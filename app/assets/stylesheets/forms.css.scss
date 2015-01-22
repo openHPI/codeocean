@@ -1,0 +1,25 @@
+.alternative-input {
+  display: none;
+}
+
+.chosen-container {
+  width: 100% !important;
+}
+
+.code-field {
+  font-family: monospace;
+}
+
+.filter-form {
+  .form-group:not(:last-child) {
+    margin-right: 1em;
+  }
+
+  input, select {
+    min-width: 200px !important;
+  }
+}
+
+.toggle-input {
+  font-size: 80%;
+}

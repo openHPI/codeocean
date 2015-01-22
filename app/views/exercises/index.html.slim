@@ -1,0 +1,34 @@
+h1 = Exercise.model_name.human(count: 2)
+
+= render(layout: 'shared/form_filters') do |f|
+  .form-group
+    = f.label(:execution_environment_id_eq, t('activerecord.attributes.exercise.execution_environment'), class: 'sr-only')
+    = f.collection_select(:execution_environment_id_eq, ExecutionEnvironment.with_exercises, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.exercise.execution_environment'))
+  .form-group
+    = f.label(:title_cont, t('activerecord.attributes.exercise.title'), class: 'sr-only')
+    = f.search_field(:title_cont, class: 'form-control', placeholder: t('activerecord.attributes.exercise.title'))
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = sort_link(@search, :title, t('activerecord.attributes.exercise.title'))
+        th = sort_link(@search, :user_id, t('activerecord.attributes.exercise.user'))
+        th = sort_link(@search, :execution_environment_id, t('activerecord.attributes.exercise.execution_environment'))
+        th = t('activerecord.attributes.exercise.public')
+        th colspan=6 = t('shared.actions')
+    tbody
+      - @exercises.each do |exercise|
+        tr
+          td = exercise.title
+          td = link_to(exercise.author, exercise.author)
+          td = link_to(exercise.execution_environment, exercise.execution_environment)
+          td = symbol_for(exercise.public?)
+          td = link_to(t('shared.show'), exercise)
+          td = link_to(t('shared.edit'), edit_exercise_path(exercise))
+          td = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+          td = link_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post)
+          td = link_to(t('.implement'), implement_exercise_path(exercise))
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise))
+
+p = render('shared/new_button', model: Exercise)

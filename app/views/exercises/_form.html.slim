@@ -1,0 +1,27 @@
+= form_for(@exercise, multipart: true) do |f|
+  = render('shared/form_errors', object: @exercise)
+  .form-group
+    = f.label(:title)
+    = f.text_field(:title, class: 'form-control', required: true)
+  .form-group
+    = f.label(:description)
+    = f.text_area(:description, class: 'form-control')
+  .form-group
+    = f.label(:execution_environment_id)
+    = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {}, class: 'form-control')
+  .form-group
+    = f.label(:instructions)
+    = f.hidden_field(:instructions)
+    .form-control.markdown
+  .checkbox
+    label
+      = f.check_box(:public)
+      = t('activerecord.attributes.exercise.public')
+  h2 = t('activerecord.attributes.exercise.files')
+  ul#files.list-unstyled
+    = f.fields_for :files do |files_form|
+      = render('file_form', f: files_form)
+  a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')
+  ul#dummies.hidden = f.fields_for(:files, CodeOcean::File.new, child_index: 'index') do |files_form|
+    = render('file_form', f: files_form)
+  .actions = render('shared/submit_button', f: f, object: @exercise)

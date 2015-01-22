@@ -1,0 +1,14 @@
+.fade.modal aria-hidden=true aria-labelledby='modal-title' id=id role='dialog' tabindex=-1
+  .modal-dialog class=local_assigns[:classes]
+    .modal-content
+      .modal-header
+        button.close data-dismiss='modal' type='button'
+          span aria-hidden=true &times;
+          span.sr-only Close
+        h4#modal-title.modal-title = title
+      .modal-body
+        - if local_assigns.has_key?(:body)
+          = body
+        - else
+          = render(layout: false, locals: (local_assigns[:template_variables] || {}).merge(modal: true), template: template)
+      .modal-footer

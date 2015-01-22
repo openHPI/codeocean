@@ -1,0 +1,27 @@
+= form_for(@file_type) do |f|
+  = render('shared/form_errors', object: @file_type)
+  .form-group
+    = f.label(:name)
+    = f.text_field(:name, class: 'form-control', required: true)
+  .form-group
+    = f.label(:editor_mode)
+    = f.select(:editor_mode, @editor_modes, {}, class: 'form-control')
+  .form-group
+    = f.label(:file_extension)
+    = f.text_field(:file_extension, class: 'form-control', placeholder: '.rb')
+  .form-group
+    = f.label(:indent_size)
+    = f.number_field(:indent_size, class: 'form-control', placeholder: 2, required: true)
+  .checkbox
+    label
+      = f.check_box(:binary)
+      = t('activerecord.attributes.file_type.binary')
+  .checkbox
+    label
+      = f.check_box(:executable)
+      = t('activerecord.attributes.file_type.executable')
+  .checkbox
+    label
+      = f.check_box(:renderable)
+      = t('activerecord.attributes.file_type.renderable')
+  .actions = render('shared/submit_button', f: f, object: @file_type)

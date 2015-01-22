@@ -1,0 +1,321 @@
+de:
+  activerecord:
+    attributes:
+      consumer:
+        name: Name
+        oauth_key: OAuth Key
+        oauth_secret: OAuth Secret
+      error:
+        message: Nachricht
+      execution_environment:
+        docker_image: Docker-Image
+        exposed_ports: Zugängliche Ports
+        help: Hilfetext
+        name: Name
+        permitted_execution_time: Erlaubte Ausführungszeit (in Sekunden)
+        run_command: Ausführungsbefehl
+        test_command: Testbefehl
+        testing_framework: Testing-Framework
+        user: Autor
+      exercise:
+        description: Beschreibung
+        embedding_parameters: Parameter für LTI-Einbettung
+        execution_environment: Ausführungsumgebung
+        execution_environment_id: Ausführungsumgebung
+        files: Dateien
+        instructions: Anweisungen
+        maximum_score: Erreichbare Punktzahl
+        public: Öffentlich
+        reference_implementation: Reference Implementation
+        template_code: Template Code
+        template_test_code: Template Test Code
+        test_code: Test Code
+        title: Titel
+        user: Autor
+      external_user:
+        consumer: Konsument
+        email: E-Mail
+        name: Name
+      file:
+        content: Inhalt
+        feedback_message: Feedback-Nachricht
+        file_type: Dateityp
+        file_type_id: Dateityp
+        hidden: Versteckt
+        name: Name
+        path: Pfad
+        read_only: Schreibgeschützt
+        role: Rolle
+        weight: Punktzahl
+      file_type:
+        binary: Binär
+        editor_mode: Editor-Modus
+        executable: Ausführbar
+        file_extension: Dateiendung
+        indent_size: Einrückung
+        name: Name
+        renderable: Anzeigbar
+        user: Autor
+      hint:
+        locale: Sprache
+        message: Nachricht
+        name: Name
+        regular_expression: Regulärer Ausdruck
+      internal_user:
+        activated: Aktiviert
+        consumer: Konsument
+        consumer_id: Konsument
+        email: E-Mail
+        name: Name
+        password: Passwort
+        password_confirmation: Passwort-Bestätigung
+        role: Rolle
+      submission:
+        cause: Anlass
+        code: Code
+        exercise: Aufgabe
+        files: Dateien
+        score: Punktzahl
+        user: Autor
+    models:
+      consumer:
+        one: Konsument
+        other: Konsumenten
+      error:
+        one: Fehler
+        other: Fehler
+      execution_environment:
+        one: Ausführungsumgebung
+        other: Ausführungsumgebungen
+      exercise:
+        one: Aufgabe
+        other: Aufgaben
+      external_user:
+        one: Externer Nutzer
+        other: Externe Nutzer
+      file:
+        one: Datei
+        other: Dateien
+      file_type:
+        one: Dateityp
+        other: Dateitypen
+      hint:
+        one: Tipp
+        other: Tipps
+      internal_user:
+        one: Interner Nutzer
+        other: Interne Nutzer
+      submission:
+        one: Abgabe
+        other: Abgaben
+    errors:
+      messages:
+        together: 'muss zusammen mit %{attribute} definiert werden'
+      models:
+        exercise:
+          at_most_one_main_file: dürfen höchstens eine Hauptdatei enthalten
+  application:
+    not_authorized: Sie Sind nicht berechtigt, diese Aktion auszuführen.
+  breadcrumbs:
+    destroy_through_lti: Code-Abgabe
+    welcome: Startseite
+  consumers:
+    show:
+      link: Konsument
+  errors:
+    index:
+      count: Anzahl
+  execution_environments:
+    form:
+      hints:
+        command: <em>filename</em> wird automatisch durch den richtigen Dateinamen ersetzt.
+        docker_image: 'Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank">DockerHub</a> verfügbar ist.'
+        exposed_ports: Während der Ausführung sind diese Ports für den Nutzer zugänglich.
+    index:
+      shell: Shell
+    shell:
+      command: Befehl
+      headline: Shell
+  exercises:
+    editor:
+      confirm_start_over: Wollen Sie wirklich von vorne anfangen?
+      confirm_submit: Wollen Sie Ihren Code wirklich zur Bewertung abgeben?
+      create_file: Neue Datei
+      destroy_file: Datei löschen
+      download: Herunterladen
+      render: Anzeigen
+      run: Ausführen
+      run_failure: Bei der Ausführung Ihres Codes sind Fehler aufgetreten.
+      run_success: Ihr Code wurde fehlerfrei ausgeführt.
+      save: Speichern
+      score: Bewerten
+      start_over: Von vorne anfangen
+      stop: Stoppen
+      submit: Code zur Bewertung abgeben
+      test: Testen
+      timeout: 'Ihr Code benötigte länger als die erlaubten %{permitted_execution_time} Sekunden, um zu terminieren.'
+      tooltips:
+        save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
+    editor_file_tree:
+      file_root: Deteien
+    file_form:
+      hints:
+        feedback_message: Diese Nachricht wird als Tipp zu fehlschlagenden Tests angezeigt.
+        path: 'Pfad der Datei im Projektverzeichnis. Kann auch leer gelassen werden.'
+    form:
+      add_file: Datei hinzufügen
+    implement:
+      default_feedback: Sehr gut. Alle Tests waren erfolgreich.
+      feedback: Feedback
+      file: 'Test-Datei <span class="number">%{number}</span>'
+      hint: Tipp
+      no_output: Die letzte Code-Ausführung hat keine Ausgabe erzeugt.
+      no_output_yet: Bisher existiert noch keine Ausgabe.
+      output: Programm-Ausgabe
+      passed_tests: Erfolgreiche Tests
+      progress: Fortschritt
+      results: Ergebnisse
+      start: Mit dem Programmieren beginnen
+      test_count: '<span class="number">%{count}</span> Test-Dateien wurden ausgeführt.'
+      workspace: Arbeitsbereich
+    index:
+      clone: Duplizieren
+      implement: Implementieren
+    statistics:
+      average_score: Durchschnittliche Punktzahl
+      final_submissions: Finale Abgaben
+      intermediate_submissions: Intermediäre Abgaben
+      participants: Bearbeitende Nutzer
+      users: '%{count} verschiedene Nutzer'
+    submit:
+      failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+  files:
+    roles:
+      main_file: Hauptdatei
+      reference_implementation: Referenzimplementierung
+      regular_file: Normale Datei
+      teacher_defined_test: Test als Bewertungsgrundlage
+      user_defined_file: Benutzerdefinierte Datei
+      user_defined_test: Benutzerdefinierter Test
+  hints:
+    form:
+      hints:
+        message: Diese Nachricht wird als Erklärung des aufgetretenen Fehlers angezeigt. Platzhalter werden automatisch durch Funde des regulären Ausdrucks ersetzt.
+        regular_expression: Dieser reguläre Ausdruck wird auf die Fehlermeldung angewendet, um relevante Bezeicher zu extrahieren.
+  internal_users:
+    activate:
+      headline: Registrierung abschließen
+      submit: Passwort speichern
+      success: Sie haben Ihre Registrierung erfolgreich abgeschlossen.
+    forgot_password:
+      headline: Passwort zurücksetzen
+      submit: Anweisungen zum Zurücksetzen senden
+      success: Anweisungen zum Zurücksetzen Ihres Passworts wurden an Ihre E-Mail-Adresse gesendet.
+    reset_password:
+      headline: Passwort zurücksetzen
+      submit: Passwort speichern
+      success: Sie haben Ihr Passwort erfolgreich geändert.
+    show:
+      link: Profil
+  locales:
+    de: Deutsch
+    en: Englisch
+  mailers:
+    user_mailer:
+      activation_needed:
+        body: 'Bitte besuchen Sie %{link} und wählen Sie ein Passwort, um Ihre Registrierung abzuschließen.'
+        subject: Bitte schließen Sie Ihre Registrierung ab.
+      reset_password:
+        body: 'Bitte besuchen Sie %{link}, sofern Sie Ihr Passwort zurücksetzen wollen.'
+        subject: Anweisungen zum Zurücksetzen Ihres Passworts
+  sessions:
+    create:
+      failure: Fehlerhafte E-Mail oder Passwort.
+      success: Sie haben sich erfolgreich angemeldet.
+    create_through_lti:
+      session_with_outcome: 'Nachdem Sie die Aufgabe bearbeitet haben, wird ihre Bewertung an %{consumer} übermittelt.'
+      session_without_outcome: 'Dies ist eine Übungs-Session. Ihre Bewertung wird nicht an %{consumer} übermittelt.'
+    destroy:
+      link: Abmelden
+      success: Sie haben sich erfolgreich abgemeldet.
+    destroy_through_lti:
+      average_score: Durchschnittliche Punktzahl
+      final_submissions: Abgaben anderer Nutzer
+      finished_with_consumer: 'Sie können dieses Fenster nun schließen oder <a href="%{url}">zu %{consumer} zurückkehren</a>.'
+      finished_without_consumer: Sie können dieses Fenster nun schließen.
+      headline: Gut gemacht!
+      score: Ihre Punktzahl
+      success_with_outcome: 'Ihr Code wurde erfolgreich bewertet. Ihre Bewertung wurde an %{consumer} übermittelt.'
+      success_without_outcome: Ihr Code wurde erfolgreich bewertet.
+    new:
+      forgot_password: Passwort vergessen?
+      headline: Anmelden
+      link: Anmelden
+      remember_me: Angemeldet bleiben
+    oauth:
+      failure: Leider ist ein Fehler aufgetreten.
+      invalid_consumer: Ungültiger OAuth-Key.
+      invalid_exercise_token: Ungültiges Aufgaben-Token.
+      invalid_signature: Ungültige OAuth-Signatur.
+      missing_parameters: OAuth-Parameter fehlen.
+      used_nonce: Die Nonce wurde bereits verwendet.
+  shared:
+    actions: Aktionen
+    administration: Administration
+    already_signed_in: Sie sind bereits angemeldet.
+    apply_filters: Filter anwenden
+    confirm_destroy: Sind Sie sicher?
+    create: '%{model} erstellen'
+    created_at: Erstellt
+    destroy: Löschen
+    edit: Bearbeiten
+    errors_one: 'Beim Speichern ist ein Fehler aufgetreten'
+    errors_other: 'Beim Speichern sind %{count} Fehler aufgetreten'
+    help:
+      execution_environment_specific_help: 'Hilfe zu %{execution_environment}'
+      general_help: Allgemeine Hilfe
+      headline: Hilfe
+      link: Hilfe
+    index: Index
+    message_failure: Leider ist ein Fehler aufgetreten.
+    new: Hinzufügen
+    new_model: '%{model} hinzufügen'
+    number: Nummer
+    object_cloned: '%{model} wurde erfolgreich dupliziert.'
+    object_created: '%{model} wurde erfolgreich erstellt.'
+    object_destroyed: '%{model} wurde erfolgreich gelöscht.'
+    object_updated: '%{model} wurde erfolgreich bearbeitet.'
+    out_of: '<span class="number">%{value}</span> von <span class="number">%{maximum_value}</span>'
+    reset_filters: Filter zurücksetzen
+    resources: Ressourcen
+    show: Anzeigen
+    statistics: Statistiken
+    tooltips:
+      shortcut: 'Tastaturkürzel: %{shortcut}'
+    update: '%{model} aktualisieren'
+    upload_file: Datei hochladen
+  submissions:
+    causes:
+      assess: Bewertung
+      download: Download
+      file: Benutzerdefinierte Datei
+      render: Anzeige
+      run: Ausführung
+      save: Speichern
+      submit: Abgabe
+      test: Test
+    create:
+      success: Ihr Code wurde gespeichert.
+    statistics:
+      history: Punkteverlauf
+      percentage: Prozentzahl
+      siblings: Dazugehörige Abgaben
+  users:
+    roles:
+      admin: Administrator
+      learner: Lernender
+      teacher: Lehrer
+  will_paginate:
+    next_label: 'Nächste Seite &#8594;'
+    page_gap: '&hellip;'
+    previous_label: '&#8592; Vorherige Seite'

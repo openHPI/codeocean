@@ -1,0 +1,34 @@
+#editor.row data-exercise-id=exercise.id data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @exercise.execution_environment.permitted_execution_time) data-errors-url=execution_environment_errors_path(exercise.execution_environment) data-submissions-url=submissions_path
+  .col-sm-3 = render('editor_file_tree', files: @files)
+  #frames.col-sm-9
+    - @files.each do |file|
+      = render('editor_frame', exercise: exercise, file: file)
+    #editor-buttons.btn-group
+      = render('editor_button', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => exercise_path(exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
+      = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
+      .btn-group
+        = render('editor_button', icon: 'fa fa-desktop', id: 'render', label: t('exercises.editor.render'))
+        = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
+        = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-stop', id: 'stop', label: t('exercises.editor.stop'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
+        = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-rocket', id: 'test', label: t('exercises.editor.test'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + t'))
+        button.btn.btn-primary.dropdown-toggle data-toggle='dropdown' type='button'
+          span.caret
+          span.sr-only Toggle Dropdown
+        ul.dropdown-menu role='menu'
+          li
+            a#dropdown-render data-cause='render' href='#'
+              i.fa.fa-desktop
+              = t('exercises.editor.render')
+          li
+            a#dropdown-run data-cause='run' href='#'
+              i.fa.fa-play
+              = t('exercises.editor.run')
+          li
+            a#dropdown-stop href='#'
+              i.fa.fa-stop
+              = t('exercises.editor.stop')
+          li
+            a#dropdown-test data-cause='test' href='#'
+              i.fa.fa-rocket
+              = t('exercises.editor.test')
+      = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s'))

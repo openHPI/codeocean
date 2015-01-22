@@ -1,0 +1,6 @@
+- if object.errors.any?
+  #error_explanation.alert.alert-warning
+    h4 = "#{t("shared.errors_#{object.errors.count == 1 ? 'one' : 'other'}", count: object.errors.count, model: object.class.model_name.human)}:"
+    ul
+      - object.errors.full_messages.each do |message|
+        li = message

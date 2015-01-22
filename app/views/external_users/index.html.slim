@@ -1,0 +1,15 @@
+h1 = ExternalUser.model_name.human(count: 2)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.external_user.name')
+        th = t('activerecord.attributes.external_user.consumer')
+        th = t('shared.actions')
+    tbody
+      - @users.each do |user|
+        tr
+          td = user.name
+          td = link_to(user.consumer, user.consumer)
+          td = link_to(t('shared.show'), user)

@@ -1,0 +1,11 @@
+default: &default
+  arguments: CHANGE_ME
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+
+test:
+  <<: *default

@@ -1,0 +1,8 @@
+h1
+  = @hint
+  = render('shared/edit_button', object: @hint, path: edit_execution_environment_hint_path(params[:execution_environment_id], @hint.id))
+
+= row(label: 'hint.name', value: @hint.name)
+= row(label: 'hint.locale', value: t("locales.#{@hint.locale}"))
+= row(label: 'hint.message', value: @hint.message)
+= row(label: 'hint.regular_expression', value: code_tag(@hint.regular_expression))

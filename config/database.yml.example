@@ -1,0 +1,18 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  password: CHANGE_ME
+  pool: 16
+  username: postgres
+
+development:
+  <<: *default
+  database: code_ocean_development
+
+production:
+  <<: *default
+  database: code_ocean_production
+
+test:
+  <<: *default
+  database: code_ocean_test

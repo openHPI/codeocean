@@ -1,0 +1,17 @@
+h1 = Consumer.model_name.human(count: 2)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.consumer.name')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @consumers.each do |consumer|
+        tr
+          td = consumer.name
+          td = link_to(t('shared.show'), consumer)
+          td = link_to(t('shared.edit'), edit_consumer_path(consumer))
+          td = link_to(t('shared.destroy'), consumer, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+
+p = render('shared/new_button', model: Consumer)

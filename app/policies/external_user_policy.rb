@@ -1,0 +1,2 @@
+class ExternalUserPolicy < AdminOnlyPolicy
+end

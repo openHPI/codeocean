@@ -1,0 +1,28 @@
+- content_for :head do
+  = javascript_include_tag('http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js')
+  = stylesheet_link_tag('http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css')
+
+h1
+  = @exercise
+  = render('shared/edit_button', object: @exercise)
+
+= row(label: 'exercise.title', value: @exercise.title)
+= row(label: 'exercise.user', value: link_to(@exercise.author, @exercise.author))
+= row(label: 'exercise.description', value: @exercise.description)
+= row(label: 'exercise.execution_environment', value: link_to(@exercise.execution_environment, @exercise.execution_environment))
+= row(label: 'exercise.instructions', value: render_markdown(@exercise.instructions))
+= row(label: 'exercise.maximum_score', value: @exercise.maximum_score)
+= row(label: 'exercise.public', value: @exercise.public?)
+= row(label: 'exercise.embedding_parameters') do
+  = content_tag(:input, nil, class: 'form-control', readonly: true, value: embedding_parameters(@exercise))
+
+h2 = t('activerecord.attributes.exercise.files')
+
+ul.list-unstyled
+  - @exercise.files.each do |file|
+    li.panel.panel-default
+      .panel-heading
+        h3.panel-title = file.name_with_extension
+      .panel-body
+        .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+        = render('shared/file', file: file)

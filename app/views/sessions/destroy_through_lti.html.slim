@@ -1,0 +1,15 @@
+h1 = t('.headline')
+
+p
+  == t(".success_#{params[:outcome] ? 'with' : 'without'}_outcome", consumer: @consumer)
+  ==< t(".finished_#{@consumer ? 'with' : 'without'}_consumer", consumer: @consumer, url: params[:url])
+
+h2 = t('shared.statistics')
+
+= row(label: '.score') do
+  p == t('shared.out_of', maximum_value: @submission.exercise.maximum_score, value: @submission.score)
+  p = progress_bar(@submission.percentage)
+= row(label: '.final_submissions', value: @submission.exercise.submissions.final.distinct.count(:user_id, :user_type) - 1)
+= row(label: '.average_score') do
+  p == t('shared.out_of', maximum_value: @submission.exercise.maximum_score, value: @submission.exercise.average_score)
+  p = progress_bar(@submission.exercise.average_percentage)

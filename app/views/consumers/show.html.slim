@@ -1,0 +1,8 @@
+h1
+  = @consumer
+  = render('shared/edit_button', object: @consumer) if policy(@consumer).edit?
+
+= row(label: 'consumer.name', value: @consumer.name)
+- %w[oauth_key oauth_secret].each do |attribute|
+  = row(label: "consumer.#{attribute}") do
+    = content_tag(:input, nil, class: 'form-control', readonly: true, value: @consumer.send(attribute))

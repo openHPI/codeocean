@@ -1,0 +1,17 @@
+h1 = ::Error.model_name.human(count: 2)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('.count')
+        th = t('activerecord.attributes.error.message')
+        th = t('shared.created_at')
+        th = t('shared.actions')
+    tbody
+      - @errors.each do |error|
+        tr
+          td = error.count
+          td = error.message
+          td = l(error.created_at, format: :short)
+          td = link_to(t('shared.show'), execution_environment_error_path(params[:execution_environment_id], error))

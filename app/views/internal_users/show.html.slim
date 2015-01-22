@@ -1,0 +1,10 @@
+h1
+  = @user
+  - if policy(@user).edit?
+    = render('shared/edit_button', object: @user)
+
+= row(label: 'internal_user.email', value: @user.email)
+= row(label: 'internal_user.name', value: @user.name)
+= row(label: 'internal_user.consumer', value: @user.consumer ? link_to(@user.consumer, @user.consumer) : nil)
+= row(label: 'internal_user.role', value: t("users.roles.#{@user.role}"))
+= row(label: 'internal_user.activated', value: @user.activated?)

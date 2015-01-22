@@ -1,0 +1,9 @@
+h1 = @exercise
+
+= row(label: '.participants', value: @exercise.users.count)
+- [:intermediate, :final].each do |scope|
+  = row(label: ".#{scope}_submissions") do
+    = "#{@exercise.submissions.send(scope).count} (#{t('.users', count: @exercise.submissions.send(scope).distinct.count(:user_id, :user_type))})"
+= row(label: '.average_score') do
+  p == @exercise.average_score ? t('shared.out_of', maximum_value: @exercise.maximum_score, value: @exercise.average_score) : empty
+  p = progress_bar(@exercise.average_percentage)

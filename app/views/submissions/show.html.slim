@@ -1,0 +1,13 @@
+h1 = @submission
+
+= row(label: 'submission.exercise', value: link_to(@submission.exercise, @submission.exercise))
+= row(label: 'submission.user', value: link_to(@submission.user, @submission.user))
+= row(label: 'submission.cause', value: t("submissions.causes.#{@submission.cause}"))
+= row(label: 'submission.score', value: @submission.score)
+
+h2 = t('activerecord.attributes.submission.files')
+
+ul.list-unstyled
+  - @files.each do |file|
+    li.panel.panel-default
+      .panel-body = render('shared/file', file: file)

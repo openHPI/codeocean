@@ -1,0 +1,13 @@
+code {
+  background-color: #F8F8F8 !important;
+  max-height: 100px;
+  overflow: scroll;
+}
+
+input[type='file'] {
+  display: none;
+}
+
+#exercise_template_code {
+  font-family: monospace;
+}

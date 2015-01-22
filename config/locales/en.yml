@@ -1,0 +1,321 @@
+en:
+  activerecord:
+    attributes:
+      consumer:
+        name: Name
+        oauth_key: OAuth Key
+        oauth_secret: OAuth Secret
+      error:
+        message: Message
+      execution_environment:
+        docker_image: Docker Image
+        exposed_ports: Exposed Ports
+        help: Help Text
+        name: Name
+        permitted_execution_time: Permitted Execution Time (in Seconds)
+        run_command: Run Command
+        test_command: Test Command
+        testing_framework: Testing Framework
+        user: Author
+      exercise:
+        description: Description
+        embedding_parameters: LTI Embedding Parameters
+        execution_environment: Execution Environment
+        execution_environment_id: Execution Environment
+        files: Files
+        instructions: Instructions
+        maximum_score: Maximum Score
+        public: Public
+        reference_implementation: Reference Implementation
+        template_code: Template Code
+        template_test_code: Template Test Code
+        test_code: Test Code
+        title: Title
+        user: Author
+      external_user:
+        consumer: Consumer
+        email: Email
+        name: Name
+      file:
+        content: Content
+        feedback_message: Feedback Message
+        file_type: File Type
+        file_type_id: File Type
+        hidden: Hidden
+        name: Name
+        path: Path
+        read_only: Read-only
+        role: Role
+        weight: Score
+      file_type:
+        binary: Binary
+        editor_mode: Editor Mode
+        executable: Executable
+        file_extension: File Extension
+        indent_size: Indent Size
+        name: Name
+        renderable: Renderable
+        user: Author
+      hint:
+        locale: Locale
+        message: Message
+        name: Name
+        regular_expression: Regular Expression
+      internal_user:
+        activated: Activated
+        consumer: Consumer
+        consumer_id: Consumer
+        email: Email
+        name: Name
+        password: Password
+        password_confirmation: Passwort Confirmation
+        role: Role
+      submission:
+        cause: Cause
+        code: Code
+        exercise: Exercise
+        files: Files
+        score: Score
+        user: Author
+    models:
+      consumer:
+        one: Consumer
+        other: Consumers
+      error:
+        one: Error
+        other: Errors
+      execution_environment:
+        one: Execution Environment
+        other: Execution Environments
+      exercise:
+        one: Exercise
+        other: Exercises
+      external_user:
+        one: External User
+        other: External Users
+      file:
+        one: File
+        other: Files
+      file_type:
+        one: File Type
+        other: File Types
+      hint:
+        one: Hint
+        other: Hints
+      internal_user:
+        one: Internal User
+        other: Internal Users
+      submission:
+        one: Submission
+        other: Submissions
+    errors:
+      messages:
+        together: 'has to be set along with %{attribute}'
+      models:
+        exercise:
+          at_most_one_main_file: must include at most one main file
+  application:
+    not_authorized: You are not authorized to perform this action.
+  breadcrumbs:
+    destroy_through_lti: Code Submission
+    welcome: Cover Page
+  consumers:
+    show:
+      link: Consumer
+  errors:
+    index:
+      count: Count
+  execution_environments:
+    form:
+      hints:
+        command: <em>filename</em> is automatically replaced with the correct filename.
+        docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank">DockerHub</a>.
+        exposed_ports: During code execution these ports are accessible for the user.
+    index:
+      shell: Shell
+    shell:
+      command: Command
+      headline: Shell
+  exercises:
+    editor:
+      confirm_start_over: Do you really want to start over?
+      confirm_submit: Do you really want to submit your code for grading?
+      create_file: New File
+      destroy_file: Delete File
+      download: Download
+      render: Render
+      run: Run
+      run_failure: Your code ran with errors.
+      run_success: Your code ran without errors.
+      save: Save
+      score: Score
+      start_over: Start over
+      stop: Stop
+      submit: Submit Code For Assessment
+      test: Test
+      timeout: 'Your code took longer than the permitted %{permitted_execution_time} seconds to run.'
+      tooltips:
+        save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
+    editor_file_tree:
+      file_root: Files
+    file_form:
+      hints:
+        feedback_message: This message is used as a hint for failing tests.
+        path: "The file's path in the project tree. Can be left blank."
+    form:
+      add_file: Add file
+    implement:
+      default_feedback: Well done. All tests have been passed.
+      feedback: Feedback
+      file: 'Test File <span class="number">%{number}</span>'
+      hint: Hint
+      no_output: The last code run has not generated any output.
+      no_output_yet: There is no output yet.
+      output: Program Output
+      passed_tests: Passed Tests
+      progress: Progress
+      results: Results
+      start: Start Coding
+      test_count: '<span class="number">%{count}</span> test files have been executed.'
+      workspace: Workspace
+    index:
+      clone: Duplicate
+      implement: Implement
+    statistics:
+      average_score: Average Score
+      final_submissions: Final Submissions
+      intermediate_submissions: Intermediate Submissions
+      participants: Participating Users
+      users: '%{count} distinct users'
+    submit:
+      failure: An error occured while transmitting your score. Please try again later.
+  files:
+    roles:
+      main_file: Main File
+      reference_implementation: Reference Implementation
+      regular_file: Regular File
+      teacher_defined_test: Test for Assessment
+      user_defined_file: User-defined File
+      user_defined_test: User-defined Test
+  hints:
+    form:
+      hints:
+        message: This message is used as an error explanation. Placeholders are automatically replaced by regular expression matches.
+        regular_expression: This regular expression is used to extract relevant identifiers from the error message.
+  internal_users:
+    activate:
+      headline: Complete Registration
+      submit: Set Password
+      success: You successfully completed your registration.
+    forgot_password:
+      headline: Reset Password
+      submit: Send Password Reset Instructions
+      success: Instructions to reset your password have been sent to your email address.
+    reset_password:
+      headline: Reset Password
+      submit: Set Password
+      success: You successfully changed your password.
+    show:
+      link: Profile
+  locales:
+    de: German
+    en: English
+  mailers:
+    user_mailer:
+      activation_needed:
+        body: 'Please visit %{link} and set up a password in order to complete your registration.'
+        subject: Please complete your registration.
+      reset_password:
+        body: 'Please visit %{link} if you want to reset your password.'
+        subject: Password reset instructions
+  sessions:
+    create:
+      failure: Invalid email or password.
+      success: Successfully signed in.
+    create_through_lti:
+      session_with_outcome: 'After you have finished the exercise, your grade will be transmitted to %{consumer}.'
+      session_without_outcome: 'This is a practice session. Your grade will not be transmitted to %{consumer}.'
+    destroy:
+      link: Sign out
+      success: Successfully signed out.
+    destroy_through_lti:
+      average_score: Average Score
+      final_submissions: Other Users' Submissions
+      finished_with_consumer: 'You may close this window now or <a href="%{url}">return to %{consumer}</a>.'
+      finished_without_consumer: You may close this window now.
+      headline: Well done!
+      score: Your Score
+      success_with_outcome: 'Your code has been successfully assessed. Your grade has been transmitted to %{consumer}.'
+      success_without_outcome: Your code has been successfully assessed.
+    new:
+      forgot_password: Forgot password?
+      headline: Sign In
+      link: Sign In
+      remember_me: Remember me
+    oauth:
+      failure: 'Sorry, something went wrong.'
+      invalid_consumer: Invalid OAuth key.
+      invalid_exercise_token: Invalid exercise token.
+      invalid_signature: Invalid OAuth signature.
+      missing_parameters: Missing OAuth parameters.
+      used_nonce: Nonce has already been used.
+  shared:
+    actions: Actions
+    administration: Administration
+    already_signed_in: You are already signed in.
+    apply_filters: Apply filters
+    confirm_destroy: Are you sure?
+    create: 'Create %{model}'
+    created_at: Created At
+    destroy: Delete
+    edit: Edit
+    errors_one: 'An error prohibited this %{model} from being saved'
+    errors_other: '%{count} errors prohibited this %{model} from being saved'
+    help:
+      execution_environment_specific_help: 'Help for %{execution_environment}'
+      general_help: General Help
+      headline: Help
+      link: Help
+    index: Index
+    message_failure: 'Sorry, something went wrong.'
+    new: Add
+    new_model: 'Add %{model}'
+    number: Number
+    object_cloned: '%{model} has successfully been duplicated.'
+    object_created: '%{model} has successfully been created.'
+    object_destroyed: '%{model} has successfully been deleted.'
+    object_updated: '%{model} has successfully been updated.'
+    out_of: '<span class="number">%{value}</span> out of <span class="number">%{maximum_value}</span>'
+    reset_filters: Reset filters
+    resources: Resources
+    show: Show
+    statistics: Statistics
+    tooltips:
+      shortcut: 'Keyboard shortcut: %{shortcut}'
+    update: 'Update %{model}'
+    upload_file: Upload file
+  submissions:
+    causes:
+      assess: Scoring
+      download: Download
+      file: User-defined file
+      render: Rendering
+      run: Execution
+      save: Save
+      submit: Submission
+      test: Test
+    create:
+      success: Your code has been saved.
+    statistics:
+      history: Score History
+      percentage: Percentage
+      siblings: Associated Submissions
+  users:
+    roles:
+      admin: Administrator
+      learner: Learner
+      teacher: Teacher
+  will_paginate:
+    next_label: 'Next Page &#8594;'
+    page_gap: '&hellip;'
+    previous_label: '&#8592; Previous Page'

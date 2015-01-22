@@ -1,0 +1,19 @@
+- if current_user.try(:internal?)
+  ul.breadcrumb
+    - if model = Kernel.const_get(controller_name.classify) rescue nil
+      - object = model.find_by(id: params[:id])
+      - if model.try(:nested_resource?)
+        li = model.model_name.human(count: 2)
+        - if object
+          li = object
+      - else
+        li = link_to(model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+        - if object
+          li = link_to(object, send(:"#{model.model_name.singular}_path", object))
+      li.active
+        - if translation_present?("shared.#{params[:action]}")
+          = t("shared.#{params[:action]}")
+        - else
+          = t("#{controller_name}.index.#{params[:action]}")
+    - else
+      li.active = t("breadcrumbs.#{params[:action]}")

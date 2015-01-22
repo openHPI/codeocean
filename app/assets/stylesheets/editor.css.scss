@@ -1,0 +1,69 @@
+button i.fa-spin {
+  display: none;
+}
+
+.editor {
+  height: 100%;
+  width: 100%;
+}
+
+.frame {
+  display: none;
+  height: 400px;
+
+  audio, img, video {
+    max-width: 100%;
+  }
+}
+
+#editor-buttons {
+  background-color: #008CBA;
+  margin-top: 1em;
+  width: 100%;
+
+  button {
+    font-size: 80%;
+  }
+
+  button, .btn-group {
+    width: 25%;
+  }
+
+  .btn-group {
+    button {
+      width: 75%;
+    }
+
+    button.dropdown-toggle {
+      width: 25%;
+    }
+  }
+}
+
+#files {
+  overflow: scroll;
+}
+
+#hint {
+  display: none;
+}
+
+#outputInformation {
+  #output {
+    max-height: 500px;
+    overflow: auto;
+    margin: 2em 0;
+
+    p {
+      margin: 0.5em;
+    }
+
+    pre + pre {
+      margin-top: 1em;
+    }
+  }
+}
+
+#results {
+  display: none;
+}

@@ -1,0 +1,26 @@
+h1 = @submission
+
+= row(label: 'submission.exercise', value: link_to(@submission.exercise, @submission.exercise))
+= row(label: 'submission.score', value: @submission.score)
+= row(label: '.siblings', value: @submission.siblings.count)
+
+h2 = t('.history')
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('shared.number')
+        th = t('shared.created_at')
+        th = t('activerecord.attributes.submission.score')
+        th = t('.percentage')
+        th = t('shared.actions')
+    tbody
+      - @submission.siblings.order(:created_at).each_with_index do |submission, index|
+        - if submission.score?
+          tr
+            td = index + 1
+            td = l(submission.created_at, format: :short)
+            td = submission.score
+            td = progress_bar(submission.percentage)
+            td = link_to(t('shared.show'), submission)

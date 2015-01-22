@@ -1,0 +1,17 @@
+default: &default
+  connection_timeout: 3
+  ports: !ruby/range 4500..4600
+
+development:
+  <<: *default
+  host: tcp://192.168.23.75:2375
+  workspace_root: <%= File.join('/', 'shared', Rails.env) %>
+
+production:
+  <<: *default
+  workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
+
+test:
+  <<: *default
+  host: tcp://192.168.23.75:2375
+  workspace_root: <%= File.join('/', 'shared', Rails.env) %>

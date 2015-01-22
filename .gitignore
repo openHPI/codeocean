@@ -1,0 +1,8 @@
+/config/*.production.yml
+/coverage
+/log
+/public/assets
+/public/uploads
+/tmp
+/vagrant/
+*.sublime-*

@@ -1,0 +1,8 @@
+h1 = @execution_environment
+
+#shell data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @execution_environment.permitted_execution_time) data-url=execute_command_execution_environment_path(@execution_environment)
+  .form-group
+    label for='command' = t('.command')
+    input#command.form-control type='text'
+  pre#output data-message-no-output=t('exercises.implement.no_output')
+    p = t('exercises.implement.no_output_yet')

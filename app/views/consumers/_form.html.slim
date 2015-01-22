@@ -1,0 +1,12 @@
+= form_for(@consumer, multipart: true) do |f|
+  = render('shared/form_errors', object: @consumer)
+  .form-group
+    = f.label(:name)
+    = f.text_field(:name, class: 'form-control', required: true)
+  .form-group
+    = f.label(:oauth_key)
+    = f.text_field(:oauth_key, class: 'form-control', required: true)
+  .form-group
+    = f.label(:oauth_secret)
+    = f.text_field(:oauth_secret, class: 'form-control', required: true)
+  .actions = render('shared/submit_button', f: f, object: @consumer)

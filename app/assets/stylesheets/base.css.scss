@@ -1,0 +1,50 @@
+h1 {
+  margin-bottom: 1em;
+}
+
+i.fa, i.glyphicon {
+  margin-right: 0.5em;
+}
+
+pre {
+  background-color: #FAFAFA;
+  margin: 0;
+  padding: 0;
+}
+
+span.caret {
+  margin-left: 0.5em;
+}
+
+.progress {
+  margin: 0;
+
+  .progress-bar {
+    line-height: initial;
+  }
+}
+
+.attribute-row + .attribute-row{
+  margin-top: 0.5em;
+}
+
+.badge {
+  font-size: 100%;
+}
+
+.disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.empty {
+  opacity: 0.5;
+}
+
+.flash {
+  font-size: 100%;
+}
+
+.markdown {
+  height: 200px;
+}

@@ -1,0 +1,8 @@
+h1
+  = @file_type
+  = render('shared/edit_button', object: @file_type)
+
+= row(label: 'file_type.name', value: @file_type.name)
+= row(label: 'file_type.user', value: link_to(@file_type.author, @file_type.author))
+- [:editor_mode, :file_extension, :indent_size, :binary, :executable, :renderable].each do |attribute|
+  = row(label: "file_type.#{attribute}", value: @file_type.send(attribute))

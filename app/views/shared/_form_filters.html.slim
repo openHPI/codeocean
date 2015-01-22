@@ -1,0 +1,11 @@
+.well
+  = search_form_for(@search, class: 'clearfix filter-form form-inline') do |f|
+    = yield(f)
+    .btn-group.pull-right
+      button.btn.btn-default.btn-sm type='submit' = t('shared.apply_filters')
+      button.btn.btn-default.btn-sm.dropdown-toggle data-toggle='dropdown' type='button'
+        span.caret
+        span.sr-only Toggle Dropdown
+      ul.dropdown-menu role='menu'
+        li
+          a href=request.path = t('shared.reset_filters')

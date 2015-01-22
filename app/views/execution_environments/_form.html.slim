@@ -1,0 +1,35 @@
+= form_for(@execution_environment) do |f|
+  = render('shared/form_errors', object: @execution_environment)
+  .form-group
+    = f.label(:name)
+    = f.text_field(:name, class: 'form-control', required: true)
+  .form-group
+    = f.label(:docker_image)
+    | &nbsp;
+    a.toggle-input href='#' = t('shared.new')
+    = f.select(:docker_image, @docker_images, {}, class: 'form-control')
+    = f.text_field(:docker_image, class: 'alternative-input form-control', disabled: true)
+    .help-block == t('.hints.docker_image')
+  .form-group
+    = f.label(:exposed_ports)
+    = f.text_field(:exposed_ports, class: 'form-control', placeholder: '3000, 4000')
+    .help-block == t('.hints.exposed_ports')
+  .form-group
+    = f.label(:permitted_execution_time)
+    = f.number_field(:permitted_execution_time, class: 'form-control', min: 1)
+  .form-group
+    = f.label(:run_command)
+    = f.text_field(:run_command, class: 'form-control', placeholder: 'command %{filename}', required: true)
+    .help-block == t('.hints.command')
+  .form-group
+    = f.label(:test_command)
+    = f.text_field(:test_command, class: 'form-control', placeholder: 'command %{filename}')
+    .help-block == t('.hints.command')
+  .form-group
+    = f.label(:testing_framework)
+    = f.select(:testing_framework, @testing_framework_adapters, {include_blank: true}, class: 'form-control')
+  .form-group
+    = f.label(:help)
+    = f.hidden_field(:help)
+    .form-control.markdown
+  .actions = render('shared/submit_button', f: f, object: @execution_environment)

@@ -1,0 +1,34 @@
+h1 = InternalUser.model_name.human(count: 2)
+
+= render(layout: 'shared/form_filters') do |f|
+  .form-group
+    = f.label(:consumer_id_eq, t('activerecord.attributes.internal_user.consumer'), class: 'sr-only')
+    = f.collection_select(:consumer_id_eq, Consumer.with_users, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.internal_user.consumer'))
+  .form-group
+    = f.label(:email_cont, t('activerecord.attributes.internal_user.email'), class: 'sr-only')
+    = f.search_field(:email_cont, class: 'form-control', placeholder: t('activerecord.attributes.internal_user.email'))
+  .form-group
+    = f.label(:role_eq, t('activerecord.attributes.internal_user.role'), class: 'sr-only')
+    = f.select(:role_eq, User::ROLES.map { |role| [t("users.roles.#{role}"), role] }, {}, class: 'form-control', prompt: t('activerecord.attributes.internal_user.role'))
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.internal_user.name')
+        th = t('activerecord.attributes.internal_user.consumer')
+        th = t('activerecord.attributes.internal_user.role')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @users.each do |user|
+        tr
+          td = user.name
+          td = user.consumer ? link_to(user.consumer, user.consumer) : empty
+          td = t("users.roles.#{user.role}")
+          td = link_to(t('shared.show'), user)
+          td = link_to(t('shared.edit'), edit_internal_user_path(user))
+          td
+            - if policy(user).destroy?
+              = link_to(t('shared.destroy'), user, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+
+p = render('shared/new_button', model: InternalUser)
