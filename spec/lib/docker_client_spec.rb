@@ -98,8 +98,11 @@ describe DockerClient, docker: true do
 
     it 'releases allocated ports' do
       expect(container).to receive(:json).at_least(:once).and_return({'HostConfig' => {'PortBindings' => {foo: [{'HostPort' => '42'}]}}})
-      docker_client.send(:start_container, container)
       expect(PortPool).to receive(:release)
+    end
+
+    it 'deletes the container' do
+      expect(container).to receive(:delete)
     end
   end
 

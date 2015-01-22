@@ -68,6 +68,7 @@ class DockerClient
         PortPool.release(port)
       end
     end
+    container.delete(force: true)
   end
 
   def execute_command(command, &block)
