@@ -44,11 +44,11 @@ group :test do
   gem 'autotest-rails'
   gem 'capybara'
   gem 'capybara-webkit'
+  gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
   gem 'rake'
   gem 'rspec-autotest'
   gem 'rspec-rails', '>= 3.0.0'
   gem 'selenium-webdriver'
-  gem 'simplecov', :require => false
 end
