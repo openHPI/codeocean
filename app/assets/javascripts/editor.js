@@ -17,8 +17,8 @@ $(function() {
   var active_frame = undefined;
   var running = false;
 
-  var flowrUrl = 'http://vm-teusner-webrtc.eaalab.hpi.uni-potsdam.de:3000/api/exceptioninfo?id=&lang=auto'
-  var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
+  var flowrUrl = 'http://vm-teusner-webrtc.eaalab.hpi.uni-potsdam.de:3000/api/exceptioninfo?id=&lang=auto';
+  var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>';
 
   var ajaxError = function(response) {
     $.flash.danger({
@@ -573,32 +573,31 @@ $(function() {
     showRequestedTab();
   }
 
-  var stderrOutput = ''
+  var stderrOutput = '';
   var handleStderrOutputForFlowr = function(event) {
     var json = JSON.parse(event.data);
 
     if (json.stderr) {
       stderrOutput += json.stderr;
     } else if (json.code) {
-      var flowrHintBody = $('#flowrHint .panel-body')
+      var flowrHintBody = $('#flowrHint .panel-body');
 
       jQuery.getJSON(flowrUrl + '&query=' + escape(stderrOutput), function(data) {
         for (var question in data.queryResults) {
           // replace everything, not only one occurence
-          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question)
-          var resultTile = $(collapsibleTileHtml)
+          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question);
+          var resultTile = $(collapsibleTileHtml);
 
-          resultTile.find('h4 > a').text(data.queryResults[question].title)
-          resultTile.find('.panel-body').append($(data.queryResults[question].body))
+          resultTile.find('h4 > a').text(data.queryResults[question].title);
+          resultTile.find('.panel-body').append($(data.queryResults[question].body));
 
-          flowrHintBody.append(resultTile)
+          flowrHintBody.append(resultTile);
         }
 
-        $('#flowrHint').fadeIn()
-      })
+        $('#flowrHint').fadeIn();
+      });
 
-
-      stderrOutput = ''
+      stderrOutput = '';
     }
   };
 });
