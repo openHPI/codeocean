@@ -1,6 +1,10 @@
 Code Ocean
 ==========
 
+[![Build Status](https://travis-ci.org/openHPI/codeocean.svg?branch=master)](https://travis-ci.org/openHPI/codeocean)
+[![Code Climate](https://codeclimate.com/github/openHPI/codeocean/badges/gpa.svg)](https://codeclimate.com/github/openHPI/codeocean)
+[![Test Coverage](https://codeclimate.com/github/openHPI/codeocean/badges/coverage.svg)](https://codeclimate.com/github/openHPI/codeocean)
+
 ## Development Setup
 
 ### Mandatory Steps
