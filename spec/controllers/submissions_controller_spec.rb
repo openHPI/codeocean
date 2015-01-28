@@ -74,8 +74,13 @@ describe SubmissionsController do
 
     context 'with a valid filename' do
       let(:file) { submission.files.first }
+      let(:file_type) { FactoryGirl.create(:dot_xml) }
       let(:request) { Proc.new { get :render_file, filename: file.name_with_extension, id: submission.id } }
-      before(:each) { request.call }
+
+      before(:each) do
+        file.update(file_type: file_type)
+        request.call
+      end
 
       expect_assigns(file: :file)
       expect_assigns(submission: :submission)
@@ -86,7 +91,7 @@ describe SubmissionsController do
       end
 
       it 'sets the correct MIME type' do
-        mime_type = Mime::Type.lookup_by_extension('css')
+        mime_type = Mime::Type.lookup_by_extension(file_type.file_extension.gsub(/^\./, ''))
         expect(Mime::Type).to receive(:lookup_by_extension).at_least(:once).and_return(mime_type)
         request.call
         expect(response.headers['Content-Type']).to eq(mime_type.to_s)
