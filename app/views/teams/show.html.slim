@@ -1,0 +1,9 @@
+h1
+  = @team
+  = render('shared/edit_button', object: @team, path: edit_team_path(@team.id))
+
+= row(label: 'team.name', value: @team.name)
+= row(label: 'team.internal_user_ids') do
+  ul.list-unstyled
+    - @team.members.order(:name).each do |internal_user|
+      li = link_to(internal_user, internal_user)

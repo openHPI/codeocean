@@ -61,4 +61,6 @@ Rails.application.routes.draw do
       get 'test/:filename', as: :test, constraints: {filename: FILENAME_REGEXP}, to: :test
     end
   end
+
+  resources :teams
 end

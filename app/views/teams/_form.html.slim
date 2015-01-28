@@ -1,0 +1,9 @@
+= form_for(@team) do |f|
+  = render('shared/form_errors', object: @team)
+  .form-group
+    = f.label(:name)
+    = f.text_field(:name, class: 'form-control', required: true)
+  .form-group
+    = f.label(:internal_user_ids)
+    = f.collection_select(:internal_user_ids, InternalUser.all.order(:name), :id, :name, {}, {class: 'form-control', multiple: true})
+  .actions = render('shared/submit_button', f: f, object: @team)

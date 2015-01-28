@@ -27,6 +27,8 @@ de:
         maximum_score: Erreichbare Punktzahl
         public: Öffentlich
         reference_implementation: Reference Implementation
+        team: Team
+        team_id: Team
         template_code: Template Code
         template_test_code: Template Test Code
         test_code: Test Code
@@ -77,6 +79,9 @@ de:
         files: Dateien
         score: Punktzahl
         user: Autor
+      team:
+        internal_user_ids: Mitglieder
+        name: Name
     models:
       consumer:
         one: Konsument
@@ -108,6 +113,9 @@ de:
       submission:
         one: Abgabe
         other: Abgaben
+      team:
+        one: Team
+        other: Teams
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'

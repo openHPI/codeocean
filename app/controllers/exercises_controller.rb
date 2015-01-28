@@ -7,6 +7,7 @@ class ExercisesController < ApplicationController
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
   before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
+  before_action :set_teams, only: [:create, :edit, :new, :update]
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -49,7 +50,7 @@ class ExercisesController < ApplicationController
   end
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :team_id, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :exercise_params
 
@@ -113,6 +114,11 @@ class ExercisesController < ApplicationController
     @file_types = FileType.all.order(:name)
   end
   private :set_file_types
+
+  def set_teams
+    @teams = Team.all.order(:name)
+  end
+  private :set_teams
 
   def show
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141031161603) do
+ActiveRecord::Schema.define(version: 20150128093003) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20141031161603) do
     t.boolean  "public"
     t.string   "user_type"
     t.string   "token"
+    t.integer  "team_id"
   end
 
   create_table "external_users", force: true do |t|
@@ -138,6 +139,14 @@ ActiveRecord::Schema.define(version: 20141031161603) do
   add_index "internal_users", ["remember_me_token"], name: "index_internal_users_on_remember_me_token", using: :btree
   add_index "internal_users", ["reset_password_token"], name: "index_internal_users_on_reset_password_token", using: :btree
 
+  create_table "internal_users_teams", force: true do |t|
+    t.integer "internal_user_id"
+    t.integer "team_id"
+  end
+
+  add_index "internal_users_teams", ["internal_user_id"], name: "index_internal_users_teams_on_internal_user_id", using: :btree
+  add_index "internal_users_teams", ["team_id"], name: "index_internal_users_teams_on_team_id", using: :btree
+
   create_table "submissions", force: true do |t|
     t.integer  "exercise_id"
     t.float    "score"
@@ -146,6 +155,12 @@ ActiveRecord::Schema.define(version: 20141031161603) do
     t.datetime "updated_at"
     t.string   "cause"
     t.string   "user_type"
+  end
+
+  create_table "teams", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

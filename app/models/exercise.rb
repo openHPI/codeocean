@@ -7,6 +7,7 @@ class Exercise < ActiveRecord::Base
 
   belongs_to :execution_environment
   has_many :submissions
+  belongs_to :team
   has_many :users, source_type: ExternalUser, through: :submissions
 
   scope :with_submissions, -> { where('id IN (SELECT exercise_id FROM submissions)') }

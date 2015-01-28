@@ -27,6 +27,8 @@ en:
         maximum_score: Maximum Score
         public: Public
         reference_implementation: Reference Implementation
+        team: Team
+        team_id: Team
         template_code: Template Code
         template_test_code: Template Test Code
         test_code: Test Code
@@ -77,6 +79,9 @@ en:
         files: Files
         score: Score
         user: Author
+      team:
+        internal_user_ids: Members
+        name: Name
     models:
       consumer:
         one: Consumer
@@ -108,6 +113,9 @@ en:
       submission:
         one: Submission
         other: Submissions
+      team:
+        one: Team
+        other: Teams
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
