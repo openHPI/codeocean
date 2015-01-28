@@ -1,4 +1,9 @@
 namespace :docker do
+  desc 'Remove all Docker containers (using the CLI)'
+  task :clean_up do
+    `docker rm $(docker ps --all --quiet)`
+  end
+
   desc 'List all installed Docker images'
   task :images => :environment do
     puts DockerClient.image_tags
