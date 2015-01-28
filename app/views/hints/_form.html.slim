@@ -1,4 +1,4 @@
-= form_for(@hint, multipart: true, url: execution_environment_hints_path(params[:execution_environment_id])) do |f|
+= form_for(@hint, url: execution_environment_hints_path(params[:execution_environment_id])) do |f|
   = render('shared/form_errors', object: @hint)
   .form-group
     = f.label(:name)
