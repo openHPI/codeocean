@@ -324,6 +324,7 @@ DEPENDENCIES
   pundit
   rails (~> 4.1.2)
   rails-i18n (~> 4.0.0)
+  rake
   ransack
   rspec-autotest
   rspec-rails (>= 3.0.0)

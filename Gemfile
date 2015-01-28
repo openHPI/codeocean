@@ -46,6 +46,7 @@ group :test do
   gem 'capybara-webkit'
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
+  gem 'rake'
   gem 'rspec-autotest'
   gem 'rspec-rails', '>= 3.0.0'
   gem 'selenium-webdriver'
