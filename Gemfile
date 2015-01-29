@@ -43,7 +43,6 @@ end
 group :test do
   gem 'autotest-rails'
   gem 'capybara'
-  gem 'capybara-webkit'
   gem 'codeclimate-test-reporter', require: nil
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
