@@ -3,20 +3,22 @@ require 'rails_helper'
 describe ExercisePolicy do
   subject { ExercisePolicy }
 
-  let(:exercise) { FactoryGirl.build(:fibonacci, team: FactoryGirl.create(:team)) }
+  before(:all) do
+    @exercise = FactoryGirl.build(:fibonacci, team: FactoryGirl.create(:team))
+  end
 
   [:create?, :index?, :new?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
-        expect(subject).to permit(FactoryGirl.build(:admin), exercise)
+        expect(subject).to permit(FactoryGirl.build(:admin), @exercise)
       end
 
       it 'grants access to teachers' do
-        expect(subject).to permit(FactoryGirl.build(:teacher), exercise)
+        expect(subject).to permit(FactoryGirl.build(:teacher), @exercise)
       end
 
       it 'does not grant access to external users' do
-        expect(subject).not_to permit(FactoryGirl.build(:external_user), exercise)
+        expect(subject).not_to permit(FactoryGirl.build(:external_user), @exercise)
       end
     end
   end
@@ -24,20 +26,20 @@ describe ExercisePolicy do
   [:clone?, :destroy?, :edit?, :show?, :statistics?, :update?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
-        expect(subject).to permit(FactoryGirl.build(:admin), exercise)
+        expect(subject).to permit(FactoryGirl.build(:admin), @exercise)
       end
 
       it 'grants access to authors' do
-        expect(subject).to permit(exercise.author, exercise)
+        expect(subject).to permit(@exercise.author, @exercise)
       end
 
       it 'grants access to team members' do
-        expect(subject).to permit(exercise.team.members.first, exercise)
+        expect(subject).to permit(@exercise.team.members.first, @exercise)
       end
 
       it 'does not grant access to all other users' do
         [:external_user, :teacher].each do |factory_name|
-          expect(subject).not_to permit(FactoryGirl.build(factory_name), exercise)
+          expect(subject).not_to permit(FactoryGirl.build(factory_name), @exercise)
         end
       end
     end
@@ -55,16 +57,16 @@ describe ExercisePolicy do
 
   describe ExercisePolicy::Scope do
     describe '#resolve' do
-      let(:admin) { FactoryGirl.create(:admin) }
-      let(:external_user) { FactoryGirl.create(:external_user) }
-      let(:teacher) { FactoryGirl.create(:teacher) }
-      let(:team) { FactoryGirl.create(:team) }
+      before(:all) do
+        @admin = FactoryGirl.create(:admin)
+        @external_user = FactoryGirl.create(:external_user)
+        @teacher = FactoryGirl.create(:teacher)
+        @team = FactoryGirl.create(:team)
+        @team.members << @teacher
 
-      before(:each) do
-        [admin, teacher].each do |user|
+        [@admin, @teacher].each do |user|
           [true, false].each do |public|
-            team.members << teacher
-            [team, nil].each do |team|
+            [@team, nil].each do |team|
               FactoryGirl.create(:fibonacci, public: public, team: team, user_id: user.id, user_type: InternalUser.class.name)
             end
           end
@@ -72,7 +74,7 @@ describe ExercisePolicy do
       end
 
       context 'for admins' do
-        let(:scope) { Pundit.policy_scope!(admin, Exercise) }
+        let(:scope) { Pundit.policy_scope!(@admin, Exercise) }
 
         it 'returns all exercises' do
           expect(scope.map(&:id)).to include(*Exercise.all.map(&:id))
@@ -80,7 +82,7 @@ describe ExercisePolicy do
       end
 
       context 'for external users' do
-        let(:scope) { Pundit.policy_scope!(external_user, Exercise) }
+        let(:scope) { Pundit.policy_scope!(@external_user, Exercise) }
 
         it 'returns nothing' do
           expect(scope.count).to be 0
@@ -88,22 +90,22 @@ describe ExercisePolicy do
       end
 
       context 'for teachers' do
-        let(:scope) { Pundit.policy_scope!(teacher, Exercise) }
+        let(:scope) { Pundit.policy_scope!(@teacher, Exercise) }
 
         it 'includes all public exercises' do
           expect(scope.map(&:id)).to include(*Exercise.where(public: true).map(&:id))
         end
 
         it 'includes all authored non-public exercises' do
-          expect(scope.map(&:id)).to include(*Exercise.where(public: false, user_id: teacher.id).map(&:id))
+          expect(scope.map(&:id)).to include(*Exercise.where(public: false, user_id: @teacher.id).map(&:id))
         end
 
         it "includes all of team members' non-public exercises" do
-          expect(scope.map(&:id)).to include(*Exercise.where(public: false, team_id: teacher.teams.first.id).map(&:id))
+          expect(scope.map(&:id)).to include(*Exercise.where(public: false, team_id: @teacher.teams.first.id).map(&:id))
         end
 
         it "does not include other authors' non-public exercises" do
-          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where("team_id <> #{teacher.teams.first.id} AND user_id <> #{teacher.id}").map(&:id))
+          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where("team_id <> #{@team.id} AND user_id <> #{@teacher.id}").map(&:id))
         end
       end
     end

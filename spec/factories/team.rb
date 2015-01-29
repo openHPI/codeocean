@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :team do
-    internal_users { build_list :teacher, 10 }
+    internal_users { build_pair :teacher }
     name 'A-Team'
   end
 end
