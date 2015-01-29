@@ -2,7 +2,9 @@ addons:
   code_climate:
     repo_token: 53a2c2608c848714e96f6a1fc0365dcfdfec051f7827d50cea965ea625f49734
 before_script:
+  - cp config/action_mailer.yml.travis config/action_mailer.yml
   - cp config/database.yml.travis config/database.yml
+  - cp config/secrets.yml.travis config/secrets.yml
   - psql --command='CREATE DATABASE travis_ci_test;' --username=postgres
 language: ruby
 rvm:
