@@ -13,4 +13,4 @@ rvm:
   - ruby-head
   - jruby-19mode
   - jruby-head
-script: rspec --tag ~docker
+script: bundle exec rspec --tag ~docker
