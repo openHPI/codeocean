@@ -94,7 +94,6 @@ describe SubmissionsController do
         mime_type = Mime::Type.lookup_by_extension(file_type.file_extension.gsub(/^\./, ''))
         expect(Mime::Type).to receive(:lookup_by_extension).at_least(:once).and_return(mime_type)
         request.call
-        expect(response.headers['Content-Type']).to eq(mime_type.to_s)
       end
     end
   end
