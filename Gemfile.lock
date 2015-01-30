@@ -57,7 +57,7 @@ GEM
       sshkit (~> 1.2)
     capistrano-upload-config (0.5.0)
       capistrano (>= 3.0)
-    capistrano3-puma (0.8.4)
+    capistrano3-puma (0.8.5)
       capistrano (~> 3.0)
       puma (>= 2.6)
     capybara (2.4.4)
@@ -82,7 +82,7 @@ GEM
     coffee-script (2.3.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.8.0)
+    coffee-script-source (1.9.0)
     colorize (0.7.5)
     database_cleaner (1.4.0)
     diff-lcs (1.2.5)
