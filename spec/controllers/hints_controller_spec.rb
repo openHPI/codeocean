@@ -55,7 +55,7 @@ describe HintsController do
   end
 
   describe 'GET #index' do
-    let!(:hints) { FactoryGirl.create_pair(:ruby_syntax_error) }
+    before(:all) { FactoryGirl.create_pair(:ruby_syntax_error) }
     before(:each) { get :index, execution_environment_id: execution_environment.id }
 
     expect_assigns(execution_environment: :execution_environment)

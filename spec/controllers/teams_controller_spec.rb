@@ -50,7 +50,7 @@ describe TeamsController do
   end
 
   describe 'GET #index' do
-    let!(:teams) { FactoryGirl.create_pair(:team) }
+    before(:all) { FactoryGirl.create_pair(:team) }
     before(:each) { get :index }
 
     expect_assigns(teams: Team.all)

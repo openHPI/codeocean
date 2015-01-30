@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 describe ExercisesController do
-  let(:exercise) { FactoryGirl.create(:fibonacci) }
+  let(:exercise) { FactoryGirl.create(:dummy) }
   let(:user) { FactoryGirl.create(:admin) }
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
-    let(:exercise_attributes) { FactoryGirl.build(:fibonacci).attributes }
+    let(:exercise_attributes) { FactoryGirl.build(:dummy).attributes }
 
     context 'with a valid exercise' do
       let(:request) { Proc.new { post :create, exercise: exercise_attributes } }
@@ -61,7 +61,7 @@ describe ExercisesController do
     expect_assigns(exercise: :exercise)
 
     it 'destroys the exercise' do
-      exercise = FactoryGirl.create(:fibonacci)
+      exercise = FactoryGirl.create(:dummy)
       expect { delete :destroy, id: exercise.id }.to change(Exercise, :count).by(-1)
     end
 
@@ -102,8 +102,8 @@ describe ExercisesController do
   end
 
   describe 'GET #index' do
-    let!(:exercises) { FactoryGirl.create_pair(:fibonacci) }
     let(:scope) { Pundit.policy_scope!(user, Exercise) }
+    before(:all) { FactoryGirl.create_pair(:dummy) }
     before(:each) { get :index }
 
     expect_assigns(exercises: :scope)
@@ -195,7 +195,7 @@ describe ExercisesController do
 
   describe 'PUT #update' do
     context 'with a valid exercise' do
-      let(:exercise_attributes) { FactoryGirl.build(:fibonacci).attributes }
+      let(:exercise_attributes) { FactoryGirl.build(:dummy).attributes }
       before(:each) { put :update, exercise: exercise_attributes, id: exercise.id }
 
       expect_assigns(exercise: Exercise)

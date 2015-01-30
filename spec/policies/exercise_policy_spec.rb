@@ -4,7 +4,7 @@ describe ExercisePolicy do
   subject { ExercisePolicy }
 
   before(:all) do
-    @exercise = FactoryGirl.build(:fibonacci, team: FactoryGirl.create(:team))
+    @exercise = FactoryGirl.build(:dummy, team: FactoryGirl.create(:team))
   end
 
   [:create?, :index?, :new?].each do |action|
@@ -67,7 +67,7 @@ describe ExercisePolicy do
         [@admin, @teacher].each do |user|
           [true, false].each do |public|
             [@team, nil].each do |team|
-              FactoryGirl.create(:fibonacci, public: public, team: team, user_id: user.id, user_type: InternalUser.class.name)
+              FactoryGirl.create(:dummy, public: public, team: team, user_id: user.id, user_type: InternalUser.class.name)
             end
           end
         end

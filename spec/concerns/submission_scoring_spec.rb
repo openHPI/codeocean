@@ -5,12 +5,15 @@ class Controller < AnonymousController
 end
 
 describe SubmissionScoring do
+  before(:all) do
+    @submission = FactoryGirl.create(:submission, cause: 'submit')
+  end
+
   let(:controller) { Controller.new }
-  let(:submission) { FactoryGirl.create(:submission, cause: 'submit') }
   before(:each) { controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user)) }
 
   describe '#score_submission' do
-    let(:score_submission) { Proc.new { controller.score_submission(submission) } }
+    let(:score_submission) { Proc.new { controller.score_submission(@submission) } }
     before(:each) { score_submission.call }
 
     it 'assigns @assessor' do
@@ -22,14 +25,14 @@ describe SubmissionScoring do
     end
 
     it 'executes the teacher-defined test cases' do
-      submission.collect_files.select(&:teacher_defined_test?).each do |file|
-        expect_any_instance_of(DockerClient).to receive(:execute_test_command).with(submission, file.name_with_extension).and_return({})
+      @submission.collect_files.select(&:teacher_defined_test?).each do |file|
+        expect_any_instance_of(DockerClient).to receive(:execute_test_command).with(@submission, file.name_with_extension).and_return({})
       end
       score_submission.call
     end
 
     it 'updates the submission' do
-      expect(submission).to receive(:update).with(score: anything)
+      expect(@submission).to receive(:update).with(score: anything)
       score_submission.call
     end
   end

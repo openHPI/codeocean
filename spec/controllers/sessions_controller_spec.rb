@@ -27,7 +27,7 @@ describe SessionsController do
   end
 
   describe 'POST #create_through_lti' do
-    let(:exercise) { FactoryGirl.create(:fibonacci) }
+    let(:exercise) { FactoryGirl.create(:dummy) }
     let(:nonce) { SecureRandom.hex }
 
     context 'without OAuth parameters' do
@@ -125,7 +125,7 @@ describe SessionsController do
 
   describe 'GET #destroy_through_lti' do
     let(:request) { Proc.new { get :destroy_through_lti, consumer_id: consumer.id, submission_id: submission.id } }
-    let(:submission) { FactoryGirl.create(:submission) }
+    let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:dummy)) }
 
     before(:each) do
       session[:consumer_id] = consumer.id

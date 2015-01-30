@@ -57,7 +57,7 @@ describe SubmissionsController do
   end
 
   describe 'GET #index' do
-    let!(:submissions) { FactoryGirl.create_pair(:submission) }
+    before(:all) { FactoryGirl.create_pair(:submission) }
     before(:each) { get :index }
 
     expect_assigns(submissions: Submission.all)

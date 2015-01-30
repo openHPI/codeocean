@@ -32,6 +32,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :dummy, class: Exercise do
+    created_by_teacher
+    description 'Dummy'
+    association :execution_environment, factory: :ruby
+    instructions
+    title 'Dummy'
+  end
+
   factory :even_odd, class: Exercise do
     created_by_teacher
     description 'Implement two methods even and odd which return whether a given number is even or odd, respectively.'

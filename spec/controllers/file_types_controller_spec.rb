@@ -53,7 +53,7 @@ describe FileTypesController do
   end
 
   describe 'GET #index' do
-    let!(:file_types) { FactoryGirl.create_pair(:dot_rb) }
+    before(:all) { FactoryGirl.create_pair(:dot_rb) }
     before(:each) { get :index }
 
     expect_assigns(file_types: FileType.all)

@@ -61,7 +61,7 @@ describe ErrorsController do
   end
 
   describe 'GET #index' do
-    let!(:errors) { FactoryGirl.create_pair(:error) }
+    before(:all) { FactoryGirl.create_pair(:error) }
     before(:each) { get :index, execution_environment_id: execution_environment.id }
 
     expect_assigns(execution_environment: :execution_environment)

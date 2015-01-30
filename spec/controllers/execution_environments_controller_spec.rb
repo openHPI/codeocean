@@ -72,7 +72,7 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'GET #index' do
-    let!(:execution_environments) { FactoryGirl.create_pair(:ruby) }
+    before(:all) { FactoryGirl.create_pair(:ruby) }
     before(:each) { get :index }
 
     expect_assigns(execution_environments: ExecutionEnvironment.all)
