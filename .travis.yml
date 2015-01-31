@@ -10,7 +10,5 @@ language: ruby
 rvm:
   - 2.1.5
   - 2.2.0
-  - ruby-head
   - jruby-19mode
-  - jruby-head
 script: bundle exec rspec --tag ~docker
