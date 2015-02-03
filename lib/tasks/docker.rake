@@ -1,7 +1,7 @@
 namespace :docker do
   desc 'Remove all Docker containers (using the CLI)'
   task :clean_up do
-    `docker rm $(docker ps --all --quiet)`
+    `docker rm --force $(docker ps --all --quiet)`
     `docker rmi $(docker images --filter dangling=true --quiet)`
   end
 
