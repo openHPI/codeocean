@@ -1,4 +1,6 @@
 class InternalUsersController < ApplicationController
+  include CommonBehavior
+
   before_action :require_activation_token, only: :activate
   before_action :require_reset_password_token, only: :reset_password
   before_action :set_user, only: MEMBER_ACTIONS
@@ -29,24 +31,11 @@ class InternalUsersController < ApplicationController
     @user = InternalUser.new(internal_user_params)
     authorize!
     @user.send(:setup_activation)
-    respond_to do |format|
-      if @user.save
-        @user.send(:send_activation_needed_email!)
-        format.html { redirect_to(@user, notice: t('shared.object_created', model: InternalUser.model_name.human)) }
-        format.json { render(:show, location: @user, status: :created) }
-      else
-        format.html { render(:new) }
-        format.json { render(json: @user.errors, status: :unprocessable_entity) }
-      end
-    end
+    create_and_respond(object: @user) { @user.send(:send_activation_needed_email!) }
   end
 
   def destroy
-    @user.destroy
-    respond_to do |format|
-      format.html { redirect_to(internal_users_url, notice: t('shared.object_destroyed', model: InternalUser.model_name.human)) }
-      format.json { head(:no_content) }
-    end
+    destroy_and_respond(object: @user)
   end
 
   def edit
@@ -118,14 +107,6 @@ class InternalUsersController < ApplicationController
   end
 
   def update
-    respond_to do |format|
-      if @user.update(internal_user_params)
-        format.html { redirect_to(@user, notice: t('shared.object_updated', model: InternalUser.model_name.human)) }
-        format.json { render(:show, location: @user, status: :ok) }
-      else
-        format.html { render(:edit) }
-        format.json { render(json: @user.errors, status: :unprocessable_entity) }
-      end
-    end
+    update_and_respond(object: @user, params: internal_user_params)
   end
 end

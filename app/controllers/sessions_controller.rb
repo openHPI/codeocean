@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
     store_lti_session_data(consumer: @consumer, parameters: params)
     store_nonce(params[:oauth_nonce])
     flash[:notice] = I18n.t("sessions.create_through_lti.session_#{lti_outcome_service? ? 'with' : 'without'}_outcome", consumer: @consumer)
-    redirect_to(implement_exercise_path(@exercise.id))
+    redirect_to(implement_exercise_path(@exercise))
   end
 
   def destroy

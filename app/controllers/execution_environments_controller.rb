@@ -1,4 +1,6 @@
 class ExecutionEnvironmentsController < ApplicationController
+  include CommonBehavior
+
   before_action :set_docker_images, only: [:create, :edit, :new, :update]
   before_action :set_execution_environment, only: MEMBER_ACTIONS + [:execute_command, :shell]
   before_action :set_testing_framework_adapters, only: [:create, :edit, :new, :update]
@@ -11,23 +13,11 @@ class ExecutionEnvironmentsController < ApplicationController
   def create
     @execution_environment = ExecutionEnvironment.new(execution_environment_params)
     authorize!
-    respond_to do |format|
-      if @execution_environment.save
-        format.html { redirect_to(@execution_environment, notice: t('shared.object_created', model: ExecutionEnvironment.model_name.human)) }
-        format.json { render(:show, location: @execution_environment, status: :created) }
-      else
-        format.html { render(:new) }
-        format.json { render(json: @execution_environment.errors, status: :unprocessable_entity) }
-      end
-    end
+    create_and_respond(object: @execution_environment)
   end
 
   def destroy
-    @execution_environment.destroy
-    respond_to do |format|
-      format.html { redirect_to(execution_environments_url, notice: t('shared.object_destroyed', model: ExecutionEnvironment.model_name.human)) }
-      format.json { head(:no_content) }
-    end
+    destroy_and_respond(object: @execution_environment)
   end
 
   def edit
@@ -85,14 +75,6 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def update
-    respond_to do |format|
-      if @execution_environment.update(execution_environment_params)
-        format.html { redirect_to(@execution_environment, notice: t('shared.object_updated', model: ExecutionEnvironment.model_name.human)) }
-        format.json { render(:show, location: @execution_environment, status: :ok) }
-      else
-        format.html { render(:edit) }
-        format.json { render(json: @execution_environment.errors, status: :unprocessable_entity) }
-      end
-    end
+    update_and_respond(object: @execution_environment, params: execution_environment_params)
   end
 end

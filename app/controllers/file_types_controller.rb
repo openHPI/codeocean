@@ -1,4 +1,6 @@
 class FileTypesController < ApplicationController
+  include CommonBehavior
+
   before_action :set_editor_modes, only: [:create, :edit, :new, :update]
   before_action :set_file_type, only: MEMBER_ACTIONS
 
@@ -10,23 +12,11 @@ class FileTypesController < ApplicationController
   def create
     @file_type = FileType.new(file_type_params)
     authorize!
-    respond_to do |format|
-      if @file_type.save
-        format.html { redirect_to(@file_type, notice: t('shared.object_created', model: FileType.model_name.human)) }
-        format.json { render(:show, location: @file_type, status: :created) }
-      else
-        format.html { render(:new) }
-        format.json { render(json: @file_type.errors, status: :unprocessable_entity) }
-      end
-    end
+    create_and_respond(object: @file_type)
   end
 
   def destroy
-    @file_type.destroy
-    respond_to do |format|
-      format.html { redirect_to(file_types_url, notice: t('shared.object_destroyed', model: FileType.model_name.human)) }
-      format.json { head(:no_content) }
-    end
+    destroy_and_respond(object: @file_type)
   end
 
   def edit
@@ -65,14 +55,6 @@ class FileTypesController < ApplicationController
   end
 
   def update
-    respond_to do |format|
-      if @file_type.update(file_type_params)
-        format.html { redirect_to(@file_type, notice: t('shared.object_updated', model: FileType.model_name.human)) }
-        format.json { render(:show, location: @file_type, status: :ok) }
-      else
-        format.html { render(:edit) }
-        format.json { render(json: @file_type.errors, status: :unprocessable_entity) }
-      end
-    end
+    update_and_respond(object: @file_type, params: file_type_params)
   end
 end

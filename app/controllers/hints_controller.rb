@@ -1,4 +1,6 @@
 class HintsController < ApplicationController
+  include CommonBehavior
+
   before_action :set_execution_environment
   before_action :set_hint, only: MEMBER_ACTIONS
 
@@ -10,23 +12,11 @@ class HintsController < ApplicationController
   def create
     @hint = Hint.new(hint_params)
     authorize!
-    respond_to do |format|
-      if @hint.save
-        format.html { redirect_to(execution_environment_hint_path(@execution_environment, @hint.id), notice: t('shared.object_created', model: Hint.model_name.human)) }
-        format.json { render(:show, location: @hint, status: :created) }
-      else
-        format.html { render(:new) }
-        format.json { render(json: @hint.errors, status: :unprocessable_entity) }
-      end
-    end
+    create_and_respond(object: @hint, path: Proc.new { execution_environment_hint_path(@execution_environment, @hint) })
   end
 
   def destroy
-    @hint.destroy
-    respond_to do |format|
-      format.html { redirect_to(execution_environment_hints_path(@execution_environment), notice: t('shared.object_destroyed', model: Hint.model_name.human)) }
-      format.json { head(:no_content) }
-    end
+    destroy_and_respond(object: @hint, path: execution_environment_hints_path(@execution_environment))
   end
 
   def edit
@@ -62,14 +52,6 @@ class HintsController < ApplicationController
   end
 
   def update
-    respond_to do |format|
-      if @hint.update(hint_params)
-        format.html { redirect_to(execution_environment_hint_path(params[:execution_environment_id], @hint.id), notice: t('shared.object_updated', model: Hint.model_name.human)) }
-        format.json { render(:show, location: @hint, status: :ok) }
-      else
-        format.html { render(:edit) }
-        format.json { render(json: @hint.errors, status: :unprocessable_entity) }
-      end
-    end
+    update_and_respond(object: @hint, params: hint_params, path: execution_environment_hint_path(@execution_environment, @hint))
   end
 end

@@ -1,5 +1,6 @@
 class SubmissionsController < ApplicationController
   include ActionController::Live
+  include CommonBehavior
   include Lti
   include SubmissionParameters
   include SubmissionScoring
@@ -20,15 +21,7 @@ class SubmissionsController < ApplicationController
   def create
     @submission = Submission.new(submission_params)
     authorize!
-    respond_to do |format|
-      format.json do
-        if @submission.save
-          render(:show, location: @submission, status: :created)
-        else
-          render(nothing: true, status: :unprocessable_entity)
-        end
-      end
-    end
+    create_and_respond(object: @submission)
   end
 
   def download_file

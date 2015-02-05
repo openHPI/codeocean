@@ -1,4 +1,6 @@
 class TeamsController < ApplicationController
+  include CommonBehavior
+
   before_action :set_team, only: MEMBER_ACTIONS
 
   def authorize!
@@ -9,23 +11,11 @@ class TeamsController < ApplicationController
   def create
     @team = Team.new(team_params)
     authorize!
-    respond_to do |format|
-      if @team.save
-        format.html { redirect_to(team_path(@team.id), notice: t('shared.object_created', model: Team.model_name.human)) }
-        format.json { render(:show, location: @team, status: :created) }
-      else
-        format.html { render(:new) }
-        format.json { render(json: @team.errors, status: :unprocessable_entity) }
-      end
-    end
+    create_and_respond(object: @team)
   end
 
   def destroy
-    @team.destroy
-    respond_to do |format|
-      format.html { redirect_to(teams_path, notice: t('shared.object_destroyed', model: Team.model_name.human)) }
-      format.json { head(:no_content) }
-    end
+    destroy_and_respond(object: @team)
   end
 
   def edit
@@ -56,14 +46,6 @@ class TeamsController < ApplicationController
   private :team_params
 
   def update
-    respond_to do |format|
-      if @team.update(team_params)
-        format.html { redirect_to(team_path(@team.id), notice: t('shared.object_updated', model: Team.model_name.human)) }
-        format.json { render(:show, location: @team, status: :ok) }
-      else
-        format.html { render(:edit) }
-        format.json { render(json: @team.errors, status: :unprocessable_entity) }
-      end
-    end
+    update_and_respond(object: @team, params: team_params)
   end
 end

@@ -1,4 +1,5 @@
 class ExercisesController < ApplicationController
+  include CommonBehavior
   include Lti
   include SubmissionParameters
   include SubmissionScoring
@@ -27,23 +28,11 @@ class ExercisesController < ApplicationController
   def create
     @exercise = Exercise.new(exercise_params)
     authorize!
-    respond_to do |format|
-      if @exercise.save
-        format.html { redirect_to(@exercise, notice: t('shared.object_created', model: Exercise.model_name.human)) }
-        format.json { render(:show, location: @exercise, status: :created) }
-      else
-        format.html { render(:new) }
-        format.json { render(json: @exercise.errors, status: :unprocessable_entity) }
-      end
-    end
+    create_and_respond(object: @exercise)
   end
 
   def destroy
-    @exercise.destroy
-    respond_to do |format|
-      format.html { redirect_to(exercises_url, notice: t('shared.object_destroyed', model: Exercise.model_name.human)) }
-      format.json { head(:no_content) }
-    end
+    destroy_and_respond(object: @exercise)
   end
 
   def edit
@@ -145,14 +134,6 @@ class ExercisesController < ApplicationController
   end
 
   def update
-    respond_to do |format|
-      if @exercise.update(exercise_params)
-        format.html { redirect_to(@exercise, notice: t('shared.object_updated', model: Exercise.model_name.human)) }
-        format.json { render(:show, location: @exercise, status: :ok) }
-      else
-        format.html { render(:edit) }
-        format.json { render(json: @exercise.errors, status: :unprocessable_entity) }
-      end
-    end
+    update_and_respond(object: @exercise, params: exercise_params)
   end
 end

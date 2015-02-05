@@ -120,6 +120,11 @@ describe InternalUsersController do
         expect(InternalUser.last.activation_token).to be_present
       end
 
+      it 'sends an activation email' do
+        expect_any_instance_of(InternalUser).to receive(:send_activation_needed_email!)
+        request.call
+      end
+
       expect_redirect
     end
 
