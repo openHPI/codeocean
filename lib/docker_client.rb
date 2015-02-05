@@ -1,5 +1,4 @@
 class DockerClient
-  CONFIG_PATH = Rails.root.join('config', 'docker.yml.erb')
   CONTAINER_WORKSPACE_PATH = '/workspace'
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
 
@@ -29,7 +28,7 @@ class DockerClient
   private :command_substitutions
 
   def self.config
-    YAML.load(ERB.new(File.new(CONFIG_PATH, 'r').read).result)[Rails.env].with_indifferent_access
+    @config ||= CodeOcean::Config.new(:docker).read(erb: true)
   end
 
   def copy_file_to_workspace(options = {})
