@@ -1,3 +1,8 @@
+/config/action_mailer.yml
+/config/database.yml
+/config/secrets.yml
+/config/sendmail.yml
+/config/smtp.yml
 /config/*.production.yml
 /coverage
 /log
