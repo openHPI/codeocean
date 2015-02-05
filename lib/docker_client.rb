@@ -62,11 +62,9 @@ class DockerClient
 
   def self.destroy_container(container)
     container.stop.kill
-    if container.json['HostConfig']['PortBindings']
-      container.json['HostConfig']['PortBindings'].values.each do |configuration|
-        port = configuration.first['HostPort'].to_i
-        PortPool.release(port)
-      end
+    (container.port_bindings.try(:values) || []).each do |configuration|
+      port = configuration.first['HostPort'].to_i
+      PortPool.release(port)
     end
     container.delete(force: true)
   end
