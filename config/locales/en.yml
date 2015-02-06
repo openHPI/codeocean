@@ -13,6 +13,7 @@ en:
         help: Help Text
         name: Name
         permitted_execution_time: Permitted Execution Time (in Seconds)
+        pool_size: Docker Container Pool Size
         run_command: Run Command
         test_command: Test Command
         testing_framework: Testing Framework

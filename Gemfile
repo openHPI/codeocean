@@ -5,6 +5,8 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
 gem 'coffee-rails', '~> 4.0.0'
+gem 'concurrent-ruby'
+gem 'concurrent-ruby-ext', platform: :ruby
 gem 'docker-api', require: 'docker'
 gem 'factory_girl_rails', '~> 4.0'
 gem 'forgery'

@@ -3,6 +3,8 @@ class ExecutionEnvironment < ActiveRecord::Base
 
   VALIDATION_COMMAND = 'whoami'
 
+  after_initialize :set_default_values
+
   has_many :exercises
   has_many :hints
 
@@ -13,7 +15,14 @@ class ExecutionEnvironment < ActiveRecord::Base
   validates :docker_image, presence: true
   validates :name, presence: true
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
+  validates :pool_size, numericality: {only_integer: true}, presence: true
   validates :run_command, presence: true
+
+  def set_default_values
+    self.permitted_execution_time ||= 60
+    self.pool_size ||= 0
+  end
+  private :set_default_values
 
   def to_s
     name
@@ -27,13 +36,13 @@ class ExecutionEnvironment < ActiveRecord::Base
   private :valid_test_setup?
 
   def validate_docker_image?
-    docker_image.present? && Rails.env != 'test'
+    docker_image.present? && !Rails.env.test?
   end
   private :validate_docker_image?
 
   def working_docker_image?
     DockerClient.pull(docker_image) unless DockerClient.image_tags.include?(docker_image)
-    output = DockerClient.new(execution_environment: self).execute_command(VALIDATION_COMMAND)
+    output = DockerClient.new(execution_environment: self).execute_arbitrary_command(VALIDATION_COMMAND)
     errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
   rescue DockerClient::Error => error
     errors.add(:docker_image, "error: #{error}")

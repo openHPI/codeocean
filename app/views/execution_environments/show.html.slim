@@ -4,7 +4,7 @@ h1
 
 = row(label: 'execution_environment.name', value: @execution_environment.name)
 = row(label: 'execution_environment.user', value: link_to(@execution_environment.author, @execution_environment.author))
-- [:docker_image, :exposed_ports, :permitted_execution_time, :run_command, :test_command].each do |attribute|
+- [:docker_image, :exposed_ports, :permitted_execution_time, :pool_size, :run_command, :test_command].each do |attribute|
   = row(label: "execution_environment.#{attribute}", value: @execution_environment.send(attribute))
 = row(label: 'execution_environment.testing_framework', value: @testing_framework_adapter.try(:framework_name))
 = row(label: 'execution_environment.help', value: render_markdown(@execution_environment.help))

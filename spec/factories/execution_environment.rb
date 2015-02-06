@@ -5,6 +5,7 @@ FactoryGirl.define do
     help
     name 'CoffeeScript'
     permitted_execution_time 10.seconds
+    pool_size 0
     run_command 'coffee'
     singleton_execution_environment
   end
@@ -15,6 +16,7 @@ FactoryGirl.define do
     help
     name 'HTML5'
     permitted_execution_time 10.seconds
+    pool_size 0
     run_command 'touch'
     singleton_execution_environment
     test_command 'rspec %{filename} --format documentation'
@@ -27,6 +29,7 @@ FactoryGirl.define do
     help
     name 'Java 8'
     permitted_execution_time 10.seconds
+    pool_size 0
     run_command 'make run'
     singleton_execution_environment
     test_command 'make test CLASS_NAME="%{class_name}" FILENAME="%{filename}"'
@@ -39,6 +42,7 @@ FactoryGirl.define do
     help
     name 'JRuby 1.7'
     permitted_execution_time 10.seconds
+    pool_size 0
     run_command 'ruby %{filename}'
     singleton_execution_environment
     test_command 'rspec %{filename} --format documentation'
@@ -51,6 +55,7 @@ FactoryGirl.define do
     help
     name 'Node.js'
     permitted_execution_time 10.seconds
+    pool_size 0
     run_command 'node %{filename}'
     singleton_execution_environment
   end
@@ -61,6 +66,7 @@ FactoryGirl.define do
     help
     name 'Python 2.7'
     permitted_execution_time 10.seconds
+    pool_size 0
     run_command 'python %{filename}'
     singleton_execution_environment
     test_command 'python -m unittest --verbose %{module_name}'
@@ -73,6 +79,7 @@ FactoryGirl.define do
     help
     name 'Ruby 2.1'
     permitted_execution_time 10.seconds
+    pool_size 0
     run_command 'ruby %{filename}'
     singleton_execution_environment
     test_command 'rspec %{filename} --format documentation'
@@ -86,6 +93,7 @@ FactoryGirl.define do
     help
     name 'Sinatra'
     permitted_execution_time 15.minutes
+    pool_size 0
     run_command 'ruby %{filename}'
     singleton_execution_environment
     test_command 'rspec %{filename} --format documentation'
@@ -98,6 +106,7 @@ FactoryGirl.define do
     help
     name 'SQLite'
     permitted_execution_time 1.minute
+    pool_size 0
     run_command 'sqlite3 /database.db -init %{filename} -html'
     singleton_execution_environment
     test_command 'ruby %{filename}'

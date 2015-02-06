@@ -84,6 +84,10 @@ GEM
       execjs
     coffee-script-source (1.9.0)
     colorize (0.7.5)
+    concurrent-ruby (0.8.0)
+      ref (~> 1.0, >= 1.0.5)
+    concurrent-ruby-ext (0.8.0)
+      concurrent-ruby (~> 0.8.0)
     database_cleaner (1.4.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
@@ -198,6 +202,7 @@ GEM
       i18n
       polyamorous (~> 1.1)
     rdoc (4.2.0)
+    ref (1.0.5)
     rspec (3.1.0)
       rspec-core (~> 3.1.0)
       rspec-expectations (~> 3.1.0)
@@ -306,6 +311,8 @@ DEPENDENCIES
   carrierwave
   codeclimate-test-reporter
   coffee-rails (~> 4.0.0)
+  concurrent-ruby
+  concurrent-ruby-ext
   database_cleaner
   docker-api
   factory_girl_rails (~> 4.0)

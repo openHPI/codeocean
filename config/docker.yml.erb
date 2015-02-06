@@ -1,5 +1,8 @@
 default: &default
   connection_timeout: 3
+  pool:
+    active: false
+    interval: 60
   ports: !ruby/range 4500..4600
 
 development:
@@ -9,6 +12,8 @@ development:
 
 production:
   <<: *default
+  pool:
+    active: true
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
 
 test:

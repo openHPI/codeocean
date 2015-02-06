@@ -25,11 +25,11 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def execute_command
     @docker_client = DockerClient.new(execution_environment: @execution_environment, user: current_user)
-    render(json: @docker_client.execute_command(params[:command]))
+    render(json: @docker_client.execute_arbitrary_command(params[:command]))
   end
 
   def execution_environment_params
-    params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :help, :indent_size, :name, :permitted_execution_time, :run_command, :test_command, :testing_framework).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :help, :indent_size, :name, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :execution_environment_params
 
@@ -44,6 +44,7 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def set_docker_images
+    DockerClient.check_availability!
     @docker_images = DockerClient.image_tags.sort
   rescue DockerClient::Error => error
     @docker_images = []

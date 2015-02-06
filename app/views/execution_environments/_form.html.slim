@@ -18,6 +18,9 @@
     = f.label(:permitted_execution_time)
     = f.number_field(:permitted_execution_time, class: 'form-control', min: 1)
   .form-group
+    = f.label(:pool_size)
+    = f.number_field(:pool_size, class: 'form-control', min: 0)
+  .form-group
     = f.label(:run_command)
     = f.text_field(:run_command, class: 'form-control', placeholder: 'command %{filename}', required: true)
     .help-block == t('.hints.command')

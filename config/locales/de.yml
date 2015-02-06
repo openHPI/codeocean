@@ -13,6 +13,7 @@ de:
         help: Hilfetext
         name: Name
         permitted_execution_time: Erlaubte Ausführungszeit (in Sekunden)
+        pool_size: Docker-Container-Pool-Größe
         run_command: Ausführungsbefehl
         test_command: Testbefehl
         testing_framework: Testing-Framework
