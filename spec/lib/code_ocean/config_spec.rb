@@ -10,7 +10,7 @@ describe CodeOcean::Config do
       let(:read) { CodeOcean::Config.new(filename).read }
 
       context 'when the file is present' do
-        before(:each) { File.write(path, {Rails.env => content}.to_yaml) }
+        before(:each) { File.write(path, {Rails.env.to_s => content}.to_yaml) }
         after(:each) { FileUtils.rm(path) }
 
         it 'returns the environment-specific content' do
@@ -30,7 +30,7 @@ describe CodeOcean::Config do
       let(:read) { CodeOcean::Config.new(filename).read(erb: true) }
 
       context 'when the file is present' do
-        before(:each) { File.write(path, {Rails.env => content}.to_yaml) }
+        before(:each) { File.write(path, {Rails.env.to_s => content}.to_yaml) }
         after(:each) { FileUtils.rm(path) }
 
         it 'returns the environment-specific content' do
