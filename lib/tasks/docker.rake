@@ -1,8 +1,8 @@
 namespace :docker do
-  desc 'Remove all Docker containers (using the CLI)'
+  desc 'Remove all Docker containers and dangling Docker images (using the CLI)'
   task :clean_up do
-    `docker rm --force $(docker ps --all --quiet)`
-    `docker rmi $(docker images --filter dangling=true --quiet)`
+    `test -n "$(docker ps --all --quiet)" && docker rm --force $(docker ps --all --quiet)`
+    `test -n "docker images --filter dangling=true --quiet" && docker rmi $(docker images --filter dangling=true --quiet)`
   end
 
   desc 'List all installed Docker images'
