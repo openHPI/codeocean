@@ -13,4 +13,8 @@ RSpec.configure do |config|
       allow_any_instance_of(ExecutionEnvironment).to receive(:working_docker_image?)
     end
   end
+
+  config.after(:suite) do
+    `which docker && test -n "$(docker ps --all --quiet)" && docker rm --force $(docker ps --all --quiet)`
+  end
 end
