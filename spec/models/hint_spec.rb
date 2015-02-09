@@ -22,4 +22,10 @@ describe Hint do
   it 'validates the presence of a regular expression' do
     expect(hint.errors[:regular_expression]).to be_present
   end
+
+  describe '.nested_resource?' do
+    it 'is true' do
+      expect(Hint.nested_resource?).to be true
+    end
+  end
 end

@@ -10,4 +10,10 @@ describe Error do
   it 'validates the presence of a message' do
     expect(error.errors[:message]).to be_present
   end
+
+  describe '.nested_resource?' do
+    it 'is true' do
+      expect(Error.nested_resource?).to be true
+    end
+  end
 end
