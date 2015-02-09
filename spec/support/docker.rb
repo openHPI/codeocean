@@ -15,6 +15,7 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do
+    FileUtils.rm_rf(Rails.root.join('tmp', 'files', 'test'))
     `which docker && test -n "$(docker ps --all --quiet)" && docker rm --force $(docker ps --all --quiet)`
   end
 end
