@@ -71,16 +71,20 @@ class InternalUsersController < ApplicationController
   end
 
   def require_activation_token
-    @user = InternalUser.load_from_activation_token(params[:token] || params[:internal_user].try(:[], :activation_token))
-    render_not_authorized unless @user
+    require_token(:activation)
   end
   private :require_activation_token
 
   def require_reset_password_token
-    @user = InternalUser.load_from_reset_password_token(params[:token] || params[:internal_user].try(:[], :reset_password_token))
-    render_not_authorized unless @user
+    require_token(:reset_password)
   end
   private :require_reset_password_token
+
+  def require_token(type)
+    @user = InternalUser.send(:"load_from_#{type}_token", params[:token] || params[:internal_user].try(:[], :"#{type}_token"))
+    render_not_authorized unless @user
+  end
+  private :require_token
 
   def reset_password
     if request.patch? || request.put?
