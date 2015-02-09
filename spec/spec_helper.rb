@@ -15,8 +15,13 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require 'codeclimate-test-reporter'
-CodeClimate::TestReporter.start if ENV['CODECLIMATE_REPO_TOKEN']
+if ENV['CODECLIMATE_REPO_TOKEN']
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.start
+else
+  require 'simplecov'
+  SimpleCov.start('rails')
+end
 
 RSpec.configure do |config|
   # These two settings work together to allow you to limit a spec run
