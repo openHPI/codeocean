@@ -11,7 +11,7 @@ module CodeOcean
     def create
       @file = CodeOcean::File.new(file_params)
       authorize!
-      create_and_respond(object: @file, path: implement_exercise_path(@file.context.exercise, tab: 2))
+      create_and_respond(object: @file, path: Proc.new { implement_exercise_path(@file.context.exercise, tab: 2) })
     end
 
     def destroy
