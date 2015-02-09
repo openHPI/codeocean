@@ -123,6 +123,44 @@ describe SessionsController do
     end
   end
 
+  describe 'DELETE #destroy' do
+    let(:user) { double }
+    before(:each) { expect(controller).to receive(:current_user).at_least(:once).and_return(user) }
+
+    context 'with an internal user' do
+      before(:each) do
+        allow(user).to receive(:external?).and_return(false)
+        allow(user).to receive(:forget_me!)
+        delete :destroy
+      end
+
+      it 'performs a logout' do
+        expect(controller).to receive(:logout)
+        delete :destroy
+      end
+
+      it 'redirects to the root path' do
+        expect(controller).to redirect_to(:root)
+      end
+    end
+
+    context 'with an external user' do
+      before(:each) do
+        allow(user).to receive(:external?).and_return(true)
+        delete :destroy
+      end
+
+      it 'clears the session' do
+        expect(controller).to receive(:clear_lti_session_data)
+        delete :destroy
+      end
+
+      it 'redirects to the root path' do
+        expect(controller).to redirect_to(:root)
+      end
+    end
+  end
+
   describe 'GET #destroy_through_lti' do
     let(:request) { Proc.new { get :destroy_through_lti, consumer_id: consumer.id, submission_id: submission.id } }
     let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:dummy)) }
@@ -141,5 +179,26 @@ describe SessionsController do
 
     expect_status(200)
     expect_template(:destroy_through_lti)
+  end
+
+  describe 'GET #new' do
+    context 'when no user is logged in' do
+      before(:each) do
+        expect(controller).to receive(:current_user).and_return(nil)
+        get :new
+      end
+
+      expect_status(200)
+      expect_template(:new)
+    end
+
+    context 'when a user is already logged in' do
+      before(:each) do
+        expect(controller).to receive(:current_user).and_return(FactoryGirl.build(:teacher))
+        get :new
+      end
+
+      expect_redirect
+    end
   end
 end
