@@ -27,6 +27,10 @@ def expect_flash_message(type, message)
   end
 end
 
+def expect_json
+  expect_content_type('application/json')
+end
+
 def expect_redirect(path = nil)
   if path
     it "redirects to #{path}" do

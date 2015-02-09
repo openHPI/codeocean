@@ -67,7 +67,7 @@ describe ExecutionEnvironmentsController do
 
     expect_assigns(docker_client: DockerClient)
     expect_assigns(execution_environment: :execution_environment)
-    expect_content_type('application/json')
+    expect_json
     expect_status(200)
   end
 

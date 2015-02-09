@@ -21,7 +21,7 @@ describe SubmissionsController do
         expect { request.call }.to change(Submission, :count).by(1)
       end
 
-      expect_content_type('application/json')
+      expect_json
       expect_status(201)
     end
 
@@ -29,7 +29,7 @@ describe SubmissionsController do
       before(:each) { post :create, submission: {} }
 
       expect_assigns(submission: Submission)
-      expect_content_type('application/json')
+      expect_json
       expect_status(422)
     end
   end
@@ -169,7 +169,7 @@ describe SubmissionsController do
 
     expect_assigns(docker_client: DockerClient)
     expect_assigns(submission: :submission)
-    expect_content_type('application/json')
+    expect_json
     expect_status(200)
   end
 end

@@ -29,7 +29,7 @@ describe ErrorsController do
           expect(response.body).to eq({hint: hint}.to_json)
         end
 
-        expect_content_type('application/json')
+        expect_json
         expect_status(200)
       end
 
@@ -46,7 +46,7 @@ describe ErrorsController do
           expect { request.call }.to change(Error, :count).by(1)
         end
 
-        expect_content_type('application/json')
+        expect_json
         expect_status(201)
       end
     end
@@ -55,7 +55,7 @@ describe ErrorsController do
       before(:each) { post :create, execution_environment_id: FactoryGirl.build(:error).execution_environment.id, error: {}, format: :json }
 
       expect_assigns(error: Error)
-      expect_content_type('application/json')
+      expect_json
       expect_status(422)
     end
   end

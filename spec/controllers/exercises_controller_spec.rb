@@ -154,7 +154,7 @@ describe ExercisesController do
           expect(assigns(:submission)).to be_a(Submission)
         end
 
-        expect_content_type('application/json')
+        expect_json
         expect_status(200)
       end
 
@@ -170,7 +170,7 @@ describe ExercisesController do
           expect(assigns(:submission)).to be_a(Submission)
         end
 
-        expect_content_type('application/json')
+        expect_json
         expect_status(503)
       end
     end
@@ -188,7 +188,7 @@ describe ExercisesController do
         expect(assigns(:submission)).to be_a(Submission)
       end
 
-      expect_content_type('application/json')
+      expect_json
       expect_status(200)
     end
   end
