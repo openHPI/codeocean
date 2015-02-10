@@ -107,39 +107,48 @@ describe Lti do
     let(:consumer) { FactoryGirl.create(:consumer) }
     let(:score) { 0.5 }
 
-    before(:each) do
-      controller.session[:consumer_id] = consumer.id
-      controller.session[:lti_parameters] = {}
-    end
-
-    context 'when grading is not supported' do
-      it 'returns a corresponding status' do
-        expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
-        expect(controller.send(:send_score, score)[:status]).to eq('unsupported')
-      end
-    end
-
-    context 'when grading is supported' do
-      let(:response) { double }
-
+    context 'with a tool provider' do
       before(:each) do
-        expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
-        expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score).and_return(response)
-        expect(response).to receive(:response_code).at_least(:once).and_return(200)
-        expect(response).to receive(:post_response).and_return(response)
-        expect(response).to receive(:body).at_least(:once).and_return('')
-        expect(response).to receive(:code_major).at_least(:once).and_return('success')
+        controller.session[:consumer_id] = consumer.id
+        controller.session[:lti_parameters] = {}
       end
 
-      it 'sends the score' do
-        controller.send(:send_score, score)
+      context 'when grading is not supported' do
+        it 'returns a corresponding status' do
+          expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
+          expect(controller.send(:send_score, score)[:status]).to eq('unsupported')
+        end
       end
 
-      it 'returns code, message, and status' do
-        result = controller.send(:send_score, score)
-        expect(result[:code]).to eq(response.response_code)
-        expect(result[:message]).to eq(response.body)
-        expect(result[:status]).to eq(response.code_major)
+      context 'when grading is supported' do
+        let(:response) { double }
+
+        before(:each) do
+          expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
+          expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score).and_return(response)
+          expect(response).to receive(:response_code).at_least(:once).and_return(200)
+          expect(response).to receive(:post_response).and_return(response)
+          expect(response).to receive(:body).at_least(:once).and_return('')
+          expect(response).to receive(:code_major).at_least(:once).and_return('success')
+        end
+
+        it 'sends the score' do
+          controller.send(:send_score, score)
+        end
+
+        it 'returns code, message, and status' do
+          result = controller.send(:send_score, score)
+          expect(result[:code]).to eq(response.response_code)
+          expect(result[:message]).to eq(response.body)
+          expect(result[:status]).to eq(response.code_major)
+        end
+      end
+    end
+
+    context 'without a tool provider' do
+      it 'returns a corresponding status' do
+        expect(controller).to receive(:build_tool_provider).and_return(nil)
+        expect(controller.send(:send_score, score)[:status]).to eq('error')
       end
     end
   end
