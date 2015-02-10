@@ -34,6 +34,8 @@ gem 'uglifier', '>= 1.3.0'
 gem 'will_paginate', '~> 3.0'
 
 group :development do
+  gem 'better_errors', platform: :ruby
+  gem 'binding_of_caller', platform: :ruby
   gem 'capistrano', '~> 3.2.1'
   gem 'capistrano3-puma'
   gem 'capistrano-rails', '~> 1.1'
