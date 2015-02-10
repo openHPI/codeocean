@@ -126,8 +126,10 @@ en:
   application:
     not_authorized: You are not authorized to perform this action.
   breadcrumbs:
-    destroy_through_lti: Code Submission
-    welcome: Cover Page
+    application:
+      welcome: Cover Page
+    sessions:
+      destroy_through_lti: Code Submission
   consumers:
     show:
       link: Consumer

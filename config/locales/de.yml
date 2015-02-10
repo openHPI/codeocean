@@ -126,8 +126,10 @@ de:
   application:
     not_authorized: Sie Sind nicht berechtigt, diese Aktion auszuführen.
   breadcrumbs:
-    destroy_through_lti: Code-Abgabe
-    welcome: Startseite
+    application:
+      welcome: Startseite
+    sessions:
+      destroy_through_lti: Code-Abgabe
   consumers:
     show:
       link: Konsument

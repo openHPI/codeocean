@@ -16,4 +16,4 @@
         - else
           = t("#{controller_name}.index.#{params[:action]}")
     - else
-      li.active = t("breadcrumbs.#{params[:action]}")
+      li.active = t("breadcrumbs.#{controller_name}.#{params[:action]}")
