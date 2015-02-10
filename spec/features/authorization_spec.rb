@@ -5,8 +5,8 @@ describe 'Authorization' do
     let(:user) { FactoryGirl.create(:admin) }
     before(:each) { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 
-    %w[consumer execution_environment exercise file_type internal_user].each do |model|
-      expect_permitted_path(:"new_#{model}_path")
+    [Consumer, ExecutionEnvironment, Exercise, FileType, InternalUser, Team].each do |model|
+      expect_permitted_path(:"new_#{model.model_name.singular}_path")
     end
   end
 
@@ -14,8 +14,8 @@ describe 'Authorization' do
     let(:user) { FactoryGirl.create(:external_user) }
     before(:each) { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 
-    %w[consumer execution_environment exercise file_type internal_user].each do |model|
-      expect_forbidden_path(:"new_#{model}_path")
+    [Consumer, ExecutionEnvironment, Exercise, FileType, InternalUser, Team].each do |model|
+      expect_forbidden_path(:"new_#{model.model_name.singular}_path")
     end
   end
 
@@ -23,12 +23,12 @@ describe 'Authorization' do
     let(:user) { FactoryGirl.create(:teacher) }
     before(:each) { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 
-    %w[consumer internal_user].each do |model|
-      expect_forbidden_path(:"new_#{model}_path")
+    [Consumer, InternalUser].each do |model|
+      expect_forbidden_path(:"new_#{model.model_name.singular}_path")
     end
 
-    %w[execution_environment exercise file_type].each do |model|
-      expect_permitted_path(:"new_#{model}_path")
+    [ExecutionEnvironment, Exercise, FileType, Team].each do |model|
+      expect_permitted_path(:"new_#{model.model_name.singular}_path")
     end
   end
 end
