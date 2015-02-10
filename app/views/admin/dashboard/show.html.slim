@@ -1,0 +1,20 @@
+h1 = t('breadcrumbs.dashboard.show')
+
+h2 Docker
+
+- if DockerContainerPool.config[:active]
+  .table-responsive
+    table.table
+      thead
+        tr
+          th = t('activerecord.models.execution_environment.one')
+          th = t('activerecord.attributes.execution_environment.pool_size')
+          th = t('.quantity')
+      tbody
+        - ExecutionEnvironment.order(:name).each do |execution_environment|
+          tr data-id=execution_environment.id
+            td = link_to(execution_environment, execution_environment)
+            td.pool-size
+            td.quantity = progress_bar(0)
+- else
+  p = t('.inactive')

@@ -123,11 +123,18 @@ de:
       models:
         exercise:
           at_most_one_main_file: dürfen höchstens eine Hauptdatei enthalten
+  admin:
+    dashboard:
+      show:
+        inactive: Der Container-Pool ist nicht aktiv.
+        quantity: Verfügbare Container
   application:
     not_authorized: Sie Sind nicht berechtigt, diese Aktion auszuführen.
   breadcrumbs:
     application:
       welcome: Startseite
+    dashboard:
+      show: Dashboard
     sessions:
       destroy_through_lti: Code-Abgabe
   consumers:

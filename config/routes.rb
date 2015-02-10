@@ -3,6 +3,10 @@ FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 Rails.application.routes.draw do
   root to: 'application#welcome'
 
+  namespace :admin do
+    get 'dashboard', to: 'dashboard#show'
+  end
+
   get '/help', to: 'application#help'
 
   resources :consumers

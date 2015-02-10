@@ -123,11 +123,18 @@ en:
       models:
         exercise:
           at_most_one_main_file: must include at most one main file
+  admin:
+    dashboard:
+      show:
+        inactive: Container pooling is not enabled.
+        quantity: Available Containers
   application:
     not_authorized: You are not authorized to perform this action.
   breadcrumbs:
     application:
       welcome: Cover Page
+    dashboard:
+      show: Dashboard
     sessions:
       destroy_through_lti: Code Submission
   consumers:
