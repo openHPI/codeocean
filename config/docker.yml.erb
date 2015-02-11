@@ -2,7 +2,8 @@ default: &default
   connection_timeout: 3
   pool:
     active: false
-    interval: 60
+    interval: 15
+    maximum_refill_count: 32
   ports: !ruby/range 4500..4600
 
 development:

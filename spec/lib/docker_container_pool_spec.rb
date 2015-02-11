@@ -91,7 +91,16 @@ describe DockerContainerPool do
     end
 
     context 'with something to refill' do
-      before(:each) { @execution_environment.update(pool_size: 1) }
+      let(:maximum_refill_count) { 5 }
+      before(:each) { @execution_environment.update(pool_size: 10) }
+
+      it 'complies with the maximum batch size' do
+        expect(DockerContainerPool::config).to receive(:[]).with(:maximum_refill_count).and_return(maximum_refill_count)
+        expect_any_instance_of(Concurrent::Future).to receive(:execute) do |future|
+          expect(DockerContainerPool).to receive(:create_container).with(@execution_environment).exactly(maximum_refill_count).times
+          future.instance_variable_get(:@task).call
+        end
+      end
 
       it 'works asynchronously' do
         expect(Concurrent::Future).to receive(:execute)

@@ -36,7 +36,7 @@ class DockerContainerPool
 
   def self.refill
     ExecutionEnvironment.all.each do |execution_environment|
-      refill_count = execution_environment.pool_size - @containers[execution_environment.id].length
+      refill_count = [execution_environment.pool_size - @containers[execution_environment.id].length, config[:maximum_refill_count]].min
       if refill_count > 0
         Concurrent::Future.execute do
           @containers[execution_environment.id] += refill_count.times.map { create_container(execution_environment) }
