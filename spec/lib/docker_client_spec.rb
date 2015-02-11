@@ -32,6 +32,11 @@ describe DockerClient, docker: true do
       expect(DockerClient).to receive(:find_image_by_tag).with(execution_environment.docker_image).and_call_original
     end
 
+    it 'creates a unique directory' do
+      expect(DockerClient).to receive(:generate_local_workspace_path).and_call_original
+      expect(FileUtils).to receive(:mkdir).with(kind_of(String)).and_call_original
+    end
+
     it 'creates a container waiting for input' do
       expect(Docker::Container).to receive(:create).with('Image' => kind_of(String), 'OpenStdin' => true, 'StdinOnce' => true).and_call_original
     end
@@ -84,7 +89,7 @@ describe DockerClient, docker: true do
     after(:each) { File.delete(file_path) }
 
     it 'creates a file' do
-      expect(DockerClient).to receive(:local_workspace_path).and_return(workspace_path)
+      expect(DockerClient).to receive(:local_workspace_path).at_least(:once).and_return(workspace_path)
       docker_client.send(:create_workspace_file, container: CONTAINER, file: file)
       expect(File.exist?(file_path)).to be true
       expect(File.new(file_path, 'r').read).to eq(file.content)
@@ -92,7 +97,7 @@ describe DockerClient, docker: true do
   end
 
   describe '.destroy_container' do
-    let(:container) { DockerClient.send(:create_container, execution_environment) }
+    let(:container) { DockerClient.create_container(execution_environment) }
     after(:each) { DockerClient.destroy_container(container) }
 
     it 'stops the container' do
@@ -166,14 +171,14 @@ describe DockerClient, docker: true do
     end
   end
 
-  describe '.generate_remote_workspace_path' do
+  describe '.generate_local_workspace_path' do
     it 'includes the correct workspace root' do
-      expect(DockerClient.generate_remote_workspace_path).to start_with(DockerClient.config[:workspace_root])
+      expect(DockerClient.generate_local_workspace_path).to start_with(DockerClient::LOCAL_WORKSPACE_ROOT.to_s)
     end
 
     it 'includes a UUID' do
       expect(SecureRandom).to receive(:uuid).and_call_original
-      DockerClient.generate_remote_workspace_path
+      DockerClient.generate_local_workspace_path
     end
   end
 
@@ -209,8 +214,7 @@ describe DockerClient, docker: true do
 
   describe '.mapped_directories' do
     it 'returns a unique mapping' do
-      expect(DockerClient).to receive(:generate_remote_workspace_path).and_return(workspace_path)
-      mapping = DockerClient.send(:mapped_directories).first
+      mapping = DockerClient.mapped_directories(workspace_path).first
       expect(mapping).to start_with(workspace_path)
       expect(mapping).to end_with(DockerClient::CONTAINER_WORKSPACE_PATH)
     end

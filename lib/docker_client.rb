@@ -28,7 +28,9 @@ class DockerClient
 
   def self.create_container(execution_environment)
     container = Docker::Container.create('Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first, 'OpenStdin' => true, 'StdinOnce' => true)
-    container.start('Binds' => mapped_directories, 'PortBindings' => mapped_ports(execution_environment))
+    local_workspace_path = generate_local_workspace_path
+    FileUtils.mkdir(local_workspace_path)
+    container.start('Binds' => mapped_directories(local_workspace_path), 'PortBindings' => mapped_ports(execution_environment))
     container
   end
 
@@ -82,8 +84,8 @@ class DockerClient
     Docker::Image.all.detect { |image| image.info['RepoTags'].flatten.include?(tag) }
   end
 
-  def self.generate_remote_workspace_path
-    File.join(config[:workspace_root], SecureRandom.uuid)
+  def self.generate_local_workspace_path
+    File.join(LOCAL_WORKSPACE_ROOT, SecureRandom.uuid)
   end
 
   def self.image_tags
@@ -110,8 +112,9 @@ class DockerClient
     Pathname.new(container.binds.first.split(':').first.sub(config[:workspace_root], LOCAL_WORKSPACE_ROOT.to_s))
   end
 
-  def self.mapped_directories
-    ["#{generate_remote_workspace_path}:#{CONTAINER_WORKSPACE_PATH}"]
+  def self.mapped_directories(local_workspace_path)
+    remote_workspace_path = local_workspace_path.sub(LOCAL_WORKSPACE_ROOT.to_s, config[:workspace_root])
+    ["#{remote_workspace_path}:#{CONTAINER_WORKSPACE_PATH}"]
   end
 
   def self.mapped_ports(execution_environment)
