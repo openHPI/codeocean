@@ -7,6 +7,7 @@ before_script:
   - cp config/secrets.yml.travis config/secrets.yml
   - psql --command='CREATE DATABASE travis_ci_test;' --username=postgres
   - bundle exec rake db:schema:load RAILS_ENV=test
+cache: bundler
 language: ruby
 rvm:
   - 2.1.5
