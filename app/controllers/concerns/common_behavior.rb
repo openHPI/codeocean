@@ -28,7 +28,6 @@ module CommonBehavior
     format.html { render(options[:template]) }
     format.json { render(json: @object.errors, status: :unprocessable_entity) }
   end
-  private :respond_with_invalid_object
 
   def respond_with_valid_object(format, options = {})
     format.html { redirect_to(options[:path], notice: options[:notice]) }

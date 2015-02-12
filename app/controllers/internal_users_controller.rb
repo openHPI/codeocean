@@ -15,8 +15,7 @@ class InternalUsersController < ApplicationController
           format.html { redirect_to(sign_in_path, notice: t('.success')) }
           format.json { render(nothing: true, status: :ok) }
         else
-          format.html { render(:activate) }
-          format.json { render(json: @user.errors, status: :unprocessable_entity) }
+          respond_with_invalid_object(format, object: @user, template: :activate)
         end
       end
     end
@@ -94,8 +93,7 @@ class InternalUsersController < ApplicationController
           format.html { redirect_to(sign_in_path, notice: t('.success')) }
           format.json { render(nothing: true, status: :ok) }
         else
-          format.html { render(:reset_password) }
-          format.json { render(json: @user.errors, status: :unprocessable_entity) }
+          respond_with_invalid_object(format, object: @user, template: :reset_password)
         end
       end
     end

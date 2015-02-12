@@ -23,7 +23,7 @@ class DockerClient
   end
 
   def copy_file_to_workspace(options = {})
-    FileUtils.cp(options[:file].native_file.path, File.join(self.class.local_workspace_path(options[:container]), options[:file].path || '', options[:file].name_with_extension))
+    FileUtils.cp(options[:file].native_file.path, local_file_path(options))
   end
 
   def self.create_container(execution_environment)
@@ -47,7 +47,7 @@ class DockerClient
   private :create_workspace
 
   def create_workspace_file(options = {})
-    file = File.new(File.join(self.class.local_workspace_path(options[:container]), options[:file].path || '', options[:file].name_with_extension), 'w')
+    file = File.new(local_file_path(options), 'w')
     file.write(options[:file].content)
     file.close
   end
@@ -107,6 +107,11 @@ class DockerClient
     check_availability!
     FileUtils.mkdir_p(LOCAL_WORKSPACE_ROOT)
   end
+
+  def local_file_path(options = {})
+    File.join(self.class.local_workspace_path(options[:container]), options[:file].path || '', options[:file].name_with_extension)
+  end
+  private :local_file_path
 
   def self.local_workspace_path(container)
     Pathname.new(container.binds.first.split(':').first.sub(config[:workspace_root], LOCAL_WORKSPACE_ROOT.to_s))
