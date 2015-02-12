@@ -59,13 +59,8 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def implement
-    if Submission.exists?(exercise_id: @exercise.id, user_id: current_user.id)
-      @submission = Submission.where(exercise_id: @exercise.id, user_id: current_user.id).order('created_at DESC').first
-      @files = @submission.collect_files.select(&:visible)
-    else
-      @files = @exercise.files.visible
-    end
-    @files = @files.sort_by(&:name_with_extension)
+    @submission = Submission.where(exercise_id: @exercise.id, user_id: current_user.id).order('created_at DESC').first
+    @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:name_with_extension)
   end
 
   def index
@@ -119,19 +114,24 @@ class ExercisesController < ApplicationController
     @submission = Submission.create(submission_params)
     score_submission(@submission)
     if lti_outcome_service?
-      response = send_score(@submission.normalized_score)
-      if response[:status] == 'success'
-        redirect_to_lti_return_path
-      else
-        respond_to do |format|
-          format.html { redirect_to(implement_exercise_path(@submission.exercise)) }
-          format.json { render(json: {message: I18n.t('exercises.submit.failure')}, status: 503) }
-        end
-      end
+      transmit_lti_score
     else
       redirect_to_lti_return_path
     end
   end
+
+  def transmit_lti_score
+    response = send_score(@submission.normalized_score)
+    if response[:status] == 'success'
+      redirect_to_lti_return_path
+    else
+      respond_to do |format|
+        format.html { redirect_to(implement_exercise_path(@submission.exercise)) }
+        format.json { render(json: {message: I18n.t('exercises.submit.failure')}, status: 503) }
+      end
+    end
+  end
+  private :transmit_lti_score
 
   def update
     update_and_respond(object: @exercise, params: exercise_params)
