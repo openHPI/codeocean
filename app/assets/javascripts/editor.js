@@ -26,7 +26,7 @@ $(function() {
     });
   };
 
-  var clearOutput = function(output) {
+  var clearOutput = function() {
     $('#output pre').remove();
   };
 
