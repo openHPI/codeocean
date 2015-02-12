@@ -13,10 +13,15 @@ class Submission < ActiveRecord::Base
   validates :cause, inclusion: {in: CAUSES}
   validates :exercise_id, presence: true
 
+  def build_files_hash(files, attribute)
+    files.map(&attribute.to_proc).zip(files).to_h
+  end
+  private :build_files_hash
+
   def collect_files
-    ancestors = exercise.files.map(&:id).zip(exercise.files)
-    descendants = files.map(&:file_id).zip(files)
-    (ancestors + descendants).to_h.values
+    ancestors = build_files_hash(exercise.files, :id)
+    descendants = build_files_hash(files, :file_id)
+    ancestors.merge(descendants).values
   end
 
   def execution_environment
