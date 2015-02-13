@@ -1,5 +1,5 @@
 $(function() {
-  var REFRESH_INTERVAL = 5000;
+  var DEFAULT_REFRESH_INTERVAL = 5000;
 
   var refreshData = function() {
     var jqxhr = $.ajax({
@@ -30,6 +30,7 @@ $(function() {
 
   if ($.isController('dashboard')) {
     refreshData();
-    setInterval(refreshData, REFRESH_INTERVAL);
+    var refresh_interval = location.search.match(/interval=(\d+)/) ? parseInt(RegExp.$1) : DEFAULT_REFRESH_INTERVAL;
+    setInterval(refreshData, refresh_interval);
   }
 });
