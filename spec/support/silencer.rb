@@ -1,8 +1,11 @@
 module Silencer
   def silenced
     @stdout = $stdout
-    $stdout = File.new(File.join('tmp', 'stdout'), 'w')
+    $stdout = Tempfile.new('stdout')
     yield if block_given?
+  ensure
+    $stdout.close
+    $stdout.unlink
     $stdout = @stdout
   end
 end
