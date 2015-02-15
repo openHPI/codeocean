@@ -26,6 +26,12 @@ describe TestingFrameworkAdapter do
     end
   end
 
+  describe '.framework_name' do
+    it 'defaults to the class name' do
+      expect(adapter.class.framework_name).to eq(TestingFrameworkAdapter.name)
+    end
+  end
+
   describe '#parse_output' do
     it 'requires subclasses to implement #parse_output' do
       expect { adapter.send(:parse_output, '') }.to raise_error(NotImplementedError)

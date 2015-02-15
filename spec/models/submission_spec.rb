@@ -32,4 +32,10 @@ describe Submission do
       end
     end
   end
+
+  describe '#to_s' do
+    it "equals the class' model name" do
+      expect(@submission.to_s).to eq(Submission.model_name.human)
+    end
+  end
 end

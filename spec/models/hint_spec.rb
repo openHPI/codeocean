@@ -28,4 +28,10 @@ describe Hint do
       expect(Hint.nested_resource?).to be true
     end
   end
+
+  describe '#to_s' do
+    it "equals the hint's name" do
+      expect(hint.to_s).to eq(hint.name)
+    end
+  end
 end
