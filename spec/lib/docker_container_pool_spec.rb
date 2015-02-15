@@ -82,6 +82,14 @@ describe DockerContainerPool do
   end
 
   describe '.refill' do
+    let(:config) { double }
+    let(:maximum_refill_count) { 5 }
+
+    before(:each) do
+      expect(DockerContainerPool).to receive(:config).and_return(config)
+      expect(config).to receive(:[]).with(:maximum_refill_count).and_return(maximum_refill_count)
+    end
+
     after(:each) { DockerContainerPool.refill }
 
     it 'regards all execution environments' do
@@ -91,11 +99,9 @@ describe DockerContainerPool do
     end
 
     context 'with something to refill' do
-      let(:maximum_refill_count) { 5 }
       before(:each) { @execution_environment.update(pool_size: 10) }
 
       it 'complies with the maximum batch size' do
-        expect(DockerContainerPool::config).to receive(:[]).with(:maximum_refill_count).and_return(maximum_refill_count)
         expect_any_instance_of(Concurrent::Future).to receive(:execute) do |future|
           expect(DockerContainerPool).to receive(:create_container).with(@execution_environment).exactly(maximum_refill_count).times
           future.instance_variable_get(:@task).call
