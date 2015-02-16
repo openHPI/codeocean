@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe RspecAdapter do
-  let(:adapter) { RspecAdapter.new }
+  let(:adapter) { described_class.new }
   let(:count) { 42 }
   let(:failed) { 25 }
   let(:stdout) { "Finished in 0.1 seconds (files took 0.1 seconds to load)\n#{count} examples, #{failed} failures" }

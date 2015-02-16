@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ExecutionEnvironmentPolicy do
-  subject { ExecutionEnvironmentPolicy }
+  subject { described_class }
 
   let(:execution_environment) { FactoryGirl.build(:ruby) }
 

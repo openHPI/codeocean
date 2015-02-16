@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Exercise do
-  let(:exercise) { Exercise.create.tap { |exercise| exercise.update(public: nil, token: nil) } }
+  let(:exercise) { described_class.create.tap { |exercise| exercise.update(public: nil, token: nil) } }
 
   it 'validates the presence of a description' do
     expect(exercise.errors[:description]).to be_present

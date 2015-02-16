@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe SubmissionPolicy do
-  subject { SubmissionPolicy }
+  subject { described_class }
 
   permissions :create? do
     it 'grants access to anyone' do

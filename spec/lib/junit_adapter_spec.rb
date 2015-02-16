@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe JunitAdapter do
-  let(:adapter) { JunitAdapter.new }
+  let(:adapter) { described_class.new }
 
   describe '#parse_output' do
     context 'with failed tests' do

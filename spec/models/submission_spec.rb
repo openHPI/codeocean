@@ -6,16 +6,16 @@ describe Submission do
   end
 
   it 'validates the presence of a cause' do
-    expect(Submission.create.errors[:cause]).to be_present
+    expect(described_class.create.errors[:cause]).to be_present
   end
 
   it 'validates the presence of an exercise' do
-    expect(Submission.create.errors[:exercise_id]).to be_present
+    expect(described_class.create.errors[:exercise_id]).to be_present
   end
 
   it 'validates the presence of a user' do
-    expect(Submission.create.errors[:user_id]).to be_present
-    expect(Submission.create.errors[:user_type]).to be_present
+    expect(described_class.create.errors[:user_id]).to be_present
+    expect(described_class.create.errors[:user_type]).to be_present
   end
 
   %w(download render run test).each do |action|
@@ -35,7 +35,7 @@ describe Submission do
 
   describe '#to_s' do
     it "equals the class' model name" do
-      expect(@submission.to_s).to eq(Submission.model_name.human)
+      expect(@submission.to_s).to eq(described_class.model_name.human)
     end
   end
 end

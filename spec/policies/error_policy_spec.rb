@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ErrorPolicy do
-  subject { ErrorPolicy }
+  subject { described_class }
 
   let(:error) { FactoryGirl.build(:error) }
 

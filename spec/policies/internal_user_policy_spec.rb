@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe InternalUserPolicy do
-  subject { InternalUserPolicy }
+  subject { described_class }
 
   [:create?, :edit?, :index?, :new?, :show?, :update?].each do |action|
     permissions(action) do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ExercisePolicy do
-  subject { ExercisePolicy }
+  subject { described_class }
 
   before(:all) do
     @exercise = FactoryGirl.build(:dummy, team: FactoryGirl.create(:team))

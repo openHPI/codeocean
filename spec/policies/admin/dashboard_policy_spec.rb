@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Admin::DashboardPolicy do
-  subject { Admin::DashboardPolicy }
+  subject { described_class }
 
   permissions :show? do
     it 'grants access to admins' do

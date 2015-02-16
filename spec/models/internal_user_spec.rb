@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe InternalUser do
   let(:password) { SecureRandom.hex }
-  let(:user) { InternalUser.create }
+  let(:user) { described_class.create }
 
   it 'validates the presence of an email address' do
     expect(user.errors[:email]).to be_present
@@ -27,7 +27,7 @@ describe InternalUser do
   end
 
   context 'when not activated' do
-    let(:user) { InternalUser.create(FactoryGirl.attributes_for(:teacher, activation_state: 'pending', password: nil)) }
+    let(:user) { described_class.create(FactoryGirl.attributes_for(:teacher, activation_state: 'pending', password: nil)) }
 
     it 'validates the confirmation of the password' do
       user.update(password: password, password_confirmation: '')

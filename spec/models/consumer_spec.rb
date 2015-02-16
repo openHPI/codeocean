@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Consumer do
-  let(:consumer) { Consumer.create }
+  let(:consumer) { described_class.create }
 
   it 'validates the presence of a name' do
     expect(consumer.errors[:name]).to be_present

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe PyUnitAdapter do
-  let(:adapter) { PyUnitAdapter.new }
+  let(:adapter) { described_class.new }
   let(:count) { 42 }
   let(:failed) { 25 }
   let(:stderr) { "Ran #{count} tests in 0.1s\n\nFAILED (failures=#{failed})" }

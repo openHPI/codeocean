@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TestingFrameworkAdapter do
-  let(:adapter) { TestingFrameworkAdapter.new }
+  let(:adapter) { described_class.new }
   let(:count) { 42 }
   let(:failed) { 25 }
   let(:passed) { 17 }
@@ -28,7 +28,7 @@ describe TestingFrameworkAdapter do
 
   describe '.framework_name' do
     it 'defaults to the class name' do
-      expect(adapter.class.framework_name).to eq(TestingFrameworkAdapter.name)
+      expect(adapter.class.framework_name).to eq(described_class.name)
     end
   end
 

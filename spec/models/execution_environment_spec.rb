@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ExecutionEnvironment do
-  let(:execution_environment) { ExecutionEnvironment.create }
+  let(:execution_environment) { described_class.create }
 
   it 'validates that the Docker image works', docker: true do
     expect(execution_environment).to receive(:validate_docker_image?).and_return(true)

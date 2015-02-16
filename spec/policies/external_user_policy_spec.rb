@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ExternalUserPolicy do
-  subject { ExternalUserPolicy }
+  subject { described_class }
 
   [:create?, :destroy?, :edit?, :index?, :new?, :show?, :update?].each do |action|
     permissions(action) do

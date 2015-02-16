@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ConsumerPolicy do
-  subject { ConsumerPolicy }
+  subject { described_class }
 
   [:create?, :destroy?, :edit?, :index?, :new?, :show?, :update?].each do |action|
     permissions(action) do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe CodeOcean::FilePolicy do
-  subject { CodeOcean::FilePolicy }
+  subject { described_class }
 
   permissions :create? do
     context 'as part of an exercise' do

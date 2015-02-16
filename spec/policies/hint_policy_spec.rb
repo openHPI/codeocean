@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe HintPolicy do
-  subject { HintPolicy }
+  subject { described_class }
 
   let(:hint) { FactoryGirl.build(:ruby_no_method_error) }
 

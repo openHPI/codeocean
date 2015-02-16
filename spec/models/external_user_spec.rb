@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ExternalUser do
-  let(:user) { ExternalUser.create }
+  let(:user) { described_class.create }
 
   it 'validates the presence of a consumer' do
     expect(user.errors[:consumer_id]).to be_present

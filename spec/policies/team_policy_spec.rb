@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TeamPolicy do
-  subject { TeamPolicy }
+  subject { described_class }
 
   let(:team) { FactoryGirl.build(:team) }
 

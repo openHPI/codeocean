@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Error do
-  let(:error) { Error.create }
+  let(:error) { described_class.create }
 
   it 'validates the presence of an execution environment' do
     expect(error.errors[:execution_environment_id]).to be_present
@@ -13,7 +13,7 @@ describe Error do
 
   describe '.nested_resource?' do
     it 'is true' do
-      expect(Error.nested_resource?).to be true
+      expect(described_class.nested_resource?).to be true
     end
   end
 end

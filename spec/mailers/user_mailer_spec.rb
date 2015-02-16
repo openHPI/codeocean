@@ -4,7 +4,7 @@ describe UserMailer do
   let(:user) { InternalUser.create(FactoryGirl.attributes_for(:teacher)) }
 
   describe '#activation_needed_email' do
-    let(:mail) { UserMailer.activation_needed_email(user) }
+    let(:mail) { described_class.activation_needed_email(user) }
 
     before(:each) do
       user.send(:setup_activation)
@@ -30,12 +30,12 @@ describe UserMailer do
 
   describe '#activation_success_email' do
     it 'does not raise an error' do
-      expect { UserMailer.activation_success_email(user) }.not_to raise_error
+      expect { described_class.activation_success_email(user) }.not_to raise_error
     end
   end
 
   describe '#reset_password_email' do
-    let(:mail) { UserMailer.reset_password_email(user) }
+    let(:mail) { described_class.reset_password_email(user) }
 
     it 'sets the correct sender' do
       expect(mail.from).to include(CodeOcean::Application.config.action_mailer[:default_options][:from])

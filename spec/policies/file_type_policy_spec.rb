@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe FileTypePolicy do
-  subject { FileTypePolicy }
+  subject { described_class }
 
   let(:file_type) { FactoryGirl.build(:dot_rb) }
 

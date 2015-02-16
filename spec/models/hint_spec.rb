@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Hint do
-  let(:hint) { Hint.create }
+  let(:hint) { described_class.create }
 
   it 'validates the presence of an execution environment' do
     expect(hint.errors[:execution_environment_id]).to be_present
@@ -25,7 +25,7 @@ describe Hint do
 
   describe '.nested_resource?' do
     it 'is true' do
-      expect(Hint.nested_resource?).to be true
+      expect(described_class.nested_resource?).to be true
     end
   end
 

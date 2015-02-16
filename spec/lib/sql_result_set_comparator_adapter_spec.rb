@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe SqlResultSetComparatorAdapter do
-  let(:adapter) { SqlResultSetComparatorAdapter.new }
+  let(:adapter) { described_class.new }
 
   describe '#parse_output' do
     context 'with missing tuples' do

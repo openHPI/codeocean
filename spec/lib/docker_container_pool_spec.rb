@@ -14,20 +14,20 @@ describe DockerContainerPool do
   end
 
   it 'uses thread-safe data structures' do
-    expect(DockerContainerPool.instance_variable_get(:@containers)).to be_a(ThreadSafe::Hash)
-    expect(DockerContainerPool.instance_variable_get(:@containers)[@execution_environment.id]).to be_a(ThreadSafe::Array)
+    expect(described_class.instance_variable_get(:@containers)).to be_a(ThreadSafe::Hash)
+    expect(described_class.instance_variable_get(:@containers)[@execution_environment.id]).to be_a(ThreadSafe::Array)
   end
 
   describe '.clean_up' do
-    before(:each) { DockerContainerPool.instance_variable_set(:@refill_task, double) }
-    after(:each) { DockerContainerPool.clean_up }
+    before(:each) { described_class.instance_variable_set(:@refill_task, double) }
+    after(:each) { described_class.clean_up }
 
     it 'stops the refill task' do
-      expect(DockerContainerPool.instance_variable_get(:@refill_task)).to receive(:shutdown)
+      expect(described_class.instance_variable_get(:@refill_task)).to receive(:shutdown)
     end
 
     it 'destroys all containers' do
-      DockerContainerPool.instance_variable_get(:@containers).each do |key, value|
+      described_class.instance_variable_get(:@containers).each do |key, value|
         value.each do |container|
           expect(DockerClient).to receive(:destroy_container).with(container)
         end
@@ -38,46 +38,46 @@ describe DockerContainerPool do
   describe '.get_container' do
     context 'when active' do
       before(:each) do
-        expect(DockerContainerPool).to receive(:config).and_return(active: true)
+        expect(described_class).to receive(:config).and_return(active: true)
       end
 
       context 'with an available container' do
-        before(:each) { DockerContainerPool.instance_variable_get(:@containers)[@execution_environment.id].push(container) }
+        before(:each) { described_class.instance_variable_get(:@containers)[@execution_environment.id].push(container) }
 
         it 'takes a container from the pool' do
-          expect(DockerContainerPool).not_to receive(:create_container).with(@execution_environment)
-          expect(DockerContainerPool.get_container(@execution_environment)).to eq(container)
+          expect(described_class).not_to receive(:create_container).with(@execution_environment)
+          expect(described_class.get_container(@execution_environment)).to eq(container)
         end
       end
 
       context 'without an available container' do
         before(:each) do
-          expect(DockerContainerPool.instance_variable_get(:@containers)[@execution_environment.id]).to be_empty
+          expect(described_class.instance_variable_get(:@containers)[@execution_environment.id]).to be_empty
         end
 
         it 'creates a new container' do
-          expect(DockerContainerPool).to receive(:create_container).with(@execution_environment)
-          DockerContainerPool.get_container(@execution_environment)
+          expect(described_class).to receive(:create_container).with(@execution_environment)
+          described_class.get_container(@execution_environment)
         end
       end
     end
 
     context 'when inactive' do
       before(:each) do
-        expect(DockerContainerPool).to receive(:config).and_return(active: false)
+        expect(described_class).to receive(:config).and_return(active: false)
       end
 
       it 'creates a new container' do
-        expect(DockerContainerPool).to receive(:create_container).with(@execution_environment)
-        DockerContainerPool.get_container(@execution_environment)
+        expect(described_class).to receive(:create_container).with(@execution_environment)
+        described_class.get_container(@execution_environment)
       end
     end
   end
 
   describe '.quantities' do
     it 'maps execution environments to quantities of available containers' do
-      expect(DockerContainerPool.quantities.keys).to eq(ExecutionEnvironment.all.map(&:id))
-      expect(DockerContainerPool.quantities.values.uniq).to eq([0])
+      expect(described_class.quantities.keys).to eq(ExecutionEnvironment.all.map(&:id))
+      expect(described_class.quantities.values.uniq).to eq([0])
     end
   end
 
@@ -86,15 +86,15 @@ describe DockerContainerPool do
     let(:maximum_refill_count) { 5 }
 
     before(:each) do
-      expect(DockerContainerPool).to receive(:config).and_return(config)
+      expect(described_class).to receive(:config).and_return(config)
       expect(config).to receive(:[]).with(:maximum_refill_count).and_return(maximum_refill_count)
     end
 
-    after(:each) { DockerContainerPool.refill }
+    after(:each) { described_class.refill }
 
     it 'regards all execution environments' do
       ExecutionEnvironment.all.each do |execution_environment|
-        expect(DockerContainerPool.instance_variable_get(:@containers)).to receive(:[]).with(execution_environment.id).and_call_original
+        expect(described_class.instance_variable_get(:@containers)).to receive(:[]).with(execution_environment.id).and_call_original
       end
     end
 
@@ -103,7 +103,7 @@ describe DockerContainerPool do
 
       it 'complies with the maximum batch size' do
         expect_any_instance_of(Concurrent::Future).to receive(:execute) do |future|
-          expect(DockerContainerPool).to receive(:create_container).with(@execution_environment).exactly(maximum_refill_count).times
+          expect(described_class).to receive(:create_container).with(@execution_environment).exactly(maximum_refill_count).times
           future.instance_variable_get(:@task).call
         end
       end
@@ -123,7 +123,7 @@ describe DockerContainerPool do
   end
 
   describe '.start_refill_task' do
-    after(:each) { DockerContainerPool.start_refill_task }
+    after(:each) { described_class.start_refill_task }
 
     it 'creates an asynchronous task' do
       expect(Concurrent::TimerTask).to receive(:new).and_call_original
