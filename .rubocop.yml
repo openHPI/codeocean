@@ -1,0 +1,13 @@
+AllCops:
+  Exclude:
+    - bin/*
+    - config/initializers/sorcery.rb
+    - db/schema.rb
+  RunRailsCops: true
+Metrics/LineLength:
+  Enabled: false
+require: rubocop-rspec
+Style/Documentation:
+  Enabled: false
+Style/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
