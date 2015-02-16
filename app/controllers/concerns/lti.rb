@@ -5,7 +5,7 @@ module Lti
 
   MAXIMUM_SCORE = 1
   MAXIMUM_SESSION_AGE = 60.minutes
-  SESSION_PARAMETERS = %w[launch_presentation_return_url lis_outcome_service_url lis_result_sourcedid]
+  SESSION_PARAMETERS = %w(launch_presentation_return_url lis_outcome_service_url lis_result_sourcedid)
 
   def build_tool_provider(options = {})
     if options[:consumer] && options[:parameters]

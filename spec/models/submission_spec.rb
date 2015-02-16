@@ -18,7 +18,7 @@ describe Submission do
     expect(Submission.create.errors[:user_type]).to be_present
   end
 
-  %w[download render run test].each do |action|
+  %w(download render run test).each do |action|
     describe "##{action}_url" do
       let(:url) { @submission.send(:"#{action}_url") }
 

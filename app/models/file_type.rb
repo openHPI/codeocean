@@ -1,9 +1,9 @@
 class FileType < ActiveRecord::Base
   include Creation
 
-  AUDIO_FILE_EXTENSIONS = %w[.aac .flac .m4a .mp3 .ogg .wav .wma]
-  IMAGE_FILE_EXTENSIONS = %w[.bmp .gif .jpeg .jpg .png]
-  VIDEO_FILE_EXTENSIONS = %w[.avi .flv .mkv .mp4 .m4v .ogv .webm]
+  AUDIO_FILE_EXTENSIONS = %w(.aac .flac .m4a .mp3 .ogg .wav .wma)
+  IMAGE_FILE_EXTENSIONS = %w(.bmp .gif .jpeg .jpg .png)
+  VIDEO_FILE_EXTENSIONS = %w(.avi .flv .mkv .mp4 .m4v .ogv .webm)
 
   after_initialize :set_default_values
 

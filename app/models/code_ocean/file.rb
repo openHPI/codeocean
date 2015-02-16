@@ -3,8 +3,8 @@ require File.expand_path('../../../uploaders/file_uploader', __FILE__)
 module CodeOcean
   class File < ActiveRecord::Base
     DEFAULT_WEIGHT = 1.0
-    ROLES = %w[main_file reference_implementation regular_file teacher_defined_test user_defined_file user_defined_test]
-    TEACHER_DEFINED_ROLES = ROLES - %w[user_defined_file]
+    ROLES = %w(main_file reference_implementation regular_file teacher_defined_test user_defined_file user_defined_test)
+    TEACHER_DEFINED_ROLES = ROLES - %w(user_defined_file)
 
     after_initialize :set_default_values
     before_validation :set_ancestor_values, if: :incomplete_descendent?

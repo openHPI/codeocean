@@ -5,8 +5,8 @@ set :application, 'code_ocean'
 set :config_example_suffix, '.example'
 set :deploy_to, '/var/www/app'
 set :keep_releases, 3
-set :linked_dirs, %w[bin log public/uploads tmp/cache tmp/files tmp/pids tmp/sockets]
-set :linked_files, %w[config/action_mailer.yml config/database.yml config/secrets.yml config/sendmail.yml config/smtp.yml]
+set :linked_dirs, %w(bin log public/uploads tmp/cache tmp/files tmp/pids tmp/sockets)
+set :linked_files, %w(config/action_mailer.yml config/database.yml config/secrets.yml config/sendmail.yml config/smtp.yml)
 set :log_level, :info
 set :puma_threads, [0, 16]
 set :repo_url, 'git@github.com:openHPI/codeocean.git'

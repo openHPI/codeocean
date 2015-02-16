@@ -3,7 +3,7 @@ FactoryGirl.create(:consumer)
 FactoryGirl.create(:consumer, name: 'openSAP')
 
 # users
-%w[admin external_user teacher].each { |factory_name| FactoryGirl.create(factory_name) }
+%w(admin external_user teacher).each { |factory_name| FactoryGirl.create(factory_name) }
 
 # execution environments
 ExecutionEnvironment.create_factories

@@ -181,7 +181,7 @@ FactoryGirl.define do
     singleton_file_type
   end
 
-  %w[binary executable renderable].each do |attribute|
+  %w(binary executable renderable).each do |attribute|
     trait(attribute) do
       self.send(attribute, true)
     end

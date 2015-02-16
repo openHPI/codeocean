@@ -1,7 +1,7 @@
 module User
   extend ActiveSupport::Concern
 
-  ROLES = %w[admin teacher]
+  ROLES = %w(admin teacher)
 
   included do
     belongs_to :consumer
