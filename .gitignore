@@ -8,6 +8,7 @@
 /log
 /public/assets
 /public/uploads
+/rubocop.html
 /tmp
 /vagrant/
 *.sublime-*
