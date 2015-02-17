@@ -126,6 +126,8 @@ en:
   admin:
     dashboard:
       show:
+        current: Current Availability
+        history: Availability History
         inactive: Container pooling is not enabled.
         quantity: Available Containers
   application:

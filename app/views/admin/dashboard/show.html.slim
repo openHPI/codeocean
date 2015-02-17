@@ -1,8 +1,13 @@
+- content_for :head do
+  = javascript_include_tag('//cdnjs.cloudflare.com/ajax/libs/vis/3.10.0/vis.min.js')
+  = stylesheet_link_tag('//cdnjs.cloudflare.com/ajax/libs/vis/3.10.0/vis.min.css')
+
 h1 = t('breadcrumbs.dashboard.show')
 
 h2 Docker
 
 - if DockerContainerPool.config[:active]
+  h3 = t('.current')
   .table-responsive
     table.table
       thead
@@ -13,8 +18,10 @@ h2 Docker
       tbody
         - ExecutionEnvironment.order(:name).each do |execution_environment|
           tr data-id=execution_environment.id
-            td = link_to(execution_environment, execution_environment)
+            td.name = link_to(execution_environment, execution_environment)
             td.pool-size
             td.quantity = progress_bar(0)
+  h3 = t('.history')
+  #graph
 - else
   p = t('.inactive')

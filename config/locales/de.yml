@@ -126,6 +126,8 @@ de:
   admin:
     dashboard:
       show:
+        current: Aktuelle Verfügbarkeit
+        history: Verfügbarkeitsverlauf
         inactive: Der Container-Pool ist nicht aktiv.
         quantity: Verfügbare Container
   application:
