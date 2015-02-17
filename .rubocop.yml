@@ -1,7 +1,9 @@
 AllCops:
   Exclude:
     - bin/*
+    - config/application.rb
     - config/initializers/sorcery.rb
+    - db/seeds/**/*
     - db/schema.rb
   RunRailsCops: true
 Metrics/LineLength:
