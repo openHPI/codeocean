@@ -7,7 +7,7 @@ describe FileTypesController do
 
   describe 'POST #create' do
     context 'with a valid file type' do
-      let(:request) { Proc.new { post :create, file_type: FactoryGirl.attributes_for(:dot_rb) } }
+      let(:request) { proc { post :create, file_type: FactoryGirl.attributes_for(:dot_rb) } }
       before(:each) { request.call }
 
       expect_assigns(editor_modes: Array)

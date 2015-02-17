@@ -7,7 +7,7 @@ describe ConsumersController do
 
   describe 'POST #create' do
     context 'with a valid consumer' do
-      let(:request) { Proc.new { post :create, consumer: FactoryGirl.attributes_for(:consumer) } }
+      let(:request) { proc { post :create, consumer: FactoryGirl.attributes_for(:consumer) } }
       before(:each) { request.call }
 
       expect_assigns(consumer: Consumer)

@@ -103,7 +103,7 @@ describe InternalUsersController do
     before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      let(:request) { Proc.new { post :create, internal_user: FactoryGirl.attributes_for(:teacher) } }
+      let(:request) { proc { post :create, internal_user: FactoryGirl.attributes_for(:teacher) } }
       before(:each) { request.call }
 
       expect_assigns(user: InternalUser)

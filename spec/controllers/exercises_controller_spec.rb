@@ -9,7 +9,7 @@ describe ExercisesController do
     let(:exercise_attributes) { FactoryGirl.build(:dummy).attributes }
 
     context 'with a valid exercise' do
-      let(:request) { Proc.new { post :create, exercise: exercise_attributes } }
+      let(:request) { proc { post :create, exercise: exercise_attributes } }
       before(:each) { request.call }
 
       expect_assigns(exercise: Exercise)
@@ -23,7 +23,7 @@ describe ExercisesController do
 
     context 'when including a file' do
       let(:files_attributes) { {'0' => FactoryGirl.build(:file).attributes} }
-      let(:request) { Proc.new { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
+      let(:request) { proc { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
 
       it 'creates the file' do
         expect { request.call }.to change(CodeOcean::File, :count)
@@ -32,7 +32,7 @@ describe ExercisesController do
 
     context "with a file upload" do
       let(:files_attributes) { {'0' => FactoryGirl.build(:file, content: fixture_file_upload('upload.rb', 'text/x-ruby')).attributes} }
-      let(:request) { Proc.new { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
+      let(:request) { proc { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
 
       it 'creates the file' do
         expect { request.call }.to change(CodeOcean::File, :count)
@@ -77,7 +77,7 @@ describe ExercisesController do
   end
 
   describe 'GET #implement' do
-    let(:request) { Proc.new { get :implement, id: exercise.id } }
+    let(:request) { proc { get :implement, id: exercise.id } }
     before(:each) { request.call }
 
     expect_assigns(exercise: :exercise)

@@ -12,7 +12,7 @@ describe SubmissionsController do
 
     context 'with a valid submission' do
       let(:exercise) { FactoryGirl.create(:hello_world) }
-      let(:request) { Proc.new { post :create, format: :json, submission: FactoryGirl.attributes_for(:submission, exercise_id: exercise.id) } }
+      let(:request) { proc { post :create, format: :json, submission: FactoryGirl.attributes_for(:submission, exercise_id: exercise.id) } }
       before(:each) { request.call }
 
       expect_assigns(submission: Submission)
@@ -75,7 +75,7 @@ describe SubmissionsController do
     context 'with a valid filename' do
       let(:file) { submission.files.first }
       let(:file_type) { FactoryGirl.create(:dot_xml) }
-      let(:request) { Proc.new { get :render_file, filename: file.name_with_extension, id: submission.id } }
+      let(:request) { proc { get :render_file, filename: file.name_with_extension, id: submission.id } }
 
       before(:each) do
         file.update(file_type: file_type)

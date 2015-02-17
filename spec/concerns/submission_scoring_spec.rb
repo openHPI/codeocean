@@ -13,7 +13,7 @@ describe SubmissionScoring do
   before(:each) { controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user)) }
 
   describe '#score_submission' do
-    let(:score_submission) { Proc.new { controller.score_submission(@submission) } }
+    let(:score_submission) { proc { controller.score_submission(@submission) } }
     before(:each) { score_submission.call }
 
     it 'assigns @assessor' do

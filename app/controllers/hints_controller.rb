@@ -12,7 +12,7 @@ class HintsController < ApplicationController
   def create
     @hint = Hint.new(hint_params)
     authorize!
-    create_and_respond(object: @hint, path: Proc.new { execution_environment_hint_path(@execution_environment, @hint) })
+    create_and_respond(object: @hint, path: proc { execution_environment_hint_path(@execution_environment, @hint) })
   end
 
   def destroy

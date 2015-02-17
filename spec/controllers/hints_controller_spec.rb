@@ -8,7 +8,7 @@ describe HintsController do
 
   describe 'POST #create' do
     context 'with a valid hint' do
-      let(:request) { Proc.new { post :create, execution_environment_id: execution_environment.id, hint: FactoryGirl.attributes_for(:ruby_syntax_error) } }
+      let(:request) { proc { post :create, execution_environment_id: execution_environment.id, hint: FactoryGirl.attributes_for(:ruby_syntax_error) } }
       before(:each) { request.call }
 
       expect_assigns(execution_environment: :execution_environment)

@@ -7,7 +7,7 @@ describe TeamsController do
 
   describe 'POST #create' do
     context 'with a valid team' do
-      let(:request) { Proc.new { post :create, team: FactoryGirl.attributes_for(:team) } }
+      let(:request) { proc { post :create, team: FactoryGirl.attributes_for(:team) } }
       before(:each) { request.call }
 
       expect_assigns(team: Team)

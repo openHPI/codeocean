@@ -8,7 +8,7 @@ describe CodeOcean::FilesController do
     let(:submission) { FactoryGirl.create(:submission, user: user) }
 
     context 'with a valid file' do
-      let(:request) { Proc.new { post :create, code_ocean_file: FactoryGirl.build(:file, context: submission).attributes, format: :json } }
+      let(:request) { proc { post :create, code_ocean_file: FactoryGirl.build(:file, context: submission).attributes, format: :json } }
       before(:each) { request.call }
 
       expect_assigns(file: CodeOcean::File)
@@ -32,7 +32,7 @@ describe CodeOcean::FilesController do
 
   describe 'DELETE #destroy' do
     let(:exercise) { FactoryGirl.create(:fibonacci) }
-    let(:request) { Proc.new { delete :destroy, id: exercise.files.first.id } }
+    let(:request) { proc { delete :destroy, id: exercise.files.first.id } }
     before(:each) { request.call }
 
     expect_assigns(file: CodeOcean::File)

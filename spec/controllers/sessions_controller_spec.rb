@@ -162,7 +162,7 @@ describe SessionsController do
   end
 
   describe 'GET #destroy_through_lti' do
-    let(:request) { Proc.new { get :destroy_through_lti, consumer_id: consumer.id, submission_id: submission.id } }
+    let(:request) { proc { get :destroy_through_lti, consumer_id: consumer.id, submission_id: submission.id } }
     let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:dummy)) }
 
     before(:each) do

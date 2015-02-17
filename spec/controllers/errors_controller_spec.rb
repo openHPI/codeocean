@@ -8,7 +8,7 @@ describe ErrorsController do
 
   describe 'POST #create' do
     context 'with a valid error' do
-      let(:request) { Proc.new { post :create, execution_environment_id: FactoryGirl.build(:error).execution_environment.id, error: FactoryGirl.attributes_for(:error), format: :json } }
+      let(:request) { proc { post :create, execution_environment_id: FactoryGirl.build(:error).execution_environment.id, error: FactoryGirl.attributes_for(:error), format: :json } }
 
       context 'when a hint can be matched' do
         let(:hint) { FactoryGirl.build(:ruby_syntax_error).message }

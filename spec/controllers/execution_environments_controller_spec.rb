@@ -9,7 +9,7 @@ describe ExecutionEnvironmentsController do
     before(:each) { expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
 
     context 'with a valid execution environment' do
-      let(:request) { Proc.new { post :create, execution_environment: FactoryGirl.attributes_for(:ruby) } }
+      let(:request) { proc { post :create, execution_environment: FactoryGirl.attributes_for(:ruby) } }
       before(:each) { request.call }
 
       expect_assigns(docker_images: Array)
