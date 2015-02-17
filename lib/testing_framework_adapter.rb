@@ -15,7 +15,7 @@ class TestingFrameworkAdapter
   end
 
   def parse_output(output)
-    raise NotImplementedError.new("#{self.class} should implement #parse_output!")
+    fail(NotImplementedError, "#{self.class} should implement #parse_output!")
   end
   private :parse_output
 

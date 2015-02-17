@@ -10,7 +10,7 @@ module CodeOcean
         content = options[:erb] ? YAML.load(ERB.new(::File.new(path, 'r').read).result) : YAML.load_file(path)
         content[Rails.env].with_indifferent_access
       else
-        raise Error.new("Configuration file not found: #{path}")
+        fail(Error, "Configuration file not found: #{path}")
       end
     end
   end

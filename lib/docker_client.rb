@@ -10,7 +10,7 @@ class DockerClient
   def self.check_availability!
     Timeout::timeout(config[:connection_timeout]) { Docker.version }
   rescue Excon::Errors::SocketError, Timeout::Error
-    raise Error.new("The Docker host at #{Docker.url} is not reachable!")
+    raise(Error, "The Docker host at #{Docker.url} is not reachable!")
   end
 
   def command_substitutions(filename)
@@ -96,12 +96,12 @@ class DockerClient
     @execution_environment = options[:execution_environment]
     @user = options[:user]
     @image = self.class.find_image_by_tag(@execution_environment.docker_image)
-    raise Error.new("Cannot find image #{@execution_environment.docker_image}!") unless @image
+    fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
   end
 
   def self.initialize_environment
     unless config[:connection_timeout] && config[:workspace_root]
-      raise Error.new('Docker configuration missing!')
+      fail(Error, 'Docker configuration missing!')
     end
     Docker.url = config[:host] if config[:host]
     check_availability!

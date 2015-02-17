@@ -95,7 +95,7 @@ module Lti
   private :return_to_consumer
 
   def send_score(score)
-    raise Error.new("Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
+    fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
     provider = build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]), parameters: session[:lti_parameters])
     if provider.nil?
       {status: 'error'}

@@ -17,7 +17,7 @@ class Assessor
     if options[:execution_environment].testing_framework?
       @testing_framework_adapter = Kernel.const_get(options[:execution_environment].testing_framework).new
     else
-      raise Error.new('No testing framework adapter set!')
+      fail(Error, 'No testing framework adapter set!')
     end
   end
 end

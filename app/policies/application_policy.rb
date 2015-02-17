@@ -21,7 +21,7 @@ class ApplicationPolicy
   private :no_one
 
   def require_user!
-    raise Pundit::NotAuthorizedError unless @user
+    fail Pundit::NotAuthorizedError unless @user
   end
   private :require_user!
 
@@ -33,7 +33,7 @@ class ApplicationPolicy
     end
 
     def require_user!
-      raise Pundit::NotAuthorizedError unless @user
+      fail Pundit::NotAuthorizedError unless @user
     end
     private :require_user!
   end
