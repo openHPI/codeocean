@@ -11,10 +11,10 @@ class TestingFrameworkAdapter
   private :augment_output
 
   def self.framework_name
-    self.name
+    name
   end
 
-  def parse_output(output)
+  def parse_output(*)
     fail(NotImplementedError, "#{self.class} should implement #parse_output!")
   end
   private :parse_output

@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: :create_through_lti
 
   def create
-    if user = login(params[:email], params[:password], params[:remember_me])
+    if login(params[:email], params[:password], params[:remember_me])
       redirect_back_or_to(:root, notice: t('.success'))
     else
       flash.now[:danger] = t('.failure')

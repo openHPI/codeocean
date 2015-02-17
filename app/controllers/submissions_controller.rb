@@ -72,7 +72,7 @@ class SubmissionsController < ApplicationController
   end
 
   def set_docker_client
-    @docker_client = DockerClient.new(execution_environment: @submission.execution_environment, user: current_user)
+    @docker_client = DockerClient.new(execution_environment: @submission.execution_environment)
   end
   private :set_docker_client
 

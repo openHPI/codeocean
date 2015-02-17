@@ -4,7 +4,7 @@ class UserMailer < ActionMailer::Base
     mail(subject: t('mailers.user_mailer.activation_needed.subject'), to: user.email)
   end
 
-  def activation_success_email(user)
+  def activation_success_email(*)
   end
 
   def reset_password_email(user)

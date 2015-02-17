@@ -67,7 +67,7 @@ describe Lti do
   describe '#return_to_consumer' do
     context 'with a return URL' do
       let(:consumer_return_url) { 'http://example.org' }
-      before(:each) { expect(controller).to receive(:params).and_return({launch_presentation_return_url: consumer_return_url}) }
+      before(:each) { expect(controller).to receive(:params).and_return(launch_presentation_return_url: consumer_return_url) }
 
       it 'redirects to the tool consumer' do
         expect(controller).to receive(:redirect_to).with(consumer_return_url)

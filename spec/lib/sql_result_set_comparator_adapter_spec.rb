@@ -8,7 +8,7 @@ describe SqlResultSetComparatorAdapter do
       let(:stdout) { "Missing tuples: [1]\nUnexpected tuples: []" }
 
       it 'considers the test as failed' do
-        expect(adapter.parse_output(stdout: stdout)).to eq({count: 1, failed: 1})
+        expect(adapter.parse_output(stdout: stdout)).to eq(count: 1, failed: 1)
       end
     end
 
@@ -16,7 +16,7 @@ describe SqlResultSetComparatorAdapter do
       let(:stdout) { "Missing tuples: []\nUnexpected tuples: [1]" }
 
       it 'considers the test as failed' do
-        expect(adapter.parse_output(stdout: stdout)).to eq({count: 1, failed: 1})
+        expect(adapter.parse_output(stdout: stdout)).to eq(count: 1, failed: 1)
       end
     end
 
@@ -24,7 +24,7 @@ describe SqlResultSetComparatorAdapter do
       let(:stdout) { "Missing tuples: []\nUnexpected tuples: []" }
 
       it 'considers the test as passed' do
-        expect(adapter.parse_output(stdout: stdout)).to eq({count: 1, passed: 1})
+        expect(adapter.parse_output(stdout: stdout)).to eq(count: 1, passed: 1)
       end
     end
   end

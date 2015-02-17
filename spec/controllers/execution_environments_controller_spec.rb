@@ -60,7 +60,7 @@ describe ExecutionEnvironmentsController do
     let(:command) { 'which ruby' }
 
     before(:each) do
-      expect(DockerClient).to receive(:new).with(execution_environment: execution_environment, user: user).and_call_original
+      expect(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
       expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(command)
       post :execute_command, command: command, id: execution_environment.id
     end

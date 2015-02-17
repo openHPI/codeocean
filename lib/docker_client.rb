@@ -8,7 +8,7 @@ class DockerClient
   attr_reader :container_id
 
   def self.check_availability!
-    Timeout::timeout(config[:connection_timeout]) { Docker.version }
+    Timeout.timeout(config[:connection_timeout]) { Docker.version }
   rescue Excon::Errors::SocketError, Timeout::Error
     raise(Error, "The Docker host at #{Docker.url} is not reachable!")
   end
@@ -94,7 +94,6 @@ class DockerClient
 
   def initialize(options = {})
     @execution_environment = options[:execution_environment]
-    @user = options[:user]
     @image = self.class.find_image_by_tag(@execution_environment.docker_image)
     fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
   end
@@ -133,7 +132,7 @@ class DockerClient
   end
 
   def send_command(command, container, &block)
-    Timeout::timeout(@execution_environment.permitted_execution_time) do
+    Timeout.timeout(@execution_environment.permitted_execution_time) do
       stderr = []
       stdout = []
       container.attach(stdin: StringIO.new(command)) do |stream, chunk|
@@ -152,7 +151,6 @@ class DockerClient
     Concurrent::Future.execute { self.class.destroy_container(container) }
   end
   private :send_command
-end
 
-class DockerClient::Error < RuntimeError
+  class Error < RuntimeError; end
 end

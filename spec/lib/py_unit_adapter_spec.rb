@@ -8,7 +8,7 @@ describe PyUnitAdapter do
 
   describe '#parse_output' do
     it 'returns the correct numbers' do
-      expect(adapter.parse_output(stderr: stderr)).to eq({count: count, failed: failed})
+      expect(adapter.parse_output(stderr: stderr)).to eq(count: count, failed: failed)
     end
   end
 end

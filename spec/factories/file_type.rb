@@ -182,9 +182,7 @@ FactoryGirl.define do
   end
 
   %w(binary executable renderable).each do |attribute|
-    trait(attribute) do
-      self.send(attribute, true)
-    end
+    trait(attribute) { send(attribute, true) }
   end
 
   trait :singleton_file_type do

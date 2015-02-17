@@ -3,7 +3,7 @@ class AnonymousController < ApplicationController
     @flash ||= {}
   end
 
-  def redirect_to(*options)
+  def redirect_to(*)
   end
 
   def session

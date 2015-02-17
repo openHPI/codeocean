@@ -13,7 +13,7 @@ module User
   end
 
   ROLES.each do |role|
-    define_method("#{role}?") { self.try(:role) == role }
+    define_method("#{role}?") { try(:role) == role }
   end
 
   def external?

@@ -10,7 +10,7 @@ def create_seed_file(exercise, path, file_attributes = {})
   else
     file_attributes.merge!(content: SeedsHelper.read_seed_file(path))
   end
-  file = exercise.add_file!(file_attributes)
+  exercise.add_file!(file_attributes)
 end
 
 FactoryGirl.define do
@@ -18,7 +18,7 @@ FactoryGirl.define do
     created_by_teacher
     description "Try HTML's audio and video capabilities."
     association :execution_environment, factory: :html
-    instructions "Build a simple website including an HTML <audio> and <video> element. Link the following media files: chai.ogg, devstories.mp4."
+    instructions 'Build a simple website including an HTML <audio> and <video> element. Link the following media files: chai.ogg, devstories.mp4.'
     title 'Audio & Video'
 
     after(:create) do |exercise|

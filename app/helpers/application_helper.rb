@@ -42,7 +42,7 @@ module ApplicationHelper
     Kramdown::Document.new(markdown).to_html.html_safe
   end
 
-  def row(options={}, &block)
+  def row(options = {}, &block)
     content_tag(:div, class: 'attribute-row row') do
       label_column(options[:label]) + value_column(options[:value], &block)
     end
@@ -65,7 +65,7 @@ module ApplicationHelper
   end
   private :translation_present?
 
-  def value_column(value, &block)
+  def value_column(value)
     content_tag(:div, class: 'col-sm-9') do
       block_given? ? yield : symbol_for(value)
     end

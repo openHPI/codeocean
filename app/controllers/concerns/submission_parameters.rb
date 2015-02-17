@@ -2,8 +2,8 @@ module SubmissionParameters
   include FileParameters
 
   def reject_illegal_file_attributes!(submission_params)
-    if exercise = Exercise.find_by(id: submission_params[:exercise_id])
-      submission_params[:files_attributes].try(:reject!) do |index, file_attributes|
+    if Exercise.exists?(id: submission_params[:exercise_id])
+      submission_params[:files_attributes].try(:reject!) do |_, file_attributes|
         file = CodeOcean::File.find_by(id: file_attributes[:file_id])
         file.nil? || file.hidden || file.read_only
       end

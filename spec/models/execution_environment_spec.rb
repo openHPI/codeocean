@@ -81,7 +81,7 @@ describe ExecutionEnvironment do
 
     context 'when the command produces an error' do
       it 'adds an error' do
-        expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return({stderr: 'command not found'})
+        expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return(stderr: 'command not found')
         working_docker_image?
         expect(execution_environment.errors[:docker_image]).to be_present
       end

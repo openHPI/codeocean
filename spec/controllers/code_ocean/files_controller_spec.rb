@@ -38,7 +38,7 @@ describe CodeOcean::FilesController do
     expect_assigns(file: CodeOcean::File)
 
     it 'destroys the file' do
-      exercise = FactoryGirl.create(:fibonacci)
+      FactoryGirl.create(:fibonacci)
       expect { request.call }.to change(CodeOcean::File, :count).by(-1)
     end
 

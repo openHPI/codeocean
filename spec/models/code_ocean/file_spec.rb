@@ -21,7 +21,7 @@ describe CodeOcean::File do
 
   context 'as a teacher-defined test' do
     before(:each) { file.update(role: 'teacher_defined_test') }
-    
+
     it 'validates the presence of a feedback message' do
       expect(file.errors[:feedback_message]).to be_present
     end

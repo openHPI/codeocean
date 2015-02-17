@@ -10,7 +10,7 @@ describe JunitAdapter do
       let(:stdout) { "FAILURES!!!\nTests run: #{count},  Failures: #{failed}" }
 
       it 'returns the correct numbers' do
-        expect(adapter.parse_output(stdout: stdout)).to eq({count: count, failed: failed})
+        expect(adapter.parse_output(stdout: stdout)).to eq(count: count, failed: failed)
       end
     end
 
@@ -19,7 +19,7 @@ describe JunitAdapter do
       let(:stdout) { "OK (#{count} tests)" }
 
       it 'returns the correct numbers' do
-        expect(adapter.parse_output(stdout: stdout)).to eq({count: count, passed: count})
+        expect(adapter.parse_output(stdout: stdout)).to eq(count: count, passed: count)
       end
     end
   end

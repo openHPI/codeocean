@@ -1,1 +1,1 @@
-Docker::Container::send(:include, DockerContainerMixin)
+Docker::Container.send(:include, DockerContainerMixin)

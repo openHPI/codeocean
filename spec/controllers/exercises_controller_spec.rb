@@ -30,7 +30,7 @@ describe ExercisesController do
       end
     end
 
-    context "with a file upload" do
+    context 'with a file upload' do
       let(:files_attributes) { {'0' => FactoryGirl.build(:file, content: fixture_file_upload('upload.rb', 'text/x-ruby')).attributes} }
       let(:request) { proc { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
 
@@ -144,7 +144,7 @@ describe ExercisesController do
 
       context 'when the score transmission succeeds' do
         before(:each) do
-          expect(controller).to receive(:send_score).and_return({status: 'success'})
+          expect(controller).to receive(:send_score).and_return(status: 'success')
           request
         end
 
@@ -160,7 +160,7 @@ describe ExercisesController do
 
       context 'when the score transmission fails' do
         before(:each) do
-          expect(controller).to receive(:send_score).and_return({status: 'unsupported'})
+          expect(controller).to receive(:send_score).and_return(status: 'unsupported')
           request
         end
 

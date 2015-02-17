@@ -27,10 +27,8 @@ describe DockerContainerPool do
     end
 
     it 'destroys all containers' do
-      described_class.instance_variable_get(:@containers).each do |key, value|
-        value.each do |container|
-          expect(DockerClient).to receive(:destroy_container).with(container)
-        end
+      described_class.instance_variable_get(:@containers).values.flatten.each do |container|
+        expect(DockerClient).to receive(:destroy_container).with(container)
       end
     end
   end

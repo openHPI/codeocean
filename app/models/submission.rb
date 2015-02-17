@@ -7,6 +7,8 @@ class Submission < ActiveRecord::Base
 
   belongs_to :exercise
 
+  delegate :execution_environment, to: :exercise
+
   scope :final, -> { where(cause: 'submit') }
   scope :intermediate, -> { where.not(cause: 'submit') }
 
@@ -22,10 +24,6 @@ class Submission < ActiveRecord::Base
     ancestors = build_files_hash(exercise.files, :id)
     descendants = build_files_hash(files, :file_id)
     ancestors.merge(descendants).values
-  end
-
-  def execution_environment
-    exercise.execution_environment
   end
 
   [:download, :render, :run, :test].each do |action|

@@ -4,11 +4,13 @@ def find_factories_by_class(klass)
   end
 end
 
-class ActiveRecord::Base
-  [:build, :create].each do |strategy|
-    define_singleton_method("#{strategy}_factories") do |attributes = {}|
-      find_factories_by_class(self).map(&:name).map do |factory_name|
-        FactoryGirl.send(strategy, factory_name, attributes)
+module ActiveRecord
+  class Base
+    [:build, :create].each do |strategy|
+      define_singleton_method("#{strategy}_factories") do |attributes = {}|
+        find_factories_by_class(self).map(&:name).map do |factory_name|
+          FactoryGirl.send(strategy, factory_name, attributes)
+        end
       end
     end
   end

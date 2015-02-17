@@ -1,5 +1,5 @@
 module CommonBehavior
-  def create_and_respond(options = {}, &block)
+  def create_and_respond(options = {})
     @object = options[:object]
     respond_to do |format|
       if @object.save
