@@ -66,6 +66,8 @@ describe SubmissionsController do
   end
 
   describe 'GET #render_file' do
+    let(:file) { submission.files.first }
+
     context 'with an invalid filename' do
       before(:each) { get :render_file, filename: SecureRandom.hex, id: submission.id }
 
@@ -73,14 +75,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:file) { submission.files.first }
-      let(:file_type) { FactoryGirl.create(:dot_xml) }
-      let(:request) { proc { get :render_file, filename: file.name_with_extension, id: submission.id } }
-
-      before(:each) do
-        file.update(file_type: file_type)
-        request.call
-      end
+      before(:each) { get :render_file, filename: file.name_with_extension, id: submission.id }
 
       expect_assigns(file: :file)
       expect_assigns(submission: :submission)
@@ -88,12 +83,6 @@ describe SubmissionsController do
 
       it 'renders the file content' do
         expect(response.body).to eq(file.content)
-      end
-
-      it 'sets the correct MIME type' do
-        mime_type = Mime::Type.lookup_by_extension(file_type.file_extension.gsub(/^\./, ''))
-        expect(Mime::Type).to receive(:lookup_by_extension).at_least(:once).and_return(mime_type)
-        request.call
       end
     end
   end
