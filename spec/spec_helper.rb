@@ -15,12 +15,14 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-if ENV['CODECLIMATE_REPO_TOKEN']
-  require 'codeclimate-test-reporter'
-  CodeClimate::TestReporter.start
-elsif RUBY_PLATFORM != 'java'
-  require 'simplecov'
-  SimpleCov.start('rails')
+unless RUBY_PLATFORM == 'java'
+  if ENV['CODECLIMATE_REPO_TOKEN']
+    require 'codeclimate-test-reporter'
+    CodeClimate::TestReporter.start
+  else
+    require 'simplecov'
+    SimpleCov.start('rails')
+  end
 end
 
 RSpec.configure do |config|
