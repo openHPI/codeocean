@@ -31,7 +31,8 @@ describe ExercisesController do
     end
 
     context 'with a file upload' do
-      let(:files_attributes) { {'0' => FactoryGirl.build(:file, content: fixture_file_upload('upload.rb', 'text/x-ruby')).attributes} }
+      let(:file_upload) { fixture_file_upload('upload.rb', 'text/x-ruby') }
+      let(:files_attributes) { {'0' => FactoryGirl.build(:file).attributes.merge(content: file_upload)} }
       let(:request) { proc { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
 
       it 'creates the file' do

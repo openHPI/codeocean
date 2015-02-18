@@ -1,20 +1,20 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
-  root to: 'application#welcome'
+  root 'application#welcome'
 
   namespace :admin do
-    get 'dashboard', to: 'dashboard#show'
+    get 'dashboard' => 'dashboard#show'
   end
 
-  get '/help', to: 'application#help'
+  get '/help' => 'application#help'
 
   resources :consumers
 
   resources :execution_environments do
     member do
       get :shell
-      post 'shell', as: :execute_command, to: :execute_command
+      post 'shell' => :execute_command, as: :execute_command
     end
 
     resources :errors, only: [:create, :index, :show]
@@ -40,29 +40,29 @@ Rails.application.routes.draw do
 
   resources :internal_users do
     member do
-      match 'activate', to: 'internal_users#activate', via: [:get, :patch, :put]
-      match 'reset_password', to: 'internal_users#reset_password', via: [:get, :patch, :put]
+      match 'activate' => 'internal_users#activate', via: [:get, :patch, :put]
+      match 'reset_password' => 'internal_users#reset_password', via: [:get, :patch, :put]
     end
   end
 
-  match '/forgot_password', as: 'forgot_password', to: 'internal_users#forgot_password', via: [:get, :post]
+  match '/forgot_password' => 'internal_users#forgot_password', as: 'forgot_password', via: [:get, :post]
 
   resources :sessions, only: [:create, :destroy, :new]
 
-  post '/lti/launch', as: 'lti_launch', to: 'sessions#create_through_lti'
-  get '/lti/return', as: 'lti_return', to: 'sessions#destroy_through_lti'
-  get '/sign_in', as: 'sign_in', to: 'sessions#new'
-  delete '/sign_out', as: 'sign_out', to: 'sessions#destroy'
+  post '/lti/launch' => 'sessions#create_through_lti', as: 'lti_launch'
+  get '/lti/return' => 'sessions#destroy_through_lti', as: 'lti_return'
+  get '/sign_in' => 'sessions#new', as: 'sign_in'
+  delete '/sign_out' => 'sessions#destroy', as: 'sign_out'
 
   resources :submissions, only: [:create, :index, :show] do
     member do
-      get 'download/:filename', as: :download, constraints: {filename: FILENAME_REGEXP}, to: :download_file
-      get 'render/:filename', as: :render, constraints: {filename: FILENAME_REGEXP}, to: :render_file
-      get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, to: :run
+      get 'download/:filename' => :download_file, as: :download, constraints: {filename: FILENAME_REGEXP}
+      get 'render/:filename' => :render_file, as: :render, constraints: {filename: FILENAME_REGEXP}
+      get 'run/:filename' => :run, as: :run, constraints: {filename: FILENAME_REGEXP}
       get :score
       get :statistics
       post :stop
-      get 'test/:filename', as: :test, constraints: {filename: FILENAME_REGEXP}, to: :test
+      get 'test/:filename' => :test, as: :test, constraints: {filename: FILENAME_REGEXP}
     end
   end
 
