@@ -3,22 +3,20 @@ require 'rails_helper'
 describe ExercisePolicy do
   subject { described_class }
 
-  before(:all) do
-    @exercise = FactoryGirl.build(:dummy, team: FactoryGirl.create(:team))
-  end
+  let(:exercise) { FactoryGirl.build(:dummy, team: FactoryGirl.create(:team)) }
 
   [:create?, :index?, :new?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
-        expect(subject).to permit(FactoryGirl.build(:admin), @exercise)
+        expect(subject).to permit(FactoryGirl.build(:admin), exercise)
       end
 
       it 'grants access to teachers' do
-        expect(subject).to permit(FactoryGirl.build(:teacher), @exercise)
+        expect(subject).to permit(FactoryGirl.build(:teacher), exercise)
       end
 
       it 'does not grant access to external users' do
-        expect(subject).not_to permit(FactoryGirl.build(:external_user), @exercise)
+        expect(subject).not_to permit(FactoryGirl.build(:external_user), exercise)
       end
     end
   end
@@ -26,20 +24,20 @@ describe ExercisePolicy do
   [:clone?, :destroy?, :edit?, :show?, :statistics?, :update?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
-        expect(subject).to permit(FactoryGirl.build(:admin), @exercise)
+        expect(subject).to permit(FactoryGirl.build(:admin), exercise)
       end
 
       it 'grants access to authors' do
-        expect(subject).to permit(@exercise.author, @exercise)
+        expect(subject).to permit(exercise.author, exercise)
       end
 
       it 'grants access to team members' do
-        expect(subject).to permit(@exercise.team.members.first, @exercise)
+        expect(subject).to permit(exercise.team.members.first, exercise)
       end
 
       it 'does not grant access to all other users' do
         [:external_user, :teacher].each do |factory_name|
-          expect(subject).not_to permit(FactoryGirl.build(factory_name), @exercise)
+          expect(subject).not_to permit(FactoryGirl.build(factory_name), exercise)
         end
       end
     end
@@ -61,8 +59,6 @@ describe ExercisePolicy do
         @admin = FactoryGirl.create(:admin)
         @external_user = FactoryGirl.create(:external_user)
         @teacher = FactoryGirl.create(:teacher)
-        @team = FactoryGirl.create(:team)
-        @team.members << @teacher
 
         [@admin, @teacher].each do |user|
           [true, false].each do |public|
@@ -90,6 +86,11 @@ describe ExercisePolicy do
       end
 
       context 'for teachers' do
+        before(:each) do
+          @team = FactoryGirl.create(:team)
+          @team.members << @teacher
+        end
+
         let(:scope) { Pundit.policy_scope!(@teacher, Exercise) }
 
         it 'includes all public exercises' do
