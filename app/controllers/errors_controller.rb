@@ -28,7 +28,7 @@ class ErrorsController < ApplicationController
 
   def index
     authorize!
-    @errors = Error.for_execution_environment(@execution_environment)
+    @errors = Error.for_execution_environment(@execution_environment).grouped_by_message
   end
 
   def set_execution_environment

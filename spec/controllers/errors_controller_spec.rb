@@ -67,7 +67,7 @@ describe ErrorsController do
     expect_assigns(execution_environment: :execution_environment)
 
     it 'aggregates errors by message' do
-      expect(assigns(:errors).count).to eq(1)
+      expect(assigns(:errors).length).to eq(1)
     end
 
     expect_status(200)
