@@ -132,7 +132,7 @@ class DockerClient
   end
 
   def send_command(command, container, &block)
-    Timeout.timeout(@execution_environment.permitted_execution_time) do
+    Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
       stderr = []
       stdout = []
       container.attach(stdin: StringIO.new(command)) do |stream, chunk|
