@@ -13,8 +13,11 @@ production:
   <<: *default
   pool:
     active: true
-    interval: 30
-    maximum_refill_count: 30
+    refill:
+      async: false
+      batch_size: 32
+      interval: 30
+      timeout: 60
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
 
 test:

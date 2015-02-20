@@ -80,34 +80,47 @@ describe DockerContainerPool do
   end
 
   describe '.refill' do
-    let(:config) { double }
-    let(:maximum_refill_count) { 5 }
-
-    before(:each) do
-      expect(described_class).to receive(:config).and_return(config)
-      expect(config).to receive(:[]).with(:maximum_refill_count).and_return(maximum_refill_count)
-    end
-
+    before(:each) { @execution_environment.update(pool_size: 10) }
     after(:each) { described_class.refill }
 
-    it 'regards all execution environments' do
-      ExecutionEnvironment.all.each do |execution_environment|
-        expect(described_class.instance_variable_get(:@containers)).to receive(:[]).with(execution_environment.id).and_call_original
+    context 'when configured to work synchronously' do
+      before(:each) do
+        expect(described_class).to receive(:config).and_return(refill: {async: false})
+      end
+
+      it 'works synchronously' do
+        expect(described_class).to receive(:refill_for_execution_environment)
       end
     end
+
+    context 'when configured to work asynchronously' do
+      before(:each) do
+        expect(described_class).to receive(:config).and_return(refill: {async: true})
+      end
+
+      it 'works asynchronously' do
+        expect_any_instance_of(Concurrent::Future).to receive(:execute) do |future|
+          expect(described_class).to receive(:refill_for_execution_environment)
+          future.instance_variable_get(:@task).call
+        end
+      end
+    end
+  end
+
+  describe '.refill_for_execution_environment' do
+    let(:batch_size) { 5 }
+
+    before(:each) do
+      expect(described_class).to receive(:config).and_return(refill: {batch_size: batch_size})
+    end
+
+    after(:each) { described_class.refill_for_execution_environment(@execution_environment) }
 
     context 'with something to refill' do
       before(:each) { @execution_environment.update(pool_size: 10) }
 
       it 'complies with the maximum batch size' do
-        expect_any_instance_of(Concurrent::Future).to receive(:execute) do |future|
-          expect(described_class).to receive(:create_container).with(@execution_environment).exactly(maximum_refill_count).times
-          future.instance_variable_get(:@task).call
-        end
-      end
-
-      it 'works asynchronously' do
-        expect(Concurrent::Future).to receive(:execute)
+        expect(described_class).to receive(:create_container).with(@execution_environment).exactly(batch_size).times
       end
     end
 
@@ -115,16 +128,23 @@ describe DockerContainerPool do
       before(:each) { @execution_environment.update(pool_size: 0) }
 
       it 'does nothing' do
-        expect(Concurrent::Future).not_to receive(:execute)
+        expect(described_class).not_to receive(:create_container)
       end
     end
   end
 
   describe '.start_refill_task' do
+    let(:interval) { 30 }
+    let(:timeout) { 60 }
+
+    before(:each) do
+      expect(described_class).to receive(:config).at_least(:once).and_return(refill: {interval: interval, timeout: timeout})
+    end
+
     after(:each) { described_class.start_refill_task }
 
     it 'creates an asynchronous task' do
-      expect(Concurrent::TimerTask).to receive(:new).and_call_original
+      expect(Concurrent::TimerTask).to receive(:new).with(execution_interval: interval, run_now: true, timeout_interval: timeout).and_call_original
     end
 
     it 'executes the task' do
