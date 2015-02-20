@@ -1,6 +1,3 @@
-# config valid only for Capistrano 3.1
-lock '3.2.1'
-
 set :application, 'code_ocean'
 set :config_example_suffix, '.example'
 set :deploy_to, '/var/www/app'
