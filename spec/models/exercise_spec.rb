@@ -27,4 +27,28 @@ describe Exercise do
     expect(exercise.errors[:user_id]).to be_present
     expect(exercise.errors[:user_type]).to be_present
   end
+
+  describe '#duplicate' do
+    let(:exercise) { FactoryGirl.create(:fibonacci) }
+    after(:each) { exercise.duplicate }
+
+    it 'duplicates the exercise' do
+      expect(exercise).to receive(:dup).and_call_original
+    end
+
+    it 'overwrites the supplied attributes' do
+      title = Forgery(:basic).text
+      expect(exercise.duplicate(title: title).title).to eq(title)
+    end
+
+    it 'duplicates all associated files' do
+      exercise.files.each do
+        |file| expect(file).to receive(:dup).and_call_original
+      end
+    end
+
+    it 'returns the duplicated exercise' do
+      expect(exercise.duplicate).to be_an(Exercise)
+    end
+  end
 end

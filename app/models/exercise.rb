@@ -27,7 +27,7 @@ class Exercise < ActiveRecord::Base
     ActiveRecord::Base.connection.execute("SELECT AVG(score) AS average_score FROM (SELECT MAX(score) AS score FROM submissions WHERE cause = 'submit' AND exercise_id = '#{id}' GROUP BY user_id) AS maximum_scores")[0]['average_score'].to_f.round(2)
   end
 
-  def duplicate(attributes)
+  def duplicate(attributes = {})
     exercise = dup
     exercise.attributes = attributes
     files.each { |file| exercise.files << file.dup }
