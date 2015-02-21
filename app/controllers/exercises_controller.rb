@@ -16,12 +16,13 @@ class ExercisesController < ApplicationController
   private :authorize!
 
   def clone
-    exercise = @exercise.duplicate(public: false, user: current_user)
+    exercise = @exercise.duplicate(public: false, token: nil, user: current_user)
+    exercise.send(:generate_token)
     if exercise.save
       redirect_to(exercise, notice: t('shared.object_cloned', model: Exercise.model_name.human))
     else
       flash[:danger] = t('shared.message_failure')
-      redirect_to(exercises_path)
+      redirect_to(@exercise)
     end
   end
 
