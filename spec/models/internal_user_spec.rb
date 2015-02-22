@@ -35,7 +35,7 @@ describe InternalUser do
     end
 
     it 'validates the presence of a password' do
-      user.update(name: Forgery::Name.full_name)
+      user.update(name: Forgery(:name).full_name)
       expect(user.errors[:password]).to be_present
     end
   end

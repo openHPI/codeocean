@@ -10,7 +10,7 @@ FactoryGirl.define do
   end
 
   trait :generated_user_name do
-    name { Forgery::Name.full_name }
+    name { Forgery(:name).full_name }
   end
 
   [ExternalUser, InternalUser].each do |klass|
