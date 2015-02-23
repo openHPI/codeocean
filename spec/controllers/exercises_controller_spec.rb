@@ -7,20 +7,35 @@ describe ExercisesController do
 
   describe 'POST #clone' do
     let(:request) { proc { post :clone, id: exercise.id } }
-    before(:each) { request.call }
 
-    expect_assigns(exercise: Exercise)
+    context 'when saving succeeds' do
+      before(:each) { request.call }
 
-    it 'clones the exercise' do
-      expect_any_instance_of(Exercise).to receive(:duplicate).with(hash_including(public: false, user: user)).and_call_original
-      expect { request.call }.to change(Exercise, :count).by(1)
+      expect_assigns(exercise: Exercise)
+
+      it 'clones the exercise' do
+        expect_any_instance_of(Exercise).to receive(:duplicate).with(hash_including(public: false, user: user)).and_call_original
+        expect { request.call }.to change(Exercise, :count).by(1)
+      end
+
+      it 'generates a new token' do
+        expect(Exercise.last.token).not_to eq(exercise.token)
+      end
+
+      expect_redirect
     end
 
-    it 'generates a new token' do
-      expect(Exercise.last.token).not_to eq(exercise.token)
-    end
+    context 'when saving fails' do
+      before(:each) do
+        expect_any_instance_of(Exercise).to receive(:save).and_return(false)
+        request.call
+      end
 
-    expect_redirect
+      expect_assigns(exercise: Exercise)
+
+      expect_flash_message(:danger)
+      expect_redirect(:exercise)
+    end
   end
 
   describe 'POST #create' do

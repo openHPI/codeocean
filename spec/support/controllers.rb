@@ -21,9 +21,13 @@ def expect_content_type(content_type)
   end
 end
 
-def expect_flash_message(type, message)
+def expect_flash_message(type, message = nil)
   it 'displays a flash message' do
-    expect(flash[type]).to eq(message.is_a?(String) ? message : I18n.t(message))
+    if message
+      expect(flash[type]).to eq(message.is_a?(String) ? message : I18n.t(message))
+    else
+      expect(flash[type]).to be_present
+    end
   end
 end
 
