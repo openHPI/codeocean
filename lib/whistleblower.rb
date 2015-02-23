@@ -10,7 +10,7 @@ class Whistleblower
 
   def generate_hint(stderr)
     if hint = find_hint(stderr)
-      hint.message.gsub(PLACEHOLDER_REGEXP) { @matches[$1.to_i] }
+      hint.message.gsub(PLACEHOLDER_REGEXP) { @matches[Regexp.last_match(1).to_i] }
     end
   end
 

@@ -9,7 +9,7 @@ class JunitAdapter < TestingFrameworkAdapter
 
   def parse_output(output)
     if SUCCESS_REGEXP.match(output[:stdout])
-      {count: $1.to_i, passed: $1.to_i}
+      {count: Regexp.last_match(1).to_i, passed: Regexp.last_match(1).to_i}
     else
       count = COUNT_REGEXP.match(output[:stdout]).try(:captures).try(:first).try(:to_i) || 0
       failed = FAILURES_REGEXP.match(output[:stdout]).try(:captures).try(:first).try(:to_i) || 0
