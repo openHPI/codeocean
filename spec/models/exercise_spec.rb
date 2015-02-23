@@ -42,13 +42,13 @@ describe Exercise do
     end
 
     it 'duplicates all associated files' do
-      exercise.files.each do
-        |file| expect(file).to receive(:dup).and_call_original
+      exercise.files.each do |file|
+        expect(file).to receive(:dup).and_call_original
       end
     end
 
     it 'returns the duplicated exercise' do
-      expect(exercise.duplicate).to be_an(Exercise)
+      expect(exercise.duplicate).to be_a(described_class)
     end
   end
 end
