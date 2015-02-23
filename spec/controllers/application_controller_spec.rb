@@ -36,6 +36,33 @@ describe ApplicationController do
     end
   end
 
+  describe '#set_locale' do
+    let(:locale) { :de }
+
+    context 'when specifying a locale' do
+      it 'overwrites the session' do
+        expect(session).to receive(:[]=).with(:locale, locale.to_s)
+        get :welcome, locale: locale
+      end
+    end
+
+    context "with a 'locale' value in the session" do
+      it 'sets this locale' do
+        session[:locale] = locale
+        expect(I18n).to receive(:locale=).with(locale)
+        get :welcome
+      end
+    end
+
+    context "without a 'locale' value in the session" do
+      it 'sets the default locale' do
+        expect(session[:locale]).to be_blank
+        expect(I18n).to receive(:locale=).with(I18n.default_locale)
+        get :welcome
+      end
+    end
+  end
+
   describe 'GET #welcome' do
     before(:each) { get :welcome }
 
