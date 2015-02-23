@@ -28,6 +28,30 @@ describe Exercise do
     expect(exercise.errors[:user_type]).to be_present
   end
 
+  describe '#average_score' do
+    let(:exercise) { FactoryGirl.create(:fibonacci) }
+    let(:users) { FactoryGirl.create_list(:external_user, 10) }
+
+    context 'without submissions' do
+      it 'returns nil' do
+        expect(exercise.average_score).to be nil
+      end
+    end
+
+    context 'with submissions' do
+      before(:each) do
+        10.times do
+          FactoryGirl.create(:submission, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
+        end
+      end
+
+      it "returns the average of all users' maximum scores" do
+        maximum_scores = exercise.submissions.group_by(&:user_id).values.map { |submission| submission.sort_by(&:score).last.score }
+        expect(exercise.average_score).to be_within(0.1).of(maximum_scores.inject(:+) / maximum_scores.length)
+      end
+    end
+  end
+
   describe '#duplicate' do
     let(:exercise) { FactoryGirl.create(:fibonacci) }
     after(:each) { exercise.duplicate }
