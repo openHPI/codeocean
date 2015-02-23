@@ -8,17 +8,7 @@ class InternalUsersController < ApplicationController
   skip_after_action :verify_authorized, only: [:activate, :forgot_password, :reset_password]
 
   def activate
-    if request.patch? || request.put?
-      respond_to do |format|
-        if @user.update(params[:internal_user].permit(:password, :password_confirmation))
-          @user.activate!
-          format.html { redirect_to(sign_in_path, notice: t('.success')) }
-          format.json { render(nothing: true, status: :ok) }
-        else
-          respond_with_invalid_object(format, object: @user, template: :activate)
-        end
-      end
-    end
+    set_up_password if request.patch? || request.put?
   end
 
   def authorize!
@@ -26,12 +16,34 @@ class InternalUsersController < ApplicationController
   end
   private :authorize!
 
+  def change_password
+    respond_to do |format|
+      if @user.update(params[:internal_user].permit(:password, :password_confirmation))
+        @user.change_password!(params[:internal_user][:password])
+        format.html { redirect_to(sign_in_path, notice: t('.success')) }
+        format.json { render(nothing: true, status: :ok) }
+      else
+        respond_with_invalid_object(format, object: @user, template: :reset_password)
+      end
+    end
+  end
+  private :change_password
+
   def create
     @user = InternalUser.new(internal_user_params)
     authorize!
     @user.send(:setup_activation)
     create_and_respond(object: @user) { @user.send(:send_activation_needed_email!) }
   end
+
+  def deliver_reset_password_instructions
+    if params[:email].present?
+      InternalUser.find_by(email: params[:email]).try(:deliver_reset_password_instructions!)
+      flash[:notice] = t('.success')
+      redirect_to(:root)
+    end
+  end
+  private :deliver_reset_password_instructions
 
   def destroy
     destroy_and_respond(object: @user)
@@ -41,15 +53,10 @@ class InternalUsersController < ApplicationController
   end
 
   def forgot_password
-    if request.get? && current_user
-      flash[:warning] = t('shared.already_signed_in')
-      redirect_to(:root)
+    if request.get?
+      render_forgot_password_form
     elsif request.post?
-      if params[:email].present?
-        InternalUser.find_by(email: params[:email]).try(:deliver_reset_password_instructions!)
-        flash[:notice] = t('.success')
-        redirect_to(:root)
-      end
+      deliver_reset_password_instructions
     end
   end
 
@@ -69,6 +76,14 @@ class InternalUsersController < ApplicationController
     authorize!
   end
 
+  def render_forgot_password_form
+    if current_user
+      flash[:warning] = t('shared.already_signed_in')
+      redirect_to(:root)
+    end
+  end
+  private :render_forgot_password_form
+
   def require_activation_token
     require_token(:activation)
   end
@@ -86,18 +101,21 @@ class InternalUsersController < ApplicationController
   private :require_token
 
   def reset_password
-    if request.patch? || request.put?
-      respond_to do |format|
-        if @user.update(params[:internal_user].permit(:password, :password_confirmation))
-          @user.change_password!(params[:internal_user][:password])
-          format.html { redirect_to(sign_in_path, notice: t('.success')) }
-          format.json { render(nothing: true, status: :ok) }
-        else
-          respond_with_invalid_object(format, object: @user, template: :reset_password)
-        end
+    change_password if request.patch? || request.put?
+  end
+
+  def set_up_password
+    respond_to do |format|
+      if @user.update(params[:internal_user].permit(:password, :password_confirmation))
+        @user.activate!
+        format.html { redirect_to(sign_in_path, notice: t('.success')) }
+        format.json { render(nothing: true, status: :ok) }
+      else
+        respond_with_invalid_object(format, object: @user, template: :activate)
       end
     end
   end
+  private :set_up_password
 
   def set_user
     @user = InternalUser.find(params[:id])
