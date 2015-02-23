@@ -21,7 +21,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
     def resolve
       if @user.admin?
         @scope.all
-      elsif @user.internal?
+      elsif @user.internal_user?
         @scope.where("user_id = #{@user.id} OR public = TRUE OR (team_id IS NOT NULL AND team_id IN (SELECT t.id FROM teams t JOIN internal_users_teams iut ON t.id = iut.team_id WHERE iut.internal_user_id = #{@user.id}))")
       else
         @scope.none

@@ -16,12 +16,8 @@ module User
     define_method("#{role}?") { try(:role) == role }
   end
 
-  def external?
-    is_a?(ExternalUser)
-  end
-
-  def internal?
-    is_a?(InternalUser)
+  [ExternalUser, InternalUser].each do |klass|
+    define_method("#{klass.name.underscore}?") { is_a?(klass) }
   end
 
   def to_s

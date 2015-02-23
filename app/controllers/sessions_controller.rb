@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    if current_user.external?
+    if current_user.external_user?
       clear_lti_session_data
     else
       logout

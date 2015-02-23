@@ -17,6 +17,18 @@ describe ExternalUser do
     end
   end
 
+  describe '#external_user?' do
+    it 'is true' do
+      expect(user.external_user?).to be true
+    end
+  end
+
+  describe '#internal_user?' do
+    it 'is false' do
+      expect(user.internal_user?).to be false
+    end
+  end
+
   describe '#teacher?' do
     it 'is false' do
       expect(FactoryGirl.build(:external_user).teacher?).to be false

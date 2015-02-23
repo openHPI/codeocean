@@ -129,7 +129,7 @@ describe SessionsController do
 
     context 'with an internal user' do
       before(:each) do
-        allow(user).to receive(:external?).and_return(false)
+        allow(user).to receive(:external_user?).and_return(false)
         allow(user).to receive(:forget_me!)
         delete :destroy
       end
@@ -146,7 +146,7 @@ describe SessionsController do
 
     context 'with an external user' do
       before(:each) do
-        allow(user).to receive(:external?).and_return(true)
+        allow(user).to receive(:external_user?).and_return(true)
         delete :destroy
       end
 

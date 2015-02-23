@@ -56,6 +56,18 @@ describe InternalUser do
     end
   end
 
+  describe '#external_user?' do
+    it 'is false' do
+      expect(user.external_user?).to be false
+    end
+  end
+
+  describe '#internal_user?' do
+    it 'is true' do
+      expect(user.internal_user?).to be true
+    end
+  end
+
   describe '#teacher?' do
     it 'is only true for teachers' do
       expect(FactoryGirl.build(:admin).teacher?).to be false
