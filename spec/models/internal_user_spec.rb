@@ -13,21 +13,13 @@ describe InternalUser do
     expect(user.errors[:email]).to be_present
   end
 
-  context 'when activated' do
-    let(:user) { FactoryGirl.create(:teacher, activation_state: 'active') }
-
-    it 'does not validate the confirmation of the password' do
-      user.update(password: password, password_confirmation: '')
-      expect(user.errors[:password_confirmation]).not_to be_present
-    end
-
-    it 'does not validate the presence of a password' do
-      expect(user.errors[:password]).not_to be_present
-    end
-  end
-
   context 'when not activated' do
-    let(:user) { described_class.create(FactoryGirl.attributes_for(:teacher, activation_state: 'pending', password: nil)) }
+    let(:user) { FactoryGirl.create(:teacher) }
+
+    before(:each) do
+      user.send(:setup_activation)
+      user.send(:send_activation_needed_email!)
+    end
 
     it 'validates the confirmation of the password' do
       user.update(password: password, password_confirmation: '')
@@ -37,6 +29,34 @@ describe InternalUser do
     it 'validates the presence of a password' do
       user.update(name: Forgery(:name).full_name)
       expect(user.errors[:password]).to be_present
+    end
+  end
+
+  context 'with a pending password reset' do
+    let(:user) { FactoryGirl.create(:teacher) }
+    before(:each) { user.deliver_reset_password_instructions! }
+
+    it 'validates the confirmation of the password' do
+      user.update(password: password, password_confirmation: '')
+      expect(user.errors[:password_confirmation]).to be_present
+    end
+
+    it 'validates the presence of a password' do
+      user.update(name: Forgery(:name).full_name)
+      expect(user.errors[:password]).to be_present
+    end
+  end
+
+  context 'when complete' do
+    let(:user) { FactoryGirl.create(:teacher, activation_state: 'active') }
+
+    it 'does not validate the confirmation of the password' do
+      user.update(password: password, password_confirmation: '')
+      expect(user.errors[:password_confirmation]).not_to be_present
+    end
+
+    it 'does not validate the presence of a password' do
+      expect(user.errors[:password]).not_to be_present
     end
   end
 
