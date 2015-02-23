@@ -3,9 +3,15 @@ require 'rails_helper'
 describe ApplicationHelper do
   describe '#code_tag' do
     context 'with code' do
+      let(:code) { 'puts 42' }
+      let(:html) { code_tag(code) }
+
       it "builds a 'pre' tag" do
-        code = 'puts 42'
-        expect(code_tag(code)).to eq("<pre><code>#{code}</code></pre>")
+        expect(html).to have_css('pre code')
+      end
+
+      it 'contains the code' do
+        expect(html).to have_text(code)
       end
     end
 
@@ -18,7 +24,7 @@ describe ApplicationHelper do
 
   describe '#empty' do
     it "builds an 'i' tag" do
-      expect(empty).to eq('<i class="empty fa fa-minus"></i>')
+      expect(empty).to have_css('i.empty.fa.fa-minus')
     end
   end
 
@@ -31,7 +37,7 @@ describe ApplicationHelper do
 
   describe '#no' do
     it "builds an 'i' tag" do
-      expect(no).to eq('<i class="glyphicon glyphicon-remove"></i>')
+      expect(no).to have_css('i.glyphicon.glyphicon-remove')
     end
   end
 
@@ -56,7 +62,7 @@ describe ApplicationHelper do
     let(:html) { row(label: 'foo', value: 42) }
 
     it "builds nested 'div' tags" do
-      expect(html.scan(/<\/div>/).length).to eq(3)
+      expect(html).to have_css('div.attribute-row.row div.col-sm-3 + div.col-sm-9')
     end
   end
 
@@ -65,7 +71,7 @@ describe ApplicationHelper do
       let(:html) { value_column('') }
 
       it "builds a 'div' tag" do
-        expect(html).to start_with('<div')
+        expect(html).to have_css('div')
       end
 
       it 'calls #empty' do
@@ -77,7 +83,7 @@ describe ApplicationHelper do
       let(:html) { value_column(false) }
 
       it "builds a 'div' tag" do
-        expect(html).to start_with('<div')
+        expect(html).to have_css('div')
       end
 
       it 'calls #no' do
@@ -89,7 +95,7 @@ describe ApplicationHelper do
       let(:html) { value_column(true) }
 
       it "builds a 'div' tag" do
-        expect(html).to start_with('<div')
+        expect(html).to have_css('div')
       end
 
       it 'calls #yes' do
@@ -102,7 +108,7 @@ describe ApplicationHelper do
       let(:value) { [42] }
 
       it "builds a 'div' tag" do
-        expect(html).to start_with('<div')
+        expect(html).to have_css('div')
       end
 
       it "uses the value's string representation" do
@@ -114,7 +120,7 @@ describe ApplicationHelper do
 
   describe '#yes' do
     it "builds an 'i' tag" do
-      expect(yes).to eq('<i class="glyphicon glyphicon-ok"></i>')
+      expect(yes).to have_css('i.glyphicon.glyphicon-ok')
     end
   end
 end
