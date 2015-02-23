@@ -24,7 +24,10 @@ class Exercise < ActiveRecord::Base
   end
 
   def average_score
-    ActiveRecord::Base.connection.execute("SELECT AVG(score) AS average_score FROM (SELECT MAX(score) AS score FROM submissions WHERE cause = 'submit' AND exercise_id = '#{id}' GROUP BY user_id) AS maximum_scores")[0]['average_score'].to_f.round(2)
+    if submissions.exists?(cause: 'submit')
+      maximum_scores_query = submissions.select('MAX(score) AS maximum_score').where(cause: 'submit').group(:user_id).to_sql
+      self.class.connection.execute("SELECT AVG(maximum_score) AS average_score FROM (#{maximum_scores_query}) AS maximum_scores").first['average_score'].to_f
+    end
   end
 
   def duplicate(attributes = {})
