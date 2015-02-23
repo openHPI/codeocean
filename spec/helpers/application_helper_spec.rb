@@ -35,6 +35,23 @@ describe ApplicationHelper do
     end
   end
 
+  describe '#progress_bar' do
+    let(:html) { progress_bar(value) }
+    let(:value) { 42 }
+
+    it "builds nested 'div' tags" do
+      expect(html).to have_css('div.progress div.progress-bar')
+    end
+
+    it 'assigns the correct text' do
+      expect(html).to have_text("#{value}%")
+    end
+
+    it 'uses the correct width' do
+      expect(html).to have_css("div.progress-bar[style='width: 42%;']")
+    end
+  end
+
   describe '#row' do
     let(:html) { row(label: 'foo', value: 42) }
 

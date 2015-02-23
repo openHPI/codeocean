@@ -92,7 +92,19 @@ describe ExecutionEnvironmentsController do
     expect_template(:new)
   end
 
-  describe '#set_docker_images', docker: true do
+  describe '#set_docker_images' do
+    context 'when Docker is available' do
+      let(:docker_images) { [1, 2, 3] }
+
+      before(:each) do
+        expect(DockerClient).to receive(:check_availability!).at_least(:once)
+        expect(DockerClient).to receive(:image_tags).and_return(docker_images)
+        controller.send(:set_docker_images)
+      end
+
+      expect_assigns(docker_images: :docker_images)
+    end
+
     context 'when Docker is unavailable' do
       let(:error_message) { 'Docker is unavailable' }
 

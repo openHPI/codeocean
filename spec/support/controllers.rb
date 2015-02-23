@@ -1,10 +1,10 @@
 def expect_assigns(pairs)
-  pairs.each_pair do |key, value|
+  pairs.each do |key, value|
     it "assigns @#{key}" do
       if value.is_a?(Class)
         expect(assigns(key)).to be_a(value)
       else
-        object = value.is_a?(Symbol) ? send(value) : value
+        object = obtain_object(value)
         if object.is_a?(ActiveRecord::Relation) || object.is_a?(Array)
           expect(assigns(key)).to match_array(object)
         else
@@ -52,5 +52,16 @@ end
 def expect_template(template)
   it "renders the '#{template}' template" do
     expect(controller).to render_template(template)
+  end
+end
+
+def obtain_object(value)
+  case value
+  when Proc
+    value.call
+  when Symbol
+    send(value)
+  else
+    value
   end
 end
