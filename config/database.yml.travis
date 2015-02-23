@@ -1,5 +1,5 @@
 test:
   adapter: postgresql
   database: travis_ci_test
-  pool: 16
+  pool: 32
   username: postgres
