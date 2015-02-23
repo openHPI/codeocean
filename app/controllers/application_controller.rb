@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   private :render_not_authorized
 
   def set_locale
-    session[:locale] = params[:locale] if params[:locale]
+    session[:locale] = params[:custom_locale] || params[:locale] || session[:locale]
     I18n.locale = session[:locale] || I18n.default_locale
   end
   private :set_locale

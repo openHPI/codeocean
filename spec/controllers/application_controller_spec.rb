@@ -40,9 +40,18 @@ describe ApplicationController do
     let(:locale) { :de }
 
     context 'when specifying a locale' do
-      it 'overwrites the session' do
-        expect(session).to receive(:[]=).with(:locale, locale.to_s)
-        get :welcome, locale: locale
+      context "using the 'custom_locale' parameter" do
+        it 'overwrites the session' do
+          expect(session).to receive(:[]=).with(:locale, locale.to_s)
+          get :welcome, custom_locale: locale
+        end
+      end
+
+      context "using the 'locale' parameter" do
+        it 'overwrites the session' do
+          expect(session).to receive(:[]=).with(:locale, locale.to_s)
+          get :welcome, locale: locale
+        end
       end
     end
 

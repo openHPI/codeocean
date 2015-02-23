@@ -29,6 +29,7 @@ describe SessionsController do
   describe 'POST #create_through_lti' do
     let(:exercise) { FactoryGirl.create(:dummy) }
     let(:nonce) { SecureRandom.hex }
+    before(:each) { I18n.locale = I18n.default_locale }
 
     context 'without OAuth parameters' do
       it 'refuses the LTI launch' do
@@ -69,7 +70,8 @@ describe SessionsController do
     end
 
     context 'with valid launch parameters' do
-      let(:request) { post :create_through_lti, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id }
+      let(:locale) { :de }
+      let(:request) { post :create_through_lti, custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id }
       let(:user) { FactoryGirl.create(:external_user, consumer_id: consumer.id) }
       before(:each) { expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
 
@@ -77,6 +79,12 @@ describe SessionsController do
         request
         expect(assigns(:current_user)).to be_an(ExternalUser)
         expect(session[:external_user_id]).to eq(user.id)
+      end
+
+      it 'sets the specified locale' do
+        expect(controller).to receive(:set_locale).and_call_original
+        request
+        expect(I18n.locale).to eq(locale)
       end
 
       it 'assigns the exercise' do
