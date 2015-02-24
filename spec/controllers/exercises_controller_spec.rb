@@ -55,28 +55,48 @@ describe ExercisesController do
     end
 
     context 'when including a file' do
-      let(:files_attributes) { {'0' => FactoryGirl.build(:file).attributes} }
       let(:request) { proc { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
 
-      it 'creates the file' do
-        expect { request.call }.to change(CodeOcean::File, :count)
-      end
-    end
+      context 'when specifying the file content within the form' do
+        let(:files_attributes) { {'0' => FactoryGirl.build(:file).attributes} }
 
-    context 'with a file upload' do
-      let(:file_upload) { fixture_file_upload('upload.rb', 'text/x-ruby') }
-      let(:files_attributes) { {'0' => FactoryGirl.build(:file).attributes.merge(content: file_upload)} }
-      let(:request) { proc { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
-
-      it 'creates the file' do
-        expect { request.call }.to change(CodeOcean::File, :count)
+        it 'creates the file' do
+          expect { request.call }.to change(CodeOcean::File, :count)
+        end
       end
 
-      it 'assigns the file content' do
-        request.call
-        file = File.new(Rails.root.join('spec', 'fixtures', 'upload.rb'), 'r')
-        expect(Exercise.last.files.first.content).to eq(file.read)
-        file.close
+      context 'when uploading a file' do
+        let(:files_attributes) { {'0' => FactoryGirl.build(:file, file_type: file_type).attributes.merge(content: uploaded_file)} }
+
+        context 'when uploading a binary file' do
+          let(:file_path) { Rails.root.join('db', 'seeds', 'audio_video', 'devstories.mp4') }
+          let(:file_type) { FactoryGirl.create(:dot_mp4) }
+          let(:uploaded_file) { Rack::Test::UploadedFile.new(file_path, 'video/mp4', true) }
+
+          it 'creates the file' do
+            expect { request.call }.to change(CodeOcean::File, :count)
+          end
+
+          it 'assigns the native file' do
+            request.call
+            expect(Exercise.last.files.first.native_file).to be_a(FileUploader)
+          end
+        end
+
+        context 'when uploading a non-binary file' do
+          let(:file_path) { Rails.root.join('db', 'seeds', 'fibonacci', 'exercise.rb') }
+          let(:file_type) { FactoryGirl.create(:dot_rb) }
+          let(:uploaded_file) { Rack::Test::UploadedFile.new(file_path, 'text/x-ruby', false) }
+
+          it 'creates the file' do
+            expect { request.call }.to change(CodeOcean::File, :count)
+          end
+
+          it 'assigns the file content' do
+            request.call
+            expect(Exercise.last.files.first.content).to eq(File.read(file_path))
+          end
+        end
       end
     end
 
