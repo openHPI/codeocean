@@ -15,7 +15,7 @@ describe InternalUsersController do
     context 'without a valid activation token' do
       before(:each) { get :activate, id: user.id }
 
-      expect_redirect
+      expect_redirect(:root)
     end
 
     context 'with an already activated user' do
@@ -24,7 +24,7 @@ describe InternalUsersController do
         get :activate, id: user.id, token: user.activation_token
       end
 
-      expect_redirect
+      expect_redirect(:root)
     end
 
     context 'with valid preconditions' do
@@ -49,7 +49,7 @@ describe InternalUsersController do
     context 'without a valid activation token' do
       before(:each) { put :activate, id: user.id }
 
-      expect_redirect
+      expect_redirect(:root)
     end
 
     context 'with an already activated user' do
@@ -58,7 +58,7 @@ describe InternalUsersController do
         put :activate, id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: password}
       end
 
-      expect_redirect
+      expect_redirect(:root)
     end
 
     context 'without a password' do
@@ -95,7 +95,7 @@ describe InternalUsersController do
       end
 
       expect_flash_message(:notice, :'internal_users.activate.success')
-      expect_redirect
+      expect_redirect(:sign_in)
     end
   end
 
@@ -125,7 +125,7 @@ describe InternalUsersController do
         request.call
       end
 
-      expect_redirect
+      expect_redirect(InternalUser.last)
     end
 
     context 'with an invalid internal user' do
@@ -234,7 +234,7 @@ describe InternalUsersController do
     context 'without a valid password reset token' do
       before(:each) { get :reset_password, id: user.id }
 
-      expect_redirect
+      expect_redirect(:root)
     end
 
     context 'with a valid password reset token' do
@@ -272,7 +272,7 @@ describe InternalUsersController do
           expect(InternalUser.authenticate(user.email, password)).to eq(user)
         end
 
-        expect_redirect { Rails.application.routes.url_helpers.send(:sign_in_path) }
+        expect_redirect(:sign_in)
       end
 
       context 'without a matching password confirmation' do
@@ -305,7 +305,7 @@ describe InternalUsersController do
       before(:each) { put :update, internal_user: FactoryGirl.attributes_for(:teacher), id: users.first.id }
 
       expect_assigns(user: InternalUser)
-      expect_redirect
+      expect_redirect { user }
     end
 
     context 'with an invalid internal user' do

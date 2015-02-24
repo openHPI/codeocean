@@ -16,7 +16,7 @@ describe ConsumersController do
         expect { request.call }.to change(Consumer, :count).by(1)
       end
 
-      expect_redirect
+      expect_redirect(Consumer.last)
     end
 
     context 'with an invalid consumer' do
@@ -79,7 +79,7 @@ describe ConsumersController do
       before(:each) { put :update, consumer: FactoryGirl.attributes_for(:consumer), id: consumer.id }
 
       expect_assigns(consumer: Consumer)
-      expect_redirect
+      expect_redirect(:consumer)
     end
 
     context 'with an invalid consumer' do

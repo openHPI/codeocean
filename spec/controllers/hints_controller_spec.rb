@@ -18,7 +18,7 @@ describe HintsController do
         expect { request.call }.to change(Hint, :count).by(1)
       end
 
-      expect_redirect
+      expect_redirect(Hint.last)
     end
 
     context 'with an invalid hint' do
@@ -42,7 +42,7 @@ describe HintsController do
       expect { delete :destroy, execution_environment_id: execution_environment.id, id: hint.id }.to change(Hint, :count).by(-1)
     end
 
-    expect_redirect
+    expect_redirect { execution_environment_hints_path(execution_environment) }
   end
 
   describe 'GET #edit' do
@@ -88,7 +88,7 @@ describe HintsController do
 
       expect_assigns(execution_environment: :execution_environment)
       expect_assigns(hint: Hint)
-      expect_redirect
+      expect_redirect { hint }
     end
 
     context 'with an invalid hint' do

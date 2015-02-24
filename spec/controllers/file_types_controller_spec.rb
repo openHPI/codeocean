@@ -17,7 +17,7 @@ describe FileTypesController do
         expect { request.call }.to change(FileType, :count).by(1)
       end
 
-      expect_redirect
+      expect_redirect(FileType.last)
     end
 
     context 'with an invalid file type' do
@@ -84,7 +84,7 @@ describe FileTypesController do
 
       expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)
-      expect_redirect
+      expect_redirect(:file_type)
     end
 
     context 'with an invalid file type' do

@@ -19,7 +19,7 @@ describe ExecutionEnvironmentsController do
         expect { request.call }.to change(ExecutionEnvironment, :count).by(1)
       end
 
-      expect_redirect
+      expect_redirect(ExecutionEnvironment.last)
     end
 
     context 'with an invalid execution environment' do
@@ -150,7 +150,7 @@ describe ExecutionEnvironmentsController do
 
       expect_assigns(docker_images: Array)
       expect_assigns(execution_environment: ExecutionEnvironment)
-      expect_redirect
+      expect_redirect(:execution_environment)
     end
 
     context 'with an invalid execution environment' do

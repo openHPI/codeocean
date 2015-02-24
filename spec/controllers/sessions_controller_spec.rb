@@ -15,7 +15,7 @@ describe SessionsController do
       end
 
       expect_flash_message(:notice, :'sessions.create.success')
-      expect_redirect
+      expect_redirect(:root)
     end
 
     context 'with invalid credentials' do
@@ -206,7 +206,7 @@ describe SessionsController do
         get :new
       end
 
-      expect_redirect
+      expect_redirect(:root)
     end
   end
 end

@@ -42,6 +42,6 @@ describe CodeOcean::FilesController do
       expect { request.call }.to change(CodeOcean::File, :count).by(-1)
     end
 
-    expect_redirect
+    expect_redirect(:exercise)
   end
 end

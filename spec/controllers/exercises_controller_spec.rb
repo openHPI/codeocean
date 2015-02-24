@@ -22,7 +22,7 @@ describe ExercisesController do
         expect(Exercise.last.token).not_to eq(exercise.token)
       end
 
-      expect_redirect
+      expect_redirect(Exercise.last)
     end
 
     context 'when saving fails' do
@@ -51,7 +51,7 @@ describe ExercisesController do
         expect { request.call }.to change(Exercise, :count).by(1)
       end
 
-      expect_redirect
+      expect_redirect(Exercise.last)
     end
 
     context 'when including a file' do
@@ -254,7 +254,7 @@ describe ExercisesController do
       before(:each) { put :update, exercise: exercise_attributes, id: exercise.id }
 
       expect_assigns(exercise: Exercise)
-      expect_redirect
+      expect_redirect(:exercise)
     end
 
     context 'with an invalid exercise' do

@@ -16,7 +16,7 @@ describe TeamsController do
         expect { request.call }.to change(Team, :count).by(1)
       end
 
-      expect_redirect
+      expect_redirect(Team.last)
     end
 
     context 'with an invalid team' do
@@ -79,7 +79,7 @@ describe TeamsController do
       before(:each) { put :update, team: FactoryGirl.attributes_for(:team), id: team.id }
 
       expect_assigns(team: Team)
-      expect_redirect
+      expect_redirect(:team)
     end
 
     context 'with an invalid team' do
