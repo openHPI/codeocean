@@ -33,6 +33,16 @@ describe Submission do
     end
   end
 
+  [:score, :stop].each do |action|
+    describe "##{action}_url" do
+      let(:url) { @submission.send(:"#{action}_url") }
+
+      it "corresponds to the #{action} path" do
+        expect(url).to eq(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", @submission))
+      end
+    end
+  end
+
   describe '#to_s' do
     it "equals the class' model name" do
       expect(@submission.to_s).to eq(described_class.model_name.human)
