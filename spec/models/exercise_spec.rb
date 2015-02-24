@@ -10,6 +10,14 @@ describe Exercise do
     end
   end
 
+  it 'validates the number of main files' do
+    exercise = FactoryGirl.create(:dummy)
+    exercise.files += FactoryGirl.create_pair(:file)
+    expect(exercise).to receive(:valid_main_file?).and_call_original
+    exercise.save
+    expect(exercise.errors[:files]).to be_present
+  end
+
   it 'validates the presence of a description' do
     expect(exercise.errors[:description]).to be_present
   end
