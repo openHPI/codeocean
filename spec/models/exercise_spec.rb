@@ -2,6 +2,13 @@ require 'rails_helper'
 
 describe Exercise do
   let(:exercise) { described_class.create.tap { |exercise| exercise.update(public: nil, token: nil) } }
+  let(:users) { FactoryGirl.create_list(:external_user, 10) }
+
+  def create_submissions
+    10.times do
+      FactoryGirl.create(:submission, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
+    end
+  end
 
   it 'validates the presence of a description' do
     expect(exercise.errors[:description]).to be_present
@@ -28,9 +35,27 @@ describe Exercise do
     expect(exercise.errors[:user_type]).to be_present
   end
 
+  describe '#average_percentage' do
+    let(:exercise) { FactoryGirl.create(:fibonacci) }
+
+    context 'without submissions' do
+      it 'returns nil' do
+        expect(exercise.average_percentage).to be nil
+      end
+    end
+
+    context 'with submissions' do
+      before(:each) { create_submissions }
+
+      it 'returns the average score expressed as a percentage' do
+        maximum_percentages = exercise.submissions.group_by(&:user_id).values.map { |submission| submission.sort_by(&:score).last.score / exercise.maximum_score * 100 }
+        expect(exercise.average_percentage).to eq(maximum_percentages.average.round)
+      end
+    end
+  end
+
   describe '#average_score' do
     let(:exercise) { FactoryGirl.create(:fibonacci) }
-    let(:users) { FactoryGirl.create_list(:external_user, 10) }
 
     context 'without submissions' do
       it 'returns nil' do
@@ -39,15 +64,11 @@ describe Exercise do
     end
 
     context 'with submissions' do
-      before(:each) do
-        10.times do
-          FactoryGirl.create(:submission, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
-        end
-      end
+      before(:each) { create_submissions }
 
       it "returns the average of all users' maximum scores" do
         maximum_scores = exercise.submissions.group_by(&:user_id).values.map { |submission| submission.sort_by(&:score).last.score }
-        expect(exercise.average_score).to be_within(0.1).of(maximum_scores.inject(:+) / maximum_scores.length)
+        expect(exercise.average_score).to be_within(0.1).of(maximum_scores.average)
       end
     end
   end
