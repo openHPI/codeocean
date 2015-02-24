@@ -5,6 +5,7 @@ AllCops:
     - config/initializers/sorcery.rb
     - db/seeds/**/*
     - db/schema.rb
+    - public/uploads/**/*
     - tmp/**/*
   RunRailsCops: true
 Metrics/LineLength:
