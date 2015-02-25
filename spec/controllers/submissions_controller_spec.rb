@@ -42,16 +42,33 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:file) { submission.files.first }
+      let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
       before(:each) { get :download_file, filename: file.name_with_extension, id: submission.id }
 
-      expect_assigns(file: :file)
-      expect_assigns(submission: :submission)
-      expect_content_type('application/octet-stream')
-      expect_status(200)
+      context 'for a binary file' do
+        let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.mp4' } }
 
-      it 'sets the correct filename' do
-        expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file.name_with_extension}\"")
+        expect_assigns(file: :file)
+        expect_assigns(submission: :submission)
+        expect_content_type('application/octet-stream')
+        expect_status(200)
+
+        it 'sets the correct filename' do
+          expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file.name_with_extension}\"")
+        end
+      end
+
+      context 'for a non-binary file' do
+        let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.js' } }
+
+        expect_assigns(file: :file)
+        expect_assigns(submission: :submission)
+        expect_content_type('text/javascript')
+        expect_status(200)
+
+        it 'sets the correct filename' do
+          expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file.name_with_extension}\"")
+        end
       end
     end
   end
@@ -75,14 +92,33 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
+      let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
       before(:each) { get :render_file, filename: file.name_with_extension, id: submission.id }
 
-      expect_assigns(file: :file)
-      expect_assigns(submission: :submission)
-      expect_status(200)
+      context 'for a binary file' do
+        let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.mp4' } }
 
-      it 'renders the file content' do
-        expect(response.body).to eq(file.content)
+        expect_assigns(file: :file)
+        expect_assigns(submission: :submission)
+        expect_content_type('application/octet-stream')
+        expect_status(200)
+
+        it 'renders the file content' do
+          expect(response.body).to eq(file.native_file.read)
+        end
+      end
+
+      context 'for a non-binary file' do
+        let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.js' } }
+
+        expect_assigns(file: :file)
+        expect_assigns(submission: :submission)
+        expect_content_type('text/javascript')
+        expect_status(200)
+
+        it 'renders the file content' do
+          expect(response.body).to eq(file.content)
+        end
       end
     end
   end
@@ -145,6 +181,15 @@ describe SubmissionsController do
     expect_assigns(submission: :submission)
     expect_status(200)
     expect_template(:show)
+  end
+
+  describe 'GET #score' do
+    let(:request) { proc { get :score, id: submission.id } }
+    before(:each) { request.call }
+
+    expect_assigns(submission: :submission)
+    expect_json
+    expect_status(200)
   end
 
   describe 'GET #test' do
