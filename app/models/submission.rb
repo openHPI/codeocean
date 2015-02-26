@@ -38,11 +38,11 @@ class Submission < ActiveRecord::Base
   end
 
   def normalized_score
-    score / exercise.maximum_score
+    score / exercise.maximum_score if score
   end
 
   def percentage
-    (normalized_score * 100).round
+    (normalized_score * 100).round if score
   end
 
   [:score, :stop].each do |action|
