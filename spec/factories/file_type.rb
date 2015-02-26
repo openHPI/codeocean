@@ -67,6 +67,13 @@ FactoryGirl.define do
     singleton_file_type
   end
 
+  factory :dot_md, class: FileType do
+    created_by_admin
+    file_extension '.md'
+    name 'Markdown'
+    singleton_file_type
+  end
+
   factory :dot_mp3, class: FileType do
     binary
     created_by_admin
