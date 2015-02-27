@@ -73,6 +73,52 @@ describe FileTree do
     end
   end
 
+  describe '#map_to_js_tree' do
+    let(:file) { FactoryGirl.build(:file) }
+    let(:js_tree) { file_tree.send(:map_to_js_tree, node) }
+    let!(:leaf) { root.add(Tree::TreeNode.new('', file)) }
+    let(:root) { Tree::TreeNode.new('', file) }
+
+    context 'for a leaf node' do
+      let(:node) { leaf }
+
+      it 'produces the required attributes' do
+        expect(js_tree).to include(:icon, :id, :text)
+      end
+
+      it 'is enabled' do
+        expect(js_tree[:state][:disabled]).to be false
+      end
+
+      it 'is closed' do
+        expect(js_tree[:state][:opened]).to be false
+      end
+    end
+
+    context 'for a non-leaf node' do
+      let(:node) { root }
+
+      it "traverses the node's children" do
+        node.children.each do |child|
+          expect(file_tree).to receive(:map_to_js_tree).at_least(:once).with(child).and_call_original
+        end
+        js_tree
+      end
+
+      it 'produces the required attributes' do
+        expect(js_tree).to include(:icon, :id, :text)
+      end
+
+      it 'is disabled' do
+        expect(js_tree[:state][:disabled]).to be true
+      end
+
+      it 'is opened' do
+        expect(js_tree[:state][:opened]).to be true
+      end
+    end
+  end
+
   describe '#node_icon' do
     let(:node_icon) { file_tree.send(:node_icon, node) }
     let(:root) { Tree::TreeNode.new('') }
