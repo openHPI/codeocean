@@ -40,6 +40,8 @@ describe ApplicationController do
     let(:locale) { :de }
 
     context 'when specifying a locale' do
+      before(:each) { allow(session).to receive(:[]=).at_least(:once) }
+
       context "using the 'custom_locale' parameter" do
         it 'overwrites the session' do
           expect(session).to receive(:[]=).with(:locale, locale.to_s)

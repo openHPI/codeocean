@@ -4,7 +4,7 @@ gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'bcrypt', '~> 3.1.7'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
-gem 'coffee-rails', '~> 4.1.0'
+gem 'coffee-rails', '~> 4.0.0'
 gem 'concurrent-ruby'
 gem 'concurrent-ruby-ext', platform: :ruby
 gem 'docker-api', require: 'docker'
@@ -20,11 +20,11 @@ gem 'pg', platform: :ruby
 gem 'pry'
 gem 'puma'
 gem 'pundit'
-gem 'rails', '~> 4.2.0'
+gem 'rails', '~> 4.1.2'
 gem 'rails-i18n', '~> 4.0.0'
 gem 'ransack'
 gem 'rubytree'
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails', '~> 4.0.3'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'slim'
 gem 'sorcery'
