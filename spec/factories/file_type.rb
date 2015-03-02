@@ -69,7 +69,9 @@ FactoryGirl.define do
 
   factory :dot_md, class: FileType do
     created_by_admin
+    editor_mode 'ace/mode/markdown'
     file_extension '.md'
+    indent_size 2
     name 'Markdown'
     singleton_file_type
   end
