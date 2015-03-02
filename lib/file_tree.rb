@@ -23,7 +23,7 @@ class FileTree < Tree::TreeNode
   end
   private :folder_icon
 
-  def initialize(files)
+  def initialize(files = [])
     super(root_label)
     files.each do |file|
       parent = self
