@@ -20,6 +20,13 @@ $(function() {
   var flowrUrl = 'http://vm-teusner-webrtc.eaalab.hpi.uni-potsdam.de:3000/api/exceptioninfo?id=&lang=auto';
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>';
 
+  var ajax = function(options) {
+    return $.ajax(_.extend({
+      dataType: 'json',
+      method: 'POST',
+    }, options));
+  };
+
   var ajaxError = function(response) {
     $.flash.danger({
       text: (response && response.responseJSON && response.responseJSON.message) || $('#flash').data('message-failure')
@@ -71,7 +78,7 @@ $(function() {
 
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
-    var jqxhr = $.ajax({
+    var jqxhr = ajax({
       data: {
         submission: {
           cause: $(initiator).data('cause') || $(initiator).prop('id'),
@@ -79,8 +86,6 @@ $(function() {
           files_attributes: (filter || _.identity)(collectFiles())
         }
       },
-      dataType: 'json',
-      method: 'POST',
       url: $(initiator).data('url') || $('#editor').data('submissions-url')
     });
     jqxhr.always(hideSpinner);
@@ -136,8 +141,7 @@ $(function() {
   };
 
   var evaluateCodeWithoutStreamedResponse = function(url, callback) {
-    var jqxhr = $.ajax({
-      dataType: 'json',
+    var jqxhr = ajax({
       method: 'GET',
       url: url
     });
@@ -405,8 +409,7 @@ $(function() {
 
   var resetCode = function() {
     showSpinner(this);
-    $.ajax({
-      dataType: 'json',
+    ajax({
       method: 'GET',
       url: $('#start-over').data('url')
     }).success(function(response) {
@@ -446,14 +449,12 @@ $(function() {
 
   var sendError = function(message) {
     showSpinner($('#render'));
-    var jqxhr = $.ajax({
+    var jqxhr = ajax({
       data: {
         error: {
           message: message
         }
       },
-      dataType: 'json',
-      method: 'POST',
       url: $('#editor').data('errors-url')
     });
     jqxhr.always(hideSpinner);
@@ -547,12 +548,10 @@ $(function() {
   var stopCode = function(event) {
     event.preventDefault();
     if ($('#stop').is(':visible')) {
-      var jqxhr = $.ajax({
+      var jqxhr = ajax({
         data: {
           container_id: $('#stop').data('container').id
         },
-        dataType: 'json',
-        method: 'POST',
         url: $('#stop').data('url')
       });
       jqxhr.always(function() {
