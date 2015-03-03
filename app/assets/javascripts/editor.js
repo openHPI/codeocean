@@ -241,18 +241,9 @@ $(function() {
     $(document).on('click', '#results a', showOutput);
     $(document).on('keypress', handleKeyPress);
     $('a[data-toggle="tab"]').on('show.bs.tab', storeTab);
-    $('#assess').on('click', scoreCode);
-    $('#create-file').on('click', showFileDialog);
-    $('#destroy-file').on('click', confirmDestroy);
-    $('#download').on('click', downloadCode);
-    $('#dropdown-render, #render').on('click', renderCode);
-    $('#dropdown-run, #run').on('click', runCode);
-    $('#dropdown-stop, #stop').on('click', stopCode);
-    $('#dropdown-test, #test').on('click', testCode);
-    $('#save').on('click', saveCode);
-    $('#start').on('click', showWorkspaceTab);
-    $('#start-over').on('click', confirmReset);
-    $('#submit').on('click', confirmSubmission);
+    initializeFileTreeButtons();
+    initializeWorkflowButtons();
+    initializeWorkspaceButtons();
   };
 
   var initializeFileTree = function() {
@@ -268,8 +259,29 @@ $(function() {
     });
   };
 
+  var initializeFileTreeButtons = function() {
+    $('#create-file').on('click', showFileDialog);
+    $('#destroy-file').on('click', confirmDestroy);
+    $('#download').on('click', downloadCode);
+  };
+
   var initializeTooltips = function() {
     $('[data-tooltip]').tooltip();
+  };
+
+  var initializeWorkflowButtons = function() {
+    $('#start').on('click', showWorkspaceTab);
+    $('#submit').on('click', confirmSubmission);
+  };
+
+  var initializeWorkspaceButtons = function() {
+    $('#assess').on('click', scoreCode);
+    $('#dropdown-render, #render').on('click', renderCode);
+    $('#dropdown-run, #run').on('click', runCode);
+    $('#dropdown-stop, #stop').on('click', stopCode);
+    $('#dropdown-test, #test').on('click', testCode);
+    $('#save').on('click', saveCode);
+    $('#start-over').on('click', confirmReset);
   };
 
   var populatePanel = function(panel, result, index) {
