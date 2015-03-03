@@ -272,6 +272,18 @@ $(function() {
     $('[data-tooltip]').tooltip();
   };
 
+  var populatePanel = function(panel, result, index) {
+    panel.removeClass('panel-default').addClass(getPanelClass(result));
+    panel.find('.panel-title .filename').text(result.filename);
+    panel.find('.panel-title .number').text(index + 1);
+    panel.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
+    panel.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
+    panel.find('.row .col-sm-9').eq(1).find('.number').eq(0).text((result.score * result.weight).toFixed(2));
+    panel.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
+    panel.find('.row .col-sm-9').eq(2).text(result.message);
+    panel.find('.row .col-sm-9').eq(3).find('a').attr('href', '#output-' + index);
+  };
+
   var printChunk = function(event) {
     var output = JSON.parse(event.data);
     if (output) {
@@ -302,17 +314,9 @@ $(function() {
 
   var printScoringResult = function(result, index) {
     $('#results').show();
-    var element = $('#dummies').children().first().clone();
-    element.removeClass('panel-default').addClass(getPanelClass(result));
-    element.find('.panel-title .filename').text(result.filename);
-    element.find('.panel-title .number').text(index + 1);
-    element.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
-    element.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
-    element.find('.row .col-sm-9').eq(1).find('.number').eq(0).text((result.score * result.weight).toFixed(2));
-    element.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
-    element.find('.row .col-sm-9').eq(2).text(result.message);
-    element.find('.row .col-sm-9').eq(3).find('a').attr('href', '#output-' + index);
-    $('#results ul').first().append(element);
+    var panel = $('#dummies').children().first().clone();
+    populatePanel(panel, result, index);
+    $('#results ul').first().append(panel);
   };
 
   var printScoringResults = function(response) {
