@@ -156,6 +156,16 @@ $(function() {
     }
   };
 
+  var getProgressBarClass = function(percentage) {
+    if (percentage < ADEQUATE_PERCENTAGE) {
+      return 'progress-bar progress-bar-danger';
+    } else if (percentage < SUCCESSFULL_PERCENTAGE) {
+      return 'progress-bar progress-bar-warning';
+    } else {
+      return 'progress-bar progress-bar-success';
+    }
+  };
+
   var handleKeyPress = function(event) {
     if (event.which === ALT_1_KEY_CODE) {
       event.preventDefault();
@@ -336,14 +346,7 @@ $(function() {
   var renderProgressBar = function(score, maximum_score) {
     var percentage = score / maximum_score * 100;
     var progress_bar = $('#score .progress-bar');
-    progress_bar.removeClass();
-    if (percentage < ADEQUATE_PERCENTAGE) {
-      progress_bar.addClass('progress-bar progress-bar-danger');
-    } else if (percentage < SUCCESSFULL_PERCENTAGE) {
-      progress_bar.addClass('progress-bar progress-bar-warning');
-    } else {
-      progress_bar.addClass('progress-bar progress-bar-success');
-    }
+    progress_bar.removeClass().addClass(getProgressBarClass(percentage));
     progress_bar.attr({
       'aria-valuemax': maximum_score,
       'aria-valuemin': 0,
