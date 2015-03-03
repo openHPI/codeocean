@@ -2,9 +2,9 @@ $(function() {
   var CHART_START = window.vis ? vis.moment().add(-1, 'minute') : undefined;
   var DEFAULT_REFRESH_INTERVAL = 5000;
 
-  var dataset = undefined;
-  var graph = undefined;
-  var groups = undefined;
+  var dataset;
+  var graph;
+  var groups;
 
   var buildChartGroups = function() {
     return _.map($('tbody tr[data-id]'), function(element) {

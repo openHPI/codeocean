@@ -65,7 +65,7 @@ $(function() {
     $('code').on('click', function() {
       $(this).css({
         'max-height': 'initial'
-      })
+      });
     });
   };
 

@@ -13,8 +13,8 @@ $(function() {
   var THEME = 'ace/theme/textmate';
 
   var editors = [];
-  var active_file = undefined;
-  var active_frame = undefined;
+  var active_file;
+  var active_frame;
   var running = false;
 
   var flowrUrl = 'http://vm-teusner-webrtc.eaalab.hpi.uni-potsdam.de:3000/api/exceptioninfo?id=&lang=auto';
@@ -107,7 +107,7 @@ $(function() {
   };
 
   var evaluateCode = function(url, streamed, callback) {
-    eval('evaluateCode' + (streamed ? 'With' : 'Without') + 'StreamedResponse')(url, callback);
+    (streamed ? evaluateCodeWithStreamedResponse : evaluateCodeWithoutStreamedResponse)(url, callback);
   };
 
   var evaluateCodeWithStreamedResponse = function(url, callback) {
