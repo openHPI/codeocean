@@ -177,25 +177,20 @@ $(function() {
   };
 
   var handleKeyPress = function(event) {
+    event.preventDefault();
     if (event.which === ALT_1_KEY_CODE) {
-      event.preventDefault();
       showTab(0);
     } else if (event.which === ALT_2_KEY_CODE) {
       showWorkspaceTab(event);
     } else if (event.which === ALT_3_KEY_CODE) {
-      event.preventDefault();
       showTab(2);
     } else if (event.which === ALT_4_KEY_CODE) {
-      event.preventDefault();
       showTab(3);
     } else if (event.which === ALT_R_KEY_CODE) {
-      event.preventDefault();
       $('#run').trigger('click');
     } else if (event.which === ALT_S_KEY_CODE) {
-      event.preventDefault();
       $('#assess').trigger('click');
     } else if (event.which === ALT_T_KEY_CODE) {
-      event.preventDefault();
       $('#test').trigger('click');
     }
   };
