@@ -156,6 +156,16 @@ $(function() {
     }
   };
 
+  var getPanelClass = function(result) {
+    if (result.stderr) {
+      return 'panel-danger';
+    } else if (result.score < 1) {
+      return 'panel-warning';
+    } else {
+      return 'panel-success';
+    }
+  };
+
   var getProgressBarClass = function(percentage) {
     if (percentage < ADEQUATE_PERCENTAGE) {
       return 'progress-bar progress-bar-danger';
@@ -293,7 +303,7 @@ $(function() {
   var printScoringResult = function(result, index) {
     $('#results').show();
     var element = $('#dummies').children().first().clone();
-    element.removeClass('panel-default').addClass(result.stderr ? 'panel-danger' : (result.score === 1 ? 'panel-success' : 'panel-warning'));
+    element.removeClass('panel-default').addClass(getPanelClass(result));
     element.find('.panel-title .filename').text(result.filename);
     element.find('.panel-title .number').text(index + 1);
     element.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
