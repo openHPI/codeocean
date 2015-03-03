@@ -252,7 +252,7 @@ $(function() {
         filename: $(this).text(),
         id: parseInt($(this).attr('id'))
       };
-      var frame = $('.editor[data-file-id="' + active_file.id + '"]').parent();
+      var frame = $('[data-file-id="' + active_file.id + '"]').parent();
       showFrame(frame);
       toggleButtonStates();
     });

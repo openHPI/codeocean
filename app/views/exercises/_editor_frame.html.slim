@@ -1,13 +1,14 @@
 .frame data-executable=file.file_type.executable? data-filename=file.name_with_extension data-renderable=file.file_type.renderable? data-role=file.role
   - if file.file_type.binary?
-    - if file.file_type.renderable?
-      - if file.file_type.audio?
-        = audio_tag(file.native_file.url, controls: true)
-      - elsif file.file_type.image?
-        = image_tag(file.native_file.url)
-      - elsif file.file_type.video?
-        = video_tag(file.native_file.url, controls: true)
-    - else
-      = link_to(file.native_file.file.name_with_extension, file.native_file.url)
+    .binary-file data-file-id=file.ancestor_id
+      - if file.file_type.renderable?
+        - if file.file_type.audio?
+          = audio_tag(file.native_file.url, controls: true)
+        - elsif file.file_type.image?
+          = image_tag(file.native_file.url)
+        - elsif file.file_type.video?
+          = video_tag(file.native_file.url, controls: true)
+      - else
+        = link_to(file.native_file.file.name_with_extension, file.native_file.url)
   - else
     .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only = file.content
