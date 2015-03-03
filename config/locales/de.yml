@@ -187,7 +187,7 @@ de:
     implement:
       default_feedback: Sehr gut. Alle Tests waren erfolgreich.
       feedback: Feedback
-      file: 'Test-Datei <span class="number">%{number}</span>'
+      file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
       hint: Tipp
       no_output: Die letzte Code-Ausführung hat keine Ausgabe erzeugt.
       no_output_yet: Bisher existiert noch keine Ausgabe.

@@ -284,6 +284,7 @@ $(function() {
     $('#results').show();
     var element = $('#dummies').children().first().clone();
     element.removeClass('panel-default').addClass(result.stderr ? 'panel-danger' : (result.score === 1 ? 'panel-success' : 'panel-warning'));
+    element.find('.panel-title .filename').text(result.filename);
     element.find('.panel-title .number').text(index + 1);
     element.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
     element.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
