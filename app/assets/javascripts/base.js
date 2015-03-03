@@ -1,3 +1,7 @@
+Array.prototype.includes = function(element) {
+  return this.indexOf(element) !== -1;
+};
+
 $(function() {
   var ANIMATION_DURATION = 500;
 

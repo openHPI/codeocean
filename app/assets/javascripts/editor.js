@@ -284,6 +284,26 @@ $(function() {
     $('#start-over').on('click', confirmReset);
   };
 
+  var isActiveFileExecutable = function() {
+    return 'executable' in active_frame.data();
+  };
+
+  var isActiveFileRenderable = function() {
+    return 'renderable' in active_frame.data();
+  };
+
+  var isActiveFileRunnable = function() {
+    return isActiveFileExecutable() && ['main_file', 'user_defined_file'].includes(active_frame.data('role'));
+  };
+
+  var isActiveFileStoppable = function() {
+    return isActiveFileRunnable() && running;
+  };
+
+  var isActiveFileTestable = function() {
+    return isActiveFileExecutable() && ['teacher_defined_test', 'user_defined_test'].includes(active_frame.data('role'));
+  };
+
   var populatePanel = function(panel, result, index) {
     panel.removeClass('panel-default').addClass(getPanelClass(result));
     panel.find('.panel-title .filename').text(result.filename);
@@ -578,18 +598,15 @@ $(function() {
   };
 
   var toggleButtonStates = function() {
-    var is_renderable = active_frame.data('renderable') !== undefined;
-    var is_runnable = active_frame.data('executable') !== undefined && _.contains(['main_file', 'user_defined_file'], active_frame.data('role'));
-    var is_testable = active_frame.data('executable') !== undefined && _.contains(['teacher_defined_test', 'user_defined_test'], active_frame.data('role'));
     $('#destroy-file').prop('disabled', active_frame.data('role') !== 'user_defined_file');
-    $('#dropdown-render').toggleClass('disabled', !is_renderable);
-    $('#dropdown-run').toggleClass('disabled', !(is_runnable && !running));
-    $('#dropdown-stop').toggleClass('disabled', !(is_runnable && running));
-    $('#dropdown-test').toggleClass('disabled', !is_testable);
-    $('#render').toggle(is_renderable);
-    $('#run').toggle(is_runnable && !running);
-    $('#stop').toggle(is_runnable && running);
-    $('#test').toggle(is_testable);
+    $('#dropdown-render').toggleClass('disabled', !isActiveFileRenderable());
+    $('#dropdown-run').toggleClass('disabled', !isActiveFileRunnable() || running);
+    $('#dropdown-stop').toggleClass('disabled', !isActiveFileStoppable());
+    $('#dropdown-test').toggleClass('disabled', !isActiveFileTestable());
+    $('#render').toggle(isActiveFileRenderable());
+    $('#run').toggle(isActiveFileRunnable() && !running);
+    $('#stop').toggle(isActiveFileStoppable());
+    $('#test').toggle(isActiveFileTestable());
   };
 
   if ($('#editor').isPresent()) {
