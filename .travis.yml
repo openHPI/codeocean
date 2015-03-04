@@ -1,6 +1,9 @@
 addons:
   code_climate:
     repo_token: 53a2c2608c848714e96f6a1fc0365dcfdfec051f7827d50cea965ea625f49734
+before_install:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 before_script:
   - cp .rspec.travis .rspec
   - cp config/action_mailer.yml.travis config/action_mailer.yml
