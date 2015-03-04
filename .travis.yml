@@ -15,6 +15,6 @@ cache: bundler
 language: ruby
 rvm:
   - 2.1.5
-  - 2.2.0
+  - 2.2.1
   - jruby-19mode
 script: bundle exec rspec --tag ~docker
