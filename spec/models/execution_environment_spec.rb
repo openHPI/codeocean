@@ -46,6 +46,40 @@ describe ExecutionEnvironment do
     expect(execution_environment.errors[:user_type]).to be_present
   end
 
+  describe '#valid_test_setup?' do
+    context 'with a test command and a testing framework' do
+      before(:each) { execution_environment.update(test_command: FactoryGirl.attributes_for(:ruby)[:test_command], testing_framework: FactoryGirl.attributes_for(:ruby)[:testing_framework]) }
+
+      it 'is valid' do
+        expect(execution_environment.errors[:test_command]).to be_blank
+      end
+    end
+
+    context 'with a test command but no testing framework' do
+      before(:each) { execution_environment.update(test_command: FactoryGirl.attributes_for(:ruby)[:test_command], testing_framework: nil) }
+
+      it 'is invalid' do
+        expect(execution_environment.errors[:test_command]).to be_present
+      end
+    end
+
+    context 'with no test command but a testing framework' do
+      before(:each) { execution_environment.update(test_command: nil, testing_framework: FactoryGirl.attributes_for(:ruby)[:testing_framework]) }
+
+      it 'is invalid' do
+        expect(execution_environment.errors[:test_command]).to be_present
+      end
+    end
+
+    context 'with no test command and no testing framework' do
+      before(:each) { execution_environment.update(test_command: nil, testing_framework: nil) }
+
+      it 'is valid' do
+        expect(execution_environment.errors[:test_command]).to be_blank
+      end
+    end
+  end
+
   describe '#validate_docker_image?' do
     it 'is false in the test environment' do
       expect(Rails.env.test?).to be true
