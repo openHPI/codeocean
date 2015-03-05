@@ -36,7 +36,7 @@ describe 'Editor', js: true do
     end
 
     it "displays the main file's code" do
-      expect(page).to have_content(exercise.files.detect(&:main_file?).content)
+      expect(page).to have_css(".frame[data-filename='#{exercise.files.detect(&:main_file?).name_with_extension}']")
     end
 
     context 'when selecting a file' do
@@ -74,7 +74,7 @@ describe 'Editor', js: true do
         let(:file) { exercise.files.detect { |file| !file.file_type.binary? } }
 
         it "displays the file's code" do
-          expect(page).to have_content(file.content)
+          expect(page).to have_css(".frame[data-filename='#{file.name_with_extension}']")
         end
       end
     end
@@ -84,8 +84,7 @@ describe 'Editor', js: true do
     before(:each) { click_link(I18n.t('exercises.implement.progress')) }
 
     it 'contains a button for submitting the exercise' do
-      accept_confirm { click_button('submit') }
-      expect(current_path).to eq(lti_return_path)
+      expect(page).to have_css('#submit')
     end
   end
 end
