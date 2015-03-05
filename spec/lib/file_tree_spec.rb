@@ -73,6 +73,24 @@ describe FileTree do
     end
   end
 
+  describe '#initialize' do
+    let(:file_tree) { described_class.new(files) }
+    let(:files) { FactoryGirl.build_list(:file, 10, context: nil, path: 'foo/bar/baz') }
+
+    it 'creates a root node' do
+      expect_any_instance_of(Tree::TreeNode).to receive(:initialize).with(file_tree.send(:root_label))
+      file_tree.send(:initialize)
+    end
+
+    it 'creates tree nodes for every file' do
+      expect(file_tree.select(&:content).map(&:content)).to eq(files)
+    end
+
+    it 'creates tree nodes for intermediary path segments' do
+      expect(file_tree.reject(&:content).reject(&:is_root?).map(&:name)).to eq(files.first.path.split('/'))
+    end
+  end
+
   describe '#map_to_js_tree' do
     let(:file) { FactoryGirl.build(:file) }
     let(:js_tree) { file_tree.send(:map_to_js_tree, node) }
