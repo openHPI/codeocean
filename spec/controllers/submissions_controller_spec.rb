@@ -192,6 +192,36 @@ describe SubmissionsController do
     expect_status(200)
   end
 
+  describe 'POST #stop' do
+    let(:request) { proc { post :stop, container_id: CONTAINER.id, id: submission.id } }
+
+    context 'when the container can be found' do
+      before(:each) do
+        expect(Docker::Container).to receive(:get).and_return(CONTAINER)
+        request.call
+      end
+
+      it 'renders nothing' do
+        expect(response.body).to be_blank
+      end
+
+      expect_status(200)
+    end
+
+    context 'when the container cannot be found' do
+      before(:each) do
+        expect(Docker::Container).to receive(:get).and_raise(Docker::Error::NotFoundError)
+        request.call
+      end
+
+      it 'renders nothing' do
+        expect(response.body).to be_blank
+      end
+
+      expect_status(200)
+    end
+  end
+
   describe 'GET #test' do
     let(:filename) { submission.collect_files.detect(&:teacher_defined_test?).name_with_extension }
     let(:output) { {} }
