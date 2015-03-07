@@ -184,7 +184,6 @@ $(function() {
   };
 
   var handleKeyPress = function(event) {
-    event.preventDefault();
     if (event.which === ALT_1_KEY_CODE) {
       showTab(0);
     } else if (event.which === ALT_2_KEY_CODE) {
@@ -199,7 +198,10 @@ $(function() {
       $('#assess').trigger('click');
     } else if (event.which === ALT_T_KEY_CODE) {
       $('#test').trigger('click');
+    } else {
+      return;
     }
+    event.preventDefault();
   };
 
   var handleScoringResponse = function(response) {
