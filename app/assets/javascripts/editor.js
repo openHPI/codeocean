@@ -617,32 +617,27 @@ $(function() {
     showRequestedTab();
   }
 
-  var stderrOutput = '';
   var handleStderrOutputForFlowr = function(event) {
     var flowrUrl = $('#flowrHint').data('url');
     var json = JSON.parse(event.data);
+    var stderrOutput = '';
 
     if (json.stderr) {
       stderrOutput += json.stderr;
     } else if (json.code) {
       var flowrHintBody = $('#flowrHint .panel-body');
 
-      jQuery.getJSON(flowrUrl + '&query=' + escape(stderrOutput), function(data) {
-        for (var question in data.queryResults) {
-          // replace everything, not only one occurence
-          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question);
+      $.getJSON(flowrUrl + '&query=' + escape(stderrOutput), function(data) {
+        _.each(_.compact(data.queryResults), function(question, index) {
+          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
           var resultTile = $(collapsibleTileHtml);
-
-          resultTile.find('h4 > a').text(data.queryResults[question].title);
-          resultTile.find('.panel-body').append($(data.queryResults[question].body));
-
+          resultTile.find('h4 > a').text(question.title);
+          resultTile.find('.panel-body').append(question.body);
           flowrHintBody.append(resultTile);
-        }
+        });
 
         $('#flowrHint').fadeIn();
       });
-
-      stderrOutput = '';
     }
   };
 });
