@@ -129,7 +129,9 @@ class SubmissionsController < ApplicationController
     @server_sent_event.write(nil, event: 'start')
     yield
     @server_sent_event.write({code: 200}, event: 'close')
-  rescue
+  rescue => exception
+    logger.error(exception.message)
+    logger.error(exception.backtrace.join("\n"))
     @server_sent_event.write({code: 500}, event: 'close')
   ensure
     @server_sent_event.close
