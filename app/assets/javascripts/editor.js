@@ -17,7 +17,6 @@ $(function() {
   var active_frame;
   var running = false;
 
-  var flowrUrl = 'http://vm-teusner-webrtc.eaalab.hpi.uni-potsdam.de:3000/api/exceptioninfo?id=&lang=auto';
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>';
 
   var ajax = function(options) {
@@ -133,8 +132,12 @@ $(function() {
     event_source.addEventListener('info', storeContainerInformation);
     event_source.addEventListener('output', callback);
     event_source.addEventListener('start', callback);
-    event_source.addEventListener('output', handleStderrOutputForFlowr);
-    event_source.addEventListener('close', handleStderrOutputForFlowr);
+
+    if ($('#flowrHint').isPresent()) {
+      event_source.addEventListener('output', handleStderrOutputForFlowr);
+      event_source.addEventListener('close', handleStderrOutputForFlowr);
+    }
+
     event_source.addEventListener('status', function(event) {
       showStatus(JSON.parse(event.data));
     });
@@ -616,6 +619,7 @@ $(function() {
 
   var stderrOutput = '';
   var handleStderrOutputForFlowr = function(event) {
+    var flowrUrl = $('#flowrHint').data('url');
     var json = JSON.parse(event.data);
 
     if (json.stderr) {

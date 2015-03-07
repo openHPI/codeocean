@@ -40,11 +40,10 @@ hr
         .panel-body
     #output
       pre = t('.no_output_yet')
-
-    #flowrHint.panel.panel-info(role='tab')
-      .panel-heading = 'Gain more insights here'
-      .panel-body
-
+    - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
+      #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+        .panel-heading = 'Gain more insights here'
+        .panel-body
   #progress.tab-pane
     #results
       h2 = t('.results')
