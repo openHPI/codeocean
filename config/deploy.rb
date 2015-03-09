@@ -1,5 +1,6 @@
 set :application, 'code_ocean'
 set :config_example_suffix, '.example'
+set :default_env, 'PATH' => '/usr/java/jdk1.8.0_40/bin:$PATH'
 set :deploy_to, '/var/www/app'
 set :keep_releases, 3
 set :linked_dirs, %w(bin log public/uploads tmp/cache tmp/files tmp/pids tmp/sockets)
