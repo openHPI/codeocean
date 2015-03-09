@@ -164,7 +164,7 @@ $(function() {
   };
 
   var getPanelClass = function(result) {
-    if (result.stderr) {
+    if (result.stderr && !result.score) {
       return 'panel-danger';
     } else if (result.score < 1) {
       return 'panel-warning';
