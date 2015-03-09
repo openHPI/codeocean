@@ -64,12 +64,12 @@ FactoryGirl.define do
     created_by_teacher
     docker_image 'hklement/ubuntu-python:latest'
     help
-    name 'Python 2.7'
+    name 'Python 3.4'
     permitted_execution_time 10.seconds
     pool_size 0
-    run_command 'python %{filename}'
+    run_command 'python3 %{filename}'
     singleton_execution_environment
-    test_command 'python -m unittest --verbose %{module_name}'
+    test_command 'python3 -m unittest --verbose %{module_name}'
     testing_framework 'PyUnitAdapter'
   end
 
@@ -77,7 +77,7 @@ FactoryGirl.define do
     created_by_teacher
     docker_image 'hklement/ubuntu-ruby:latest'
     help
-    name 'Ruby 2.1'
+    name 'Ruby 2.2'
     permitted_execution_time 10.seconds
     pool_size 0
     run_command 'ruby %{filename}'
