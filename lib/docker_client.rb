@@ -14,7 +14,7 @@ class DockerClient
   end
 
   def command_substitutions(filename)
-    {class_name: File.basename(filename, File.extname(filename)).camelize, filename: filename}
+    {class_name: File.basename(filename, File.extname(filename)).camelize, filename: filename, module_name: File.basename(filename, File.extname(filename)).underscore}
   end
   private :command_substitutions
 
