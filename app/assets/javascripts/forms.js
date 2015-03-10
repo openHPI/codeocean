@@ -15,6 +15,7 @@ $(function() {
   });
 
   $('select:visible').chosen({
+    allow_single_deselect: true,
     disable_search_threshold: 5,
     search_contains: true
   });
