@@ -8,6 +8,7 @@ describe 'exercises/implement.html.slim' do
   before(:each) do
     assign(:exercise, exercise)
     assign(:files, files)
+    assign(:paths, [])
     render
   end
 

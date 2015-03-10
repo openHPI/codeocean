@@ -3,6 +3,9 @@
     = f.label(:name, t('activerecord.attributes.file.name'))
     = f.text_field(:name, class: 'form-control', required: true)
   .form-group
+    = f.label(:path, t('activerecord.attributes.file.path'))
+    = f.select(:path, @paths, {}, class: 'form-control')
+  .form-group
     = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
     = f.collection_select(:file_type_id, FileType.where(binary: false).order(:name), :id, :name, {}, class: 'form-control')
   = f.hidden_field(:context_id)

@@ -26,6 +26,17 @@ class ExercisesController < ApplicationController
     end
   end
 
+  def collect_paths(files)
+    unique_paths = files.map(&:path).reject(&:blank?).uniq
+    subpaths = unique_paths.map do |path|
+      (path.split('/').length + 1).times.map do |n|
+        path.split('/').shift(n).join('/')
+      end
+    end
+    subpaths.flatten.uniq
+  end
+  private :collect_paths
+
   def create
     @exercise = Exercise.new(exercise_params)
     authorize!
@@ -62,6 +73,7 @@ class ExercisesController < ApplicationController
   def implement
     @submission = Submission.where(exercise_id: @exercise.id, user_id: current_user.id).order('created_at DESC').first
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:name_with_extension)
+    @paths = collect_paths(@files)
   end
 
   def index
