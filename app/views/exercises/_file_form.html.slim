@@ -1,5 +1,6 @@
 li.panel.panel-default
   .panel-body
+    .clearfix = link_to(t('shared.destroy'), '#', class:'btn btn-warning btn-sm discard-file pull-right')
     .form-group
       = f.label(:name, t('activerecord.attributes.file.name'))
       = f.text_field(:name, class: 'form-control')

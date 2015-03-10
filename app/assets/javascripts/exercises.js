@@ -14,8 +14,14 @@ $(function() {
     $('body, html').scrollTo('#add-file');
   };
 
+  var discardFile = function(event) {
+    event.preventDefault();
+    $(this).parents('li').remove();
+  };
+
   var enableInlineFileCreation = function() {
     $('#add-file').on('click', addFileForm);
+    $('#files').on('click', 'li .discard-file', discardFile);
     $('form.edit_exercise, form.new_exercise').on('submit', function() {
       $('#dummies').html('');
     });
