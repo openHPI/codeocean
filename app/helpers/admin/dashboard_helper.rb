@@ -5,7 +5,7 @@ module Admin
     end
 
     def docker_data
-      ExecutionEnvironment.order(:id).select(:id, :permitted_execution_time, :pool_size).map do |execution_environment|
+      ExecutionEnvironment.order(:id).select(:id, :pool_size).map do |execution_environment|
         execution_environment.attributes.merge(quantity: DockerContainerPool.quantities[execution_environment.id])
       end
     end

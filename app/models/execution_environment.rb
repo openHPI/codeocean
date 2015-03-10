@@ -19,8 +19,8 @@ class ExecutionEnvironment < ActiveRecord::Base
   validates :run_command, presence: true
 
   def set_default_values
-    self.permitted_execution_time ||= 60
-    self.pool_size ||= 0
+    self.permitted_execution_time ||= 60 if has_attribute?(:permitted_execution_time)
+    self.pool_size ||= 0 if has_attribute?(:pool_size)
   end
   private :set_default_values
 
