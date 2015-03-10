@@ -6,6 +6,7 @@ class ExecutionEnvironment < ActiveRecord::Base
   after_initialize :set_default_values
 
   has_many :exercises
+  belongs_to :file_type
   has_many :hints
 
   scope :with_exercises, -> { where('id IN (SELECT execution_environment_id FROM exercises)') }

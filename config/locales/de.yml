@@ -10,6 +10,8 @@ de:
       execution_environment:
         docker_image: Docker-Image
         exposed_ports: Zugängliche Ports
+        file_type: Standard-Dateityp
+        file_type_id: Standard-Dateityp
         help: Hilfetext
         name: Name
         permitted_execution_time: Erlaubte Ausführungszeit (in Sekunden)

@@ -4,6 +4,9 @@
     = f.label(:name)
     = f.text_field(:name, class: 'form-control', required: true)
   .form-group
+    = f.label(:file_type_id)
+    = f.collection_select(:file_type_id, FileType.all.order(:name), :id, :name, {include_blank: true}, class: 'form-control')
+  .form-group
     = f.label(:docker_image)
     | &nbsp;
     a.toggle-input href='#' = t('shared.new')

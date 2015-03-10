@@ -29,7 +29,7 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def execution_environment_params
-    params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :help, :indent_size, :name, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :name, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :execution_environment_params
 

@@ -10,6 +10,8 @@ en:
       execution_environment:
         docker_image: Docker Image
         exposed_ports: Exposed Ports
+        file_type: Default File Type
+        file_type_id: Default File Type
         help: Help Text
         name: Name
         permitted_execution_time: Permitted Execution Time (in Seconds)

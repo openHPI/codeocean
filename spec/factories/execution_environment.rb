@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :coffee_script, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-coffee:latest'
+    association :file_type, factory: :dot_coffee
     help
     name 'CoffeeScript'
     permitted_execution_time 10.seconds
@@ -13,6 +14,7 @@ FactoryGirl.define do
   factory :html, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-html:latest'
+    association :file_type, factory: :dot_html
     help
     name 'HTML5'
     permitted_execution_time 10.seconds
@@ -26,6 +28,7 @@ FactoryGirl.define do
   factory :java, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-java:latest'
+    association :file_type, factory: :dot_java
     help
     name 'Java 8'
     permitted_execution_time 10.seconds
@@ -39,6 +42,7 @@ FactoryGirl.define do
   factory :jruby, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-jruby:latest'
+    association :file_type, factory: :dot_rb
     help
     name 'JRuby 1.7'
     permitted_execution_time 10.seconds
@@ -52,6 +56,7 @@ FactoryGirl.define do
   factory :node_js, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-node:latest'
+    association :file_type, factory: :dot_js
     help
     name 'Node.js'
     permitted_execution_time 10.seconds
@@ -63,6 +68,7 @@ FactoryGirl.define do
   factory :python, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-python:latest'
+    association :file_type, factory: :dot_py
     help
     name 'Python 3.4'
     permitted_execution_time 10.seconds
@@ -76,6 +82,7 @@ FactoryGirl.define do
   factory :ruby, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-ruby:latest'
+    association :file_type, factory: :dot_rb
     help
     name 'Ruby 2.2'
     permitted_execution_time 10.seconds
@@ -89,6 +96,7 @@ FactoryGirl.define do
   factory :sinatra, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-sinatra:latest'
+    association :file_type, factory: :dot_rb
     exposed_ports '4567'
     help
     name 'Sinatra'
@@ -103,6 +111,7 @@ FactoryGirl.define do
   factory :sqlite, class: ExecutionEnvironment do
     created_by_teacher
     docker_image 'hklement/ubuntu-sqlite:latest'
+    association :file_type, factory: :dot_sql
     help
     name 'SQLite'
     permitted_execution_time 1.minute

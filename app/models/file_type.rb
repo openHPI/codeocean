@@ -7,6 +7,7 @@ class FileType < ActiveRecord::Base
 
   after_initialize :set_default_values
 
+  has_many :execution_environments
   has_many :files
 
   validates :binary, inclusion: {in: [true, false]}
