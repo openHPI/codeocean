@@ -9,11 +9,8 @@ $(function() {
     var element = $('#dummies').children().first().clone();
     var html = $('<div>').append(element).html().replace(/index/g, new Date().getTime());
     $('#files').append(html);
-    $('#files select').chosen({
-      disable_search_threshold: 5,
-      search_contains: true
-    });
     $('#files li:last select[name*="file_type_id"]').val(getSelectedExecutionEnvironment().file_type_id);
+    $('#files li:last select').chosen(window.CodeOcean.CHOSEN_OPTIONS);
     $('body, html').scrollTo('#add-file');
   };
 

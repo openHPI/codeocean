@@ -1,4 +1,10 @@
 $(function() {
+  var CHOSEN_OPTIONS = {
+    allow_single_deselect: true,
+    disable_search_threshold: 5,
+    search_contains: true
+  };
+
   $('form').on('click', '.toggle-input', function(event) {
     event.preventDefault();
     if (!$(this).hasClass('disabled')) {
@@ -14,9 +20,8 @@ $(function() {
     }
   });
 
-  $('select:visible').chosen({
-    allow_single_deselect: true,
-    disable_search_threshold: 5,
-    search_contains: true
-  });
+  window.CodeOcean = window.CodeOcean || {};
+  window.CodeOcean.CHOSEN_OPTIONS = CHOSEN_OPTIONS;
+
+  $('select:visible').chosen(CHOSEN_OPTIONS);
 });
