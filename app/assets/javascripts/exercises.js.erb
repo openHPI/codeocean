@@ -1,5 +1,6 @@
 $(function() {
   var ACE_FILES_PATH = '/assets/ace/';
+  var FILE_TYPES = <%= FileType.where('file_extension IS NOT NULL').map { |file_type| [file_type.file_extension, file_type.id] }.to_h.to_json %>;
   var TAB_KEY_CODE = 9;
 
   var addFileForm = function(event) {
@@ -36,8 +37,11 @@ $(function() {
   var inferFileAttributes = function() {
     $(document).on('change', 'input[type="file"]', function(event) {
       var filename = $(this).val().split(/\\|\//g).pop();
+      var file_type_id = FILE_TYPES['.' + filename.split('.')[1]];
       var parent = $(this).parents('li');
-      parent.find('input[type="text"]').first().val(filename.split('.')[0]);
+      parent.find('input[name*="name"]').val(filename.split('.')[0]);
+      parent.find('select[name*="file_type_id"]').val(file_type_id);
+      parent.find('select[name*="file_type_id"]').trigger('chosen:updated');
     });
   };
 
