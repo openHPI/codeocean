@@ -24,6 +24,10 @@ module CodeOcean
     scope :editable, -> { where(read_only: false) }
     scope :visible, -> { where(hidden: false) }
 
+    ROLES.each do |role|
+      scope :"#{role}s", -> { where(role: role) }
+    end
+
     validates :feedback_message, if: :teacher_defined_test?, presence: true
     validates :feedback_message, absence: true, unless: :teacher_defined_test?
     validates :file_type_id, presence: true

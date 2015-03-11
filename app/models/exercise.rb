@@ -43,7 +43,7 @@ class Exercise < ActiveRecord::Base
   private :generate_token
 
   def maximum_score
-    files.where(role: 'teacher_defined_test').sum(:weight)
+    files.teacher_defined_tests.sum(:weight)
   end
 
   def set_default_values
@@ -56,7 +56,7 @@ class Exercise < ActiveRecord::Base
   end
 
   def valid_main_file?
-    if files.where(role: 'main_file').count > 1
+    if files.main_files.count > 1
       errors.add(:files, I18n.t('activerecord.errors.models.exercise.at_most_one_main_file'))
     end
   end
