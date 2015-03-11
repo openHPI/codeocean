@@ -16,4 +16,5 @@ h1 = Team.model_name.human(count: 2)
           td = link_to(t('shared.edit'), edit_team_path(team.id))
           td = link_to(t('shared.destroy'), team_path(team.id), data: {confirm: t('shared.confirm_destroy')}, method: :delete)
 
+= render('shared/pagination', collection: @teams)
 p = render('shared/new_button', model: Team, path: new_team_path)

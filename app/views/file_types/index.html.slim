@@ -18,4 +18,5 @@ h1 = FileType.model_name.human(count: 2)
           td = link_to(t('shared.edit'), edit_file_type_path(file_type))
           td = link_to(t('shared.destroy'), file_type, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
 
+= render('shared/pagination', collection: @file_types)
 p = render('shared/new_button', model: FileType)

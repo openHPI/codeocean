@@ -22,7 +22,7 @@ class TeamsController < ApplicationController
   end
 
   def index
-    @teams = Team.all.includes(:internal_users).order(:name)
+    @teams = Team.all.includes(:internal_users).order(:name).paginate(page: params[:page])
     authorize!
   end
 

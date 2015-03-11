@@ -20,4 +20,5 @@ h1 = ExecutionEnvironment.model_name.human(count: 2)
           td = link_to(t('activerecord.models.error.other'), execution_environment_errors_path(execution_environment.id))
           td = link_to(t('activerecord.models.hint.other'), execution_environment_hints_path(execution_environment.id))
 
+= render('shared/pagination', collection: @execution_environments)
 p = render('shared/new_button', model: ExecutionEnvironment)

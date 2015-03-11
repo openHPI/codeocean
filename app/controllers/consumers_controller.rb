@@ -27,7 +27,7 @@ class ConsumersController < ApplicationController
   private :consumer_params
 
   def index
-    @consumers = Consumer.all
+    @consumers = Consumer.paginate(page: params[:page])
     authorize!
   end
 

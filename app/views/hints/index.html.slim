@@ -16,4 +16,5 @@ h1 = Hint.model_name.human(count: 2)
           td = link_to(t('shared.edit'), edit_execution_environment_hint_path(params[:execution_environment_id], hint.id))
           td = link_to(t('shared.destroy'), execution_environment_hint_path(params[:execution_environment_id], hint.id), data: {confirm: t('shared.confirm_destroy')}, method: :delete)
 
+= render('shared/pagination', collection: @hints)
 p = render('shared/new_button', model: Hint, path: new_execution_environment_hint_path(params[:execution_environment_id]))

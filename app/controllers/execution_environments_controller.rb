@@ -34,7 +34,7 @@ class ExecutionEnvironmentsController < ApplicationController
   private :execution_environment_params
 
   def index
-    @execution_environments = ExecutionEnvironment.all.includes(:user).order(:name)
+    @execution_environments = ExecutionEnvironment.all.includes(:user).order(:name).paginate(page: params[:page])
     authorize!
   end
 

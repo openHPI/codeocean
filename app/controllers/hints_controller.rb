@@ -28,7 +28,7 @@ class HintsController < ApplicationController
   private :hint_params
 
   def index
-    @hints = @execution_environment.hints.order(:name)
+    @hints = @execution_environment.hints.order(:name).paginate(page: params[:page])
     authorize!
   end
 

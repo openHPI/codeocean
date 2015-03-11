@@ -29,5 +29,4 @@ h1 = Submission.model_name.human(count: 2)
           td = link_to(t('shared.show'), submission)
           td = link_to(t('shared.statistics'), statistics_submission_path(submission))
 
-.text-center
-  ul.pagination = will_paginate(@submissions, container: false)
+= render('shared/pagination', collection: @submissions)

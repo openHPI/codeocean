@@ -31,4 +31,5 @@ h1 = InternalUser.model_name.human(count: 2)
             - if policy(user).destroy?
               = link_to(t('shared.destroy'), user, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
 
+= render('shared/pagination', collection: @users)
 p = render('shared/new_button', model: InternalUser)

@@ -15,3 +15,5 @@ h1 = ::Error.model_name.human(count: 2)
           td = error.message
           td = l(error.created_at, format: :short)
           td = link_to(t('shared.show'), execution_environment_error_path(params[:execution_environment_id], error))
+
+p = render('shared/pagination', collection: @errors)

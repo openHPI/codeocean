@@ -35,4 +35,5 @@ h1 = Exercise.model_name.human(count: 2)
           td = link_to(t('.implement'), implement_exercise_path(exercise))
           td = link_to(t('shared.statistics'), statistics_exercise_path(exercise))
 
+= render('shared/pagination', collection: @exercises)
 p = render('shared/new_button', model: Exercise)

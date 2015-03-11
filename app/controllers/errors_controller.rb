@@ -27,7 +27,7 @@ class ErrorsController < ApplicationController
   private :error_params
 
   def index
-    @errors = Error.for_execution_environment(@execution_environment).grouped_by_message
+    @errors = Error.for_execution_environment(@execution_environment).grouped_by_message.paginate(page: params[:page])
     authorize!
   end
 

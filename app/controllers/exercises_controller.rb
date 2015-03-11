@@ -78,7 +78,7 @@ class ExercisesController < ApplicationController
 
   def index
     @search = policy_scope(Exercise).search(params[:q])
-    @exercises = @search.result.includes(:execution_environment, :user).order(:title)
+    @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page])
     authorize!
   end
 

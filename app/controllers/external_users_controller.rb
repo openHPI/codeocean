@@ -5,7 +5,7 @@ class ExternalUsersController < ApplicationController
   private :authorize!
 
   def index
-    @users = ExternalUser.all.includes(:consumer)
+    @users = ExternalUser.all.includes(:consumer).paginate(page: params[:page])
     authorize!
   end
 

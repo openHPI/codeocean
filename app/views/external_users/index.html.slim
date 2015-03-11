@@ -13,3 +13,5 @@ h1 = ExternalUser.model_name.human(count: 2)
           td = user.name
           td = link_to(user.consumer, user.consumer)
           td = link_to(t('shared.show'), user)
+
+= render('shared/pagination', collection: @users)
