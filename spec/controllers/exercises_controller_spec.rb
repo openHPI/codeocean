@@ -182,6 +182,14 @@ describe ExercisesController do
     expect_template(:show)
   end
 
+  describe 'GET #statistics' do
+    before(:each) { get :statistics, id: exercise.id }
+
+    expect_assigns(exercise: :exercise)
+    expect_status(200)
+    expect_template(:statistics)
+  end
+
   describe 'POST #submit' do
     let(:output) { {} }
     let(:request) { post :submit, format: :json, id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id} }

@@ -43,18 +43,37 @@ describe ApplicationHelper do
 
   describe '#progress_bar' do
     let(:html) { progress_bar(value) }
-    let(:value) { 42 }
 
-    it "builds nested 'div' tags" do
-      expect(html).to have_css('div.progress div.progress-bar')
+    context 'with a value' do
+      let(:value) { 42 }
+
+      it "builds nested 'div' tags" do
+        expect(html).to have_css('div.progress div.progress-bar')
+      end
+
+      it 'assigns the correct text' do
+        expect(html).to have_text("#{value}%")
+      end
+
+      it 'uses the correct width' do
+        expect(html).to have_css("div.progress-bar[style='width: 42%;']")
+      end
     end
 
-    it 'assigns the correct text' do
-      expect(html).to have_text("#{value}%")
-    end
+    context 'without a value' do
+      let(:value) { nil }
 
-    it 'uses the correct width' do
-      expect(html).to have_css("div.progress-bar[style='width: 42%;']")
+      it 'does not raise an error' do
+        expect { html }.not_to raise_error
+      end
+
+      it 'assigns the correct classes' do
+        expect(html).to have_css('div.disabled.progress div.progress-bar')
+      end
+
+      it 'uses the correct width' do
+        expect(html).to have_css("div.progress-bar[style='width: 0%;']")
+      end
     end
   end
 
