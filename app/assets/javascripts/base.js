@@ -2,6 +2,12 @@ Array.prototype.includes = function(element) {
   return this.indexOf(element) !== -1;
 };
 
+window.CodeOcean = {
+  refresh: function() {
+    Turbolinks.visit(window.location.pathname);
+  }
+};
+
 $(function() {
   var ANIMATION_DURATION = 500;
 

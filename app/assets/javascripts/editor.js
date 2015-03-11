@@ -97,9 +97,7 @@ $(function() {
       return _.reject(files, function(file) {
         return file.file_id === active_file.id;
       });
-    }, function() {
-      Turbolinks.visit(window.location.pathname);
-    });
+    }, window.CodeOcean.refresh);
   };
 
   var downloadCode = function(event) {

@@ -20,8 +20,6 @@ $(function() {
     }
   });
 
-  window.CodeOcean = window.CodeOcean || {};
   window.CodeOcean.CHOSEN_OPTIONS = CHOSEN_OPTIONS;
-
   $('select:visible').chosen(CHOSEN_OPTIONS);
 });
