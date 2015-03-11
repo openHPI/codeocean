@@ -22,7 +22,7 @@ class TeamsController < ApplicationController
   end
 
   def index
-    @teams = Team.all.order(:name)
+    @teams = Team.all.includes(:internal_users).order(:name)
     authorize!
   end
 

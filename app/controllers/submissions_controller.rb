@@ -34,7 +34,7 @@ class SubmissionsController < ApplicationController
 
   def index
     @search = Submission.search(params[:q])
-    @submissions = @search.result.paginate(page: params[:page])
+    @submissions = @search.result.includes(:exercise, :user).paginate(page: params[:page])
     authorize!
   end
 

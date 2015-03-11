@@ -5,7 +5,7 @@ class ExternalUsersController < ApplicationController
   private :authorize!
 
   def index
-    @users = ExternalUser.all
+    @users = ExternalUser.all.includes(:consumer)
     authorize!
   end
 
