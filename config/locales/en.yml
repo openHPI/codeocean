@@ -29,12 +29,8 @@ en:
         instructions: Instructions
         maximum_score: Maximum Score
         public: Public
-        reference_implementation: Reference Implementation
         team: Team
         team_id: Team
-        template_code: Template Code
-        template_test_code: Template Test Code
-        test_code: Test Code
         title: Title
         user: Author
       external_user:
