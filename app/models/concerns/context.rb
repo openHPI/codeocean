@@ -7,14 +7,10 @@ module Context
   end
 
   def add_file(file_attributes)
-    file = files.create(file_attributes)
-    save
-    file
+    files.create(file_attributes).tap { save }
   end
 
   def add_file!(file_attributes)
-    file = files.create!(file_attributes)
-    save!
-    file
+    files.create!(file_attributes).tap { save! }
   end
 end
