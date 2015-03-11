@@ -2,7 +2,7 @@ class ErrorsController < ApplicationController
   before_action :set_execution_environment
 
   def authorize!
-    authorize(@error || @execution_environment.errors)
+    authorize(@error || @errors)
   end
   private :authorize!
 
@@ -27,8 +27,8 @@ class ErrorsController < ApplicationController
   private :error_params
 
   def index
-    authorize!
     @errors = Error.for_execution_environment(@execution_environment).grouped_by_message
+    authorize!
   end
 
   def set_execution_environment
