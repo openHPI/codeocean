@@ -28,7 +28,7 @@ class HintsController < ApplicationController
   private :hint_params
 
   def index
-    @hints = Hint.where(execution_environment_id: @execution_environment.id).order(:name)
+    @execution_environment.hints.order(:name)
     authorize!
   end
 

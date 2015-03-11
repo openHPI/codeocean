@@ -52,7 +52,7 @@ class Submission < ActiveRecord::Base
   end
 
   def siblings
-    Submission.where(exercise_id: exercise_id, user_id: user_id, user_type: user_type)
+    user.submissions.where(exercise_id: exercise_id)
   end
 
   def to_s

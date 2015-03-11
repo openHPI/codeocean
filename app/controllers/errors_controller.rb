@@ -2,7 +2,7 @@ class ErrorsController < ApplicationController
   before_action :set_execution_environment
 
   def authorize!
-    authorize(@error || Error.where(execution_environment_id: @execution_environment.id))
+    authorize(@error || @execution_environment.errors)
   end
   private :authorize!
 

@@ -2,7 +2,7 @@ class Whistleblower
   PLACEHOLDER_REGEXP = /\$(\d)/
 
   def find_hint(stderr)
-    Hint.where(execution_environment_id: @execution_environment.id).detect do |hint|
+    @execution_environment.hints.detect do |hint|
       @matches = Regexp.new(hint.regular_expression).match(stderr)
     end
   end

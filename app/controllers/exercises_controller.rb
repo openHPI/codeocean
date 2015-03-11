@@ -71,7 +71,7 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def implement
-    @submission = Submission.where(exercise_id: @exercise.id, user_id: current_user.id).order('created_at DESC').first
+    @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:name_with_extension)
     @paths = collect_paths(@files)
   end
