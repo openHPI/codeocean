@@ -203,6 +203,7 @@ de:
     index:
       clone: Duplizieren
       implement: Implementieren
+      test_files: Test-Dateien
     statistics:
       average_score: Durchschnittliche Punktzahl
       final_submissions: Finale Abgaben

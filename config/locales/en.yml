@@ -203,6 +203,7 @@ en:
     index:
       clone: Duplicate
       implement: Implement
+      test_files: Test Files
     statistics:
       average_score: Average Score
       final_submissions: Final Submissions
