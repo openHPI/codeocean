@@ -11,5 +11,5 @@
     = f.text_field(:name, class: 'form-control', required: true)
   .form-group
     = f.label(:role)
-    = f.select(:role, User::ROLES.map { |role| [t("users.roles.#{role}"), role] }, {}, class: 'form-control')
+    = f.select(:role, User::ROLES.map { |role| [t("users.roles.#{role}"), role] }, {selected: @user.role || 'teacher'}, class: 'form-control')
   .actions = render('shared/submit_button', f: f, object: @user)
