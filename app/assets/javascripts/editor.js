@@ -175,11 +175,11 @@ $(function() {
 
   var getProgressBarClass = function(percentage) {
     if (percentage < ADEQUATE_PERCENTAGE) {
-      return 'progress-bar progress-bar-danger';
+      return 'progress-bar progress-bar-striped progress-bar-danger';
     } else if (percentage < SUCCESSFULL_PERCENTAGE) {
-      return 'progress-bar progress-bar-warning';
+      return 'progress-bar progress-bar-striped progress-bar-warning';
     } else {
-      return 'progress-bar progress-bar-success';
+      return 'progress-bar progress-bar-striped progress-bar-success';
     }
   };
 
