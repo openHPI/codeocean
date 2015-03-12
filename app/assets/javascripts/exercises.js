@@ -1,8 +1,9 @@
 $(function() {
   var ACE_FILES_PATH = '/assets/ace/';
-  var EXECUTION_ENVIRONMENTS = <%= ExecutionEnvironment.where('file_type_id IS NOT NULL').select(:file_type_id, :id).to_json %>;
-  var FILE_TYPES = <%= FileType.where('file_extension IS NOT NULL').map { |file_type| [file_type.file_extension, file_type.id] }.to_h.to_json %>;
   var TAB_KEY_CODE = 9;
+
+  var execution_environments;
+  var file_types;
 
   var addFileForm = function(event) {
     event.preventDefault();
@@ -27,10 +28,16 @@ $(function() {
     });
   };
 
+  var findFileTypeByFileExtension = function(file_extension) {
+    return _.find(file_types, function(file_type) {
+      return file_type.file_extension === file_extension;
+    }) || {};
+  };
+
   var getSelectedExecutionEnvironment = function() {
-    return _.find(EXECUTION_ENVIRONMENTS, function(execution_environment) {
+    return _.find(execution_environments, function(execution_environment) {
       return execution_environment.id === parseInt($('#exercise_execution_environment_id').val());
-    }, this);
+    });
   };
 
   var highlightCode = function() {
@@ -42,10 +49,12 @@ $(function() {
   var inferFileAttributes = function() {
     $(document).on('change', 'input[type="file"]', function(event) {
       var filename = $(this).val().split(/\\|\//g).pop();
-      var file_type_id = FILE_TYPES['.' + filename.split('.')[1]];
+      var file_extension = '.' + filename.split('.')[1];
+      var file_type = findFileTypeByFileExtension(file_extension);
+      var name = filename.split('.')[0];
       var parent = $(this).parents('li');
-      parent.find('input[name*="name"]').val(filename.split('.')[0]);
-      parent.find('select[name*="file_type_id"]').val(file_type_id).trigger('chosen:updated');
+      parent.find('input[name*="name"]').val(name);
+      parent.find('select[name*="file_type_id"]').val(file_type.id).trigger('chosen:updated');
     });
   };
 
@@ -85,6 +94,8 @@ $(function() {
 
   if ($.isController('exercises')) {
     if ($('.edit_exercise, .new_exercise').isPresent()) {
+      execution_environments = $('form').data('execution-environments');
+      file_types = $('form').data('file-types');
       new MarkdownEditor('#exercise_instructions');
       enableInlineFileCreation();
       inferFileAttributes();

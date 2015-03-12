@@ -24,9 +24,9 @@ class FileType < ActiveRecord::Base
   end
 
   def set_default_values
-    self.binary ||= false
-    self.executable ||= false
-    self.renderable ||= false
+    self.binary ||= false if has_attribute?(:binary)
+    self.executable ||= false if has_attribute?(:executable)
+    self.renderable ||= false if has_attribute?(:renderable)
   end
   private :set_default_values
 
