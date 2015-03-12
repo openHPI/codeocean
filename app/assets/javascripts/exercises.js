@@ -70,7 +70,7 @@ $(function() {
   var getSelectedExecutionEnvironment = function() {
     return _.find(execution_environments, function(execution_environment) {
       return execution_environment.id === parseInt($('#exercise_execution_environment_id').val());
-    });
+    }) || {};
   };
 
   var highlightCode = function() {
