@@ -109,7 +109,7 @@ $(function() {
   };
 
   var overrideTextareaTabBehavior = function() {
-    $('.form-group textarea').on('keydown', function(event) {
+    $('.form-group textarea[name$="[content]"]').on('keydown', function(event) {
       if (event.which === TAB_KEY_CODE) {
         event.preventDefault();
         insertTabAtCursor($(this));
