@@ -45,6 +45,7 @@ describe CodeOcean::File do
     end
 
     it 'validates the absence of a weight' do
+      allow(file).to receive(:clear_weight)
       file.update(weight: 1)
       expect(file.errors[:weight]).to be_present
     end
