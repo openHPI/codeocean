@@ -22,11 +22,12 @@ li.panel.panel-default
       label
         = f.check_box(:read_only)
         = t('activerecord.attributes.file.read_only')
-    .form-group
-      = f.label(:name, t('activerecord.attributes.file.feedback_message'))
-      = f.text_area(:feedback_message, class: 'form-control', disabled: !f.object.teacher_defined_test?, maxlength: 255)
-      .help-block = t('.hints.feedback_message')
-    .form-group
-      = f.label(:role, t('activerecord.attributes.file.weight'))
-      = f.number_field(:weight, class: 'form-control', disabled: !f.object.teacher_defined_test?, min: 1, step: 'any')
+    .test-related-fields style="display: #{f.object.teacher_defined_test? ? 'initial' : 'none'};"
+      .form-group
+        = f.label(:name, t('activerecord.attributes.file.feedback_message'))
+        = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
+        .help-block = t('.hints.feedback_message')
+      .form-group
+        = f.label(:role, t('activerecord.attributes.file.weight'))
+        = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
     = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))

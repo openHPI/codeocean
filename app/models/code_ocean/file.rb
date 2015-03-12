@@ -9,8 +9,9 @@ module CodeOcean
     TEACHER_DEFINED_ROLES = ROLES - %w(user_defined_file)
 
     after_initialize :set_default_values
-    before_validation :set_ancestor_values, if: :incomplete_descendent?
+    before_validation :clear_weight, unless: :teacher_defined_test?
     before_validation :hash_content, if: :content_present?
+    before_validation :set_ancestor_values, if: :incomplete_descendent?
 
     belongs_to :context, polymorphic: true
     belongs_to :execution_environment
@@ -48,6 +49,11 @@ module CodeOcean
     def ancestor_id
       file_id || id
     end
+
+    def clear_weight
+      self.weight = nil
+    end
+    private :clear_weight
 
     def content_present?
       content? || native_file?

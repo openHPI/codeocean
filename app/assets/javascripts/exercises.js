@@ -103,8 +103,14 @@ $(function() {
     $(document).on('change', 'select[name$="[role]"]', function() {
       var is_test_file = $(this).val() === 'teacher_defined_test';
       var parent = $(this).parents('.panel');
-      parent.find('[name$="[feedback_message]"]').attr('disabled', !is_test_file);
-      parent.find('[name$="[weight]"]').attr('disabled', !is_test_file);
+      var fields = parent.find('.test-related-fields');
+      if (is_test_file) {
+        fields.slideDown();
+      } else {
+        fields.slideUp();
+        parent.find('[name$="[feedback_message]"]').val('');
+        parent.find('[name$="[weight]"]').val(1);
+      }
     });
   };
 
