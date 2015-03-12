@@ -1,6 +1,7 @@
 class Exercise < ActiveRecord::Base
   include Context
   include Creation
+  include DefaultValues
 
   after_initialize :generate_token
   after_initialize :set_default_values
@@ -47,7 +48,7 @@ class Exercise < ActiveRecord::Base
   end
 
   def set_default_values
-    self.public ||= false
+    set_default_values_if_present(public: false)
   end
   private :set_default_values
 

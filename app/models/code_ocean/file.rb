@@ -2,6 +2,8 @@ require File.expand_path('../../../uploaders/file_uploader', __FILE__)
 
 module CodeOcean
   class File < ActiveRecord::Base
+    include DefaultValues
+
     DEFAULT_WEIGHT = 1.0
     ROLES = %w(main_file reference_implementation regular_file teacher_defined_test user_defined_file user_defined_test)
     TEACHER_DEFINED_ROLES = ROLES - %w(user_defined_file)
@@ -74,10 +76,8 @@ module CodeOcean
     private :set_ancestor_values
 
     def set_default_values
-      self.content ||= ''
-      self.hidden ||= false
-      self.read_only ||= false
-      self.weight ||= DEFAULT_WEIGHT if teacher_defined_test?
+      set_default_values_if_present(content: '', hidden: false, read_only: false)
+      set_default_values_if_present(weight: DEFAULT_WEIGHT) if teacher_defined_test?
     end
     private :set_default_values
 

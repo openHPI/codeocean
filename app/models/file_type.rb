@@ -1,5 +1,6 @@
 class FileType < ActiveRecord::Base
   include Creation
+  include DefaultValues
 
   AUDIO_FILE_EXTENSIONS = %w(.aac .flac .m4a .mp3 .ogg .wav .wma)
   IMAGE_FILE_EXTENSIONS = %w(.bmp .gif .jpeg .jpg .png)
@@ -24,9 +25,7 @@ class FileType < ActiveRecord::Base
   end
 
   def set_default_values
-    self.binary ||= false if has_attribute?(:binary)
-    self.executable ||= false if has_attribute?(:executable)
-    self.renderable ||= false if has_attribute?(:renderable)
+    set_default_values_if_present(binary: false, executable: false, renderable: false)
   end
   private :set_default_values
 

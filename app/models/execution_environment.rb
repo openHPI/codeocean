@@ -1,5 +1,6 @@
 class ExecutionEnvironment < ActiveRecord::Base
   include Creation
+  include DefaultValues
 
   VALIDATION_COMMAND = 'whoami'
 
@@ -20,8 +21,7 @@ class ExecutionEnvironment < ActiveRecord::Base
   validates :run_command, presence: true
 
   def set_default_values
-    self.permitted_execution_time ||= 60 if has_attribute?(:permitted_execution_time)
-    self.pool_size ||= 0 if has_attribute?(:pool_size)
+    set_default_values_if_present(permitted_execution_time: 60, pool_size: 0)
   end
   private :set_default_values
 
