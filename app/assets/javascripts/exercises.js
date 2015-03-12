@@ -1,5 +1,4 @@
 $(function() {
-  var ACE_FILES_PATH = '/assets/ace/';
   var TAB_KEY_CODE = 9;
 
   var execution_environments;
@@ -15,7 +14,7 @@ $(function() {
     $('body, html').scrollTo('#add-file');
   };
 
-  var ajaxError = function(response) {
+  var ajaxError = function() {
     $.flash.danger({
       text: $('#flash').data('message-failure')
     });
@@ -81,7 +80,7 @@ $(function() {
   };
 
   var inferFileAttributes = function() {
-    $(document).on('change', 'input[type="file"]', function(event) {
+    $(document).on('change', 'input[type="file"]', function() {
       var filename = $(this).val().split(/\\|\//g).pop();
       var file_extension = '.' + filename.split('.')[1];
       var file_type = findFileTypeByFileExtension(file_extension);
