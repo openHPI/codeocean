@@ -25,12 +25,16 @@ span.caret {
   }
 }
 
-.attribute-row + .attribute-row{
+.attribute-row + .attribute-row {
   margin-top: 0.5em;
 }
 
 .badge {
   font-size: 100%;
+}
+
+.container[data-controller] {
+  padding-bottom: 15px;
 }
 
 .disabled {
