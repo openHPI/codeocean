@@ -61,7 +61,7 @@ module CodeOcean
     private :content_present?
 
     def hash_content
-      self.hashed_content = Digest::MD5.new.hexdigest(file_type.binary? ? ::File.new(native_file.file.path, 'r').read : content)
+      self.hashed_content = Digest::MD5.new.hexdigest(file_type.try(:binary?) ? ::File.new(native_file.file.path, 'r').read : content)
     end
     private :hash_content
 
