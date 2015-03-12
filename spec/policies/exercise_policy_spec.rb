@@ -5,6 +5,15 @@ describe ExercisePolicy do
 
   let(:exercise) { FactoryGirl.build(:dummy, team: FactoryGirl.create(:team)) }
 
+  permissions :batch_update? do
+    it 'grants access to admins only' do
+      expect(subject).to permit(FactoryGirl.build(:admin), exercise)
+      [:external_user, :teacher].each do |factory_name|
+        expect(subject).not_to permit(FactoryGirl.build(factory_name), exercise)
+      end
+    end
+  end
+
   [:create?, :index?, :new?].each do |action|
     permissions(action) do
       it 'grants access to admins' do

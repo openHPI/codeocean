@@ -15,9 +15,43 @@ $(function() {
     $('body, html').scrollTo('#add-file');
   };
 
+  var ajaxError = function(response) {
+    $.flash.danger({
+      text: $('#flash').data('message-failure')
+    });
+  };
+
+  var buildCheckboxes = function() {
+    $('tbody tr').each(function(index, element) {
+      var td = $('td.public', element);
+      var checkbox = $('<input>', {
+        checked: td.data('value'),
+        type: 'checkbox'
+      });
+      td.on('click', function(event) {
+        event.preventDefault();
+        checkbox.prop('checked', !checkbox.prop('checked'));
+      });
+      td.html(checkbox);
+    });
+  };
+
   var discardFile = function(event) {
     event.preventDefault();
     $(this).parents('li').remove();
+  };
+
+  var enableBatchUpdate = function() {
+    $('thead .batch a').on('click', function(event) {
+      event.preventDefault();
+      if (!$(this).data('toggled')) {
+        $(this).data('toggled', true);
+        $(this).text($(this).data('text'));
+        buildCheckboxes();
+      } else {
+        performBatchUpdate();
+      }
+    });
   };
 
   var enableInlineFileCreation = function() {
@@ -84,6 +118,23 @@ $(function() {
     });
   };
 
+  var performBatchUpdate = function() {
+    var jqxhr = $.ajax({
+      data: {
+        exercises: _.map($('tbody tr'), function(element) {
+          return {
+            id: $(element).data('id'),
+            public: $('.public input', element).prop('checked')
+          };
+        })
+      },
+      dataType: 'json',
+      method: 'PUT'
+    });
+    jqxhr.done(window.CodeOcean.refresh);
+    jqxhr.fail(ajaxError);
+  };
+
   var toggleCodeHeight = function() {
     $('code').on('click', function() {
       $(this).css({
@@ -93,7 +144,9 @@ $(function() {
   };
 
   if ($.isController('exercises')) {
-    if ($('.edit_exercise, .new_exercise').isPresent()) {
+    if ($('table').isPresent()) {
+      enableBatchUpdate();
+    } else if ($('.edit_exercise, .new_exercise').isPresent()) {
       execution_environments = $('form').data('execution-environments');
       file_types = $('form').data('file-types');
       new MarkdownEditor('#exercise_instructions');

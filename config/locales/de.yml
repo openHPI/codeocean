@@ -283,6 +283,7 @@ de:
     administration: Administration
     already_signed_in: Sie sind bereits angemeldet.
     apply_filters: Filter anwenden
+    batch_update: Batch-Update
     confirm_destroy: Sind Sie sicher?
     create: '%{model} erstellen'
     created_at: Erstellt

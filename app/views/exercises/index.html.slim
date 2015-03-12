@@ -17,17 +17,21 @@ h1 = Exercise.model_name.human(count: 2)
         th = sort_link(@search, :execution_environment_id, t('activerecord.attributes.exercise.execution_environment'))
         th = t('.test_files')
         th = t('activerecord.attributes.exercise.maximum_score')
-        th = t('activerecord.attributes.exercise.public')
+        th
+          = t('activerecord.attributes.exercise.public')
+          - if policy(Exercise).batch_update?
+            br
+            span.batch = link_to(t('shared.batch_update'), '#', 'data-text' => t('shared.update', model: t('activerecord.models.exercise.other')))
         th colspan=6 = t('shared.actions')
     tbody
       - @exercises.each do |exercise|
-        tr
+        tr data-id=exercise.id
           td = exercise.title
           td = link_to(exercise.author, exercise.author)
           td = link_to(exercise.execution_environment, exercise.execution_environment)
           td = exercise.files.teacher_defined_tests.count
           td = exercise.maximum_score
-          td = symbol_for(exercise.public?)
+          td.public data-value=exercise.public? = symbol_for(exercise.public?)
           td = link_to(t('shared.show'), exercise)
           td = link_to(t('shared.edit'), edit_exercise_path(exercise))
           td = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete)

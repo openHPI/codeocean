@@ -15,6 +15,17 @@ class ExercisesController < ApplicationController
   end
   private :authorize!
 
+  def batch_update
+    @exercises = Exercise.all
+    authorize!
+    @exercises = params[:exercises].values.map do |exercise_params|
+      exercise = Exercise.find(exercise_params.delete(:id))
+      exercise.update(exercise_params)
+      exercise
+    end
+    render(json: {exercises: @exercises})
+  end
+
   def clone
     exercise = @exercise.duplicate(public: false, token: nil, user: current_user)
     exercise.send(:generate_token)

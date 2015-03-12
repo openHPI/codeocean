@@ -5,6 +5,20 @@ describe ExercisesController do
   let(:user) { FactoryGirl.create(:admin) }
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
+  describe 'PUT #batch_update' do
+    let(:attributes) { {public: true} }
+    let(:request) { proc { put :batch_update, exercises: {0 => attributes.merge(id: exercise.id)} } }
+    before(:each) { request.call }
+
+    it 'updates the exercises' do
+      expect_any_instance_of(Exercise).to receive(:update).with(attributes)
+      request.call
+    end
+
+    expect_json
+    expect_status(200)
+  end
+
   describe 'POST #clone' do
     let(:request) { proc { post :clone, id: exercise.id } }
 

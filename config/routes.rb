@@ -22,6 +22,10 @@ Rails.application.routes.draw do
   end
 
   resources :exercises do
+    collection do
+      match '', to: 'exercises#batch_update', via: [:patch, :put]
+    end
+
     member do
       post :clone
       get :implement

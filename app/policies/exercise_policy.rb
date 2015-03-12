@@ -4,6 +4,10 @@ class ExercisePolicy < AdminOrAuthorPolicy
   end
   private :author?
 
+  def batch_update?
+    admin?
+  end
+
   [:clone?, :destroy?, :edit?, :show?, :statistics?, :update?].each do |action|
     define_method(action) { admin? || author? || team_member? }
   end
