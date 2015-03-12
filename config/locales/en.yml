@@ -283,6 +283,7 @@ en:
     administration: Administration
     already_signed_in: You are already signed in.
     apply_filters: Apply filters
+    back: Back
     batch_update: Batch Update
     confirm_destroy: Are you sure?
     create: 'Create %{model}'

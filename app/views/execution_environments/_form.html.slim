@@ -9,8 +9,8 @@
   .form-group
     = f.label(:docker_image)
     | &nbsp;
-    a.toggle-input href='#' = t('shared.new')
-    = f.select(:docker_image, @docker_images, {}, class: 'form-control')
+    a.toggle-input data={text_initial: t('shared.new'), text_toggled: t('shared.back')} href='#' = t('shared.new')
+    .original-input = f.select(:docker_image, @docker_images, {}, class: 'form-control')
     = f.text_field(:docker_image, class: 'alternative-input form-control', disabled: true)
     .help-block == t('.hints.docker_image')
   .form-group

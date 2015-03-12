@@ -7,16 +7,21 @@ $(function() {
 
   $('form').on('click', '.toggle-input', function(event) {
     event.preventDefault();
+
     if (!$(this).hasClass('disabled')) {
-      $(this).hide();
       var parent = $(this).parents('.form-group');
-      var original_input = parent.find('input:not(disabled), select:not(disabled), textarea:not(disabled), .chosen-container');
-      original_input.attr('disabled', true);
-      original_input.hide();
+      var original_input = parent.find('.original-input');
       var alternative_input = parent.find('.alternative-input');
-      alternative_input.attr('disabled', false);
-      alternative_input.show();
-      alternative_input.trigger('click');
+
+      if (alternative_input.attr('disabled')) {
+        $(this).text($(this).data('text-toggled'));
+        original_input.attr('disabled', true).hide();
+        alternative_input.attr('disabled', false).show();
+      } else {
+        $(this).text($(this).data('text-initial'));
+        alternative_input.attr('disabled', true).hide();
+        original_input.attr('disabled', false).show();
+      }
     }
   });
 
