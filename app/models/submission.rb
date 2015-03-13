@@ -21,8 +21,8 @@ class Submission < ActiveRecord::Base
   private :build_files_hash
 
   def collect_files
-    ancestors = build_files_hash(exercise.files, :id)
-    descendants = build_files_hash(files, :file_id)
+    ancestors = build_files_hash(exercise.files.includes(:file_type), :id)
+    descendants = build_files_hash(files.includes(:file_type), :file_id)
     ancestors.merge(descendants).values
   end
 
