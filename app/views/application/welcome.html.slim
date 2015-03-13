@@ -1,3 +1,8 @@
-h1 = t('breadcrumbs.application.welcome')
+h1 = t('.title', application_name: application_name)
 
-p = Forgery(:lorem_ipsum).words(100)
+- if current_user.try(:external_user?)
+  p = t('.text_signed_in_as_external_user', application_name: application_name)
+- elsif current_user.try(:internal_user?)
+  p = t('.text_signed_in_as_internal_user', user_name: current_user.name)
+- else
+  p == t('.text_signed_out', application_name: application_name, sign_in_path: sign_in_path)
