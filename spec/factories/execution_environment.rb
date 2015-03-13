@@ -47,7 +47,7 @@ FactoryGirl.define do
     name 'JRuby 1.7'
     permitted_execution_time 10.seconds
     pool_size 0
-    run_command 'ruby %{filename}'
+    run_command 'jruby %{filename}'
     singleton_execution_environment
     test_command 'rspec %{filename} --format documentation'
     testing_framework 'RspecAdapter'
