@@ -330,6 +330,10 @@ $(function() {
     return isActiveFileExecutable() && ['teacher_defined_test', 'user_defined_test'].includes(active_frame.data('role'));
   };
 
+  var isBrowserSupported = function() {
+    return window.EventSource !== undefined;
+  };
+
   var populatePanel = function(panel, result, index) {
     panel.removeClass('panel-default').addClass(getPanelClass(result));
     panel.find('.panel-title .filename').text(result.filename);
@@ -631,13 +635,18 @@ $(function() {
   };
 
   if ($('#editor').isPresent()) {
-    configureEditors();
-    initializeEditors();
-    initializeEventHandlers();
-    initializeFileTree();
-    initializeTooltips();
-    renderScore();
-    showFirstFile();
-    showRequestedTab();
+    if (isBrowserSupported()) {
+      $('.score, #development-environment').show();
+      configureEditors();
+      initializeEditors();
+      initializeEventHandlers();
+      initializeFileTree();
+      initializeTooltips();
+      renderScore();
+      showFirstFile();
+      showRequestedTab();
+    } else {
+      $('#alert').show();
+    }
   }
 });

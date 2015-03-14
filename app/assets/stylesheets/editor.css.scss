@@ -16,6 +16,14 @@ button i.fa-spin {
   }
 }
 
+.score {
+  display: none;
+}
+
+#alert, #development-environment {
+  display: none;
+}
+
 #editor-buttons {
   background-color: #008CBA;
   margin-top: 1em;

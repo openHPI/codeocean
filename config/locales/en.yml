@@ -188,6 +188,9 @@ en:
     form:
       add_file: Add file
     implement:
+      alert:
+        text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'
+        title: Your browser is not supported!
       default_feedback: Well done. All tests have been passed.
       feedback: Feedback
       file: 'Test File <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
