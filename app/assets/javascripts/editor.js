@@ -481,14 +481,8 @@ $(function() {
     });
   };
 
-  var showFrame = function(frame) {
-    active_frame = frame;
-    $('.frame').hide();
-    frame.show();
-  };
-
-  var showMainFile = function() {
-    var frame = $('.frame[data-role="main_file"]');
+  var showFirstFile = function() {
+    var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
     var file_id = frame.find('.editor').data('file-id');
     active_file = {
       filename: frame.data('filename'),
@@ -497,6 +491,12 @@ $(function() {
     $('#files').jstree().select_node(file_id);
     showFrame(frame);
     toggleButtonStates();
+  };
+
+  var showFrame = function(frame) {
+    active_frame = frame;
+    $('.frame').hide();
+    frame.show();
   };
 
   var showOutput = function(event) {
@@ -613,7 +613,7 @@ $(function() {
     initializeFileTree();
     initializeTooltips();
     renderScore();
-    showMainFile();
+    showFirstFile();
     showRequestedTab();
   }
 
