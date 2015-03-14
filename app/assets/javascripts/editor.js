@@ -38,6 +38,18 @@ $(function() {
     $('#output pre').remove();
   };
 
+  var closeEventSource = function(event) {
+    event.target.close();
+    hideSpinner();
+    running = false;
+    toggleButtonStates();
+
+    if (event.type === 'error' || JSON.parse(event.data).code !== 200) {
+      ajaxError();
+      showTab(1);
+    }
+  };
+
   var collectFiles = function() {
     var editable_editors = _.filter(editors, function(editor) {
       return !editor.getReadOnly();
@@ -116,18 +128,9 @@ $(function() {
 
   var evaluateCodeWithStreamedResponse = function(url, callback) {
     var event_source = new EventSource(url);
-    event_source.addEventListener('close', function(event) {
-      event_source.close();
-      hideSpinner();
-      running = false;
-      toggleButtonStates();
-      if (JSON.parse(event.data).code !== 200) {
-        ajaxError();
-        showTab(1);
-      }
-    });
 
-    event_source.addEventListener('error', ajaxError);
+    event_source.addEventListener('close', closeEventSource);
+    event_source.addEventListener('error', closeEventSource);
     event_source.addEventListener('hint', renderHint);
     event_source.addEventListener('info', storeContainerInformation);
     event_source.addEventListener('output', callback);
