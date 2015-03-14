@@ -48,7 +48,7 @@ class DockerContainerPool
   end
 
   def self.start_refill_task
-    @refill_task = Concurrent::TimerTask.new(execution_interval: config[:refill][:interval], run_now: true, timeout_interval: config[:refill][:timeout]) { refill }
+    @refill_task = Concurrent::TimerTask.new(execution_interval: config[:refill][:interval], run_now: false, timeout_interval: config[:refill][:timeout]) { refill }
     @refill_task.execute
   end
 end
