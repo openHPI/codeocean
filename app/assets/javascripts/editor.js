@@ -27,8 +27,10 @@ $(function() {
   };
 
   var ajaxError = function(response) {
+    var message = ((response || {}).responseJSON || {}).message || '';
+
     $.flash.danger({
-      text: (response && response.responseJSON && response.responseJSON.message) || $('#flash').data('message-failure')
+      text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
   };
 
