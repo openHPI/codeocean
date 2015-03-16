@@ -5,35 +5,29 @@ class Controller < AnonymousController
 end
 
 describe SubmissionScoring do
-  before(:all) do
-    @submission = FactoryGirl.create(:submission, cause: 'submit')
-  end
-
   let(:controller) { Controller.new }
+  before(:all) { @submission = FactoryGirl.create(:submission, cause: 'submit') }
   before(:each) { controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user)) }
 
-  describe '#score_submission' do
-    let(:score_submission) { proc { controller.score_submission(@submission) } }
-    before(:each) { score_submission.call }
+  describe '#collect_test_results' do
+    after(:each) { controller.send(:collect_test_results, @submission) }
 
-    it 'assigns @assessor' do
-      expect(controller.instance_variable_get(:@assessor)).to be_an(Assessor)
-    end
-
-    it 'assigns @docker_client' do
-      expect(controller.instance_variable_get(:@docker_client)).to be_a(DockerClient)
-    end
-
-    it 'executes the teacher-defined test cases' do
+    it 'executes every teacher-defined test file' do
       @submission.collect_files.select(&:teacher_defined_test?).each do |file|
-        expect_any_instance_of(DockerClient).to receive(:execute_test_command).with(@submission, file.name_with_extension).and_return({})
+        expect(controller).to receive(:execute_test_file).with(file, @submission).and_return({})
       end
-      score_submission.call
+    end
+  end
+
+  describe '#score_submission' do
+    after(:each) { controller.score_submission(@submission) }
+
+    it 'collects the test results' do
+      expect(controller).to receive(:collect_test_results).and_return([])
     end
 
-    it 'updates the submission' do
+    it 'assigns a score to the submissions' do
       expect(@submission).to receive(:update).with(score: anything)
-      score_submission.call
     end
   end
 end

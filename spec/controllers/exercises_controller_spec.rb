@@ -210,7 +210,7 @@ describe ExercisesController do
 
     before(:each) do
       allow_any_instance_of(Submission).to receive(:normalized_score).and_return(1)
-      expect(controller).to receive(:execute_test_files).and_return([{score: 1, weight: 1}])
+      expect(controller).to receive(:collect_test_results).and_return([{score: 1, weight: 1}])
       expect(controller).to receive(:score_submission).and_call_original
     end
 
