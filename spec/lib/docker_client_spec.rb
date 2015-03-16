@@ -26,33 +26,63 @@ describe DockerClient, docker: true do
   end
 
   describe '.create_container' do
-    after(:each) { described_class.create_container(execution_environment) }
+    let(:create_container) { described_class.create_container(execution_environment) }
 
     it 'uses the correct Docker image' do
       expect(described_class).to receive(:find_image_by_tag).with(execution_environment.docker_image).and_call_original
+      create_container
     end
 
     it 'creates a unique directory' do
       expect(described_class).to receive(:generate_local_workspace_path).and_call_original
       expect(FileUtils).to receive(:mkdir).with(kind_of(String)).and_call_original
+      create_container
     end
 
     it 'creates a container waiting for input' do
       expect(Docker::Container).to receive(:create).with('Image' => kind_of(String), 'OpenStdin' => true, 'StdinOnce' => true).and_call_original
+      create_container
     end
 
     it 'starts the container' do
       expect_any_instance_of(Docker::Container).to receive(:start)
+      create_container
     end
 
     it 'configures mapped directories' do
       expect(described_class).to receive(:mapped_directories).and_call_original
       expect_any_instance_of(Docker::Container).to receive(:start).with(hash_including('Binds' => kind_of(Array)))
+      create_container
     end
 
     it 'configures mapped ports' do
       expect(described_class).to receive(:mapped_ports).with(execution_environment).and_call_original
       expect_any_instance_of(Docker::Container).to receive(:start).with(hash_including('PortBindings' => kind_of(Hash)))
+      create_container
+    end
+
+    context 'when an error occurs' do
+      let(:error) { Docker::Error::NotFoundError.new }
+
+      context 'when retries are left' do
+        before(:each) do
+          expect(described_class).to receive(:mapped_directories).and_raise(error).and_call_original
+        end
+
+        it 'retries to create a container' do
+          expect(create_container).to be_a(Docker::Container)
+        end
+      end
+
+      context 'when no retries are left' do
+        before(:each) do
+          expect(described_class).to receive(:mapped_directories).exactly(DockerClient::RETRY_COUNT + 1).times.and_raise(error)
+        end
+
+        it 'raises the error' do
+          expect { create_container }.to raise_error(error)
+        end
+      end
     end
   end
 
@@ -114,7 +144,7 @@ describe DockerClient, docker: true do
     end
 
     it 'removes the mapped directory' do
-      expect(described_class).to receive(:local_workspace_path).and_return(workspace_path)
+      expect(described_class).to receive(:local_workspace_path).at_least(:once).and_return(workspace_path)
       expect(FileUtils).to receive(:rm_rf).with(workspace_path)
     end
 
@@ -124,14 +154,42 @@ describe DockerClient, docker: true do
   end
 
   describe '#execute_arbitrary_command' do
-    after(:each) { docker_client.execute_arbitrary_command(command) }
+    let(:execute_arbitrary_command) { docker_client.execute_arbitrary_command(command) }
 
     it 'takes a container from the pool' do
       expect(DockerContainerPool).to receive(:get_container).and_call_original
+      execute_arbitrary_command
     end
 
     it 'sends the command' do
       expect(docker_client).to receive(:send_command).with(command, kind_of(Docker::Container))
+      execute_arbitrary_command
+    end
+
+    context 'when a socket error occurs' do
+      let(:error) { Excon::Errors::SocketError.new(SocketError.new) }
+
+      context 'when retries are left' do
+        let(:result) { 42 }
+
+        before(:each) do
+          expect(docker_client).to receive(:send_command).and_raise(error).and_return(result)
+        end
+
+        it 'retries to execute the command' do
+          expect(execute_arbitrary_command).to eq(result)
+        end
+      end
+
+      context 'when no retries are left' do
+        before(:each) do
+          expect(docker_client).to receive(:send_command).exactly(DockerClient::RETRY_COUNT + 1).times.and_raise(error)
+        end
+
+        it 'raises the error' do
+          expect { execute_arbitrary_command }.to raise_error(error)
+        end
+      end
     end
   end
 

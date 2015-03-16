@@ -3,6 +3,7 @@ require 'concurrent'
 class DockerClient
   CONTAINER_WORKSPACE_PATH = '/workspace'
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
+  RETRY_COUNT = 2
 
   attr_reader :assigned_ports
   attr_reader :container_id
@@ -27,11 +28,15 @@ class DockerClient
   end
 
   def self.create_container(execution_environment)
+    tries ||= 0
     container = Docker::Container.create('Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first, 'OpenStdin' => true, 'StdinOnce' => true)
     local_workspace_path = generate_local_workspace_path
     FileUtils.mkdir(local_workspace_path)
     container.start('Binds' => mapped_directories(local_workspace_path), 'PortBindings' => mapped_ports(execution_environment))
     container
+  rescue Docker::Error::NotFoundError => error
+    destroy_container(container)
+    (tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
   def create_workspace(container)
@@ -59,14 +64,17 @@ class DockerClient
       port = configuration.first['HostPort'].to_i
       PortPool.release(port)
     end
-    FileUtils.rm_rf(local_workspace_path(container))
+    FileUtils.rm_rf(local_workspace_path(container)) if local_workspace_path(container)
     container.delete(force: true)
   end
 
   def execute_arbitrary_command(command, &block)
+    tries ||= 0
     container = DockerContainerPool.get_container(@execution_environment)
     @container_id = container.id
     send_command(command, container, &block)
+  rescue Excon::Errors::SocketError => error
+    (tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
   [:run, :test].each do |cause|
@@ -113,7 +121,7 @@ class DockerClient
   private :local_file_path
 
   def self.local_workspace_path(container)
-    Pathname.new(container.binds.first.split(':').first.sub(config[:workspace_root], LOCAL_WORKSPACE_ROOT.to_s))
+    Pathname.new(container.binds.first.split(':').first.sub(config[:workspace_root], LOCAL_WORKSPACE_ROOT.to_s)) if container.binds.present?
   end
 
   def self.mapped_directories(local_workspace_path)
