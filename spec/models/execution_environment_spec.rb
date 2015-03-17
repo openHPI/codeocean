@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ExecutionEnvironment do
-  let(:execution_environment) { described_class.create }
+  let(:execution_environment) { described_class.create.tap { |execution_environment| execution_environment.update(network_enabled: nil) } }
 
   it 'validates that the Docker image works', docker: true do
     expect(execution_environment).to receive(:validate_docker_image?).and_return(true)
@@ -30,6 +30,10 @@ describe ExecutionEnvironment do
 
   it 'validates the presence of a name' do
     expect(execution_environment.errors[:name]).to be_present
+  end
+
+  it 'validates the presence of the network enabled flag' do
+    expect(execution_environment.errors[:network_enabled]).to be_present
   end
 
   it 'validates the numericality of the permitted run time' do

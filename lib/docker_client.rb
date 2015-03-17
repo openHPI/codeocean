@@ -29,6 +29,7 @@ class DockerClient
     {
       'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
       'Memory' => execution_environment.memory_limit.megabytes,
+      'NetworkDisabled' => !execution_environment.network_enabled?,
       'OpenStdin' => true,
       'StdinOnce' => true
     }

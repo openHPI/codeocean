@@ -6,6 +6,7 @@ FactoryGirl.define do
     association :file_type, factory: :dot_coffee
     help
     name 'CoffeeScript'
+    network_enabled false
     permitted_execution_time 10.seconds
     pool_size 0
     run_command 'coffee'
@@ -19,6 +20,7 @@ FactoryGirl.define do
     association :file_type, factory: :dot_html
     help
     name 'HTML5'
+    network_enabled false
     permitted_execution_time 10.seconds
     pool_size 0
     run_command 'touch'
@@ -34,6 +36,7 @@ FactoryGirl.define do
     association :file_type, factory: :dot_java
     help
     name 'Java 8'
+    network_enabled false
     permitted_execution_time 10.seconds
     pool_size 0
     run_command 'make run'
@@ -49,6 +52,7 @@ FactoryGirl.define do
     association :file_type, factory: :dot_rb
     help
     name 'JRuby 1.7'
+    network_enabled false
     permitted_execution_time 10.seconds
     pool_size 0
     run_command 'jruby %{filename}'
@@ -64,6 +68,7 @@ FactoryGirl.define do
     association :file_type, factory: :dot_js
     help
     name 'Node.js'
+    network_enabled false
     permitted_execution_time 10.seconds
     pool_size 0
     run_command 'node %{filename}'
@@ -77,6 +82,7 @@ FactoryGirl.define do
     association :file_type, factory: :dot_py
     help
     name 'Python 3.4'
+    network_enabled false
     permitted_execution_time 10.seconds
     pool_size 0
     run_command 'python3 %{filename}'
@@ -92,6 +98,7 @@ FactoryGirl.define do
     association :file_type, factory: :dot_rb
     help
     name 'Ruby 2.2'
+    network_enabled false
     permitted_execution_time 10.seconds
     pool_size 0
     run_command 'ruby %{filename}'
@@ -108,6 +115,7 @@ FactoryGirl.define do
     exposed_ports '4567'
     help
     name 'Sinatra'
+    network_enabled true
     permitted_execution_time 15.minutes
     pool_size 0
     run_command 'ruby %{filename}'
@@ -123,6 +131,7 @@ FactoryGirl.define do
     association :file_type, factory: :dot_sql
     help
     name 'SQLite'
+    network_enabled false
     permitted_execution_time 1.minute
     pool_size 0
     run_command 'sqlite3 /database.db -init %{filename} -html'

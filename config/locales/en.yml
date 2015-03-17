@@ -15,6 +15,7 @@ en:
         help: Help Text
         memory_limit: Memory Limit (in MB)
         name: Name
+        network_enabled: Network Enabled
         permitted_execution_time: Permitted Execution Time (in Seconds)
         pool_size: Docker Container Pool Size
         run_command: Run Command

@@ -36,6 +36,10 @@ describe DockerClient, docker: true do
       expect(container_creation_options).to include('Memory' => execution_environment.memory_limit.megabytes)
     end
 
+    it 'specifies whether network access is enabled' do
+      expect(container_creation_options).to include('NetworkDisabled' => !execution_environment.network_enabled?)
+    end
+
     it 'specifies to open the standard input stream once' do
       expect(container_creation_options).to include('OpenStdin' => true, 'StdinOnce' => true)
     end
