@@ -2,7 +2,9 @@ require 'concurrent'
 
 class DockerClient
   CONTAINER_WORKSPACE_PATH = '/workspace'
+  DEFAULT_MEMORY_LIMIT = 256
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
+  MINIMUM_MEMORY_LIMIT = 4
   RETRY_COUNT = 2
 
   attr_reader :assigned_ports
@@ -23,16 +25,32 @@ class DockerClient
     @config ||= CodeOcean::Config.new(:docker).read(erb: true)
   end
 
+  def self.container_creation_options(execution_environment)
+    {
+      'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
+      'Memory' => execution_environment.memory_limit.megabytes,
+      'OpenStdin' => true,
+      'StdinOnce' => true
+    }
+  end
+
+  def self.container_start_options(execution_environment, local_workspace_path)
+    {
+      'Binds' => mapped_directories(local_workspace_path),
+      'PortBindings' => mapped_ports(execution_environment)
+    }
+  end
+
   def copy_file_to_workspace(options = {})
     FileUtils.cp(options[:file].native_file.path, local_file_path(options))
   end
 
   def self.create_container(execution_environment)
     tries ||= 0
-    container = Docker::Container.create('Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first, 'OpenStdin' => true, 'StdinOnce' => true)
+    container = Docker::Container.create(container_creation_options(execution_environment))
     local_workspace_path = generate_local_workspace_path
     FileUtils.mkdir(local_workspace_path)
-    container.start('Binds' => mapped_directories(local_workspace_path), 'PortBindings' => mapped_ports(execution_environment))
+    container.start(container_start_options(execution_environment, local_workspace_path))
     container
   rescue Docker::Error::NotFoundError => error
     destroy_container(container)

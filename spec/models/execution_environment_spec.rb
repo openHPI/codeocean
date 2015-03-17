@@ -13,6 +13,21 @@ describe ExecutionEnvironment do
     expect(execution_environment.errors[:docker_image]).to be_present
   end
 
+  it 'validates the minimum value of the memory limit' do
+    execution_environment.update(memory_limit: DockerClient::MINIMUM_MEMORY_LIMIT / 2)
+    expect(execution_environment.errors[:memory_limit]).to be_present
+  end
+
+  it 'validates the numericality of the memory limit' do
+    execution_environment.update(memory_limit: Math::PI)
+    expect(execution_environment.errors[:memory_limit]).to be_present
+  end
+
+  it 'validates the presence of a memory limit' do
+    execution_environment.update(memory_limit: nil)
+    expect(execution_environment.errors[:memory_limit]).to be_present
+  end
+
   it 'validates the presence of a name' do
     expect(execution_environment.errors[:name]).to be_present
   end

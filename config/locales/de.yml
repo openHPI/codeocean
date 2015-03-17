@@ -13,6 +13,7 @@ de:
         file_type: Standard-Dateityp
         file_type_id: Standard-Dateityp
         help: Hilfetext
+        memory_limit: Speicher-Limit (in MB)
         name: Name
         permitted_execution_time: Erlaubte Ausführungszeit (in Sekunden)
         pool_size: Docker-Container-Pool-Größe

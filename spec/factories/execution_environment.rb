@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :coffee_script, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-coffee:latest'
     association :file_type, factory: :dot_coffee
     help
@@ -13,6 +14,7 @@ FactoryGirl.define do
 
   factory :html, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-html:latest'
     association :file_type, factory: :dot_html
     help
@@ -27,6 +29,7 @@ FactoryGirl.define do
 
   factory :java, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-java:latest'
     association :file_type, factory: :dot_java
     help
@@ -41,6 +44,7 @@ FactoryGirl.define do
 
   factory :jruby, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-jruby:latest'
     association :file_type, factory: :dot_rb
     help
@@ -55,6 +59,7 @@ FactoryGirl.define do
 
   factory :node_js, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-node:latest'
     association :file_type, factory: :dot_js
     help
@@ -67,6 +72,7 @@ FactoryGirl.define do
 
   factory :python, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-python:latest'
     association :file_type, factory: :dot_py
     help
@@ -81,6 +87,7 @@ FactoryGirl.define do
 
   factory :ruby, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-ruby:latest'
     association :file_type, factory: :dot_rb
     help
@@ -95,6 +102,7 @@ FactoryGirl.define do
 
   factory :sinatra, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-sinatra:latest'
     association :file_type, factory: :dot_rb
     exposed_ports '4567'
@@ -110,6 +118,7 @@ FactoryGirl.define do
 
   factory :sqlite, class: ExecutionEnvironment do
     created_by_teacher
+    default_memory_limit
     docker_image 'hklement/ubuntu-sqlite:latest'
     association :file_type, factory: :dot_sql
     help
@@ -120,6 +129,10 @@ FactoryGirl.define do
     singleton_execution_environment
     test_command 'ruby %{filename}'
     testing_framework 'SqlResultSetComparatorAdapter'
+  end
+
+  trait :default_memory_limit do
+    memory_limit DockerClient::DEFAULT_MEMORY_LIMIT
   end
 
   trait :help do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150310150712) do
+ActiveRecord::Schema.define(version: 20150317083739) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20150310150712) do
     t.string   "user_type"
     t.integer  "pool_size"
     t.integer  "file_type_id"
+    t.integer  "memory_limit"
   end
 
   create_table "exercises", force: true do |t|

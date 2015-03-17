@@ -25,6 +25,34 @@ describe DockerClient, docker: true do
     end
   end
 
+  describe '.container_creation_options' do
+    let(:container_creation_options) { described_class.container_creation_options(execution_environment) }
+
+    it 'specifies the Docker image' do
+      expect(container_creation_options).to include('Image' => described_class.find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first)
+    end
+
+    it 'specifies the memory limit' do
+      expect(container_creation_options).to include('Memory' => execution_environment.memory_limit.megabytes)
+    end
+
+    it 'specifies to open the standard input stream once' do
+      expect(container_creation_options).to include('OpenStdin' => true, 'StdinOnce' => true)
+    end
+  end
+
+  describe '.container_start_options' do
+    let(:container_start_options) { described_class.container_start_options(execution_environment, '') }
+
+    it 'specifies mapped directories' do
+      expect(container_start_options).to include('Binds' => kind_of(Array))
+    end
+
+    it 'specifies mapped ports' do
+      expect(container_start_options).to include('PortBindings' => kind_of(Hash))
+    end
+  end
+
   describe '.create_container' do
     let(:create_container) { described_class.create_container(execution_environment) }
 
@@ -39,25 +67,25 @@ describe DockerClient, docker: true do
       create_container
     end
 
-    it 'creates a container waiting for input' do
-      expect(Docker::Container).to receive(:create).with('Image' => kind_of(String), 'OpenStdin' => true, 'StdinOnce' => true).and_call_original
+    it 'creates a container' do
+      expect(described_class).to receive(:container_creation_options).with(execution_environment).and_call_original
+      expect(Docker::Container).to receive(:create).with(kind_of(Hash)).and_call_original
       create_container
     end
 
     it 'starts the container' do
-      expect_any_instance_of(Docker::Container).to receive(:start)
+      expect(described_class).to receive(:container_start_options).with(execution_environment, kind_of(String)).and_call_original
+      expect_any_instance_of(Docker::Container).to receive(:start).with(kind_of(Hash)).and_call_original
       create_container
     end
 
     it 'configures mapped directories' do
       expect(described_class).to receive(:mapped_directories).and_call_original
-      expect_any_instance_of(Docker::Container).to receive(:start).with(hash_including('Binds' => kind_of(Array)))
       create_container
     end
 
     it 'configures mapped ports' do
       expect(described_class).to receive(:mapped_ports).with(execution_environment).and_call_original
-      expect_any_instance_of(Docker::Container).to receive(:start).with(hash_including('PortBindings' => kind_of(Hash)))
       create_container
     end
 

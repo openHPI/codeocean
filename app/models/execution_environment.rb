@@ -15,6 +15,7 @@ class ExecutionEnvironment < ActiveRecord::Base
   validate :valid_test_setup?
   validate :working_docker_image?, if: :validate_docker_image?
   validates :docker_image, presence: true
+  validates :memory_limit, numericality: {greater_than_or_equal_to: DockerClient::MINIMUM_MEMORY_LIMIT, only_integer: true}, presence: true
   validates :name, presence: true
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
   validates :pool_size, numericality: {only_integer: true}, presence: true

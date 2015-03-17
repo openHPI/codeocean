@@ -13,6 +13,7 @@ en:
         file_type: Default File Type
         file_type_id: Default File Type
         help: Help Text
+        memory_limit: Memory Limit (in MB)
         name: Name
         permitted_execution_time: Permitted Execution Time (in Seconds)
         pool_size: Docker Container Pool Size
