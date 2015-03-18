@@ -1,3 +1,5 @@
+require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
+
 class Exercise < ActiveRecord::Base
   include Context
   include Creation
@@ -16,7 +18,7 @@ class Exercise < ActiveRecord::Base
   validate :valid_main_file?
   validates :description, presence: true
   validates :execution_environment_id, presence: true
-  validates :public, inclusion: {in: [true, false]}
+  validates :public, boolean_presence: true
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
 

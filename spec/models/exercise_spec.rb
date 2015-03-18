@@ -28,6 +28,8 @@ describe Exercise do
 
   it 'validates the presence of the public flag' do
     expect(exercise.errors[:public]).to be_present
+    exercise.update(public: false)
+    expect(exercise.errors[:public]).to be_blank
   end
 
   it 'validates the presence of a title' do

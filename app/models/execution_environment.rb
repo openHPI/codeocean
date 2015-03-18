@@ -1,3 +1,5 @@
+require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
+
 class ExecutionEnvironment < ActiveRecord::Base
   include Creation
   include DefaultValues
@@ -16,7 +18,7 @@ class ExecutionEnvironment < ActiveRecord::Base
   validate :working_docker_image?, if: :validate_docker_image?
   validates :docker_image, presence: true
   validates :memory_limit, numericality: {greater_than_or_equal_to: DockerClient::MINIMUM_MEMORY_LIMIT, only_integer: true}, presence: true
-  validates :network_enabled, inclusion: {in: [true, false]}
+  validates :network_enabled, boolean_presence: true
   validates :name, presence: true
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
   validates :pool_size, numericality: {only_integer: true}, presence: true

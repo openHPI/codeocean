@@ -34,6 +34,8 @@ describe ExecutionEnvironment do
 
   it 'validates the presence of the network enabled flag' do
     expect(execution_environment.errors[:network_enabled]).to be_present
+    execution_environment.update(network_enabled: false)
+    expect(execution_environment.errors[:network_enabled]).to be_blank
   end
 
   it 'validates the numericality of the permitted run time' do

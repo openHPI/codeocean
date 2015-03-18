@@ -1,4 +1,5 @@
 require File.expand_path('../../../uploaders/file_uploader', __FILE__)
+require File.expand_path('../../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
 
 module CodeOcean
   class File < ActiveRecord::Base
@@ -35,9 +36,9 @@ module CodeOcean
     validates :feedback_message, absence: true, unless: :teacher_defined_test?
     validates :file_type_id, presence: true
     validates :hashed_content, if: :content_present?, presence: true
-    validates :hidden, inclusion: {in: [true, false]}
+    validates :hidden, boolean_presence: true
     validates :name, presence: true
-    validates :read_only, inclusion: {in: [true, false]}
+    validates :read_only, boolean_presence: true
     validates :role, inclusion: {in: ROLES}
     validates :weight, if: :teacher_defined_test?, numericality: true, presence: true
     validates :weight, absence: true, unless: :teacher_defined_test?

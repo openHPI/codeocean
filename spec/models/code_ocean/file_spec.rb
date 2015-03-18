@@ -9,6 +9,8 @@ describe CodeOcean::File do
 
   it 'validates the presence of the hidden flag' do
     expect(file.errors[:hidden]).to be_present
+    file.update(hidden: false)
+    expect(file.errors[:hidden]).to be_blank
   end
 
   it 'validates the presence of a name' do
@@ -17,6 +19,8 @@ describe CodeOcean::File do
 
   it 'validates the presence of the read-only flag' do
     expect(file.errors[:read_only]).to be_present
+    file.update(read_only: false)
+    expect(file.errors[:read_only]).to be_blank
   end
 
   context 'as a teacher-defined test' do

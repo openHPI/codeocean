@@ -1,3 +1,5 @@
+require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
+
 class FileType < ActiveRecord::Base
   include Creation
   include DefaultValues
@@ -11,12 +13,12 @@ class FileType < ActiveRecord::Base
   has_many :execution_environments
   has_many :files
 
-  validates :binary, inclusion: {in: [true, false]}
+  validates :binary, boolean_presence: true
   validates :editor_mode, presence: true, unless: :binary?
-  validates :executable, inclusion: {in: [true, false]}
+  validates :executable, boolean_presence: true
   validates :indent_size, presence: true, unless: :binary?
   validates :name, presence: true
-  validates :renderable, inclusion: {in: [true, false]}
+  validates :renderable, boolean_presence: true
 
   [:audio, :image, :video].each do |type|
     define_method("#{type}?") do

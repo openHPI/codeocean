@@ -5,6 +5,8 @@ describe FileType do
 
   it 'validates the presence of the binary flag' do
     expect(file_type.errors[:binary]).to be_present
+    file_type.update(binary: false)
+    expect(file_type.errors[:binary]).to be_blank
   end
 
   context 'when binary' do
@@ -33,6 +35,8 @@ describe FileType do
 
   it 'validates the presence of the executable flag' do
     expect(file_type.errors[:executable]).to be_present
+    file_type.update(executable: false)
+    expect(file_type.errors[:executable]).to be_blank
   end
 
   it 'validates the presence of a name' do
@@ -41,6 +45,8 @@ describe FileType do
 
   it 'validates the presence of the renderable flag' do
     expect(file_type.errors[:renderable]).to be_present
+    file_type.update(renderable: false)
+    expect(file_type.errors[:renderable]).to be_blank
   end
 
   it 'validates the presence of a user' do
