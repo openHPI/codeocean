@@ -29,7 +29,7 @@ module ApplicationHelper
   private :label_column
 
   def no
-    content_tag(:i, nil, class: 'glyphicon glyphicon-remove')
+    content_tag(:i, nil, class: 'fa fa-times')
   end
 
   def progress_bar(value)
@@ -73,6 +73,6 @@ module ApplicationHelper
   private :value_column
 
   def yes
-    content_tag(:i, nil, class: 'glyphicon glyphicon-ok')
+    content_tag(:i, nil, class: 'fa fa-check')
   end
 end

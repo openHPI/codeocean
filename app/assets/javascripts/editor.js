@@ -549,7 +549,7 @@ $(function() {
   };
 
   var showSpinner = function(initiator) {
-    $(initiator).find('i.fa, i.glyphicon').hide();
+    $(initiator).find('i.fa').hide();
     $(initiator).find('i.fa-spin').show();
   };
 

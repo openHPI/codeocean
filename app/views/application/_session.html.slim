@@ -2,7 +2,7 @@
   - if current_user.internal_user?
     li.dropdown
       a.dropdown-toggle data-toggle='dropdown' href='#'
-        i.glyphicon.glyphicon-user
+        i.fa.fa-user
         = current_user
         span.caret
       ul.dropdown-menu role='menu'
@@ -12,7 +12,7 @@
   - else
     li
       p.navbar-text
-        i.glyphicon.glyphicon-user
+        i.fa.fa-user
         = current_user
 - else
   li = link_to(sign_in_path) do

@@ -1,4 +1,4 @@
 - if policy(model).new?
   a.btn.btn-success href=(local_assigns.has_key?(:path) ? path : send(:"new_#{model.model_name.singular}_path"))
-    i.glyphicon.glyphicon-plus
+    i.fa.fa-plus
     = t('shared.new_model', model: model.model_name.human)

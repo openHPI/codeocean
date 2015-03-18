@@ -37,7 +37,7 @@ describe ApplicationHelper do
 
   describe '#no' do
     it "builds an 'i' tag" do
-      expect(no).to have_css('i.glyphicon.glyphicon-remove')
+      expect(no).to have_css('i.fa.fa-times')
     end
   end
 
@@ -139,7 +139,7 @@ describe ApplicationHelper do
 
   describe '#yes' do
     it "builds an 'i' tag" do
-      expect(yes).to have_css('i.glyphicon.glyphicon-ok')
+      expect(yes).to have_css('i.fa.fa-check')
     end
   end
 end
