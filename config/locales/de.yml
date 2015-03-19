@@ -262,7 +262,7 @@ de:
       failure: Fehlerhafte E-Mail oder Passwort.
       success: Sie haben sich erfolgreich angemeldet.
     create_through_lti:
-      session_with_outcome: 'Nachdem Sie die Aufgabe bearbeitet haben, wird ihre Bewertung an %{consumer} übermittelt.'
+      session_with_outcome: 'Nachdem Sie die Aufgabe bearbeitet haben, wird Ihre Bewertung an %{consumer} übermittelt.'
       session_without_outcome: 'Dies ist eine Übungs-Session. Ihre Bewertung wird nicht an %{consumer} übermittelt.'
     destroy:
       link: Abmelden
