@@ -5,7 +5,6 @@ class SubmissionsController < ApplicationController
   include SubmissionParameters
   include SubmissionScoring
 
-  around_action :with_server_sent_events, only: :run
   before_action :set_submission, only: [:download_file, :render_file, :run, :score, :show, :statistics, :stop, :test]
   before_action :set_docker_client, only: [:run, :test]
   before_action :set_files, only: [:download_file, :render_file, :show]
@@ -47,22 +46,24 @@ class SubmissionsController < ApplicationController
   end
 
   def run
-    container_id = nil
-    stderr = ''
-    output = @docker_client.execute_run_command(@submission, params[:filename]) do |stream, chunk|
-      unless container_id
-        container_id = @docker_client.container_id
-        @server_sent_event.write({id: container_id, ports: @docker_client.assigned_ports}, event: 'info')
+    with_server_sent_events do |server_sent_event|
+      container_info_sent = false
+      stderr = ''
+      output = @docker_client.execute_run_command(@submission, params[:filename]) do |stream, chunk|
+        unless container_info_sent
+          server_sent_event.write({id: @docker_client.container.try(:id), port_bindings: @docker_client.container.try(:port_bindings)}, event: 'info')
+          container_info_sent = true
+        end
+        server_sent_event.write({stream => chunk}, event: 'output')
+        stderr += chunk if stream == :stderr
       end
-      @server_sent_event.write({stream => chunk}, event: 'output')
-      stderr += chunk if stream == :stderr
-    end
-    @server_sent_event.write(output, event: 'status')
-    if stderr.present?
-      if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(stderr)
-        @server_sent_event.write(hint, event: 'hint')
-      else
-        store_error(stderr)
+      server_sent_event.write(output, event: 'status')
+      if stderr.present?
+        if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(stderr)
+          server_sent_event.write(hint, event: 'hint')
+        else
+          store_error(stderr)
+        end
       end
     end
   end
@@ -114,7 +115,7 @@ class SubmissionsController < ApplicationController
   end
 
   def store_error(stderr)
-    ::Error.create(execution_environment_id: @submission.exercise.execution_environment_id, message: stderr)
+    ::Error.create(execution_environment_id: @submission.execution_environment.id, message: stderr)
   end
   private :store_error
 
@@ -125,16 +126,16 @@ class SubmissionsController < ApplicationController
 
   def with_server_sent_events
     response.headers['Content-Type'] = 'text/event-stream'
-    @server_sent_event = SSE.new(response.stream)
-    @server_sent_event.write(nil, event: 'start')
-    yield
-    @server_sent_event.write({code: 200}, event: 'close')
+    server_sent_event = SSE.new(response.stream)
+    server_sent_event.write(nil, event: 'start')
+    yield(server_sent_event) if block_given?
+    server_sent_event.write({code: 200}, event: 'close')
   rescue => exception
     logger.error(exception.message)
     logger.error(exception.backtrace.join("\n"))
-    @server_sent_event.write({code: 500}, event: 'close')
+    server_sent_event.write({code: 500}, event: 'close')
   ensure
-    @server_sent_event.close
+    server_sent_event.close
   end
   private :with_server_sent_events
 end

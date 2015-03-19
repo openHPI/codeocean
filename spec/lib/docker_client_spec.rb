@@ -118,15 +118,14 @@ describe DockerClient, docker: true do
     end
   end
 
-  describe '#create_workspace' do
+  describe '#create_workspace_files' do
     let(:container) { double }
 
     before(:each) do
-      docker_client.instance_variable_set(:@submission, submission)
       expect(container).to receive(:binds).at_least(:once).and_return(["#{workspace_path}:#{DockerClient::CONTAINER_WORKSPACE_PATH}"])
     end
 
-    after(:each) { docker_client.send(:create_workspace, container) }
+    after(:each) { docker_client.send(:create_workspace_files, container, submission) }
 
     it 'creates submission-specific directories' do
       expect(Dir).to receive(:mkdir).at_least(:once)
@@ -233,8 +232,8 @@ describe DockerClient, docker: true do
       expect(DockerContainerPool).to receive(:get_container).with(submission.execution_environment).and_call_original
     end
 
-    it 'creates the workspace' do
-      expect(docker_client).to receive(:create_workspace)
+    it 'creates the workspace files' do
+      expect(docker_client).to receive(:create_workspace_files)
     end
 
     it 'executes the run command' do
@@ -251,8 +250,8 @@ describe DockerClient, docker: true do
       expect(DockerContainerPool).to receive(:get_container).with(submission.execution_environment).and_call_original
     end
 
-    it 'creates the workspace' do
-      expect(docker_client).to receive(:create_workspace)
+    it 'creates the workspace files' do
+      expect(docker_client).to receive(:create_workspace_files)
     end
 
     it 'executes the test command' do

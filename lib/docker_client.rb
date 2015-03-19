@@ -7,8 +7,7 @@ class DockerClient
   MINIMUM_MEMORY_LIMIT = 4
   RETRY_COUNT = 2
 
-  attr_reader :assigned_ports
-  attr_reader :container_id
+  attr_reader :container
 
   def self.check_availability!
     Timeout.timeout(config[:connection_timeout]) { Docker.version }
@@ -58,8 +57,8 @@ class DockerClient
     (tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
-  def create_workspace(container)
-    @submission.collect_files.each do |file|
+  def create_workspace_files(container, submission)
+    submission.collect_files.each do |file|
       FileUtils.mkdir_p(File.join(self.class.local_workspace_path(container), file.path || ''))
       if file.file_type.binary?
         copy_file_to_workspace(container: container, file: file)
@@ -68,7 +67,7 @@ class DockerClient
       end
     end
   end
-  private :create_workspace
+  private :create_workspace_files
 
   def create_workspace_file(options = {})
     file = File.new(local_file_path(options), 'w')
@@ -79,31 +78,29 @@ class DockerClient
 
   def self.destroy_container(container)
     container.stop.kill
-    (container.port_bindings.try(:values) || []).each do |configuration|
-      port = configuration.first['HostPort'].to_i
-      PortPool.release(port)
-    end
+    container.port_bindings.values.each { |port| PortPool.release(port) }
     FileUtils.rm_rf(local_workspace_path(container)) if local_workspace_path(container)
     container.delete(force: true)
   end
 
   def execute_arbitrary_command(command, &block)
+    execute_command(command, nil, block)
+  end
+
+  def execute_command(command, before_execution_block, output_consuming_block)
     tries ||= 0
-    container = DockerContainerPool.get_container(@execution_environment)
-    @container_id = container.id
-    send_command(command, container, &block)
+    @container = DockerContainerPool.get_container(@execution_environment)
+    before_execution_block.try(:call)
+    send_command(command, @container, &output_consuming_block)
   rescue Excon::Errors::SocketError => error
     (tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
   [:run, :test].each do |cause|
     define_method("execute_#{cause}_command") do |submission, filename, &block|
-      container = DockerContainerPool.get_container(submission.execution_environment)
-      @container_id = container.id
-      @submission = submission
-      create_workspace(container)
       command = submission.execution_environment.send(:"#{cause}_command") % command_substitutions(filename)
-      send_command(command, container, &block)
+      create_workspace_files = proc { create_workspace_files(container, submission) }
+      execute_command(command, create_workspace_files, block)
     end
   end
 

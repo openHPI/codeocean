@@ -125,6 +125,7 @@ describe SubmissionsController do
 
   describe 'GET #run' do
     let(:filename) { submission.collect_files.detect(&:main_file?).name_with_extension }
+    let(:request) { get :run, filename: filename, id: submission.id }
 
     before(:each) do
       expect_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
@@ -133,27 +134,27 @@ describe SubmissionsController do
     context 'when no errors occur during execution' do
       before(:each) do
         expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
-        get :run, filename: filename, id: submission.id
+        request
       end
 
       expect_assigns(docker_client: DockerClient)
-      expect_assigns(server_sent_event: ActionController::Live::SSE)
       expect_assigns(submission: :submission)
       expect_content_type('text/event-stream')
       expect_status(200)
     end
 
     context 'when an error occurs during execution' do
-      let(:hint) { "Your object 'main' of class 'Object' does not understand the method 'foo'." }
       let(:stderr) { "undefined method `foo' for main:Object (NoMethodError)" }
 
       before(:each) do
         expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_yield(:stderr, stderr)
       end
 
-      after(:each) { get :run, filename: filename, id: submission.id }
+      after(:each) { request }
 
       context 'when the error is covered by a hint' do
+        let(:hint) { "Your object 'main' of class 'Object' does not understand the method 'foo'." }
+
         before(:each) do
           expect_any_instance_of(Whistleblower).to receive(:generate_hint).with(stderr).and_return(hint)
         end
@@ -235,5 +236,54 @@ describe SubmissionsController do
     expect_assigns(submission: :submission)
     expect_json
     expect_status(200)
+  end
+
+  describe '#with_server_sent_events' do
+    let(:response) { ActionController::TestResponse.new }
+    before(:each) { allow(controller).to receive(:response).and_return(response) }
+
+    context 'when no error occurs' do
+      after(:each) { controller.send(:with_server_sent_events) }
+
+      it 'uses server-sent events' do
+        expect(ActionController::Live::SSE).to receive(:new).and_call_original
+      end
+
+      it "writes a 'start' event" do
+        allow_any_instance_of(ActionController::Live::SSE).to receive(:write)
+        expect_any_instance_of(ActionController::Live::SSE).to receive(:write).with(nil, event: 'start')
+      end
+
+      it "writes a 'close' event" do
+        allow_any_instance_of(ActionController::Live::SSE).to receive(:write)
+        expect_any_instance_of(ActionController::Live::SSE).to receive(:write).with({code: 200}, event: 'close')
+      end
+
+      it 'closes the stream' do
+        expect_any_instance_of(ActionController::Live::SSE).to receive(:close).and_call_original
+      end
+    end
+
+    context 'when an error occurs' do
+      after(:each) { controller.send(:with_server_sent_events) { fail } }
+
+      it 'uses server-sent events' do
+        expect(ActionController::Live::SSE).to receive(:new).and_call_original
+      end
+
+      it "writes a 'start' event" do
+        allow_any_instance_of(ActionController::Live::SSE).to receive(:write)
+        expect_any_instance_of(ActionController::Live::SSE).to receive(:write).with(nil, event: 'start')
+      end
+
+      it "writes a 'close' event" do
+        allow_any_instance_of(ActionController::Live::SSE).to receive(:write)
+        expect_any_instance_of(ActionController::Live::SSE).to receive(:write).with({code: 500}, event: 'close')
+      end
+
+      it 'closes the stream' do
+        expect_any_instance_of(ActionController::Live::SSE).to receive(:close).and_call_original
+      end
+    end
   end
 end
