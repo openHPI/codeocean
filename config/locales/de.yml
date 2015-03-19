@@ -168,6 +168,7 @@ de:
       create_file: Neue Datei
       destroy_file: Datei löschen
       download: Herunterladen
+      network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank">%{address}</a>.'
       render: Anzeigen
       run: Ausführen
       run_failure: Bei der Ausführung Ihres Codes sind Fehler aufgetreten.

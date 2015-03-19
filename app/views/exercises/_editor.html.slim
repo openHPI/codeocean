@@ -8,7 +8,7 @@
       = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
       .btn-group
         = render('editor_button', icon: 'fa fa-desktop', id: 'render', label: t('exercises.editor.render'))
-        = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
+        = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-network' => t('exercises.editor.network'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
         = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-stop', id: 'stop', label: t('exercises.editor.stop'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
         = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-rocket', id: 'test', label: t('exercises.editor.test'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + t'))
         button.btn.btn-primary.dropdown-toggle data-toggle='dropdown' type='button'

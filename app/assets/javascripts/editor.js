@@ -600,7 +600,18 @@ $(function() {
   };
 
   var storeContainerInformation = function(event) {
-    $('#stop').data('container', JSON.parse(event.data));
+    var container_information = JSON.parse(event.data);
+    $('#stop').data('container', container_information);
+
+    if (_.size(container_information.port_bindings) > 0) {
+      $.flash.info({
+        icon: ['fa', 'fa-exchange'],
+        text: _.map(container_information.port_bindings, function(key, value) {
+          var url = window.location.protocol + '//' + window.location.hostname + ':' + key;
+          return $('#run').data('message-network').replace('%{port}', value).replace(/%{address}/g, url);
+        }).join('\n')
+      });
+    }
   };
 
   var storeTab = function(event) {
