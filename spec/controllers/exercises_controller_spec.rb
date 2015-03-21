@@ -146,27 +146,39 @@ describe ExercisesController do
 
   describe 'GET #implement' do
     let(:request) { proc { get :implement, id: exercise.id } }
-    before(:each) { request.call }
 
-    expect_assigns(exercise: :exercise)
+    context 'with an exercise with visible files' do
+      let(:exercise) { FactoryGirl.create(:fibonacci) }
+      before(:each) { request.call }
 
-    context 'with an existing submission' do
-      let!(:submission) { FactoryGirl.create(:submission, exercise_id: exercise.id, user_id: user.id, user_type: InternalUser.class.name) }
+      expect_assigns(exercise: :exercise)
 
-      it "populates the editors with the submission's files' content" do
-        request.call
-        expect(assigns(:files)).to eq(submission.files)
+      context 'with an existing submission' do
+        let!(:submission) { FactoryGirl.create(:submission, exercise_id: exercise.id, user_id: user.id, user_type: user.class.name) }
+
+        it "populates the editors with the submission's files' content" do
+          request.call
+          expect(assigns(:files)).to eq(submission.files)
+        end
       end
+
+      context 'without an existing submission' do
+        it "populates the editors with the exercise's files' content" do
+          expect(assigns(:files)).to eq(exercise.files.visible)
+        end
+      end
+
+      expect_status(200)
+      expect_template(:implement)
     end
 
-    context 'without an existing submission' do
-      it "populates the editors with the exercise's files' content" do
-        expect(assigns(:files)).to eq(exercise.files.visible)
-      end
-    end
+    context 'with an exercise without visible files' do
+      before(:each) { request.call }
 
-    expect_status(200)
-    expect_template(:implement)
+      expect_assigns(exercise: :exercise)
+      expect_flash_message(:alert, :'exercises.implement.no_files')
+      expect_redirect(:exercise)
+    end
   end
 
   describe 'GET #index' do

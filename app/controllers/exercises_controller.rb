@@ -82,6 +82,7 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def implement
+    redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:name_with_extension)
     @paths = collect_paths(@files)

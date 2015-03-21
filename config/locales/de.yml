@@ -199,6 +199,7 @@ de:
       feedback: Feedback
       file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
       hint: Tipp
+      no_files: Die Aufgabe umfasst noch keine sichtbaren Dateien.
       no_output: Die letzte Code-Ausführung hat keine Ausgabe erzeugt.
       no_output_yet: Bisher existiert noch keine Ausgabe.
       output: Programm-Ausgabe
