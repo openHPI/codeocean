@@ -156,6 +156,10 @@ $(function() {
     jqxhr.fail(ajaxError);
   };
 
+  var fileActionsAvailable = function() {
+    return isActiveFileRenderable() || isActiveFileRunnable() || isActiveFileStoppable() || isActiveFileTestable();
+  };
+
   var findOrCreateOutputElement = function(index) {
     if ($('#output-' + index).isPresent()) {
       return $('#output-' + index);
@@ -644,6 +648,8 @@ $(function() {
     $('#dropdown-run').toggleClass('disabled', !isActiveFileRunnable() || running);
     $('#dropdown-stop').toggleClass('disabled', !isActiveFileStoppable());
     $('#dropdown-test').toggleClass('disabled', !isActiveFileTestable());
+    $('#dummy').toggle(!fileActionsAvailable());
+    $('#editor-buttons .dropdown-toggle').toggle(fileActionsAvailable());
     $('#render').toggle(isActiveFileRenderable());
     $('#run').toggle(isActiveFileRunnable() && !running);
     $('#stop').toggle(isActiveFileStoppable());

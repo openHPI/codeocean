@@ -168,6 +168,7 @@ en:
       create_file: New File
       destroy_file: Delete File
       download: Download
+      dummy: No Action
       network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank">%{address}</a>.'
       render: Render
       run: Run
