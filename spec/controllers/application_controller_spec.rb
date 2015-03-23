@@ -22,18 +22,13 @@ describe ApplicationController do
   end
 
   describe '#render_not_authorized' do
-    let(:render_not_authorized) { controller.send(:render_not_authorized) }
-
-    it 'displays a flash message' do
-      expect(controller).to receive(:redirect_to)
-      render_not_authorized
-      expect(flash[:danger]).to eq(I18n.t('application.not_authorized'))
+    before(:each) do
+      expect(controller).to receive(:welcome) { controller.send(:render_not_authorized) }
+      get :welcome
     end
 
-    it 'redirects to the root URL' do
-      expect(controller).to receive(:redirect_to).with(:root)
-      render_not_authorized
-    end
+    expect_flash_message(:alert, I18n.t('application.not_authorized'))
+    expect_redirect(:root)
   end
 
   describe '#set_locale' do

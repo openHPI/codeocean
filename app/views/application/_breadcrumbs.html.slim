@@ -11,7 +11,7 @@
         - if object
           li = link_to(object, send(:"#{model.model_name.singular}_path", object))
       li.active
-        - if translation_present?("shared.#{params[:action]}")
+        - if I18n.translation_present?("shared.#{params[:action]}")
           = t("shared.#{params[:action]}")
         - else
           = t("#{controller_name}.index.#{params[:action]}")

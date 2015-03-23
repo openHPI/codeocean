@@ -17,8 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_not_authorized
-    flash[:danger] = t('application.not_authorized')
-    redirect_to(:root)
+    redirect_to(:root, alert: t('application.not_authorized'))
   end
   private :render_not_authorized
 

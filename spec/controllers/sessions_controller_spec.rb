@@ -103,25 +103,25 @@ describe SessionsController do
       end
 
       context 'when LTI outcomes are supported' do
+        let(:message) { I18n.t('sessions.create_through_lti.session_with_outcome', consumer: consumer) }
+
         before(:each) do
           expect(controller).to receive(:lti_outcome_service?).and_return(true)
           request
         end
 
-        it 'displays a flash message' do
-          expect(flash[:notice]).to eq(I18n.t('sessions.create_through_lti.session_with_outcome', consumer: consumer))
-        end
+        expect_flash_message(:notice, :message)
       end
 
       context 'when LTI outcomes are not supported' do
+        let(:message) { I18n.t('sessions.create_through_lti.session_without_outcome', consumer: consumer) }
+
         before(:each) do
           expect(controller).to receive(:lti_outcome_service?).and_return(false)
           request
         end
 
-        it 'displays a flash message' do
-          expect(flash[:notice]).to eq(I18n.t('sessions.create_through_lti.session_without_outcome', consumer: consumer))
-        end
+        expect_flash_message(:notice, :message)
       end
 
       it 'redirects to the requested exercise' do
@@ -206,6 +206,7 @@ describe SessionsController do
         get :new
       end
 
+      expect_flash_message(:alert, :'shared.already_signed_in')
       expect_redirect(:root)
     end
   end

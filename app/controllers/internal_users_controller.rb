@@ -39,8 +39,7 @@ class InternalUsersController < ApplicationController
   def deliver_reset_password_instructions
     if params[:email].present?
       InternalUser.find_by(email: params[:email]).try(:deliver_reset_password_instructions!)
-      flash[:notice] = t('.success')
-      redirect_to(:root)
+      redirect_to(:root, notice: t('.success'))
     end
   end
   private :deliver_reset_password_instructions
@@ -77,10 +76,7 @@ class InternalUsersController < ApplicationController
   end
 
   def render_forgot_password_form
-    if current_user
-      flash[:warning] = t('shared.already_signed_in')
-      redirect_to(:root)
-    end
+    redirect_to(:root, alert: t('shared.already_signed_in')) if current_user
   end
   private :render_forgot_password_form
 

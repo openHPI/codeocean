@@ -118,10 +118,7 @@ describe ExecutionEnvironmentsController do
       end
 
       expect_assigns(docker_images: Array)
-
-      it 'displays a flash message' do
-        expect(flash[:warning]).to eq(error_message)
-      end
+      expect_flash_message(:warning, :error_message)
     end
   end
 

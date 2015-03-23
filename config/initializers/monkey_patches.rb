@@ -13,3 +13,9 @@ unless Array.respond_to?(:to_h)
     end
   end
 end
+
+module I18n
+  def self.translation_present?(key)
+    t(key, default: '').present?
+  end
+end

@@ -24,7 +24,7 @@ end
 def expect_flash_message(type, message = nil)
   it 'displays a flash message' do
     if message
-      expect(flash[type]).to eq(message.is_a?(String) ? message : I18n.t(message))
+      expect(flash[type]).to eq(obtain_message(message))
     else
       expect(flash[type]).to be_present
     end
@@ -59,13 +59,25 @@ def expect_template(template)
   end
 end
 
-def obtain_object(value)
-  case value
+def obtain_object(object)
+  case object
   when Proc
-    value.call
+    object.call
   when Symbol
-    send(value)
+    send(object)
   else
-    value
+    object
   end
 end
+private :obtain_object
+
+def obtain_message(object)
+  if object.is_a?(String)
+    object
+  elsif I18n.translation_present?(object)
+    I18n.t(object)
+  else
+    send(object)
+  end
+end
+private :obtain_message

@@ -46,8 +46,7 @@ describe ExercisesController do
       end
 
       expect_assigns(exercise: Exercise)
-
-      expect_flash_message(:danger)
+      expect_flash_message(:danger, :'shared.message_failure')
       expect_redirect(:exercise)
     end
   end

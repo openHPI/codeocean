@@ -22,7 +22,7 @@ module ApplicationHelper
   def label_column(label)
     content_tag(:div, class: 'col-sm-3') do
       content_tag(:strong) do
-        translation_present?("activerecord.attributes.#{label}") ? t("activerecord.attributes.#{label}") : t(label)
+        I18n.translation_present?("activerecord.attributes.#{label}") ? t("activerecord.attributes.#{label}") : t(label)
       end
     end
   end
@@ -59,11 +59,6 @@ module ApplicationHelper
       value.to_s
     end
   end
-
-  def translation_present?(key)
-    I18n.t(key, default: '').present?
-  end
-  private :translation_present?
 
   def value_column(value)
     content_tag(:div, class: 'col-sm-9') do

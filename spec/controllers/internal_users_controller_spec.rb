@@ -180,6 +180,7 @@ describe InternalUsersController do
         get :forgot_password
       end
 
+      expect_flash_message(:alert, :'shared.already_signed_in')
       expect_redirect(:root)
     end
   end
