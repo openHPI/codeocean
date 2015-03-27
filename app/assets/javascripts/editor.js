@@ -17,7 +17,6 @@ $(function() {
   var active_frame;
   var running = false;
 
-  var flowrUrl = 'http://vm-teusner-webrtc.eaalab.hpi.uni-potsdam.de:3000/api/exceptioninfo?id=&lang=auto'
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
   var ajax = function(options) {
@@ -233,6 +232,7 @@ $(function() {
         return
       }
 
+      var flowrUrl = $('#flowrHint').data('url')
       var flowrHintBody = $('#flowrHint .panel-body')
       var queryParameters = {
         query: stderrOutput
@@ -286,62 +286,61 @@ $(function() {
       session.setUseSoftTabs(true);
       session.setUseWrapMode(true);
 
-      var file_id =  $(element).data('file-id');
-      setAnnotations(editor, file_id);
+      setAnnotations(editor, $(element).data('file-id'))
 
       session.on('annotationRemoval', handleAnnotationRemoval)
       session.on('annotationChange', handleAnnotationChange)
 
       // TODO refactor here
       // Code for clicks on gutter / sidepanel
-      editor.on("guttermousedown", function(e){
-        var target = e.domEvent.target;
-        if (target.className.indexOf("ace_gutter-cell") == -1)
-          return;
-        if (!editor.isFocused())
-          return;
-        if (e.clientX > 25 + target.getBoundingClientRect().left)
-          return;
+      editor.on("guttermousedown", handleGutterClick);
+    })
+  }
 
+  var handleGutterClick = function(e){
+    var file_id =  $(element).data('file-id');
+    var target = e.domEvent.target;
 
-        var row = e.getDocumentPosition().row;
-        e.stop();
+    if (target.className.indexOf("ace_gutter-cell") == -1) return;
+    if (!editor.isFocused()) return;
+    if (e.clientX > 25 + target.getBoundingClientRect().left) return;
 
-        var commentModal = $('#comment-modal')
+    var row = e.getDocumentPosition().row;
+    e.stop();
 
-        if (hasCommentsInRow(editor, row)) {
-          var rowComments = getCommentsForRow(editor, row)
-          var comments = _.pluck(rowComments, 'text').join('\n')
-          commentModal.find('#other-comments').text(comments)
-        } else {
-          commentModal.find('#other-comments').text('none')
-        }
+    var commentModal = $('#comment-modal')
 
-        commentModal.find('#addCommentButton').off('click')
-        commentModal.find('#removeAllButton').off('click')
+    if (hasCommentsInRow(editor, row)) {
+      var rowComments = getCommentsForRow(editor, row)
+      var comments = _.pluck(rowComments, 'text').join('\n')
+      commentModal.find('#other-comments').text(comments)
+    } else {
+      commentModal.find('#other-comments').text('none')
+    }
 
-        commentModal.find('#addCommentButton').on('click', function(e){
-          var user_id = 18
-          var commenttext = commentModal.find('textarea').val()
+    commentModal.find('#addCommentButton').off('click')
+    commentModal.find('#removeAllButton').off('click')
 
-          if (commenttext !== "") {
-            createComment(user_id, file_id, row, editor, commenttext)
-            commentModal.modal('hide')
-          }
-        })
+    commentModal.find('#addCommentButton').on('click', function(e){
+      var user_id = 18
+      var commenttext = commentModal.find('textarea').val()
 
-        commentModal.find('#removeAllButton').on('click', function(e){
-          var user_id = 18;
-          deleteComment(user_id,file_id,row,editor);
-          commentModal.modal('hide')
-        })
+      if (commenttext !== "") {
+        createComment(user_id, file_id, row, editor, commenttext)
+        commentModal.modal('hide')
+      }
+    })
 
-        commentModal.modal('show')
-      });
-    });
-  };
+    commentModal.find('#removeAllButton').on('click', function(e){
+      var user_id = 18;
+      deleteComment(user_id,file_id,row,editor);
+      commentModal.modal('hide')
+    })
 
-    var hasCommentsInRow = function (editor, row){
+    commentModal.modal('show')
+  }
+
+  var hasCommentsInRow = function (editor, row) {
     return editor.getSession().getAnnotations().some(function(element) {
       return element.row === row
     })
