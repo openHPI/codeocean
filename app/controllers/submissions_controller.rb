@@ -44,6 +44,7 @@ class SubmissionsController < ApplicationController
         comment.save!
       end
     end
+  end
 
   def download_file
     if @file.native_file?
