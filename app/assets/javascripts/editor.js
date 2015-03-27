@@ -13,8 +13,8 @@ $(function() {
   var THEME = 'ace/theme/textmate';
 
   var editors = [];
-  var active_file;
-  var active_frame;
+  var active_file = undefined;
+  var active_frame = undefined;
   var running = false;
 
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
@@ -128,9 +128,22 @@ $(function() {
 
   var evaluateCodeWithStreamedResponse = function(url, callback) {
     var event_source = new EventSource(url);
+    event_source.addEventListener('close', function(event) {
+      event_source.close();
+      hideSpinner();
+      running = false;
+      toggleButtonStates();
+      if (JSON.parse(event.data).code !== 200) {
+        ajaxError();
+        showTab(1);
+      }
 
-    event_source.addEventListener('close', closeEventSource);
-    event_source.addEventListener('error', closeEventSource);
+      if (qa_api) {
+        qa_api.executeCommand('syncOutput', [chunkBuffer]);
+        chunkBuffer = [{streamedResponse: true}];
+      }
+    });
+    event_source.addEventListener('error', ajaxError);
     event_source.addEventListener('hint', renderHint);
     event_source.addEventListener('info', storeContainerInformation);
     event_source.addEventListener('output', callback);
@@ -264,6 +277,9 @@ $(function() {
   var handleTestResponse = function(response) {
     clearOutput();
     printOutput(response[0], false, 0);
+        if (qa_api) {
+            qa_api.executeCommand('syncOutput', [response]);
+        }
     showStatus(response[0]);
     showTab(2);
   };
@@ -276,6 +292,19 @@ $(function() {
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
       var editor = ace.edit(element);
+      if (qa_api) {
+        editor.getSession().on("change", function (deltaObject) {
+          qa_api.executeCommand('syncEditor', [active_file, deltaObject]);
+        });
+      }
+
+      var document = editor.getSession().getDocument();
+      // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
+      var file_id = $(element).data('file-id');
+      var content = $('.editor-content[data-file-id=' + file_id + ']');
+      setActiveFile($(element).parent().data('filename'), file_id);
+
+      document.insertLines(0, content.text().split(/\n/));
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
@@ -500,10 +529,15 @@ $(function() {
     return 'executable' in active_frame.data();
   };
 
-  var isActiveFileRenderable = function() {
-    return 'renderable' in active_frame.data();
-  };
-
+    var setActiveFile = function (filename, fileId) {
+        active_file = {
+            filename: filename,
+            id: fileId
+        };
+    }
+    var isActiveFileRenderable = function() {
+        return 'renderable' in active_frame.data();
+    };
   var isActiveFileRunnable = function() {
     return isActiveFileExecutable() && ['main_file', 'user_defined_file'].includes(active_frame.data('role'));
   };
@@ -532,10 +566,17 @@ $(function() {
     panel.find('.row .col-sm-9').eq(3).find('a').attr('href', '#output-' + index);
   };
 
+    var chunkBuffer = [{streamedResponse: true}];
+
   var printChunk = function(event) {
     var output = JSON.parse(event.data);
     if (output) {
-      printOutput(output, true, 0);
+        printOutput(output, true, 0);
+        // send test response to QA
+        // we are expecting an array of outputs:
+        if (qa_api) {
+            chunkBuffer.push(output);
+        }
     } else {
       clearOutput();
       $('#hint').fadeOut();
@@ -575,6 +616,10 @@ $(function() {
       printOutput(result, false, index);
       printScoringResult(result, index);
     });
+    if (qa_api) {
+      // send test response to QA
+      qa_api.executeCommand('syncOutput', [response]);
+    }
   };
 
   var renderCode = function(event) {
@@ -698,10 +743,7 @@ $(function() {
   var showFirstFile = function() {
     var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
     var file_id = frame.find('.editor').data('file-id');
-    active_file = {
-      filename: frame.data('filename'),
-      id: file_id
-    };
+      setActiveFile(frame.data('filename'), file_id);
     $('#files').jstree().select_node(file_id);
     showFrame(frame);
     toggleButtonStates();
@@ -834,18 +876,52 @@ $(function() {
   };
 
   if ($('#editor').isPresent()) {
-    if (isBrowserSupported()) {
-      $('.score, #development-environment').show();
-      configureEditors();
-      initializeEditors();
-      initializeEventHandlers();
-      initializeFileTree();
-      initializeTooltips();
-      renderScore();
-      showFirstFile();
-      showRequestedTab();
-    } else {
-      $('#alert').show();
+    var qa_api;
+    if ($('#questions-column').isPresent() && QaApi.isBrowserSupported()) {
+      $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
+      $('#questions-column').addClass('col-md-3');
+
+      var node = document.getElementById('questions-holder');
+      var url = $('#questions-holder').data('url');
+
+      var qa_api = new QaApi(node, url);
     }
+    configureEditors();
+    initializeEditors(qa_api);
+    initializeEventHandlers();
+    initializeFileTree();
+    initializeTooltips();
+    renderScore();
+    showMainFile();
+    showRequestedTab();
   }
+
+  var stderrOutput = ''
+  var handleStderrOutputForFlowr = function(event) {
+    var json = JSON.parse(event.data);
+
+    if (json.stderr) {
+      stderrOutput += json.stderr;
+    } else if (json.code) {
+      var flowrHintBody = $('#flowrHint .panel-body')
+
+      jQuery.getJSON(flowrUrl + '&query=' + escape(stderrOutput), function(data) {
+        for (var question in data.queryResults) {
+          // replace everything, not only one occurence
+          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question)
+          var resultTile = $(collapsibleTileHtml)
+
+          resultTile.find('h4 > a').text(data.queryResults[question].title)
+          resultTile.find('.panel-body').append($(data.queryResults[question].body))
+
+          flowrHintBody.append(resultTile)
+        }
+
+        $('#flowrHint').fadeIn()
+      })
+
+
+      stderrOutput = ''
+    }
+  };
 });
