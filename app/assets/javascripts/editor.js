@@ -16,6 +16,7 @@ $(function() {
   var active_file = undefined;
   var active_frame = undefined;
   var running = false;
+  var qa_api = undefined;
 
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
@@ -128,22 +129,9 @@ $(function() {
 
   var evaluateCodeWithStreamedResponse = function(url, callback) {
     var event_source = new EventSource(url);
-    event_source.addEventListener('close', function(event) {
-      event_source.close();
-      hideSpinner();
-      running = false;
-      toggleButtonStates();
-      if (JSON.parse(event.data).code !== 200) {
-        ajaxError();
-        showTab(1);
-      }
 
-      if (qa_api) {
-        qa_api.executeCommand('syncOutput', [chunkBuffer]);
-        chunkBuffer = [{streamedResponse: true}];
-      }
-    });
-    event_source.addEventListener('error', ajaxError);
+    event_source.addEventListener('close', closeEventSource);
+    event_source.addEventListener('error', closeEventSource);
     event_source.addEventListener('hint', renderHint);
     event_source.addEventListener('info', storeContainerInformation);
     event_source.addEventListener('output', callback);
@@ -154,10 +142,19 @@ $(function() {
       event_source.addEventListener('close', handleStderrOutputForFlowr);
     }
 
+    if (qa_api) {
+      event_source.addEventListener('close', handleStreamedResponseForCodePilot);
+    }
+
     event_source.addEventListener('status', function(event) {
       showStatus(JSON.parse(event.data));
     });
   };
+
+  var handleStreamedResponseForCodePilot = function(event) {
+      qa_api.executeCommand('syncOutput', [chunkBuffer]);
+      chunkBuffer = [{streamedResponse: true}];
+  }
 
   var evaluateCodeWithoutStreamedResponse = function(url, callback) {
     var jqxhr = ajax({
@@ -277,9 +274,9 @@ $(function() {
   var handleTestResponse = function(response) {
     clearOutput();
     printOutput(response[0], false, 0);
-        if (qa_api) {
-            qa_api.executeCommand('syncOutput', [response]);
-        }
+    if (qa_api) {
+      qa_api.executeCommand('syncOutput', [response]);
+    }
     showStatus(response[0]);
     showTab(2);
   };
@@ -347,7 +344,7 @@ $(function() {
         commentModal.find('#removeAllButton').off('click')
 
         commentModal.find('#addCommentButton').on('click', function(e){
-          var user_id = 18
+          var user_id = element.data('user-id')
           var commenttext = commentModal.find('textarea').val()
 
           if (commenttext !== "") {
@@ -357,7 +354,7 @@ $(function() {
         })
 
         commentModal.find('#removeAllButton').on('click', function(e){
-          var user_id = 18;
+          var user_id = element.data('user-id')
           deleteComment(user_id,file_id,row,editor);
           commentModal.modal('hide')
         })
@@ -380,10 +377,7 @@ $(function() {
   }
 
   var setAnnotations = function (editor, file_id){
-
-      var session = editor.getSession();
-
-      // Retrieve comments for file and set them as annotations
+      var session = editor.getSession()
       var url = "/comments";
 
       var jqrequest = $.ajax({
@@ -468,7 +462,7 @@ $(function() {
         url:  '/comments',
         data: {
           id: annotation.id,
-          user_id: 18,
+          user_id: $('#editor').data('user-id'),
           comment: {
             row: annotation.row,
             text: annotation.text
@@ -504,6 +498,7 @@ $(function() {
     $('#create-file').on('click', showFileDialog);
     $('#destroy-file').on('click', confirmDestroy);
     $('#download').on('click', downloadCode);
+    $('#request-for-comments').on('click', requestComments)
   };
 
   var initializeTooltips = function() {
@@ -529,15 +524,17 @@ $(function() {
     return 'executable' in active_frame.data();
   };
 
-    var setActiveFile = function (filename, fileId) {
-        active_file = {
-            filename: filename,
-            id: fileId
-        };
-    }
-    var isActiveFileRenderable = function() {
-        return 'renderable' in active_frame.data();
-    };
+  var setActiveFile = function (filename, fileId) {
+      active_file = {
+          filename: filename,
+          id: fileId
+      };
+  }
+
+  var isActiveFileRenderable = function() {
+    return 'renderable' in active_frame.data();
+  };
+
   var isActiveFileRunnable = function() {
     return isActiveFileExecutable() && ['main_file', 'user_defined_file'].includes(active_frame.data('role'));
   };
@@ -566,7 +563,7 @@ $(function() {
     panel.find('.row .col-sm-9').eq(3).find('a').attr('href', '#output-' + index);
   };
 
-    var chunkBuffer = [{streamedResponse: true}];
+  var chunkBuffer = [{streamedResponse: true}];
 
   var printChunk = function(event) {
     var output = JSON.parse(event.data);
@@ -612,10 +609,17 @@ $(function() {
     $('#results ul').first().html('');
     $('.test-count .number').html(response.length);
     clearOutput();
+
     _.each(response, function(result, index) {
       printOutput(result, false, index);
       printScoringResult(result, index);
     });
+
+    if (_.some(response, function(result) {
+      return result.status === 'timeout';
+    })) {
+      showTimeoutMessage();
+    }
     if (qa_api) {
       // send test response to QA
       qa_api.executeCommand('syncOutput', [response]);
@@ -743,7 +747,7 @@ $(function() {
   var showFirstFile = function() {
     var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
     var file_id = frame.find('.editor').data('file-id');
-      setActiveFile(frame.data('filename'), file_id);
+    setActiveFile(frame.data('filename'), file_id);
     $('#files').jstree().select_node(file_id);
     showFrame(frame);
     toggleButtonStates();
@@ -778,10 +782,7 @@ $(function() {
 
   var showStatus = function(output) {
     if (output.status === 'timeout') {
-      $.flash.danger({
-        icon: ['fa', 'fa-clock-o'],
-        text: $('#editor').data('message-timeout')
-      });
+      showTimeoutMessage();
     } else if (output.stderr) {
       $.flash.danger({
         icon: ['fa', 'fa-bug'],
@@ -797,6 +798,13 @@ $(function() {
 
   var showTab = function(index) {
     $('a[data-toggle="tab"]').eq(index || 0).tab('show');
+  };
+
+  var showTimeoutMessage = function() {
+    $.flash.danger({
+      icon: ['fa', 'fa-clock-o'],
+      text: $('#editor').data('message-timeout')
+    });
   };
 
   var showWorkspaceTab = function(event) {
@@ -875,53 +883,55 @@ $(function() {
     $('#test').toggle(isActiveFileTestable());
   };
 
-  if ($('#editor').isPresent()) {
-    var qa_api;
-    if ($('#questions-column').isPresent() && QaApi.isBrowserSupported()) {
-      $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
-      $('#questions-column').addClass('col-md-3');
+  var requestComments = function(e) {
+    var user_id = $('#editor').data('user-id')
+    var exercise_id = $('#editor').data('exercise-id')
+    var file_id = $('.editor').data('file-id')
 
-      var node = document.getElementById('questions-holder');
-      var url = $('#questions-holder').data('url');
-
-      var qa_api = new QaApi(node, url);
-    }
-    configureEditors();
-    initializeEditors(qa_api);
-    initializeEventHandlers();
-    initializeFileTree();
-    initializeTooltips();
-    renderScore();
-    showMainFile();
-    showRequestedTab();
+    $.ajax({
+      method: 'POST',
+      url: '/request_for_comments',
+      data: {
+        request_for_comment: {
+          requestorid: user_id,
+          exerciseid: exercise_id,
+          fileid: file_id,
+          "requested_at(1i)": 2015,
+          "requested_at(2i)":3,
+          "requested_at(3i)":27,
+          "requested_at(4i)":17,
+          "requested_at(5i)":06
+        }
+      }
+    })
   }
 
-  var stderrOutput = ''
-  var handleStderrOutputForFlowr = function(event) {
-    var json = JSON.parse(event.data);
+    var initializeCodePilot = function() {
+        if ($('#questions-column').isPresent() && QaApi.isBrowserSupported()) {
+            $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
+            $('#questions-column').addClass('col-md-3');
 
-    if (json.stderr) {
-      stderrOutput += json.stderr;
-    } else if (json.code) {
-      var flowrHintBody = $('#flowrHint .panel-body')
+            var node = document.getElementById('questions-holder');
+            var url = $('#questions-holder').data('url');
 
-      jQuery.getJSON(flowrUrl + '&query=' + escape(stderrOutput), function(data) {
-        for (var question in data.queryResults) {
-          // replace everything, not only one occurence
-          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question)
-          var resultTile = $(collapsibleTileHtml)
-
-          resultTile.find('h4 > a').text(data.queryResults[question].title)
-          resultTile.find('.panel-body').append($(data.queryResults[question].body))
-
-          flowrHintBody.append(resultTile)
+            qa_api = new QaApi(node, url);
         }
-
-        $('#flowrHint').fadeIn()
-      })
-
-
-      stderrOutput = ''
     }
-  };
+
+  if ($('#editor').isPresent()) {
+      if (isBrowserSupported()) {
+          initializeCodePilot();
+          $('.score, #development-environment').show();
+          configureEditors();
+          initializeEditors();
+          initializeEventHandlers();
+          initializeFileTree();
+          initializeTooltips();
+          renderScore();
+          showFirstFile();
+          showRequestedTab();
+      } else {
+          $('#alert').show();
+      }
+  }
 });

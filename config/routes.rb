@@ -1,6 +1,7 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
+  resources :request_for_comments
   resources :comments, except: [:destroy] do
     collection do
       delete :destroy

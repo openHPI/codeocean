@@ -11,4 +11,5 @@
       - else
         = link_to(file.native_file.file.name_with_extension, file.native_file.url)
   - else
-    .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only = file.content
+    .editor-content.hidden data-file-id=file.ancestor_id = file.content
+    .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only

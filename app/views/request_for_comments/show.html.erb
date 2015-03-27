@@ -1,0 +1,9 @@
+<div class="list-group">
+  <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exerciseid) %></h4>
+  <p class="list-group-item-text">
+    <%= InternalUser.find(@request_for_comment.requestorid) %> | <%= @request_for_comment.requested_at %>
+  </p>
+</div>
+
+<div id='editor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.fileid%>'>
+</div>

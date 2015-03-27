@@ -110,7 +110,7 @@ GEM
       excon (>= 0.38.0)
       json
     erubis (2.7.0)
-    excon (0.44.4)
+    excon (0.45.0)
     execjs (2.4.0)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
