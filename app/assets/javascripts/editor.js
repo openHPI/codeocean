@@ -569,10 +569,17 @@ $(function() {
     $('#results ul').first().html('');
     $('.test-count .number').html(response.length);
     clearOutput();
+
     _.each(response, function(result, index) {
       printOutput(result, false, index);
       printScoringResult(result, index);
     });
+
+    if (_.some(response, function(result) {
+      return result.status === 'timeout';
+    })) {
+      showTimeoutMessage();
+    }
   };
 
   var renderCode = function(event) {
@@ -734,10 +741,7 @@ $(function() {
 
   var showStatus = function(output) {
     if (output.status === 'timeout') {
-      $.flash.danger({
-        icon: ['fa', 'fa-clock-o'],
-        text: $('#editor').data('message-timeout')
-      });
+      showTimeoutMessage();
     } else if (output.stderr) {
       $.flash.danger({
         icon: ['fa', 'fa-bug'],
@@ -753,6 +757,13 @@ $(function() {
 
   var showTab = function(index) {
     $('a[data-toggle="tab"]').eq(index || 0).tab('show');
+  };
+
+  var showTimeoutMessage = function() {
+    $.flash.danger({
+      icon: ['fa', 'fa-clock-o'],
+      text: $('#editor').data('message-timeout')
+    });
   };
 
   var showWorkspaceTab = function(event) {
