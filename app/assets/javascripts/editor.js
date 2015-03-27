@@ -318,7 +318,7 @@ $(function() {
         commentModal.find('#removeAllButton').off('click')
 
         commentModal.find('#addCommentButton').on('click', function(e){
-          var user_id = 18
+          var user_id = element.data('user-id')
           var commenttext = commentModal.find('textarea').val()
 
           if (commenttext !== "") {
@@ -328,7 +328,7 @@ $(function() {
         })
 
         commentModal.find('#removeAllButton').on('click', function(e){
-          var user_id = 18;
+          var user_id = element.data('user-id')
           deleteComment(user_id,file_id,row,editor);
           commentModal.modal('hide')
         })
@@ -351,10 +351,7 @@ $(function() {
   }
 
   var setAnnotations = function (editor, file_id){
-
-      var session = editor.getSession();
-
-      // Retrieve comments for file and set them as annotations
+      var session = editor.getSession()
       var url = "/comments";
 
       var jqrequest = $.ajax({
@@ -439,7 +436,7 @@ $(function() {
         url:  '/comments',
         data: {
           id: annotation.id,
-          user_id: 18,
+          user_id: $('#editor').data('user-id'),
           comment: {
             row: annotation.row,
             text: annotation.text
@@ -475,6 +472,7 @@ $(function() {
     $('#create-file').on('click', showFileDialog);
     $('#destroy-file').on('click', confirmDestroy);
     $('#download').on('click', downloadCode);
+    $('#request-for-comments').on('click', requestComments)
   };
 
   var initializeTooltips = function() {
@@ -832,6 +830,29 @@ $(function() {
     $('#stop').toggle(isActiveFileStoppable());
     $('#test').toggle(isActiveFileTestable());
   };
+
+  var requestComments = function(e) {
+    var user_id = $('#editor').data('user-id')
+    var exercise_id = $('#editor').data('exercise-id')
+    var file_id = $('.editor').data('file-id')
+
+    $.ajax({
+      method: 'POST',
+      url: '/request_for_comments',
+      data: {
+        request_for_comment: {
+          requestorid: user_id,
+          exerciseid: exercise_id,
+          fileid: file_id,
+          "requested_at(1i)": 2015,
+          "requested_at(2i)":3,
+          "requested_at(3i)":27,
+          "requested_at(4i)":17,
+          "requested_at(5i)":06
+        }
+      }
+    })
+  }
 
   if ($('#editor').isPresent()) {
     if (isBrowserSupported()) {
