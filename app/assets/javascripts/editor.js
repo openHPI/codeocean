@@ -17,7 +17,8 @@ $(function() {
   var active_frame;
   var running = false;
 
-  var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>';
+  var flowrUrl = 'http://vm-teusner-webrtc.eaalab.hpi.uni-potsdam.de:3000/api/exceptioninfo?id=&lang=auto'
+  var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
   var ajax = function(options) {
     return $.ajax(_.extend({
@@ -221,27 +222,42 @@ $(function() {
     showTab(3);
   };
 
+  var stderrOutput = ''
   var handleStderrOutputForFlowr = function(event) {
-    var flowrUrl = $('#flowrHint').data('url');
     var json = JSON.parse(event.data);
-    var stderrOutput = '';
 
     if (json.stderr) {
       stderrOutput += json.stderr;
     } else if (json.code) {
-      var flowrHintBody = $('#flowrHint .panel-body');
+      if (stderrOutput == '') {
+        return
+      }
 
-      $.getJSON(flowrUrl + '&query=' + escape(stderrOutput), function(data) {
-        _.each(_.compact(data.queryResults), function(question, index) {
-          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
-          var resultTile = $(collapsibleTileHtml);
-          resultTile.find('h4 > a').text(question.title);
-          resultTile.find('.panel-body').append(question.body);
-          flowrHintBody.append(resultTile);
-        });
+      var flowrHintBody = $('#flowrHint .panel-body')
+      var queryParameters = {
+        query: stderrOutput
+      }
 
-        $('#flowrHint').fadeIn();
-      });
+      flowrHintBody.empty()
+
+      jQuery.getJSON(flowrUrl, queryParameters, function(data) {
+        for (var question in data.queryResults) {
+          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question)
+          var resultTile = $(collapsibleTileHtml)
+
+          resultTile.find('h4 > a').text(data.queryResults[question].title + ' | Found via ' + data.queryResults[question].source)
+          resultTile.find('.panel-body').html(data.queryResults[question].body)
+          resultTile.find('.panel-body').append('<a href="' + data.queryResults[question].url  + '" class="btn btn-primary btn-block">Open this question</a>')
+
+          flowrHintBody.append(resultTile)
+        }
+
+        if (data.queryResults.length !== 0) {
+          $('#flowrHint').fadeIn()
+        }
+      })
+
+      stderrOutput = ''
     }
   };
 
@@ -269,8 +285,172 @@ $(function() {
       session.setTabSize($(element).data('indent-size'));
       session.setUseSoftTabs(true);
       session.setUseWrapMode(true);
+
+      var file_id =  $(element).data('file-id');
+      setAnnotations(editor, file_id);
+
+      session.on('annotationRemoval', handleAnnotationRemoval)
+      session.on('annotationChange', handleAnnotationChange)
+
+      // TODO refactor here
+      // Code for clicks on gutter / sidepanel
+      editor.on("guttermousedown", function(e){
+        var target = e.domEvent.target;
+        if (target.className.indexOf("ace_gutter-cell") == -1)
+          return;
+        if (!editor.isFocused())
+          return;
+        if (e.clientX > 25 + target.getBoundingClientRect().left)
+          return;
+
+
+        var row = e.getDocumentPosition().row;
+        e.stop();
+
+        var commentModal = $('#comment-modal')
+
+        if (hasCommentsInRow(editor, row)) {
+          var rowComments = getCommentsForRow(editor, row)
+          var comments = _.pluck(rowComments, 'text').join('\n')
+          commentModal.find('#other-comments').text(comments)
+        } else {
+          commentModal.find('#other-comments').text('none')
+        }
+
+        commentModal.find('#addCommentButton').off('click')
+        commentModal.find('#removeAllButton').off('click')
+
+        commentModal.find('#addCommentButton').on('click', function(e){
+          var user_id = 18
+          var commenttext = commentModal.find('textarea').val()
+
+          if (commenttext !== "") {
+            createComment(user_id, file_id, row, editor, commenttext)
+            commentModal.modal('hide')
+          }
+        })
+
+        commentModal.find('#removeAllButton').on('click', function(e){
+          var user_id = 18;
+          deleteComment(user_id,file_id,row,editor);
+          commentModal.modal('hide')
+        })
+
+        commentModal.modal('show')
+      });
     });
   };
+
+    var hasCommentsInRow = function (editor, row){
+    return editor.getSession().getAnnotations().some(function(element) {
+      return element.row === row
+    })
+  }
+
+  var getCommentsForRow = function (editor, row){
+    return editor.getSession().getAnnotations().filter(function(element) {
+      return element.row === row
+    })
+  }
+
+  var setAnnotations = function (editor, file_id){
+
+      var session = editor.getSession();
+
+      // Retrieve comments for file and set them as annotations
+      var url = "/comments";
+
+      var jqrequest = $.ajax({
+          dataType: 'json',
+          method: 'GET',
+          url: url,
+          data: {
+            file_id: file_id
+          }
+      });
+
+      jqrequest.done(function(response){
+          setAnnotationsCallback(response, session);
+      });
+      jqrequest.fail(ajaxError);
+  }
+
+  var setAnnotationsCallback = function (response, session) {
+      var annotations = response;
+
+      $.each(annotations, function(index, comment){
+          comment.className = "code-ocean_comment";
+          comment.text = comment.user_id + ": " + comment.text;
+      });
+
+      session.setAnnotations(annotations);
+  }
+
+  var deleteComment = function (user_id, file_id, row, editor) {
+      var jqxhr = $.ajax({
+          type: 'DELETE',
+          url: "/comments",
+          data: {
+            row: row,
+            file_id: file_id,
+            user_id: user_id
+          }
+      });
+      jqxhr.done(function (response) {
+          setAnnotations(editor, file_id);
+      });
+      jqxhr.fail(ajaxError);
+  }
+
+  var createComment = function (user_id, file_id, row, editor, commenttext){
+      var jqxhr = $.ajax({
+        data: {
+          comment: {
+            user_id: user_id,
+            file_id: file_id,
+            row: row,
+            column: 0,
+            text: commenttext
+          }
+        },
+        dataType: 'json',
+        method: 'POST',
+        url:  "/comments"
+      });
+      jqxhr.done(function(response){
+          setAnnotations(editor, file_id);
+      });
+      jqxhr.fail(ajaxError);
+  }
+
+  var handleAnnotationRemoval = function(removedAnnotations) {
+    removedAnnotations.forEach(function(annotation) {
+      $.ajax({
+        method: 'DELETE',
+        url:  '/comment_by_id',
+        data: {
+          id: annotation.id,
+        }
+      })
+    })
+  }
+
+  var handleAnnotationChange = function(changedAnnotations) {
+    changedAnnotations.forEach(function(annotation) {
+      $.ajax({
+        method: 'PUT',
+        url:  '/comments',
+        data: {
+          id: annotation.id,
+          user_id: 18,
+          comment: {
+            row: annotation.row,
+            text: annotation.text
+          }
+        }
+      })
+    })
+  }
 
   var initializeEventHandlers = function() {
     $(document).on('click', '#results a', showOutput);

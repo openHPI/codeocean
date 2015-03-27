@@ -1,6 +1,15 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
+  resources :comments, except: [:destroy] do
+    collection do
+      delete :destroy
+    end
+  end
+
+  delete '/comment_by_id', to: 'comments#destroy_by_id'
+  put '/comments', to: 'comments#update'
+
   root to: 'application#welcome'
 
   namespace :admin do
