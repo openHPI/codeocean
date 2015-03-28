@@ -13,9 +13,10 @@ $(function() {
   var THEME = 'ace/theme/textmate';
 
   var editors = [];
-  var active_file;
-  var active_frame;
+  var active_file = undefined;
+  var active_frame = undefined;
   var running = false;
+  var qa_api = undefined;
 
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
@@ -141,10 +142,19 @@ $(function() {
       event_source.addEventListener('close', handleStderrOutputForFlowr);
     }
 
+    if (qa_api) {
+      event_source.addEventListener('close', handleStreamedResponseForCodePilot);
+    }
+
     event_source.addEventListener('status', function(event) {
       showStatus(JSON.parse(event.data));
     });
   };
+
+  var handleStreamedResponseForCodePilot = function(event) {
+      qa_api.executeCommand('syncOutput', [chunkBuffer]);
+      chunkBuffer = [{streamedResponse: true}];
+  }
 
   var evaluateCodeWithoutStreamedResponse = function(url, callback) {
     var jqxhr = ajax({
@@ -264,6 +274,9 @@ $(function() {
   var handleTestResponse = function(response) {
     clearOutput();
     printOutput(response[0], false, 0);
+    if (qa_api) {
+      qa_api.executeCommand('syncOutput', [response]);
+    }
     showStatus(response[0]);
     showTab(2);
   };
@@ -276,6 +289,19 @@ $(function() {
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
       var editor = ace.edit(element);
+      if (qa_api) {
+        editor.getSession().on("change", function (deltaObject) {
+          qa_api.executeCommand('syncEditor', [active_file, deltaObject]);
+        });
+      }
+
+      var document = editor.getSession().getDocument();
+      // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
+      var file_id = $(element).data('file-id');
+      var content = $('.editor-content[data-file-id=' + file_id + ']');
+      setActiveFile($(element).parent().data('filename'), file_id);
+
+      document.insertLines(0, content.text().split(/\n/));
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
@@ -498,6 +524,13 @@ $(function() {
     return 'executable' in active_frame.data();
   };
 
+  var setActiveFile = function (filename, fileId) {
+      active_file = {
+          filename: filename,
+          id: fileId
+      };
+  }
+
   var isActiveFileRenderable = function() {
     return 'renderable' in active_frame.data();
   };
@@ -530,10 +563,17 @@ $(function() {
     panel.find('.row .col-sm-9').eq(3).find('a').attr('href', '#output-' + index);
   };
 
+  var chunkBuffer = [{streamedResponse: true}];
+
   var printChunk = function(event) {
     var output = JSON.parse(event.data);
     if (output) {
-      printOutput(output, true, 0);
+        printOutput(output, true, 0);
+        // send test response to QA
+        // we are expecting an array of outputs:
+        if (qa_api) {
+            chunkBuffer.push(output);
+        }
     } else {
       clearOutput();
       $('#hint').fadeOut();
@@ -579,6 +619,10 @@ $(function() {
       return result.status === 'timeout';
     })) {
       showTimeoutMessage();
+    }
+    if (qa_api) {
+      // send test response to QA
+      qa_api.executeCommand('syncOutput', [response]);
     }
   };
 
@@ -703,10 +747,7 @@ $(function() {
   var showFirstFile = function() {
     var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
     var file_id = frame.find('.editor').data('file-id');
-    active_file = {
-      filename: frame.data('filename'),
-      id: file_id
-    };
+    setActiveFile(frame.data('filename'), file_id);
     $('#files').jstree().select_node(file_id);
     showFrame(frame);
     toggleButtonStates();
@@ -865,19 +906,32 @@ $(function() {
     })
   }
 
-  if ($('#editor').isPresent()) {
-    if (isBrowserSupported()) {
-      $('.score, #development-environment').show();
-      configureEditors();
-      initializeEditors();
-      initializeEventHandlers();
-      initializeFileTree();
-      initializeTooltips();
-      renderScore();
-      showFirstFile();
-      showRequestedTab();
-    } else {
-      $('#alert').show();
+    var initializeCodePilot = function() {
+        if ($('#questions-column').isPresent() && QaApi.isBrowserSupported()) {
+            $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
+            $('#questions-column').addClass('col-md-3');
+
+            var node = document.getElementById('questions-holder');
+            var url = $('#questions-holder').data('url');
+
+            qa_api = new QaApi(node, url);
+        }
     }
+
+  if ($('#editor').isPresent()) {
+      if (isBrowserSupported()) {
+          initializeCodePilot();
+          $('.score, #development-environment').show();
+          configureEditors();
+          initializeEditors();
+          initializeEventHandlers();
+          initializeFileTree();
+          initializeTooltips();
+          renderScore();
+          showFirstFile();
+          showRequestedTab();
+      } else {
+          $('#alert').show();
+      }
   }
 });

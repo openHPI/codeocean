@@ -86,6 +86,12 @@ class ExercisesController < ApplicationController
     @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:name_with_extension)
     @paths = collect_paths(@files)
+
+    if current_user.respond_to? :external_id
+      @user_id = current_user.external_id
+    else
+      @user_id = '00000001-3100-4444-9999-000000000001'
+    end
   end
 
   def index

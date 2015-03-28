@@ -1,73 +1,79 @@
-h1 = @exercise
+.row
+  #editor-column.col-md-10.col-md-offset-1
+    h1 = @exercise
 
-span.badge.pull-right.score
+    span.badge.pull-right.score
 
-p.lead = @exercise.description
+    p.lead = @exercise.description
 
-#alert.alert.alert-danger role='alert'
-  h4 = t('.alert.title')
-  p = t('.alert.text', application_name: application_name)
+    #alert.alert.alert-danger role='alert'
+      h4 = t('.alert.title')
+      p = t('.alert.text', application_name: application_name)
 
-#development-environment
-  ul.nav.nav-justified.nav-tabs role='tablist'
-    li.active
-      a data-placement='top' data-toggle='tab' data-tooltip=true href='#instructions' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 1')
-        i.fa.fa-question
-        = t('activerecord.attributes.exercise.instructions')
-    li
-      a data-placement='top' data-toggle='tab' data-tooltip=true href='#workspace' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 2')
-        i.fa.fa-code
-        = t('.workspace')
-    li
-      a data-placement='top' data-toggle='tab' data-tooltip=true href='#outputInformation' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 3')
-        i.fa.fa-terminal
-        = t('.output')
-    li
-      a data-placement='top' data-toggle='tab' data-tooltip=true href='#progress' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 4')
-        i.fa.fa-line-chart
-        = t('.progress')
+    #development-environment
+      ul.nav.nav-justified.nav-tabs role='tablist'
+        li.active
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#instructions' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 1')
+            i.fa.fa-question
+            = t('activerecord.attributes.exercise.instructions')
+        li
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#workspace' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 2')
+            i.fa.fa-code
+            = t('.workspace')
+        li
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#outputInformation' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 3')
+            i.fa.fa-terminal
+            = t('.output')
+        li
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#progress' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 4')
+            i.fa.fa-line-chart
+            = t('.progress')
 
-  hr
+      hr
 
-  .tab-content
-    #instructions.tab-pane.active
-      p = render_markdown(@exercise.instructions)
-      br
-      p.text-center
-        a#start.btn.btn-lg.btn-success
-          i.fa.fa-code
-          = t('.start')
-    #workspace.tab-pane = render('editor', exercise: @exercise, files: @files, submission: @submission)
-    #outputInformation.tab-pane data-message-no-output=t('.no_output')
-      #hint
-        .panel.panel-warning
-          .panel-heading = t('.hint')
-          .panel-body
-      #output
-        pre = t('.no_output_yet')
-      - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
-        #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
-          .panel-heading = 'Gain more insights here'
-          .panel-body
-    #progress.tab-pane
-      #results
-        h2 = t('.results')
-        p.test-count == t('.test_count', count: 0)
-        ul.list-unstyled
-        ul#dummies.hidden.list-unstyled
-          li.panel.panel-default
-            .panel-heading
-              h3.panel-title == t('.file', filename: '', number: 0)
-            .panel-body
-              = row(label: '.passed_tests', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
-              = row(label: 'activerecord.attributes.submission.score', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
-              = row(label: '.feedback')
-              = row(label: '.output', value: link_to(t('shared.show'), '#'))
-      #score data-maximum-score=@exercise.maximum_score data-score=@submission.try(:score)
-        h4
-          span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
-          span.score
-        .progress
-          .progress-bar role='progressbar'
-      br
-      p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-message-confirm' => t('exercises.editor.confirm_submit'), :'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
+      .tab-content
+        #instructions.tab-pane.active
+          p = render_markdown(@exercise.instructions)
+          br
+          p.text-center
+            a#start.btn.btn-lg.btn-success
+              i.fa.fa-code
+              = t('.start')
+        #workspace.tab-pane = render('editor', exercise: @exercise, files: @files, submission: @submission)
+        #outputInformation.tab-pane data-message-no-output=t('.no_output')
+          #hint
+            .panel.panel-warning
+              .panel-heading = t('.hint')
+              .panel-body
+          #output
+            pre = t('.no_output_yet')
+          - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
+            #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+              .panel-heading = 'Gain more insights here'
+              .panel-body
+        #progress.tab-pane
+          #results
+            h2 = t('.results')
+            p.test-count == t('.test_count', count: 0)
+            ul.list-unstyled
+            ul#dummies.hidden.list-unstyled
+              li.panel.panel-default
+                .panel-heading
+                  h3.panel-title == t('.file', filename: '', number: 0)
+                .panel-body
+                  = row(label: '.passed_tests', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
+                  = row(label: 'activerecord.attributes.submission.score', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
+                  = row(label: '.feedback')
+                  = row(label: '.output', value: link_to(t('shared.show'), '#'))
+          #score data-maximum-score=@exercise.maximum_score data-score=@submission.try(:score)
+            h4
+              span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
+              span.score
+            .progress
+              .progress-bar role='progressbar'
+          br
+          p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-message-confirm' => t('exercises.editor.confirm_submit'), :'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
+  - if qa_url
+    #questions-column
+      #questions-holder data-url="#{qa_url}/qa/index/#{@exercise.id}/#{@user_id}"
+    = qa_js_tag
