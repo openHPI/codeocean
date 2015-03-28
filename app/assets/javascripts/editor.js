@@ -344,7 +344,7 @@ $(function() {
         commentModal.find('#removeAllButton').off('click')
 
         commentModal.find('#addCommentButton').on('click', function(e){
-          var user_id = element.data('user-id')
+          var user_id = $(element).data('user-id')
           var commenttext = commentModal.find('textarea').val()
 
           if (commenttext !== "") {
@@ -354,7 +354,7 @@ $(function() {
         })
 
         commentModal.find('#removeAllButton').on('click', function(e){
-          var user_id = element.data('user-id')
+          var user_id = $(element).data('user-id')
           deleteComment(user_id,file_id,row,editor);
           commentModal.modal('hide')
         })
