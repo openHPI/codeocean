@@ -1,0 +1,12 @@
+<h1>Listing comment requests</h1>
+
+<div class="list-group">
+  <% @request_for_comments.each do |request_for_comment| %>
+    <a href="<%= request_for_comment_path(request_for_comment) %>" class="list-group-item">
+      <h4 class="list-group-item-heading"><%= Exercise.find(request_for_comment.exerciseid) %></h4>
+      <p class="list-group-item-text">
+        <%= InternalUser.find(request_for_comment.requestorid) %> | <%= request_for_comment.requested_at %>
+      </p>
+    </a>
+  <% end %>
+</div>

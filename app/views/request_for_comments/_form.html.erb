@@ -1,0 +1,33 @@
+<%= form_for(@request_for_comment) do |f| %>
+  <% if @request_for_comment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@request_for_comment.errors.count, "error") %> prohibited this request_for_comment from being saved:</h2>
+
+      <ul>
+      <% @request_for_comment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :requestorid %><br>
+    <%= f.number_field :requestorid %>
+  </div>
+  <div class="field">
+    <%= f.label :exerciseid %><br>
+    <%= f.number_field :exerciseid %>
+  </div>
+  <div class="field">
+    <%= f.label :fileid %><br>
+    <%= f.number_field :fileid %>
+  </div>
+  <div class="field">
+    <%= f.label :requested_at %><br>
+    <%= f.datetime_select :requested_at %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

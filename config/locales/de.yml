@@ -209,6 +209,12 @@ de:
       start: Mit dem Programmieren beginnen
       test_count: '<span class="number">%{count}</span> Test-Dateien wurden ausgeführt.'
       workspace: Arbeitsbereich
+      comment:
+        dialogtitle: Kommentieren Sie diese Zeile!
+        others: Andere Kommentare auf dieser Zeile
+        addyours: Fügen Sie Ihren Kommentar hinzu
+        addComment: Hinzufügen
+        removeAllOnLine: Alle Kommentare auf dieser Zeile löschen
     index:
       clone: Duplizieren
       implement: Implementieren

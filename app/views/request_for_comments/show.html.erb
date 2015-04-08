@@ -1,0 +1,88 @@
+<div class="list-group">
+  <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exerciseid) %></h4>
+  <p class="list-group-item-text">
+    <%= InternalUser.find(@request_for_comment.requestorid) %> | <%= @request_for_comment.requested_at %>
+  </p>
+</div>
+
+<form class="form-inline">
+  <div class="form-group">
+    <p style='display:inline-block'>Line</p>
+    <input type="number" class="form-control" id="lineInput" placeholder="1" required>
+  </div>
+  <div class="form-group">
+    <p style='display:inline-block'>Comment</p>
+    <input type="text" class="form-control" id="commentInput" placeholder="I'd suggest a variable here" required>
+  </div>
+  <button id='submitComment' type="submit" class="btn btn-default">Comment!</button>
+</form>
+
+<div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.fileid%>'>
+  <%= CodeOcean::File.find(@request_for_comment.fileid).content %>
+</div>
+
+<script type="text/javascript">
+  //(function() {
+    var commentitor = $('#commentitor')
+    var userid = commentitor.data('user-id')
+    var fileid = commentitor.data('file-id')
+    var lineInput = $('#lineInput')
+    var commentInput = $('#commentInput')
+    commentitor = ace.edit(commentitor[0])
+
+    $('#submitComment').click(addComment)
+    setAnnotations()
+
+    function setAnnotations() {
+      var session = commentitor.getSession()
+
+      var jqrequest = $.ajax({
+          dataType: 'json',
+          method: 'GET',
+          url: '/comments',
+          data: {
+            file_id: fileid
+          }
+      });
+
+      jqrequest.done(function(response){
+        $.each(response, function(index, comment) {
+          comment.className = "code-ocean_comment"
+          comment.text = comment.user_id + ": " + comment.text
+        })
+
+        commentitor.getSession().setAnnotations(response)
+      })
+    }
+
+    function addComment() {
+      var line = lineInput.val()
+      var comment = commentInput.val()
+
+      if (line == '' || comment == '') {
+        return
+      } else {
+        line = parseInt(line) - 1
+      }
+
+
+      var jqxhr = $.ajax({
+        data: {
+          comment: {
+            user_id: userid,
+            file_id: fileid,
+            row: line,
+            column: 0,
+            text: comment
+          }
+        },
+        dataType: 'json',
+        method: 'POST',
+        url:  "/comments"
+      })
+
+      jqxhr.done(setAnnotations)
+      lineInput.val(''); commentInput.val('');
+    }
+  //})()
+</script>
