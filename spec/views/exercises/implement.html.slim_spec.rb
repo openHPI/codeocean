@@ -6,6 +6,7 @@ describe 'exercises/implement.html.slim' do
   let(:non_binary_files) { files.reject { |file| file.file_type.binary? } }
 
   before(:each) do
+    assign(:current_user, FactoryGirl.create(:admin))
     assign(:exercise, exercise)
     assign(:files, files)
     assign(:paths, [])
