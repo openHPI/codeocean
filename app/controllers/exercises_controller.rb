@@ -90,7 +90,7 @@ class ExercisesController < ApplicationController
     if current_user.respond_to? :external_id
       @user_id = current_user.external_id
     else
-      @user_id = '00000001-3100-4444-9999-000000000001'
+      @user_id = current_user.id
     end
   end
 

@@ -231,7 +231,7 @@ $(function() {
     showTab(3);
   };
 
-  var stderrOutput = ''
+  var stderrOutput = '';
   var handleStderrOutputForFlowr = function(event) {
     var json = JSON.parse(event.data);
 
@@ -239,35 +239,35 @@ $(function() {
       stderrOutput += json.stderr;
     } else if (json.code) {
       if (stderrOutput == '') {
-        return
+        return;
       }
 
-      var flowrUrl = $('#flowrHint').data('url')
-      var flowrHintBody = $('#flowrHint .panel-body')
+      var flowrUrl = $('#flowrHint').data('url');
+      var flowrHintBody = $('#flowrHint .panel-body');
       var queryParameters = {
         query: stderrOutput
       }
 
-      flowrHintBody.empty()
+      flowrHintBody.empty();
 
       jQuery.getJSON(flowrUrl, queryParameters, function(data) {
         for (var question in data.queryResults) {
-          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question)
-          var resultTile = $(collapsibleTileHtml)
+          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question);
+          var resultTile = $(collapsibleTileHtml);
 
-          resultTile.find('h4 > a').text(data.queryResults[question].title + ' | Found via ' + data.queryResults[question].source)
-          resultTile.find('.panel-body').html(data.queryResults[question].body)
-          resultTile.find('.panel-body').append('<a href="' + data.queryResults[question].url  + '" class="btn btn-primary btn-block">Open this question</a>')
+          resultTile.find('h4 > a').text(data.queryResults[question].title + ' | Found via ' + data.queryResults[question].source);
+          resultTile.find('.panel-body').html(data.queryResults[question].body);
+          resultTile.find('.panel-body').append('<a href="' + data.queryResults[question].url  + '" class="btn btn-primary btn-block">Open this question</a>');
 
-          flowrHintBody.append(resultTile)
+          flowrHintBody.append(resultTile);
         }
 
         if (data.queryResults.length !== 0) {
-          $('#flowrHint').fadeIn()
+          $('#flowrHint').fadeIn();
         }
       })
 
-      stderrOutput = ''
+      stderrOutput = '';
     }
   };
 
@@ -315,8 +315,8 @@ $(function() {
       var file_id =  $(element).data('file-id');
       setAnnotations(editor, file_id);
 
-      session.on('annotationRemoval', handleAnnotationRemoval)
-      session.on('annotationChange', handleAnnotationChange)
+      session.on('annotationRemoval', handleAnnotationRemoval);
+      session.on('annotationChange', handleAnnotationChange);
 
       // TODO refactor here
       // Code for clicks on gutter / sidepanel
@@ -330,54 +330,54 @@ $(function() {
         var row = e.getDocumentPosition().row;
         e.stop();
 
-        var commentModal = $('#comment-modal')
+        var commentModal = $('#comment-modal');
 
         if (hasCommentsInRow(editor, row)) {
-          var rowComments = getCommentsForRow(editor, row)
-          var comments = _.pluck(rowComments, 'text').join('\n')
-          commentModal.find('#other-comments').text(comments)
+          var rowComments = getCommentsForRow(editor, row);
+          var comments = _.pluck(rowComments, 'text').join('\n');
+          commentModal.find('#other-comments').text(comments);
         } else {
-          commentModal.find('#other-comments').text('none')
+          commentModal.find('#other-comments').text('none');
         }
 
-        commentModal.find('#addCommentButton').off('click')
-        commentModal.find('#removeAllButton').off('click')
+        commentModal.find('#addCommentButton').off('click');
+        commentModal.find('#removeAllButton').off('click');
 
         commentModal.find('#addCommentButton').on('click', function(e){
-          var user_id = $(element).data('user-id')
-          var commenttext = commentModal.find('textarea').val()
+          var user_id = $(element).data('user-id');
+          var commenttext = commentModal.find('textarea').val();
 
           if (commenttext !== "") {
-            createComment(user_id, file_id, row, editor, commenttext)
-            commentModal.modal('hide')
+            createComment(user_id, file_id, row, editor, commenttext);
+            commentModal.modal('hide');
           }
         })
 
         commentModal.find('#removeAllButton').on('click', function(e){
-          var user_id = $(element).data('user-id')
+          var user_id = $(element).data('user-id');
           deleteComment(user_id,file_id,row,editor);
-          commentModal.modal('hide')
+          commentModal.modal('hide');
         })
 
-        commentModal.modal('show')
+        commentModal.modal('show');
       });
     });
   };
 
   var hasCommentsInRow = function (editor, row){
     return editor.getSession().getAnnotations().some(function(element) {
-      return element.row === row
+      return element.row === row;
     })
   }
 
   var getCommentsForRow = function (editor, row){
     return editor.getSession().getAnnotations().filter(function(element) {
-      return element.row === row
+      return element.row === row;
     })
   }
 
   var setAnnotations = function (editor, file_id){
-      var session = editor.getSession()
+      var session = editor.getSession();
       var url = "/comments";
 
       var jqrequest = $.ajax({
@@ -498,7 +498,7 @@ $(function() {
     $('#create-file').on('click', showFileDialog);
     $('#destroy-file').on('click', confirmDestroy);
     $('#download').on('click', downloadCode);
-    $('#request-for-comments').on('click', requestComments)
+    $('#request-for-comments').on('click', requestComments);
   };
 
   var initializeTooltips = function() {
