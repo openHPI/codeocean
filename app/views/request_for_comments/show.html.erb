@@ -23,15 +23,15 @@
 
 <script type="text/javascript">
   //(function() {
-    var commentitor = $('#commentitor')
-    var userid = commentitor.data('user-id')
-    var fileid = commentitor.data('file-id')
-    var lineInput = $('#lineInput')
-    var commentInput = $('#commentInput')
-    commentitor = ace.edit(commentitor[0])
+    var commentitor = $('#commentitor');
+    var userid = commentitor.data('user-id');
+    var fileid = commentitor.data('file-id');
+    var lineInput = $('#lineInput');
+    var commentInput = $('#commentInput');
+    commentitor = ace.edit(commentitor[0]);
 
-    $('#submitComment').click(addComment)
-    setAnnotations()
+    $('#submitComment').click(addComment);
+    setAnnotations();
 
     function setAnnotations() {
       var session = commentitor.getSession()
