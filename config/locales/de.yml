@@ -210,11 +210,14 @@ de:
       test_count: '<span class="number">%{count}</span> Test-Dateien wurden ausgeführt.'
       workspace: Arbeitsbereich
       comment:
+        a_comment: Kommentar
+        line: Zeile
         dialogtitle: Kommentieren Sie diese Zeile!
         others: Andere Kommentare auf dieser Zeile
         addyours: Fügen Sie Ihren Kommentar hinzu
-        addComment: Hinzufügen
+        addComment: Kommentieren
         removeAllOnLine: Alle Kommentare auf dieser Zeile löschen
+        listing: Die neuesten Kommentaranfragen
     index:
       clone: Duplizieren
       implement: Implementieren
