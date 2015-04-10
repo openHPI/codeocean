@@ -7,14 +7,14 @@
 
 <form class="form-inline">
   <div class="form-group">
-    <p style='display:inline-block'>Line</p>
+    <p style='display:inline-block'><%= t('exercises.implement.comment.line') %></p>
     <input type="number" class="form-control" id="lineInput" placeholder="1" required>
   </div>
   <div class="form-group">
-    <p style='display:inline-block'>Comment</p>
+    <p style='display:inline-block'><%= t('exercises.implement.comment.a_comment') %></p>
     <input type="text" class="form-control" id="commentInput" placeholder="I'd suggest a variable here" required>
   </div>
-  <button id='submitComment' type="submit" class="btn btn-default">Comment!</button>
+  <button id='submitComment' type="submit" class="btn btn-default"><%= t('exercises.implement.comment.addComment') %>!</button>
 </form>
 
 <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.fileid%>'>
