@@ -34,6 +34,12 @@ html lang='en'
     .container data-controller=controller_name
       = render('breadcrumbs')
       = render('flash')
-      = yield
+    - if (controller_name == "exercises" && action_name == "implement")
+      .container-fluid
+        = yield
+    - else
+      .container
+        = yield
+
     - template_variables = {execution_environment: @exercise.execution_environment} if action_name == 'implement'
     = render('shared/modal', classes: 'modal-lg', id: 'modal-help', template: 'application/help', template_variables: template_variables, title: t('shared.help.headline'))
