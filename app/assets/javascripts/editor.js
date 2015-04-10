@@ -92,20 +92,47 @@ $(function() {
 
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
+
+      var annotations = {};
+      var annotations_arr = [];
+      var file_ids = [];
+
+
+      $('.editor').each(function(index, element) {
+          var file_id =  $(element).data('id');
+          var editor = ace.edit(element);
+          //annotations[file_id] = editor.getSession().getAnnotations();
+          var cleaned_annotations = editor.getSession().getAnnotations();
+          for(var i = cleaned_annotations.length-1; i>=0; --i){
+              cleaned_annotations[i].text = cleaned_annotations[i].text.replace(cleaned_annotations[i].username + ": ", "");
+          }
+          annotations_arr = annotations_arr.concat(editor.getSession().getAnnotations());
+      });
+
     var jqxhr = ajax({
       data: {
         submission: {
           cause: $(initiator).data('cause') || $(initiator).prop('id'),
           exercise_id: $('#editor').data('exercise-id'),
           files_attributes: (filter || _.identity)(collectFiles())
-        }
+        },
+        source_submission_id: $('.ace_editor',$('#editor'))[0].dataset.id,
+        //annotations: annotations,
+        annotations_arr: annotations_arr
       },
+      dataType: 'json',
+      method: 'POST',
       url: $(initiator).data('url') || $('#editor').data('submissions-url')
     });
     jqxhr.always(hideSpinner);
+    jqxhr.done(createSubmissionCallback);
     jqxhr.done(callback);
     jqxhr.fail(ajaxError);
   };
+
+    var createSubmissionCallback = function(data){
+      var id =  $('.editor').data('id');
+    };
 
   var destroyFile = function() {
     createSubmission($('#destroy-file'), function(files) {
@@ -232,7 +259,10 @@ $(function() {
   };
 
   var stderrOutput = '';
+  // activate flowr only for half of the audience
+  var isFlowrEnabled = parseInt($('#editor').data('user-id'))%2 == 0;
   var handleStderrOutputForFlowr = function(event) {
+  if (!isFlowrEnabled) return
     var json = JSON.parse(event.data);
 
     if (json.stderr) {
@@ -312,7 +342,7 @@ $(function() {
       session.setUseSoftTabs(true);
       session.setUseWrapMode(true);
 
-      var file_id =  $(element).data('file-id');
+      var file_id =  $(element).data('id');
       setAnnotations(editor, file_id);
 
       session.on('annotationRemoval', handleAnnotationRemoval);
@@ -400,7 +430,8 @@ $(function() {
 
       $.each(annotations, function(index, comment){
           comment.className = "code-ocean_comment";
-          comment.text = comment.user_id + ": " + comment.text;
+          comment.text = comment.username + ": " + comment.text;
+        //  comment.text = comment.user_id + ": " + comment.text;
       });
 
       session.setAnnotations(annotations);
@@ -638,7 +669,7 @@ $(function() {
             printOutput({
               stderr: message
             }, true, 0);
-            sendError(message);
+            sendError(message, response.id);
             showTab(2);
           };
         }
@@ -713,12 +744,13 @@ $(function() {
     });
   };
 
-  var sendError = function(message) {
+  var sendError = function(message, submission_id) {
     showSpinner($('#render'));
     var jqxhr = ajax({
       data: {
         error: {
-          message: message
+          message: message,
+          submission_id: submission_id
         }
       },
       url: $('#editor').data('errors-url')
@@ -886,7 +918,7 @@ $(function() {
   var requestComments = function(e) {
     var user_id = $('#editor').data('user-id')
     var exercise_id = $('#editor').data('exercise-id')
-    var file_id = $('.editor').data('file-id')
+    var file_id = $('.editor').data('id')
 
     $.ajax({
       method: 'POST',

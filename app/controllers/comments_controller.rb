@@ -1,28 +1,60 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: [:show, :edit, :update, :destroy_by_id]
 
-  # disable authorization check. TODO: turn this on later.
-  skip_after_action :verify_authorized
+  # to disable authorization check: comment the line below back in
+ # skip_after_action :verify_authorized
+
+  def authorize!
+    authorize(@comment || @comments)
+  end
+  private :authorize!
 
   # GET /comments
   # GET /comments.json
   def index
     #@comments = Comment.all
-    @comments = Comment.where(file_id: params[:file_id])
+    #if admin, show all comments.
+    #check whether user is the author of the passed file_id, if so, show all comments. otherwise, only show comments of auther and own comments
+    file = CodeOcean::File.find(params[:file_id])
+    submission = Submission.find(file.context_id)
+
+    is_admin = false
+    if current_user.respond_to? :external_id
+      user_id = current_user.external_id
+    else
+      user_id = current_user.id
+      is_admin = current_user.role == 'admin'
+    end
+
+    if(is_admin ||  user_id == submission.user_id)
+      # fetch all comments for this file
+      @comments = Comment.where(file_id: params[:file_id])
+    else
+      @comments = Comment.where(file_id: params[:file_id], user_id: user_id)
+    end
+
+    #@comments = Comment.where(file_id: params[:file_id])
+
+    #add names to comments
+    @comments.map{|comment| comment.username = Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]}
+    authorize!
   end
 
   # GET /comments/1
   # GET /comments/1.json
   def show
+    authorize!
   end
 
   # GET /comments/new
   def new
     @comment = Comment.new
+    authorize!
   end
 
   # GET /comments/1/edit
   def edit
+    authorize!
   end
 
   # POST /comments
@@ -39,6 +71,7 @@ class CommentsController < ApplicationController
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
+    authorize!
   end
 
   # PATCH/PUT /comments/1
@@ -53,6 +86,7 @@ class CommentsController < ApplicationController
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
+    authorize!
   end
 
   # DELETE /comments/1
@@ -73,6 +107,7 @@ class CommentsController < ApplicationController
       format.html { head :no_content, notice: 'Comments were successfully destroyed.' }
       format.json { head :no_content }
     end
+    authorize!
   end
 
   private

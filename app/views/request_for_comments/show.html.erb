@@ -29,6 +29,7 @@
     var lineInput = $('#lineInput');
     var commentInput = $('#commentInput');
     commentitor = ace.edit(commentitor[0]);
+    commentitor.setReadOnly(true);
 
     $('#submitComment').click(addComment);
     setAnnotations();
@@ -48,7 +49,7 @@
       jqrequest.done(function(response){
         $.each(response, function(index, comment) {
           comment.className = "code-ocean_comment"
-          comment.text = comment.user_id + ": " + comment.text
+          comment.text = comment.username + ": " + comment.text
         })
 
         commentitor.getSession().setAnnotations(response)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150327141740) do
+ActiveRecord::Schema.define(version: 20150408155923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,7 +43,10 @@ ActiveRecord::Schema.define(version: 20150327141740) do
     t.text     "message"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "submission_id"
   end
+
+  add_index "errors", ["submission_id"], name: "index_errors_on_submission_id", using: :btree
 
   create_table "execution_environments", force: true do |t|
     t.string   "docker_image"
