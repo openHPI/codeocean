@@ -209,6 +209,15 @@ en:
       start: Start Coding
       test_count: '<span class="number">%{count}</span> test files have been executed.'
       workspace: Workspace
+      comment:
+        a_comment: comment
+        line: line
+        dialogtitle: Comment on this line!
+        others: Other comments on this line
+        addyours: Add your comment
+        addComment: Comment this
+        removeAllOnLine: Remove all comments on this line
+        listing: Listing the newest comment requests
     index:
       clone: Duplicate
       implement: Implement

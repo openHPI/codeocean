@@ -13,11 +13,12 @@ $(function() {
   var THEME = 'ace/theme/textmate';
 
   var editors = [];
-  var active_file;
-  var active_frame;
+  var active_file = undefined;
+  var active_frame = undefined;
   var running = false;
+  var qa_api = undefined;
 
-  var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>';
+  var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
   var ajax = function(options) {
     return $.ajax(_.extend({
@@ -91,20 +92,47 @@ $(function() {
 
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
+
+      var annotations = {};
+      var annotations_arr = [];
+      var file_ids = [];
+
+
+      $('.editor').each(function(index, element) {
+          var file_id =  $(element).data('id');
+          var editor = ace.edit(element);
+          //annotations[file_id] = editor.getSession().getAnnotations();
+          var cleaned_annotations = editor.getSession().getAnnotations();
+          for(var i = cleaned_annotations.length-1; i>=0; --i){
+              cleaned_annotations[i].text = cleaned_annotations[i].text.replace(cleaned_annotations[i].username + ": ", "");
+          }
+          annotations_arr = annotations_arr.concat(editor.getSession().getAnnotations());
+      });
+
     var jqxhr = ajax({
       data: {
         submission: {
           cause: $(initiator).data('cause') || $(initiator).prop('id'),
           exercise_id: $('#editor').data('exercise-id'),
           files_attributes: (filter || _.identity)(collectFiles())
-        }
+        },
+        source_submission_id: $('.ace_editor',$('#editor'))[0].dataset.id,
+        //annotations: annotations,
+        annotations_arr: annotations_arr
       },
+      dataType: 'json',
+      method: 'POST',
       url: $(initiator).data('url') || $('#editor').data('submissions-url')
     });
     jqxhr.always(hideSpinner);
+    jqxhr.done(createSubmissionCallback);
     jqxhr.done(callback);
     jqxhr.fail(ajaxError);
   };
+
+    var createSubmissionCallback = function(data){
+      var id =  $('.editor').data('id');
+    };
 
   var destroyFile = function() {
     createSubmission($('#destroy-file'), function(files) {
@@ -141,10 +169,19 @@ $(function() {
       event_source.addEventListener('close', handleStderrOutputForFlowr);
     }
 
+    if (qa_api) {
+      event_source.addEventListener('close', handleStreamedResponseForCodePilot);
+    }
+
     event_source.addEventListener('status', function(event) {
       showStatus(JSON.parse(event.data));
     });
   };
+
+  var handleStreamedResponseForCodePilot = function(event) {
+      qa_api.executeCommand('syncOutput', [chunkBuffer]);
+      chunkBuffer = [{streamedResponse: true}];
+  }
 
   var evaluateCodeWithoutStreamedResponse = function(url, callback) {
     var jqxhr = ajax({
@@ -221,33 +258,55 @@ $(function() {
     showTab(3);
   };
 
+  var stderrOutput = '';
+  // activate flowr only for half of the audience
+  var isFlowrEnabled = parseInt($('#editor').data('user-id'))%2 == 0;
   var handleStderrOutputForFlowr = function(event) {
-    var flowrUrl = $('#flowrHint').data('url');
+  if (!isFlowrEnabled) return
     var json = JSON.parse(event.data);
-    var stderrOutput = '';
 
     if (json.stderr) {
       stderrOutput += json.stderr;
     } else if (json.code) {
+      if (stderrOutput == '') {
+        return;
+      }
+
+      var flowrUrl = $('#flowrHint').data('url');
       var flowrHintBody = $('#flowrHint .panel-body');
+      var queryParameters = {
+        query: stderrOutput
+      }
 
-      $.getJSON(flowrUrl + '&query=' + escape(stderrOutput), function(data) {
-        _.each(_.compact(data.queryResults), function(question, index) {
-          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
+      flowrHintBody.empty();
+
+      jQuery.getJSON(flowrUrl, queryParameters, function(data) {
+        for (var question in data.queryResults) {
+          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question);
           var resultTile = $(collapsibleTileHtml);
-          resultTile.find('h4 > a').text(question.title);
-          resultTile.find('.panel-body').append(question.body);
-          flowrHintBody.append(resultTile);
-        });
 
-        $('#flowrHint').fadeIn();
-      });
+          resultTile.find('h4 > a').text(data.queryResults[question].title + ' | Found via ' + data.queryResults[question].source);
+          resultTile.find('.panel-body').html(data.queryResults[question].body);
+          resultTile.find('.panel-body').append('<a href="' + data.queryResults[question].url  + '" class="btn btn-primary btn-block">Open this question</a>');
+
+          flowrHintBody.append(resultTile);
+        }
+
+        if (data.queryResults.length !== 0) {
+          $('#flowrHint').fadeIn();
+        }
+      })
+
+      stderrOutput = '';
     }
   };
 
   var handleTestResponse = function(response) {
     clearOutput();
     printOutput(response[0], false, 0);
+    if (qa_api) {
+      qa_api.executeCommand('syncOutput', [response]);
+    }
     showStatus(response[0]);
     showTab(2);
   };
@@ -260,6 +319,19 @@ $(function() {
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
       var editor = ace.edit(element);
+      if (qa_api) {
+        editor.getSession().on("change", function (deltaObject) {
+          qa_api.executeCommand('syncEditor', [active_file, deltaObject]);
+        });
+      }
+
+      var document = editor.getSession().getDocument();
+      // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
+      var file_id = $(element).data('file-id');
+      var content = $('.editor-content[data-file-id=' + file_id + ']');
+      setActiveFile($(element).parent().data('filename'), file_id);
+
+      document.insertLines(0, content.text().split(/\n/));
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
@@ -269,8 +341,167 @@ $(function() {
       session.setTabSize($(element).data('indent-size'));
       session.setUseSoftTabs(true);
       session.setUseWrapMode(true);
+
+      var file_id =  $(element).data('id');
+      setAnnotations(editor, file_id);
+
+      session.on('annotationRemoval', handleAnnotationRemoval);
+      session.on('annotationChange', handleAnnotationChange);
+
+      // TODO refactor here
+      // Code for clicks on gutter / sidepanel
+      editor.on("guttermousedown", function(e){
+        var target  = e.domEvent.target;
+
+        if (target.className.indexOf("ace_gutter-cell") == -1) return;
+        if (!editor.isFocused()) return;
+        if (e.clientX > 25 + target.getBoundingClientRect().left) return;
+
+        var row = e.getDocumentPosition().row;
+        e.stop();
+
+        var commentModal = $('#comment-modal');
+
+        if (hasCommentsInRow(editor, row)) {
+          var rowComments = getCommentsForRow(editor, row);
+          var comments = _.pluck(rowComments, 'text').join('\n');
+          commentModal.find('#other-comments').text(comments);
+        } else {
+          commentModal.find('#other-comments').text('none');
+        }
+
+        commentModal.find('#addCommentButton').off('click');
+        commentModal.find('#removeAllButton').off('click');
+
+        commentModal.find('#addCommentButton').on('click', function(e){
+          var user_id = $(element).data('user-id');
+          var commenttext = commentModal.find('textarea').val();
+
+          if (commenttext !== "") {
+            createComment(user_id, file_id, row, editor, commenttext);
+            commentModal.modal('hide');
+          }
+        })
+
+        commentModal.find('#removeAllButton').on('click', function(e){
+          var user_id = $(element).data('user-id');
+          deleteComment(user_id,file_id,row,editor);
+          commentModal.modal('hide');
+        })
+
+        commentModal.modal('show');
+      });
     });
   };
+
+  var hasCommentsInRow = function (editor, row){
+    return editor.getSession().getAnnotations().some(function(element) {
+      return element.row === row;
+    })
+  }
+
+  var getCommentsForRow = function (editor, row){
+    return editor.getSession().getAnnotations().filter(function(element) {
+      return element.row === row;
+    })
+  }
+
+  var setAnnotations = function (editor, file_id){
+      var session = editor.getSession();
+      var url = "/comments";
+
+      var jqrequest = $.ajax({
+          dataType: 'json',
+          method: 'GET',
+          url: url,
+          data: {
+            file_id: file_id
+          }
+      });
+
+      jqrequest.done(function(response){
+          setAnnotationsCallback(response, session);
+      });
+      jqrequest.fail(ajaxError);
+  }
+
+  var setAnnotationsCallback = function (response, session) {
+      var annotations = response;
+
+      $.each(annotations, function(index, comment){
+          comment.className = "code-ocean_comment";
+          comment.text = comment.username + ": " + comment.text;
+        //  comment.text = comment.user_id + ": " + comment.text;
+      });
+
+      session.setAnnotations(annotations);
+  }
+
+  var deleteComment = function (user_id, file_id, row, editor) {
+      var jqxhr = $.ajax({
+          type: 'DELETE',
+          url: "/comments",
+          data: {
+            row: row,
+            file_id: file_id,
+            user_id: user_id
+          }
+      });
+      jqxhr.done(function (response) {
+          setAnnotations(editor, file_id);
+      });
+      jqxhr.fail(ajaxError);
+  }
+
+  var createComment = function (user_id, file_id, row, editor, commenttext){
+      var jqxhr = $.ajax({
+        data: {
+          comment: {
+            user_id: user_id,
+            file_id: file_id,
+            row: row,
+            column: 0,
+            text: commenttext
+          }
+        },
+        dataType: 'json',
+        method: 'POST',
+        url:  "/comments"
+      });
+      jqxhr.done(function(response){
+          setAnnotations(editor, file_id);
+      });
+      jqxhr.fail(ajaxError);
+  }
+
+  var handleAnnotationRemoval = function(removedAnnotations) {
+    removedAnnotations.forEach(function(annotation) {
+      $.ajax({
+        method: 'DELETE',
+        url:  '/comment_by_id',
+        data: {
+          id: annotation.id,
+        }
+      })
+    })
+  }
+
+  var handleAnnotationChange = function(changedAnnotations) {
+    changedAnnotations.forEach(function(annotation) {
+      $.ajax({
+        method: 'PUT',
+        url:  '/comments',
+        data: {
+          id: annotation.id,
+          user_id: $('#editor').data('user-id'),
+          comment: {
+            row: annotation.row,
+            text: annotation.text
+          }
+        }
+      })
+    })
+  }
 
   var initializeEventHandlers = function() {
     $(document).on('click', '#results a', showOutput);
@@ -298,6 +529,7 @@ $(function() {
     $('#create-file').on('click', showFileDialog);
     $('#destroy-file').on('click', confirmDestroy);
     $('#download').on('click', downloadCode);
+    $('#request-for-comments').on('click', requestComments);
   };
 
   var initializeTooltips = function() {
@@ -322,6 +554,13 @@ $(function() {
   var isActiveFileExecutable = function() {
     return 'executable' in active_frame.data();
   };
+
+  var setActiveFile = function (filename, fileId) {
+      active_file = {
+          filename: filename,
+          id: fileId
+      };
+  }
 
   var isActiveFileRenderable = function() {
     return 'renderable' in active_frame.data();
@@ -355,10 +594,17 @@ $(function() {
     panel.find('.row .col-sm-9').eq(3).find('a').attr('href', '#output-' + index);
   };
 
+  var chunkBuffer = [{streamedResponse: true}];
+
   var printChunk = function(event) {
     var output = JSON.parse(event.data);
     if (output) {
-      printOutput(output, true, 0);
+        printOutput(output, true, 0);
+        // send test response to QA
+        // we are expecting an array of outputs:
+        if (qa_api) {
+            chunkBuffer.push(output);
+        }
     } else {
       clearOutput();
       $('#hint').fadeOut();
@@ -405,6 +651,10 @@ $(function() {
     })) {
       showTimeoutMessage();
     }
+    if (qa_api) {
+      // send test response to QA
+      qa_api.executeCommand('syncOutput', [response]);
+    }
   };
 
   var renderCode = function(event) {
@@ -419,7 +669,7 @@ $(function() {
             printOutput({
               stderr: message
             }, true, 0);
-            sendError(message);
+            sendError(message, response.id);
             showTab(2);
           };
         }
@@ -494,12 +744,13 @@ $(function() {
     });
   };
 
-  var sendError = function(message) {
+  var sendError = function(message, submission_id) {
     showSpinner($('#render'));
     var jqxhr = ajax({
       data: {
         error: {
-          message: message
+          message: message,
+          submission_id: submission_id
         }
       },
       url: $('#editor').data('errors-url')
@@ -528,10 +779,7 @@ $(function() {
   var showFirstFile = function() {
     var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
     var file_id = frame.find('.editor').data('file-id');
-    active_file = {
-      filename: frame.data('filename'),
-      id: file_id
-    };
+    setActiveFile(frame.data('filename'), file_id);
     $('#files').jstree().select_node(file_id);
     showFrame(frame);
     toggleButtonStates();
@@ -667,19 +915,55 @@ $(function() {
     $('#test').toggle(isActiveFileTestable());
   };
 
-  if ($('#editor').isPresent()) {
-    if (isBrowserSupported()) {
-      $('.score, #development-environment').show();
-      configureEditors();
-      initializeEditors();
-      initializeEventHandlers();
-      initializeFileTree();
-      initializeTooltips();
-      renderScore();
-      showFirstFile();
-      showRequestedTab();
-    } else {
-      $('#alert').show();
+  var requestComments = function(e) {
+    var user_id = $('#editor').data('user-id')
+    var exercise_id = $('#editor').data('exercise-id')
+    var file_id = $('.editor').data('id')
+
+    $.ajax({
+      method: 'POST',
+      url: '/request_for_comments',
+      data: {
+        request_for_comment: {
+          requestorid: user_id,
+          exerciseid: exercise_id,
+          fileid: file_id,
+          "requested_at(1i)": 2015,
+          "requested_at(2i)":3,
+          "requested_at(3i)":27,
+          "requested_at(4i)":17,
+          "requested_at(5i)":06
+        }
+      }
+    })
+  }
+
+    var initializeCodePilot = function() {
+        if ($('#questions-column').isPresent() && QaApi.isBrowserSupported()) {
+            $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
+            $('#questions-column').addClass('col-md-3');
+
+            var node = document.getElementById('questions-holder');
+            var url = $('#questions-holder').data('url');
+
+            qa_api = new QaApi(node, url);
+        }
     }
+
+  if ($('#editor').isPresent()) {
+      if (isBrowserSupported()) {
+          initializeCodePilot();
+          $('.score, #development-environment').show();
+          configureEditors();
+          initializeEditors();
+          initializeEventHandlers();
+          initializeFileTree();
+          initializeTooltips();
+          renderScore();
+          showFirstFile();
+          showRequestedTab();
+      } else {
+          $('#alert').show();
+      }
   }
 });

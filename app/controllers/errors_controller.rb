@@ -22,7 +22,7 @@ class ErrorsController < ApplicationController
   end
 
   def error_params
-    params[:error].permit(:message).merge(execution_environment_id: @execution_environment.id)
+    params[:error].permit(:message, :submission_id).merge(execution_environment_id: @execution_environment.id)
   end
   private :error_params
 

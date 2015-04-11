@@ -20,7 +20,30 @@ class SubmissionsController < ApplicationController
   def create
     @submission = Submission.new(submission_params)
     authorize!
+    copy_comments
     create_and_respond(object: @submission)
+  end
+
+  def copy_comments
+    # copy each annotation and set the target_file.id
+    unless(params[:annotations_arr].nil?)
+      params[:annotations_arr].each do | annotation |
+        comment = Comment.new(:user_id => annotation[1][:user_id], :file_id => annotation[1][:file_id], :user_type => 'InternalUser', :row => annotation[1][:row], :column => annotation[1][:column], :text => annotation[1][:text])
+        source_file = CodeOcean::File.find(annotation[1][:file_id])
+
+        #comment = Comment.new(annotation[1].permit(:user_id, :file_id, :user_type, :row, :column, :text, :created_at, :updated_at))
+        target_file = @submission.files.detect do |file|
+          # file_id has to be that of a the former iteration OR of the initial file (if this is the first run)
+          file.file_id == source_file.file_id || file.file_id == source_file.id #seems to be needed here: (check this): || file.file_id == source_file.id
+        end
+
+        #save to assign an id
+        target_file.save!
+
+        comment.file_id = target_file.id
+        comment.save!
+      end
+    end
   end
 
   def download_file
