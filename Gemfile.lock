@@ -111,7 +111,7 @@ GEM
       json
     erubis (2.7.0)
     excon (0.45.1)
-    execjs (2.5.0)
+    execjs (2.5.2)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.5.0)
@@ -128,7 +128,7 @@ GEM
     ims-lti (1.1.8)
       builder
       oauth (~> 0.4.5)
-    jbuilder (2.2.12)
+    jbuilder (2.2.13)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
     jdbc-postgres (9.4.1200)
