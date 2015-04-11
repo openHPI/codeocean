@@ -16,6 +16,7 @@ gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'ims-lti'
 gem 'kramdown'
+gem 'newrelic_rpm'
 gem 'pg', platform: :ruby
 gem 'pry'
 gem 'puma'
