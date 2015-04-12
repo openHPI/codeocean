@@ -20,6 +20,7 @@ module SubmissionScoring
   private :execute_test_file
 
   def feedback_message(file, score)
+    set_locale
     score == Assessor::MAXIMUM_SCORE ? I18n.t('exercises.implement.default_feedback') : file.feedback_message
   end
 
