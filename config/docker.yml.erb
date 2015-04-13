@@ -11,6 +11,7 @@ development:
 
 production:
   <<: *default
+  host: unix:///var/run/docker.sock
   pool:
     active: true
     refill:
