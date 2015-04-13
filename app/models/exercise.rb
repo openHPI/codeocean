@@ -23,7 +23,7 @@ class Exercise < ActiveRecord::Base
   validates :token, presence: true, uniqueness: true
 
   def average_percentage
-    (average_score / maximum_score * 100).round if average_score
+    (average_score/ maximum_score * 100).round if average_score
   end
 
   def average_score

@@ -363,7 +363,7 @@ DEPENDENCIES
   rake
   ransack
   rspec-autotest
-  rspec-rails (~> 3.1.0)
+  rspec-rails
   rubocop
   rubocop-rspec
   rubytree

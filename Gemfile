@@ -60,7 +60,7 @@ group :test do
   gem 'nyan-cat-formatter'
   gem 'rake'
   gem 'rspec-autotest'
-  gem 'rspec-rails', '~> 3.1.0'
+  gem 'rspec-rails'
   gem 'selenium-webdriver'
   gem 'simplecov', require: false
 end

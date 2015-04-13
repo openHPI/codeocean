@@ -172,7 +172,12 @@ class DockerClient
   rescue Timeout::Error
     {status: :timeout}
   ensure
-    Concurrent::Future.execute { self.class.destroy_container(container) }
+    Concurrent::Future.execute {
+      #self.class.destroy_container(container)
+      FileUtils.rm_rf(local_workspace_path(container)) if local_workspace_path(container)
+      FileUtils.mkdir(local_workspace_path)
+      DockerContainerPool.return_container(container, @execution_environment)
+    }
   end
   private :send_command
 

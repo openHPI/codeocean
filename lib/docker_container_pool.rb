@@ -20,6 +20,11 @@ class DockerContainerPool
     DockerClient.create_container(execution_environment)
   end
 
+  def self.return_container(container, execution_environment)
+    #container.start()
+    @containers[execution_environment.id].push(container)
+  end
+
   def self.get_container(execution_environment)
     if config[:active]
       @containers[execution_environment.id].try(:shift) || create_container(execution_environment)
