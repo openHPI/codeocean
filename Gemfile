@@ -7,7 +7,7 @@ gem 'carrierwave'
 gem 'coffee-rails', '~> 4.0.0'
 gem 'concurrent-ruby'
 gem 'concurrent-ruby-ext', platform: :ruby
-gem 'docker-api', require: 'docker'
+gem 'docker-api','~> 1.21.0',  require: 'docker'
 gem 'factory_girl_rails', '~> 4.0'
 gem 'forgery'
 gem 'highline'

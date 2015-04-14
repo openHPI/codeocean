@@ -343,7 +343,7 @@ DEPENDENCIES
   concurrent-ruby
   concurrent-ruby-ext
   database_cleaner
-  docker-api
+  docker-api (~> 1.21.0)
   factory_girl_rails (~> 4.0)
   forgery
   highline
