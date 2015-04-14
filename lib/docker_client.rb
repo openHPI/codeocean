@@ -97,6 +97,8 @@ class DockerClient
       raise('Alle Slots belegt. Versuche es später nochmal.')
     end
   rescue Excon::Errors::SocketError => error
+    # socket errors seems to be normal when using exec
+    # so lets ignore them for now
     #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
