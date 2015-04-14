@@ -162,9 +162,12 @@ class DockerClient
       stdout = []
       # map command in a shell call, maybe add -c
       command =  ['bash', '-c', command]
+      command.join(' ')
       # lets call the command, but we do not want the container to stop afterwards
       # thats why we use exec. If its ok do stop the container this could be assign instead
-      container.exec(command) do |stream, chunk|
+      #container.exec(command) do |stream, chunk|
+      container.attach(stdin: StringIO.new(command)) do |stream, chunk|
+end
         block.call(stream, chunk) if block_given?
         if stream == :stderr
           stderr.push(chunk)
