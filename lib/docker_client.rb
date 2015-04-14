@@ -155,11 +155,16 @@ class DockerClient
     `docker pull #{docker_image}` if docker_image
   end
 
+  #this sends the command to run whatever is defined in the backend
   def send_command(command, container, &block)
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
       stderr = []
       stdout = []
-      container.attach(stdin: StringIO.new(command)) do |stream, chunk|
+      # map command in a shell call, maybe add -c
+      command =  ['bash', '-c', command]
+      # lets call the command, but we do not want the container to stop afterwards
+      # thats why we use exec. If its ok do stop the container this could be assign instead
+      container.exec(command) do |stream, chunk|
         block.call(stream, chunk) if block_given?
         if stream == :stderr
           stderr.push(chunk)
@@ -173,7 +178,11 @@ class DockerClient
     {status: :timeout}
   ensure
     Concurrent::Future.execute {
+      # If you do not want to reuse running container you could use:
       #self.class.destroy_container(container)
+      # This could be moved to an execution environment specific setting
+
+      # we may need to stop the exec call here..!!!
       FileUtils.rm_rf(local_workspace_path(container)) if local_workspace_path(container)
       FileUtils.mkdir(local_workspace_path)
       DockerContainerPool.return_container(container, @execution_environment)

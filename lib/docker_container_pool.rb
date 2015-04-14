@@ -21,7 +21,6 @@ class DockerContainerPool
   end
 
   def self.return_container(container, execution_environment)
-    #container.start()
     @containers[execution_environment.id].push(container)
   end
 
