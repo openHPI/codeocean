@@ -17,7 +17,7 @@ class DockerContainerPool
   end
 
   def self.create_container(execution_environment)
-    DockerClient.create_container(execution_environment)
+     DockerClient.create_container(execution_environment)
   end
 
   def self.return_container(container, execution_environment)
@@ -26,7 +26,7 @@ class DockerContainerPool
 
   def self.get_container(execution_environment)
     if config[:active]
-      @containers[execution_environment.id].try(:shift) || create_container(execution_environment)
+      @containers[execution_environment.id].try(:shift) || nil
     else
       create_container(execution_environment)
     end
@@ -49,6 +49,7 @@ class DockerContainerPool
   def self.refill_for_execution_environment(execution_environment)
     refill_count = [execution_environment.pool_size - @containers[execution_environment.id].length, config[:refill][:batch_size]].min
     @containers[execution_environment.id] += refill_count.times.map { create_container(execution_environment) }
+    #refill_count.times.map { create_container(execution_environment) }
   end
 
   def self.start_refill_task

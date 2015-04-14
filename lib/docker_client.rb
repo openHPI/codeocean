@@ -90,10 +90,14 @@ class DockerClient
   def execute_command(command, before_execution_block, output_consuming_block)
     tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
-    before_execution_block.try(:call)
-    send_command(command, @container, &output_consuming_block)
+    if @container
+      before_execution_block.try(:call)
+      send_command(command, @container, &output_consuming_block)
+    else
+      raise('Alle Slots belegt. Versuche es später nochmal.')
+    end
   rescue Excon::Errors::SocketError => error
-    (tries += 1) <= RETRY_COUNT ? retry : raise(error)
+    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
   [:run, :test].each do |cause|
@@ -187,7 +191,7 @@ class DockerClient
 
       # we may need to stop the exec call here..!!!
       FileUtils.rm_rf(local_workspace_path(container)) if local_workspace_path(container)
-      FileUtils.mkdir(local_workspace_path)
+      FileUtils.mkdir(local_workspace_path(container))
       DockerContainerPool.return_container(container, @execution_environment)
     }
   end
