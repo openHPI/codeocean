@@ -88,7 +88,7 @@ class DockerClient
   end
 
   def execute_command(command, before_execution_block, output_consuming_block)
-    tries ||= 0
+    #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       before_execution_block.try(:call)
