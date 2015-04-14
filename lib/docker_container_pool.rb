@@ -4,7 +4,8 @@ require 'concurrent/utilities'
 
 class DockerContainerPool
   @containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
-
+  #as containers are not containing containers in use
+  @all_containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
   def self.clean_up
     @refill_task.try(:shutdown)
     @containers.values.each do |containers|
@@ -47,8 +48,10 @@ class DockerContainerPool
   end
 
   def self.refill_for_execution_environment(execution_environment)
-    refill_count = [execution_environment.pool_size - @containers[execution_environment.id].length, config[:refill][:batch_size]].min
-    @containers[execution_environment.id] += refill_count.times.map { create_container(execution_environment) }
+    refill_count = [execution_environment.pool_size - @all_containers[execution_environment.id].length, config[:refill][:batch_size]].min
+    c = refill_count.times.map { create_container(execution_environment) }
+    @containers[execution_environment.id] += c
+    @all_containers[execution_environment.id] += c
     #refill_count.times.map { create_container(execution_environment) }
   end
 
