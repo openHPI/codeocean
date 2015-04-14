@@ -167,7 +167,7 @@ class DockerClient
       # thats why we use exec. If its ok do stop the container this could be assign instead
       #container.exec(command) do |stream, chunk|
       container.attach(stdin: StringIO.new(command)) do |stream, chunk|
-end
+
         block.call(stream, chunk) if block_given?
         if stream == :stderr
           stderr.push(chunk)
