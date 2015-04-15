@@ -166,6 +166,7 @@ de:
       confirm_start_over: Wollen Sie wirklich von vorne anfangen?
       confirm_submit: Wollen Sie Ihren Code wirklich zur Bewertung abgeben?
       create_file: Neue Datei
+      depleted: Alle Ausführungsausgebungen sind momentan in Benutzung. Probiere es später nochmal.
       destroy_file: Datei löschen
       download: Herunterladen
       dummy: Keine Aktion

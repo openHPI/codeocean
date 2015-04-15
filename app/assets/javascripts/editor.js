@@ -651,6 +651,11 @@ $(function() {
     })) {
       showTimeoutMessage();
     }
+    if (_.some(response, function(result) {
+          return result.status === 'container_depleted';
+      })) {
+      showContainerDepletedMessage();
+    }
     if (qa_api) {
       // send test response to QA
       qa_api.executeCommand('syncOutput', [response]);
@@ -826,6 +831,13 @@ $(function() {
         text: $('#run').data('message-success')
       });
     }
+  };
+
+  var showContainerDepletedMessage = function() {
+    $.flash.danger({
+      icon: ['fa', 'fa-clock-o'],
+      text: $('#editor').data('message-depleted')
+    });
   };
 
   var showTab = function(index) {

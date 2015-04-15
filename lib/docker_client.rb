@@ -96,7 +96,7 @@ class DockerClient
       before_execution_block.try(:call)
       send_command(command, @container, &output_consuming_block)
     else
-      raise('Alle Slots belegt. Versuche es nachher nochmal.')
+      {status: :container_depleted}
     end
   rescue Excon::Errors::SocketError => error
     # socket errors seems to be normal when using exec
