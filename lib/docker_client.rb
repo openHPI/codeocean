@@ -187,6 +187,7 @@ class DockerClient
       {status: :ok, stderr: stderr.join, stdout: stdout.join}
     end
   rescue Timeout::Error
+    container.restart if RECYCLE_CONTAINERS
     {status: :timeout}
   ensure
     RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)
