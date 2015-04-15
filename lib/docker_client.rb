@@ -1,4 +1,5 @@
 require 'concurrent'
+require 'pathname'
 
 class DockerClient
   CONTAINER_WORKSPACE_PATH = '/workspace'
@@ -55,7 +56,7 @@ class DockerClient
     container
   rescue Docker::Error::NotFoundError => error
     destroy_container(container)
-    (tries += 1) <= RETRY_COUNT ? retry : raise(error)
+    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
   def create_workspace_files(container, submission)
@@ -164,8 +165,9 @@ class DockerClient
 
   def return_container(container)
     local_workspace_path = self.class.local_workspace_path(container)
-    FileUtils.rm_rf(local_workspace_path) if local_workspace_path
-    FileUtils.mkdir(local_workspace_path)
+    #FileUtils.rm_rf(local_workspace_path) if local_workspace_path
+    Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
+    #FileUtils.mkdir(local_workspace_path)
     DockerContainerPool.return_container(container, @execution_environment)
   end
   private :return_container
