@@ -53,8 +53,8 @@ describe DockerContainerPool do
           expect(described_class.instance_variable_get(:@containers)[@execution_environment.id]).to be_empty
         end
 
-        it 'creates a new container' do
-          expect(described_class).to receive(:create_container).with(@execution_environment)
+        it 'not creates a new container' do
+          expect(described_class).not_to receive(:create_container).with(@execution_environment)
           described_class.get_container(@execution_environment)
         end
       end
