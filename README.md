@@ -39,6 +39,7 @@ The application is compatible with MRI and JRuby. Due to superior parallelism, w
 
 - delete all containers (include running ones) `docker rm -f $(docker ps -aq)`
 - if the application is run as a service restart it by using `service codeocean restart`
+- `/etc/init.d/postgresql restart`
 - if deployed via capistrano you will find the logs at `/var/www/app/shared/log/` -> `production.log`
 
 
