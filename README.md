@@ -34,3 +34,15 @@ In order to execute code submissions using Docker, source code files are written
 - customize *config/deploy/production.rb* if you want to deploy using [Capistrano](http://capistranorb.com/)
 
 The application is compatible with MRI and JRuby. Due to superior parallelism, we recommend using JRuby.
+
+## Useful service maintance commands
+
+- delete all containers (include running ones) `docker rm -f $(docker ps -aq)`
+- if the application is run as a service restart it by using `service codeocean restart`
+- if deployed via capistrano you will find the logs at `/var/www/app/shared/log/` -> `production.log`
+
+
+
+
+
+
