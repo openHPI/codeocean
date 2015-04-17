@@ -635,7 +635,7 @@ $(function() {
         element.data('content_buffer' , element.data('content_buffer') + output.stdout);
       }
     } else if (output.code && output.code == '200' && output_mode_is_streaming === false){
-        element.append( element.data('content_buffer'));
+      element.append( element.data('content_buffer'));
     } else {
       element.addClass('text-muted').text($('#output').data('message-no-output'));
     }
