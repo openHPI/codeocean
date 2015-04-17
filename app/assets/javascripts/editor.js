@@ -17,6 +17,7 @@ $(function() {
   var active_frame = undefined;
   var running = false;
   var qa_api = undefined;
+  var output_mode_is_streaming = true;
 
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
@@ -615,6 +616,10 @@ $(function() {
 
   var printOutput = function(output, colorize, index) {
     var element = findOrCreateOutputElement(index);
+    // disable streaming if desired
+    if (output.stdout && output.stdout.length >= 20 && output.stdout.substr(0,20) == "##DISABLESTREAMING##"){
+        output_mode_is_streaming = false;
+    }
     if (!colorize) {
       var stream = _.sortBy([output.stderr || '', output.stdout || ''], function(stream) {
         return stream.length;
@@ -623,7 +628,14 @@ $(function() {
     } else if (output.stderr) {
       element.addClass('text-warning').append(output.stderr);
     } else if (output.stdout) {
-      element.addClass('text-success').append(output.stdout);
+      if (output_mode_is_streaming){
+        element.addClass('text-success').append(output.stdout);
+      }else{
+        element.addClass('text-success');
+        element.data('content_buffer' , element.data('content_buffer') + output.stdout);
+      }
+    } else if (output.code && output.code == '200' && output_mode_is_streaming === false){
+        element.append( element.data('content_buffer'));
     } else {
       element.addClass('text-muted').text($('#output').data('message-no-output'));
     }
