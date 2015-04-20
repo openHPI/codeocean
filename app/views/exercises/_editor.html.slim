@@ -4,7 +4,7 @@
     - @files.each do |file|
       = render('editor_frame', exercise: exercise, file: file)
     #editor-buttons.btn-group
-      = render('editor_button', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => exercise_path(exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
+      = render('editor_button', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
       = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
       .btn-group
         = render('editor_button', disabled: true, icon: 'fa fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))

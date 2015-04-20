@@ -202,23 +202,20 @@ describe ExercisesController do
   describe 'GET #show' do
     context 'as admin' do
       before(:each) { get :show, id: exercise.id }
+
       expect_assigns(exercise: :exercise)
       expect_status(200)
       expect_template(:show)
     end
-    context 'as internal user' do
-      let(:user) { FactoryGirl.create(:internal_user) }
-      before(:each) { get :show, id: exercise.id }
+  end
+
+  describe 'GET #reload' do
+    context 'as anyone' do
+      before(:each) { get :reload, format: :json, id: exercise.id }
+
       expect_assigns(exercise: :exercise)
       expect_status(200)
-      expect_template(:show)
-    end
-    context 'as external user' do
-      let(:user) { FactoryGirl.create(:external_user) }
-      before(:each) { get :show, id: exercise.id }
-      expect_assigns(exercise: :exercise)
-      expect_status(200)
-      expect_template(:show)
+      expect_template(:reload)
     end
   end
 

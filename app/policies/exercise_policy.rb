@@ -12,12 +12,12 @@ class ExercisePolicy < AdminOrAuthorPolicy
     define_method(action) { admin? || author? || team_member? }
   end
 
-  [:implement?, :submit?].each do |action|
+  [:implement?, :submit?, :reload?].each do |action|
     define_method(action) { everyone }
   end
 
   def team_member?
-    @record.team.try(:members, []).include?(@user)
+    @record.team.try(:members, []).include?(@user) if @record.team
   end
   private :team_member?
 
