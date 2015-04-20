@@ -200,11 +200,26 @@ describe ExercisesController do
   end
 
   describe 'GET #show' do
-    before(:each) { get :show, id: exercise.id }
-
-    expect_assigns(exercise: :exercise)
-    expect_status(200)
-    expect_template(:show)
+    context 'as admin' do
+      before(:each) { get :show, id: exercise.id }
+      expect_assigns(exercise: :exercise)
+      expect_status(200)
+      expect_template(:show)
+    end
+    context 'as internal user' do
+      let(:user) { FactoryGirl.create(:internal_user) }
+      before(:each) { get :show, id: exercise.id }
+      expect_assigns(exercise: :exercise)
+      expect_status(200)
+      expect_template(:show)
+    end
+    context 'as external user' do
+      let(:user) { FactoryGirl.create(:external_user) }
+      before(:each) { get :show, id: exercise.id }
+      expect_assigns(exercise: :exercise)
+      expect_status(200)
+      expect_template(:show)
+    end
   end
 
   describe 'GET #statistics' do
