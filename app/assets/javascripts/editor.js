@@ -832,6 +832,8 @@ $(function() {
   var showStatus = function(output) {
     if (output.status === 'timeout') {
       showTimeoutMessage();
+    } else if (output.status === 'container_depleted') {
+        showContainerDepletedMessage();
     } else if (output.stderr) {
       $.flash.danger({
         icon: ['fa', 'fa-bug'],
