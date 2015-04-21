@@ -3,6 +3,8 @@ require 'concurrent/timer_task'
 require 'concurrent/utilities'
 
 class DockerContainerPool
+  TIME_TILL_RESTART = 900
+
   @containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
   #as containers are not containing containers in use
   @all_containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
@@ -22,12 +24,28 @@ class DockerContainerPool
   end
 
   def self.return_container(container, execution_environment)
+    container.status = 'available'
     @containers[execution_environment.id].push(container)
   end
 
   def self.get_container(execution_environment)
     if config[:active]
-      @containers[execution_environment.id].try(:shift) || nil
+      container = @containers[execution_environment.id].try(:shift) || nil
+
+      if((Time.now - container.start_time).to_i.abs > TIME_TILL_RESTART)
+        # remove container from @all_containers
+        @all_containers[execution_environment.id]-=[container]
+
+        # destroy container
+        DockerClient.destroy_container(container)
+
+        # create new container and add it to @all_containers. will be added to @containers on return_container
+        container = create_container(@execution_environment)
+        @all_containers[execution_environment.id]+=[container]
+      end
+      container.status = 'used'
+      container
+
     else
       create_container(execution_environment)
     end

@@ -53,6 +53,7 @@ class DockerClient
     local_workspace_path = generate_local_workspace_path
     FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
+    container.start_time = Time.now
     container
   rescue Docker::Error::NotFoundError => error
     destroy_container(container)
