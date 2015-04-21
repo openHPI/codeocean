@@ -16,27 +16,31 @@ class CommentsController < ApplicationController
     #if admin, show all comments.
     #check whether user is the author of the passed file_id, if so, show all comments. otherwise, only show comments of auther and own comments
     file = CodeOcean::File.find(params[:file_id])
-    submission = Submission.find(file.context_id)
+    #there might be no submission yet, so dont use find
+    submission = Submission.find_by(id: file.context_id)
+    if submission
+      is_admin = false
+      if current_user.respond_to? :external_id
+        user_id = current_user.external_id
+      else
+        user_id = current_user.id
+        is_admin = current_user.role == 'admin'
+      end
 
-    is_admin = false
-    if current_user.respond_to? :external_id
-      user_id = current_user.external_id
+      if(is_admin ||  user_id == submission.user_id)
+        # fetch all comments for this file
+        @comments = Comment.where(file_id: params[:file_id])
+      else
+        @comments = Comment.where(file_id: params[:file_id], user_id: user_id)
+      end
+
+      #@comments = Comment.where(file_id: params[:file_id])
+
+      #add names to comments
+      @comments.map{|comment| comment.username = Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]}
     else
-      user_id = current_user.id
-      is_admin = current_user.role == 'admin'
+      @comments = Comment.where(file_id: -1) #we need an empty relation here
     end
-
-    if(is_admin ||  user_id == submission.user_id)
-      # fetch all comments for this file
-      @comments = Comment.where(file_id: params[:file_id])
-    else
-      @comments = Comment.where(file_id: params[:file_id], user_id: user_id)
-    end
-
-    #@comments = Comment.where(file_id: params[:file_id])
-
-    #add names to comments
-    @comments.map{|comment| comment.username = Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]}
     authorize!
   end
 

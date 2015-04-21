@@ -28,7 +28,7 @@ class SubmissionsController < ApplicationController
     # copy each annotation and set the target_file.id
     unless(params[:annotations_arr].nil?)
       params[:annotations_arr].each do | annotation |
-        comment = Comment.new(:user_id => annotation[1][:user_id], :file_id => annotation[1][:file_id], :user_type => 'InternalUser', :row => annotation[1][:row], :column => annotation[1][:column], :text => annotation[1][:text])
+        comment = Comment.new(:user_id => annotation[1][:user_id], :file_id => annotation[1][:file_id], :user_type => current_user.user_type, :row => annotation[1][:row], :column => annotation[1][:column], :text => annotation[1][:text])
         source_file = CodeOcean::File.find(annotation[1][:file_id])
 
         #comment = Comment.new(annotation[1].permit(:user_id, :file_id, :user_type, :row, :column, :text, :created_at, :updated_at))
