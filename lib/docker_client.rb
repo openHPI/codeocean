@@ -196,8 +196,8 @@ class DockerClient
 
     if(RECYCLE_CONTAINERS)
       # create new container and add it to @all_containers. will be added to @containers on return_container
-      container = create_container(execution_environment)
-      DockerContainerPool.add_to_all_containers(container, execution_environment)
+      container = create_container(@execution_environment)
+      DockerContainerPool.add_to_all_containers(container, @execution_environment)
     end
     {status: :timeout}
   ensure
