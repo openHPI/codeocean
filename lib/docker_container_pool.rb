@@ -20,7 +20,9 @@ class DockerContainerPool
   end
 
   def self.create_container(execution_environment)
-     DockerClient.create_container(execution_environment)
+     container = DockerClient.create_container(execution_environment)
+     container.status = 'available'
+     container
   end
 
   def self.return_container(container, execution_environment)
@@ -32,18 +34,20 @@ class DockerContainerPool
     if config[:active]
       container = @containers[execution_environment.id].try(:shift) || nil
 
-      if((Time.now - container.start_time).to_i.abs > TIME_TILL_RESTART)
-        # remove container from @all_containers
-        @all_containers[execution_environment.id]-=[container]
+      if(!container.nil?)
+        if ((Time.now - container.start_time).to_i.abs > TIME_TILL_RESTART)
+          # remove container from @all_containers
+          @all_containers[execution_environment.id]-=[container]
 
-        # destroy container
-        DockerClient.destroy_container(container)
+          # destroy container
+          DockerClient.destroy_container(container)
 
-        # create new container and add it to @all_containers. will be added to @containers on return_container
-        container = create_container(@execution_environment)
-        @all_containers[execution_environment.id]+=[container]
+          # create new container and add it to @all_containers. will be added to @containers on return_container
+          container = create_container(@execution_environment)
+          @all_containers[execution_environment.id]+=[container]
+        end
+        #container.status = 'used'
       end
-      container.status = 'used'
       container
 
     else
