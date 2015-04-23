@@ -38,7 +38,7 @@ class Submission < ActiveRecord::Base
   end
 
   def normalized_score
-    if score && exercise.maximum_score && exercise.maximum_score > 0
+    if !score.nil? && !exercise.maximum_score.nil? && (exercise.maximum_score > 0)
       score / exercise.maximum_score
     else
       0
