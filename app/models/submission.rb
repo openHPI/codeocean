@@ -46,7 +46,7 @@ class Submission < ActiveRecord::Base
   end
 
   def percentage
-    (normalized_score * 100).round if score
+    (normalized_score * 100).round
   end
 
   [:score, :stop].each do |action|
