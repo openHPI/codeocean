@@ -3,7 +3,6 @@ require 'concurrent/timer_task'
 require 'concurrent/utilities'
 
 class DockerContainerPool
-  TIME_TILL_RESTART = 900
 
   @containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
   #as containers are not containing containers in use
@@ -53,25 +52,9 @@ class DockerContainerPool
   def self.get_container(execution_environment)
     if config[:active]
       container = @containers[execution_environment.id].try(:shift) || nil
-      if(!container.nil?)
-        if ((Time.now - container.start_time).to_i.abs > TIME_TILL_RESTART)
-          # remove container from @all_containers
-          Rails.logger.info('reinit container after time of life max  ' + container.to_s)
-          remove_from_all_containers(container, execution_environment)
-
-          # destroy container
-          DockerClient.destroy_container(container)
-
-          # create new container and add it to @all_containers. will be added to @containers on return_container
-          container = create_container(execution_environment)
-          add_to_all_containers(container, execution_environment)
-          Rails.logger.info('new container is ' + container.to_s)
-        end
-        #container.status = 'used'
-      end
-      Rails.logger.info('fetched container  ' + container.to_s)
-      Rails.logger.info('remaining avail. container  ' + @containers[execution_environment.id].size.to_s)
-      Rails.logger.info('all container count' + @all_containers[execution_environment.id].size.to_s)
+      Rails.logger.info('get_container fetched container  ' + container.to_s)
+      Rails.logger.info('get_container remaining avail. container  ' + @containers[execution_environment.id].size.to_s)
+      Rails.logger.info('get_container all container count' + @all_containers[execution_environment.id].size.to_s)
       container
     else
       create_container(execution_environment)
