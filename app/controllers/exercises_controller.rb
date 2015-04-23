@@ -156,6 +156,7 @@ class ExercisesController < ApplicationController
   end
 
   def transmit_lti_score
+    ::NewRelic::Agent.add_custom_parameters({ submission: @submission, normalized_score: @submission.normalized_score })
     response = send_score(@submission.normalized_score)
     if response[:status] == 'success'
       redirect_to_lti_return_path
