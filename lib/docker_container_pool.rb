@@ -41,7 +41,9 @@ class DockerContainerPool
 
   def self.return_container(container, execution_environment)
     container.status = 'available'
-    @containers[execution_environment.id].push(container)
+    unless(@containers[execution_environment.id].include?(container))
+      @containers[execution_environment.id].push(container)
+    end
   end
 
   def self.get_container(execution_environment)
