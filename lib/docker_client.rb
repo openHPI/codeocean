@@ -80,6 +80,7 @@ class DockerClient
   private :create_workspace_file
 
   def self.destroy_container(container)
+    Rails.logger.info('destroying container ' + container.to_s)
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
     FileUtils.rm_rf(local_workspace_path(container)) if local_workspace_path(container)
@@ -188,6 +189,7 @@ class DockerClient
       {status: :ok, stderr: stderr.join, stdout: stdout.join}
     end
   rescue Timeout::Error
+    Rails.logger.info('got timeout error for container ' + container.to_s)
     #container.restart if RECYCLE_CONTAINERS
     DockerContainerPool.remove_from_all_containers(container, @execution_environment)
 
@@ -201,6 +203,7 @@ class DockerClient
     end
     {status: :timeout}
   ensure
+    Rails.logger.info('after timeout error ensuring for' + container.to_s)
     RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)
   end
   private :send_command

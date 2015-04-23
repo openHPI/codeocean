@@ -30,6 +30,8 @@ class DockerContainerPool
     @all_containers[execution_environment.id]+=[container]
     if(!@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id]+=[container]
+    else
+      Rails.logger.info('failed trying to add existing container ' + container.to_s)
     end
   end
 
@@ -43,16 +45,18 @@ class DockerContainerPool
     container.status = 'available'
     unless(@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id].push(container)
+    else
+      Rails.logger.info('trying to return existing container ' + container.to_s)
     end
   end
 
   def self.get_container(execution_environment)
     if config[:active]
       container = @containers[execution_environment.id].try(:shift) || nil
-
       if(!container.nil?)
         if ((Time.now - container.start_time).to_i.abs > TIME_TILL_RESTART)
           # remove container from @all_containers
+          Rails.logger.info('reinit container after time of life max  ' + container.to_s)
           remove_from_all_containers(container, execution_environment)
 
           # destroy container
@@ -61,11 +65,14 @@ class DockerContainerPool
           # create new container and add it to @all_containers. will be added to @containers on return_container
           container = create_container(execution_environment)
           add_to_all_containers(container, execution_environment)
+          Rails.logger.info('new container is ' + container.to_s)
         end
         #container.status = 'used'
       end
+      Rails.logger.info('fetched container  ' + container.to_s)
+      Rails.logger.info('remaining avail. container  ' + @containers[execution_environment.id].size)
+      Rails.logger.info('all container count' + @all_containers[execution_environment.id].size)
       container
-
     else
       create_container(execution_environment)
     end
@@ -87,6 +94,7 @@ class DockerContainerPool
 
   def self.refill_for_execution_environment(execution_environment)
     refill_count = [execution_environment.pool_size - @all_containers[execution_environment.id].length, config[:refill][:batch_size]].min
+    Rails.logger.info('adding' + refill_count.to_s + ' containers for  ' +  execution_environment.name )
     c = refill_count.times.map { create_container(execution_environment) }
     @containers[execution_environment.id] += c
     @all_containers[execution_environment.id] += c
