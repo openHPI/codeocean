@@ -42,7 +42,7 @@ class Submission < ActiveRecord::Base
       score / exercise.maximum_score
     else
       0
-    return
+    end
   end
 
   def percentage
