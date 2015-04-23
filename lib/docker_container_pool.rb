@@ -70,8 +70,8 @@ class DockerContainerPool
         #container.status = 'used'
       end
       Rails.logger.info('fetched container  ' + container.to_s)
-      Rails.logger.info('remaining avail. container  ' + @containers[execution_environment.id].size)
-      Rails.logger.info('all container count' + @all_containers[execution_environment.id].size)
+      Rails.logger.info('remaining avail. container  ' + @containers[execution_environment.id].size.to_s)
+      Rails.logger.info('all container count' + @all_containers[execution_environment.id].size.to_s)
       container
     else
       create_container(execution_environment)
