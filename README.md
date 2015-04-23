@@ -25,7 +25,7 @@ In order to execute code submissions using Docker, source code files are written
 
 - create *config/sendmail.yml*
 - create *config/smtp.yml*
-- if Docker is not supported by your OS, set up a local Docker server, for instance using [vagrant-docker](https://github.com/hklement/vagrant-docker)
+- use boot2docker if there is no native support for docker on your OS
 - create seed data by executing `rake db:seed`
 
 ## Production Setup
