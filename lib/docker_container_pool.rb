@@ -3,6 +3,8 @@ require 'concurrent/timer_task'
 require 'concurrent/utilities'
 
 class DockerContainerPool
+  TIME_TILL_RESTART = 900
+
   @containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
   #as containers are not containing containers in use
   @all_containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
@@ -17,17 +19,51 @@ class DockerContainerPool
     @config ||= CodeOcean::Config.new(:docker).read(erb: true)[:pool]
   end
 
+  def self.remove_from_all_containers(container, execution_environment)
+    @all_containers[execution_environment.id]-=[container]
+    if(@containers[execution_environment.id].include?(container))
+      @containers[execution_environment.id]-=[container]
+    end
+  end
+
+  def self.add_to_all_containers(container, execution_environment)
+    @all_containers[execution_environment.id]+=[container]
+    if(!@containers[execution_environment.id].include?(container))
+      @containers[execution_environment.id]+=[container]
+    end
+  end
+
   def self.create_container(execution_environment)
-     DockerClient.create_container(execution_environment)
+     container = DockerClient.create_container(execution_environment)
+     container.status = 'available'
+     container
   end
 
   def self.return_container(container, execution_environment)
+    container.status = 'available'
     @containers[execution_environment.id].push(container)
   end
 
   def self.get_container(execution_environment)
     if config[:active]
-      @containers[execution_environment.id].try(:shift) || nil
+      container = @containers[execution_environment.id].try(:shift) || nil
+
+      if(!container.nil?)
+        if ((Time.now - container.start_time).to_i.abs > TIME_TILL_RESTART)
+          # remove container from @all_containers
+          remove_from_all_containers(container, execution_environment)
+
+          # destroy container
+          DockerClient.destroy_container(container)
+
+          # create new container and add it to @all_containers. will be added to @containers on return_container
+          container = create_container(execution_environment)
+          add_to_all_containers(container, execution_environment)
+        end
+        #container.status = 'used'
+      end
+      container
+
     else
       create_container(execution_environment)
     end

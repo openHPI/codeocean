@@ -53,6 +53,7 @@ class DockerClient
     local_workspace_path = generate_local_workspace_path
     FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
+    container.start_time = Time.now
     container
   rescue Docker::Error::NotFoundError => error
     destroy_container(container)
@@ -187,7 +188,17 @@ class DockerClient
       {status: :ok, stderr: stderr.join, stdout: stdout.join}
     end
   rescue Timeout::Error
-    container.restart if RECYCLE_CONTAINERS
+    #container.restart if RECYCLE_CONTAINERS
+    DockerContainerPool.remove_from_all_containers(container, @execution_environment)
+
+    # destroy container
+    destroy_container(container)
+
+    if(RECYCLE_CONTAINERS)
+      # create new container and add it to @all_containers. will be added to @containers on return_container
+      container = create_container(@execution_environment)
+      DockerContainerPool.add_to_all_containers(container, @execution_environment)
+    end
     {status: :timeout}
   ensure
     RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)
