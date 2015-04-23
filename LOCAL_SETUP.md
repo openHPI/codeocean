@@ -28,15 +28,15 @@ Execute: vagrant box add ubuntu/trusty64
 Execute: vagrant up
 Install docker environments
 export DOCKER_HOST=tcp://192.168.23.75:2375
-docker pull openhpi/codeocean-runtime-coffee
-docker pull openhpi/codeocean-runtime-java
-docker pull openhpi/codeocean-runtime-sqlite
-docker pull openhpi/codeocean-runtime-sinatra
-docker pull openhpi/codeocean-runtime-ruby
-docker pull openhpi/codeocean-runtime-python
-docker pull openhpi/codeocean-runtime-node
-docker pull openhpi/codeocean-runtime-html
-docker pull openhpi/codeocean-runtime-jruby
+docker pull jprberlin/ubuntu-coffee
+docker pull jprberlin/ubuntu-java
+docker pull jprberlin/ubuntu-sqlite
+docker pull jprberlin/ubuntu-sinatra
+docker pull jprberlin/ubuntu-ruby
+docker pull jprberlin/ubuntu-python
+docker pull jprberlin/ubuntu-node
+docker pull jprberlin/ubuntu-html
+docker pull jprberlin/ubuntu-jruby
 
 cd repoPath
 bundle install
