@@ -177,16 +177,9 @@ class DockerClient
   def send_command(command, container, &block)
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
       output = container.exec(['bash', '-c', command])
-      #do |stream, chunk|
-      #  block.call(stream, chunk) if block_given? #this may issue
-      #  if stream == :stderr
-      ##    stderr.push(chunk)
-      #  else
-      #    stdout.push(chunk)
-      #  end
-      #end
+      Rails.logger.info "output from container.exec"
       Rails.logger.info output
-      {status: output[2], stderr: output[1].join, stdout: output[0].join}
+      {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join, stderr: output[1].join}
     end
   rescue Timeout::Error
     timeout_occured = true
@@ -202,7 +195,7 @@ class DockerClient
       container = self.class.create_container(@execution_environment)
       DockerContainerPool.add_to_all_containers(container, @execution_environment)
     end
-    {status: :timeout,  stderr: '', stdout: ''}
+    {status: :timeout}
   ensure
     Rails.logger.info('send_command ensuring for' + container.to_s)
     RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)

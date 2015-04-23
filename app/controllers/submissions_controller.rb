@@ -70,27 +70,15 @@ class SubmissionsController < ApplicationController
 
   def run
     with_server_sent_events do |server_sent_event|
-      container_info_sent = false
-      stderr = ''
       output = @docker_client.execute_run_command(@submission, params[:filename])
-      if output
-        server_sent_event.write({stdout: output[:stdout]}, event: 'output')
-        server_sent_event.write({stderr: output[:stderr]}, event: 'output')
-        output[:status] = :ok if output[:status] == 0
-        server_sent_event.write({status: output[:status]}, event: 'status')
-      end
-      #server_sent_event.write({stdout: output[:output][2], event: 'status')
-      # do |stream, chunk|
-      #   unless container_info_sent
-      #     server_sent_event.write({id: @docker_client.container.try(:id), port_bindings: @docker_client.container.try(:port_bindings)}, event: 'info')
-      #     container_info_sent = true
-      #   end
-      #   server_sent_event.write({stream => chunk}, event: 'output')
-      #   stderr += chunk if stream == :stderr
-      # end
-      # server_sent_event.write(output, event: 'status')
-      if stderr.present?
-        if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(stderr)
+      
+      server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
+      server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
+      
+      server_sent_event.write({status: output[:status]}, event: 'status')
+      
+      unless output[:stderr].nil?
+        if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
           server_sent_event.write(hint, event: 'hint')
         else
           store_error(stderr)
