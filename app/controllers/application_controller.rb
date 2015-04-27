@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
 
   def current_user
+    ::NewRelic::Agent.add_custom_parameters({ external_user_id: :external_user_id, user_id: :user_id, session_user_id: session[:user_id] })
     @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources
   end
 
