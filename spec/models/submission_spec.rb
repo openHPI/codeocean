@@ -54,7 +54,7 @@ describe Submission do
       before(:each) { submission.score = nil }
 
       it 'returns nil' do
-        expect(submission.normalized_score).to be nil
+        expect(submission.normalized_score).to be 0
       end
     end
   end
@@ -73,7 +73,7 @@ describe Submission do
       before(:each) { submission.score = nil }
 
       it 'returns nil' do
-        expect(submission.percentage).to be nil
+        expect(submission.percentage).to be 0
       end
     end
   end
