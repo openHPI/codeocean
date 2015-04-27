@@ -9,7 +9,11 @@ class Assessor
   end
 
   def calculate_score(test_outcome)
-    (test_outcome[:passed].to_f / test_outcome[:count].to_f)
+    score = 0.0;
+    if(test_outcome[:passed].to_f != 0.0 && test_outcome[:count].to_f != 0.0)
+      score = (test_outcome[:passed].to_f / test_outcome[:count].to_f)
+    end
+    score
   end
   private :calculate_score
 
