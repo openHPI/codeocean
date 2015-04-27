@@ -27,9 +27,6 @@ module SubmissionScoring
   def score_submission(submission)
     outputs = collect_test_results(submission)
     score = outputs.map { |output|
-      ::NewRelic::Agent.add_custom_parameters({ score: output[:score] })
-      ::NewRelic::Agent.add_custom_parameters({ weight: output[:weight] })
-      ::NewRelic::Agent.add_custom_parameters({ filename: output[:filename] })
       output[:score] * output[:weight] }.reduce(:+)
     submission.update(score: score)
     outputs
