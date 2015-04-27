@@ -25,7 +25,7 @@ class FileTree < Tree::TreeNode
 
   def initialize(files = [])
     super(root_label)
-    files.each do |file|
+    files.uniq{|f| f.name_with_extension}.each do |file|
       parent = self
       (file.path || '').split('/').each do |segment|
         node = parent.children.detect { |child| child.name == segment } || parent.add(Tree::TreeNode.new(segment))
