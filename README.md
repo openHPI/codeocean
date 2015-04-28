@@ -42,7 +42,14 @@ The application is compatible with MRI and JRuby. Due to superior parallelism, w
 - `/etc/init.d/postgresql restart`
 - if deployed via capistrano you will find the logs at `/var/www/app/shared/log/` -> `production.log`
 
+## Roadmap
 
+1.1
+
+ [ ] WebSocket Suppport
+ [ ] Interactive Exercises
+ [ ] Allow Disabling of File Creation
+ [ ] Set Container Recyling per Environment
 
 
 
