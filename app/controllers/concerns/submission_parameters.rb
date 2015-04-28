@@ -12,7 +12,6 @@ module SubmissionParameters
   private :reject_illegal_file_attributes!
 
   def submission_params
-    ::NewRelic::Agent.add_custom_parameters({ current_user: current_user.id })
     submission_params = params[:submission].permit(:cause, :exercise_id, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
     reject_illegal_file_attributes!(submission_params)
     submission_params
