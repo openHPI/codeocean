@@ -42,7 +42,7 @@ class DockerContainerPool
 
   def self.return_container(container, execution_environment)
     container.status = 'available'
-    unless(@containers[execution_environment.id].include?(container))
+    if(@containers[execution_environment.id] && !@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id].push(container)
     else
       Rails.logger.info('trying to return existing container ' + container.to_s)

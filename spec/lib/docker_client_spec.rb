@@ -112,6 +112,7 @@ describe DockerClient, docker: true do
         end
 
         it 'raises the error' do
+          pending('RETRY COUNT is disabled')
           expect { create_container }.to raise_error(error)
         end
       end

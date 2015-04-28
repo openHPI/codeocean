@@ -83,7 +83,10 @@ class DockerClient
     Rails.logger.info('destroying container ' + container.to_s)
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
-    Pathname.new(local_workspace_path).children.each{ |p| p.rmtree} if local_workspace_path(container)
+    local_workspace_path = local_workspace_path(container)
+    if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
+     Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
+    end
     container.delete(force: true)
   end
 
@@ -94,9 +97,9 @@ class DockerClient
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
-    #clear directory (it should be emtpy anyhow)
-    Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
     if @container
+      #clear directory (it should be emtpy anyhow)
+      Pathname.new(self.class.local_workspace_path(@container)).children.each{ |p| p.rmtree}
       before_execution_block.try(:call)
       send_command(command, @container, &output_consuming_block)
     else
@@ -201,7 +204,6 @@ class DockerClient
     RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)
   end
   private :send_command
-
 
   class Error < RuntimeError; end
 end
