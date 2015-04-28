@@ -20,7 +20,7 @@ class SubmissionsController < ApplicationController
   def create
     @submission = Submission.new(submission_params)
     authorize!
-    copy_comments
+    #copy_comments
     create_and_respond(object: @submission)
   end
 
