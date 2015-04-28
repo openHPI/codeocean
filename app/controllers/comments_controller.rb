@@ -39,7 +39,7 @@ class CommentsController < ApplicationController
       #add names to comments
       @comments.map{|comment| comment.username = Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]}
     else
-      @comments = Comment.where(file_id: -1) #we need an empty relation here
+      @comments = Comment.all.limit(0) #we need an empty relation here
     end
     authorize!
   end
