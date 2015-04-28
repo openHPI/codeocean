@@ -53,7 +53,7 @@ describe Submission do
     context 'without a score' do
       before(:each) { submission.score = nil }
 
-      it 'returns nil' do
+      it 'returns 0' do
         expect(submission.normalized_score).to be 0
       end
     end
@@ -72,7 +72,7 @@ describe Submission do
     context 'without a score' do
       before(:each) { submission.score = nil }
 
-      it 'returns nil' do
+      it 'returns 0' do
         expect(submission.percentage).to be 0
       end
     end
