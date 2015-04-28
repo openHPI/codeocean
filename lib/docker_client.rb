@@ -61,6 +61,8 @@ class DockerClient
   end
 
   def create_workspace_files(container, submission)
+    #clear directory (it should be emtpy anyhow)
+    Pathname.new(self.class.local_workspace_path(container)).children.each{ |p| p.rmtree}
     submission.collect_files.each do |file|
       FileUtils.mkdir_p(File.join(self.class.local_workspace_path(container), file.path || ''))
       if file.file_type.binary?
@@ -98,8 +100,6 @@ class DockerClient
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
-      #clear directory (it should be emtpy anyhow)
-      Pathname.new(self.class.local_workspace_path(@container)).children.each{ |p| p.rmtree}
       before_execution_block.try(:call)
       send_command(command, @container, &output_consuming_block)
     else
