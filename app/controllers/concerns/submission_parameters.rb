@@ -12,7 +12,11 @@ module SubmissionParameters
   private :reject_illegal_file_attributes!
 
   def submission_params
-    submission_params = params[:submission].permit(:cause, :exercise_id, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
+    if current_user
+      current_user_id = current_user.id
+      current_user_class_name = current_user.class.name
+    end
+    submission_params = params[:submission].permit(:cause, :exercise_id, files_attributes: file_attributes).merge(user_id: current_user_id, user_type: current_user_class_name)
     reject_illegal_file_attributes!(submission_params)
     submission_params
   end
