@@ -4,18 +4,8 @@
     <%= InternalUser.find(@request_for_comment.requestorid) %> | <%= @request_for_comment.requested_at %>
   </p>
 </div>
-
-<form class="form-inline">
-  <div class="form-group">
-    <p style='display:inline-block'><%= t('exercises.implement.comment.line') %></p>
-    <input type="number" class="form-control" id="lineInput" placeholder="1" required>
-  </div>
-  <div class="form-group">
-    <p style='display:inline-block'><%= t('exercises.implement.comment.a_comment') %></p>
-    <input type="text" class="form-control" id="commentInput" placeholder="I'd suggest a variable here" required>
-  </div>
-  <button id='submitComment' type="submit" class="btn btn-default"><%= t('exercises.implement.comment.addComment') %>!</button>
-</form>
+<!--
+-->
 
 <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.fileid%>'>
   <%= CodeOcean::File.find(@request_for_comment.fileid).content %>
@@ -26,12 +16,24 @@
     var commentitor = $('#commentitor');
     var userid = commentitor.data('user-id');
     var fileid = commentitor.data('file-id');
-    var lineInput = $('#lineInput');
-    var commentInput = $('#commentInput');
+
+    var inputHtml = ''
+    //inputHtml += '<form class="form">'
+    //inputHtml +=   '<div class="form-group">'
+    //inputHtml +=    '<p style="display:inline-block"><%= t("exercises.implement.comment.line") %></p>'
+    //inputHtml +=    '<input type="number" class="form-control" id="lineInput" placeholder="1" required>'
+    //inputHtml +=  '</div>'
+    inputHtml +=  '<div class="input-group">'
+    //inputHtml +=    '<p style="display:inline-block"><%= t("exercises.implement.comment.a_comment") %></p>'
+    inputHtml +=    '<input type="text" class="form-control" id="commentInput" placeholder="I\'d suggest a variable here" required>'
+    inputHtml +=    '<span class="input-group-btn"><button id="submitComment" class="btn btn-default"><%= t("exercises.implement.comment.addComment") %>!</button></span>'
+    inputHtml +=  '</div>'
+    //inputHtml +='</form>'
+
+
     commentitor = ace.edit(commentitor[0]);
     commentitor.setReadOnly(true);
 
-    $('#submitComment').click(addComment);
     setAnnotations();
 
     function setAnnotations() {
@@ -47,18 +49,34 @@
       });
 
       jqrequest.done(function(response){
+        //data-container=".ui-front" on gutter cell
         $.each(response, function(index, comment) {
           comment.className = "code-ocean_comment"
           comment.text = comment.username + ": " + comment.text
         })
 
         commentitor.getSession().setAnnotations(response)
+
+        //$('.ace_gutter-layer').data('container', '.ui-front')
+        $('.ace_gutter-cell').popover({
+          title: 'Add a comment',
+          html: true,
+          content: inputHtml,
+          position: 'right',
+          trigger: 'focus click'
+        }).on('shown.bs.popover', function() {
+          $('#commentInput').focus()
+          $('#submitComment').click(addComment);
+          console.log($(this).text())
+          $('#commentInput').data('line', $(this).text())
+        })
       })
     }
 
     function addComment() {
-      var line = lineInput.val()
+      var commentInput = $('#commentInput');
       var comment = commentInput.val()
+      var line = $('#commentInput').data('line')
 
       if (line == '' || comment == '') {
         return
@@ -66,8 +84,7 @@
         line = parseInt(line) - 1
       }
 
-
-      var jqxhr = $.ajax({
+      $.ajax({
         data: {
           comment: {
             user_id: userid,
@@ -80,10 +97,13 @@
         dataType: 'json',
         method: 'POST',
         url:  "/comments"
-      })
+      }).done(setAnnotations)
 
-      jqxhr.done(setAnnotations)
-      lineInput.val(''); commentInput.val('');
+      $('.ace_gutter-cell').popover('hide')
     }
   //})()
 </script>
+<style>
+  #commentitor, .ace_gutter, .ace_gutter-layer { overflow: visible }
+  .popover { width: 400px; max-width: none; }
+</style>
