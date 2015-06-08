@@ -617,9 +617,9 @@ $(function() {
   var printOutput = function(output, colorize, index) {
     var element = findOrCreateOutputElement(index);
     // disable streaming if desired
-    if (output.stdout && output.stdout.length >= 20 && output.stdout.substr(0,20) == "##DISABLESTREAMING##"){
-        output_mode_is_streaming = false;
-    }
+    //if (output.stdout && output.stdout.length >= 20 && output.stdout.substr(0,20) == "##DISABLESTREAMING##"){
+    //    output_mode_is_streaming = false;
+    //}
     if (!colorize) {
       var stream = _.sortBy([output.stderr || '', output.stdout || ''], function(stream) {
         return stream.length;
@@ -628,14 +628,14 @@ $(function() {
     } else if (output.stderr) {
       element.addClass('text-warning').append(output.stderr);
     } else if (output.stdout) {
-      if (output_mode_is_streaming){
-        element.addClass('text-success').append(output.stdout);
-      }else{
-        element.addClass('text-success');
-        element.data('content_buffer' , element.data('content_buffer') + output.stdout);
-      }
-    } else if (output.code && output.code == '200' && output_mode_is_streaming === false){
-      element.append( element.data('content_buffer'));
+      //if (output_mode_is_streaming){
+      element.addClass('text-success').append(output.stdout);
+      //}else{
+      //  element.addClass('text-success');
+      //  element.data('content_buffer' , element.data('content_buffer') + output.stdout);
+      //}
+    //} else if (output.code && output.code == '200'){
+    //  element.append( element.data('content_buffer'));
     } else {
       element.addClass('text-muted').text($('#output').data('message-no-output'));
     }
