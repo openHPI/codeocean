@@ -7,10 +7,10 @@ class MochaAdapter < TestingFrameworkAdapter
   end
 
   def parse_output(output)
-    matches_success = SUCCESS_REGEXP.match(output[:stderr])
-    matches_failed = FAILURES_REGEXP.match(output[:stderr])
-    failed = matches_failed ? matches_failed.captures.try(:first).to_i : 0
-    success = matches_success ? matches_success.captures.try(:first).to_i : 0
+    matches_success = SUCCESS_REGEXP.match(text)
+    matches_failed = FAILURES_REGEXP.match(text)
+    failed = matches_failed ? matches_failed.captures.first.to_i : 0
+    success = matches_success ? matches_success.captures.first.to_i : 0
     {count: success+failed, failed: failed}
   end
 end
