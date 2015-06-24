@@ -20,7 +20,7 @@ class SubmissionsController < ApplicationController
   def create
     @submission = Submission.new(submission_params)
     authorize!
-    #copy_comments
+    copy_comments
     create_and_respond(object: @submission)
   end
 
@@ -28,13 +28,14 @@ class SubmissionsController < ApplicationController
     # copy each annotation and set the target_file.id
     unless(params[:annotations_arr].nil?)
       params[:annotations_arr].each do | annotation |
+        #comment = Comment.new(annotation[1].permit(:user_id, :file_id, :user_type, :row, :column, :text, :created_at, :updated_at))
         comment = Comment.new(:user_id => annotation[1][:user_id], :file_id => annotation[1][:file_id], :user_type => current_user.class.name, :row => annotation[1][:row], :column => annotation[1][:column], :text => annotation[1][:text])
         source_file = CodeOcean::File.find(annotation[1][:file_id])
 
-        #comment = Comment.new(annotation[1].permit(:user_id, :file_id, :user_type, :row, :column, :text, :created_at, :updated_at))
+        # retrieve target file
         target_file = @submission.files.detect do |file|
           # file_id has to be that of a the former iteration OR of the initial file (if this is the first run)
-          file.file_id == source_file.file_id || file.file_id == source_file.id #seems to be needed here: (check this): || file.file_id == source_file.id
+          file.file_id == source_file.file_id || file.file_id == source_file.id #seems to be needed here: (check this): || file.file_id == source_file.id ; yes this is needed, for comments on templates as well as comments on files added by users.
         end
 
         #save to assign an id

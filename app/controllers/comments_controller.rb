@@ -14,7 +14,7 @@ class CommentsController < ApplicationController
   def index
     #@comments = Comment.all
     #if admin, show all comments.
-    #check whether user is the author of the passed file_id, if so, show all comments. otherwise, only show comments of auther and own comments
+    #check whether user is the author of the passed file_id, if so, show all comments. otherwise, only show comments of the file-author and own comments
     file = CodeOcean::File.find(params[:file_id])
     #there might be no submission yet, so dont use find
     submission = Submission.find_by(id: file.context_id)
@@ -31,7 +31,10 @@ class CommentsController < ApplicationController
         # fetch all comments for this file
         @comments = Comment.where(file_id: params[:file_id])
       else
-        @comments = Comment.where(file_id: params[:file_id], user_id: user_id)
+        # fetch comments of the current user
+        #@comments = Comment.where(file_id: params[:file_id], user_id: user_id)
+        # fetch comments of file-author and the current user
+        @comments = Comment.where(file_id: params[:file_id], user_id: [user_id, submission.user_id])
       end
 
       #@comments = Comment.where(file_id: params[:file_id])
