@@ -117,8 +117,11 @@ $(function() {
           exercise_id: $('#editor').data('exercise-id'),
           files_attributes: (filter || _.identity)(collectFiles())
         },
-        source_submission_id: $('.ace_editor',$('#editor'))[0].dataset.id,
-        //annotations: annotations,
+        // fixed: not used any longer
+        // todo : get source_submission_id of each editor, since comments have to be copied for each file
+        //
+        // source_submission_id: $('.ace_editor',$('#editor'))[0].dataset.id,
+        // annotations: annotations,
         annotations_arr: annotations_arr
       },
       dataType: 'json',
@@ -132,7 +135,37 @@ $(function() {
   };
 
     var createSubmissionCallback = function(data){
-      var id =  $('.editor').data('id');
+
+        // update the ids of the editors and reload the annotations
+        for (var i = 0; i < editors.length; i++) {
+            var file_id_old = $(editors[i].container).data('file-id');
+
+            // if we have an file_id set (the file is a copy of a teacher supplied given file)
+            if (file_id_old != null){
+                // if we find file_id_old (this is the reference to the base file) in the submission, this is the match
+                for(var j = 0; j< data.files.length; j++){
+                    if(data.files[j].file_id == file_id_old){
+                        //$(editors[i].container).data('id') = data.files[j].id;
+                        $(editors[i].container).data('id', data.files[j].id );
+                    }
+                }
+            } else {
+                // the old file was created from scratch. set the id of the editor to the matching new one
+                var old_id =  $(editors[i].container).data('id');
+                for(var j = 0; j< data.files.length; j++){
+                    if(data.files[j].file_id == old_id){
+                        $(editors[i].container).data('id', data.files[j].id);
+                    }
+                }
+            }
+            setAnnotations(editors[i], $(editors[i].container).data('id'));
+        }
+
+        /*
+        $('.editor').each(function(index, element) {
+            var file_id_old =  $(element).data('id');
+
+        }); */
     };
 
   var destroyFile = function() {
@@ -377,6 +410,7 @@ $(function() {
         commentModal.find('#addCommentButton').on('click', function(e){
           var user_id = $(element).data('user-id');
           var commenttext = commentModal.find('textarea').val();
+          var file_id =  $(element).data('id');
 
           if (commenttext !== "") {
             createComment(user_id, file_id, row, editor, commenttext);
