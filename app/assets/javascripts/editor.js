@@ -125,13 +125,19 @@ $(function() {
   };
 
     var createSubmissionCallback = function(data){
-
         // update the ids of the editors and reload the annotations
         for (var i = 0; i < editors.length; i++) {
+
+            // set the data attribute to submission
+            $(editors[i].container).data('context-type', 'Submission');
+
+
             var file_id_old = $(editors[i].container).data('file-id');
 
             // file_id_old is always set. Either it is a reference to a teacher supplied given file, or it is the actual id of a new user created file.
-            // I am not sure why the latter happens, but therefore the else part is not needed any longer...
+            // This is the case, since it is set via a call to ancestor_id on the model, which returns either file_id if set, or id if it is not set.
+            // therefore the else part is not needed any longer...
+
             // if we have an file_id set (the file is a copy of a teacher supplied given file)
             if (file_id_old != null){
                 // if we find file_id_old (this is the reference to the base file) in the submission, this is the match
@@ -361,12 +367,13 @@ $(function() {
       session.on('annotationRemoval', handleAnnotationRemoval);
       session.on('annotationChange', handleAnnotationChange);
 
-      // TODO refactor here
-      // TODO: only show modal dialog when the file is part of a submission (and not the template)
+      // TODO refactor here, put this in its own function
       // Code for clicks on gutter / sidepanel
       editor.on("guttermousedown", function(e){
         var target  = e.domEvent.target;
 
+        // only allow comments on submissions, not on the template
+        if ($(editor.container).data('context-type') != 'Submission') return;
         if (target.className.indexOf("ace_gutter-cell") == -1) return;
         if (!editor.isFocused()) return;
         if (e.clientX > 25 + target.getBoundingClientRect().left) return;
