@@ -979,7 +979,7 @@ $(function() {
   }
 
     var initializeCodePilot = function() {
-        if ($('#questions-column').isPresent() && QaApi.isBrowserSupported()) {
+        if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined') && QaApi.isBrowserSupported()) {
             $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
             $('#questions-column').addClass('col-md-3');
 
