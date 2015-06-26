@@ -94,15 +94,10 @@ $(function() {
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
 
-      var annotations = {};
       var annotations_arr = [];
-      var file_ids = [];
-
 
       $('.editor').each(function(index, element) {
-          var file_id =  $(element).data('id');
           var editor = ace.edit(element);
-          //annotations[file_id] = editor.getSession().getAnnotations();
           var cleaned_annotations = editor.getSession().getAnnotations();
           for(var i = cleaned_annotations.length-1; i>=0; --i){
               cleaned_annotations[i].text = cleaned_annotations[i].text.replace(cleaned_annotations[i].username + ": ", "");
@@ -117,11 +112,6 @@ $(function() {
           exercise_id: $('#editor').data('exercise-id'),
           files_attributes: (filter || _.identity)(collectFiles())
         },
-        // fixed: not used any longer
-        // todo : get source_submission_id of each editor, since comments have to be copied for each file
-        //
-        // source_submission_id: $('.ace_editor',$('#editor'))[0].dataset.id,
-        // annotations: annotations,
         annotations_arr: annotations_arr
       },
       dataType: 'json',
@@ -140,6 +130,8 @@ $(function() {
         for (var i = 0; i < editors.length; i++) {
             var file_id_old = $(editors[i].container).data('file-id');
 
+            // file_id_old is always set. Either it is a reference to a teacher supplied given file, or it is the actual id of a new user created file.
+            // I am not sure why the latter happens, but therefore the else part is not needed any longer...
             // if we have an file_id set (the file is a copy of a teacher supplied given file)
             if (file_id_old != null){
                 // if we find file_id_old (this is the reference to the base file) in the submission, this is the match
@@ -149,23 +141,10 @@ $(function() {
                         $(editors[i].container).data('id', data.files[j].id );
                     }
                 }
-            } else {
-                // the old file was created from scratch. set the id of the editor to the matching new one
-                var old_id =  $(editors[i].container).data('id');
-                for(var j = 0; j< data.files.length; j++){
-                    if(data.files[j].file_id == old_id){
-                        $(editors[i].container).data('id', data.files[j].id);
-                    }
-                }
             }
             setAnnotations(editors[i], $(editors[i].container).data('id'));
         }
 
-        /*
-        $('.editor').each(function(index, element) {
-            var file_id_old =  $(element).data('id');
-
-        }); */
     };
 
   var destroyFile = function() {
@@ -383,6 +362,7 @@ $(function() {
       session.on('annotationChange', handleAnnotationChange);
 
       // TODO refactor here
+      // TODO: only show modal dialog when the file is part of a submission (and not the template)
       // Code for clicks on gutter / sidepanel
       editor.on("guttermousedown", function(e){
         var target  = e.domEvent.target;
