@@ -125,12 +125,16 @@ $(function() {
   };
 
     var createSubmissionCallback = function(data){
+        // set all frames context types to submission
+        $('.frame').each(function(index, element) {
+            $(element).data('context-type', 'Submission');
+        });
+
         // update the ids of the editors and reload the annotations
         for (var i = 0; i < editors.length; i++) {
 
             // set the data attribute to submission
-            $(editors[i].container).data('context-type', 'Submission');
-
+            //$(editors[i].container).data('context-type', 'Submission');
 
             var file_id_old = $(editors[i].container).data('file-id');
 
@@ -150,6 +154,8 @@ $(function() {
             }
             setAnnotations(editors[i], $(editors[i].container).data('id'));
         }
+        // toggle button states (it might be the case that the request for comments button has to be enabled
+        toggleButtonStates();
 
     };
 
@@ -373,7 +379,8 @@ $(function() {
         var target  = e.domEvent.target;
 
         // only allow comments on submissions, not on the template
-        if ($(editor.container).data('context-type') != 'Submission') return;
+        if(active_frame.data('context-type') != 'Submission') return;
+        //if ($(editor.container).data('context-type') != 'Submission') return;
         if (target.className.indexOf("ace_gutter-cell") == -1) return;
         if (!editor.isFocused()) return;
         if (e.clientX > 25 + target.getBoundingClientRect().left) return;
@@ -573,6 +580,10 @@ $(function() {
     $('#start-over').on('click', confirmReset);
   };
 
+  var isActiveFileBinary = function() {
+      return 'binary' in active_frame.data();
+  };
+
   var isActiveFileExecutable = function() {
     return 'executable' in active_frame.data();
   };
@@ -594,6 +605,10 @@ $(function() {
 
   var isActiveFileStoppable = function() {
     return isActiveFileRunnable() && running;
+  };
+
+  var isActiveFileSubmission = function() {
+      return ['Submission'].includes(active_frame.data('contextType'));
   };
 
   var isActiveFileTestable = function() {
@@ -960,6 +975,7 @@ $(function() {
     $('#run').toggle(isActiveFileRunnable() && !running);
     $('#stop').toggle(isActiveFileStoppable());
     $('#test').toggle(isActiveFileTestable());
+    $('#request-for-comments').toggle(isActiveFileSubmission() && !isActiveFileBinary());
   };
 
   var requestComments = function(e) {

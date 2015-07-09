@@ -1,4 +1,4 @@
-.frame data-executable=file.file_type.executable? data-filename=file.name_with_extension data-renderable=file.file_type.renderable? data-role=file.role
+.frame data-executable=file.file_type.executable? data-filename=file.name_with_extension data-renderable=file.file_type.renderable? data-role=file.role data-binary=file.file_type.binary? data-context-type=file.context_type
   - if file.file_type.binary?
     .binary-file data-file-id=file.ancestor_id
       - if file.file_type.renderable?
@@ -12,4 +12,4 @@
         = link_to(file.native_file.file.name_with_extension, file.native_file.url)
   - else
     .editor-content.hidden data-file-id=file.ancestor_id = file.content
-    .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only data-id=file.id data-context-type=file.context_type
+    .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only data-id=file.id
