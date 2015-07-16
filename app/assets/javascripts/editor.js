@@ -991,14 +991,19 @@ $(function() {
           requestorid: user_id,
           exerciseid: exercise_id,
           fileid: file_id,
-          "requested_at(1i)": 2015,
-          "requested_at(2i)":3,
+          "requested_at(1i)": 2015, // these are the timestamp values that the request handler demands
+          "requested_at(2i)":3, // they could be random here, because the timestamp is updated on serverside anyway
           "requested_at(3i)":27,
           "requested_at(4i)":17,
           "requested_at(5i)":06
         }
       }
+    }).done(function() {
+      hideSpinner()
+      $.flash.success({ text: 'Request for comments sent!' })
     })
+
+    showSpinner($('#request-for-comments'))
   }
 
     var initializeCodePilot = function() {
