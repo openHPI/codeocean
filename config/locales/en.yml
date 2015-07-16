@@ -175,6 +175,7 @@ en:
       run: Run
       run_failure: Your code ran with errors.
       run_success: Your code ran without errors.
+      requestComments: Request comments
       save: Save
       score: Score
       start_over: Start over
