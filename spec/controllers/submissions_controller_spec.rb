@@ -160,6 +160,7 @@ describe SubmissionsController do
         end
 
         it 'does not store the error' do
+          pending("no server sent events used right now")
           expect(Error).not_to receive(:create)
         end
       end
@@ -170,6 +171,7 @@ describe SubmissionsController do
         end
 
         it 'stores the error' do
+          pending("no server sent events used right now")
           expect(Error).to receive(:create).with(execution_environment_id: submission.exercise.execution_environment_id, message: stderr)
         end
       end

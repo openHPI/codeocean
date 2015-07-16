@@ -6,11 +6,12 @@ default: &default
 
 development:
   <<: *default
-  host: tcp://192.168.23.75:2375
+  host: tcp://192.168.59.104:2376
   workspace_root: <%= File.join('/', 'shared', Rails.env) %>
 
 production:
   <<: *default
+  host: unix:///var/run/docker.sock
   pool:
     active: true
     refill:
@@ -22,5 +23,5 @@ production:
 
 test:
   <<: *default
-  host: tcp://192.168.23.75:2375
+  host: tcp://192.168.59.104:2376
   workspace_root: <%= File.join('/', 'shared', Rails.env) %>

@@ -38,11 +38,16 @@ class Submission < ActiveRecord::Base
   end
 
   def normalized_score
-    score / exercise.maximum_score if score
+    ::NewRelic::Agent.add_custom_parameters({ unnormalized_score: score })
+    if !score.nil? && !exercise.maximum_score.nil? && (exercise.maximum_score > 0)
+      score / exercise.maximum_score
+    else
+      0
+    end
   end
 
   def percentage
-    (normalized_score * 100).round if score
+    (normalized_score * 100).round
   end
 
   [:score, :stop].each do |action|

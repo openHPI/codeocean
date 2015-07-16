@@ -200,11 +200,23 @@ describe ExercisesController do
   end
 
   describe 'GET #show' do
-    before(:each) { get :show, id: exercise.id }
+    context 'as admin' do
+      before(:each) { get :show, id: exercise.id }
 
-    expect_assigns(exercise: :exercise)
-    expect_status(200)
-    expect_template(:show)
+      expect_assigns(exercise: :exercise)
+      expect_status(200)
+      expect_template(:show)
+    end
+  end
+
+  describe 'GET #reload' do
+    context 'as anyone' do
+      before(:each) { get :reload, format: :json, id: exercise.id }
+
+      expect_assigns(exercise: :exercise)
+      expect_status(200)
+      expect_template(:reload)
+    end
   end
 
   describe 'GET #statistics' do

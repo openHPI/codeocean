@@ -166,6 +166,7 @@ en:
       confirm_start_over: Do you really want to start over?
       confirm_submit: Do you really want to submit your code for grading?
       create_file: New File
+      depleted: All execution environments are busy. Please try again later.
       destroy_file: Delete File
       download: Download
       dummy: No Action

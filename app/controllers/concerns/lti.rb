@@ -95,6 +95,7 @@ module Lti
   private :return_to_consumer
 
   def send_score(score)
+    ::NewRelic::Agent.add_custom_parameters({ score: score, session: session })
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
     provider = build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]), parameters: session[:lti_parameters])
     if provider.nil?

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe DockerContainerPool do
-  let(:container) { double }
+  let(:container) { double(:start_time => Time.now, :status => 'available') }
 
   def reload_class
     load('docker_container_pool.rb')
@@ -53,8 +53,8 @@ describe DockerContainerPool do
           expect(described_class.instance_variable_get(:@containers)[@execution_environment.id]).to be_empty
         end
 
-        it 'creates a new container' do
-          expect(described_class).to receive(:create_container).with(@execution_environment)
+        it 'not creates a new container' do
+          expect(described_class).not_to receive(:create_container).with(@execution_environment)
           described_class.get_container(@execution_environment)
         end
       end

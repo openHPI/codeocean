@@ -25,7 +25,7 @@ In order to execute code submissions using Docker, source code files are written
 
 - create *config/sendmail.yml*
 - create *config/smtp.yml*
-- if Docker is not supported by your OS, set up a local Docker server, for instance using [vagrant-docker](https://github.com/hklement/vagrant-docker)
+- use boot2docker if there is no native support for docker on your OS
 - create seed data by executing `rake db:seed`
 
 ## Production Setup
@@ -34,3 +34,23 @@ In order to execute code submissions using Docker, source code files are written
 - customize *config/deploy/production.rb* if you want to deploy using [Capistrano](http://capistranorb.com/)
 
 The application is compatible with MRI and JRuby. Due to superior parallelism, we recommend using JRuby.
+
+## Useful service maintenance commands
+
+- delete all containers (include running ones) `docker rm -f $(docker ps -aq)`
+- if the application is run as a service restart it by using `service codeocean restart`
+- `/etc/init.d/postgresql restart`
+- if deployed via capistrano you will find the logs at `/var/www/app/shared/log/` -> `production.log`
+
+## Roadmap
+
+1.1
+
+ [ ] WebSocket Suppport
+ [ ] Interactive Exercises
+ [ ] Allow Disabling of File Creation
+ [ ] Set Container Recyling per Environment
+
+
+
+

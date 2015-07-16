@@ -7,7 +7,7 @@ gem 'carrierwave'
 gem 'coffee-rails', '~> 4.0.0'
 gem 'concurrent-ruby'
 gem 'concurrent-ruby-ext', platform: :ruby
-gem 'docker-api', require: 'docker'
+gem 'docker-api','~> 1.21.1',  require: 'docker'
 gem 'factory_girl_rails', '~> 4.0'
 gem 'forgery'
 gem 'highline'
@@ -16,6 +16,7 @@ gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'ims-lti'
 gem 'kramdown'
+gem 'newrelic_rpm'
 gem 'pg', platform: :ruby
 gem 'pry'
 gem 'puma'
@@ -59,7 +60,7 @@ group :test do
   gem 'nyan-cat-formatter'
   gem 'rake'
   gem 'rspec-autotest'
-  gem 'rspec-rails', '~> 3.1.0'
+  gem 'rspec-rails'
   gem 'selenium-webdriver'
   gem 'simplecov', require: false
 end

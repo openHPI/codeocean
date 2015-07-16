@@ -1,10 +1,12 @@
 require 'concurrent'
+require 'pathname'
 
 class DockerClient
   CONTAINER_WORKSPACE_PATH = '/workspace'
   DEFAULT_MEMORY_LIMIT = 256
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
   MINIMUM_MEMORY_LIMIT = 4
+  RECYCLE_CONTAINERS = true
   RETRY_COUNT = 2
 
   attr_reader :container
@@ -51,13 +53,16 @@ class DockerClient
     local_workspace_path = generate_local_workspace_path
     FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
+    container.start_time = Time.now
     container
   rescue Docker::Error::NotFoundError => error
     destroy_container(container)
-    (tries += 1) <= RETRY_COUNT ? retry : raise(error)
+    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
   def create_workspace_files(container, submission)
+    #clear directory (it should be emtpy anyhow)
+    Pathname.new(self.class.local_workspace_path(container)).children.each{ |p| p.rmtree}
     submission.collect_files.each do |file|
       FileUtils.mkdir_p(File.join(self.class.local_workspace_path(container), file.path || ''))
       if file.file_type.binary?
@@ -77,9 +82,13 @@ class DockerClient
   private :create_workspace_file
 
   def self.destroy_container(container)
+    Rails.logger.info('destroying container ' + container.to_s)
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
-    FileUtils.rm_rf(local_workspace_path(container)) if local_workspace_path(container)
+    local_workspace_path = local_workspace_path(container)
+    if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
+     Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
+    end
     container.delete(force: true)
   end
 
@@ -88,12 +97,18 @@ class DockerClient
   end
 
   def execute_command(command, before_execution_block, output_consuming_block)
-    tries ||= 0
+    #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
-    before_execution_block.try(:call)
-    send_command(command, @container, &output_consuming_block)
+    if @container
+      before_execution_block.try(:call)
+      send_command(command, @container, &output_consuming_block)
+    else
+      {status: :container_depleted}
+    end
   rescue Excon::Errors::SocketError => error
-    (tries += 1) <= RETRY_COUNT ? retry : raise(error)
+    # socket errors seems to be normal when using exec
+    # so lets ignore them for now
+    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
   [:run, :test].each do |cause|
@@ -155,24 +170,38 @@ class DockerClient
     `docker pull #{docker_image}` if docker_image
   end
 
+  def return_container(container)
+    local_workspace_path = self.class.local_workspace_path(container)
+    Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
+    DockerContainerPool.return_container(container, @execution_environment)
+  end
+  private :return_container
+
   def send_command(command, container, &block)
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
-      stderr = []
-      stdout = []
-      container.attach(stdin: StringIO.new(command)) do |stream, chunk|
-        block.call(stream, chunk) if block_given?
-        if stream == :stderr
-          stderr.push(chunk)
-        else
-          stdout.push(chunk)
-        end
-      end
-      {status: :ok, stderr: stderr.join, stdout: stdout.join}
+      output = container.exec(['bash', '-c', command])
+      Rails.logger.info "output from container.exec"
+      Rails.logger.info output
+      {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join, stderr: output[1].join}
     end
   rescue Timeout::Error
+    timeout_occured = true
+    Rails.logger.info('got timeout error for container ' + container.to_s)
+    #container.restart if RECYCLE_CONTAINERS
+    DockerContainerPool.remove_from_all_containers(container, @execution_environment)
+
+    # destroy container
+    self.class.destroy_container(container)
+
+    if(RECYCLE_CONTAINERS)
+      # create new container and add it to @all_containers. will be added to @containers on return_container
+      container = self.class.create_container(@execution_environment)
+      DockerContainerPool.add_to_all_containers(container, @execution_environment)
+    end
     {status: :timeout}
   ensure
-    Concurrent::Future.execute { self.class.destroy_container(container) }
+    Rails.logger.info('send_command ensuring for' + container.to_s)
+    RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)
   end
   private :send_command
 

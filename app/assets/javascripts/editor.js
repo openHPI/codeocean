@@ -17,6 +17,7 @@ $(function() {
   var active_frame = undefined;
   var running = false;
   var qa_api = undefined;
+  var output_mode_is_streaming = true;
 
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
@@ -615,6 +616,10 @@ $(function() {
 
   var printOutput = function(output, colorize, index) {
     var element = findOrCreateOutputElement(index);
+    // disable streaming if desired
+    //if (output.stdout && output.stdout.length >= 20 && output.stdout.substr(0,20) == "##DISABLESTREAMING##"){
+    //    output_mode_is_streaming = false;
+    //}
     if (!colorize) {
       var stream = _.sortBy([output.stderr || '', output.stdout || ''], function(stream) {
         return stream.length;
@@ -623,7 +628,14 @@ $(function() {
     } else if (output.stderr) {
       element.addClass('text-warning').append(output.stderr);
     } else if (output.stdout) {
+      //if (output_mode_is_streaming){
       element.addClass('text-success').append(output.stdout);
+      //}else{
+      //  element.addClass('text-success');
+      //  element.data('content_buffer' , element.data('content_buffer') + output.stdout);
+      //}
+    //} else if (output.code && output.code == '200'){
+    //  element.append( element.data('content_buffer'));
     } else {
       element.addClass('text-muted').text($('#output').data('message-no-output'));
     }
@@ -650,6 +662,11 @@ $(function() {
       return result.status === 'timeout';
     })) {
       showTimeoutMessage();
+    }
+    if (_.some(response, function(result) {
+          return result.status === 'container_depleted';
+      })) {
+      showContainerDepletedMessage();
     }
     if (qa_api) {
       // send test response to QA
@@ -815,6 +832,8 @@ $(function() {
   var showStatus = function(output) {
     if (output.status === 'timeout') {
       showTimeoutMessage();
+    } else if (output.status === 'container_depleted') {
+        showContainerDepletedMessage();
     } else if (output.stderr) {
       $.flash.danger({
         icon: ['fa', 'fa-bug'],
@@ -826,6 +845,13 @@ $(function() {
         text: $('#run').data('message-success')
       });
     }
+  };
+
+  var showContainerDepletedMessage = function() {
+    $.flash.danger({
+      icon: ['fa', 'fa-clock-o'],
+      text: $('#editor').data('message-depleted')
+    });
   };
 
   var showTab = function(index) {
@@ -944,7 +970,7 @@ $(function() {
   }
 
     var initializeCodePilot = function() {
-        if ($('#questions-column').isPresent() && QaApi.isBrowserSupported()) {
+        if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined') && QaApi.isBrowserSupported()) {
             $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
             $('#questions-column').addClass('col-md-3');
 

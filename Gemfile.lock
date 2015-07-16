@@ -50,7 +50,7 @@ GEM
     bootstrap-will_paginate (0.0.10)
       will_paginate
     builder (3.2.2)
-    byebug (4.0.3)
+    byebug (4.0.5)
       columnize (= 0.9.0)
     capistrano (3.3.5)
       capistrano-stats (~> 1.1.0)
@@ -67,7 +67,7 @@ GEM
       capistrano (~> 3.0)
       sshkit (~> 1.2)
     capistrano-stats (1.1.1)
-    capistrano-upload-config (0.5.0)
+    capistrano-upload-config (0.6.0)
       capistrano (>= 3.0)
     capistrano3-puma (0.9.0)
       capistrano (~> 3.0)
@@ -83,7 +83,7 @@ GEM
       activesupport (>= 3.2.0)
       json (>= 1.7)
       mime-types (>= 1.16)
-    childprocess (0.5.5)
+    childprocess (0.5.6)
       ffi (~> 1.0, >= 1.0.11)
     codeclimate-test-reporter (0.4.7)
       simplecov (>= 0.7.1, < 1.0.0)
@@ -91,11 +91,11 @@ GEM
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
-    coffee-script (2.3.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
     coffee-script-source (1.9.1)
-    colorize (0.7.5)
+    colorize (0.7.7)
     columnize (0.9.0)
     concurrent-ruby (0.8.0)
       ref (~> 1.0, >= 1.0.5)
@@ -106,12 +106,12 @@ GEM
     debug_inspector (0.0.2)
     diff-lcs (1.2.5)
     docile (1.1.5)
-    docker-api (1.20.0)
+    docker-api (1.21.1)
       excon (>= 0.38.0)
       json
     erubis (2.7.0)
-    excon (0.45.0)
-    execjs (2.4.0)
+    excon (0.45.2)
+    execjs (2.5.2)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.5.0)
@@ -128,7 +128,7 @@ GEM
     ims-lti (1.1.8)
       builder
       oauth (~> 0.4.5)
-    jbuilder (2.2.12)
+    jbuilder (2.2.13)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
     jdbc-postgres (9.4.1200)
@@ -154,6 +154,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
+    newrelic_rpm (3.11.2.286)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     nokogiri (1.6.6.2-java)
@@ -169,7 +170,7 @@ GEM
     parser (2.2.0.3)
       ast (>= 1.1, < 3.0)
     pg (0.18.1)
-    polyamorous (1.1.0)
+    polyamorous (1.2.0)
       activerecord (>= 3.0)
     powerpack (0.1.0)
     pry (0.10.1)
@@ -210,12 +211,12 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (2.0.0)
     rake (10.4.2)
-    ransack (1.6.4)
+    ransack (1.6.6)
       actionpack (>= 3.0)
       activerecord (>= 3.0)
       activesupport (>= 3.0)
       i18n
-      polyamorous (~> 1.1)
+      polyamorous (~> 1.2)
     rdoc (4.2.0)
     ref (1.0.5)
     rspec (3.1.0)
@@ -240,7 +241,7 @@ GEM
       rspec-mocks (~> 3.1.0)
       rspec-support (~> 3.1.0)
     rspec-support (3.1.2)
-    rubocop (0.29.1)
+    rubocop (0.30.0)
       astrolabe (~> 1.3)
       parser (>= 2.2.0.1, < 3.0)
       powerpack (~> 0.1)
@@ -275,13 +276,13 @@ GEM
       temple (~> 0.7.3)
       tilt (>= 1.3.3, < 2.1)
     slop (3.6.0)
-    sorcery (0.9.0)
+    sorcery (0.9.1)
       bcrypt (~> 3.1)
       oauth (~> 0.4, >= 0.4.4)
       oauth2 (>= 0.8.0)
     spoon (0.0.4)
       ffi
-    spring (1.3.3)
+    spring (1.3.4)
     sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -342,7 +343,7 @@ DEPENDENCIES
   concurrent-ruby
   concurrent-ruby-ext
   database_cleaner
-  docker-api
+  docker-api (~> 1.21.1)
   factory_girl_rails (~> 4.0)
   forgery
   highline
@@ -351,6 +352,7 @@ DEPENDENCIES
   jquery-rails
   jquery-turbolinks
   kramdown
+  newrelic_rpm
   nyan-cat-formatter
   pg
   pry
@@ -361,7 +363,7 @@ DEPENDENCIES
   rake
   ransack
   rspec-autotest
-  rspec-rails (~> 3.1.0)
+  rspec-rails
   rubocop
   rubocop-rspec
   rubytree

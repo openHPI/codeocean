@@ -13,6 +13,8 @@ module ExerciseHelper
 
     if enabled
       config.read[:code_pilot][:url]
+    else
+      return nil
     end
   end
 end

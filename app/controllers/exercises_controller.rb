@@ -6,7 +6,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit]
+  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit, :reload]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_teams, only: [:create, :edit, :new, :update]
 
@@ -138,6 +138,10 @@ class ExercisesController < ApplicationController
   def show
   end
 
+  #we might want to think about auth here
+  def reload
+  end
+
   def statistics
   end
 
@@ -152,6 +156,7 @@ class ExercisesController < ApplicationController
   end
 
   def transmit_lti_score
+    ::NewRelic::Agent.add_custom_parameters({ submission: @submission.id, normalized_score: @submission.normalized_score })
     response = send_score(@submission.normalized_score)
     if response[:status] == 'success'
       redirect_to_lti_return_path

@@ -20,7 +20,7 @@ class SubmissionsController < ApplicationController
   def create
     @submission = Submission.new(submission_params)
     authorize!
-    copy_comments
+    #copy_comments
     create_and_respond(object: @submission)
   end
 
@@ -28,7 +28,7 @@ class SubmissionsController < ApplicationController
     # copy each annotation and set the target_file.id
     unless(params[:annotations_arr].nil?)
       params[:annotations_arr].each do | annotation |
-        comment = Comment.new(:user_id => annotation[1][:user_id], :file_id => annotation[1][:file_id], :user_type => 'InternalUser', :row => annotation[1][:row], :column => annotation[1][:column], :text => annotation[1][:text])
+        comment = Comment.new(:user_id => annotation[1][:user_id], :file_id => annotation[1][:file_id], :user_type => current_user.class.name, :row => annotation[1][:row], :column => annotation[1][:column], :text => annotation[1][:text])
         source_file = CodeOcean::File.find(annotation[1][:file_id])
 
         #comment = Comment.new(annotation[1].permit(:user_id, :file_id, :user_type, :row, :column, :text, :created_at, :updated_at))
@@ -55,7 +55,7 @@ class SubmissionsController < ApplicationController
   end
 
   def index
-    @search = Submission.search(params[:q])
+    @search = Submission.last(100).search(params[:q])
     @submissions = @search.result.includes(:exercise, :user).paginate(page: params[:page])
     authorize!
   end
@@ -70,22 +70,18 @@ class SubmissionsController < ApplicationController
 
   def run
     with_server_sent_events do |server_sent_event|
-      container_info_sent = false
-      stderr = ''
-      output = @docker_client.execute_run_command(@submission, params[:filename]) do |stream, chunk|
-        unless container_info_sent
-          server_sent_event.write({id: @docker_client.container.try(:id), port_bindings: @docker_client.container.try(:port_bindings)}, event: 'info')
-          container_info_sent = true
-        end
-        server_sent_event.write({stream => chunk}, event: 'output')
-        stderr += chunk if stream == :stderr
-      end
-      server_sent_event.write(output, event: 'status')
-      if stderr.present?
-        if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(stderr)
+      output = @docker_client.execute_run_command(@submission, params[:filename])
+      
+      server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
+      server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
+      
+      server_sent_event.write({status: output[:status]}, event: 'status')
+      
+      unless output[:stderr].nil?
+        if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
           server_sent_event.write(hint, event: 'hint')
         else
-          store_error(stderr)
+          store_error(output[:stderr])
         end
       end
     end
@@ -138,7 +134,7 @@ class SubmissionsController < ApplicationController
   end
 
   def store_error(stderr)
-    ::Error.create(execution_environment_id: @submission.execution_environment.id, message: stderr)
+    ::Error.create(submission_id: @submission.id, execution_environment_id: @submission.execution_environment.id, message: stderr)
   end
   private :store_error
 

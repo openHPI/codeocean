@@ -12,14 +12,14 @@ Install qt - https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-an
 Install and setup
 Create a local codeOceanRoot:   mkdir /path/to/CodeOcean  
 ==> codeOceanRoot = /path/to/CodeOcean 
-Clone Hauke's Repository to codeOceanRoot - https://github.com/openHPI/codeocean (old: https://dev.xikolo.de/gitlab/hklement/xikolo-hands-on-programming, Valid https://dev.xikolo.de/gitlab user required)
+Clone Repository to codeOceanRoot - https://github.com/openHPI/codeocean
 ==> repoPath = codeOceanRoot/xikolo-hands-on-programming
 cd repoPath/config
 duplicate .example config files (remove .example from filename)
 action_mailer.yml, database.yml, secrets.yml, sendmail.yml, smtp.yml
 add your local dbuser credentials to database.yml
 Linux users may need to add a "host" and a "port" parameter
-Copy vagrant files from https://github.com/hklement/vagrant-docker to codeOceanRoot
+Copy vagrant files from https://github.com/hklement/vagrant-docker to codeOceanRoot or use boot2docker
 ==> vagrantPath = codeOceanRoot/vagrant-docker-master
 cd vagrantPath
 open Vagrantfile in text editor of choice
@@ -28,15 +28,15 @@ Execute: vagrant box add ubuntu/trusty64
 Execute: vagrant up
 Install docker environments
 export DOCKER_HOST=tcp://192.168.23.75:2375
-docker pull hklement/ubuntu-coffee
-docker pull hklement/ubuntu-java
-docker pull hklement/ubuntu-sqlite
-docker pull hklement/ubuntu-sinatra
-docker pull hklement/ubuntu-ruby
-docker pull hklement/ubuntu-python
-docker pull hklement/ubuntu-node
-docker pull hklement/ubuntu-html
-docker pull hklement/ubuntu-jruby
+docker pull jprberlin/ubuntu-coffee
+docker pull jprberlin/ubuntu-java
+docker pull jprberlin/ubuntu-sqlite
+docker pull jprberlin/ubuntu-sinatra
+docker pull jprberlin/ubuntu-ruby
+docker pull jprberlin/ubuntu-python
+docker pull jprberlin/ubuntu-node
+docker pull jprberlin/ubuntu-html
+docker pull jprberlin/ubuntu-jruby
 
 cd repoPath
 bundle install

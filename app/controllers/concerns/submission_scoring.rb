@@ -20,12 +20,14 @@ module SubmissionScoring
   private :execute_test_file
 
   def feedback_message(file, score)
+    set_locale
     score == Assessor::MAXIMUM_SCORE ? I18n.t('exercises.implement.default_feedback') : file.feedback_message
   end
 
   def score_submission(submission)
     outputs = collect_test_results(submission)
-    score = outputs.map { |output| output[:score] * output[:weight] }.reduce(:+)
+    score = outputs.map { |output|
+      output[:score] * output[:weight] }.reduce(:+)
     submission.update(score: score)
     outputs
   end
