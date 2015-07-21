@@ -1,5 +1,7 @@
 require 'concurrent'
 require 'pathname'
+require 'uri'
+require 'json'
 
 class DockerClient
   CONTAINER_WORKSPACE_PATH = '/workspace'
@@ -8,6 +10,8 @@ class DockerClient
   MINIMUM_MEMORY_LIMIT = 4
   RECYCLE_CONTAINERS = true
   RETRY_COUNT = 2
+
+  @@pooling_counter = 0
 
   attr_reader :container
 
@@ -93,15 +97,54 @@ class DockerClient
   end
 
   def execute_arbitrary_command(command, &block)
-    execute_command(command, nil, block)
+    execute_command(command, nil, block, nil)
   end
 
-  def execute_command(command, before_execution_block, output_consuming_block)
+  def execute_command(command, before_execution_block, output_consuming_block, submission)
     #tries ||= 0
-    @container = DockerContainerPool.get_container(@execution_environment)
+    
+    # pedro:
+    # pedro: Step 1: Retrieve the next container
+    # pedro: get the units for our container type
+    # pedro: hardcoded container name to pythondev
+    name = "pythondev"
+    fleetinfostr = `python /root/DockerCodeOcean.git/fleetctl-units.py`
+    fleetinfo = JSON.parse(fleetinfostr)
+    num_units = fleetinfo["units"][name].length
+
+    # pedro: get the next unit by pooling id
+    puts "pedro: previous pooling_counter: #{@@pooling_counter} % #{num_units}"
+    containerIndex = (@@pooling_counter % num_units)
+    @@pooling_counter += 1
+    puts "pedro: Grabbing containerIndex: #{containerIndex}"
+
+    execUnit = nil
+
+    # look for the unit with the matching ID
+    fleetinfo["units"][name].each do |unit|
+      if unit["i"] == (containerIndex + 1)
+        execUnit = unit
+      end
+    end
+
+    # fall back
+    if execUnit == nil
+      puts "pedro: Warning! Had to use fallback method to get container!"
+      execUnit = fleetinfo["units"][name][containerIndex]
+    end
+
+    ip = execUnit["ip"]
+    i = execUnit["i"]
+    name = "#{name}-#{i}"
+
+    # pedro: execute the command on the contaienr
+    puts "pedro: Grabbing container #{name} at tcp://#{ip}:2376"
+    Docker.url = "tcp://#{ip}:2376"
+    @container = Docker::Container.get(name);
+    # @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       before_execution_block.try(:call)
-      send_command(command, @container, &output_consuming_block)
+      send_command(command, @container, submission, &output_consuming_block)
     else
       {status: :container_depleted}
     end
@@ -111,11 +154,29 @@ class DockerClient
     #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
+
+  # pedro: this is should be remove. Metaprogramming doesn't help anything here
   [:run, :test].each do |cause|
     define_method("execute_#{cause}_command") do |submission, filename, &block|
+
+      print "pedro: Executing submission " + submission.id.to_s + "\n"
+
+      # Create the files in etcd
+      submission.collect_files.each do |file|
+        print "pedro: file: " + file.name_with_extension + "\n"
+        value = URI.escape(file.content)
+        command = "curl -L -X PUT http://docker:4001/v2/keys/pedro/submissions/#{submission.id.to_s}/#{file.name_with_extension} -d value=\"#{value}\""
+        # print command + "\n"
+        system command
+      end
+
       command = submission.execution_environment.send(:"#{cause}_command") % command_substitutions(filename)
-      create_workspace_files = proc { create_workspace_files(container, submission) }
-      execute_command(command, create_workspace_files, block)
+      execute_command(command, nil, nil, submission)
+
+      # {status: :container_depleted} # pedro: return default message atm
+
+      # create_workspace_files = proc { create_workspace_files(container, submission) }
+      # execute_command(command, create_workspace_files, block)
     end
   end
 
@@ -133,8 +194,10 @@ class DockerClient
 
   def initialize(options = {})
     @execution_environment = options[:execution_environment]
-    @image = self.class.find_image_by_tag(@execution_environment.docker_image)
-    fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
+
+    print "pedro: We're not looking for the docker_image anymore\n"
+    # @image = self.class.find_image_by_tag(@execution_environment.docker_image)
+    # fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
   end
 
   def self.initialize_environment
@@ -177,9 +240,18 @@ class DockerClient
   end
   private :return_container
 
-  def send_command(command, container, &block)
+  def send_command(command, container, submission, &block)
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
-      output = container.exec(['bash', '-c', command])
+      # pedro
+      command = "/execute.sh /pedro/submissions/#{submission.id.to_s}/ \"#{command}\""
+      arguments = ['bash', '-c', command]
+      puts "pedro: sending command"
+      puts arguments
+
+      # puts "echo \"received command from codeocean\""
+      # container.exec(["echo", "received command from codeocean"], detach: false, stdout: false)
+      output = container.exec(arguments)
+
       Rails.logger.info "output from container.exec"
       Rails.logger.info output
       {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join, stderr: output[1].join}
@@ -200,8 +272,8 @@ class DockerClient
     end
     {status: :timeout}
   ensure
-    Rails.logger.info('send_command ensuring for' + container.to_s)
-    RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)
+    # Rails.logger.info('send_command ensuring for' + container.to_s)
+    # RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)
   end
   private :send_command
 

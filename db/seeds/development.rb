@@ -6,7 +6,8 @@ FactoryGirl.create(:consumer, name: 'openSAP')
 [:admin, :external_user, :teacher].each { |factory_name| FactoryGirl.create(factory_name) }
 
 # execution environments
-ExecutionEnvironment.create_factories
+# pedro: we don't need to create the execution environments here anymore
+# ExecutionEnvironment.create_factories
 
 # errors
 Error.create_factories
