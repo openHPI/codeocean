@@ -1004,6 +1004,8 @@ $(function() {
     })
 
     showSpinner($('#request-for-comments'))
+    // hide button until next submission is created
+    $('#request-for-comments').toggle(false);
   }
 
     var initializeCodePilot = function() {
