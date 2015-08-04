@@ -89,7 +89,7 @@ class DockerClient
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
      Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
     end
-    container.delete(force: true)
+    container.delete(force: true, v: true)
   end
 
   def execute_arbitrary_command(command, &block)
