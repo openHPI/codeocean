@@ -839,12 +839,14 @@ $(function() {
         icon: ['fa', 'fa-bug'],
         text: $('#run').data('message-failure')
       });
-    } else {
+    }
+    /* do not show the success message any longer, puzzles and distracts users.
+    else {
       $.flash.success({
         icon: ['fa', 'fa-check'],
         text: $('#run').data('message-success')
       });
-    }
+    } */
   };
 
   var showContainerDepletedMessage = function() {

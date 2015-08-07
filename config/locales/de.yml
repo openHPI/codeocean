@@ -173,8 +173,8 @@ de:
       network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank">%{address}</a>.'
       render: Anzeigen
       run: Ausführen
-      run_failure: Bei der Ausführung Ihres Codes sind Fehler aufgetreten.
-      run_success: Ihr Code wurde fehlerfrei ausgeführt.
+      run_failure: Ihr Code konnte nicht auf der Plattform ausgeführt werden.
+      run_success: Ihr Code wurde auf der Plattform ausgeführt.
       requestComments: Rückmeldung erbitten
       save: Speichern
       score: Bewerten
