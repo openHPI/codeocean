@@ -2,7 +2,7 @@ class Submission < ActiveRecord::Base
   include Context
   include Creation
 
-  CAUSES = %w(assess download file render run save submit test)
+  CAUSES = %w(assess download file render run save submit test autosave)
   FILENAME_URL_PLACEHOLDER = '{filename}'
 
   belongs_to :exercise

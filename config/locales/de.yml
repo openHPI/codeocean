@@ -170,6 +170,7 @@ de:
       destroy_file: Datei löschen
       download: Herunterladen
       dummy: Keine Aktion
+      lastsaved: 'Zuletzt gespeichert: '
       network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank">%{address}</a>.'
       render: Anzeigen
       run: Ausführen

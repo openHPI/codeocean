@@ -11,6 +11,7 @@ $(function() {
   var FILENAME_URL_PLACEHOLDER = '{filename}';
   var SUCCESSFULL_PERCENTAGE = 90;
   var THEME = 'ace/theme/textmate';
+  var AUTOSAVE_INTERVAL = 15 * 1000;
 
   var editors = [];
   var active_file = undefined;
@@ -317,6 +318,23 @@ $(function() {
     $('button i.fa-spin').hide();
   };
 
+  var autosaveTimer;
+  var autosaveLabel = $("#autosave-label span");
+
+  var resetSaveTimer = function(){
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(autosave, AUTOSAVE_INTERVAL);
+  };
+
+  var autosave = function(){
+    var date = new Date();
+    autosaveLabel.parent().css("visibility", "visible");
+    autosaveLabel.text(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
+    autosaveLabel.text(date.toLocaleTimeString());
+    autosaveTimer = null;
+    createSubmission($('#autosave'), null);
+  }
+
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
       var editor = ace.edit(element);
@@ -325,6 +343,12 @@ $(function() {
           qa_api.executeCommand('syncEditor', [active_file, deltaObject]);
         });
       }
+
+
+      // listener for autosave
+      editor.getSession().on("change", function (deltaObject) {
+        resetSaveTimer();
+      });
 
       var document = editor.getSession().getDocument();
       // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
@@ -982,6 +1006,13 @@ $(function() {
             qa_api = new QaApi(node, url);
         }
     }
+
+  $(window).on("beforeunload", function() {
+    if(autosaveTimer){
+      autosave();
+    }
+
+  })
 
   if ($('#editor').isPresent()) {
       if (isBrowserSupported()) {
