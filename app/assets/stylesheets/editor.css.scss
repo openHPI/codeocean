@@ -31,7 +31,7 @@ button i.fa-spin {
 
 #editor-buttons {
   background-color: #008CBA;
-  margin-top: 1em;
+  margin-top: 0;
   width: 100%;
 
   button {
@@ -39,7 +39,7 @@ button i.fa-spin {
   }
 
   button, .btn-group {
-    width: 25%;
+    width: 33.33333%;
   }
 
   .btn-group {
@@ -79,4 +79,12 @@ button i.fa-spin {
 
 #results {
   display: none;
+}
+
+#autosave-label{
+  visibility: hidden;
+  height: 1.6em;
+  text-align:  right;
+  color: #777;
+  font-size: 0.8em;
 }

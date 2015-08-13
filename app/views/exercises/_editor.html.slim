@@ -3,9 +3,13 @@
   #frames.col-sm-9
     - @files.each do |file|
       = render('editor_frame', exercise: exercise, file: file)
+    #autosave-label
+      = t('exercises.editor.lastsaved')
+      span
     #editor-buttons.btn-group
       = render('editor_button', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
-      = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
+      // = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
+      button style="display:none" id="autosave"
       .btn-group
         = render('editor_button', disabled: true, icon: 'fa fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))
         = render('editor_button', icon: 'fa fa-desktop', id: 'render', label: t('exercises.editor.render'))

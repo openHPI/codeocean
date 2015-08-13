@@ -170,11 +170,12 @@ en:
       destroy_file: Delete File
       download: Download
       dummy: No Action
+      lastsaved: 'Last saved: '
       network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank">%{address}</a>.'
       render: Render
       run: Run
-      run_failure: Your code ran with errors.
-      run_success: Your code ran without errors.
+      run_failure: Your code could not be run.
+      run_success: Your code was run on our servers.
       requestComments: Request comments
       save: Save
       score: Score
