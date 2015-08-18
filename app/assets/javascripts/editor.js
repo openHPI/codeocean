@@ -1014,9 +1014,9 @@ $(function() {
       url: '/request_for_comments',
       data: {
         request_for_comment: {
-          requestorid: user_id,
-          exerciseid: exercise_id,
-          fileid: file_id,
+          requestor_user_id: user_id,
+          exercise_id: exercise_id,
+          file_id: file_id,
           "requested_at(1i)": 2015, // these are the timestamp values that the request handler demands
           "requested_at(2i)":3, // they could be random here, because the timestamp is updated on serverside anyway
           "requested_at(3i)":27,

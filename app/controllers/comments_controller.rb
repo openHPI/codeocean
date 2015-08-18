@@ -20,10 +20,10 @@ class CommentsController < ApplicationController
     submission = Submission.find_by(id: file.context_id)
     if submission
       is_admin = false
-      if current_user.respond_to? :external_id
-        user_id = current_user.external_id
-      else
-        user_id = current_user.id
+      user_id = current_user.id
+
+      # if we have an internal user, check whether he is an admin
+      if not current_user.respond_to? :external_id
         is_admin = current_user.role == 'admin'
       end
 
@@ -37,18 +37,16 @@ class CommentsController < ApplicationController
         @comments = Comment.where(file_id: params[:file_id], user_id: [user_id, submission.user_id])
       end
 
-      #@comments = Comment.where(file_id: params[:file_id])
-
       #add names to comments
       # if the user is internal, set the name
-      # todo:
-      # if the user is external, fetch the displayname from xikolo
+
       @comments.map{|comment|
         if(comment.user_type == 'InternalUser')
           comment.username = InternalUser.find(comment.user_id).name
         elsif(comment.user_type == 'ExternalUser')
           comment.username = ExternalUser.find(comment.user_id).name
-              #alternativ: Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]
+          # alternative: # if the user is external, fetch the displayname from xikolo
+          # Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]
         end
       }
     else

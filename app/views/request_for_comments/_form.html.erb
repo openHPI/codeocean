@@ -12,20 +12,24 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :requestorid %><br>
-    <%= f.number_field :requestorid %>
+    <%= f.label :requestor_user_id %><br>
+    <%= f.number_field :requestor_user_id %>
   </div>
   <div class="field">
-    <%= f.label :exerciseid %><br>
-    <%= f.number_field :exerciseid %>
+    <%= f.label :exercise_id %><br>
+    <%= f.number_field :exercise_id %>
   </div>
   <div class="field">
-    <%= f.label :fileid %><br>
-    <%= f.number_field :fileid %>
+    <%= f.label :file_id %><br>
+    <%= f.number_field :file_id %>
   </div>
   <div class="field">
     <%= f.label :requested_at %><br>
     <%= f.datetime_select :requested_at %>
+  </div>
+  <div class="field">
+    <%= f.label :user_type %><br>
+    <%= f.text_field :user_type %>
   </div>
   <div class="actions">
     <%= f.submit %>

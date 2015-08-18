@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150421074734) do
+ActiveRecord::Schema.define(version: 20150818142251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -171,12 +171,13 @@ ActiveRecord::Schema.define(version: 20150421074734) do
   add_index "internal_users_teams", ["team_id"], name: "index_internal_users_teams_on_team_id", using: :btree
 
   create_table "request_for_comments", force: true do |t|
-    t.integer  "requestorid",  null: false
-    t.integer  "exerciseid",   null: false
-    t.integer  "fileid",       null: false
+    t.integer  "requestor_user_id", null: false
+    t.integer  "exercise_id",       null: false
+    t.integer  "file_id",           null: false
     t.datetime "requested_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "user_type"
   end
 
   create_table "submissions", force: true do |t|

@@ -66,6 +66,6 @@ class RequestForCommentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def request_for_comment_params
-      params.require(:request_for_comment).permit(:requestorid, :exerciseid, :fileid, :requested_at)
+      params.require(:request_for_comment).permit(:requestor_user_id, :exercise_id, :file_id, :requested_at)
     end
 end
