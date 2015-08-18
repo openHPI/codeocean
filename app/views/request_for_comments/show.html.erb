@@ -4,11 +4,11 @@
     <%= InternalUser.find(@request_for_comment.requestorid) %> | <%= @request_for_comment.requested_at %>
   </p>
 </div>
-<!--
--->
 
-<div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.fileid%>'>
-  <%= CodeOcean::File.find(@request_for_comment.fileid).content %>
+<!--
+do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
+-->
+<div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.fileid%>'><%= CodeOcean::File.find(@request_for_comment.fileid).content %>
 </div>
 
 <script type="text/javascript">
