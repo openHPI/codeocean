@@ -510,7 +510,6 @@ $(function() {
       var jqxhr = $.ajax({
         data: {
           comment: {
-            user_id: user_id,
             file_id: file_id,
             row: row,
             column: 0,
@@ -1014,7 +1013,6 @@ $(function() {
       url: '/request_for_comments',
       data: {
         request_for_comment: {
-          requestor_user_id: user_id,
           exercise_id: exercise_id,
           file_id: file_id,
           "requested_at(1i)": 2015, // these are the timestamp values that the request handler demands

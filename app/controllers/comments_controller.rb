@@ -75,7 +75,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    @comment = Comment.new(comment_params.merge(user_type: current_user.class.name))
+    @comment = Comment.new(comment_params)
 
     respond_to do |format|
       if @comment.save
@@ -135,6 +135,6 @@ class CommentsController < ApplicationController
     def comment_params
       #params.require(:comment).permit(:user_id, :file_id, :row, :column, :text)
       # fuer production mode, damit böse menschen keine falsche user_id uebergeben:
-      params.require(:comment).permit(:file_id, :row, :column, :text).merge(user_id: current_user.id)
+      params.require(:comment).permit(:file_id, :row, :column, :text).merge(user_id: current_user.id, user_type: current_user.class.name)
     end
 end
