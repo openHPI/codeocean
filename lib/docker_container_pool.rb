@@ -50,11 +50,12 @@ class DockerContainerPool
   end
 
   def self.get_container(execution_environment)
+    # if pooling is active, do pooling, otherwise just create an container and return it
     if config[:active]
       container = @containers[execution_environment.id].try(:shift) || nil
       Rails.logger.info('get_container fetched container  ' + container.to_s)
-      Rails.logger.info('get_container remaining avail. container  ' + @containers[execution_environment.id].size.to_s)
-      Rails.logger.info('get_container all container count' + @all_containers[execution_environment.id].size.to_s)
+      Rails.logger.info('get_container remaining avail. containers:  ' + @containers[execution_environment.id].size.to_s)
+      Rails.logger.info('get_container all container count: ' + @all_containers[execution_environment.id].size.to_s)
       container
     else
       create_container(execution_environment)
@@ -77,11 +78,14 @@ class DockerContainerPool
 
   def self.refill_for_execution_environment(execution_environment)
     refill_count = [execution_environment.pool_size - @all_containers[execution_environment.id].length, config[:refill][:batch_size]].min
-    Rails.logger.info('adding' + refill_count.to_s + ' containers for  ' +  execution_environment.name )
-    c = refill_count.times.map { create_container(execution_environment) }
-    @containers[execution_environment.id] += c
-    @all_containers[execution_environment.id] += c
-    #refill_count.times.map { create_container(execution_environment) }
+    if refill_count > 0
+      Rails.logger.info('adding ' + refill_count.to_s + ' containers for  ' +  execution_environment.name )
+      c = refill_count.times.map { create_container(execution_environment) }
+      @containers[execution_environment.id] += c
+      @all_containers[execution_environment.id] += c
+      #refill_count.times.map { create_container(execution_environment) }
+    end
+
   end
 
   def self.start_refill_task

@@ -19,11 +19,11 @@ duplicate .example config files (remove .example from filename)
 action_mailer.yml, database.yml, secrets.yml, sendmail.yml, smtp.yml
 add your local dbuser credentials to database.yml
 Linux users may need to add a "host" and a "port" parameter
+set path for /shared to codeOceanRoot/shared - double check this, when errors like "no target for make run available" arise, this is a likely cause. If in doubt, also check the paths in config/docker.yml match the relative structure, Linux users might need to use an absolute path)
 Copy vagrant files from https://github.com/hklement/vagrant-docker to codeOceanRoot or use boot2docker
 ==> vagrantPath = codeOceanRoot/vagrant-docker-master
 cd vagrantPath
 open Vagrantfile in text editor of choice
-set path for /shared to codeOceanRoot/shared - double check this, when errors like "no target for make run available" arise, this is a likely cause. If in doubt, also check the paths in config/docker.yml match the relative structure)
 Execute: vagrant box add ubuntu/trusty64
 Execute: vagrant up
 Install docker environments
