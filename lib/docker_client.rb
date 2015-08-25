@@ -22,7 +22,7 @@ class DockerClient
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
-      FileUtils.rmdir(Pathname.new(local_workspace_path))
+      #FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
   end
 
@@ -196,17 +196,16 @@ class DockerClient
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
     result
   rescue Timeout::Error
-    timeout_occured = true
     Rails.logger.info('got timeout error for container ' + container.to_s)
 
     # remove container from pool, then destroy it
-    DockerContainerPool.remove_from_all_containers(container, @execution_environment)
+    (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
 
     # destroy container
     self.class.destroy_container(container)
 
     # if we recylce containers, we start a fresh one
-    if(RECYCLE_CONTAINERS)
+    if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
       # create new container and add it to @all_containers and @containers.
       container = self.class.create_container(@execution_environment)
       DockerContainerPool.add_to_all_containers(container, @execution_environment)

@@ -6,8 +6,8 @@ describe 'Editor', js: true do
 
   before(:each) do
     visit(sign_in_path)
-    fill_in('Email', with: user.email)
-    fill_in('Password', with: FactoryGirl.attributes_for(:teacher)[:password])
+    fill_in('email', with: user.email)
+    fill_in('password', with: FactoryGirl.attributes_for(:teacher)[:password])
     click_button(I18n.t('sessions.new.link'))
     visit(implement_exercise_path(exercise))
   end
@@ -83,8 +83,9 @@ describe 'Editor', js: true do
   describe 'Progress Tab' do
     before(:each) { click_link(I18n.t('exercises.implement.progress')) }
 
-    it 'contains a button for submitting the exercise' do
-      expect(page).to have_css('#submit')
+    it 'does not contains a button for submitting the exercise' do
+      # the button is only displayed when an correct LTI handshake to a running course happened. This is not the case in the test
+      expect(page).not_to have_css('#submit')
     end
   end
 end
