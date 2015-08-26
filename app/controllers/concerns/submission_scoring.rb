@@ -26,8 +26,14 @@ module SubmissionScoring
 
   def score_submission(submission)
     outputs = collect_test_results(submission)
-    score = outputs.map { |output|
-      output[:score] * output[:weight] }.reduce(:+)
+    score = 0.0
+    if not (outputs.nil? || outputs.empty?)
+      outputs.each do |output|
+        if not output.nil?
+          score += output[:score] * output[:weight]
+        end
+      end
+    end
     submission.update(score: score)
     outputs
   end
