@@ -250,6 +250,26 @@ $(function() {
     event.preventDefault();
   };
 
+  var lastCopyText;
+  var handleCopyEvent = function(text){
+    lastCopyText = text;
+  };
+
+  var handlePasteEvent = function (pasteObject) {
+    console.log("Handling paste event. this is ", this );
+    console.log("Text: " + pasteObject.text);
+
+    var same = (lastCopyText === pasteObject.text)
+    console.log("Text is the same: " + same);
+
+    // if the text is not copied from within the editor (from any file), send an event to lanalytics
+    if(!same){
+      //publishCodeOceanEvent("editor-paste", {
+      //  text: pasteObject.text
+      //});
+    }
+  };
+
   var handleScoringResponse = function(response) {
     printScoringResults(response);
     var score = _.reduce(response, function(sum, result) {
@@ -338,18 +358,12 @@ $(function() {
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
       var editor = ace.edit(element);
+
       if (qa_api) {
         editor.getSession().on("change", function (deltaObject) {
           qa_api.executeCommand('syncEditor', [active_file, deltaObject]);
         });
       }
-
-
-      // listener for autosave
-      editor.getSession().on("change", function (deltaObject) {
-        resetSaveTimer();
-      });
-
       var document = editor.getSession().getDocument();
       // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
       var file_id = $(element).data('file-id');
@@ -370,51 +384,29 @@ $(function() {
       var file_id =  $(element).data('id');
       setAnnotations(editor, file_id);
 
+      /*
+       * Register event handlers
+       */
+
+      // editor itself
+      editor.on("paste", handlePasteEvent);
+      editor.on("copy", handleCopyEvent);
+      editor.on("guttermousedown", handleSidebarClick);
+
+      /* // alternative:
+      editor.on("guttermousedown", function(e) {
+        handleSidebarClick(e);
+      });
+      */
+
+
+      //session
       session.on('annotationRemoval', handleAnnotationRemoval);
       session.on('annotationChange', handleAnnotationChange);
 
-      // TODO refactor here
-      // Code for clicks on gutter / sidepanel
-      editor.on("guttermousedown", function(e){
-        var target  = e.domEvent.target;
-
-        if (target.className.indexOf("ace_gutter-cell") == -1) return;
-        if (!editor.isFocused()) return;
-        if (e.clientX > 25 + target.getBoundingClientRect().left) return;
-
-        var row = e.getDocumentPosition().row;
-        e.stop();
-
-        var commentModal = $('#comment-modal');
-
-        if (hasCommentsInRow(editor, row)) {
-          var rowComments = getCommentsForRow(editor, row);
-          var comments = _.pluck(rowComments, 'text').join('\n');
-          commentModal.find('#other-comments').text(comments);
-        } else {
-          commentModal.find('#other-comments').text('none');
-        }
-
-        commentModal.find('#addCommentButton').off('click');
-        commentModal.find('#removeAllButton').off('click');
-
-        commentModal.find('#addCommentButton').on('click', function(e){
-          var user_id = $(element).data('user-id');
-          var commenttext = commentModal.find('textarea').val();
-
-          if (commenttext !== "") {
-            createComment(user_id, file_id, row, editor, commenttext);
-            commentModal.modal('hide');
-          }
-        })
-
-        commentModal.find('#removeAllButton').on('click', function(e){
-          var user_id = $(element).data('user-id');
-          deleteComment(user_id,file_id,row,editor);
-          commentModal.modal('hide');
-        })
-
-        commentModal.modal('show');
+      // listener for autosave
+      session.on("change", function (deltaObject) {
+        resetSaveTimer();
       });
     });
   };
@@ -423,13 +415,13 @@ $(function() {
     return editor.getSession().getAnnotations().some(function(element) {
       return element.row === row;
     })
-  }
+  };
 
   var getCommentsForRow = function (editor, row){
     return editor.getSession().getAnnotations().filter(function(element) {
       return element.row === row;
     })
-  }
+  };
 
   var setAnnotations = function (editor, file_id){
       var session = editor.getSession();
@@ -448,7 +440,7 @@ $(function() {
           setAnnotationsCallback(response, session);
       });
       jqrequest.fail(ajaxError);
-  }
+  };
 
   var setAnnotationsCallback = function (response, session) {
       var annotations = response;
@@ -497,7 +489,7 @@ $(function() {
           setAnnotations(editor, file_id);
       });
       jqxhr.fail(ajaxError);
-  }
+  };
 
   var handleAnnotationRemoval = function(removedAnnotations) {
     removedAnnotations.forEach(function(annotation) {
@@ -509,7 +501,7 @@ $(function() {
         }
       })
     })
-  }
+  };
 
   var handleAnnotationChange = function(changedAnnotations) {
     changedAnnotations.forEach(function(annotation) {
@@ -526,7 +518,50 @@ $(function() {
         }
       })
     })
-  }
+  };
+
+  // Code for clicks on gutter / sidepanel
+  var handleSidebarClick = function(e) {
+      var target  = e.domEvent.target;
+
+      if (target.className.indexOf("ace_gutter-cell") == -1) return;
+      if (!e.editor.isFocused()) return;
+      if (e.clientX > 25 + target.getBoundingClientRect().left) return;
+
+      var row = e.getDocumentPosition().row;
+      e.stop();
+
+      var commentModal = $('#comment-modal');
+
+      if (hasCommentsInRow(editor, row)) {
+        var rowComments = getCommentsForRow(editor, row);
+        var comments = _.pluck(rowComments, 'text').join('\n');
+        commentModal.find('#other-comments').text(comments);
+      } else {
+        commentModal.find('#other-comments').text('none');
+      }
+
+      commentModal.find('#addCommentButton').off('click');
+      commentModal.find('#removeAllButton').off('click');
+
+      commentModal.find('#addCommentButton').on('click', function(e){
+        var user_id = $(element).data('user-id');
+        var commenttext = commentModal.find('textarea').val();
+
+        if (commenttext !== "") {
+          createComment(user_id, file_id, row, editor, commenttext);
+          commentModal.modal('hide');
+        }
+      });
+
+      commentModal.find('#removeAllButton').on('click', function(e){
+        var user_id = $(element).data('user-id');
+        deleteComment(user_id,file_id,row,editor);
+        commentModal.modal('hide');
+      });
+
+      commentModal.modal('show');
+  };
 
   var initializeEventHandlers = function() {
     $(document).on('click', '#results a', showOutput);
@@ -697,6 +732,25 @@ $(function() {
       qa_api.executeCommand('syncOutput', [response]);
     }
   };
+
+    // Publishing events for other (JS) components to react to codeocean events
+ var publishCodeOceanEvent = function (eventName, contextData) {
+  /*$(this.$baseElement).trigger(eventName, {
+    resource: this.$baseElement.data("lanalytics-resource"),
+    inContext: contextData
+  });
+  */
+
+   $.ajax("/lanalytics/log", {
+     type: 'POST',
+     cache: false,
+     dataType: 'JSON',
+     data: experienceStatement.params() ,
+     success: (response_data, text_status, jqXHR),
+     error: (jqXHR, textStatus, errorThrown)
+    })
+
+};
 
   var renderCode = function(event) {
     event.preventDefault();
@@ -1007,12 +1061,13 @@ $(function() {
         }
     }
 
+  // save on quit
   $(window).on("beforeunload", function() {
     if(autosaveTimer){
       autosave();
     }
 
-  })
+  });
 
   if ($('#editor').isPresent()) {
       if (isBrowserSupported()) {
