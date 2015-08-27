@@ -1,0 +1,116 @@
+#!/bin/bash
+# rvm/rails installation from https://gorails.com/setup/ubuntu/14.04
+# passenger installation from https://www.phusionpassenger.com/library/install/nginx/install/oss/trusty/
+
+# passenger
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
+apt-get install -y apt-transport-https ca-certificates
+sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main > /etc/apt/sources.list.d/passenger.list'
+
+# rails
+add-apt-repository ppa:chris-lea/node.js
+
+apt-get update
+
+# code_ocean
+apt-get install -y postgresql-client postgresql-9.3 postgresql-server-dev-9.3 vagrant maven jruby
+
+# Docker
+if [ ! -f /etc/default/docker ]
+then
+    curl -sSL https://get.docker.com/ | sh
+fi
+if ! grep code_ocean /etc/default/docker
+then
+    cat >>/etc/default/docker <<EOF
+
+# code_ocean: enable TCP
+DOCKER_OPTS="-H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock"
+EOF
+    service docker restart
+fi
+# XXX docker pull jprberlin/ubuntu-coffee
+docker pull jprberlin/ubuntu-java
+# XXX docker pull jprberlin/ubuntu-sqlite
+# XXX docker pull jprberlin/ubuntu-sinatra
+# XXX docker pull jprberlin/ubuntu-ruby
+# XXX docker pull jprberlin/ubuntu-python
+docker pull jprberlin/ubuntu-node
+# XXX docker pull jprberlin/ubuntu-html
+# XXX docker pull jprberlin/ubuntu-jruby
+
+
+# rvm
+apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev
+apt-get install -y libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
+gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+curl -L https://get.rvm.io | bash -s stable
+source /etc/profile.d/rvm.sh
+rvm install 2.1.5
+rvm use 2.1.5 --default
+ruby -v
+
+# rails
+apt-get -y install nodejs
+gem install rails -v 4.2.1
+
+# drop postgres access control
+if  ! grep -q code_ocean /etc/postgresql/9.3/main/pg_hba.conf
+then
+  cat >/etc/postgresql/9.3/main/pg_hba.conf <<EOF
+# code_ocean: drop access control
+local all all trust
+host  all all 127.0.0.1/32 trust
+host  all all ::1/128 trust
+EOF
+  service postgresql restart
+fi
+
+# create database
+if ! (sudo -u postgres psql -l | grep -q code_ocean_development)
+then
+  sudo -u postgres createdb code_ocean_development || true
+fi
+
+# nginx and passenger
+apt-get install -y nginx-extras passenger
+
+############# codeocean install ###########################
+cd /vagrant
+
+# config
+for f in action_mailer.yml database.yml secrets.yml sendmail.yml smtp.yml
+do
+  if [ ! -f config/$f ]
+  then
+    cp config/$f.example config/$f
+  fi
+done
+
+# install code
+bundle install
+
+# create database
+export RAILS_ENV=development
+rake db:schema:load
+rake db:migrate
+rake db:seed
+
+# NGINX
+if [ ! -L /etc/nginx/sites-enabled/code_ocean ]
+then
+    cat > /etc/nginx/sites-available/code_ocean <<EOF
+passenger_root /usr/lib/ruby/vendor_ruby/phusion_passenger/locations.ini;
+server {
+    server_name codeocean.local;
+    root /vagrant/public;
+    passenger_ruby /usr/local/rvm/gems/ruby-2.1.5/wrappers/ruby;
+    passenger_sticky_sessions on;
+    passenger_enabled on;
+    passenger_app_env development;
+}
+EOF
+    rm -f /etc/nginx/sites-enabled/default
+    ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled
+    service nginx restart
+fi
