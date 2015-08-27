@@ -95,6 +95,8 @@ export RAILS_ENV=development
 rake db:schema:load
 rake db:migrate
 rake db:seed
+chown -R vagrant /shared
+ln -sf /shared tmp/files
 
 # NGINX
 if [ ! -L /etc/nginx/sites-enabled/code_ocean ]
