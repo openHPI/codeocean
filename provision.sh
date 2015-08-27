@@ -79,7 +79,7 @@ apt-get install -y nginx-extras passenger
 cd /vagrant
 
 # config
-for f in action_mailer.yml database.yml secrets.yml sendmail.yml smtp.yml
+for f in action_mailer.yml database.yml secrets.yml sendmail.yml smtp.yml code_ocean.yml
 do
   if [ ! -f config/$f ]
   then
