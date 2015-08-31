@@ -256,17 +256,20 @@ $(function() {
   };
 
   var handlePasteEvent = function (pasteObject) {
-    console.log("Handling paste event. this is ", this );
-    console.log("Text: " + pasteObject.text);
+    //console.log("Handling paste event. this is ", this );
+    //console.log("Text: " + pasteObject.text);
 
     var same = (lastCopyText === pasteObject.text)
-    console.log("Text is the same: " + same);
+    //console.log("Text is the same: " + same);
 
     // if the text is not copied from within the editor (from any file), send an event to lanalytics
-    if(!same){
-      //publishCodeOceanEvent("editor-paste", {
-      //  text: pasteObject.text
-      //});
+    //if(!same){
+    //  publishCodeOceanEvent("codeocean_editor_paste", {
+    //    text: pasteObject.text,
+    //    exercise: $('#editor').data('exercise-id'),
+    //    file_id: "1"
+    //
+    //  });
     }
   };
 
@@ -445,24 +448,22 @@ $(function() {
   var setAnnotationsCallback = function (response, session) {
       var annotations = response;
 
+      // add classname and the username in front of each comment
       $.each(annotations, function(index, comment){
           comment.className = "code-ocean_comment";
           comment.text = comment.username + ": " + comment.text;
-        //  comment.text = comment.user_id + ": " + comment.text;
       });
 
       session.setAnnotations(annotations);
   }
 
-  var deleteComment = function (user_id, file_id, row, editor) {
+  var deleteComment = function (file_id, row, editor) {
       var jqxhr = $.ajax({
           type: 'DELETE',
           url: "/comments",
           data: {
             row: row,
-            file_id: file_id,
-            user_id: user_id
-          }
+            file_id: file_id          }
       });
       jqxhr.done(function (response) {
           setAnnotations(editor, file_id);
@@ -470,11 +471,10 @@ $(function() {
       jqxhr.fail(ajaxError);
   }
 
-  var createComment = function (user_id, file_id, row, editor, commenttext){
+  var createComment = function (file_id, row, editor, commenttext){
       var jqxhr = $.ajax({
         data: {
           comment: {
-            user_id: user_id,
             file_id: file_id,
             row: row,
             column: 0,
@@ -523,9 +523,10 @@ $(function() {
   // Code for clicks on gutter / sidepanel
   var handleSidebarClick = function(e) {
       var target  = e.domEvent.target;
+      var editor =  e.editor;
 
       if (target.className.indexOf("ace_gutter-cell") == -1) return;
-      if (!e.editor.isFocused()) return;
+      if (!editor.isFocused()) return;
       if (e.clientX > 25 + target.getBoundingClientRect().left) return;
 
       var row = e.getDocumentPosition().row;
@@ -545,18 +546,20 @@ $(function() {
       commentModal.find('#removeAllButton').off('click');
 
       commentModal.find('#addCommentButton').on('click', function(e){
-        var user_id = $(element).data('user-id');
         var commenttext = commentModal.find('textarea').val();
+        // attention: use id of data attribute here, not file-id (file-id is the original file)
+        var file_id = $(editor.container).data('id');
 
         if (commenttext !== "") {
-          createComment(user_id, file_id, row, editor, commenttext);
+          createComment(file_id, row, editor, commenttext);
           commentModal.modal('hide');
         }
       });
 
       commentModal.find('#removeAllButton').on('click', function(e){
-        var user_id = $(element).data('user-id');
-        deleteComment(user_id,file_id,row,editor);
+        // attention: use id of data attribute here, not file-id (file-id is the original file)
+        var file_id = $(editor.container).data('id');
+        deleteComment(file_id,row, editor);
         commentModal.modal('hide');
       });
 
@@ -734,23 +737,29 @@ $(function() {
   };
 
     // Publishing events for other (JS) components to react to codeocean events
- var publishCodeOceanEvent = function (eventName, contextData) {
-  /*$(this.$baseElement).trigger(eventName, {
-    resource: this.$baseElement.data("lanalytics-resource"),
-    inContext: contextData
-  });
-  */
+   var publishCodeOceanEvent = function (eventName, contextData) {
 
-   $.ajax("/lanalytics/log", {
-     type: 'POST',
-     cache: false,
-     dataType: 'JSON',
-     data: experienceStatement.params() ,
-     success: (response_data, text_status, jqXHR),
-     error: (jqXHR, textStatus, errorThrown)
-    })
+     var payload = {
+       user: {
+         resource_uuid: $('#editor').data('user-id')
+       },
+       verb: eventName,
+       resource: {},
+       timestamp: new Date().toISOString(),
+       with_result: {},
+       in_context: contextData
+     };
 
-};
+     $.ajax("https://open.hpi.de/lanalytics/log", {
+       type: 'POST',
+       cache: false,
+       dataType: 'JSON',
+       data: payload,
+       success: {},
+       error: {}
+      })
+
+  };
 
   var renderCode = function(event) {
     event.preventDefault();
