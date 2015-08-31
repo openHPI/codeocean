@@ -283,7 +283,7 @@ $(function() {
     //console.log("Handling paste event. this is ", this );
     //console.log("Text: " + pasteObject.text);
 
-    var same = (lastCopyText === pasteObject.text)
+    var same = (lastCopyText === pasteObject.text);
     //console.log("Text is the same: " + same);
 
     // if the text is not copied from within the editor (from any file), send an event to lanalytics
@@ -294,7 +294,7 @@ $(function() {
     //    file_id: "1"
     //
     //  });
-    }
+    //}
   };
 
   var handleScoringResponse = function(response) {
