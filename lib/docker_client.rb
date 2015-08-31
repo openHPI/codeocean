@@ -4,6 +4,7 @@ require 'pathname'
 class DockerClient
   CONTAINER_WORKSPACE_PATH = '/workspace'
   DEFAULT_MEMORY_LIMIT = 256
+  # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
   MINIMUM_MEMORY_LIMIT = 4
   RECYCLE_CONTAINERS = true
@@ -15,6 +16,14 @@ class DockerClient
     Timeout.timeout(config[:connection_timeout]) { Docker.version }
   rescue Excon::Errors::SocketError, Timeout::Error
     raise(Error, "The Docker host at #{Docker.url} is not reachable!")
+  end
+
+  def self.clean_container_workspace(container)
+    local_workspace_path = local_workspace_path(container)
+    if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
+      Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
+      #FileUtils.rmdir(Pathname.new(local_workspace_path))
+    end
   end
 
   def command_substitutions(filename)
@@ -51,6 +60,7 @@ class DockerClient
     tries ||= 0
     container = Docker::Container.create(container_creation_options(execution_environment))
     local_workspace_path = generate_local_workspace_path
+    # container.start always creates the passed local_workspace_path on disk. Seems like we have to live with that, therefore we can also just create the empty folder ourselves.
     FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
     container.start_time = Time.now
@@ -61,8 +71,8 @@ class DockerClient
   end
 
   def create_workspace_files(container, submission)
-    #clear directory (it should be emtpy anyhow)
-    Pathname.new(self.class.local_workspace_path(container)).children.each{ |p| p.rmtree}
+    #clear directory (it should be empty anyhow)
+    #Pathname.new(self.class.local_workspace_path(container)).children.each{ |p| p.rmtree}
     submission.collect_files.each do |file|
       FileUtils.mkdir_p(File.join(self.class.local_workspace_path(container), file.path || ''))
       if file.file_type.binary?
@@ -85,10 +95,7 @@ class DockerClient
     Rails.logger.info('destroying container ' + container.to_s)
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
-    local_workspace_path = local_workspace_path(container)
-    if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
-     Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
-    end
+    clean_container_workspace(container)
     container.delete(force: true, v: true)
   end
 
@@ -157,6 +164,7 @@ class DockerClient
 
   def self.mapped_directories(local_workspace_path)
     remote_workspace_path = local_workspace_path.sub(LOCAL_WORKSPACE_ROOT.to_s, config[:workspace_root])
+    # create the string to be returned
     ["#{remote_workspace_path}:#{CONTAINER_WORKSPACE_PATH}"]
   end
 
@@ -170,38 +178,39 @@ class DockerClient
     `docker pull #{docker_image}` if docker_image
   end
 
-  def return_container(container)
-    local_workspace_path = self.class.local_workspace_path(container)
-    Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
-    DockerContainerPool.return_container(container, @execution_environment)
+  def self.return_container(container, execution_environment)
+    clean_container_workspace(container)
+    DockerContainerPool.return_container(container, execution_environment)
   end
-  private :return_container
+  #private :return_container
 
   def send_command(command, container, &block)
+    result = {status: :failed, stdout: '', stderr: ''}
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
       output = container.exec(['bash', '-c', command])
       Rails.logger.info "output from container.exec"
       Rails.logger.info output
-      {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join, stderr: output[1].join}
+      result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join, stderr: output[1].join}
     end
+    # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
+    (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
+    result
   rescue Timeout::Error
-    timeout_occured = true
     Rails.logger.info('got timeout error for container ' + container.to_s)
-    #container.restart if RECYCLE_CONTAINERS
-    DockerContainerPool.remove_from_all_containers(container, @execution_environment)
+
+    # remove container from pool, then destroy it
+    (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
 
     # destroy container
     self.class.destroy_container(container)
 
-    if(RECYCLE_CONTAINERS)
-      # create new container and add it to @all_containers. will be added to @containers on return_container
+    # if we recylce containers, we start a fresh one
+    if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
+      # create new container and add it to @all_containers and @containers.
       container = self.class.create_container(@execution_environment)
       DockerContainerPool.add_to_all_containers(container, @execution_environment)
     end
     {status: :timeout}
-  ensure
-    Rails.logger.info('send_command ensuring for' + container.to_s)
-    RECYCLE_CONTAINERS ? return_container(container) : self.class.destroy_container(container)
   end
   private :send_command
 

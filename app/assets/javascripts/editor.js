@@ -274,6 +274,29 @@ $(function() {
     event.preventDefault();
   };
 
+  var lastCopyText;
+  var handleCopyEvent = function(text){
+    lastCopyText = text;
+  };
+
+  var handlePasteEvent = function (pasteObject) {
+    //console.log("Handling paste event. this is ", this );
+    //console.log("Text: " + pasteObject.text);
+
+    var same = (lastCopyText === pasteObject.text)
+    //console.log("Text is the same: " + same);
+
+    // if the text is not copied from within the editor (from any file), send an event to lanalytics
+    //if(!same){
+    //  publishCodeOceanEvent("codeocean_editor_paste", {
+    //    text: pasteObject.text,
+    //    exercise: $('#editor').data('exercise-id'),
+    //    file_id: "1"
+    //
+    //  });
+    }
+  };
+
   var handleScoringResponse = function(response) {
     printScoringResults(response);
     var score = _.reduce(response, function(sum, result) {
@@ -362,18 +385,12 @@ $(function() {
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
       var editor = ace.edit(element);
+
       if (qa_api) {
         editor.getSession().on("change", function (deltaObject) {
           qa_api.executeCommand('syncEditor', [active_file, deltaObject]);
         });
       }
-
-
-      // listener for autosave
-      editor.getSession().on("change", function (deltaObject) {
-        resetSaveTimer();
-      });
-
       var document = editor.getSession().getDocument();
       // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
       var file_id = $(element).data('file-id');
@@ -412,37 +429,28 @@ $(function() {
         var row = e.getDocumentPosition().row;
         e.stop();
 
-        var commentModal = $('#comment-modal');
+      /*
+       * Register event handlers
+       */
 
-        if (hasCommentsInRow(editor, row)) {
-          var rowComments = getCommentsForRow(editor, row);
-          var comments = _.pluck(rowComments, 'text').join('\n');
-          commentModal.find('#other-comments').text(comments);
-        } else {
-          commentModal.find('#other-comments').text('none');
-        }
+      // editor itself
+      editor.on("paste", handlePasteEvent);
+      editor.on("copy", handleCopyEvent);
+      editor.on("guttermousedown", handleSidebarClick);
 
-        commentModal.find('#addCommentButton').off('click');
-        commentModal.find('#removeAllButton').off('click');
+      /* // alternative:
+      editor.on("guttermousedown", function(e) {
+        handleSidebarClick(e);
+      });
+      */
+      
+      //session
+      session.on('annotationRemoval', handleAnnotationRemoval);
+      session.on('annotationChange', handleAnnotationChange);
 
-        commentModal.find('#addCommentButton').on('click', function(e){
-          var user_id = $(element).data('user-id');
-          var commenttext = commentModal.find('textarea').val();
-          var file_id =  $(element).data('id');
-
-          if (commenttext !== "") {
-            createComment(user_id, file_id, row, editor, commenttext);
-            commentModal.modal('hide');
-          }
-        })
-
-        commentModal.find('#removeAllButton').on('click', function(e){
-          var user_id = $(element).data('user-id');
-          deleteComment(user_id,file_id,row,editor);
-          commentModal.modal('hide');
-        })
-
-        commentModal.modal('show');
+      // listener for autosave
+      session.on("change", function (deltaObject) {
+        resetSaveTimer();
       });
     });
   };
@@ -451,13 +459,13 @@ $(function() {
     return editor.getSession().getAnnotations().some(function(element) {
       return element.row === row;
     })
-  }
+  };
 
   var getCommentsForRow = function (editor, row){
     return editor.getSession().getAnnotations().filter(function(element) {
       return element.row === row;
     })
-  }
+  };
 
   var setAnnotations = function (editor, file_id){
       var session = editor.getSession();
@@ -476,29 +484,27 @@ $(function() {
           setAnnotationsCallback(response, session);
       });
       jqrequest.fail(ajaxError);
-  }
+  };
 
   var setAnnotationsCallback = function (response, session) {
       var annotations = response;
 
+      // add classname and the username in front of each comment
       $.each(annotations, function(index, comment){
           comment.className = "code-ocean_comment";
           comment.text = comment.username + ": " + comment.text;
-        //  comment.text = comment.user_id + ": " + comment.text;
       });
 
       session.setAnnotations(annotations);
   }
 
-  var deleteComment = function (user_id, file_id, row, editor) {
+  var deleteComment = function (file_id, row, editor) {
       var jqxhr = $.ajax({
           type: 'DELETE',
           url: "/comments",
           data: {
             row: row,
-            file_id: file_id,
-            user_id: user_id
-          }
+            file_id: file_id          }
       });
       jqxhr.done(function (response) {
           setAnnotations(editor, file_id);
@@ -506,7 +512,7 @@ $(function() {
       jqxhr.fail(ajaxError);
   }
 
-  var createComment = function (user_id, file_id, row, editor, commenttext){
+  var createComment = function (file_id, row, editor, commenttext){
       var jqxhr = $.ajax({
         data: {
           comment: {
@@ -524,7 +530,7 @@ $(function() {
           setAnnotations(editor, file_id);
       });
       jqxhr.fail(ajaxError);
-  }
+  };
 
   var handleAnnotationRemoval = function(removedAnnotations) {
     removedAnnotations.forEach(function(annotation) {
@@ -536,7 +542,7 @@ $(function() {
         }
       })
     })
-  }
+  };
 
   var handleAnnotationChange = function(changedAnnotations) {
     changedAnnotations.forEach(function(annotation) {
@@ -553,7 +559,53 @@ $(function() {
         }
       })
     })
-  }
+  };
+
+  // Code for clicks on gutter / sidepanel
+  var handleSidebarClick = function(e) {
+      var target  = e.domEvent.target;
+      var editor =  e.editor;
+
+      if (target.className.indexOf("ace_gutter-cell") == -1) return;
+      if (!editor.isFocused()) return;
+      if (e.clientX > 25 + target.getBoundingClientRect().left) return;
+
+      var row = e.getDocumentPosition().row;
+      e.stop();
+
+      var commentModal = $('#comment-modal');
+
+      if (hasCommentsInRow(editor, row)) {
+        var rowComments = getCommentsForRow(editor, row);
+        var comments = _.pluck(rowComments, 'text').join('\n');
+        commentModal.find('#other-comments').text(comments);
+      } else {
+        commentModal.find('#other-comments').text('none');
+      }
+
+      commentModal.find('#addCommentButton').off('click');
+      commentModal.find('#removeAllButton').off('click');
+
+      commentModal.find('#addCommentButton').on('click', function(e){
+        var commenttext = commentModal.find('textarea').val();
+        // attention: use id of data attribute here, not file-id (file-id is the original file)
+        var file_id = $(editor.container).data('id');
+
+        if (commenttext !== "") {
+          createComment(file_id, row, editor, commenttext);
+          commentModal.modal('hide');
+        }
+      });
+
+      commentModal.find('#removeAllButton').on('click', function(e){
+        // attention: use id of data attribute here, not file-id (file-id is the original file)
+        var file_id = $(editor.container).data('id');
+        deleteComment(file_id,row, editor);
+        commentModal.modal('hide');
+      });
+
+      commentModal.modal('show');
+  };
 
   var initializeEventHandlers = function() {
     $(document).on('click', '#results a', showOutput);
@@ -731,6 +783,31 @@ $(function() {
       // send test response to QA
       qa_api.executeCommand('syncOutput', [response]);
     }
+  };
+
+    // Publishing events for other (JS) components to react to codeocean events
+   var publishCodeOceanEvent = function (eventName, contextData) {
+
+     var payload = {
+       user: {
+         resource_uuid: $('#editor').data('user-id')
+       },
+       verb: eventName,
+       resource: {},
+       timestamp: new Date().toISOString(),
+       with_result: {},
+       in_context: contextData
+     };
+
+     $.ajax("https://open.hpi.de/lanalytics/log", {
+       type: 'POST',
+       cache: false,
+       dataType: 'JSON',
+       data: payload,
+       success: {},
+       error: {}
+      })
+
   };
 
   var renderCode = function(event) {
@@ -1044,12 +1121,13 @@ $(function() {
         }
     }
 
+  // save on quit
   $(window).on("beforeunload", function() {
     if(autosaveTimer){
       autosave();
     }
 
-  })
+  });
 
   if ($('#editor').isPresent()) {
       if (isBrowserSupported()) {
