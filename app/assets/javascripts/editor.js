@@ -414,21 +414,6 @@ $(function() {
       session.on('annotationRemoval', handleAnnotationRemoval);
       session.on('annotationChange', handleAnnotationChange);
 
-      // TODO refactor here, put this in its own function
-      // Code for clicks on gutter / sidepanel
-      editor.on("guttermousedown", function(e){
-        var target  = e.domEvent.target;
-
-        // only allow comments on submissions, not on the template
-        if(active_frame.data('context-type') != 'Submission') return;
-        //if ($(editor.container).data('context-type') != 'Submission') return;
-        if (target.className.indexOf("ace_gutter-cell") == -1) return;
-        if (!editor.isFocused()) return;
-        if (e.clientX > 25 + target.getBoundingClientRect().left) return;
-
-        var row = e.getDocumentPosition().row;
-        e.stop();
-
       /*
        * Register event handlers
        */
