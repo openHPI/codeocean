@@ -14,16 +14,16 @@ class CommentsController < ApplicationController
   def index
     #@comments = Comment.all
     #if admin, show all comments.
-    #check whether user is the author of the passed file_id, if so, show all comments. otherwise, only show comments of auther and own comments
+    #check whether user is the author of the passed file_id, if so, show all comments. otherwise, only show comments of the file-author and own comments
     file = CodeOcean::File.find(params[:file_id])
     #there might be no submission yet, so dont use find
     submission = Submission.find_by(id: file.context_id)
     if submission
       is_admin = false
-      if current_user.respond_to? :external_id
-        user_id = current_user.external_id
-      else
-        user_id = current_user.id
+      user_id = current_user.id
+
+      # if we have an internal user, check whether he is an admin
+      if not current_user.respond_to? :external_id
         is_admin = current_user.role == 'admin'
       end
 
@@ -31,13 +31,24 @@ class CommentsController < ApplicationController
         # fetch all comments for this file
         @comments = Comment.where(file_id: params[:file_id])
       else
-        @comments = Comment.where(file_id: params[:file_id], user_id: user_id)
+        # fetch comments of the current user
+        #@comments = Comment.where(file_id: params[:file_id], user_id: user_id)
+        # fetch comments of file-author and the current user
+        @comments = Comment.where(file_id: params[:file_id], user_id: [user_id, submission.user_id])
       end
 
-      #@comments = Comment.where(file_id: params[:file_id])
-
       #add names to comments
-      @comments.map{|comment| comment.username = Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]}
+      # if the user is internal, set the name
+
+      @comments.map{|comment|
+        if(comment.user_type == 'InternalUser')
+          comment.username = InternalUser.find(comment.user_id).name
+        elsif(comment.user_type == 'ExternalUser')
+          comment.username = ExternalUser.find(comment.user_id).name
+          # alternative: # if the user is external, fetch the displayname from xikolo
+          # Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]
+        end
+      }
     else
       @comments = Comment.all.limit(0) #we need an empty relation here
     end
@@ -64,7 +75,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    @comment = Comment.new(comment_params.merge(user_type: current_user.class.name))
+    @comment = Comment.new(comment_params)
 
     respond_to do |format|
       if @comment.save
@@ -124,6 +135,6 @@ class CommentsController < ApplicationController
     def comment_params
       #params.require(:comment).permit(:user_id, :file_id, :row, :column, :text)
       # fuer production mode, damit böse menschen keine falsche user_id uebergeben:
-      params.require(:comment).permit(:file_id, :row, :column, :text).merge(user_id: current_user.id)
+      params.require(:comment).permit(:file_id, :row, :column, :text).merge(user_id: current_user.id, user_type: current_user.class.name)
     end
 end

@@ -95,15 +95,10 @@ $(function() {
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
 
-      var annotations = {};
       var annotations_arr = [];
-      var file_ids = [];
-
 
       $('.editor').each(function(index, element) {
-          var file_id =  $(element).data('id');
           var editor = ace.edit(element);
-          //annotations[file_id] = editor.getSession().getAnnotations();
           var cleaned_annotations = editor.getSession().getAnnotations();
           for(var i = cleaned_annotations.length-1; i>=0; --i){
               cleaned_annotations[i].text = cleaned_annotations[i].text.replace(cleaned_annotations[i].username + ": ", "");
@@ -118,8 +113,6 @@ $(function() {
           exercise_id: $('#editor').data('exercise-id'),
           files_attributes: (filter || _.identity)(collectFiles())
         },
-        source_submission_id: $('.ace_editor',$('#editor'))[0].dataset.id,
-        //annotations: annotations,
         annotations_arr: annotations_arr
       },
       dataType: 'json',
@@ -133,7 +126,38 @@ $(function() {
   };
 
     var createSubmissionCallback = function(data){
-      var id =  $('.editor').data('id');
+        // set all frames context types to submission
+        $('.frame').each(function(index, element) {
+            $(element).data('context-type', 'Submission');
+        });
+
+        // update the ids of the editors and reload the annotations
+        for (var i = 0; i < editors.length; i++) {
+
+            // set the data attribute to submission
+            //$(editors[i].container).data('context-type', 'Submission');
+
+            var file_id_old = $(editors[i].container).data('file-id');
+
+            // file_id_old is always set. Either it is a reference to a teacher supplied given file, or it is the actual id of a new user created file.
+            // This is the case, since it is set via a call to ancestor_id on the model, which returns either file_id if set, or id if it is not set.
+            // therefore the else part is not needed any longer...
+
+            // if we have an file_id set (the file is a copy of a teacher supplied given file)
+            if (file_id_old != null){
+                // if we find file_id_old (this is the reference to the base file) in the submission, this is the match
+                for(var j = 0; j< data.files.length; j++){
+                    if(data.files[j].file_id == file_id_old){
+                        //$(editors[i].container).data('id') = data.files[j].id;
+                        $(editors[i].container).data('id', data.files[j].id );
+                    }
+                }
+            }
+            setAnnotations(editors[i], $(editors[i].container).data('id'));
+        }
+        // toggle button states (it might be the case that the request for comments button has to be enabled
+        toggleButtonStates();
+
     };
 
   var destroyFile = function() {
@@ -387,6 +411,9 @@ $(function() {
       var file_id =  $(element).data('id');
       setAnnotations(editor, file_id);
 
+      session.on('annotationRemoval', handleAnnotationRemoval);
+      session.on('annotationChange', handleAnnotationChange);
+
       /*
        * Register event handlers
        */
@@ -401,8 +428,7 @@ $(function() {
         handleSidebarClick(e);
       });
       */
-
-
+      
       //session
       session.on('annotationRemoval', handleAnnotationRemoval);
       session.on('annotationChange', handleAnnotationChange);
@@ -614,6 +640,10 @@ $(function() {
     $('#start-over').on('click', confirmReset);
   };
 
+  var isActiveFileBinary = function() {
+      return 'binary' in active_frame.data();
+  };
+
   var isActiveFileExecutable = function() {
     return 'executable' in active_frame.data();
   };
@@ -635,6 +665,10 @@ $(function() {
 
   var isActiveFileStoppable = function() {
     return isActiveFileRunnable() && running;
+  };
+
+  var isActiveFileSubmission = function() {
+      return ['Submission'].includes(active_frame.data('contextType'));
   };
 
   var isActiveFileTestable = function() {
@@ -1028,6 +1062,7 @@ $(function() {
     $('#run').toggle(isActiveFileRunnable() && !running);
     $('#stop').toggle(isActiveFileStoppable());
     $('#test').toggle(isActiveFileTestable());
+    $('#request-for-comments').toggle(isActiveFileSubmission() && !isActiveFileBinary());
   };
 
   var requestComments = function(e) {
@@ -1040,9 +1075,8 @@ $(function() {
       url: '/request_for_comments',
       data: {
         request_for_comment: {
-          requestorid: user_id,
-          exerciseid: exercise_id,
-          fileid: file_id,
+          exercise_id: exercise_id,
+          file_id: file_id,
           "requested_at(1i)": 2015, // these are the timestamp values that the request handler demands
           "requested_at(2i)":3, // they could be random here, because the timestamp is updated on serverside anyway
           "requested_at(3i)":27,
@@ -1056,6 +1090,8 @@ $(function() {
     })
 
     showSpinner($('#request-for-comments'))
+    // hide button until next submission is created
+    $('#request-for-comments').toggle(false);
   }
 
     var initializeCodePilot = function() {

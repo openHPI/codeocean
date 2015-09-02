@@ -1,14 +1,22 @@
 <div class="list-group">
-  <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exerciseid) %></h4>
+  <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exercise_id) %></h4>
   <p class="list-group-item-text">
-    <%= InternalUser.find(@request_for_comment.requestorid) %> | <%= @request_for_comment.requested_at %>
+      <%
+         user = nil
+         if (@request_for_comment.user_type == 'InternalUser')
+           user = InternalUser.find(@request_for_comment.requestor_user_id)
+         else
+           user = ExternalUser.find(@request_for_comment.requestor_user_id)
+         end
+      %>
+    <%= user %> | <%= @request_for_comment.requested_at %>
   </p>
 </div>
-<!--
--->
 
-<div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.fileid%>'>
-  <%= CodeOcean::File.find(@request_for_comment.fileid).content %>
+<!--
+do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
+-->
+<div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.file_id%>'><%= CodeOcean::File.find(@request_for_comment.file_id).content %>
 </div>
 
 <script type="text/javascript">
