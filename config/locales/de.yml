@@ -73,6 +73,11 @@ de:
         password: Passwort
         password_confirmation: Passwort-Bestätigung
         role: Rolle
+      request_for_comments:
+        exercise: Aufgabe
+        execution_environment: Sprache
+        username: Benutzername
+        requested_at: Angefragezeitpunkt
       submission:
         cause: Anlass
         code: Code
@@ -176,7 +181,7 @@ de:
       run: Ausführen
       run_failure: Ihr Code konnte nicht auf der Plattform ausgeführt werden.
       run_success: Ihr Code wurde auf der Plattform ausgeführt.
-      requestComments: Rückmeldung erbitten
+      requestComments: Kommentare erbitten
       save: Speichern
       score: Bewerten
       start_over: Von vorne anfangen
@@ -272,6 +277,9 @@ de:
       reset_password:
         body: 'Bitte besuchen Sie %{link}, sofern Sie Ihr Passwort zurücksetzen wollen.'
         subject: Anweisungen zum Zurücksetzen Ihres Passworts
+  request_for_comments:
+    index:
+      get_my_comment_requests: Meine Kommentaranfragen
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

@@ -4,4 +4,5 @@ class Comment < ActiveRecord::Base
   attr_accessor :username
 
   belongs_to :file, class: CodeOcean::File
+  belongs_to :user, polymorphic: true
 end

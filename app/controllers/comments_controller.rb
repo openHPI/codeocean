@@ -41,13 +41,9 @@ class CommentsController < ApplicationController
       # if the user is internal, set the name
 
       @comments.map{|comment|
-        if(comment.user_type == 'InternalUser')
-          comment.username = InternalUser.find(comment.user_id).name
-        elsif(comment.user_type == 'ExternalUser')
-          comment.username = ExternalUser.find(comment.user_id).name
-          # alternative: # if the user is external, fetch the displayname from xikolo
-          # Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]
-        end
+          comment.username = comment.user.name
+        # alternative: # if the user is external, fetch the displayname from xikolo
+        # Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]
       }
     else
       @comments = Comment.all.limit(0) #we need an empty relation here
