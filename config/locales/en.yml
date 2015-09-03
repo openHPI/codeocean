@@ -73,6 +73,11 @@ en:
         password: Password
         password_confirmation: Passwort Confirmation
         role: Role
+      request_for_comments:
+        exercise: Exercise
+        execution_environment: Language
+        username: Username
+        requested_at: Request Date
       submission:
         cause: Cause
         code: Code
@@ -272,6 +277,9 @@ en:
       reset_password:
         body: 'Please visit %{link} if you want to reset your password.'
         subject: Password reset instructions
+  request_for_comments:
+    index:
+      get_my_comment_requests: My Requests for Comments
   sessions:
     create:
       failure: Invalid email or password.

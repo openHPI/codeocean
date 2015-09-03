@@ -2,12 +2,9 @@
   <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exercise_id) %></h4>
   <p class="list-group-item-text">
       <%
-         user = nil
-         if (@request_for_comment.user_type == 'InternalUser')
-           user = InternalUser.find(@request_for_comment.requestor_user_id)
-         else
-           user = ExternalUser.find(@request_for_comment.requestor_user_id)
-         end
+
+           user = @request_for_comment.user
+
       %>
     <%= user %> | <%= @request_for_comment.requested_at %>
   </p>

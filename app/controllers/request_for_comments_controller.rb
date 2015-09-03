@@ -11,9 +11,13 @@ class RequestForCommentsController < ApplicationController
   # GET /request_for_comments
   # GET /request_for_comments.json
   def index
-    # @request_for_comments = RequestForComment.all
-    @request_for_comments = RequestForComment.all.order('created_at DESC').limit(50)
+    @request_for_comments = RequestForComment.last_per_user(2).paginate(page: params[:page])
     authorize!
+  end
+
+  def get_my_comment_requests
+    @request_for_comments = RequestForComment.where(user_id: current_user.id).order('created_at DESC').paginate(page: params[:page])
+    render 'index'
   end
 
   # GET /request_for_comments/1
@@ -66,6 +70,6 @@ class RequestForCommentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def request_for_comment_params
-      params.require(:request_for_comment).permit(:exercise_id, :file_id, :requested_at).merge(requestor_user_id: current_user.id, user_type: current_user.class.name)
+      params.require(:request_for_comment).permit(:exercise_id, :file_id, :requested_at).merge(user_id: current_user.id, user_type: current_user.class.name)
     end
 end
