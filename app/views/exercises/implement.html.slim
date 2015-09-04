@@ -45,12 +45,23 @@
             .panel.panel-warning
               .panel-heading = t('.hint')
               .panel-body
-          #output
-            pre = t('.no_output_yet')
-          - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
-            #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
-              .panel-heading = 'Gain more insights here'
-              .panel-body
+          .row
+            .col-lg-7.col-md-7
+              #prompt.input-group.hidden
+                span.input-group-addon = 'Your input'
+                input#prompt-input.form-control type='text'
+                span.input-group-btn
+                  button#prompt-submit.btn.btn-primary type="button" = 'Send'
+              #output
+                pre = t('.no_output_yet')
+              - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
+                #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+                  .panel-heading = 'Gain more insights here'
+                  .panel-body
+            .col-lg-5.col-md-5
+              #turtlediv
+                // todo what should the canvas default size be?
+                canvas#turtlecanvas.hidden style='border-style:solid;border-width:thin'
         #progress.tab-pane
           #results
             h2 = t('.results')

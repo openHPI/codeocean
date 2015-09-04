@@ -428,7 +428,7 @@ $(function() {
         handleSidebarClick(e);
       });
       */
-      
+
       //session
       session.on('annotationRemoval', handleAnnotationRemoval);
       session.on('annotationChange', handleAnnotationChange);
