@@ -46,7 +46,8 @@
               .panel-heading = t('.hint')
               .panel-body
           .row
-            .col-lg-7.col-md-7
+            #output-col1
+              // todo set to full width if turtle isnt used
               #prompt.input-group.hidden
                 span.input-group-addon = 'Your input'
                 input#prompt-input.form-control type='text'
@@ -58,7 +59,7 @@
                 #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
                   .panel-heading = 'Gain more insights here'
                   .panel-body
-            .col-lg-5.col-md-5
+            #output-col2.col-lg-5.col-md-5
               #turtlediv
                 // todo what should the canvas default size be?
                 canvas#turtlecanvas.hidden style='border-style:solid;border-width:thin'

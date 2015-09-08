@@ -20,6 +20,8 @@ Rails.application.routes.draw do
 
   get '/help', to: 'application#help'
 
+  get '/socket/:id', to: 'socket#docker'
+
   resources :consumers
 
   resources :execution_environments do

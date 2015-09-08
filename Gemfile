@@ -33,6 +33,8 @@ gem 'thread_safe'
 gem 'turbolinks'
 gem 'uglifier', '>= 1.3.0'
 gem 'will_paginate', '~> 3.0'
+gem 'tubesock'
+gem 'faye-websocket'
 
 group :development do
   gem 'better_errors', platform: :ruby

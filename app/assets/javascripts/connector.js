@@ -1,4 +1,4 @@
-$(function() {
+/*$(function() {
     var websocket,
         turtlescreen,
         numMessages = 0,
@@ -16,7 +16,8 @@ $(function() {
 
     var initWebsocket = function(host) {
         // todo use host param
-        var wsUri = "ws://127.0.0.1:3333/chat"
+        var wsUri = 'ws://' + window.location.hostname + ':3333/socket/510c8a4225ec';
+        //var wsUri = "ws://127.0.0.1:3333/chat"
         websocket = new WebSocket(wsUri);
         websocket.onopen = function(evt) { onWebSocketOpen(evt) };
         websocket.onclose = function(evt) { onWebSocketClose(evt) };
@@ -89,8 +90,8 @@ $(function() {
 
     // todo reuse method from editor.js
     var printOutput = function(msg) {
-        // todo create paragraph for newlines only
-        var element = findOrCreateOutputElement(numMessages);
+        var element = findOrCreateOutputElement(0);
+        console.log(element);
         switch (msg.stream) {
             case 'internal':
                 element.addClass('text-danger');
@@ -104,13 +105,6 @@ $(function() {
                 element.addClass('text-muted');
         }
         element.append(msg.data)
-        // todo consider empty output
-        // element.html(msg.data);
-        // // element.addClass('text-muted');
-        // // element.html($('#output').data('message-no-output'));
-        // if (output.isPresent()) {
-        //     output.append(element);
-        // }
     };
 
     // taken from editor.js
@@ -167,28 +161,20 @@ $(function() {
                 return false;
             }
             // why does docker sometimes send multiple commands at once?
-            //console.log("trimming composite:" + message);
             message = message.replace(/^\s+|\s+$/g, "");
             messages = message.split("\n");
-            //console.log("individual commands:" + messages);
             for (var i = 0; i < messages.length; i++) {
                 if (!messages[i]) {
                     continue;
                 }
-                //console.log("parse individual:" + messages[i]);
                 parseCanvasMessage(messages[i], false);
             }
             return;
         }
-
-        // console.log("Interpreting");
-        // console.log(JSON.stringify(msg));
-
         executeCommand(msg);
     };
 
     var showPrompt = function() {
-        console.log("showing prompt");
         if (prompt.isPresent() && prompt.hasClass('hidden')) {
             prompt.removeClass('hidden');
         }
@@ -196,7 +182,6 @@ $(function() {
     }
 
     var hidePrompt = function() {
-        console.log("hiding prompt");
         if (prompt.isPresent() && !prompt.hasClass('hidden')) {
             console.log("hiding prompt2");
             prompt.addClass('hidden');
@@ -206,6 +191,8 @@ $(function() {
     var showCanvas = function() {
         if ($('#turtlediv').isPresent()
                 && turtlecanvas.hasClass('hidden')) {
+            // initialize two-column layout
+            $('#output-col1').addClass('col-lg-7 col-md-7 two-column');
             turtlecanvas.removeClass('hidden');
         }
     };
@@ -213,9 +200,14 @@ $(function() {
     var hideCanvas = function() {
         if ($('#turtlediv').isPresent()
                 && !(turtlecanvas.hasClass('hidden'))) {
+            output = $('#output-col1');
+            if (output.hasClass('two-column')) {
+                output.removeClass('col-lg-7 col-md-7 two-column');
+            }
             turtlecanvas.addClass('hidden');
         }
     };
 
     initCallbacks();
 });
+*/

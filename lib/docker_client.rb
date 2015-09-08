@@ -108,7 +108,10 @@ class DockerClient
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       before_execution_block.try(:call)
-      send_command(command, @container, &output_consuming_block)
+      Thread.new do
+        send_command(command, @container, &output_consuming_block)
+      end
+      @container.id
     else
       {status: :container_depleted}
     end
@@ -186,8 +189,10 @@ class DockerClient
 
   def send_command(command, container, &block)
     result = {status: :failed, stdout: '', stderr: ''}
-    Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
-      output = container.exec(['bash', '-c', command])
+    Rails.logger.info 'Container id:' + container.id
+    Timeout.timeout(10) do
+      output = container.exec(['bash', '-c', 'sleep 10 && echo "test"'])
+      #output=[[], [], 2]
       Rails.logger.info "output from container.exec"
       Rails.logger.info output
       result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join, stderr: output[1].join}

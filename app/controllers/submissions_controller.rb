@@ -4,6 +4,7 @@ class SubmissionsController < ApplicationController
   include Lti
   include SubmissionParameters
   include SubmissionScoring
+  include Tubesock::Hijack
 
   before_action :set_submission, only: [:download_file, :render_file, :run, :score, :show, :statistics, :stop, :test]
   before_action :set_docker_client, only: [:run, :test]
@@ -71,20 +72,23 @@ class SubmissionsController < ApplicationController
 
   def run
     with_server_sent_events do |server_sent_event|
-      output = @docker_client.execute_run_command(@submission, params[:filename])
-      
-      server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
-      server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
-      
-      server_sent_event.write({status: output[:status]}, event: 'status')
-      
-      unless output[:stderr].nil?
-        if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
-          server_sent_event.write(hint, event: 'hint')
-        else
-          store_error(output[:stderr])
-        end
-      end
+      container_id = @docker_client.execute_run_command(@submission, params[:filename])
+      Rails.logger.info "Output:" + container_id
+
+      server_sent_event.write({container: container_id.to_s}, event: 'info') if container_id
+
+      # server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
+      # server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
+      # server_sent_event.write({container: output[:container]}, event: 'info') if output[:container]
+      # server_sent_event.write({status: output[:status]}, event: 'status')
+
+      # unless output[:stderr].nil?
+      #   if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
+      #     server_sent_event.write(hint, event: 'hint')
+      #   else
+      #     store_error(output[:stderr])
+      #   end
+      # end
     end
   end
 
