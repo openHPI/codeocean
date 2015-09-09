@@ -141,7 +141,7 @@ class DockerClient
 
       socket = Faye::WebSocket::Client.new('ws://localhost:7000/v1.19/containers/' + @container.id + '/attach/ws?logs=1&stderr=1&stdout=1&stream=1&stdin=1',
                                            [],
-                                           :headers => { 'Origin' => 'http://localhost'} )
+                                           :headers => { 'Origin' => 'http://localhost2'} )
 
       Thread.new do
         @container.exec(['sleep', '30'])
@@ -149,7 +149,7 @@ class DockerClient
 
       socket.on :open do |event|
         puts "Socket to Docker open."
-        socket.send(command + '\n')
+        #socket.send(command + '\n')
         #kill_after_timeout(@container)
       end
 
