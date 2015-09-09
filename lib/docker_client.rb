@@ -45,6 +45,7 @@ class DockerClient
       'NetworkDisabled' => !execution_environment.network_enabled?,
       'OpenStdin' => true,
       'StdinOnce' => true,
+      # required to expose standard streams over websocket
       'AttachStdout' => true,
       'AttachStdin' => true,
       'AttachStderr' => true,
@@ -110,27 +111,21 @@ class DockerClient
     execute_command(command, nil, block)
   end
 
-#  def execute_command(command, before_execution_block, output_consuming_block)
-#    #tries ||= 0
-#    @container = DockerContainerPool.get_container(@execution_environment)
-#    if @container
-#      before_execution_block.try(:call)
-#      Thread.new do
-#        send_command(command, @container, &output_consuming_block)
-#      end
-#      @container.id
-#    else
-#      {status: :container_depleted}
-#    end
-#  rescue Excon::Errors::SocketError => error
-#    # socket errors seems to be normal when using exec
-#    # so lets ignore them for now
-#    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
-#  end
-
-  def flush(socket)
-    socket.send '
-    '
+  def create_socket(container)
+    # todo read host + port from config
+    # todo factor out query params
+    socket = Faye::WebSocket::Client.new('ws://localhost:2375/v1.19/containers/' + @container.id + '/attach/ws?logs=1&stderr=1&stdout=1&stream=1&stdin=1', [], :headers => { 'Origin' => 'http://localhost'} )
+    socket.on :error do |event|
+      puts "Something wrent really wrong: " + event.message
+    end
+    socket.on :close do |event|
+      puts "Closing socket"
+    end
+    socket.on :open do |event|
+      puts "Created docker socket."
+      kill_after_timeout(container)
+    end
+    socket
   end
 
   def execute_command(command, before_execution_block, output_consuming_block)
@@ -138,48 +133,36 @@ class DockerClient
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       before_execution_block.try(:call)
-
-      # todo read host + port from config
-      # todo factor out query params
-      @socket = Faye::WebSocket::Client.new('ws://localhost:2375/v1.19/containers/' + @container.id + '/attach/ws?logs=1&stderr=1&stdout=1&stream=1&stdin=1', [], :headers => { 'Origin' => 'http://localhost'} )
-
-      @socket.on :error do |event|
-        puts "Something wrent really wrong: " + event.message
-      end
-
-      @socket.on :close do |event|
-        puts "Closing socket"
-      end
-
-      @socket.on :open do |event|
-        puts "Created docker socket."
-        socket.send command
-        flush(socket)
-        puts "Initial command executed."
-        kill_after_timeout(@container)
-      end
-
+      # todo catch exception if socket could not be created
+      @socket ||= create_socket(@container)
+      execute_socket_command(@socket, command)
       {status: :container_running, socket: @socket}
     else
       {status: :container_depleted}
     end
   end
 
+  def execute_socket_command(socket, command)
+    # todo maybe prepend timeout coreutil to limit execution time in docker?
+    socket.send command + '
+    ' # flush
+  end
+
   # Kills a container after X seconds. Used by execute_command, as it's impossible to determine
   # wether a container is done or not as long as we're using the socket to commit the command.
   def kill_after_timeout(container)
     Thread.new do
-      sleep(10)
-
-      puts "Killing container naow."
+      sleep(10) # todo timeout depending on execution environment config
+      Rails.logger.info("Killing container after timeout.")
+      # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
+      # (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
 
       # todo won't this always create a new container?
-
       # remove container from pool, then destroy it
       (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
 
-          # destroy container
-          self.class.destroy_container(container)
+      # destroy container
+      self.class.destroy_container(container)
 
       # if we recylce containers, we start a fresh one
       if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
@@ -190,6 +173,8 @@ class DockerClient
     end
   end
 
+  # execute_run_command
+  # execute_test_command
   [:run, :test].each do |cause|
     define_method("execute_#{cause}_command") do |submission, filename, &block|
       command = submission.execution_environment.send(:"#{cause}_command") % command_substitutions(filename)
