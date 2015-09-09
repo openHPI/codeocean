@@ -191,7 +191,17 @@ $(function() {
   };
 
   var evaluateCodeWithStreamedResponse = function(url, callback) {
-    var event_source = new EventSource(url);
+
+    websocket = new WebSocket('ws://' + window.location.hostname + ':3333' + url);
+
+    websocket.onopen = function(evt) { onWebSocketOpen(evt) };
+    websocket.onclose = function(evt) { onWebSocketClose(evt) };
+    websocket.onmessage = function(evt) { onWebSocketMessage(evt) };
+    websocket.onerror = function(evt) { onWebSocketError(evt) };
+    websocket.flush = function() { this.send('\n'); }
+
+    initTurtle();
+    /** var event_source = new EventSource(url);
 
     event_source.addEventListener('close', closeEventSource);
     event_source.addEventListener('error', closeEventSource);
@@ -212,7 +222,7 @@ $(function() {
 
     event_source.addEventListener('status', function(event) {
       showStatus(JSON.parse(event.data));
-    });
+    }); **/
   };
 
   var handleStreamedResponseForCodePilot = function(event) {

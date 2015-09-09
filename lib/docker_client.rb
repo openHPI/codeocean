@@ -41,14 +41,24 @@ class DockerClient
       'Memory' => execution_environment.memory_limit.megabytes,
       'NetworkDisabled' => !execution_environment.network_enabled?,
       'OpenStdin' => true,
-      'StdinOnce' => true
+      'StdinOnce' => false,
+      'AttachStdout' => true,
+      'AttachStdin' => true,
+      'AttachStderr' => true,
+      'Tty' => true
     }
   end
 
   def self.container_start_options(execution_environment, local_workspace_path)
     {
       'Binds' => mapped_directories(local_workspace_path),
-      'PortBindings' => mapped_ports(execution_environment)
+      'PortBindings' => mapped_ports(execution_environment),
+      'OpenStdin' => true,
+      'StdinOnce' => false,
+      'AttachStdout' => true,
+      'AttachStdin' => true,
+      'AttachStderr' => true,
+      'Tty' => true
     }
   end
 
@@ -103,22 +113,84 @@ class DockerClient
     execute_command(command, nil, block)
   end
 
+#  def execute_command(command, before_execution_block, output_consuming_block)
+#    #tries ||= 0
+#    @container = DockerContainerPool.get_container(@execution_environment)
+#    if @container
+#      before_execution_block.try(:call)
+#      Thread.new do
+#        send_command(command, @container, &output_consuming_block)
+#      end
+#      @container.id
+#    else
+#      {status: :container_depleted}
+#    end
+#  rescue Excon::Errors::SocketError => error
+#    # socket errors seems to be normal when using exec
+#    # so lets ignore them for now
+#    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
+#  end
+
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       before_execution_block.try(:call)
+
+      command = 'ls '
+
+      socket = Faye::WebSocket::Client.new('ws://localhost:7000/v1.19/containers/' + @container.id + '/attach/ws?logs=1&stderr=1&stdout=1&stream=1&stdin=1',
+                                           [],
+                                           :headers => { 'Origin' => 'http://localhost'} )
+
       Thread.new do
-        send_command(command, @container, &output_consuming_block)
+        @container.exec(['sleep', '30'])
       end
-      @container.id
+
+      socket.on :open do |event|
+        puts "Socket to Docker open."
+        socket.send(command + '\n')
+        #kill_after_timeout(@container)
+      end
+
+      socket.on :message do |event|
+        puts "Received: " + event.data
+      end
+
+      socket.on :close do |event|
+        puts "Socket to Docker closed."
+      end
+
+      socket.on :error do |event|
+        puts "Socket to Docker raised error."
+      end
+
+      {status: :container_running, socket: socket}
     else
       {status: :container_depleted}
     end
-  rescue Excon::Errors::SocketError => error
-    # socket errors seems to be normal when using exec
-    # so lets ignore them for now
-    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
+  end
+
+  # Kills a container after X seconds. Used by execute_command, as it's impossible to determine
+  # wether a container is done or not as long as we're using the socket to commit the command.
+  def kill_after_timeout(container)
+    Thread.new do
+      sleep(5)
+
+      puts "Killing container naow."
+      # remove container from pool, then destroy it
+      (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
+
+          # destroy container
+          self.class.destroy_container(container)
+
+      # if we recylce containers, we start a fresh one
+      if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
+        # create new container and add it to @all_containers and @containers.
+        container = self.class.create_container(@execution_environment)
+        DockerContainerPool.add_to_all_containers(container, @execution_environment)
+      end
+    end
   end
 
   [:run, :test].each do |cause|
@@ -191,7 +263,7 @@ class DockerClient
     result = {status: :failed, stdout: '', stderr: ''}
     Rails.logger.info 'Container id:' + container.id
     Timeout.timeout(10) do
-      output = container.exec(['bash', '-c', 'sleep 10 && echo "test"'])
+      output = container.exec(['ls'],{:tty => true})
       #output=[[], [], 2]
       Rails.logger.info "output from container.exec"
       Rails.logger.info output

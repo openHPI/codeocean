@@ -71,11 +71,42 @@ class SubmissionsController < ApplicationController
   end
 
   def run
-    with_server_sent_events do |server_sent_event|
-      container_id = @docker_client.execute_run_command(@submission, params[:filename])
-      Rails.logger.info "Output:" + container_id
+    hijack do |tubesock|
+      #Needed to get Faye Websocket running. No idea why.
+      Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+      Thread.new do
+      #Headers value is needed because docker rejects connections without origin-header.
+      #TODO Use dynamic URL instead of localhost:7000
+      #TODO Try to use UNIX-Socket instead of TCP:7000
+      socket = @docker_client.execute_run_command(@submission, params[:filename])
 
-      server_sent_event.write({container: container_id.to_s}, event: 'info') if container_id
+      socket[:socket].on :message do |event|
+        puts "Docker sending: " + data
+        tubesock.send_data(event.data)
+      end
+
+      socket[:socket].on :close do |event|
+        tubesock.close
+      end
+
+      tubesock.onmessage do |data|
+        puts "Client sending: " + data
+        res = socket[:socket].send data
+        if res == false
+          puts "Something is wrong."
+        end
+      end
+
+      tubesock.onclose do |data|
+        puts "Client closed connection."
+      end
+    end
+    end
+    #with_server_sent_events do |server_sent_event|
+      #container_id = @docker_client.execute_run_command(@submission, params[:filename])
+      #Rails.logger.info "Output:" + container_id
+
+      #server_sent_event.write({container: container_id.to_s}, event: 'info') if container_id
 
       # server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
       # server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
@@ -89,7 +120,6 @@ class SubmissionsController < ApplicationController
       #     store_error(output[:stderr])
       #   end
       # end
-    end
   end
 
   def score
