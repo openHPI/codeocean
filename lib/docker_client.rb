@@ -2,6 +2,8 @@ require 'concurrent'
 require 'pathname'
 
 class DockerClient
+  include Tubesock::Hijack
+
   CONTAINER_WORKSPACE_PATH = '/workspace'
   DEFAULT_MEMORY_LIMIT = 256
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
@@ -11,6 +13,7 @@ class DockerClient
   RETRY_COUNT = 2
 
   attr_reader :container
+  attr_reader :socket
 
   def self.check_availability!
     Timeout.timeout(config[:connection_timeout]) { Docker.version }
@@ -41,7 +44,7 @@ class DockerClient
       'Memory' => execution_environment.memory_limit.megabytes,
       'NetworkDisabled' => !execution_environment.network_enabled?,
       'OpenStdin' => true,
-      'StdinOnce' => false,
+      'StdinOnce' => true,
       'AttachStdout' => true,
       'AttachStdin' => true,
       'AttachStderr' => true,
@@ -53,12 +56,6 @@ class DockerClient
     {
       'Binds' => mapped_directories(local_workspace_path),
       'PortBindings' => mapped_ports(execution_environment),
-      'OpenStdin' => true,
-      'StdinOnce' => false,
-      'AttachStdout' => true,
-      'AttachStdin' => true,
-      'AttachStderr' => true,
-      'Tty' => true
     }
   end
 
@@ -131,41 +128,38 @@ class DockerClient
 #    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
 #  end
 
+  def flush(socket)
+    socket.send '
+    '
+  end
+
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       before_execution_block.try(:call)
 
-      command = 'ls '
+      # todo read host + port from config
+      # todo factor out query params
+      @socket = Faye::WebSocket::Client.new('ws://localhost:2375/v1.19/containers/' + @container.id + '/attach/ws?logs=1&stderr=1&stdout=1&stream=1&stdin=1', [], :headers => { 'Origin' => 'http://localhost'} )
 
-      socket = Faye::WebSocket::Client.new('ws://localhost:7000/v1.19/containers/' + @container.id + '/attach/ws?logs=1&stderr=1&stdout=1&stream=1&stdin=1',
-                                           [],
-                                           :headers => { 'Origin' => 'http://localhost'} )
-
-      Thread.new do
-        @container.exec(['sleep', '30'])
+      @socket.on :error do |event|
+        puts "Something wrent really wrong: " + event.message
       end
 
-      socket.on :open do |event|
-        puts "Socket to Docker open."
-        socket.send(command + '\n')
-        #kill_after_timeout(@container)
+      @socket.on :close do |event|
+        puts "Closing socket"
       end
 
-      socket.on :message do |event|
-        puts "Received: " + event.data
+      @socket.on :open do |event|
+        puts "Created docker socket."
+        socket.send command
+        flush(socket)
+        puts "Initial command executed."
+        kill_after_timeout(@container)
       end
 
-      socket.on :close do |event|
-        puts "Socket to Docker closed."
-      end
-
-      socket.on :error do |event|
-        puts "Socket to Docker raised error."
-      end
-
-      {status: :container_running, socket: socket}
+      {status: :container_running, socket: @socket}
     else
       {status: :container_depleted}
     end
@@ -175,9 +169,12 @@ class DockerClient
   # wether a container is done or not as long as we're using the socket to commit the command.
   def kill_after_timeout(container)
     Thread.new do
-      sleep(5)
+      sleep(10)
 
       puts "Killing container naow."
+
+      # todo won't this always create a new container?
+
       # remove container from pool, then destroy it
       (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
 

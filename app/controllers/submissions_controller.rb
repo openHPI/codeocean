@@ -74,33 +74,52 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       #Needed to get Faye Websocket running. No idea why.
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
-      Thread.new do
-      #Headers value is needed because docker rejects connections without origin-header.
-      #TODO Use dynamic URL instead of localhost:7000
-      #TODO Try to use UNIX-Socket instead of TCP:7000
-      socket = @docker_client.execute_run_command(@submission, params[:filename])
 
-      socket[:socket].on :message do |event|
-        puts "Docker sending: " + data
-        tubesock.send_data(event.data)
-      end
+      result = @docker_client.execute_run_command(@submission, params[:filename])
+      socket = result[:socket]
 
-      socket[:socket].on :close do |event|
-        tubesock.close
+      socket.on :message do |event|
+          puts "Docker sending: " + event.data
+          tubesock.send_data event.data
       end
 
       tubesock.onmessage do |data|
-        puts "Client sending: " + data
-        res = socket[:socket].send data
-        if res == false
-          puts "Something is wrong."
-        end
+          puts "Client sending: " + data
+          res = socket.send data
+          if res == false
+              puts "Something is wrong."
+          end
       end
 
-      tubesock.onclose do |data|
-        puts "Client closed connection."
-      end
-    end
+      #
+      # this works if we return the initial command from execute_run_command
+      # container = @docker_client.execute_run_command(@submission, params[:filename])
+      # print(container)
+
+      # socket = Faye::WebSocket::Client.new('ws://localhost:2375/v1.19/containers/' + container[:id] + '/attach/ws?logs=1&stderr=1&stdout=1&stream=1&stdin=1',
+      #                                      [],
+      #                                      :headers => { 'Origin' => 'http://localhost'} )
+
+      # socket.on :error do |event|
+      #     puts "Something wrent really wrong: " + event.message
+      # end
+
+      # socket.on :open do |event|
+      #     puts "Created docker socket."
+      # end
+
+      # socket.on :message do |event|
+      #     puts "Server sending: " + event.data
+      #     tubesock.send_data event.data
+      # end
+
+      # tubesock.onmessage do |data|
+      #     puts "Client sending: " + data
+      #     res = socket.send data
+      #     if res == false
+      #         puts "Something is wrong."
+      #     end
+      # end
     end
     #with_server_sent_events do |server_sent_event|
       #container_id = @docker_client.execute_run_command(@submission, params[:filename])
