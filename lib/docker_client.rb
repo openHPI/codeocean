@@ -111,10 +111,15 @@ class DockerClient
     execute_command(command, nil, block)
   end
 
-  def create_socket(container)
+  def create_socket(container,stderr = false)
     # todo read host + port from config
     # todo factor out query params
-    socket = Faye::WebSocket::Client.new('ws://localhost:2375/v1.19/containers/' + @container.id + '/attach/ws?logs=1&stderr=1&stdout=1&stream=1&stdin=1', [], :headers => { 'Origin' => 'http://localhost'} )
+
+    #Use stdout only if stderr is not used
+    req = 'logs=1&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
+    print 'Using request: ' + req
+
+    socket = Faye::WebSocket::Client.new('ws://localhost:7000/v1.19/containers/' + @container.id + '/attach/ws?' + req, [], :headers => { 'Origin' => 'http://localhost'} )
     socket.on :error do |event|
       puts "Something wrent really wrong: " + event.message
     end
@@ -123,7 +128,7 @@ class DockerClient
     end
     socket.on :open do |event|
       puts "Created docker socket."
-      kill_after_timeout(container)
+      #kill_after_timeout(container)
     end
     socket
   end
@@ -135,8 +140,9 @@ class DockerClient
       before_execution_block.try(:call)
       # todo catch exception if socket could not be created
       @socket ||= create_socket(@container)
+      @socket_stderr ||= create_socket(@container,true)
       execute_socket_command(@socket, command)
-      {status: :container_running, socket: @socket}
+      {status: :container_running, socket: @socket, socket_stderr: @socket_stderr}
     else
       {status: :container_depleted}
     end
@@ -144,8 +150,7 @@ class DockerClient
 
   def execute_socket_command(socket, command)
     # todo maybe prepend timeout coreutil to limit execution time in docker?
-    socket.send command + '
-    ' # flush
+    socket.send command + "\n" # flush
   end
 
   # Kills a container after X seconds. Used by execute_command, as it's impossible to determine

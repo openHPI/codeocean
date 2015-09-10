@@ -77,16 +77,16 @@ class SubmissionsController < ApplicationController
 
       result = @docker_client.execute_run_command(@submission, params[:filename])
       socket = result[:socket]
+      socket_stderr = result[:socket_stderr]
+
+      #socket_stderr.on :message do |event|
+      #  puts "Docker sending via stderr: " + event.data
+      #  parse_message(event.data, 'stderr', tubesock)
+      #end
 
       socket.on :message do |event|
-          puts "Docker sending: " + event.data
-          begin
-            parsed = JSON.parse(event.data)
-            tubesock.send_data event.data
-          rescue JSON::ParserError => e
-            parsed = {'cmd':'write','stream':'stdout','data':event.data}
-            tubesock.send_data JSON.dump(parsed)
-          end
+        puts "Docker sending: " + event.data
+        parse_message(event.data, 'stdout', tubesock)
       end
 
       tubesock.onmessage do |data|
@@ -117,6 +117,24 @@ class SubmissionsController < ApplicationController
       #     store_error(output[:stderr])
       #   end
       # end
+  end
+
+  def parse_message(message,output_stream,socket,recursive = true)
+    begin
+      parsed = JSON.parse(message)
+      socket.send_data message
+    rescue JSON::ParserError => e
+      print "1\n"
+      if ((recursive == true) && (message.include? "\n"))
+        print "3\n"
+        for part in message.split("\n")
+          self.parse_message(part,output_stream,socket,false)
+        end
+      else
+        parsed = {'cmd': 'write','stream': output_stream,'data': message}
+        socket.send_data JSON.dump(parsed)
+      end
+    end
   end
 
   def score
