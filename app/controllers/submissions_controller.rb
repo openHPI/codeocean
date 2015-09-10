@@ -80,11 +80,19 @@ class SubmissionsController < ApplicationController
 
       socket.on :message do |event|
           puts "Docker sending: " + event.data
-          tubesock.send_data event.data
+          begin
+            parsed = JSON.parse(event.data)
+            tubesock.send_data event.data
+          rescue JSON::ParserError => e
+            parsed = {'cmd':'write','stream':'stdout','data':event.data}
+            tubesock.send_data JSON.dump(parsed)
+          end
       end
 
       tubesock.onmessage do |data|
           puts "Client sending: " + data
+
+
           res = socket.send data
           if res == false
               puts "Something is wrong."
