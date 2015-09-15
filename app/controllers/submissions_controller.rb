@@ -4,6 +4,7 @@ class SubmissionsController < ApplicationController
   include Lti
   include SubmissionParameters
   include SubmissionScoring
+  include Tubesock::Hijack
 
   before_action :set_submission, only: [:download_file, :render_file, :run, :score, :show, :statistics, :stop, :test]
   before_action :set_docker_client, only: [:run, :test]
@@ -70,20 +71,68 @@ class SubmissionsController < ApplicationController
   end
 
   def run
-    with_server_sent_events do |server_sent_event|
-      output = @docker_client.execute_run_command(@submission, params[:filename])
-      
-      server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
-      server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
-      
-      server_sent_event.write({status: output[:status]}, event: 'status')
-      
-      unless output[:stderr].nil?
-        if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
-          server_sent_event.write(hint, event: 'hint')
-        else
-          store_error(output[:stderr])
+    hijack do |tubesock|
+      #Needed to get Faye Websocket running. No idea why.
+      Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+
+      result = @docker_client.execute_run_command(@submission, params[:filename])
+      socket = result[:socket]
+      socket_stderr = result[:socket_stderr]
+
+      #socket_stderr.on :message do |event|
+      #  puts "Docker sending via stderr: " + event.data
+      #  parse_message(event.data, 'stderr', tubesock)
+      #end
+
+      socket.on :message do |event|
+        puts "Docker sending: " + event.data
+        parse_message(event.data, 'stdout', tubesock)
+      end
+
+      tubesock.onmessage do |data|
+          puts "Client sending: " + data
+
+
+          res = socket.send data
+          if res == false
+              puts "Something is wrong."
+          end
+      end
+    end
+    #with_server_sent_events do |server_sent_event|
+      #container_id = @docker_client.execute_run_command(@submission, params[:filename])
+      #Rails.logger.info "Output:" + container_id
+
+      #server_sent_event.write({container: container_id.to_s}, event: 'info') if container_id
+
+      # server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
+      # server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
+      # server_sent_event.write({container: output[:container]}, event: 'info') if output[:container]
+      # server_sent_event.write({status: output[:status]}, event: 'status')
+
+      # unless output[:stderr].nil?
+      #   if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
+      #     server_sent_event.write(hint, event: 'hint')
+      #   else
+      #     store_error(output[:stderr])
+      #   end
+      # end
+  end
+
+  def parse_message(message,output_stream,socket,recursive = true)
+    begin
+      parsed = JSON.parse(message)
+      socket.send_data message
+    rescue JSON::ParserError => e
+      print "1\n"
+      if ((recursive == true) && (message.include? "\n"))
+        print "3\n"
+        for part in message.split("\n")
+          self.parse_message(part,output_stream,socket,false)
         end
+      else
+        parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>message}
+        socket.send_data JSON.dump(parsed)
       end
     end
   end
