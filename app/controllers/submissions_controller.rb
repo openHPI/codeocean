@@ -131,7 +131,7 @@ class SubmissionsController < ApplicationController
           self.parse_message(part,output_stream,socket,false)
         end
       else
-        parsed = {'cmd': 'write','stream': output_stream,'data': message}
+        parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>message}
         socket.send_data JSON.dump(parsed)
       end
     end
