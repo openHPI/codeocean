@@ -71,6 +71,7 @@ class SubmissionsController < ApplicationController
   end
 
   def run
+    # TODO reimplement SSEs with websocket commands
     # with_server_sent_events do |server_sent_event|
     #   output = @docker_client.execute_run_command(@submission, params[:filename])
 
@@ -95,16 +96,35 @@ class SubmissionsController < ApplicationController
       socket = result[:socket]
 
       socket.on :message do |event|
-        puts "Docker sending: " + event.data
-        parse_message(event.data, 'stdout', tubesock)
+        Rails.logger.info("Docker sending: " + event.data)
+        handle_message(event.data, tubesock)
+      end
+
+      socket.on :close do |event|
+        kill_socket(tubesock)
       end
 
       tubesock.onmessage do |data|
-          puts "Client sending: " + data
-          res = socket.send data
-          if res == false
-              puts "Something is wrong."
-          end
+        Rails.logger.info("Client sending: " + data)
+        socket.send data
+      end
+    end
+  end
+
+  def kill_socket(tubesock)
+    # Hijacked connection needs to be notified correctly
+    tubesock.send_data JSON.dump({'cmd' => 'exit'})
+    tubesock.close
+  end
+
+  def handle_message(message, tubesock)
+    # Handle special commands first
+    if (/^exit/.match(message))
+      kill_socket(tubesock)
+    else
+      # Filter out information about user and working directory
+      if !(/root|workspace/.match(message))
+        parse_message(message, 'stdout', tubesock)
       end
     end
   end
@@ -114,9 +134,7 @@ class SubmissionsController < ApplicationController
       parsed = JSON.parse(message)
       socket.send_data message
     rescue JSON::ParserError => e
-      print "1\n"
       if ((recursive == true) && (message.include? "\n"))
-        print "3\n"
         for part in message.split("\n")
           self.parse_message(part,output_stream,socket,false)
         end

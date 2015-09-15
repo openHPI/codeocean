@@ -25,8 +25,10 @@ $(function() {
       numMessages = 0,
       turtlecanvas = $('#turtlecanvas'),
       prompt = $('#prompt'),
-      commands = ['input', 'write', 'turtle', 'turtlebatch'],
+      commands = ['input', 'write', 'turtle', 'turtlebatch', 'exit'],
       streams = ['stdin', 'stdout', 'stderr'];
+
+  var ENTER_KEY_CODE = 13;
 
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
@@ -190,6 +192,7 @@ $(function() {
 
   var evaluateCodeWithStreamedResponse = function(url, callback) {
     initWebsocketConnection(url);
+    console.log(callback);
 
     // TODO only init turtle when required
     initTurtle();
@@ -645,11 +648,11 @@ $(function() {
   };
 
   var initializeWorkspaceButtons = function() {
-    $('#assess').on('click', scoreCode);
+    $('#assess').on('click', scoreCode); // todo
     $('#dropdown-render, #render').on('click', renderCode);
     $('#dropdown-run, #run').on('click', runCode);
-    $('#dropdown-stop, #stop').on('click', stopCode);
-    $('#dropdown-test, #test').on('click', testCode);
+    $('#dropdown-stop, #stop').on('click', stopCode); // todo
+    $('#dropdown-test, #test').on('click', testCode); // todo
     $('#save').on('click', saveCode);
     $('#start-over').on('click', confirmReset);
   };
@@ -690,6 +693,7 @@ $(function() {
   };
 
   var isBrowserSupported = function() {
+    // todo event streams are no longer required with websockets
     return window.EventSource !== undefined;
   };
 
@@ -717,12 +721,16 @@ $(function() {
             chunkBuffer.push(output);
         }
     } else {
+      resetOutputTab();
+    }
+  };
+
+  var resetOutputTab = function() {
       clearOutput();
       $('#hint').fadeOut();
       $('#flowrHint').fadeOut();
       showTab(2);
-    }
-  };
+  }
 
   var printOutput = function(output, colorize, index) {
     var element = findOrCreateOutputElement(index);
@@ -1010,21 +1018,43 @@ $(function() {
   var stopCode = function(event) {
     event.preventDefault();
     if ($('#stop').is(':visible')) {
-      var jqxhr = ajax({
-        data: {
-          container_id: $('#stop').data('container').id
-        },
-        url: $('#stop').data('url')
-      });
-      jqxhr.always(function() {
-        hideSpinner();
-        running = false;
-        toggleButtonStates();
-      });
-      jqxhr.fail(ajaxError);
+      killWebsocket();
+      stopContainer();
     }
   };
 
+  // todo we are missing the url here
+  // we could also hide the container completely by killing it on the server and only exposing the websocket
+  var stopContainer = function() {
+    var jqxhr = ajax({
+      data: {
+        container_id: $('#stop').data('container').id
+      },
+      url: $('#stop').data('url')
+    });
+    jqxhr.always(function() {
+      hideSpinner();
+      running = false;
+      toggleButtonStates();
+    });
+    jqxhr.fail(ajaxError);
+  }
+
+  var killWebsocket = function() {
+    if (websocket.readyState != WebSocket.OPEN) {
+      return;
+    }
+    // todo flash notification
+    websocket.send(JSON.stringify({cmd: 'exit'}));
+    websocket.flush();
+    websocket.close();
+    // todo remove this once xhr works or container is killed on the server
+    hideSpinner();
+    running = false;
+    toggleButtonStates();
+  }
+
+  // todo set this from websocket command, required to e.g. stop container
   var storeContainerInformation = function(event) {
     var container_information = JSON.parse(event.data);
     $('#stop').data('container', container_information);
@@ -1089,15 +1119,16 @@ $(function() {
   };
 
   var initTurtle = function() {
-      turtlescreen = new Turtle(websocket, $('#turtlecanvas'));
+      // todo guard clause if turtle is not required for the current exercise
+      turtlescreen = new Turtle(websocket, turtlecanvas);
+      if ($('#run').isPresent()) {
+        $('#run').bind('click', hideCanvas);
+      }
   };
 
-  var initCallbacks = function() {
+  var initPrompt = function() {
       if ($('#run').isPresent()) {
-          $('#run').bind('click', function(event) {
-              hideCanvas();
-              hidePrompt();
-          });
+          $('#run').bind('click', hidePrompt);
       }
       if ($('#prompt').isPresent()) {
           $('#prompt').on('keypress', handlePromptKeyPress);
@@ -1106,23 +1137,22 @@ $(function() {
   }
 
   var onWebSocketOpen = function(evt) {
-      //alert("Session started");
+      resetOutputTab();
   };
 
   var onWebSocketClose = function(evt) {
-      //alert("Session terminated");
+      // no reason to alert since this will happen either way
   };
 
   var onWebSocketMessage = function(evt) {
-      numMessages++;
       parseCanvasMessage(evt.data, true);
   };
 
   var onWebSocketError = function(evt) {
-      //alert("Something went wrong.")
+      // todo flash error message
   };
 
-  var executeCommand = function(msg) {
+  var executeWebsocketCommand = function(msg) {
       if ($.inArray(msg.cmd, commands) == -1) {
           console.log("Unknown command: " + msg.cmd);
           // skipping unregistered commands is required
@@ -1144,26 +1174,16 @@ $(function() {
               showCanvas();
               handleTurtlebatchCommand(msg);
               break;
+          case 'exit':
+              killWebsocket();
+              break;
       }
   };
 
-  // todo reuse method from editor.js
   var printWebsocketOutput = function(msg) {
-      var element = findOrCreateOutputElement(0);
-      console.log(element);
-      switch (msg.stream) {
-          case 'internal':
-              element.addClass('text-danger');
-              break;
-          case 'stderr':
-              element.addClass('text-warning');
-              break;
-          case 'stdout':
-          case 'stdin': // for eventual prompts
-          default:
-              element.addClass('text-muted');
-      }
-      element.append(msg.data)
+      var stream = {};
+      stream[msg.stream] = msg.data;
+      printOutput(stream, true, 0);
   };
 
   var handleTurtleCommand = function(msg) {
@@ -1190,6 +1210,7 @@ $(function() {
   }
 
   var submitPromptInput = function() {
+      // todo make sure websocket is actually open
       var input = $('#prompt-input');
       var message = input.val();
       websocket.send(JSON.stringify({cmd: 'result', 'data': message}));
@@ -1219,7 +1240,7 @@ $(function() {
           }
           return;
       }
-      executeCommand(msg);
+      executeWebsocketCommand(msg);
   };
 
   var showPrompt = function() {
@@ -1231,7 +1252,6 @@ $(function() {
 
   var hidePrompt = function() {
       if (prompt.isPresent() && !prompt.hasClass('hidden')) {
-          console.log("hiding prompt2");
           prompt.addClass('hidden');
       }
   }
@@ -1314,6 +1334,7 @@ $(function() {
           initializeEventHandlers();
           initializeFileTree();
           initializeTooltips();
+          initPrompt();
           renderScore();
           showFirstFile();
           showRequestedTab();
