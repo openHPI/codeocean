@@ -78,8 +78,6 @@ class SubmissionsController < ApplicationController
     #   server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
     #   server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
 
-    #   server_sent_event.write({status: output[:status]}, event: 'status')
-
     #   unless output[:stderr].nil?
     #     if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
     #       server_sent_event.write(hint, event: 'hint')
@@ -93,11 +91,7 @@ class SubmissionsController < ApplicationController
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
 
       result = @docker_client.execute_run_command(@submission, params[:filename])
-
-      if result[:status] == :container_depleted
-        tubesock.send_data JSON.dump({'cmd' => 'container_depleted'})
-        kill_socket(tubesock)
-      end
+      tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => result[:status]})
 
       if result[:status] == :container_running
         socket = result[:socket]
@@ -127,6 +121,8 @@ class SubmissionsController < ApplicationController
             socket.send data
           end
         end
+      else
+        kill_socket(tubesock)
       end
     end
   end

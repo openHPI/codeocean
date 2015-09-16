@@ -164,7 +164,7 @@ class DockerClient
   def kill_after_timeout(container)
     """
     We need to start a second thread to kill the websocket connection,
-    as it is impossible to determine when no more input is requested.
+    as it is impossible to determine whether further input is requested.
     """
     Thread.new do
       timeout = @execution_environment.permitted_execution_time.to_i # seconds
@@ -175,9 +175,11 @@ class DockerClient
   end
 
   def kill_container(container)
-
-    # todo won't this always create a new container?
-    # It does, because it's impossible to determine wether a programm is still running or not while using ws to run.
+    """
+    Please note that we cannot properly recycle containers when using
+    websockets because it is impossible to determine whether a program
+    is still running.
+    """
     # remove container from pool, then destroy it
     (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
 

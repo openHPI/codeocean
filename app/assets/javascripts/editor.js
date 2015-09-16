@@ -25,7 +25,7 @@ $(function() {
       numMessages = 0,
       turtlecanvas = $('#turtlecanvas'),
       prompt = $('#prompt'),
-      commands = ['input', 'write', 'turtle', 'turtlebatch', 'exit'],
+      commands = ['input', 'write', 'turtle', 'turtlebatch', 'exit', 'status'],
       streams = ['stdin', 'stdout', 'stderr'];
 
   var ENTER_KEY_CODE = 13;
@@ -192,20 +192,14 @@ $(function() {
 
   var evaluateCodeWithStreamedResponse = function(url, callback) {
     initWebsocketConnection(url);
-    console.log(callback);
 
     // TODO only init turtle when required
     initTurtle();
 
     // TODO reimplement via websocket messsages
     /*var event_source = new EventSource(url);
-
-    event_source.addEventListener('close', closeEventSource);
-    event_source.addEventListener('error', closeEventSource);
     event_source.addEventListener('hint', renderHint);
     event_source.addEventListener('info', storeContainerInformation);
-    event_source.addEventListener('output', callback);
-    event_source.addEventListener('start', callback);
 
     if ($('#flowrHint').isPresent()) {
       event_source.addEventListener('output', handleStderrOutputForFlowr);
@@ -214,11 +208,7 @@ $(function() {
 
     if (qa_api) {
       event_source.addEventListener('close', handleStreamedResponseForCodePilot);
-    }
-
-    event_source.addEventListener('status', function(event) {
-      showStatus(JSON.parse(event.data));
-    });*/
+    }*/
   };
 
   var handleStreamedResponseForCodePilot = function(event) {
@@ -976,7 +966,7 @@ $(function() {
     if (output.status === 'timeout') {
       showTimeoutMessage();
     } else if (output.status === 'container_depleted') {
-        showContainerDepletedMessage();
+      showContainerDepletedMessage();
     } else if (output.stderr) {
       $.flash.danger({
         icon: ['fa', 'fa-bug'],
@@ -1010,6 +1000,12 @@ $(function() {
     });
   };
 
+  var showWebsocketError = function() {
+    $.flash.danger({
+      text: $('#flash').data('message-failure')
+    });
+  }
+
   var showWorkspaceTab = function(event) {
     event.preventDefault();
     showTab(1);
@@ -1018,40 +1014,29 @@ $(function() {
   var stopCode = function(event) {
     event.preventDefault();
     if ($('#stop').is(':visible')) {
-      killWebsocket();
-      stopContainer();
+      killWebsocketAndContainer();
     }
   };
 
-  // todo we are missing the url here
-  // we could also hide the container completely by killing it on the server and only exposing the websocket
-  var stopContainer = function() {
-    var jqxhr = ajax({
-      data: {
-        container_id: $('#stop').data('container').id
-      },
-      url: $('#stop').data('url')
-    });
-    jqxhr.always(function() {
-      hideSpinner();
-      running = false;
-      toggleButtonStates();
-    });
-    jqxhr.fail(ajaxError);
-  }
-
-  var killWebsocket = function() {
+  var killWebsocketAndContainer = function() {
     if (websocket.readyState != WebSocket.OPEN) {
       return;
     }
-    // todo flash notification
     websocket.send(JSON.stringify({cmd: 'exit'}));
     websocket.flush();
     websocket.close();
-    // todo remove this once xhr works or container is killed on the server
     hideSpinner();
     running = false;
     toggleButtonStates();
+    hidePrompt();
+    flashKillMessage();
+  }
+
+  var flashKillMessage = function() {
+    $.flash.info({
+      icon: ['fa', 'fa-clock-o'],
+      text: "Your program was stopped." // todo get data attribute
+    });
   }
 
   // todo set this from websocket command, required to e.g. stop container
@@ -1111,10 +1096,10 @@ $(function() {
 
   var initWebsocketConnection = function(url) {
       websocket = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + url);
-      websocket.onopen = function(evt) { onWebSocketOpen(evt) };
-      websocket.onclose = function(evt) { onWebSocketClose(evt) };
-      websocket.onmessage = function(evt) { onWebSocketMessage(evt) };
-      websocket.onerror = function(evt) { onWebSocketError(evt) };
+      websocket.onopen = function(evt) { resetOutputTab(); }; // todo show some kind of indicator for established connection
+      websocket.onclose = function(evt) { /* expected at some point */ };
+      websocket.onmessage = function(evt) { parseCanvasMessage(evt.data, true); };
+      websocket.onerror = function(evt) { showWebsocketError(); };
       websocket.flush = function() { this.send('\n'); }
   };
 
@@ -1136,51 +1121,42 @@ $(function() {
       }
   }
 
-  var onWebSocketOpen = function(evt) {
-      resetOutputTab();
-  };
-
-  var onWebSocketClose = function(evt) {
-      // no reason to alert since this will happen either way
-  };
-
-  var onWebSocketMessage = function(evt) {
-      parseCanvasMessage(evt.data, true);
-  };
-
-  var onWebSocketError = function(evt) {
-      // todo flash error message
-  };
-
   var executeWebsocketCommand = function(msg) {
       if ($.inArray(msg.cmd, commands) == -1) {
-          console.log("Unknown command: " + msg.cmd);
-          // skipping unregistered commands is required
-          // as we may receive mirrored response due to internal behaviour
-          return;
+        console.log("Unknown command: " + msg.cmd);
+        // skipping unregistered commands is required
+        // as we may receive mirrored response due to internal behaviour
+        return;
       }
       switch(msg.cmd) {
-          case 'input':
-              showPrompt();
-              break;
-          case 'write':
-              printWebsocketOutput(msg);
-              break;
-          case 'turtle':
-              showCanvas();
-              handleTurtleCommand(msg);
-              break;
-          case 'turtlebatch':
-              showCanvas();
-              handleTurtlebatchCommand(msg);
-              break;
-          case 'exit':
-              killWebsocket();
-              break;
+        case 'input':
+            showPrompt();
+            break;
+        case 'write':
+            printWebsocketOutput(msg);
+            break;
+        case 'turtle':
+            showCanvas();
+            handleTurtleCommand(msg);
+            break;
+        case 'turtlebatch':
+            showCanvas();
+            handleTurtlebatchCommand(msg);
+            break;
+        case 'exit':
+            killWebsocketAndContainer();
+            break;
+        case 'status':
+            showStatus(msg)
+            break;
       }
   };
 
   var printWebsocketOutput = function(msg) {
+      if (!msg.data) {
+        return;
+      }
+      msg.data = msg.data.replace(/(\r\n|\n|\r)/gm, "</br>");
       var stream = {};
       stream[msg.stream] = msg.data;
       printOutput(stream, true, 0);
@@ -1210,7 +1186,6 @@ $(function() {
   }
 
   var submitPromptInput = function() {
-      // todo make sure websocket is actually open
       var input = $('#prompt-input');
       var message = input.val();
       websocket.send(JSON.stringify({cmd: 'result', 'data': message}));
