@@ -93,20 +93,40 @@ class SubmissionsController < ApplicationController
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
 
       result = @docker_client.execute_run_command(@submission, params[:filename])
-      socket = result[:socket]
 
-      socket.on :message do |event|
-        Rails.logger.info("Docker sending: " + event.data)
-        handle_message(event.data, tubesock)
-      end
-
-      socket.on :close do |event|
+      if result[:status] == :container_depleted
+        tubesock.send_data JSON.dump({'cmd' => 'container_depleted'})
         kill_socket(tubesock)
       end
 
-      tubesock.onmessage do |data|
-        Rails.logger.info("Client sending: " + data)
-        socket.send data
+      if result[:status] == :container_running
+        socket = result[:socket]
+
+        socket.on :message do |event|
+          Rails.logger.info("Docker sending: " + event.data)
+          handle_message(event.data, tubesock)
+        end
+
+        socket.on :close do |event|
+          kill_socket(tubesock)
+        end
+
+        tubesock.onmessage do |data|
+          Rails.logger.info("Client sending: " + data)
+          # Check wether the client send a JSON command and kill container
+          # if the command is 'exit', send it to docker otherwise.
+          begin
+            parsed = JSON.parse(data)
+            if parsed['cmd'] == 'exit'
+              Rails.logger.info("Client killed container.")
+              @docker_client.kill_container(result[:container])
+            else
+              socket.send data
+            end
+          rescue JSON::ParserError
+            socket.send data
+          end
+        end
       end
     end
   end
@@ -134,6 +154,7 @@ class SubmissionsController < ApplicationController
       parsed = JSON.parse(message)
       socket.send_data message
     rescue JSON::ParserError => e
+      # Check wether the message contains multiple lines, if true try to parse each line
       if ((recursive == true) && (message.include? "\n"))
         for part in message.split("\n")
           self.parse_message(part,output_stream,socket,false)

@@ -155,7 +155,7 @@ class DockerClient
       @socket ||= create_socket(@container)
       # Newline required to flush
       @socket.send command + "\n"
-      {status: :container_running, socket: @socket}
+      {status: :container_running, socket: @socket, container: @container}
     else
       {status: :container_depleted}
     end
@@ -170,22 +170,25 @@ class DockerClient
       timeout = @execution_environment.permitted_execution_time.to_i # seconds
       sleep(timeout)
       Rails.logger.info("Killing container after timeout of " + timeout.to_s + " seconds.")
-      # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
-      # (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
+      kill_container(container)
+    end
+  end
 
-      # todo won't this always create a new container?
-      # remove container from pool, then destroy it
-      (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
+  def kill_container(container)
 
-      # destroy container
-      self.class.destroy_container(container)
+    # todo won't this always create a new container?
+    # It does, because it's impossible to determine wether a programm is still running or not while using ws to run.
+    # remove container from pool, then destroy it
+    (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
 
-      # if we recylce containers, we start a fresh one
-      if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
-        # create new container and add it to @all_containers and @containers.
-        container = self.class.create_container(@execution_environment)
-        DockerContainerPool.add_to_all_containers(container, @execution_environment)
-      end
+    #destroy container
+    self.class.destroy_container(container)
+
+    # if we recylce containers, we start a fresh one
+    if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
+      # create new container and add it to @all_containers and @containers.
+      container = self.class.create_container(@execution_environment)
+      DockerContainerPool.add_to_all_containers(container, @execution_environment)
     end
   end
 
