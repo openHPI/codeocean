@@ -13,3 +13,4 @@
 /tmp
 /vagrant/
 *.sublime-*
+/.idea
