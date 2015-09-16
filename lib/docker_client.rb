@@ -198,7 +198,7 @@ class DockerClient
     execute_websocket_command(command, create_workspace_files, block)
   end
 
-  def execute_test_command(subbmission, filename, &block)
+  def execute_test_command(submission, filename, &block)
     """
     Stick to existing Docker API with exec command.
     """
