@@ -4,6 +4,7 @@ import io, select, sys, os, threading, code
 import pickle, struct, builtins, json
 #, ressource
 from queue import Queue
+from argparse import ArgumentParser
 
 # hard limit to 64M
 #try:
@@ -163,12 +164,15 @@ builtins.input = shell.input
 #iothread.start()
 
 if __name__ == '__main__':
-    #script = "print (\"Hello world.\")\n\rmsg = input()\n\rprint(\"Out:\")\n\rprint(msg)"
-    #with open("programm.py", "w", encoding='utf-8') as f:
-    #    f.write(script)
-    with open(os.path.join("/", "workspace", "exercise.py"), "r", encoding='utf-8') as f:
+    parser = ArgumentParser(description='A python interpreter that generates json commands based on the standard I/O streams.')
+    parser.add_argument('-f', '--filename', type=str, required=True, default='exercise.py', help='Python file to be interpreted.')
+    args = parser.parse_args()
+
+    filepath = os.path.join("/", "workspace", args.filename)
+    with open(filepath, "r", encoding='utf-8') as f:
         script = f.read()
-    c = compile(script, "exercise.py", 'exec')
+    c = compile(script, args.filename, 'exec')
     exec(c, {})
+
     # work-around for docker not terminating properly
     shell.sendpickle({'cmd':'exit'})
