@@ -28,6 +28,7 @@ de:
         execution_environment: Ausführungsumgebung
         execution_environment_id: Ausführungsumgebung
         files: Dateien
+        hide_file_tree: Dateibaum verstecken
         instructions: Anweisungen
         maximum_score: Erreichbare Punktzahl
         public: Öffentlich

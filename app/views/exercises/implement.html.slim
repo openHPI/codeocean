@@ -13,19 +13,15 @@
     #development-environment
       ul.nav.nav-justified.nav-tabs role='tablist'
         li.active
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#instructions' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 1')
-            i.fa.fa-question
-            = t('activerecord.attributes.exercise.instructions')
-        li
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#workspace' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 2')
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#workspace' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 1')
             i.fa.fa-code
             = t('.workspace')
         li
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#outputInformation' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 3')
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#outputInformation' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 2')
             i.fa.fa-terminal
             = t('.output')
         li
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#progress' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 4')
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#progress' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 3')
             i.fa.fa-line-chart
             = t('.progress')
 
@@ -46,6 +42,7 @@
               .panel-heading = t('.hint')
               .panel-body
           .row
+            / #output-col1.col-sm-12
             #output-col1
               // todo set to full width if turtle isnt used
               #prompt.input-group.hidden
