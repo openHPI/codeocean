@@ -1160,7 +1160,7 @@ $(function() {
       if (!msg.data) {
         return;
       }
-      msg.data = msg.data.replace(/(\r\n|\n|\r)/gm, "</br>");
+      //msg.data = msg.data.replace(/(\r\n|\n|\r)/gm, "<br />");
       var stream = {};
       stream[msg.stream] = msg.data;
       printOutput(stream, true, 0);
