@@ -11,6 +11,7 @@ $(function() {
   var FILENAME_URL_PLACEHOLDER = '{filename}';
   var SUCCESSFULL_PERCENTAGE = 90;
   var THEME = 'ace/theme/textmate';
+  var REMEMBER_TAB = false;
   var AUTOSAVE_INTERVAL = 15 * 1000;
 
   var editors = [];
@@ -946,11 +947,16 @@ $(function() {
   };
 
   var showRequestedTab = function() {
-    var regexp = /tab=(\d+)/;
-    if (regexp.test(window.location.search)) {
-      var index = regexp.exec(window.location.search)[1] - 1;
+    if(REMEMBER_TAB){
+      var regexp = /tab=(\d+)/;
+      if (regexp.test(window.location.search)) {
+        var index = regexp.exec(window.location.search)[1] - 1;
+      } else {
+        var index = localStorage.tab;
+      }
     } else {
-      var index = localStorage.tab;
+      // else start with first tab.
+      var index = 0;
     }
     showTab(index);
   };
