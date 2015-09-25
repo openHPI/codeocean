@@ -59,7 +59,7 @@ $(function() {
 
     if (event.type === 'error' || JSON.parse(event.data).code !== 200) {
       ajaxError();
-      showTab(1);
+      showTab(0);
     }
   };
 
@@ -262,13 +262,11 @@ $(function() {
 
   var handleKeyPress = function(event) {
     if (event.which === ALT_1_KEY_CODE) {
-      showTab(0);
-    } else if (event.which === ALT_2_KEY_CODE) {
       showWorkspaceTab(event);
+    } else if (event.which === ALT_2_KEY_CODE) {
+      showTab(1);
     } else if (event.which === ALT_3_KEY_CODE) {
       showTab(2);
-    } else if (event.which === ALT_4_KEY_CODE) {
-      showTab(3);
     } else if (event.which === ALT_R_KEY_CODE) {
       $('#run').trigger('click');
     } else if (event.which === ALT_S_KEY_CODE) {
@@ -311,7 +309,7 @@ $(function() {
     }, 0).toFixed(2);
     $('#score').data('score', score);
     renderScore();
-    showTab(3);
+    showTab(2);
   };
 
   var stderrOutput = '';
@@ -364,7 +362,7 @@ $(function() {
       qa_api.executeCommand('syncOutput', [response]);
     }
     showStatus(response[0]);
-    showTab(2);
+    showTab(1);
   };
 
   var hideSpinner = function() {
@@ -719,7 +717,7 @@ $(function() {
       clearOutput();
       $('#hint').fadeOut();
       $('#flowrHint').fadeOut();
-      showTab(2);
+      showTab(1);
   }
 
   var printOutput = function(output, colorize, index) {
@@ -820,7 +818,7 @@ $(function() {
               stderr: message
             }, true, 0);
             sendError(message, response.id);
-            showTab(2);
+            showTab(1);
           };
         }
       });
@@ -943,7 +941,7 @@ $(function() {
 
   var showOutput = function(event) {
     event.preventDefault();
-    showTab(2);
+    showTab(1);
     $('#output').scrollTo($(this).attr('href'));
   };
 
@@ -1008,7 +1006,7 @@ $(function() {
 
   var showWorkspaceTab = function(event) {
     event.preventDefault();
-    showTab(1);
+    showTab(0);
   };
 
   var stopCode = function(event) {
