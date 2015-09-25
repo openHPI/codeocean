@@ -28,14 +28,7 @@
       hr
 
       .tab-content
-        #instructions.tab-pane.active
-          p = render_markdown(@exercise.instructions)
-          br
-          p.text-center
-            a#start.btn.btn-lg.btn-success
-              i.fa.fa-code
-              = t('.start')
-        #workspace.tab-pane = render('editor', exercise: @exercise, files: @files, submission: @submission)
+        #workspace.tab-pane.active = render('editor', exercise: @exercise, files: @files, submission: @submission)
         #outputInformation.tab-pane data-message-no-output=t('.no_output')
           #hint
             .panel.panel-warning
@@ -59,7 +52,7 @@
             #output-col2.col-lg-5.col-md-5
               #turtlediv
                 // todo what should the canvas default size be?
-                canvas#turtlecanvas.hidden style='border-style:solid;border-width:thin'
+                canvas#turtlecanvas.hidden width=400 height=400 style='border-style:solid;border-width:thin'
         #progress.tab-pane
           #results
             h2 = t('.results')
