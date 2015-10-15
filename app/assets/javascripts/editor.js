@@ -1161,6 +1161,7 @@ $(function() {
         return;
       }
       //msg.data = msg.data.replace(/(\r\n|\n|\r)/gm, "<br />");
+      msg.data = msg.data.replace(/(\r)/gm, "\n");
       var stream = {};
       stream[msg.stream] = msg.data;
       printOutput(stream, true, 0);
