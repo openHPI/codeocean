@@ -22,6 +22,7 @@ production:
       interval: 30
       timeout: 60
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
+  ws_host: ws://localhost:4243
 
 test:
   <<: *default
