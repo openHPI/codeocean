@@ -176,6 +176,7 @@ en:
       destroy_file: Delete File
       download: Download
       dummy: No Action
+      input: Your input
       lastsaved: 'Last saved: '
       network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank">%{address}</a>.'
       render: Render
@@ -185,6 +186,7 @@ en:
       requestComments: Request comments
       save: Save
       score: Score
+      send: Send
       start_over: Start over
       stop: Stop
       submit: Submit Code For Assessment

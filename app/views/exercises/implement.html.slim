@@ -39,10 +39,10 @@
             #output-col1
               // todo set to full width if turtle isnt used
               #prompt.input-group.hidden
-                span.input-group-addon = 'Your input'
+                span.input-group-addon = t('exercises.editor.input')
                 input#prompt-input.form-control type='text'
                 span.input-group-btn
-                  button#prompt-submit.btn.btn-primary type="button" = 'Send'
+                  button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
               #output
                 pre = t('.no_output_yet')
               - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
