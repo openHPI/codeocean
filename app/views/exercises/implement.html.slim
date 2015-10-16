@@ -13,44 +13,46 @@
     #development-environment
       ul.nav.nav-justified.nav-tabs role='tablist'
         li.active
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#instructions' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 1')
-            i.fa.fa-question
-            = t('activerecord.attributes.exercise.instructions')
-        li
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#workspace' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 2')
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#workspace' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 1')
             i.fa.fa-code
             = t('.workspace')
         li
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#outputInformation' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 3')
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#outputInformation' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 2')
             i.fa.fa-terminal
             = t('.output')
         li
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#progress' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 4')
+          a data-placement='top' data-toggle='tab' data-tooltip=true href='#progress' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 3')
             i.fa.fa-line-chart
             = t('.progress')
 
       hr
 
       .tab-content
-        #instructions.tab-pane.active
-          p = render_markdown(@exercise.instructions)
-          br
-          p.text-center
-            a#start.btn.btn-lg.btn-success
-              i.fa.fa-code
-              = t('.start')
-        #workspace.tab-pane = render('editor', exercise: @exercise, files: @files, submission: @submission)
+        #workspace.tab-pane.active = render('editor', exercise: @exercise, files: @files, submission: @submission)
         #outputInformation.tab-pane data-message-no-output=t('.no_output')
           #hint
             .panel.panel-warning
               .panel-heading = t('.hint')
               .panel-body
-          #output
-            pre = t('.no_output_yet')
-          - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
-            #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
-              .panel-heading = 'Gain more insights here'
-              .panel-body
+          .row
+            / #output-col1.col-sm-12
+            #output-col1
+              // todo set to full width if turtle isnt used
+              #prompt.input-group.hidden
+                span.input-group-addon = 'Your input'
+                input#prompt-input.form-control type='text'
+                span.input-group-btn
+                  button#prompt-submit.btn.btn-primary type="button" = 'Send'
+              #output
+                pre = t('.no_output_yet')
+              - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
+                #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+                  .panel-heading = 'Gain more insights here'
+                  .panel-body
+            #output-col2.col-lg-5.col-md-5
+              #turtlediv
+                // todo what should the canvas default size be?
+                canvas#turtlecanvas.hidden width=400 height=400 style='border-style:solid;border-width:thin'
         #progress.tab-pane
           #results
             h2 = t('.results')

@@ -11,6 +11,7 @@ $(function() {
   var FILENAME_URL_PLACEHOLDER = '{filename}';
   var SUCCESSFULL_PERCENTAGE = 90;
   var THEME = 'ace/theme/textmate';
+  var REMEMBER_TAB = false;
   var AUTOSAVE_INTERVAL = 15 * 1000;
 
   var editors = [];
@@ -19,6 +20,16 @@ $(function() {
   var running = false;
   var qa_api = undefined;
   var output_mode_is_streaming = true;
+
+  var websocket,
+      turtlescreen,
+      numMessages = 0,
+      turtlecanvas = $('#turtlecanvas'),
+      prompt = $('#prompt'),
+      commands = ['input', 'write', 'turtle', 'turtlebatch', 'exit', 'status'],
+      streams = ['stdin', 'stdout', 'stderr'];
+
+  var ENTER_KEY_CODE = 13;
 
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
@@ -49,7 +60,7 @@ $(function() {
 
     if (event.type === 'error' || JSON.parse(event.data).code !== 200) {
       ajaxError();
-      showTab(1);
+      showTab(0);
     }
   };
 
@@ -181,14 +192,15 @@ $(function() {
   };
 
   var evaluateCodeWithStreamedResponse = function(url, callback) {
-    var event_source = new EventSource(url);
+    initWebsocketConnection(url);
 
-    event_source.addEventListener('close', closeEventSource);
-    event_source.addEventListener('error', closeEventSource);
+    // TODO only init turtle when required
+    initTurtle();
+
+    // TODO reimplement via websocket messsages
+    /*var event_source = new EventSource(url);
     event_source.addEventListener('hint', renderHint);
     event_source.addEventListener('info', storeContainerInformation);
-    event_source.addEventListener('output', callback);
-    event_source.addEventListener('start', callback);
 
     if ($('#flowrHint').isPresent()) {
       event_source.addEventListener('output', handleStderrOutputForFlowr);
@@ -197,11 +209,7 @@ $(function() {
 
     if (qa_api) {
       event_source.addEventListener('close', handleStreamedResponseForCodePilot);
-    }
-
-    event_source.addEventListener('status', function(event) {
-      showStatus(JSON.parse(event.data));
-    });
+    }*/
   };
 
   var handleStreamedResponseForCodePilot = function(event) {
@@ -255,13 +263,11 @@ $(function() {
 
   var handleKeyPress = function(event) {
     if (event.which === ALT_1_KEY_CODE) {
-      showTab(0);
-    } else if (event.which === ALT_2_KEY_CODE) {
       showWorkspaceTab(event);
+    } else if (event.which === ALT_2_KEY_CODE) {
+      showTab(1);
     } else if (event.which === ALT_3_KEY_CODE) {
       showTab(2);
-    } else if (event.which === ALT_4_KEY_CODE) {
-      showTab(3);
     } else if (event.which === ALT_R_KEY_CODE) {
       $('#run').trigger('click');
     } else if (event.which === ALT_S_KEY_CODE) {
@@ -304,7 +310,7 @@ $(function() {
     }, 0).toFixed(2);
     $('#score').data('score', score);
     renderScore();
-    showTab(3);
+    showTab(2);
   };
 
   var stderrOutput = '';
@@ -357,7 +363,7 @@ $(function() {
       qa_api.executeCommand('syncOutput', [response]);
     }
     showStatus(response[0]);
-    showTab(2);
+    showTab(1);
   };
 
   var hideSpinner = function() {
@@ -428,7 +434,7 @@ $(function() {
         handleSidebarClick(e);
       });
       */
-      
+
       //session
       session.on('annotationRemoval', handleAnnotationRemoval);
       session.on('annotationChange', handleAnnotationChange);
@@ -631,11 +637,11 @@ $(function() {
   };
 
   var initializeWorkspaceButtons = function() {
-    $('#assess').on('click', scoreCode);
+    $('#assess').on('click', scoreCode); // todo
     $('#dropdown-render, #render').on('click', renderCode);
     $('#dropdown-run, #run').on('click', runCode);
-    $('#dropdown-stop, #stop').on('click', stopCode);
-    $('#dropdown-test, #test').on('click', testCode);
+    $('#dropdown-stop, #stop').on('click', stopCode); // todo
+    $('#dropdown-test, #test').on('click', testCode); // todo
     $('#save').on('click', saveCode);
     $('#start-over').on('click', confirmReset);
   };
@@ -676,6 +682,7 @@ $(function() {
   };
 
   var isBrowserSupported = function() {
+    // todo event streams are no longer required with websockets
     return window.EventSource !== undefined;
   };
 
@@ -703,12 +710,16 @@ $(function() {
             chunkBuffer.push(output);
         }
     } else {
+      resetOutputTab();
+    }
+  };
+
+  var resetOutputTab = function() {
       clearOutput();
       $('#hint').fadeOut();
       $('#flowrHint').fadeOut();
-      showTab(2);
-    }
-  };
+      showTab(1);
+  }
 
   var printOutput = function(output, colorize, index) {
     var element = findOrCreateOutputElement(index);
@@ -808,7 +819,7 @@ $(function() {
               stderr: message
             }, true, 0);
             sendError(message, response.id);
-            showTab(2);
+            showTab(1);
           };
         }
       });
@@ -931,16 +942,21 @@ $(function() {
 
   var showOutput = function(event) {
     event.preventDefault();
-    showTab(2);
+    showTab(1);
     $('#output').scrollTo($(this).attr('href'));
   };
 
   var showRequestedTab = function() {
-    var regexp = /tab=(\d+)/;
-    if (regexp.test(window.location.search)) {
-      var index = regexp.exec(window.location.search)[1] - 1;
+    if(REMEMBER_TAB){
+      var regexp = /tab=(\d+)/;
+      if (regexp.test(window.location.search)) {
+        var index = regexp.exec(window.location.search)[1] - 1;
+      } else {
+        var index = localStorage.tab;
+      }
     } else {
-      var index = localStorage.tab;
+      // else start with first tab.
+      var index = 0;
     }
     showTab(index);
   };
@@ -954,7 +970,7 @@ $(function() {
     if (output.status === 'timeout') {
       showTimeoutMessage();
     } else if (output.status === 'container_depleted') {
-        showContainerDepletedMessage();
+      showContainerDepletedMessage();
     } else if (output.stderr) {
       $.flash.danger({
         icon: ['fa', 'fa-bug'],
@@ -988,29 +1004,46 @@ $(function() {
     });
   };
 
+  var showWebsocketError = function() {
+    $.flash.danger({
+      text: $('#flash').data('message-failure')
+    });
+  }
+
   var showWorkspaceTab = function(event) {
     event.preventDefault();
-    showTab(1);
+    showTab(0);
   };
 
   var stopCode = function(event) {
     event.preventDefault();
     if ($('#stop').is(':visible')) {
-      var jqxhr = ajax({
-        data: {
-          container_id: $('#stop').data('container').id
-        },
-        url: $('#stop').data('url')
-      });
-      jqxhr.always(function() {
-        hideSpinner();
-        running = false;
-        toggleButtonStates();
-      });
-      jqxhr.fail(ajaxError);
+      killWebsocketAndContainer();
     }
   };
 
+  var killWebsocketAndContainer = function() {
+    if (websocket.readyState != WebSocket.OPEN) {
+      return;
+    }
+    websocket.send(JSON.stringify({cmd: 'exit'}));
+    websocket.flush();
+    websocket.close();
+    hideSpinner();
+    running = false;
+    toggleButtonStates();
+    hidePrompt();
+    flashKillMessage();
+  }
+
+  var flashKillMessage = function() {
+    $.flash.info({
+      icon: ['fa', 'fa-clock-o'],
+      text: "Your program was stopped." // todo get data attribute
+    });
+  }
+
+  // todo set this from websocket command, required to e.g. stop container
   var storeContainerInformation = function(event) {
     var container_information = JSON.parse(event.data);
     $('#stop').data('container', container_information);
@@ -1063,6 +1096,164 @@ $(function() {
     $('#stop').toggle(isActiveFileStoppable());
     $('#test').toggle(isActiveFileTestable());
     $('#request-for-comments').toggle(isActiveFileSubmission() && !isActiveFileBinary());
+  };
+
+  var initWebsocketConnection = function(url) {
+      websocket = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + url);
+      websocket.onopen = function(evt) { resetOutputTab(); }; // todo show some kind of indicator for established connection
+      websocket.onclose = function(evt) { /* expected at some point */ };
+      websocket.onmessage = function(evt) { parseCanvasMessage(evt.data, true); };
+      websocket.onerror = function(evt) { showWebsocketError(); };
+      websocket.flush = function() { this.send('\n'); }
+  };
+
+  var initTurtle = function() {
+      // todo guard clause if turtle is not required for the current exercise
+      turtlescreen = new Turtle(websocket, turtlecanvas);
+      if ($('#run').isPresent()) {
+        $('#run').bind('click', hideCanvas);
+      }
+  };
+
+  var initPrompt = function() {
+      if ($('#run').isPresent()) {
+          $('#run').bind('click', hidePrompt);
+      }
+      if ($('#prompt').isPresent()) {
+          $('#prompt').on('keypress', handlePromptKeyPress);
+          $('#prompt-submit').on('click', submitPromptInput);
+      }
+  }
+
+  var executeWebsocketCommand = function(msg) {
+      if ($.inArray(msg.cmd, commands) == -1) {
+        console.log("Unknown command: " + msg.cmd);
+        // skipping unregistered commands is required
+        // as we may receive mirrored response due to internal behaviour
+        return;
+      }
+      switch(msg.cmd) {
+        case 'input':
+            showPrompt();
+            break;
+        case 'write':
+            printWebsocketOutput(msg);
+            break;
+        case 'turtle':
+            showCanvas();
+            handleTurtleCommand(msg);
+            break;
+        case 'turtlebatch':
+            showCanvas();
+            handleTurtlebatchCommand(msg);
+            break;
+        case 'exit':
+            killWebsocketAndContainer();
+            break;
+        case 'status':
+            showStatus(msg)
+            break;
+      }
+  };
+
+  var printWebsocketOutput = function(msg) {
+      if (!msg.data) {
+        return;
+      }
+      //msg.data = msg.data.replace(/(\r\n|\n|\r)/gm, "<br />");
+      msg.data = msg.data.replace(/(\r)/gm, "\n");
+      var stream = {};
+      stream[msg.stream] = msg.data;
+      printOutput(stream, true, 0);
+  };
+
+  var handleTurtleCommand = function(msg) {
+      if (msg.action in turtlescreen) {
+          result = turtlescreen[msg.action].apply(turtlescreen, msg.args);
+          websocket.send(JSON.stringify({cmd: 'result', 'result': result}));
+      } else {
+          websocket.send(JSON.stringify({cmd: 'exception', exception: 'AttributeError', message: msg.action}));
+      }
+      websocket.flush();
+  };
+
+  var handleTurtlebatchCommand = function(msg) {
+      for (i = 0; i < msg.batch.length; i++) {
+          cmd = msg.batch[i];
+          turtlescreen[cmd[0]].apply(turtlescreen, cmd[1]);
+      }
+  };
+
+  var handlePromptKeyPress = function(evt) {
+      if (evt.which === ENTER_KEY_CODE) {
+          submitPromptInput();
+      }
+  }
+
+  var submitPromptInput = function() {
+      var input = $('#prompt-input');
+      var message = input.val();
+      websocket.send(JSON.stringify({cmd: 'result', 'data': message}));
+      websocket.flush();
+      input.val('');
+      hidePrompt();
+  }
+
+  var parseCanvasMessage = function(message, recursive) {
+      var msg;
+      message = message.replace(/^\s+|\s+$/g, "");
+      try {
+          // todo validate json instead of catching
+          msg = JSON.parse(message);
+      } catch (e) {
+          if (!recursive) {
+              return false;
+          }
+          // why does docker sometimes send multiple commands at once?
+          message = message.replace(/^\s+|\s+$/g, "");
+          messages = message.split("\n");
+          for (var i = 0; i < messages.length; i++) {
+              if (!messages[i]) {
+                  continue;
+              }
+              parseCanvasMessage(messages[i], false);
+          }
+          return;
+      }
+      executeWebsocketCommand(msg);
+  };
+
+  var showPrompt = function() {
+      if (prompt.isPresent() && prompt.hasClass('hidden')) {
+          prompt.removeClass('hidden');
+      }
+      prompt.focus();
+  }
+
+  var hidePrompt = function() {
+      if (prompt.isPresent() && !prompt.hasClass('hidden')) {
+          prompt.addClass('hidden');
+      }
+  }
+
+  var showCanvas = function() {
+      if ($('#turtlediv').isPresent()
+              && turtlecanvas.hasClass('hidden')) {
+          // initialize two-column layout
+          $('#output-col1').addClass('col-lg-7 col-md-7 two-column');
+          turtlecanvas.removeClass('hidden');
+      }
+  };
+
+  var hideCanvas = function() {
+      if ($('#turtlediv').isPresent()
+              && !(turtlecanvas.hasClass('hidden'))) {
+          output = $('#output-col1');
+          if (output.hasClass('two-column')) {
+              output.removeClass('col-lg-7 col-md-7 two-column');
+          }
+          turtlecanvas.addClass('hidden');
+      }
   };
 
   var requestComments = function(e) {
@@ -1123,6 +1314,7 @@ $(function() {
           initializeEventHandlers();
           initializeFileTree();
           initializeTooltips();
+          initPrompt();
           renderScore();
           showFirstFile();
           showRequestedTab();

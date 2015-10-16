@@ -4,6 +4,7 @@ class SubmissionsController < ApplicationController
   include Lti
   include SubmissionParameters
   include SubmissionScoring
+  include Tubesock::Hijack
 
   before_action :set_submission, only: [:download_file, :render_file, :run, :score, :show, :statistics, :stop, :test]
   before_action :set_docker_client, only: [:run, :test]
@@ -70,20 +71,95 @@ class SubmissionsController < ApplicationController
   end
 
   def run
-    with_server_sent_events do |server_sent_event|
-      output = @docker_client.execute_run_command(@submission, params[:filename])
-      
-      server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
-      server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
-      
-      server_sent_event.write({status: output[:status]}, event: 'status')
-      
-      unless output[:stderr].nil?
-        if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
-          server_sent_event.write(hint, event: 'hint')
-        else
-          store_error(output[:stderr])
+    # TODO reimplement SSEs with websocket commands
+    # with_server_sent_events do |server_sent_event|
+    #   output = @docker_client.execute_run_command(@submission, params[:filename])
+
+    #   server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
+    #   server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
+
+    #   unless output[:stderr].nil?
+    #     if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
+    #       server_sent_event.write(hint, event: 'hint')
+    #     else
+    #       store_error(output[:stderr])
+    #     end
+    #   end
+    # end
+
+    hijack do |tubesock|
+      Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+
+      result = @docker_client.execute_run_command(@submission, params[:filename])
+      tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => result[:status]})
+
+      if result[:status] == :container_running
+        socket = result[:socket]
+
+        socket.on :message do |event|
+          Rails.logger.info("Docker sending: " + event.data)
+          handle_message(event.data, tubesock)
         end
+
+        socket.on :close do |event|
+          kill_socket(tubesock)
+        end
+
+        tubesock.onmessage do |data|
+          Rails.logger.info("Client sending: " + data)
+          # Check wether the client send a JSON command and kill container
+          # if the command is 'exit', send it to docker otherwise.
+          begin
+            parsed = JSON.parse(data)
+            if parsed['cmd'] == 'exit'
+              Rails.logger.info("Client killed container.")
+              @docker_client.kill_container(result[:container])
+            else
+              socket.send data
+            end
+          rescue JSON::ParserError
+            socket.send data
+          end
+        end
+      else
+        kill_socket(tubesock)
+      end
+    end
+  end
+
+  def kill_socket(tubesock)
+    # Hijacked connection needs to be notified correctly
+    tubesock.send_data JSON.dump({'cmd' => 'exit'})
+    tubesock.close
+  end
+
+  def handle_message(message, tubesock)
+    # Handle special commands first
+    if (/^exit/.match(message))
+      kill_socket(tubesock)
+    else
+      # Filter out information about run_command, test_command, user or working directory
+      run_command = @submission.execution_environment.run_command
+      test_command = @submission.execution_environment.test_command
+      if !(/root|workspace|#{run_command}|#{test_command}/.match(message))
+        parse_message(message, 'stdout', tubesock)
+      end
+    end
+  end
+
+  def parse_message(message, output_stream, socket, recursive = true)
+    begin
+      parsed = JSON.parse(message)
+      socket.send_data message
+    rescue JSON::ParserError => e
+      # Check wether the message contains multiple lines, if true try to parse each line
+      if ((recursive == true) && (message.include? "\n"))
+        for part in message.split("\n")
+          self.parse_message(part,output_stream,socket,false)
+        end
+      else
+        parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>message}
+        socket.send_data JSON.dump(parsed)
       end
     end
   end

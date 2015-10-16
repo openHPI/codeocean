@@ -11,6 +11,7 @@ class DockerClient
   RETRY_COUNT = 2
 
   attr_reader :container
+  attr_reader :socket
 
   def self.check_availability!
     Timeout.timeout(config[:connection_timeout]) { Docker.version }
@@ -41,7 +42,12 @@ class DockerClient
       'Memory' => execution_environment.memory_limit.megabytes,
       'NetworkDisabled' => !execution_environment.network_enabled?,
       'OpenStdin' => true,
-      'StdinOnce' => true
+      'StdinOnce' => true,
+      # required to expose standard streams over websocket
+      'AttachStdout' => true,
+      'AttachStdin' => true,
+      'AttachStderr' => true,
+      'Tty' => true
     }
   end
 
@@ -50,6 +56,29 @@ class DockerClient
       'Binds' => mapped_directories(local_workspace_path),
       'PortBindings' => mapped_ports(execution_environment)
     }
+  end
+
+  def create_socket(container, stderr=false)
+    # todo factor out query params
+    # todo separate stderr
+    query_params = 'logs=1&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
+
+    # Headers are required by Docker
+    headers = {'Origin' => 'http://localhost'}
+
+    socket = Faye::WebSocket::Client.new(DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params, [], :headers => headers)
+
+    socket.on :error do |event|
+      Rails.logger.info "Websocket error: " + event.message
+    end
+    socket.on :close do |event|
+      Rails.logger.info "Websocket closed."
+    end
+    socket.on :open do |event|
+      Rails.logger.info "Websocket created."
+      kill_after_timeout(container)
+    end
+    socket
   end
 
   def copy_file_to_workspace(options = {})
@@ -118,12 +147,69 @@ class DockerClient
     #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
-  [:run, :test].each do |cause|
-    define_method("execute_#{cause}_command") do |submission, filename, &block|
-      command = submission.execution_environment.send(:"#{cause}_command") % command_substitutions(filename)
-      create_workspace_files = proc { create_workspace_files(container, submission) }
-      execute_command(command, create_workspace_files, block)
+  def execute_websocket_command(command, before_execution_block, output_consuming_block)
+    @container = DockerContainerPool.get_container(@execution_environment)
+    if @container
+      before_execution_block.try(:call)
+      # todo catch exception if socket could not be created
+      @socket ||= create_socket(@container)
+      # Newline required to flush
+      @socket.send command + "\n"
+      {status: :container_running, socket: @socket, container: @container}
+    else
+      {status: :container_depleted}
     end
+  end
+
+  def kill_after_timeout(container)
+    """
+    We need to start a second thread to kill the websocket connection,
+    as it is impossible to determine whether further input is requested.
+    """
+    Thread.new do
+      timeout = @execution_environment.permitted_execution_time.to_i # seconds
+      sleep(timeout)
+      Rails.logger.info("Killing container after timeout of " + timeout.to_s + " seconds.")
+      kill_container(container)
+    end
+  end
+
+  def kill_container(container)
+    """
+    Please note that we cannot properly recycle containers when using
+    websockets because it is impossible to determine whether a program
+    is still running.
+    """
+    # remove container from pool, then destroy it
+    (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
+
+    #destroy container
+    self.class.destroy_container(container)
+
+    # if we recylce containers, we start a fresh one
+    if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
+      # create new container and add it to @all_containers and @containers.
+      container = self.class.create_container(@execution_environment)
+      DockerContainerPool.add_to_all_containers(container, @execution_environment)
+    end
+  end
+
+  def execute_run_command(submission, filename, &block)
+    """
+    Run commands by attaching a websocket to Docker.
+    """
+    command = submission.execution_environment.send(:"run_command") % command_substitutions(filename)
+    create_workspace_files = proc { create_workspace_files(container, submission) }
+    execute_websocket_command(command, create_workspace_files, block)
+  end
+
+  def execute_test_command(submission, filename, &block)
+    """
+    Stick to existing Docker API with exec command.
+    """
+    command = submission.execution_environment.send(:"test_command") % command_substitutions(filename)
+    create_workspace_files = proc { create_workspace_files(container, submission) }
+    execute_command(command, create_workspace_files, block)
   end
 
   def self.find_image_by_tag(tag)
