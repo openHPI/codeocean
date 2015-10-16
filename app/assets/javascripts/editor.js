@@ -682,8 +682,8 @@ $(function() {
   };
 
   var isBrowserSupported = function() {
-    // todo event streams are no longer required with websockets
-    return window.EventSource !== undefined;
+    // eventsource tests for server send events (used for scoring), websockets is used for run
+    return Modernizr.eventsource && Modernizr.websockets;
   };
 
   var populatePanel = function(panel, result, index) {
