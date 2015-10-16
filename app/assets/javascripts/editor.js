@@ -1099,7 +1099,7 @@ $(function() {
   };
 
   var initWebsocketConnection = function(url) {
-      websocket = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + url);
+      websocket = new WebSocket('wss://' + window.location.hostname + ':' + window.location.port + url);
       websocket.onopen = function(evt) { resetOutputTab(); }; // todo show some kind of indicator for established connection
       websocket.onclose = function(evt) { /* expected at some point */ };
       websocket.onmessage = function(evt) { parseCanvasMessage(evt.data, true); };
