@@ -126,7 +126,9 @@ class DockerClient
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
     clean_container_workspace(container)
-    container.delete(force: true, v: true)
+    if(container)
+      container.delete(force: true, v: true)
+    end
   end
 
   def execute_arbitrary_command(command, &block)
