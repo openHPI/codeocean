@@ -112,8 +112,8 @@ class SubmissionsController < ApplicationController
           begin
             parsed = JSON.parse(data)
             if parsed['cmd'] == 'exit'
-              Rails.logger.info("Client killed container.")
-              @docker_client.kill_container(result[:container])
+              Rails.logger.info("Client exited container.")
+              @docker_client.exit_container(result[:container])
             else
               socket.send data
             end

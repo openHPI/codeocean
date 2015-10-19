@@ -176,6 +176,7 @@ de:
       destroy_file: Datei löschen
       download: Herunterladen
       dummy: Keine Aktion
+      input: Ihre Eingabe
       lastsaved: 'Zuletzt gespeichert: '
       network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank">%{address}</a>.'
       render: Anzeigen
@@ -185,6 +186,7 @@ de:
       requestComments: Kommentare erbitten
       save: Speichern
       score: Bewerten
+      send: Senden
       start_over: Von vorne anfangen
       stop: Stoppen
       submit: Code zur Bewertung abgeben

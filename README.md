@@ -25,8 +25,9 @@ In order to execute code submissions using Docker, source code files are written
 
 - create *config/sendmail.yml*
 - create *config/smtp.yml*
-- use boot2docker if there is no native support for docker on your OS
+- use boot2docker or vagrant if there is no native support for docker on your OS
 - create seed data by executing `rake db:seed`
+- if you already created a configuration for your local installation and want to use vagrant, too, be sure to log into the vagrant instance via ssh and add your database user manually to the database. Afterwards, create, migrate and seed.
 
 ## Production Setup
 
@@ -46,8 +47,8 @@ The application is compatible with MRI and JRuby. Due to superior parallelism, w
 
 1.1
 
- [ ] WebSocket Suppport
- [ ] Interactive Exercises
+ [x] WebSocket Suppport
+ [x] Interactive Exercises
  [ ] Allow Disabling of File Creation
  [ ] Set Container Recyling per Environment
 

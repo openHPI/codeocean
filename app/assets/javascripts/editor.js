@@ -13,6 +13,9 @@ $(function() {
   var THEME = 'ace/theme/textmate';
   var REMEMBER_TAB = false;
   var AUTOSAVE_INTERVAL = 15 * 1000;
+  var NONE = 0;
+  var WEBSOCKET = 1;
+  var SERVER_SEND_EVENT = 2;
 
   var editors = [];
   var active_file = undefined;
@@ -20,6 +23,7 @@ $(function() {
   var running = false;
   var qa_api = undefined;
   var output_mode_is_streaming = true;
+  var runmode = NONE;
 
   var websocket,
       turtlescreen,
@@ -873,6 +877,7 @@ $(function() {
   var runCode = function(event) {
     event.preventDefault();
     if ($('#run').is(':visible')) {
+      runmode = WEBSOCKET;
       createSubmission(this, null, function(response) {
         $('#stop').data('url', response.stop_url);
         running = true;
@@ -910,6 +915,7 @@ $(function() {
 
   var scoreCode = function(event) {
     event.preventDefault();
+    runmode = SERVER_SEND_EVENT;
     createSubmission(this, null, function(response) {
       showSpinner($('#assess'));
       var url = response.score_url;
@@ -1018,8 +1024,28 @@ $(function() {
   var stopCode = function(event) {
     event.preventDefault();
     if ($('#stop').is(':visible')) {
-      killWebsocketAndContainer();
+      if(runmode == WEBSOCKET){
+        killWebsocketAndContainer();
+      } else if (runmode == SERVER_SEND_EVENT) {
+        stopCodeServerSendEvent(event);
+      }
+      runmode = NONE;
     }
+  };
+
+  var stopCodeServerSendEvent = function(event){
+    var jqxhr = ajax({
+      data: {
+        container_id: $('#stop').data('container').id
+      },
+      url: $('#stop').data('url')
+    });
+    jqxhr.always(function() {
+      hideSpinner();
+      running = false;
+      toggleButtonStates();
+    });
+    jqxhr.fail(ajaxError);
   };
 
   var killWebsocketAndContainer = function() {

@@ -93,6 +93,7 @@ class DockerClient
     FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
     container.start_time = Time.now
+    container.status = :created
     container
   rescue Docker::Error::NotFoundError => error
     destroy_container(container)
@@ -125,7 +126,9 @@ class DockerClient
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
     clean_container_workspace(container)
-    container.delete(force: true, v: true)
+    if(container)
+      container.delete(force: true, v: true)
+    end
   end
 
   def execute_arbitrary_command(command, &block)
@@ -135,6 +138,7 @@ class DockerClient
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
+    @container.status = :executing
     if @container
       before_execution_block.try(:call)
       send_command(command, @container, &output_consuming_block)
@@ -149,6 +153,7 @@ class DockerClient
 
   def execute_websocket_command(command, before_execution_block, output_consuming_block)
     @container = DockerContainerPool.get_container(@execution_environment)
+    @container.status = :executing
     if @container
       before_execution_block.try(:call)
       # todo catch exception if socket could not be created
@@ -169,21 +174,24 @@ class DockerClient
     Thread.new do
       timeout = @execution_environment.permitted_execution_time.to_i # seconds
       sleep(timeout)
-      Rails.logger.info("Killing container after timeout of " + timeout.to_s + " seconds.")
-      kill_container(container)
+      if container.status != :returned
+        Rails.logger.info("Killing container after timeout of " + timeout.to_s + " seconds.")
+        kill_container(container)
+      end
     end
   end
 
-  def kill_container(container)
-    """
-    Please note that we cannot properly recycle containers when using
-    websockets because it is impossible to determine whether a program
-    is still running.
-    """
-    # remove container from pool, then destroy it
-    (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
+  def exit_container(container)
+    # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
+    (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
+  end
 
-    #destroy container
+  def kill_container(container)
+    # remove container from pool, then destroy it
+    if (DockerContainerPool.config[:active])
+      DockerContainerPool.remove_from_all_containers(container, @execution_environment)
+    end
+
     self.class.destroy_container(container)
 
     # if we recylce containers, we start a fresh one
@@ -267,6 +275,7 @@ class DockerClient
   def self.return_container(container, execution_environment)
     clean_container_workspace(container)
     DockerContainerPool.return_container(container, execution_environment)
+    container.status = :returned
   end
   #private :return_container
 
@@ -285,7 +294,9 @@ class DockerClient
     Rails.logger.info('got timeout error for container ' + container.to_s)
 
     # remove container from pool, then destroy it
-    (DockerContainerPool.config[:active]) ? DockerContainerPool.remove_from_all_containers(container, @execution_environment) :
+    if (DockerContainerPool.config[:active])
+      DockerContainerPool.remove_from_all_containers(container, @execution_environment)
+    end
 
     # destroy container
     self.class.destroy_container(container)
