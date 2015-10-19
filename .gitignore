@@ -14,3 +14,5 @@
 /vagrant/
 *.sublime-*
 /.idea
+/.vagrant
+*.iml
