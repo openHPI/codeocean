@@ -54,8 +54,11 @@ class DockerContainerPool
     if config[:active]
       container = @containers[execution_environment.id].try(:shift) || nil
       Rails.logger.info('get_container fetched container  ' + container.to_s)
-      Rails.logger.info('get_container remaining avail. containers:  ' + @containers[execution_environment.id].size.to_s)
-      Rails.logger.info('get_container all container count: ' + @all_containers[execution_environment.id].size.to_s)
+      # just access and the following if we got a container. Otherwise, the execution_environment might be just created and not fully exist yet.
+      if(container)
+        Rails.logger.info('get_container remaining avail. containers:  ' + @containers[execution_environment.id].size.to_s)
+        Rails.logger.info('get_container all container count: ' + @all_containers[execution_environment.id].size.to_s)
+      end
       container
     else
       create_container(execution_environment)
