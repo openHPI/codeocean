@@ -7,7 +7,9 @@ default: &default
 development:
   <<: *default
   host: tcp://192.168.59.104:2376
-  workspace_root: <%= File.join('/', 'shared', Rails.env) %>
+  ws_host: ws://192.168.59.104:2376
+  #workspace_root: <%= File.join('/', 'shared', Rails.env) %>
+  workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
 
 production:
   <<: *default

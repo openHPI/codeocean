@@ -1,6 +1,6 @@
 #editor.row data-exercise-id=exercise.id data-message-depleted=t('exercises.editor.depleted') data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @exercise.execution_environment.permitted_execution_time) data-errors-url=execution_environment_errors_path(exercise.execution_environment) data-submissions-url=submissions_path data-user-id=@current_user.id
-  .col-sm-3 = render('editor_file_tree', files: @files)
-  #frames.col-sm-9
+  div class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') = render('editor_file_tree', files: @files)
+  div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
     - @files.each do |file|
       = render('editor_frame', exercise: exercise, file: file)
     #autosave-label

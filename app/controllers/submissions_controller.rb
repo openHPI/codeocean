@@ -138,8 +138,10 @@ class SubmissionsController < ApplicationController
     if (/^exit/.match(message))
       kill_socket(tubesock)
     else
-      # Filter out information about user and working directory
-      if !(/root|workspace/.match(message))
+      # Filter out information about run_command, test_command, user or working directory
+      run_command = @submission.execution_environment.run_command
+      test_command = @submission.execution_environment.test_command
+      if !(/root|workspace|#{run_command}|#{test_command}/.match(message))
         parse_message(message, 'stdout', tubesock)
       end
     end

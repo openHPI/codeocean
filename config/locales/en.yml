@@ -28,6 +28,7 @@ en:
         execution_environment: Execution Environment
         execution_environment_id: Execution Environment
         files: Files
+        hide_file_tree: Hide File Tree
         instructions: Instructions
         maximum_score: Maximum Score
         public: Public

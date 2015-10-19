@@ -1,5 +1,5 @@
 class PyUnitAdapter < TestingFrameworkAdapter
-  COUNT_REGEXP = /Ran (\d+) tests/
+  COUNT_REGEXP = /Ran (\d+) test/
   FAILURES_REGEXP = /FAILED \(failures=(\d+)\)/
 
   def self.framework_name

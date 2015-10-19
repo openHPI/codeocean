@@ -23,6 +23,10 @@
     label
       = f.check_box(:public)
       = t('activerecord.attributes.exercise.public')
+  .checkbox
+    label
+      = f.check_box(:hide_file_tree)
+      = t('activerecord.attributes.exercise.hide_file_tree')
   h2 = t('activerecord.attributes.exercise.files')
   ul#files.list-unstyled
     = f.fields_for :files do |files_form|
