@@ -138,8 +138,8 @@ class DockerClient
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
-    @container.status = :executing
     if @container
+      @container.status = :executing
       before_execution_block.try(:call)
       send_command(command, @container, &output_consuming_block)
     else
@@ -153,8 +153,8 @@ class DockerClient
 
   def execute_websocket_command(command, before_execution_block, output_consuming_block)
     @container = DockerContainerPool.get_container(@execution_environment)
-    @container.status = :executing
     if @container
+      @container.status = :executing
       before_execution_block.try(:call)
       # todo catch exception if socket could not be created
       @socket ||= create_socket(@container)
