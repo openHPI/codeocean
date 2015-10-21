@@ -3,6 +3,6 @@ class Comment < ActiveRecord::Base
   include Creation
   attr_accessor :username
 
-  belongs_to :file, class: CodeOcean::File
+  belongs_to :file, class_name: 'CodeOcean::File'
   belongs_to :user, polymorphic: true
 end

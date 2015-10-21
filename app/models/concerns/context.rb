@@ -2,7 +2,7 @@ module Context
   extend ActiveSupport::Concern
 
   included do
-    has_many :files, as: :context, class: CodeOcean::File
+    has_many :files, as: :context, class_name: 'CodeOcean::File'
     accepts_nested_attributes_for :files
   end
 
