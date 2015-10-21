@@ -1160,7 +1160,7 @@ $(function() {
       }
       switch(msg.cmd) {
         case 'input':
-            showPrompt();
+            showPrompt(msg);
             break;
         case 'write':
             printWebsocketOutput(msg);
@@ -1249,11 +1249,13 @@ $(function() {
       executeWebsocketCommand(msg);
   };
 
-  var showPrompt = function() {
-      if (prompt.isPresent() && prompt.hasClass('hidden')) {
+  var showPrompt = function(msg) {
+    var label = $('#prompt .input-group-addon');
+    label.text(msg.data || label.data('prompt'));
+    if (prompt.isPresent() && prompt.hasClass('hidden')) {
           prompt.removeClass('hidden');
       }
-      prompt.focus();
+    $('#prompt input').focus();
   }
 
   var hidePrompt = function() {
