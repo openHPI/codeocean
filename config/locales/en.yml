@@ -191,7 +191,7 @@ en:
       stop: Stop
       submit: Submit Code For Assessment
       test: Test
-      timeout: 'Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
+      timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
       tooltips:
         save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
     editor_file_tree:
