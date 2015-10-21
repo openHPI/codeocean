@@ -90,6 +90,12 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
 
+
+      # socket is the socket into the container, tubesock is the socket to the client
+
+      # give the docker_client the tubesock object, so that it can send messages (timeout)
+      @docker_client.tubesock = tubesock
+
       result = @docker_client.execute_run_command(@submission, params[:filename])
       tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => result[:status]})
 

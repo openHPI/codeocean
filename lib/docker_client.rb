@@ -12,6 +12,7 @@ class DockerClient
 
   attr_reader :container
   attr_reader :socket
+  attr_accessor :tubesock
 
   def self.check_availability!
     Timeout.timeout(config[:connection_timeout]) { Docker.version }
@@ -176,6 +177,10 @@ class DockerClient
       sleep(timeout)
       if container.status != :returned
         Rails.logger.info("Killing container after timeout of " + timeout.to_s + " seconds.")
+        # send timeout to the tubesock socket
+        if(@tubesock)
+          @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
+        end
         kill_container(container)
       end
     end

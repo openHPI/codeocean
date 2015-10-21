@@ -30,7 +30,7 @@ $(function() {
       numMessages = 0,
       turtlecanvas = $('#turtlecanvas'),
       prompt = $('#prompt'),
-      commands = ['input', 'write', 'turtle', 'turtlebatch', 'exit', 'status'],
+      commands = ['input', 'write', 'turtle', 'turtlebatch', 'exit', 'timeout', 'status'],
       streams = ['stdin', 'stdout', 'stderr'];
 
   var ENTER_KEY_CODE = 13;
@@ -1004,7 +1004,7 @@ $(function() {
   };
 
   var showTimeoutMessage = function() {
-    $.flash.danger({
+    $.flash.info({
       icon: ['fa', 'fa-clock-o'],
       text: $('#editor').data('message-timeout')
     });
@@ -1059,14 +1059,6 @@ $(function() {
     running = false;
     toggleButtonStates();
     hidePrompt();
-    flashKillMessage();
-  }
-
-  var flashKillMessage = function() {
-    $.flash.info({
-      icon: ['fa', 'fa-clock-o'],
-      text: "Your program was stopped." // todo get data attribute
-    });
   }
 
   // todo set this from websocket command, required to e.g. stop container
@@ -1175,6 +1167,10 @@ $(function() {
             break;
         case 'exit':
             killWebsocketAndContainer();
+            break;
+        case 'timeout':
+            // just show the timeout message here. Another exit command is sent by the rails backend when the socket to the docker container closes.
+            showTimeoutMessage();
             break;
         case 'status':
             showStatus(msg)
