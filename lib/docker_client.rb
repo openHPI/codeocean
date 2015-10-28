@@ -62,7 +62,7 @@ class DockerClient
   def create_socket(container, stderr=false)
     # todo factor out query params
     # todo separate stderr
-    query_params = 'logs=1&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
+    query_params = 'logs=0&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
 
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
