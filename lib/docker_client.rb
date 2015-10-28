@@ -172,7 +172,7 @@ class DockerClient
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
     """
-    Thread.new do
+    @thread = Thread.new do
       timeout = @execution_environment.permitted_execution_time.to_i # seconds
       sleep(timeout)
       if container.status != :returned
@@ -187,6 +187,10 @@ class DockerClient
   end
 
   def exit_container(container)
+    # exit the timeout thread if it is still alive
+    if(@thread && @thread.alive?)
+      @thread.exit
+    end
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end
