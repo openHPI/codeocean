@@ -112,13 +112,13 @@ class SubmissionsController < ApplicationController
         end
 
         tubesock.onmessage do |data|
-          Rails.logger.info("Client sending: " + data)
+          Rails.logger.debug("Client sending: " + data)
           # Check wether the client send a JSON command and kill container
           # if the command is 'exit', send it to docker otherwise.
           begin
             parsed = JSON.parse(data)
             if parsed['cmd'] == 'exit'
-              Rails.logger.info("Client exited container.")
+              Rails.logger.debug("Client exited container.")
               @docker_client.exit_container(result[:container])
             else
               socket.send data
@@ -209,6 +209,7 @@ class SubmissionsController < ApplicationController
   end
 
   def stop
+    Rails.logger.debug('stopping submission ' + @submission)
     container = Docker::Container.get(params[:container_id])
     DockerClient.destroy_container(container)
   rescue Docker::Error::NotFoundError
