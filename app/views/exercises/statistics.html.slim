@@ -15,7 +15,7 @@ h1 = @exercise
         - ['.user', '.score', '.runs', '.worktime'].each do |title|
           th.header = t(title)
     tbody
-      - @exercise.users.each do |user|
+      - @exercise.users.distinct().each do |user|
         tr
           - submissions = @exercise.submissions.where('user_id=?', user.id)
           td = "#{user.name} (#{user.email})"
