@@ -1,6 +1,6 @@
 class RequestForComment < ActiveRecord::Base
   belongs_to :exercise
-  belongs_to :file, class: CodeOcean::File
+  belongs_to :file, class_name: 'CodeOcean::File'
   belongs_to :user, polymorphic: true
 
   before_create :set_requested_timestamp

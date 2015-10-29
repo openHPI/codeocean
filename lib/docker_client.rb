@@ -12,6 +12,7 @@ class DockerClient
 
   attr_reader :container
   attr_reader :socket
+  attr_accessor :tubesock
 
   def self.check_availability!
     Timeout.timeout(config[:connection_timeout]) { Docker.version }
@@ -61,7 +62,7 @@ class DockerClient
   def create_socket(container, stderr=false)
     # todo factor out query params
     # todo separate stderr
-    query_params = 'logs=1&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
+    query_params = 'logs=0&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
 
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
@@ -138,8 +139,8 @@ class DockerClient
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
-    @container.status = :executing
     if @container
+      @container.status = :executing
       before_execution_block.try(:call)
       send_command(command, @container, &output_consuming_block)
     else
@@ -153,8 +154,8 @@ class DockerClient
 
   def execute_websocket_command(command, before_execution_block, output_consuming_block)
     @container = DockerContainerPool.get_container(@execution_environment)
-    @container.status = :executing
     if @container
+      @container.status = :executing
       before_execution_block.try(:call)
       # todo catch exception if socket could not be created
       @socket ||= create_socket(@container)
@@ -171,17 +172,25 @@ class DockerClient
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
     """
-    Thread.new do
+    @thread = Thread.new do
       timeout = @execution_environment.permitted_execution_time.to_i # seconds
       sleep(timeout)
       if container.status != :returned
         Rails.logger.info("Killing container after timeout of " + timeout.to_s + " seconds.")
+        # send timeout to the tubesock socket
+        if(@tubesock)
+          @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
+        end
         kill_container(container)
       end
     end
   end
 
   def exit_container(container)
+    # exit the timeout thread if it is still alive
+    if(@thread && @thread.alive?)
+      @thread.exit
+    end
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end

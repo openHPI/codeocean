@@ -28,15 +28,16 @@ Execute: vagrant box add ubuntu/trusty64
 Execute: vagrant up
 Install docker environments
 export DOCKER_HOST=tcp://192.168.23.75:2375
+docker pull openhpi/docker_java
+docker pull openhpi/docker_ruby
+docker pull openhpi/docker_python
+
+(The following images need to be moved to openhpi/docker_[coffee|sqlite|etc.] if they are required at some point.
 docker pull jprberlin/ubuntu-coffee
-docker pull jprberlin/ubuntu-java
 docker pull jprberlin/ubuntu-sqlite
 docker pull jprberlin/ubuntu-sinatra
-docker pull jprberlin/ubuntu-ruby
-docker pull jprberlin/ubuntu-python
-docker pull jprberlin/ubuntu-node
 docker pull jprberlin/ubuntu-html
-docker pull jprberlin/ubuntu-jruby
+docker pull jprberlin/ubuntu-jruby)
 
 cd repoPath
 bundle install

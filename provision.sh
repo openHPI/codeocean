@@ -29,15 +29,10 @@ DOCKER_OPTS="-H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock"
 EOF
     service docker restart
 fi
-# XXX docker pull jprberlin/ubuntu-coffee
-docker pull jprberlin/ubuntu-java
-# XXX docker pull jprberlin/ubuntu-sqlite
-# XXX docker pull jprberlin/ubuntu-sinatra
-# XXX docker pull jprberlin/ubuntu-ruby
-# XXX docker pull jprberlin/ubuntu-python
-docker pull jprberlin/ubuntu-node
-# XXX docker pull jprberlin/ubuntu-html
-# XXX docker pull jprberlin/ubuntu-jruby
+
+docker pull openhpi/docker_java
+docker pull openhpi/docker_ruby
+docker pull openhpi/docker_python
 
 
 # rvm
