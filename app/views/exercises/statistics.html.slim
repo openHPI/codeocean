@@ -21,4 +21,5 @@ h1 = @exercise
           td = "#{user.name} (#{user.email})"
           td = submissions.maximum('score')
           td = submissions.count('id')
-          td = "#{((submissions.maximum('created_at') - submissions.minimum('created_at')) / 60).round(2)} min"
+          - seconds = submissions.maximum('created_at') - submissions.minimum('created_at')
+          td = "#{distance_of_time_in_words(seconds)} (#{seconds})"
