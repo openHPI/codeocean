@@ -239,6 +239,10 @@ de:
       intermediate_submissions: Intermediäre Abgaben
       participants: Bearbeitende Nutzer
       users: '%{count} verschiedene Nutzer'
+      user: 'Nutzer'
+      score: 'Punktzahl'
+      runs: 'Versuche'
+      worktime: 'Arbeitszeit'
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
   files:

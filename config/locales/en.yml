@@ -239,6 +239,10 @@ en:
       intermediate_submissions: Intermediate Submissions
       participants: Participating Users
       users: '%{count} distinct users'
+      user: 'User'
+      score: 'Score'
+      runs: 'Runs'
+      worktime: 'Worktime'
     submit:
       failure: An error occured while transmitting your score. Please try again later.
   files:

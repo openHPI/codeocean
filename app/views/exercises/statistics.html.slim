@@ -7,3 +7,18 @@ h1 = @exercise
 = row(label: '.average_score') do
   p == @exercise.average_score ? t('shared.out_of', maximum_value: @exercise.maximum_score, value: @exercise.average_score.round(2)) : empty
   p = progress_bar(@exercise.average_percentage)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        - ['.user', '.score', '.runs', '.worktime'].each do |title|
+          th.header = t(title)
+    tbody
+      - @exercise.users.each do |user|
+        tr
+          - submissions = @exercise.submissions.where('user_id=?', user.id)
+          td = "#{user.name} (#{user.email})"
+          td = submissions.maximum('score')
+          td = submissions.count('id')
+          td = "#{((submissions.maximum('created_at') - submissions.minimum('created_at')) / 60).round(2)} min"
