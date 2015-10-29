@@ -9,15 +9,7 @@ h1 = @execution_environment
     tbody
       - @execution_environment.exercises.each do |exercise|
         tr
-          - submissions = exercise.submissions
           td = exercise.title
-          td = submissions.average(:score)
-          td = submissions.count()
-          - minima = submissions.group(:user_id).minimum(:created_at)
-          - maxima = submissions.group(:user_id).maximum(:created_at)
-          - result = 0
-          - results = {}
-          - maxima.each {|key, value| results[key] = value - minima[key]}
-          - results.values.map {|value| result += value}
-          - result /= results.size if results.size > 0
-          td = distance_of_time_in_words(result)
+          td = exercise.average_score
+          td = exercise.submissions.count()
+          td = exercise.average_working_time
