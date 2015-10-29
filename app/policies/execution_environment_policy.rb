@@ -4,7 +4,7 @@ class ExecutionEnvironmentPolicy < AdminOrAuthorPolicy
   end
   private :author?
 
-  [:execute_command?, :shell?].each do |action|
+  [:execute_command?, :shell?, :statistics?].each do |action|
     define_method(action) { admin? || author? }
   end
 end

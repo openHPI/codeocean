@@ -167,6 +167,11 @@ en:
     shell:
       command: Command
       headline: Shell
+    statistics:
+      exercise: Exercise
+      score: Average Score
+      runs: Average Number of Runs
+      worktime: Average Worktime
   exercises:
     editor:
       confirm_start_over: Do you really want to start over?
@@ -239,10 +244,10 @@ en:
       intermediate_submissions: Intermediate Submissions
       participants: Participating Users
       users: '%{count} distinct users'
-      user: 'User'
-      score: 'Score'
-      runs: 'Runs'
-      worktime: 'Worktime'
+      user: User
+      score: Score
+      runs: Runs
+      worktime: Worktime
     submit:
       failure: An error occured while transmitting your score. Please try again later.
   files:

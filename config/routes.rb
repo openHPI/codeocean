@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     member do
       get :shell
       post 'shell', as: :execute_command, to: :execute_command
+      get :statistics
     end
 
     resources :errors, only: [:create, :index, :show]

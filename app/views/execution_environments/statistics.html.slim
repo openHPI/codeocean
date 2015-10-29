@@ -1,0 +1,23 @@
+h1 = @execution_environment
+
+.table-responsive
+  table.table
+    thead
+      tr
+        - ['.exercise', '.score', '.runs', '.worktime'].each do |title|
+          th.header = t(title)
+    tbody
+      - @execution_environment.exercises.each do |exercise|
+        tr
+          - submissions = exercise.submissions
+          td = exercise.title
+          td = submissions.average(:score)
+          td = submissions.count()
+          - minima = submissions.group(:user_id).minimum(:created_at)
+          - maxima = submissions.group(:user_id).maximum(:created_at)
+          - result = 0
+          - results = {}
+          - maxima.each {|key, value| results[key] = value - minima[key]}
+          - results.values.map {|value| result += value}
+          - result /= results.size if results.size > 0
+          td = distance_of_time_in_words(result)

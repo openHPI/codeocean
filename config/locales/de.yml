@@ -167,6 +167,11 @@ de:
     shell:
       command: Befehl
       headline: Shell
+    statistics:
+      exercise: Übung
+      score: Durchschnittliche Punktzahl
+      runs: Durchschnittliche Anzahl von Versuchen
+      worktime: Durchschnittliche Arbeitszeit
   exercises:
     editor:
       confirm_start_over: Wollen Sie wirklich von vorne anfangen?
