@@ -38,8 +38,23 @@ class Exercise < ActiveRecord::Base
   end
 
   def average_working_time
-    working_time_query = submissions.select('MAX(created_at) - MIN(created_at) AS time').group(:user_id).to_sql.sub('$1', id.to_s)
-    self.class.connection.execute("SELECT AVG(time) AS average_time FROM (#{working_time_query}) AS working_times").first['average_time']
+    self.class.connection.execute("""
+      SELECT avg(working_time) as average_time
+      FROM
+        (SELECT user_id,
+                sum(working_time_new) AS working_time
+         FROM
+           (SELECT user_id,
+                   CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
+            FROM
+              (SELECT user_id,
+                      id,
+                      (created_at - lag(created_at) over (PARTITION BY user_id
+                                                          ORDER BY id)) AS working_time
+               FROM submissions
+               WHERE exercise_id=#{id}) AS foo) AS bar
+         GROUP BY user_id) AS baz;
+    """).first['average_time']
   end
 
   def duplicate(attributes = {})
