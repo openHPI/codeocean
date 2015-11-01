@@ -248,6 +248,8 @@ en:
       score: Score
       runs: Runs
       worktime: Worktime
+      internal_users: Internal Users
+      external_users: External Users
     submit:
       failure: An error occured while transmitting your score. Please try again later.
   files:

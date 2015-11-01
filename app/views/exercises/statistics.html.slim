@@ -8,18 +8,20 @@ h1 = @exercise
   p == @exercise.average_score ? t('shared.out_of', maximum_value: @exercise.maximum_score, value: @exercise.average_score.round(2)) : empty
   p = progress_bar(@exercise.average_percentage)
 
-.table-responsive
-  table.table
-    thead
-      tr
-        - ['.user', '.score', '.runs', '.worktime'].each do |title|
-          th.header = t(title)
-    tbody
-      - @exercise.users.distinct().each do |user|
+- Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
+  strong = label
+  .table-responsive
+    table.table
+      thead
         tr
-          - submissions = @exercise.submissions.where('user_id=?', user.id)
-          td = "#{user.name} (#{user.email})"
-          td = submissions.maximum('score')
-          td = submissions.count('id')
-          - seconds = submissions.maximum('created_at') - submissions.minimum('created_at')
-          td = "#{distance_of_time_in_words(seconds)} (#{seconds})"
+          - ['.user', '.score', '.runs', '.worktime'].each do |title|
+            th.header = t(title)
+      tbody
+        - @exercise.send(symbol).distinct().each do |user|
+          tr
+            - submissions = @exercise.submissions.where('user_id=?', user.id)
+            td = "#{user.name} (#{user.email})"
+            td = submissions.maximum('score')
+            td = submissions.count('id')
+            - seconds = submissions.maximum('created_at') - submissions.minimum('created_at')
+            td = "#{distance_of_time_in_words(seconds)} (#{seconds})"

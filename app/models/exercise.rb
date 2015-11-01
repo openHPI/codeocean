@@ -11,7 +11,10 @@ class Exercise < ActiveRecord::Base
   belongs_to :execution_environment
   has_many :submissions
   belongs_to :team
-  has_many :users, source_type: ExternalUser, through: :submissions
+
+  has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
+  has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions
+  alias_method :users, :external_users
 
   scope :with_submissions, -> { where('id IN (SELECT exercise_id FROM submissions)') }
 
@@ -21,6 +24,7 @@ class Exercise < ActiveRecord::Base
   validates :public, boolean_presence: true
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
+
 
   def average_percentage
     (average_score / maximum_score * 100).round if average_score
