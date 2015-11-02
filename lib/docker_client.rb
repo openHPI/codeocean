@@ -103,24 +103,25 @@ class DockerClient
   def execute_command(command, before_execution_block, output_consuming_block, submission)
     #tries ||= 0
     
-    # pedro:
-    # pedro: Step 1: Retrieve the next container
-    # pedro: get the units for our container type
-    # pedro: hardcoded container name to pythondev
+    # CoreOS Adjustment:
+    # Here we're finding out which container we want to execute the command on.
+    # We are using a round-robin pooling strategy by increasing the @ooling_count.
+    # Currently the container name is hardcoded to "pythondev" (the name of our python image).
+    # This would have to be adjusted dynamically based on the original execution environment.
+
+    # To get all available containers in our cluster, we execute a custom python script, which reads the fleet configurations
+    # and returns a json string for us to handle here.
     name = "pythondev"
     fleetinfostr = `python /root/DockerCodeOcean.git/fleetctl-units.py`
     fleetinfo = JSON.parse(fleetinfostr)
     num_units = fleetinfo["units"][name].length
 
-    # pedro: get the next unit by pooling id
-    puts "pedro: previous pooling_counter: #{@@pooling_counter} % #{num_units}"
+    # get the next unit by pooling id
     containerIndex = (@@pooling_counter % num_units)
     @@pooling_counter += 1
-    puts "pedro: Grabbing containerIndex: #{containerIndex}"
-
-    execUnit = nil
 
     # look for the unit with the matching ID
+    execUnit = nil
     fleetinfo["units"][name].each do |unit|
       if unit["i"] == (containerIndex + 1)
         execUnit = unit
@@ -133,15 +134,15 @@ class DockerClient
       execUnit = fleetinfo["units"][name][containerIndex]
     end
 
+    # gets the IP of the machine on which the container is running
     ip = execUnit["ip"]
     i = execUnit["i"]
     name = "#{name}-#{i}"
 
-    # pedro: execute the command on the contaienr
-    puts "pedro: Grabbing container #{name} at tcp://#{ip}:2376"
+    # Sets the IP of the docker library
     Docker.url = "tcp://#{ip}:2376"
     @container = Docker::Container.get(name);
-    # @container = DockerContainerPool.get_container(@execution_environment)
+
     if @container
       before_execution_block.try(:call)
       send_command(command, @container, submission, &output_consuming_block)
@@ -155,28 +156,26 @@ class DockerClient
   end
 
 
-  # pedro: this is should be remove. Metaprogramming doesn't help anything here
   [:run, :test].each do |cause|
     define_method("execute_#{cause}_command") do |submission, filename, &block|
+
+      # CoreOS Adjustment:
+      # Here we are writing all files to etcd
+      # In a productive solution there should probably be a more secure way to distribute the files
 
       print "pedro: Executing submission " + submission.id.to_s + "\n"
 
       # Create the files in etcd
       submission.collect_files.each do |file|
-        print "pedro: file: " + file.name_with_extension + "\n"
         value = URI.escape(file.content)
+
+        # Writes to etcd
         command = "curl -L -X PUT http://docker:4001/v2/keys/pedro/submissions/#{submission.id.to_s}/#{file.name_with_extension} -d value=\"#{value}\""
-        # print command + "\n"
         system command
       end
 
       command = submission.execution_environment.send(:"#{cause}_command") % command_substitutions(filename)
       execute_command(command, nil, nil, submission)
-
-      # {status: :container_depleted} # pedro: return default message atm
-
-      # create_workspace_files = proc { create_workspace_files(container, submission) }
-      # execute_command(command, create_workspace_files, block)
     end
   end
 
@@ -195,7 +194,9 @@ class DockerClient
   def initialize(options = {})
     @execution_environment = options[:execution_environment]
 
-    print "pedro: We're not looking for the docker_image anymore\n"
+    # CoreOS Adjustment:
+    # We're not looking for the docker_image anymore
+
     # @image = self.class.find_image_by_tag(@execution_environment.docker_image)
     # fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
   end
@@ -242,14 +243,17 @@ class DockerClient
 
   def send_command(command, container, submission, &block)
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
-      # pedro
+
+      # CoreOS Adjustment:
+      # Execute our run script within the container.
+      # Arguments are the path to the files in etcd
+      # and the command that should be executed to run the user's submission.
+      # 
       command = "/execute.sh /pedro/submissions/#{submission.id.to_s}/ \"#{command}\""
       arguments = ['bash', '-c', command]
       puts "pedro: sending command"
       puts arguments
 
-      # puts "echo \"received command from codeocean\""
-      # container.exec(["echo", "received command from codeocean"], detach: false, stdout: false)
       output = container.exec(arguments)
 
       Rails.logger.info "output from container.exec"

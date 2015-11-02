@@ -46,7 +46,8 @@ class ExecutionEnvironment < ActiveRecord::Base
   private :validate_docker_image?
 
   def working_docker_image?
-    print "pedro: working_docker_image has been disabled! (" + docker_image + ")\n"
+    # CoreOS Adjustment:
+    # This code is not executed anymore, becaue the pulling of execution environments is handled with fleet now.
     # DockerClient.pull(docker_image) unless DockerClient.image_tags.include?(docker_image)
     # output = DockerClient.new(execution_environment: self).execute_arbitrary_command(VALIDATION_COMMAND)
     # errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
