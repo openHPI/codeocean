@@ -1,0 +1,14 @@
+[Unit]
+Description=postgreSQL
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=5
+ExecStartPre=-/usr/bin/docker kill co-postgres
+ExecStartPre=-/usr/bin/docker rm co-postgres
+ExecStartPre=-/usr/bin/docker pull torpedro/postgres
+ExecStart=/usr/bin/docker run --name co-postgres -e POSTGRES_PASSWORD=Initial1 torpedro/postgres
+ExecStartPost=/bin/bash -c "etcdctl set postgres-ip $(/usr/bin/docker exec co-postgres hostname -i)"
+ExecStop=-/usr/bin/docker kill co-postgres
+ExecStopPost=-/usr/bin/docker rm co-postgres

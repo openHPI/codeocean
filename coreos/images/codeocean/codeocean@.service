@@ -1,0 +1,13 @@
+[Unit]
+Description=CodeOcean
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill codeocean-%i
+ExecStartPre=-/usr/bin/docker rm codeocean-%i
+ExecStartPre=-/usr/bin/docker pull torpedro/codeocean
+ExecStart=/bin/bash -c "/usr/bin/docker run --add-host=docker:$(hostname -i) --add-host=co-postgres:$(etcdctl get postgres-ip) --privileged=true -p 3000:3000 -e DOCKER_HOST=tcp://docker:2376 --name codeocean-%i torpedro/codeocean"
+ExecStop=-/usr/bin/docker kill codeocean-%i
+ExecStopPost=-/usr/bin/docker rm codeocean-%i

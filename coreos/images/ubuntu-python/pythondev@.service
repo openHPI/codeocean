@@ -1,0 +1,13 @@
+[Unit]
+Description=UbuntuPython
+After=docker.service
+Requires=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill pythondev-%i
+ExecStartPre=-/usr/bin/docker rm pythondev-%i
+ExecStartPre=-/usr/bin/docker pull torpedro/ubuntu-python
+ExecStart=/bin/bash -c "/usr/bin/docker run -t --name=pythondev-%i --add-host=docker:$(hostname -i) torpedro/ubuntu-python"
+ExecStop=-/usr/bin/docker kill pythondev-%i
+ExecStopPost=-/usr/bin/docker rm pythondev-%i
