@@ -97,6 +97,7 @@ class DockerClient
     container.status = :created
     container
   rescue Docker::Error::NotFoundError => error
+    Rails.logger.info('create_container: Got Docker::Error::NotFoundError: ' + error)
     destroy_container(container)
     #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
@@ -176,7 +177,7 @@ class DockerClient
       timeout = @execution_environment.permitted_execution_time.to_i # seconds
       sleep(timeout)
       if container.status != :returned
-        Rails.logger.info("Killing container after timeout of " + timeout.to_s + " seconds.")
+        Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
         # send timeout to the tubesock socket
         if(@tubesock)
           @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
@@ -187,6 +188,7 @@ class DockerClient
   end
 
   def exit_container(container)
+    Rails.logger.debug('exiting container ' + container.to_s)
     # exit the timeout thread if it is still alive
     if(@thread && @thread.alive?)
       @thread.exit
@@ -196,6 +198,7 @@ class DockerClient
   end
 
   def kill_container(container)
+    Rails.logger.info('killing container ' + container.to_s)
     # remove container from pool, then destroy it
     if (DockerContainerPool.config[:active])
       DockerContainerPool.remove_from_all_containers(container, @execution_environment)
@@ -215,7 +218,7 @@ class DockerClient
     """
     Run commands by attaching a websocket to Docker.
     """
-    command = submission.execution_environment.send(:"run_command") % command_substitutions(filename)
+    command = submission.execution_environment.run_command % command_substitutions(filename)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_websocket_command(command, create_workspace_files, block)
   end
@@ -224,7 +227,7 @@ class DockerClient
     """
     Stick to existing Docker API with exec command.
     """
-    command = submission.execution_environment.send(:"test_command") % command_substitutions(filename)
+    command = submission.execution_environment.test_command % command_substitutions(filename)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_command(command, create_workspace_files, block)
   end
@@ -282,6 +285,7 @@ class DockerClient
   end
 
   def self.return_container(container, execution_environment)
+    Rails.logger.debug('returning container ' + container.to_s)
     clean_container_workspace(container)
     DockerContainerPool.return_container(container, execution_environment)
     container.status = :returned
