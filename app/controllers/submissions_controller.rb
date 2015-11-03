@@ -103,7 +103,7 @@ class SubmissionsController < ApplicationController
         socket = result[:socket]
 
         socket.on :message do |event|
-          Rails.logger.info("Docker sending: " + event.data)
+          Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + event.data)
           handle_message(event.data, tubesock)
         end
 
@@ -112,7 +112,7 @@ class SubmissionsController < ApplicationController
         end
 
         tubesock.onmessage do |data|
-          Rails.logger.debug("Client sending: " + data)
+          Rails.logger.info(Time.now.getutc.to_s + ": Client sending: " + data)
           # Check wether the client send a JSON command and kill container
           # if the command is 'exit', send it to docker otherwise.
           begin
@@ -122,9 +122,11 @@ class SubmissionsController < ApplicationController
               @docker_client.exit_container(result[:container])
             else
               socket.send data
+              Rails.logger.info('Sent the received data to docker:' + data)
             end
           rescue JSON::ParserError
             socket.send data
+            Rails.logger.info('Sent the received data to docker:' + data)
           end
         end
       else
@@ -157,6 +159,7 @@ class SubmissionsController < ApplicationController
     begin
       parsed = JSON.parse(message)
       socket.send_data message
+      Rails.logger.info('parse_message sent: ' + message)
     rescue JSON::ParserError => e
       # Check wether the message contains multiple lines, if true try to parse each line
       if ((recursive == true) && (message.include? "\n"))
@@ -166,6 +169,7 @@ class SubmissionsController < ApplicationController
       else
         parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>message}
         socket.send_data JSON.dump(parsed)
+        Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))
       end
     end
   end
