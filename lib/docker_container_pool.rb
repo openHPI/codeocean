@@ -83,10 +83,13 @@ class DockerContainerPool
   def self.refill_for_execution_environment(execution_environment)
     refill_count = [execution_environment.pool_size - @all_containers[execution_environment.id].length, config[:refill][:batch_size]].min
     if refill_count > 0
-      Rails.logger.info('adding ' + refill_count.to_s + ' containers for  ' +  execution_environment.name )
+      Rails.logger.info('Adding ' + refill_count.to_s + ' containers for execution_environment ' +  execution_environment.name )
       c = refill_count.times.map { create_container(execution_environment) }
+      Rails.logger.debug('Created containers: ' + c.to_s )
       @containers[execution_environment.id] += c
       @all_containers[execution_environment.id] += c
+      Rails.logger.debug('@containers ' + @containers.object_id.to_s + ' has:'+ @containers[execution_environment.id].to_s)
+      Rails.logger.debug('@all_containers '  + @containers.object_id.to_s + ' has:'+ @all_containers[execution_environment.id].to_s)
       #refill_count.times.map { create_container(execution_environment) }
     end
 

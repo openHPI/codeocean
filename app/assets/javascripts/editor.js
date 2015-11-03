@@ -1127,6 +1127,10 @@ $(function() {
 
   var initTurtle = function() {
       // todo guard clause if turtle is not required for the current exercise
+
+      // clear canvas
+      // turtlecanvas.getContext("2d").clearRect(0, 0, turtlecanvas.width, turtlecanvas.height);
+
       turtlescreen = new Turtle(websocket, turtlecanvas);
       if ($('#run').isPresent()) {
         $('#run').bind('click', hideCanvas);

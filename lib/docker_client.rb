@@ -218,7 +218,7 @@ class DockerClient
     """
     Run commands by attaching a websocket to Docker.
     """
-    command = submission.execution_environment.send(:"run_command") % command_substitutions(filename)
+    command = submission.execution_environment.run_command % command_substitutions(filename)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_websocket_command(command, create_workspace_files, block)
   end
@@ -227,7 +227,7 @@ class DockerClient
     """
     Stick to existing Docker API with exec command.
     """
-    command = submission.execution_environment.send(:"test_command") % command_substitutions(filename)
+    command = submission.execution_environment.test_command % command_substitutions(filename)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_command(command, create_workspace_files, block)
   end
