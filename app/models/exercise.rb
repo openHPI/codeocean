@@ -37,6 +37,11 @@ class Exercise < ActiveRecord::Base
     else 0 end
   end
 
+  def average_number_of_submissions
+    user_count = internal_users.distinct.count + external_users.distinct.count
+    return user_count == 0 ? 0 : submissions.count() / user_count.to_f()
+  end
+
   def average_working_time
     self.class.connection.execute("""
       SELECT avg(working_time) as average_time
