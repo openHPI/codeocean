@@ -21,6 +21,6 @@ h1 = @exercise
           tr
             - submissions = @exercise.submissions.where('user_id=?', user.id)
             td = "#{user.name} (#{user.email})"
-            td = submissions.maximum('score')
+            td = submissions.maximum('score') or 0
             td = submissions.count('id')
             td = @exercise.average_working_time_for(user.id) or 0
