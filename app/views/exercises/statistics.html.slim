@@ -23,5 +23,4 @@ h1 = @exercise
             td = "#{user.name} (#{user.email})"
             td = submissions.maximum('score')
             td = submissions.count('id')
-            - seconds = submissions.maximum('created_at') - submissions.minimum('created_at')
-            td = "#{distance_of_time_in_words(seconds)} (#{seconds})"
+            td = @exercise.average_working_time_for(user.id) or 0
