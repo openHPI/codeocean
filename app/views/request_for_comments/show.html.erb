@@ -2,9 +2,15 @@
   <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exercise_id) %></h4>
   <p class="list-group-item-text">
       <%
-
-           user = @request_for_comment.user
-
+        user = @request_for_comment.user
+        submission_id =  ActiveRecord::Base.connection.execute("select id from submissions
+          where exercise_id =
+          #{@request_for_comment.exercise_id} AND
+          user_id =  #{@request_for_comment.user_id} AND
+          '#{@request_for_comment.created_at}' > created_at
+          order by created_at desc
+          limit 1").first['id'].to_i
+        submission = Submission.find(submission_id)
       %>
     <%= user %> | <%= @request_for_comment.requested_at %>
   </p>
@@ -13,36 +19,34 @@
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
 -->
-<div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.file_id%>'><%= CodeOcean::File.find(@request_for_comment.file_id).content %>
-</div>
+<% submission.files.each do |file| %>
+  <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %>
+  <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>'><%= file.content %>
+  </div>
+<% end %>
 
 <script type="text/javascript">
   //(function() {
-    var commentitor = $('#commentitor');
+    var commentitor = $('.editor');
     var userid = commentitor.data('user-id');
-    var fileid = commentitor.data('file-id');
 
-    var inputHtml = ''
-    //inputHtml += '<form class="form">'
-    //inputHtml +=   '<div class="form-group">'
-    //inputHtml +=    '<p style="display:inline-block"><%= t("exercises.implement.comment.line") %></p>'
-    //inputHtml +=    '<input type="number" class="form-control" id="lineInput" placeholder="1" required>'
-    //inputHtml +=  '</div>'
-    inputHtml +=  '<div class="input-group">'
-    //inputHtml +=    '<p style="display:inline-block"><%= t("exercises.implement.comment.a_comment") %></p>'
-    inputHtml +=    '<input type="text" class="form-control" id="commentInput" placeholder="I\'d suggest a variable here" required>'
-    inputHtml +=    '<span class="input-group-btn"><button id="submitComment" class="btn btn-default"><%= t("exercises.implement.comment.addComment") %>!</button></span>'
-    inputHtml +=  '</div>'
-    //inputHtml +='</form>'
+    commentitor.each(function (index, editor) {
+      currentEditor = ace.edit(editor);
+      currentEditor.setReadOnly(true);
 
+      setAnnotations(currentEditor, $(editor).data('file-id'));
+    });
 
-    commentitor = ace.edit(commentitor[0]);
-    commentitor.setReadOnly(true);
+    function setAnnotations(editor, fileid) {
+      var session = editor.getSession()
 
-    setAnnotations();
-
-    function setAnnotations() {
-      var session = commentitor.getSession()
+      var inputHtml = ''
+      inputHtml += '<div class="input-group">'
+      inputHtml +=   '<input type="text" class="form-control" id="commentInput' + fileid + '" '
+      inputHtml +=     'placeholder="I\'d suggest a variable here" required>'
+      inputHtml +=   '<span class="input-group-btn"><button id="submitComment' + fileid + '" '
+      inputHtml +=     'class="btn btn-default"><%= t("exercises.implement.comment.addComment") %>!</button></span>'
+      inputHtml += '</div>'
 
       var jqrequest = $.ajax({
           dataType: 'json',
@@ -60,28 +64,26 @@ do not put a carriage return in the line below. it will be present in the presen
           comment.text = comment.username + ": " + comment.text
         })
 
-        commentitor.getSession().setAnnotations(response)
+        editor.getSession().setAnnotations(response)
 
-        //$('.ace_gutter-layer').data('container', '.ui-front')
-        $('.ace_gutter-cell').popover({
+        $(editor.container).find('.ace_gutter-cell').popover({
           title: 'Add a comment',
           html: true,
           content: inputHtml,
           position: 'right',
           trigger: 'focus click'
         }).on('shown.bs.popover', function() {
-          $('#commentInput').focus()
-          $('#submitComment').click(addComment);
-          console.log($(this).text())
-          $('#commentInput').data('line', $(this).text())
+          $('#commentInput' + fileid).focus()
+          $('#submitComment' + fileid).click(_.partial(addComment, editor, fileid));
+          $('#commentInput' + fileid).data('line', $(this).text())
         })
       })
     }
 
-    function addComment() {
-      var commentInput = $('#commentInput');
+    function addComment(editor, fileid) {
+      var commentInput = $('#commentInput' + fileid);
       var comment = commentInput.val()
-      var line = $('#commentInput').data('line')
+      var line = $('#commentInput' + fileid).data('line')
 
       if (line == '' || comment == '') {
         return
@@ -102,7 +104,7 @@ do not put a carriage return in the line below. it will be present in the presen
         dataType: 'json',
         method: 'POST',
         url:  "/comments"
-      }).done(setAnnotations)
+      }).done(setAnnotations(editor, fileid))
 
       $('.ace_gutter-cell').popover('hide')
     }
