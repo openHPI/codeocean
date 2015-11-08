@@ -174,15 +174,20 @@ class DockerClient
     as it is impossible to determine whether further input is requested.
     """
     @thread = Thread.new do
-      timeout = @execution_environment.permitted_execution_time.to_i # seconds
-      sleep(timeout)
-      if container.status != :returned
-        Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
-        # send timeout to the tubesock socket
-        if(@tubesock)
-          @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
+      begin
+        timeout = @execution_environment.permitted_execution_time.to_i # seconds
+        sleep(timeout)
+        if container.status != :returned
+          Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
+          # send timeout to the tubesock socket
+          if(@tubesock)
+            @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
+          end
+          kill_container(container)
         end
-        kill_container(container)
+      ensure
+        #guarantee that the thread is releasing the DB connection after it is done
+        ActiveRecord::Base.connectionpool.releaseconnection
       end
     end
   end
