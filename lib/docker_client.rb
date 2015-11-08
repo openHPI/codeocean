@@ -303,7 +303,7 @@ class DockerClient
       output = container.exec(['bash', '-c', command])
       Rails.logger.info "output from container.exec"
       Rails.logger.info output
-      result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join, stderr: output[1].join}
+      result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'), stderr: output[1].join.force_encoding('utf-8')}
     end
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
