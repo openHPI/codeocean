@@ -288,7 +288,7 @@ de:
       failure: Fehlerhafte E-Mail oder Passwort.
       success: Sie haben sich erfolgreich angemeldet.
     create_through_lti:
-      session_with_outcome: 'Nachdem Sie die Aufgabe bearbeitet haben, wird Ihre Bewertung an %{consumer} übermittelt.'
+      session_with_outcome: 'Bitte beachten Sie, dass zur Gutschrift der Punkte Ihr Code nach der Bearbeitung durch Klicken auf den Button "Code zur Bewertung abgeben" eingetragen werden muss.'
       session_without_outcome: 'Dies ist eine Übungs-Session. Ihre Bewertung wird nicht an %{consumer} übermittelt.'
     destroy:
       link: Abmelden

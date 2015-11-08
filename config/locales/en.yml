@@ -288,7 +288,7 @@ en:
       failure: Invalid email or password.
       success: Successfully signed in.
     create_through_lti:
-      session_with_outcome: 'After you have finished the exercise, your grade will be transmitted to %{consumer}.'
+      session_with_outcome: 'Please click "Submit Code for Assessment" after scoring to claim your sc.'
       session_without_outcome: 'This is a practice session. Your grade will not be transmitted to %{consumer}.'
     destroy:
       link: Sign out
