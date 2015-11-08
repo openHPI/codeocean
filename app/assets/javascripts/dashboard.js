@@ -2,6 +2,8 @@ $(function() {
   var CHART_START = window.vis ? vis.moment().add(-1, 'minute') : undefined;
   var DEFAULT_REFRESH_INTERVAL = 5000;
 
+  var refreshInterval;
+
   var dataset;
   var graph;
   var groups;
@@ -46,17 +48,21 @@ $(function() {
   };
 
   var refreshData = function(callback) {
-    var jqxhr = $.ajax({
-      dataType: 'json',
-      method: 'GET'
-    });
-    jqxhr.done(function(response) {
-      (callback || _.noop)(response);
-      setGroupVisibility(response);
-      updateChartData(response);
-      updateTable(response);
-      requestAnimationFrame(refreshChart);
-    });
+    if (! $.isController('dashboard')) {
+      clearInterval(refreshInterval);
+    } else {
+      var jqxhr = $.ajax({
+        dataType: 'json',
+        method: 'GET'
+      });
+      jqxhr.done(function(response) {
+        (callback || _.noop)(response);
+        setGroupVisibility(response);
+        updateChartData(response);
+        updateTable(response);
+        requestAnimationFrame(refreshChart);
+      });
+    }
   };
 
   var setGroupVisibility = function(response) {
@@ -101,6 +107,7 @@ $(function() {
     initializeChart();
     refreshData();
     var refresh_interval = location.search.match(/interval=(\d+)/) ? parseInt(RegExp.$1) : DEFAULT_REFRESH_INTERVAL;
-    setInterval(refreshData, refresh_interval);
+    refreshInterval = setInterval(refreshData, refresh_interval);
   }
+
 });
