@@ -4,6 +4,14 @@
       <%
 
            user = @request_for_comment.user
+           submission_id =  self.class.connection.execute("select id from submissions
+           where exercise_id =
+           #{@request_for_comment.exercise_id} AND
+           user_id =  #{@request_for_comment.user_id} AND
+           #{@request_for_comment.user_id} > created_at
+           order by created_at desc
+           limit 1").first['id'].to_i
+           submission = Submission.find(submission_id)
 
       %>
     <%= user %> | <%= @request_for_comment.requested_at %>
