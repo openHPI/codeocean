@@ -174,7 +174,7 @@ class DockerClient
     as it is impossible to determine whether further input is requested.
     """
     @thread = Thread.new do
-      begin
+      #begin
         timeout = @execution_environment.permitted_execution_time.to_i # seconds
         sleep(timeout)
         if container.status != :returned
@@ -185,10 +185,10 @@ class DockerClient
           end
           kill_container(container)
         end
-      ensure
-        #guarantee that the thread is releasing the DB connection after it is done
-        ActiveRecord::Base.connectionpool.releaseconnection
-      end
+      # ensure
+        # #guarantee that the thread is releasing the DB connection after it is done
+        # ActiveRecord::Base.connectionpool.releaseconnection
+      # end
     end
   end
 
