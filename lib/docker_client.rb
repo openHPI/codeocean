@@ -239,6 +239,7 @@ class DockerClient
   end
 
   def self.find_image_by_tag(tag)
+    # todo: cache this.
     Docker::Image.all.detect { |image| image.info['RepoTags'].flatten.include?(tag) }
   end
 
@@ -252,8 +253,10 @@ class DockerClient
 
   def initialize(options = {})
     @execution_environment = options[:execution_environment]
-    @image = self.class.find_image_by_tag(@execution_environment.docker_image)
-    fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
+    # todo: eventually re-enable this if it is cached. But in the end, we do not need this.
+    # docker daemon got much too much load. all not 100% necessary calls to the daemon were removed.
+    #@image = self.class.find_image_by_tag(@execution_environment.docker_image)
+    #fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
   end
 
   def self.initialize_environment
@@ -261,7 +264,9 @@ class DockerClient
       fail(Error, 'Docker configuration missing!')
     end
     Docker.url = config[:host] if config[:host]
-    check_availability!
+    # todo: availability check disabled for performance reasons. Reconsider if this is necessary.
+    # docker daemon got much too much load. all not 100% necessary calls to the daemon were removed.
+    # check_availability!
     FileUtils.mkdir_p(LOCAL_WORKSPACE_ROOT)
   end
 
