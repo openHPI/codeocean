@@ -162,6 +162,7 @@ class DockerClient
       @socket ||= create_socket(@container)
       # Newline required to flush
       @socket.send command + "\n"
+      Rails.logger.info('Sent command: ' + command.to_s)
       {status: :container_running, socket: @socket, container: @container}
     else
       {status: :container_depleted}
