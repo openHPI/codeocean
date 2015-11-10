@@ -174,22 +174,22 @@ class DockerClient
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
     """
-    @thread = Thread.new do
-      #begin
-        timeout = @execution_environment.permitted_execution_time.to_i # seconds
-        sleep(timeout)
-        if container.status != :returned
-          Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
-          # send timeout to the tubesock socket
-          if(@tubesock)
-            @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
+    begin
+      @thread = Thread.new do
+          timeout = @execution_environment.permitted_execution_time.to_i # seconds
+          sleep(timeout)
+          if container.status != :returned
+            Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
+            # send timeout to the tubesock socket
+            if(@tubesock)
+              @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
+            end
+            kill_container(container)
           end
-          kill_container(container)
-        end
-      # ensure
-        # #guarantee that the thread is releasing the DB connection after it is done
-        # ActiveRecord::Base.connectionpool.releaseconnection
-      # end
+      end
+    ensure
+      # guarantee that the thread is releasing the DB connection after it is done
+      ActiveRecord::Base.connectionpool.releaseconnection
     end
   end
 
