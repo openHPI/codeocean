@@ -6,6 +6,7 @@ h1 = ExecutionEnvironment.model_name.human(count: 2)
       tr
         th = t('activerecord.attributes.execution_environment.name')
         th = t('activerecord.attributes.execution_environment.user')
+        th = t('activerecord.attributes.execution_environment.pool_size')
         th = t('activerecord.attributes.execution_environment.memory_limit')
         th = t('activerecord.attributes.execution_environment.network_enabled')
         th = t('activerecord.attributes.execution_environment.permitted_execution_time')
@@ -16,6 +17,7 @@ h1 = ExecutionEnvironment.model_name.human(count: 2)
         tr
           td = execution_environment.name
           td = link_to(execution_environment.author, execution_environment.author)
+          td = execution_environment.pool_size
           td = execution_environment.memory_limit
           td = symbol_for(execution_environment.network_enabled)
           td = execution_environment.permitted_execution_time
