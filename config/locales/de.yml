@@ -248,6 +248,7 @@ de:
       score: Punktzahl
       runs: Versuche
       worktime: Arbeitszeit
+      average_worktime: Durchschnittliche Arbeitszeit
       internal_users: Interne Nutzer
       external_user: Externe Nutzer
     submit:
