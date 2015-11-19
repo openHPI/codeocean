@@ -35,6 +35,7 @@ $(function() {
 
   var ENTER_KEY_CODE = 13;
 
+  var flowrOutputBuffer = "";
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
   var ajax = function(options) {
@@ -317,47 +318,37 @@ $(function() {
     showTab(2);
   };
 
-  var stderrOutput = '';
   // activate flowr only for half of the audience
-  var isFlowrEnabled = parseInt($('#editor').data('user-id'))%2 == 0;
-  var handleStderrOutputForFlowr = function(event) {
-  if (!isFlowrEnabled) return
-    var json = JSON.parse(event.data);
+  var isFlowrEnabled = true;//parseInt($('#editor').data('user-id'))%2 == 0;
+  var handleStderrOutputForFlowr = function() {
+    if (!isFlowrEnabled) return
 
-    if (json.stderr) {
-      stderrOutput += json.stderr;
-    } else if (json.code) {
-      if (stderrOutput == '') {
-        return;
-      }
-
-      var flowrUrl = $('#flowrHint').data('url');
-      var flowrHintBody = $('#flowrHint .panel-body');
-      var queryParameters = {
-        query: stderrOutput
-      }
-
-      flowrHintBody.empty();
-
-      jQuery.getJSON(flowrUrl, queryParameters, function(data) {
-        for (var question in data.queryResults) {
-          var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question);
-          var resultTile = $(collapsibleTileHtml);
-
-          resultTile.find('h4 > a').text(data.queryResults[question].title + ' | Found via ' + data.queryResults[question].source);
-          resultTile.find('.panel-body').html(data.queryResults[question].body);
-          resultTile.find('.panel-body').append('<a href="' + data.queryResults[question].url  + '" class="btn btn-primary btn-block">Open this question</a>');
-
-          flowrHintBody.append(resultTile);
-        }
-
-        if (data.queryResults.length !== 0) {
-          $('#flowrHint').fadeIn();
-        }
-      })
-
-      stderrOutput = '';
+    var flowrUrl = $('#flowrHint').data('url');
+    var flowrHintBody = $('#flowrHint .panel-body');
+    var queryParameters = {
+      query: flowrOutputBuffer
     }
+
+    flowrHintBody.empty();
+
+    jQuery.getJSON(flowrUrl, queryParameters, function(data) {
+      jQuery.each(data.queryResults, function(index, question) {
+        var collapsibleTileHtml = flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question);
+        var resultTile = $(collapsibleTileHtml);
+
+        resultTile.find('h4 > a').text(question.title + ' | Found via ' + question.source);
+        resultTile.find('.panel-body').html(question.body);
+        resultTile.find('.panel-body').append('<a href="' + question.url  + '" class="btn btn-primary btn-block">Open this question</a>');
+
+        flowrHintBody.append(resultTile);
+      });
+
+      if (data.queryResults.length !== 0) {
+        $('#flowrHint').fadeIn();
+      }
+    })
+
+    flowrOutputBuffer = '';
   };
 
   var handleTestResponse = function(response) {
@@ -741,6 +732,7 @@ $(function() {
     } else if (output.stdout) {
       //if (output_mode_is_streaming){
       element.addClass('text-success').append(output.stdout);
+      flowrOutputBuffer += output.stdout;
       //}else{
       //  element.addClass('text-success');
       //  element.data('content_buffer' , element.data('content_buffer') + output.stdout);
@@ -1171,6 +1163,7 @@ $(function() {
             break;
         case 'exit':
             killWebsocketAndContainer();
+            handleStderrOutputForFlowr();
             break;
         case 'timeout':
             // just show the timeout message here. Another exit command is sent by the rails backend when the socket to the docker container closes.
