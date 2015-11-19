@@ -162,6 +162,7 @@ class DockerClient
       @socket ||= create_socket(@container)
       # Newline required to flush
       @socket.send command + "\n"
+      Rails.logger.info('Sent command: ' + command.to_s)
       {status: :container_running, socket: @socket, container: @container}
     else
       {status: :container_depleted}
@@ -173,18 +174,23 @@ class DockerClient
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
     """
-    @thread = Thread.new do
-      timeout = @execution_environment.permitted_execution_time.to_i # seconds
-      sleep(timeout)
-      if container.status != :returned
-        Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
-        # send timeout to the tubesock socket
-        if(@tubesock)
-          @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
-        end
-        kill_container(container)
+    #begin
+      @thread = Thread.new do
+          timeout = @execution_environment.permitted_execution_time.to_i # seconds
+          sleep(timeout)
+          if container.status != :returned
+            Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
+            # send timeout to the tubesock socket
+            if(@tubesock)
+              @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
+            end
+            kill_container(container)
+          end
       end
-    end
+    #ensure
+      # guarantee that the thread is releasing the DB connection after it is done
+      # ActiveRecord::Base.connectionpool.releaseconnection
+    #end
   end
 
   def exit_container(container)
@@ -233,6 +239,7 @@ class DockerClient
   end
 
   def self.find_image_by_tag(tag)
+    # todo: cache this.
     Docker::Image.all.detect { |image| image.info['RepoTags'].flatten.include?(tag) }
   end
 
@@ -246,8 +253,10 @@ class DockerClient
 
   def initialize(options = {})
     @execution_environment = options[:execution_environment]
-    @image = self.class.find_image_by_tag(@execution_environment.docker_image)
-    fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
+    # todo: eventually re-enable this if it is cached. But in the end, we do not need this.
+    # docker daemon got much too much load. all not 100% necessary calls to the daemon were removed.
+    #@image = self.class.find_image_by_tag(@execution_environment.docker_image)
+    #fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
   end
 
   def self.initialize_environment
@@ -255,7 +264,9 @@ class DockerClient
       fail(Error, 'Docker configuration missing!')
     end
     Docker.url = config[:host] if config[:host]
-    check_availability!
+    # todo: availability check disabled for performance reasons. Reconsider if this is necessary.
+    # docker daemon got much too much load. all not 100% necessary calls to the daemon were removed.
+    # check_availability!
     FileUtils.mkdir_p(LOCAL_WORKSPACE_ROOT)
   end
 
@@ -298,7 +309,7 @@ class DockerClient
       output = container.exec(['bash', '-c', command])
       Rails.logger.info "output from container.exec"
       Rails.logger.info output
-      result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join, stderr: output[1].join}
+      result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'), stderr: output[1].join.force_encoding('utf-8')}
     end
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)

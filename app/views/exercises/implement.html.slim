@@ -4,7 +4,7 @@
 
     span.badge.pull-right.score
 
-    p.lead = @exercise.description
+    p.lead = render_markdown(@exercise.description)
 
     #alert.alert.alert-danger role='alert'
       h4 = t('.alert.title')
