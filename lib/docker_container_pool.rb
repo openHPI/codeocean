@@ -22,6 +22,7 @@ class DockerContainerPool
     @all_containers[execution_environment.id]-=[container]
     if(@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id]-=[container]
+      Rails.logger.debug('Removed container ' + container.to_s + ' from all_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in all_pool ' + @all_containers[execution_environment.id].size)
     end
   end
 
@@ -29,6 +30,7 @@ class DockerContainerPool
     @all_containers[execution_environment.id]+=[container]
     if(!@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id]+=[container]
+      Rails.logger.debug('Added container ' + container.to_s + ' to all_pool for execution environment ' + execution_environment.to_s + '. Containers in all_pool: ' + @all_containers[execution_environment.id].size)
     else
       Rails.logger.info('failed trying to add existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
     end
@@ -85,11 +87,12 @@ class DockerContainerPool
     if refill_count > 0
       Rails.logger.info('Adding ' + refill_count.to_s + ' containers for execution_environment ' +  execution_environment.name )
       c = refill_count.times.map { create_container(execution_environment) }
-      Rails.logger.debug('Created containers: ' + c.to_s )
+      Rails.logger.info('Created containers: ' + c.to_s )
+      #c.each { |container| return_container(container, execution_environment) }
       @containers[execution_environment.id] += c
       @all_containers[execution_environment.id] += c
-      Rails.logger.debug('@containers ' + @containers.object_id.to_s + ' has:'+ @containers[execution_environment.id].to_s)
-      Rails.logger.debug('@all_containers '  + @containers.object_id.to_s + ' has:'+ @all_containers[execution_environment.id].to_s)
+      Rails.logger.debug('@containers  for ' + execution_environment.name.to_s + ' (' + @containers.object_id.to_s + ') has the following content: '+ @containers[execution_environment.id].to_s)
+      Rails.logger.debug('@all_containers for '  + execution_environment.name.to_s + ' (' + @all_containers.object_id.to_s + ') has the following content: ' + @all_containers[execution_environment.id].to_s)
       #refill_count.times.map { create_container(execution_environment) }
     end
 
