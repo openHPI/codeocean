@@ -71,7 +71,7 @@ class DockerContainerPool
   end
 
   def self.refill
-    ExecutionEnvironment.where('pool_size > 0').each do |execution_environment|
+    ExecutionEnvironment.where('pool_size > 0').order(pool_size: :desc).each do |execution_environment|
       if config[:refill][:async]
         Concurrent::Future.execute { refill_for_execution_environment(execution_environment) }
       else
