@@ -19,7 +19,7 @@ gem 'kramdown'
 gem 'newrelic_rpm'
 gem 'pg', platform: :ruby
 gem 'pry'
-gem 'puma'
+gem 'puma', '~> 2.15.3'
 gem 'pundit'
 gem 'rails', '~> 4.1.2'
 gem 'rails-i18n', '~> 4.0.0'

@@ -18,8 +18,8 @@ production:
     active: true
     refill:
       async: false
-      batch_size: 32
-      interval: 30
+      batch_size: 8
+      interval: 15
       timeout: 60
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   ws_host: ws://localhost:4243
