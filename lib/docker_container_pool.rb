@@ -1,6 +1,6 @@
 require 'concurrent/future'
 require 'concurrent/timer_task'
-require 'concurrent/utilities'
+
 
 class DockerContainerPool
 
