@@ -13,4 +13,10 @@ class ExternalUsersController < ApplicationController
     @user = ExternalUser.find(params[:id])
     authorize!
   end
+
+  def statistics
+    @user = ExternalUser.find(params[:id])
+    authorize!
+  end
+
 end

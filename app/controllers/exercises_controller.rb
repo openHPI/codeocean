@@ -7,6 +7,7 @@ class ExercisesController < ApplicationController
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
   before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit, :reload]
+  before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_teams, only: [:create, :edit, :new, :update]
 
@@ -125,6 +126,14 @@ class ExercisesController < ApplicationController
   end
   private :set_exercise
 
+  def set_external_user
+    if params[:external_user_id]
+      @external_user = ExternalUser.find(params[:external_user_id])
+      authorize!
+    end
+  end
+  private :set_exercise
+
   def set_file_types
     @file_types = FileType.all.order(:name)
   end
@@ -143,6 +152,11 @@ class ExercisesController < ApplicationController
   end
 
   def statistics
+    if(@external_user)
+      render 'exercises/external_users/statistics'
+    else
+      render 'exercises/statistics'
+    end
   end
 
   def submit
