@@ -4,7 +4,11 @@ h1 = "#{@exercise} (external user #{@external_user})"
 - if current_submission
     - files = current_submission.files.to_a
 
-    .hidden data-submissions=ActiveSupport::JSON.encode(submissions)
+    - all_files = []
+    - submissions.each do |submission|
+        - all_files.push(ActiveSupport::JSON.encode(submission.files))
+
+    .hidden#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=all_files
 
     #editor.row data-exercise-id=@exercise.id data-message-depleted=t('exercises.editor.depleted') data-user-id=@external_user.id
       div class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') id='files' data-entries=FileTree.new(files).to_js_tree
