@@ -1,22 +1,26 @@
 h1 = "#{@exercise} (external user #{@external_user})"
-- submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id).to_a
-- current_index = submissions.length - 1
-- current_submission = submissions[current_index]
-- files = current_submission.files.to_a
+- submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
+- current_submission = submissions.last
+- if current_submission
+    - files = current_submission.files.to_a
 
-#editor.row data-exercise-id=@exercise.id data-message-depleted=t('exercises.editor.depleted') data-user-id=@external_user.id
-  div class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') id='files' data-entries=FileTree.new(files).to_js_tree
-  div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
-    - files.each do |file|
-      = render('editor_frame', exercise: @exercise, file: file)
+    .hidden data-submissions=ActiveSupport::JSON.encode(submissions)
 
-#slider
-    input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=current_index
-    datalist#datapoints
-        - index=0
-        - submissions.each do |submission|
-            option data-submission=submission
-                =index
-            - index += 1
+    #editor.row data-exercise-id=@exercise.id data-message-depleted=t('exercises.editor.depleted') data-user-id=@external_user.id
+      div class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') id='files' data-entries=FileTree.new(files).to_js_tree
+      div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
+        - files.each do |file|
+          = render('editor_frame', exercise: @exercise, file: file)
 
-#timeline
+    #slider
+        input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=0
+        datalist#datapoints
+            - index=0
+            - submissions.each do |submission|
+                option data-submission=submission
+                    =index
+                - index += 1
+
+    #timeline
+- else
+    p = t('.no_data_available')
