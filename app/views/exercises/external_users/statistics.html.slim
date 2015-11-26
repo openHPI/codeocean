@@ -1,1 +1,11 @@
-h1 = "#{@exercise} for external user #{@external_user}"
+h1 = "#{@exercise} (external user #{@external_user})"
+
+#editor.row data-exercise-id=@exercise.id data-message-depleted=t('exercises.editor.depleted') data-user-id=@external_user.id
+  div class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') id='files' data-entries=FileTree.new(@exercise.files).to_js_tree
+  div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
+    - @exercise.files.each do |file|
+      = render('editor_frame', exercise: @exercise, file: file)
+
+#slider
+
+#timeline
