@@ -15,7 +15,7 @@ $(function() {
 
     slider.on('change', function(event) {
       var currentSubmission = slider.val();
-      var currentFiles = JSON.parse(files[currentSubmission]);
+      var currentFiles = files[currentSubmission];
 
       editors.each(function(index, editor) {
         currentEditor = ace.edit(editor);

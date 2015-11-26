@@ -2,29 +2,29 @@ h1 = "#{@exercise} (external user #{@external_user})"
 - submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
 - current_submission = submissions.last
 - if current_submission
-    - files = current_submission.files.to_a
+  - initial_files = current_submission.files.to_a
 
-    - all_files = []
-    - submissions.each do |submission|
-        - all_files.push(ActiveSupport::JSON.encode(submission.files))
+  - all_files = []
+  - submissions.each do |submission|
+    - all_files.push(submission.files)
 
-    .hidden#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=all_files
+  .hidden#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files)
 
-    #editor.row data-exercise-id=@exercise.id data-message-depleted=t('exercises.editor.depleted') data-user-id=@external_user.id
-      div class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') id='files' data-entries=FileTree.new(files).to_js_tree
-      div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
-        - files.each do |file|
-          = render('editor_frame', exercise: @exercise, file: file)
+  #editor.row data-exercise-id=@exercise.id data-message-depleted=t('exercises.editor.depleted') data-user-id=@external_user.id
+    #files class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') data-entries=FileTree.new(initial_files).to_js_tree
+    div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
+      - initial_files.each do |file|
+        = render('editor_frame', exercise: @exercise, file: file)
 
-    #slider
-        input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=0
-        datalist#datapoints
-            - index=0
-            - submissions.each do |submission|
-                option data-submission=submission
-                    =index
-                - index += 1
+  #slider
+    input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=0
+    datalist#datapoints
+      - index=0
+      - submissions.each do |submission|
+        option data-submission=submission
+          =index
+        - index += 1
 
-    #timeline
+  #timeline
 - else
-    p = t('.no_data_available')
+  p = t('.no_data_available')
