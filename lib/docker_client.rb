@@ -304,7 +304,12 @@ class DockerClient
 
   def self.return_container(container, execution_environment)
     Rails.logger.debug('returning container ' + container.to_s)
-    clean_container_workspace(container)
+    begin
+      clean_container_workspace(container)
+    rescue Docker::Error::NotFoundError => error
+      Rails.logger.info('return_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
+      Rails.logger.info('Nothing is done here additionally. The container will be exchanged upon its next retrieval.')
+    end
     DockerContainerPool.return_container(container, execution_environment)
     container.status = :returned
   end

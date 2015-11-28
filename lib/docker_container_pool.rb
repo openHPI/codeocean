@@ -22,7 +22,7 @@ class DockerContainerPool
     @all_containers[execution_environment.id]-=[container]
     if(@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id]-=[container]
-      Rails.logger.debug('Removed container ' + container.to_s + ' from all_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in all_pool ' + @all_containers[execution_environment.id].size)
+      Rails.logger.debug('Removed container ' + container.to_s + ' from all_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in all_pool ' + @all_containers[execution_environment.id].size.to_s)
     end
   end
 
@@ -30,7 +30,7 @@ class DockerContainerPool
     @all_containers[execution_environment.id]+=[container]
     if(!@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id]+=[container]
-      Rails.logger.debug('Added container ' + container.to_s + ' to all_pool for execution environment ' + execution_environment.to_s + '. Containers in all_pool: ' + @all_containers[execution_environment.id].size)
+      Rails.logger.debug('Added container ' + container.to_s + ' to all_pool for execution environment ' + execution_environment.to_s + '. Containers in all_pool: ' + @all_containers[execution_environment.id].size.to_s)
     else
       Rails.logger.info('failed trying to add existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
     end
@@ -59,9 +59,28 @@ class DockerContainerPool
       Rails.logger.debug('get_container fetched container  ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
       # just access and the following if we got a container. Otherwise, the execution_environment might be just created and not fully exist yet.
       if(container)
-        Rails.logger.debug('get_container remaining avail. containers:  ' + @containers[execution_environment.id].size.to_s)
-        Rails.logger.debug('get_container all container count: ' + @all_containers[execution_environment.id].size.to_s)
+        begin
+          # check whether the container is running. exited containers go to the else part.
+          # Dead containers raise a NotFOundError on the container.json call. This is handled in the rescue block.
+          if(container.json['State']['Running'])
+            Rails.logger.debug('get_container remaining avail. containers:  ' + @containers[execution_environment.id].size.to_s)
+            Rails.logger.debug('get_container all container count: ' + @all_containers[execution_environment.id].size.to_s)
+          else
+            Rails.logger.error('docker_container_pool.get_container retrieved a container not running. Container will be removed from list:  ' +  container.to_s)
+            remove_from_all_containers(container, execution_environment)
+            Rails.logger.error('Creating a new container and returning that.')
+            container = create_container(execution_environment)
+            DockerContainerPool.add_to_all_containers(container, execution_environment)
+          end
+        rescue Docker::Error::NotFoundError => error
+          Rails.logger.error('docker_container_pool.get_container rescued from Docker::Error::NotFoundError. Most likely, the container is not there any longer. Removing faulty entry from list: ' +  container.to_s)
+          remove_from_all_containers(container, execution_environment)
+          Rails.logger.error('Creating a new container and returning that.')
+          container = create_container(execution_environment)
+          DockerContainerPool.add_to_all_containers(container, execution_environment)
+        end
       end
+      # returning nil is no problem. then the pool is just depleted.
       container
     else
       create_container(execution_environment)
