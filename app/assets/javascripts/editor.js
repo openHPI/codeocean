@@ -411,6 +411,7 @@ $(function() {
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
+      editor.commands.bindKey("ctrl+alt+0", null);
       editors.push(editor);
       var session = editor.getSession();
       session.setMode($(element).data('mode'));
