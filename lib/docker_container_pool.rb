@@ -18,6 +18,14 @@ class DockerContainerPool
     @config ||= CodeOcean::Config.new(:docker).read(erb: true)[:pool]
   end
 
+  def self.containers
+    @containers
+  end
+
+  def self.all_containers
+    @all_containers
+  end
+
   def self.remove_from_all_containers(container, execution_environment)
     @all_containers[execution_environment.id]-=[container]
     if(@containers[execution_environment.id].include?(container))
