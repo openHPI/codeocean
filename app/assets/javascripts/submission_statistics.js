@@ -3,13 +3,16 @@ $(function() {
   var ACE_FILES_PATH = '/assets/ace/';
   var THEME = 'ace/theme/textmate';
 
+  var currentSubmission = 0;
   var active_file = undefined;
+  var fileTrees = []
 
   var showFirstFile = function() {
     var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
     var file_id = frame.find('.editor').data('file-id');
-    $('#files').jstree().select_node(file_id);
+    $(fileTrees[currentSubmission]).jstree().select_node(file_id);
     showFrame(frame);
+    showFileTree(currentSubmission);
   };
 
   var showFrame = function(frame) {
@@ -18,16 +21,24 @@ $(function() {
   };
 
   var initializeFileTree = function() {
-    $('#files').jstree($('#files').data('entries'));
-    $('#files').on('click', 'li.jstree-leaf', function() {
-      active_file = {
-        filename: $(this).text(),
-        id: parseInt($(this).attr('id'))
-      };
-      var frame = $('[data-file-id="' + active_file.id + '"]').parent();
-      showFrame(frame);
+    $('.files').each(function(index, element) {
+      fileTree = $(element).jstree($(element).data('entries'));
+      fileTree.on('click', 'li.jstree-leaf', function() {
+        active_file = {
+          filename: $(this).text(),
+          id: parseInt($(this).attr('id'))
+        };
+        var frame = $('[data-file-id="' + active_file.id + '"]').parent();
+        showFrame(frame);
+      });
+      fileTrees.push(fileTree);
     });
   };
+
+  var showFileTree = function(index) {
+    $('.files').hide();
+    $(fileTrees[index].context).show();
+  }
 
   if ($.isController('exercises') && $('#timeline').isPresent()) {
 
@@ -60,7 +71,8 @@ $(function() {
     });
 
     slider.on('change', function(event) {
-      var currentSubmission = slider.val();
+      currentSubmission = slider.val();
+      showFileTree(currentSubmission);
       var currentFiles = files[currentSubmission];
 
       editors.each(function(index, editor) {
