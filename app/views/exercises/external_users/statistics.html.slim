@@ -10,7 +10,7 @@ h1 = "#{@exercise} (external user #{@external_user})"
 
   .hidden#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files)
 
-  #editor.row
+  #stats-editor.row
     #files class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') data-entries=FileTree.new(initial_files).to_js_tree
     div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
       - initial_files.each do |file|
