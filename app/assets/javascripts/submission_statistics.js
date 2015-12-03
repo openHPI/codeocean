@@ -6,28 +6,31 @@ $(function() {
   var currentSubmission = 0;
   var active_file = undefined;
   var fileTrees = []
+  var editor = undefined;
 
-  var showFirstFile = function() {
-    $(fileTrees[currentSubmission]).jstree().select_node(active_file.file_id);
-    showActiveFrame();
+  var showActiveFile = function() {
+    var session = editor.getSession();
+    //session.setMode(active_file.file_type.editor_mode);
+    //session.setTabSize(active_file.file_type.indent_size);
+    session.setValue(active_file.content);
+    session.setUseSoftTabs(true);
+    session.setUseWrapMode(true);
+
     showFileTree(currentSubmission);
-  };
-
-  var showActiveFrame = function() {
-    var frame = $('.data[data-file-id="' + active_file.id + '"]').parent().find('.frame');
-    $('.frame').hide();
-    frame.show();
+    $(fileTrees[currentSubmission]).jstree().select_node(active_file.file_id);
   };
 
   var initializeFileTree = function() {
     $('.files').each(function(index, element) {
       fileTree = $(element).jstree($(element).data('entries'));
       fileTree.on('click', 'li.jstree-leaf', function() {
-        active_file = {
-          filename: $(this).text(),
-          id: parseInt($(this).attr('id'))
-        };
-        showActiveFrame()
+        var id = parseInt($(this).attr('id'))
+        _.each(files[currentSubmission], function(file) {
+          if (file.file_id === id) {
+            active_file = file;
+          }
+        });
+        showActiveFile();
       });
       fileTrees.push(fileTree);
     });
@@ -44,42 +47,26 @@ $(function() {
       ace.config.set(attribute, ACE_FILES_PATH);
     });
 
-    var editors = $('.editor');
     var slider = $('#slider>input');
     var submissions = $('#data').data('submissions');
     var files = $('#data').data('files');
 
-    editors.each(function(index, element) {
-      currentEditor = ace.edit(element);
-
-      var file_id = $(element).data('file-id');
-      var content = $('.editor-content[data-file-id=' + file_id + ']');
-
-      currentEditor.setShowPrintMargin(false);
-      currentEditor.setTheme(THEME);
-      currentEditor.$blockScrolling = Infinity;
-      currentEditor.setReadOnly(true);
-
-      var session = currentEditor.getSession();
-      session.setMode($(element).data('mode'));
-      session.setTabSize($(element).data('indent-size'));
-      session.setUseSoftTabs(true);
-      session.setUseWrapMode(true);
-      session.setValue(content.text());
-    });
+    editor = ace.edit('current-file');
+    editor.setShowPrintMargin(false);
+    editor.setTheme(THEME);
+    editor.$blockScrolling = Infinity;
+    editor.setReadOnly(true);
 
     slider.on('change', function(event) {
       currentSubmission = slider.val();
-      showFileTree(currentSubmission);
       var currentFiles = files[currentSubmission];
-      console.log(currentFiles);
       active_file = currentFiles[0];
-      showFirstFile();
+      showActiveFile();
     });
 
     active_file = files[0][0]
     initializeFileTree();
-    showFirstFile();
+    showActiveFile();
   }
 
 });
