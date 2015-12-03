@@ -10,11 +10,16 @@ h1 = "#{@exercise} (external user #{@external_user})"
 
   .hidden#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files)
 
-  #stats-editor.row
-    #files class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') data-entries=FileTree.new(initial_files).to_js_tree
-    div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
-      - initial_files.each do |file|
-        = render('editor_frame', exercise: @exercise, file: file)
+  - index = 0
+  - all_files.each do |files|
+    #stats-editor.row
+      .files class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') data-index=index data-entries=FileTree.new(files).to_js_tree
+      .frames class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
+        - files.each do |file|
+          .frame-container
+            = render('editor_frame', exercise: @exercise, file: file)
+            .hidden.data data-file-id=file.id
+    - index += 1
 
   #slider
     input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=0

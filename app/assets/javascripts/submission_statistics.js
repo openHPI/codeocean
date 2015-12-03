@@ -8,14 +8,13 @@ $(function() {
   var fileTrees = []
 
   var showFirstFile = function() {
-    var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
-    var file_id = frame.find('.editor').data('file-id');
-    $(fileTrees[currentSubmission]).jstree().select_node(file_id);
-    showFrame(frame);
+    $(fileTrees[currentSubmission]).jstree().select_node(active_file.file_id);
+    showActiveFrame();
     showFileTree(currentSubmission);
   };
 
-  var showFrame = function(frame) {
+  var showActiveFrame = function() {
+    var frame = $('.data[data-file-id="' + active_file.id + '"]').parent().find('.frame');
     $('.frame').hide();
     frame.show();
   };
@@ -28,8 +27,7 @@ $(function() {
           filename: $(this).text(),
           id: parseInt($(this).attr('id'))
         };
-        var frame = $('[data-file-id="' + active_file.id + '"]').parent();
-        showFrame(frame);
+        showActiveFrame()
       });
       fileTrees.push(fileTree);
     });
@@ -74,17 +72,12 @@ $(function() {
       currentSubmission = slider.val();
       showFileTree(currentSubmission);
       var currentFiles = files[currentSubmission];
-
-      editors.each(function(index, editor) {
-        currentEditor = ace.edit(editor);
-        fileContent = "";
-        if (currentFiles[index]) {
-          fileContent = currentFiles[index].content
-        }
-        currentEditor.getSession().setValue(fileContent);
-      });
+      console.log(currentFiles);
+      active_file = currentFiles[0];
+      showFirstFile();
     });
 
+    active_file = files[0][0]
     initializeFileTree();
     showFirstFile();
   }
