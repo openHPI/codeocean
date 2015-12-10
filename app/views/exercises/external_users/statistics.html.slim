@@ -16,9 +16,9 @@ h1 = "#{@exercise} (external user #{@external_user})"
       .files class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') data-index=index data-entries=FileTree.new(files).to_js_tree
       - index += 1
     div class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
-      #current-file.editor style="height: 400px"
+      #current-file.editor
 
-  #slider
+  #submissions-slider
     input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=0
     datalist#datapoints
       - index=0
@@ -28,5 +28,18 @@ h1 = "#{@exercise} (external user #{@external_user})"
         - index += 1
 
   #timeline
+    .table-responsive
+      table.table
+        thead
+          tr
+            - ['.time', '.cause', '.score'].each do |title|
+              th.header = t(title)
+        tbody
+          - submissions.each do |submission|
+            tr data-id=submission.id
+              td = submission.created_at.strftime("%F %T")
+              td = submission.cause
+              td = submission.score
+
 - else
   p = t('.no_data_available')

@@ -47,7 +47,7 @@ $(function() {
       ace.config.set(attribute, ACE_FILES_PATH);
     });
 
-    var slider = $('#slider>input');
+    var slider = $('#submissions-slider>input');
     var submissions = $('#data').data('submissions');
     var files = $('#data').data('files');
 

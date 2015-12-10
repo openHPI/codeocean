@@ -256,6 +256,9 @@ de:
     external_users:
       statistics:
         no_data_available: Keine Daten verfügbar.
+        time: Zeit
+        cause: Grund
+        score: Punktzahl
   files:
     roles:
       main_file: Hauptdatei
