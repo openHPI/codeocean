@@ -40,7 +40,7 @@ h1 = "#{@exercise} (external user #{@external_user})"
         tbody
           - submissions.each do |submission|
             tr data-id=submission.id
-              td = submission.created_at.strftime("%F %T")
+              td.clickable = submission.created_at.strftime("%F %T")
               td = submission.cause
               td = submission.score
 

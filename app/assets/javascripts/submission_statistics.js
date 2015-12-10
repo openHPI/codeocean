@@ -65,6 +65,14 @@ $(function() {
       fileTypeById[filetype.id] = filetype;
     });
 
+    $('tr[data-id]>.clickable').each(function(index, element) {
+      element = $(element);
+      element.click(function() {
+        slider.val(index);
+        slider.change()
+      });
+    });
+
     slider.on('change', function(event) {
       currentSubmission = slider.val();
       var currentFiles = files[currentSubmission];
