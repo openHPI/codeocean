@@ -19,7 +19,9 @@ $(function() {
     session.setUseWrapMode(true);
 
     showFileTree(currentSubmission);
-    $(fileTrees[currentSubmission]).jstree().select_node(active_file.file_id);
+    filetree = $(fileTrees[currentSubmission])
+    filetree.jstree("deselect_all");
+    filetree.jstree().select_node(active_file.file_id);
   };
 
   var initializeFileTree = function() {
@@ -76,7 +78,13 @@ $(function() {
     slider.on('change', function(event) {
       currentSubmission = slider.val();
       var currentFiles = files[currentSubmission];
-      active_file = currentFiles[0];
+      var fileIndex = 0;
+      _.each(currentFiles, function(file, index) {
+        if (file.name === active_file.name) {
+          fileIndex = index;
+        }
+      })
+      active_file = currentFiles[fileIndex];
       showActiveFile();
     });
 
