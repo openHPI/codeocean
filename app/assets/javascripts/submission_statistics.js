@@ -7,11 +7,13 @@ $(function() {
   var active_file = undefined;
   var fileTrees = []
   var editor = undefined;
+  var fileTypeById = {}
 
   var showActiveFile = function() {
     var session = editor.getSession();
-    //session.setMode(active_file.file_type.editor_mode);
-    //session.setTabSize(active_file.file_type.indent_size);
+    var fileType = fileTypeById[active_file.file_type_id]
+    session.setMode(fileType.editor_mode);
+    session.setTabSize(fileType.indent_size);
     session.setValue(active_file.content);
     session.setUseSoftTabs(true);
     session.setUseWrapMode(true);
@@ -50,12 +52,18 @@ $(function() {
     var slider = $('#submissions-slider>input');
     var submissions = $('#data').data('submissions');
     var files = $('#data').data('files');
+    var filetypes = $('#data').data('file-types');
 
     editor = ace.edit('current-file');
     editor.setShowPrintMargin(false);
     editor.setTheme(THEME);
     editor.$blockScrolling = Infinity;
     editor.setReadOnly(true);
+
+    _.each(filetypes, function (filetype) {
+      filetype = JSON.parse(filetype);
+      fileTypeById[filetype.id] = filetype;
+    });
 
     slider.on('change', function(event) {
       currentSubmission = slider.val();

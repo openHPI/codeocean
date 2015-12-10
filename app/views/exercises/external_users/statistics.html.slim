@@ -5,10 +5,13 @@ h1 = "#{@exercise} (external user #{@external_user})"
   - initial_files = current_submission.files.to_a
 
   - all_files = []
+  - file_types = Set.new()
   - submissions.each do |submission|
+    - submission.files.each do |file|
+      - file_types.add(ActiveSupport::JSON.encode(file.file_type))
     - all_files.push(submission.files)
 
-  .hidden#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files)
+  .hidden#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
 
   #stats-editor.row
     - index = 0
