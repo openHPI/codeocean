@@ -1,6 +1,6 @@
 - content_for :head do
-  = javascript_include_tag('//cdnjs.cloudflare.com/ajax/libs/vis/3.10.0/vis.min.js')
-  = stylesheet_link_tag('//cdnjs.cloudflare.com/ajax/libs/vis/3.10.0/vis.min.css')
+  = javascript_include_tag(asset_path('vis.min.js', type: :javascript))
+  = stylesheet_link_tag(asset_path('vis.min.css', type: :stylesheet))
 
 h1 = t('breadcrumbs.dashboard.show')
 
