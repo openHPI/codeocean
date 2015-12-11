@@ -168,7 +168,8 @@ $(function() {
                     }
                 }
             }
-            setAnnotations(editors[i], $(editors[i].container).data('id'));
+           // setAnnotations(editors[i], $(editors[i].container).data('id'));
+            console.log('location: #{Time.now}' + window.location.port);
         }
         // toggle button states (it might be the case that the request for comments button has to be enabled
         toggleButtonStates();
@@ -419,7 +420,7 @@ $(function() {
       session.setUseWrapMode(true);
 
       var file_id =  $(element).data('id');
-      setAnnotations(editor, file_id);
+      //setAnnotations(editor, file_id);
 
       session.on('annotationRemoval', handleAnnotationRemoval);
       session.on('annotationChange', handleAnnotationChange);
@@ -1118,7 +1119,9 @@ $(function() {
   };
 
   var initWebsocketConnection = function(url) {
-      websocket = new WebSocket('wss://' + window.location.hostname + ':' + window.location.port + url);
+      //TODO: get the protocol from config file dependent on environment. (dev: ws, prod: wss)
+      //causes: Puma::HttpParserError: Invalid HTTP format, parsing fails.
+      websocket = new WebSocket('ws://' + window.location.hostname + ':' + window.location.port + url);
       websocket.onopen = function(evt) { resetOutputTab(); }; // todo show some kind of indicator for established connection
       websocket.onclose = function(evt) { /* expected at some point */ };
       websocket.onmessage = function(evt) { parseCanvasMessage(evt.data, true); };
