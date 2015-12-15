@@ -9,7 +9,7 @@ h1 = @execution_environment
     tbody
       - @execution_environment.exercises.each do |exercise|
         tr
-          td = exercise.title
+          td = link_to exercise.title, controller: "exercises", action: "statistics", id: exercise.id
           td = exercise.average_score
           td = exercise.average_number_of_submissions
           td = exercise.average_working_time
