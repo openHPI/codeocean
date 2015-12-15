@@ -100,12 +100,12 @@ $(function() {
     }
   };
 
-  var confirmSubmission = function(event) {
-    event.preventDefault();
-    if (confirm($(this).data('message-confirm'))) {
-      submitCode();
-    }
-  };
+  //var confirmSubmission = function(event) {
+  //  event.preventDefault();
+  //  if (confirm($(this).data('message-confirm'))) {
+  //    submitCode();
+  //  }
+  //};
 
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
@@ -637,7 +637,8 @@ $(function() {
 
   var initializeWorkflowButtons = function() {
     $('#start').on('click', showWorkspaceTab);
-    $('#submit').on('click', confirmSubmission);
+    //$('#submit').on('click', confirmSubmission);
+    $('#submit').on('click', submitCode);
   };
 
   var initializeWorkspaceButtons = function() {

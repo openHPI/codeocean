@@ -88,6 +88,8 @@ class DockerClient
 
   def self.create_container(execution_environment)
     tries ||= 0
+    Rails.logger.info "docker_client: self.create_container with creation options:"
+    Rails.logger.info(container_creation_options(execution_environment))
     container = Docker::Container.create(container_creation_options(execution_environment))
     local_workspace_path = generate_local_workspace_path
     # container.start always creates the passed local_workspace_path on disk. Seems like we have to live with that, therefore we can also just create the empty folder ourselves.
@@ -97,7 +99,7 @@ class DockerClient
     container.status = :created
     container
   rescue Docker::Error::NotFoundError => error
-    Rails.logger.info('create_container: Got Docker::Error::NotFoundError: ' + error)
+    Rails.logger.info('create_container: Got Docker::Error::NotFoundError: ' + error.to_s)
     destroy_container(container)
     #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
@@ -113,6 +115,8 @@ class DockerClient
         create_workspace_file(container: container, file: file)
       end
     end
+  rescue Docker::Error::NotFoundError => error
+    Rails.logger.info('create_workspace_files: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
   end
   private :create_workspace_files
 
@@ -131,6 +135,9 @@ class DockerClient
     if(container)
       container.delete(force: true, v: true)
     end
+  rescue Docker::Error::NotFoundError => error
+    Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
+    Rails.logger.error('No further actions are done concerning that.')
   end
 
   def execute_arbitrary_command(command, &block)
@@ -297,7 +304,12 @@ class DockerClient
 
   def self.return_container(container, execution_environment)
     Rails.logger.debug('returning container ' + container.to_s)
-    clean_container_workspace(container)
+    begin
+      clean_container_workspace(container)
+    rescue Docker::Error::NotFoundError => error
+      Rails.logger.info('return_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
+      Rails.logger.info('Nothing is done here additionally. The container will be exchanged upon its next retrieval.')
+    end
     DockerContainerPool.return_container(container, execution_environment)
     container.status = :returned
   end
