@@ -23,7 +23,7 @@ h1 = @exercise
         - @exercise.send(symbol).distinct().each do |user|
           tr
             - submissions = @exercise.submissions.where('user_id=?', user.id)
-            td = "#{user.name} (#{user.email})"
+            td = link_to_if symbol==:external_users, "#{user.name} (#{user.email})", {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
             td = submissions.maximum('score') or 0
             td = submissions.count('id')
             td = @exercise.average_working_time_for(user.id) or 0
