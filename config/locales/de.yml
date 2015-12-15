@@ -253,6 +253,12 @@ de:
       external_user: Externe Nutzer
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+    external_users:
+      statistics:
+        no_data_available: Keine Daten verfügbar.
+        time: Zeit
+        cause: Grund
+        score: Punktzahl
   files:
     roles:
       main_file: Hauptdatei

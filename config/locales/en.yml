@@ -253,6 +253,12 @@ en:
       external_users: External Users
     submit:
       failure: An error occured while transmitting your score. Please try again later.
+    external_users:
+      statistics:
+        no_data_available: No data available.
+        time: Time
+        cause: Cause
+        score: Score
   files:
     roles:
       main_file: Main File
