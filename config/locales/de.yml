@@ -371,6 +371,7 @@ de:
     upload_file: Datei hochladen
   submissions:
     causes:
+      autosave: Autosave
       assess: Bewertung
       download: Download
       file: Benutzerdefinierte Datei
