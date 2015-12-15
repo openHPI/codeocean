@@ -408,6 +408,8 @@ $(function() {
       setActiveFile($(element).parent().data('filename'), file_id);
 
       document.insertLines(0, content.text().split(/\n/));
+      // remove last (empty) that is there by default line
+      document.removeLines(document.getLength()-1,document.getLength()-1);
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
