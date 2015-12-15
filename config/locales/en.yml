@@ -353,6 +353,7 @@ en:
     upload_file: Upload file
   submissions:
     causes:
+      autosave: Autosave
       assess: Scoring
       download: Download
       file: User-defined file
