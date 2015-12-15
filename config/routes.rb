@@ -20,12 +20,20 @@ Rails.application.routes.draw do
 
   get '/help', to: 'application#help'
 
+  concern :statistics do
+    member do
+      get :statistics
+    end
+  end
+
+
   resources :consumers
 
   resources :execution_environments do
     member do
       get :shell
       post 'shell', as: :execute_command, to: :execute_command
+      get :statistics
     end
 
     resources :errors, only: [:create, :index, :show]
@@ -46,7 +54,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :external_users, only: [:index, :show]
+  resources :external_users, only: [:index, :show], concerns: :statistics do
+    resources :exercises, concerns: :statistics
+  end
 
   namespace :code_ocean do
     resources :files, only: [:create, :destroy]

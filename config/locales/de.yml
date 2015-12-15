@@ -167,6 +167,11 @@ de:
     shell:
       command: Befehl
       headline: Shell
+    statistics:
+      exercise: Übung
+      score: Durchschnittliche Punktzahl
+      runs: Durchschnittliche Anzahl von Versuchen
+      worktime: Durchschnittliche Arbeitszeit
   exercises:
     editor:
       confirm_start_over: Wollen Sie wirklich von vorne anfangen?
@@ -239,8 +244,21 @@ de:
       intermediate_submissions: Intermediäre Abgaben
       participants: Bearbeitende Nutzer
       users: '%{count} verschiedene Nutzer'
+      user: Nutzer
+      score: Punktzahl
+      runs: Versuche
+      worktime: Arbeitszeit
+      average_worktime: Durchschnittliche Arbeitszeit
+      internal_users: Interne Nutzer
+      external_user: Externe Nutzer
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+    external_users:
+      statistics:
+        no_data_available: Keine Daten verfügbar.
+        time: Zeit
+        cause: Grund
+        score: Punktzahl
   files:
     roles:
       main_file: Hauptdatei

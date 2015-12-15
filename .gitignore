@@ -12,6 +12,7 @@
 /rubocop.html
 /tmp
 /vagrant/
+/.vagrant
 *.sublime-*
 /.idea
 /.vagrant
