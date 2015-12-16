@@ -1,2 +1,18 @@
-h1 = @user
-H2 = 'Hallo'
+h1 = t('.title')
+
+- exercises = Exercise.where(:id => @user.submissions.group(:exercise_id).select(:exercise_id).distinct())
+
+.table-responsive
+  table.table
+    thead
+      tr
+        - ['.exercise', '.score', '.runs', '.worktime'].each do |title|
+          th.header = t(title)
+    tbody
+      - exercises.each do |exercise|
+        - submissions = @user.submissions.where(:exercise_id => exercise.id, :cause => ['submit', 'run'])
+        tr
+          td = link_to exercise.title, exercise
+          td = submissions.maximum(:score) or 0
+          td = submissions.count
+          td = exercise.average_working_time_for(@user.id) or 0

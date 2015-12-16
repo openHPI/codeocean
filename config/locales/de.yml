@@ -259,6 +259,13 @@ de:
         time: Zeit
         cause: Grund
         score: Punktzahl
+  external_users:
+    statistics:
+      title: Statistiken für Externe Benutzer
+      exercise: Übung
+      score: Bewertung
+      runs: Versuche
+      worktime: Arbeitszeit
   files:
     roles:
       main_file: Hauptdatei
