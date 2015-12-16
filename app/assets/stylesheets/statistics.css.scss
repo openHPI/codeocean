@@ -10,3 +10,19 @@
 .clickable {
     cursor: pointer;
 }
+
+.flex-container {
+    display: flex;
+}
+
+.flex-item {
+    flex-grow: 1;
+}
+
+#play-button {
+    height: 40px;
+    width: 40px;
+    margin-right: 15px;
+    margin-top: auto;
+    margin-bottom: auto;
+}

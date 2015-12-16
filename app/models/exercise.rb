@@ -53,7 +53,7 @@ class Exercise < ActiveRecord::Base
             (SELECT user_id,
                     id,
                     (created_at - lag(created_at) over (PARTITION BY user_id
-                                                        ORDER BY id)) AS working_time
+                                                        ORDER BY created_at)) AS working_time
             FROM submissions
             WHERE exercise_id=#{id}) AS foo) AS bar
       GROUP BY user_id

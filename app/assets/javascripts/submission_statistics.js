@@ -55,6 +55,8 @@ $(function() {
     var submissions = $('#data').data('submissions');
     var files = $('#data').data('files');
     var filetypes = $('#data').data('file-types');
+    var playButton = $('#play-button');
+    var playInterval = undefined;
 
     editor = ace.edit('current-file');
     editor.setShowPrintMargin(false);
@@ -86,6 +88,23 @@ $(function() {
       })
       active_file = currentFiles[fileIndex];
       showActiveFile();
+    });
+
+    playButton.on('click', function(event) {
+      if (playInterval == undefined) {
+        playInterval = setInterval(function() {
+          if ($.isController('exercises') && $('#timeline').isPresent() && slider.val() < submissions.length - 1) {
+            slider.val(parseInt(slider.val()) + 1);
+            slider.change()
+          } else {
+            clearInterval(playInterval);
+          }
+        }, 5000);
+        playButton.find('span.fa').removeClass('fa-play').addClass('fa-pause')
+      } else {
+        clearInterval(playInterval);
+        playButton.find('span.fa').removeClass('fa-pause').addClass('fa-play')
+      }
     });
 
     active_file = files[0][0]

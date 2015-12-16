@@ -259,6 +259,13 @@ en:
         time: Time
         cause: Cause
         score: Score
+  external_users:
+    statistics:
+      title: External User Statistics
+      exercise: Exercise
+      score: Score
+      runs: Runs
+      worktime: Working Time
   files:
     roles:
       main_file: Main File
