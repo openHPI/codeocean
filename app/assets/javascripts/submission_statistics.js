@@ -100,10 +100,10 @@ $(function() {
             clearInterval(playInterval);
           }
         }, 5000);
-        playButton.find('span.glyphicon').removeClass('glyphicon-play').addClass('glyphicon-pause')
+        playButton.find('span.fa').removeClass('fa-play').addClass('fa-pause')
       } else {
         clearInterval(playInterval);
-        playButton.find('span.glyphicon').removeClass('glyphicon-pause').addClass('glyphicon-play')
+        playButton.find('span.fa').removeClass('fa-pause').addClass('fa-play')
       }
     });
 
