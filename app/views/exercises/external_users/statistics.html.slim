@@ -21,14 +21,17 @@ h1 = "#{@exercise} (external user #{@external_user})"
     div class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
       #current-file.editor
 
-  #submissions-slider
-    input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=0
-    datalist#datapoints
-      - index=0
-      - submissions.each do |submission|
-        option data-submission=submission
-          =index
-        - index += 1
+  .flex-container
+    button.btn.btn-default id='play-button'
+      span.glyphicon.glyphicon-play
+    #submissions-slider.flex-item
+      input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=0
+      datalist#datapoints
+        - index=0
+        - submissions.each do |submission|
+          option data-submission=submission
+            =index
+          - index += 1
 
   #timeline
     .table-responsive
