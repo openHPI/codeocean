@@ -168,7 +168,13 @@ class DockerClient
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       @container.status = :executing
-      before_execution_block.try(:call)
+      # do not use try here, directly call the passed proc and rescue from the error in order to log the problem.
+      #before_execution_block.try(:call)
+      begin
+        before_execution_block.call
+      rescue StandardError => error
+        Rails.logger.error('execute_websocket_command: Rescued from StandardError caused by before_execution_block.call: ' + error.to_s)
+      end
       # TODO: catch exception if socket could not be created
       @socket ||= create_socket(@container)
       # Newline required to flush
