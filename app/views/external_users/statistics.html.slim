@@ -12,7 +12,7 @@ h1 = t('.title')
       - exercises.each do |exercise|
         - submissions = @user.submissions.where(:exercise_id => exercise.id, :cause => ['submit', 'run'])
         tr
-          td = link_to exercise.title, exercise
+          td = link_to exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
           td = submissions.maximum(:score) or 0
           td = submissions.count
           td = exercise.average_working_time_for(@user.id) or 0
