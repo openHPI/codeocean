@@ -419,7 +419,7 @@ $(function() {
       session.setUseWrapMode(true);
 
       var file_id =  $(element).data('id');
-      setAnnotations(editor, file_id);
+      //setAnnotations(editor, file_id);
 
       session.on('annotationRemoval', handleAnnotationRemoval);
       session.on('annotationChange', handleAnnotationChange);
@@ -1118,7 +1118,10 @@ $(function() {
   };
 
   var initWebsocketConnection = function(url) {
-      websocket = new WebSocket('wss://' + window.location.hostname + ':' + window.location.port + url);
+      //TODO: get the protocol from config file dependent on environment. (dev: ws, prod: wss)
+      //causes: Puma::HttpParserError: Invalid HTTP format, parsing fails.
+      //TODO: make sure that this gets cached.
+      websocket = new WebSocket('<%= DockerClient.config['ws_client_protocol'] %>' + window.location.hostname + ':' + window.location.port + url);
       websocket.onopen = function(evt) { resetOutputTab(); }; // todo show some kind of indicator for established connection
       websocket.onclose = function(evt) { /* expected at some point */ };
       websocket.onmessage = function(evt) { parseCanvasMessage(evt.data, true); };

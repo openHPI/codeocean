@@ -121,6 +121,7 @@ class DockerClient
   private :create_workspace_files
 
   def create_workspace_file(options = {})
+    #TODO: try catch i/o exception and log failed attempts
     file = File.new(local_file_path(options), 'w')
     file.write(options[:file].content)
     file.close
@@ -140,10 +141,12 @@ class DockerClient
     Rails.logger.error('No further actions are done concerning that.')
   end
 
+  #currently only used to check if containers have been started correctly, or other internal checks
   def execute_arbitrary_command(command, &block)
     execute_command(command, nil, block)
   end
 
+  #only used by server sent events (deprecated?)
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
@@ -160,12 +163,13 @@ class DockerClient
     #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
+  #called when the user clicks the "Run" button
   def execute_websocket_command(command, before_execution_block, output_consuming_block)
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       @container.status = :executing
       before_execution_block.try(:call)
-      # todo catch exception if socket could not be created
+      # TODO: catch exception if socket could not be created
       @socket ||= create_socket(@container)
       # Newline required to flush
       @socket.send command + "\n"
@@ -318,6 +322,7 @@ class DockerClient
   def send_command(command, container, &block)
     result = {status: :failed, stdout: '', stderr: ''}
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
+      #TODO: check phusion doku again if we need -i -t options here
       output = container.exec(['bash', '-c', command])
       Rails.logger.info "output from container.exec"
       Rails.logger.info output
