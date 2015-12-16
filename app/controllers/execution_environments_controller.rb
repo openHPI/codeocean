@@ -2,7 +2,7 @@ class ExecutionEnvironmentsController < ApplicationController
   include CommonBehavior
 
   before_action :set_docker_images, only: [:create, :edit, :new, :update]
-  before_action :set_execution_environment, only: MEMBER_ACTIONS + [:execute_command, :shell]
+  before_action :set_execution_environment, only: MEMBER_ACTIONS + [:execute_command, :shell, :statistics]
   before_action :set_testing_framework_adapters, only: [:create, :edit, :new, :update]
 
   def authorize!
@@ -26,6 +26,9 @@ class ExecutionEnvironmentsController < ApplicationController
   def execute_command
     @docker_client = DockerClient.new(execution_environment: @execution_environment)
     render(json: @docker_client.execute_arbitrary_command(params[:command]))
+  end
+
+  def statistics
   end
 
   def execution_environment_params

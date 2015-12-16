@@ -130,6 +130,14 @@ describe ExecutionEnvironmentsController do
     expect_template(:shell)
   end
 
+  describe 'GET #statistics' do
+    before(:each) { get :statistics, id: execution_environment.id }
+
+    expect_assigns(execution_environment: :execution_environment)
+    expect_status(200)
+    expect_template(:statistics)
+  end
+
   describe 'GET #show' do
     before(:each) { get :show, id: execution_environment.id }
 

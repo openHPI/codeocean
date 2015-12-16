@@ -7,3 +7,23 @@ h1 = @exercise
 = row(label: '.average_score') do
   p == @exercise.average_score ? t('shared.out_of', maximum_value: @exercise.maximum_score, value: @exercise.average_score.round(2)) : empty
   p = progress_bar(@exercise.average_percentage)
+
+= row(label: '.average_worktime') do
+  p = @exercise.average_working_time
+
+- Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
+  strong = label
+  .table-responsive
+    table.table
+      thead
+        tr
+          - ['.user', '.score', '.runs', '.worktime'].each do |title|
+            th.header = t(title)
+      tbody
+        - @exercise.send(symbol).distinct().each do |user|
+          tr
+            - submissions = @exercise.submissions.where('user_id=?', user.id)
+            td = link_to_if symbol==:external_users, "#{user.name} (#{user.email})", {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
+            td = submissions.maximum('score') or 0
+            td = submissions.count('id')
+            td = @exercise.average_working_time_for(user.id) or 0

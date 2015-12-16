@@ -1,0 +1,48 @@
+h1 = "#{@exercise} (external user #{@external_user})"
+- submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
+- current_submission = submissions.first
+- if current_submission
+  - initial_files = current_submission.files.to_a
+
+  - all_files = []
+  - file_types = Set.new()
+  - submissions.each do |submission|
+    - submission.files.each do |file|
+      - file_types.add(ActiveSupport::JSON.encode(file.file_type))
+    - all_files.push(submission.files)
+
+  .hidden#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
+
+  #stats-editor.row
+    - index = 0
+    - all_files.each do |files|
+      .files class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') data-index=index data-entries=FileTree.new(files).to_js_tree
+      - index += 1
+    div class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
+      #current-file.editor
+
+  #submissions-slider
+    input type='range' orient='horizontal' list='datapoints' min=0 max=submissions.length-1 value=0
+    datalist#datapoints
+      - index=0
+      - submissions.each do |submission|
+        option data-submission=submission
+          =index
+        - index += 1
+
+  #timeline
+    .table-responsive
+      table.table
+        thead
+          tr
+            - ['.time', '.cause', '.score'].each do |title|
+              th.header = t(title)
+        tbody
+          - submissions.each do |submission|
+            tr data-id=submission.id
+              td.clickable = submission.created_at.strftime("%F %T")
+              td = submission.cause
+              td = submission.score
+
+- else
+  p = t('.no_data_available')
