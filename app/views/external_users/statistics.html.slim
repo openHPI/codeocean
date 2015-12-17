@@ -15,4 +15,4 @@ h1 = t('.title')
           td = link_to exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
           td = submissions.maximum(:score) or 0
           td = submissions.count
-          td = exercise.average_working_time_for(@user.id) or 0
+          td = exercise.average_working_time_for_only(@user.id) or 0
