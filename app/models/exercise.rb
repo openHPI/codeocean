@@ -25,6 +25,8 @@ class Exercise < ActiveRecord::Base
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
 
+  @working_time_statistics = nil
+
 
   def average_percentage
     (average_score / maximum_score * 100).round if average_score
@@ -60,6 +62,13 @@ class Exercise < ActiveRecord::Base
     """
   end
 
+  def retrieve_working_time_statistics
+    @working_time_statistics = {}
+    self.class.connection.execute(user_working_time_query).each do |tuple|
+      @working_time_statistics[tuple["user_id"].to_i] = tuple
+    end
+  end
+
   def average_working_time
     self.class.connection.execute("""
       SELECT avg(working_time) as average_time
@@ -69,10 +78,24 @@ class Exercise < ActiveRecord::Base
   end
 
   def average_working_time_for(user_id)
+    if @working_time_statistics == nil
+      retrieve_working_time_statistics()
+    end
+    @working_time_statistics[user_id]["working_time"]
+  end
+
+  def average_working_time_for_only(user_id)
     self.class.connection.execute("""
-      #{user_working_time_query}
-      HAVING user_id = #{user_id}
-    """).first['working_time']
+      SELECT sum(working_time_new) AS working_time
+      FROM
+        (SELECT CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
+         FROM
+            (SELECT id,
+                    (created_at - lag(created_at) over (PARTITION BY user_id
+                                                        ORDER BY created_at)) AS working_time
+            FROM submissions
+            WHERE exercise_id=#{id} and user_id=#{user_id}) AS foo) AS bar
+    """).first["working_time"]
   end
 
   def duplicate(attributes = {})
