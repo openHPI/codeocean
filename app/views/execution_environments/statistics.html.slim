@@ -4,12 +4,16 @@ h1 = @execution_environment
   table.table
     thead
       tr
-        - ['.exercise', '.score', '.runs', '.worktime'].each do |title|
+        - ['.exercise', '.users', '.score', '.maximum_score', '.percentage_correct', '.runs', '.worktime'].each do |title|
           th.header = t(title)
     tbody
       - @execution_environment.exercises.each do |exercise|
+        - average_score = exercise.average_score
         tr
           td = link_to exercise.title, controller: "exercises", action: "statistics", id: exercise.id
-          td = exercise.average_score
+          td = exercise.users.distinct.count
+          td = average_score
+          td = exercise.maximum_score
+          td = 100 / exercise.maximum_score * average_score
           td = exercise.average_number_of_submissions
           td = exercise.average_working_time
