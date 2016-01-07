@@ -28,7 +28,42 @@ class ExecutionEnvironmentsController < ApplicationController
     render(json: @docker_client.execute_arbitrary_command(params[:command]))
   end
 
+
+  def working_time_query
+    """
+      SELECT exercise_id, avg(working_time) as average_time
+      FROM
+        (
+      SELECT user_id,
+             exercise_id,
+             sum(working_time_new) AS working_time
+      FROM
+        (SELECT user_id,
+                exercise_id,
+                CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
+         FROM
+            (SELECT user_id,
+                    exercise_id,
+                    id,
+                    (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
+                                                        ORDER BY created_at)) AS working_time
+            FROM submissions
+            WHERE exercise_id IN (SELECT ID FROM exercises WHERE execution_environment_id = #{@execution_environment.id})
+            GROUP BY exercise_id, user_id, id) AS foo) AS bar
+      GROUP BY user_id, exercise_id
+    ) AS baz GROUP BY exercise_id;
+    """
+  end
+
   def statistics
+    working_time_statistics = {}
+    ActiveRecord::Base.connection.execute(working_time_query).each do |tuple|
+      working_time_statistics[tuple["exercise_id"].to_i] = tuple
+    end
+
+    render locals: {
+      working_time_statistics: working_time_statistics
+    }
   end
 
   def execution_environment_params
