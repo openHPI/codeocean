@@ -8,6 +8,9 @@ h1 = @execution_environment
           th.header = t(title)
     tbody
       - @execution_environment.exercises.each do |exercise|
+        - average_score = exercise.average_score
+        - wts = working_time_statistics[exercise.id]
+        - if wts then average_time = wts["average_time"] else 0
         tr
           td = link_to exercise.title, controller: "exercises", action: "statistics", id: exercise.id
           td = exercise.users.distinct.count
@@ -15,4 +18,4 @@ h1 = @execution_environment
           td = exercise.maximum_score
           td = 100 / exercise.maximum_score * average_score
           td = exercise.average_number_of_submissions
-          td = working_time_statistics[exercise.id]["average_time"]
+          td = average_time
