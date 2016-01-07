@@ -157,7 +157,8 @@ class ExercisesController < ApplicationController
     else
       user_statistics = {}
       query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
-              FROM submissions WHERE exercise_id = 101 GROUP BY user_id;"
+              FROM submissions WHERE exercise_id = #{@exercise.id} GROUP BY
+              user_id;"
       ActiveRecord::Base.connection.execute(query).each do |tuple|
         user_statistics[tuple["user_id"].to_i] = tuple
       end
