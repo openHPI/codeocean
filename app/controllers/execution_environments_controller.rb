@@ -55,14 +55,47 @@ class ExecutionEnvironmentsController < ApplicationController
     """
   end
 
+  def user_query
+    """
+    SELECT
+      id AS exercise_id,
+      COUNT(DISTINCT user_id) AS users,
+      AVG(score) AS average_score,
+      MAX(score) AS maximum_score,
+      CASE
+        WHEN MAX(score)=0 THEN 0
+        ELSE 100 / MAX(score) * AVG(score)
+      END AS percent_correct,
+      SUM(submission_count) / COUNT(DISTINCT user_id) AS average_submission_count
+    FROM
+      (SELECT e.id,
+              s.user_id,
+              MAX(s.score) AS score,
+              COUNT(s.id) AS submission_count
+       FROM submissions s
+       JOIN exercises e ON e.id = s.exercise_id
+       WHERE e.execution_environment_id = #{@execution_environment.id}
+       GROUP BY e.id,
+                s.user_id) AS inner_query
+    GROUP BY id;
+    """
+  end
+
   def statistics
     working_time_statistics = {}
+    user_statistics = {}
+
     ActiveRecord::Base.connection.execute(working_time_query).each do |tuple|
       working_time_statistics[tuple["exercise_id"].to_i] = tuple
     end
 
+    ActiveRecord::Base.connection.execute(user_query).each do |tuple|
+      user_statistics[tuple["exercise_id"].to_i] = tuple
+    end
+
     render locals: {
-      working_time_statistics: working_time_statistics
+      working_time_statistics: working_time_statistics,
+      user_statistics: user_statistics
     }
   end
 
