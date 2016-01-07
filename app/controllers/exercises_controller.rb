@@ -155,7 +155,15 @@ class ExercisesController < ApplicationController
     if(@external_user)
       render 'exercises/external_users/statistics'
     else
-      render 'exercises/statistics'
+      user_statistics = {}
+      query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
+              FROM submissions WHERE exercise_id = 101 GROUP BY user_id;"
+      ActiveRecord::Base.connection.execute(query).each do |tuple|
+        user_statistics[tuple["user_id"].to_i] = tuple
+      end
+      render locals: {
+        user_statistics: user_statistics
+      }
     end
   end
 
