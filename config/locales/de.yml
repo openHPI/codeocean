@@ -171,6 +171,8 @@ de:
       exercise: Übung
       users: Anzahl (externer) Nutzer
       score: Durchschnittliche Punktzahl
+      stddev_score: stdabw (Punktzahl)
+      stddev_worktime: stdabw (Arbeitszeit)
       maximum_score: Maximale Punktzahl
       percentage_correct: Prozent Korrekt
       runs: Durchschnittliche Anzahl von Versuchen

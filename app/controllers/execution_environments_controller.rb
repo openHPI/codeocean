@@ -31,7 +31,7 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def working_time_query
     """
-      SELECT exercise_id, avg(working_time) as average_time
+      SELECT exercise_id, avg(working_time) as average_time, stddev_samp(extract('epoch' from working_time)) * interval '1 second' as stddev_time
       FROM
         (
       SELECT user_id,
@@ -62,6 +62,7 @@ class ExecutionEnvironmentsController < ApplicationController
       COUNT(DISTINCT user_id) AS users,
       AVG(score) AS average_score,
       MAX(score) AS maximum_score,
+      stddev_samp(score) as stddev_score,
       CASE
         WHEN MAX(score)=0 THEN 0
         ELSE 100 / MAX(score) * AVG(score)
