@@ -13,6 +13,18 @@ class RequestForComment < ActiveRecord::Base
         self.requested_at = Time.now
     end
 
+  def submission
+    Submission.find(file.context_id)
+  end
+
+  def last_submission
+    Submission.find_by_sql(" select * from submissions
+            where exercise_id = #{exercise_id} AND
+            user_id =  #{user_id}
+            order by created_at desc
+            limit 1").first
+  end
+
     private
     def self.row_number_user_sql
       select("id, user_id, exercise_id, file_id, requested_at, created_at, updated_at, user_type, row_number() OVER (PARTITION BY user_id ORDER BY created_at DESC) as row_number").to_sql
