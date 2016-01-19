@@ -128,6 +128,23 @@ class DockerClient
   end
   private :create_workspace_file
 
+  def create_workspace_files_transmit(container, submission)
+    # create a temporary dir, put all files in it, and put it into the container. the dir is automatically removed when leaving the block.
+    Dir.mktmpdir {|dir|
+      submission.collect_files.each do |file|
+        disk_file = File.new(dir + '/' + (file.path || '') + file.name_with_extension, 'w')
+        disk_file.write(file.content)
+        disk_file.close
+      end
+
+      # tar the files in dir and put the tar to CONTAINER_WORKSPACE_PATH in the container
+      container.archive_in(dir, CONTAINER_WORKSPACE_PATH, overwrite: false)
+
+      # untar the tar file placed in the CONTAINER_WORKSPACE_PATH
+      container.exec(['bash', '-c', 'tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH])
+    }
+  end
+
   def self.destroy_container(container)
     Rails.logger.info('destroying container ' + container.to_s)
     container.stop.kill
@@ -242,7 +259,7 @@ class DockerClient
     Run commands by attaching a websocket to Docker.
     """
     command = submission.execution_environment.run_command % command_substitutions(filename)
-    create_workspace_files = proc { create_workspace_files(container, submission) }
+    create_workspace_files = proc { create_workspace_files_transmit(container, submission) }
     execute_websocket_command(command, create_workspace_files, block)
   end
 
@@ -251,7 +268,7 @@ class DockerClient
     Stick to existing Docker API with exec command.
     """
     command = submission.execution_environment.test_command % command_substitutions(filename)
-    create_workspace_files = proc { create_workspace_files(container, submission) }
+    create_workspace_files = proc { create_workspace_files_transmit(container, submission) }
     execute_command(command, create_workspace_files, block)
   end
 
