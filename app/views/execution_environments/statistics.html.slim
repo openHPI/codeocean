@@ -16,10 +16,10 @@ h1 = @execution_environment
         tr
           td = link_to exercise.title, controller: "exercises", action: "statistics", id: exercise.id
           td = us["users"]
-          td = us["average_score"]
-          td = us["maximum_score"]
-          td = us["stddev_score"]
-          td = us["percent_correct"]
-          td = us["average_submission_count"]
+          td = us["average_score"].to_f.round(4)
+          td = us["maximum_score"].to_f.round(2)
+          td = us["stddev_score"].to_f.round(4)
+          td = (us["percent_correct"].to_f or 0).round(4)
+          td = us["average_submission_count"].to_f.round(2)
           td = average_time
           td = stddev_time
