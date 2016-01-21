@@ -29,7 +29,7 @@ class Exercise < ActiveRecord::Base
 
 
   def average_percentage
-    (average_score / maximum_score * 100).round if average_score
+    (average_score / maximum_score * 100).round if average_score and maximum_score != 0.0 else 0
   end
 
   def average_score
