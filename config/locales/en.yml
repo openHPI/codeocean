@@ -169,7 +169,12 @@ en:
       headline: Shell
     statistics:
       exercise: Exercise
+      users: (External) Users Count
       score: Average Score
+      stddev_score: stddev (score)
+      stddev_worktime: stddev (working time)
+      maximum_score: Maximum Score
+      percentage_correct: Percentage Correct
       runs: Average Number of Runs
       worktime: Average Working Time
   exercises:

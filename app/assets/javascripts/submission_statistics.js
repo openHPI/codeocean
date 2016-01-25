@@ -90,6 +90,12 @@ $(function() {
       showActiveFile();
     });
 
+    stopReplay = function() {
+      clearInterval(playInterval);
+      playInterval = undefined;
+      playButton.find('span.fa').removeClass('fa-pause').addClass('fa-play')
+    }
+
     playButton.on('click', function(event) {
       if (playInterval == undefined) {
         playInterval = setInterval(function() {
@@ -97,13 +103,12 @@ $(function() {
             slider.val(parseInt(slider.val()) + 1);
             slider.change()
           } else {
-            clearInterval(playInterval);
+            stopReplay();
           }
         }, 5000);
         playButton.find('span.fa').removeClass('fa-play').addClass('fa-pause')
       } else {
-        clearInterval(playInterval);
-        playButton.find('span.fa').removeClass('fa-pause').addClass('fa-play')
+        stopReplay();
       }
     });
 

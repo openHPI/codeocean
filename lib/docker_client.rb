@@ -2,7 +2,7 @@ require 'concurrent'
 require 'pathname'
 
 class DockerClient
-  CONTAINER_WORKSPACE_PATH = '/workspace'
+  CONTAINER_WORKSPACE_PATH = '/workspace' #'/home/python/workspace' #'/tmp/workspace'
   DEFAULT_MEMORY_LIMIT = 256
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
@@ -21,11 +21,14 @@ class DockerClient
   end
 
   def self.clean_container_workspace(container)
+    container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
+=begin
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
       #FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
+=end
   end
 
   def command_substitutions(filename)
@@ -42,6 +45,8 @@ class DockerClient
       'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
       'Memory' => execution_environment.memory_limit.megabytes,
       'NetworkDisabled' => !execution_environment.network_enabled?,
+      #'HostConfig' => { 'CpusetCpus' => '0', 'CpuQuota' => 10000 },
+      #DockerClient.config['allowed_cpus']
       'OpenStdin' => true,
       'StdinOnce' => true,
       # required to expose standard streams over websocket
@@ -88,12 +93,12 @@ class DockerClient
 
   def self.create_container(execution_environment)
     tries ||= 0
-    Rails.logger.info "docker_client: self.create_container with creation options:"
-    Rails.logger.info(container_creation_options(execution_environment))
+    #Rails.logger.info "docker_client: self.create_container with creation options:"
+    #Rails.logger.info(container_creation_options(execution_environment))
     container = Docker::Container.create(container_creation_options(execution_environment))
     local_workspace_path = generate_local_workspace_path
     # container.start always creates the passed local_workspace_path on disk. Seems like we have to live with that, therefore we can also just create the empty folder ourselves.
-    FileUtils.mkdir(local_workspace_path)
+    # FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
     container.start_time = Time.now
     container.status = :created
@@ -127,6 +132,54 @@ class DockerClient
     file.close
   end
   private :create_workspace_file
+
+  def create_workspace_files_transmit(container, submission)
+    begin
+    # create a temporary dir, put all files in it, and put it into the container. the dir is automatically removed when leaving the block.
+    Dir.mktmpdir {|dir|
+      submission.collect_files.each do |file|
+        disk_file = File.new(dir + '/' + (file.path || '') + file.name_with_extension, 'w')
+        disk_file.write(file.content)
+        disk_file.close
+      end
+
+
+      begin
+        # create target folder, TODO re-active this when we remove shared folder bindings
+        #container.exec(['bash', '-c', 'mkdir ' + CONTAINER_WORKSPACE_PATH])
+        #container.exec(['bash', '-c', 'chown -R python ' + CONTAINER_WORKSPACE_PATH])
+        #container.exec(['bash', '-c', 'chgrp -G python ' + CONTAINER_WORKSPACE_PATH])
+      rescue StandardError => error
+        Rails.logger.error('create workspace folder: Rescued from StandardError: ' + error.to_s)
+      end
+
+      #sleep 1000
+
+      begin
+        # tar the files in dir and put the tar to CONTAINER_WORKSPACE_PATH in the container
+        container.archive_in(dir, CONTAINER_WORKSPACE_PATH, overwrite: false)
+
+      rescue StandardError => error
+        Rails.logger.error('insert tar: Rescued from StandardError: ' + error.to_s)
+      end
+
+      #Rails.logger.info('command: tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH)
+
+      begin
+        # untar the tar file placed in the CONTAINER_WORKSPACE_PATH
+        container.exec(['bash', '-c', 'tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH])
+      rescue StandardError => error
+        Rails.logger.error('untar: Rescued from StandardError: ' + error.to_s)
+      end
+
+
+      #sleep 1000
+
+    }
+    rescue StandardError => error
+      Rails.logger.error('create_workspace_files_transmit: Rescued from StandardError: ' + error.to_s)
+    end
+  end
 
   def self.destroy_container(container)
     Rails.logger.info('destroying container ' + container.to_s)
@@ -191,8 +244,8 @@ class DockerClient
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
     """
-    #begin
       @thread = Thread.new do
+        #begin
           timeout = @execution_environment.permitted_execution_time.to_i # seconds
           sleep(timeout)
           if container.status != :returned
@@ -203,11 +256,11 @@ class DockerClient
             end
             kill_container(container)
           end
+        #ensure
+        # guarantee that the thread is releasing the DB connection after it is done
+        # ActiveRecord::Base.connectionpool.releaseconnection
+        #end
       end
-    #ensure
-      # guarantee that the thread is releasing the DB connection after it is done
-      # ActiveRecord::Base.connectionpool.releaseconnection
-    #end
   end
 
   def exit_container(container)
@@ -242,7 +295,7 @@ class DockerClient
     Run commands by attaching a websocket to Docker.
     """
     command = submission.execution_environment.run_command % command_substitutions(filename)
-    create_workspace_files = proc { create_workspace_files(container, submission) }
+    create_workspace_files = proc { create_workspace_files_transmit(container, submission) }
     execute_websocket_command(command, create_workspace_files, block)
   end
 
@@ -251,7 +304,7 @@ class DockerClient
     Stick to existing Docker API with exec command.
     """
     command = submission.execution_environment.test_command % command_substitutions(filename)
-    create_workspace_files = proc { create_workspace_files(container, submission) }
+    create_workspace_files = proc { create_workspace_files_transmit(container, submission) }
     execute_command(command, create_workspace_files, block)
   end
 
