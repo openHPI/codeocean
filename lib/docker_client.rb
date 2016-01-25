@@ -21,7 +21,7 @@ class DockerClient
   end
 
   def self.clean_container_workspace(container)
-    container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH])
+    container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
 =begin
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
@@ -145,8 +145,8 @@ class DockerClient
 
 
       begin
-        # create target folder
-        container.exec(['bash', '-c', 'mkdir ' + CONTAINER_WORKSPACE_PATH])
+        # create target folder, TODO re-active this when we remove shared folder bindings
+        #container.exec(['bash', '-c', 'mkdir ' + CONTAINER_WORKSPACE_PATH])
         #container.exec(['bash', '-c', 'chown -R python ' + CONTAINER_WORKSPACE_PATH])
         #container.exec(['bash', '-c', 'chgrp -G python ' + CONTAINER_WORKSPACE_PATH])
       rescue StandardError => error
@@ -163,7 +163,7 @@ class DockerClient
         Rails.logger.error('insert tar: Rescued from StandardError: ' + error.to_s)
       end
 
-      Rails.logger.info('command: tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH)
+      #Rails.logger.info('command: tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH)
 
       begin
         # untar the tar file placed in the CONTAINER_WORKSPACE_PATH
