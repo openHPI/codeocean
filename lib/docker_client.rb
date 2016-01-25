@@ -173,7 +173,7 @@ class DockerClient
       end
 
 
-    sleep 1000
+      #sleep 1000
 
     }
     rescue StandardError => error
