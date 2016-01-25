@@ -1,5 +1,5 @@
 h1 = "#{@exercise} (external user #{@external_user})"
-- submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
+- submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id).order("created_at")
 - current_submission = submissions.first
 - if current_submission
   - initial_files = current_submission.files.to_a

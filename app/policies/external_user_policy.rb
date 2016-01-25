@@ -1,5 +1,5 @@
 class ExternalUserPolicy < AdminOnlyPolicy
   def statistics?
-    admin?
+    admin? || author? || team_member?
   end
 end
