@@ -249,7 +249,7 @@ $(function() {
     if ($('#render-' + index).isPresent()) {
       return $('#render-' + index);
     } else {
-      var element = $('<p>').attr('id', 'render-' + index);
+      var element = $('<div>').attr('id', 'render-' + index);
       $('#render').append(element);
       return element;
     }
