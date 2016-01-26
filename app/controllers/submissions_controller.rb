@@ -113,17 +113,49 @@ class SubmissionsController < ApplicationController
         socket = result[:socket]
 
         socket.on :message do |event|
-          if(event.data.include?('#xxbufferstart'))
-            ##
+          message = event.data
+
+          if (@probablybuffer)
+            if (message.start_with? "#")
+              @buffer = true
+              message.slice! "#"
+            else
+              #re-add the sliced ~ from last message
+              @message.append = "~"
+            end
+            @probablybuffer = false
+          end
+
+          if(!@buffer && (message.length == 1) && (message.start_with? "~"))
+            @probablybuffer = true
+            message.slice! "~"
+          end
+
+          if (!@buffer && (message.start_with? "~#"))
             @buffer = true
+            message.slice! "~#"
           end
 
           if(@buffer)
-            @message.append = event.data
-          else
+            #check if we have to end buffering
+            if(message.ends_with? "#~")
+              @buffer = false
+              message.slice! "#~"
+              @message.append = message
+              Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + @message)
+              handle_message(@message, tubesock)
+            elsif(message.ends_with? "#")
+              @probablyend = true
+              message.slice! "#"
+            end
+            @message.append = message
+          elsif(!@probablybuffer)####
+            # normal case here
             Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + event.data)
             handle_message(event.data, tubesock)
           end
+
+          if()
 
           if(event.data.include?('#xxbufferstop'))
             @buffer = false
