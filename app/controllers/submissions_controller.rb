@@ -113,8 +113,8 @@ class SubmissionsController < ApplicationController
         socket = result[:socket]
 
         socket.on :message do |event|
-          Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + event.data)
-          handle_message(event.data, tubesock)
+            Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + event.data)
+            handle_message(event.data, tubesock)
         end
 
         socket.on :close do |event|
