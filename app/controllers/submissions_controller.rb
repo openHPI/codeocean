@@ -115,13 +115,6 @@ class SubmissionsController < ApplicationController
         socket.on :message do |event|
             Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + event.data)
             handle_message(event.data, tubesock)
-          end
-
-          if(event.data.include?('#xxbufferstop'))
-            @buffer = false
-            Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + @message)
-            handle_message( @message, tubesock)
-          end
         end
 
         socket.on :close do |event|
