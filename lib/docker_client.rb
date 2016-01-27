@@ -98,7 +98,7 @@ class DockerClient
     container = Docker::Container.create(container_creation_options(execution_environment))
     local_workspace_path = generate_local_workspace_path
     # container.start always creates the passed local_workspace_path on disk. Seems like we have to live with that, therefore we can also just create the empty folder ourselves.
-    # FileUtils.mkdir(local_workspace_path)
+    FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
     container.start_time = Time.now
     container.status = :created

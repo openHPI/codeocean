@@ -41,7 +41,7 @@ class DockerContainerPool
     @all_containers[execution_environment.id]+=[container]
     if(!@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id]+=[container]
-      Rails.logger.debug('Added container ' + container.to_s + ' to all_pool for execution environment ' + execution_environment.to_s + '. Containers in all_pool: ' + @all_containers[execution_environment.id].size.to_s)
+      #Rails.logger.debug('Added container ' + container.to_s + ' to all_pool for execution environment ' + execution_environment.to_s + '. Containers in all_pool: ' + @all_containers[execution_environment.id].size.to_s)
     else
       Rails.logger.info('failed trying to add existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
     end
@@ -50,7 +50,7 @@ class DockerContainerPool
   def self.create_container(execution_environment)
     container = DockerClient.create_container(execution_environment)
     container.status = 'available'
-    Rails.logger.debug('created container ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
+    #Rails.logger.debug('created container ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
     container
   end
 
@@ -120,11 +120,11 @@ class DockerContainerPool
     if refill_count > 0
       Rails.logger.info('Adding ' + refill_count.to_s + ' containers for execution_environment ' +  execution_environment.name )
       c = refill_count.times.map { create_container(execution_environment) }
-      Rails.logger.info('Created containers: ' + c.to_s )
+      #Rails.logger.info('Created containers: ' + c.to_s )
       @containers[execution_environment.id] += c
       @all_containers[execution_environment.id] += c
-      Rails.logger.debug('@containers  for ' + execution_environment.name.to_s + ' (' + @containers.object_id.to_s + ') has the following content: '+ @containers[execution_environment.id].to_s)
-      Rails.logger.debug('@all_containers for '  + execution_environment.name.to_s + ' (' + @all_containers.object_id.to_s + ') has the following content: ' + @all_containers[execution_environment.id].to_s)
+      #Rails.logger.debug('@containers  for ' + execution_environment.name.to_s + ' (' + @containers.object_id.to_s + ') has the following content: '+ @containers[execution_environment.id].to_s)
+      #Rails.logger.debug('@all_containers for '  + execution_environment.name.to_s + ' (' + @all_containers.object_id.to_s + ') has the following content: ' + @all_containers[execution_environment.id].to_s)
     end
   end
 
