@@ -176,7 +176,24 @@ class SubmissionsController < ApplicationController
         for part in message.split("\n")
           self.parse_message(part,output_stream,socket,false)
         end
+      elsif(message.include? "<img")
+        #Rails.logger.info('img foung')
+        @buffering = true
+        @buffer = ""
+        @buffer += message
+        #Rails.logger.info('Starting to buffer')
+      elsif(@buffering && (message.include? "/>"))
+        @buffer += message
+        parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>@buffer}
+        socket.send_data JSON.dump(parsed)
+        #socket.send_data @buffer
+        @buffering = false
+        #Rails.logger.info('Sent complete buffer')
+      elsif(@buffering)
+        @buffer += message
+        #Rails.logger.info('Appending to buffer')
       else
+        #Rails.logger.info('else')
         parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>message}
         socket.send_data JSON.dump(parsed)
         Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))
