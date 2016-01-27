@@ -21,14 +21,14 @@ class DockerClient
   end
 
   def self.clean_container_workspace(container)
-    container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
-=begin
+    # remove files when using transferral via Docker API archive_in (transmit)
+    #container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
+    
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
       #FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
-=end
   end
 
   def command_substitutions(filename)
@@ -295,7 +295,7 @@ class DockerClient
     Run commands by attaching a websocket to Docker.
     """
     command = submission.execution_environment.run_command % command_substitutions(filename)
-    create_workspace_files = proc { create_workspace_files_transmit(container, submission) }
+    create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_websocket_command(command, create_workspace_files, block)
   end
 
@@ -304,7 +304,7 @@ class DockerClient
     Stick to existing Docker API with exec command.
     """
     command = submission.execution_environment.test_command % command_substitutions(filename)
-    create_workspace_files = proc { create_workspace_files_transmit(container, submission) }
+    create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_command(command, create_workspace_files, block)
   end
 
