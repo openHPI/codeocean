@@ -169,7 +169,12 @@ de:
       headline: Shell
     statistics:
       exercise: Übung
+      users: Anzahl (externer) Nutzer
       score: Durchschnittliche Punktzahl
+      stddev_score: stdabw (Punktzahl)
+      stddev_worktime: stdabw (Arbeitszeit)
+      maximum_score: Maximale Punktzahl
+      percentage_correct: Prozent Korrekt
       runs: Durchschnittliche Anzahl von Versuchen
       worktime: Durchschnittliche Arbeitszeit
   exercises:
@@ -264,7 +269,7 @@ de:
       title: Statistiken für Externe Benutzer
       exercise: Übung
       score: Bewertung
-      runs: Versuche
+      runs: Abgaben
       worktime: Arbeitszeit
   files:
     roles:
