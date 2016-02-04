@@ -1,2 +1,0 @@
-class CodeHarborLinkController < ApplicationController
-end
