@@ -1,0 +1,2 @@
+module CodeHarborLinksHelper
+end

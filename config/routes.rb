@@ -1,6 +1,7 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
+  resources :code_harbor_links
   resources :request_for_comments
     get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
   resources :comments, except: [:destroy] do

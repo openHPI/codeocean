@@ -1,0 +1,21 @@
+<%= form_for(@code_harbor_link) do |f| %>
+  <% if @code_harbor_link.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@code_harbor_link.errors.count, "error") %> prohibited this code_harbor_link from being saved:</h2>
+
+      <ul>
+      <% @code_harbor_link.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :oauth2token %><br>
+    <%= f.text_field :oauth2token %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
