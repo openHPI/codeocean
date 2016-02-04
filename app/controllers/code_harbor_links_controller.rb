@@ -10,7 +10,7 @@ class CodeHarborLinksController < ApplicationController
   # GET /code_harbor_links
   # GET /code_harbor_links.json
   def index
-    @code_harbor_links = CodeHarborLink.all
+    @code_harbor_links = CodeHarborLink.paginate(page: params[:page])
     authorize!
   end
 
