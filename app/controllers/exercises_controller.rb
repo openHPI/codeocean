@@ -11,6 +11,10 @@ class ExercisesController < ApplicationController
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_teams, only: [:create, :edit, :new, :update]
 
+  skip_before_filter :verify_authenticity_token, only: [:import_thin_common_cartridge]
+  skip_after_action :verify_authorized, only: [:import_thin_common_cartridge]
+  skip_after_action :verify_policy_scoped, only: [:import_thin_common_cartridge]
+
   def authorize!
     authorize(@exercise || @exercises)
   end
@@ -60,6 +64,12 @@ class ExercisesController < ApplicationController
   end
 
   def edit
+  end
+
+  def import_thin_common_cartridge
+    logger.info(request.headers['Authorization'])
+    logger.info(request.headers['Authorisation'])
+    render :nothing => true, :status => 200, :content_type => 'text/html'
   end
 
   def exercise_params
