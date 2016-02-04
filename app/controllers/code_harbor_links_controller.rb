@@ -10,7 +10,7 @@ class CodeHarborLinksController < ApplicationController
   # GET /code_harbor_links
   # GET /code_harbor_links.json
   def index
-    @code_harbor_links = CodeHarborLink.paginate(page: params[:page])
+    @code_harbor_links = CodeHarborLink.where(user_id: current_user.id).paginate(page: params[:page])
     authorize!
   end
 
@@ -56,6 +56,7 @@ class CodeHarborLinksController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_code_harbor_link
       @code_harbor_link = CodeHarborLink.find(params[:id])
+      @code_harbor_link.user = current_user
       authorize!
     end
 
