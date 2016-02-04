@@ -264,6 +264,8 @@ en:
         time: Time
         cause: Cause
         score: Score
+        time_difference: 'Working Time until here*'
+        addendum: '* Deltas longer than 30 minutes are ignored.'
   external_users:
     statistics:
       title: External User Statistics

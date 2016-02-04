@@ -264,6 +264,8 @@ de:
         time: Zeit
         cause: Grund
         score: Punktzahl
+        time_difference: 'Arbeitszeit bis hier*'
+        addendum: '* Differenzen von mehr als 30 Minuten werden ignoriert.'
   external_users:
     statistics:
       title: Statistiken für Externe Benutzer

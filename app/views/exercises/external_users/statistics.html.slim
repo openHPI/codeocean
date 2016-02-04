@@ -38,14 +38,17 @@ h1 = "#{@exercise} (external user #{@external_user})"
       table.table
         thead
           tr
-            - ['.time', '.cause', '.score'].each do |title|
+            - ['.time', '.cause', '.score', '.time_difference'].each do |title|
               th.header = t(title)
         tbody
-          - submissions.each do |submission|
+          - deltas = submissions.map.with_index {|item, index| delta = item.created_at - submissions[index - 1].created_at if index > 0; if delta == nil or delta > 30*60 then 0 else delta end}
+          - submissions.each_with_index do |submission, index|
             tr data-id=submission.id
               td.clickable = submission.created_at.strftime("%F %T")
               td = submission.cause
               td = submission.score
+              td = Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0
+    p = t('.addendum')
 
 - else
   p = t('.no_data_available')
