@@ -40,6 +40,8 @@ Rails.application.routes.draw do
     resources :hints
   end
 
+  post '/thin_common_cartridge' => 'exercises#import_thin_common_cartridge'
+
   resources :exercises do
     collection do
       match '', to: 'exercises#batch_update', via: [:patch, :put]
