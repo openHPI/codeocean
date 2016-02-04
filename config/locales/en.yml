@@ -1,6 +1,8 @@
 en:
   activerecord:
     attributes:
+      code_harbor_link:
+        oauth2token: OAuth2 Token
       consumer:
         name: Name
         oauth_key: OAuth Key
@@ -90,6 +92,9 @@ en:
         internal_user_ids: Members
         name: Name
     models:
+      code_harbor_link:
+        one: CodeHarbor Link
+        other: CodeHarbor Links
       consumer:
         one: Consumer
         other: Consumers
