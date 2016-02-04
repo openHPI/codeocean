@@ -93,8 +93,8 @@ de:
         name: Name
     models:
       code_harbor_link:
-        one: CodeHarbor-Verknüpfung
-        other: CodeHarbor-Verknüpfungen
+        one: CodeHarbor-Link
+        other: CodeHarbor-Links
       consumer:
         one: Konsument
         other: Konsumenten
