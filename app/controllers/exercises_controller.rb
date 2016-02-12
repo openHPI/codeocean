@@ -11,9 +11,9 @@ class ExercisesController < ApplicationController
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_teams, only: [:create, :edit, :new, :update]
 
-  skip_before_filter :verify_authenticity_token, only: [:import_thin_common_cartridge]
-  skip_after_action :verify_authorized, only: [:import_thin_common_cartridge]
-  skip_after_action :verify_policy_scoped, only: [:import_thin_common_cartridge]
+  skip_before_filter :verify_authenticity_token, only: [:import_proforma_xml]
+  skip_after_action :verify_authorized, only: [:import_proforma_xml]
+  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml]
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -66,7 +66,7 @@ class ExercisesController < ApplicationController
   def edit
   end
 
-  def import_thin_common_cartridge
+  def import_proforma_xml
     begin
       user = user_for_oauth2_request()
       exercise = Exercise.new

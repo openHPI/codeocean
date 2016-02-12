@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     resources :hints
   end
 
-  post '/thin_common_cartridge' => 'exercises#import_thin_common_cartridge'
+  post '/import_proforma_xml' => 'exercises#import_proforma_xml'
 
   resources :exercises do
     collection do
