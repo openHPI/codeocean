@@ -1,3 +1,4 @@
+require 'nokogiri'
 require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
 
 class Exercise < ActiveRecord::Base
@@ -103,6 +104,14 @@ class Exercise < ActiveRecord::Base
     exercise.attributes = attributes
     files.each { |file| exercise.files << file.dup }
     exercise
+  end
+
+  def from_proforma_xml(xml_string)
+    # how to extract the proforma functionality into a different module in rails?
+    xml = Nokogiri::XML(xml_string)
+    self.title = xml.xpath('/root/p:task/p:meta-data/p:title/text()')[0].content
+    self.description = xml.xpath('/root/p:task/p:description/text()')[0].content,
+    self.execution_environment_id = 1
   end
 
   def generate_token
