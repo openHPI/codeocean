@@ -35,6 +35,7 @@ class CodeHarborLinksController < ApplicationController
   # POST /code_harbor_links.json
   def create
     @code_harbor_link = CodeHarborLink.new(code_harbor_link_params)
+    @code_harbor_link.user = current_user
     authorize!
     create_and_respond(object: @code_harbor_link)
   end
