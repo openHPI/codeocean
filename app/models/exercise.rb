@@ -109,8 +109,11 @@ class Exercise < ActiveRecord::Base
   def from_proforma_xml(xml_string)
     # how to extract the proforma functionality into a different module in rails?
     xml = Nokogiri::XML(xml_string)
-    self.title = xml.xpath('/root/p:task/p:meta-data/p:title/text()')[0].content
-    self.description = xml.xpath('/root/p:task/p:description/text()')[0].content,
+    xml.collect_namespaces
+    self.attributes = {
+      title: xml.xpath('/root/p:task/p:meta-data/p:title/text()')[0].content,
+      description: xml.xpath('/root/p:task/p:description/text()')[0].content
+    }
     self.execution_environment_id = 1
   end
 

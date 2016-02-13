@@ -70,8 +70,9 @@ class ExercisesController < ApplicationController
     begin
       user = user_for_oauth2_request()
       exercise = Exercise.new
-      exercise.from_proforma_xml(request.body.read)
-      exercise.update(:user => user)
+      request_body = request.body.read
+      exercise.from_proforma_xml(request_body)
+      exercise.user = user
       saved = exercise.save
       if saved
         render :text => 'SUCCESS', :status => 200
