@@ -77,6 +77,7 @@ class ExercisesController < ApplicationController
       if saved
         render :text => 'SUCCESS', :status => 200
       else
+        logger.info(exercise.errors.full_messages)
         render :text => 'Invalid exercise', :status => 400
       end
     rescue => error

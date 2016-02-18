@@ -110,9 +110,27 @@ class Exercise < ActiveRecord::Base
     # how to extract the proforma functionality into a different module in rails?
     xml = Nokogiri::XML(xml_string)
     xml.collect_namespaces
+    description = xml.xpath('/root/p:task/p:description/text()')[0].content
     self.attributes = {
       title: xml.xpath('/root/p:task/p:meta-data/p:title/text()')[0].content,
-      description: xml.xpath('/root/p:task/p:description/text()')[0].content
+      description: description,
+      instructions: description
+    }
+    xml.xpath('/root/p:task/p:files/p:file').all? { |file|
+      file_name_split = file.xpath('@filename').first.value.split('.')
+      file_class = file.xpath('@class').first.value
+      comment = file.xpath('@comment').first.value
+      is_main_file = (file_class == 'template') && (comment == 'main')
+      files.build({
+        name: file_name_split.first,
+        content: file.xpath('text()').first.content,
+        read_only: false,
+        hidden: file_class == 'internal',
+        role: is_main_file ? 'main_file' : 'regular_file',
+        file_type: FileType.where(
+          file_extension: ".#{file_name_split.second}"
+        ).take
+      })
     }
     self.execution_environment_id = 1
   end
