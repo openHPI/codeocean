@@ -111,8 +111,11 @@ class Exercise < ActiveRecord::Base
     file_class = file_node.xpath('@class').first.value
     comment = file_node.xpath('@comment').first.value
     is_referenced_by_test = task_node.xpath("p:tests/p:test/p:filerefs/p:fileref[@id=#{file_id}]")
+    is_referenced_by_model_solution = task_node.xpath("p:model-solutions/p:model-solution/p:filerefs/p:fileref[@id=#{file_id}]")
     if is_referenced_by_test && (file_class == 'internal')
       return 'teacher_defined_test'
+    elsif is_referenced_by_model_solution && (file_class == 'internal')
+      return 'reference_implementation'
     elsif (file_class == 'template') && (comment == 'main')
       return 'main_file'
     elsif (file_class == 'internal') && (comment == 'main')
@@ -134,12 +137,15 @@ class Exercise < ActiveRecord::Base
     task_node.xpath('p:files/p:file').all? { |file|
       file_name_split = file.xpath('@filename').first.value.split('.')
       file_class = file.xpath('@class').first.value
+      role = determine_file_role_from_proforma_file(task_node, file)
+      feedback_message_nodes = task_node.xpath("p:tests/p:test/p:test-configuration/c:feedback-message/text()")
       files.build({
         name: file_name_split.first,
         content: file.xpath('text()').first.content,
         read_only: false,
         hidden: file_class == 'internal',
-        role: determine_file_role_from_proforma_file(task_node, file),
+        role: role,
+        feedback_message: (role == 'teacher_defined_test') ? feedback_message_nodes.first.content : nil,
         file_type: FileType.where(
           file_extension: ".#{file_name_split.second}"
         ).take
@@ -172,4 +178,5 @@ class Exercise < ActiveRecord::Base
     end
   end
   private :valid_main_file?
+
 end
