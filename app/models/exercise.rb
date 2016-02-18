@@ -106,27 +106,40 @@ class Exercise < ActiveRecord::Base
     exercise
   end
 
+  def determine_file_role_from_proforma_file(task_node, file_node)
+    file_id = file_node.xpath('@id')
+    file_class = file_node.xpath('@class').first.value
+    comment = file_node.xpath('@comment').first.value
+    is_referenced_by_test = task_node.xpath("p:tests/p:test/p:filerefs/p:fileref[@id=#{file_id}]")
+    if is_referenced_by_test && (file_class == 'internal')
+      return 'teacher_defined_test'
+    elsif (file_class == 'template') && (comment == 'main')
+      return 'main_file'
+    elsif (file_class == 'internal') && (comment == 'main')
+    end
+    return 'regular_file'
+  end
+
   def from_proforma_xml(xml_string)
     # how to extract the proforma functionality into a different module in rails?
     xml = Nokogiri::XML(xml_string)
     xml.collect_namespaces
-    description = xml.xpath('/root/p:task/p:description/text()')[0].content
+    task_node = xml.xpath('/root/p:task')
+    description = task_node.xpath('p:description/text()')[0].content
     self.attributes = {
-      title: xml.xpath('/root/p:task/p:meta-data/p:title/text()')[0].content,
+      title: task_node.xpath('p:meta-data/p:title/text()')[0].content,
       description: description,
       instructions: description
     }
-    xml.xpath('/root/p:task/p:files/p:file').all? { |file|
+    task_node.xpath('p:files/p:file').all? { |file|
       file_name_split = file.xpath('@filename').first.value.split('.')
       file_class = file.xpath('@class').first.value
-      comment = file.xpath('@comment').first.value
-      is_main_file = (file_class == 'template') && (comment == 'main')
       files.build({
         name: file_name_split.first,
         content: file.xpath('text()').first.content,
         read_only: false,
         hidden: file_class == 'internal',
-        role: is_main_file ? 'main_file' : 'regular_file',
+        role: determine_file_role_from_proforma_file(task_node, file),
         file_type: FileType.where(
           file_extension: ".#{file_name_split.second}"
         ).take
