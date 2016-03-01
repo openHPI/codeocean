@@ -48,6 +48,7 @@ class DockerContainerPool
   end
 
   def self.create_container(execution_environment)
+    Rails.logger.info('trying to create container for execution environment: ' + execution_environment.to_s)
     container = DockerClient.create_container(execution_environment)
     container.status = 'available'
     #Rails.logger.debug('created container ' + container.to_s + ' for execution environment ' + execution_environment.to_s)

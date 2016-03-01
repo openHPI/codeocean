@@ -35,6 +35,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'will_paginate', '~> 3.0'
 gem 'tubesock'
 gem 'faye-websocket'
+gem 'websocket-client-simple'
 
 group :development do
   gem 'better_errors', platform: :ruby
