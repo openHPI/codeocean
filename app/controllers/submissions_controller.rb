@@ -139,6 +139,11 @@ class SubmissionsController < ApplicationController
             Rails.logger.debug('Rescued parsing error, sent the received client data to docker:' + data)
           end
         end
+
+        # Send command after all listeners are attached.
+        # Newline required to flush
+        socket.send command + "\n"
+        Rails.logger.info('Sent command: ' + command.to_s)
       else
         kill_socket(tubesock)
       end
