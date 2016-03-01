@@ -218,7 +218,7 @@ class DockerClient
   end
 
   #called when the user clicks the "Run" button
-  def execute_websocket_command(command, before_execution_block, output_consuming_block)
+  def open_websocket_connection(command, before_execution_block, output_consuming_block)
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       @container.status = :executing
@@ -231,10 +231,7 @@ class DockerClient
       end
       # TODO: catch exception if socket could not be created
       @socket ||= create_socket(@container)
-      # Newline required to flush
-      @socket.send command + "\n"
-      Rails.logger.info('Sent command: ' + command.to_s)
-      {status: :container_running, socket: @socket, container: @container}
+      {status: :container_running, socket: @socket, container: @container, command: command}
     else
       {status: :container_depleted}
     end
@@ -297,7 +294,8 @@ class DockerClient
     """
     command = submission.execution_environment.run_command % command_substitutions(filename)
     create_workspace_files = proc { create_workspace_files(container, submission) }
-    execute_websocket_command(command, create_workspace_files, block)
+    open_websocket_connection(command, create_workspace_files, block)
+    # actual run command is run in the submissions controller, after all listeners are attached.
   end
 
   def execute_test_command(submission, filename, &block)
