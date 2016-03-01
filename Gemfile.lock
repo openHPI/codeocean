@@ -362,6 +362,7 @@ DEPENDENCIES
   jquery-turbolinks
   kramdown
   newrelic_rpm
+  nokogiri
   nyan-cat-formatter
   pg
   pry
