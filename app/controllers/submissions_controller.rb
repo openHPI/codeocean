@@ -25,6 +25,11 @@ class SubmissionsController < ApplicationController
     create_and_respond(object: @submission)
   end
 
+  def command_substitutions(filename)
+    {class_name: File.basename(filename, File.extname(filename)).camelize, filename: filename, module_name: File.basename(filename, File.extname(filename)).underscore}
+  end
+  private :command_substitutions
+
   def copy_comments
     # copy each annotation and set the target_file.id
     unless(params[:annotations_arr].nil?)
@@ -88,6 +93,11 @@ class SubmissionsController < ApplicationController
     # end
 
     hijack do |tubesock|
+      # probably add:
+      # ensure
+      #   #guarantee that the thread is releasing the DB connection after it is done
+      #   ActiveRecord::Base.connectionpool.releaseconnection
+      # end
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
 
 
@@ -101,6 +111,7 @@ class SubmissionsController < ApplicationController
 
       if result[:status] == :container_running
         socket = result[:socket]
+        command = result[:command]
 
         socket.on :message do |event|
           Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + event.data)
@@ -122,13 +133,18 @@ class SubmissionsController < ApplicationController
               @docker_client.exit_container(result[:container])
             else
               socket.send data
-              Rails.logger.info('Sent the received data to docker:' + data)
+              Rails.logger.debug('Sent the received client data to docker:' + data)
             end
           rescue JSON::ParserError
             socket.send data
-            Rails.logger.info('Sent the received data to docker:' + data)
+            Rails.logger.debug('Rescued parsing error, sent the received client data to docker:' + data)
           end
         end
+
+        # Send command after all listeners are attached.
+        # Newline required to flush
+        socket.send command + "\n"
+        Rails.logger.info('Sent command: ' + command.to_s)
       else
         kill_socket(tubesock)
       end
@@ -147,8 +163,8 @@ class SubmissionsController < ApplicationController
       kill_socket(tubesock)
     else
       # Filter out information about run_command, test_command, user or working directory
-      run_command = @submission.execution_environment.run_command
-      test_command = @submission.execution_environment.test_command
+      run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
+      test_command = @submission.execution_environment.test_command % command_substitutions(params[:filename])
       if !(/root|workspace|#{run_command}|#{test_command}/.match(message))
         parse_message(message, 'stdout', tubesock)
       end
@@ -166,7 +182,24 @@ class SubmissionsController < ApplicationController
         for part in message.split("\n")
           self.parse_message(part,output_stream,socket,false)
         end
+      elsif(message.include? "<img")
+        #Rails.logger.info('img foung')
+        @buffering = true
+        @buffer = ""
+        @buffer += message
+        #Rails.logger.info('Starting to buffer')
+      elsif(@buffering && (message.include? "/>"))
+        @buffer += message
+        parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>@buffer}
+        socket.send_data JSON.dump(parsed)
+        #socket.send_data @buffer
+        @buffering = false
+        #Rails.logger.info('Sent complete buffer')
+      elsif(@buffering)
+        @buffer += message
+        #Rails.logger.info('Appending to buffer')
       else
+        #Rails.logger.info('else')
         parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>message}
         socket.send_data JSON.dump(parsed)
         Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))

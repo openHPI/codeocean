@@ -1,6 +1,7 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
+  resources :code_harbor_links
   resources :request_for_comments
     get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
   resources :comments, except: [:destroy] do
@@ -20,17 +21,27 @@ Rails.application.routes.draw do
 
   get '/help', to: 'application#help'
 
+  concern :statistics do
+    member do
+      get :statistics
+    end
+  end
+
+
   resources :consumers
 
   resources :execution_environments do
     member do
       get :shell
       post 'shell', as: :execute_command, to: :execute_command
+      get :statistics
     end
 
     resources :errors, only: [:create, :index, :show]
     resources :hints
   end
+
+  post '/import_proforma_xml' => 'exercises#import_proforma_xml'
 
   resources :exercises do
     collection do
@@ -46,7 +57,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :external_users, only: [:index, :show]
+  resources :external_users, only: [:index, :show], concerns: :statistics do
+    resources :exercises, concerns: :statistics
+  end
 
   namespace :code_ocean do
     resources :files, only: [:create, :destroy]

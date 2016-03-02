@@ -1,6 +1,8 @@
 de:
   activerecord:
     attributes:
+      code_harbor_link:
+        oauth2token: OAuth2 Token
       consumer:
         name: Name
         oauth_key: OAuth Key
@@ -90,6 +92,9 @@ de:
         internal_user_ids: Mitglieder
         name: Name
     models:
+      code_harbor_link:
+        one: CodeHarbor-Link
+        other: CodeHarbor-Links
       consumer:
         one: Konsument
         other: Konsumenten
@@ -167,6 +172,16 @@ de:
     shell:
       command: Befehl
       headline: Shell
+    statistics:
+      exercise: Übung
+      users: Anzahl (externer) Nutzer
+      score: Durchschnittliche Punktzahl
+      stddev_score: stdabw (Punktzahl)
+      stddev_worktime: stdabw (Arbeitszeit)
+      maximum_score: Maximale Punktzahl
+      percentage_correct: Prozent Korrekt
+      runs: Durchschnittliche Anzahl von Versuchen
+      worktime: Durchschnittliche Arbeitszeit
   exercises:
     editor:
       confirm_start_over: Wollen Sie wirklich von vorne anfangen?
@@ -239,8 +254,28 @@ de:
       intermediate_submissions: Intermediäre Abgaben
       participants: Bearbeitende Nutzer
       users: '%{count} verschiedene Nutzer'
+      user: Nutzer
+      score: Punktzahl
+      runs: Versuche
+      worktime: Arbeitszeit
+      average_worktime: Durchschnittliche Arbeitszeit
+      internal_users: Interne Nutzer
+      external_user: Externe Nutzer
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+    external_users:
+      statistics:
+        no_data_available: Keine Daten verfügbar.
+        time: Zeit
+        cause: Grund
+        score: Punktzahl
+  external_users:
+    statistics:
+      title: Statistiken für Externe Benutzer
+      exercise: Übung
+      score: Bewertung
+      runs: Abgaben
+      worktime: Arbeitszeit
   files:
     roles:
       main_file: Hauptdatei
@@ -288,7 +323,7 @@ de:
       failure: Fehlerhafte E-Mail oder Passwort.
       success: Sie haben sich erfolgreich angemeldet.
     create_through_lti:
-      session_with_outcome: 'Nachdem Sie die Aufgabe bearbeitet haben, wird Ihre Bewertung an %{consumer} übermittelt.'
+      session_with_outcome: 'Bitte beachten Sie, dass zur Gutschrift der Punkte Ihr Code nach der Bearbeitung durch Klicken auf den Button "Code zur Bewertung abgeben" eingetragen werden muss.'
       session_without_outcome: 'Dies ist eine Übungs-Session. Ihre Bewertung wird nicht an %{consumer} übermittelt.'
     destroy:
       link: Abmelden
@@ -353,6 +388,7 @@ de:
     upload_file: Datei hochladen
   submissions:
     causes:
+      autosave: Autosave
       assess: Bewertung
       download: Download
       file: Benutzerdefinierte Datei

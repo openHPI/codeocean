@@ -1,0 +1,18 @@
+h1 = t('.title')
+
+- exercises = Exercise.where(:id => @user.submissions.group(:exercise_id).select(:exercise_id).distinct())
+
+.table-responsive
+  table.table
+    thead
+      tr
+        - ['.exercise', '.score', '.runs', '.worktime'].each do |title|
+          th.header = t(title)
+    tbody
+      - exercises.each do |exercise|
+        - if statistics[exercise.id] then stats = statistics[exercise.id] else stats = {"working_time" => 0, "runs" => 0, "score" => 0}
+        tr
+          td = link_to exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
+          td = stats["maximum_score"] or 0
+          td = stats["runs"] or 0
+          td = stats["working_time"] or 0

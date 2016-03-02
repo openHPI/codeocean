@@ -30,7 +30,7 @@ $(function() {
       numMessages = 0,
       turtlecanvas = $('#turtlecanvas'),
       prompt = $('#prompt'),
-      commands = ['input', 'write', 'turtle', 'turtlebatch', 'exit', 'timeout', 'status'],
+      commands = ['input', 'write', 'turtle', 'turtlebatch', 'render', 'exit', 'timeout', 'status'],
       streams = ['stdin', 'stdout', 'stderr'];
 
   var ENTER_KEY_CODE = 13;
@@ -100,12 +100,12 @@ $(function() {
     }
   };
 
-  var confirmSubmission = function(event) {
-    event.preventDefault();
-    if (confirm($(this).data('message-confirm'))) {
-      submitCode();
-    }
-  };
+  //var confirmSubmission = function(event) {
+  //  event.preventDefault();
+  //  if (confirm($(this).data('message-confirm'))) {
+  //    submitCode();
+  //  }
+  //};
 
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
@@ -244,6 +244,18 @@ $(function() {
       return element;
     }
   };
+
+  var findOrCreateRenderElement = function(index) {
+    if ($('#render-' + index).isPresent()) {
+      return $('#render-' + index);
+    } else {
+      var element = $('<div>').attr('id', 'render-' + index);
+      $('#render').append(element);
+      return element;
+    }
+  };
+
+
 
   var getPanelClass = function(result) {
     if (result.stderr && !result.score) {
@@ -408,6 +420,8 @@ $(function() {
       setActiveFile($(element).parent().data('filename'), file_id);
 
       document.insertLines(0, content.text().split(/\n/));
+      // remove last (empty) that is there by default line
+      document.removeLines(document.getLength()-1,document.getLength()-1);
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
@@ -419,10 +433,7 @@ $(function() {
       session.setUseWrapMode(true);
 
       var file_id =  $(element).data('id');
-      setAnnotations(editor, file_id);
-
-      session.on('annotationRemoval', handleAnnotationRemoval);
-      session.on('annotationChange', handleAnnotationChange);
+      //setAnnotations(editor, file_id);
 
       /*
        * Register event handlers
@@ -637,7 +648,8 @@ $(function() {
 
   var initializeWorkflowButtons = function() {
     $('#start').on('click', showWorkspaceTab);
-    $('#submit').on('click', confirmSubmission);
+    //$('#submit').on('click', confirmSubmission);
+    $('#submit').on('click', submitCode);
   };
 
   var initializeWorkspaceButtons = function() {
@@ -1117,7 +1129,10 @@ $(function() {
   };
 
   var initWebsocketConnection = function(url) {
-      websocket = new WebSocket('wss://' + window.location.hostname + ':' + window.location.port + url);
+      //TODO: get the protocol from config file dependent on environment. (dev: ws, prod: wss)
+      //causes: Puma::HttpParserError: Invalid HTTP format, parsing fails.
+      //TODO: make sure that this gets cached.
+      websocket = new WebSocket('<%= DockerClient.config['ws_client_protocol'] %>' + window.location.hostname + ':' + window.location.port + url);
       websocket.onopen = function(evt) { resetOutputTab(); }; // todo show some kind of indicator for established connection
       websocket.onclose = function(evt) { /* expected at some point */ };
       websocket.onmessage = function(evt) { parseCanvasMessage(evt.data, true); };
@@ -1169,6 +1184,9 @@ $(function() {
             showCanvas();
             handleTurtlebatchCommand(msg);
             break;
+        case 'render':
+          renderWebsocketOutput(msg);
+          break;
         case 'exit':
             killWebsocketAndContainer();
             break;
@@ -1180,6 +1198,11 @@ $(function() {
             showStatus(msg)
             break;
       }
+  };
+
+  var renderWebsocketOutput = function(msg){
+    var element = findOrCreateRenderElement(0);
+    element.append(msg.data);
   };
 
   var printWebsocketOutput = function(msg) {

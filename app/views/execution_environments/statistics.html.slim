@@ -1,0 +1,25 @@
+h1 = @execution_environment
+
+.table-responsive
+  table.table.table-striped.sortable
+    thead
+      tr
+        - ['.exercise', '.users', '.score', '.maximum_score', '.stddev_score', '.percentage_correct', '.runs', '.worktime', '.stddev_worktime'].each do |title|
+          th.header = t(title)
+    tbody
+      - @execution_environment.exercises.each do |exercise|
+        - us = user_statistics[exercise.id]
+        - if not us then us = {"users" => 0, "average_score" => 0.0, "maximum_score" => 0, "stddev_score" => 0.0, "percent_correct" => nil, "average_submission_count" => 0}
+        - wts = working_time_statistics[exercise.id]
+        - if wts then average_time = wts["average_time"] else 0
+        - if wts then stddev_time = wts["stddev_time"] else 0
+        tr
+          td = link_to exercise.title, controller: "exercises", action: "statistics", id: exercise.id
+          td = us["users"]
+          td = us["average_score"].to_f.round(4)
+          td = us["maximum_score"].to_f.round(2)
+          td = us["stddev_score"].to_f.round(4)
+          td = (us["percent_correct"].to_f or 0).round(4)
+          td = us["average_submission_count"].to_f.round(2)
+          td = average_time
+          td = stddev_time
