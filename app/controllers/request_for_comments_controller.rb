@@ -11,7 +11,7 @@ class RequestForCommentsController < ApplicationController
   # GET /request_for_comments
   # GET /request_for_comments.json
   def index
-    @request_for_comments = RequestForComment.last_per_user(2).paginate(page: params[:page])
+    @request_for_comments = RequestForComment.last_per_user(2).order('created_at DESC').paginate(page: params[:page])
     authorize!
   end
 

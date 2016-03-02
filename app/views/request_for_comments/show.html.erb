@@ -1,107 +1,112 @@
 <div class="list-group">
   <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exercise_id) %></h4>
   <p class="list-group-item-text">
-    <%= @request_for_comment.user %> | <%= @request_for_comment.requested_at %> | <%= @request_for_comment.submission.id %>
+      <%
+        user = @request_for_comment.user
+        submission_id =  ActiveRecord::Base.connection.execute("select id from submissions
+          where exercise_id =
+          #{@request_for_comment.exercise_id} AND
+          user_id =  #{@request_for_comment.user_id} AND
+          '#{@request_for_comment.created_at}' > created_at
+          order by created_at desc
+          limit 1").first['id'].to_i
+        submission = Submission.find(submission_id)
+      %>
+    <%= user %> | <%= @request_for_comment.requested_at %>
   </p>
 </div>
 
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
 -->
-<div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=@request_for_comment.file_id%>'><%= CodeOcean::File.find(@request_for_comment.file_id).content %>
-</div>
+<% submission.files.each do |file| %>
+  <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %>
+  <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>'><%= file.content %>
+  </div>
+<% end %>
 
 <script type="text/javascript">
-  //(function() {
-    var commentitor = $('#commentitor');
-    var userid = commentitor.data('user-id');
-    var fileid = commentitor.data('file-id');
+  var commentitor = $('.editor');
+  var userid = commentitor.data('user-id');
+
+  commentitor.each(function (index, editor) {
+    currentEditor = ace.edit(editor);
+    currentEditor.setReadOnly(true);
+
+    setAnnotations(currentEditor, $(editor).data('file-id'));
+  });
+
+  function setAnnotations(editor, fileid) {
+    var session = editor.getSession()
 
     var inputHtml = ''
-    //inputHtml += '<form class="form">'
-    //inputHtml +=   '<div class="form-group">'
-    //inputHtml +=    '<p style="display:inline-block"><%= t("exercises.implement.comment.line") %></p>'
-    //inputHtml +=    '<input type="number" class="form-control" id="lineInput" placeholder="1" required>'
-    //inputHtml +=  '</div>'
-    inputHtml +=  '<div class="input-group">'
-    //inputHtml +=    '<p style="display:inline-block"><%= t("exercises.implement.comment.a_comment") %></p>'
-    inputHtml +=    '<input type="text" class="form-control" id="commentInput" placeholder="I\'d suggest a variable here" required>'
-    inputHtml +=    '<span class="input-group-btn"><button id="submitComment" class="btn btn-default"><%= t("exercises.implement.comment.addComment") %>!</button></span>'
-    inputHtml +=  '</div>'
-    //inputHtml +='</form>'
+    inputHtml += '<div class="input-group">'
+    inputHtml +=   '<input type="text" class="form-control" id="commentInput"'
+    inputHtml +=     'placeholder="I\'d suggest a variable here" required>'
+    inputHtml +=   '<span class="input-group-btn"><button id="submitComment"'
+    inputHtml +=     'class="btn btn-default"><%= t("exercises.implement.comment.addComment") %>!</button></span>'
+    inputHtml += '</div>'
 
-
-    commentitor = ace.edit(commentitor[0]);
-    commentitor.setReadOnly(true);
-
-    setAnnotations();
-
-    function setAnnotations() {
-      var session = commentitor.getSession()
-
-      var jqrequest = $.ajax({
-          dataType: 'json',
-          method: 'GET',
-          url: '/comments',
-          data: {
-            file_id: fileid
-          }
-      });
-
-      jqrequest.done(function(response){
-        //data-container=".ui-front" on gutter cell
-        $.each(response, function(index, comment) {
-          comment.className = "code-ocean_comment"
-          comment.text = comment.username + ": " + comment.text
-        })
-
-        commentitor.getSession().setAnnotations(response)
-
-        //$('.ace_gutter-layer').data('container', '.ui-front')
-        $('.ace_gutter-cell').popover({
-          title: 'Add a comment',
-          html: true,
-          content: inputHtml,
-          position: 'right',
-          trigger: 'focus click'
-        }).on('shown.bs.popover', function() {
-          $('#commentInput').focus()
-          $('#submitComment').click(addComment);
-          console.log($(this).text())
-          $('#commentInput').data('line', $(this).text())
-        })
-      })
-    }
-
-    function addComment() {
-      var commentInput = $('#commentInput');
-      var comment = commentInput.val()
-      var line = $('#commentInput').data('line')
-
-      if (line == '' || comment == '') {
-        return
-      } else {
-        line = parseInt(line) - 1
-      }
-
-      $.ajax({
-        data: {
-          comment: {
-            user_id: userid,
-            file_id: fileid,
-            row: line,
-            column: 0,
-            text: comment
-          }
-        },
+    var jqrequest = $.ajax({
         dataType: 'json',
-        method: 'POST',
-        url:  "/comments"
-      }).done(setAnnotations)
+        method: 'GET',
+        url: '/comments',
+        data: {
+          file_id: fileid
+        }
+    });
 
-      $('.ace_gutter-cell').popover('hide')
+    jqrequest.done(function(response){
+      $.each(response, function(index, comment) {
+        comment.className = "code-ocean_comment"
+        comment.text = comment.username + ": " + comment.text
+      })
+
+      editor.getSession().setAnnotations(response)
+
+      $(editor.container).find('.ace_gutter-cell').popover({
+        title: 'Add a comment',
+        html: true,
+        content: inputHtml,
+        position: 'right',
+        trigger: 'focus click'
+      }).on('shown.bs.popover', function() {
+        var container = $(editor.container)
+        container.find('#commentInput').focus()
+        container.find('#submitComment').click(_.partial(addComment, editor, fileid));
+        container.find('#commentInput').data('line', $(this).text())
+      })
+    })
+  }
+
+  function addComment(editor, fileid) {
+    var commentInput = $(editor.container).find('#commentInput');
+    var comment = commentInput.val()
+    var line = commentInput.data('line')
+
+    if (line == '' || comment == '') {
+      return
+    } else {
+      line = parseInt(line) - 1
     }
-  //})()
+
+    $.ajax({
+      data: {
+        comment: {
+          user_id: userid,
+          file_id: fileid,
+          row: line,
+          column: 0,
+          text: comment
+        }
+      },
+      dataType: 'json',
+      method: 'POST',
+      url:  "/comments"
+    }).done(setAnnotations(editor, fileid))
+
+    $('.ace_gutter-cell').popover('hide')
+  }
 </script>
 <style>
   #commentitor, .ace_gutter, .ace_gutter-layer { overflow: visible }
