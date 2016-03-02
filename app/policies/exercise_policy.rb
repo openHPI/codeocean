@@ -8,7 +8,11 @@ class ExercisePolicy < AdminOrAuthorPolicy
     admin?
   end
 
-  [:clone?, :destroy?, :edit?, :show?, :statistics?, :update?].each do |action|
+  def show?
+    @user.internal_user?
+  end
+
+  [:clone?, :destroy?, :edit?, :statistics?, :update?].each do |action|
     define_method(action) { admin? || author? || team_member? }
   end
 

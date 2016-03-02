@@ -1,10 +1,10 @@
-class ExecutionEnvironmentPolicy < AdminOrAuthorPolicy
+class ExecutionEnvironmentPolicy < AdminOnlyPolicy
   def author?
     @user == @record.author
   end
   private :author?
 
-  [:execute_command?, :shell?].each do |action|
+  [:execute_command?, :shell?, :statistics?].each do |action|
     define_method(action) { admin? || author? }
   end
 end

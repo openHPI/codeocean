@@ -4,12 +4,13 @@
 
 h1
   = @exercise
-  = render('shared/edit_button', object: @exercise)
+  - if policy(@exercise).edit?
+    = render('shared/edit_button', object: @exercise)
 
 = row(label: 'exercise.title', value: @exercise.title)
-= row(label: 'exercise.user', value: link_to(@exercise.author, @exercise.author))
+= row(label: 'exercise.user', value: link_to_if(policy(@exercise.author).show?, @exercise.author, @exercise.author))
 = row(label: 'exercise.description', value: @exercise.description)
-= row(label: 'exercise.execution_environment', value: link_to(@exercise.execution_environment, @exercise.execution_environment))
+= row(label: 'exercise.execution_environment', value: link_to_if(policy(@exercise.execution_environment).show?, @exercise.execution_environment, @exercise.execution_environment))
 = row(label: 'exercise.instructions', value: render_markdown(@exercise.instructions))
 = row(label: 'exercise.team', value: @exercise.team ? link_to(@exercise.team, @exercise.team) : nil)
 = row(label: 'exercise.maximum_score', value: @exercise.maximum_score)
@@ -26,5 +27,6 @@ ul.list-unstyled
       .panel-heading
         h3.panel-title = file.name_with_extension
       .panel-body
-        .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+        - if policy(file).destroy?
+          .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
         = render('shared/file', file: file)

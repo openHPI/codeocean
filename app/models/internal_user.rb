@@ -17,4 +17,8 @@ class InternalUser < ActiveRecord::Base
     activation_token? || reset_password_token?
   end
   private :password_void?
+
+  def teacher?
+    role == 'teacher'
+  end
 end

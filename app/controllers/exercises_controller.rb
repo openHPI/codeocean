@@ -7,8 +7,13 @@ class ExercisesController < ApplicationController
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
   before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit, :reload]
+  before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_teams, only: [:create, :edit, :new, :update]
+
+  skip_before_filter :verify_authenticity_token, only: [:import_proforma_xml]
+  skip_after_action :verify_authorized, only: [:import_proforma_xml]
+  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml]
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -60,6 +65,58 @@ class ExercisesController < ApplicationController
 
   def edit
   end
+
+  def import_proforma_xml
+    begin
+      user = user_for_oauth2_request()
+      exercise = Exercise.new
+      request_body = request.body.read
+      exercise.from_proforma_xml(request_body)
+      exercise.user = user
+      saved = exercise.save
+      if saved
+        render :text => 'SUCCESS', :status => 200
+      else
+        logger.info(exercise.errors.full_messages)
+        render :text => 'Invalid exercise', :status => 400
+      end
+    rescue => error
+      if error.class == Hash
+        render :text => error.message, :status => error.status
+      else
+        raise error
+        render :text => '', :status => 500
+      end
+    end
+  end
+
+  def user_for_oauth2_request
+    authorizationHeader = request.headers['Authorization']
+    if authorizationHeader == nil
+      raise ({status: 401, message: 'No Authorization header'})
+    end
+
+    oauth2Token = authorizationHeader.split(' ')[1]
+    if oauth2Token == nil || oauth2Token.size == 0
+      raise ({status: 401, message: 'No token in Authorization header'})
+    end
+
+    user = user_by_code_harbor_token(oauth2Token)
+    if user == nil
+      raise ({status: 401, message: 'Unknown OAuth2 token'})
+    end
+
+    return user
+  end
+  private :user_for_oauth2_request
+
+  def user_by_code_harbor_token(oauth2Token)
+    link = CodeHarborLink.where(:oauth2token => oauth2Token)[0]
+    if link != nil
+      return link.user
+    end
+  end
+  private :user_by_code_harbor_token
 
   def exercise_params
     params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :team_id, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
@@ -125,6 +182,14 @@ class ExercisesController < ApplicationController
   end
   private :set_exercise
 
+  def set_external_user
+    if params[:external_user_id]
+      @external_user = ExternalUser.find(params[:external_user_id])
+      authorize!
+    end
+  end
+  private :set_exercise
+
   def set_file_types
     @file_types = FileType.all.order(:name)
   end
@@ -143,6 +208,20 @@ class ExercisesController < ApplicationController
   end
 
   def statistics
+    if(@external_user)
+      render 'exercises/external_users/statistics'
+    else
+      user_statistics = {}
+      query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
+              FROM submissions WHERE exercise_id = #{@exercise.id} GROUP BY
+              user_id;"
+      ActiveRecord::Base.connection.execute(query).each do |tuple|
+        user_statistics[tuple["user_id"].to_i] = tuple
+      end
+      render locals: {
+        user_statistics: user_statistics
+      }
+    end
   end
 
   def submit

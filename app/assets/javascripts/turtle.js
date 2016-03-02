@@ -33,6 +33,7 @@ function Turtle(pipe, canvas) {
             'x': xpos - dx,
             'y': ypos - dy
         }));
+        pipe.send('\n');
     });
 }
 
