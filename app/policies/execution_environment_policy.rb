@@ -1,4 +1,4 @@
-class ExecutionEnvironmentPolicy < AdminOrAuthorPolicy
+class ExecutionEnvironmentPolicy < AdminOnlyPolicy
   def author?
     @user == @record.author
   end
