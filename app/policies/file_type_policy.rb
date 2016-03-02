@@ -1,4 +1,4 @@
-class FileTypePolicy < AdminOrAuthorPolicy
+class FileTypePolicy < AdminOnlyPolicy
   def author?
     @user == @record.author
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204111716) do
+ActiveRecord::Schema.define(version: 20160302133540) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,6 +90,8 @@ ActiveRecord::Schema.define(version: 20160204111716) do
     t.integer  "team_id"
     t.boolean  "hide_file_tree"
   end
+
+  add_index "exercises", ["execution_environment_id"], name: "test3", using: :btree
 
   create_table "external_users", force: true do |t|
     t.integer  "consumer_id"
@@ -200,8 +202,20 @@ ActiveRecord::Schema.define(version: 20160204111716) do
     t.string   "user_type"
   end
 
+  add_index "submissions", ["exercise_id"], name: "test1", where: "((user_type)::text = 'ExternalUser'::text)", using: :btree
+  add_index "submissions", ["exercise_id"], name: "test2", using: :btree
+
   create_table "teams", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "testruns", force: true do |t|
+    t.boolean  "passed"
+    t.text     "output"
+    t.integer  "file_id"
+    t.integer  "submission_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

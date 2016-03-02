@@ -3,7 +3,7 @@ h1 = t('.title')
 - exercises = Exercise.where(:id => @user.submissions.group(:exercise_id).select(:exercise_id).distinct())
 
 .table-responsive
-  table.table
+  table.table.table-striped.sortable
     thead
       tr
         - ['.exercise', '.score', '.runs', '.worktime'].each do |title|
