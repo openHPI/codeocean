@@ -21,14 +21,14 @@ class DockerClient
   end
 
   def self.clean_container_workspace(container)
-    container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
-=begin
+    # remove files when using transferral via Docker API archive_in (transmit)
+    #container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
+    
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
       #FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
-=end
   end
 
   def command_substitutions(filename)
@@ -96,9 +96,10 @@ class DockerClient
     #Rails.logger.info "docker_client: self.create_container with creation options:"
     #Rails.logger.info(container_creation_options(execution_environment))
     container = Docker::Container.create(container_creation_options(execution_environment))
+    # container.start sometimes creates the passed local_workspace_path on disk (depending on the setup).
+    # this is however not guaranteed and caused issues on the server already. Therefore create the necessary folders manually!
     local_workspace_path = generate_local_workspace_path
-    # container.start always creates the passed local_workspace_path on disk. Seems like we have to live with that, therefore we can also just create the empty folder ourselves.
-    # FileUtils.mkdir(local_workspace_path)
+    FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
     container.start_time = Time.now
     container.status = :created
@@ -217,7 +218,7 @@ class DockerClient
   end
 
   #called when the user clicks the "Run" button
-  def execute_websocket_command(command, before_execution_block, output_consuming_block)
+  def open_websocket_connection(command, before_execution_block, output_consuming_block)
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       @container.status = :executing
@@ -230,10 +231,7 @@ class DockerClient
       end
       # TODO: catch exception if socket could not be created
       @socket ||= create_socket(@container)
-      # Newline required to flush
-      @socket.send command + "\n"
-      Rails.logger.info('Sent command: ' + command.to_s)
-      {status: :container_running, socket: @socket, container: @container}
+      {status: :container_running, socket: @socket, container: @container, command: command}
     else
       {status: :container_depleted}
     end
@@ -295,8 +293,9 @@ class DockerClient
     Run commands by attaching a websocket to Docker.
     """
     command = submission.execution_environment.run_command % command_substitutions(filename)
-    create_workspace_files = proc { create_workspace_files_transmit(container, submission) }
-    execute_websocket_command(command, create_workspace_files, block)
+    create_workspace_files = proc { create_workspace_files(container, submission) }
+    open_websocket_connection(command, create_workspace_files, block)
+    # actual run command is run in the submissions controller, after all listeners are attached.
   end
 
   def execute_test_command(submission, filename, &block)
@@ -304,7 +303,7 @@ class DockerClient
     Stick to existing Docker API with exec command.
     """
     command = submission.execution_environment.test_command % command_substitutions(filename)
-    create_workspace_files = proc { create_workspace_files_transmit(container, submission) }
+    create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_command(command, create_workspace_files, block)
   end
 

@@ -30,7 +30,7 @@ $(function() {
       numMessages = 0,
       turtlecanvas = $('#turtlecanvas'),
       prompt = $('#prompt'),
-      commands = ['input', 'write', 'turtle', 'turtlebatch', 'exit', 'timeout', 'status'],
+      commands = ['input', 'write', 'turtle', 'turtlebatch', 'render', 'exit', 'timeout', 'status'],
       streams = ['stdin', 'stdout', 'stderr'];
 
   var ENTER_KEY_CODE = 13;
@@ -244,6 +244,18 @@ $(function() {
       return element;
     }
   };
+
+  var findOrCreateRenderElement = function(index) {
+    if ($('#render-' + index).isPresent()) {
+      return $('#render-' + index);
+    } else {
+      var element = $('<div>').attr('id', 'render-' + index);
+      $('#render').append(element);
+      return element;
+    }
+  };
+
+
 
   var getPanelClass = function(result) {
     if (result.stderr && !result.score) {
@@ -1172,6 +1184,9 @@ $(function() {
             showCanvas();
             handleTurtlebatchCommand(msg);
             break;
+        case 'render':
+          renderWebsocketOutput(msg);
+          break;
         case 'exit':
             killWebsocketAndContainer();
             break;
@@ -1183,6 +1198,11 @@ $(function() {
             showStatus(msg)
             break;
       }
+  };
+
+  var renderWebsocketOutput = function(msg){
+    var element = findOrCreateRenderElement(0);
+    element.append(msg.data);
   };
 
   var printWebsocketOutput = function(msg) {
