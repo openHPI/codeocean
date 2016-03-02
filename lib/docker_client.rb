@@ -2,7 +2,7 @@ require 'concurrent'
 require 'pathname'
 
 class DockerClient
-  CONTAINER_WORKSPACE_PATH = '/workspace'
+  CONTAINER_WORKSPACE_PATH = '/workspace' #'/home/python/workspace' #'/tmp/workspace'
   DEFAULT_MEMORY_LIMIT = 256
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
@@ -21,6 +21,9 @@ class DockerClient
   end
 
   def self.clean_container_workspace(container)
+    # remove files when using transferral via Docker API archive_in (transmit)
+    #container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
+    
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
@@ -42,6 +45,8 @@ class DockerClient
       'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
       'Memory' => execution_environment.memory_limit.megabytes,
       'NetworkDisabled' => !execution_environment.network_enabled?,
+      #'HostConfig' => { 'CpusetCpus' => '0', 'CpuQuota' => 10000 },
+      #DockerClient.config['allowed_cpus']
       'OpenStdin' => true,
       'StdinOnce' => true,
       # required to expose standard streams over websocket
@@ -88,11 +93,12 @@ class DockerClient
 
   def self.create_container(execution_environment)
     tries ||= 0
-    Rails.logger.info "docker_client: self.create_container with creation options:"
-    Rails.logger.info(container_creation_options(execution_environment))
+    #Rails.logger.info "docker_client: self.create_container with creation options:"
+    #Rails.logger.info(container_creation_options(execution_environment))
     container = Docker::Container.create(container_creation_options(execution_environment))
+    # container.start sometimes creates the passed local_workspace_path on disk (depending on the setup).
+    # this is however not guaranteed and caused issues on the server already. Therefore create the necessary folders manually!
     local_workspace_path = generate_local_workspace_path
-    # container.start always creates the passed local_workspace_path on disk. Seems like we have to live with that, therefore we can also just create the empty folder ourselves.
     FileUtils.mkdir(local_workspace_path)
     container.start(container_start_options(execution_environment, local_workspace_path))
     container.start_time = Time.now
@@ -121,11 +127,60 @@ class DockerClient
   private :create_workspace_files
 
   def create_workspace_file(options = {})
+    #TODO: try catch i/o exception and log failed attempts
     file = File.new(local_file_path(options), 'w')
     file.write(options[:file].content)
     file.close
   end
   private :create_workspace_file
+
+  def create_workspace_files_transmit(container, submission)
+    begin
+    # create a temporary dir, put all files in it, and put it into the container. the dir is automatically removed when leaving the block.
+    Dir.mktmpdir {|dir|
+      submission.collect_files.each do |file|
+        disk_file = File.new(dir + '/' + (file.path || '') + file.name_with_extension, 'w')
+        disk_file.write(file.content)
+        disk_file.close
+      end
+
+
+      begin
+        # create target folder, TODO re-active this when we remove shared folder bindings
+        #container.exec(['bash', '-c', 'mkdir ' + CONTAINER_WORKSPACE_PATH])
+        #container.exec(['bash', '-c', 'chown -R python ' + CONTAINER_WORKSPACE_PATH])
+        #container.exec(['bash', '-c', 'chgrp -G python ' + CONTAINER_WORKSPACE_PATH])
+      rescue StandardError => error
+        Rails.logger.error('create workspace folder: Rescued from StandardError: ' + error.to_s)
+      end
+
+      #sleep 1000
+
+      begin
+        # tar the files in dir and put the tar to CONTAINER_WORKSPACE_PATH in the container
+        container.archive_in(dir, CONTAINER_WORKSPACE_PATH, overwrite: false)
+
+      rescue StandardError => error
+        Rails.logger.error('insert tar: Rescued from StandardError: ' + error.to_s)
+      end
+
+      #Rails.logger.info('command: tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH)
+
+      begin
+        # untar the tar file placed in the CONTAINER_WORKSPACE_PATH
+        container.exec(['bash', '-c', 'tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH])
+      rescue StandardError => error
+        Rails.logger.error('untar: Rescued from StandardError: ' + error.to_s)
+      end
+
+
+      #sleep 1000
+
+    }
+    rescue StandardError => error
+      Rails.logger.error('create_workspace_files_transmit: Rescued from StandardError: ' + error.to_s)
+    end
+  end
 
   def self.destroy_container(container)
     Rails.logger.info('destroying container ' + container.to_s)
@@ -140,10 +195,12 @@ class DockerClient
     Rails.logger.error('No further actions are done concerning that.')
   end
 
+  #currently only used to check if containers have been started correctly, or other internal checks
   def execute_arbitrary_command(command, &block)
     execute_command(command, nil, block)
   end
 
+  #only used by server sent events (deprecated?)
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)
@@ -160,17 +217,21 @@ class DockerClient
     #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
-  def execute_websocket_command(command, before_execution_block, output_consuming_block)
+  #called when the user clicks the "Run" button
+  def open_websocket_connection(command, before_execution_block, output_consuming_block)
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       @container.status = :executing
-      before_execution_block.try(:call)
-      # todo catch exception if socket could not be created
+      # do not use try here, directly call the passed proc and rescue from the error in order to log the problem.
+      #before_execution_block.try(:call)
+      begin
+        before_execution_block.call
+      rescue StandardError => error
+        Rails.logger.error('execute_websocket_command: Rescued from StandardError caused by before_execution_block.call: ' + error.to_s)
+      end
+      # TODO: catch exception if socket could not be created
       @socket ||= create_socket(@container)
-      # Newline required to flush
-      @socket.send command + "\n"
-      Rails.logger.info('Sent command: ' + command.to_s)
-      {status: :container_running, socket: @socket, container: @container}
+      {status: :container_running, socket: @socket, container: @container, command: command}
     else
       {status: :container_depleted}
     end
@@ -181,8 +242,8 @@ class DockerClient
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
     """
-    #begin
       @thread = Thread.new do
+        #begin
           timeout = @execution_environment.permitted_execution_time.to_i # seconds
           sleep(timeout)
           if container.status != :returned
@@ -193,11 +254,11 @@ class DockerClient
             end
             kill_container(container)
           end
+        #ensure
+        # guarantee that the thread is releasing the DB connection after it is done
+        # ActiveRecord::Base.connectionpool.releaseconnection
+        #end
       end
-    #ensure
-      # guarantee that the thread is releasing the DB connection after it is done
-      # ActiveRecord::Base.connectionpool.releaseconnection
-    #end
   end
 
   def exit_container(container)
@@ -233,7 +294,8 @@ class DockerClient
     """
     command = submission.execution_environment.run_command % command_substitutions(filename)
     create_workspace_files = proc { create_workspace_files(container, submission) }
-    execute_websocket_command(command, create_workspace_files, block)
+    open_websocket_connection(command, create_workspace_files, block)
+    # actual run command is run in the submissions controller, after all listeners are attached.
   end
 
   def execute_test_command(submission, filename, &block)
@@ -318,6 +380,7 @@ class DockerClient
   def send_command(command, container, &block)
     result = {status: :failed, stdout: '', stderr: ''}
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
+      #TODO: check phusion doku again if we need -i -t options here
       output = container.exec(['bash', '-c', command])
       Rails.logger.info "output from container.exec"
       Rails.logger.info output

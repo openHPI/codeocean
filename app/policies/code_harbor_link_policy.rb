@@ -1,0 +1,3 @@
+class CodeHarborLinkPolicy < AdminOnlyPolicy
+  
+end

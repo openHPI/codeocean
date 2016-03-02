@@ -30,6 +30,12 @@ EOF
     service docker restart
 fi
 
+# run docker without sudo
+sudo groupadd docker
+sudo gpasswd -a ${USER} docker
+newgrp docker
+sudo service docker restart
+
 docker pull openhpi/docker_java
 docker pull openhpi/docker_ruby
 docker pull openhpi/docker_python
@@ -109,5 +115,6 @@ server {
 EOF
     rm -f /etc/nginx/sites-enabled/default
     ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled
-    service nginx restart
+    #service nginx restart
+    #cd /vagrant/ && rails s 
 fi

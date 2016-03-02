@@ -34,6 +34,7 @@ class Xikolo::Client
   end
 
   def self.url
+    #todo: JanR: set an environment variable here, fallback value: http://open.hpi.de/api/
     'http://localhost:2000/api/'
   end
 
