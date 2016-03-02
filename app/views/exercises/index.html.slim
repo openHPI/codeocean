@@ -27,17 +27,17 @@ h1 = Exercise.model_name.human(count: 2)
       - @exercises.each do |exercise|
         tr data-id=exercise.id
           td = exercise.title
-          td = link_to(exercise.author, exercise.author)
-          td = link_to(exercise.execution_environment, exercise.execution_environment)
+          td = link_to_if(policy(exercise.author).show?, exercise.author, exercise.author)
+          td = link_to_if(policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
           td = exercise.files.teacher_defined_tests.count
           td = exercise.maximum_score
           td.public data-value=exercise.public? = symbol_for(exercise.public?)
-          td = link_to(t('shared.show'), exercise)
-          td = link_to(t('shared.edit'), edit_exercise_path(exercise))
-          td = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
-          td = link_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post)
-          td = link_to(t('.implement'), implement_exercise_path(exercise))
-          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise))
+          td = link_to(t('shared.show'), exercise) if policy(exercise).show?
+          td = link_to(t('shared.edit'), edit_exercise_path(exercise)) if policy(exercise).edit?
+          td = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(exercise).destroy?
+          td = link_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post) if policy(exercise).clone?
+          td = link_to(t('.implement'), implement_exercise_path(exercise)) if policy(exercise).implement?
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise)) if policy(exercise).statistics?
 
 = render('shared/pagination', collection: @exercises)
 p = render('shared/new_button', model: Exercise)
