@@ -91,6 +91,8 @@ ActiveRecord::Schema.define(version: 20160204111716) do
     t.boolean  "hide_file_tree"
   end
 
+  add_index "exercises", ["execution_environment_id"], name: "test3", using: :btree
+
   create_table "external_users", force: true do |t|
     t.integer  "consumer_id"
     t.string   "email"
@@ -199,6 +201,9 @@ ActiveRecord::Schema.define(version: 20160204111716) do
     t.string   "cause"
     t.string   "user_type"
   end
+
+  add_index "submissions", ["exercise_id"], name: "test1", where: "((user_type)::text = 'ExternalUser'::text)", using: :btree
+  add_index "submissions", ["exercise_id"], name: "test2", using: :btree
 
   create_table "teams", force: true do |t|
     t.string   "name"
