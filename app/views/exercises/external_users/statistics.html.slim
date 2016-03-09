@@ -47,7 +47,12 @@ h1 = "#{@exercise} (external user #{@external_user})"
               td.clickable = submission.created_at.strftime("%F %T")
               td = submission.cause
               td = submission.score
-              td = submission.testruns.map{|run| run.passed ? 'p' : 'f'}.join(' ')
+              td
+                -submission.testruns.each do |run|
+                  - if run.passed
+                    .unit-test-result.positive-result
+                  - else
+                    .unit-test-result.negative-result
               td = Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0
     p = t('.addendum')
 
