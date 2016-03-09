@@ -21,6 +21,7 @@ module CodeOcean
     belongs_to :file_type
 
     has_many :files
+    has_many :testruns
     alias_method :descendants, :files
 
     mount_uploader :native_file, FileUploader

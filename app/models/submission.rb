@@ -7,6 +7,8 @@ class Submission < ActiveRecord::Base
 
   belongs_to :exercise
 
+  has_many :testruns
+
   delegate :execution_environment, to: :exercise
 
   scope :final, -> { where(cause: 'submit') }

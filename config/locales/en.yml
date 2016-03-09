@@ -269,6 +269,7 @@ en:
         time: Time
         cause: Cause
         score: Score
+        tests: Unit Test Results
         time_difference: 'Working Time until here*'
         addendum: '* Deltas longer than 30 minutes are ignored.'
   external_users:
