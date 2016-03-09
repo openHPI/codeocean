@@ -703,7 +703,7 @@ $(function() {
     panel.find('.row .col-sm-9').eq(1).find('.number').eq(0).text((result.score * result.weight).toFixed(2));
     panel.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
     panel.find('.row .col-sm-9').eq(2).text(result.message);
-    panel.find('.row .col-sm-9').eq(3).text(result.error_messages.join(', '));
+    if (result.error_messages) panel.find('.row .col-sm-9').eq(3).text(result.error_messages.join(', '));
     panel.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
   };
 
