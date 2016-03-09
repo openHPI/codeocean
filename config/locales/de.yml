@@ -222,6 +222,7 @@ de:
         text: 'Ihr Browser unterstützt nicht alle Funktionalitäten, die %{application_name} benötigt. Bitte nutzen Sie einen modernen Browser, um %{application_name} zu besuchen.'
         title: Ihr Browser wird nicht unterstützt!
       default_feedback: Sehr gut. Alle Tests waren erfolgreich.
+      error_messages: Fehlermeldungen
       feedback: Feedback
       file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
       hint: Tipp
