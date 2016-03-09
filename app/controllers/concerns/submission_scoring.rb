@@ -6,7 +6,9 @@ module SubmissionScoring
       future = Concurrent::Future.execute do
         assessor = Assessor.new(execution_environment: submission.execution_environment)
         output = execute_test_file(file, submission)
-        output.merge!(assessor.assess(output))
+        assessment = assessor.assess(output)
+        Testrun.new(submission: submission, file: file, passed: assessment[:passed] == assessment[:count], output: output[:stderr]).save
+        output.merge!(assessment)
         output.merge!(filename: file.name_with_extension, message: feedback_message(file, output[:score]), weight: file.weight)
       end
       future.value
@@ -27,9 +29,9 @@ module SubmissionScoring
   def score_submission(submission)
     outputs = collect_test_results(submission)
     score = 0.0
-    if not (outputs.nil? || outputs.empty?)
+    unless outputs.nil? || outputs.empty?
       outputs.each do |output|
-        if not output.nil?
+        unless output.nil?
           score += output[:score] * output[:weight]
         end
       end
