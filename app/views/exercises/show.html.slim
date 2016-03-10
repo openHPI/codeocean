@@ -21,12 +21,15 @@ h1
 
 h2 = t('activerecord.attributes.exercise.files')
 
-ul.list-unstyled
+ul.list-unstyled.panel-group#files
   - @exercise.files.each do |file|
     li.panel.panel-default
-      .panel-heading
-        h3.panel-title = file.name_with_extension
-      .panel-body
-        - if policy(file).destroy?
-          .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
-        = render('shared/file', file: file)
+      .panel-heading role="tab" id="heading"
+        div.clearfix role="button"
+          span.panel-title = file.name_with_extension
+          a.pull-right data-toggle="collapse" data-parent="#files" href="#collapse#{file.id}" collapse
+      .panel-collapse.collapse.in id="collapse#{file.id}" role="tabpanel"
+        .panel-body
+          - if policy(file).destroy?
+            .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+          = render('shared/file', file: file)
