@@ -8,15 +8,16 @@
     = f.text_field(:title, class: 'form-control', required: true)
   .form-group
     = f.label(:description)
-    = f.text_area(:description, class: 'form-control')
+    = f.hidden_field(:description)
+    .form-control.markdown
   .form-group
     = f.label(:execution_environment_id)
     = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {}, class: 'form-control')
-  .form-group
+  /.form-group
     = f.label(:instructions)
     = f.hidden_field(:instructions)
     .form-control.markdown
-  .form-group
+  /.form-group
     = f.label(:team_id)
     = f.collection_select(:team_id, @teams, :id, :name, {include_blank: true}, class: 'form-control')
   .checkbox

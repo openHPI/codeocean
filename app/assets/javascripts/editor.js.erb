@@ -310,14 +310,14 @@ $(function() {
     //console.log("Text is the same: " + same);
 
     // if the text is not copied from within the editor (from any file), send an event to lanalytics
-    //if(!same){
-    //  publishCodeOceanEvent("codeocean_editor_paste", {
-    //    text: pasteObject.text,
-    //    exercise: $('#editor').data('exercise-id'),
-    //    file_id: "1"
-    //
-    //  });
-    //}
+    if(!same){
+      publishCodeOceanEvent("codeocean_editor_paste", {
+        text: pasteObject.text,
+        exercise: $('#editor').data('exercise-id'),
+        file_id: "1"
+
+      });
+    }
   };
 
   var handleScoringResponse = function(response) {
