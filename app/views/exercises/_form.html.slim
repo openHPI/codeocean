@@ -29,7 +29,7 @@
       = f.check_box(:hide_file_tree)
       = t('activerecord.attributes.exercise.hide_file_tree')
   h2 = t('activerecord.attributes.exercise.files')
-  ul#files.list-unstyled
+  ul#files.list-unstyled.panel-group
     = f.fields_for :files do |files_form|
       = render('file_form', f: files_form)
   a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')

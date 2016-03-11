@@ -1,33 +1,39 @@
+- id = f.object.id
 li.panel.panel-default
-  .panel-body
-    .clearfix = link_to(t('shared.destroy'), '#', class:'btn btn-warning btn-sm discard-file pull-right')
-    .form-group
-      = f.label(:name, t('activerecord.attributes.file.name'))
-      = f.text_field(:name, class: 'form-control')
-    .form-group
-      = f.label(:path, t('activerecord.attributes.file.path'))
-      = f.text_field(:path, class: 'form-control')
-      .help-block = t('.hints.path')
-    .form-group
-      = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
-      = f.collection_select(:file_type_id, @file_types, :id, :name, {}, class: 'form-control')
-    .form-group
-      = f.label(:role, t('activerecord.attributes.file.role'))
-      = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map { |role| [t("files.roles.#{role}"), role] }, {include_blank: true}, class: 'form-control')
-    .checkbox
-      label
-        = f.check_box(:hidden)
-        = t('activerecord.attributes.file.hidden')
-    .checkbox
-      label
-        = f.check_box(:read_only)
-        = t('activerecord.attributes.file.read_only')
-    .test-related-fields style="display: #{f.object.teacher_defined_test? ? 'initial' : 'none'};"
+  .panel-heading role="tab" id="heading"
+    div.clearfix role="button"
+      span = f.object.name
+      a.pull-right data-toggle="collapse" data-parent="#files" href="#collapse#{id}" collapse
+  .panel-collapse.collapse.in id="collapse#{id}" role="tabpanel"
+    .panel-body
+      .clearfix = link_to(t('shared.destroy'), '#', class:'btn btn-warning btn-sm discard-file pull-right')
       .form-group
-        = f.label(:name, t('activerecord.attributes.file.feedback_message'))
-        = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
-        .help-block = t('.hints.feedback_message')
+        = f.label(:name, t('activerecord.attributes.file.name'))
+        = f.text_field(:name, class: 'form-control')
       .form-group
-        = f.label(:role, t('activerecord.attributes.file.weight'))
-        = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
-    = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
+        = f.label(:path, t('activerecord.attributes.file.path'))
+        = f.text_field(:path, class: 'form-control')
+        .help-block = t('.hints.path')
+      .form-group
+        = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
+        = f.collection_select(:file_type_id, @file_types, :id, :name, {}, class: 'form-control')
+      .form-group
+        = f.label(:role, t('activerecord.attributes.file.role'))
+        = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map { |role| [t("files.roles.#{role}"), role] }, {include_blank: true}, class: 'form-control')
+      .checkbox
+        label
+          = f.check_box(:hidden)
+          = t('activerecord.attributes.file.hidden')
+      .checkbox
+        label
+          = f.check_box(:read_only)
+          = t('activerecord.attributes.file.read_only')
+      .test-related-fields style="display: #{f.object.teacher_defined_test? ? 'initial' : 'none'};"
+        .form-group
+          = f.label(:name, t('activerecord.attributes.file.feedback_message'))
+          = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
+          .help-block = t('.hints.feedback_message')
+        .form-group
+          = f.label(:role, t('activerecord.attributes.file.weight'))
+          = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
+      = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
