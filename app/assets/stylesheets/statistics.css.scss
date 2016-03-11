@@ -26,3 +26,26 @@
     margin-top: auto;
     margin-bottom: auto;
 }
+
+div.unit-test-result {
+  float: left;
+  margin-right: 10px;
+  width: 10px;
+  height: 10px;
+}
+
+div.positive-result {
+  border-radius: 50%;
+  background-color: #8efa00;
+  -webkit-box-shadow: 0px 0px 11px 1px rgba(44,222,0,1);
+  -moz-box-shadow: 0px 0px 11px 1px rgba(44,222,0,1);
+  box-shadow: 0px 0px 11px 1px rgba(44,222,0,1);
+}
+
+div.negative-result {
+  border-radius: 50%;
+  background-color: #ff2600;
+  -webkit-box-shadow: 0px 0px 11px 1px rgba(222,0,0,1);
+  -moz-box-shadow: 0px 0px 11px 1px rgba(222,0,0,1);
+  box-shadow: 0px 0px 11px 1px rgba(222,0,0,1);
+}

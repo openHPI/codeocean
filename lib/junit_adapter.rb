@@ -2,6 +2,7 @@ class JunitAdapter < TestingFrameworkAdapter
   COUNT_REGEXP = /Tests run: (\d+)/
   FAILURES_REGEXP = /Failures: (\d+)/
   SUCCESS_REGEXP = /OK \((\d+) test[s]?\)/
+  ASSERTION_ERROR_REGEXP = /java\.lang\.AssertionError:\s(.*)/
 
   def self.framework_name
     'JUnit'
@@ -13,7 +14,8 @@ class JunitAdapter < TestingFrameworkAdapter
     else
       count = COUNT_REGEXP.match(output[:stdout]).try(:captures).try(:first).try(:to_i) || 0
       failed = FAILURES_REGEXP.match(output[:stdout]).try(:captures).try(:first).try(:to_i) || 0
-      {count: count, failed: failed}
+      error_matches = ASSERTION_ERROR_REGEXP.match(output[:stdout]).try(:captures) || []
+      {count: count, failed: failed, error_messages: error_matches}
     end
   end
 end
