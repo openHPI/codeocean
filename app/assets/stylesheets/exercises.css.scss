@@ -11,3 +11,30 @@ input[type='file'] {
 #exercise_template_code {
   font-family: monospace;
 }
+
+// Graph Settings
+
+.axis path {
+  fill: none;
+  stroke: #100;
+  shape-rendering: crispEdges;
+}
+.axis line {
+  fill: none;
+  stroke: #999;
+  //shape-rendering: crispEdges;
+}
+
+.y.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: orange;//steelblue;
+  stroke-width: 4px;
+}
+
+div#chart_1{
+  background-color: #FAFAFA;
+}

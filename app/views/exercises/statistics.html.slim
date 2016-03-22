@@ -13,6 +13,16 @@ h1 = @exercise
 
 - Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
   strong = label
+  -if symbol==:external_users
+    -working_time_array = []
+    - @exercise.send(symbol).distinct().each do |user|
+      -working_time = @exercise.average_working_time_for(user.id) or 0
+      -working_time_array.push working_time
+    hr
+    .hidden#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
+    div#chart_1
+      .graph-functions
+    hr
   .table-responsive
     table.table.table-striped.sortable
       thead
