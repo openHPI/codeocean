@@ -1,3 +1,4 @@
+script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"
 h1 = @exercise
 
 = row(label: '.participants', value: @exercise.users.distinct.count)
@@ -21,8 +22,10 @@ h1 = @exercise
     hr
     .hidden#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
     div#chart_1
-      .graph-functions
     hr
+    div#chart_2
+    hr
+    .graph-functions
   .table-responsive
     table.table.table-striped.sortable
       thead

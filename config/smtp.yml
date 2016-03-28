@@ -1,0 +1,14 @@
+default: &default
+  address: CHANGE_ME
+  password: CHANGE_ME
+  port: CHANGE_ME
+  user_name: CHANGE_ME
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+
+test:
+  <<: *default

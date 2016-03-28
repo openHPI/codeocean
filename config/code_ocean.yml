@@ -1,0 +1,19 @@
+default: &default
+  flowr:
+    enabled: false
+  code_pilot:
+    enabled: false
+
+development:
+  flowr:
+    enabled: true
+    url: http://example.org:3000/api/exceptioninfo?id=&lang=auto
+  code_pilot:
+    enabled: false
+    url: //localhost:3000
+
+production:
+  <<: *default
+
+test:
+  <<: *default

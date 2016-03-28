@@ -1,0 +1,21 @@
+default: &default
+  default_options:
+    from: codeocean@hpi.de
+  delivery_method: :smtp
+
+development:
+  <<: *default
+  default_url_options:
+    host: localhost
+
+production:
+  <<: *default
+  default_url_options:
+    host: CHANGE_ME
+
+test:
+  <<: *default
+  default_url_options:
+    host: localhost
+    port: 3000
+  delivery_method: :test
