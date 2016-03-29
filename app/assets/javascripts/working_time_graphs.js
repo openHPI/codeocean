@@ -34,7 +34,7 @@ $(function() {
 
       minutes_count[(maximum_minutes + 1)] = 0;
       //$('.graph-functions').html("<p></p>")
-      //console.log(minutes_count); // THIS SHOWS THAT THE FINAL VALUES ARE 1 AND NOT ACTUALLY 0
+      console.log(minutes_array);
 
 
       function getWidth() {
@@ -191,7 +191,7 @@ $(function() {
       //<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
       function draw_bar_graph() {
           var group_incrament = 5;
-          var group_ranges = group_incrament;
+          var group_ranges = group_incrament; // just for the start
           var minutes_array_for_bar = [];
 
           do {
@@ -204,7 +204,7 @@ $(function() {
               minutes_array_for_bar.push(section_value);
               group_ranges += group_incrament;
           }
-          while (group_ranges < maximum_minutes);
+          while (group_ranges < maximum_minutes + group_incrament);
 
           //console.log(minutes_array_for_bar); // this var used as the bars
           //minutes_array_for_bar = [39, 20, 28, 20, 39, 34, 26, 23, 16, 8];
