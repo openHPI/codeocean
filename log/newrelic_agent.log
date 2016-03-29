@@ -2685,3 +2685,51 @@
 [2016-03-28 17:51:35 +0200 SkizBop.fritz.box (12708)] ERROR : Invalid license key, please contact support@newrelic.com
 [2016-03-28 17:51:35 +0200 SkizBop.fritz.box (12708)] ERROR : Visit NewRelic.com to obtain a valid license key, or to upgrade your account.
 [2016-03-28 18:10:20 +0200 SkizBop.fritz.box (12708)] INFO : Starting Agent shutdown
+[2016-03-28 18:26:33 +0200 SkizBop.fritz.box (13230)] INFO : Starting the New Relic agent in "development" environment.
+[2016-03-28 18:26:33 +0200 SkizBop.fritz.box (13230)] INFO : To prevent agent startup add a NEWRELIC_AGENT_ENABLED=false environment variable or modify the "development" section of your newrelic.yml.
+[2016-03-28 18:26:33 +0200 SkizBop.fritz.box (13230)] WARN : No configuration file found. Working directory = /Users/johngeiger/Dropbox/cs/codeocean
+[2016-03-28 18:26:33 +0200 SkizBop.fritz.box (13230)] WARN : Looked in these locations (based on defaults): /Users/johngeiger/Dropbox/cs/codeocean/config/newrelic.yml, /Users/johngeiger/Dropbox/cs/codeocean/newrelic.yml, /Users/johngeiger/Dropbox/cs/codeocean/config/newrelic.yml, /Users/johngeiger/Dropbox/cs/codeocean/newrelic.yml, /Users/johngeiger/.newrelic/newrelic.yml, /Users/johngeiger/newrelic.yml
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Environment: development
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : No known dispatcher detected.
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Application: development
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'development'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing ActiveRecord 4 instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing middleware-based Excon instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing Net instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing deferred Rack::Builder instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing Rack::Builder middleware instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing Rails 3+ middleware instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing Rails 4 Controller instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing Rails 4 view instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Installing Rails 4 Error instrumentation
+[2016-03-28 18:26:34 +0200 SkizBop.fritz.box (13230)] INFO : Finished instrumentation
+[2016-03-28 18:26:37 +0200 SkizBop.fritz.box (13230)] INFO : Doing deferred dependency-detection before Rack startup
+[2016-03-28 18:26:42 +0200 SkizBop.fritz.box (13230)] WARN : The method NewRelic::Agent.add_custom_parameters is deprecated.
+[2016-03-28 18:26:42 +0200 SkizBop.fritz.box (13230)] WARN : Please use NewRelic::Agent.add_custom_attributes instead.
+[2016-03-28 18:26:47 +0200 SkizBop.fritz.box (13230)] ERROR : Invalid license key, please contact support@newrelic.com
+[2016-03-28 18:26:47 +0200 SkizBop.fritz.box (13230)] ERROR : Visit NewRelic.com to obtain a valid license key, or to upgrade your account.
+[2016-03-28 18:27:18 +0200 SkizBop.fritz.box (13230)] INFO : Starting Agent shutdown
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Starting the New Relic agent in "development" environment.
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : To prevent agent startup add a NEWRELIC_AGENT_ENABLED=false environment variable or modify the "development" section of your newrelic.yml.
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] WARN : No configuration file found. Working directory = /Users/johngeiger/Dropbox/cs/codeocean
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] WARN : Looked in these locations (based on defaults): /Users/johngeiger/Dropbox/cs/codeocean/config/newrelic.yml, /Users/johngeiger/Dropbox/cs/codeocean/newrelic.yml, /Users/johngeiger/Dropbox/cs/codeocean/config/newrelic.yml, /Users/johngeiger/Dropbox/cs/codeocean/newrelic.yml, /Users/johngeiger/.newrelic/newrelic.yml, /Users/johngeiger/newrelic.yml
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Environment: development
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : No known dispatcher detected.
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Application: development
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] WARN : No license key found. This often means your newrelic.yml file was not found, or it lacks a section for the running environment, 'development'. You may also want to try linting your newrelic.yml to ensure it is valid YML.
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing ActiveRecord 4 instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing middleware-based Excon instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing Net instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing deferred Rack::Builder instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing Rack::Builder middleware instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing Rails 3+ middleware instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing Rails 4 Controller instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing Rails 4 view instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Installing Rails 4 Error instrumentation
+[2016-03-29 11:01:51 +0200 SkizBop.local (14805)] INFO : Finished instrumentation
+[2016-03-29 11:02:06 +0200 SkizBop.local (14805)] INFO : Doing deferred dependency-detection before Rack startup
+[2016-03-29 11:02:12 +0200 SkizBop.local (14805)] WARN : The method NewRelic::Agent.add_custom_parameters is deprecated.
+[2016-03-29 11:02:12 +0200 SkizBop.local (14805)] WARN : Please use NewRelic::Agent.add_custom_attributes instead.
+[2016-03-29 11:02:13 +0200 SkizBop.local (14805)] ERROR : Invalid license key, please contact support@newrelic.com
+[2016-03-29 11:02:13 +0200 SkizBop.local (14805)] ERROR : Visit NewRelic.com to obtain a valid license key, or to upgrade your account.
+[2016-03-29 11:03:36 +0200 SkizBop.local (14805)] INFO : Starting Agent shutdown

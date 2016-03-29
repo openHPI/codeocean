@@ -190,19 +190,19 @@ $(function() {
 
       //<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
       function draw_bar_graph() {
-          var group_incrament = 10;
+          var group_incrament = 5;
           var group_ranges = group_incrament;
           var minutes_array_for_bar = [];
 
           do {
               var section_value = 0;
               for (var i = 0; i < minutes_array.length; i++) {
-                  if ((minutes_array[i] < group_ranges) && (minutes_array[i] >= (group_ranges - 10))) {
+                  if ((minutes_array[i] < group_ranges) && (minutes_array[i] >= (group_ranges - group_incrament))) {
                       section_value++;
                   }
               }
               minutes_array_for_bar.push(section_value);
-              group_ranges += 10;
+              group_ranges += group_incrament;
           }
           while (group_ranges < maximum_minutes);
 
