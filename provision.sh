@@ -39,7 +39,8 @@ sudo service docker restart
 docker pull openhpi/docker_java
 docker pull openhpi/docker_ruby
 docker pull openhpi/docker_python
-
+docker pull openhpi/co_execenv_python
+docker pull openhpi/co_execenv_java
 
 # rvm
 apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev
@@ -96,8 +97,9 @@ export RAILS_ENV=development
 rake db:schema:load
 rake db:migrate
 rake db:seed
+sudo mkdir /shared
 chown -R vagrant /shared
-ln -sf /shared tmp/files
+ln -sf /shared tmp/files #make sure you are running vagrant with admin privileges
 
 # NGINX
 if [ ! -L /etc/nginx/sites-enabled/code_ocean ]
