@@ -97,7 +97,7 @@ export RAILS_ENV=development
 rake db:schema:load
 rake db:migrate
 rake db:seed
-sudo mkdir /shared
+sudo mkdir -p /shared
 chown -R vagrant /shared
 ln -sf /shared tmp/files #make sure you are running vagrant with admin privileges
 
