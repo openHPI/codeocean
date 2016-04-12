@@ -2,7 +2,7 @@ class JunitAdapter < TestingFrameworkAdapter
   COUNT_REGEXP = /Tests run: (\d+)/
   FAILURES_REGEXP = /Failures: (\d+)/
   SUCCESS_REGEXP = /OK \((\d+) test[s]?\)/
-  ASSERTION_ERROR_REGEXP = /java\.lang\.AssertionError:\s(.*)/
+  ASSERTION_ERROR_REGEXP = /java\.lang\.AssertionError:\s(.​*)|org\.junit\.ComparisonFailure:\s(.*​)/
 
   def self.framework_name
     'JUnit'
