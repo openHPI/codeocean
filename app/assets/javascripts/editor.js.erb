@@ -796,9 +796,12 @@ $(function() {
 
      var payload = {
        user: {
-         resource_uuid: $('#editor').data('user-id')
+         type: 'User',
+         uuid: $('#editor').data('user-id')
        },
-       verb: eventName,
+       verb: {
+         type: eventName
+       },
        resource: {},
        timestamp: new Date().toISOString(),
        with_result: {},
