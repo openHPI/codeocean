@@ -802,7 +802,10 @@ $(function() {
        verb: {
          type: eventName
        },
-       resource: {},
+       resource: {
+         type: 'page',
+         uid: document.location.href
+       },
        timestamp: new Date().toISOString(),
        with_result: {},
        in_context: contextData
