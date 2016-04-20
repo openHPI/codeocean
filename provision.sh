@@ -41,6 +41,7 @@ docker pull openhpi/docker_ruby
 docker pull openhpi/docker_python
 docker pull openhpi/co_execenv_python
 docker pull openhpi/co_execenv_java
+docker pull openhpi/co_execenv_java_antlr
 
 # rvm
 apt-get install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev
