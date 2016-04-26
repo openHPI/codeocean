@@ -434,13 +434,6 @@ $(function() {
       // editor itself
       editor.on("paste", handlePasteEvent);
       editor.on("copy", handleCopyEvent);
-      editor.on("guttermousedown", handleSidebarClick);
-
-      /* // alternative:
-      editor.on("guttermousedown", function(e) {
-        handleSidebarClick(e);
-      });
-      */
 
       //session
       session.on('annotationRemoval', handleAnnotationRemoval);
@@ -451,18 +444,6 @@ $(function() {
         resetSaveTimer();
       });
     });
-  };
-
-  var hasCommentsInRow = function (editor, row){
-    return editor.getSession().getAnnotations().some(function(element) {
-      return element.row === row;
-    })
-  };
-
-  var getCommentsForRow = function (editor, row){
-    return editor.getSession().getAnnotations().filter(function(element) {
-      return element.row === row;
-    })
   };
 
   var setAnnotations = function (editor, file_id){
@@ -494,40 +475,6 @@ $(function() {
       });
 
       session.setAnnotations(annotations);
-  }
-
-  var deleteComment = function (file_id, row, editor) {
-      var jqxhr = $.ajax({
-          type: 'DELETE',
-          url: "/comments",
-          data: {
-            row: row,
-            file_id: file_id          }
-      });
-      jqxhr.done(function (response) {
-          setAnnotations(editor, file_id);
-      });
-      jqxhr.fail(ajaxError);
-  }
-
-  var createComment = function (file_id, row, editor, commenttext){
-      var jqxhr = $.ajax({
-        data: {
-          comment: {
-            file_id: file_id,
-            row: row,
-            column: 0,
-            text: commenttext
-          }
-        },
-        dataType: 'json',
-        method: 'POST',
-        url:  "/comments"
-      });
-      jqxhr.done(function(response){
-          setAnnotations(editor, file_id);
-      });
-      jqxhr.fail(ajaxError);
   };
 
   var handleAnnotationRemoval = function(removedAnnotations) {
@@ -557,52 +504,6 @@ $(function() {
         }
       })
     })
-  };
-
-  // Code for clicks on gutter / sidepanel
-  var handleSidebarClick = function(e) {
-      var target  = e.domEvent.target;
-      var editor =  e.editor;
-
-      if (target.className.indexOf("ace_gutter-cell") == -1) return;
-      if (!editor.isFocused()) return;
-      if (e.clientX > 25 + target.getBoundingClientRect().left) return;
-
-      var row = e.getDocumentPosition().row;
-      e.stop();
-
-      var commentModal = $('#comment-modal');
-
-      if (hasCommentsInRow(editor, row)) {
-        var rowComments = getCommentsForRow(editor, row);
-        var comments = _.pluck(rowComments, 'text').join('\n');
-        commentModal.find('#other-comments').text(comments);
-      } else {
-        commentModal.find('#other-comments').text('none');
-      }
-
-      commentModal.find('#addCommentButton').off('click');
-      commentModal.find('#removeAllButton').off('click');
-
-      commentModal.find('#addCommentButton').on('click', function(e){
-        var commenttext = commentModal.find('textarea').val();
-        // attention: use id of data attribute here, not file-id (file-id is the original file)
-        var file_id = $(editor.container).data('id');
-
-        if (commenttext !== "") {
-          createComment(file_id, row, editor, commenttext);
-          commentModal.modal('hide');
-        }
-      });
-
-      commentModal.find('#removeAllButton').on('click', function(e){
-        // attention: use id of data attribute here, not file-id (file-id is the original file)
-        var file_id = $(editor.container).data('id');
-        deleteComment(file_id,row, editor);
-        commentModal.modal('hide');
-      });
-
-      commentModal.modal('show');
   };
 
   var initializeEventHandlers = function() {
@@ -1125,7 +1026,6 @@ $(function() {
     $('#run').toggle(isActiveFileRunnable() && !running);
     $('#stop').toggle(isActiveFileStoppable());
     $('#test').toggle(isActiveFileTestable());
-    $('#request-for-comments').toggle(isActiveFileSubmission() && !isActiveFileBinary());
   };
 
   var initWebsocketConnection = function(url) {
