@@ -322,6 +322,7 @@ de:
   request_for_comments:
     index:
       get_my_comment_requests: Meine Kommentaranfragen
+      all: "Alle Kommentaranfragen"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

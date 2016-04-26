@@ -321,6 +321,7 @@ en:
         subject: Password reset instructions
   request_for_comments:
     index:
+      all: All Requests for Comments
       get_my_comment_requests: My Requests for Comments
   sessions:
     create:
