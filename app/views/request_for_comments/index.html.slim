@@ -13,7 +13,7 @@ h1 = RequestForComment.model_name.human(count: 2)
         tr data-id=request_for_comment.id
           td = link_to(request_for_comment.exercise.title, request_for_comment)
           td = request_for_comment.exercise.execution_environment
-          td = request_for_comment.user.name
+          td = request_for_comment.user.displayname
           td = request_for_comment.requested_at
 
 = render('shared/pagination', collection: @request_for_comments)
