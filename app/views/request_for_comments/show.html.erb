@@ -112,8 +112,9 @@ do not put a carriage return in the line below. it will be present in the presen
     var editor =  e.editor;
 
     if (target.className.indexOf("ace_gutter-cell") == -1) return;
-    if (!editor.isFocused()) return;
-    if (e.clientX > 25 + target.getBoundingClientRect().left) return;
+    //if (!editor.isFocused()) return;
+    //if (e.clientX > 25 + target.getBoundingClientRect().left) return;
+
 
     var row = e.getDocumentPosition().row;
     e.stop();
