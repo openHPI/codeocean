@@ -1,12 +1,6 @@
 class CommentPolicy < ApplicationPolicy
   def author?
-    if @record.is_a?(ActiveRecord::Relation)
-      flag = true
-      @record.all {|item| flag = (flag and item.author == @user)}
-      flag
-    else
-      @user == @record.author
-    end
+    @user == @record.author
   end
   private :author?
 

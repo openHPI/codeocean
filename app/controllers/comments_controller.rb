@@ -111,9 +111,8 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    @comments = Comment.where(file_id: params[:file_id], row: params[:row])
-    authorize!
-    @comments.delete_all
+    @comments = Comment.where(file_id: params[:file_id], row: params[:row], user: current_user)
+    @comments.each { |comment| authorize comment; comment.destroy }
     respond_to do |format|
       #format.html { redirect_to comments_url, notice: 'Comments were successfully destroyed.' }
       format.html { head :no_content, notice: 'Comments were successfully destroyed.' }
