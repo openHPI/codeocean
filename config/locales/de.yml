@@ -245,6 +245,8 @@ de:
         addComment: Kommentieren
         removeAllOnLine: Alle Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
+        request: "Kommentaranfrage stellen"
+        question: "Was ist Ihre Frage? (optional)"
     index:
       clone: Duplizieren
       implement: Implementieren

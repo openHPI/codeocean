@@ -37,3 +37,5 @@
               i.fa.fa-rocket
               = t('exercises.editor.test')
       = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s'))
+
+= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.request'), template: 'exercises/_request_comment_dialogcontent')

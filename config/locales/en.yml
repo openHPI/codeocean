@@ -245,6 +245,8 @@ en:
         addComment: Comment this
         removeAllOnLine: Remove all comments on this line
         listing: Listing the newest comment requests
+        request: "Request Comments"
+        question: "What is your question? (optional)"
     index:
       clone: Duplicate
       implement: Implement
