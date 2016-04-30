@@ -1160,7 +1160,7 @@ $(function() {
       }
     }).done(function() {
       hideSpinner();
-      $.flash.success({ text: 'Request for comments sent!' })
+      $.flash.success({ text: $('#askForCommentsButton').data('message-success') })
     }).error(ajaxError);
 
     $('#comment-modal').modal('hide');
