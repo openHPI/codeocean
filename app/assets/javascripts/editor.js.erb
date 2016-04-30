@@ -256,8 +256,6 @@ $(function() {
     }
   };
 
-
-
   var getPanelClass = function(result) {
     if (result.stderr && !result.score) {
       return 'panel-danger';
@@ -444,66 +442,6 @@ $(function() {
         resetSaveTimer();
       });
     });
-  };
-
-  var setAnnotations = function (editor, file_id){
-      var session = editor.getSession();
-      var url = "/comments";
-
-      var jqrequest = $.ajax({
-          dataType: 'json',
-          method: 'GET',
-          url: url,
-          data: {
-            file_id: file_id
-          }
-      });
-
-      jqrequest.done(function(response){
-          setAnnotationsCallback(response, session);
-      });
-      jqrequest.fail(ajaxError);
-  };
-
-  var setAnnotationsCallback = function (response, session) {
-      var annotations = response;
-
-      // add classname and the username in front of each comment
-      $.each(annotations, function(index, comment){
-          comment.className = "code-ocean_comment";
-          comment.text = comment.username + ": " + comment.text;
-      });
-
-      session.setAnnotations(annotations);
-  };
-
-  var handleAnnotationRemoval = function(removedAnnotations) {
-    removedAnnotations.forEach(function(annotation) {
-      $.ajax({
-        method: 'DELETE',
-        url:  '/comment_by_id',
-        data: {
-          id: annotation.id,
-        }
-      })
-    })
-  };
-
-  var handleAnnotationChange = function(changedAnnotations) {
-    changedAnnotations.forEach(function(annotation) {
-      $.ajax({
-        method: 'PUT',
-        url:  '/comments',
-        data: {
-          id: annotation.id,
-          user_id: $('#editor').data('user-id'),
-          comment: {
-            row: annotation.row,
-            text: annotation.text
-          }
-        }
-      })
-    })
   };
 
   var initializeEventHandlers = function() {
