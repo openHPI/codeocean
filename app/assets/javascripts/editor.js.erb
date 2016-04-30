@@ -110,18 +110,6 @@ $(function() {
 
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
-
-      var annotations_arr = [];
-
-      $('.editor').each(function(index, element) {
-          var editor = ace.edit(element);
-          var cleaned_annotations = editor.getSession().getAnnotations();
-          for(var i = cleaned_annotations.length-1; i>=0; --i){
-              cleaned_annotations[i].text = cleaned_annotations[i].text.replace(cleaned_annotations[i].username + ": ", "");
-          }
-          annotations_arr = annotations_arr.concat(editor.getSession().getAnnotations());
-      });
-
     var jqxhr = ajax({
       data: {
         submission: {
@@ -129,7 +117,7 @@ $(function() {
           exercise_id: $('#editor').data('exercise-id'),
           files_attributes: (filter || _.identity)(collectFiles())
         },
-        annotations_arr: annotations_arr
+        annotations_arr: []
       },
       dataType: 'json',
       method: 'POST',
@@ -169,7 +157,6 @@ $(function() {
                     }
                 }
             }
-            setAnnotations(editors[i], $(editors[i].container).data('id'));
         }
         // toggle button states (it might be the case that the request for comments button has to be enabled
         toggleButtonStates();
@@ -423,7 +410,6 @@ $(function() {
       session.setUseWrapMode(true);
 
       var file_id =  $(element).data('id');
-      //setAnnotations(editor, file_id);
 
       /*
        * Register event handlers
@@ -432,10 +418,6 @@ $(function() {
       // editor itself
       editor.on("paste", handlePasteEvent);
       editor.on("copy", handleCopyEvent);
-
-      //session
-      session.on('annotationRemoval', handleAnnotationRemoval);
-      session.on('annotationChange', handleAnnotationChange);
 
       // listener for autosave
       session.on("change", function (deltaObject) {
@@ -451,6 +433,7 @@ $(function() {
     initializeFileTreeButtons();
     initializeWorkflowButtons();
     initializeWorkspaceButtons();
+    initializeRequestForComments()
   };
 
   var initializeFileTree = function() {
@@ -492,6 +475,12 @@ $(function() {
     $('#save').on('click', saveCode);
     $('#start-over').on('click', confirmReset);
   };
+
+  var initializeRequestForComments = function () {
+    $('#requestCommentsButton').on('click', function() {
+      $('#comment-modal').modal('show');
+    })
+  }
 
   var isActiveFileBinary = function() {
       return 'binary' in active_frame.data();
