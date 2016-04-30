@@ -326,6 +326,7 @@ de:
     index:
       get_my_comment_requests: Meine Kommentaranfragen
       all: "Alle Kommentaranfragen"
+    no_question: "Der Autor hat keine Frage zu dieser Anfrage gestellt."
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

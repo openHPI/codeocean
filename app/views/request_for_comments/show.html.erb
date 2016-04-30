@@ -14,7 +14,13 @@
       %>
     <%= user %> | <%= @request_for_comment.requested_at %>
   </p>
-  <h5><%=t('activerecord.attributes.request_for_comments.question')%>: "<%= @request_for_comment.question %>"</h5>
+  <h5>
+    <% if @request_for_comment.question %>
+      <%= t('activerecord.attributes.request_for_comments.question')%>: "<%= @request_for_comment.question %>"
+    <% else %>
+      <%= t('request_for_comments.no_question') %>
+    <% end %>
+  </h5>
 </div>
 
 <!--
