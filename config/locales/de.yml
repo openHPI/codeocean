@@ -81,6 +81,7 @@ de:
         execution_environment: Sprache
         username: Benutzername
         requested_at: Angefragezeitpunkt
+        question: "Frage"
       submission:
         cause: Anlass
         code: Code

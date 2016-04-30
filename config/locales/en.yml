@@ -81,6 +81,7 @@ en:
         execution_environment: Language
         username: Username
         requested_at: Request Date
+        question: "Question"
       submission:
         cause: Cause
         code: Code
