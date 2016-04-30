@@ -13,6 +13,7 @@ $(function() {
   var THEME = 'ace/theme/textmate';
   var REMEMBER_TAB = false;
   var AUTOSAVE_INTERVAL = 15 * 1000;
+  var REQUEST_FOR_COMMENTS_DELAY = 5 * 60 * 1000;
   var NONE = 0;
   var WEBSOCKET = 1;
   var SERVER_SEND_EVENT = 2;
@@ -477,11 +478,17 @@ $(function() {
   };
 
   var initializeRequestForComments = function () {
-    $('#requestCommentsButton').on('click', function() {
+    var button = $('#requestCommentsButton');
+    button.hide();
+    button.on('click', function() {
       $('#comment-modal').modal('show');
     });
 
     $('#askForCommentsButton').on('click', requestComments);
+
+    setTimeout(function() {
+      button.fadeIn();
+    }, REQUEST_FOR_COMMENTS_DELAY);
   };
 
   var isActiveFileBinary = function() {
