@@ -479,8 +479,10 @@ $(function() {
   var initializeRequestForComments = function () {
     $('#requestCommentsButton').on('click', function() {
       $('#comment-modal').modal('show');
-    })
-  }
+    });
+
+    $('#askForCommentsButton').on('click', requestComments);
+  };
 
   var isActiveFileBinary = function() {
       return 'binary' in active_frame.data();
@@ -495,7 +497,7 @@ $(function() {
           filename: filename,
           id: fileId
       };
-  }
+  };
 
   var isActiveFileRenderable = function() {
     return 'renderable' in active_frame.data();
@@ -1135,10 +1137,11 @@ $(function() {
       }
   };
 
-  var requestComments = function(e) {
+  var requestComments = function() {
     var user_id = $('#editor').data('user-id')
     var exercise_id = $('#editor').data('exercise-id')
     var file_id = $('.editor').data('id')
+    var question = $('#question').val();
 
     $.ajax({
       method: 'POST',
@@ -1147,6 +1150,7 @@ $(function() {
         request_for_comment: {
           exercise_id: exercise_id,
           file_id: file_id,
+          question: question,
           "requested_at(1i)": 2015, // these are the timestamp values that the request handler demands
           "requested_at(2i)":3, // they could be random here, because the timestamp is updated on serverside anyway
           "requested_at(3i)":27,
@@ -1155,13 +1159,11 @@ $(function() {
         }
       }
     }).done(function() {
-      hideSpinner()
+      hideSpinner();
       $.flash.success({ text: 'Request for comments sent!' })
-    })
+    }).error(ajaxError);
 
-    showSpinner($('#request-for-comments'))
-    // hide button until next submission is created
-    $('#request-for-comments').toggle(false);
+    $('#comment-modal').modal('hide');
   }
 
     var initializeCodePilot = function() {
