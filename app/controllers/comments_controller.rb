@@ -41,7 +41,7 @@ class CommentsController < ApplicationController
       # if the user is internal, set the name
 
       @comments.map{|comment|
-          comment.username = comment.user.name
+          comment.username = comment.user.displayname
         # alternative: # if the user is external, fetch the displayname from xikolo
         # Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]
       }
