@@ -248,7 +248,7 @@ de:
         removeAllOnLine: Meine Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
         request: "Kommentaranfrage stellen"
-        question: "Was ist Ihre Frage? (optional)"
+        question: "Bitte beschreiben Sie kurz ihre Problem oder nennen Sie den Programmteil, zu dem sie Feedback wünschen."
     index:
       clone: Duplizieren
       implement: Implementieren

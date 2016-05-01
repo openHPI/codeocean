@@ -248,7 +248,7 @@ en:
         removeAllOnLine: Remove my comments on this line
         listing: Listing the newest comment requests
         request: "Request Comments"
-        question: "What is your question? (optional)"
+        question: "Please shortly describe your problem or the program part you would like to get feedback for."
     index:
       clone: Duplicate
       implement: Implement

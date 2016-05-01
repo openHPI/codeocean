@@ -13,7 +13,7 @@ $(function() {
   var THEME = 'ace/theme/textmate';
   var REMEMBER_TAB = false;
   var AUTOSAVE_INTERVAL = 15 * 1000;
-  var REQUEST_FOR_COMMENTS_DELAY = 5 * 60 * 1000;
+  var REQUEST_FOR_COMMENTS_DELAY = 3 * 60 * 1000;
   var NONE = 0;
   var WEBSOCKET = 1;
   var SERVER_SEND_EVENT = 2;
@@ -1171,6 +1171,8 @@ $(function() {
     }).error(ajaxError);
 
     $('#comment-modal').modal('hide');
+    var button = $('#requestCommentsButton');
+    button.fadeOut();
   }
 
     var initializeCodePilot = function() {
