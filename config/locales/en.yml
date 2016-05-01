@@ -81,6 +81,7 @@ en:
         execution_environment: Language
         username: Username
         requested_at: Request Date
+        question: "Question"
       submission:
         cause: Cause
         code: Code
@@ -209,6 +210,7 @@ en:
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
       tooltips:
         save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
+      request_for_comments_sent: "Request for comments sent."
     editor_file_tree:
       file_root: Files
     file_form:
@@ -243,8 +245,10 @@ en:
         others: Other comments on this line
         addyours: Add your comment
         addComment: Comment this
-        removeAllOnLine: Remove all comments on this line
+        removeAllOnLine: Remove my comments on this line
         listing: Listing the newest comment requests
+        request: "Request Comments"
+        question: "Please shortly describe your problem or the program part you would like to get feedback for."
     index:
       clone: Duplicate
       implement: Implement
@@ -321,7 +325,9 @@ en:
         subject: Password reset instructions
   request_for_comments:
     index:
+      all: All Requests for Comments
       get_my_comment_requests: My Requests for Comments
+    no_question: "The author did not enter a question for this request."
   sessions:
     create:
       failure: Invalid email or password.

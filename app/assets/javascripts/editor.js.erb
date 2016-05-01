@@ -13,6 +13,7 @@ $(function() {
   var THEME = 'ace/theme/textmate';
   var REMEMBER_TAB = false;
   var AUTOSAVE_INTERVAL = 15 * 1000;
+  var REQUEST_FOR_COMMENTS_DELAY = 3 * 60 * 1000;
   var NONE = 0;
   var WEBSOCKET = 1;
   var SERVER_SEND_EVENT = 2;
@@ -110,18 +111,6 @@ $(function() {
 
   var createSubmission = function(initiator, filter, callback) {
     showSpinner(initiator);
-
-      var annotations_arr = [];
-
-      $('.editor').each(function(index, element) {
-          var editor = ace.edit(element);
-          var cleaned_annotations = editor.getSession().getAnnotations();
-          for(var i = cleaned_annotations.length-1; i>=0; --i){
-              cleaned_annotations[i].text = cleaned_annotations[i].text.replace(cleaned_annotations[i].username + ": ", "");
-          }
-          annotations_arr = annotations_arr.concat(editor.getSession().getAnnotations());
-      });
-
     var jqxhr = ajax({
       data: {
         submission: {
@@ -129,7 +118,7 @@ $(function() {
           exercise_id: $('#editor').data('exercise-id'),
           files_attributes: (filter || _.identity)(collectFiles())
         },
-        annotations_arr: annotations_arr
+        annotations_arr: []
       },
       dataType: 'json',
       method: 'POST',
@@ -169,7 +158,6 @@ $(function() {
                     }
                 }
             }
-            setAnnotations(editors[i], $(editors[i].container).data('id'));
         }
         // toggle button states (it might be the case that the request for comments button has to be enabled
         toggleButtonStates();
@@ -255,8 +243,6 @@ $(function() {
       return element;
     }
   };
-
-
 
   var getPanelClass = function(result) {
     if (result.stderr && !result.score) {
@@ -425,7 +411,6 @@ $(function() {
       session.setUseWrapMode(true);
 
       var file_id =  $(element).data('id');
-      //setAnnotations(editor, file_id);
 
       /*
        * Register event handlers
@@ -434,175 +419,12 @@ $(function() {
       // editor itself
       editor.on("paste", handlePasteEvent);
       editor.on("copy", handleCopyEvent);
-      editor.on("guttermousedown", handleSidebarClick);
-
-      /* // alternative:
-      editor.on("guttermousedown", function(e) {
-        handleSidebarClick(e);
-      });
-      */
-
-      //session
-      session.on('annotationRemoval', handleAnnotationRemoval);
-      session.on('annotationChange', handleAnnotationChange);
 
       // listener for autosave
       session.on("change", function (deltaObject) {
         resetSaveTimer();
       });
     });
-  };
-
-  var hasCommentsInRow = function (editor, row){
-    return editor.getSession().getAnnotations().some(function(element) {
-      return element.row === row;
-    })
-  };
-
-  var getCommentsForRow = function (editor, row){
-    return editor.getSession().getAnnotations().filter(function(element) {
-      return element.row === row;
-    })
-  };
-
-  var setAnnotations = function (editor, file_id){
-      var session = editor.getSession();
-      var url = "/comments";
-
-      var jqrequest = $.ajax({
-          dataType: 'json',
-          method: 'GET',
-          url: url,
-          data: {
-            file_id: file_id
-          }
-      });
-
-      jqrequest.done(function(response){
-          setAnnotationsCallback(response, session);
-      });
-      jqrequest.fail(ajaxError);
-  };
-
-  var setAnnotationsCallback = function (response, session) {
-      var annotations = response;
-
-      // add classname and the username in front of each comment
-      $.each(annotations, function(index, comment){
-          comment.className = "code-ocean_comment";
-          comment.text = comment.username + ": " + comment.text;
-      });
-
-      session.setAnnotations(annotations);
-  }
-
-  var deleteComment = function (file_id, row, editor) {
-      var jqxhr = $.ajax({
-          type: 'DELETE',
-          url: "/comments",
-          data: {
-            row: row,
-            file_id: file_id          }
-      });
-      jqxhr.done(function (response) {
-          setAnnotations(editor, file_id);
-      });
-      jqxhr.fail(ajaxError);
-  }
-
-  var createComment = function (file_id, row, editor, commenttext){
-      var jqxhr = $.ajax({
-        data: {
-          comment: {
-            file_id: file_id,
-            row: row,
-            column: 0,
-            text: commenttext
-          }
-        },
-        dataType: 'json',
-        method: 'POST',
-        url:  "/comments"
-      });
-      jqxhr.done(function(response){
-          setAnnotations(editor, file_id);
-      });
-      jqxhr.fail(ajaxError);
-  };
-
-  var handleAnnotationRemoval = function(removedAnnotations) {
-    removedAnnotations.forEach(function(annotation) {
-      $.ajax({
-        method: 'DELETE',
-        url:  '/comment_by_id',
-        data: {
-          id: annotation.id,
-        }
-      })
-    })
-  };
-
-  var handleAnnotationChange = function(changedAnnotations) {
-    changedAnnotations.forEach(function(annotation) {
-      $.ajax({
-        method: 'PUT',
-        url:  '/comments',
-        data: {
-          id: annotation.id,
-          user_id: $('#editor').data('user-id'),
-          comment: {
-            row: annotation.row,
-            text: annotation.text
-          }
-        }
-      })
-    })
-  };
-
-  // Code for clicks on gutter / sidepanel
-  var handleSidebarClick = function(e) {
-      var target  = e.domEvent.target;
-      var editor =  e.editor;
-
-      if (target.className.indexOf("ace_gutter-cell") == -1) return;
-      if (!editor.isFocused()) return;
-      if (e.clientX > 25 + target.getBoundingClientRect().left) return;
-
-      var row = e.getDocumentPosition().row;
-      e.stop();
-
-      var commentModal = $('#comment-modal');
-
-      if (hasCommentsInRow(editor, row)) {
-        var rowComments = getCommentsForRow(editor, row);
-        var comments = _.pluck(rowComments, 'text').join('\n');
-        commentModal.find('#other-comments').text(comments);
-      } else {
-        commentModal.find('#other-comments').text('none');
-      }
-
-      commentModal.find('#addCommentButton').off('click');
-      commentModal.find('#removeAllButton').off('click');
-
-      commentModal.find('#addCommentButton').on('click', function(e){
-        var commenttext = commentModal.find('textarea').val();
-        // attention: use id of data attribute here, not file-id (file-id is the original file)
-        var file_id = $(editor.container).data('id');
-
-        if (commenttext !== "") {
-          createComment(file_id, row, editor, commenttext);
-          commentModal.modal('hide');
-        }
-      });
-
-      commentModal.find('#removeAllButton').on('click', function(e){
-        // attention: use id of data attribute here, not file-id (file-id is the original file)
-        var file_id = $(editor.container).data('id');
-        deleteComment(file_id,row, editor);
-        commentModal.modal('hide');
-      });
-
-      commentModal.modal('show');
   };
 
   var initializeEventHandlers = function() {
@@ -612,6 +434,7 @@ $(function() {
     initializeFileTreeButtons();
     initializeWorkflowButtons();
     initializeWorkspaceButtons();
+    initializeRequestForComments()
   };
 
   var initializeFileTree = function() {
@@ -654,6 +477,20 @@ $(function() {
     $('#start-over').on('click', confirmReset);
   };
 
+  var initializeRequestForComments = function () {
+    var button = $('#requestCommentsButton');
+    button.hide();
+    button.on('click', function() {
+      $('#comment-modal').modal('show');
+    });
+
+    $('#askForCommentsButton').on('click', requestComments);
+
+    setTimeout(function() {
+      button.fadeIn();
+    }, REQUEST_FOR_COMMENTS_DELAY);
+  };
+
   var isActiveFileBinary = function() {
       return 'binary' in active_frame.data();
   };
@@ -667,7 +504,7 @@ $(function() {
           filename: filename,
           id: fileId
       };
-  }
+  };
 
   var isActiveFileRenderable = function() {
     return 'renderable' in active_frame.data();
@@ -1125,7 +962,6 @@ $(function() {
     $('#run').toggle(isActiveFileRunnable() && !running);
     $('#stop').toggle(isActiveFileStoppable());
     $('#test').toggle(isActiveFileTestable());
-    $('#request-for-comments').toggle(isActiveFileSubmission() && !isActiveFileBinary());
   };
 
   var initWebsocketConnection = function(url) {
@@ -1308,10 +1144,11 @@ $(function() {
       }
   };
 
-  var requestComments = function(e) {
+  var requestComments = function() {
     var user_id = $('#editor').data('user-id')
     var exercise_id = $('#editor').data('exercise-id')
     var file_id = $('.editor').data('id')
+    var question = $('#question').val();
 
     $.ajax({
       method: 'POST',
@@ -1320,6 +1157,7 @@ $(function() {
         request_for_comment: {
           exercise_id: exercise_id,
           file_id: file_id,
+          question: question,
           "requested_at(1i)": 2015, // these are the timestamp values that the request handler demands
           "requested_at(2i)":3, // they could be random here, because the timestamp is updated on serverside anyway
           "requested_at(3i)":27,
@@ -1328,13 +1166,13 @@ $(function() {
         }
       }
     }).done(function() {
-      hideSpinner()
-      $.flash.success({ text: 'Request for comments sent!' })
-    })
+      hideSpinner();
+      $.flash.success({ text: $('#askForCommentsButton').data('message-success') })
+    }).error(ajaxError);
 
-    showSpinner($('#request-for-comments'))
-    // hide button until next submission is created
-    $('#request-for-comments').toggle(false);
+    $('#comment-modal').modal('hide');
+    var button = $('#requestCommentsButton');
+    button.fadeOut();
   }
 
     var initializeCodePilot = function() {

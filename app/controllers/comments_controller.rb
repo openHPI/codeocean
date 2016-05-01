@@ -41,7 +41,7 @@ class CommentsController < ApplicationController
       # if the user is internal, set the name
 
       @comments.map{|comment|
-          comment.username = comment.user.name
+          comment.username = comment.user.displayname
         # alternative: # if the user is external, fetch the displayname from xikolo
         # Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]
       }
@@ -111,14 +111,13 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    @comments = Comment.where(file_id: params[:file_id], row: params[:row])
-    @comments.delete_all
+    @comments = Comment.where(file_id: params[:file_id], row: params[:row], user: current_user)
+    @comments.each { |comment| authorize comment; comment.destroy }
     respond_to do |format|
       #format.html { redirect_to comments_url, notice: 'Comments were successfully destroyed.' }
       format.html { head :no_content, notice: 'Comments were successfully destroyed.' }
       format.json { head :no_content }
     end
-    authorize!
   end
 
   private
