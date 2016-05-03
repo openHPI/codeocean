@@ -478,7 +478,7 @@ $(function() {
   };
 
   var initializeRequestForComments = function () {
-    var button = $('#requestCommentsButton');
+    var button = $('.requestCommentsButton');
     button.hide();
     button.on('click', function() {
       $('#comment-modal').modal('show');
@@ -1171,7 +1171,7 @@ $(function() {
     }).error(ajaxError);
 
     $('#comment-modal').modal('hide');
-    var button = $('#requestCommentsButton');
+    var button = $('.requestCommentsButton');
     button.fadeOut();
   }
 
