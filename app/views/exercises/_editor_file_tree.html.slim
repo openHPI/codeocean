@@ -2,8 +2,8 @@
 
 hr
 
-= render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-cause' => 'file'}, icon: 'fa fa-plus', id: 'create-file', label: t('exercises.editor.create_file'))
-= render('editor_button', classes: 'btn-block btn-warning btn-sm', data: {:'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy')}, icon: 'fa fa-times', id: 'destroy-file', label: t('exercises.editor.destroy_file'))
+/= render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-cause' => 'file'}, icon: 'fa fa-plus', id: 'create-file', label: t('exercises.editor.create_file'))
+/= render('editor_button', classes: 'btn-block btn-warning btn-sm', data: {:'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy')}, icon: 'fa fa-times', id: 'destroy-file', label: t('exercises.editor.destroy_file'))
 = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-download', id: 'download', label: t('exercises.editor.download'))
 
 = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))
