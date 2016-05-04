@@ -34,7 +34,7 @@ class Xikolo::Client
   end
 
   def self.url
-    @url ||= Config.new(:code_ocean).read.fetch(:xikolo_api_url, 'http://localhost:3000/api/') #caches this with ||=, second value of fetch is default value
+    @url ||= CodeOcean::Config.new(:code_ocean).read.fetch(:xikolo_api_url, 'http://localhost:3000/api/') #caches this with ||=, second value of fetch is default value
   end
 
   def self.accept
