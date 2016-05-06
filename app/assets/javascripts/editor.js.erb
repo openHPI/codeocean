@@ -703,7 +703,7 @@ $(function() {
     var score = $('#score').data('score');
     var maxium_score = $('#score').data('maximum-score');
     var percentage_score = score / maxium_score * 100
-    $('.score').html((percentage_score ) + ' % ');
+    $('.score').html((percentage_score || 0) + ' % ');
     renderProgressBar(score, maxium_score);
   };
 
