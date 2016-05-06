@@ -22,7 +22,7 @@ h1
 h2 = t('activerecord.attributes.exercise.files')
 
 ul.list-unstyled.panel-group#files
-  - @exercise.files.each do |file|
+  - @exercise.files.order('name').each do |file|
     li.panel.panel-default
       .panel-heading role="tab" id="heading"
         div.clearfix role="button"
