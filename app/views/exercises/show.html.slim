@@ -28,7 +28,7 @@ ul.list-unstyled.panel-group#files
         div.clearfix role="button"
           span.panel-title = file.name_with_extension
           a.pull-right data-toggle="collapse" data-parent="#files" href="#collapse#{file.id}" collapse
-      .panel-collapse.collapse id="collapse#{file.id}" role="tabpanel"
+      .panel-collapse.collapse.in id="collapse#{file.id}" role="tabpanel"
         .panel-body
           - if policy(file).destroy?
             .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
