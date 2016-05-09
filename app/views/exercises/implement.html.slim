@@ -76,8 +76,22 @@
               .progress-bar role='progressbar'
 
           br
-          - if session[:lti_parameters].try(:has_key?, 'list_outcome_service_url')
+          - if session[:lti_parameters].try(:has_key?, 'lis_outcome_service_url')
             p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
+          - else
+            p.text-center = render('editor_button', disabled: true, classes: 'btn-lg btn-success', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-ban', id: 'submit_outdated', label: t('exercises.editor.submit'), title: t('shared.tooltips.shortcut', shortcut: 'Time is over!'))
+
+                        //title: t('.tooltips.save')
+                        //        = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-stop', id: 'stop', label: t('exercises.editor.stop'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
+
+                        // title: t('.tooltips.save'))
+                        //  = render('editor_button', icon: 'fa fa-desktop', id: 'render', label: t('exercises.editor.render'))
+
+                        //label: t('exercises.editor.start_over'))
+                        // = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
+
+                        //  = render('editor_button', disabled: true, icon: 'fa fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))
+
   - if qa_url
     #questions-column
       #questions-holder data-url="#{qa_url}/qa/index/#{@exercise.id}/#{@user_id}"
