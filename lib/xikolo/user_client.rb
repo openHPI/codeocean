@@ -11,7 +11,7 @@ class Xikolo::UserClient
       end
       return {display_name: name, user_visual: user['user_visual'], language: user['language']}
     else
-      return {display_name: "User" + user_id, user_visual: ActionController::Base.helpers.image_path('default.png'), language: "DE"}
+      return {display_name: "User " + user_id, user_visual: ActionController::Base.helpers.image_path('default.png'), language: "DE"}
     end
   end
 end

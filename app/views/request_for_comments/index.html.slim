@@ -5,14 +5,17 @@ h1 = RequestForComment.model_name.human(count: 2)
     thead
       tr
         th = t('activerecord.attributes.request_for_comments.exercise')
-        th = t('activerecord.attributes.request_for_comments.execution_environment')
+        th = t('activerecord.attributes.request_for_comments.question')
         th = t('activerecord.attributes.request_for_comments.username')
         th = t('activerecord.attributes.request_for_comments.requested_at')
     tbody
       - @request_for_comments.each do |request_for_comment|
         tr data-id=request_for_comment.id
           td = link_to(request_for_comment.exercise.title, request_for_comment)
-          td = request_for_comment.exercise.execution_environment
+          - if request_for_comment.has_attribute?(:question)
+            td = request_for_comment.question
+          - else
+            td = '-'
           td = request_for_comment.user.displayname
           td = request_for_comment.requested_at
 

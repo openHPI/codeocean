@@ -115,7 +115,7 @@ do not put a carriage return in the line below. it will be present in the presen
   }
 
   function handleSidebarClick(e) {
-    var target  = e.domEvent.toElement;
+    var target  = e.domEvent.target;
     var editor =  e.editor;
 
     if (target.className.indexOf("ace_gutter-cell") == -1) return;
