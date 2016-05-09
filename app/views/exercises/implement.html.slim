@@ -76,7 +76,7 @@
               .progress-bar role='progressbar'
 
           br
-          - if session[:lti_parameters].try(:has_key?, 'lis_outcome_service_url')
+          - if session[:lti_parameters].try(:has_key?, 'list_outcome_service_url')
             p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
   - if qa_url
     #questions-column
