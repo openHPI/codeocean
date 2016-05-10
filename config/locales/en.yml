@@ -396,6 +396,8 @@ en:
       shortcut: 'Keyboard shortcut: %{shortcut}'
     update: 'Update %{model}'
     upload_file: Upload file
+    time:
+      before: "%{time} ago"
   submissions:
     causes:
       autosave: Autosave

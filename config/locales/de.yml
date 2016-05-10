@@ -396,6 +396,8 @@ de:
       shortcut: 'Tastaturkürzel: %{shortcut}'
     update: '%{model} aktualisieren'
     upload_file: Datei hochladen
+    time:
+      before: "%{time} zuvor"
   submissions:
     causes:
       autosave: Autosave

@@ -12,41 +12,16 @@ class CommentsController < ApplicationController
   # GET /comments
   # GET /comments.json
   def index
-    #@comments = Comment.all
-    #if admin, show all comments.
-    #check whether user is the author of the passed file_id, if so, show all comments. otherwise, only show comments of the file-author and own comments
     file = CodeOcean::File.find(params[:file_id])
     #there might be no submission yet, so dont use find
     submission = Submission.find_by(id: file.context_id)
     if submission
-      is_admin = false
-      user_id = current_user.id
-
-      # if we have an internal user, check whether he is an admin
-      if not current_user.respond_to? :external_id
-        is_admin = current_user.role == 'admin'
-      end
-
-      if(is_admin ||  user_id == submission.user_id)
-        # fetch all comments for this file
-        @comments = Comment.where(file_id: params[:file_id])
-      else
-        # fetch comments of the current user
-        #@comments = Comment.where(file_id: params[:file_id], user_id: user_id)
-        # fetch comments of file-author and the current user
-        @comments = Comment.where(file_id: params[:file_id], user_id: [user_id, submission.user_id])
-      end
-
-      #add names to comments
-      # if the user is internal, set the name
-
+      @comments = Comment.where(file_id: params[:file_id])
       @comments.map{|comment|
-          comment.username = comment.user.displayname
-        # alternative: # if the user is external, fetch the displayname from xikolo
-        # Xikolo::UserClient.get(comment.user_id.to_s)[:display_name]
+        comment.username = comment.user.displayname
       }
     else
-      @comments = Comment.all.limit(0) #we need an empty relation here
+      @comments = []
     end
     authorize!
   end
