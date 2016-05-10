@@ -38,6 +38,7 @@ de:
         team_id: Team
         title: Titel
         user: Autor
+        allow_file_creation: "Dateierstellung erlauben"
       external_user:
         consumer: Konsument
         email: E-Mail
@@ -292,6 +293,8 @@ de:
       teacher_defined_test: Test als Bewertungsgrundlage
       user_defined_file: Benutzerdefinierte Datei
       user_defined_test: Benutzerdefinierter Test
+    error:
+      filename: "Die Datei konnte nicht gespeichert werden, da eine Datei mit dem Namen '%{name}' bereits existiert."
   hints:
     form:
       hints:

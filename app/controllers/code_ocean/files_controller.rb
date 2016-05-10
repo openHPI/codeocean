@@ -14,6 +14,21 @@ module CodeOcean
       create_and_respond(object: @file, path: proc { implement_exercise_path(@file.context.exercise, tab: 2) })
     end
 
+    def create_and_respond(options = {})
+      @object = options[:object]
+      respond_to do |format|
+        if @object.save
+          yield if block_given?
+          path = options[:path].try(:call) || @object
+          respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human), path: path, status: :created)
+        else
+          filename = (@object.path || '') + '/' + (@object.name || '') + (@object.file_type.file_extension || '')
+          format.html { redirect_to(options[:path]); flash[:danger] = t('files.error.filename', name: filename) }
+          format.json { render(json: @object.errors, status: :unprocessable_entity) }
+        end
+      end
+    end
+
     def destroy
       @file = CodeOcean::File.find(params[:id])
       authorize!
