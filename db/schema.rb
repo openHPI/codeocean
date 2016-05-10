@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160426114951) do
+ActiveRecord::Schema.define(version: 20160510145341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(version: 20160426114951) do
     t.string   "token"
     t.integer  "team_id"
     t.boolean  "hide_file_tree"
+    t.boolean  "allow_file_creation"
   end
 
   add_index "exercises", ["execution_environment_id"], name: "test3", using: :btree
