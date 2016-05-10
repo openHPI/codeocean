@@ -38,6 +38,7 @@ en:
         team_id: Team
         title: Title
         user: Author
+        allow_file_creation: "Allow file creation"
       external_user:
         consumer: Consumer
         email: Email

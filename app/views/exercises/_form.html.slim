@@ -28,6 +28,10 @@
     label
       = f.check_box(:hide_file_tree)
       = t('activerecord.attributes.exercise.hide_file_tree')
+  .checkbox
+    label
+      = f.check_box(:allow_file_creation)
+      = t('activerecord.attributes.exercise.allow_file_creation')
   h2 = t('activerecord.attributes.exercise.files')
   ul#files.list-unstyled.panel-group
     = f.fields_for :files do |files_form|
