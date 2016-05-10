@@ -292,6 +292,8 @@ en:
       teacher_defined_test: Test for Assessment
       user_defined_file: User-defined File
       user_defined_test: User-defined Test
+    error:
+      filename: "The file could not be saved, because another file with the name '%{name}' already exists."
   hints:
     form:
       hints:

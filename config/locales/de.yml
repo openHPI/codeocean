@@ -292,6 +292,8 @@ de:
       teacher_defined_test: Test als Bewertungsgrundlage
       user_defined_file: Benutzerdefinierte Datei
       user_defined_test: Benutzerdefinierter Test
+    error:
+      filename: "Die Datei konnte nicht gespeichert werden, da eine Datei mit dem Namen '%{name}' bereits existiert."
   hints:
     form:
       hints:
