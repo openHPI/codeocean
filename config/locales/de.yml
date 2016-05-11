@@ -208,6 +208,7 @@ de:
       submit: Code zur Bewertung abgeben
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
+      time_over: 'Time for this exercise is over [german]'
       tooltips:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
         time_over: 'Time is over! [german]'
