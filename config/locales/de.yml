@@ -210,6 +210,7 @@ de:
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
       tooltips:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
+        time_over: 'Time is over! [german]'
       request_for_comments_sent: "Kommentaranfrage gesendet."
     editor_file_tree:
       file_root: Dateien
