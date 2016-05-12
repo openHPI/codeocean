@@ -31,8 +31,13 @@ input[type='file'] {
 
 .line {
   fill: none;
-  stroke: orange;//steelblue;
-  stroke-width: 4px;
+  //stroke: orange;//steelblue;
+  stroke-width: 2px;
+}
+.line2 {
+  fill: none;
+  //stroke: red;//steelblue;
+  stroke-width: 3px;
 }
 
 div#chart_1 {

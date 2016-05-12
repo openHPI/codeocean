@@ -1,4 +1,6 @@
 $(function() {
+    // http://localhost:3333/exercises/38/statistics good for testing
+    // originally at--> localhost:3333/exercises/69/statistics
 
   if ($.isController('exercises') && $('.graph-functions').isPresent()) {
       var working_times = $('#data').data('working-time');
@@ -19,23 +21,34 @@ $(function() {
 
       // GET ALL THE DATA ------------------------------------------------------------------------------
       minutes_array = _.map(working_times,function(item){return get_minutes(item)});
-      maximum_minutes = _.max(minutes_array);
-      var minutes_count = new Array(maximum_minutes + 1);
+      minutes_array_length = minutes_array.length;
 
-      for (var i = 0; i < maximum_minutes; i++){
-          for (var j = 0; j < minutes_array[i]; j++){
+      maximum_minutes = _.max(minutes_array);
+      var minutes_count = new Array(maximum_minutes);
+
+      for (var i = 0; i < minutes_array_length; i++){
+          var studentTime = minutes_array[i];
+
+          for (var j = 0; j < studentTime; j++){
               if (minutes_count[j] == undefined){
-                  minutes_count[j] = 1;
+                  minutes_count[j] = 0;
               } else{
                   minutes_count[j] += 1;
               }
           }
       }
 
-      minutes_count[(maximum_minutes + 1)] = 0;
+      // minutes_count[(maximum_minutes + 1)] = 0;
       //$('.graph-functions').html("<p></p>")
-      console.log(minutes_array);
 
+      // var minutes_count = new Array(10);
+      // var minutes_array_len = minutes_array.length;
+      // for (var i=0; i< minutes_count; i++){
+      //
+      //     for (var j = 0; j < minutes_array_len; j++){
+      //         if ()
+      //     }
+      // }
 
       function getWidth() {
           if (self.innerHeight) {
@@ -51,15 +64,10 @@ $(function() {
           }
       }
 
-
       // DRAW THE LINE GRAPH ------------------------------------------------------------------------------
       function draw_line_graph() {
-
-          // good to test at: localhost:3333/exercises/69/statistics
-
           var width_ratio = .8;
           var height_ratio = .7; // percent of height
-
 
           // currently sets as percentage of window width, however, unfortunately
           // is not yet responsive
@@ -72,15 +80,12 @@ $(function() {
 
           var x = d3.scale.linear()
               .range([0, width]);
-
           var y = d3.scale.linear()
               .range([height, 0]); // - (height/20
-
           var xAxis = d3.svg.axis()
               .scale(x)
               .orient("bottom")
               .ticks(20);
-
           var yAxis = d3.svg.axis()
               .scale(y)
               .orient("left")
@@ -96,13 +101,11 @@ $(function() {
                   return y(d / minutes_count[0] * 100);
               });
 
-
           var svg = d3.select("#chart_1").append("svg")  //PLACEMENT GOES HERE  <---------------
               .attr("width", width + margin.left + margin.right)
               .attr("height", height + margin.top + margin.bottom)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
           x.domain(d3.extent(minutes_count, function (d, i) {
               return (i);
@@ -115,7 +118,6 @@ $(function() {
               .attr("class", "x axis")
               .attr("transform", "translate(0," + height + ")")
               .call(xAxis);
-
 
           svg.append("text")// x axis label
               .attr("class", "x axis")
@@ -152,17 +154,17 @@ $(function() {
               .datum(minutes_count)
               .attr("class", "line")
               .attr('id', 'myPath')// new
-              .attr("stroke", "black")
+              .attr("stroke", "orange")
               .attr("stroke-width", 5)
               .attr("fill", "none")// end new
               .attr("d", line);//---
           //.on("mousemove", mMove)//new again
           //.append("title");
 
-          function type(d) {
-              d.frequency = +d.frequency;
-              return d;
-          }
+          // function type(d) {
+          //     d.frequency = +d.frequency;
+          //     return d;
+          // }
       }
 
       draw_line_graph();
@@ -184,10 +186,7 @@ $(function() {
       //              (m[0]*(minutes_count.length/x_width)) +" Minutes");//text(m[1]);
       //}
 
-
-
       // DRAW THE SECOND GRAPH ------------------------------------------------------------------------------
-
       //<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
       function draw_bar_graph() {
           var group_incrament = 5;
@@ -229,7 +228,8 @@ $(function() {
 
           var xAxis = d3.svg.axis()
               .scale(x)
-              .orient("bottom");
+              .orient("bottom")
+              .ticks(10);
 
 
           var yAxis = d3.svg.axis()
@@ -325,8 +325,7 @@ $(function() {
               .style('text-decoration', 'underline');
 
       }
-      draw_bar_graph()
-
+      // draw_bar_graph();
   }
 
 });
