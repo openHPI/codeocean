@@ -465,7 +465,6 @@ $(function() {
     $('#start').on('click', showWorkspaceTab);
     //$('#submit').on('click', confirmSubmission);
     $('#submit').on('click', submitCode);
-    $('#submit_outdated').on('click', submitOutdated);
   };
 
   var initializeWorkspaceButtons = function() {
@@ -749,13 +748,6 @@ $(function() {
       $.flash.success({
         text: $('#save').data('message-success')
       });
-    });
-  };
-
-  var submitOutdated = function(event) {
-    $.flash.danger({
-      icon: ['fa', 'fa-clock-o'],
-      text: $('#editor').data('message-deadline')
     });
   };
 
