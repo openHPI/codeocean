@@ -98,6 +98,8 @@ GEM
     concurrent-ruby (1.0.0-java)
     concurrent-ruby-ext (1.0.0)
       concurrent-ruby (~> 1.0.0)
+    d3-rails (3.5.11)
+      railties (>= 3.1)
     database_cleaner (1.5.1)
     debug_inspector (0.0.2)
     diff-lcs (1.2.5)
@@ -362,6 +364,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   concurrent-ruby (~> 1.0.0)
   concurrent-ruby-ext (~> 1.0.0)
+  d3-rails
   database_cleaner
   docker-api (~> 1.25.0)
   factory_girl_rails (~> 4.0)

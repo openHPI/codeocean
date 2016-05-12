@@ -1,3 +1,4 @@
+script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"
 h1 = @exercise
 
 = row(label: '.participants', value: @exercise.users.distinct.count)
@@ -13,6 +14,18 @@ h1 = @exercise
 
 - Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
   strong = label
+  -if symbol==:external_users
+    -working_time_array = []
+    - @exercise.send(symbol).distinct().each do |user|
+      -working_time = @exercise.average_working_time_for(user.id) or 0
+      -working_time_array.push working_time
+    hr
+    .hidden#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
+    .graph-functions
+    div#chart_1
+    hr
+    /div#chart_2
+    /hr
   .table-responsive
     table.table.table-striped.sortable
       thead

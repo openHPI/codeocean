@@ -32,7 +32,7 @@ h1 = "#{@exercise} (external user #{@external_user})"
           option data-submission=submission
             =index
           - index += 1
-
+  - working_times_until = Array.new
   #timeline
     .table-responsive
       table.table
@@ -54,7 +54,11 @@ h1 = "#{@exercise} (external user #{@external_user})"
                   - else
                     .unit-test-result.negative-result
               td = Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0
+              -working_times_until.push((Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0))
     p = t('.addendum')
+    .hidden#wtimes data-working_times=ActiveSupport::JSON.encode(working_times_until);
+    div#progress_chart.col-lg-12
+      .graph-functions-2
 
 - else
   p = t('.no_data_available')

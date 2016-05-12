@@ -36,7 +36,8 @@ gem 'will_paginate', '~> 3.0'
 gem 'tubesock'
 gem 'faye-websocket'
 gem 'nokogiri'
-gem 'rest-client'
+gem 'd3-rails'
+gem 'rest-client’
 
 group :development do
   gem 'better_errors', platform: :ruby
