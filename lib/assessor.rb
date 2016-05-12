@@ -12,6 +12,8 @@ class Assessor
     score = 0.0;
     if(test_outcome[:passed].to_f != 0.0 && test_outcome[:count].to_f != 0.0)
       score = (test_outcome[:passed].to_f / test_outcome[:count].to_f)
+      # prevent negative scores
+      score = [0.0, score].max
     end
     score
   end

@@ -8,7 +8,11 @@ class CommentPolicy < ApplicationPolicy
     everyone
   end
 
-  [:new?, :show?, :destroy?].each do |action|
+  def show?
+    everyone
+  end
+
+  [:new?, :destroy?].each do |action|
     define_method(action) { admin? || author? }
   end
 

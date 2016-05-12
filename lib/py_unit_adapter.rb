@@ -11,7 +11,7 @@ class PyUnitAdapter < TestingFrameworkAdapter
     count = COUNT_REGEXP.match(output[:stderr]).captures.first.to_i
     matches = FAILURES_REGEXP.match(output[:stderr])
     failed = matches ? matches.captures.try(:first).to_i : 0
-    error_matches = ASSERTION_ERROR_REGEXP.match(output[:stderr]).captures
+    error_matches = ASSERTION_ERROR_REGEXP.match(output[:stderr]).try(:captures) || []
     {count: count, failed: failed, error_messages: error_matches}
   end
 end

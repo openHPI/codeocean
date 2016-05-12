@@ -21,4 +21,9 @@ class InternalUser < ActiveRecord::Base
   def teacher?
     role == 'teacher'
   end
+
+  def displayname
+    name
+  end
+
 end

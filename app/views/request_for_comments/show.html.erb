@@ -14,6 +14,13 @@
       %>
     <%= user %> | <%= @request_for_comment.requested_at %>
   </p>
+  <h5>
+    <% if @request_for_comment.question and not @request_for_comment.question == '' %>
+      <%= t('activerecord.attributes.request_for_comments.question')%>: "<%= @request_for_comment.question %>"
+    <% else %>
+      <%= t('request_for_comments.no_question') %>
+    <% end %>
+  </h5>
 </div>
 
 <!--
@@ -25,27 +32,22 @@ do not put a carriage return in the line below. it will be present in the presen
   </div>
 <% end %>
 
+<%= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent') %>
+
 <script type="text/javascript">
   var commentitor = $('.editor');
   var userid = commentitor.data('user-id');
 
   commentitor.each(function (index, editor) {
-    currentEditor = ace.edit(editor);
+    var currentEditor = ace.edit(editor);
     currentEditor.setReadOnly(true);
 
     setAnnotations(currentEditor, $(editor).data('file-id'));
+    currentEditor.on("guttermousedown", handleSidebarClick);
   });
 
   function setAnnotations(editor, fileid) {
-    var session = editor.getSession()
-
-    var inputHtml = ''
-    inputHtml += '<div class="input-group">'
-    inputHtml +=   '<input type="text" class="form-control" id="commentInput"'
-    inputHtml +=     'placeholder="I\'d suggest a variable here" required>'
-    inputHtml +=   '<span class="input-group-btn"><button id="submitComment"'
-    inputHtml +=     'class="btn btn-default"><%= t("exercises.implement.comment.addComment") %>!</button></span>'
-    inputHtml += '</div>'
+    var session = editor.getSession();
 
     var jqrequest = $.ajax({
         dataType: 'json',
@@ -58,57 +60,109 @@ do not put a carriage return in the line below. it will be present in the presen
 
     jqrequest.done(function(response){
       $.each(response, function(index, comment) {
-        comment.className = "code-ocean_comment"
+        comment.className = "code-ocean_comment";
         comment.text = comment.username + ": " + comment.text
-      })
+      });
 
-      editor.getSession().setAnnotations(response)
-
-      $(editor.container).find('.ace_gutter-cell').popover({
-        title: 'Add a comment',
-        html: true,
-        content: inputHtml,
-        position: 'right',
-        trigger: 'focus click'
-      }).on('shown.bs.popover', function() {
-        var container = $(editor.container)
-        container.find('#commentInput').focus()
-        container.find('#submitComment').click(_.partial(addComment, editor, fileid));
-        container.find('#commentInput').data('line', $(this).text())
-      })
+      session.setAnnotations(response);
     })
   }
 
-  function addComment(editor, fileid) {
-    var commentInput = $(editor.container).find('#commentInput');
-    var comment = commentInput.val()
-    var line = commentInput.data('line')
+  function hasCommentsInRow(editor, row){
+    return editor.getSession().getAnnotations().some(function(element) {
+      return element.row === row;
+    })
+  }
 
-    if (line == '' || comment == '') {
-      return
-    } else {
-      line = parseInt(line) - 1
-    }
+  function getCommentsForRow(editor, row){
+    return editor.getSession().getAnnotations().filter(function(element) {
+      return element.row === row;
+    })
+  }
 
-    $.ajax({
+  function deleteComment(file_id, row, editor) {
+    var jqxhr = $.ajax({
+      type: 'DELETE',
+      url: "/comments",
+      data: {
+        row: row,
+        file_id: file_id          }
+    });
+    jqxhr.done(function (response) {
+      setAnnotations(editor, file_id);
+    });
+    jqxhr.fail(ajaxError);
+  }
+
+  function createComment(file_id, row, editor, commenttext){
+    var jqxhr = $.ajax({
       data: {
         comment: {
-          user_id: userid,
-          file_id: fileid,
-          row: line,
+          file_id: file_id,
+          row: row,
           column: 0,
-          text: comment
+          text: commenttext
         }
       },
       dataType: 'json',
       method: 'POST',
       url:  "/comments"
-    }).done(setAnnotations(editor, fileid))
-
-    $('.ace_gutter-cell').popover('hide')
+    });
+    jqxhr.done(function(response){
+      setAnnotations(editor, file_id);
+    });
+    jqxhr.fail(ajaxError);
   }
+
+  function handleSidebarClick(e) {
+    var target  = e.domEvent.target;
+    var editor =  e.editor;
+
+    if (target.className.indexOf("ace_gutter-cell") == -1) return;
+    //if (!editor.isFocused()) return;
+    //if (e.clientX > 25 + target.getBoundingClientRect().left) return;
+
+
+    var row = e.getDocumentPosition().row;
+    e.stop();
+
+    var commentModal = $('#comment-modal');
+
+    if (hasCommentsInRow(editor, row)) {
+      var rowComments = getCommentsForRow(editor, row);
+      var comments = _.pluck(rowComments, 'text').join('\n');
+      commentModal.find('#other-comments').text(comments);
+    } else {
+      commentModal.find('#other-comments').text('none');
+    }
+
+    commentModal.find('#addCommentButton').off('click');
+    commentModal.find('#removeAllButton').off('click');
+
+    commentModal.find('#addCommentButton').on('click', function(e){
+      var commenttext = commentModal.find('textarea').val();
+      var file_id = $(editor.container).data('file-id');
+
+      if (commenttext !== "") {
+        createComment(file_id, row, editor, commenttext);
+        commentModal.modal('hide');
+      }
+    });
+
+    commentModal.find('#removeAllButton').on('click', function(e){
+      var file_id = $(editor.container).data('file-id');
+      deleteComment(file_id, row, editor);
+      commentModal.modal('hide');
+    });
+
+    commentModal.modal('show');
+  }
+
+  function ajaxError(response) {
+    var message = ((response || {}).responseJSON || {}).message || '';
+
+    $.flash.danger({
+      text: message.length > 0 ? message : $('#flash').data('message-failure')
+    });
+  };
 </script>
-<style>
-  #commentitor, .ace_gutter, .ace_gutter-layer { overflow: visible }
-  .popover { width: 400px; max-width: none; }
-</style>

@@ -34,8 +34,7 @@ class Xikolo::Client
   end
 
   def self.url
-    #todo: JanR: set an environment variable here, fallback value: http://open.hpi.de/api/
-    'http://localhost:2000/api/'
+    @url ||= CodeOcean::Config.new(:code_ocean).read.fetch(:xikolo_api_url, 'http://localhost:3000/api/') #caches this with ||=, second value of fetch is default value
   end
 
   def self.accept
@@ -43,7 +42,7 @@ class Xikolo::Client
   end
 
   def self.token
-    'Token token="'+Rails.application.config.xikolo[:token]+'"'
+    'Token token="'+Rails.application.secrets.openhpi_api_token+'"'
   end
 
   private

@@ -124,7 +124,7 @@ class SubmissionsController < ApplicationController
 
         tubesock.onmessage do |data|
           Rails.logger.info(Time.now.getutc.to_s + ": Client sending: " + data)
-          # Check wether the client send a JSON command and kill container
+          # Check whether the client send a JSON command and kill container
           # if the command is 'exit', send it to docker otherwise.
           begin
             parsed = JSON.parse(data)

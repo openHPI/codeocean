@@ -16,6 +16,7 @@ h1
 = row(label: 'exercise.maximum_score', value: @exercise.maximum_score)
 = row(label: 'exercise.public', value: @exercise.public?)
 = row(label: 'exercise.hide_file_tree', value: @exercise.hide_file_tree?)
+= row(label: 'exercise.allow_file_creation', value: @exercise.allow_file_creation?)
 = row(label: 'exercise.embedding_parameters') do
   = content_tag(:input, nil, class: 'form-control', readonly: true, value: embedding_parameters(@exercise))
 

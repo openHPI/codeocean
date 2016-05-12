@@ -2,6 +2,19 @@ require File.expand_path('../../../uploaders/file_uploader', __FILE__)
 require File.expand_path('../../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
 
 module CodeOcean
+
+  class FileNameValidator < ActiveModel::Validator
+    def validate(record)
+      existing_files = File.where(name: record.name, path: record.path, file_type_id: record.file_type_id,
+                                  context_id: record.context_id, context_type: record.context_type).to_a
+      unless existing_files.empty?
+        if (not record.context.is_a?(Exercise)) || (record.context.new_record?)
+          record.errors[:base] << 'Duplicate'
+        end
+      end
+    end
+  end
+
   class File < ActiveRecord::Base
     include DefaultValues
 
@@ -43,6 +56,8 @@ module CodeOcean
     validates :role, inclusion: {in: ROLES}
     validates :weight, if: :teacher_defined_test?, numericality: true, presence: true
     validates :weight, absence: true, unless: :teacher_defined_test?
+
+    validates_with FileNameValidator, fields: [:name, :path, :file_type_id]
 
     ROLES.each do |role|
       define_method("#{role}?") { self.role == role }

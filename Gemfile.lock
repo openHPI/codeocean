@@ -107,6 +107,8 @@ GEM
     docker-api (1.25.0)
       excon (>= 0.38.0)
       json
+    domain_name (0.5.25)
+      unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     eventmachine (1.0.9.1)
     eventmachine (1.0.9.1-java)
@@ -127,6 +129,8 @@ GEM
     forgery (0.6.0)
     highline (1.7.8)
     hike (1.2.3)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     i18n (0.7.0)
     ims-lti (1.1.10)
       builder
@@ -157,6 +161,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.0.2)
+    netrc (0.10.3)
     newrelic_rpm (3.14.3.313)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
@@ -220,6 +225,10 @@ GEM
       polyamorous (~> 1.2)
     rdoc (4.2.2)
       json (~> 1.4)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -313,6 +322,9 @@ GEM
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
     unicode-display_width (0.3.1)
     web-console (2.3.0)
       activemodel (>= 4.0)
@@ -375,6 +387,7 @@ DEPENDENCIES
   rails-i18n (~> 4.0.0)
   rake
   ransack
+  rest-client
   rspec-autotest
   rspec-rails
   rubocop
