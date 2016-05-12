@@ -465,7 +465,6 @@ $(function() {
     $('#start').on('click', showWorkspaceTab);
     //$('#submit').on('click', confirmSubmission);
     $('#submit').on('click', submitCode);
-    $('#submit_outdated').on('click', submitOutdated);
   };
 
   var initializeWorkspaceButtons = function() {
@@ -575,10 +574,14 @@ $(function() {
     //    output_mode_is_streaming = false;
     //}
     if (!colorize) {
-      var stream = _.sortBy([output.stderr || '', output.stdout || ''], function(stream) {
-        return stream.length;
-      })[1];
-      element.append(stream);
+      if(output.stdout != ''){
+        element.append(output.stdout)
+      }
+
+      if(output.stderr != ''){
+        element.append('There was an error: StdErr: ' + output.stderr);
+      }
+
     } else if (output.stderr) {
       element.addClass('text-warning').append(output.stderr);
     } else if (output.stdout) {
@@ -749,16 +752,7 @@ $(function() {
     });
   };
 
-  var submitCode = function(event) {
-    event.preventDefault();
-    createSubmission(this, null, function() {
-      $.flash.success({
-        text: $('#save').data('message-success')
-      });
-    });
-  };
-
-//need to change data string
+  //need to change data string
   var submitOutdated = function(event) {
     $.flash.danger({
       icon: ['fa', 'fa-clock-o'],
