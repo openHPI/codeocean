@@ -1,6 +1,5 @@
 
 
-
 .row
   #editor-column.col-md-10.col-md-offset-1
     h1 = @exercise
@@ -78,30 +77,11 @@
             .progress
               .progress-bar role='progressbar'
 
-          //#editor.row data-message-depleted=t('exercises.editor.depleted') data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @exercise.execution_environment.permitted_execution_time)
           br
           - if session[:lti_parameters].try(:has_key?, 'lis_outcome_service_url')
             p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
           - else
-            p.text-center = render('editor_button', classes: 'btn-lg btn-warning-outline', data: {:'data-message-confirm' => t('exercises.editor.time_over'), :'data-placement' => 'bottom', :'data-tooltip' => true} , icon: 'fa fa-ban', id: 'submit_outdated', label: t('exercises.editor.time_over'), title: t('shared.tooltips.time_over'))
-
-//data: {:'data-message-depleted' => t('exercises.editor.depleted')}
-
-            // = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
-//        = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-network' => t('exercises.editor.network'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
-
-                        //title: t('.tooltips.save')
-                        // data-message-depleted=t('exercises.editor.depleted')
-
-                        //  = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-stop', id: 'stop', label: t('exercises.editor.stop'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
-
-                        // title: t('.tooltips.save'))
-                        //  = render('editor_button', icon: 'fa fa-desktop', id: 'render', label: t('exercises.editor.render'))
-
-                        //label: t('exercises.editor.start_over'))
-                        // = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
-
-                        //  = render('editor_button', disabled: true, icon: 'fa fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))
+            p.text-center = render('editor_button', classes: 'btn-lg btn-warning-outline', data: {:'data-message-confirm' => t('exercises.editor.time_over'), :'data-placement' => 'bottom', :'data-tooltip' => true} , icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.time_over'), title: t('shared.tooltips.time_over'))
 
   - if qa_url
     #questions-column

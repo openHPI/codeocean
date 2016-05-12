@@ -208,7 +208,7 @@ en:
       submit: Submit Code For Assessment
       test: Test
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
-      time_over: 'Time for this exercise is over'
+      time_over: 'The deadline for this exercise has already passed'
       tooltips:
         save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
       request_for_comments_sent: "Request for comments sent."
@@ -395,7 +395,7 @@ en:
     statistics: Statistics
     tooltips:
       shortcut: 'Keyboard shortcut: %{shortcut}'
-      time_over: 'Time is over!'
+      time_over: 'The results for this exercise can only be submitted to the e-learning platform before the deadline has passed.'
     update: 'Update %{model}'
     upload_file: Upload file
   submissions:

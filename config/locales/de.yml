@@ -208,10 +208,9 @@ de:
       submit: Code zur Bewertung abgeben
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
-      time_over: 'Time for this exercise is over [german]'
+      time_over: 'Die Abgabefrist für diese Aufgabe ist bereits abgelaufen.'
       tooltips:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
-        time_over: 'Time is over! [german]'
       request_for_comments_sent: "Kommentaranfrage gesendet."
     editor_file_tree:
       file_root: Dateien
@@ -395,7 +394,8 @@ de:
     show: Anzeigen
     statistics: Statistiken
     tooltips:
-      shortcut: 'Tastaturkürzel: %{shortcut}'
+      shortcut: 'Tastaturkürzel: %{shortcut}'      
+      time_over: 'Die hier erzielten Punkten können nur bis zum Ablauf der Abgabefrist an die E-Learning-Plattform übertragen werden.'
     update: '%{model} aktualisieren'
     upload_file: Datei hochladen
   submissions:
