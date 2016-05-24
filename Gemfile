@@ -48,13 +48,13 @@ group :development do
   gem 'capistrano-rvm'
   gem 'capistrano-upload-config'
   gem 'rubocop', require: false
-  gem 'rubocop-rspec'
+  gem 'rubocop-rspec'  
+  gem 'web-console', '~> 2.0', platform: :ruby
 end
 
 group :development, :test do
   gem 'byebug', platform: :ruby
   gem 'spring'
-  gem 'web-console', '~> 2.0', platform: :ruby
 end
 
 group :test do
