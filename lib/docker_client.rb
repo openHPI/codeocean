@@ -23,7 +23,7 @@ class DockerClient
   def self.clean_container_workspace(container)
     # remove files when using transferral via Docker API archive_in (transmit)
     #container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
-    
+
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
@@ -69,10 +69,12 @@ class DockerClient
     # todo separate stderr
     query_params = 'logs=0&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
 
+    client_params = DockerClient.config['host'] + '/containers/' + @container.id + '/attach/ws?' + query_params
+
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
-    socket = Faye::WebSocket::Client.new(DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params, [], :headers => headers)
+    socket = Faye::WebSocket::Client.new(client_params, [], :headers => headers)
 
     socket.on :error do |event|
       Rails.logger.info "Websocket error: " + event.message
