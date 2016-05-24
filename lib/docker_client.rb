@@ -69,6 +69,7 @@ class DockerClient
     # todo separate stderr
     query_params = 'logs=0&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
 
+    # Should be hosts instead of ws_hosts, right?
     client_params = DockerClient.config['host'] + '/containers/' + @container.id + '/attach/ws?' + query_params
 
     # Headers are required by Docker
