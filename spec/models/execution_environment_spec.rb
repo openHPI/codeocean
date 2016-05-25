@@ -121,7 +121,7 @@ describe ExecutionEnvironment do
 
   describe '#working_docker_image?', docker: true do
     let(:working_docker_image?) { execution_environment.send(:working_docker_image?) }
-    before(:each) { expect(DockerClient).to receive(:find_image_by_tag) }
+    before(:each) { expect(DockerClient).to receive(:find_image_by_tag).and_return(Object.new) }
 
     it 'instantiates a Docker client' do
       expect(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
