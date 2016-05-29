@@ -37,7 +37,7 @@ gem 'tubesock'
 gem 'faye-websocket'
 gem 'nokogiri'
 gem 'd3-rails'
-gem 'rest-client’
+gem 'rest-client'
 
 group :development do
   gem 'better_errors', platform: :ruby

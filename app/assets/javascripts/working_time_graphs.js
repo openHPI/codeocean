@@ -4,7 +4,7 @@ $(function() {
 
   if ($.isController('exercises') && $('.graph-functions').isPresent()) {
       var working_times = $('#data').data('working-time');
-
+      
       function get_minutes (time_stamp){
           try{
               hours = time_stamp.split(":")[0];
@@ -67,6 +67,9 @@ $(function() {
       // DRAW THE LINE GRAPH ------------------------------------------------------------------------------
       function draw_line_graph() {
           var width_ratio = .8;
+          if (width_ratio > 1000){
+              width_ratio = 1000;
+          }
           var height_ratio = .7; // percent of height
 
           // currently sets as percentage of window width, however, unfortunately
