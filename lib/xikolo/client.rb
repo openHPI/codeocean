@@ -1,4 +1,4 @@
-class Xikolo::Client
+class Xikolo::3Client
   def self.get_user(user_id)
     params = {:user_id => user_id}
     response = get_request(user_profile_url(user_id), params)

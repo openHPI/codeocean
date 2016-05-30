@@ -143,8 +143,9 @@ describe DockerContainerPool do
 
     after(:each) { described_class.start_refill_task }
 
+    # changed from false to true
     it 'creates an asynchronous task' do
-      expect(Concurrent::TimerTask).to receive(:new).with(execution_interval: interval, run_now: false, timeout_interval: timeout).and_call_original
+      expect(Concurrent::TimerTask).to receive(:new).with(execution_interval: interval, run_now: true, timeout_interval: timeout).and_call_original
     end
 
     it 'executes the task' do
