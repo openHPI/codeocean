@@ -18,7 +18,7 @@ gem 'ims-lti'
 gem 'kramdown'
 gem 'newrelic_rpm'
 gem 'pg', platform: :ruby
-gem 'pry'
+gem 'pry-byebug'
 gem 'puma', '~> 2.15.3'
 gem 'pundit'
 gem 'rails', '~> 4.1.13'

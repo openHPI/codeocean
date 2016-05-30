@@ -191,6 +191,7 @@ class DockerClient
     container.port_bindings.values.each { |port| PortPool.release(port) }
     clean_container_workspace(container)
     if(container)
+      binding.pry
       container.delete(force: true, v: true)
     end
   rescue Docker::Error::NotFoundError => error

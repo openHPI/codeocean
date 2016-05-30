@@ -15,6 +15,7 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
+
 unless RUBY_PLATFORM == 'java'
   if ENV['CODECLIMATE_REPO_TOKEN']
     require 'codeclimate-test-reporter'
