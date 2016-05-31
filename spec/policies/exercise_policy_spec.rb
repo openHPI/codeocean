@@ -30,7 +30,7 @@ describe ExercisePolicy do
     end
   end
 
-  [:clone?, :destroy?, :edit?, :show?, :statistics?, :update?].each do |action|
+  [:clone?, :destroy?, :edit?, :statistics?, :update?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryGirl.build(:admin), exercise)
@@ -48,6 +48,14 @@ describe ExercisePolicy do
         [:external_user, :teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryGirl.build(factory_name), exercise)
         end
+      end
+    end
+  end
+
+  [:show?].each do |action|
+    permissions(action) do
+      it 'not grants access to external users' do
+        expect(subject).not_to permit(FactoryGirl.build(:external_user), exercise)
       end
     end
   end
