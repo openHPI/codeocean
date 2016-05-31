@@ -1,6 +1,6 @@
 class TeamPolicy < ApplicationPolicy
   [:create?, :index?, :new?].each do |action|
-    define_method(action) { admin? }
+    define_method(action) { admin? || teacher? }
   end
 
   [:destroy?, :edit?, :show?, :update?].each do |action|

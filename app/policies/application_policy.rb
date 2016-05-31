@@ -4,6 +4,11 @@ class ApplicationPolicy
   end
   private :admin?
 
+  def teacher?
+    @user.teacher?
+  end
+  private :teacher?
+
   def everyone
     true
   end
