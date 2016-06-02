@@ -131,18 +131,23 @@ $(function() {
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             var largestSubmittedTimeStamp = submissions[submissions_length-1];
+            var indexForTime;
             var largestArrayForRange;
             if(largestSubmittedTimeStamp.cause == "assess"){
-                largestArrayForRange = submissionsScoreAndTimeAssess;
+                largestArrayForRange = submissionsScoreAndTimeAssess[1];
+                indexForTime = 1;
             } else if(largestSubmittedTimeStamp.cause == "submit"){
-                largestArrayForRange = submissionsScoreAndTimeSubmits;
+                largestArrayForRange = submissionsScoreAndTimeSubmits[1];
+                indexForTime = 1;
             } else if(largestSubmittedTimeStamp.cause == "run"){
-                largestArrayForRange = submissionsScoreAndTimeRuns;
+                largestArrayForRange = submissionsScoreAndTimeRuns[0];
+                indexForTime = 0;
+
             }
 
             x.domain(d3.extent(largestArrayForRange, function (d) {
                 // console.log(d[1]);
-                return (d[1]);
+                return (d[indexForTime]);
             }));
             y.domain(d3.extent(submissionsScoreAndTimeAssess, function (d) {
                 // console.log(d[0]);
