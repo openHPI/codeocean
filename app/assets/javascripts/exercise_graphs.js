@@ -134,13 +134,13 @@ $(function() {
             var indexForTime;
             var largestArrayForRange;
             if(largestSubmittedTimeStamp.cause == "assess"){
-                largestArrayForRange = submissionsScoreAndTimeAssess[1];
+                largestArrayForRange = submissionsScoreAndTimeAssess;
                 indexForTime = 1;
             } else if(largestSubmittedTimeStamp.cause == "submit"){
-                largestArrayForRange = submissionsScoreAndTimeSubmits[1];
+                largestArrayForRange = submissionsScoreAndTimeSubmits;
                 indexForTime = 1;
             } else if(largestSubmittedTimeStamp.cause == "run"){
-                largestArrayForRange = submissionsScoreAndTimeRuns[0];
+                largestArrayForRange = submissionsScoreAndTimeRuns;
                 indexForTime = 0;
 
             }
