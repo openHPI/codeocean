@@ -130,8 +130,17 @@ $(function() {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            var largestSubmittedTimeStamp = submissions[submissions_length-1];
+            var largestArrayForRange;
+            if(largestSubmittedTimeStamp.cause == "assess"){
+                largestArrayForRange = submissionsScoreAndTimeAssess;
+            } else if(largestSubmittedTimeStamp.cause == "submit"){
+                largestArrayForRange = submissionsScoreAndTimeSubmits;
+            } else if(largestSubmittedTimeStamp.cause == "run"){
+                largestArrayForRange = submissionsScoreAndTimeRuns;
+            }
 
-            x.domain(d3.extent(submissionsScoreAndTimeAssess, function (d) {
+            x.domain(d3.extent(largestArrayForRange, function (d) {
                 // console.log(d[1]);
                 return (d[1]);
             }));
