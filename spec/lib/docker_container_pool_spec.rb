@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe DockerContainerPool do
-  let(:container) { double(:start_time => Time.now, :status => 'available') }
+  let(:container) { double(:start_time => Time.now, :status => 'available', :json => {'State' => {'Running' => true}}) }
 
   def reload_class
     load('docker_container_pool.rb')
