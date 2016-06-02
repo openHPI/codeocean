@@ -10,6 +10,8 @@
     = f.label(:description)
     = f.hidden_field(:description)
     .form-control.markdown
+  a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')
+  .actions = render('shared/submit_button', f: f, object: @exercise)
   .form-group
     = f.label(:execution_environment_id)
     = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {}, class: 'form-control')
@@ -36,7 +38,5 @@
   ul#files.list-unstyled.panel-group
     = f.fields_for :files do |files_form|
       = render('file_form', f: files_form)
-  a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')
   ul#dummies.hidden = f.fields_for(:files, CodeOcean::File.new, child_index: 'index') do |files_form|
     = render('file_form', f: files_form)
-  .actions = render('shared/submit_button', f: f, object: @exercise)
