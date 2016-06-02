@@ -67,8 +67,8 @@ $(function() {
       // DRAW THE LINE GRAPH ------------------------------------------------------------------------------
       function draw_line_graph() {
           var width_ratio = .8;
-          if (width_ratio > 1000){
-              width_ratio = 1000;
+          if (getWidth()*width_ratio > 1000){
+              width_ratio = 1000/getWidth();
           }
           var height_ratio = .7; // percent of height
 
