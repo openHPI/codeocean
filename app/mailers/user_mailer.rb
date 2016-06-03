@@ -11,4 +11,9 @@ class UserMailer < ActionMailer::Base
     @reset_password_url = reset_password_internal_user_url(user, token: user.reset_password_token)
     mail(subject: t('mailers.user_mailer.reset_password.subject'), to: user.email)
   end
+
+  def got_new_comment(comment, user, commenting_user)
+    @commenting_user = commenting_user
+    mail(subject: t('mailers.user_mailer.got_new_comment.subject'), to: user.email)
+  end
 end
