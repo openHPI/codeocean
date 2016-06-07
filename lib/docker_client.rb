@@ -28,7 +28,7 @@ class DockerClient
     path_to_delete = Pathname.new(local_workspace_path)
     if local_workspace_path ||  Pathname.new(local_workspace_path).exist?
       path_to_delete.children.each{ |p| p.rmtree}
-      FileUtils.rmdir(path_to_delete)
+      #FileUtils.rmdir(path_to_delete)
     end
   end
 
@@ -70,13 +70,10 @@ class DockerClient
     # todo separate stderr
     query_params = 'logs=0&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
 
-    # Should be hosts instead of ws_hosts, right?
-    client_params = DockerClient.config['host'] + '/containers/' + @container.id + '/attach/ws?' + query_params
-
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
-    socket = Faye::WebSocket::Client.new(client_params, [], :headers => headers)
+    socket = Faye::WebSocket::Client.new(DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params, [], :headers => headers)
 
     socket.on :error do |event|
       Rails.logger.info "Websocket error: " + event.message
