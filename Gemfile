@@ -20,7 +20,7 @@ gem 'newrelic_rpm'
 gem 'pg', platform: :ruby
 gem 'pry-byebug'
 gem 'puma', '~> 2.15.3'
-gem 'pundit'
+gem 'pundit', '0.3'
 gem 'rails', '~> 4.1.13'
 gem 'rails-i18n', '~> 4.0.0'
 gem 'ransack'

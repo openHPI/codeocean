@@ -154,7 +154,7 @@ GEM
     method_source (0.8.2)
     mime-types (2.99)
     mini_portile2 (2.0.0)
-    minitest (5.8.4)
+    minitest (5.9.0)
     multi_json (1.11.2)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -195,7 +195,7 @@ GEM
       pry (~> 0.10)
     puma (2.15.3)
     puma (2.15.3-java)
-    pundit (1.1.0)
+    pundit (0.3.0)
       activesupport (>= 3.0.0)
     rack (1.5.5)
     rack-test (0.6.3)
@@ -386,7 +386,7 @@ DEPENDENCIES
   pg
   pry-byebug
   puma (~> 2.15.3)
-  pundit
+  pundit (= 0.3)
   rails (~> 4.1.13)
   rails-i18n (~> 4.0.0)
   rake
