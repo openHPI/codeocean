@@ -174,8 +174,14 @@ class SubmissionsController < ApplicationController
   def parse_message(message, output_stream, socket, recursive = true)
     begin
       parsed = JSON.parse(message)
-      socket.send_data message
-      Rails.logger.info('parse_message sent: ' + message)
+      if(parsed.class == Hash && parsed.key?('cmd'))
+        socket.send_data message
+        Rails.logger.info('parse_message sent: ' + message)
+      else
+        parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>message}
+        socket.send_data JSON.dump(parsed)
+        Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))
+      end
     rescue JSON::ParserError => e
       # Check wether the message contains multiple lines, if true try to parse each line
       if ((recursive == true) && (message.include? "\n"))
