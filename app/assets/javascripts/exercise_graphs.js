@@ -10,6 +10,8 @@ $(function() {
         submissionsScoreAndTimeAssess = [[0,0]];
         submissionsScoreAndTimeSubmits = [[0,0]];
         submissionsScoreAndTimeRuns = [];
+        submissionsSaves = [];
+        submissionsAutosaves = [];
         var maximumValue = 0;
 
         var wtimes = $('#wtimes').data('working_times'); //.hidden#wtimes data-working_times=ActiveSupport::JSON.encode(working_times_until)
@@ -38,6 +40,10 @@ $(function() {
                 submissionsScoreAndTimeSubmits.push(submissionArray);
             } else if(submission.cause == "run"){
                 submissionsScoreAndTimeRuns.push(submissionArray[1]);
+            } else if(submission.cause == "autosave"){
+                submissionsAutosaves.push(submissionArray[1]);
+            }  else if(submission.cause == "save"){
+                submissionsSaves.push(submissionArray[1]);
             }
         }
         // console.log(submissionsScoreAndTimeAssess.length);
@@ -131,8 +137,8 @@ $(function() {
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             var largestSubmittedTimeStamp = submissions[submissions_length-1];
-            var indexForTime;
             var largestArrayForRange;
+
             if(largestSubmittedTimeStamp.cause == "assess"){
                 largestArrayForRange = submissionsScoreAndTimeAssess;
                 indexForTime = 1;
@@ -142,17 +148,33 @@ $(function() {
             } else if(largestSubmittedTimeStamp.cause == "run"){
                 largestArrayForRange = submissionsScoreAndTimeRuns;
                 indexForTime = 0;
-
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
+            } else if(largestSubmittedTimeStamp.cause == "submit"){
+                largestArrayForRange = submissionsScoreAndTimeSubmits;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
+            } else if(largestSubmittedTimeStamp.cause == "run"){
+                largestArrayForRange = submissionsScoreAndTimeRuns;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
+            } else if(largestSubmittedTimeStamp.cause == "autosave"){
+                largestArrayForRange = submissionsAutosaves;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
+            } else if(largestSubmittedTimeStamp.cause == "save"){
+                largestArrayForRange = submissionsSaves;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
             }
 
-            x.domain(d3.extent(largestArrayForRange, function (d) {
-                // console.log(d[1]);
-                return (d[indexForTime]);
-            }));
-            y.domain(d3.extent(submissionsScoreAndTimeAssess, function (d) {
+            // x.domain(d3.extent(largestArrayForRange, function (d) {
+            //     // console.log(d[1]);
+            //     return (d[indexForTime]);
+            // }));
+
+            // take maximum value between assesses and submits
+            var yDomain = submissionsScoreAndTimeAssess.concat(submissionsScoreAndTimeSubmits);
+            y.domain(d3.extent(yDomain, function (d) {
                 // console.log(d[0]);
                 return (d[0]);
             }));
+            // y.domain([0,2]).clamp(true);
 
             svg.append("g") //x axis
                 .attr("class", "x axis")
@@ -298,7 +320,7 @@ $(function() {
         try{
             graph_assesses();
         } catch(err){
-            // not enough data
+            alert("could not draw the graph");
         }
 
   }
