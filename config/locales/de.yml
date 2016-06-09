@@ -93,6 +93,10 @@ de:
       team:
         internal_user_ids: Mitglieder
         name: Name
+      file_template:
+        name: "Name"
+        file_type: "Dateityp"
+        content: "Code"
     models:
       code_harbor_link:
         one: CodeHarbor-Link
