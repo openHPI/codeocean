@@ -120,6 +120,9 @@ de:
       file:
         one: Datei
         other: Dateien
+      file_template:
+        one: Dateivorlage
+        other: Dateivorlagen
       file_type:
         one: Dateityp
         other: Dateitypen

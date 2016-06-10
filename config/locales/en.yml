@@ -120,6 +120,9 @@ en:
       file:
         one: File
         other: Files
+      file_template:
+        one: File Template
+        other: File Templates
       file_type:
         one: File Type
         other: File Types
