@@ -432,3 +432,5 @@ de:
     next_label: 'Nächste Seite &#8594;'
     page_gap: '&hellip;'
     previous_label: '&#8592; Vorherige Seite'
+  file_template:
+    no_template_label: "Leere Datei"

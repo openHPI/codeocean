@@ -6,6 +6,14 @@ class FileTemplatesController < ApplicationController
   end
   private :authorize!
 
+  def by_file_type
+    @file_templates = FileTemplate.where(:file_type_id => params[:file_type_id])
+    authorize!
+    respond_to do |format|
+      format.json { render :show, status: :ok, json: @file_templates.to_json }
+    end
+  end
+
   # GET /file_templates
   # GET /file_templates.json
   def index
