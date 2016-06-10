@@ -54,6 +54,7 @@ en:
         read_only: Read-only
         role: Role
         weight: Score
+        file_template_id: "File Template"
       file_type:
         binary: Binary
         editor_mode: Editor Mode

@@ -10,6 +10,9 @@ module CodeOcean
 
     def create
       @file = CodeOcean::File.new(file_params)
+      if @file.file_template_id
+        @file.content = FileTemplate.find(@file.file_template_id).content
+      end
       authorize!
       create_and_respond(object: @file, path: proc { implement_exercise_path(@file.context.exercise, tab: 2) })
     end

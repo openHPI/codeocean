@@ -54,6 +54,7 @@ de:
         read_only: Schreibgeschützt
         role: Rolle
         weight: Punktzahl
+        file_template_id: "Dateivorlage"
       file_type:
         binary: Binär
         editor_mode: Editor-Modus
