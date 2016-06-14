@@ -41,8 +41,7 @@ Turtle.prototype.update = function () {
     var i, k, canvas, ctx, dx, dy, item, c, length;
     canvas = this.canvas[0];
     ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     length = this.items.length;
     dx = canvas.width / 2;
     dy = canvas.height / 2;
@@ -56,8 +55,8 @@ Turtle.prototype.update = function () {
             for (k = 2; k < c.length; k += 2) {
                 ctx.lineTo(c[k] + dx, c[k + 1] + dy);
             }
-            if (this.fill) {
-                ctx.strokeStyle = this.fill;
+            if (item.fill) {
+                ctx.strokeStyle = item.fill;
             }
 
             ctx.stroke();
