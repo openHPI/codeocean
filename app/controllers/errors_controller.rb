@@ -8,7 +8,7 @@ class ErrorsController < ApplicationController
 
   def create
     @error = Error.new(error_params)
-    authorize @error
+    authorize!
     hint = Whistleblower.new(execution_environment: @error.execution_environment).generate_hint(@error.message)
     respond_to do |format|
       format.json do
