@@ -195,7 +195,7 @@ GEM
       pry (~> 0.10)
     puma (2.15.3)
     puma (2.15.3-java)
-    pundit (0.3.0)
+    pundit (1.1.0)
       activesupport (>= 3.0.0)
     rack (1.5.5)
     rack-test (0.6.3)
@@ -386,7 +386,7 @@ DEPENDENCIES
   pg
   pry-byebug
   puma (~> 2.15.3)
-  pundit (= 0.3)
+  pundit
   rails (~> 4.1.13)
   rails-i18n (~> 4.0.0)
   rake

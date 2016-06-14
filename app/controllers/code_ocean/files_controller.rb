@@ -22,6 +22,7 @@ module CodeOcean
           path = options[:path].try(:call) || @object
           respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human), path: path, status: :created)
         else
+          # i have deleted ".file_extension" due to error "undefined method `file_extension' for nil:NilClass"
           filename = (@object.path || '') + '/' + (@object.name || '') + (@object.file_type.file_extension || '')
           format.html { redirect_to(options[:path]); flash[:danger] = t('files.error.filename', name: filename) }
           format.json { render(json: @object.errors, status: :unprocessable_entity) }
