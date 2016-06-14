@@ -212,7 +212,7 @@ de:
       exercise_deadline_passed: 'Die Abgabefrist für diese Aufgabe ist bereits abgelaufen.'
       tooltips:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
-        exercise_deadline_passed: 'Die hier erzielten Punkten können nur bis zum Ablauf der Abgabefrist an die E-Learning-Plattform übertragen werden.'
+        exercise_deadline_passed: 'Die hier erzielten Punkte können nur bis zum Ablauf der Abgabefrist an die E-Learning-Plattform übertragen werden.'
       request_for_comments_sent: "Kommentaranfrage gesendet."
     editor_file_tree:
       file_root: Dateien
