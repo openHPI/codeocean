@@ -707,8 +707,7 @@ $(function() {
     var score = $('#score').data('score');
     var maxium_score = $('#score').data('maximum-score');
     if (score >= 0 && score <= maxium_score && maxium_score >0 ) {
-      var rounded_number = (score / maxium_score ).toFixed(2);
-      var percentage_score = rounded_number * 100
+      var percentage_score = (score / maxium_score * 100 ).toFixed(2);
       $('.score').html(percentage_score + '%');
     }
     else {
