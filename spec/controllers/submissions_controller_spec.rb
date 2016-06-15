@@ -200,9 +200,8 @@ describe SubmissionsController do
 
     context 'when the container can be found' do
       before(:each) do
-        #not sure where is a correct place for this call. Need to change structure of this test?
-        #expect(Rails.logger).to receive(:error).with(/error message/)
         expect(Docker::Container).to receive(:get).and_return(CONTAINER)
+        #expect(Rails.logger).to receive(:debug).at_least(:once).and_call_original
         request.call
       end
 
@@ -215,7 +214,6 @@ describe SubmissionsController do
 
     context 'when the container cannot be found' do
       before(:each) do
-        #expect(Rails.logger).to receive(:error).with(/error message/)
         expect(Docker::Container).to receive(:get).and_raise(Docker::Error::NotFoundError)
         request.call
       end

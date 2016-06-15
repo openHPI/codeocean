@@ -246,9 +246,8 @@ class SubmissionsController < ApplicationController
   end
 
   def stop
-    # temporary disabled
-    # Rails.logger.error('stopping submission ' + @submission)
-    container = Docker::Container.get(params[:container_id])
+    Rails.logger.debug('stopping submission ' + @submission.id.to_s)
+    container = Docker::Container.get(params[:containtier_id])
     DockerClient.destroy_container(container)
   rescue Docker::Error::NotFoundError
   ensure
