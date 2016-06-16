@@ -704,8 +704,8 @@ $(function() {
   };
 
   var renderScore = function() {
-    var score = $('#score').data('score');
-    var maxium_score = $('#score').data('maximum-score');
+    var score = parseFloat($('#score').data('score'));
+    var maxium_score = parseFloat($('#score').data('maximum-score'));
     if (score >= 0 && score <= maxium_score && maxium_score >0 ) {
       var percentage_score = (score / maxium_score * 100 ).toFixed(0);
       $('.score').html(percentage_score + '%');
