@@ -214,7 +214,11 @@ class SubmissionsController < ApplicationController
   end
 
   def score
-    render(json: score_submission(@submission))
+    hijack do |tubesock|
+      Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+      # tubesock is the socket to the client
+      tubesock.send_data JSON.dump(score_submission(@submission))
+    end
   end
 
   def set_docker_client

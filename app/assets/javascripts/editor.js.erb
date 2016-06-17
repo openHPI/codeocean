@@ -184,8 +184,8 @@ $(function() {
     (streamed ? evaluateCodeWithStreamedResponse : evaluateCodeWithoutStreamedResponse)(url, callback);
   };
 
-  var evaluateCodeWithStreamedResponse = function(url, callback) {
-    initWebsocketConnection(url);
+  var evaluateCodeWithStreamedResponse = function(url, onmessageFunction) {
+    initWebsocketConnection(url, onmessageFunction);
 
     // TODO only init turtle when required
     initTurtle();
@@ -306,9 +306,10 @@ $(function() {
     }
   };
 
-  var handleScoringResponse = function(response) {
-    printScoringResults(response);
-    var score = _.reduce(response, function(sum, result) {
+  var handleScoringResponse = function(websocket_event) {
+    results = JSON.parse(websocket_event.data);
+    printScoringResults(results);
+    var score = _.reduce(results, function(sum, result) {
       return sum + result.score * result.weight;
     }, 0).toFixed(2);
     $('#score').data('score', score);
@@ -743,7 +744,7 @@ $(function() {
         showSpinner($('#run'));
         toggleButtonStates();
         var url = response.run_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
-        evaluateCode(url, true, printChunk);
+        evaluateCode(url, true, function(evt) { parseCanvasMessage(evt.data, true); });
       });
     }
   };
@@ -778,7 +779,7 @@ $(function() {
     createSubmission(this, null, function(response) {
       showSpinner($('#assess'));
       var url = response.score_url;
-      evaluateCode(url, false, handleScoringResponse);
+      evaluateCode(url, true, handleScoringResponse);
     });
   };
 
@@ -974,14 +975,14 @@ $(function() {
     $('#test').toggle(isActiveFileTestable());
   };
 
-  var initWebsocketConnection = function(url) {
+  var initWebsocketConnection = function(url, onmessageFunction) {
       //TODO: get the protocol from config file dependent on environment. (dev: ws, prod: wss)
       //causes: Puma::HttpParserError: Invalid HTTP format, parsing fails.
       //TODO: make sure that this gets cached.
       websocket = new WebSocket('<%= DockerClient.config['ws_client_protocol'] %>' + window.location.hostname + ':' + window.location.port + url);
       websocket.onopen = function(evt) { resetOutputTab(); }; // todo show some kind of indicator for established connection
       websocket.onclose = function(evt) { /* expected at some point */ };
-      websocket.onmessage = function(evt) { parseCanvasMessage(evt.data, true); };
+      websocket.onmessage = onmessageFunction;
       websocket.onerror = function(evt) { showWebsocketError(); };
       websocket.flush = function() { this.send('\n'); }
   };
