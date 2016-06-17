@@ -37,6 +37,7 @@ $(function() {
   var ENTER_KEY_CODE = 13;
 
   var flowrOutputBuffer = "";
+  var QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
   var ajax = function(options) {
@@ -317,6 +318,14 @@ $(function() {
     showTab(2);
   };
 
+  var handleQaApiOutput = function() {
+    if (qa_api) {
+      qa_api.executeCommand('syncOutput', [[QaApiOutputBuffer]]);
+      // reset the object
+    }
+    QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
+  }
+
   // activate flowr only for half of the audience
   var isFlowrEnabled = true;//parseInt($('#editor').data('user-id'))%2 == 0;
   var handleStderrOutputForFlowr = function() {
@@ -586,10 +595,15 @@ $(function() {
 
     } else if (output.stderr) {
       element.addClass('text-warning').append(output.stderr);
+      flowrOutputBuffer += output.stderr;
+      QaApiOutputBuffer.stderr += output.stderr;
     } else if (output.stdout) {
       //if (output_mode_is_streaming){
       element.addClass('text-success').append(output.stdout);
       flowrOutputBuffer += output.stdout;
+      QaApiOutputBuffer.stdout += output.stdout;
+
+
       //}else{
       //  element.addClass('text-success');
       //  element.data('content_buffer' , element.data('content_buffer') + output.stdout);
@@ -1037,6 +1051,7 @@ $(function() {
           break;
         case 'exit':
             killWebsocketAndContainer();
+            handleQaApiOutput();
             handleStderrOutputForFlowr();
             break;
         case 'timeout':
