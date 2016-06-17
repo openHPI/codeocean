@@ -226,20 +226,17 @@ $(function() {
                 .attr("cx", function(d) { return x(d[1]); })
                 .attr("cy", function(d) { return y(d[0]); });
 
-
-            svg.append("path")
-                .datum(submissionsScoreAndTimeSubmits)
-                .attr("class", "line2")
-                .attr('id', 'myPath')// new
-                .attr("stroke", "blue")
-                .attr("stroke-width", 5)
-                .attr("fill", "none")// end new
-                .attr("d", line);//---
+            if (submissionsScoreAndTimeSubmits.length > 0){
+              // get rid of the 0 element at the beginning
+              submissionsScoreAndTimeSubmits.shift();
+            }
 
             svg.selectAll("dot") // Add dots to submits
                 .data(submissionsScoreAndTimeSubmits)
                 .enter().append("circle")
-                .attr("r", 3.5)
+                .attr("r", 6)
+                .attr("stroke", "black")
+                .attr("fill", "blue")
                 .attr("cx", function(d) { return x(d[1]); })
                 .attr("cy", function(d) { return y(d[0]); });
 
