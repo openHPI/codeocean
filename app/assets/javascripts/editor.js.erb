@@ -350,13 +350,14 @@ $(function() {
     flowrOutputBuffer = '';
   };
 
-  var handleTestResponse = function(response) {
+  var handleTestResponse = function(websocket_event) {
+    result = JSON.parse(websocket_event.data);
     clearOutput();
-    printOutput(response[0], false, 0);
+    printOutput(result, false, 0);
     if (qa_api) {
-      qa_api.executeCommand('syncOutput', [response]);
+      qa_api.executeCommand('syncOutput', [result]);
     }
-    showStatus(response[0]);
+    showStatus(result);
     showTab(1);
   };
 
@@ -956,7 +957,7 @@ $(function() {
       createSubmission(this, null, function(response) {
         showSpinner($('#test'));
         var url = response.test_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
-        evaluateCode(url, false, handleTestResponse);
+        evaluateCode(url, true, handleTestResponse);
       });
     }
   };

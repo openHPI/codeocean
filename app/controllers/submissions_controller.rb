@@ -270,8 +270,14 @@ class SubmissionsController < ApplicationController
   private :store_error
 
   def test
-    output = @docker_client.execute_test_command(@submission, params[:filename])
-    render(json: [output])
+    hijack do |tubesock|
+      Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+
+      output = @docker_client.execute_test_command(@submission, params[:filename])
+
+      # tubesock is the socket to the client
+      tubesock.send_data JSON.dump(output)
+    end
   end
 
   def with_server_sent_events
