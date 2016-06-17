@@ -141,20 +141,13 @@ $(function() {
 
             if(largestSubmittedTimeStamp.cause == "assess"){
                 largestArrayForRange = submissionsScoreAndTimeAssess;
-                indexForTime = 1;
-            } else if(largestSubmittedTimeStamp.cause == "submit"){
-                largestArrayForRange = submissionsScoreAndTimeSubmits;
-                indexForTime = 1;
-            } else if(largestSubmittedTimeStamp.cause == "run"){
-                largestArrayForRange = submissionsScoreAndTimeRuns;
-                indexForTime = 0;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
             } else if(largestSubmittedTimeStamp.cause == "submit"){
                 largestArrayForRange = submissionsScoreAndTimeSubmits;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
             } else if(largestSubmittedTimeStamp.cause == "run"){
                 largestArrayForRange = submissionsScoreAndTimeRuns;
-                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
             } else if(largestSubmittedTimeStamp.cause == "autosave"){
                 largestArrayForRange = submissionsAutosaves;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
@@ -162,12 +155,6 @@ $(function() {
                 largestArrayForRange = submissionsSaves;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
             }
-
-            // x.domain(d3.extent(largestArrayForRange, function (d) {
-            //     // console.log(d[1]);
-            //     return (d[indexForTime]);
-            // }));
-
             // take maximum value between assesses and submits
             var yDomain = submissionsScoreAndTimeAssess.concat(submissionsScoreAndTimeSubmits);
             y.domain(d3.extent(yDomain, function (d) {
@@ -212,15 +199,15 @@ $(function() {
                 .style('font-size', 20)
                 .style('text-decoration', 'underline');
 
-            //
-            // svg.append("path")
-            //    //.datum()
-            //    .attr("class", "line")
-            //    .attr('id', 'myPath')// new
-            //    .attr("stroke", "black")
-            //    .attr("stroke-width", 5)
-            //    .attr("fill", "none")// end new
-            //    .attr("d", line(submissionsScoreAndTimeAssess));//---
+            
+             svg.append("path")
+                //.datum()
+                .attr("class", "line")
+                .attr('id', 'myPath')// new
+                .attr("stroke", "black")
+                .attr("stroke-width", 5)
+                .attr("fill", "none")// end new
+                .attr("d", line(submissionsScoreAndTimeAssess));//---
 
             svg.append("path")
                 .datum(submissionsScoreAndTimeAssess)
@@ -239,20 +226,17 @@ $(function() {
                 .attr("cx", function(d) { return x(d[1]); })
                 .attr("cy", function(d) { return y(d[0]); });
 
-
-            svg.append("path")
-                .datum(submissionsScoreAndTimeSubmits)
-                .attr("class", "line2")
-                .attr('id', 'myPath')// new
-                .attr("stroke", "blue")
-                .attr("stroke-width", 5)
-                .attr("fill", "none")// end new
-                .attr("d", line);//---
+            if (submissionsScoreAndTimeSubmits.length > 0){
+              // get rid of the 0 element at the beginning
+              submissionsScoreAndTimeSubmits.shift();
+            }
 
             svg.selectAll("dot") // Add dots to submits
                 .data(submissionsScoreAndTimeSubmits)
                 .enter().append("circle")
-                .attr("r", 3.5)
+                .attr("r", 6)
+                .attr("stroke", "black")
+                .attr("fill", "blue")
                 .attr("cx", function(d) { return x(d[1]); })
                 .attr("cy", function(d) { return y(d[0]); });
 
