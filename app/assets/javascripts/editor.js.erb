@@ -538,8 +538,8 @@ $(function() {
   };
 
   var isBrowserSupported = function() {
-    // eventsource tests for server send events (used for scoring), websockets is used for run
-    return Modernizr.eventsource && Modernizr.websockets;
+    //  websockets is used for run, score and test
+    return Modernizr.websockets;
   };
 
   var populatePanel = function(panel, result, index) {
