@@ -12,8 +12,12 @@ class UserMailer < ActionMailer::Base
     mail(subject: t('mailers.user_mailer.reset_password.subject'), to: user.email)
   end
 
-  def got_new_comment(comment, user, commenting_user)
-    @commenting_user = commenting_user
-    mail(subject: t('mailers.user_mailer.got_new_comment.subject'), to: user.email)
+  def got_new_comment(comment, request_for_comment, commenting_user)
+    # todo: check whether we can take the last known locale of the receiver?
+    @receiver_displayname = request_for_comment.user.displayname
+    @commenting_user_displayname = commenting_user.displayname
+    @comment_text = comment.text
+    @rfc_link = request_for_comment_url(request_for_comment)
+    mail(subject: t('mailers.user_mailer.got_new_comment.subject', commenting_user_displayname: @commenting_user_displayname), to: request_for_comment.user.email).deliver
   end
 end
