@@ -53,6 +53,8 @@ Rails.application.routes.draw do
       get :implement
       get :statistics
       get :reload
+      post :clone
+      post :resubmit
       post :submit
     end
   end

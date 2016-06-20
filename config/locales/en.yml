@@ -374,6 +374,7 @@ en:
     created_at: Created At
     destroy: Delete
     edit: Edit
+    resubmit: 'Resubmit'
     errors_one: 'An error prohibited this %{model} from being saved'
     errors_other: '%{count} errors prohibited this %{model} from being saved'
     help:
