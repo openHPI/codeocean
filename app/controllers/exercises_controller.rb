@@ -226,12 +226,7 @@ class ExercisesController < ApplicationController
 
   def submit
     @submission = Submission.create(submission_params)
-    score_submission(@submission)
-    if lti_outcome_service?
-      transmit_lti_score
-    else
-      redirect_to_lti_return_path
-    end
+    ExercisesController.score_submission(@submission)
   end
 
   def resubmit
@@ -239,19 +234,23 @@ class ExercisesController < ApplicationController
       render 'exercises/external_users/statistics'
     else
       user_resubmission = {}
-      query = "SELECT user_id AS user, MAX(score) AS maximum_score, MAX(STR_TO_DATE(submission_date, '%m-%d-%Y'))
+      query = "SELECT user_id AS user, MAX(score) AS maximum_score, STR_TO_DATE(submission_date, '%m-%d-%Y') as date,
               FROM submissions WHERE exercise_id=#{@exercise.id} GROUP BY
               user_id;"
       ActiveRecord::Base.connection.execute(query).each do |tuple|
         user_statistics[tuple["user_id"].to_i] = tuple
       end
-      render locals:
-      {
-        user_resubmission: user_statistics
-      }
     end
   end
 
+  def score_submission(@submission)
+    score_submission(@submission)
+    if lti_outcome_service?
+      transmit_lti_score
+    else
+      redirect_to_lti_return_path
+    end
+  end
 
   def transmit_lti_score
     ::NewRelic::Agent.add_custom_parameters({ submission: @submission.id, normalized_score: @submission.normalized_score })
