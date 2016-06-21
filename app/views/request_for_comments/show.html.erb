@@ -12,7 +12,7 @@
           limit 1").first['id'].to_i
         submission = Submission.find(submission_id)
       %>
-    <%= user %> | <%= @request_for_comment.requested_at %>
+    <%= user.displayname %> | <%= @request_for_comment.requested_at %>
   </p>
   <h5>
     <% if @request_for_comment.question and not @request_for_comment.question == '' %>

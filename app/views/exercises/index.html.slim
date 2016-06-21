@@ -27,7 +27,7 @@ h1 = Exercise.model_name.human(count: 2)
       - @exercises.each do |exercise|
         tr data-id=exercise.id
           td = exercise.title
-          td = link_to_if(policy(exercise.author).show?, exercise.author, exercise.author)
+          td = link_to_if(exercise.author && policy(exercise.author).show?, exercise.author, exercise.author)
           td = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
           td = exercise.files.teacher_defined_tests.count
           td = exercise.maximum_score
