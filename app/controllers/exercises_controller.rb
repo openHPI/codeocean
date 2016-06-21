@@ -215,7 +215,7 @@ class ExercisesController < ApplicationController
       query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
               FROM submissions WHERE exercise_id = #{@exercise.id} GROUP BY
               user_id;"
-        ActiveRecord::Base.connection.execute(query).each do |tuple|
+      ActiveRecord::Base.connection.execute(query).each do |tuple|
         user_statistics[tuple["user_id"].to_i] = tuple
       end
       render locals: {

@@ -54,7 +54,7 @@ Rails.application.routes.draw do
       get :statistics
       get :reload
       post :clone
-      post :resubmit
+
       post :submit
     end
   end
