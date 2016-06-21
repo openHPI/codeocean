@@ -215,7 +215,7 @@ class ExercisesController < ApplicationController
       query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
               FROM submissions WHERE exercise_id = #{@exercise.id} GROUP BY
               user_id;"
-      ActiveRecord::Base.connection.execute(query).each do |tuple|
+        ActiveRecord::Base.connection.execute(query).each do |tuple|
         user_statistics[tuple["user_id"].to_i] = tuple
       end
       render locals: {
@@ -233,6 +233,25 @@ class ExercisesController < ApplicationController
       redirect_to_lti_return_path
     end
   end
+
+  def resubmit
+    if(@external_user)
+      render 'exercises/external_users/statistics'
+    else
+      user_resubmission = {}
+      query = "SELECT user_id AS user, MAX(score) AS maximum_score, MAX(STR_TO_DATE(submission_date, '%m-%d-%Y'))
+              FROM submissions WHERE exercise_id=#{@exercise.id} GROUP BY
+              user_id;"
+      ActiveRecord::Base.connection.execute(query).each do |tuple|
+        user_statistics[tuple["user_id"].to_i] = tuple
+      end
+      render locals:
+      {
+        user_resubmission: user_statistics
+      }
+    end
+  end
+
 
   def transmit_lti_score
     ::NewRelic::Agent.add_custom_parameters({ submission: @submission.id, normalized_score: @submission.normalized_score })

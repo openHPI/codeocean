@@ -375,6 +375,7 @@ de:
     destroy: Löschen
     edit: Bearbeiten
     resubmit: 'todo'
+    actions_button: 'todo'
     errors_one: 'Beim Speichern ist ein Fehler aufgetreten'
     errors_other: 'Beim Speichern sind %{count} Fehler aufgetreten'
     help:
