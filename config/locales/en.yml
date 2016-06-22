@@ -327,11 +327,11 @@ en:
         subject: Please complete your registration.
       got_new_comment:
         body: |
-          Dear %{receiver_displayname},
-
-          you received a new comment from %{commenting_user_displayname} to your request for comments on CodeOcean.
-          You can find it here: %{link}
-
+          Dear %{receiver_displayname}, <br>
+          <br>
+          you received a new comment from %{commenting_user_displayname} to your request for comments on CodeOcean. <br>
+          You can find it here: %{link} <br>
+          <br>
           This mail was automatically sent by CodeOcean.
         subject: 'You received a new comment on CodeOcean from %{commenting_user_displayname}.'
       reset_password:

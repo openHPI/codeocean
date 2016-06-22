@@ -329,7 +329,7 @@ de:
         body: |
           Hallo %{receiver_displayname}, <br>
           <br>
-          es gibt einen neuen Kommentar von %{commenting_user_displayname} zu Ihrer Kommentaranfrage auf CodeOcean.
+          es gibt einen neuen Kommentar von %{commenting_user_displayname} zu Ihrer Kommentaranfrage auf CodeOcean. <br>
           Sie finden ihn hier: %{link} <br>
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
