@@ -325,6 +325,15 @@ en:
       activation_needed:
         body: 'Please visit %{link} and set up a password in order to complete your registration.'
         subject: Please complete your registration.
+      got_new_comment:
+        body: |
+          Dear %{receiver_displayname},
+
+          you received a new comment from %{commenting_user_displayname} to your request for comments on CodeOcean.
+          You can find it here: %{link}
+
+          This mail was automatically sent by CodeOcean.
+        subject: 'You received a new comment on CodeOcean from %{commenting_user_displayname}.'
       reset_password:
         body: 'Please visit %{link} if you want to reset your password.'
         subject: Password reset instructions

@@ -1,5 +1,5 @@
 <div class="list-group">
-  <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exercise_id) %></h4>
+  <h4 id ="exercise_caption" class="list-group-item-heading" data-rfc-id = "<%= @request_for_comment.id %>" ><%= Exercise.find(@request_for_comment.exercise_id) %></h4>
   <p class="list-group-item-text">
       <%
         user = @request_for_comment.user
@@ -101,7 +101,8 @@ do not put a carriage return in the line below. it will be present in the presen
           file_id: file_id,
           row: row,
           column: 0,
-          text: commenttext
+          text: commenttext,
+          request_id: $('h4#exercise_caption').data('rfc-id')
         }
       },
       dataType: 'json',
