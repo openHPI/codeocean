@@ -331,6 +331,8 @@ de:
 
           es gibt einen neuen Kommentar von %{commenting_user_displayname} zu Ihrer Kommentaranfrage auf CodeOcean.
           Sie finden ihn hier: %{link}
+          
+          Diese Mail wurde automatisch von CodeOcean verschickt.
         subject: Sie haben einen neuen Kommentar von %{commenting_user_displayname} auf CodeOcean erhalten.
       reset_password:
         body: 'Bitte besuchen Sie %{link}, sofern Sie Ihr Passwort zurücksetzen wollen.'
