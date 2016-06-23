@@ -327,12 +327,24 @@ en:
         subject: Please complete your registration.
       got_new_comment:
         body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          es gibt einen neuen Kommentar von %{commenting_user_displayname} zu Ihrer Kommentaranfrage auf CodeOcean. <br>
+          Sie finden ihn hier: %{link} <br>
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
           Dear %{receiver_displayname}, <br>
           <br>
           you received a new comment from %{commenting_user_displayname} to your request for comments on CodeOcean. <br>
           You can find it here: %{link} <br>
           <br>
-          This mail was automatically sent by CodeOcean.
+          This mail was automatically sent by CodeOcean. <br>
         subject: 'You received a new comment on CodeOcean from %{commenting_user_displayname}.'
       reset_password:
         body: 'Please visit %{link} if you want to reset your password.'
