@@ -25,22 +25,32 @@
 
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
+also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
 -->
 <% submission.files.each do |file| %>
   <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %>
-  <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>'><%= file.content %>
+  <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>' data-mode='<%=file.file_type.editor_mode%>'><%= file.content %>
   </div>
 <% end %>
 
 <%= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent') %>
 
 <script type="text/javascript">
+
+  // set file paths for ace
+  var ACE_FILES_PATH = '/assets/ace/';
+  _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
+    ace.config.set(attribute, ACE_FILES_PATH);
+  });
+
   var commentitor = $('.editor');
   var userid = commentitor.data('user-id');
 
   commentitor.each(function (index, editor) {
     var currentEditor = ace.edit(editor);
     currentEditor.setReadOnly(true);
+    // set editor mode (used for syntax highlighting
+    currentEditor.getSession().setMode($(editor).data('mode'));
 
     setAnnotations(currentEditor, $(editor).data('file-id'));
     currentEditor.on("guttermousedown", handleSidebarClick);
