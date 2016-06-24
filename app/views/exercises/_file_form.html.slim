@@ -1,10 +1,10 @@
 - id = f.object.id
 li.panel.panel-default
   .panel-heading role="tab" id="heading"
-    div.clearfix role="button"
-      span = f.object.name
-      a.pull-right data-toggle="collapse" data-parent="#files" href="#collapse#{id}" collapse
-  .panel-collapse.collapse.in id="collapse#{id}" role="tabpanel"
+    a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{id}"
+      div.clearfix role="button"
+        span = f.object.name
+  .panel-collapse.collapse id="collapse#{id}" role="tabpanel"
     .panel-body
       .clearfix = link_to(t('shared.destroy'), '#', class:'btn btn-warning btn-sm discard-file pull-right')
       .form-group
