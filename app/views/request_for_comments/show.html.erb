@@ -21,6 +21,11 @@
       <%= t('request_for_comments.no_question') %>
     <% end %>
   </h5>
+  <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
+      <button class="btn btn-default" id="mark-as-solved-button">Bla</button>
+  <% else %>
+
+  <% end %>
 </div>
 
 <!--
@@ -36,6 +41,22 @@ also, all settings from the rails model needed for the editor configuration in t
 <%= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent') %>
 
 <script type="text/javascript">
+
+  var solvedButton = $('#mark-as-solved-button');
+
+  solvedButton.on('click', function(event){
+    var jqrequest = $.ajax({
+      dataType: 'json',
+      method: 'GET',
+      url: location + '/mark_as_solved'
+    });
+
+    jqrequest.done(function(response){
+      if(response.solved){
+        solvedButton.hide();
+      }
+    });
+  });
 
   // set file paths for ace
   var ACE_FILES_PATH = '/assets/ace/';
