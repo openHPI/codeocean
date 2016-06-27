@@ -15,14 +15,20 @@
     <%= user.displayname %> | <%= @request_for_comment.requested_at %>
   </p>
   <h5>
+    <u><%= t('activerecord.attributes.exercise.instructions') %>:</u> "<%= @request_for_comment.exercise.description %>"
+  </h5>
+
+  <h5>
     <% if @request_for_comment.question and not @request_for_comment.question == '' %>
-      <%= t('activerecord.attributes.request_for_comments.question')%>: "<%= @request_for_comment.question %>"
+        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  "<%= @request_for_comment.question %>"
     <% else %>
-      <%= t('request_for_comments.no_question') %>
+        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
     <% end %>
   </h5>
   <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
-      <button class="btn btn-default" id="mark-as-solved-button">Bla</button>
+      <button class="btn btn-default" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
+  <% elsif  (@request_for_comment.solved?) %>
+          <button type="button" class="btn btn-success"><%= t('request_for_comments.solved') %></button>
   <% else %>
 
   <% end %>

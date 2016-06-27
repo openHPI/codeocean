@@ -25,12 +25,16 @@ class RequestForComment < ActiveRecord::Base
             limit 1").first
   end
 
+  def comments_count
+    submission.files.map { |file| file.comments.size}.sum
+  end
+
   def to_s
     "RFC-" + self.id.to_s
   end
 
     private
     def self.row_number_user_sql
-      select("id, user_id, exercise_id, file_id, question, requested_at, created_at, updated_at, user_type, row_number() OVER (PARTITION BY user_id ORDER BY created_at DESC) as row_number").to_sql
+      select("id, user_id, exercise_id, file_id, question, requested_at, created_at, updated_at, user_type, solved, row_number() OVER (PARTITION BY user_id ORDER BY created_at DESC) as row_number").to_sql
     end
 end

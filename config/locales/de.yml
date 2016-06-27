@@ -78,6 +78,7 @@ de:
         password_confirmation: Passwort-Bestätigung
         role: Rolle
       request_for_comments:
+        comments: Kommentare
         exercise: Aufgabe
         execution_environment: Sprache
         username: Benutzername
@@ -161,6 +162,7 @@ de:
     show:
       link: Konsument
   errors:
+    connection_refused: Verbindung abgelehnt
     index:
       count: Anzahl
   execution_environments:
@@ -350,10 +352,13 @@ de:
         body: 'Bitte besuchen Sie %{link}, sofern Sie Ihr Passwort zurücksetzen wollen.'
         subject: Anweisungen zum Zurücksetzen Ihres Passworts
   request_for_comments:
+    comments: Kommentare
     index:
       get_my_comment_requests: Meine Kommentaranfragen
       all: "Alle Kommentaranfragen"
     no_question: "Der Autor hat keine Frage zu dieser Anfrage gestellt."
+    mark_as_solved: "Diese Frage als beantwortet markieren"
+    solved: "Diese Frage wurde erfolgreich beantwortet"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

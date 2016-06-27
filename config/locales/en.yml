@@ -78,6 +78,7 @@ en:
         password_confirmation: Passwort Confirmation
         role: Role
       request_for_comments:
+        comments: Comments
         exercise: Exercise
         execution_environment: Language
         username: Username
@@ -161,6 +162,7 @@ en:
     show:
       link: Consumer
   errors:
+    connection_refused: Connection refused
     index:
       count: Count
   execution_environments:
@@ -350,10 +352,13 @@ en:
         body: 'Please visit %{link} if you want to reset your password.'
         subject: Password reset instructions
   request_for_comments:
+    comments: Comments
     index:
       all: All Requests for Comments
       get_my_comment_requests: My Requests for Comments
     no_question: "The author did not enter a question for this request."
+    mark_as_solved: "Mark this question as answered"
+    solved: "This question has been answered"
   sessions:
     create:
       failure: Invalid email or password.
