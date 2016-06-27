@@ -1,5 +1,5 @@
 class RequestForCommentsController < ApplicationController
-  before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy]
+  before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy, :mark_as_solved]
 
   skip_after_action :verify_authorized
 
@@ -18,6 +18,18 @@ class RequestForCommentsController < ApplicationController
   def get_my_comment_requests
     @request_for_comments = RequestForComment.where(user_id: current_user.id).order('created_at DESC').paginate(page: params[:page])
     render 'index'
+  end
+
+  def mark_as_solved
+    authorize!
+    @request_for_comment.solved = true
+    respond_to do |format|
+      if @request_for_comment.save
+        format.json { render :show, status: :ok, location: @request_for_comment }
+      else
+        format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   # GET /request_for_comments/1
@@ -70,6 +82,6 @@ class RequestForCommentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def request_for_comment_params
-      params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at).merge(user_id: current_user.id, user_type: current_user.class.name)
+      params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved).merge(user_id: current_user.id, user_type: current_user.class.name)
     end
 end

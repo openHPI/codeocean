@@ -1,5 +1,8 @@
 class RequestForCommentPolicy < ApplicationPolicy
-
+  def author?
+    @user == @record.author
+  end
+  private :author?
 
   def create?
     everyone
@@ -11,6 +14,10 @@ class RequestForCommentPolicy < ApplicationPolicy
 
   [:destroy?].each do |action|
     define_method(action) { admin? }
+  end
+
+  def mark_as_solved?
+    admin? || author?
   end
 
   def edit?
