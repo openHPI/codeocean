@@ -47,6 +47,7 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
   gem 'capistrano-upload-config'
+  gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
 end
