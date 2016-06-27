@@ -35,6 +35,7 @@ module CodeOcean
 
     has_many :files
     has_many :testruns
+    has_many :comments
     alias_method :descendants, :files
 
     mount_uploader :native_file, FileUploader
