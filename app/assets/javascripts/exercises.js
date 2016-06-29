@@ -12,6 +12,9 @@ $(function() {
     $('#files li:last select[name*="file_type_id"]').val(getSelectedExecutionEnvironment().file_type_id);
     $('#files li:last select').chosen(window.CodeOcean.CHOSEN_OPTIONS);
     $('body, html').scrollTo('#add-file');
+    // if we collapse the file forms by default, we need to click on the new element in order to open it.
+    // however, this crashes for more files (if we add several ones by clicking the add button more often), since the elements are probably not correctly added to the files list.
+    //$('#files li:last>div:first>a>div').click();
   };
 
   var ajaxError = function() {
