@@ -383,6 +383,7 @@ $(function() {
 
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
+      //here?
       ace.require("ace/ext/language_tools");
       var editor = ace.edit(element);
 
@@ -404,10 +405,14 @@ $(function() {
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
       editor.setOptions({
+        enableBasicAutocompletion: true
+      });
+      /*editor.setOptions({
         enableBasicAutocompletion: true,
         enableSnippets: true,
         enableLiveAutocompletion: false
       });
+      */
       editor.commands.bindKey("ctrl+alt+0", null);
       editors.push(editor);
       var session = editor.getSession();
