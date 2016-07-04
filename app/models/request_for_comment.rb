@@ -25,6 +25,35 @@ class RequestForComment < ActiveRecord::Base
             limit 1").first
   end
 
+  def last_submission_before_creation
+    submission1 = Submission.find_by_sql(" select * from submissions
+            where exercise_id = #{exercise_id} AND
+            user_id =  #{user_id} AND
+            '#{created_at.localtime}' > created_at
+            order by created_at desc
+            limit 1").first
+    submission2 = Submission.find_by_sql(" select * from submissions
+            where exercise_id = #{exercise_id} AND
+            user_id =  #{user_id} AND
+            '#{created_at}' > created_at
+            order by created_at desc
+            limit 1").first
+    submission3 = Submission.find_by_sql(" select * from submissions
+            where exercise_id = #{exercise_id} AND
+            user_id =  #{user_id} AND
+            '#{created_at.strftime('%Y-%m-%d %H:%M:%S.%N')}' > created_at
+            order by created_at desc
+            limit 1").first
+    submission4 = Submission.find_by_sql(" select * from submissions
+            where exercise_id = #{exercise_id} AND
+            user_id =  #{user_id} AND
+            '#{created_at.localtime.strftime('%Y-%m-%d %H:%M:%S.%N')}' > created_at
+            order by created_at desc
+            limit 1").first
+    binding.pry
+    submission1
+  end
+
   def comments_count
     submission.files.map { |file| file.comments.size}.sum
   end
