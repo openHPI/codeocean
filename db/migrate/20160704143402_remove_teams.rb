@@ -1,6 +1,6 @@
 class RemoveTeams < ActiveRecord::Migration
   def change
-    remove_column :exercises, :team_id, :integer
+    remove_reference :exercises, :team
     drop_table :teams
     drop_table :internal_users_teams
   end
