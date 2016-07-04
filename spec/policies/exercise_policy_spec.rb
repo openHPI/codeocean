@@ -3,6 +3,8 @@ require 'rails_helper'
 describe ExercisePolicy do
   subject { described_class }
 
+let(:exercise) { FactoryGirl.build(:dummy) }
+  
   permissions :batch_update? do
     it 'grants access to admins only' do
       expect(subject).to permit(FactoryGirl.build(:admin), exercise)
