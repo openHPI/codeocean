@@ -85,6 +85,7 @@ $(function() {
   var configureEditors = function() {
     _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
       ace.config.set(attribute, ACE_FILES_PATH);
+      ace.require('ace/ext/language_tools');
     });
   };
 
@@ -148,7 +149,7 @@ $(function() {
             // This is the case, since it is set via a call to ancestor_id on the model, which returns either file_id if set, or id if it is not set.
             // therefore the else part is not needed any longer...
 
-            // if we have an file_id set (the file is a copy of a teacher supplied given file)
+            // if we have an file_id set (the file is a copy of a teacher supplied given file
             if (file_id_old != null){
                 // if we find file_id_old (this is the reference to the base file) in the submission, this is the match
                 for(var j = 0; j< data.files.length; j++){
@@ -383,8 +384,8 @@ $(function() {
 
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
-      //here?
-      ace.require("ace/ext/language_tools");
+      //here?'ace/theme/textmate'
+      ace.require('ace/ext/language_tools');
       var editor = ace.edit(element);
 
       if (qa_api) {
@@ -404,15 +405,14 @@ $(function() {
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
+
+      editor.setShowInvisibles(true);
       editor.setOptions({
-        enableBasicAutocompletion: true
-      });
-      /*editor.setOptions({
         enableBasicAutocompletion: true,
         enableSnippets: true,
-        enableLiveAutocompletion: false
+        enableLiveAutocompletion: true
       });
-      */
+      
       editor.commands.bindKey("ctrl+alt+0", null);
       editors.push(editor);
       var session = editor.getSession();
