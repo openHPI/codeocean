@@ -1,4 +1,5 @@
 - id = f.object.id
+- file = form_files.file_id=id
 li.panel.panel-default
   .panel-heading role="tab" id="heading"
     a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{id}"
@@ -37,3 +38,4 @@ li.panel.panel-default
           = f.label(:role, t('activerecord.attributes.file.weight'))
           = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
       = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
+      .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only data-id=file.id
