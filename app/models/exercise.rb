@@ -10,7 +10,7 @@ class Exercise < ActiveRecord::Base
   after_initialize :set_default_values
 
   belongs_to :execution_environment
-  has_many :submission
+  has_many :submissions
 
   has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
   has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions
