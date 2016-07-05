@@ -85,7 +85,6 @@ $(function() {
   var configureEditors = function() {
     _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
       ace.config.set(attribute, ACE_FILES_PATH);
-      ace.require('ace/ext/language_tools');
     });
   };
 
@@ -384,7 +383,6 @@ $(function() {
 
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
-      //here?'ace/theme/textmate'
       ace.require('ace/ext/language_tools');
       var editor = ace.edit(element);
 
@@ -406,7 +404,6 @@ $(function() {
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
 
-      editor.setShowInvisibles(true);
       editor.setOptions({
         enableBasicAutocompletion: true,
         enableSnippets: true,
