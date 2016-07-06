@@ -99,5 +99,4 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :teams
 end

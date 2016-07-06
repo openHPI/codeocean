@@ -3,8 +3,8 @@ require 'rails_helper'
 describe ExercisePolicy do
   subject { described_class }
 
-  let(:exercise) { FactoryGirl.build(:dummy, team: FactoryGirl.create(:team)) }
-
+let(:exercise) { FactoryGirl.build(:dummy) }
+  
   permissions :batch_update? do
     it 'grants access to admins only' do
       expect(subject).to permit(FactoryGirl.build(:admin), exercise)
@@ -40,10 +40,6 @@ describe ExercisePolicy do
         expect(subject).to permit(exercise.author, exercise)
       end
 
-      it 'grants access to team members' do
-        expect(subject).to permit(exercise.team.members.first, exercise)
-      end
-
       it 'does not grant access to all other users' do
         [:external_user, :teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryGirl.build(factory_name), exercise)
@@ -71,9 +67,7 @@ describe ExercisePolicy do
 
         [@admin, @teacher].each do |user|
           [true, false].each do |public|
-            [@team, nil].each do |team|
-              FactoryGirl.create(:dummy, public: public, team: team, user_id: user.id, user_type: InternalUser.class.name)
-            end
+            FactoryGirl.create(:dummy, public: public, user_id: user.id, user_type: InternalUser.class.name)
           end
         end
       end
@@ -95,10 +89,6 @@ describe ExercisePolicy do
       end
 
       context 'for teachers' do
-        before(:each) do
-          @team = FactoryGirl.create(:team)
-          @team.members << @teacher
-        end
 
         let(:scope) { Pundit.policy_scope!(@teacher, Exercise) }
 
@@ -110,12 +100,8 @@ describe ExercisePolicy do
           expect(scope.map(&:id)).to include(*Exercise.where(public: false, user_id: @teacher.id).map(&:id))
         end
 
-        it "includes all of team members' non-public exercises" do
-          expect(scope.map(&:id)).to include(*Exercise.where(public: false, team_id: @teacher.teams.first.id).map(&:id))
-        end
-
         it "does not include other authors' non-public exercises" do
-          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where("team_id <> #{@team.id} AND user_id <> #{@teacher.id}").map(&:id))
+          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where(user_id <> #{@teacher.id}").map(&:id))
         end
       end
     end

@@ -34,8 +34,6 @@ de:
         instructions: Anweisungen
         maximum_score: Erreichbare Punktzahl
         public: Öffentlich
-        team: Team
-        team_id: Team
         title: Titel
         user: Autor
         allow_file_creation: "Dateierstellung erlauben"
@@ -91,9 +89,6 @@ de:
         files: Dateien
         score: Punktzahl
         user: Autor
-      team:
-        internal_user_ids: Mitglieder
-        name: Name
     models:
       code_harbor_link:
         one: CodeHarbor-Link
@@ -128,9 +123,6 @@ de:
       submission:
         one: Abgabe
         other: Abgaben
-      team:
-        one: Team
-        other: Teams
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'
