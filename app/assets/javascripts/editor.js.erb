@@ -470,7 +470,7 @@ $(function() {
 
   var initializeRegexes = function(){
     regex_for_language.set("ace/mode/python", /File "(.+?)", line (\d+)/g);
-    regex_for_language.set("ace/mode/java", /(.*\.java):(\d):/g);
+    regex_for_language.set("ace/mode/java", /(.*\.java):(\d+):/g);
   }
 
   var initializeTooltips = function() {
