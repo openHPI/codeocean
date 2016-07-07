@@ -20,12 +20,7 @@ $(function() {
 
   var editors = [];
   var editor_for_file = new Map();
-
-  var tracepositions_regexes = {
-    python: /File "(.+?)", line (\d+)/g,
-    java: /(.*\.java):(\d):/g
-  };
-
+  var regex_for_language = new Map();
   var tracepositions_regex;
 
   var active_file = undefined;
@@ -422,12 +417,7 @@ $(function() {
 
       // set regex for parsing error traces based on the mode of the main file.
       if( $(element).parent().data('role') == "main_file"){
-        var mode = $(element).data('mode');
-        if(mode == "ace/mode/python"){
-          tracepositions_regex = tracepositions_regexes.python;
-        } else if (mode = "ace/mode/java"){
-          tracepositions_regex = tracepositions_regexes.java;
-        }
+        tracepositions_regex = regex_for_language.get($(element).data('mode'));
       }
 
       var file_id =  $(element).data('id');
@@ -476,6 +466,12 @@ $(function() {
     $('#download').on('click', downloadCode);
     $('#request-for-comments').on('click', requestComments);
   };
+
+
+  var initializeRegexes = function(){
+    regex_for_language.set("ace/mode/python", /File "(.+?)", line (\d+)/g);
+    regex_for_language.set("ace/mode/java", /(.*\.java):(\d):/g);
+  }
 
   var initializeTooltips = function() {
     $('[data-tooltip]').tooltip();
@@ -1265,6 +1261,7 @@ $(function() {
 
   if ($('#editor').isPresent()) {
       if (isBrowserSupported()) {
+          initializeRegexes();
           initializeCodePilot();
           $('.score, #development-environment').show();
           configureEditors();
