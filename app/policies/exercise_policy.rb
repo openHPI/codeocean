@@ -25,7 +25,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
       if @user.admin?
         @scope.all
       elsif @user.internal_user?
-        @scope.where('user_id = ? OR public = TRUE', @user.id, @user.id)
+        @scope.where('user_id = ? OR public = TRUE', @user.id)
       else
         @scope.none
       end
