@@ -1,6 +1,5 @@
 - id = f.object.id
 - file= f.object.files.first
-//- exercise_arg = @exercise
 
 li.panel.panel-default
   .panel-heading role="tab" id="heading"
@@ -39,7 +38,8 @@ li.panel.panel-default
         .form-group
           = f.label(:role, t('activerecord.attributes.file.weight'))
           = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
-      .frame data-executable=file.file_type.executable? data-filename=file.name_with_extension data-renderable=file.file_type.renderable? data-role=file.role data-binary=file.file_type.binary? data-context-type=file.context_type
+          = f.label(file.id)
+      /.frame data-executable=file.file_type.executable? data-filename=file.name_with_extension data-renderable=file.file_type.renderable? data-role=file.role data-binary=file.file_type.binary? data-context-type=file.context_type
         - if file.file_type.binary?
           .binary-file data-file-id=file.ancestor_id
             - if file.file_type.renderable?
