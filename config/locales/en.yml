@@ -212,6 +212,7 @@ en:
       test: Test
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
       exercise_deadline_passed: 'The deadline for this exercise has already passed'
+      qualitycheck: Quality Check
       tooltips:
         save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
         exercise_deadline_passed: 'The results for this exercise can only be submitted to the e-learning platform before the deadline has passed.'

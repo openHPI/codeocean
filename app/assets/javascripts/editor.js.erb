@@ -474,6 +474,7 @@ $(function() {
     $('#dropdown-stop, #stop').on('click', stopCode); // todo
     $('#dropdown-test, #test').on('click', testCode); // todo
     $('#save').on('click', saveCode);
+    $('#qualitycheck').on('click', qualityCheck);
     $('#start-over').on('click', confirmReset);
   };
 
@@ -747,6 +748,19 @@ $(function() {
       });
     }
   };
+
+  var qualityCheck = function(event) {
+    event.preventDefault();
+    console.log("Quality Check");
+    createSubmission(this, null, function(response) {
+      var url = response.quality_check_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
+      evaluateCode(url, true, checkQualityResult);
+    });
+  };
+
+  var checkQualityResult = function() {
+    alert("works");
+  }
 
   var saveCode = function(event) {
     event.preventDefault();

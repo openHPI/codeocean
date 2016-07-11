@@ -92,6 +92,7 @@ Rails.application.routes.draw do
       get 'download/:filename', as: :download, constraints: {filename: FILENAME_REGEXP}, to: :download_file
       get 'render/:filename', as: :render, constraints: {filename: FILENAME_REGEXP}, to: :render_file
       get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, to: :run
+      get 'quality_check/:filename', as: :quality_check, constraints: {filename: FILENAME_REGEXP}, to: :quality_check
       get :score
       get :statistics
       post :stop

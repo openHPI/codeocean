@@ -212,6 +212,7 @@ de:
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
       exercise_deadline_passed: 'Die Abgabefrist für diese Aufgabe ist bereits abgelaufen.'
+      qualitycheck: Qualitätskontrolle
       tooltips:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
         exercise_deadline_passed: 'Die hier erzielten Punkte können nur bis zum Ablauf der Abgabefrist an die E-Learning-Plattform übertragen werden.'

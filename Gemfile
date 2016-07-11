@@ -50,6 +50,7 @@ group :development do
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
+  gem 'bunny'
 end
 
 group :development, :test do

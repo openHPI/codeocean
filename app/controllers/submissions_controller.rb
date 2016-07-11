@@ -76,6 +76,9 @@ class SubmissionsController < ApplicationController
   end
 
   def run
+    p "run ?"
+    binding.pry
+
     # TODO reimplement SSEs with websocket commands
     # with_server_sent_events do |server_sent_event|
     #   output = @docker_client.execute_run_command(@submission, params[:filename])
@@ -215,6 +218,11 @@ class SubmissionsController < ApplicationController
 
   def score
     render(json: score_submission(@submission))
+  end
+
+  def quality_check
+    p "yippie"
+    render :json => { :test => 'yippie' }
   end
 
   def set_docker_client

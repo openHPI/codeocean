@@ -2,7 +2,7 @@ class Submission < ActiveRecord::Base
   include Context
   include Creation
 
-  CAUSES = %w(assess download file render run save submit test autosave)
+  CAUSES = %w(assess download file render run save submit test autosave qualitycheck)
   FILENAME_URL_PLACEHOLDER = '{filename}'
 
   belongs_to :exercise
@@ -28,7 +28,7 @@ class Submission < ActiveRecord::Base
     ancestors.merge(descendants).values
   end
 
-  [:download, :render, :run, :test].each do |action|
+  [:download, :render, :run, :test, :quality_check].each do |action|
     filename = FILENAME_URL_PLACEHOLDER.gsub(/\W/, '')
     define_method("#{action}_url") do
       Rails.application.routes.url_helpers.send(:"#{action}_submission_path", self, filename).sub(filename, FILENAME_URL_PLACEHOLDER)
