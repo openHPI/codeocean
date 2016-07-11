@@ -1,5 +1,9 @@
 - id = f.object.id
-- file= f.object.files.first
+
+
+.editor-content.hidden data-file-id=:ancestor_id = :content
+.editor data-file-id=:ancestor_id data-indent-size=2 data-mode="ace/mode/python" data-read-only=true data-id=:id
+
 
 li.panel.panel-default
   .panel-heading role="tab" id="heading"
@@ -33,25 +37,10 @@ li.panel.panel-default
       .test-related-fields style="display: #{f.object.teacher_defined_test? ? 'initial' : 'none'};"
         .form-group
           = f.label(:name, t('activerecord.attributes.file.feedback_message'))
+          = f.label(:ancestor_id, t('activerecord.attributes.file.name'))
           = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
           .help-block = t('.hints.feedback_message')
         .form-group
           = f.label(:role, t('activerecord.attributes.file.weight'))
           = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
-        = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
-          /= f.label(file.id)
-      /.frame data-executable=file.file_type.executable? data-filename=file.name_with_extension data-renderable=file.file_type.renderable? data-role=file.role data-binary=file.file_type.binary? data-context-type=file.context_type
-        - if file.file_type.binary?
-          .binary-file data-file-id=file.ancestor_id
-            - if file.file_type.renderable?
-              - if file.file_type.audio?
-                = audio_tag(file.native_file.url, controls: true)
-              - elsif file.file_type.image?
-                = image_tag(file.native_file.url)
-              - elsif file.file_type.video?
-                = video_tag(file.native_file.url, controls: true)
-            - else
-              = link_to(file.native_file.file.name_with_extension, file.native_file.url)
-        - else
-          .editor-content.hidden data-file-id=file.ancestor_id = file.content
-          .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only data-id=file.id
+    = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
