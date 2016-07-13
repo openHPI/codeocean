@@ -28,7 +28,7 @@ gem 'rubytree'
 gem 'sass-rails', '~> 4.0.3'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'slim'
-gem "bootstrap_pagedown"
+gem 'bootstrap_pagedown'
 gem 'sorcery'
 gem 'thread_safe'
 gem 'turbolinks'

@@ -9,9 +9,18 @@
   .form-group
     = f.label(:description)
     = f.hidden_field(:description)
-    = f.pagedown_editor :description
     /.form-control.markdown
     .wmd-panel
+      #wmd-button-bar
+      textarea#wmd-input
+      #wmd-preview
+    = f.pagedown_editor :description, {skip_preview: false, panel_class: 'wmd-panel', button_bar_id: 'wmd-button-bar', button_bar_class: '', editor_id: 'wmd-input', editor_class: 'wmd-input', preview_id: 'wmd-preview', preview_class: '', }
+  /.form-group
+    = f.label(:description)
+    = f.hidden_field(:description)
+
+    .form-control.markdown
+    /.wmd-panel
       .wmd-button-bar
       textarea.wmd-input
       .wmd-preview
