@@ -160,6 +160,7 @@ $(function() {
      // new MarkdownEditor('#exercise_instructions');
       new MarkdownEditor('#exercise_description');
       // todo: add an ace editor for each file
+      new PagedownEditor('#exercise_description');
 
       enableInlineFileCreation();
       inferFileAttributes();
