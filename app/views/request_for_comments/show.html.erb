@@ -1,21 +1,14 @@
 <div class="list-group">
-  <h4 id ="exercise_caption" class="list-group-item-heading" data-rfc-id = "<%= @request_for_comment.id %>" ><%= Exercise.find(@request_for_comment.exercise_id) %></h4>
+  <h4 id ="exercise_caption" class="list-group-item-heading" data-rfc-id = "<%= @request_for_comment.id %>" ><%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %></h4>
   <p class="list-group-item-text">
       <%
         user = @request_for_comment.user
-        submission_id =  ActiveRecord::Base.connection.execute("select id from submissions
-          where exercise_id =
-          #{@request_for_comment.exercise_id} AND
-          user_id =  #{@request_for_comment.user_id} AND
-          '#{@request_for_comment.created_at}' > created_at
-          order by created_at desc
-          limit 1").first['id'].to_i
-        submission = Submission.find(submission_id)
+        submission =  @request_for_comment.last_submission_before_creation
       %>
-    <%= user.displayname %> | <%= @request_for_comment.requested_at %>
+    <%= user.displayname %> | <%= @request_for_comment.created_at.localtime %>
   </p>
   <h5>
-    <u><%= t('activerecord.attributes.exercise.instructions') %>:</u> "<%= @request_for_comment.exercise.description %>"
+    <u><%= t('activerecord.attributes.exercise.description') %>:</u> "<%= render_markdown(@request_for_comment.exercise.description) %>"
   </h5>
 
   <h5>

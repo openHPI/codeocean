@@ -1214,25 +1214,25 @@ $(function() {
     var file_id = $('.editor').data('id')
     var question = $('#question').val();
 
-    $.ajax({
-      method: 'POST',
-      url: '/request_for_comments',
-      data: {
-        request_for_comment: {
-          exercise_id: exercise_id,
-          file_id: file_id,
-          question: question,
-          "requested_at(1i)": 2015, // these are the timestamp values that the request handler demands
-          "requested_at(2i)":3, // they could be random here, because the timestamp is updated on serverside anyway
-          "requested_at(3i)":27,
-          "requested_at(4i)":17,
-          "requested_at(5i)":06
+    var createRequestForComments = function(submission) {
+      $.ajax({
+        method: 'POST',
+        url: '/request_for_comments',
+        data: {
+          request_for_comment: {
+            exercise_id: exercise_id,
+            file_id: file_id,
+            submission_id: submission.id,
+            question: question
+          }
         }
-      }
-    }).done(function() {
-      hideSpinner();
-      $.flash.success({ text: $('#askForCommentsButton').data('message-success') })
-    }).error(ajaxError);
+      }).done(function() {
+        hideSpinner();
+        $.flash.success({ text: $('#askForCommentsButton').data('message-success') });
+      }).error(ajaxError);
+    }
+
+    createSubmission($('.requestCommentsButton'), null, createRequestForComments);
 
     $('#comment-modal').modal('hide');
     var button = $('.requestCommentsButton');

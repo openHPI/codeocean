@@ -173,15 +173,15 @@ ActiveRecord::Schema.define(version: 20160704143402) do
   add_index "internal_users", ["reset_password_token"], name: "index_internal_users_on_reset_password_token", using: :btree
 
   create_table "request_for_comments", force: true do |t|
-    t.integer  "user_id",      null: false
-    t.integer  "exercise_id",  null: false
-    t.integer  "file_id",      null: false
-    t.datetime "requested_at"
+    t.integer  "user_id",       null: false
+    t.integer  "exercise_id",   null: false
+    t.integer  "file_id",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "user_type"
     t.text     "question"
     t.boolean  "solved"
+    t.integer  "submission_id"
   end
 
   create_table "submissions", force: true do |t|
