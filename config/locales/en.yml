@@ -34,8 +34,6 @@ en:
         instructions: Instructions
         maximum_score: Maximum Score
         public: Public
-        team: Team
-        team_id: Team
         title: Title
         user: Author
         allow_file_creation: "Allow file creation"
@@ -91,9 +89,6 @@ en:
         files: Files
         score: Score
         user: Author
-      team:
-        internal_user_ids: Members
-        name: Name
     models:
       code_harbor_link:
         one: CodeHarbor Link
@@ -128,9 +123,6 @@ en:
       submission:
         one: Submission
         other: Submissions
-      team:
-        one: Team
-        other: Teams
     errors:
       messages:
         together: 'has to be set along with %{attribute}'

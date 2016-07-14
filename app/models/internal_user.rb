@@ -3,8 +3,6 @@ class InternalUser < ActiveRecord::Base
 
   authenticates_with_sorcery!
 
-  has_and_belongs_to_many :teams
-
   validates :email, presence: true, uniqueness: true
   validates :password, confirmation: true, if: :password_void?, on: :update, presence: true
   validates :role, inclusion: {in: ROLES}

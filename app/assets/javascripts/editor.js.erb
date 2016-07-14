@@ -19,6 +19,10 @@ $(function() {
   var SERVER_SEND_EVENT = 2;
 
   var editors = [];
+  var editor_for_file = new Map();
+  var regex_for_language = new Map();
+  var tracepositions_regex;
+
   var active_file = undefined;
   var active_frame = undefined;
   var running = false;
@@ -404,11 +408,17 @@ $(function() {
       editor.setTheme(THEME);
       editor.commands.bindKey("ctrl+alt+0", null);
       editors.push(editor);
+      editor_for_file.set($(element).parent().data('filename'), editor);
       var session = editor.getSession();
       session.setMode($(element).data('mode'));
       session.setTabSize($(element).data('indent-size'));
       session.setUseSoftTabs(true);
       session.setUseWrapMode(true);
+
+      // set regex for parsing error traces based on the mode of the main file.
+      if( $(element).parent().data('role') == "main_file"){
+        tracepositions_regex = regex_for_language.get($(element).data('mode'));
+      }
 
       var file_id =  $(element).data('id');
 
@@ -456,6 +466,12 @@ $(function() {
     $('#download').on('click', downloadCode);
     $('#request-for-comments').on('click', requestComments);
   };
+
+
+  var initializeRegexes = function(){
+    regex_for_language.set("ace/mode/python", /File "(.+?)", line (\d+)/g);
+    regex_for_language.set("ace/mode/java", /(.*\.java):(\d+):/g);
+  }
 
   var initializeTooltips = function() {
     $('[data-tooltip]').tooltip();
@@ -587,7 +603,7 @@ $(function() {
     } else if (output.stdout) {
       //if (output_mode_is_streaming){
       element.addClass('text-success').append(output.stdout);
-      flowrOutputBuffer += output.stdout;
+     // flowrOutputBuffer += output.stdout;
       //}else{
       //  element.addClass('text-success');
       //  element.data('content_buffer' , element.data('content_buffer') + output.stdout);
@@ -876,7 +892,9 @@ $(function() {
   }
 
   var showWorkspaceTab = function(event) {
-    event.preventDefault();
+    if(event){
+      event.preventDefault();
+    }
     showTab(0);
   };
 
@@ -1036,6 +1054,7 @@ $(function() {
         case 'exit':
             killWebsocketAndContainer();
             handleStderrOutputForFlowr();
+            augmentStacktraceInOutput();
             break;
         case 'timeout':
             // just show the timeout message here. Another exit command is sent by the rails backend when the socket to the docker container closes.
@@ -1045,6 +1064,41 @@ $(function() {
             showStatus(msg)
             break;
       }
+  };
+
+
+  var jumpToSourceLine = function(event){
+    var file = $(event.target).data('file');
+    var line = $(event.target).data('line');
+
+    showWorkspaceTab(null);
+    // set active file ?!?!
+
+    var frame = $('div.frame[data-filename="' + file + '"]');
+    showFrame(frame);
+
+    var editor = editor_for_file.get(file);
+    editor.gotoLine(line, 0);
+
+  };
+
+  var augmentStacktraceInOutput = function() {
+    if(tracepositions_regex){
+      var element = $('#output>pre');
+      var text = element.text();
+      element.on( "click", "a", jumpToSourceLine);
+
+      var matches;
+
+      while(matches = tracepositions_regex.exec(text)){
+        var frame = $('div.frame[data-filename="' + matches[1] + '"]')
+
+        if(frame.length > 0){
+          element.html(text.replace(matches[0], "<a href='#' data-file='" +  matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>"));
+        }
+      }
+    }
+
   };
 
   var renderWebsocketOutput = function(msg){
@@ -1208,6 +1262,7 @@ $(function() {
 
   if ($('#editor').isPresent()) {
       if (isBrowserSupported()) {
+          initializeRegexes();
           initializeCodePilot();
           $('.score, #development-environment').show();
           configureEditors();
