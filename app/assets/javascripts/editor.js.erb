@@ -1215,7 +1215,6 @@ $(function() {
     var question = $('#question').val();
 
     var createRequestForComments = function(submission) {
-      console.log(submission);
       $.ajax({
         method: 'POST',
         url: '/request_for_comments',

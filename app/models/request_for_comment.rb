@@ -17,6 +17,8 @@ class RequestForComment < ActiveRecord::Base
     Submission.find(file.context_id)
   end
 
+  # not used right now, finds the last submission for the respective user and exercise.
+  # might be helpful to check whether the exercise has been solved in the meantime.
   def last_submission
     Submission.find_by_sql(" select * from submissions
             where exercise_id = #{exercise_id} AND
@@ -25,33 +27,15 @@ class RequestForComment < ActiveRecord::Base
             limit 1").first
   end
 
+  # not used any longer, since we directly saved the submission_id now.
+  # Was used before that to determine the submission belonging to the request_for_comment.
   def last_submission_before_creation
-    submission1 = Submission.find_by_sql(" select * from submissions
+    Submission.find_by_sql(" select * from submissions
             where exercise_id = #{exercise_id} AND
             user_id =  #{user_id} AND
             '#{created_at.localtime}' > created_at
             order by created_at desc
             limit 1").first
-    submission2 = Submission.find_by_sql(" select * from submissions
-            where exercise_id = #{exercise_id} AND
-            user_id =  #{user_id} AND
-            '#{created_at}' > created_at
-            order by created_at desc
-            limit 1").first
-    submission3 = Submission.find_by_sql(" select * from submissions
-            where exercise_id = #{exercise_id} AND
-            user_id =  #{user_id} AND
-            '#{created_at.strftime('%Y-%m-%d %H:%M:%S.%N')}' > created_at
-            order by created_at desc
-            limit 1").first
-    submission4 = Submission.find_by_sql(" select * from submissions
-            where exercise_id = #{exercise_id} AND
-            user_id =  #{user_id} AND
-            '#{created_at.localtime.strftime('%Y-%m-%d %H:%M:%S.%N')}' > created_at
-            order by created_at desc
-            limit 1").first
-    binding.pry
-    submission1
   end
 
   def comments_count
@@ -64,6 +48,6 @@ class RequestForComment < ActiveRecord::Base
 
     private
     def self.row_number_user_sql
-      select("id, user_id, exercise_id, file_id, question, requested_at, created_at, updated_at, user_type, solved, row_number() OVER (PARTITION BY user_id ORDER BY created_at DESC) as row_number").to_sql
+      select("id, user_id, exercise_id, file_id, question, created_at, updated_at, user_type, solved, submission_id, row_number() OVER (PARTITION BY user_id ORDER BY created_at DESC) as row_number").to_sql
     end
 end
