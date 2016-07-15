@@ -28,11 +28,15 @@ class Submission < ActiveRecord::Base
     ancestors.merge(descendants).values
   end
 
-  [:download, :render, :run, :test].each do |action|
+  [:download_file, :render, :run, :test].each do |action|
     filename = FILENAME_URL_PLACEHOLDER.gsub(/\W/, '')
     define_method("#{action}_url") do
       Rails.application.routes.url_helpers.send(:"#{action}_submission_path", self, filename).sub(filename, FILENAME_URL_PLACEHOLDER)
     end
+  end
+
+  def download_url
+    Rails.application.routes.url_helpers.send(:download_submission_path, self)
   end
 
   def main_file

@@ -179,7 +179,10 @@ $(function() {
   var downloadCode = function(event) {
     event.preventDefault();
     createSubmission(this, null,function(response) {
-      var url = response.download_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
+      var url = response.download_url;
+
+      // to download just a single file, use the following url
+      //var url = response.download_file_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
       window.location = url;
     });
   };
