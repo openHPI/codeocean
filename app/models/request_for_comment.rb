@@ -1,5 +1,6 @@
 class RequestForComment < ActiveRecord::Base
   include Creation
+  belongs_to :submission
   belongs_to :exercise
   belongs_to :file, class_name: 'CodeOcean::File'
 
@@ -12,10 +13,6 @@ class RequestForComment < ActiveRecord::Base
     def set_requested_timestamp
         self.requested_at = Time.now
     end
-
-  def submission
-    Submission.find(file.context_id)
-  end
 
   # not used right now, finds the last submission for the respective user and exercise.
   # might be helpful to check whether the exercise has been solved in the meantime.
