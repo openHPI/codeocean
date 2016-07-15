@@ -89,7 +89,8 @@ Rails.application.routes.draw do
 
   resources :submissions, only: [:create, :index, :show] do
     member do
-      get 'download/:filename', as: :download, constraints: {filename: FILENAME_REGEXP}, to: :download_file
+      get 'download', as: :download, to: :download
+      get 'download/:filename', as: :download_file, constraints: {filename: FILENAME_REGEXP}, to: :download_file
       get 'render/:filename', as: :render, constraints: {filename: FILENAME_REGEXP}, to: :render_file
       get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, to: :run
       get :score
