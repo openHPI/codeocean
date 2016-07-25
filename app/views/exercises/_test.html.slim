@@ -1,0 +1,12 @@
+- execution_environments = ExecutionEnvironment.where('file_type_id IS NOT NULL').select(:file_type_id, :id)
+- file_types = FileType.where('file_extension IS NOT NULL').select(:file_extension, :id)
+
+= form_for(@exercise, data: {execution_environments: execution_environments, file_types: file_types}, multipart: true) do |f|
+  .form-group
+    = f.label(:description)
+    = f.hidden_field(:description)
+    .form-control.markdown
+
+    = f.pagedown_editor :description
+    /= f.input :description, :as => :pagedown, :input_html => { :preview => true }
+end
