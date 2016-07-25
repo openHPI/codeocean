@@ -13,7 +13,6 @@
 //= require jquery
 //
 //= require ace/ace
-//= require bootstrap_pagedown
 //= require chosen.jquery.min
 //= require d3
 //= require jquery.turbolinks

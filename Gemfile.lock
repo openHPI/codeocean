@@ -48,8 +48,6 @@ GEM
       debug_inspector (>= 0.0.1)
     bootstrap-will_paginate (0.0.10)
       will_paginate
-    bootstrap_pagedown (1.1.0)
-      rails (>= 3.2)
     builder (3.2.2)
     byebug (8.2.2)
     capistrano (3.3.5)
@@ -359,7 +357,6 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-will_paginate
-  bootstrap_pagedown
   byebug
   capistrano (~> 3.3.0)
   capistrano-rails
