@@ -15,4 +15,5 @@
  *= require_tree ../../../vendor/assets/stylesheets/
  *= require_self
  *= require bootstrap_pagedown
+ *= require markdown
 */

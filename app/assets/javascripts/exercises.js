@@ -158,7 +158,7 @@ $(function() {
       execution_environments = $('form').data('execution-environments');
       file_types = $('form').data('file-types');
      // new MarkdownEditor('#exercise_instructions');
-      new MarkdownEditor('#exercise_description');
+      //new MarkdownEditor('#exercise_description');
       // todo: add an ace editor for each file
       new PagedownEditor('#exercise_description');
 
