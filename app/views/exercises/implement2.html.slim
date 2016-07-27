@@ -1,0 +1,7 @@
+#editor.row data-exercise-id=@exercise.id
+  #files style=("display: none;") data-entries=FileTree.new(@files).to_js_tree
+  div id='frames' class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
+    - @files.each do |file|
+      /= render('editor_frame', exercise: @exercise, file: file)
+      .editor-content.hidden data-file-id=file.ancestor_id = file.content
+      .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only data-id=file.id

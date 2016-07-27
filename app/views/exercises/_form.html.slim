@@ -35,8 +35,10 @@
   h2 = t('activerecord.attributes.exercise.files')
   ul#files.list-unstyled.panel-group
     = f.fields_for :files do |files_form|
-      = render('file_form', f: files_form, object: @exercise)
-  a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')
+      = render('file_form', f: files_form)
+  /a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')
+    = render('editor', exercise: @exercise, files: @files, submission: @submission)
   ul#dummies.hidden = f.fields_for(:files, CodeOcean::File.new, child_index: 'index') do |files_form|
-    = render('file_form', f: files_form, e: @exercise)
+    = render('file_form', f: files_form, exercise: @exercise)
+    /= render('editor2', exercise: @exercise, files: @exercise.files, submission: @submission)
   .actions = render('shared/submit_button', f: f, object: @exercise)

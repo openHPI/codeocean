@@ -3,5 +3,7 @@
   | &nbsp;
   a.toggle-input data={text_initial: t('shared.upload_file'), text_toggled: t('shared.back')} href='#' = t('shared.upload_file')
   = form.text_area(attribute, class: 'code-field form-control original-input', rows: 16)
-  = render('editor_frame', exercise: e, file: @files)
+  // Need to render content in ace editor instead of plain text
+  /= render('editor_frame', exercise: @exercise, file: @exercise.files.first)
   = form.file_field(attribute, class: 'alternative-input form-control', disabled: true)
+

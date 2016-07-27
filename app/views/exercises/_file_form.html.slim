@@ -1,10 +1,5 @@
 - id = f.object.id
 
-
-.editor-content.hidden data-file-id=:ancestor_id = :content
-.editor data-file-id=:ancestor_id data-indent-size=2 data-mode="ace/mode/python" data-read-only=true data-id=:id
-
-
 li.panel.panel-default
   .panel-heading role="tab" id="heading"
     a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{id}"
@@ -37,10 +32,13 @@ li.panel.panel-default
       .test-related-fields style="display: #{f.object.teacher_defined_test? ? 'initial' : 'none'};"
         .form-group
           = f.label(:name, t('activerecord.attributes.file.feedback_message'))
-          = f.label(:ancestor_id, t('activerecord.attributes.file.name'))
           = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
           .help-block = t('.hints.feedback_message')
         .form-group
           = f.label(:role, t('activerecord.attributes.file.weight'))
           = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
-          = render('code_field', attribute: :content, form: f, e: @exercise, label: t('activerecord.attributes.file.content'))
+        = render('code_field', attribute: :content, form: f, exercise: @exercise, files: @exercise.files, label: t('activerecord.attributes.file.content'))
+
+        /=render('editor', exercise: @exercise, files: @files, submission: @submission)
+        /= render('editor_frame', exercise: @exercise, file: @exercise.files.take)
+
