@@ -41,6 +41,7 @@ $(function() {
   var ENTER_KEY_CODE = 13;
 
   var flowrOutputBuffer = "";
+  var QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
   var flowrResultHtml = '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>'
 
   var ajax = function(options) {
@@ -191,8 +192,8 @@ $(function() {
     (streamed ? evaluateCodeWithStreamedResponse : evaluateCodeWithoutStreamedResponse)(url, callback);
   };
 
-  var evaluateCodeWithStreamedResponse = function(url, callback) {
-    initWebsocketConnection(url);
+  var evaluateCodeWithStreamedResponse = function(url, onmessageFunction) {
+    initWebsocketConnection(url, onmessageFunction);
 
     // TODO only init turtle when required
     initTurtle();
@@ -313,15 +314,24 @@ $(function() {
     }
   };
 
-  var handleScoringResponse = function(response) {
-    printScoringResults(response);
-    var score = _.reduce(response, function(sum, result) {
+  var handleScoringResponse = function(websocket_event) {
+    results = JSON.parse(websocket_event.data);
+    printScoringResults(results);
+    var score = _.reduce(results, function(sum, result) {
       return sum + result.score * result.weight;
     }, 0).toFixed(2);
     $('#score').data('score', score);
     renderScore();
     showTab(2);
   };
+
+  var handleQaApiOutput = function() {
+    if (qa_api) {
+      qa_api.executeCommand('syncOutput', [[QaApiOutputBuffer]]);
+      // reset the object
+    }
+    QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
+  }
 
   // activate flowr only for half of the audience
   var isFlowrEnabled = true;//parseInt($('#editor').data('user-id'))%2 == 0;
@@ -356,13 +366,14 @@ $(function() {
     flowrOutputBuffer = '';
   };
 
-  var handleTestResponse = function(response) {
+  var handleTestResponse = function(websocket_event) {
+    result = JSON.parse(websocket_event.data);
     clearOutput();
-    printOutput(response[0], false, 0);
+    printOutput(result, false, 0);
     if (qa_api) {
-      qa_api.executeCommand('syncOutput', [response]);
+      qa_api.executeCommand('syncOutput', [result]);
     }
-    showStatus(response[0]);
+    showStatus(result);
     showTab(1);
   };
 
@@ -546,8 +557,8 @@ $(function() {
   };
 
   var isBrowserSupported = function() {
-    // eventsource tests for server send events (used for scoring), websockets is used for run
-    return Modernizr.eventsource && Modernizr.websockets;
+    //  websockets is used for run, score and test
+    return Modernizr.websockets;
   };
 
   var populatePanel = function(panel, result, index) {
@@ -593,20 +604,23 @@ $(function() {
     //    output_mode_is_streaming = false;
     //}
     if (!colorize) {
-      if(output.stdout != ''){
+      if(output.stdout != undefined && output.stdout != ''){
         element.append(output.stdout)
       }
 
-      if(output.stderr != ''){
+      if(output.stderr != undefined && output.stderr != ''){
         element.append('There was an error: StdErr: ' + output.stderr);
       }
 
     } else if (output.stderr) {
       element.addClass('text-warning').append(output.stderr);
+      flowrOutputBuffer += output.stderr;
+      QaApiOutputBuffer.stderr += output.stderr;
     } else if (output.stdout) {
       //if (output_mode_is_streaming){
       element.addClass('text-success').append(output.stdout);
-     // flowrOutputBuffer += output.stdout;
+      flowrOutputBuffer += output.stdout;
+      QaApiOutputBuffer.stdout += output.stdout;
       //}else{
       //  element.addClass('text-success');
       //  element.data('content_buffer' , element.data('content_buffer') + output.stdout);
@@ -762,7 +776,7 @@ $(function() {
         showSpinner($('#run'));
         toggleButtonStates();
         var url = response.run_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
-        evaluateCode(url, true, printChunk);
+        evaluateCode(url, true, function(evt) { parseCanvasMessage(evt.data, true); });
       });
     }
   };
@@ -797,7 +811,7 @@ $(function() {
     createSubmission(this, null, function(response) {
       showSpinner($('#assess'));
       var url = response.score_url;
-      evaluateCode(url, false, handleScoringResponse);
+      evaluateCode(url, true, handleScoringResponse);
     });
   };
 
@@ -976,7 +990,7 @@ $(function() {
       createSubmission(this, null, function(response) {
         showSpinner($('#test'));
         var url = response.test_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
-        evaluateCode(url, false, handleTestResponse);
+        evaluateCode(url, true, handleTestResponse);
       });
     }
   };
@@ -995,14 +1009,14 @@ $(function() {
     $('#test').toggle(isActiveFileTestable());
   };
 
-  var initWebsocketConnection = function(url) {
+  var initWebsocketConnection = function(url, onmessageFunction) {
       //TODO: get the protocol from config file dependent on environment. (dev: ws, prod: wss)
       //causes: Puma::HttpParserError: Invalid HTTP format, parsing fails.
       //TODO: make sure that this gets cached.
       websocket = new WebSocket('<%= DockerClient.config['ws_client_protocol'] %>' + window.location.hostname + ':' + window.location.port + url);
       websocket.onopen = function(evt) { resetOutputTab(); }; // todo show some kind of indicator for established connection
       websocket.onclose = function(evt) { /* expected at some point */ };
-      websocket.onmessage = function(evt) { parseCanvasMessage(evt.data, true); };
+      websocket.onmessage = onmessageFunction;
       websocket.onerror = function(evt) { showWebsocketError(); };
       websocket.flush = function() { this.send('\n'); }
   };
@@ -1056,6 +1070,7 @@ $(function() {
           break;
         case 'exit':
             killWebsocketAndContainer();
+            handleQaApiOutput();
             handleStderrOutputForFlowr();
             augmentStacktraceInOutput();
             break;
