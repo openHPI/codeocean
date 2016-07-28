@@ -9,6 +9,9 @@ $(function() {
 
         submissionsScoreAndTimeAssess = [[0,0]];
         submissionsScoreAndTimeSubmits = [[0,0]];
+        submissionsScoreAndTimeRuns = [];
+        submissionsSaves = [];
+        submissionsAutosaves = [];
         var maximumValue = 0;
 
         var wtimes = $('#wtimes').data('working_times'); //.hidden#wtimes data-working_times=ActiveSupport::JSON.encode(working_times_until)
@@ -18,43 +21,42 @@ $(function() {
 
         for (var i = 0;i<submissions_length;i++){
             var submission = submissions[i];
+            var workingTime;
+            var submissionArray;
+
+            workingTime = get_minutes(wtimes[i]);
+            submissionArray = [submission.score, 0];
+
+            if (workingTime > 0) {
+                submissionArray[1] = workingTime;
+            }
+            if(submission.score>maximumValue){
+                maximumValue = submission.score;
+            }
 
             if(submission.cause == "assess"){
-                var workingTime = get_minutes(wtimes[i]);
-                var submissionArray = [submission.score, 0];
-
-                if (workingTime > 0) {
-                    submissionArray[1] = workingTime;
-                }
-
-                if(submission.score>maximumValue){
-                    maximumValue = submission.score;
-                }
                 submissionsScoreAndTimeAssess.push(submissionArray);
             } else if(submission.cause == "submit"){
-                var workingTime = get_minutes(wtimes[i]);
-                var submissionArray = [submission.score, 0];
-
-                if (workingTime > 0) {
-                    submissionArray[1] = workingTime;
-                }
-
-                if(submission.score>maximumValue){
-                    maximumValue = submission.score;
-                }
                 submissionsScoreAndTimeSubmits.push(submissionArray);
+            } else if(submission.cause == "run"){
+                submissionsScoreAndTimeRuns.push(submissionArray[1]);
+            } else if(submission.cause == "autosave"){
+                submissionsAutosaves.push(submissionArray[1]);
+            }  else if(submission.cause == "save"){
+                submissionsSaves.push(submissionArray[1]);
             }
         }
         // console.log(submissionsScoreAndTimeAssess.length);
         // console.log(submissionsScoreAndTimeSubmits);
+        // console.log(submissionsScoreAndTimeRuns);
 
         function get_minutes (time_stamp) {
             try {
                 hours = time_stamp.split(":")[0];
                 minutes = time_stamp.split(":")[1];
                 seconds = time_stamp.split(":")[2];
-
-                minutes = parseFloat(hours * 60) + parseInt(minutes);
+                seconds /= 60;
+                minutes = parseFloat(hours * 60) + parseInt(minutes) + seconds;
                 if (minutes > 0){
                     return minutes;
                 } else{
@@ -82,6 +84,9 @@ $(function() {
         function graph_assesses() {
             // MAKE THE GRAPH
             var width_ratio = .8;
+            if (getWidth()*width_ratio > 1000){
+                width_ratio = 1000/getWidth();
+            }
             var height_ratio = .7; // percent of height
 
             var margin = {top: 100, right: 20, bottom: 70, left: 70},//30,50
@@ -131,15 +136,32 @@ $(function() {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+            var largestSubmittedTimeStamp = submissions[submissions_length-1];
+            var largestArrayForRange;
 
-            x.domain(d3.extent(submissionsScoreAndTimeAssess, function (d) {
-                // console.log(d[1]);
-                return (d[1]);
-            }));
-            y.domain(d3.extent(submissionsScoreAndTimeAssess, function (d) {
+            if(largestSubmittedTimeStamp.cause == "assess"){
+                largestArrayForRange = submissionsScoreAndTimeAssess;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
+            } else if(largestSubmittedTimeStamp.cause == "submit"){
+                largestArrayForRange = submissionsScoreAndTimeSubmits;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
+            } else if(largestSubmittedTimeStamp.cause == "run"){
+                largestArrayForRange = submissionsScoreAndTimeRuns;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
+            } else if(largestSubmittedTimeStamp.cause == "autosave"){
+                largestArrayForRange = submissionsAutosaves;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
+            } else if(largestSubmittedTimeStamp.cause == "save"){
+                largestArrayForRange = submissionsSaves;
+                x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
+            }
+            // take maximum value between assesses and submits
+            var yDomain = submissionsScoreAndTimeAssess.concat(submissionsScoreAndTimeSubmits);
+            y.domain(d3.extent(yDomain, function (d) {
                 // console.log(d[0]);
                 return (d[0]);
             }));
+            // y.domain([0,2]).clamp(true);
 
             svg.append("g") //x axis
                 .attr("class", "x axis")
@@ -177,15 +199,15 @@ $(function() {
                 .style('font-size', 20)
                 .style('text-decoration', 'underline');
 
-            //
-            // svg.append("path")
-            //    //.datum()
-            //    .attr("class", "line")
-            //    .attr('id', 'myPath')// new
-            //    .attr("stroke", "black")
-            //    .attr("stroke-width", 5)
-            //    .attr("fill", "none")// end new
-            //    .attr("d", line(submissionsScoreAndTimeAssess));//---
+            
+             svg.append("path")
+                //.datum()
+                .attr("class", "line")
+                .attr('id', 'myPath')// new
+                .attr("stroke", "black")
+                .attr("stroke-width", 5)
+                .attr("fill", "none")// end new
+                .attr("d", line(submissionsScoreAndTimeAssess));//---
 
             svg.append("path")
                 .datum(submissionsScoreAndTimeAssess)
@@ -204,27 +226,35 @@ $(function() {
                 .attr("cx", function(d) { return x(d[1]); })
                 .attr("cy", function(d) { return y(d[0]); });
 
-
-            svg.append("path")
-                .datum(submissionsScoreAndTimeSubmits)
-                .attr("class", "line2")
-                .attr('id', 'myPath')// new
-                .attr("stroke", "blue")
-                .attr("stroke-width", 5)
-                .attr("fill", "none")// end new
-                .attr("d", line);//---
+            if (submissionsScoreAndTimeSubmits.length > 0){
+              // get rid of the 0 element at the beginning
+              submissionsScoreAndTimeSubmits.shift();
+            }
 
             svg.selectAll("dot") // Add dots to submits
                 .data(submissionsScoreAndTimeSubmits)
                 .enter().append("circle")
-                .attr("r", 3.5)
+                .attr("r", 6)
+                .attr("stroke", "black")
+                .attr("fill", "blue")
                 .attr("cx", function(d) { return x(d[1]); })
                 .attr("cy", function(d) { return y(d[0]); });
 
+            for (var i = 0; i < submissionsScoreAndTimeRuns.length; i++) {
+                svg.append("line")
+                    .attr("stroke", "red")
+                    .attr("stroke-width", 1)
+                    .attr("fill", "none")// end new
+                    .attr("y1", y(0))
+                    .attr("y2", 0)
+                    .attr("x1", x(submissionsScoreAndTimeRuns[i]))
+                    .attr("x2", x(submissionsScoreAndTimeRuns[i]));
+            }
 
             var color_hash = {  0 : ["Submissions", "blue"],
-                1 : ["Assesses", "orange"]
-            }
+                1 : ["Assesses", "orange"],
+                2 : ["Runs", "red"]
+            };
 
             // add legend
             var legend = svg.append("g")
@@ -234,7 +264,8 @@ $(function() {
                 .attr("height", 100)
                 .attr("width", 100);
 
-            var dataset = [submissionsScoreAndTimeSubmits,submissionsScoreAndTimeAssess];
+            var dataset = [submissionsScoreAndTimeSubmits,submissionsScoreAndTimeAssess, submissionsScoreAndTimeRuns];
+            var yOffset = -70;
 
             legend.selectAll('g').data(dataset)
                 .enter()
@@ -243,14 +274,14 @@ $(function() {
                     var g = d3.select(this);
                     g.append("rect")
                         .attr("x", 20)
-                        .attr("y", i*25 + 8)
+                        .attr("y", i*25 + yOffset)// + 8
                         .attr("width", 10)
                         .attr("height", 10)
                         .style("fill", color_hash[String(i)][1]);
 
                     g.append("text")
                         .attr("x", 40)
-                        .attr("y", i * 25 + 18)
+                        .attr("y", i * 25 + yOffset + 10)// + 18
                         .attr("height",30)
                         .attr("width",100)
                         .style("fill", color_hash[String(i)][1])
@@ -273,7 +304,7 @@ $(function() {
         try{
             graph_assesses();
         } catch(err){
-            // not enough data
+            alert("could not draw the graph");
         }
 
   }

@@ -6,9 +6,9 @@ class SubmissionsController < ApplicationController
   include SubmissionScoring
   include Tubesock::Hijack
 
-  before_action :set_submission, only: [:download_file, :render_file, :run, :score, :show, :statistics, :stop, :test]
+  before_action :set_submission, only: [:download, :download_file, :render_file, :run, :score, :show, :statistics, :stop, :test]
   before_action :set_docker_client, only: [:run, :test]
-  before_action :set_files, only: [:download_file, :render_file, :show]
+  before_action :set_files, only: [:download, :download_file, :render_file, :show]
   before_action :set_file, only: [:download_file, :render_file]
   before_action :set_mime_type, only: [:download_file, :render_file]
   skip_before_action :verify_authenticity_token, only: [:download_file, :render_file]
@@ -51,6 +51,20 @@ class SubmissionsController < ApplicationController
         comment.save!
       end
     end
+  end
+
+  def download
+    # files = @submission.files.map{ }
+    # zipline( files, 'submission.zip')
+    # send_data(@file.content, filename: @file.name_with_extension)
+    require 'zip'
+    stringio = Zip::OutputStream.write_buffer do |zio|
+      @files.each do |file|
+        zio.put_next_entry(file.name_with_extension)
+        zio.write(file.content)
+      end
+    end
+    send_data(stringio.string, filename: @submission.exercise.title.tr(" ", "_") + ".zip")
   end
 
   def download_file

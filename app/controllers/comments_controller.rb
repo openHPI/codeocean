@@ -46,7 +46,11 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    @comment = Comment.new(comment_params)
+    @comment = Comment.new(comment_params_without_request_id)
+
+    if comment_params[:request_id]
+      UserMailer.got_new_comment(@comment, RequestForComment.find(comment_params[:request_id]), current_user)
+    end
 
     respond_to do |format|
       if @comment.save
@@ -64,7 +68,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1.json
   def update
     respond_to do |format|
-      if @comment.update(comment_params)
+      if @comment.update(comment_params_without_request_id)
         format.html { head :no_content, notice: 'Comment was successfully updated.' }
         format.json { render :show, status: :ok, location: @comment }
       else
@@ -101,10 +105,14 @@ class CommentsController < ApplicationController
       @comment = Comment.find(params[:id])
     end
 
+  def comment_params_without_request_id
+    comment_params.except :request_id
+  end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def comment_params
       #params.require(:comment).permit(:user_id, :file_id, :row, :column, :text)
       # fuer production mode, damit böse menschen keine falsche user_id uebergeben:
-      params.require(:comment).permit(:file_id, :row, :column, :text).merge(user_id: current_user.id, user_type: current_user.class.name)
+      params.require(:comment).permit(:file_id, :row, :column, :text, :request_id).merge(user_id: current_user.id, user_type: current_user.class.name)
     end
 end

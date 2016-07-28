@@ -19,6 +19,10 @@ $(function() {
   var SERVER_SEND_EVENT = 2;
 
   var editors = [];
+  var editor_for_file = new Map();
+  var regex_for_language = new Map();
+  var tracepositions_regex;
+
   var active_file = undefined;
   var active_frame = undefined;
   var running = false;
@@ -175,7 +179,10 @@ $(function() {
   var downloadCode = function(event) {
     event.preventDefault();
     createSubmission(this, null,function(response) {
-      var url = response.download_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
+      var url = response.download_url;
+
+      // to download just a single file, use the following url
+      //var url = response.download_file_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
       window.location = url;
     });
   };
@@ -404,11 +411,17 @@ $(function() {
       editor.setTheme(THEME);
       editor.commands.bindKey("ctrl+alt+0", null);
       editors.push(editor);
+      editor_for_file.set($(element).parent().data('filename'), editor);
       var session = editor.getSession();
       session.setMode($(element).data('mode'));
       session.setTabSize($(element).data('indent-size'));
       session.setUseSoftTabs(true);
       session.setUseWrapMode(true);
+
+      // set regex for parsing error traces based on the mode of the main file.
+      if( $(element).parent().data('role') == "main_file"){
+        tracepositions_regex = regex_for_language.get($(element).data('mode'));
+      }
 
       var file_id =  $(element).data('id');
 
@@ -456,6 +469,12 @@ $(function() {
     $('#download').on('click', downloadCode);
     $('#request-for-comments').on('click', requestComments);
   };
+
+
+  var initializeRegexes = function(){
+    regex_for_language.set("ace/mode/python", /File "(.+?)", line (\d+)/g);
+    regex_for_language.set("ace/mode/java", /(.*\.java):(\d+):/g);
+  }
 
   var initializeTooltips = function() {
     $('[data-tooltip]').tooltip();
@@ -587,7 +606,7 @@ $(function() {
     } else if (output.stdout) {
       //if (output_mode_is_streaming){
       element.addClass('text-success').append(output.stdout);
-      flowrOutputBuffer += output.stdout;
+     // flowrOutputBuffer += output.stdout;
       //}else{
       //  element.addClass('text-success');
       //  element.data('content_buffer' , element.data('content_buffer') + output.stdout);
@@ -704,9 +723,15 @@ $(function() {
   };
 
   var renderScore = function() {
-    var score = $('#score').data('score');
-    var maxium_score = $('#score').data('maximum-score');
-    $('.score').html((score || '?') + ' / ' + maxium_score);
+    var score = parseFloat($('#score').data('score'));
+    var maxium_score = parseFloat($('#score').data('maximum-score'));
+    if (score >= 0 && score <= maxium_score && maxium_score >0 ) {
+      var percentage_score = (score / maxium_score * 100 ).toFixed(0);
+      $('.score').html(percentage_score + '%');
+    }
+    else {
+      $('.score').html( 0 + '%');
+    }
     renderProgressBar(score, maxium_score);
   };
 
@@ -870,7 +895,9 @@ $(function() {
   }
 
   var showWorkspaceTab = function(event) {
-    event.preventDefault();
+    if(event){
+      event.preventDefault();
+    }
     showTab(0);
   };
 
@@ -1030,6 +1057,7 @@ $(function() {
         case 'exit':
             killWebsocketAndContainer();
             handleStderrOutputForFlowr();
+            augmentStacktraceInOutput();
             break;
         case 'timeout':
             // just show the timeout message here. Another exit command is sent by the rails backend when the socket to the docker container closes.
@@ -1039,6 +1067,41 @@ $(function() {
             showStatus(msg)
             break;
       }
+  };
+
+
+  var jumpToSourceLine = function(event){
+    var file = $(event.target).data('file');
+    var line = $(event.target).data('line');
+
+    showWorkspaceTab(null);
+    // set active file ?!?!
+
+    var frame = $('div.frame[data-filename="' + file + '"]');
+    showFrame(frame);
+
+    var editor = editor_for_file.get(file);
+    editor.gotoLine(line, 0);
+
+  };
+
+  var augmentStacktraceInOutput = function() {
+    if(tracepositions_regex){
+      var element = $('#output>pre');
+      var text = element.text();
+      element.on( "click", "a", jumpToSourceLine);
+
+      var matches;
+
+      while(matches = tracepositions_regex.exec(text)){
+        var frame = $('div.frame[data-filename="' + matches[1] + '"]')
+
+        if(frame.length > 0){
+          element.html(text.replace(matches[0], "<a href='#' data-file='" +  matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>"));
+        }
+      }
+    }
+
   };
 
   var renderWebsocketOutput = function(msg){
@@ -1154,25 +1217,25 @@ $(function() {
     var file_id = $('.editor').data('id')
     var question = $('#question').val();
 
-    $.ajax({
-      method: 'POST',
-      url: '/request_for_comments',
-      data: {
-        request_for_comment: {
-          exercise_id: exercise_id,
-          file_id: file_id,
-          question: question,
-          "requested_at(1i)": 2015, // these are the timestamp values that the request handler demands
-          "requested_at(2i)":3, // they could be random here, because the timestamp is updated on serverside anyway
-          "requested_at(3i)":27,
-          "requested_at(4i)":17,
-          "requested_at(5i)":06
+    var createRequestForComments = function(submission) {
+      $.ajax({
+        method: 'POST',
+        url: '/request_for_comments',
+        data: {
+          request_for_comment: {
+            exercise_id: exercise_id,
+            file_id: file_id,
+            submission_id: submission.id,
+            question: question
+          }
         }
-      }
-    }).done(function() {
-      hideSpinner();
-      $.flash.success({ text: $('#askForCommentsButton').data('message-success') })
-    }).error(ajaxError);
+      }).done(function() {
+        hideSpinner();
+        $.flash.success({ text: $('#askForCommentsButton').data('message-success') });
+      }).error(ajaxError);
+    }
+
+    createSubmission($('.requestCommentsButton'), null, createRequestForComments);
 
     $('#comment-modal').modal('hide');
     var button = $('.requestCommentsButton');
@@ -1201,6 +1264,7 @@ $(function() {
 
   if ($('#editor').isPresent()) {
       if (isBrowserSupported()) {
+          initializeRegexes();
           initializeCodePilot();
           $('.score, #development-environment').show();
           configureEditors();

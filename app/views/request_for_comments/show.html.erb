@@ -1,46 +1,76 @@
 <div class="list-group">
-  <h4 class="list-group-item-heading"><%= Exercise.find(@request_for_comment.exercise_id) %></h4>
+  <h4 id ="exercise_caption" class="list-group-item-heading" data-rfc-id = "<%= @request_for_comment.id %>" ><%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %></h4>
   <p class="list-group-item-text">
       <%
         user = @request_for_comment.user
-        submission_id =  ActiveRecord::Base.connection.execute("select id from submissions
-          where exercise_id =
-          #{@request_for_comment.exercise_id} AND
-          user_id =  #{@request_for_comment.user_id} AND
-          '#{@request_for_comment.created_at}' > created_at
-          order by created_at desc
-          limit 1").first['id'].to_i
-        submission = Submission.find(submission_id)
+        submission =  @request_for_comment.submission
       %>
-    <%= user.displayname %> | <%= @request_for_comment.requested_at %>
+    <%= user.displayname %> | <%= @request_for_comment.created_at.localtime %>
   </p>
   <h5>
+    <u><%= t('activerecord.attributes.exercise.description') %>:</u> "<%= render_markdown(@request_for_comment.exercise.description) %>"
+  </h5>
+
+  <h5>
     <% if @request_for_comment.question and not @request_for_comment.question == '' %>
-      <%= t('activerecord.attributes.request_for_comments.question')%>: "<%= @request_for_comment.question %>"
+        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  "<%= @request_for_comment.question %>"
     <% else %>
-      <%= t('request_for_comments.no_question') %>
+        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
     <% end %>
   </h5>
+  <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
+      <button class="btn btn-default" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
+  <% elsif  (@request_for_comment.solved?) %>
+          <button type="button" class="btn btn-success"><%= t('request_for_comments.solved') %></button>
+  <% else %>
+
+  <% end %>
 </div>
 
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
+also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
 -->
 <% submission.files.each do |file| %>
   <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %>
-  <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>'><%= file.content %>
+  <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>' data-mode='<%=file.file_type.editor_mode%>'><%= file.content %>
   </div>
 <% end %>
 
 <%= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent') %>
 
 <script type="text/javascript">
+
+  var solvedButton = $('#mark-as-solved-button');
+
+  solvedButton.on('click', function(event){
+    var jqrequest = $.ajax({
+      dataType: 'json',
+      method: 'GET',
+      url: location + '/mark_as_solved'
+    });
+
+    jqrequest.done(function(response){
+      if(response.solved){
+        solvedButton.hide();
+      }
+    });
+  });
+
+  // set file paths for ace
+  var ACE_FILES_PATH = '/assets/ace/';
+  _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
+    ace.config.set(attribute, ACE_FILES_PATH);
+  });
+
   var commentitor = $('.editor');
   var userid = commentitor.data('user-id');
 
   commentitor.each(function (index, editor) {
     var currentEditor = ace.edit(editor);
     currentEditor.setReadOnly(true);
+    // set editor mode (used for syntax highlighting
+    currentEditor.getSession().setMode($(editor).data('mode'));
 
     setAnnotations(currentEditor, $(editor).data('file-id'));
     currentEditor.on("guttermousedown", handleSidebarClick);
@@ -101,7 +131,8 @@ do not put a carriage return in the line below. it will be present in the presen
           file_id: file_id,
           row: row,
           column: 0,
-          text: commenttext
+          text: commenttext,
+          request_id: $('h4#exercise_caption').data('rfc-id')
         }
       },
       dataType: 'json',

@@ -7,13 +7,17 @@ Rails.application.routes.draw do
     end
   end
   resources :code_harbor_links
-  resources :request_for_comments
-    get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
+  resources :request_for_comments do
+    member do
+      get :mark_as_solved
+    end
+  end
   resources :comments, except: [:destroy] do
     collection do
       delete :destroy
     end
   end
+  get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
 
   delete '/comment_by_id', to: 'comments#destroy_by_id'
   put '/comments', to: 'comments#update'
@@ -90,7 +94,8 @@ Rails.application.routes.draw do
 
   resources :submissions, only: [:create, :index, :show] do
     member do
-      get 'download/:filename', as: :download, constraints: {filename: FILENAME_REGEXP}, to: :download_file
+      get 'download', as: :download, to: :download
+      get 'download/:filename', as: :download_file, constraints: {filename: FILENAME_REGEXP}, to: :download_file
       get 'render/:filename', as: :render, constraints: {filename: FILENAME_REGEXP}, to: :render_file
       get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, to: :run
       get :score
@@ -100,5 +105,4 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :teams
 end

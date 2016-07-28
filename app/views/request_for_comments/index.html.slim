@@ -4,19 +4,29 @@ h1 = RequestForComment.model_name.human(count: 2)
   table.table.sortable
     thead
       tr
+        th
+          i class="fa fa-lightbulb-o" aria-hidden="true" title = t('request_for_comments.solved') align="right"
         th = t('activerecord.attributes.request_for_comments.exercise')
         th = t('activerecord.attributes.request_for_comments.question')
+        th
+          i class="fa fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
         th = t('activerecord.attributes.request_for_comments.username')
         th = t('activerecord.attributes.request_for_comments.requested_at')
     tbody
       - @request_for_comments.each do |request_for_comment|
         tr data-id=request_for_comment.id
+          - if request_for_comment.solved?
+            td
+              span class="fa fa-check" aria-hidden="true"
+          - else
+            td = ''
           td = link_to(request_for_comment.exercise.title, request_for_comment)
           - if request_for_comment.has_attribute?(:question) && request_for_comment.question
             td = truncate(request_for_comment.question, length: 200)
           - else
             td = '-'
+          td = request_for_comment.comments_count
           td = request_for_comment.user.displayname
-          td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.requested_at))
+          td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.created_at))
 
 = render('shared/pagination', collection: @request_for_comments)
