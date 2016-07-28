@@ -1,0 +1,20 @@
+h1 = FileTemplate.model_name.human(count: 2)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.file_template.name')
+        th = t('activerecord.attributes.file_template.file_type')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @file_templates.each do |file_template|
+        tr
+          td = file_template.name
+          td = link_to(file_template.file_type, file_type_path(file_template.file_type))
+          td = link_to(t('shared.show'), file_template)
+          td = link_to(t('shared.edit'), edit_file_template_path(file_template))
+          td = link_to(t('shared.destroy'), file_template, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+
+= render('shared/pagination', collection: @file_templates)
+p = render('shared/new_button', model: FileTemplate)

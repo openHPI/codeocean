@@ -50,9 +50,9 @@ h1 = "#{@exercise} (external user #{@external_user})"
               td
                 -submission.testruns.each do |run|
                   - if run.passed
-                    .unit-test-result.positive-result
+                    .unit-test-result.positive-result  title=run.output
                   - else
-                    .unit-test-result.negative-result
+                    .unit-test-result.negative-result title=run.output
               td = Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0
               -working_times_until.push((Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0))
     p = t('.addendum')

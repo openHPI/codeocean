@@ -195,6 +195,8 @@ GEM
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     rack (1.5.5)
+    rack-mini-profiler (0.10.1)
+      rack (>= 1.2.0)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.1.14.1)
@@ -324,6 +326,7 @@ GEM
       json (>= 1.8.0)
     unf (0.1.4)
       unf_ext
+    unf (0.1.4-java)
     unf_ext (0.0.7.1)
     unicode-display_width (0.3.1)
     web-console (2.3.0)
@@ -383,6 +386,7 @@ DEPENDENCIES
   pry
   puma (~> 2.15.3)
   pundit
+  rack-mini-profiler
   rails (~> 4.1.13)
   rails-i18n (~> 4.0.0)
   rake
@@ -393,6 +397,7 @@ DEPENDENCIES
   rubocop
   rubocop-rspec
   rubytree
+  rubyzip
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   selenium-webdriver

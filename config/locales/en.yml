@@ -34,8 +34,6 @@ en:
         instructions: Instructions
         maximum_score: Maximum Score
         public: Public
-        team: Team
-        team_id: Team
         title: Title
         user: Author
         allow_file_creation: "Allow file creation"
@@ -54,6 +52,7 @@ en:
         read_only: Read-only
         role: Role
         weight: Score
+        file_template_id: "File Template"
       file_type:
         binary: Binary
         editor_mode: Editor Mode
@@ -78,6 +77,7 @@ en:
         password_confirmation: Passwort Confirmation
         role: Role
       request_for_comments:
+        comments: Comments
         exercise: Exercise
         execution_environment: Language
         username: Username
@@ -90,9 +90,10 @@ en:
         files: Files
         score: Score
         user: Author
-      team:
-        internal_user_ids: Members
-        name: Name
+      file_template:
+        name: "Name"
+        file_type: "File Type"
+        content: "Content"
     models:
       code_harbor_link:
         one: CodeHarbor Link
@@ -115,6 +116,9 @@ en:
       file:
         one: File
         other: Files
+      file_template:
+        one: File Template
+        other: File Templates
       file_type:
         one: File Type
         other: File Types
@@ -127,9 +131,6 @@ en:
       submission:
         one: Submission
         other: Submissions
-      team:
-        one: Team
-        other: Teams
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
@@ -161,6 +162,7 @@ en:
     show:
       link: Consumer
   errors:
+    connection_refused: Connection refused
     index:
       count: Count
   execution_environments:
@@ -325,14 +327,38 @@ en:
       activation_needed:
         body: 'Please visit %{link} and set up a password in order to complete your registration.'
         subject: Please complete your registration.
+      got_new_comment:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          es gibt einen neuen Kommentar von %{commenting_user_displayname} zu Ihrer Kommentaranfrage auf CodeOcean. <br>
+          Sie finden ihn hier: %{link} <br>
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          you received a new comment from %{commenting_user_displayname} to your request for comments on CodeOcean. <br>
+          You can find it here: %{link} <br>
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: 'You received a new comment on CodeOcean from %{commenting_user_displayname}.'
       reset_password:
         body: 'Please visit %{link} if you want to reset your password.'
         subject: Password reset instructions
   request_for_comments:
+    comments: Comments
     index:
       all: All Requests for Comments
       get_my_comment_requests: My Requests for Comments
     no_question: "The author did not enter a question for this request."
+    mark_as_solved: "Mark this question as answered"
+    solved: "This question has been answered"
   sessions:
     create:
       failure: Invalid email or password.
@@ -429,3 +455,5 @@ en:
     next_label: 'Next Page &#8594;'
     page_gap: '&hellip;'
     previous_label: '&#8592; Previous Page'
+  file_template:
+    no_template_label: "Empty File"

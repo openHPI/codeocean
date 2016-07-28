@@ -12,6 +12,9 @@ $(function() {
     $('#files li:last select[name*="file_type_id"]').val(getSelectedExecutionEnvironment().file_type_id);
     $('#files li:last select').chosen(window.CodeOcean.CHOSEN_OPTIONS);
     $('body, html').scrollTo('#add-file');
+    // if we collapse the file forms by default, we need to click on the new element in order to open it.
+    // however, this crashes for more files (if we add several ones by clicking the add button more often), since the elements are probably not correctly added to the files list.
+    //$('#files li:last>div:first>a>div').click();
   };
 
   var ajaxError = function() {
@@ -148,6 +151,22 @@ $(function() {
     });
   };
 
+  var updateFileTemplates = function(fileType) {
+      var jqxhr = $.ajax({
+          url: '/file_templates/by_file_type/' + fileType + '.json',
+          dataType: 'json'
+      });
+      jqxhr.done(function(response) {
+          var noTemplateLabel = $('#noTemplateLabel').data('text');
+          var options = "<option value>" + noTemplateLabel + "</option>";
+          for (var i = 0; i < response.length; i++) {
+              options += "<option value='" + response[i].id + "'>" + response[i].name + "</option>"
+          }
+          $("#code_ocean_file_file_template_id").find('option').remove().end().append($(options));
+      });
+      jqxhr.fail(ajaxError);
+  }
+
   if ($.isController('exercises')) {
     if ($('table').isPresent()) {
       enableBatchUpdate();
@@ -162,6 +181,10 @@ $(function() {
       inferFileAttributes();
       observeFileRoleChanges();
       overrideTextareaTabBehavior();
+    } else if ($('#files.jstree').isPresent()) {
+        var fileTypeSelect = $('#code_ocean_file_file_type_id');
+        fileTypeSelect.on("change", function() {updateFileTemplates(fileTypeSelect.val())});
+        updateFileTemplates(fileTypeSelect.val());
     }
     toggleCodeHeight();
     if (window.hljs) {
