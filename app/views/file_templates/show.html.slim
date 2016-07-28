@@ -1,0 +1,7 @@
+h1
+  = @file_template
+  = render('shared/edit_button', object: @file_template)
+
+= row(label: 'file_template.name', value: @file_template.name)
+= row(label: 'file_template.file_type', value: link_to(@file_template.file_type, file_type_path(@file_template.file_type)))
+= row(label: 'file_template.content', value: @file_template.content)

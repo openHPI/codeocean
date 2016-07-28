@@ -100,6 +100,14 @@ ActiveRecord::Schema.define(version: 20160704143402) do
     t.datetime "updated_at"
   end
 
+  create_table "file_templates", force: true do |t|
+    t.string   "name"
+    t.text     "content"
+    t.integer  "file_type_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "file_types", force: true do |t|
     t.string   "editor_mode"
     t.string   "file_extension"
@@ -131,6 +139,7 @@ ActiveRecord::Schema.define(version: 20160704143402) do
     t.string   "feedback_message"
     t.float    "weight"
     t.string   "path"
+    t.integer  "file_template_id"
   end
 
   add_index "files", ["context_id", "context_type"], name: "index_files_on_context_id_and_context_type", using: :btree

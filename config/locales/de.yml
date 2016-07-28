@@ -52,6 +52,7 @@ de:
         read_only: Schreibgeschützt
         role: Rolle
         weight: Punktzahl
+        file_template_id: "Dateivorlage"
       file_type:
         binary: Binär
         editor_mode: Editor-Modus
@@ -89,6 +90,10 @@ de:
         files: Dateien
         score: Punktzahl
         user: Autor
+      file_template:
+        name: "Name"
+        file_type: "Dateityp"
+        content: "Code"
     models:
       code_harbor_link:
         one: CodeHarbor-Link
@@ -111,6 +116,9 @@ de:
       file:
         one: Datei
         other: Dateien
+      file_template:
+        one: Dateivorlage
+        other: Dateivorlagen
       file_type:
         one: Dateityp
         other: Dateitypen
@@ -447,3 +455,5 @@ de:
     next_label: 'Nächste Seite &#8594;'
     page_gap: '&hellip;'
     previous_label: '&#8592; Vorherige Seite'
+  file_template:
+    no_template_label: "Leere Datei"

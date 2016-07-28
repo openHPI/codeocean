@@ -52,6 +52,7 @@ en:
         read_only: Read-only
         role: Role
         weight: Score
+        file_template_id: "File Template"
       file_type:
         binary: Binary
         editor_mode: Editor Mode
@@ -89,6 +90,10 @@ en:
         files: Files
         score: Score
         user: Author
+      file_template:
+        name: "Name"
+        file_type: "File Type"
+        content: "Content"
     models:
       code_harbor_link:
         one: CodeHarbor Link
@@ -111,6 +116,9 @@ en:
       file:
         one: File
         other: Files
+      file_template:
+        one: File Template
+        other: File Templates
       file_type:
         one: File Type
         other: File Types
@@ -447,3 +455,5 @@ en:
     next_label: 'Next Page &#8594;'
     page_gap: '&hellip;'
     previous_label: '&#8592; Previous Page'
+  file_template:
+    no_template_label: "Empty File"
