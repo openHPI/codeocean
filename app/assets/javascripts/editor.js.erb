@@ -604,11 +604,11 @@ $(function() {
     //    output_mode_is_streaming = false;
     //}
     if (!colorize) {
-      if(output.stdout != ''){
+      if(output.stdout != undefined && output.stdout != ''){
         element.append(output.stdout)
       }
 
-      if(output.stderr != ''){
+      if(output.stderr != undefined && output.stderr != ''){
         element.append('There was an error: StdErr: ' + output.stderr);
       }
 
