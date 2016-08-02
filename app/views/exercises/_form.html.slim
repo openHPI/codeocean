@@ -33,19 +33,12 @@
       = f.check_box(:allow_file_creation)
       = t('activerecord.attributes.exercise.allow_file_creation')
   h2 = t('activerecord.attributes.exercise.files')
-
-
-
-
-  = render('form2', exercise: @exercise, file: @files)
-
-
-
-
+  //render ace editor for not hidden files
+  = render('ace', exercise: @exercise, file: @files)
   ul#files.list-unstyled.panel-group
     = f.fields_for :files do |files_form|
-      = render('file_form', f: files_form, exercise: @exercise, file: @files)
+      = render('file_form', f: files_form)
   a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')
   ul#dummies.hidden = f.fields_for(:files, CodeOcean::File.new, child_index: 'index') do |files_form|
-    = render('file_form', f: files_form, exercise: @exercise, file: @files)
+    = render('file_form', f: files_form)
   .actions = render('shared/submit_button', f: f, object: @exercise)
