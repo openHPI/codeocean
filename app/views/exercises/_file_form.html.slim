@@ -37,8 +37,4 @@ li.panel.panel-default
         .form-group
           = f.label(:role, t('activerecord.attributes.file.weight'))
           = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
-        = render('code_field', attribute: :content, form: f, exercise: @exercise, files: @exercise.files, label: t('activerecord.attributes.file.content'))
-
-        /=render('editor', exercise: @exercise, files: @files, submission: @submission)
-        /= render('editor_frame', exercise: @exercise, file: @exercise.files.take)
-
+        = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
