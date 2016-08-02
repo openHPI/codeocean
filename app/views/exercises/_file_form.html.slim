@@ -1,7 +1,4 @@
 - id = f.object.id
-
-
-
 li.panel.panel-default
   .panel-heading role="tab" id="heading"
     a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{id}"
@@ -40,4 +37,3 @@ li.panel.panel-default
           = f.label(:role, t('activerecord.attributes.file.weight'))
           = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
       = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
-      /= render('form2', exercise: @exercise, file: @files)
