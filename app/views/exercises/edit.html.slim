@@ -1,3 +1,6 @@
 h1 = @exercise
 
-= render('form')
+/= render('form')
+
+
+= render('form', exercise: @exercise, files: @files)
