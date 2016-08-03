@@ -383,7 +383,6 @@ $(function() {
 
   var initializeEditors = function() {
     $('.editor').each(function(index, element) {
-      ace.require('ace/ext/language_tools');
       var editor = ace.edit(element);
 
       if (qa_api) {
