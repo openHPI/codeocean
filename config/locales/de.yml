@@ -402,6 +402,7 @@ de:
     created_at: Erstellt
     destroy: Löschen
     edit: Bearbeiten
+    actions_button: 'Andere Aktionen'
     errors_one: 'Beim Speichern ist ein Fehler aufgetreten'
     errors_other: 'Beim Speichern sind %{count} Fehler aufgetreten'
     help:
