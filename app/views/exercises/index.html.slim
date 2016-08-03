@@ -45,7 +45,6 @@ h1 = Exercise.model_name.human(count: 2)
                 li = link_to(t('shared.show'), exercise) if policy(exercise).show?
                 li = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(exercise).destroy?
                 li = link_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post) if policy(exercise).clone?
-                li = link_to(t('shared.statistics'), statistics_exercise_path(exercise)) if policy(exercise).statistics?
 
 = render('shared/pagination', collection: @exercises)
 p = render('shared/new_button', model: Exercise)
