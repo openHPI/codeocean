@@ -73,6 +73,8 @@ class DockerClient
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
+
+    # rspec error: undefined method `+' for nil:NilClass. problem with ws_host?
     socket = Faye::WebSocket::Client.new(DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params, [], :headers => headers)
 
     socket.on :error do |event|

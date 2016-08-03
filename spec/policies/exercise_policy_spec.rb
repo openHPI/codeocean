@@ -109,7 +109,7 @@ let(:exercise) { FactoryGirl.build(:dummy) }
         end
 
         it "does not include other authors' non-public exercises" do
-          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where(user_id <> #{@teacher.id}").map(&:id))
+          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where("user_id <> #{@teacher.id}").map(&:id))
         end
       end
     end
