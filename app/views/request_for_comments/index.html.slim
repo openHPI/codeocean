@@ -27,6 +27,6 @@ h1 = RequestForComment.model_name.human(count: 2)
             td = '-'
           td = request_for_comment.comments_count
           td = request_for_comment.user.displayname
-          td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.requested_at))
+          td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.created_at))
 
 = render('shared/pagination', collection: @request_for_comments)

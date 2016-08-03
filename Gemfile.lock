@@ -397,6 +397,7 @@ DEPENDENCIES
   rubocop
   rubocop-rspec
   rubytree
+  rubyzip
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   selenium-webdriver
