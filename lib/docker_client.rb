@@ -203,7 +203,7 @@ class DockerClient
     execute_command(command, nil, block)
   end
 
-  #only used by server sent events (deprecated?)
+  #only used by score
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     @container = DockerContainerPool.get_container(@execution_environment)

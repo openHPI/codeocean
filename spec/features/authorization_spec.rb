@@ -5,7 +5,7 @@ describe 'Authorization' do
     let(:user) { FactoryGirl.create(:admin) }
     before(:each) { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 
-    [Consumer, ExecutionEnvironment, Exercise, FileType, InternalUser, Team].each do |model|
+    [Consumer, ExecutionEnvironment, Exercise, FileType, InternalUser].each do |model|
       expect_permitted_path(:"new_#{model.model_name.singular}_path")
     end
   end
@@ -14,7 +14,7 @@ describe 'Authorization' do
     let(:user) { FactoryGirl.create(:external_user) }
     before(:each) { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 
-    [Consumer, ExecutionEnvironment, Exercise, FileType, InternalUser, Team].each do |model|
+    [Consumer, ExecutionEnvironment, Exercise, FileType, InternalUser].each do |model|
       expect_forbidden_path(:"new_#{model.model_name.singular}_path")
     end
   end
@@ -27,7 +27,7 @@ describe 'Authorization' do
       expect_forbidden_path(:"new_#{model.model_name.singular}_path")
     end
 
-    [ExecutionEnvironment, Exercise, FileType, Team].each do |model|
+    [ExecutionEnvironment, Exercise, FileType].each do |model|
       expect_permitted_path(:"new_#{model.model_name.singular}_path")
     end
   end

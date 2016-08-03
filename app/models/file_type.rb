@@ -12,6 +12,7 @@ class FileType < ActiveRecord::Base
 
   has_many :execution_environments
   has_many :files
+  has_many :file_templates
 
   validates :binary, boolean_presence: true
   validates :editor_mode, presence: true, unless: :binary?

@@ -8,5 +8,9 @@
   .form-group
     = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
     = f.collection_select(:file_type_id, FileType.where(binary: false).order(:name), :id, :name, {selected: @exercise.execution_environment.file_type.try(:id)}, class: 'form-control')
+  .form-group
+    = f.label(:file_template_id, t('activerecord.attributes.file.file_template_id'))
+    = f.collection_select(:file_template_id, FileTemplate.all.order(:name), :id, :name, {:include_blank => true}, class: 'form-control')
   = f.hidden_field(:context_id)
+  .hidden#noTemplateLabel data-text=t('file_template.no_template_label')
   .actions = render('shared/submit_button', f: f, object: CodeOcean::File.new)

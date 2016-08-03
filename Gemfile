@@ -38,6 +38,7 @@ gem 'faye-websocket'
 gem 'nokogiri'
 gem 'd3-rails'
 gem 'rest-client'
+gem 'rubyzip'
 
 group :development do
   gem 'better_errors', platform: :ruby
@@ -47,6 +48,7 @@ group :development do
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
   gem 'capistrano-upload-config'
+  gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
   gem 'web-console', '~> 2.0', platform: :ruby
