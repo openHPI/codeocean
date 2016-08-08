@@ -7,15 +7,17 @@
       = t('exercises.editor.lastsaved')
       span
     #editor-buttons.btn-group
+      = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-network' => t('exercises.editor.network'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
+      = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-trophy', id: 'qualitycheck', label: t('exercises.editor.qualitycheck'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + q'))
       = render('editor_button', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
       // = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
       button style="display:none" id="autosave"
-      .btn-group
+      /.btn-group
         = render('editor_button', disabled: true, icon: 'fa fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))
         = render('editor_button', icon: 'fa fa-desktop', id: 'render', label: t('exercises.editor.render'))
-        = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-network' => t('exercises.editor.network'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
         = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-stop', id: 'stop', label: t('exercises.editor.stop'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
         = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-rocket', id: 'test', label: t('exercises.editor.test'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + t'))
+        = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s'))
         /button.btn.btn-primary.dropdown-toggle data-toggle='dropdown' type='button'
         /  span.caret
         /  span.sr-only Toggle Dropdown
@@ -40,7 +42,5 @@
         /    a#dropdown-test data-cause='qualityCheck' href='#'
         /      i.fa.fa-rocket
         /      = t('exercises.editor.qualitycheck')
-        = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-trophy', id: 'qualitycheck', label: t('exercises.editor.qualitycheck'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + q'))
-        = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s'))
 
 = render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.request'), template: 'exercises/_request_comment_dialogcontent')
