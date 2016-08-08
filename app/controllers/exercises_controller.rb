@@ -6,7 +6,8 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit, :reload]
+  #need to add quality_check here?
+  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit, :reload, :quality_check]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_teams, only: [:create, :edit, :new, :update]

@@ -6,7 +6,7 @@ class SubmissionsController < ApplicationController
   include SubmissionScoring
   include Tubesock::Hijack
 
-  before_action :set_submission, only: [:download_file, :render_file, :run, :score, :show, :statistics, :stop, :test]
+  before_action :set_submission, only: [:download_file, :render_file, :run, :score, :show, :statistics, :stop, :test, :quality_check]
   before_action :set_docker_client, only: [:run, :test]
   before_action :set_files, only: [:download_file, :render_file, :show]
   before_action :set_file, only: [:download_file, :render_file]
@@ -76,9 +76,6 @@ class SubmissionsController < ApplicationController
   end
 
   def run
-    p "run ?"
-    binding.pry
-
     # TODO reimplement SSEs with websocket commands
     # with_server_sent_events do |server_sent_event|
     #   output = @docker_client.execute_run_command(@submission, params[:filename])
