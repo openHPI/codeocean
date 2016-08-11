@@ -1,0 +1,86 @@
+CodeOceanEditorWebsocket = {
+  initWebsocketConnection: function (url, onmessageFunction) {
+    //TODO: get the protocol from config file dependent on environment. (dev: ws, prod: wss)
+    //causes: Puma::HttpParserError: Invalid HTTP format, parsing fails.
+    //TODO: make sure that this gets cached.
+    this.websocket = new WebSocket('<%= DockerClient.config['ws_client_protocol'] %>' + window.location.hostname + ':' + window.location.port + url);
+    this.websocket.onopen = function (evt) {
+      this.resetOutputTab();
+    }; // todo show some kind of indicator for established connection
+    this.websocket.onclose = function (evt) { /* expected at some point */
+    };
+    this.websocket.onmessage = onmessageFunction;
+    this.websocket.onerror = function (evt) {
+      this.showWebsocketError();
+    };
+    this.websocket.flush = function () {
+      this.send('\n');
+    }
+  },
+
+  //ToDo: Move websocket and commands variable in here
+  executeWebsocketCommand: function (msg) {
+    if ($.inArray(msg.cmd, this.commands) == -1) {
+      console.log("Unknown command: " + msg.cmd);
+      // skipping unregistered commands is required
+      // as we may receive mirrored response due to internal behaviour
+      return;
+    }
+    switch (msg.cmd) {
+      case 'input':
+        this.showPrompt(msg);
+        break;
+      case 'write':
+        this.printWebsocketOutput(msg);
+        break;
+      case 'turtle':
+        this.showCanvas();
+        this.handleTurtleCommand(msg);
+        break;
+      case 'turtlebatch':
+        this.showCanvas();
+        this.handleTurtlebatchCommand(msg);
+        break;
+      case 'render':
+        this.renderWebsocketOutput(msg);
+        break;
+      case 'exit':
+        this.killWebsocketAndContainer();
+        this.handleQaApiOutput();
+        this.handleStderrOutputForFlowr();
+        this.augmentStacktraceInOutput();
+        break;
+      case 'timeout':
+        // just show the timeout message here. Another exit command is sent by the rails backend when the socket to the docker container closes.
+        this.showTimeoutMessage();
+        break;
+      case 'status':
+        this.showStatus(msg);
+        break;
+    }
+  },
+
+  parseCanvasMessage: function (message, recursive) {
+    var msg;
+    message = message.replace(/^\s+|\s+$/g, "");
+    try {
+      // todo validate json instead of catching
+      msg = JSON.parse(message);
+    } catch (e) {
+      if (!recursive) {
+        return false;
+      }
+      // why does docker sometimes send multiple commands at once?
+      message = message.replace(/^\s+|\s+$/g, "");
+      var messages = message.split("\n");
+      for (var i = 0; i < messages.length; i++) {
+        if (!messages[i]) {
+          continue;
+        }
+        this.parseCanvasMessage(messages[i], false);
+      }
+      return;
+    }
+    this.executeWebsocketCommand(msg);
+  }
+};

@@ -1,0 +1,266 @@
+CodeOceanEditorEvaluation = {
+  chunkBuffer: [{streamedResponse: true}],
+
+  evaluateCode: function (url, streamed, callback) {
+    (streamed ? this.evaluateCodeWithStreamedResponse : this.evaluateCodeWithoutStreamedResponse)(url, callback);
+  },
+
+  evaluateCodeWithStreamedResponse: function (url, onmessageFunction) {
+    this.initWebsocketConnection(url, onmessageFunction);
+
+    // TODO only init turtle when required
+    this.initTurtle();
+  },
+
+  evaluateCodeWithoutStreamedResponse: function (url, callback) {
+    var jqxhr = this.ajax({
+      method: 'GET',
+      url: url
+    });
+    jqxhr.always(this.hideSpinner);
+    jqxhr.done(callback);
+    jqxhr.fail(this.ajaxError);
+  },
+
+  handleScoringResponse: function (websocket_event) {
+    var results = JSON.parse(websocket_event.data);
+    this.printScoringResults(results);
+    var score = _.reduce(results, function (sum, result) {
+      return sum + result.score * result.weight;
+    }, 0).toFixed(2);
+    $('#score').data('score', score);
+    this.renderScore();
+    this.showTab(2);
+  },
+
+  handleTestResponse: function (websocket_event) {
+    var result = JSON.parse(websocket_event.data);
+    this.clearOutput();
+    this.printOutput(result, false, 0);
+    if (this.qa_api) {
+      this.qa_api.executeCommand('syncOutput', [result]);
+    }
+    this.showStatus(result);
+    this.showTab(1);
+  },
+
+  printOutput: function (output, colorize, index) {
+    var element = this.findOrCreateOutputElement(index);
+    if (!colorize) {
+      if (output.stdout != undefined && output.stdout != '') {
+        element.append(output.stdout)
+      }
+
+      if (output.stderr != undefined && output.stderr != '') {
+        element.append('There was an error: StdErr: ' + output.stderr);
+      }
+
+    } else if (output.stderr) {
+      element.addClass('text-warning').append(output.stderr);
+      this.flowrOutputBuffer += output.stderr;
+      this.QaApiOutputBuffer.stderr += output.stderr;
+    } else if (output.stdout) {
+      element.addClass('text-success').append(output.stdout);
+      this.flowrOutputBuffer += output.stdout;
+      this.QaApiOutputBuffer.stdout += output.stdout;
+    } else {
+      element.addClass('text-muted').text($('#output').data('message-no-output'));
+    }
+  },
+
+  printScoringResult: function (result, index) {
+    $('#results').show();
+    var panel = $('#dummies').children().first().clone();
+    this.populatePanel(panel, result, index);
+    $('#results ul').first().append(panel);
+  },
+
+  printScoringResults: function (response) {
+    $('#results ul').first().html('');
+    $('.test-count .number').html(response.length);
+    this.clearOutput();
+
+    _.each(response, function (result, index) {
+      this.printOutput(result, false, index);
+      this.printScoringResult(result, index);
+    });
+
+    if (_.some(response, function (result) {
+          return result.status === 'timeout';
+        })) {
+      this.showTimeoutMessage();
+    }
+    if (_.some(response, function (result) {
+          return result.status === 'container_depleted';
+        })) {
+      this.showContainerDepletedMessage();
+    }
+    if (this.qa_api) {
+      // send test response to QA
+      this.qa_api.executeCommand('syncOutput', [response]);
+    }
+  },
+
+  renderHint: function (object) {
+    var hint = object.data || object.hint;
+    if (hint) {
+      $('#hint .panel-body').text(hint);
+      $('#hint').fadeIn();
+    }
+  },
+
+  renderScore: function () {
+    var score = parseFloat($('#score').data('score'));
+    var maximum_score = parseFloat($('#score').data('maximum-score'));
+    if (score >= 0 && score <= maximum_score && maximum_score > 0) {
+      var percentage_score = (score / maximum_score * 100 ).toFixed(0);
+      $('.score').html(percentage_score + '%');
+    }
+    else {
+      $('.score').html(0 + '%');
+    }
+    this.renderProgressBar(score, maxium_score);
+  },
+
+  scoreCode: function (event) {
+    event.preventDefault();
+    runmode = this.SERVER_SEND_EVENT;
+    this.createSubmission(this, null, function (response) {
+      showSpinner($('#assess'));
+      var url = response.score_url;
+      this.evaluateCode(url, true, this.handleScoringResponse);
+    });
+  },
+
+  stopCode: function (event) {
+    event.preventDefault();
+    if ($('#stop').is(':visible')) {
+      if (this.runmode == this.WEBSOCKET) {
+        killWebsocketAndContainer();
+      } else if (this.runmode == this.SERVER_SEND_EVENT) {
+        stopCodeServerSendEvent(event);
+      }
+      this.runmode = this.NONE;
+    }
+  },
+
+  stopCodeServerSendEvent: function (event) {
+    var jqxhr = this.ajax({
+      data: {
+        container_id: $('#stop').data('container').id
+      },
+      url: $('#stop').data('url')
+    });
+    jqxhr.always(function () {
+      this.hideSpinner();
+      this.running = false;
+      this.toggleButtonStates();
+    });
+    jqxhr.fail(ajaxError);
+  },
+
+  killWebsocketAndContainer: function () {
+    if (this.websocket.readyState != WebSocket.OPEN) {
+      return;
+    }
+
+    this.websocket.send(JSON.stringify({cmd: 'exit'}));
+    this.websocket.flush();
+    this.websocket.close();
+    this.hideSpinner();
+    this.running = false;
+    this.toggleButtonStates();
+    this.hidePrompt();
+  },
+
+  // todo set this from websocket command, required to e.g. stop container
+  storeContainerInformation: function (event) {
+    var container_information = JSON.parse(event.data);
+    $('#stop').data('container', container_information);
+
+    if (_.size(container_information.port_bindings) > 0) {
+      $.flash.info({
+        icon: ['fa', 'fa-exchange'],
+        text: _.map(container_information.port_bindings, function (key, value) {
+          var url = window.location.protocol + '//' + window.location.hostname + ':' + key;
+          return $('#run').data('message-network').replace('%{port}', value).replace(/%{address}/g, url);
+        }).join('\n')
+      });
+    }
+  },
+
+  //TODO: Move Prompt Part in own component
+  showPrompt: function(msg) {
+    var label = $('#prompt .input-group-addon');
+    label.text(msg.data || label.data('prompt'));
+    if (this.prompt.isPresent() && this.prompt.hasClass('hidden')) {
+      this.prompt.removeClass('hidden');
+    }
+    $('#prompt input').focus();
+  },
+
+  hidePrompt: function() {
+    if (this.prompt.isPresent() && !this.prompt.hasClass('hidden')) {
+      this.prompt.addClass('hidden');
+    }
+  },
+
+  initPrompt: function() {
+    if ($('#run').isPresent()) {
+      $('#run').bind('click', this.hidePrompt);
+    }
+    if ($('#prompt').isPresent()) {
+      $('#prompt').on('keypress', this.handlePromptKeyPress);
+      $('#prompt-submit').on('click', this.submitPromptInput);
+    }
+  },
+
+  submitPromptInput: function() {
+    var input = $('#prompt-input');
+    var message = input.val();
+    this.websocket.send(JSON.stringify({cmd: 'result', 'data': message}));
+    this.websocket.flush();
+    input.val('');
+    this.hidePrompt();
+  },
+
+  handlePromptKeyPress: function(evt) {
+    if (evt.which === this.ENTER_KEY_CODE) {
+      this.submitPromptInput();
+    }
+  },
+
+  renderWebsocketOutput: function(msg){
+    var element = this.findOrCreateRenderElement(0);
+    element.append(msg.data);
+  },
+
+  printWebsocketOutput: function(msg) {
+    if (!msg.data) {
+      return;
+    }
+    msg.data = msg.data.replace(/(\r)/gm, "\n");
+    var stream = {};
+    stream[msg.stream] = msg.data;
+    this.printOutput(stream, true, 0);
+  },
+
+  clearOutput: function() {
+    $('#output pre').remove();
+  },
+
+  printChunk: function(event) {
+    var output = JSON.parse(event.data);
+    if (output) {
+      this.printOutput(output, true, 0);
+      // send test response to QA
+      // we are expecting an array of outputs:
+      if (this.qa_api) {
+        this.chunkBuffer.push(output);
+      }
+    } else {
+      this.resetOutputTab();
+    }
+  },
+
+};

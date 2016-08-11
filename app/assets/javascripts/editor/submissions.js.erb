@@ -1,0 +1,171 @@
+
+CodeOceanEditorSubmissions = {
+  collectFiles: function() {
+    var editable_editors = _.filter(this.editors, function(editor) {
+      return !editor.getReadOnly();
+    });
+    return _.map(editable_editors, function(editor) {
+      return {
+        content: editor.getValue(),
+        file_id: $(editor.container).data('file-id')
+      };
+    });
+  },
+
+  createSubmission: function (initiator, filter, callback) {
+    this.showSpinner(initiator);
+    var jqxhr = this.ajax({
+      data: {
+        submission: {
+          cause: $(initiator).data('cause') || $(initiator).prop('id'),
+          exercise_id: $('#editor').data('exercise-id'),
+          files_attributes: (filter || _.identity)(this.collectFiles())
+        },
+        annotations_arr: []
+      },
+      dataType: 'json',
+      method: 'POST',
+      url: $(initiator).data('url') || $('#editor').data('submissions-url')
+    });
+    jqxhr.always(this.hideSpinner);
+    jqxhr.done(this.createSubmissionCallback);
+    jqxhr.done(callback);
+    jqxhr.fail(this.ajaxError);
+  },
+
+  createSubmissionCallback: function(data){
+    // set all frames context types to submission
+    $('.frame').each(function(index, element) {
+      $(element).data('context-type', 'Submission');
+    });
+
+    // update the ids of the editors and reload the annotations
+    for (var i = 0; i < this.editors.length; i++) {
+
+      // set the data attribute to submission
+      //$(editors[i].container).data('context-type', 'Submission');
+
+      var file_id_old = $(this.editors[i].container).data('file-id');
+
+      // file_id_old is always set. Either it is a reference to a teacher supplied given file, or it is the actual id of a new user created file.
+      // This is the case, since it is set via a call to ancestor_id on the model, which returns either file_id if set, or id if it is not set.
+      // therefore the else part is not needed any longer...
+
+      // if we have an file_id set (the file is a copy of a teacher supplied given file)
+      if (file_id_old != null){
+        // if we find file_id_old (this is the reference to the base file) in the submission, this is the match
+        for(var j = 0; j< data.files.length; j++){
+          if(data.files[j].file_id == file_id_old){
+            //$(editors[i].container).data('id') = data.files[j].id;
+            $(this.editors[i].container).data('id', data.files[j].id );
+          }
+        }
+      }
+    }
+    // toggle button states (it might be the case that the request for comments button has to be enabled
+    this.toggleButtonStates();
+  },
+
+  destroyFile: function() {
+    this.createSubmission($('#destroy-file'), function(files) {
+      return _.reject(files, function(file) {
+        return file.file_id === active_file.id;
+      });
+    }, window.CodeOcean.refresh);
+  },
+
+  downloadCode: function(event) {
+    event.preventDefault();
+    this.createSubmission(this, null,function(response) {
+      var url = response.download_url;
+
+      // to download just a single file, use the following url
+      //var url = response.download_file_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
+      window.location = url;
+    });
+  },
+
+  resetCode: function() {
+    this.showSpinner(this);
+    this.ajax({
+      method: 'GET',
+      url: $('#start-over').data('url')
+    }).success(function(response) {
+      this.hideSpinner();
+      _.each(this.editors, function(editor) {
+        var file_id = $(editor.container).data('file-id');
+        var file = _.find(response.files, function(file) {
+          return file.id === file_id;
+        });
+        editor.setValue(file.content);
+      });
+    });
+  },
+
+  renderCode: function(event) {
+    event.preventDefault();
+    if ($('#render').is(':visible')) {
+      this.createSubmission(this, null, function (response) {
+        var url = response.render_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
+        var pop_up_window = window.open(url);
+        if (pop_up_window) {
+          pop_up_window.onerror = function (message) {
+            this.clearOutput();
+            this.printOutput({
+              stderr: message
+            }, true, 0);
+            this.sendError(message, response.id);
+            this.showTab(1);
+          };
+        }
+      });
+    }
+  },
+
+  //Todo Split up in submitpart and run part
+  runCode: function(event) {
+      event.preventDefault();
+      if ($('#run').is(':visible')) {
+        this.runmode = this.WEBSOCKET;
+        this.createSubmission(this, null, function(response) {
+
+          //Run part starts here
+          $('#stop').data('url', response.stop_url);
+          this.running = true;
+          this.showSpinner($('#run'));
+          this.toggleButtonStates();
+          var url = response.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
+          this.evaluateCode(url, true, function(evt) { this.parseCanvasMessage(evt.data, true); });
+        });
+      }
+  },
+
+  saveCode: function(event) {
+    event.preventDefault();
+    this.createSubmission(this, null, function() {
+      $.flash.success({
+        text: $('#save').data('message-success')
+      });
+    });
+  },
+
+  testCode: function(event) {
+    event.preventDefault();
+    if ($('#test').is(':visible')) {
+      this.createSubmission(this, null, function(response) {
+        this.showSpinner($('#test'));
+        var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
+        this.evaluateCode(url, true, this.handleTestResponse);
+      });
+    }
+  },
+
+  submitCode: function() {
+    this.createSubmission($('#submit'), null, function (response) {
+      if (response.redirect) {
+        localStorage.removeItem('tab');
+        window.location = response.redirect;
+      }
+    })
+  }
+};

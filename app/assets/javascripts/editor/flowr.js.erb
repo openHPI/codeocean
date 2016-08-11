@@ -1,0 +1,91 @@
+CodeOceanEditorFlowr = {
+  isFlowrEnabled: true,
+
+  handleStderrOutputForFlowr: function () {
+    if (!this.isFlowrEnabled) return;
+
+    var flowrUrl = $('#flowrHint').data('url');
+    var flowrHintBody = $('#flowrHint .panel-body');
+    var queryParameters = {
+      query: this.flowrOutputBuffer
+    }
+
+    flowrHintBody.empty();
+
+    jQuery.getJSON(flowrUrl, queryParameters, function (data) {
+      jQuery.each(data.queryResults, function (index, question) {
+        var collapsibleTileHtml = this.flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question);
+        var resultTile = $(collapsibleTileHtml);
+
+        resultTile.find('h4 > a').text(question.title + ' | Found via ' + question.source);
+        resultTile.find('.panel-body').html(question.body);
+        resultTile.find('.panel-body').append('<a href="' + question.url + '" class="btn btn-primary btn-block">Open this question</a>');
+
+        flowrHintBody.append(resultTile);
+      });
+
+      if (data.queryResults.length !== 0) {
+        $('#flowrHint').fadeIn();
+      }
+    });
+
+    this.flowrOutputBuffer = '';
+  },
+
+  requestComments: function () {
+    var user_id = $('#editor').data('user-id');
+    var exercise_id = $('#editor').data('exercise-id');
+    var file_id = $('.editor').data('id');
+    var question = $('#question').val();
+
+    var createRequestForComments = function (submission) {
+      $.ajax({
+        method: 'POST',
+        url: '/request_for_comments',
+        data: {
+          request_for_comment: {
+            exercise_id: exercise_id,
+            file_id: file_id,
+            submission_id: submission.id,
+            question: question
+          }
+        }
+      }).done(function () {
+        this.hideSpinner();
+        $.flash.success({text: $('#askForCommentsButton').data('message-success')});
+      }).error(this.ajaxError);
+    }
+
+    this.createSubmission($('.requestCommentsButton'), null, createRequestForComments);
+
+    $('#comment-modal').modal('hide');
+    var button = $('.requestCommentsButton');
+    button.fadeOut();
+  },
+
+  //tODO move codepilot out of here.
+  initializeCodePilot: function () {
+    if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined') && QaApi.isBrowserSupported()) {
+      $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
+      $('#questions-column').addClass('col-md-3');
+
+      var node = document.getElementById('questions-holder');
+      var url = $('#questions-holder').data('url');
+
+      this.qa_api = new QaApi(node, url);
+    }
+  },
+
+  handleQaApiOutput: function () {
+    if (this.qa_api) {
+      this.qa_api.executeCommand('syncOutput', [[this.QaApiOutputBuffer]]);
+      // reset the object
+    }
+    this.QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
+  },
+
+  handleStreamedResponseForCodePilot: function (event) {
+    this.qa_api.executeCommand('syncOutput', [this.chunkBuffer]);
+    this.chunkBuffer = [{streamedResponse: true}];
+  }
+};

@@ -1,0 +1,585 @@
+var CodeOceanEditor = {
+  ACE_FILES_PATH: '/assets/ace/',
+  ADEQUATE_PERCENTAGE: 50,
+  ALT_1_KEY_CODE: 161,
+  ALT_2_KEY_CODE: 8220,
+  ALT_3_KEY_CODE: 182,
+  ALT_4_KEY_CODE: 162,
+  ALT_R_KEY_CODE: 174,
+  ALT_S_KEY_CODE: 8218,
+  ALT_T_KEY_CODE: 8224,
+  FILENAME_URL_PLACEHOLDER: '{filename}',
+  SUCCESSFULL_PERCENTAGE: 90,
+  THEME: 'ace/theme/textmate',
+  REMEMBER_TAB: false,
+  AUTOSAVE_INTERVAL: 15 * 1000,
+  REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
+  NONE: 0,
+  WEBSOCKET: 1,
+  SERVER_SEND_EVENT: 2,
+
+  editors: [],
+  editor_for_file: new Map(),
+  regex_for_language: new Map(),
+  tracepositions_regex: undefined,
+
+  active_file: undefined,
+  active_frame: undefined,
+  running: false,
+  qa_api: undefined,
+  output_mode_is_streaming: true,
+  runmode: this.NONE,
+
+  websocket: null,
+  turtlescreen: null,
+  numMessages: 0,
+  turtlecanvas: $('#turtlecanvas'),
+  prompt: $('#prompt'),
+  commands: ['input', 'write', 'turtle', 'turtlebatch', 'render', 'exit', 'timeout', 'status'],
+  streams: ['stdin', 'stdout', 'stderr'],
+  lastCopyText: null,
+
+  autosaveTimer: null,
+  autosaveLabel: $("#autosave-label span"),
+
+  ENTER_KEY_CODE: 13,
+
+  flowrOutputBuffer: "",
+  QaApiOutputBuffer: {'stdout': '', 'stderr': ''},
+  flowrResultHtml: '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>',
+
+
+  configureEditors: function () {
+    _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
+      this.ace.config.set(attribute, this.ACE_FILES_PATH);
+    }.bind(this));
+  },
+
+  confirmDestroy: function (event) {
+    event.preventDefault();
+    if (confirm($(this).data('message-confirm'))) {
+      this.destroyFile();
+    }
+  },
+
+
+  confirmReset: function (event) {
+    event.preventDefault();
+    if (confirm($(this).data('message-confirm'))) {
+      this.resetCode();
+    }
+  },
+
+  fileActionsAvailable: function () {
+    return this.isActiveFileRenderable() || this.isActiveFileRunnable() || this.isActiveFileStoppable() || this.isActiveFileTestable();
+  },
+
+  findOrCreateOutputElement: function (index) {
+    if ($('#output-' + index).isPresent()) {
+      return $('#output-' + index);
+    } else {
+      var element = $('<pre>').attr('id', 'output-' + index);
+      $('#output').append(element);
+      return element;
+    }
+  },
+
+  findOrCreateRenderElement: function (index) {
+    if ($('#render-' + index).isPresent()) {
+      return $('#render-' + index);
+    } else {
+      var element = $('<div>').attr('id', 'render-' + index);
+      $('#render').append(element);
+      return element;
+    }
+  },
+
+  getPanelClass: function (result) {
+    if (result.stderr && !result.score) {
+      return 'panel-danger';
+    } else if (result.score < 1) {
+      return 'panel-warning';
+    } else {
+      return 'panel-success';
+    }
+  },
+
+  showOutput: function(event) {
+    event.preventDefault();
+    this.showTab(1);
+    $('#output').scrollTo($(this).attr('href'));
+  },
+
+  renderProgressBar: function(score, maximum_score) {
+    var percentage = score / maximum_score * 100;
+    var progress_bar = $('#score .progress-bar');
+    progress_bar.removeClass().addClass(this.getProgressBarClass(percentage));
+    progress_bar.attr({
+      'aria-valuemax': maximum_score,
+      'aria-valuemin': 0,
+      'aria-valuenow': score
+    });
+    progress_bar.css('width', percentage + '%');
+  },
+
+  showFirstFile: function() {
+    var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
+    var file_id = frame.find('.editor').data('file-id');
+    this.setActiveFile(frame.data('filename'), file_id);
+    $('#files').jstree().select_node(file_id);
+    this.showFrame(frame);
+    this.toggleButtonStates();
+  },
+
+  showFrame: function(frame) {
+    this.active_frame = frame;
+    $('.frame').hide();
+    frame.show();
+  },
+
+  getProgressBarClass: function (percentage) {
+    if (percentage < this.ADEQUATE_PERCENTAGE) {
+      return 'progress-bar progress-bar-striped progress-bar-danger';
+    } else if (percentage < this.SUCCESSFULL_PERCENTAGE) {
+      return 'progress-bar progress-bar-striped progress-bar-warning';
+    } else {
+      return 'progress-bar progress-bar-striped progress-bar-success';
+    }
+  },
+
+  handleKeyPress: function (event) {
+    if (event.which === this.ALT_1_KEY_CODE) {
+      this.showWorkspaceTab(event);
+    } else if (event.which === this.ALT_2_KEY_CODE) {
+      this.showTab(1);
+    } else if (event.which === this.ALT_3_KEY_CODE) {
+      this.showTab(2);
+    } else if (event.which === this.ALT_R_KEY_CODE) {
+      $('#run').trigger('click');
+    } else if (event.which === this.ALT_S_KEY_CODE) {
+      $('#assess').trigger('click');
+    } else if (event.which === this.ALT_T_KEY_CODE) {
+      $('#test').trigger('click');
+    } else {
+      return;
+    }
+    event.preventDefault();
+  },
+
+  handleCopyEvent: function (text) {
+    this.lastCopyText = text;
+  },
+
+  handlePasteEvent: function (pasteObject) {
+    var same = (this.lastCopyText === pasteObject.text);
+
+    // if the text is not copied from within the editor (from any file), send an event to lanalytics
+    if (!same) {
+      this.publishCodeOceanEvent("codeocean_editor_paste", {
+        text: pasteObject.text,
+        exercise: $('#editor').data('exercise-id'),
+        file_id: "1"
+
+      });
+    }
+  },
+
+  hideSpinner: function () {
+    $('button i.fa').show();
+    $('button i.fa-spin').hide();
+  },
+
+  resetSaveTimer: function () {
+    this.clearTimeout(this.autosaveTimer);
+    this.autosaveTimer = setTimeout(this.autosave, this.AUTOSAVE_INTERVAL);
+  },
+
+  autosave: function () {
+    var date = new Date();
+    this.autosaveLabel.parent().css("visibility", "visible");
+    this.autosaveLabel.text(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
+    this.autosaveLabel.text(date.toLocaleTimeString());
+    this.autosaveTimer = null;
+    this.createSubmission($('#autosave'), null);
+  },
+
+  initializeEditors: function () {
+    $('.editor').each(function (index, element) {
+      var editor = ace.edit(element);
+
+      if (this.qa_api) {
+        editor.getSession().on("change", function (deltaObject) {
+          this.qa_api.executeCommand('syncEditor', [this.active_file, deltaObject]);
+        });
+      }
+      var document = editor.getSession().getDocument();
+      // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
+      var file_id = $(element).data('file-id');
+      var content = $('.editor-content[data-file-id=' + file_id + ']');
+      this.setActiveFile($(element).parent().data('filename'), file_id);
+
+      document.insertLines(0, content.text().split(/\n/));
+      // remove last (empty) that is there by default line
+      document.removeLines(document.getLength() - 1, document.getLength() - 1);
+      editor.setReadOnly($(element).data('read-only') !== undefined);
+      editor.setShowPrintMargin(false);
+      editor.setTheme(this.THEME);
+      editor.commands.bindKey("ctrl+alt+0", null);
+      this.editors.push(editor);
+      this.editor_for_file.set($(element).parent().data('filename'), editor);
+      var session = editor.getSession();
+      session.setMode($(element).data('mode'));
+      session.setTabSize($(element).data('indent-size'));
+      session.setUseSoftTabs(true);
+      session.setUseWrapMode(true);
+
+      // set regex for parsing error traces based on the mode of the main file.
+      if ($(element).parent().data('role') == "main_file") {
+        this.tracepositions_regex = this.regex_for_language.get($(element).data('mode'));
+      }
+
+      var file_id = $(element).data('id');
+
+      /*
+       * Register event handlers
+       */
+
+      // editor itself
+      editor.on("paste", this.handlePasteEvent);
+      editor.on("copy", this.handleCopyEvent);
+
+      // listener for autosave
+      session.on("change", function (deltaObject) {
+        this.resetSaveTimer();
+      }.bind(this));
+    });
+  },
+
+  initializeEventHandlers: function () {
+    $(document).on('click', '#results a', this.showOutput);
+    $(document).on('keypress', this.handleKeyPress);
+    $('a[data-toggle="tab"]').on('show.bs.tab', this.storeTab);
+    this.initializeFileTreeButtons();
+    this.initializeWorkflowButtons();
+    this.initializeWorkspaceButtons();
+    this.initializeRequestForComments()
+  },
+
+  initializeFileTree: function () {
+    $('#files').jstree($('#files').data('entries'));
+    $('#files').on('click', 'li.jstree-leaf', function () {
+      active_file = {
+        filename: $(this).text(),
+        id: parseInt($(this).attr('id'))
+      };
+      var frame = $('[data-file-id="' + active_file.id + '"]').parent();
+      this.showFrame(frame);
+      this.toggleButtonStates();
+    });
+  },
+
+  initializeFileTreeButtons: function () {
+    $('#create-file').on('click', this.showFileDialog);
+    $('#destroy-file').on('click', this.confirmDestroy);
+    $('#download').on('click', this.downloadCode);
+    $('#request-for-comments').on('click', this.requestComments);
+  },
+
+  initializeRegexes: function () {
+    this.regex_for_language.set("ace/mode/python", /File "(.+?)", line (\d+)/g);
+    this.regex_for_language.set("ace/mode/java", /(.*\.java):(\d+):/g);
+  },
+
+  initializeTooltips: function () {
+    $('[data-tooltip]').tooltip();
+  },
+
+  initializeWorkflowButtons: function () {
+    $('#start').on('click', this.showWorkspaceTab);
+    //$('#submit').on('click', confirmSubmission);
+    $('#submit').on('click', this.submitCode);
+  },
+
+  initializeWorkspaceButtons: function () {
+    $('#assess').on('click', this.scoreCode); // todo
+    $('#dropdown-render, #render').on('click', this.renderCode);
+    $('#dropdown-run, #run').on('click', this.runCode);
+    $('#dropdown-stop, #stop').on('click', this.stopCode); // todo
+    $('#dropdown-test, #test').on('click', this.testCode); // todo
+    $('#save').on('click', this.saveCode);
+    $('#start-over').on('click', this.confirmReset);
+  },
+
+  initializeRequestForComments: function () {
+    var button = $('.requestCommentsButton');
+    button.hide();
+    button.on('click', function () {
+      $('#comment-modal').modal('show');
+    });
+
+    $('#askForCommentsButton').on('click', this.requestComments);
+
+    setTimeout(function () {
+      button.fadeIn();
+    }, this.REQUEST_FOR_COMMENTS_DELAY);
+  },
+
+  isActiveFileRenderable: function () {
+    return 'renderable' in this.active_frame.data();
+  },
+
+  isActiveFileRunnable: function () {
+    return this.isActiveFileExecutable() && ['main_file', 'user_defined_file'].includes(this.active_frame.data('role'));
+  },
+
+  isActiveFileStoppable: function () {
+    return this.isActiveFileRunnable() && this.running;
+  },
+
+  isActiveFileSubmission: function () {
+    return ['Submission'].includes(this.active_frame.data('contextType'));
+  },
+
+  isActiveFileTestable: function () {
+    return this.isActiveFileExecutable() && ['teacher_defined_test', 'user_defined_test'].includes(this.active_frame.data('role'));
+  },
+
+  isBrowserSupported: function () {
+    //  websockets is used for run, score and test
+    return Modernizr.websockets;
+  },
+
+  populatePanel: function (panel, result, index) {
+    panel.removeClass('panel-default').addClass(this.getPanelClass(result));
+    panel.find('.panel-title .filename').text(result.filename);
+    panel.find('.panel-title .number').text(index + 1);
+    panel.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
+    panel.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
+    panel.find('.row .col-sm-9').eq(1).find('.number').eq(0).text((result.score * result.weight).toFixed(2));
+    panel.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
+    panel.find('.row .col-sm-9').eq(2).text(result.message);
+    if (result.error_messages) panel.find('.row .col-sm-9').eq(3).text(result.error_messages.join(', '));
+    panel.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
+  },
+
+  publishCodeOceanEvent: function (eventName, contextData) {
+    var payload = {
+      user: {
+        type: 'User',
+        uuid: $('#editor').data('user-id')
+      },
+      verb: {
+        type: eventName
+      },
+      resource: {
+        type: 'page',
+        uuid: document.location.href
+      },
+      timestamp: new Date().toISOString(),
+      with_result: {},
+      in_context: contextData
+    };
+
+    $.ajax("https://open.hpi.de/lanalytics/log", {
+      type: 'POST',
+      cache: false,
+      dataType: 'JSON',
+      data: payload,
+      success: {},
+      error: {}
+    })
+  },
+
+  sendError: function (message, submission_id) {
+    this.showSpinner($('#render'));
+    var jqxhr = this.ajax({
+      data: {
+        error: {
+          message: message,
+          submission_id: submission_id
+        }
+      },
+      url: $('#editor').data('errors-url')
+    });
+    jqxhr.always(this.hideSpinner);
+    jqxhr.success(this.renderHint);
+  },
+
+  toggleButtonStates: function () {
+    $('#destroy-file').prop('disabled', active_frame.data('role') !== 'user_defined_file');
+    $('#dropdown-render').toggleClass('disabled', !this.isActiveFileRenderable());
+    $('#dropdown-run').toggleClass('disabled', !this.isActiveFileRunnable() || this.running);
+    $('#dropdown-stop').toggleClass('disabled', !this.isActiveFileStoppable());
+    $('#dropdown-test').toggleClass('disabled', !this.isActiveFileTestable());
+    $('#dummy').toggle(!this.fileActionsAvailable());
+    $('#editor-buttons .dropdown-toggle').toggle(this.fileActionsAvailable());
+    $('#render').toggle(this.isActiveFileRenderable());
+    $('#run').toggle(this.isActiveFileRunnable() && !this.running);
+    $('#stop').toggle(this.isActiveFileStoppable());
+    $('#test').toggle(this.isActiveFileTestable());
+  },
+
+  jumpToSourceLine: function (event) {
+    var file = $(event.target).data('file');
+    var line = $(event.target).data('line');
+
+    this.showWorkspaceTab(null);
+    // set active file ?!?!
+
+    var frame = $('div.frame[data-filename="' + file + '"]');
+    this.showFrame(frame);
+
+    var editor = editor_for_file.get(file);
+    editor.gotoLine(line, 0);
+
+  },
+
+  augmentStacktraceInOutput: function () {
+    if (this.tracepositions_regex) {
+      var element = $('#output>pre');
+      var text = element.text();
+      element.on("click", "a", this.jumpToSourceLine);
+
+      var matches;
+
+      while (matches = this.tracepositions_regex.exec(text)) {
+        var frame = $('div.frame[data-filename="' + matches[1] + '"]')
+
+        if (frame.length > 0) {
+          element.html(text.replace(matches[0], "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>"));
+        }
+      }
+    }
+  },
+
+  storeTab: function (event) {
+    localStorage.tab = $(event.target).parent().index();
+  },
+
+  resetOutputTab: function () {
+    this.clearOutput();
+    $('#hint').fadeOut();
+    $('#flowrHint').fadeOut();
+    this.showTab(1);
+  },
+
+  isActiveFileBinary: function () {
+    return 'binary' in this.active_frame.data();
+  },
+
+  isActiveFileExecutable: function () {
+    return 'executable' in this.active_frame.data();
+  },
+
+  setActiveFile: function (filename, fileId) {
+    this.active_file = {
+      filename: filename,
+      id: fileId
+    };
+  },
+
+  closeEventSource: function (event) {
+    event.target.close();
+    this.hideSpinner();
+    this.running = false;
+    this.toggleButtonStates();
+
+    if (event.type === 'error' || JSON.parse(event.data).code !== 200) {
+      this.ajaxError();
+      this.showTab(0);
+    }
+  },
+
+  showRequestedTab: function() {
+    if(this.REMEMBER_TAB){
+      var regexp = /tab=(\d+)/;
+      if (regexp.test(window.location.search)) {
+        var index = regexp.exec(window.location.search)[1] - 1;
+      } else {
+        var index = this.localStorage.tab;
+      }
+    } else {
+      // else start with first tab.
+      var index = 0;
+    }
+    this.showTab(index);
+  },
+
+  showSpinner: function(initiator) {
+    $(initiator).find('i.fa').hide();
+    $(initiator).find('i.fa-spin').show();
+  },
+
+  showStatus: function(output) {
+    if (output.status === 'timeout') {
+      this.showTimeoutMessage();
+    } else if (output.status === 'container_depleted') {
+      this.showContainerDepletedMessage();
+    } else if (output.stderr) {
+      $.flash.danger({
+        icon: ['fa', 'fa-bug'],
+        text: $('#run').data('message-failure')
+      });
+    }
+  },
+
+  showContainerDepletedMessage: function() {
+    $.flash.danger({
+      icon: ['fa', 'fa-clock-o'],
+      text: $('#editor').data('message-depleted')
+    });
+  },
+
+  showTab: function(index) {
+    $('a[data-toggle="tab"]').eq(index || 0).tab('show');
+  },
+
+  showTimeoutMessage: function() {
+    $.flash.info({
+      icon: ['fa', 'fa-clock-o'],
+      text: $('#editor').data('message-timeout')
+    });
+  },
+
+  showWebsocketError: function() {
+    $.flash.danger({
+      text: $('#flash').data('message-failure')
+    });
+  },
+
+  showWorkspaceTab: function(event) {
+    if(event){
+      event.preventDefault();
+    }
+    this.showTab(0);
+  },
+
+  showFileDialog: function(event) {
+    event.preventDefault();
+    this.createSubmission(this, null, function(response) {
+      $('#code_ocean_file_context_id').val(response.id);
+      $('#modal-file').modal('show');
+    });
+  },
+
+  initializeEverything: function() {
+    this.initializeRegexes();
+    this.initializeCodePilot();
+    $('.score, #development-environment').show();
+    this.configureEditors();
+    this.initializeEditors();
+    this.initializeEventHandlers();
+    this.initializeFileTree();
+    this.initializeTooltips();
+    this.initPrompt();
+    this.renderScore();
+    this.showFirstFile();
+    this.showRequestedTab();
+
+    $(window).on("beforeunload", function() {
+      if(this.autosaveTimer != null){
+        this.autosave();
+      }
+    }.bind(this));
+  }
+};
