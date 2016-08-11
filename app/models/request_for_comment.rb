@@ -4,14 +4,10 @@ class RequestForComment < ActiveRecord::Base
   belongs_to :exercise
   belongs_to :file, class_name: 'CodeOcean::File'
 
-  before_create :set_requested_timestamp
+  scope :unsolved, -> { where(solved: [false, nil]) }
 
     def self.last_per_user(n = 5)
       from("(#{row_number_user_sql}) as request_for_comments").where("row_number <= ?", n)
-    end
-
-    def set_requested_timestamp
-        self.requested_at = Time.now
     end
 
   # not used right now, finds the last submission for the respective user and exercise.
