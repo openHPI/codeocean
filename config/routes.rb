@@ -1,6 +1,11 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
+  resources :file_templates do
+    collection do
+      get 'by_file_type/:file_type_id', as: :by_file_type, to: :by_file_type
+    end
+  end
   resources :code_harbor_links
   resources :request_for_comments do
     member do
@@ -89,7 +94,8 @@ Rails.application.routes.draw do
 
   resources :submissions, only: [:create, :index, :show] do
     member do
-      get 'download/:filename', as: :download, constraints: {filename: FILENAME_REGEXP}, to: :download_file
+      get 'download', as: :download, to: :download
+      get 'download/:filename', as: :download_file, constraints: {filename: FILENAME_REGEXP}, to: :download_file
       get 'render/:filename', as: :render, constraints: {filename: FILENAME_REGEXP}, to: :render_file
       get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, to: :run
       get :score
@@ -99,5 +105,4 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :teams
 end

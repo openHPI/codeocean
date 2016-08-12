@@ -22,6 +22,3 @@ Hint.create_factories
 
 # submissions
 FactoryGirl.create(:submission, exercise: @exercises[:fibonacci])
-
-# teams
-FactoryGirl.create(:team, internal_users: InternalUser.limit(10))

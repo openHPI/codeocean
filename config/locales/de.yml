@@ -34,8 +34,6 @@ de:
         instructions: Anweisungen
         maximum_score: Erreichbare Punktzahl
         public: Öffentlich
-        team: Team
-        team_id: Team
         title: Titel
         user: Autor
         allow_file_creation: "Dateierstellung erlauben"
@@ -54,6 +52,7 @@ de:
         read_only: Schreibgeschützt
         role: Rolle
         weight: Punktzahl
+        file_template_id: "Dateivorlage"
       file_type:
         binary: Binär
         editor_mode: Editor-Modus
@@ -91,9 +90,10 @@ de:
         files: Dateien
         score: Punktzahl
         user: Autor
-      team:
-        internal_user_ids: Mitglieder
-        name: Name
+      file_template:
+        name: "Name"
+        file_type: "Dateityp"
+        content: "Code"
     models:
       code_harbor_link:
         one: CodeHarbor-Link
@@ -116,6 +116,9 @@ de:
       file:
         one: Datei
         other: Dateien
+      file_template:
+        one: Dateivorlage
+        other: Dateivorlagen
       file_type:
         one: Dateityp
         other: Dateitypen
@@ -128,9 +131,6 @@ de:
       submission:
         one: Abgabe
         other: Abgaben
-      team:
-        one: Team
-        other: Teams
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'
@@ -402,6 +402,7 @@ de:
     created_at: Erstellt
     destroy: Löschen
     edit: Bearbeiten
+    actions_button: 'Andere Aktionen'
     errors_one: 'Beim Speichern ist ein Fehler aufgetreten'
     errors_other: 'Beim Speichern sind %{count} Fehler aufgetreten'
     help:
@@ -455,3 +456,5 @@ de:
     next_label: 'Nächste Seite &#8594;'
     page_gap: '&hellip;'
     previous_label: '&#8592; Vorherige Seite'
+  file_template:
+    no_template_label: "Leere Datei"

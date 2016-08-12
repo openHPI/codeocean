@@ -34,8 +34,6 @@ en:
         instructions: Instructions
         maximum_score: Maximum Score
         public: Public
-        team: Team
-        team_id: Team
         title: Title
         user: Author
         allow_file_creation: "Allow file creation"
@@ -54,6 +52,7 @@ en:
         read_only: Read-only
         role: Role
         weight: Score
+        file_template_id: "File Template"
       file_type:
         binary: Binary
         editor_mode: Editor Mode
@@ -91,9 +90,10 @@ en:
         files: Files
         score: Score
         user: Author
-      team:
-        internal_user_ids: Members
-        name: Name
+      file_template:
+        name: "Name"
+        file_type: "File Type"
+        content: "Content"
     models:
       code_harbor_link:
         one: CodeHarbor Link
@@ -116,6 +116,9 @@ en:
       file:
         one: File
         other: Files
+      file_template:
+        one: File Template
+        other: File Templates
       file_type:
         one: File Type
         other: File Types
@@ -128,9 +131,6 @@ en:
       submission:
         one: Submission
         other: Submissions
-      team:
-        one: Team
-        other: Teams
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
@@ -402,6 +402,7 @@ en:
     created_at: Created At
     destroy: Delete
     edit: Edit
+    actions_button: 'Other actions'
     errors_one: 'An error prohibited this %{model} from being saved'
     errors_other: '%{count} errors prohibited this %{model} from being saved'
     help:
@@ -455,3 +456,5 @@ en:
     next_label: 'Next Page &#8594;'
     page_gap: '&hellip;'
     previous_label: '&#8592; Previous Page'
+  file_template:
+    no_template_label: "Empty File"

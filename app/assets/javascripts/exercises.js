@@ -151,20 +151,41 @@ $(function() {
     });
   };
 
+  var updateFileTemplates = function(fileType) {
+      var jqxhr = $.ajax({
+          url: '/file_templates/by_file_type/' + fileType + '.json',
+          dataType: 'json'
+      });
+      jqxhr.done(function(response) {
+          var noTemplateLabel = $('#noTemplateLabel').data('text');
+          var options = "<option value>" + noTemplateLabel + "</option>";
+          for (var i = 0; i < response.length; i++) {
+              options += "<option value='" + response[i].id + "'>" + response[i].name + "</option>"
+          }
+          $("#code_ocean_file_file_template_id").find('option').remove().end().append($(options));
+      });
+      jqxhr.fail(ajaxError);
+  }
+
   if ($.isController('exercises')) {
     if ($('table').isPresent()) {
       enableBatchUpdate();
     } else if ($('.edit_exercise, .new_exercise').isPresent()) {
       execution_environments = $('form').data('execution-environments');
       file_types = $('form').data('file-types');
-     // new MarkdownEditor('#exercise_instructions');
-      new MarkdownEditor('#exercise_description');
+      // new MarkdownEditor('#exercise_instructions');
+      // new MarkdownEditor('#exercise_description')
       // todo: add an ace editor for each file
+      new PagedownEditor('#exercise_description');
 
       enableInlineFileCreation();
       inferFileAttributes();
       observeFileRoleChanges();
       overrideTextareaTabBehavior();
+    } else if ($('#files.jstree').isPresent()) {
+        var fileTypeSelect = $('#code_ocean_file_file_type_id');
+        fileTypeSelect.on("change", function() {updateFileTemplates(fileTypeSelect.val())});
+        updateFileTemplates(fileTypeSelect.val());
     }
     toggleCodeHeight();
     if (window.hljs) {

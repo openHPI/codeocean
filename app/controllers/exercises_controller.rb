@@ -9,7 +9,6 @@ class ExercisesController < ApplicationController
   before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :edit, :run, :statistics, :submit, :reload]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
-  before_action :set_teams, only: [:create, :edit, :new, :update]
 
   skip_before_filter :verify_authenticity_token, only: [:import_proforma_xml]
   skip_after_action :verify_authorized, only: [:import_proforma_xml]
@@ -121,7 +120,7 @@ class ExercisesController < ApplicationController
   private :user_by_code_harbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :team_id, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :exercise_params
 
@@ -196,11 +195,6 @@ class ExercisesController < ApplicationController
     @file_types = FileType.all.order(:name)
   end
   private :set_file_types
-
-  def set_teams
-    @teams = Team.all.order(:name)
-  end
-  private :set_teams
 
   def show
   end

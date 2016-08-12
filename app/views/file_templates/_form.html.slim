@@ -1,0 +1,12 @@
+= form_for(@file_template) do |f|
+  = render('shared/form_errors', object: @file_template)
+  .form-group
+    = f.label(:name)
+    = f.text_field(:name, class: 'form-control', required: true)
+  .form-group
+    = f.label(:file_type_id)
+    = f.collection_select(:file_type_id, FileType.all.order(:name), :id, :name, {}, class: 'form-control')
+  .form-group
+    = f.label(:content)
+    = f.text_area(:content, class: 'form-control')
+  .actions = render('shared/submit_button', f: f, object: @file_template)

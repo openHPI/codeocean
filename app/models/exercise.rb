@@ -11,7 +11,6 @@ class Exercise < ActiveRecord::Base
 
   belongs_to :execution_environment
   has_many :submissions
-  belongs_to :team
 
   has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
   has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions

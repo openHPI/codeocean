@@ -28,6 +28,8 @@ gem 'rubytree'
 gem 'sass-rails', '~> 4.0.3'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'slim'
+gem 'bootstrap_pagedown'
+gem 'pagedown-rails', '~> 1.1.4'
 gem 'sorcery'
 gem 'thread_safe'
 gem 'turbolinks'
@@ -38,6 +40,7 @@ gem 'faye-websocket'
 gem 'nokogiri'
 gem 'd3-rails'
 gem 'rest-client'
+gem 'rubyzip'
 
 group :development do
   gem 'better_errors', platform: :ruby
@@ -50,12 +53,13 @@ group :development do
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
+  gem 'web-console', '~> 2.0', platform: :ruby
 end
 
 group :development, :test do
   gem 'byebug', platform: :ruby
   gem 'spring'
-  gem 'web-console', '~> 2.0', platform: :ruby
+
 end
 
 group :test do
