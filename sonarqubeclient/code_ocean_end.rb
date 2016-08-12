@@ -1,6 +1,6 @@
 require 'active_record'
 require 'pg'
-require "bunny"
+require 'bunny'
 require 'json'
 require 'pp'
 
@@ -10,8 +10,7 @@ class Files < ActiveRecord::Base
 	        :adapter  => "postgresql",
 	        :host     => "localhost",
 	        :database => "code_ocean_development",
-	        :username => "postgres",
-	        :password => "postpass"
+	        :username => "postgres"
 	)
 
 end
@@ -38,9 +37,9 @@ total_start = Time.now
 index=1
 
 
-exercise_data = Files.connection.execute("select files.name as file_name, files.role as file_role, file_types.file_extension as file_ext, files.read_only as file_readonly, files.content as file_content from files, file_types where files.context_id=162 and files.context_type='Exercise' and files.file_type_id=file_types.id;")
+exercise_data = Files.connection.execute("select files.name as file_name, files.role as file_role, file_types.file_extension as file_ext, files.read_only as file_readonly, files.content as file_content from files, file_types where files.context_id=82 and files.context_type='Exercise' and files.file_type_id=file_types.id;")
 
-submissions_data = Files.connection.execute("select distinct on(submissions.user_id, files.name, file_types.file_extension) submissions.user_id as user_id, files.name as file_name, file_types.file_extension as file_ext, files.read_only as file_readonly,files.role as file_role, files.content as file_content from exercises, files, file_types, submissions where exercises.id = 162 and files.file_type_id=file_types.id and submissions.id = files.context_id and submissions.exercise_id=exercises.id and submissions.cause='submit' order by submissions.user_id, files.name, file_types.file_extension, date(submissions.created_at) desc;")
+submissions_data = Files.connection.execute("select distinct on(submissions.user_id, files.name, file_types.file_extension) submissions.user_id as user_id, files.name as file_name, file_types.file_extension as file_ext, files.read_only as file_readonly,files.role as file_role, files.content as file_content from exercises, files, file_types, submissions where exercises.id = 82 and files.file_type_id=file_types.id and submissions.id = files.context_id and submissions.exercise_id=exercises.id and submissions.cause='submit' order by submissions.user_id, files.name, file_types.file_extension, date(submissions.created_at) desc;")
 
 puts "Processing " + submissions_data.count.to_s + " number of submissions..."
 submissions_hash = {}

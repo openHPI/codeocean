@@ -1,7 +1,7 @@
 require 'active_record'
 require 'pg'
 require 'csv'
-require "bunny"
+require 'bunny'
 require 'json'
 require 'timeout'
 
