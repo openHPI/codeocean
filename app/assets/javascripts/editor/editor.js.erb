@@ -51,7 +51,7 @@ var CodeOceanEditor = {
 
   configureEditors: function () {
     _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
-      this.ace.config.set(attribute, this.ACE_FILES_PATH);
+      ace.config.set(attribute, this.ACE_FILES_PATH);
     }.bind(this));
   },
 
@@ -65,7 +65,7 @@ var CodeOceanEditor = {
 
   confirmReset: function (event) {
     event.preventDefault();
-    if (confirm($(this).data('message-confirm'))) {
+    if (confirm($('#start-over').data('message-confirm'))) {
       this.resetCode();
     }
   },
@@ -190,7 +190,7 @@ var CodeOceanEditor = {
   },
 
   resetSaveTimer: function () {
-    this.clearTimeout(this.autosaveTimer);
+    clearTimeout(this.autosaveTimer);
     this.autosaveTimer = setTimeout(this.autosave, this.AUTOSAVE_INTERVAL);
   },
 
@@ -212,6 +212,7 @@ var CodeOceanEditor = {
           this.qa_api.executeCommand('syncEditor', [this.active_file, deltaObject]);
         });
       }
+
       var document = editor.getSession().getDocument();
       // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
       var file_id = $(element).data('file-id');
@@ -245,14 +246,14 @@ var CodeOceanEditor = {
        */
 
       // editor itself
-      editor.on("paste", this.handlePasteEvent);
-      editor.on("copy", this.handleCopyEvent);
+      editor.on("paste", this.handlePasteEvent.bind(this));
+      editor.on("copy", this.handleCopyEvent.bind(this));
 
       // listener for autosave
       session.on("change", function (deltaObject) {
         this.resetSaveTimer();
       }.bind(this));
-    });
+    }.bind(this));
   },
 
   initializeEventHandlers: function () {
@@ -279,10 +280,10 @@ var CodeOceanEditor = {
   },
 
   initializeFileTreeButtons: function () {
-    $('#create-file').on('click', this.showFileDialog);
-    $('#destroy-file').on('click', this.confirmDestroy);
-    $('#download').on('click', this.downloadCode);
-    $('#request-for-comments').on('click', this.requestComments);
+    $('#create-file').on('click', this.showFileDialog.bind(this));
+    $('#destroy-file').on('click', this.confirmDestroy.bind(this));
+    $('#download').on('click', this.downloadCode.bind(this));
+    $('#request-for-comments').on('click', this.requestComments.bind(this));
   },
 
   initializeRegexes: function () {
@@ -295,19 +296,18 @@ var CodeOceanEditor = {
   },
 
   initializeWorkflowButtons: function () {
-    $('#start').on('click', this.showWorkspaceTab);
-    //$('#submit').on('click', confirmSubmission);
-    $('#submit').on('click', this.submitCode);
+    $('#start').on('click', this.showWorkspaceTab.bind(this));
+    $('#submit').on('click', this.submitCode.bind(this));
   },
 
   initializeWorkspaceButtons: function () {
-    $('#assess').on('click', this.scoreCode); // todo
-    $('#dropdown-render, #render').on('click', this.renderCode);
-    $('#dropdown-run, #run').on('click', this.runCode);
-    $('#dropdown-stop, #stop').on('click', this.stopCode); // todo
-    $('#dropdown-test, #test').on('click', this.testCode); // todo
-    $('#save').on('click', this.saveCode);
-    $('#start-over').on('click', this.confirmReset);
+    $('#assess').on('click', this.scoreCode.bind(this));
+    $('#dropdown-render, #render').on('click', this.renderCode.bind(this));
+    $('#dropdown-run, #run').on('click', this.runCode.bind(this));
+    $('#dropdown-stop, #stop').on('click', this.stopCode.bind(this));
+    $('#dropdown-test, #test').on('click', this.testCode.bind(this));
+    $('#save').on('click', this.saveCode.bind(this));
+    $('#start-over').on('click', this.confirmReset.bind(this));
   },
 
   initializeRequestForComments: function () {
@@ -406,7 +406,7 @@ var CodeOceanEditor = {
   },
 
   toggleButtonStates: function () {
-    $('#destroy-file').prop('disabled', active_frame.data('role') !== 'user_defined_file');
+    $('#destroy-file').prop('disabled', this.active_frame.data('role') !== 'user_defined_file');
     $('#dropdown-render').toggleClass('disabled', !this.isActiveFileRenderable());
     $('#dropdown-run').toggleClass('disabled', !this.isActiveFileRunnable() || this.running);
     $('#dropdown-stop').toggleClass('disabled', !this.isActiveFileStoppable());
@@ -556,7 +556,7 @@ var CodeOceanEditor = {
 
   showFileDialog: function(event) {
     event.preventDefault();
-    this.createSubmission(this, null, function(response) {
+    this.createSubmission('#create-file', null, function(response) {
       $('#code_ocean_file_context_id').val(response.id);
       $('#modal-file').modal('show');
     });

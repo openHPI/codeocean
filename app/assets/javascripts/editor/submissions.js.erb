@@ -27,10 +27,10 @@ CodeOceanEditorSubmissions = {
       method: 'POST',
       url: $(initiator).data('url') || $('#editor').data('submissions-url')
     });
-    jqxhr.always(this.hideSpinner);
-    jqxhr.done(this.createSubmissionCallback);
-    jqxhr.done(callback);
-    jqxhr.fail(this.ajaxError);
+    jqxhr.always(this.hideSpinner.bind(this));
+    jqxhr.done(this.createSubmissionCallback.bind(this));
+    jqxhr.done(callback.bind(this));
+    jqxhr.fail(this.ajaxError.bind(this));
   },
 
   createSubmissionCallback: function(data){
@@ -76,7 +76,7 @@ CodeOceanEditorSubmissions = {
 
   downloadCode: function(event) {
     event.preventDefault();
-    this.createSubmission(this, null,function(response) {
+    this.createSubmission('#download', null,function(response) {
       var url = response.download_url;
 
       // to download just a single file, use the following url
@@ -98,14 +98,14 @@ CodeOceanEditorSubmissions = {
           return file.id === file_id;
         });
         editor.setValue(file.content);
-      });
-    });
+      }.bind(this));
+    }.bind(this));
   },
 
   renderCode: function(event) {
     event.preventDefault();
     if ($('#render').is(':visible')) {
-      this.createSubmission(this, null, function (response) {
+      this.createSubmission('#render', null, function (response) {
         var url = response.render_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
         var pop_up_window = window.open(url);
         if (pop_up_window) {
@@ -127,22 +127,21 @@ CodeOceanEditorSubmissions = {
       event.preventDefault();
       if ($('#run').is(':visible')) {
         this.runmode = this.WEBSOCKET;
-        this.createSubmission(this, null, function(response) {
-
+        this.createSubmission('#run', null, function(response) {
           //Run part starts here
           $('#stop').data('url', response.stop_url);
           this.running = true;
           this.showSpinner($('#run'));
           this.toggleButtonStates();
           var url = response.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
-          this.evaluateCode(url, true, function(evt) { this.parseCanvasMessage(evt.data, true); });
-        });
+          this.evaluateCode(url, function(evt) { this.parseCanvasMessage(evt.data, true); }.bind(this));
+        }.bind(this));
       }
   },
 
   saveCode: function(event) {
     event.preventDefault();
-    this.createSubmission(this, null, function() {
+    this.createSubmission('#save', null, function() {
       $.flash.success({
         text: $('#save').data('message-success')
       });
@@ -152,11 +151,11 @@ CodeOceanEditorSubmissions = {
   testCode: function(event) {
     event.preventDefault();
     if ($('#test').is(':visible')) {
-      this.createSubmission(this, null, function(response) {
+      this.createSubmission('#test', null, function(response) {
         this.showSpinner($('#test'));
         var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
-        this.evaluateCode(url, true, this.handleTestResponse);
-      });
+        this.evaluateCode(url, this.handleTestResponse.bind(this));
+      }.bind(this));
     }
   },
 

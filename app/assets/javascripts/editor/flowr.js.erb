@@ -54,7 +54,7 @@ CodeOceanEditorFlowr = {
         this.hideSpinner();
         $.flash.success({text: $('#askForCommentsButton').data('message-success')});
       }).error(this.ajaxError);
-    }
+    };
 
     this.createSubmission($('.requestCommentsButton'), null, createRequestForComments);
 

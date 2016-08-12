@@ -1,25 +1,11 @@
 CodeOceanEditorEvaluation = {
   chunkBuffer: [{streamedResponse: true}],
 
-  evaluateCode: function (url, streamed, callback) {
-    (streamed ? this.evaluateCodeWithStreamedResponse : this.evaluateCodeWithoutStreamedResponse)(url, callback);
-  },
-
-  evaluateCodeWithStreamedResponse: function (url, onmessageFunction) {
+  evaluateCode: function (url, onmessageFunction) {
     this.initWebsocketConnection(url, onmessageFunction);
 
     // TODO only init turtle when required
     this.initTurtle();
-  },
-
-  evaluateCodeWithoutStreamedResponse: function (url, callback) {
-    var jqxhr = this.ajax({
-      method: 'GET',
-      url: url
-    });
-    jqxhr.always(this.hideSpinner);
-    jqxhr.done(callback);
-    jqxhr.fail(this.ajaxError);
   },
 
   handleScoringResponse: function (websocket_event) {
@@ -83,7 +69,7 @@ CodeOceanEditorEvaluation = {
     _.each(response, function (result, index) {
       this.printOutput(result, false, index);
       this.printScoringResult(result, index);
-    });
+    }.bind(this));
 
     if (_.some(response, function (result) {
           return result.status === 'timeout';
@@ -119,26 +105,26 @@ CodeOceanEditorEvaluation = {
     else {
       $('.score').html(0 + '%');
     }
-    this.renderProgressBar(score, maxium_score);
+    this.renderProgressBar(score, maximum_score);
   },
 
   scoreCode: function (event) {
     event.preventDefault();
-    runmode = this.SERVER_SEND_EVENT;
-    this.createSubmission(this, null, function (response) {
-      showSpinner($('#assess'));
+    this.runmode = this.SERVER_SEND_EVENT;
+    this.createSubmission('#assess', null, function (response) {
+      this.showSpinner($('#assess'));
       var url = response.score_url;
-      this.evaluateCode(url, true, this.handleScoringResponse);
-    });
+      this.evaluateCode(url, this.handleScoringResponse.bind(this));
+    }.bind(this));
   },
 
   stopCode: function (event) {
     event.preventDefault();
     if ($('#stop').is(':visible')) {
       if (this.runmode == this.WEBSOCKET) {
-        killWebsocketAndContainer();
+        this.killWebsocketAndContainer();
       } else if (this.runmode == this.SERVER_SEND_EVENT) {
-        stopCodeServerSendEvent(event);
+        this.stopCodeServerSendEvent(event);
       }
       this.runmode = this.NONE;
     }
@@ -207,11 +193,11 @@ CodeOceanEditorEvaluation = {
 
   initPrompt: function() {
     if ($('#run').isPresent()) {
-      $('#run').bind('click', this.hidePrompt);
+      $('#run').bind('click', this.hidePrompt.bind(this));
     }
     if ($('#prompt').isPresent()) {
-      $('#prompt').on('keypress', this.handlePromptKeyPress);
-      $('#prompt-submit').on('click', this.submitPromptInput);
+      $('#prompt').on('keypress', this.handlePromptKeyPress.bind(this));
+      $('#prompt-submit').on('click', this.submitPromptInput.bind(this));
     }
   },
 
@@ -247,20 +233,6 @@ CodeOceanEditorEvaluation = {
 
   clearOutput: function() {
     $('#output pre').remove();
-  },
-
-  printChunk: function(event) {
-    var output = JSON.parse(event.data);
-    if (output) {
-      this.printOutput(output, true, 0);
-      // send test response to QA
-      // we are expecting an array of outputs:
-      if (this.qa_api) {
-        this.chunkBuffer.push(output);
-      }
-    } else {
-      this.resetOutputTab();
-    }
-  },
+  }
 
 };

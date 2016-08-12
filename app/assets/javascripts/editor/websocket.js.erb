@@ -6,13 +6,13 @@ CodeOceanEditorWebsocket = {
     this.websocket = new WebSocket('<%= DockerClient.config['ws_client_protocol'] %>' + window.location.hostname + ':' + window.location.port + url);
     this.websocket.onopen = function (evt) {
       this.resetOutputTab();
-    }; // todo show some kind of indicator for established connection
+    }.bind(this); // todo show some kind of indicator for established connection
     this.websocket.onclose = function (evt) { /* expected at some point */
-    };
+    }.bind(this);
     this.websocket.onmessage = onmessageFunction;
     this.websocket.onerror = function (evt) {
       this.showWebsocketError();
-    };
+    }.bind(this);
     this.websocket.flush = function () {
       this.send('\n');
     }
