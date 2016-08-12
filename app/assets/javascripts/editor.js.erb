@@ -14,9 +14,6 @@ $(function() {
   var REMEMBER_TAB = false;
   var AUTOSAVE_INTERVAL = 15 * 1000;
   var REQUEST_FOR_COMMENTS_DELAY = 3 * 60 * 1000;
-  var NONE = 0;
-  var WEBSOCKET = 1;
-  var SERVER_SEND_EVENT = 2;
 
   var editors = [];
   var editor_for_file = new Map();
@@ -29,7 +26,6 @@ $(function() {
   var running = false;
   var qa_api = undefined;
   var output_mode_is_streaming = true;
-  var runmode = NONE;
 
   var websocket,
       turtlescreen,
@@ -62,18 +58,6 @@ $(function() {
 
   var clearOutput = function() {
     $('#output pre').remove();
-  };
-
-  var closeEventSource = function(event) {
-    event.target.close();
-    hideSpinner();
-    running = false;
-    toggleButtonStates();
-
-    if (event.type === 'error' || JSON.parse(event.data).code !== 200) {
-      ajaxError();
-      showTab(0);
-    }
   };
 
   var collectFiles = function() {
@@ -189,44 +173,8 @@ $(function() {
     });
   };
 
-  var evaluateCode = function(url, streamed, callback) {
-    (streamed ? evaluateCodeWithStreamedResponse : evaluateCodeWithoutStreamedResponse)(url, callback);
-  };
-
-  var evaluateCodeWithStreamedResponse = function(url, onmessageFunction) {
-    initWebsocketConnection(url, onmessageFunction);
-
-    // TODO only init turtle when required
-    initTurtle();
-
-    // TODO reimplement via websocket messsages
-    /*var event_source = new EventSource(url);
-    event_source.addEventListener('hint', renderHint);
-    event_source.addEventListener('info', storeContainerInformation);
-
-    if ($('#flowrHint').isPresent()) {
-      event_source.addEventListener('output', handleStderrOutputForFlowr);
-      event_source.addEventListener('close', handleStderrOutputForFlowr);
-    }
-
-    if (qa_api) {
-      event_source.addEventListener('close', handleStreamedResponseForCodePilot);
-    }*/
-  };
-
-  var handleStreamedResponseForCodePilot = function(event) {
-      qa_api.executeCommand('syncOutput', [chunkBuffer]);
-      chunkBuffer = [{streamedResponse: true}];
-  }
-
-  var evaluateCodeWithoutStreamedResponse = function(url, callback) {
-    var jqxhr = ajax({
-      method: 'GET',
-      url: url
-    });
-    jqxhr.always(hideSpinner);
-    jqxhr.done(callback);
-    jqxhr.fail(ajaxError);
+  var evaluateCode = function(url, callback) {
+    initWebsocketConnection(url, callback);
   };
 
   var fileActionsAvailable = function() {
@@ -522,10 +470,6 @@ $(function() {
     }, REQUEST_FOR_COMMENTS_DELAY);
   };
 
-  var isActiveFileBinary = function() {
-      return 'binary' in active_frame.data();
-  };
-
   var isActiveFileExecutable = function() {
     return 'executable' in active_frame.data();
   };
@@ -575,21 +519,6 @@ $(function() {
     panel.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
   };
 
-  var chunkBuffer = [{streamedResponse: true}];
-
-  var printChunk = function(event) {
-    var output = JSON.parse(event.data);
-    if (output) {
-        printOutput(output, true, 0);
-        // send test response to QA
-        // we are expecting an array of outputs:
-        if (qa_api) {
-            chunkBuffer.push(output);
-        }
-    } else {
-      resetOutputTab();
-    }
-  };
 
   var resetOutputTab = function() {
       clearOutput();
@@ -770,14 +699,13 @@ $(function() {
   var runCode = function(event) {
     event.preventDefault();
     if ($('#run').is(':visible')) {
-      runmode = WEBSOCKET;
       createSubmission(this, null, function(response) {
         $('#stop').data('url', response.stop_url);
         running = true;
         showSpinner($('#run'));
         toggleButtonStates();
         var url = response.run_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
-        evaluateCode(url, true, function(evt) { parseCanvasMessage(evt.data, true); });
+        evaluateCode(url, function(evt) { parseCanvasMessage(evt.data, true); });
       });
     }
   };
@@ -808,11 +736,10 @@ $(function() {
 
   var scoreCode = function(event) {
     event.preventDefault();
-    runmode = SERVER_SEND_EVENT;
     createSubmission(this, null, function(response) {
       showSpinner($('#assess'));
       var url = response.score_url;
-      evaluateCode(url, true, handleScoringResponse);
+      evaluateCode(url, handleScoringResponse);
     });
   };
 
@@ -918,29 +845,9 @@ $(function() {
 
   var stopCode = function(event) {
     event.preventDefault();
-    if ($('#stop').is(':visible')) {
-      if(runmode == WEBSOCKET){
-        killWebsocketAndContainer();
-      } else if (runmode == SERVER_SEND_EVENT) {
-        stopCodeServerSendEvent(event);
-      }
-      runmode = NONE;
+    if (isActiveFileStoppable()) {
+      killWebsocketAndContainer();
     }
-  };
-
-  var stopCodeServerSendEvent = function(event){
-    var jqxhr = ajax({
-      data: {
-        container_id: $('#stop').data('container').id
-      },
-      url: $('#stop').data('url')
-    });
-    jqxhr.always(function() {
-      hideSpinner();
-      running = false;
-      toggleButtonStates();
-    });
-    jqxhr.fail(ajaxError);
   };
 
   var killWebsocketAndContainer = function() {
@@ -961,22 +868,6 @@ $(function() {
     hidePrompt();
   }
 
-  // todo set this from websocket command, required to e.g. stop container
-  var storeContainerInformation = function(event) {
-    var container_information = JSON.parse(event.data);
-    $('#stop').data('container', container_information);
-
-    if (_.size(container_information.port_bindings) > 0) {
-      $.flash.info({
-        icon: ['fa', 'fa-exchange'],
-        text: _.map(container_information.port_bindings, function(key, value) {
-          var url = window.location.protocol + '//' + window.location.hostname + ':' + key;
-          return $('#run').data('message-network').replace('%{port}', value).replace(/%{address}/g, url);
-        }).join('\n')
-      });
-    }
-  };
-
   var storeTab = function(event) {
     localStorage.tab = $(event.target).parent().index();
   };
@@ -996,7 +887,7 @@ $(function() {
       createSubmission(this, null, function(response) {
         showSpinner($('#test'));
         var url = response.test_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
-        evaluateCode(url, true, handleTestResponse);
+        evaluateCode(url, handleTestResponse);
       });
     }
   };
