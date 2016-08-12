@@ -10,7 +10,8 @@ class Files < ActiveRecord::Base
 	        :adapter  => "postgresql",
 	        :host     => "localhost",
 	        :database => "code_ocean_development",
-	        :username => "postgres"
+	        :username => "postgres",
+	        :password => "postpass"
 	)
 
 end
