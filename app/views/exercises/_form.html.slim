@@ -30,8 +30,8 @@
       = f.check_box(:allow_file_creation)
       = t('activerecord.attributes.exercise.allow_file_creation')
   h2 = t('activerecord.attributes.exercise.files')
-  //render ace editor for not hidden files
-  //= render('ace', exercise: @exercise, file: @files)
+  /render ace editor for not hidden files
+  = render('ace', exercise: @exercise, file: @files.first)
 
 
   ul#files.list-unstyled.panel-group
