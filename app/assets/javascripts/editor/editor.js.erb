@@ -427,7 +427,7 @@ var CodeOceanEditor = {
     var frame = $('div.frame[data-filename="' + file + '"]');
     this.showFrame(frame);
 
-    var editor = editor_for_file.get(file);
+    var editor = this.editor_for_file.get(file);
     editor.gotoLine(line, 0);
 
   },
@@ -436,7 +436,7 @@ var CodeOceanEditor = {
     if (this.tracepositions_regex) {
       var element = $('#output>pre');
       var text = element.text();
-      element.on("click", "a", this.jumpToSourceLine);
+      element.on("click", "a", this.jumpToSourceLine.bind(this));
 
       var matches;
 
