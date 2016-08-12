@@ -34,10 +34,12 @@ CodeOceanEditorWebsocket = {
         this.printWebsocketOutput(msg);
         break;
       case 'turtle':
+        this.initTurtle();
         this.showCanvas();
         this.handleTurtleCommand(msg);
         break;
       case 'turtlebatch':
+        this.initTurtle();
         this.showCanvas();
         this.handleTurtlebatchCommand(msg);
         break;
@@ -49,6 +51,7 @@ CodeOceanEditorWebsocket = {
         this.handleQaApiOutput();
         this.handleStderrOutputForFlowr();
         this.augmentStacktraceInOutput();
+        this.cleanUpTurtle();
         break;
       case 'timeout':
         // just show the timeout message here. Another exit command is sent by the rails backend when the socket to the docker container closes.

@@ -83,9 +83,4 @@ CodeOceanEditorFlowr = {
     }
     this.QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
   },
-
-  handleStreamedResponseForCodePilot: function (event) {
-    this.qa_api.executeCommand('syncOutput', [this.chunkBuffer]);
-    this.chunkBuffer = [{streamedResponse: true}];
-  }
 };

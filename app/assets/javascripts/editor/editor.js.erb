@@ -31,9 +31,7 @@ var CodeOceanEditor = {
   runmode: this.NONE,
 
   websocket: null,
-  turtlescreen: null,
   numMessages: 0,
-  turtlecanvas: $('#turtlecanvas'),
   prompt: $('#prompt'),
   commands: ['input', 'write', 'turtle', 'turtlebatch', 'render', 'exit', 'timeout', 'status'],
   streams: ['stdin', 'stdout', 'stderr'],
@@ -191,7 +189,7 @@ var CodeOceanEditor = {
 
   resetSaveTimer: function () {
     clearTimeout(this.autosaveTimer);
-    this.autosaveTimer = setTimeout(this.autosave, this.AUTOSAVE_INTERVAL);
+    this.autosaveTimer = setTimeout(this.autosave.bind(this), this.AUTOSAVE_INTERVAL);
   },
 
   autosave: function () {
@@ -476,18 +474,6 @@ var CodeOceanEditor = {
       filename: filename,
       id: fileId
     };
-  },
-
-  closeEventSource: function (event) {
-    event.target.close();
-    this.hideSpinner();
-    this.running = false;
-    this.toggleButtonStates();
-
-    if (event.type === 'error' || JSON.parse(event.data).code !== 200) {
-      this.ajaxError();
-      this.showTab(0);
-    }
   },
 
   showRequestedTab: function() {

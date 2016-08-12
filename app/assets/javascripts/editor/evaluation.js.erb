@@ -2,10 +2,7 @@ CodeOceanEditorEvaluation = {
   chunkBuffer: [{streamedResponse: true}],
 
   evaluateCode: function (url, onmessageFunction) {
-    this.initWebsocketConnection(url, onmessageFunction);
-
-    // TODO only init turtle when required
-    this.initTurtle();
+    this.initWebsocketConnection(url, onmessageFunction);;
   },
 
   handleScoringResponse: function (websocket_event) {
@@ -120,7 +117,7 @@ CodeOceanEditorEvaluation = {
 
   stopCode: function (event) {
     event.preventDefault();
-    if ($('#stop').is(':visible')) {
+    if (this.isActiveFileStoppable()) {
       if (this.runmode == this.WEBSOCKET) {
         this.killWebsocketAndContainer();
       } else if (this.runmode == this.SERVER_SEND_EVENT) {
@@ -157,22 +154,6 @@ CodeOceanEditorEvaluation = {
     this.running = false;
     this.toggleButtonStates();
     this.hidePrompt();
-  },
-
-  // todo set this from websocket command, required to e.g. stop container
-  storeContainerInformation: function (event) {
-    var container_information = JSON.parse(event.data);
-    $('#stop').data('container', container_information);
-
-    if (_.size(container_information.port_bindings) > 0) {
-      $.flash.info({
-        icon: ['fa', 'fa-exchange'],
-        text: _.map(container_information.port_bindings, function (key, value) {
-          var url = window.location.protocol + '//' + window.location.hostname + ':' + key;
-          return $('#run').data('message-network').replace('%{port}', value).replace(/%{address}/g, url);
-        }).join('\n')
-      });
-    }
   },
 
   //TODO: Move Prompt Part in own component

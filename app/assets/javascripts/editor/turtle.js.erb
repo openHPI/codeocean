@@ -1,9 +1,18 @@
 CodeOceanEditorTurtle = {
+  turtlecanvas: null,
+  turtlescreen: null,
+  resetTurtle: true,
+
   initTurtle: function () {
-    this.turtlescreen = new Turtle(this.websocket, this.turtlecanvas);
-    if ($('#run').isPresent()) {
-      $('#run').bind('click', this.hideCanvas);
+    if (this.resetTurtle) {
+      this.resetTurtle = false;
+      this.turtlecanvas = $('#turtlecanvas');
+      this.turtlescreen = new Turtle(this.websocket, this.turtlecanvas);
     }
+  },
+
+  cleanUpTurtle: function() {
+    this.resetTurtle = true;
   },
 
   handleTurtleCommand: function (msg) {
@@ -29,6 +38,7 @@ CodeOceanEditorTurtle = {
       // initialize two-column layout
       $('#output-col1').addClass('col-lg-7 col-md-7 two-column');
       this.turtlecanvas.removeClass('hidden');
+      //this.turtlecanvas.parent().parent().removeClass('hidden');
     }
   },
 
@@ -40,6 +50,8 @@ CodeOceanEditorTurtle = {
         output.removeClass('col-lg-7 col-md-7 two-column');
       }
       this.turtlecanvas.addClass('hidden');
+      //this.turtlecanvas.parent().parent().addClass('hidden');
     }
-  },
+  }
+
 };
