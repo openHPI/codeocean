@@ -22,6 +22,7 @@ $(function() {
   var editor_for_file = new Map();
   var regex_for_language = new Map();
   var tracepositions_regex;
+  var resetTurtle = true;
 
   var active_file = undefined;
   var active_frame = undefined;
@@ -949,6 +950,11 @@ $(function() {
     websocket.send(JSON.stringify({cmd: 'exit'}));
     websocket.flush();
     websocket.close();
+
+    if(turtlescreen != null){
+      resetTurtle = true;
+    }
+
     hideSpinner();
     running = false;
     toggleButtonStates();
@@ -1027,10 +1033,11 @@ $(function() {
       // clear canvas
       // turtlecanvas.getContext("2d").clearRect(0, 0, turtlecanvas.width, turtlecanvas.height);
 
+    if(resetTurtle) {
       turtlescreen = new Turtle(websocket, turtlecanvas);
-      if ($('#run').isPresent()) {
-        $('#run').bind('click', hideCanvas);
-      }
+      showCanvas();
+      resetTurtle = false;
+    }
   };
 
   var initPrompt = function() {
@@ -1058,10 +1065,12 @@ $(function() {
             printWebsocketOutput(msg);
             break;
         case 'turtle':
+            initTurtle();
             showCanvas();
             handleTurtleCommand(msg);
             break;
         case 'turtlebatch':
+            initTurtle();
             showCanvas();
             handleTurtlebatchCommand(msg);
             break;
