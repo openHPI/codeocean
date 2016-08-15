@@ -5,7 +5,7 @@
       a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{file.id}"
         div.clearfix role="button"
           span = file.name
-    /.panel-collapse.collapse id="collapse#{file.id}" role="tabpanel"
+    .panel-collapse.collapse id="collapse#{file.id}" role="tabpanel"
       .panel-body
         .clearfix = link_to(t('shared.destroy'), '#', class:'btn btn-warning btn-sm discard-file pull-right')
         .form-group
