@@ -32,7 +32,7 @@
   h2 = t('activerecord.attributes.exercise.files')
 
   /hidden editor -> to be deleted
-  = render('ace', exercise: @exercise, file: @files.first)
+  .hide = render('ace', exercise: @exercise, file: @files.first)
   /after use $('.frame').show() in js console everything works fine, probably editors are hidden somewhere in editor.js because we get "display:none" on frames
 
   ul#files.list-unstyled.panel-group
