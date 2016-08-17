@@ -31,7 +31,7 @@
   h2 = t('activerecord.attributes.exercise.files')
 
   ul#files.list-unstyled.panel-group
-    = @exercise.files.each do |file|
+    - @exercise.files.each do |file|
       = render partial: 'file_form', locals: { file: file }
 
   a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')

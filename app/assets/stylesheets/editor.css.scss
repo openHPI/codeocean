@@ -4,14 +4,12 @@ button i.fa-spin {
 
 .editor {
   height: 100%;
-  width: auto;
-  margin: 12px;
+  width: 100%;
 }
 
 .frame {
   display: none;
-  height: 200px;
-  width: auto;
+  height: 400px;
 
   audio, img, video {
     max-width: 100%;
@@ -57,10 +55,7 @@ button i.fa-spin {
 
 #files {
   overflow: auto;
-
 }
-
-
 
 #hint {
   display: none;

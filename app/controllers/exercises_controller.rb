@@ -63,7 +63,6 @@ class ExercisesController < ApplicationController
   end
 
   def edit
-
   end
 
   def import_proforma_xml

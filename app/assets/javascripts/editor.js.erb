@@ -403,8 +403,6 @@ $(function() {
     $('.editor').each(function(index, element) {
       var editor = ace.edit(element);
 
-      console.log('ace', element)
-
       if (qa_api) {
         editor.getSession().on("change", function (deltaObject) {
           qa_api.executeCommand('syncEditor', [active_file, deltaObject]);
@@ -836,9 +834,9 @@ $(function() {
 
   var showFrame = function(frame) {
     active_frame = frame;
-    // should not be hidden to generate multiple ace editors in edit mode
-    //$('.frame').hide();
-    $('.frame').show();
+    $('.frame').hide();
+    frame.show();
+
   };
 
   var showOutput = function(event) {
