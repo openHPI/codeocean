@@ -134,7 +134,7 @@ CodeOceanEditorSubmissions = {
           this.showSpinner($('#run'));
           this.toggleButtonStates();
           var url = response.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
-          this.evaluateCode(url, function(evt) { this.parseCanvasMessage(evt.data, true); }.bind(this));
+          this.initializeSocketForRunning(url);
         }.bind(this));
       }
   },
@@ -154,7 +154,7 @@ CodeOceanEditorSubmissions = {
       this.createSubmission('#test', null, function(response) {
         this.showSpinner($('#test'));
         var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
-        this.evaluateCode(url, this.handleTestResponse.bind(this));
+        this.initializeSocketForTesting();
       }.bind(this));
     }
   },

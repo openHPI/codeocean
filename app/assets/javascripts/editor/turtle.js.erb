@@ -16,6 +16,8 @@ CodeOceanEditorTurtle = {
   },
 
   handleTurtleCommand: function (msg) {
+    this.initTurtle();
+    this.showCanvas();
     if (msg.action in this.turtlescreen) {
       var result = this.turtlescreen[msg.action].apply(this.turtlescreen, msg.args);
       this.websocket.send(JSON.stringify({cmd: 'result', 'result': result}));
@@ -26,6 +28,8 @@ CodeOceanEditorTurtle = {
   },
 
   handleTurtlebatchCommand: function (msg) {
+    this.initTurtle();
+    this.showCanvas();
     for (var i = 0; i < msg.batch.length; i++) {
       var cmd = msg.batch[i];
       this.turtlescreen[cmd[0]].apply(this.turtlescreen, cmd[1]);

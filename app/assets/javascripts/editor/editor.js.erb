@@ -30,11 +30,8 @@ var CodeOceanEditor = {
   output_mode_is_streaming: true,
   runmode: this.NONE,
 
-  websocket: null,
   numMessages: 0,
   prompt: $('#prompt'),
-  commands: ['input', 'write', 'turtle', 'turtlebatch', 'render', 'exit', 'timeout', 'status'],
-  streams: ['stdin', 'stdout', 'stderr'],
   lastCopyText: null,
 
   autosaveTimer: null,
@@ -42,7 +39,6 @@ var CodeOceanEditor = {
 
   ENTER_KEY_CODE: 13,
 
-  flowrOutputBuffer: "",
   QaApiOutputBuffer: {'stdout': '', 'stderr': ''},
   flowrResultHtml: '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>',
 
@@ -255,9 +251,9 @@ var CodeOceanEditor = {
   },
 
   initializeEventHandlers: function () {
-    $(document).on('click', '#results a', this.showOutput);
-    $(document).on('keypress', this.handleKeyPress);
-    $('a[data-toggle="tab"]').on('show.bs.tab', this.storeTab);
+    $(document).on('click', '#results a', this.showOutput.bind(this));
+    $(document).on('keypress', this.handleKeyPress.bind(this));
+    $('a[data-toggle="tab"]').on('show.bs.tab', this.storeTab.bind(this));
     this.initializeFileTreeButtons();
     this.initializeWorkflowButtons();
     this.initializeWorkspaceButtons();

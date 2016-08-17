@@ -1,12 +1,7 @@
 CodeOceanEditorEvaluation = {
   chunkBuffer: [{streamedResponse: true}],
 
-  evaluateCode: function (url, onmessageFunction) {
-    this.initWebsocketConnection(url, onmessageFunction);;
-  },
-
-  handleScoringResponse: function (websocket_event) {
-    var results = JSON.parse(websocket_event.data);
+  handleScoringResponse: function (results) {
     this.printScoringResults(results);
     var score = _.reduce(results, function (sum, result) {
       return sum + result.score * result.weight;
@@ -16,8 +11,7 @@ CodeOceanEditorEvaluation = {
     this.showTab(2);
   },
 
-  handleTestResponse: function (websocket_event) {
-    var result = JSON.parse(websocket_event.data);
+  handleTestResponse: function (result) {
     this.clearOutput();
     this.printOutput(result, false, 0);
     if (this.qa_api) {
@@ -111,7 +105,7 @@ CodeOceanEditorEvaluation = {
     this.createSubmission('#assess', null, function (response) {
       this.showSpinner($('#assess'));
       var url = response.score_url;
-      this.evaluateCode(url, this.handleScoringResponse.bind(this));
+      this.initializeSocketForScoring(url);
     }.bind(this));
   },
 
