@@ -23,9 +23,7 @@ conn.start
 ch   = conn.create_channel
 q    = ch.queue("sourcecodes")
 
-# index=1
-
-# CSV.open("prelim_analysis_CA.csv", "wb") do |csv|
+ index=1
 
 	puts "Waiting for messages in #{q.name}. To exit press CTRL+C"
 	q.subscribe(:block => true) do |delivery_info, properties, body|
