@@ -29,13 +29,11 @@
       = f.check_box(:allow_file_creation)
       = t('activerecord.attributes.exercise.allow_file_creation')
   h2 = t('activerecord.attributes.exercise.files')
-
   ul#files.list-unstyled.panel-group
     - @exercise.files.each do |file|
-      = render partial: 'file_form', locals: { file: file }
-
+      = render partial: 'file_form', locals: {file: file}
   a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')
-
   ul#dummies.hidden
-    = render partial: 'file_form', locals: { file: CodeOcean::File.new }
+    = render partial: 'file_form', locals: {file: CodeOcean::File.new}
   .actions = render('shared/submit_button', f: f, object: @exercise)
+
