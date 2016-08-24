@@ -1,4 +1,4 @@
-= form_for(file) do |f|
+= fields_for(file) do |f|
   li.panel.panel-default
     .panel-heading role="tab" id="heading"
       a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{file.id}"
@@ -36,8 +36,6 @@
           .form-group
             = f.label(:role, t('activerecord.attributes.file.weight'))
             = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
-
-        /render ace editor
         - unless file.new_record?
           = render partial: 'ace', locals: { exercise: @exercise, file: file }
 
