@@ -1,4 +1,85 @@
-= fields_for(file) do |f|
+li.panel.panel-default
+  .panel-heading role="tab" id="heading"
+    a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{file.id}"
+      div.clearfix role="button"
+        span = file.name
+  .panel-collapse.collapse id="collapse#{file.id}" role="tabpanel"
+    .panel-body
+      .clearfix = link_to(t('shared.destroy'), '#', class:'btn btn-warning btn-sm discard-file pull-right')
+      .form-group
+        = f.label(:name, t('activerecord.attributes.file.name'))
+        = f.text_field(:name, class: 'form-control')
+      .form-group
+        = f.label(:path, t('activerecord.attributes.file.path'))
+        = f.text_field(:path, class: 'form-control')
+        .help-block = t('.hints.path')
+      .form-group
+        = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
+        = f.collection_select(:file_type_id, @file_types, :id, :name, {}, class: 'form-control')
+      .form-group
+        = f.label(:role, t('activerecord.attributes.file.role'))
+        = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map { |role| [t("files.roles.#{role}"), role] }, {include_blank: true}, class: 'form-control')
+      .checkbox
+        label
+          = f.check_box(:hidden)
+          = t('activerecord.attributes.file.hidden')
+      .checkbox
+        label
+          = f.check_box(:read_only)
+          = t('activerecord.attributes.file.read_only')
+      .test-related-fields style="display: #{file.teacher_defined_test? ? 'initial' : 'none'};"
+        .form-group
+          = f.label(:name, t('activerecord.attributes.file.feedback_message'))
+          = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
+          .help-block = t('.hints.feedback_message')
+        .form-group
+          = f.label(:role, t('activerecord.attributes.file.weight'))
+          = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
+      - unless file.new_record?
+        /= render partial: 'ace', locals: { exercise: @exercise, file: file }
+
+    /Disabled blank text editor field
+    = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
+
+
+
+
+
+
+
+
+
+
+
+
+/- id = f.object.id
+/
+/li.panel.panel-default
+/  .panel-heading role="tab" id="heading"
+/    a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{id}"
+/      div.clearfix role="button"
+/        span = f.object.name
+/  .panel-collapse.collapse-in id="collapse#{id}" role="tabpanel"
+/    .panel-body
+/      .clearfix = link_to(t('shared.destroy'), '#', class:'btn btn-warning btn-sm discard-file pull-right')
+/      .form-group
+/        = f.label(:name, t('activerecord.attributes.file.name'))
+/        = f.text_field(:name, class: 'form-control')
+/
+/
+/  = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
+/  = render partial: 'ace', locals: { exercise: @exercise, file: file,  }
+
+
+
+
+
+
+
+
+
+
+/= fields_for(file) do |f|
   li.panel.panel-default
     .panel-heading role="tab" id="heading"
       a.file-heading data-toggle="collapse" data-parent="#files" href="#collapse#{file.id}"
@@ -8,36 +89,9 @@
       .panel-body
         .clearfix = link_to(t('shared.destroy'), '#', class:'btn btn-warning btn-sm discard-file pull-right')
         .form-group
-          = f.label(:name, t('activerecord.attributes.file.name'))
-          = f.text_field(:name, class: 'form-control')
-        .form-group
-          = f.label(:path, t('activerecord.attributes.file.path'))
-          = f.text_field(:path, class: 'form-control')
-          .help-block = t('.hints.path')
-        .form-group
-          = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
-          = f.collection_select(:file_type_id, @file_types, :id, :name, {}, class: 'form-control')
-        .form-group
-          = f.label(:role, t('activerecord.attributes.file.role'))
-          = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map { |role| [t("files.roles.#{role}"), role] }, {include_blank: true}, class: 'form-control')
-        .checkbox
-          label
-            = f.check_box(:hidden)
-            = t('activerecord.attributes.file.hidden')
-        .checkbox
-          label
-            = f.check_box(:read_only)
-            = t('activerecord.attributes.file.read_only')
-        .test-related-fields style="display: #{file.teacher_defined_test? ? 'initial' : 'none'};"
-          .form-group
-            = f.label(:name, t('activerecord.attributes.file.feedback_message'))
-            = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
-            .help-block = t('.hints.feedback_message')
-          .form-group
-            = f.label(:role, t('activerecord.attributes.file.weight'))
-            = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
-        - unless file.new_record?
-          = render partial: 'ace', locals: { exercise: @exercise, file: file }
+                = f.label(:name, t('activerecord.attributes.file.name'))
+                = f.text_field(:name, class: 'form-control')
+    = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
+
 
         /Disabled blank text editor field
-        /= render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))

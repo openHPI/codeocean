@@ -23,6 +23,15 @@ $(function() {
             editor.setReadOnly($(element).data('read-only') !== undefined);
             editor.setShowPrintMargin(false);
             editor.setTheme(THEME);
+
+            //todo
+            // var textarea = $('textarea[name="2822862"]');
+            // alert($(element).data('file-id'));
+            // editor.getSession().setValue(textarea.val());
+            // editor.getSession().on('change', function(){
+            //     textarea.val(editor.getSession().getValue());
+            // });
+
             editor.commands.bindKey("ctrl+alt+0", null);
             var session = editor.getSession();
             session.setMode($(element).data('mode'));

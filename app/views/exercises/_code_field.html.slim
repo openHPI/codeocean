@@ -2,5 +2,6 @@
   = form.label(attribute, label)
   | &nbsp;
   a.toggle-input data={text_initial: t('shared.upload_file'), text_toggled: t('shared.back')} href='#' = t('shared.upload_file')
+  /= form.text_area(attribute, class: 'code-field form-control original-input', rows: 16, name: file.id)
   = form.text_area(attribute, class: 'code-field form-control original-input', rows: 16)
   = form.file_field(attribute, class: 'alternative-input form-control', disabled: true)
