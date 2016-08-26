@@ -24,13 +24,16 @@ $(function() {
             editor.setShowPrintMargin(false);
             editor.setTheme(THEME);
 
-            //todo
-            // var textarea = $('textarea[name="2822862"]');
-            // alert($(element).data('file-id'));
-            // editor.getSession().setValue(textarea.val());
-            // editor.getSession().on('change', function(){
-            //     textarea.val(editor.getSession().getValue());
-            // });
+            var textarea = $('textarea[id="exercise_files_attributes_'+index+'_content"]');
+            var content = textarea.val();
+
+            if (content != undefined)
+            {
+                editor.getSession().setValue(content);
+                editor.getSession().on('change', function(){
+                    textarea.val(editor.getSession().getValue());
+                });
+            }
 
             editor.commands.bindKey("ctrl+alt+0", null);
             var session = editor.getSession();
