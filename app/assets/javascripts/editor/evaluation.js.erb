@@ -138,13 +138,13 @@ CodeOceanEditorEvaluation = {
   },
 
   killWebsocketAndContainer: function () {
-    if (this.websocket.readyState != WebSocket.OPEN) {
+    if (this.websocket.getReadyState() != WebSocket.OPEN) {
       return;
     }
 
     this.websocket.send(JSON.stringify({cmd: 'exit'}));
-    this.websocket.flush();
-    this.websocket.close();
+    this.websocket.killWebSocket();
+    
     this.hideSpinner();
     this.running = false;
     this.toggleButtonStates();

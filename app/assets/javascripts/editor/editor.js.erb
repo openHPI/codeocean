@@ -35,7 +35,7 @@ var CodeOceanEditor = {
   lastCopyText: null,
 
   autosaveTimer: null,
-  autosaveLabel: $("#autosave-label span"),
+  autosaveLabel: "#autosave-label span",
 
   ENTER_KEY_CODE: 13,
 
@@ -189,9 +189,10 @@ var CodeOceanEditor = {
 
   autosave: function () {
     var date = new Date();
-    this.autosaveLabel.parent().css("visibility", "visible");
-    this.autosaveLabel.text(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
-    this.autosaveLabel.text(date.toLocaleTimeString());
+    var autosaveLabel = $(this.autosaveLabel);
+    autosaveLabel.parent().css("visibility", "visible");
+    autosaveLabel.text(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
+    autosaveLabel.text(date.toLocaleTimeString());
     this.autosaveTimer = null;
     this.createSubmission($('#autosave'), null);
   },
