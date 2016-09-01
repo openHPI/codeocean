@@ -1,5 +1,5 @@
 div id='output_sidebar_collapsed'
-  = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: 'Expand sidebar', icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
 div id='output_sidebar_uncollapsed' class='hidden col-sm-12' data-message-no-output=t('exercises.implement.no_output')
   .row
     = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: 'Collapse')

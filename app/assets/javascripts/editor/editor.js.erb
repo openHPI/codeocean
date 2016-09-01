@@ -586,6 +586,10 @@ var CodeOceanEditor = {
     $('#output_sidebar').removeClass('output-col').addClass('output-col-collapsed');
   },
 
+  initializeSideBarTooltips: function() {
+    $('[data-toggle="tooltip"]').tooltip()
+  },
+
   initializeEverything: function() {
     this.initializeRegexes();
     this.initializeCodePilot();
@@ -596,6 +600,7 @@ var CodeOceanEditor = {
     this.initializeFileTree();
     this.initializeSideBarCollapse();
     this.initializeOutputBarToggle();
+    this.initializeSideBarTooltips();
     this.initializeTooltips();
     this.initPrompt();
     this.renderScore();
