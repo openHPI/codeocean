@@ -1,5 +1,5 @@
 #editor.row data-exercise-id=exercise.id data-message-depleted=t('exercises.editor.depleted') data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @exercise.execution_environment.permitted_execution_time) data-errors-url=execution_environment_errors_path(exercise.execution_environment) data-submissions-url=submissions_path data-user-id=@current_user.id
-  div id="sidebar" class=(@exercise.hide_file_tree ? 'hidden sidebar-col' : 'sidebar-col') = render('editor_file_tree', files: @files)
+  div id="sidebar" class=(@exercise.hide_file_tree ? 'hidden sidebar-col' : 'sidebar-col') = render('editor_file_tree', exercisee: @exercise, files: @files)
   div id='output_sidebar' class='output-col-collapsed' = render('exercises/editor_output')
   div id='frames' class=(@exercise.hide_file_tree ? 'editor-col' : 'editor-col')
     - @files.each do |file|
@@ -8,7 +8,6 @@
       = t('exercises.editor.lastsaved')
       span
     #editor-buttons.btn-group
-      = render('editor_button', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
       // = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
       button style="display:none" id="autosave"
       .btn-group
@@ -38,5 +37,8 @@
               i.fa.fa-rocket
               = t('exercises.editor.test')
       = render('editor_button', data: {:'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s'))
+      button.btn.btn-primary.requestCommentsButton type='button' id="requestComments"
+        i.fa.fa-comment
+        = t('exercises.editor.requestComments')
 
 = render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.request'), template: 'exercises/_request_comment_dialogcontent')

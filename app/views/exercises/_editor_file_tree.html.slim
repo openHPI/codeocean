@@ -5,6 +5,7 @@ div id='sidebar-collapsed'
     = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-cause' => 'file', :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus', id: 'create-file-collapsed', label:'', title: t('exercises.editor.create_file'))
 
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-download', id: 'download-collapsed', label:'', title: t('exercises.editor.download'))
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-history', id: 'start-over-collapsed', label:'', title: t('exercises.editor.start_over'))
 
 div id='sidebar-uncollapsed'
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: 'Collapse')
@@ -21,3 +22,4 @@ div id='sidebar-uncollapsed'
       = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))
 
   = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-download', id: 'download', label: t('exercises.editor.download'))
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))

@@ -323,10 +323,11 @@ var CodeOceanEditor = {
     $('#dropdown-test, #test').on('click', this.testCode.bind(this));
     $('#save').on('click', this.saveCode.bind(this));
     $('#start-over').on('click', this.confirmReset.bind(this));
+    $('#start-over-collapsed').on('click', this.confirmReset.bind(this));
   },
 
   initializeRequestForComments: function () {
-    var button = $('.requestCommentsButton');
+    var button = $('#requestComments');
     button.hide();
     button.on('click', function () {
       $('#comment-modal').modal('show');
@@ -572,9 +573,6 @@ var CodeOceanEditor = {
   },
 
   showOutputBar: function() {
-    if ($('#sidebar').hasClass('sidebar-col')) {
-      this.handleSideBarToggle();
-    }
     $('#output_sidebar_collapsed').addClass('hidden');
     $('#output_sidebar_uncollapsed').removeClass('hidden');
     $('#output_sidebar').removeClass('output-col-collapsed').addClass('output-col');
@@ -590,6 +588,17 @@ var CodeOceanEditor = {
     $('[data-toggle="tooltip"]').tooltip()
   },
 
+  initializeDescriptionToggle: function() {
+    $('#exercise-headline').on('click',this.toggleDescriptionPanel.bind(this))
+  },
+
+  toggleDescriptionPanel: function() {
+    $('#description-panel').toggleClass('description-panel-collapsed');
+    $('#description-panel').toggleClass('description-panel');
+    $('#description-symbol').toggleClass('fa-chevron-down');
+    $('#description-symbol').toggleClass('fa-chevron-right');
+  },
+
   initializeEverything: function() {
     this.initializeRegexes();
     this.initializeCodePilot();
@@ -600,6 +609,7 @@ var CodeOceanEditor = {
     this.initializeFileTree();
     this.initializeSideBarCollapse();
     this.initializeOutputBarToggle();
+    this.initializeDescriptionToggle();
     this.initializeSideBarTooltips();
     this.initializeTooltips();
     this.initPrompt();

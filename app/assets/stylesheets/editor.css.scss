@@ -18,6 +18,7 @@ button i.fa-spin {
 
 .score {
   display: none;
+  vertical-align: bottom;
 }
 
 #alert, #development-environment {
@@ -149,4 +150,22 @@ button i.fa-spin {
 
 .enforce-top-margin {
   margin-top: 5px !important;
+}
+
+.enforce-right-margin {
+  margin-right: 10px !important;
+}
+
+.description-panel-collapsed {
+  -webkit-transition: width 2s;
+  transition: width 2s;
+  height: 0px;
+  visibility: hidden;
+}
+
+.description-panel {
+  height: auto;
+  -webkit-transition: height 2s;
+  transition: height 2s;
+  visibility: visible;
 }

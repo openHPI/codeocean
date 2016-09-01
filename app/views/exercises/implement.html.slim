@@ -1,10 +1,14 @@
 .row
   #editor-column.col-md-12
-    h1 = @exercise
+    div
+      span.badge.pull-right.score
 
-    span.badge.pull-right.score
+      h1 id="exercise-headline"
+        i class="fa fa-chevron-down" id="description-symbol"
+        = @exercise
 
-    p.lead = render_markdown(@exercise.description)
+    #description-panel.lead.description-panel
+      = render_markdown(@exercise.description)
 
     #alert.alert.alert-danger role='alert'
       h4 = t('.alert.title')
