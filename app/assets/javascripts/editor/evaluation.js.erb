@@ -154,16 +154,18 @@ CodeOceanEditorEvaluation = {
   //TODO: Move Prompt Part in own component
   showPrompt: function(msg) {
     var label = $('#prompt .input-group-addon');
+    var prompt = $(this.prompt)
     label.text(msg.data || label.data('prompt'));
-    if (this.prompt.isPresent() && this.prompt.hasClass('hidden')) {
-      this.prompt.removeClass('hidden');
+    if (prompt.isPresent() && prompt.hasClass('hidden')) {
+      prompt.removeClass('hidden');
     }
     $('#prompt input').focus();
   },
 
   hidePrompt: function() {
-    if (this.prompt.isPresent() && !this.prompt.hasClass('hidden')) {
-      this.prompt.addClass('hidden');
+    var prompt = $(this.prompt)
+    if (prompt.isPresent() && !prompt.hasClass('hidden')) {
+      prompt.addClass('hidden');
     }
   },
 
