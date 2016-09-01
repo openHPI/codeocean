@@ -564,7 +564,7 @@ var CodeOceanEditor = {
     this.createSubmission('#create-file', null, function(response) {
       $('#code_ocean_file_context_id').val(response.id);
       $('#modal-file').modal('show');
-    });
+    }.bind(this));
   },
 
   initializeOutputBarToggle: function() {
