@@ -66,8 +66,8 @@ CodeOceanEditorFlowr = {
   //tODO move codepilot out of here.
   initializeCodePilot: function () {
     if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined') && QaApi.isBrowserSupported()) {
-      $('#editor-column').addClass('col-md-8').removeClass('col-md-10');
-      $('#questions-column').addClass('col-md-3');
+      $('#editor-column').addClass('col-md-10').removeClass('col-md-12');
+      $('#questions-column').addClass('col-md-2');
 
       var node = document.getElementById('questions-holder');
       var url = $('#questions-holder').data('url');

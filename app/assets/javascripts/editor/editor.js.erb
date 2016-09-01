@@ -429,12 +429,7 @@ var CodeOceanEditor = {
 
   toggleButtonStates: function () {
     $('#destroy-file').prop('disabled', this.active_frame.data('role') !== 'user_defined_file');
-    $('#dropdown-render').toggleClass('disabled', !this.isActiveFileRenderable());
-    $('#dropdown-run').toggleClass('disabled', !this.isActiveFileRunnable() || this.running);
-    $('#dropdown-stop').toggleClass('disabled', !this.isActiveFileStoppable());
-    $('#dropdown-test').toggleClass('disabled', !this.isActiveFileTestable());
     $('#dummy').toggle(!this.fileActionsAvailable());
-    $('#editor-buttons .dropdown-toggle').toggle(this.fileActionsAvailable());
     $('#render').toggle(this.isActiveFileRenderable());
     $('#run').toggle(this.isActiveFileRunnable() && !this.running);
     $('#stop').toggle(this.isActiveFileStoppable());
