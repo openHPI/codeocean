@@ -3,17 +3,15 @@ div id='output_sidebar_collapsed'
 div id='output_sidebar_uncollapsed' class='hidden col-sm-12' data-message-no-output=t('exercises.implement.no_output')
   .row
     = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_sidebar'))
-  hr
-  div
+  div.enforce-big-top-margin
     #turtlediv
       canvas#turtlecanvas.hidden width=400 height=400 style='border-style:solid;border-width:thin'
-  hr
-  div
+  div.enforce-big-top-margin
     #hint
       .panel.panel-warning
         .panel-heading = t('exercises.implement.hint')
         .panel-body
-  div
+  div.enforce-big-top-margin
     #prompt.input-group.hidden
       span.input-group-addon data-prompt=t('exercises.editor.input') = t('exercises.editor.input')
       input#prompt-input.form-control type='text'
