@@ -17,11 +17,13 @@ CodeOceanEditorWebsocket = {
   initializeSocketForTesting: function(url) {
     this.initializeSocket(url);
     this.websocket.on('default',this.handleTestResponse.bind(this));
+    this.websocket.on('exit', this.handleExitCommand.bind(this));
   },
 
   initializeSocketForScoring: function(url) {
     this.initializeSocket(url);
-    this.websocket.on('default',this.handleScoringResponse.bind(this))
+    this.websocket.on('default',this.handleScoringResponse.bind(this));
+    this.websocket.on('exit', this.handleExitCommand.bind(this));
   },
 
   initializeSocketForRunning: function(url) {
