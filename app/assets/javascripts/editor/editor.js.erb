@@ -204,7 +204,7 @@ var CodeOceanEditor = {
       if (this.qa_api) {
         editor.getSession().on("change", function (deltaObject) {
           this.qa_api.executeCommand('syncEditor', [this.active_file, deltaObject]);
-        });
+        }.bind(this));
       }
 
       var document = editor.getSession().getDocument();
