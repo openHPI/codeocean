@@ -158,7 +158,7 @@ CodeOceanEditorSubmissions = {
       this.createSubmission('#test', null, function(response) {
         this.showSpinner($('#test'));
         var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
-        this.initializeSocketForTesting();
+        this.initializeSocketForTesting(url);
       }.bind(this));
     }
   },
