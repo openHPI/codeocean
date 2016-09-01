@@ -53,10 +53,10 @@ CodeOceanEditorFlowr = {
       }).done(function () {
         this.hideSpinner();
         $.flash.success({text: $('#askForCommentsButton').data('message-success')});
-      }).error(this.ajaxError);
+      }.bind(this)).error(this.ajaxError.bind(this));
     };
 
-    this.createSubmission($('.requestCommentsButton'), null, createRequestForComments);
+    this.createSubmission($('.requestCommentsButton'), null, createRequestForComments.bind(this));
 
     $('#comment-modal').modal('hide');
     var button = $('.requestCommentsButton');

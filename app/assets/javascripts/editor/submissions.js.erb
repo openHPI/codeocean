@@ -29,7 +29,10 @@ CodeOceanEditorSubmissions = {
     });
     jqxhr.always(this.hideSpinner.bind(this));
     jqxhr.done(this.createSubmissionCallback.bind(this));
-    jqxhr.done(callback.bind(this));
+    if(callback != null){
+      jqxhr.done(callback.bind(this));
+    }
+
     jqxhr.fail(this.ajaxError.bind(this));
   },
 
