@@ -88,3 +88,18 @@ CommandSocket.prototype.executeCommand = function(cmd) {
 CommandSocket.prototype.send = function(data) {
   this.websocket.send(data);
 };
+
+/**
+ * Returns the ready state of the socket.
+ */
+CommandSocket.prototype.getReadyState = function() {
+  return this.websocket.readyState;
+};
+
+/**
+ * Closes the websocket.
+ */
+CommandSocket.prototype.killWebSocket = function() {
+  this.websocket.flush();
+  this.websocket.close();
+};
