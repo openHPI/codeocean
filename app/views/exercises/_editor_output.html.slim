@@ -1,0 +1,29 @@
+div id='output_sidebar_collapsed'
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
+div id='output_sidebar_uncollapsed' class='hidden col-sm-12' data-message-no-output=t('exercises.implement.no_output')
+  .row
+    = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: 'Collapse')
+  hr
+  div
+    #hint
+      .panel.panel-warning
+        .panel-heading = t('exercises.implement.hint')
+        .panel-body
+  div
+    // todo set to full width if turtle isnt used
+    #prompt.input-group.hidden
+      span.input-group-addon data-prompt=t('exercises.editor.input') = t('exercises.editor.input')
+      input#prompt-input.form-control type='text'
+      span.input-group-btn
+        button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
+    #output
+      pre = t('exercises.implement.no_output_yet')
+    - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
+      #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+        .panel-heading = 'Gain more insights here'
+        .panel-body
+  hr
+  div
+    #turtlediv
+      // todo what should the canvas default size be?
+      canvas#turtlecanvas.hidden width=400 height=400 style='border-style:solid;border-width:thin'

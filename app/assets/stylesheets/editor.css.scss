@@ -64,6 +64,7 @@ button i.fa-spin {
 #outputInformation {
   #output {
     max-height: 500px;
+    width: 100%;
     overflow: auto;
     margin: 2em 0;
 
@@ -94,4 +95,54 @@ button i.fa-spin {
   margin-top: -50px;
   margin-right: 25px;
   float: right;
+}
+
+.sidebar-col-collapsed {
+  -webkit-transition: width 2s;
+  transition: width 2s;
+  width:52px;
+  float:left;
+  min-height: 1px;
+  padding-left: 15px;
+}
+
+.sidebar-col {
+  -webkit-transition: width 2s;
+  transition: width 2s;
+  width:20%;
+  float:left;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.editor-col {
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  width:auto;
+  height:100%;
+  overflow:hidden;
+}
+
+.output-col {
+  -webkit-transition: width 2s;
+  transition: width 2s;
+  width:40%;
+  float:right;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box
+}
+
+.output-col-collapsed {
+  -webkit-transition: width 2s;
+  transition: width 2s;
+  width:67px;
+  float:right;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box
 }

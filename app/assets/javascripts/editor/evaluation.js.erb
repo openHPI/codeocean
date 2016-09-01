@@ -8,7 +8,7 @@ CodeOceanEditorEvaluation = {
     }, 0).toFixed(2);
     $('#score').data('score', score);
     this.renderScore();
-    this.showTab(2);
+    this.showTab(1);
   },
 
   handleTestResponse: function (result) {
@@ -18,7 +18,8 @@ CodeOceanEditorEvaluation = {
       this.qa_api.executeCommand('syncOutput', [result]);
     }
     this.showStatus(result);
-    this.showTab(1);
+    this.showTab(0);
+    this.showOutputBar();
   },
 
   printOutput: function (output, colorize, index) {
@@ -132,7 +133,7 @@ CodeOceanEditorEvaluation = {
       this.hideSpinner();
       this.running = false;
       this.toggleButtonStates();
-    });
+    }.bind(this));
     jqxhr.fail(ajaxError);
   },
 

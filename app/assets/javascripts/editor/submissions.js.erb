@@ -115,7 +115,8 @@ CodeOceanEditorSubmissions = {
               stderr: message
             }, true, 0);
             this.sendError(message, response.id);
-            this.showTab(1);
+            this.showTab(0);
+            this.showOutputBar();
           };
         }
       });

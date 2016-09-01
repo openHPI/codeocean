@@ -1,10 +1,23 @@
-#files data-entries=FileTree.new(files).to_js_tree
+div id='sidebar-collapsed'
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-plus-square', id: 'sidebar-collapse-collapsed', label:'')
+  - if @exercise.allow_file_creation?
+    = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-cause' => 'file'}, icon: 'fa fa-plus', id: 'create-file-collapsed', label:'')
+    = render('editor_button', classes: 'btn-block btn-warning btn-sm', data: {:'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy')}, label:'', icon: 'fa fa-times', id: 'destroy-file-collapsed')
 
-hr
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-download', id: 'download-collapsed', label:'')
 
-- if @exercise.allow_file_creation?
-  = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-cause' => 'file'}, icon: 'fa fa-plus', id: 'create-file', label: t('exercises.editor.create_file'))
-  = render('editor_button', classes: 'btn-block btn-warning btn-sm', data: {:'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy')}, icon: 'fa fa-times', id: 'destroy-file', label: t('exercises.editor.destroy_file'))
-  = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))
+div id='sidebar-uncollapsed'
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: 'Collapse')
 
-= render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-download', id: 'download', label: t('exercises.editor.download'))
+  hr
+
+  #files data-entries=FileTree.new(files).to_js_tree
+
+  hr
+
+  - if @exercise.allow_file_creation?
+    = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-cause' => 'file'}, icon: 'fa fa-plus', id: 'create-file', label: t('exercises.editor.create_file'))
+    = render('editor_button', classes: 'btn-block btn-warning btn-sm', data: {:'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy')}, icon: 'fa fa-times', id: 'destroy-file', label: t('exercises.editor.destroy_file'))
+      = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))
+
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-download', id: 'download', label: t('exercises.editor.download'))
