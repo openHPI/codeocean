@@ -97,6 +97,13 @@ CommandSocket.prototype.getReadyState = function() {
 };
 
 /**
+ * Flush the websocket.
+ */
+CommandSocket.prototype.flush = function() {
+  this.websocket.flush();
+};
+
+/**
  * Closes the websocket.
  */
 CommandSocket.prototype.killWebSocket = function() {
