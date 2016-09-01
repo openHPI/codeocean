@@ -14,6 +14,8 @@ var CodeOceanEditor = {
   REMEMBER_TAB: false,
   AUTOSAVE_INTERVAL: 15 * 1000,
   REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
+  REQUEST_TOOLTIP_TIME: 5000,
+
   NONE: 0,
   WEBSOCKET: 1,
   SERVER_SEND_EVENT: 2,
@@ -328,7 +330,7 @@ var CodeOceanEditor = {
 
   initializeRequestForComments: function () {
     var button = $('#requestComments');
-    button.hide();
+    button.prop('disabled', true);
     button.on('click', function () {
       $('#comment-modal').modal('show');
     });
@@ -336,8 +338,12 @@ var CodeOceanEditor = {
     $('#askForCommentsButton').on('click', this.requestComments);
 
     setTimeout(function () {
-      button.fadeIn();
-    }, this.REQUEST_FOR_COMMENTS_DELAY);
+      button.prop('disabled', false);
+      button.tooltip('show');
+      setTimeout(function() {
+        button.tooltip('hide');
+      }, this.REQUEST_TOOLTIP_TIME);
+    }.bind(this), this.REQUEST_FOR_COMMENTS_DELAY);
   },
 
   isActiveFileRenderable: function () {

@@ -203,6 +203,9 @@ en:
       run_failure: Your code could not be run.
       run_success: Your code was run on our servers.
       requestComments: Request comments
+      requestCommentsTooltip: If you need help with your code, you can now request comments here!
+      collapse_sidebar: Collapse sidebar
+      expand_sidebar: Expand sidebar
       save: Save
       score: Score
       send: Send

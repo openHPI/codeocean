@@ -1,5 +1,5 @@
 div id='sidebar-collapsed'
-  = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus-square', id: 'sidebar-collapse-collapsed', label:'', title:'Expand sidebar')
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus-square', id: 'sidebar-collapse-collapsed', label:'', title:t('exercises.editor.expand_sidebar'))
 
   - if @exercise.allow_file_creation?
     = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-cause' => 'file', :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus', id: 'create-file-collapsed', label:'', title: t('exercises.editor.create_file'))
@@ -8,7 +8,7 @@ div id='sidebar-collapsed'
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-history', id: 'start-over-collapsed', label:'', title: t('exercises.editor.start_over'))
 
 div id='sidebar-uncollapsed'
-  = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: 'Collapse')
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_sidebar'))
 
   hr
 

@@ -59,8 +59,8 @@ CodeOceanEditorFlowr = {
     this.createSubmission($('.requestCommentsButton'), null, createRequestForComments.bind(this));
 
     $('#comment-modal').modal('hide');
-    var button = $('.requestCommentsButton');
-    button.fadeOut();
+    var button = $('#requestComments');
+    button.prop('disabled', true);
   },
 
   //tODO move codepilot out of here.
