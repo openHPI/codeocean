@@ -188,6 +188,8 @@ de:
       worktime: Durchschnittliche Arbeitszeit
   exercises:
     editor:
+      collapse_action_sidebar: Aktions-Leiste Einklappen
+      collapse_output_sidebar: Ausgabe-Leiste Einklappen
       confirm_start_over: Wollen Sie wirklich von vorne anfangen?
       confirm_submit: Wollen Sie Ihren Code wirklich zur Bewertung abgeben?
       create_file: Neue Datei
@@ -195,6 +197,8 @@ de:
       destroy_file: Datei löschen
       download: Herunterladen
       dummy: Keine Aktion
+      expand_action_sidebar: Aktions-Leiste Ausklappen
+      expand_output_sidebar: Ausgabe-Leiste Ausklappen
       input: Ihre Eingabe
       lastsaved: 'Zuletzt gespeichert: '
       network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank">%{address}</a>.'
@@ -204,8 +208,6 @@ de:
       run_success: Ihr Code wurde auf der Plattform ausgeführt.
       requestComments: Kommentare erbitten
       requestCommentsTooltip: Wenn du Hilfe mit deinem Code benötigst, kannst dir hier Kommentare erbitten
-      collapse_sidebar: Sidebar einklappen
-      expand_sidebar: Sidebar ausklappen
       save: Speichern
       score: Bewerten
       send: Senden

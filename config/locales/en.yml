@@ -188,6 +188,8 @@ en:
       worktime: Average Working Time
   exercises:
     editor:
+      collapse_action_sidebar: Collapse Action Sidebar
+      collapse_output_sidebar: Collapse Output Sidebar
       confirm_start_over: Do you really want to start over?
       confirm_submit: Do you really want to submit your code for grading?
       create_file: New File
@@ -195,6 +197,8 @@ en:
       destroy_file: Delete File
       download: Download
       dummy: No Action
+      expand_action_sidebar: Expand Action Sidebar
+      expand_output_sidebar: Expand Output Sidebar
       input: Your input
       lastsaved: 'Last saved: '
       network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank">%{address}</a>.'
@@ -204,8 +208,6 @@ en:
       run_success: Your code was run on our servers.
       requestComments: Request comments
       requestCommentsTooltip: If you need help with your code, you can now request comments here!
-      collapse_sidebar: Collapse sidebar
-      expand_sidebar: Expand sidebar
       save: Save
       score: Score
       send: Send

@@ -1,8 +1,8 @@
 div id='output_sidebar_collapsed'
-  = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_sidebar'), icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
 div id='output_sidebar_uncollapsed' class='hidden col-sm-12' data-message-no-output=t('exercises.implement.no_output')
   .row
-    = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_sidebar'))
+    = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
   div.enforce-big-top-margin
     #turtlediv
       canvas#turtlecanvas.hidden width=400 height=400 style='border-style:solid;border-width:thin'
