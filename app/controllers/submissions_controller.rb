@@ -232,6 +232,7 @@ class SubmissionsController < ApplicationController
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
       # tubesock is the socket to the client
       tubesock.send_data JSON.dump(score_submission(@submission))
+      tubesock.send_data JSON.dump({'cmd' => 'exit'})
     end
   end
 
@@ -291,6 +292,7 @@ class SubmissionsController < ApplicationController
 
       # tubesock is the socket to the client
       tubesock.send_data JSON.dump(output)
+      tubesock.send_data JSON.dump('cmd' => 'exit')
     end
   end
 
