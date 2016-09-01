@@ -1,7 +1,7 @@
 #editor.row data-exercise-id=exercise.id data-message-depleted=t('exercises.editor.depleted') data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @exercise.execution_environment.permitted_execution_time) data-errors-url=execution_environment_errors_path(exercise.execution_environment) data-submissions-url=submissions_path data-user-id=@current_user.id
   div id="sidebar" class=(@exercise.hide_file_tree ? 'sidebar-col-collapsed' : 'sidebar-col') = render('editor_file_tree', exercise: @exercise, files: @files)
   div id='output_sidebar' class='output-col-collapsed' = render('exercises/editor_output')
-  div id='frames' class=(@exercise.hide_file_tree ? 'editor-col' : 'editor-col')
+  div id='frames' class='editor-col'
     - @files.each do |file|
       = render('editor_frame', exercise: exercise, file: file)
     #autosave-label
