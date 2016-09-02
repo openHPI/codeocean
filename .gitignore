@@ -6,6 +6,7 @@
 /config/smtp.yml
 /config/docker.yml.erb
 /config/*.production.yml
+/config/*.staging.yml
 /coverage
 /log
 /public/assets

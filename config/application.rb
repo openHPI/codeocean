@@ -30,6 +30,8 @@ module CodeOcean
 
     config.autoload_paths << Rails.root.join('lib')
     config.eager_load_paths << Rails.root.join('lib')
+    config.assets.precompile += %w( markdown-buttons.png )
+
     case (RUBY_ENGINE)
       when 'ruby'
         # ...
