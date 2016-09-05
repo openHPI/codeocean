@@ -369,6 +369,13 @@ $(function() {
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(THEME);
+
+      editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: false,
+        enableLiveAutocompletion: true
+      });
+      
       editor.commands.bindKey("ctrl+alt+0", null);
       editors.push(editor);
       editor_for_file.set($(element).parent().data('filename'), editor);
