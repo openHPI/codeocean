@@ -221,6 +221,17 @@ var CodeOceanEditor = {
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(this.THEME);
+
+      // set options for autocompletion
+      if($(element).data('allow-auto-completion')){
+        editor.setOptions({
+          enableBasicAutocompletion: true,
+          enableSnippets: false,
+          enableLiveAutocompletion: true
+        });
+      }
+
+
       editor.commands.bindKey("ctrl+alt+0", null);
       this.editors.push(editor);
       this.editor_for_file.set($(element).parent().data('filename'), editor);

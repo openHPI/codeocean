@@ -36,6 +36,7 @@ en:
         public: Public
         title: Title
         user: Author
+        allow_auto_completion: "Allow auto completion"
         allow_file_creation: "Allow file creation"
       external_user:
         consumer: Consumer

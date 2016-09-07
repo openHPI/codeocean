@@ -28,6 +28,10 @@
     label
       = f.check_box(:allow_file_creation)
       = t('activerecord.attributes.exercise.allow_file_creation')
+  .checkbox
+    label
+      = f.check_box(:allow_auto_completion)
+      = t('activerecord.attributes.exercise.allow_auto_completion')
   h2 = t('activerecord.attributes.exercise.files')
   ul#files.list-unstyled.panel-group
     = f.fields_for :files do |files_form|

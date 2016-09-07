@@ -36,6 +36,7 @@ de:
         public: Öffentlich
         title: Titel
         user: Autor
+        allow_auto_completion: "Autovervollständigung aktivieren"
         allow_file_creation: "Dateierstellung erlauben"
       external_user:
         consumer: Konsument
