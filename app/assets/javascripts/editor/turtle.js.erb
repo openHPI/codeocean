@@ -42,19 +42,6 @@ CodeOceanEditorTurtle = {
       // initialize two-column layout
       $('#output-col1').addClass('col-lg-7 col-md-7 two-column');
       this.turtlecanvas.removeClass('hidden');
-      //this.turtlecanvas.parent().parent().removeClass('hidden');
-    }
-  },
-
-  hideCanvas: function () {
-    if ($('#turtlediv').isPresent()
-        && !(this.turtlecanvas.hasClass('hidden'))) {
-      var output = $('#output-col1');
-      if (output.hasClass('two-column')) {
-        output.removeClass('col-lg-7 col-md-7 two-column');
-      }
-      this.turtlecanvas.addClass('hidden');
-      //this.turtlecanvas.parent().parent().addClass('hidden');
     }
   }
 
