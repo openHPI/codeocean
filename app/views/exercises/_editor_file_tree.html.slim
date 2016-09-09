@@ -8,7 +8,7 @@ div id='sidebar-collapsed' class=(@exercise.hide_file_tree ? '' : 'hidden')
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-history', id: 'start-over-collapsed', label:'', title: t('exercises.editor.start_over'))
 
 div id='sidebar-uncollapsed' class=(@exercise.hide_file_tree ? 'hidden' : '')
-  = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
 
   div class=(@exercise.hide_file_tree ? 'hidden' : '')
     hr
