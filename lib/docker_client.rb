@@ -261,15 +261,20 @@ class DockerClient
       end
   end
 
-  def exit_container(container)
-    Rails.logger.debug('exiting container ' + container.to_s)
-    # exit the timeout thread if it is still alive
+  def exit_thread_if_alive
     if(@thread && @thread.alive?)
       @thread.exit
     end
+  end
+
+  def exit_container(container)
+    Rails.logger.debug('exiting container ' + container.to_s)
+    # exit the timeout thread if it is still alive
+    exit_thread_if_alive
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end
+
 
   def kill_container(container)
     Rails.logger.info('killing container ' + container.to_s)
@@ -286,6 +291,7 @@ class DockerClient
       container = self.class.create_container(@execution_environment)
       DockerContainerPool.add_to_all_containers(container, @execution_environment)
     end
+    exit_thread_if_alive
   end
 
   def execute_run_command(submission, filename, &block)

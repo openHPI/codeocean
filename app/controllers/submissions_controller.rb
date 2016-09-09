@@ -129,7 +129,7 @@ class SubmissionsController < ApplicationController
 
         socket.on :message do |event|
           Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + event.data)
-          handle_message(event.data, tubesock)
+          handle_message(event.data, tubesock, result[:container])
         end
 
         socket.on :close do |event|
@@ -171,10 +171,11 @@ class SubmissionsController < ApplicationController
     tubesock.close
   end
 
-  def handle_message(message, tubesock)
+  def handle_message(message, tubesock, container)
     # Handle special commands first
     if (/^exit/.match(message))
       kill_socket(tubesock)
+      @docker_client.exit_container(container)
     else
       # Filter out information about run_command, test_command, user or working directory
       run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
