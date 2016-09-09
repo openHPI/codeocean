@@ -15,6 +15,7 @@ var CodeOceanEditor = {
   AUTOSAVE_INTERVAL: 15 * 1000,
   REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
   REQUEST_TOOLTIP_TIME: 5000,
+  EDITOR_HEIGHT_SUBST: 100,
 
   NONE: 0,
   WEBSOCKET: 1,
@@ -201,6 +202,15 @@ var CodeOceanEditor = {
 
   initializeEditors: function () {
     $('.editor').each(function (index, element) {
+      // Resize frame.
+      var windowHeight = window.innerHeight - this.EDITOR_HEIGHT_SUBST;
+      $(element).parent().height(windowHeight);
+
+      $(window).resize(function(){
+        var windowHeight = window.innerHeight - this.EDITOR_HEIGHT_SUBST;
+        $(element).parent().height(windowHeight);
+      }.bind(this));
+
       var editor = ace.edit(element);
 
       if (this.qa_api) {
@@ -221,6 +231,8 @@ var CodeOceanEditor = {
       editor.setReadOnly($(element).data('read-only') !== undefined);
       editor.setShowPrintMargin(false);
       editor.setTheme(this.THEME);
+
+
 
       // set options for autocompletion
       if($(element).data('allow-auto-completion')){
