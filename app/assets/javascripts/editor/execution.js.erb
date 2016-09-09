@@ -39,10 +39,11 @@ CodeOceanEditorWebsocket = {
   },
 
   handleExitCommand: function() {
-    this.killWebsocketAndContainer();
+    this.killWebsocket();
     this.handleQaApiOutput();
     this.handleStderrOutputForFlowr();
     this.augmentStacktraceInOutput();
     this.cleanUpTurtle();
+    this.cleanUpUI();
   }
 };

@@ -111,80 +111,25 @@ CodeOceanEditorEvaluation = {
   stopCode: function (event) {
     event.preventDefault();
     if (this.isActiveFileStoppable()) {
-      this.killWebsocketAndContainer();
+      this.websocket.send(JSON.stringify({'cmd': 'client_kill'}));
+      this.killWebsocket();
+      this.cleanUpUI();
     }
   },
 
-  stopCodeServerSendEvent: function (event) {
-    var jqxhr = this.ajax({
-      data: {
-        container_id: $('#stop').data('container').id
-      },
-      url: $('#stop').data('url')
-    });
-    jqxhr.always(function () {
-      this.hideSpinner();
-      this.running = false;
-      this.toggleButtonStates();
-    }.bind(this));
-    jqxhr.fail(ajaxError);
-  },
-
-  killWebsocketAndContainer: function () {
-    if (this.websocket.getReadyState() != WebSocket.OPEN) {
+  killWebsocket: function () {
+    if (this.websocket != null && this.websocket.getReadyState() != WebSocket.OPEN) {
       return;
     }
 
-    this.websocket.send(JSON.stringify({cmd: 'exit'}));
     this.websocket.killWebSocket();
-    
-    this.hideSpinner();
     this.running = false;
+  },
+
+  cleanUpUI: function() {
+    this.hideSpinner();
     this.toggleButtonStates();
     this.hidePrompt();
-  },
-
-  //TODO: Move Prompt Part in own component
-  showPrompt: function(msg) {
-    var label = $('#prompt .input-group-addon');
-    var prompt = $(this.prompt);
-    label.text(msg.data || label.data('prompt'));
-    if (prompt.isPresent() && prompt.hasClass('hidden')) {
-      prompt.removeClass('hidden');
-    }
-    $('#prompt input').focus();
-  },
-
-  hidePrompt: function() {
-    var prompt = $(this.prompt);
-    if (prompt.isPresent() && !prompt.hasClass('hidden')) {
-      prompt.addClass('hidden');
-    }
-  },
-
-  initPrompt: function() {
-    if ($('#run').isPresent()) {
-      $('#run').bind('click', this.hidePrompt.bind(this));
-    }
-    if ($('#prompt').isPresent()) {
-      $('#prompt').on('keypress', this.handlePromptKeyPress.bind(this));
-      $('#prompt-submit').on('click', this.submitPromptInput.bind(this));
-    }
-  },
-
-  submitPromptInput: function() {
-    var input = $('#prompt-input');
-    var message = input.val();
-    this.websocket.send(JSON.stringify({cmd: 'result', 'data': message}));
-    this.websocket.flush();
-    input.val('');
-    this.hidePrompt();
-  },
-
-  handlePromptKeyPress: function(evt) {
-    if (evt.which === this.ENTER_KEY_CODE) {
-      this.submitPromptInput();
-    }
   },
 
   renderWebsocketOutput: function(msg){
