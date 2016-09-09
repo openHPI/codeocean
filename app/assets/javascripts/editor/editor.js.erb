@@ -275,7 +275,6 @@ var CodeOceanEditor = {
   initializeEventHandlers: function () {
     $(document).on('click', '#results a', this.showOutput.bind(this));
     $(document).on('keypress', this.handleKeyPress.bind(this));
-    $('a[data-toggle="tab"]').on('show.bs.tab', this.storeTab.bind(this));
     this.initializeFileTreeButtons();
     this.initializeWorkflowButtons();
     this.initializeWorkspaceButtons();
@@ -480,10 +479,6 @@ var CodeOceanEditor = {
         }
       }
     }
-  },
-
-  storeTab: function (event) {
-    localStorage.tab = $(event.target).parent().index();
   },
 
   resetOutputTab: function () {
