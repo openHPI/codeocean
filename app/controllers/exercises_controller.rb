@@ -247,13 +247,12 @@ class ExercisesController < ApplicationController
   end
 
   def redirect_after_submit
-    Rails.logger.error('Score ' + @submission.normalized_score.to_s)
+    Rails.logger.debug('Score ' + @submission.normalized_score.to_s)
     if @submission.normalized_score == 1.0
       # if user has an own rfc, redirect to it and message him to clean up and accept the answer.
 
       # else: show open rfc for same exercise
       if rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).order("RANDOM()").first
-        Rails.logger.error('rfc: ' + rfc.to_s)
 
         # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
         flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
