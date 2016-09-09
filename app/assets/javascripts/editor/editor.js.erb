@@ -24,7 +24,6 @@ var CodeOceanEditor = {
   active_file: undefined,
   active_frame: undefined,
   running: false,
-  qa_api: undefined,
   output_mode_is_streaming: true,
 
   numMessages: 0,
@@ -35,7 +34,6 @@ var CodeOceanEditor = {
 
   ENTER_KEY_CODE: 13,
 
-  QaApiOutputBuffer: {'stdout': '', 'stderr': ''},
   flowrResultHtml: '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>',
 
 

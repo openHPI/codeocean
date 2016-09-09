@@ -8,7 +8,7 @@ CodeOceanEditorFlowr = {
     var flowrHintBody = $('#flowrHint .panel-body');
     var queryParameters = {
       query: this.flowrOutputBuffer
-    }
+    };
 
     flowrHintBody.empty();
 
@@ -30,57 +30,5 @@ CodeOceanEditorFlowr = {
     });
 
     this.flowrOutputBuffer = '';
-  },
-
-  requestComments: function () {
-    var user_id = $('#editor').data('user-id');
-    var exercise_id = $('#editor').data('exercise-id');
-    var file_id = $('.editor').data('id');
-    var question = $('#question').val();
-
-    var createRequestForComments = function (submission) {
-      $.ajax({
-        method: 'POST',
-        url: '/request_for_comments',
-        data: {
-          request_for_comment: {
-            exercise_id: exercise_id,
-            file_id: file_id,
-            submission_id: submission.id,
-            question: question
-          }
-        }
-      }).done(function () {
-        this.hideSpinner();
-        $.flash.success({text: $('#askForCommentsButton').data('message-success')});
-      }.bind(this)).error(this.ajaxError.bind(this));
-    };
-
-    this.createSubmission($('.requestCommentsButton'), null, createRequestForComments.bind(this));
-
-    $('#comment-modal').modal('hide');
-    var button = $('#requestComments');
-    button.prop('disabled', true);
-  },
-
-  //tODO move codepilot out of here.
-  initializeCodePilot: function () {
-    if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined') && QaApi.isBrowserSupported()) {
-      $('#editor-column').addClass('col-md-10').removeClass('col-md-12');
-      $('#questions-column').addClass('col-md-2');
-
-      var node = document.getElementById('questions-holder');
-      var url = $('#questions-holder').data('url');
-
-      this.qa_api = new QaApi(node, url);
-    }
-  },
-
-  handleQaApiOutput: function () {
-    if (this.qa_api) {
-      this.qa_api.executeCommand('syncOutput', [[this.QaApiOutputBuffer]]);
-      // reset the object
-    }
-    this.QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
-  },
+  }
 };

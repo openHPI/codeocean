@@ -170,5 +170,36 @@ CodeOceanEditorSubmissions = {
         window.location = response.redirect;
       }
     })
+  },
+
+  requestComments: function () {
+    var user_id = $('#editor').data('user-id');
+    var exercise_id = $('#editor').data('exercise-id');
+    var file_id = $('.editor').data('id');
+    var question = $('#question').val();
+
+    var createRequestForComments = function (submission) {
+      $.ajax({
+        method: 'POST',
+        url: '/request_for_comments',
+        data: {
+          request_for_comment: {
+            exercise_id: exercise_id,
+            file_id: file_id,
+            submission_id: submission.id,
+            question: question
+          }
+        }
+      }).done(function () {
+        this.hideSpinner();
+        $.flash.success({text: $('#askForCommentsButton').data('message-success')});
+      }.bind(this)).error(this.ajaxError.bind(this));
+    };
+
+    this.createSubmission($('.requestCommentsButton'), null, createRequestForComments.bind(this));
+
+    $('#comment-modal').modal('hide');
+    var button = $('#requestComments');
+    button.prop('disabled', true);
   }
 };
