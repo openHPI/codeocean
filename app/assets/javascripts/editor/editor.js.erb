@@ -15,7 +15,6 @@ var CodeOceanEditor = {
   AUTOSAVE_INTERVAL: 15 * 1000,
   REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
   REQUEST_TOOLTIP_TIME: 5000,
-  EDITOR_HEIGHT_SUBST: 100,
 
   NONE: 0,
   WEBSOCKET: 1,
@@ -200,15 +199,21 @@ var CodeOceanEditor = {
     this.createSubmission($('#autosave'), null);
   },
 
+  resizeParentOfAceEditor: function (element){
+    // calculate needed size: window height - position of top of button-bar - 60 for bar itself and margins
+    var windowHeight = window.innerHeight - $('#editor-buttons').offset().top - 60;
+    $(element).parent().height(windowHeight);
+  },
+
   initializeEditors: function () {
     $('.editor').each(function (index, element) {
-      // Resize frame.
-      var windowHeight = window.innerHeight - this.EDITOR_HEIGHT_SUBST;
-      $(element).parent().height(windowHeight);
 
+      // Resize frame on load
+      this.resizeParentOfAceEditor(element);
+
+      // Resize frame on window size change
       $(window).resize(function(){
-        var windowHeight = window.innerHeight - this.EDITOR_HEIGHT_SUBST;
-        $(element).parent().height(windowHeight);
+        this.resizeParentOfAceEditor(element);
       }.bind(this));
 
       var editor = ace.edit(element);
