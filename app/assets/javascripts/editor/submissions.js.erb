@@ -136,6 +136,7 @@ CodeOceanEditorSubmissions = {
           $('#stop').data('url', response.stop_url);
           this.running = true;
           this.showSpinner($('#run'));
+          $('#score_div').addClass('hidden');
           this.toggleButtonStates();
           var url = response.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
           this.initializeSocketForRunning(url);

@@ -105,6 +105,7 @@ CodeOceanEditorEvaluation = {
     this.runmode = this.SERVER_SEND_EVENT;
     this.createSubmission('#assess', null, function (response) {
       this.showSpinner($('#assess'));
+      $('#score_div').removeClass('hidden');
       var url = response.score_url;
       this.initializeSocketForScoring(url);
     }.bind(this));

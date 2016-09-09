@@ -15,47 +15,8 @@
       p = t('.alert.text', application_name: application_name)
 
     #development-environment
-      ul.nav.nav-justified.nav-tabs role='tablist'
-        li.active
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#workspace' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 1')
-            i.fa.fa-code
-            = t('.workspace')
-        li
-          a data-placement='top' data-toggle='tab' data-tooltip=true href='#progress' role='tab' title=t('shared.tooltips.shortcut', shortcut: 'ALT + 3')
-            i.fa.fa-line-chart
-            = t('.progress')
-
-      hr
-
       .tab-content
         #workspace.tab-pane.active = render('editor', exercise: @exercise, files: @files, submission: @submission)
-        #progress.tab-pane
-          #results
-            h2 = t('.results')
-            p.test-count == t('.test_count', count: 0)
-            ul.list-unstyled
-            ul#dummies.hidden.list-unstyled
-              li.panel.panel-default
-                .panel-heading
-                  h3.panel-title == t('.file', filename: '', number: 0)
-                .panel-body
-                  = row(label: '.passed_tests', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
-                  = row(label: 'activerecord.attributes.submission.score', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
-                  = row(label: '.feedback')
-                  = row(label: '.error_messages')
-                  = row(label: '.output', value: link_to(t('shared.show'), '#'))
-          #score data-maximum-score=@exercise.maximum_score data-score=@submission.try(:score)
-            h4
-              span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
-              span.score
-            .progress
-              .progress-bar role='progressbar'
-
-          br
-          - if session[:lti_parameters].try(:has_key?, 'lis_outcome_service_url')
-            p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
-          - else
-            p.text-center = render('editor_button', classes: 'btn-lg btn-warning-outline', data: {:'data-placement' => 'bottom', :'data-tooltip' => true} , icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
 
   - if qa_url
     #questions-column
