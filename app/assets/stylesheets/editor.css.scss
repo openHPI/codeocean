@@ -107,10 +107,11 @@ button i.fa-spin {
 .sidebar-col-collapsed {
   -webkit-transition: width 2s;
   transition: width 2s;
-  width:52px;
+  width:67px;
   float:left;
   min-height: 1px;
   padding-left: 15px;
+  padding-right: 15px;
 }
 
 .sidebar-col {
@@ -125,8 +126,6 @@ button i.fa-spin {
 
 .editor-col {
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
   width:auto;
   height:100%;
   overflow:hidden;

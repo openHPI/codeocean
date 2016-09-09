@@ -139,9 +139,7 @@ var CodeOceanEditor = {
   },
 
   handleKeyPress: function (event) {
-    if (event.which === this.ALT_1_KEY_CODE) {
-      this.showWorkspaceTab(event);
-    } else if (event.which === this.ALT_R_KEY_CODE) {
+    if (event.which === this.ALT_R_KEY_CODE) {
       $('#run').trigger('click');
     } else if (event.which === this.ALT_S_KEY_CODE) {
       $('#assess').trigger('click');
@@ -276,7 +274,6 @@ var CodeOceanEditor = {
     $(document).on('click', '#results a', this.showOutput.bind(this));
     $(document).on('keypress', this.handleKeyPress.bind(this));
     this.initializeFileTreeButtons();
-    this.initializeWorkflowButtons();
     this.initializeWorkspaceButtons();
     this.initializeRequestForComments()
   },
@@ -324,12 +321,9 @@ var CodeOceanEditor = {
     $('[data-tooltip]').tooltip();
   },
 
-  initializeWorkflowButtons: function () {
-    $('#start').on('click', this.showWorkspaceTab.bind(this));
-    $('#submit').on('click', this.submitCode.bind(this));
-  },
 
   initializeWorkspaceButtons: function () {
+    $('#submit').on('click', this.submitCode.bind(this));
     $('#assess').on('click', this.scoreCode.bind(this));
     $('#dropdown-render, #render').on('click', this.renderCode.bind(this));
     $('#dropdown-run, #run').on('click', this.runCode.bind(this));
@@ -452,8 +446,7 @@ var CodeOceanEditor = {
     var file = $(event.target).data('file');
     var line = $(event.target).data('line');
 
-    this.showWorkspaceTab(null);
-    // set active file ?!?!
+    // set active file, only needed for codepilot, so skipped for now
 
     var frame = $('div.frame[data-filename="' + file + '"]');
     this.showFrame(frame);
