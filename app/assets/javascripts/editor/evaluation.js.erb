@@ -1,6 +1,19 @@
 CodeOceanEditorEvaluation = {
   chunkBuffer: [{streamedResponse: true}],
 
+  /**
+   * Scoring-Functions
+   */
+  scoreCode: function (event) {
+    event.preventDefault();
+    this.createSubmission('#assess', null, function (response) {
+      this.showSpinner($('#assess'));
+      $('#score_div').removeClass('hidden');
+      var url = response.score_url;
+      this.initializeSocketForScoring(url);
+    }.bind(this));
+  },
+
   handleScoringResponse: function (results) {
     this.printScoringResults(results);
     var score = _.reduce(results, function (sum, result) {
@@ -8,40 +21,6 @@ CodeOceanEditorEvaluation = {
     }, 0).toFixed(2);
     $('#score').data('score', score);
     this.renderScore();
-  },
-
-  handleTestResponse: function (result) {
-    this.clearOutput();
-    this.printOutput(result, false, 0);
-    if (this.qa_api) {
-      this.qa_api.executeCommand('syncOutput', [result]);
-    }
-    this.showStatus(result);
-    this.showOutputBar();
-  },
-
-  printOutput: function (output, colorize, index) {
-    var element = this.findOrCreateOutputElement(index);
-    if (!colorize) {
-      if (output.stdout != undefined && output.stdout != '') {
-        element.append(output.stdout)
-      }
-
-      if (output.stderr != undefined && output.stderr != '') {
-        element.append('There was an error: StdErr: ' + output.stderr);
-      }
-
-    } else if (output.stderr) {
-      element.addClass('text-warning').append(output.stderr);
-      this.flowrOutputBuffer += output.stderr;
-      this.QaApiOutputBuffer.stderr += output.stderr;
-    } else if (output.stdout) {
-      element.addClass('text-success').append(output.stdout);
-      this.flowrOutputBuffer += output.stdout;
-      this.QaApiOutputBuffer.stdout += output.stdout;
-    } else {
-      element.addClass('text-muted').text($('#output').data('message-no-output'));
-    }
   },
 
   printScoringResult: function (result, index) {
@@ -98,16 +77,22 @@ CodeOceanEditorEvaluation = {
     this.renderProgressBar(score, maximum_score);
   },
 
-  scoreCode: function (event) {
-    event.preventDefault();
-    this.createSubmission('#assess', null, function (response) {
-      this.showSpinner($('#assess'));
-      $('#score_div').removeClass('hidden');
-      var url = response.score_url;
-      this.initializeSocketForScoring(url);
-    }.bind(this));
+  /**
+   * Testing-Logic
+   */
+  handleTestResponse: function (result) {
+    this.clearOutput();
+    this.printOutput(result, false, 0);
+    if (this.qa_api) {
+      this.qa_api.executeCommand('syncOutput', [result]);
+    }
+    this.showStatus(result);
+    this.showOutputBar();
   },
 
+  /**
+   * Stop-Logic
+   */
   stopCode: function (event) {
     event.preventDefault();
     if (this.isActiveFileStoppable()) {
@@ -132,6 +117,9 @@ CodeOceanEditorEvaluation = {
     this.hidePrompt();
   },
 
+  /**
+   * Output-Logic
+   */
   renderWebsocketOutput: function(msg){
     var element = this.findOrCreateRenderElement(0);
     element.append(msg.data);
@@ -149,6 +137,31 @@ CodeOceanEditorEvaluation = {
 
   clearOutput: function() {
     $('#output pre').remove();
+  },
+
+  printOutput: function (output, colorize, index) {
+    var element = this.findOrCreateOutputElement(index);
+    if (!colorize) {
+      if (output.stdout != undefined && output.stdout != '') {
+        element.append(output.stdout)
+      }
+
+      if (output.stderr != undefined && output.stderr != '') {
+        element.append('There was an error: StdErr: ' + output.stderr);
+      }
+
+    } else if (output.stderr) {
+      element.addClass('text-warning').append(output.stderr);
+      this.flowrOutputBuffer += output.stderr;
+      this.QaApiOutputBuffer.stderr += output.stderr;
+    } else if (output.stdout) {
+      element.addClass('text-success').append(output.stdout);
+      this.flowrOutputBuffer += output.stdout;
+      this.QaApiOutputBuffer.stdout += output.stdout;
+    } else {
+      element.addClass('text-muted').text($('#output').data('message-no-output'));
+    }
   }
+
 
 };

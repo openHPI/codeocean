@@ -1,17 +1,13 @@
-
 CodeOceanEditorSubmissions = {
-  collectFiles: function() {
-    var editable_editors = _.filter(this.editors, function(editor) {
-      return !editor.getReadOnly();
-    });
-    return _.map(editable_editors, function(editor) {
-      return {
-        content: editor.getValue(),
-        file_id: $(editor.container).data('file-id')
-      };
-    });
-  },
+  FILENAME_URL_PLACEHOLDER: '{filename}',
 
+  AUTOSAVE_INTERVAL: 15 * 1000,
+  autosaveTimer: null,
+  autosaveLabel: "#autosave-label span",
+
+  /**
+   * Submission-Creation
+   */
   createSubmission: function (initiator, filter, callback) {
     this.showSpinner(initiator);
     var jqxhr = this.ajax({
@@ -34,6 +30,18 @@ CodeOceanEditorSubmissions = {
     }
 
     jqxhr.fail(this.ajaxError.bind(this));
+  },
+
+  collectFiles: function() {
+    var editable_editors = _.filter(this.editors, function(editor) {
+      return !editor.getReadOnly();
+    });
+    return _.map(editable_editors, function(editor) {
+      return {
+        content: editor.getValue(),
+        file_id: $(editor.container).data('file-id')
+      };
+    });
   },
 
   createSubmissionCallback: function(data){
@@ -69,6 +77,9 @@ CodeOceanEditorSubmissions = {
     this.toggleButtonStates();
   },
 
+  /**
+   * File-Management
+   */
   destroyFile: function() {
     this.createSubmission($('#destroy-file'), function(files) {
       return _.reject(files, function(file) {
@@ -125,7 +136,9 @@ CodeOceanEditorSubmissions = {
     }
   },
 
-  //Todo Split up in submitpart and run part
+  /**
+   * Execution-Logic
+   */
   runCode: function(event) {
       event.preventDefault();
       if ($('#run').is(':visible')) {
@@ -172,34 +185,27 @@ CodeOceanEditorSubmissions = {
     })
   },
 
-  requestComments: function () {
-    var user_id = $('#editor').data('user-id');
-    var exercise_id = $('#editor').data('exercise-id');
-    var file_id = $('.editor').data('id');
-    var question = $('#question').val();
+  /**
+   * Autosave-Logic
+   */
+  resetSaveTimer: function () {
+    clearTimeout(this.autosaveTimer);
+    this.autosaveTimer = setTimeout(this.autosave.bind(this), this.AUTOSAVE_INTERVAL);
+  },
 
-    var createRequestForComments = function (submission) {
-      $.ajax({
-        method: 'POST',
-        url: '/request_for_comments',
-        data: {
-          request_for_comment: {
-            exercise_id: exercise_id,
-            file_id: file_id,
-            submission_id: submission.id,
-            question: question
-          }
-        }
-      }).done(function () {
-        this.hideSpinner();
-        $.flash.success({text: $('#askForCommentsButton').data('message-success')});
-      }.bind(this)).error(this.ajaxError.bind(this));
-    };
+  unloadAutoSave: function() {
+    if(this.autosaveTimer != null){
+      this.autosave();
+    }
+  },
 
-    this.createSubmission($('.requestCommentsButton'), null, createRequestForComments.bind(this));
-
-    $('#comment-modal').modal('hide');
-    var button = $('#requestComments');
-    button.prop('disabled', true);
+  autosave: function () {
+    var date = new Date();
+    var autosaveLabel = $(this.autosaveLabel);
+    autosaveLabel.parent().css("visibility", "visible");
+    autosaveLabel.text(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
+    autosaveLabel.text(date.toLocaleTimeString());
+    this.autosaveTimer = null;
+    this.createSubmission($('#autosave'), null);
   }
 };

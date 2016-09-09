@@ -1,18 +1,19 @@
 var CodeOceanEditor = {
+  //ACE-Editor-Path
   ACE_FILES_PATH: '/assets/ace/',
+  THEME: 'ace/theme/textmate',
+
+  //Color-Encoding for Percentages in Progress Bars (For submissions)
   ADEQUATE_PERCENTAGE: 50,
-  ALT_1_KEY_CODE: 161,
-  ALT_2_KEY_CODE: 8220,
-  ALT_3_KEY_CODE: 182,
-  ALT_4_KEY_CODE: 162,
+  SUCCESSFULL_PERCENTAGE: 90,
+
+  //Key-Codes (for Hotkeys)
   ALT_R_KEY_CODE: 174,
   ALT_S_KEY_CODE: 8218,
   ALT_T_KEY_CODE: 8224,
-  FILENAME_URL_PLACEHOLDER: '{filename}',
-  SUCCESSFULL_PERCENTAGE: 90,
-  THEME: 'ace/theme/textmate',
-  REMEMBER_TAB: false,
-  AUTOSAVE_INTERVAL: 15 * 1000,
+  ENTER_KEY_CODE: 13,
+
+  //Request-For-Comments-Configuration
   REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
   REQUEST_TOOLTIP_TIME: 5000,
 
@@ -24,18 +25,8 @@ var CodeOceanEditor = {
   active_file: undefined,
   active_frame: undefined,
   running: false,
-  output_mode_is_streaming: true,
 
-  numMessages: 0,
   lastCopyText: null,
-
-  autosaveTimer: null,
-  autosaveLabel: "#autosave-label span",
-
-  ENTER_KEY_CODE: 13,
-
-  flowrResultHtml: '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>',
-
 
   configureEditors: function () {
     _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
@@ -49,7 +40,6 @@ var CodeOceanEditor = {
       this.destroyFile();
     }
   },
-
 
   confirmReset: function (event) {
     event.preventDefault();
@@ -169,21 +159,6 @@ var CodeOceanEditor = {
   hideSpinner: function () {
     $('button i.fa').show();
     $('button i.fa-spin').hide();
-  },
-
-  resetSaveTimer: function () {
-    clearTimeout(this.autosaveTimer);
-    this.autosaveTimer = setTimeout(this.autosave.bind(this), this.AUTOSAVE_INTERVAL);
-  },
-
-  autosave: function () {
-    var date = new Date();
-    var autosaveLabel = $(this.autosaveLabel);
-    autosaveLabel.parent().css("visibility", "visible");
-    autosaveLabel.text(date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds());
-    autosaveLabel.text(date.toLocaleTimeString());
-    this.autosaveTimer = null;
-    this.createSubmission($('#autosave'), null);
   },
 
   resizeParentOfAceEditor: function (element){
@@ -588,10 +563,6 @@ var CodeOceanEditor = {
     this.renderScore();
     this.showFirstFile();
 
-    $(window).on("beforeunload", function() {
-      if(this.autosaveTimer != null){
-        this.autosave();
-      }
-    }.bind(this));
+    $(window).on("beforeunload", this.unloadAutoSave.bind(this));
   }
 };
