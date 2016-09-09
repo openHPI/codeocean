@@ -224,7 +224,7 @@ class ExercisesController < ApplicationController
     if lti_outcome_service?
       transmit_lti_score
     else
-      redirect_to_lti_return_path
+      redirect_after_submit
     end
   end
 
@@ -232,7 +232,7 @@ class ExercisesController < ApplicationController
     ::NewRelic::Agent.add_custom_parameters({ submission: @submission.id, normalized_score: @submission.normalized_score })
     response = send_score(@submission.normalized_score)
     if response[:status] == 'success'
-      redirect_to_lti_return_path
+      redirect_after_submit
     else
       respond_to do |format|
         format.html { redirect_to(implement_exercise_path(@submission.exercise)) }
@@ -245,4 +245,28 @@ class ExercisesController < ApplicationController
   def update
     update_and_respond(object: @exercise, params: exercise_params)
   end
+
+  def redirect_after_submit
+    Rails.logger.debug('Score ' + @submission.normalized_score.to_s)
+    if @submission.normalized_score == 1.0
+      # if user has an own rfc, redirect to it and message him to clean up and accept the answer.
+
+      # else: show open rfc for same exercise
+      if rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).order("RANDOM()").first
+
+        # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
+        flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
+        flash.keep(:notice)
+
+        respond_to do |format|
+          format.html { redirect_to(rfc) }
+          format.json { render(json: {redirect: url_for(rfc)}) }
+        end
+
+        return
+      end
+    end
+    redirect_to_lti_return_path
+  end
+
 end
