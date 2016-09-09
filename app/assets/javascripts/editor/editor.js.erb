@@ -16,10 +16,6 @@ var CodeOceanEditor = {
   REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
   REQUEST_TOOLTIP_TIME: 5000,
 
-  NONE: 0,
-  WEBSOCKET: 1,
-  SERVER_SEND_EVENT: 2,
-
   editors: [],
   editor_for_file: new Map(),
   regex_for_language: new Map(),
@@ -30,7 +26,6 @@ var CodeOceanEditor = {
   running: false,
   qa_api: undefined,
   output_mode_is_streaming: true,
-  runmode: this.NONE,
 
   numMessages: 0,
   prompt: '#prompt',
@@ -102,7 +97,6 @@ var CodeOceanEditor = {
 
   showOutput: function(event) {
     event.preventDefault();
-    this.showTab(0);
     this.showOutputBar();
     $('#output').scrollTo($(this).attr('href'));
   },
@@ -147,8 +141,6 @@ var CodeOceanEditor = {
   handleKeyPress: function (event) {
     if (event.which === this.ALT_1_KEY_CODE) {
       this.showWorkspaceTab(event);
-    } else if (event.which === this.ALT_3_KEY_CODE) {
-      this.showTab(1);
     } else if (event.which === this.ALT_R_KEY_CODE) {
       $('#run').trigger('click');
     } else if (event.which === this.ALT_S_KEY_CODE) {
@@ -498,7 +490,6 @@ var CodeOceanEditor = {
     this.clearOutput();
     $('#hint').fadeOut();
     $('#flowrHint').fadeOut();
-    this.showTab(0);
     this.showOutputBar();
   },
 
@@ -515,21 +506,6 @@ var CodeOceanEditor = {
       filename: filename,
       id: fileId
     };
-  },
-
-  showRequestedTab: function() {
-    if(this.REMEMBER_TAB){
-      var regexp = /tab=(\d+)/;
-      if (regexp.test(window.location.search)) {
-        var index = regexp.exec(window.location.search)[1] - 1;
-      } else {
-        var index = this.localStorage.tab;
-      }
-    } else {
-      // else start with first tab.
-      var index = 0;
-    }
-    this.showTab(index);
   },
 
   showSpinner: function(initiator) {
@@ -557,10 +533,6 @@ var CodeOceanEditor = {
     });
   },
 
-  showTab: function(index) {
-    $('a[data-toggle="tab"]').eq(index || 0).tab('show');
-  },
-
   showTimeoutMessage: function() {
     $.flash.info({
       icon: ['fa', 'fa-clock-o'],
@@ -572,13 +544,6 @@ var CodeOceanEditor = {
     $.flash.danger({
       text: $('#flash').data('message-failure')
     });
-  },
-
-  showWorkspaceTab: function(event) {
-    if(event){
-      event.preventDefault();
-    }
-    this.showTab(0);
   },
 
   showFileDialog: function(event) {
@@ -637,7 +602,6 @@ var CodeOceanEditor = {
     this.initPrompt();
     this.renderScore();
     this.showFirstFile();
-    this.showRequestedTab();
 
     $(window).on("beforeunload", function() {
       if(this.autosaveTimer != null){

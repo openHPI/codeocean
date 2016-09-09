@@ -8,7 +8,6 @@ CodeOceanEditorEvaluation = {
     }, 0).toFixed(2);
     $('#score').data('score', score);
     this.renderScore();
-    this.showTab(1);
   },
 
   handleTestResponse: function (result) {
@@ -18,7 +17,6 @@ CodeOceanEditorEvaluation = {
       this.qa_api.executeCommand('syncOutput', [result]);
     }
     this.showStatus(result);
-    this.showTab(0);
     this.showOutputBar();
   },
 
@@ -102,7 +100,6 @@ CodeOceanEditorEvaluation = {
 
   scoreCode: function (event) {
     event.preventDefault();
-    this.runmode = this.SERVER_SEND_EVENT;
     this.createSubmission('#assess', null, function (response) {
       this.showSpinner($('#assess'));
       $('#score_div').removeClass('hidden');
@@ -114,12 +111,7 @@ CodeOceanEditorEvaluation = {
   stopCode: function (event) {
     event.preventDefault();
     if (this.isActiveFileStoppable()) {
-      if (this.runmode == this.WEBSOCKET) {
-        this.killWebsocketAndContainer();
-      } else if (this.runmode == this.SERVER_SEND_EVENT) {
-        this.stopCodeServerSendEvent(event);
-      }
-      this.runmode = this.NONE;
+      this.killWebsocketAndContainer();
     }
   },
 

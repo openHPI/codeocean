@@ -118,7 +118,6 @@ CodeOceanEditorSubmissions = {
               stderr: message
             }, true, 0);
             this.sendError(message, response.id);
-            this.showTab(0);
             this.showOutputBar();
           };
         }
@@ -130,7 +129,6 @@ CodeOceanEditorSubmissions = {
   runCode: function(event) {
       event.preventDefault();
       if ($('#run').is(':visible')) {
-        this.runmode = this.WEBSOCKET;
         this.createSubmission('#run', null, function(response) {
           //Run part starts here
           $('#stop').data('url', response.stop_url);
