@@ -363,10 +363,15 @@ var CodeOceanEditor = {
   },
 
   publishCodeOceanEvent: function (eventName, contextData) {
+
+    // enhance contextData hash with the user agent
+    contextData['user_agent'] = navigator.userAgent;
+
     var payload = {
       user: {
         type: 'User',
-        uuid: $('#editor').data('user-id')
+        uuid: $('#editor').data('user-id'),
+        external_id: $('#editor').data('user-external-id')
       },
       verb: {
         type: eventName
