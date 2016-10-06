@@ -152,8 +152,9 @@ $(function() {
   };
 
   var updateFileTemplates = function(fileType) {
+      var rel_url_root = '<%= (defined? config.relative_url_root) && config.relative_url_root != nil && config.relative_url_root != "" ? config.relative_url_root : "" %>';
       var jqxhr = $.ajax({
-          url: '/file_templates/by_file_type/' + fileType + '.json',
+          url:  rel_url_root + '/file_templates/by_file_type/' + fileType + '.json',
           dataType: 'json'
       });
       jqxhr.done(function(response) {
