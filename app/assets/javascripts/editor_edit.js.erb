@@ -1,5 +1,6 @@
 $(function() {
-    var ACE_FILES_PATH = '/assets/ace/';
+    // ruby part adds the relative_url_root, if it is set.
+    var ACE_FILES_PATH = '<%= (defined? config.relative_url_root) && config.relative_url_root != nil && config.relative_url_root != "" ? config.relative_url_root : "" %>' + '/assets/ace/';
     var THEME = 'ace/theme/textmate';
 
     var configureEditors = function() {

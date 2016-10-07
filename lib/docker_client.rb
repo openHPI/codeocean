@@ -72,7 +72,10 @@ class DockerClient
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
-    socket = Faye::WebSocket::Client.new(DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params, [], :headers => headers)
+    socket_url = DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params
+    socket = Faye::WebSocket::Client.new(socket_url, [], :headers => headers)
+
+    Rails.logger.debug "Opening Websocket on URL " + socket_url
 
     socket.on :error do |event|
       Rails.logger.info "Websocket error: " + event.message
