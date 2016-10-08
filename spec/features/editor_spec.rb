@@ -17,10 +17,10 @@ describe 'Editor', js: true do
   end
 
   describe 'Instructions Tab' do
+    pending("need to make travis working again")
     before(:each) { click_link(I18n.t('activerecord.attributes.exercise.instructions')) }
 
     it 'displays the exercise instructions' do
-      pending("need to make travis working again")
       expect(page).to have_content(exercise.instructions)
     end
   end
