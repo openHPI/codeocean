@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 20160704143402) do
     t.integer  "file_type_id"
     t.integer  "memory_limit"
     t.boolean  "network_enabled"
+
   end
 
   create_table "exercises", force: true do |t|

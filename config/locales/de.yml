@@ -246,7 +246,7 @@ de:
       comment:
         a_comment: Kommentar
         line: Zeile
-        dialogtitle: Kommentieren Sie diese Zeile!
+        dialogtitle: Kommentar hinzufügen
         others: Andere Kommentare auf dieser Zeile
         addyours: Fügen Sie Ihren Kommentar hinzu
         addComment: Kommentieren
@@ -273,6 +273,7 @@ de:
       external_user: Externe Nutzer
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+      full_score_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über ihre Hilfe und Kommentare freuen.
     external_users:
       statistics:
         no_data_available: Keine Daten verfügbar.

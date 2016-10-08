@@ -29,7 +29,7 @@ unless RUBY_PLATFORM == 'java'
 end
 
 require 'selenium-webdriver'
-Selenium::WebDriver::Firefox::Binary.path='/usr/bin/firefox'
+#Selenium::WebDriver::Firefox::Binary.path='/usr/bin/firefox'
 
 RSpec.configure do |config|
   # These two settings work together to allow you to limit a spec run
