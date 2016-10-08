@@ -48,6 +48,8 @@ GEM
       debug_inspector (>= 0.0.1)
     bootstrap-will_paginate (0.0.10)
       will_paginate
+    bootstrap_pagedown (1.1.0)
+      rails (>= 3.2)
     builder (3.2.2)
     byebug (8.2.2)
     capistrano (3.3.5)
@@ -174,6 +176,8 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
+    pagedown-rails (1.1.4)
+      railties (> 3.1)
     parser (2.3.0.6)
       ast (~> 2.2)
     pg (0.18.4)
@@ -357,6 +361,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-will_paginate
+  bootstrap_pagedown
   byebug
   capistrano (~> 3.3.0)
   capistrano-rails
@@ -384,6 +389,7 @@ DEPENDENCIES
   newrelic_rpm
   nokogiri
   nyan-cat-formatter
+  pagedown-rails (~> 1.1.4)
   pg
   pry-byebug
   puma (~> 2.15.3)

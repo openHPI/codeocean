@@ -1,5 +1,5 @@
 module ApplicationHelper
-  APPLICATION_NAME = 'Code Ocean'
+  APPLICATION_NAME = 'CodeOcean'
 
   def application_name
     APPLICATION_NAME

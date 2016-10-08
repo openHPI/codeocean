@@ -5,6 +5,7 @@
 /config/sendmail.yml
 /config/smtp.yml
 /config/*.production.yml
+/config/*.staging.yml
 /coverage
 /log
 /public/assets
