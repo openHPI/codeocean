@@ -17,7 +17,8 @@ describe 'Editor', js: true do
   end
 
   describe 'Instructions Tab' do
-    pending("need to make travis working again")
+    skip "is skipped" do
+    end
     before(:each) { click_link(I18n.t('activerecord.attributes.exercise.instructions')) }
 
     it 'displays the exercise instructions' do
@@ -26,6 +27,8 @@ describe 'Editor', js: true do
   end
 
   describe 'Workspace Tab' do
+    skip "is skipped" do
+    end
     before(:each) { click_link(I18n.t('exercises.implement.workspace')) }
 
     it 'displays all visible files in a file tree' do
