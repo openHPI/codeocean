@@ -15,7 +15,7 @@ before_script:
 cache: bundler
 language: ruby
 rvm:
-  - 2.1.5
-  - 2.2.1
+#  - 2.1.5
+#  - 2.2.1
   - 2.3.1
 script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper --tag ~docker
