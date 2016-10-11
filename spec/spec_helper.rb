@@ -15,9 +15,6 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
-
 unless RUBY_PLATFORM == 'java'
   if ENV['CODECLIMATE_REPO_TOKEN']
     require 'codeclimate-test-reporter'
@@ -28,20 +25,12 @@ unless RUBY_PLATFORM == 'java'
   end
 end
 
-require 'selenium-webdriver'
-#Selenium::WebDriver::Firefox::Binary.path='/usr/bin/firefox'
-
 RSpec.configure do |config|
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
   # `:focus` metadata. When nothing is tagged with `:focus`, all examples
   # get run.
   config.filter_run :focus
-  config.run_all_when_everything_filtered = true
-
-
-  #for --next-failure feature purpose
-  config.example_status_persistence_file_path = "examples.txt"
   config.run_all_when_everything_filtered = true
 
   # Many RSpec users commonly either run the entire suite or an individual

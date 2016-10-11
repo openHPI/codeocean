@@ -271,7 +271,7 @@ class SubmissionsController < ApplicationController
 
   def stop
     Rails.logger.debug('stopping submission ' + @submission.id.to_s)
-    container = Docker::Container.get(params[:containtier_id])
+    container = Docker::Container.get(params[:container_id])
     DockerClient.destroy_container(container)
   rescue Docker::Error::NotFoundError
   ensure

@@ -25,10 +25,9 @@ class DockerClient
     #container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
 
     local_workspace_path = local_workspace_path(container)
-    path_to_delete = Pathname.new(local_workspace_path)
-    if local_workspace_path ||  Pathname.new(local_workspace_path).exist?
-      path_to_delete.children.each{ |p| p.rmtree}
-      #FileUtils.rmdir(path_to_delete)
+    if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
+      Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
+      #FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
   end
 
@@ -193,8 +192,6 @@ class DockerClient
     if(container)
       container.delete(force: true, v: true)
     end
-    local_workspace_path(container)
-
   rescue Docker::Error::NotFoundError => error
     Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
     Rails.logger.error('No further actions are done concerning that.')
@@ -332,11 +329,13 @@ class DockerClient
     Docker::Image.all.map { |image| image.info['RepoTags'] }.flatten.reject { |tag| tag.include?('<none>') }
   end
 
-# When @image commented test doesn't work
+# When @image commented test doesn't work -> test set to pending
   def initialize(options = {})
     @execution_environment = options[:execution_environment]
-    @image = self.class.find_image_by_tag(@execution_environment.docker_image)
-    fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
+    # todo: eventually re-enable this if it is cached. But in the end, we do not need this.
+    # docker daemon got much too much load. all not 100% necessary calls to the daemon were removed.
+    #@image = self.class.find_image_by_tag(@execution_environment.docker_image)
+    #fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
   end
 
   def self.initialize_environment
