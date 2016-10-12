@@ -232,8 +232,13 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
       # tubesock is the socket to the client
-      tubesock.send_data JSON.dump(score_submission(@submission))
-      tubesock.send_data JSON.dump({'cmd' => 'exit'})
+
+      # the score_submission call will end up calling docker exec, which is blocking.
+      # to ensure responsiveness, we therefore open a thread here.
+      Thread.new {
+        tubesock.send_data JSON.dump(score_submission(@submission))
+        tubesock.send_data JSON.dump({'cmd' => 'exit'})
+      }
     end
   end
 
