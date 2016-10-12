@@ -1,13 +1,68 @@
 $(function() {
+  // ruby part adds the relative_url_root, if it is set.
+  var ACE_FILES_PATH = '<%= (defined? config.relative_url_root) && config.relative_url_root != nil && config.relative_url_root != "" ? config.relative_url_root : "" %>' + '/assets/ace/';
+  var THEME = 'ace/theme/textmate';
+
   var TAB_KEY_CODE = 9;
 
   var execution_environments;
   var file_types;
 
+
+
+  var configureEditors = function() {
+    _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
+      ace.config.set(attribute, ACE_FILES_PATH);
+    });
+  };
+
+  var initializeEditor = function(index, element) {
+    var editor = ace.edit(element);
+
+    var document = editor.getSession().getDocument();
+    // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
+    var file_id = $(element).data('file-id');
+    var content = $('.editor-content[data-file-id=' + file_id + ']');
+
+    document.insertLines(0, content.text().split(/\n/));
+    // remove last (empty) that is there by default line
+    document.removeLines(document.getLength() - 1, document.getLength() - 1);
+    editor.setReadOnly($(element).data('read-only') !== undefined);
+    editor.setShowPrintMargin(false);
+    editor.setTheme(THEME);
+
+    var textarea = $('textarea[id="exercise_files_attributes_'+index+'_content"]');
+    var content = textarea.val();
+
+    if (content != undefined)
+    {
+      editor.getSession().setValue(content);
+      editor.getSession().on('change', function(){
+        textarea.val(editor.getSession().getValue());
+      });
+    }
+
+    editor.commands.bindKey("ctrl+alt+0", null);
+    var session = editor.getSession();
+    session.setMode($(element).data('mode'));
+    session.setTabSize($(element).data('indent-size'));
+    session.setUseSoftTabs(true);
+    session.setUseWrapMode(true);
+  }
+
+  var initializeEditors = function() {
+    // initialize ace editors for all code textareas in the dom except the last one. The last one is the dummy area for new files, which is cloned when needed.
+    // this one must NOT! be initialized.
+    $('.editor:not(:last)').each(initializeEditor)
+  };
+
   var addFileForm = function(event) {
     event.preventDefault();
     var element = $('#dummies').children().first().clone();
-    var html = $('<div>').append(element).html().replace(/index/g, new Date().getTime());
+
+    // the timestamp is used here, since it is most probably unique. This is strange, but was originally designed that way.
+    var latestTextAreaIndex = new Date().getTime();
+    var html = $('<div>').append(element).html().replace(/index/g, latestTextAreaIndex);
     $('#files').append(html);
     $('#files li:last select[name*="file_type_id"]').val(getSelectedExecutionEnvironment().file_type_id);
     $('#files li:last select').chosen(window.CodeOcean.CHOSEN_OPTIONS);
@@ -15,6 +70,10 @@ $(function() {
     // if we collapse the file forms by default, we need to click on the new element in order to open it.
     // however, this crashes for more files (if we add several ones by clicking the add button more often), since the elements are probably not correctly added to the files list.
     //$('#files li:last>div:first>a>div').click();
+
+    // initialize the ace editor for the new textarea.
+    // pass the correct index and the last ace editor under the node files. this is the last one, since we just added it.
+    initializeEditor(latestTextAreaIndex, $('#files .editor').last()[0]);
   };
 
   var ajaxError = function() {
@@ -193,4 +252,13 @@ $(function() {
       highlightCode();
     }
   }
+
+
+  if ($('#editor-edit').isPresent()) {
+    configureEditors();
+    initializeEditors();
+    $('.frame').show();
+  }
+
+
 });
