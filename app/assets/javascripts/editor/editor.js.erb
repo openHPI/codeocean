@@ -86,7 +86,7 @@ var CodeOceanEditor = {
   showOutput: function(event) {
     event.preventDefault();
     this.showOutputBar();
-    $('#output').scrollTo($(this).attr('href'));
+    $('#output').scrollTo($(event.target).attr('href'));
   },
 
   renderProgressBar: function(score, maximum_score) {
