@@ -1,9 +1,17 @@
+sudo: required
+
+services:
+  - docker
+  # https://docs.travis-ci.com/user/docker/
+
 addons:
   code_climate:
     repo_token: 53a2c2608c848714e96f6a1fc0365dcfdfec051f7827d50cea965ea625f49734
+
 before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+
 before_script:
   - cp .rspec.travis .rspec
   - cp config/action_mailer.yml.travis config/action_mailer.yml
@@ -12,6 +20,7 @@ before_script:
   - cp config/secrets.yml.travis config/secrets.yml
   - psql --command='CREATE DATABASE travis_ci_test;' --username=postgres
   - bundle exec rake db:schema:load RAILS_ENV=test
+
 cache: bundler
 language: ruby
 rvm:
@@ -24,5 +33,5 @@ rvm:
 #  - 2.1.5
 #  - 2.2.1
   - 2.3.1
-script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper
+script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper --tag ~docker
 

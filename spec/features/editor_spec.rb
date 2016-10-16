@@ -13,6 +13,7 @@ describe 'Editor', js: true do
   end
 
   it 'displays the exercise title' do
+    # pending("no exercise title set")
     expect(page).to have_content(exercise.title)
   end
 
@@ -91,7 +92,7 @@ describe 'Editor', js: true do
     before(:each) { click_link(I18n.t('exercises.implement.progress')) }
 
     it 'does not contains a button for submitting the exercise' do
-      # the button is only displayed when an correct LTI handshake to a running course happened. This is not the case in the test
+      # pending("the button is only displayed when an correct LTI handshake to a running course happened. This is not the case in the test")
       expect(page).not_to have_css('#submit')
     end
   end
