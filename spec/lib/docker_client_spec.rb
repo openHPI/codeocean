@@ -26,9 +26,9 @@ describe DockerClient, docker: true do
   end
 
   describe '.container_creation_options' do
-    it "is TODO" do
-      pending("heavy load on the docker daemon")
-    end
+    # it "is TODO" do
+    #   pending("heavy load on the docker daemon")
+    # end
 
     let(:container_creation_options) { described_class.container_creation_options(execution_environment) }
 
@@ -163,9 +163,9 @@ describe DockerClient, docker: true do
   end
 
   describe '.destroy_container' do
-    it "is TODO" do
-      pending("heavy load on the docker daemon")
-    end
+    # it "is TODO" do
+    #   pending("heavy load on the docker daemon")
+    # end
     let(:container) { described_class.create_container(execution_environment) }
     after(:each) { described_class.destroy_container(container) }
 
