@@ -21,7 +21,8 @@ describe ExecutionEnvironmentPolicy do
     end
   end
 
-  [:destroy?, :edit?, :execute_command?, :shell?, :show?, :update?].each do |action|
+
+  [:execute_command?, :shell?, :statistics?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryGirl.build(:admin), execution_environment)
@@ -29,6 +30,24 @@ describe ExecutionEnvironmentPolicy do
 
       it 'grants access to authors' do
         expect(subject).to permit(execution_environment.author, execution_environment)
+      end
+
+      it 'does not grant access to all other users' do
+        [:external_user, :teacher].each do |factory_name|
+          expect(subject).not_to permit(FactoryGirl.build(factory_name), execution_environment)
+        end
+      end
+    end
+  end
+
+  [:destroy?, :edit?, :show?, :update?].each do |action|
+    permissions(action) do
+      it 'grants access to admins' do
+        expect(subject).to permit(FactoryGirl.build(:admin), execution_environment)
+      end
+
+      it 'does not grant access to authors' do
+        expect(subject).not_to permit(execution_environment.author, execution_environment)
       end
 
       it 'does not grant access to all other users' do

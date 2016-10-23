@@ -50,7 +50,7 @@ describe Exercise do
 
     context 'without submissions' do
       it 'returns nil' do
-        expect(exercise.average_percentage).to be nil
+        expect(exercise.average_percentage).to be 0
       end
     end
 
@@ -69,7 +69,7 @@ describe Exercise do
 
     context 'without submissions' do
       it 'returns nil' do
-        expect(exercise.average_score).to be nil
+        expect(exercise.average_score).to be 0
       end
     end
 

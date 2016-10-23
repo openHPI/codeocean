@@ -5,8 +5,8 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
 gem 'coffee-rails', '~> 4.0.0'
-gem 'concurrent-ruby', '~> 1.0.0'
-gem 'concurrent-ruby-ext', '~> 1.0.0', platform: :ruby
+gem 'concurrent-ruby', '~> 1.0.1'
+gem 'concurrent-ruby-ext', '~> 1.0.1', platform: :ruby
 gem 'docker-api','~> 1.25.0',  require: 'docker'
 gem 'factory_girl_rails', '~> 4.0'
 gem 'forgery'
@@ -18,7 +18,7 @@ gem 'ims-lti'
 gem 'kramdown'
 gem 'newrelic_rpm'
 gem 'pg', platform: :ruby
-gem 'pry'
+gem 'pry-byebug'
 gem 'puma', '~> 2.15.3'
 gem 'pundit'
 gem 'rails', '~> 4.1.13'
@@ -59,7 +59,6 @@ end
 group :development, :test do
   gem 'byebug', platform: :ruby
   gem 'spring'
-
 end
 
 group :test do

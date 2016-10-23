@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe DockerContainerPool do
-  let(:container) { double(:start_time => Time.now, :status => 'available') }
+  let(:container) { double(:start_time => Time.now, :status => 'available', :json => {'State' => {'Running' => true}}) }
 
   def reload_class
     load('docker_container_pool.rb')
@@ -44,6 +44,8 @@ describe DockerContainerPool do
 
         it 'takes a container from the pool' do
           expect(described_class).not_to receive(:create_container).with(@execution_environment)
+          #  #<Double (anonymous)> received unexpected message :json with (no args)
+          #  expect(described_class).to receive(:json).with()
           expect(described_class.get_container(@execution_environment)).to eq(container)
         end
       end
@@ -59,6 +61,7 @@ describe DockerContainerPool do
         end
       end
     end
+
 
     context 'when inactive' do
       before(:each) do
@@ -143,8 +146,9 @@ describe DockerContainerPool do
 
     after(:each) { described_class.start_refill_task }
 
+    # changed from false to true
     it 'creates an asynchronous task' do
-      expect(Concurrent::TimerTask).to receive(:new).with(execution_interval: interval, run_now: false, timeout_interval: timeout).and_call_original
+      expect(Concurrent::TimerTask).to receive(:new).with(execution_interval: interval, run_now: true, timeout_interval: timeout).and_call_original
     end
 
     it 'executes the task' do

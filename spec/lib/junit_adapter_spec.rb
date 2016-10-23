@@ -8,9 +8,10 @@ describe JunitAdapter do
       let(:count) { 42 }
       let(:failed) { 25 }
       let(:stdout) { "FAILURES!!!\nTests run: #{count},  Failures: #{failed}" }
+      let(:error_matches) { [] }
 
       it 'returns the correct numbers' do
-        expect(adapter.parse_output(stdout: stdout)).to eq(count: count, failed: failed)
+        expect(adapter.parse_output(stdout: stdout)).to eq(count: count, failed: failed, error_messages: error_matches)
       end
     end
 
