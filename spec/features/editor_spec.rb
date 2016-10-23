@@ -13,7 +13,6 @@ describe 'Editor', js: true do
   end
 
   it 'displays the exercise title' do
-    # pending("no exercise title set")
     expect(page).to have_content(exercise.title)
   end
 
