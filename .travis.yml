@@ -12,7 +12,7 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:4243 -H unix:///var/run/docker.sock --iptables=false"' | sudo tee /etc/default/docker > /dev/null
-  - export DOCKER_HOST=tcp://192.168.23.75:2375
+  #- export DOCKER_HOST=tcp://192.168.23.75:2375
   - sudo service docker restart
   - sleep 5
   #- docker pull openhpi/docker_java
@@ -43,7 +43,7 @@ rvm:
 #  - 2.1.5
 #  - 2.2.1
   
-script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper
+script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper --tag ~docker
 #  - sudo docker run --rm=true -v `pwd`:/ansible-apache:rw weldpua2008/docker-ansible:${OS_TYPE}${OS_VERSION}_v${ANSIBLE_VERSION} /bin/bash -c "/ansible-apache/tests/test-in-docker-image.sh ${OS_TYPE} ${OS_VERSION} ${ANSIBLE_VERSION}"
 
 
