@@ -44,8 +44,6 @@ describe DockerContainerPool do
 
         it 'takes a container from the pool' do
           expect(described_class).not_to receive(:create_container).with(@execution_environment)
-          #  #<Double (anonymous)> received unexpected message :json with (no args)
-          #  expect(described_class).to receive(:json).with()
           expect(described_class.get_container(@execution_environment)).to eq(container)
         end
       end
@@ -61,7 +59,6 @@ describe DockerContainerPool do
         end
       end
     end
-
 
     context 'when inactive' do
       before(:each) do

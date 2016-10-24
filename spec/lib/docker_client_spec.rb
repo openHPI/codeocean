@@ -7,9 +7,7 @@ describe DockerClient, docker: true do
   let(:execution_environment) { FactoryGirl.build(:ruby) }
   let(:image) { double }
   let(:submission) { FactoryGirl.create(:submission) }
-  # let(:workspace_path) { '/tmp/codeocean_dockertest' }
   let(:workspace_path) { '/tmp' }
-
 
   describe '.check_availability!' do
     context 'when a socket error occurs' do

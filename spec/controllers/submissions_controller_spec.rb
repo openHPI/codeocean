@@ -18,7 +18,6 @@ describe SubmissionsController do
       expect_assigns(submission: Submission)
 
       it 'creates the submission' do
-        # pending("need to implement other pendings first")
         expect { request.call }.to change(Submission, :count).by(1)
       end
 
@@ -189,7 +188,6 @@ describe SubmissionsController do
   end
 
   describe 'GET #score' do
-
     let(:request) { proc { get :score, id: submission.id } }
     before(:each) { request.call }
 

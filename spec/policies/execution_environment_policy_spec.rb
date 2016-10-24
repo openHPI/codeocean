@@ -21,7 +21,6 @@ describe ExecutionEnvironmentPolicy do
     end
   end
 
-
   [:execute_command?, :shell?, :statistics?].each do |action|
     permissions(action) do
       it 'grants access to admins' do

@@ -48,7 +48,6 @@ class ExecutionEnvironment < ActiveRecord::Base
   def working_docker_image?
     DockerClient.pull(docker_image) unless DockerClient.image_tags.include?(docker_image)
     output = DockerClient.new(execution_environment: self).execute_arbitrary_command(VALIDATION_COMMAND)
-
     errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
   rescue DockerClient::Error => error
     errors.add(:docker_image, "error: #{error}")
