@@ -1,6 +1,6 @@
 $(function() {
   // ruby part adds the relative_url_root, if it is set.
-  var ACE_FILES_PATH = '<%= (defined? config.relative_url_root) && config.relative_url_root != nil && config.relative_url_root != "" ? config.relative_url_root : "" %>' + '/assets/ace/';
+  var ACE_FILES_PATH = '<%= (defined?  Rails.application.config.relative_url_root) &&  Rails.application.config.relative_url_root != nil &&  Rails.application.config.relative_url_root != "" ?  Rails.application.config.relative_url_root : "" %>' + '/assets/ace/';
   var THEME = 'ace/theme/textmate';
 
   var TAB_KEY_CODE = 9;
@@ -211,7 +211,7 @@ $(function() {
   };
 
   var updateFileTemplates = function(fileType) {
-      var rel_url_root = '<%= (defined? config.relative_url_root) && config.relative_url_root != nil && config.relative_url_root != "" ? config.relative_url_root : "" %>';
+      var rel_url_root = '<%= (defined?  Rails.application.config.relative_url_root) &&  Rails.application.config.relative_url_root != nil &&  Rails.application.config.relative_url_root != "" ?  Rails.application.config.relative_url_root : "" %>';
       var jqxhr = $.ajax({
           url:  rel_url_root + '/file_templates/by_file_type/' + fileType + '.json',
           dataType: 'json'
