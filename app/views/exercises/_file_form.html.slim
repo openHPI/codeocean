@@ -38,4 +38,3 @@ li.panel.panel-default
           = f.label(:role, t('activerecord.attributes.file.weight'))
           = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
       = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
-      = render partial: 'editor_edit', locals: { exercise: @exercise }

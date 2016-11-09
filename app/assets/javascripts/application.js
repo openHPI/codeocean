@@ -25,3 +25,4 @@
 //= require markdown.converter
 //= require markdown.sanitizer
 //= require markdown.editor
+//= require ../../../vendor/assets/javascripts/ace/ext-language_tools

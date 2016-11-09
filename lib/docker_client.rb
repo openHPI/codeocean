@@ -72,7 +72,10 @@ class DockerClient
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
-    socket = Faye::WebSocket::Client.new(DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params, [], :headers => headers)
+    socket_url = DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params
+    socket = Faye::WebSocket::Client.new(socket_url, [], :headers => headers)
+
+    Rails.logger.debug "Opening Websocket on URL " + socket_url
 
     socket.on :error do |event|
       Rails.logger.info "Websocket error: " + event.message
@@ -261,15 +264,20 @@ class DockerClient
       end
   end
 
-  def exit_container(container)
-    Rails.logger.debug('exiting container ' + container.to_s)
-    # exit the timeout thread if it is still alive
+  def exit_thread_if_alive
     if(@thread && @thread.alive?)
       @thread.exit
     end
+  end
+
+  def exit_container(container)
+    Rails.logger.debug('exiting container ' + container.to_s)
+    # exit the timeout thread if it is still alive
+    exit_thread_if_alive
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end
+
 
   def kill_container(container)
     Rails.logger.info('killing container ' + container.to_s)
@@ -286,6 +294,7 @@ class DockerClient
       container = self.class.create_container(@execution_environment)
       DockerContainerPool.add_to_all_containers(container, @execution_environment)
     end
+    exit_thread_if_alive
   end
 
   def execute_run_command(submission, filename, &block)
