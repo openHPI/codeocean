@@ -118,7 +118,7 @@ class ExercisesController < ApplicationController
   private :user_by_code_harbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :exercise_params
 
@@ -247,23 +247,34 @@ class ExercisesController < ApplicationController
   end
 
   def redirect_after_submit
-    Rails.logger.debug('Score ' + @submission.normalized_score.to_s)
+    Rails.logger.debug('Redirecting user with score:s ' + @submission.normalized_score.to_s)
     if @submission.normalized_score == 1.0
-      # if user has an own rfc, redirect to it and message him to clean up and accept the answer.
+      # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
+      # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
+      if current_user.respond_to? :external_id
+        if rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise, user_id: current_user.id).first
+          # set a message that informs the user that his own RFC should be closed.
+          flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
+          flash.keep(:notice)
 
-      # else: show open rfc for same exercise
-      if rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).order("RANDOM()").first
+          respond_to do |format|
+            format.html { redirect_to(rfc) }
+            format.json { render(json: {redirect: url_for(rfc)}) }
+          end
+          return
 
-        # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
-        flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
-        flash.keep(:notice)
+        # else: show open rfc for same exercise if available
+        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).order("RANDOM()").first
+          # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
+          flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
+          flash.keep(:notice)
 
-        respond_to do |format|
-          format.html { redirect_to(rfc) }
-          format.json { render(json: {redirect: url_for(rfc)}) }
+          respond_to do |format|
+            format.html { redirect_to(rfc) }
+            format.json { render(json: {redirect: url_for(rfc)}) }
+          end
+          return
         end
-
-        return
       end
     end
     redirect_to_lti_return_path

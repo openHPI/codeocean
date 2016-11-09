@@ -43,3 +43,5 @@ module CodeOcean
     end
   end
 end
+
+Rails.application.config.assets.precompile += %w( markdown-buttons.png )

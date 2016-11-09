@@ -36,6 +36,7 @@ en:
         public: Public
         title: Title
         user: Author
+        allow_auto_completion: "Allow auto completion"
         allow_file_creation: "Allow file creation"
       external_user:
         consumer: Consumer
@@ -188,6 +189,8 @@ en:
       worktime: Average Working Time
   exercises:
     editor:
+      collapse_action_sidebar: Collapse Action Sidebar
+      collapse_output_sidebar: Collapse Output Sidebar
       confirm_start_over: Do you really want to start over?
       confirm_submit: Do you really want to submit your code for grading?
       create_file: New File
@@ -195,6 +198,8 @@ en:
       destroy_file: Delete File
       download: Download
       dummy: No Action
+      expand_action_sidebar: Expand Action Sidebar
+      expand_output_sidebar: Expand Output Sidebar
       input: Your input
       lastsaved: 'Last saved: '
       network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank">%{address}</a>.'
@@ -203,6 +208,7 @@ en:
       run_failure: Your code could not be run.
       run_success: Your code was run on our servers.
       requestComments: Request comments
+      requestCommentsTooltip: If you need help with your code, you can now request comments here!
       save: Save
       score: Score
       send: Send
@@ -274,6 +280,7 @@ en:
     submit:
       failure: An error occured while transmitting your score. Please try again later.
       full_score_redirect_to_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Another participant has a question concerning the exercise you just solved. Your help and comments will be greatly appreciated!
+      full_score_redirect_to_own_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Your question concerning the exercise is solved? If so, please share the essential insight with your fellows and mark the question as solved, before you close this window!
     external_users:
       statistics:
         no_data_available: No data available.

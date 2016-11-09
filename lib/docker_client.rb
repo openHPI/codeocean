@@ -72,9 +72,10 @@ class DockerClient
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
+    socket_url = DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params
+    socket = Faye::WebSocket::Client.new(socket_url, [], :headers => headers)
 
-    # rspec error: undefined method `+' for nil:NilClass. problem with ws_host?
-    socket = Faye::WebSocket::Client.new(DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params, [], :headers => headers)
+    Rails.logger.debug "Opening Websocket on URL " + socket_url
 
     socket.on :error do |event|
       Rails.logger.info "Websocket error: " + event.message
@@ -263,12 +264,16 @@ class DockerClient
       end
   end
 
-  def exit_container(container)
-    Rails.logger.debug('exiting container ' + container.to_s)
-    # exit the timeout thread if it is still alive
+  def exit_thread_if_alive
     if(@thread && @thread.alive?)
       @thread.exit
     end
+  end
+
+  def exit_container(container)
+    Rails.logger.debug('exiting container ' + container.to_s)
+    # exit the timeout thread if it is still alive
+    exit_thread_if_alive
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end
@@ -288,6 +293,7 @@ class DockerClient
       container = self.class.create_container(@execution_environment)
       DockerContainerPool.add_to_all_containers(container, @execution_environment)
     end
+    exit_thread_if_alive
   end
 
   def execute_run_command(submission, filename, &block)
@@ -297,13 +303,6 @@ class DockerClient
     command = submission.execution_environment.run_command % command_substitutions(filename)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     open_websocket_connection(command, create_workspace_files, block)
-
-    # to pass the test "it executes the run command" it needs to send a command, not sure if it should be implemented.
-    if container
-      container.status = :executing
-      send_command(command, container, &block)
-    end
-
     # actual run command is run in the submissions controller, after all listeners are attached.
   end
 
@@ -329,7 +328,6 @@ class DockerClient
     Docker::Image.all.map { |image| image.info['RepoTags'] }.flatten.reject { |tag| tag.include?('<none>') }
   end
 
-# When @image commented test doesn't work -> test set to pending
   def initialize(options = {})
     @execution_environment = options[:execution_environment]
     # todo: eventually re-enable this if it is cached. But in the end, we do not need this.

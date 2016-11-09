@@ -36,6 +36,7 @@ de:
         public: Öffentlich
         title: Titel
         user: Autor
+        allow_auto_completion: "Autovervollständigung aktivieren"
         allow_file_creation: "Dateierstellung erlauben"
       external_user:
         consumer: Konsument
@@ -188,6 +189,8 @@ de:
       worktime: Durchschnittliche Arbeitszeit
   exercises:
     editor:
+      collapse_action_sidebar: Aktions-Leiste Einklappen
+      collapse_output_sidebar: Ausgabe-Leiste Einklappen
       confirm_start_over: Wollen Sie wirklich von vorne anfangen?
       confirm_submit: Wollen Sie Ihren Code wirklich zur Bewertung abgeben?
       create_file: Neue Datei
@@ -195,6 +198,8 @@ de:
       destroy_file: Datei löschen
       download: Herunterladen
       dummy: Keine Aktion
+      expand_action_sidebar: Aktions-Leiste Ausklappen
+      expand_output_sidebar: Ausgabe-Leiste Ausklappen
       input: Ihre Eingabe
       lastsaved: 'Zuletzt gespeichert: '
       network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank">%{address}</a>.'
@@ -203,6 +208,7 @@ de:
       run_failure: Ihr Code konnte nicht auf der Plattform ausgeführt werden.
       run_success: Ihr Code wurde auf der Plattform ausgeführt.
       requestComments: Kommentare erbitten
+      requestCommentsTooltip: Falls Sie Hilfe mit Ihrem Code benötigen, können Sie hier Kommentare erbitten
       save: Speichern
       score: Bewerten
       send: Senden
@@ -274,6 +280,7 @@ de:
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
       full_score_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über ihre Hilfe und Kommentare freuen.
+      full_score_redirect_to_own_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ihre Frage ist damit wahrscheinlich gelöst? Falls ja, fügen Sie doch den entscheidenden Kniff als Antwort hinzu und markieren die Frage als gelöst, bevor sie das Fenster schließen.
     external_users:
       statistics:
         no_data_available: Keine Daten verfügbar.

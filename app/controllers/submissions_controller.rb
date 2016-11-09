@@ -129,7 +129,7 @@ class SubmissionsController < ApplicationController
 
         socket.on :message do |event|
           Rails.logger.info( Time.now.getutc.to_s + ": Docker sending: " + event.data)
-          handle_message(event.data, tubesock)
+          handle_message(event.data, tubesock, result[:container])
         end
 
         socket.on :close do |event|
@@ -139,12 +139,12 @@ class SubmissionsController < ApplicationController
         tubesock.onmessage do |data|
           Rails.logger.info(Time.now.getutc.to_s + ": Client sending: " + data)
           # Check whether the client send a JSON command and kill container
-          # if the command is 'exit', send it to docker otherwise.
+          # if the command is 'client_exit', send it to docker otherwise.
           begin
             parsed = JSON.parse(data)
-            if parsed['cmd'] == 'exit'
+            if parsed['cmd'] == 'client_kill'
               Rails.logger.debug("Client exited container.")
-              @docker_client.exit_container(result[:container])
+              @docker_client.kill_container(result[:container])
             else
               socket.send data
               Rails.logger.debug('Sent the received client data to docker:' + data)
@@ -171,10 +171,11 @@ class SubmissionsController < ApplicationController
     tubesock.close
   end
 
-  def handle_message(message, tubesock)
+  def handle_message(message, tubesock, container)
     # Handle special commands first
     if (/^exit/.match(message))
       kill_socket(tubesock)
+      @docker_client.exit_container(container)
     else
       # Filter out information about run_command, test_command, user or working directory
       run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
@@ -231,7 +232,13 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
       # tubesock is the socket to the client
-      tubesock.send_data JSON.dump(score_submission(@submission))
+
+      # the score_submission call will end up calling docker exec, which is blocking.
+      # to ensure responsiveness, we therefore open a thread here.
+      Thread.new {
+        tubesock.send_data JSON.dump(score_submission(@submission))
+        tubesock.send_data JSON.dump({'cmd' => 'exit'})
+      }
     end
   end
 
@@ -291,6 +298,7 @@ class SubmissionsController < ApplicationController
 
       # tubesock is the socket to the client
       tubesock.send_data JSON.dump(output)
+      tubesock.send_data JSON.dump('cmd' => 'exit')
     end
   end
 
