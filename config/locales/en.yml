@@ -274,6 +274,7 @@ en:
     submit:
       failure: An error occured while transmitting your score. Please try again later.
       full_score_redirect_to_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Another participant has a question concerning the exercise you just solved. Your help and comments will be greatly appreciated!
+      full_score_redirect_to_own_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Your question concerning the exercise is solved? If so, please share the essential insight with your fellows and mark the question as solved, before you close this window!
     external_users:
       statistics:
         no_data_available: No data available.
