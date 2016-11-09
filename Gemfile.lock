@@ -96,8 +96,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
-    concurrent-ruby (1.0.0)
-    concurrent-ruby (1.0.0-java)
+    concurrent-ruby (1.0.2)
+    concurrent-ruby (1.0.2-java)
     concurrent-ruby-ext (1.0.0)
       concurrent-ruby (~> 1.0.0)
     d3-rails (3.5.11)

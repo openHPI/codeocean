@@ -7,3 +7,5 @@ This binds the daemon to the specified socket (for access via the command line o
 Either pass these options to the starting call, or specify them in the docker config file.
 
 In Ubuntu, this file is located under: /ect/default/docker
+
+In Debian, please refer to the RHEL and CentOS part under that link: https://docs.docker.com/engine/admin/#/configuring-docker-1
