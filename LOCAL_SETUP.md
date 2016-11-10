@@ -1,4 +1,6 @@
-```
+Code Ocean
+==========
+
 ## Install prerequisites
 On Mac: install brew - http://brew.sh/
 Install Postgres - Mac: http://postgresapp.com/, Others: https://wiki.postgresql.org/wiki/Detailed_installation_guides
@@ -72,4 +74,3 @@ bundle exec rspec
 
 Login
 admin@example.org:admin
-```
