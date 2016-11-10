@@ -28,5 +28,5 @@ cd /vagrant
 rails s -p 3000
 
 ### Login to CodeOcean
-192.168.59.104:3000
+192.168.59.104:3000  
 admin@example.org:admin
