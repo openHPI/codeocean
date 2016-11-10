@@ -1,15 +1,13 @@
 ```
-Install prerequisites
+## Install prerequisites
 On Mac: install brew - http://brew.sh/
 Install Postgres - Mac: http://postgresapp.com/, Others: https://wiki.postgresql.org/wiki/Detailed_installation_guides
 Install Vagrant - https://docs.vagrantup.com/v2/installation/, using homebrew: http://sourabhbajaj.com/mac-setup/Vagrant/README.html
 Install rvm(ruby-2.1.2 + rails-4.x) - https://rvm.io/rvm/install
-Install Maven -  Mac: brew install maven, Other: http://maven.apache.org/download.cgi
-Install JRuby -  Execute: rvm install jruby
 Install Docker - Mac: https://docs.docker.com/installation/mac/, Ubuntu: https://docs.docker.com/installation/ubuntulinux/
 Install VirtualBox - https://www.virtualbox.org/wiki/Downloads
-Install qt - https://github.com/thoughtbot/capybara-webkit/wiki/Installing-Qt-and-compiling-capybara-webkit
-Install and setup
+
+## Install and setup
 Create a local codeOceanRoot:   mkdir /path/to/CodeOcean  
 ==> codeOceanRoot = /path/to/CodeOcean 
 Clone Repository to codeOceanRoot - https://github.com/openHPI/codeocean
