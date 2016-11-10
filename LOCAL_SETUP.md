@@ -2,7 +2,7 @@ Local Setup with Vagrant
 ==========
 
 ## Install prerequisites
-Install Vagrant - https://www.vagrantup.com/docs/installation/
+Install Vagrant - https://www.vagrantup.com/docs/installation/  
 Install VirtualBox - https://www.virtualbox.org/wiki/Downloads
 
 ## Install and setup
