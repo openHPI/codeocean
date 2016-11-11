@@ -30,7 +30,7 @@ let(:exercise) { FactoryGirl.build(:dummy) }
     end
   end
 
-  [:clone?, :destroy?, :edit?, :show?, :statistics?, :update?].each do |action|
+  [:clone?, :destroy?, :edit?, :statistics?, :update?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryGirl.build(:admin), exercise)
@@ -44,6 +44,14 @@ let(:exercise) { FactoryGirl.build(:dummy) }
         [:external_user, :teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryGirl.build(factory_name), exercise)
         end
+      end
+    end
+  end
+
+  [:show?].each do |action|
+    permissions(action) do
+      it 'not grants access to external users' do
+        expect(subject).not_to permit(FactoryGirl.build(:external_user), exercise)
       end
     end
   end
@@ -101,7 +109,7 @@ let(:exercise) { FactoryGirl.build(:dummy) }
         end
 
         it "does not include other authors' non-public exercises" do
-          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where(user_id <> #{@teacher.id}").map(&:id))
+          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where("user_id <> #{@teacher.id}").map(&:id))
         end
       end
     end

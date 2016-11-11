@@ -16,7 +16,7 @@ describe Submission do
     expect(described_class.create.errors[:user_type]).to be_present
   end
 
-  [:download, :render, :run, :test].each do |action|
+  [:render, :run, :test].each do |action|
     describe "##{action}_url" do
       let(:url) { submission.send(:"#{action}_url") }
 

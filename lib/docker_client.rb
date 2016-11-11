@@ -23,7 +23,7 @@ class DockerClient
   def self.clean_container_workspace(container)
     # remove files when using transferral via Docker API archive_in (transmit)
     #container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
-    
+
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
@@ -277,7 +277,6 @@ class DockerClient
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end
-
 
   def kill_container(container)
     Rails.logger.info('killing container ' + container.to_s)
