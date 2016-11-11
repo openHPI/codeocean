@@ -138,10 +138,6 @@ describe SubmissionsController do
       end
 
       pending("todo")
-      #expect_assigns(docker_client: DockerClient)
-      #expect_assigns(submission: :submission)
-      #expect_content_type('text/event-stream')
-      #expect_status(200)
     end
 
     context 'when an error occurs during execution' do
@@ -192,9 +188,6 @@ describe SubmissionsController do
     before(:each) { request.call }
 
     pending("todo: mock puma webserver or encapsulate tubesock call (Tubesock::HijackNotAvailable)")
-    #expect_assigns(submission: :submission)
-    #expect_json
-    #expect_status(200)
   end
 
   describe 'POST #stop' do
@@ -238,10 +231,6 @@ describe SubmissionsController do
     end
 
     pending("todo")
-    #expect_assigns(docker_client: DockerClient)
-    #expect_assigns(submission: :submission)
-    #expect_json
-    #expect_status(200)
   end
 
   describe '#with_server_sent_events' do
