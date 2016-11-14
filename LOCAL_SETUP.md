@@ -44,6 +44,11 @@ cd /vagrant
 gem install bundler
 bundle install
 
+#### Pending migrations
+vagrant ssh
+cd /vagrant
+rake db:migrate
+
 
 ### Start server
 vagrant ssh  
