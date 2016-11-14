@@ -22,8 +22,8 @@ vagrant ssh
 sudo apt-get install nginx  
 sudo ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled  
 
-### Make docker daemon useable without sudo
-# Infos taken from: http://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo
+#### Make docker daemon useable without sudo
+Infos taken from: http://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo
 
 sudo groupadd docker
 sudo gpasswd -a ${USER} docker
