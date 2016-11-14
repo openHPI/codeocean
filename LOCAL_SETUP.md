@@ -18,17 +18,23 @@ vagrant up
 ### Trouble shooting 
 ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled <= Failed (no such directory)  
 
-vagrant ssh   
-sudo apt-get install nginx  
-sudo ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled  
-
 #### Make docker daemon useable without sudo
 Infos taken from: http://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo
 
+vagrant ssh 
 sudo groupadd docker
 sudo gpasswd -a ${USER} docker
 sudo service docker restart
 newgrp docker
+
+apt-get install nginx  
+ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled  
+
+#### Make rvm useable without sudo
+Infos taken from: http://stackoverflow.com/questions/26242712/installing-rvm-getting-error-there-was-an-error23
+
+vagrant ssh
+rvm group add rvm "$USER"
 
 ### Start server
 vagrant ssh  
