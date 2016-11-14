@@ -30,11 +30,20 @@ newgrp docker
 apt-get install nginx  
 ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled  
 
-#### Make rvm useable without sudo
+#### If ruby version needs to be updated (as provision.sh is not up-to-date :( )
 Infos taken from: http://stackoverflow.com/questions/26242712/installing-rvm-getting-error-there-was-an-error23
 
 vagrant ssh
 rvm group add rvm "$USER"
+
+logout and login again
+rvm fix-permissions (not necessarily required)
+rvm install (requested ruby version)
+
+cd /vagrant
+gem install bundler
+bundle install
+
 
 ### Start server
 vagrant ssh  
