@@ -53,7 +53,8 @@ cd /vagrant
 rake db:migrate
 
 #### Missing config files or anything else goes wrong
-Check the according parts of the provision.sh file.
+Check the according parts of the provision.sh file and try to re-run them directly in the vagrant VM.
+All problems that have occurred resulted from a more restrictive rights management in the VMs that run under a Windows host system.
 
 ### Start server
 vagrant ssh  
