@@ -16,6 +16,9 @@ vagrant box add ubuntu/trusty64
 vagrant up  
 
 ### Trouble shooting 
+(sometimes, particularly if VirtualBox is running under Windows as the host sysstem, parts of the provision script are) not executed.
+vagrant up does not show error messages but later on the trouble starts.
+
 ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled <= Failed (no such directory)  
 
 #### Make docker daemon useable without sudo
@@ -49,6 +52,8 @@ vagrant ssh
 cd /vagrant
 rake db:migrate
 
+#### Missing config files or anything else goes wrong
+Check the according parts of the provision.sh file.
 
 ### Start server
 vagrant ssh  
