@@ -29,7 +29,11 @@ var CodeOceanEditor = {
 
   lastCopyText: null,
 
-  configureEditors: function () {
+  <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
+  sendLearningAnalyticEvents: <%= @config['codeocean_events']['enabled'] %>,
+  learningAnalyticsURL: "<%= @config['codeocean_events']['url'] %>",
+
+configureEditors: function () {
     _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
       ace.config.set(attribute, this.ACE_FILES_PATH);
     }.bind(this));
@@ -363,37 +367,41 @@ var CodeOceanEditor = {
     panel.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
   },
 
+  // move URL to config file, only fire event if desired.
   publishCodeOceanEvent: function (eventName, contextData) {
+    if(this.sendLearningAnalyticEvents){
 
-    // enhance contextData hash with the user agent
-    contextData['user_agent'] = navigator.userAgent;
+      // enhance contextData hash with the user agent
+      contextData['user_agent'] = navigator.userAgent;
 
-    var payload = {
-      user: {
-        type: 'User',
-        uuid: $('#editor').data('user-id'),
-        external_id: $('#editor').data('user-external-id')
-      },
-      verb: {
-        type: eventName
-      },
-      resource: {
-        type: 'page',
-        uuid: document.location.href
-      },
-      timestamp: new Date().toISOString(),
-      with_result: {},
-      in_context: contextData
-    };
+      var payload = {
+        user: {
+          type: 'User',
+          uuid: $('#editor').data('user-id'),
+          external_id: $('#editor').data('user-external-id')
+        },
+        verb: {
+          type: eventName
+        },
+        resource: {
+          type: 'page',
+          uuid: document.location.href
+        },
+        timestamp: new Date().toISOString(),
+        with_result: {},
+        in_context: contextData
+      };
 
-    $.ajax("https://open.hpi.de/lanalytics/log", {
-      type: 'POST',
-      cache: false,
-      dataType: 'JSON',
-      data: payload,
-      success: {},
-      error: {}
-    })
+      $.ajax(this.learningAnalyticsURL, {
+        type: 'POST',
+        cache: false,
+        dataType: 'JSON',
+        data: payload,
+        success: {},
+        error: {}
+      })
+
+    }
   },
 
   sendError: function (message, submission_id) {
@@ -551,6 +559,7 @@ var CodeOceanEditor = {
     $('#description-symbol').toggleClass('fa-chevron-down');
     $('#description-symbol').toggleClass('fa-chevron-right');
   },
+
 
   initializeEverything: function() {
     this.initializeRegexes();
