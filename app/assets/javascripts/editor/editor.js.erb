@@ -30,8 +30,9 @@ var CodeOceanEditor = {
   lastCopyText: null,
 
   <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
-  sendLearningAnalyticEvents: <%= @config['codeocean_events']['enabled'] %>,
-  learningAnalyticsURL: "<%= @config['codeocean_events']['url'] %>",
+  sendLearningAnalyticEvents: <%= @config['codeocean_events'] ? @config['codeocean_events']['enabled'] : false %>,
+  learningAnalyticsURL: "<%= @config['codeocean_events'] ? @config['codeocean_events']['url'] : "" %>",
+
 
 configureEditors: function () {
     _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
