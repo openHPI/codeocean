@@ -33,6 +33,8 @@ Rails.application.configure do
   # Raise errors for missing translations.
   config.action_view.raise_on_missing_translations = true
 
+  BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']
+
   # Delete middleware in order to allow concurrent requests.
   config.middleware.delete(Rack::Lock)
 end
