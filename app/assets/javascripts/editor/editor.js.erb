@@ -319,7 +319,7 @@ configureEditors: function () {
       $('#comment-modal').modal('show');
     });
 
-    $('#askForCommentsButton').on('click', this.requestComments);
+    $('#askForCommentsButton').on('click', this.requestComments.bind(this));
 
     setTimeout(function () {
       button.prop('disabled', false);
