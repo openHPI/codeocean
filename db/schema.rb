@@ -182,15 +182,6 @@ ActiveRecord::Schema.define(version: 20161216131239) do
   add_index "internal_users", ["remember_me_token"], name: "index_internal_users_on_remember_me_token", using: :btree
   add_index "internal_users", ["reset_password_token"], name: "index_internal_users_on_reset_password_token", using: :btree
 
-  create_table "lti_parameters", force: true do |t|
-    t.string   "external_user_id"
-    t.string   "consumer_id"
-    t.string   "exercise_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.json     "lti_parameters"
-  end
-
   create_table "request_for_comments", force: true do |t|
     t.integer  "user_id",       null: false
     t.integer  "exercise_id",   null: false

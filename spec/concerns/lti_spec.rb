@@ -116,6 +116,7 @@ describe Lti do
     context 'with an valid score' do
       context 'with a tool provider' do
         before(:each) do
+          #Todo replace session with lti_parameter
           controller.session[:consumer_id] = consumer.id
           controller.session[:lti_parameters] = {}
         end

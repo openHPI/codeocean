@@ -44,6 +44,7 @@ module Lti
   private :external_user_name
 
   def lti_outcome_service?
+    #Todo replace session with lti_parameter
     session[:lti_parameters].try(:has_key?, 'lis_outcome_service_url')
   end
   private :lti_outcome_service?
@@ -97,6 +98,7 @@ module Lti
   def send_score(score)
     ::NewRelic::Agent.add_custom_parameters({ score: score, session: session })
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
+    #Todo replace session with lti_parameter
     provider = build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]), parameters: session[:lti_parameters])
     if provider.nil?
       {status: 'error'}
@@ -116,9 +118,15 @@ module Lti
   private :set_current_user
 
   def store_lti_session_data(options = {})
-    session[:consumer_id] = options[:consumer].id
-    session[:external_user_id] = @current_user.id
-    session[:lti_parameters] = options[:parameters].slice(*SESSION_PARAMETERS)
+    exercise = Exercise.where(token: options[:parameters][:custom_token]).first
+    exercise_id = exercise.id unless exercise.nil?
+
+    lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,
+                                                    external_user_id: options[:parameters][:user_id].to_s,
+                                                    exercises_id: exercise_id)
+
+    lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).to_json
+    lti_parameters.save!
   end
   private :store_lti_session_data
 

@@ -27,6 +27,7 @@ div id='output_sidebar_uncollapsed' class='hidden col-sm-12 enforce-bottom-margi
         .progress-bar role='progressbar'
 
     br
+      / #Todo replace session with lti_parameter
     - if session[:lti_parameters].try(:has_key?, 'lis_outcome_service_url')
       p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
     - else

@@ -78,6 +78,7 @@ describe SessionsController do
       it 'assigns the current user' do
         request
         expect(assigns(:current_user)).to be_an(ExternalUser)
+        #Todo replace session with lti_parameter
         expect(session[:external_user_id]).to eq(user.id)
       end
 
@@ -174,6 +175,7 @@ describe SessionsController do
     let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:dummy)) }
 
     before(:each) do
+      #Todo replace session with lti_parameter
       session[:consumer_id] = consumer.id
       session[:lti_parameters] = {}
     end
