@@ -265,7 +265,7 @@ class ExercisesController < ApplicationController
           return
 
         # else: show open rfc for same exercise if available
-        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).order("RANDOM()").first
+        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).where.not(question: nil).order("RANDOM()").first
           # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
           flash.keep(:notice)

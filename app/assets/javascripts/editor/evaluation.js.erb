@@ -6,6 +6,7 @@ CodeOceanEditorEvaluation = {
    */
   scoreCode: function (event) {
     event.preventDefault();
+    this.clearScoringOutput();
     this.createSubmission('#assess', null, function (response) {
       this.showSpinner($('#assess'));
       $('#score_div').removeClass('hidden');
@@ -137,6 +138,14 @@ CodeOceanEditorEvaluation = {
 
   clearOutput: function() {
     $('#output pre').remove();
+  },
+
+  clearScoringOutput: function() {
+    $('#results ul').first().html('');
+    $('.test-count .number').html(0);
+    $('#score').data('score', 0);
+    this.renderScore();
+    this.clearOutput();
   },
 
   printOutput: function (output, colorize, index) {
