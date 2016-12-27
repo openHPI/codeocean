@@ -94,6 +94,7 @@ describe SessionsController do
       end
 
       it 'stores LTI parameters in the session' do
+        #Todo replace session with lti_parameter
         expect(controller).to receive(:store_lti_session_data)
         request
       end
@@ -160,6 +161,7 @@ describe SessionsController do
       end
 
       it 'clears the session' do
+        #Todo replace session with lti_parameter
         expect(controller).to receive(:clear_lti_session_data)
         delete :destroy
       end
@@ -183,6 +185,7 @@ describe SessionsController do
     before(:each) { request.call }
 
     it 'clears the session' do
+      #Todo replace session with lti_parameter
       expect(controller).to receive(:clear_lti_session_data)
       request.call
     end

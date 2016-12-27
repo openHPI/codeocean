@@ -15,6 +15,7 @@ module Lti
   private :build_tool_provider
 
   def clear_lti_session_data
+    #Todo replace session with lti_parameter
     session.delete(:consumer_id)
     session.delete(:external_user_id)
     session.delete(:lti_parameters)

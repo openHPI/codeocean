@@ -17,6 +17,7 @@ describe Lti do
 
   describe '#clear_lti_session_data' do
     it 'clears the session' do
+      #Todo replace session with lti_parameter
       expect(controller.session).to receive(:delete).with(:consumer_id)
       expect(controller.session).to receive(:delete).with(:external_user_id)
       expect(controller.session).to receive(:delete).with(:lti_parameters)
@@ -163,11 +164,13 @@ describe Lti do
   end
 
   describe '#store_lti_session_data' do
+    #Todo replace session with lti_parameter
     let(:parameters) { {} }
     before(:each) { controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user)) }
     after(:each) { controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters) }
 
     it 'stores data in the session' do
+      #Todo replace session with lti_parameter
       expect(controller.session).to receive(:[]=).with(:consumer_id, anything)
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
       expect(controller.session).to receive(:[]=).with(:lti_parameters, kind_of(Hash))
