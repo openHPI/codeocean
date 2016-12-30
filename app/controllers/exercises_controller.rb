@@ -162,12 +162,10 @@ class ExercisesController < ApplicationController
                                        external_user_id: session[:external_user_id],
                                        exercises_id: @submission.exercise_id).first
 
-    lti_parameters = JSON.parse(lti_parameter.lti_parameters)
-
     path = lti_return_path(consumer_id: session[:consumer_id],
                            submission_id: @submission.id,
                            url: consumer_return_url(build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]),
-                                                                        parameters: lti_parameters)))
+                                                                        parameters: lti_parameter.lti_parameters)))
                                                                         # parameters: session[:lti_parameters])))
     respond_to do |format|
       format.html { redirect_to(path) }

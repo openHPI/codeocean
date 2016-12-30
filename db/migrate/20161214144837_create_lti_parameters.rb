@@ -4,7 +4,7 @@ class CreateLtiParameters < ActiveRecord::Migration
       t.string :external_user_id
       t.belongs_to :consumers
       t.belongs_to :exercises
-      t.column :lti_parameters, :jsonb
+      t.jsonb :lti_parameters, null: false, default: '{}'
 
       t.timestamps
     end

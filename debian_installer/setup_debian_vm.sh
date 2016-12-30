@@ -77,8 +77,8 @@ debian_installer/setup_debian_7_create_tables.sh
 
 # Protocol TCP Host port 3030, guest port 3000, name CodeOcean, other left blank.
 # That's all! 
-# Start Puma server on VM
-# rails s -p 8080 
+# Start Puma server on VM (since we upgraded to rails 4.2.5, it is necessary to specify the address here as well. Otherwise, we can't connect from the host machine)
+# rails s -b 0.0.0.0 -p 8080 
 
 # To connect to Ruby app use 
 #http://127.0.0.1:3030

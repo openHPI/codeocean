@@ -104,10 +104,8 @@ module Lti
     lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
                                        external_user_id: session[:external_user_id],
                                        exercises_id: exercise_id).first
-    lti_parameters = JSON.parse(lti_parameter.lti_parameters)
-
     consumer = Consumer.find_by(id: session[:consumer_id])
-    provider = build_tool_provider(consumer: consumer, parameters: lti_parameters)
+    provider = build_tool_provider(consumer: consumer, parameters: lti_parameter.lti_parameters)
     # provider = build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]), parameters: session[:lti_parameters])
     if provider.nil?
       {status: 'error'}
