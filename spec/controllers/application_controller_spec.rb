@@ -4,7 +4,6 @@ describe ApplicationController do
   describe '#current_user' do
     context 'with an external user' do
       let(:external_user) { FactoryGirl.create(:external_user) }
-      #Todo replace session with lti_parameter
       before(:each) { session[:external_user_id] = external_user.id }
 
       it 'returns the external user' do

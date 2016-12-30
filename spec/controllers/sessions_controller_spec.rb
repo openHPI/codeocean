@@ -78,7 +78,6 @@ describe SessionsController do
       it 'assigns the current user' do
         request
         expect(assigns(:current_user)).to be_an(ExternalUser)
-        #Todo replace session with lti_parameter
         expect(session[:external_user_id]).to eq(user.id)
       end
 
@@ -94,7 +93,7 @@ describe SessionsController do
       end
 
       it 'stores LTI parameters in the session' do
-        #Todo replace session with lti_parameter
+        #Todo replace session with lti_parameter /should be done already
         expect(controller).to receive(:store_lti_session_data)
         request
       end
@@ -161,7 +160,7 @@ describe SessionsController do
       end
 
       it 'clears the session' do
-        #Todo replace session with lti_parameter
+        #Todo replace session with lti_parameter /should be done already
         expect(controller).to receive(:clear_lti_session_data)
         delete :destroy
       end
@@ -179,13 +178,14 @@ describe SessionsController do
     before(:each) do
       #Todo replace session with lti_parameter
       session[:consumer_id] = consumer.id
-      session[:lti_parameters] = {}
+      #Todo create LtiParameter Object
+      # session[:lti_parameters] = {}
     end
 
     before(:each) { request.call }
 
     it 'clears the session' do
-      #Todo replace session with lti_parameter
+      #Todo replace session with lti_parameter /should be done already
       expect(controller).to receive(:clear_lti_session_data)
       request.call
     end

@@ -44,7 +44,7 @@ else
     echo "Postgres installation failed"
 fi
 
-# create database
+# create development database
 # TODO: extract databasename to variable
 if ! (sudo -u postgres psql -l | grep -q codeocean-development)
 then
@@ -57,7 +57,13 @@ then
   sudo -u postgres psql -d codeocean-development -U postgres -c "CREATE USER codeocean;"
   sudo -u postgres psql -d codeocean-development -U postgres -c 'GRANT ALL PRIVILEGES ON DATABASE "codeocean-development" to codeocean';
   sudo -u postgres psql -d codeocean-development -U postgres -c 'ALTER DATABASE "codeocean-development" OWNER TO codeocean';
+  sudo -u postgres psql -d codeocean-development -U postgres -c 'ALTER USER "codeocean" CREATEDB';
   echo "Done"
 else
   echo "Database codeocean-development already exists"
 fi
+
+# TODO: create test database
+
+
+

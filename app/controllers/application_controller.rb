@@ -10,7 +10,6 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
 
   def current_user
-    #Todo replace session with lti_parameter
     @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources
   end
 

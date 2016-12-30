@@ -2,6 +2,7 @@ require 'oauth/request_proxy/rack_request'
 
 module Lti
   extend ActiveSupport::Concern
+  include LtiHelper
 
   MAXIMUM_SCORE = 1
   MAXIMUM_SESSION_AGE = 60.minutes
@@ -14,11 +15,17 @@ module Lti
   end
   private :build_tool_provider
 
-  def clear_lti_session_data
-    #Todo replace session with lti_parameter
+  def clear_lti_session_data(exercise_id = nil)
+    #Todo replace session with lti_parameter /done
+    #TODO decide if we need to remove all LtiParameters for user/consumer
+    if (exercise_id.nil?)
+      LtiParameter.destroy_all(consumers_id: session[:consumer_id], external_user_id: session[:external_user_id])
+    else #TODO: probably it does not make sense to keep the LtiParameters if the session is deleted
+      LtiParameter.destroy_all(consumers_id: session[:consumer_id], external_user_id: session[:external_user_id], exercises_id: exercise_id)
+    end
     session.delete(:consumer_id)
     session.delete(:external_user_id)
-    session.delete(:lti_parameters)
+    #session.delete(:lti_parameters)
   end
   private :clear_lti_session_data
 
@@ -43,12 +50,6 @@ module Lti
     end
   end
   private :external_user_name
-
-  def lti_outcome_service?
-    #Todo replace session with lti_parameter
-    session[:lti_parameters].try(:has_key?, 'lis_outcome_service_url')
-  end
-  private :lti_outcome_service?
 
   def refuse_lti_launch(options = {})
     return_to_consumer(lti_errorlog: options[:message], lti_errormsg: t('sessions.oauth.failure'))
@@ -96,11 +97,18 @@ module Lti
   end
   private :return_to_consumer
 
-  def send_score(score)
+  def send_score(exercise_id, score)
     ::NewRelic::Agent.add_custom_parameters({ score: score, session: session })
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
-    #Todo replace session with lti_parameter
-    provider = build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]), parameters: session[:lti_parameters])
+    #Todo replace session with lti_parameter /done
+    lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
+                                       external_user_id: session[:external_user_id],
+                                       exercises_id: exercise_id).first
+    lti_parameters = JSON.parse(lti_parameter.lti_parameters)
+
+    consumer = Consumer.find_by(id: session[:consumer_id])
+    provider = build_tool_provider(consumer: consumer, parameters: lti_parameters)
+    # provider = build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]), parameters: session[:lti_parameters])
     if provider.nil?
       {status: 'error'}
     elsif provider.outcome_service?
@@ -128,6 +136,9 @@ module Lti
 
     lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).to_json
     lti_parameters.save!
+
+    session[:consumer_id] = options[:consumer].id
+    session[:external_user_id] = @current_user.external_id
   end
   private :store_lti_session_data
 

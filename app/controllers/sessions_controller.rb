@@ -21,7 +21,9 @@ class SessionsController < ApplicationController
     set_current_user
     store_lti_session_data(consumer: @consumer, parameters: params)
     store_nonce(params[:oauth_nonce])
-    redirect_to(implement_exercise_path(@exercise), notice: t("sessions.create_through_lti.session_#{lti_outcome_service? ? 'with' : 'without'}_outcome", consumer: @consumer))
+    redirect_to(implement_exercise_path(@exercise),
+                notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id) ? 'with' : 'without'}_outcome",
+                consumer: @consumer))
   end
 
   def destroy
@@ -36,7 +38,8 @@ class SessionsController < ApplicationController
   def destroy_through_lti
     @consumer = Consumer.find_by(id: params[:consumer_id])
     @submission = Submission.find(params[:submission_id])
-    clear_lti_session_data
+    #TODO decide if we need to remove all LtiParameters for user/consumer
+    clear_lti_session_data(@submission.exercise_id)
   end
 
   def new

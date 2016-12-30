@@ -20,7 +20,8 @@ describe Lti do
       #Todo replace session with lti_parameter
       expect(controller.session).to receive(:delete).with(:consumer_id)
       expect(controller.session).to receive(:delete).with(:external_user_id)
-      expect(controller.session).to receive(:delete).with(:lti_parameters)
+      # expect(controller.session).to receive(:delete).with(:lti_parameters)
+      #Todo check that there are no more LtiParameters for this user/consumer/(exercise?)
       controller.send(:clear_lti_session_data)
     end
   end
@@ -119,7 +120,8 @@ describe Lti do
         before(:each) do
           #Todo replace session with lti_parameter
           controller.session[:consumer_id] = consumer.id
-          controller.session[:lti_parameters] = {}
+          # controller.session[:lti_parameters] = {}
+          #Todo create empty LtiParameter instead
         end
 
         context 'when grading is not supported' do
@@ -167,13 +169,15 @@ describe Lti do
     #Todo replace session with lti_parameter
     let(:parameters) { {} }
     before(:each) { controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user)) }
-    after(:each) { controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters) }
+    #Todo do this with lti_parameter object
+    # after(:each) { controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters) }
 
     it 'stores data in the session' do
       #Todo replace session with lti_parameter
       expect(controller.session).to receive(:[]=).with(:consumer_id, anything)
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
-      expect(controller.session).to receive(:[]=).with(:lti_parameters, kind_of(Hash))
+      # expect(controller.session).to receive(:[]=).with(:lti_parameters, kind_of(Hash))
+      #Todo it creates an LtiParameter Object
     end
 
     it 'stores only selected tuples' do
