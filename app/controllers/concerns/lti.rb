@@ -136,7 +136,7 @@ module Lti
     lti_parameters.save!
 
     session[:consumer_id] = options[:consumer].id
-    session[:external_user_id] = @current_user.external_id
+    session[:external_user_id] = @current_user.id
   end
   private :store_lti_session_data
 
