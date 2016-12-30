@@ -78,11 +78,66 @@ debian_installer/setup_debian_7_create_tables.sh
 # Protocol TCP Host port 3030, guest port 3000, name CodeOcean, other left blank.
 # That's all! 
 # Start Puma server on VM
-# rails s -p 3000 
+# rails s -p 8080 
 
 # To connect to Ruby app use 
 #http://127.0.0.1:3030
 
+
+#The following is required so that CodeOcean can connect back to openHPI local
+
+# Setup a second networking interface
+# 1. Host-only vboxnet0 (ip-address: 192.168.59.104)   
+# 2. NAT with all the portforwarding stuff as described above
+
+# Edit /etc/network/interfaces in Guest machine:
+# 1. check for available interfaces:
+# ls /sys/class/net   ===>    docker0  eth0  eth1  lo
+
+# 2. edit network configuration:
+# sudoedit /etc/network/interfaces
+# and add the following lines:
+ 
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+source /etc/network/interfaces.d/*
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+# allow-hotplug eth0
+# iface eth0 inet dhcp
+
+#Host-only interface
+auto eth0
+iface eth0 inet static
+        address         192.168.59.104
+        netmask         255.255.255.0
+        network         192.168.59.0
+        broadcast       192.168.59.255
+
+#NAT interface
+auto eth1
+iface eth1 inet dhcp
+
+# See also: 
+# http://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in
+
+# !!!!!Attention!!!!!!!!
+# Start openHPI Local as:
+# http://{host.ip}:3000/
+# e.g. http://192.168.178.33:3000/
+# set LTI Provider in course as:
+# http://192.168.59.104:3030/lti/launch
+
+# Access VBox with static IP and port-forwarding
+# SSH:
+# ssh -p 3022 debian@192.168.59.104
+# CodeOcean:
+# http://192.168.59.104:3030
 
 #TODO production: 
 # require passwd for sudo again.
