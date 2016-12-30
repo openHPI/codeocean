@@ -19,9 +19,11 @@ module Lti
     #Todo replace session with lti_parameter /done
     #TODO decide if we need to remove all LtiParameters for user/consumer
     if (exercise_id.nil?)
-      LtiParameter.destroy_all(consumers_id: session[:consumer_id], external_user_id: session[:external_user_id])
+      LtiParameter.destroy_all(consumers_id: session[:consumer_id], external_user_id: session[:external_user_external_id])
     else #TODO: probably it does not make sense to keep the LtiParameters if the session is deleted
-      LtiParameter.destroy_all(consumers_id: session[:consumer_id], external_user_id: session[:external_user_id], exercises_id: exercise_id)
+      LtiParameter.destroy_all(consumers_id: session[:consumer_id],
+                               external_user_id: session[:external_user_external_id],
+                               exercises_id: exercise_id)
     end
     session.delete(:consumer_id)
     session.delete(:external_user_id)
@@ -102,8 +104,10 @@ module Lti
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
     #Todo replace session with lti_parameter /done
     lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
-                                       external_user_id: session[:external_user_id],
+                                       external_user_id: session[:external_user_external_id],
                                        exercises_id: exercise_id).first
+    # lti_parameters = JSON.parse(lti_parameter.lti_parameters)
+
     consumer = Consumer.find_by(id: session[:consumer_id])
     provider = build_tool_provider(consumer: consumer, parameters: lti_parameter.lti_parameters)
     # provider = build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]), parameters: session[:lti_parameters])
@@ -136,6 +140,7 @@ module Lti
     lti_parameters.save!
 
     session[:consumer_id] = options[:consumer].id
+    session[:external_user_external_id] = @current_user.external_id
     session[:external_user_id] = @current_user.id
   end
   private :store_lti_session_data

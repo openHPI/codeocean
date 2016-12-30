@@ -159,7 +159,7 @@ class ExercisesController < ApplicationController
   def redirect_to_lti_return_path
     #Todo replace session with lti_parameter /done
     lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
-                                       external_user_id: session[:external_user_id],
+                                       external_user_id: session[:external_user_external_id],
                                        exercises_id: @submission.exercise_id).first
 
     path = lti_return_path(consumer_id: session[:consumer_id],
