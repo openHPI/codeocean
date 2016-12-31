@@ -15,19 +15,20 @@ module Lti
   end
   private :build_tool_provider
 
+  # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
+  # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
+  # Only the lti_parameters are deleted.
   def clear_lti_session_data(exercise_id = nil)
     #Todo replace session with lti_parameter /done
-    #TODO decide if we need to remove all LtiParameters for user/consumer
     if (exercise_id.nil?)
       LtiParameter.destroy_all(consumers_id: session[:consumer_id], external_user_id: session[:external_user_external_id])
-    else #TODO: probably it does not make sense to keep the LtiParameters if the session is deleted
+      session.delete(:consumer_id)
+      session.delete(:external_user_id)
+    else
       LtiParameter.destroy_all(consumers_id: session[:consumer_id],
                                external_user_id: session[:external_user_external_id],
                                exercises_id: exercise_id)
     end
-    session.delete(:consumer_id)
-    session.delete(:external_user_id)
-    #session.delete(:lti_parameters)
   end
   private :clear_lti_session_data
 

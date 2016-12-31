@@ -38,7 +38,6 @@ class SessionsController < ApplicationController
   def destroy_through_lti
     @consumer = Consumer.find_by(id: params[:consumer_id])
     @submission = Submission.find(params[:submission_id])
-    #TODO decide if we need to remove all LtiParameters for user/consumer
     clear_lti_session_data(@submission.exercise_id)
   end
 
