@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160907123009) do
+ActiveRecord::Schema.define(version: 20170105153533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,6 +181,11 @@ ActiveRecord::Schema.define(version: 20160907123009) do
   add_index "internal_users", ["email"], name: "index_internal_users_on_email", unique: true, using: :btree
   add_index "internal_users", ["remember_me_token"], name: "index_internal_users_on_remember_me_token", using: :btree
   add_index "internal_users", ["reset_password_token"], name: "index_internal_users_on_reset_password_token", using: :btree
+
+  create_table "remote_evaluation_mappings", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "request_for_comments", force: true do |t|
     t.integer  "user_id",       null: false
