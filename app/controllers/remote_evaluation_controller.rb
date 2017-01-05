@@ -8,10 +8,10 @@ class RemoteEvaluationController < ApplicationController
   # @exercise_files
   def evaluate
     token = params[:token]
-    # im Model nachgucken, ob es zu diesem token einen user und eine exerciseId gibt
+    # todo: im Model nachgucken, ob es zu diesem token einen user und eine exerciseId gibt
     # wenn ja ausführen
-    ## @exercise_files (entpacken, stream entziffern was auch immer)
-    ##
+    ## submission erstellen (submission create) mit cause "remoteAssess", fileAttributes = exerciseFiles: { Array of {name: Dateiname, content: Inhalt der Datei} } und exercise_id
+    ## extra: validiere, ob files wirklich zur Übung gehören (wenn allowNewFiles-flag nicht gesetzt ist)
     # wenn nein und token expired (nach einem Monat): sende antwort, dass token expired und: Log dich ein, suche Übung und update das token
     render :nothing => true
   end

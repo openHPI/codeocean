@@ -53,6 +53,8 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  # todo: create token from userid and exerciseid and save it in remote_evaluation_mapping_model, send file with this token
+  # todo: extra: also send fileIds or names in the file
   def download
     # files = @submission.files.map{ }
     # zipline( files, 'submission.zip')
