@@ -16,7 +16,12 @@ class RemoteEvaluationController < ApplicationController
       puts remote_evaluation_mapping.user_id
 
       ## submission erstellen (submission create) mit cause "remoteAssess", fileAttributes: { Array of {name: Dateiname, content: Inhalt der Datei} } und exercise_id
-      submission = Submission.new(:cause => 'remoteAssess', :files_attributes => files_attributes) # todo: create instead of new to save in db!
+      # todo: create instead of new to save in db!
+      submission = Submission.new(
+          :cause => 'remoteAssess',
+          :files_attributes => files_attributes,
+          :exercise_id => remote_evaluation_mapping.exercise_id,
+          :user_id => remote_evaluation_mapping.user_id)
       render json: submission
     else
       # todo: better output
