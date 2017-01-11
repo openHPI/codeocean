@@ -108,7 +108,7 @@ class DockerClient
     container.status = :created
     container
   rescue Docker::Error::NotFoundError => error
-    Rails.logger.info('create_container: Got Docker::Error::NotFoundError: ' + error.to_s)
+    Rails.logger.error('create_container: Got Docker::Error::NotFoundError: ' + error.to_s)
     destroy_container(container)
     #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
@@ -390,8 +390,8 @@ class DockerClient
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
       #TODO: check phusion doku again if we need -i -t options here
       output = container.exec(['bash', '-c', command])
-      Rails.logger.info "output from container.exec"
-      Rails.logger.info output
+      Rails.logger.debug "output from container.exec"
+      Rails.logger.debug output
       result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'), stderr: output[1].join.force_encoding('utf-8')}
     end
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
