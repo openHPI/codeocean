@@ -325,7 +325,7 @@ class DockerClient
   end
 
   def self.image_tags
-    Docker::Image.all.map { |image| image.info['RepoTags'] }.flatten.reject { |tag| tag.include?('<none>') }
+    Docker::Image.all.map { |image| image.info['RepoTags'] }.flatten.reject { |tag| tag.present? && tag.include?('<none>') }
   end
 
   def initialize(options = {})
