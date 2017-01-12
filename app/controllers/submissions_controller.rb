@@ -327,9 +327,15 @@ class SubmissionsController < ApplicationController
   def create_remote_evaluation_mapping
     user_id = @submission.user_id
     exercise_id = @submission.exercise_id
+
     remote_evaluation_mapping = RemoteEvaluationMapping.create(:user_id => user_id, :exercise_id => exercise_id)
+
+    # create id.co file
     path = "tmp/id.co"
-    content = remote_evaluation_mapping.validation_token + " #validation_token"
+    content = "#{remote_evaluation_mapping.validation_token}\n"
+    @submission.files.each do |file|
+      content += "#{file.path}#{file.name}#{file.file_type.file_extension}=#{file.id.to_s}\n"
+    end
     File.open(path, "w+") do |f|
       f.write(content)
     end
