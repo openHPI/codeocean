@@ -19,12 +19,12 @@ module Lti
   # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
   # Only the lti_parameters are deleted.
   def clear_lti_session_data(exercise_id = nil)
+    @current_user = ExternalUser.find(@submission.user_id)
     if (exercise_id.nil?)
-      LtiParameter.destroy_all(consumers_id: session[:consumer_id], external_user_id: @current_user.external_id)
       session.delete(:consumer_id)
       session.delete(:external_user_id)
     else
-      LtiParameter.destroy_all(consumers_id: session[:consumer_id],
+      LtiParameter.destroy_all(consumers_id: @consumer.id,
                                external_user_id: @current_user.external_id,
                                exercises_id: exercise_id)
     end
@@ -123,6 +123,7 @@ module Lti
 
   def set_current_user
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
+    #TODO is this really necessary, and does it work at all?
     @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))
   end
   private :set_current_user
