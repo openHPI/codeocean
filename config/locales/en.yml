@@ -238,10 +238,10 @@ en:
       submit: Submit Code For Assessment
       test: Test
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
-      exercise_deadline_passed: 'The deadline for this exercise has already passed'
+      exercise_deadline_passed: 'The score cannot be submitted.'
       tooltips:
         save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
-        exercise_deadline_passed: 'The results for this exercise can only be submitted to the e-learning platform before the deadline has passed.'
+        exercise_deadline_passed: 'Either the deadline has already passed or you did not directly access this page from the e-learning platform. (Did you use the Back button of your browser after submitting the score?)'
       request_for_comments_sent: "Request for comments sent."
     editor_file_tree:
       file_root: Files

@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
     store_lti_session_data(consumer: @consumer, parameters: params)
     store_nonce(params[:oauth_nonce])
     redirect_to(implement_exercise_path(@exercise),
-                notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id) ? 'with' : 'without'}_outcome",
+                notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, @current_user.external_id , @consumer.id) ? 'with' : 'without'}_outcome",
                 consumer: @consumer))
   end
 

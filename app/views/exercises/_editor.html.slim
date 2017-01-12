@@ -1,11 +1,10 @@
 - external_user_id = @current_user.respond_to?(:external_id) ? @current_user.external_id : '' #'tests' #(@current_user.uuid.present? ? @current_user.uuid : '')
+- consumer_id = @current_user.respond_to?(:external_id) ? @current_user.consumer_id : '' #'tests' #(@current_user.uuid.present? ? @current_user.uuid : '')
 #editor.row data-exercise-id=exercise.id data-message-depleted=t('exercises.editor.depleted') data-message-timeout=t('exercises.editor.timeout',  permitted_execution_time: @exercise.execution_environment.permitted_execution_time) data-errors-url=execution_environment_errors_path(exercise.execution_environment) data-submissions-url=submissions_path data-user-id=@current_user.id data-user-external-id=external_user_id
   div id="sidebar" class=(@exercise.hide_file_tree ? 'sidebar-col-collapsed' : 'sidebar-col') = render('editor_file_tree', exercise: @exercise, files: @files)
-  div id='output_sidebar' class='output-col-collapsed' = render('exercises/editor_output')
+  div id='output_sidebar' class='output-col-collapsed' = render('exercises/editor_output', external_user_id: external_user_id, consumer_id: consumer_id )
   div id='frames' class='editor-col'
     #editor-buttons.btn-group.enforce-bottom-margin
-      // = render('editor_button', data: {:'data-message-success' => t('submissions.create.success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-save', id: 'save', label: t('exercises.editor.save'), title: t('.tooltips.save'))
-      // .btn-group
       = render('editor_button', disabled: true, icon: 'fa fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))
       = render('editor_button', icon: 'fa fa-desktop', id: 'render', label: t('exercises.editor.render'))
       = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-network' => t('exercises.editor.network'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-tooltip' => true}, icon: 'fa fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r'))
