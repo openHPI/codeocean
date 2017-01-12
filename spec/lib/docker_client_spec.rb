@@ -3,8 +3,8 @@ require 'seeds_helper'
 
 describe DockerClient, docker: true do
   let(:command) { 'whoami' }
-  let(:docker_client) { described_class.new(execution_environment: FactoryGirl.build(:ruby), user: FactoryGirl.build(:admin)) }
-  let(:execution_environment) { FactoryGirl.build(:ruby) }
+  let(:docker_client) { described_class.new(execution_environment: FactoryGirl.build(:java), user: FactoryGirl.build(:admin)) }
+  let(:execution_environment) { FactoryGirl.build(:java) }
   let(:image) { double }
   let(:submission) { FactoryGirl.create(:submission) }
   let(:workspace_path) { '/tmp' }

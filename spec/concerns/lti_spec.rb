@@ -17,11 +17,8 @@ describe Lti do
 
   describe '#clear_lti_session_data' do
     it 'clears the session' do
-      #Todo replace session with lti_parameter
       expect(controller.session).to receive(:delete).with(:consumer_id)
       expect(controller.session).to receive(:delete).with(:external_user_id)
-      # expect(controller.session).to receive(:delete).with(:lti_parameters)
-      #Todo check that there are no more LtiParameters for this user/consumer/(exercise?)
       controller.send(:clear_lti_session_data)
     end
   end
@@ -108,10 +105,13 @@ describe Lti do
   describe '#send_score' do
     let(:consumer) { FactoryGirl.create(:consumer) }
     let(:score) { 0.5 }
+    #let(:exercise) { FactoryGirl.create(:math) }
+    let(:submission) { FactoryGirl.create(:submission) }
+    let!(:lti_parameter) { FactoryGirl.create(:lti_parameter)}
 
     context 'with an invalid score' do
       it 'raises an exception' do
-        expect { controller.send(:send_score, Lti::MAXIMUM_SCORE * 2) }.to raise_error(Lti::Error)
+        expect { controller.send(:send_score, Lti::MAXIMUM_SCORE * 2, submission.exercise_id, submission.user_id) }.to raise_error(Lti::Error)
       end
     end
 
@@ -168,9 +168,10 @@ describe Lti do
   describe '#store_lti_session_data' do
     #Todo replace session with lti_parameter
     let(:parameters) { {} }
+    before_count = LtiParameter.count
     before(:each) { controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user)) }
     #Todo do this with lti_parameter object
-    # after(:each) { controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters) }
+    after(:each) { controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters) }
 
     it 'stores data in the session' do
       #Todo replace session with lti_parameter
@@ -178,6 +179,7 @@ describe Lti do
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
       # expect(controller.session).to receive(:[]=).with(:lti_parameters, kind_of(Hash))
       #Todo it creates an LtiParameter Object
+      expect(LtiParameter.count).to eq(before_count + 1)
     end
 
     it 'stores only selected tuples' do

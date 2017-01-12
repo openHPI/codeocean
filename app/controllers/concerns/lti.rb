@@ -18,14 +18,13 @@ module Lti
   # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
   # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
   # Only the lti_parameters are deleted.
-  def clear_lti_session_data(exercise_id = nil)
-    @current_user = ExternalUser.find(@submission.user_id)
+  def clear_lti_session_data(exercise_id = nil, user_id = nil, consumer_id = nil)
     if (exercise_id.nil?)
       session.delete(:consumer_id)
       session.delete(:external_user_id)
     else
-      LtiParameter.destroy_all(consumers_id: @consumer.id,
-                               external_user_id: @current_user.external_id,
+      LtiParameter.destroy_all(consumers_id: consumer_id,
+                               external_users_id: user_id,
                                exercises_id: exercise_id)
     end
   end
@@ -99,12 +98,12 @@ module Lti
   end
   private :return_to_consumer
 
-  def send_score(exercise_id, score)
+  def send_score(exercise_id, score, user_id)
     ::NewRelic::Agent.add_custom_parameters({ score: score, session: session })
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
 
     lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
-                                       external_user_id: @current_user.external_id,
+                                       external_users_id: user_id,
                                        exercises_id: exercise_id).first
 
     consumer = Consumer.find_by(id: session[:consumer_id])
@@ -123,7 +122,6 @@ module Lti
 
   def set_current_user
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
-    #TODO is this really necessary, and does it work at all?
     @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))
   end
   private :set_current_user
@@ -133,7 +131,7 @@ module Lti
     exercise_id = exercise.id unless exercise.nil?
 
     lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,
-                                                    external_user_id: options[:parameters][:user_id].to_s,
+                                                    external_users_id: @current_user.id, #options[:parameters][:user_id].to_s,
                                                     exercises_id: exercise_id)
 
     lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).to_json

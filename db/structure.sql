@@ -486,42 +486,12 @@ ALTER SEQUENCE internal_users_id_seq OWNED BY internal_users.id;
 
 
 --
--- Name: internal_users_teams; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE internal_users_teams (
-    id integer NOT NULL,
-    internal_user_id integer,
-    team_id integer
-);
-
-
---
--- Name: internal_users_teams_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE internal_users_teams_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: internal_users_teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE internal_users_teams_id_seq OWNED BY internal_users_teams.id;
-
-
---
 -- Name: lti_parameters; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE lti_parameters (
     id integer NOT NULL,
-    external_user_id character varying,
+    external_users_id integer,
     consumers_id integer,
     exercises_id integer,
     lti_parameters jsonb DEFAULT '{}'::jsonb NOT NULL,
@@ -591,7 +561,7 @@ ALTER SEQUENCE request_for_comments_id_seq OWNED BY request_for_comments.id;
 --
 
 CREATE TABLE schema_migrations (
-    version character varying NOT NULL
+    version character varying(255) NOT NULL
 );
 
 
@@ -628,37 +598,6 @@ CREATE SEQUENCE submissions_id_seq
 --
 
 ALTER SEQUENCE submissions_id_seq OWNED BY submissions.id;
-
-
---
--- Name: teams; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE teams (
-    id integer NOT NULL,
-    name character varying,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-
---
--- Name: teams_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE teams_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
 
 
 --
@@ -783,13 +722,6 @@ ALTER TABLE ONLY internal_users ALTER COLUMN id SET DEFAULT nextval('internal_us
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY internal_users_teams ALTER COLUMN id SET DEFAULT nextval('internal_users_teams_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY lti_parameters ALTER COLUMN id SET DEFAULT nextval('lti_parameters_id_seq'::regclass);
 
 
@@ -805,13 +737,6 @@ ALTER TABLE ONLY request_for_comments ALTER COLUMN id SET DEFAULT nextval('reque
 --
 
 ALTER TABLE ONLY submissions ALTER COLUMN id SET DEFAULT nextval('submissions_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regclass);
 
 
 --
@@ -918,14 +843,6 @@ ALTER TABLE ONLY internal_users
 
 
 --
--- Name: internal_users_teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY internal_users_teams
-    ADD CONSTRAINT internal_users_teams_pkey PRIMARY KEY (id);
-
-
---
 -- Name: lti_parameters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -947,14 +864,6 @@ ALTER TABLE ONLY request_for_comments
 
 ALTER TABLE ONLY submissions
     ADD CONSTRAINT submissions_pkey PRIMARY KEY (id);
-
-
---
--- Name: teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY teams
-    ADD CONSTRAINT teams_pkey PRIMARY KEY (id);
 
 
 --
@@ -1026,20 +935,6 @@ CREATE INDEX index_internal_users_on_remember_me_token ON internal_users USING b
 --
 
 CREATE INDEX index_internal_users_on_reset_password_token ON internal_users USING btree (reset_password_token);
-
-
---
--- Name: index_internal_users_teams_on_internal_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internal_users_teams_on_internal_user_id ON internal_users_teams USING btree (internal_user_id);
-
-
---
--- Name: index_internal_users_teams_on_team_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_internal_users_teams_on_team_id ON internal_users_teams USING btree (team_id);
 
 
 --
@@ -1223,5 +1118,5 @@ INSERT INTO schema_migrations (version) VALUES ('20160704143402');
 
 INSERT INTO schema_migrations (version) VALUES ('20160907123009');
 
-INSERT INTO schema_migrations (version) VALUES ('20161214144837');
+INSERT INTO schema_migrations (version) VALUES ('20170112151637');
 
