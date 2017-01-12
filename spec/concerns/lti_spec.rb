@@ -105,29 +105,25 @@ describe Lti do
   describe '#send_score' do
     let(:consumer) { FactoryGirl.create(:consumer) }
     let(:score) { 0.5 }
-    #let(:exercise) { FactoryGirl.create(:math) }
     let(:submission) { FactoryGirl.create(:submission) }
     let!(:lti_parameter) { FactoryGirl.create(:lti_parameter)}
 
     context 'with an invalid score' do
       it 'raises an exception' do
-        expect { controller.send(:send_score, Lti::MAXIMUM_SCORE * 2, submission.exercise_id, submission.user_id) }.to raise_error(Lti::Error)
+        expect { controller.send(:send_score, submission.exercise_id, Lti::MAXIMUM_SCORE * 2, submission.user_id) }.to raise_error(Lti::Error)
       end
     end
 
     context 'with an valid score' do
-      context 'with a tool provider' do
+      context 'with a tool consumer' do
         before(:each) do
-          #Todo replace session with lti_parameter
           controller.session[:consumer_id] = consumer.id
-          # controller.session[:lti_parameters] = {}
-          #Todo create empty LtiParameter instead
         end
 
         context 'when grading is not supported' do
           it 'returns a corresponding status' do
             expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
-            expect(controller.send(:send_score, score)[:status]).to eq('unsupported')
+            expect(controller.send(:send_score, submission.exercise_id, score, submission.user_id)[:status]).to eq('unsupported')
           end
         end
 
@@ -144,11 +140,11 @@ describe Lti do
           end
 
           it 'sends the score' do
-            controller.send(:send_score, score)
+            controller.send(:send_score, submission.exercise_id, score, submission.user_id)
           end
 
           it 'returns code, message, and status' do
-            result = controller.send(:send_score, score)
+            result = controller.send(:send_score, submission.exercise_id, score, submission.user_id)
             expect(result[:code]).to eq(response.response_code)
             expect(result[:message]).to eq(response.body)
             expect(result[:status]).to eq(response.code_major)
@@ -156,34 +152,28 @@ describe Lti do
         end
       end
 
-      context 'without a tool provider' do
+      context 'without a tool consumer' do
         it 'returns a corresponding status' do
-          expect(controller).to receive(:build_tool_provider).and_return(nil)
-          expect(controller.send(:send_score, score)[:status]).to eq('error')
+          expect(controller.send(:send_score, submission.exercise_id, score, submission.user_id)[:status]).to eq('error')
         end
       end
     end
   end
 
   describe '#store_lti_session_data' do
-    #Todo replace session with lti_parameter
     let(:parameters) { {} }
-    before_count = LtiParameter.count
-    before(:each) { controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user)) }
-    #Todo do this with lti_parameter object
-    after(:each) { controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters) }
 
     it 'stores data in the session' do
-      #Todo replace session with lti_parameter
+      controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user))
       expect(controller.session).to receive(:[]=).with(:consumer_id, anything)
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
-      # expect(controller.session).to receive(:[]=).with(:lti_parameters, kind_of(Hash))
-      #Todo it creates an LtiParameter Object
-      expect(LtiParameter.count).to eq(before_count + 1)
+      controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters)
     end
 
-    it 'stores only selected tuples' do
-      expect(parameters).to receive(:slice).with(*Lti::SESSION_PARAMETERS)
+    it 'it creates an LtiParameter Object' do
+      before_count = LtiParameter.count
+      controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters)
+      expect(LtiParameter.count).to eq(before_count + 1)
     end
   end
 

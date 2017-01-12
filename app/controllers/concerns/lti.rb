@@ -102,12 +102,14 @@ module Lti
     ::NewRelic::Agent.add_custom_parameters({ score: score, session: session })
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
 
-    lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
-                                       external_users_id: user_id,
-                                       exercises_id: exercise_id).first
+    if session[:consumer_id]
+      lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
+                                         external_users_id: user_id,
+                                         exercises_id: exercise_id).first
 
-    consumer = Consumer.find_by(id: session[:consumer_id])
-    provider = build_tool_provider(consumer: consumer, parameters: lti_parameter.lti_parameters)
+      consumer = Consumer.find_by(id: session[:consumer_id])
+      provider = build_tool_provider(consumer: consumer, parameters: lti_parameter.lti_parameters)
+    end
 
     if provider.nil?
       {status: 'error'}
@@ -130,15 +132,16 @@ module Lti
     exercise = Exercise.where(token: options[:parameters][:custom_token]).first
     exercise_id = exercise.id unless exercise.nil?
 
+    current_user = ExternalUser.find_or_create_by(consumer_id: options[:consumer].id, external_id: options[:parameters][:user_id].to_s)
     lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,
-                                                    external_users_id: @current_user.id, #options[:parameters][:user_id].to_s,
+                                                    external_users_id: current_user.id,
                                                     exercises_id: exercise_id)
 
     lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).to_json
     lti_parameters.save!
 
     session[:consumer_id] = options[:consumer].id
-    session[:external_user_id] = @current_user.id
+    session[:external_user_id] = current_user.id
   end
   private :store_lti_session_data
 
