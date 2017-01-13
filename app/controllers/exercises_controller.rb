@@ -161,8 +161,6 @@ class ExercisesController < ApplicationController
                                        external_users_id: @submission.user_id,
                                        exercises_id: @submission.exercise_id).first
 
-    # binding.pry
-
     path = lti_return_path(consumer_id: session[:consumer_id],
                            submission_id: @submission.id,
                            url: consumer_return_url(build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]),
