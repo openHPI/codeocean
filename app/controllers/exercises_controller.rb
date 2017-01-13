@@ -158,8 +158,10 @@ class ExercisesController < ApplicationController
 
   def redirect_to_lti_return_path
     lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
-                                       external_users_id: @current_user.id,
+                                       external_users_id: @submission.user_id,
                                        exercises_id: @submission.exercise_id).first
+
+    # binding.pry
 
     path = lti_return_path(consumer_id: session[:consumer_id],
                            submission_id: @submission.id,
@@ -228,7 +230,8 @@ class ExercisesController < ApplicationController
   def submit
     @submission = Submission.create(submission_params)
     score_submission(@submission)
-    if lti_outcome_service?(@submission.exercise_id, @current_user.id, @current_user.consumer_id)
+    current_user = ExternalUser.find(@submission.user_id)
+    if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id, current_user.consumer_id)
       transmit_lti_score
     else
       redirect_after_submit
