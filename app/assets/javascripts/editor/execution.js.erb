@@ -3,7 +3,7 @@ CodeOceanEditorWebsocket = {
 
   createSocketUrl: function(url) {
       var sockURL = new URL(window.location);
-      sockURL.path = url;
+      sockURL.pathname = url;
       sockURL.protocol = '<%= DockerClient.config['ws_client_protocol'] %>';
 
       return sockURL.toString();
