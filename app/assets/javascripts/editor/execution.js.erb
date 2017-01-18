@@ -2,8 +2,11 @@ CodeOceanEditorWebsocket = {
   websocket: null,
 
   createSocketUrl: function(url) {
-    var rel_url_root = '<%= (defined? config.relative_url_root) && config.relative_url_root != nil && config.relative_url_root != "" ? config.relative_url_root : "" %>';
-    return '<%= DockerClient.config['ws_client_protocol'] %>' + window.location.hostname + ':' + rel_url_root + window.location.port + url;
+      var sockURL = new URL(window.location);
+      sockURL.path = url;
+      sockURL.protocol = '<%= DockerClient.config['ws_client_protocol'] %>';
+
+      return sockURL.toString();
   },
 
   initializeSocket: function(url) {
