@@ -231,7 +231,7 @@ describe ExercisesController do
     let(:output) { {} }
     let(:request) { post :submit, format: :json, id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id} }
     let!(:external_user) { FactoryGirl.create(:external_user) }
-    let!(:lti_parameter) { FactoryGirl.create(:lti_parameter) }
+    let!(:lti_parameter) { FactoryGirl.create(:lti_parameter, external_user: external_user, exercise: exercise) }
 
     before(:each) do
       allow_any_instance_of(Submission).to receive(:normalized_score).and_return(1)
