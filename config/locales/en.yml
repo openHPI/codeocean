@@ -1,3 +1,24 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
 en:
   activerecord:
     attributes:
@@ -217,10 +238,10 @@ en:
       submit: Submit Code For Assessment
       test: Test
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
-      exercise_deadline_passed: 'The deadline for this exercise has already passed'
+      exercise_deadline_passed: 'The score cannot be submitted.'
       tooltips:
         save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
-        exercise_deadline_passed: 'The results for this exercise can only be submitted to the e-learning platform before the deadline has passed.'
+        exercise_deadline_passed: 'Either the deadline has already passed or you did not directly access this page from the e-learning platform. (Did you use the Back button of your browser after submitting the score?)'
       request_for_comments_sent: "Request for comments sent."
     editor_file_tree:
       file_root: Files
@@ -386,6 +407,7 @@ en:
       score: Your Score
       success_with_outcome: 'Your code has been successfully assessed. Your grade has been transmitted to %{consumer}.'
       success_without_outcome: Your code has been successfully assessed.
+      do_not_use_backbutton: Never use the browser's "Back" button to get back to CodeOcean. Always start an exercise from within %{consumer}.
     new:
       forgot_password: Forgot password?
       headline: Sign In
@@ -466,3 +488,4 @@ en:
     previous_label: '&#8592; Previous Page'
   file_template:
     no_template_label: "Empty File"
+

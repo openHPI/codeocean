@@ -21,7 +21,7 @@ gem 'pg', platform: :ruby
 gem 'pry-byebug'
 gem 'puma', '~> 2.15.3'
 gem 'pundit'
-gem 'rails', '~> 4.1.13'
+gem 'rails', '4.2.5'
 gem 'rails-i18n', '~> 4.0.0'
 gem 'ransack'
 gem 'rubytree'
