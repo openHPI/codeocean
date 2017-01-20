@@ -63,7 +63,7 @@ class SubmissionsController < ApplicationController
     require 'zip'
     stringio = Zip::OutputStream.write_buffer do |zio|
       @files.each do |file|
-        zio.put_next_entry(file.name_with_extension)
+        zio.put_next_entry(file.path + file.name_with_extension)
         zio.write(file.content)
       end
       zio.put_next_entry(File.basename id_file)
