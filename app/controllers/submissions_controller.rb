@@ -53,7 +53,6 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  # todo: extra: also send fileIds or names in the file
   def download
     # files = @submission.files.map{ }
     # zipline( files, 'submission.zip')
@@ -331,7 +330,7 @@ class SubmissionsController < ApplicationController
     remote_evaluation_mapping = RemoteEvaluationMapping.create(:user_id => user_id, :exercise_id => exercise_id)
 
     # create id.co file
-    path = "tmp/id.co"
+    path = "tmp/.co"
     content = "#{remote_evaluation_mapping.validation_token}\n"
     @submission.files.each do |file|
       content += "#{file.path}#{file.name}#{file.file_type.file_extension}=#{file.id.to_s}\n"

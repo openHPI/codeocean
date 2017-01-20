@@ -1,5 +1,6 @@
 class RemoteEvaluationController < ApplicationController
   include RemoteEvaluationParameters
+  include SubmissionScoring
 
   skip_after_action :verify_authorized
   skip_before_action :verify_authenticity_token
@@ -8,7 +9,7 @@ class RemoteEvaluationController < ApplicationController
   # @param validation_token
   # @param files_attributes
   def evaluate
-    
+
     validation_token = remote_evaluation_params[:validation_token]
     files_attributes = remote_evaluation_params[:files_attributes] || []
 
@@ -24,7 +25,7 @@ class RemoteEvaluationController < ApplicationController
       _params[:user_type] = "ExternalUser"
 
       @submission = Submission.create(_params)
-      render json: @submission
+      render json: score_submission(@submission)
     else
       # todo: better output
       # todo: check token expired?
