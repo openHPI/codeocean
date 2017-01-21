@@ -156,7 +156,7 @@ CodeOceanEditorEvaluation = {
       }
 
       if (output.stderr != undefined && output.stderr != '') {
-        element.append(output.stderr);
+        element.append('StdErr: ' + output.stderr);
       }
 
     } else if (output.stderr) {
