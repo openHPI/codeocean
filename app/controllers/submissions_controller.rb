@@ -66,9 +66,20 @@ class SubmissionsController < ApplicationController
         zio.put_next_entry(file.path.to_s == '' ? file.name_with_extension : File.join(file.path, file.name_with_extension))
         zio.write(file.content)
       end
+
+      # zip .co file
       zio.put_next_entry(File.basename id_file)
       zio.write(File.read id_file)
       File.delete(id_file) if File.exist?(id_file)
+
+      # zip client scripts
+      scripts_path = 'app/assets/remote_scripts'
+      Dir.foreach(scripts_path) do |file|
+        next if file == '.' or file == '..'
+        zio.put_next_entry(File.join('.scripts', File.basename(file)))
+        zio.write(File.read File.join(scripts_path, file))
+      end
+
     end
     send_data(stringio.string, filename: @submission.exercise.title.tr(" ", "_") + ".zip")
   end
