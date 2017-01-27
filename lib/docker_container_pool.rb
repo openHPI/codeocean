@@ -7,7 +7,9 @@ class DockerContainerPool
   @containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
   #as containers are not containing containers in use
   @all_containers = ThreadSafe::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, ThreadSafe::Array.new] }]
+
   def self.clean_up
+    Rails.logger.info('Container Pool is now performing a cleanup. ')
     @refill_task.try(:shutdown)
     @all_containers.values.each do |containers|
       DockerClient.destroy_container(containers.shift) until containers.empty?

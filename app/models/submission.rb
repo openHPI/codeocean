@@ -28,17 +28,6 @@ class Submission < ActiveRecord::Base
     ancestors.merge(descendants).values
   end
 
-  [:download_file, :render, :run, :test].each do |action|
-    filename = FILENAME_URL_PLACEHOLDER.gsub(/\W/, '')
-    define_method("#{action}_url") do
-      Rails.application.routes.url_helpers.send(:"#{action}_submission_path", self, filename).sub(filename, FILENAME_URL_PLACEHOLDER)
-    end
-  end
-
-  def download_url
-    Rails.application.routes.url_helpers.send(:download_submission_path, self)
-  end
-
   def main_file
     collect_files.detect(&:main_file?)
   end
@@ -54,12 +43,6 @@ class Submission < ActiveRecord::Base
 
   def percentage
     (normalized_score * 100).round
-  end
-
-  [:score, :stop].each do |action|
-    define_method("#{action}_url") do
-      Rails.application.routes.url_helpers.send(:"#{action}_submission_path", self)
-    end
   end
 
   def siblings

@@ -27,7 +27,7 @@ div id='output_sidebar_uncollapsed' class='hidden col-sm-12 enforce-bottom-margi
         .progress-bar role='progressbar'
 
     br
-    - if session[:lti_parameters].try(:has_key?, 'lis_outcome_service_url')
+    - if lti_outcome_service?(@exercise.id, external_user_id, consumer_id)
       p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
     - else
       p.text-center = render('editor_button', classes: 'btn-lg btn-warning-outline', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))

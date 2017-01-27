@@ -217,10 +217,10 @@ de:
       submit: Code zur Bewertung abgeben
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
-      exercise_deadline_passed: 'Die Abgabefrist für diese Aufgabe ist bereits abgelaufen.'
+      exercise_deadline_passed: 'Das Ergebnis kann nicht übertragen werden.'
       tooltips:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
-        exercise_deadline_passed: 'Die hier erzielten Punkte können nur bis zum Ablauf der Abgabefrist an die E-Learning-Plattform übertragen werden.'
+        exercise_deadline_passed: 'Entweder ist die Abgabefrist bereits abgelaufen oder Sie haben die Aufgabe nicht direkt über die E-Learning Plattform gestartet. (Möglicherweise haben Sie den Zurück Button Ihres Browsers benutzt nachdem Sie Ihre Aufgabe abgegeben haben?)'
       request_for_comments_sent: "Kommentaranfrage gesendet."
     editor_file_tree:
       file_root: Dateien
@@ -386,6 +386,7 @@ de:
       score: Ihre Punktzahl
       success_with_outcome: 'Ihr Code wurde erfolgreich bewertet. Ihre Bewertung wurde an %{consumer} übermittelt.'
       success_without_outcome: Ihr Code wurde erfolgreich bewertet.
+      do_not_use_backbutton: Benutzen Sie nicht den "Zurück" Button des Browsers, um zu CodeOcean zurück zu kehren. Übungen müssen immer aus dem %{consumer} Kontext gestartet werden.
     new:
       forgot_password: Passwort vergessen?
       headline: Anmelden
