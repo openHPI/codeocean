@@ -1,0 +1,19 @@
+h1 = Tag.model_name.human(count: 2)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.hint.name')
+        /th = t('activerecord.attributes.hint.locale')
+        /th colspan=3 = t('shared.actions')
+    tbody
+      - @tags.each do |tag|
+        tr
+          td = tag.name
+          td = link_to(t('shared.show'), tag)
+          td = link_to(t('shared.edit'), edit_tag_path(tag))
+          td = link_to(t('shared.destroy'), tag, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if tag.can_be_destroyed?
+
+= render('shared/pagination', collection: @tags)
+p = render('shared/new_button', model: Tag, path: new_tag_path)
