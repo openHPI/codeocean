@@ -12,6 +12,15 @@ class Exercise < ActiveRecord::Base
   belongs_to :execution_environment
   has_many :submissions
 
+  has_and_belongs_to_many :proxy_exercises
+  has_many :user_proxy_exercise_exercises
+  has_and_belongs_to_many :exercise_collections
+  has_many :user_exercise_interventions
+  has_many :interventions, through: :user_exercise_interventions
+  has_many :exercise_tags
+  has_many :tags, through: :exercise_tags
+  accepts_nested_attributes_for :exercise_tags
+
   has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
   has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions
   alias_method :users, :external_users
@@ -105,6 +114,7 @@ class Exercise < ActiveRecord::Base
   def duplicate(attributes = {})
     exercise = dup
     exercise.attributes = attributes
+    exercise_tags.each  { |et| exercise.exercise_tags << et.dup }
     files.each { |file| exercise.files << file.dup }
     exercise
   end
