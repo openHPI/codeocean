@@ -16,6 +16,9 @@ h1 = Exercise.model_name.human(count: 2)
         th = sort_link(@search, :execution_environment_id, t('activerecord.attributes.exercise.execution_environment'))
         th = t('.test_files')
         th = t('activerecord.attributes.exercise.maximum_score')
+        th = t('activerecord.attributes.exercise.tags')
+        th = t('activerecord.attributes.exercise.difficulty')
+        th = t('activerecord.attributes.exercise.worktime')
         th
           = t('activerecord.attributes.exercise.public')
           - if policy(Exercise).batch_update?
@@ -29,6 +32,9 @@ h1 = Exercise.model_name.human(count: 2)
           td = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
           td = exercise.files.teacher_defined_tests.count
           td = exercise.maximum_score
+          td = exercise.exercise_tags.count
+          td = exercise.expected_difficulty
+          td = exercise.expected_worktime_seconds / 60
           td.public data-value=exercise.public? = symbol_for(exercise.public?)
           td = link_to(t('shared.edit'), edit_exercise_path(exercise)) if policy(exercise).edit?
           td = link_to(t('.implement'), implement_exercise_path(exercise)) if policy(exercise).implement?

@@ -1,0 +1,35 @@
+h1 = ProxyExercise.model_name.human(count: 2)
+
+= render(layout: 'shared/form_filters') do |f|
+  .form-group
+    = f.label(:title_cont, t('activerecord.attributes.proxy_exercise.title'), class: 'sr-only')
+    = f.search_field(:title_cont, class: 'form-control', placeholder: t('activerecord.attributes.proxy_exercise.title'))
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = sort_link(@search, :title, t('activerecord.attributes.proxy_exercise.title'))
+        th = "Token"
+        th = t('activerecord.attributes.proxy_exercise.files_count')
+        th colspan=6 = t('shared.actions')
+    tbody
+      - @proxy_exercises.each do |proxy_exercise|
+        tr data-id=proxy_exercise.id
+          td = link_to(proxy_exercise.title,proxy_exercise)
+          td = proxy_exercise.token
+          td = proxy_exercise.count_files
+          td = link_to(t('shared.edit'), edit_proxy_exercise_path(proxy_exercise)) if policy(proxy_exercise).edit?
+
+          td
+            .btn-group
+              button.btn.btn-primary-outline.btn-xs.dropdown-toggle data-toggle="dropdown" type="button" = t('shared.actions_button')
+              span.caret
+              span.sr-only Toggle Dropdown
+              ul.dropdown-menu.pull-right role="menu"
+                li = link_to(t('shared.show'), proxy_exercise) if policy(proxy_exercise).show?
+                li = link_to(t('shared.destroy'), proxy_exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(proxy_exercise).destroy?
+                li = link_to(t('.clone'), clone_proxy_exercise_path(proxy_exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post) if policy(proxy_exercise).clone?
+
+= render('shared/pagination', collection: @proxy_exercises)
+p = render('shared/new_button', model: ProxyExercise)
