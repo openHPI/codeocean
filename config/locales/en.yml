@@ -48,6 +48,7 @@ en:
       exercise:
         description: Description
         embedding_parameters: LTI Embedding Parameters
+        tags: Tags
         execution_environment: Execution Environment
         execution_environment_id: Execution Environment
         files: Files
@@ -55,10 +56,17 @@ en:
         instructions: Instructions
         maximum_score: Maximum Score
         public: Public
+        selection: Selected
         title: Title
         user: Author
         allow_auto_completion: "Allow auto completion"
         allow_file_creation: "Allow file creation"
+        difficulty: Difficulty
+        worktime: "Expected worktime in minutes"
+      proxy_exercise:
+        title: Title
+        files_count: Exercises Count
+        token: Token
       external_user:
         consumer: Consumer
         email: Email
@@ -112,6 +120,10 @@ en:
         files: Files
         score: Score
         user: Author
+      tag:
+        name: Name
+        usage: Used
+        difficulty: Required Skills
       file_template:
         name: "Name"
         file_type: "File Type"
@@ -132,6 +144,9 @@ en:
       exercise:
         one: Exercise
         other: Exercises
+      proxy_exercise:
+        one: Proxy Exercise
+        other: Proxy Exercises
       external_user:
         one: External User
         other: External Users
@@ -311,6 +326,9 @@ en:
         tests: Unit Test Results
         time_difference: 'Working Time until here*'
         addendum: '* Deltas longer than 30 minutes are ignored.'
+  proxy_exercises:
+      index:
+        clone: Duplicate
   external_users:
     statistics:
       title: External User Statistics

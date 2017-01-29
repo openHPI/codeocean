@@ -1,4 +1,4 @@
-class ExercisePolicy < AdminOrAuthorPolicy
+class ProxyExercisePolicy < AdminOrAuthorPolicy
   def author?
     @user == @record.author
   end
@@ -12,11 +12,11 @@ class ExercisePolicy < AdminOrAuthorPolicy
     @user.internal_user?
   end
 
-  [:clone?, :destroy?, :edit?, :statistics?, :update?].each do |action|
+  [:clone?, :destroy?, :edit?, :update?].each do |action|
     define_method(action) { admin? || author?}
   end
 
-  [:implement?, :working_times?, :submit?, :reload?].each do |action|
+  [:reload?].each do |action|
     define_method(action) { everyone }
   end
 

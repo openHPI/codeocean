@@ -1,0 +1,24 @@
+= form_for(@proxy_exercise, multipart: true) do |f|
+  = render('shared/form_errors', object: @proxy_exercise)
+  .form-group
+    = f.label(:title)
+    = f.text_field(:title, class: 'form-control', required: true)
+  .form-group
+    = f.label(:description)
+    = f.pagedown_editor :description
+
+  h3 Exercises
+  .table-responsive
+    table.table
+      thead
+        tr
+          th = t('activerecord.attributes.exercise.selection')
+          th = sort_link(@search, :title, t('activerecord.attributes.submission.exercise'))
+          th = sort_link(@search, :created_at, t('shared.created_at'))
+      = collection_check_boxes :proxy_exercise, :exercise_ids, @exercises, :id, :title do |b|
+        tr
+          td = b.check_box
+          td = link_to(b.object, b.object)
+          td = l(b.object.created_at, format: :short)
+
+  .actions = render('shared/submit_button', f: f, object: @proxy_exercise)

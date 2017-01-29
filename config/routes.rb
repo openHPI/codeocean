@@ -60,7 +60,24 @@ Rails.application.routes.draw do
     member do
       post :clone
       get :implement
+      get :working_times
       get :statistics
+      get :reload
+      post :submit
+    end
+  end
+
+  resources :proxy_exercises do
+    member do
+      post :clone
+      get :reload
+      post :submit
+    end
+  end
+
+  resources :tags do
+    member do
+      post :clone
       get :reload
       post :submit
     end
