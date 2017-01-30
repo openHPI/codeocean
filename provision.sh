@@ -13,7 +13,7 @@ add-apt-repository ppa:chris-lea/node.js
 apt-get update
 
 # code_ocean
-apt-get install -y postgresql-client postgresql-9.3 postgresql-server-dev-9.3 vagrant maven jruby
+apt-get install -y postgresql-client postgresql-9.5 postgresql-server-dev-9.5 vagrant
 
 # Docker
 if [ ! -f /etc/default/docker ]
@@ -58,7 +58,7 @@ apt-get -y install nodejs
 gem install rails -v 4.2.1
 
 # drop postgres access control
-if  ! grep -q code_ocean /etc/postgresql/9.3/main/pg_hba.conf
+if  ! grep -q code_ocean /etc/postgresql/9.5/main/pg_hba.conf
 then
   cat >/etc/postgresql/9.3/main/pg_hba.conf <<EOF
 # code_ocean: drop access control
