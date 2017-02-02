@@ -120,7 +120,7 @@ CodeOceanEditorSubmissions = {
     event.preventDefault();
     if ($('#render').is(':visible')) {
       this.createSubmission('#render', null, function (response) {
-        var url = response.render_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
+        var url = response.render_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
         var pop_up_window = window.open(url);
         if (pop_up_window) {
           pop_up_window.onerror = function (message) {
@@ -149,7 +149,7 @@ CodeOceanEditorSubmissions = {
           this.showSpinner($('#run'));
           $('#score_div').addClass('hidden');
           this.toggleButtonStates();
-          var url = response.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
+          var url = response.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
           this.initializeSocketForRunning(url);
         }.bind(this));
       }
@@ -170,7 +170,7 @@ CodeOceanEditorSubmissions = {
       this.createSubmission('#test', null, function(response) {
         this.showSpinner($('#test'));
         $('#score_div').addClass('hidden');
-        var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename);
+        var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filenamereplace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
         this.initializeSocketForTesting(url);
       }.bind(this));
     }
