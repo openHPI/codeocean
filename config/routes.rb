@@ -3,7 +3,7 @@ FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 Rails.application.routes.draw do
   resources :file_templates do
     collection do
-      get 'by_file_type/:file_type_id', as: :by_file_type, to: :by_file_type
+      get 'by_file_type/:file_type_id', as: :by_file_type, action: :by_file_type
     end
   end
   resources :code_harbor_links
@@ -42,7 +42,7 @@ Rails.application.routes.draw do
   resources :execution_environments do
     member do
       get :shell
-      post 'shell', as: :execute_command, to: :execute_command
+      post 'shell', as: :execute_command, action: :execute_command
       get :statistics
     end
 
@@ -94,15 +94,17 @@ Rails.application.routes.draw do
 
   resources :submissions, only: [:create, :index, :show] do
     member do
-      get 'download', as: :download, to: :download
-      get 'download/:filename', as: :download_file, constraints: {filename: FILENAME_REGEXP}, to: :download_file
-      get 'render/:filename', as: :render, constraints: {filename: FILENAME_REGEXP}, to: :render_file
-      get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, to: :run
+      get 'download', as: :download, action: :download
+      get 'download/:filename', as: :download_file, constraints: {filename: FILENAME_REGEXP}, action: :download_file
+      get 'render/:filename', as: :render, constraints: {filename: FILENAME_REGEXP}, action: :render_file
+      get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, action: :run
       get :score
       get :statistics
       post :stop
-      get 'test/:filename', as: :test, constraints: {filename: FILENAME_REGEXP}, to: :test
+      get 'test/:filename', as: :test, constraints: {filename: FILENAME_REGEXP}, action: :test
     end
   end
+
+  post "/evaluate", to: 'remote_evaluation#evaluate', via: [:post]
 
 end

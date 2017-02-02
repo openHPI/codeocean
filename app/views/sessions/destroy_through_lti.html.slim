@@ -3,6 +3,7 @@ h1 = t('.headline')
 p
   == t(".success_#{params[:outcome] ? 'with' : 'without'}_outcome", consumer: @consumer)
   ==< t(".finished_#{@consumer ? 'with' : 'without'}_consumer", consumer: @consumer, url: params[:url])
+  ==< t(".do_not_use_backbutton", consumer: @consumer)
 
 h2 = t('shared.statistics')
 

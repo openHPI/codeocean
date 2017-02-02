@@ -32,7 +32,7 @@ FactoryGirl.define do
   factory :java, class: ExecutionEnvironment do
     created_by_teacher
     default_memory_limit
-    docker_image 'hklement/ubuntu-java:latest'
+    docker_image 'openhpi/co_execenv_java:latest'
     association :file_type, factory: :dot_java
     help
     name 'Java 8'
@@ -78,7 +78,7 @@ FactoryGirl.define do
   factory :python, class: ExecutionEnvironment do
     created_by_teacher
     default_memory_limit
-    docker_image 'hklement/ubuntu-python:latest'
+    docker_image 'openhpi/co_execenv_python:latest'
     association :file_type, factory: :dot_py
     help
     name 'Python 3.4'

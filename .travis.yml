@@ -6,6 +6,7 @@ services:
 addons:
   code_climate:
     repo_token: 53a2c2608c848714e96f6a1fc0365dcfdfec051f7827d50cea965ea625f49734
+  postgresql: "9.5"
 
 before_install:
   - export DISPLAY=:99.0

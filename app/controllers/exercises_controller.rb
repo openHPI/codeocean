@@ -157,7 +157,14 @@ class ExercisesController < ApplicationController
   end
 
   def redirect_to_lti_return_path
-    path = lti_return_path(consumer_id: session[:consumer_id], submission_id: @submission.id, url: consumer_return_url(build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]), parameters: session[:lti_parameters])))
+    lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
+                                       external_users_id: @submission.user_id,
+                                       exercises_id: @submission.exercise_id).first
+
+    path = lti_return_path(consumer_id: session[:consumer_id],
+                           submission_id: @submission.id,
+                           url: consumer_return_url(build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]),
+                                                                        parameters: lti_parameter.lti_parameters)))
     respond_to do |format|
       format.html { redirect_to(path) }
       format.json { render(json: {redirect: path}) }
@@ -221,7 +228,8 @@ class ExercisesController < ApplicationController
   def submit
     @submission = Submission.create(submission_params)
     score_submission(@submission)
-    if lti_outcome_service?
+    current_user = ExternalUser.find(@submission.user_id)
+    if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id, current_user.consumer_id)
       transmit_lti_score
     else
       redirect_after_submit
@@ -230,7 +238,8 @@ class ExercisesController < ApplicationController
 
   def transmit_lti_score
     ::NewRelic::Agent.add_custom_parameters({ submission: @submission.id, normalized_score: @submission.normalized_score })
-    response = send_score(@submission.normalized_score)
+    response = send_score(@submission.exercise_id, @submission.normalized_score, @submission.user_id)
+
     if response[:status] == 'success'
       redirect_after_submit
     else
