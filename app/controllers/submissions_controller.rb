@@ -57,12 +57,29 @@ class SubmissionsController < ApplicationController
     # files = @submission.files.map{ }
     # zipline( files, 'submission.zip')
     # send_data(@file.content, filename: @file.name_with_extension)
+
+    id_file = create_remote_evaluation_mapping
+
     require 'zip'
     stringio = Zip::OutputStream.write_buffer do |zio|
       @files.each do |file|
-        zio.put_next_entry(file.name_with_extension)
+        zio.put_next_entry(file.path.to_s == '' ? file.name_with_extension : File.join(file.path, file.name_with_extension))
         zio.write(file.content)
       end
+
+      # zip .co file
+      zio.put_next_entry(File.basename id_file)
+      zio.write(File.read id_file)
+      File.delete(id_file) if File.exist?(id_file)
+
+      # zip client scripts
+      scripts_path = 'app/assets/remote_scripts'
+      Dir.foreach(scripts_path) do |file|
+        next if file == '.' or file == '..'
+        zio.put_next_entry(File.join('.scripts', File.basename(file)))
+        zio.write(File.read File.join(scripts_path, file))
+      end
+
     end
     send_data(stringio.string, filename: @submission.exercise.title.tr(" ", "_") + ".zip")
   end
@@ -316,4 +333,23 @@ class SubmissionsController < ApplicationController
     server_sent_event.close
   end
   private :with_server_sent_events
+
+  def create_remote_evaluation_mapping
+    user_id = @submission.user_id
+    exercise_id = @submission.exercise_id
+
+    remote_evaluation_mapping = RemoteEvaluationMapping.create(:user_id => user_id, :exercise_id => exercise_id)
+
+    # create id.co file
+    path = "tmp/.co"
+    content = "#{remote_evaluation_mapping.validation_token}\n"
+    @submission.files.each do |file|
+      file_path = file.path.to_s == '' ? file.name_with_extension : File.join(file.path, file.name_with_extension)
+      content += "#{file_path}=#{file.id.to_s}\n"
+    end
+    File.open(path, "w+") do |f|
+      f.write(content)
+    end
+    path
+  end
 end
