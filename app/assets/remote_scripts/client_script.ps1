@@ -85,4 +85,4 @@ for ($i = 2; $i -lt $file_array.length; $i++){
 
 $post_data = "{`"remote_evaluation`": {`"validation_token`": `"$validation_token`",`"files_attributes`": [$files_attributes]}}"
 
-post_web_request 'application/json' $post_data 'http://192.168.59.104:3000/evaluate'
+post_web_request 'application/json' $post_data 'http://codeocean.openhpi.de/evaluate'

@@ -39,10 +39,9 @@ SET default_with_oids = false;
 
 CREATE TABLE code_harbor_links (
     id integer NOT NULL,
-    oauth2token character varying(255),
+    oauth2token character varying,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    user_id integer
+    updated_at timestamp without time zone
 );
 
 
@@ -73,7 +72,7 @@ CREATE TABLE comments (
     id integer NOT NULL,
     user_id integer,
     file_id integer,
-    user_type character varying(255),
+    user_type character varying,
     "row" integer,
     "column" integer,
     text text,
@@ -107,11 +106,11 @@ ALTER SEQUENCE comments_id_seq OWNED BY comments.id;
 
 CREATE TABLE consumers (
     id integer NOT NULL,
-    name character varying(255),
+    name character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    oauth_key character varying(255),
-    oauth_secret character varying(255)
+    oauth_key character varying,
+    oauth_secret character varying
 );
 
 
@@ -173,18 +172,18 @@ ALTER SEQUENCE errors_id_seq OWNED BY errors.id;
 
 CREATE TABLE execution_environments (
     id integer NOT NULL,
-    docker_image character varying(255),
-    name character varying(255),
+    docker_image character varying,
+    name character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    run_command character varying(255),
-    test_command character varying(255),
-    testing_framework character varying(255),
+    run_command character varying,
+    test_command character varying,
+    testing_framework character varying,
     help text,
-    exposed_ports character varying(255),
+    exposed_ports character varying,
     permitted_execution_time integer,
     user_id integer,
-    user_type character varying(255),
+    user_type character varying,
     pool_size integer,
     file_type_id integer,
     memory_limit integer,
@@ -219,14 +218,14 @@ CREATE TABLE exercises (
     id integer NOT NULL,
     description text,
     execution_environment_id integer,
-    title character varying(255),
+    title character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     user_id integer,
     instructions text,
     public boolean,
-    user_type character varying(255),
-    token character varying(255),
+    user_type character varying,
+    token character varying,
     hide_file_tree boolean,
     allow_file_creation boolean,
     allow_auto_completion boolean DEFAULT false
@@ -259,9 +258,9 @@ ALTER SEQUENCE exercises_id_seq OWNED BY exercises.id;
 CREATE TABLE external_users (
     id integer NOT NULL,
     consumer_id integer,
-    email character varying(255),
-    external_id character varying(255),
-    name character varying(255),
+    email character varying,
+    external_id character varying,
+    name character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -292,7 +291,7 @@ ALTER SEQUENCE external_users_id_seq OWNED BY external_users.id;
 
 CREATE TABLE file_templates (
     id integer NOT NULL,
-    name character varying(255),
+    name character varying,
     content text,
     file_type_id integer,
     created_at timestamp without time zone,
@@ -325,16 +324,16 @@ ALTER SEQUENCE file_templates_id_seq OWNED BY file_templates.id;
 
 CREATE TABLE file_types (
     id integer NOT NULL,
-    editor_mode character varying(255),
-    file_extension character varying(255),
+    editor_mode character varying,
+    file_extension character varying,
     indent_size integer,
-    name character varying(255),
+    name character varying,
     user_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     executable boolean,
     renderable boolean,
-    user_type character varying(255),
+    user_type character varying,
     "binary" boolean
 );
 
@@ -366,20 +365,20 @@ CREATE TABLE files (
     id integer NOT NULL,
     content text,
     context_id integer,
-    context_type character varying(255),
+    context_type character varying,
     file_id integer,
     file_type_id integer,
     hidden boolean,
-    name character varying(255),
+    name character varying,
     read_only boolean,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    native_file character varying(255),
-    role character varying(255),
-    hashed_content character varying(255),
-    feedback_message character varying(255),
+    native_file character varying,
+    role character varying,
+    hashed_content character varying,
+    feedback_message character varying,
     weight double precision,
-    path character varying(255),
+    path character varying,
     file_template_id integer
 );
 
@@ -410,10 +409,10 @@ ALTER SEQUENCE files_id_seq OWNED BY files.id;
 CREATE TABLE hints (
     id integer NOT NULL,
     execution_environment_id integer,
-    locale character varying(255),
+    locale character varying,
     message text,
-    name character varying(255),
-    regular_expression character varying(255),
+    name character varying,
+    regular_expression character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -445,23 +444,23 @@ ALTER SEQUENCE hints_id_seq OWNED BY hints.id;
 CREATE TABLE internal_users (
     id integer NOT NULL,
     consumer_id integer,
-    email character varying(255),
-    name character varying(255),
-    role character varying(255),
+    email character varying,
+    name character varying,
+    role character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    crypted_password character varying(255),
-    salt character varying(255),
+    crypted_password character varying,
+    salt character varying,
     failed_logins_count integer DEFAULT 0,
     lock_expires_at timestamp without time zone,
-    unlock_token character varying(255),
-    remember_me_token character varying(255),
+    unlock_token character varying,
+    remember_me_token character varying,
     remember_me_token_expires_at timestamp without time zone,
-    reset_password_token character varying(255),
+    reset_password_token character varying,
     reset_password_token_expires_at timestamp without time zone,
     reset_password_email_sent_at timestamp without time zone,
-    activation_state character varying(255),
-    activation_token character varying(255),
+    activation_state character varying,
+    activation_token character varying,
     activation_token_expires_at timestamp without time zone
 );
 
@@ -520,6 +519,39 @@ ALTER SEQUENCE lti_parameters_id_seq OWNED BY lti_parameters.id;
 
 
 --
+-- Name: remote_evaluation_mappings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE remote_evaluation_mappings (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    exercise_id integer NOT NULL,
+    validation_token character varying NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: remote_evaluation_mappings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE remote_evaluation_mappings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: remote_evaluation_mappings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE remote_evaluation_mappings_id_seq OWNED BY remote_evaluation_mappings.id;
+
+
+--
 -- Name: request_for_comments; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -530,7 +562,7 @@ CREATE TABLE request_for_comments (
     file_id integer NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    user_type character varying(255),
+    user_type character varying,
     question text,
     solved boolean,
     submission_id integer
@@ -561,7 +593,7 @@ ALTER SEQUENCE request_for_comments_id_seq OWNED BY request_for_comments.id;
 --
 
 CREATE TABLE schema_migrations (
-    version character varying(255) NOT NULL
+    version character varying NOT NULL
 );
 
 
@@ -576,8 +608,8 @@ CREATE TABLE submissions (
     user_id integer,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    cause character varying(255),
-    user_type character varying(255)
+    cause character varying,
+    user_type character varying
 );
 
 
@@ -729,6 +761,13 @@ ALTER TABLE ONLY lti_parameters ALTER COLUMN id SET DEFAULT nextval('lti_paramet
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY remote_evaluation_mappings ALTER COLUMN id SET DEFAULT nextval('remote_evaluation_mappings_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY request_for_comments ALTER COLUMN id SET DEFAULT nextval('request_for_comments_id_seq'::regclass);
 
 
@@ -851,6 +890,14 @@ ALTER TABLE ONLY lti_parameters
 
 
 --
+-- Name: remote_evaluation_mappings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY remote_evaluation_mappings
+    ADD CONSTRAINT remote_evaluation_mappings_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: request_for_comments_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -872,13 +919,6 @@ ALTER TABLE ONLY submissions
 
 ALTER TABLE ONLY testruns
     ADD CONSTRAINT testruns_pkey PRIMARY KEY (id);
-
-
---
--- Name: index_code_harbor_links_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_code_harbor_links_on_user_id ON code_harbor_links USING btree (user_id);
 
 
 --
@@ -1119,4 +1159,6 @@ INSERT INTO schema_migrations (version) VALUES ('20160704143402');
 INSERT INTO schema_migrations (version) VALUES ('20160907123009');
 
 INSERT INTO schema_migrations (version) VALUES ('20170112151637');
+
+INSERT INTO schema_migrations (version) VALUES ('20170202161833');
 

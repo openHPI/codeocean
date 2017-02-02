@@ -7,6 +7,7 @@
 
 
 project_root="${1%/}"
+declare -a file_array
 
 function get_valid_file_path {
     file_path="$project_root/$1"
@@ -16,7 +17,7 @@ function get_valid_file_path {
         file_name="${1##*/}"
         valid_file_path="$(find "$project_root" -name "$file_name" | head -1)"
         if ! [ "$valid_file_path" ]; then
-            path_to_file="$(echo "$1" | grep -oP '^.+/')"
+            path_to_file="$(echo "$1" | pcregrep -o '^.+/')"
             echo "Error: $file_name is not in $project_root/$path_to_file and could not be found under $project_root."
             exit 1
         fi
@@ -40,9 +41,17 @@ function get_file_attributes {
     echo "{\"file_id\": $file_id,\"content\": \"$escaped_file_content\"}"
 }
 
+function read_file_to_array {
+    let i=0
+    while IFS=$'\n' read -r line_data; do
+        file_array[i]="${line_data}"
+        ((++i))
+    done < $1
+}
+
 
 co_file_path="$(get_valid_file_path '.co')"
-mapfile -t file_array < "$co_file_path"
+read_file_to_array $co_file_path
 
 validation_token="${file_array[0]}"
 
@@ -54,5 +63,6 @@ done
 
 post_data="{\"remote_evaluation\": {\"validation_token\": \"$validation_token\",\"files_attributes\": [$files_attributes]}}"
 
+#echo ${post_data}
 curl -H 'Content-Type: application/json' --data "$post_data" http://codeocean.openhpi.de/evaluate
 echo
