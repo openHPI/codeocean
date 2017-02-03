@@ -1,6 +1,6 @@
 # run like this: powershell.exe -noprofile -executionpolicy bypass -file path\to\client_script.ps1 path\to\project_root
 
-# CodeOcean Remote Client v0.4
+# CodeOcean Remote Client v0.5
 
 #file_info format: <path/to/file/><file_name>=<id> (src/frog.java=34)
 #file_path format: <path/to/file/><file_name>
@@ -76,13 +76,15 @@ $file_array = get-content $co_file.fullname
 
 $validation_token = $file_array[0]
 
-$files_attributes = get_file_attributes $file_array[1]
+$target_url = $file_array[1]
 
-for ($i = 2; $i -lt $file_array.length; $i++){
+$files_attributes = get_file_attributes $file_array[2]
+
+for ($i = 3; $i -lt $file_array.length; $i++){
     $files_attributes += ', '
     $files_attributes += get_file_attributes $file_array[$i]
 }
 
 $post_data = "{`"remote_evaluation`": {`"validation_token`": `"$validation_token`",`"files_attributes`": [$files_attributes]}}"
 
-post_web_request 'application/json' $post_data 'http://codeocean.openhpi.de/evaluate'
+post_web_request 'application/json' $post_data $target_url

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CodeOcean Remote Client v0.4
+# CodeOcean Remote Client v0.5
 
 #file_info format: <path/to/file/><file_name>=<id> (src/frog.java=34)
 #file_path format: <path/to/file/><file_name>
@@ -55,14 +55,15 @@ read_file_to_array $co_file_path
 
 validation_token="${file_array[0]}"
 
-files_attributes="$(get_file_attributes "${file_array[1]}")"
+target_url="${file_array[1]}"
 
-for ((i = 2; i < ${#file_array[@]}; i++)); do
+files_attributes="$(get_file_attributes "${file_array[2]}")"
+
+for ((i = 3; i < ${#file_array[@]}; i++)); do
     files_attributes+=", $(get_file_attributes "${file_array[i]}")"
 done
 
 post_data="{\"remote_evaluation\": {\"validation_token\": \"$validation_token\",\"files_attributes\": [$files_attributes]}}"
 
-#echo ${post_data}
-curl -H 'Content-Type: application/json' --data "$post_data" http://codeocean.openhpi.de/evaluate
+curl -H 'Content-Type: application/json' --data "$post_data" "$target_url"
 echo
