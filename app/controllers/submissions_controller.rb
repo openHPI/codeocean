@@ -342,7 +342,10 @@ class SubmissionsController < ApplicationController
 
     # create id.co file
     path = "tmp/.co"
+    # parse validation token
     content = "#{remote_evaluation_mapping.validation_token}\n"
+    # parse remote request url
+    content += "#{request.base_url}/evaluate\n"
     @submission.files.each do |file|
       file_path = file.path.to_s == '' ? file.name_with_extension : File.join(file.path, file.name_with_extension)
       content += "#{file_path}=#{file.id.to_s}\n"
