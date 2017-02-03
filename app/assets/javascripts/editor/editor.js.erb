@@ -167,6 +167,13 @@ configureEditors: function () {
     $('button i.fa-spin').hide();
   },
 
+
+  resizeAceEditors: function (){
+    $('.editor').each(function (index, element) {
+      this.resizeParentOfAceEditor(element);
+    }.bind(this));
+  },
+
   resizeParentOfAceEditor: function (element){
     // calculate needed size: window height - position of top of button-bar - 60 for bar itself and margins
     var windowHeight = window.innerHeight - $('#editor-buttons').offset().top - 60;
@@ -559,6 +566,9 @@ configureEditors: function () {
     $('#description-panel').toggleClass('description-panel');
     $('#description-symbol').toggleClass('fa-chevron-down');
     $('#description-symbol').toggleClass('fa-chevron-right');
+    // resize ace editors
+    this.resizeAceEditors();
+
   },
 
 
