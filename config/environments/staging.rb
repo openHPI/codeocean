@@ -99,6 +99,5 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Run on subfolder in production environment.
-  config.relative_url_root = '/co-staging'
-
+  # config.relative_url_root = '/co-staging'
 end
