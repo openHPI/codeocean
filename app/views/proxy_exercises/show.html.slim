@@ -1,0 +1,24 @@
+- content_for :head do
+  = javascript_include_tag('http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js')
+  = stylesheet_link_tag('http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css')
+
+h1
+  = @proxy_exercise.title
+  - if policy(@proxy_exercise).edit?
+    = render('shared/edit_button', object: @proxy_exercise)
+
+= row(label: 'exercise.title', value: @proxy_exercise.title)
+= row(label: 'proxy_exercise.files_count', value: @exercises.count)
+= row(label: 'proxy_exercise.token', value: @proxy_exercise.token)
+= row(label: 'exercise.description', value: @proxy_exercise.description)
+h3 Exercises
+.table-responsive
+  table.table
+    thead
+      tr
+        th = sort_link(@search, :title, t('activerecord.attributes.submission.exercise'))
+        th = sort_link(@search, :created_at, t('shared.created_at'))
+    - @proxy_exercise.exercises.each do |exercise|
+      tr
+        td = link_to(exercise.title, exercise)
+        td = l(exercise.created_at, format: :short)

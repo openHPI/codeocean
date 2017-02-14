@@ -1,0 +1,6 @@
+h1
+  = @tag.name
+  = render('shared/edit_button', object: @tag)
+
+= row(label: 'tag.name', value: @tag.name)
+= row(label: 'tag.usage', value: @tag.exercises.count)
