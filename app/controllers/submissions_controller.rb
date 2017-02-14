@@ -173,7 +173,7 @@ class SubmissionsController < ApplicationController
 
   def handle_message(message, tubesock, container)
     # Handle special commands first
-    if (/^exit/.match(message))
+    if (/^#exit/.match(message))
       kill_socket(tubesock)
       @docker_client.exit_container(container)
     else
