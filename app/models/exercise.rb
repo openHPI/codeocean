@@ -75,6 +75,30 @@ class Exercise < ActiveRecord::Base
     """
   end
 
+  def getQuantiles(quantiles)
+    quantiles_str = "[" + quantiles.join(",") + "]"
+    result = self.class.connection.execute("""
+      SELECT unnest(PERCENTILE_CONT(ARRAY#{quantiles_str}) WITHIN GROUP (ORDER BY working_time))
+      FROM
+          (
+            SELECT user_id,
+                   sum(working_time_new) AS working_time
+            FROM
+              (SELECT user_id,
+                      CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
+               FROM
+                  (SELECT user_id,
+                          id,
+                          (created_at - lag(created_at) OVER (PARTITION BY user_id
+                                                              ORDER BY created_at)) AS working_time
+                  FROM submissions
+                  WHERE exercise_id=69) AS foo) AS bar
+            GROUP BY user_id
+      ) AS foo
+    """)
+    quantiles.each_with_index.map{|q,i| [q, Time.parse(result[i]["unnest"]).seconds_since_midnight]}.to_h
+  end
+
   def retrieve_working_time_statistics
     @working_time_statistics = {}
     self.class.connection.execute(user_working_time_query).each do |tuple|

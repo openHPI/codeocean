@@ -54,11 +54,24 @@ class ProxyExercise < ActiveRecord::Base
       ]
     end
 
+    def scoring_matrix_quantiles
+      [0.2,0.4,0.6,0.8]
+    end
+
     def score(user, ex)
       points_ratio =  ex.maximum_score(user) / ex.maximum_score.to_f
+      points_ratio_index = points_ratio.to_i
       working_time_user = Time.parse(ex.average_working_time_for_only(user.id) || "00:00:00")
       scoring_matrix = scoring_matrix
-
+      quantiles_working_time = ex.getQuantiles(scoring_matrix_quantiles)
+      quantile_index = quantile_time.size
+      quantiles_working_time.each_with_index do |quantile_time, i|
+        if working_time_user <= quantile_time
+          quantile_index = i
+          break
+        end
+      end
+      scoring_matrix[points_ratio_index][quantile_index]
     end
 
     def getRelativeKnowledgeLoss(user, execises)
@@ -66,11 +79,11 @@ class ProxyExercise < ActiveRecord::Base
       topic_knowledge_loss_user = Tag.all.map{|t| [t, 0]}.to_h
       topic_knowledge_max = Tag.all.map{|t| [t, 0]}.to_h
       execises.each do |ex|
-        score = score(user, ex)
+        user_score_factor = score(user, ex)
         ex.tags.each do |t|
           tag_ratio = ex.exercise_tags.where(tag: t).factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
           topic_knowledge = ex.expected_difficulty * tag_ratio
-          topic_knowledge_loss_user[t] += (1-score) * topic_knowledge
+          topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge
           topic_knowledge_max[t] += topic_knowledge
         end
       end
