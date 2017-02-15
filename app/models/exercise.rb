@@ -107,7 +107,7 @@ class Exercise < ActiveRecord::Base
                     (created_at - lag(created_at) over (PARTITION BY user_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
-            WHERE exercise_id=#{id} and user_id=#{user_id}) AS foo) AS bar
+            WHERE exercise_id=#{id} and user_id=#{user_id} and user_type='ExternalUser') AS foo) AS bar
     """).first["working_time"]
   end
 
@@ -172,8 +172,12 @@ class Exercise < ActiveRecord::Base
   end
   private :generate_token
 
-  def maximum_score
-    files.teacher_defined_tests.sum(:weight)
+  def maximum_score(*user)
+    if user
+      submissions.where(user: user, cause: "assess").where("score IS NOT NULL").order("score DESC").first.score || 0 rescue 0
+    else
+      files.teacher_defined_tests.sum(:weight)
+    end
   end
 
   def set_default_values

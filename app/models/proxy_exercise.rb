@@ -43,8 +43,22 @@ class ProxyExercise < ActiveRecord::Base
       exercises.shuffle.first
     end
 
+    # [score][quantile]
+    def scoring_matrix
+      [
+          [0  ,0  ,0  ,0  ,0  ],
+          [0.2,0.2,0.2,0.2,0.1],
+          [0.5,0.5,0.4,0.4,0.3],
+          [0.6,0.6,0.5,0.5,0.4],
+          [1  ,1  ,0.9,0.8,0.7],
+      ]
+    end
+
     def score(user, ex)
-      1
+      points_ratio =  ex.maximum_score(user) / ex.maximum_score.to_f
+      working_time_user = Time.parse(ex.average_working_time_for_only(user.id) || "00:00:00")
+      scoring_matrix = scoring_matrix
+
     end
 
     def getRelativeKnowledgeLoss(user, execises)
