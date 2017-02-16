@@ -96,7 +96,7 @@ class Exercise < ActiveRecord::Base
             GROUP BY user_id
       ) AS foo
     """)
-    quantiles.each_with_index.map{|q,i| [q, Time.parse(result[i]["unnest"]).seconds_since_midnight]}.to_h
+    quantiles.each_with_index.map{|q,i| Time.parse(result[i]["unnest"]).seconds_since_midnight}
   end
 
   def retrieve_working_time_statistics
@@ -196,7 +196,7 @@ class Exercise < ActiveRecord::Base
   end
   private :generate_token
 
-  def maximum_score(*user)
+  def maximum_score(user = nil)
     if user
       submissions.where(user: user, cause: "assess").where("score IS NOT NULL").order("score DESC").first.score || 0 rescue 0
     else
