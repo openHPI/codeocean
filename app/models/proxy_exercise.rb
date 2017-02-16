@@ -60,35 +60,44 @@ class ProxyExercise < ActiveRecord::Base
 
     def score(user, ex)
       points_ratio =  ex.maximum_score(user) / ex.maximum_score.to_f
-      points_ratio_index = points_ratio.to_i
-      working_time_user = Time.parse(ex.average_working_time_for_only(user.id) || "00:00:00")
-      scoring_matrix = scoring_matrix
+      if points_ratio == 0.0
+        Rails.logger.debug("scoring user #{user.id} for exercise #{ex.id}: points_ratio=#{points_ratio} score: 0" )
+        return 0.0
+      end
+      points_ratio_index = ((scoring_matrix.size - 1)  * points_ratio).to_i
+      working_time_user = Time.parse(ex.average_working_time_for_only(user.id) || "00:00:00").seconds_since_midnight
       quantiles_working_time = ex.getQuantiles(scoring_matrix_quantiles)
-      quantile_index = quantile_time.size
+      quantile_index = quantiles_working_time.size
       quantiles_working_time.each_with_index do |quantile_time, i|
         if working_time_user <= quantile_time
           quantile_index = i
           break
         end
       end
+      Rails.logger.debug(
+          "scoring user #{user.id} exercise #{ex.id}: worktime #{working_time_user}, points: #{points_ratio}" \
+          "(index #{points_ratio_index}) quantiles #{quantiles_working_time} placed into quantile index #{quantile_index} " \
+          "score: #{scoring_matrix[points_ratio_index][quantile_index]}")
       scoring_matrix[points_ratio_index][quantile_index]
     end
 
     def getRelativeKnowledgeLoss(user, execises)
       # initialize knowledge for each tag with 0
-      topic_knowledge_loss_user = Tag.all.map{|t| [t, 0]}.to_h
-      topic_knowledge_max = Tag.all.map{|t| [t, 0]}.to_h
+      all_used_tags = execises.inject(Set.new){|tagset, ex| tagset.merge(ex.tags)}
+      topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
+      topic_knowledge_max = all_used_tags.map{|t| [t, 0]}.to_h
       execises.each do |ex|
         user_score_factor = score(user, ex)
         ex.tags.each do |t|
-          tag_ratio = ex.exercise_tags.where(tag: t).factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
+          tag_ratio = ex.exercise_tags.where(tag: t).first.factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
           topic_knowledge = ex.expected_difficulty * tag_ratio
           topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge
           topic_knowledge_max[t] += topic_knowledge
         end
       end
       relative_loss = {}
-      topic_knowledge_max.keys.each do |t|
+      puts all_used_tags.size
+      all_used_tags.each do |t|
         relative_loss[t] = topic_knowledge_loss_user[t] / topic_knowledge_max[t]
       end
       relative_loss
