@@ -81,12 +81,12 @@ class ProxyExercise < ActiveRecord::Base
       scoring_matrix[points_ratio_index][quantile_index]
     end
 
-    def getRelativeKnowledgeLoss(user, execises)
+    def getRelativeKnowledgeLoss(user, exercises)
       # initialize knowledge for each tag with 0
-      all_used_tags = execises.inject(Set.new){|tagset, ex| tagset.merge(ex.tags)}
+      all_used_tags = exercises.inject(Set.new){|tagset, ex| tagset.merge(ex.tags)}
       topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
       topic_knowledge_max = all_used_tags.map{|t| [t, 0]}.to_h
-      execises.each do |ex|
+      exercises.each do |ex|
         user_score_factor = score(user, ex)
         ex.tags.each do |t|
           tag_ratio = ex.exercise_tags.where(tag: t).first.factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
