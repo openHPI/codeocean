@@ -24,7 +24,7 @@ class ProxyExercise < ActiveRecord::Base
       title
     end
 
-    def selectMatchingExercise(user)
+    def getMatchingExercise(user)
       assigned_user_proxy_exercise = user_proxy_exercise_exercises.where(user: user).first
       recommendedExercise =
         if (assigned_user_proxy_exercise)
