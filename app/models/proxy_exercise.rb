@@ -90,13 +90,12 @@ class ProxyExercise < ActiveRecord::Base
         user_score_factor = score(user, ex)
         ex.tags.each do |t|
           tag_ratio = ex.exercise_tags.where(tag: t).first.factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
-          topic_knowledge = ex.expected_difficulty * tag_ratio
-          topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge
-          topic_knowledge_max[t] += topic_knowledge
+          topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
+          topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge_ratio
+          topic_knowledge_max[t] += topic_knowledge_ratio
         end
       end
       relative_loss = {}
-      puts all_used_tags.size
       all_used_tags.each do |t|
         relative_loss[t] = topic_knowledge_loss_user[t] / topic_knowledge_max[t]
       end
