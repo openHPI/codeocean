@@ -129,6 +129,12 @@ describe SessionsController do
         request
         expect(controller).to redirect_to(implement_exercise_path(exercise.id))
       end
+
+      it 'redirects to recommended exercise if requested token of proxy exercise' do
+        FactoryGirl.create(:proxy_exercise, exercises: [exercise])
+        post :create_through_lti, custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id
+        expect(controller).to redirect_to(implement_exercise_path(exercise.id))
+      end
     end
   end
 
