@@ -92,7 +92,7 @@ class Exercise < ActiveRecord::Base
                           (created_at - lag(created_at) OVER (PARTITION BY user_id
                                                               ORDER BY created_at)) AS working_time
                   FROM submissions
-                  WHERE exercise_id=69) AS foo) AS bar
+                  WHERE exercise_id=#{self.id}) AS foo) AS bar
             GROUP BY user_id
       ) AS foo
     """)
@@ -200,7 +200,8 @@ class Exercise < ActiveRecord::Base
     if user
       submissions.where(user: user, cause: "assess").where("score IS NOT NULL").order("score DESC").first.score || 0 rescue 0
     else
-      files.teacher_defined_tests.sum(:weight)
+      5
+      #files.teacher_defined_tests.sum(:weight)
     end
   end
 

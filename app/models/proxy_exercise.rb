@@ -40,7 +40,45 @@ class ProxyExercise < ActiveRecord::Base
     end
 
     def findMatchingExercise(user)
-      exercises.shuffle.first
+      #exercises.shuffle.first
+      exercisesUserHasAccessed = user.submissions.where(cause: :assess).map{|s| s.exercise}.uniq
+      tagsUserHasSeen = exercisesUserHasAccessed.map{|ex| ex.tags}.uniq.flatten
+      puts "exercisesUserHasAccessed #{exercisesUserHasAccessed}"
+
+
+      # find execises
+      potentialRecommendedExercises = []
+      exercises.each do |ex|
+        ## find exercises which have tags the user has already seen
+        if (ex.tags - tagsUserHasSeen).empty?
+          potentialRecommendedExercises << ex
+        end
+      end
+      puts "potentialRecommendedExercises: #{potentialRecommendedExercises}"
+      recommendedExercise = selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
+      recommendedExercise
+    end
+
+    def selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
+      topic_knowledge_user_and_max = getUserKnowledgeAndMaxKnowledge(user, exercisesUserHasAccessed)
+      puts "topic_knowledge_user_and_max: #{topic_knowledge_user_and_max}"
+      topic_knowledge_user = topic_knowledge_user_and_max[:user_topic_knowledge]
+      topic_knowledge_max = topic_knowledge_user_and_max[:max_topic_knowledge]
+      relative_knowledge_improvement = {}
+      potentialRecommendedExercises.each do |potex|
+        tags =  potex.tags
+        relative_knowledge_improvement[potex] = 0.0
+        tags.each do |tag|
+          tag_ratio = potex.exercise_tags.where(tag: tag).first.factor / potex.exercise_tags.inject(0){|sum, et| sum += et.factor }
+          max_topic_knowledge_ratio = potex.expected_difficulty * tag_ratio
+          old_relative_loss_tag = topic_knowledge_user[tag] / topic_knowledge_max[tag]
+          new_relative_loss_tag = topic_knowledge_user[tag] / (topic_knowledge_max[tag] + max_topic_knowledge_ratio)
+          relative_knowledge_improvement[potex] += new_relative_loss_tag - old_relative_loss_tag
+        end
+      end
+      puts "relative improvements #{relative_knowledge_improvement}"
+      exercise_with_greatest_improvements = relative_knowledge_improvement.max_by{|k,v| v}
+      exercise_with_greatest_improvements
     end
 
     # [score][quantile]
@@ -64,6 +102,8 @@ class ProxyExercise < ActiveRecord::Base
         Rails.logger.debug("scoring user #{user.id} for exercise #{ex.id}: points_ratio=#{points_ratio} score: 0" )
         return 0.0
       end
+      puts points_ratio
+      puts ex.maximum_score.to_f
       points_ratio_index = ((scoring_matrix.size - 1)  * points_ratio).to_i
       working_time_user = Time.parse(ex.average_working_time_for_only(user.id) || "00:00:00").seconds_since_midnight
       quantiles_working_time = ex.getQuantiles(scoring_matrix_quantiles)
@@ -90,9 +130,9 @@ class ProxyExercise < ActiveRecord::Base
         user_score_factor = score(user, ex)
         ex.tags.each do |t|
           tag_ratio = ex.exercise_tags.where(tag: t).first.factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
-          topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
-          topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge_ratio
-          topic_knowledge_max[t] += topic_knowledge_ratio
+          max_topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
+          topic_knowledge_loss_user[t] += (1 - user_score_factor) * max_topic_knowledge_ratio
+          topic_knowledge_max[t] += max_topic_knowledge_ratio
         end
       end
       relative_loss = {}
@@ -100,6 +140,23 @@ class ProxyExercise < ActiveRecord::Base
         relative_loss[t] = topic_knowledge_loss_user[t] / topic_knowledge_max[t]
       end
       relative_loss
+    end
+
+    def getUserKnowledgeAndMaxKnowledge(user, exercises)
+      # initialize knowledge for each tag with 0
+      all_used_tags = exercises.inject(Set.new){|tagset, ex| tagset.merge(ex.tags)}
+      topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
+      topic_knowledge_max = all_used_tags.map{|t| [t, 0]}.to_h
+      exercises.each do |ex|
+        user_score_factor = score(user, ex)
+        ex.tags.each do |t|
+          tag_ratio = ex.exercise_tags.where(tag: t).first.factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
+          topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
+          topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge_ratio
+          topic_knowledge_max[t] += topic_knowledge_ratio
+        end
+      end
+      {user_topic_knowledge: topic_knowledge_loss_user, max_topic_knowledge: topic_knowledge_max}
     end
 
 end
