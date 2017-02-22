@@ -62,23 +62,26 @@ class ProxyExercise < ActiveRecord::Base
     def selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
       topic_knowledge_user_and_max = getUserKnowledgeAndMaxKnowledge(user, exercisesUserHasAccessed)
       puts "topic_knowledge_user_and_max: #{topic_knowledge_user_and_max}"
+      puts "potentialRecommendedExercises: #{potentialRecommendedExercises.size}"
       topic_knowledge_user = topic_knowledge_user_and_max[:user_topic_knowledge]
       topic_knowledge_max = topic_knowledge_user_and_max[:max_topic_knowledge]
       relative_knowledge_improvement = {}
       potentialRecommendedExercises.each do |potex|
         tags =  potex.tags
         relative_knowledge_improvement[potex] = 0.0
+        puts "potex #{potex}"
         tags.each do |tag|
-          tag_ratio = potex.exercise_tags.where(tag: tag).first.factor / potex.exercise_tags.inject(0){|sum, et| sum += et.factor }
+          tag_ratio = potex.exercise_tags.where(tag: tag).first.factor.to_f / potex.exercise_tags.inject(0){|sum, et| sum += et.factor }.to_f
           max_topic_knowledge_ratio = potex.expected_difficulty * tag_ratio
           old_relative_loss_tag = topic_knowledge_user[tag] / topic_knowledge_max[tag]
           new_relative_loss_tag = topic_knowledge_user[tag] / (topic_knowledge_max[tag] + max_topic_knowledge_ratio)
-          relative_knowledge_improvement[potex] += new_relative_loss_tag - old_relative_loss_tag
+          puts "tag #{tag} old_relative_loss_tag #{old_relative_loss_tag}, new_relative_loss_tag #{new_relative_loss_tag}, max_topic_knowledge_ratio #{max_topic_knowledge_ratio} tag_ratio #{tag_ratio}"
+          relative_knowledge_improvement[potex] += old_relative_loss_tag - new_relative_loss_tag
         end
       end
       puts "relative improvements #{relative_knowledge_improvement}"
       exercise_with_greatest_improvements = relative_knowledge_improvement.max_by{|k,v| v}
-      exercise_with_greatest_improvements
+      exercise_with_greatest_improvements.first
     end
 
     # [score][quantile]
@@ -148,10 +151,14 @@ class ProxyExercise < ActiveRecord::Base
       topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
       topic_knowledge_max = all_used_tags.map{|t| [t, 0]}.to_h
       exercises.each do |ex|
+        puts "exercise: #{ex}"
         user_score_factor = score(user, ex)
         ex.tags.each do |t|
-          tag_ratio = ex.exercise_tags.where(tag: t).first.factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
+          tag_ratio = ex.exercise_tags.where(tag: t).first.factor.to_f / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }.to_f
+          puts "tag: #{t}, factor: #{ex.exercise_tags.where(tag: t).first.factor}, sumall: #{ex.exercise_tags.inject(0){|sum, et| sum += et.factor }}"
+          puts "tag_ratio #{tag_ratio}"
           topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
+          puts "topic_knowledge_ratio #{topic_knowledge_ratio}"
           topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge_ratio
           topic_knowledge_max[t] += topic_knowledge_ratio
         end
