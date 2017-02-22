@@ -28,7 +28,7 @@ module CodeOcean
     config.eager_load_paths << Rails.root.join('lib')
     config.assets.precompile += %w( markdown-buttons.png )
 
-    config.active_record.schema_format = :sql
+    #config.active_record.schema_format = :sql
 
     case (RUBY_ENGINE)
       when 'ruby'
