@@ -40,24 +40,23 @@ class ProxyExercise < ActiveRecord::Base
     end
 
     def findMatchingExercise(user)
-      #exercises.shuffle.first
-      # hier vielleicht nur betrachten wenn der user die aufgabe assessed oder submitted hat
       exercisesUserHasAccessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq
       tagsUserHasSeen = exercisesUserHasAccessed.map{|ex| ex.tags}.uniq.flatten
-      puts "exercisesUserHasAccessed #{exercisesUserHasAccessed}"
+      Rails.logger.info("exercisesUserHasAccessed #{exercisesUserHasAccessed.map{|e|e.id}.join(",")}")
 
       # find execises
       potentialRecommendedExercises = []
       exercises.each do |ex|
-        ## find exercises which have tags the user has already seen
+        ## find exercises which have only tags the user has already seen
         if (ex.tags - tagsUserHasSeen).empty?
           potentialRecommendedExercises << ex
         end
       end
+      Rails.logger.info("potentialRecommendedExercises: #{potentialRecommendedExercises.map{|e|e.id}}")
+      # if all exercises contain tags which the user has never seen, recommend easiest exercise
       if potentialRecommendedExercises.empty?
         getEasiestExercise(exercises)
       else
-        puts "potentialRecommendedExercises: #{potentialRecommendedExercises}"
         recommendedExercise = selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
         recommendedExercise
       end
@@ -66,26 +65,33 @@ class ProxyExercise < ActiveRecord::Base
     def selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
       topic_knowledge_user_and_max = getUserKnowledgeAndMaxKnowledge(user, exercisesUserHasAccessed)
       puts "topic_knowledge_user_and_max: #{topic_knowledge_user_and_max}"
-      puts "potentialRecommendedExercises: #{potentialRecommendedExercises.size}: #{potentialRecommendedExercises.map{|p| p.title}}"
+      puts "potentialRecommendedExercises: #{potentialRecommendedExercises.size}: #{potentialRecommendedExercises.map{|p| p.id}}"
       topic_knowledge_user = topic_knowledge_user_and_max[:user_topic_knowledge]
       topic_knowledge_max = topic_knowledge_user_and_max[:max_topic_knowledge]
+      current_users_knowledge_lack = {}
+      topic_knowledge_max.keys.each do |tag|
+        current_users_knowledge_lack[tag] = topic_knowledge_user[tag] /  topic_knowledge_max[tag]
+      end
+
       relative_knowledge_improvement = {}
       potentialRecommendedExercises.each do |potex|
         tags =  potex.tags
         relative_knowledge_improvement[potex] = 0.0
-        puts "potex #{potex}"
+        Rails.logger.info("review potential exercise #{potex.id}")
         tags.each do |tag|
           tag_ratio = potex.exercise_tags.where(tag: tag).first.factor.to_f / potex.exercise_tags.inject(0){|sum, et| sum += et.factor }.to_f
           max_topic_knowledge_ratio = potex.expected_difficulty * tag_ratio
           old_relative_loss_tag = topic_knowledge_user[tag] / topic_knowledge_max[tag]
           new_relative_loss_tag = topic_knowledge_user[tag] / (topic_knowledge_max[tag] + max_topic_knowledge_ratio)
-          puts "tag #{tag} old_relative_loss_tag #{old_relative_loss_tag}, new_relative_loss_tag #{new_relative_loss_tag}, max_topic_knowledge_ratio #{max_topic_knowledge_ratio} tag_ratio #{tag_ratio}"
+          puts "tag #{tag} old_relative_loss_tag #{old_relative_loss_tag}, new_relative_loss_tag #{new_relative_loss_tag}, min_loss_after_solving #{topic_knowledge_max[tag] + max_topic_knowledge_ratio} tag_ratio #{tag_ratio}"
           relative_knowledge_improvement[potex] += old_relative_loss_tag - new_relative_loss_tag
         end
       end
-      puts "relative improvements #{relative_knowledge_improvement}"
-      exercise_with_greatest_improvements = relative_knowledge_improvement.max_by{|k,v| v}.first
-      exercise_with_greatest_improvements
+
+      best_matching_exercise = relative_knowledge_improvement.max_by{|k,v| v}.first
+      Rails.logger.info(current_users_knowledge_lack.map{|k,v| "#{k} => #{v}"})
+      Rails.logger.info("relative improvements #{relative_knowledge_improvement.map{|k,v| k.id.to_s + ':' + v.to_s}}")
+      best_matching_exercise
     end
 
     # [score][quantile]
@@ -109,8 +115,6 @@ class ProxyExercise < ActiveRecord::Base
         Rails.logger.debug("scoring user #{user.id} for exercise #{ex.id}: points_ratio=#{points_ratio} score: 0" )
         return 0.0
       end
-      puts points_ratio
-      puts ex.maximum_score.to_f
       points_ratio_index = ((scoring_matrix.size - 1)  * points_ratio).to_i
       working_time_user = Time.parse(ex.average_working_time_for_only(user.id) || "00:00:00").seconds_since_midnight
       quantiles_working_time = ex.getQuantiles(scoring_matrix_quantiles)
@@ -155,14 +159,14 @@ class ProxyExercise < ActiveRecord::Base
       topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
       topic_knowledge_max = all_used_tags.map{|t| [t, 0]}.to_h
       exercises.each do |ex|
-        puts "exercise: #{ex}"
+        Rails.logger.info("exercise: #{ex.id}: #{ex}")
         user_score_factor = score(user, ex)
         ex.tags.each do |t|
           tag_ratio = ex.exercise_tags.where(tag: t).first.factor.to_f / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }.to_f
-          puts "tag: #{t}, factor: #{ex.exercise_tags.where(tag: t).first.factor}, sumall: #{ex.exercise_tags.inject(0){|sum, et| sum += et.factor }}"
-          puts "tag_ratio #{tag_ratio}"
+          Rails.logger.info("tag: #{t}, factor: #{ex.exercise_tags.where(tag: t).first.factor}, sumall: #{ex.exercise_tags.inject(0){|sum, et| sum += et.factor }}")
+          Rails.logger.info("tag_ratio #{tag_ratio}")
           topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
-          puts "topic_knowledge_ratio #{topic_knowledge_ratio}"
+          Rails.logger.info("topic_knowledge_ratio #{topic_knowledge_ratio}")
           topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge_ratio
           topic_knowledge_max[t] += topic_knowledge_ratio
         end
