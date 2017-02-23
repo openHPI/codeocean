@@ -1,7 +1,7 @@
 class AddTags < ActiveRecord::Migration
 
   def change
-    add_column :exercises, :expected_worktime_seconds, :integer, default: 0
+    add_column :exercises, :expected_worktime_seconds, :integer, default: 60
     add_column :exercises, :expected_difficulty, :integer, default: 1
 
     create_table :tags do |t|
@@ -12,7 +12,7 @@ class AddTags < ActiveRecord::Migration
     create_table :exercise_tags do |t|
       t.belongs_to :exercise
       t.belongs_to :tag
-      t.integer :factor, default: 0
+      t.integer :factor, default: 1
     end
   end
 
