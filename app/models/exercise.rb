@@ -198,10 +198,9 @@ class Exercise < ActiveRecord::Base
 
   def maximum_score(user = nil)
     if user
-      submissions.where(user: user, cause: "assess").where("score IS NOT NULL").order("score DESC").first.score || 0 rescue 0
+      submissions.where(user: user).where("cause IN ('submit','assess')").where("score IS NOT NULL").order("score DESC").first.score || 0 rescue 0
     else
-      5
-      #files.teacher_defined_tests.sum(:weight)
+      files.teacher_defined_tests.sum(:weight)
     end
   end
 

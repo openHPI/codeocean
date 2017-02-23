@@ -42,10 +42,9 @@ class ProxyExercise < ActiveRecord::Base
     def findMatchingExercise(user)
       #exercises.shuffle.first
       # hier vielleicht nur betrachten wenn der user die aufgabe assessed oder submitted hat
-      exercisesUserHasAccessed = user.submissions.map{|s| s.exercise}.uniq
+      exercisesUserHasAccessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq
       tagsUserHasSeen = exercisesUserHasAccessed.map{|ex| ex.tags}.uniq.flatten
       puts "exercisesUserHasAccessed #{exercisesUserHasAccessed}"
-
 
       # find execises
       potentialRecommendedExercises = []
