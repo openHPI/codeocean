@@ -41,7 +41,8 @@ class ProxyExercise < ActiveRecord::Base
 
     def findMatchingExercise(user)
       #exercises.shuffle.first
-      exercisesUserHasAccessed = user.submissions.where(cause: :assess).map{|s| s.exercise}.uniq
+      # hier vielleicht nur betrachten wenn der user die aufgabe assessed oder submitted hat
+      exercisesUserHasAccessed = user.submissions.map{|s| s.exercise}.uniq
       tagsUserHasSeen = exercisesUserHasAccessed.map{|ex| ex.tags}.uniq.flatten
       puts "exercisesUserHasAccessed #{exercisesUserHasAccessed}"
 
@@ -54,15 +55,19 @@ class ProxyExercise < ActiveRecord::Base
           potentialRecommendedExercises << ex
         end
       end
-      puts "potentialRecommendedExercises: #{potentialRecommendedExercises}"
-      recommendedExercise = selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
-      recommendedExercise
+      if potentialRecommendedExercises.empty?
+        getEasiestExercise(exercises)
+      else
+        puts "potentialRecommendedExercises: #{potentialRecommendedExercises}"
+        recommendedExercise = selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
+        recommendedExercise
+      end
     end
 
     def selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
       topic_knowledge_user_and_max = getUserKnowledgeAndMaxKnowledge(user, exercisesUserHasAccessed)
       puts "topic_knowledge_user_and_max: #{topic_knowledge_user_and_max}"
-      puts "potentialRecommendedExercises: #{potentialRecommendedExercises.size}"
+      puts "potentialRecommendedExercises: #{potentialRecommendedExercises.size}: #{potentialRecommendedExercises.map{|p| p.title}}"
       topic_knowledge_user = topic_knowledge_user_and_max[:user_topic_knowledge]
       topic_knowledge_max = topic_knowledge_user_and_max[:max_topic_knowledge]
       relative_knowledge_improvement = {}
@@ -80,8 +85,8 @@ class ProxyExercise < ActiveRecord::Base
         end
       end
       puts "relative improvements #{relative_knowledge_improvement}"
-      exercise_with_greatest_improvements = relative_knowledge_improvement.max_by{|k,v| v}
-      exercise_with_greatest_improvements.first
+      exercise_with_greatest_improvements = relative_knowledge_improvement.max_by{|k,v| v}.first
+      exercise_with_greatest_improvements
     end
 
     # [score][quantile]
@@ -164,6 +169,10 @@ class ProxyExercise < ActiveRecord::Base
         end
       end
       {user_topic_knowledge: topic_knowledge_loss_user, max_topic_knowledge: topic_knowledge_max}
+    end
+
+    def getEasiestExercise(exercises)
+      exercises.order(:expected_difficulty).first
     end
 
 end
