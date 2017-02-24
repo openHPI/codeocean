@@ -89,7 +89,7 @@ class ProxyExercise < ActiveRecord::Base
       end
 
       best_matching_exercise = relative_knowledge_improvement.max_by{|k,v| v}.first
-      Rails.logger.info(current_users_knowledge_lack.map{|k,v| "#{k} => #{v}"})
+      Rails.logger.info("current users knowledge loss: " + current_users_knowledge_lack.map{|k,v| "#{k} => #{v}"})
       Rails.logger.info("relative improvements #{relative_knowledge_improvement.map{|k,v| k.id.to_s + ':' + v.to_s}}")
       best_matching_exercise
     end
