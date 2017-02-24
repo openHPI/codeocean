@@ -67,7 +67,7 @@ class Exercise < ActiveRecord::Base
          FROM
             (SELECT user_id,
                     id,
-                    (created_at - lag(created_at) over (PARTITION BY user_id
+                    (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
             WHERE exercise_id=#{id}) AS foo) AS bar
@@ -89,10 +89,10 @@ class Exercise < ActiveRecord::Base
                FROM
                   (SELECT user_id,
                           id,
-                          (created_at - lag(created_at) OVER (PARTITION BY user_id
+                          (created_at - lag(created_at) OVER (PARTITION BY user_id, exercise_id
                                                               ORDER BY created_at)) AS working_time
                   FROM submissions
-                  WHERE exercise_id=#{self.id}) AS foo) AS bar
+                  WHERE exercise_id=#{self.id} AND user_type = 'ExternalUser') AS foo) AS bar
             GROUP BY user_id
       ) AS foo
     """)
@@ -128,7 +128,7 @@ class Exercise < ActiveRecord::Base
         (SELECT CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT id,
-                    (created_at - lag(created_at) over (PARTITION BY user_id
+                    (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
             WHERE exercise_id=#{id} and user_id=#{user_id} and user_type='ExternalUser') AS foo) AS bar
