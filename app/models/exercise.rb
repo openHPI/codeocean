@@ -75,7 +75,7 @@ class Exercise < ActiveRecord::Base
     """
   end
 
-  def getQuantiles(quantiles)
+  def get_quantiles(quantiles)
     quantiles_str = "[" + quantiles.join(",") + "]"
     result = self.class.connection.execute("""
       SELECT unnest(PERCENTILE_CONT(ARRAY#{quantiles_str}) WITHIN GROUP (ORDER BY working_time))

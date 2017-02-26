@@ -24,48 +24,48 @@ class ProxyExercise < ActiveRecord::Base
       title
     end
 
-    def getMatchingExercise(user)
+    def get_matching_exercise(user)
       assigned_user_proxy_exercise = user_proxy_exercise_exercises.where(user: user).first
-      recommendedExercise =
+      recommended_exercise =
         if (assigned_user_proxy_exercise)
           Rails.logger.info("retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}" )
           assigned_user_proxy_exercise.exercise
         else
           Rails.logger.info("find new matching exercise for user #{user.id}" )
-          matchingExercise = findMatchingExercise(user)
-          user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matchingExercise, proxy_exercise: self)
-          matchingExercise
+          matching_exercise = find_matching_exercise(user)
+          user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matching_exercise, proxy_exercise: self)
+          matching_exercise
         end
-      recommendedExercise
+      recommended_exercise
     end
 
-    def findMatchingExercise(user)
-      exercisesUserHasAccessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq
-      tagsUserHasSeen = exercisesUserHasAccessed.map{|ex| ex.tags}.uniq.flatten
-      Rails.logger.info("exercisesUserHasAccessed #{exercisesUserHasAccessed.map{|e|e.id}.join(",")}")
+    def find_matching_exercise(user)
+      exercises_user_has_accessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq
+      tags_user_has_seen = exercises_user_has_accessed.map{|ex| ex.tags}.uniq.flatten
+      Rails.logger.info("exercises_user_has_accessed #{exercises_user_has_accessed.map{|e|e.id}.join(",")}")
 
       # find execises
-      potentialRecommendedExercises = []
+      potential_recommended_exercises = []
       exercises.each do |ex|
         ## find exercises which have only tags the user has already seen
-        if (ex.tags - tagsUserHasSeen).empty?
-          potentialRecommendedExercises << ex
+        if (ex.tags - tags_user_has_seen).empty?
+          potential_recommended_exercises << ex
         end
       end
-      Rails.logger.info("potentialRecommendedExercises: #{potentialRecommendedExercises.map{|e|e.id}}")
+      Rails.logger.info("potential_recommended_exercises: #{potential_recommended_exercises.map{|e|e.id}}")
       # if all exercises contain tags which the user has never seen, recommend easiest exercise
-      if potentialRecommendedExercises.empty?
-        getEasiestExercise(exercises)
+      if potential_recommended_exercises.empty?
+        select_easiest_exercise(exercises)
       else
-        recommendedExercise = selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
-        recommendedExercise
+        recommended_exercise = select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
+        recommended_exercise
       end
     end
 
-    def selectBestMatchingExercise(user, exercisesUserHasAccessed, potentialRecommendedExercises)
-      topic_knowledge_user_and_max = getUserKnowledgeAndMaxKnowledge(user, exercisesUserHasAccessed)
+    def select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
+      topic_knowledge_user_and_max = get_user_knowledge_and_max_knowledge(user, exercises_user_has_accessed)
       puts "topic_knowledge_user_and_max: #{topic_knowledge_user_and_max}"
-      puts "potentialRecommendedExercises: #{potentialRecommendedExercises.size}: #{potentialRecommendedExercises.map{|p| p.id}}"
+      puts "potential_recommended_exercises: #{potential_recommended_exercises.size}: #{potential_recommended_exercises.map{|p| p.id}}"
       topic_knowledge_user = topic_knowledge_user_and_max[:user_topic_knowledge]
       topic_knowledge_max = topic_knowledge_user_and_max[:max_topic_knowledge]
       current_users_knowledge_lack = {}
@@ -74,7 +74,7 @@ class ProxyExercise < ActiveRecord::Base
       end
 
       relative_knowledge_improvement = {}
-      potentialRecommendedExercises.each do |potex|
+      potential_recommended_exercises.each do |potex|
         tags =  potex.tags
         relative_knowledge_improvement[potex] = 0.0
         Rails.logger.info("review potential exercise #{potex.id}")
@@ -87,9 +87,8 @@ class ProxyExercise < ActiveRecord::Base
           relative_knowledge_improvement[potex] += old_relative_loss_tag - new_relative_loss_tag
         end
       end
-      highest_difficulty_user_has_accessed =  exercisesUserHasAccessed.map{|e| e.expected_difficulty}.sort.last || 0
+      highest_difficulty_user_has_accessed =  exercises_user_has_accessed.map{|e| e.expected_difficulty}.sort.last || 0
       best_matching_exercise = find_best_exercise(relative_knowledge_improvement, highest_difficulty_user_has_accessed)
-      #best_matching_exercise = relative_knowledge_improvement.max_by{|k,v| v}.first
       Rails.logger.info("current users knowledge loss: " + current_users_knowledge_lack.map{|k,v| "#{k} => #{v}"}.to_s)
       Rails.logger.info("relative improvements #{relative_knowledge_improvement.map{|k,v| k.id.to_s + ':' + v.to_s}}")
       best_matching_exercise
@@ -136,7 +135,7 @@ class ProxyExercise < ActiveRecord::Base
       end
       points_ratio_index = ((scoring_matrix.size - 1)  * points_ratio).to_i
       working_time_user = Time.parse(ex.average_working_time_for_only(user.id) || "00:00:00").seconds_since_midnight
-      quantiles_working_time = ex.getQuantiles(scoring_matrix_quantiles)
+      quantiles_working_time = ex.get_quantiles(scoring_matrix_quantiles)
       quantile_index = quantiles_working_time.size
       quantiles_working_time.each_with_index do |quantile_time, i|
         if working_time_user <= quantile_time
@@ -151,7 +150,7 @@ class ProxyExercise < ActiveRecord::Base
       scoring_matrix[points_ratio_index][quantile_index]
     end
 
-    def getRelativeKnowledgeLoss(user, exercises)
+    def get_relative_knowledge_loss(user, exercises)
       # initialize knowledge for each tag with 0
       all_used_tags = exercises.inject(Set.new){|tagset, ex| tagset.merge(ex.tags)}
       topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
@@ -172,7 +171,7 @@ class ProxyExercise < ActiveRecord::Base
       relative_loss
     end
 
-    def getUserKnowledgeAndMaxKnowledge(user, exercises)
+    def get_user_knowledge_and_max_knowledge(user, exercises)
       # initialize knowledge for each tag with 0
       all_used_tags = exercises.inject(Set.new){|tagset, ex| tagset.merge(ex.tags)}
       topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
@@ -193,7 +192,7 @@ class ProxyExercise < ActiveRecord::Base
       {user_topic_knowledge: topic_knowledge_loss_user, max_topic_knowledge: topic_knowledge_max}
     end
 
-    def getEasiestExercise(exercises)
+    def select_easiest_exercise(exercises)
       exercises.order(:expected_difficulty).first
     end
 

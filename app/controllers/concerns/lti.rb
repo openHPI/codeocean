@@ -76,7 +76,7 @@ module Lti
   def require_valid_exercise_token
     proxy_exercise = ProxyExercise.find_by(token: params[:custom_token])
     unless proxy_exercise.nil?
-      @exercise = proxy_exercise.getMatchingExercise(@current_user)
+      @exercise = proxy_exercise.get_matching_exercise(@current_user)
     else
       @exercise = Exercise.find_by(token: params[:custom_token])
     end
