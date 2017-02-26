@@ -83,15 +83,34 @@ class ProxyExercise < ActiveRecord::Base
           max_topic_knowledge_ratio = potex.expected_difficulty * tag_ratio
           old_relative_loss_tag = topic_knowledge_user[tag] / topic_knowledge_max[tag]
           new_relative_loss_tag = topic_knowledge_user[tag] / (topic_knowledge_max[tag] + max_topic_knowledge_ratio)
-          puts "tag #{tag} old_relative_loss_tag #{old_relative_loss_tag}, new_relative_loss_tag #{new_relative_loss_tag}, min_loss_after_solving #{topic_knowledge_max[tag] + max_topic_knowledge_ratio} tag_ratio #{tag_ratio}"
+          puts "tag #{tag} old_relative_loss_tag #{old_relative_loss_tag}, new_relative_loss_tag #{new_relative_loss_tag}, tag_ratio #{tag_ratio}"
           relative_knowledge_improvement[potex] += old_relative_loss_tag - new_relative_loss_tag
         end
       end
-
-      best_matching_exercise = relative_knowledge_improvement.max_by{|k,v| v}.first
+      highest_difficulty_user_has_accessed =  exercisesUserHasAccessed.map{|e| e.expected_difficulty}.sort.last || 0
+      best_matching_exercise = find_best_exercise(relative_knowledge_improvement, highest_difficulty_user_has_accessed)
+      #best_matching_exercise = relative_knowledge_improvement.max_by{|k,v| v}.first
       Rails.logger.info("current users knowledge loss: " + current_users_knowledge_lack.map{|k,v| "#{k} => #{v}"}.to_s)
       Rails.logger.info("relative improvements #{relative_knowledge_improvement.map{|k,v| k.id.to_s + ':' + v.to_s}}")
       best_matching_exercise
+    end
+
+    def find_best_exercise(relative_knowledge_improvement, highest_difficulty_user_has_accessed)
+      Rails.logger.info("select most appropiate exercise for user. his highest difficulty was #{highest_difficulty_user_has_accessed}")
+      sorted_exercises = relative_knowledge_improvement.sort_by{|k,v| v}.reverse
+
+      sorted_exercises.each do |ex,diff|
+        Rails.logger.info("review exercise #{ex.id} diff: #{ex.expected_difficulty}")
+        if (ex.expected_difficulty - highest_difficulty_user_has_accessed) <= 1
+          Rails.logger.info("matched #{ex.id}")
+          return ex
+        else
+          Rails.logger.info("ex #{ex.id} is too difficult")
+        end
+      end
+      easiest_exercise = sorted_exercises.min_by{|k,v| v}.first
+      Rails.logger.info("no match, select easiest exercise as fallback #{easiest_exercise.id}")
+      easiest_exercise
     end
 
     # [score][quantile]
