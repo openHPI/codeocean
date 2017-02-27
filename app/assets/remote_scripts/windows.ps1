@@ -1,6 +1,8 @@
-# run like this: powershell.exe -noprofile -executionpolicy bypass -file path\to\client_script.ps1 path\to\project_root
+# run like this:
+# cd path\to\project_root
+# powershell.exe -noprofile -executionpolicy bypass -file .scripts\windows.ps1 .
 
-# CodeOcean Remote Client v0.5
+# CodeOcean Remote Client v0.6
 
 #file_info format: <path/to/file/><file_name>=<id> (src/frog.java=34)
 #file_path format: <path/to/file/><file_name>
@@ -57,6 +59,7 @@ function get_file ($file_path){
 
 function get_escaped_file_content ($file){
     $content = [IO.File]::ReadAllText($file.fullname)
+    $content = $content.replace('\', '\\')
     $content = $content -replace "`r`n", '\n'
     $content = $content -replace "`n", '\n'
     $content = $content.replace('"', '\"')

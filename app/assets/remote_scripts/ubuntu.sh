@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# CodeOcean Remote Client v0.5
+# run like this:
+# cd path/to/project_root
+# .scripts/ubuntu.sh .
+
+# CodeOcean Remote Client v0.6
 
 #file_info format: <path/to/file/><file_name>=<id> (src/frog.java=34)
 #file_path format: <path/to/file/><file_name>
@@ -27,6 +31,7 @@ function get_valid_file_path {
 function get_escaped_file_content {
     file_path="$1"
     cat "$file_path" |
+    perl -p -e 's@\\@\\\\@g' |
     perl -p -e 's@\r\n@\\n@g' |
     perl -p -e 's@\n@\\n@g' |
     perl -p -e 's@"@\\"@g'
