@@ -585,11 +585,33 @@ configureEditors: function () {
             url: $('#editor').data('working-times-url'),
             success: function (data) {
                 var percentile75 = data['working_time_75_percentile'];
-                var accu = data['working_time_accumulated'];
-                $('#avg-working-time').text(`75th percentile: ${percentile75} and accumulated time: ${accu}`);
+                var accumulatedWorkTimeUser = data['working_time_accumulated'];
+
+                var timeUntilBreak = 15 * 60;
+
+                if ((accumulatedWorkTimeUser - percentile75) > 0) {
+                    // working time is already over 75 percentile
+                    var timeUntilAskQuestion = 7 * 60;
+                } else {
+                    // working time is less than 75 percentile
+                    // ensure we give user at least 10 minutes before we bother the user
+                    var timeUntilAskQuestion = (percentile75 - accumulatedWorkTimeUser) > 10 * 60 ? (percentile75 - accumulatedWorkTimeUser) : 10 * 60;
+                }
+
+                // if notifications are too close to each other, ensure some time differences between them
+                if (Math.abs(timeUntilAskQuestion - timeUntilBreak) < 5){
+                    timeUntilBreak = timeUntilBreak * 2;
+                }
+
                 setTimeout(function() {
+                    $('#intervention-text').text(`Willst du eine Pause machen?  75th percentile: ${percentile75} and accumulated time: ${accumulatedWorkTimeUser}`);
                     $('#intervention-modal').modal('show')
-                }, 10000);
+                }, timeUntilBreak);
+
+                setTimeout(function() {
+                    $('#intervention-text').text(`Willst du eine Frage stellen?`);
+                    $('#intervention-modal').modal('show')
+                }, timeUntilAskQuestion);
             }
         });
     },
