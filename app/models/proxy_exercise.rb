@@ -32,7 +32,13 @@ class ProxyExercise < ActiveRecord::Base
           assigned_user_proxy_exercise.exercise
         else
           Rails.logger.info("find new matching exercise for user #{user.id}" )
-          matching_exercise = find_matching_exercise(user)
+          matching_exercise =
+              begin
+                find_matching_exercise(user)
+              rescue #fallback
+                Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
+                exercises.shuffle.first
+              end
           user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matching_exercise, proxy_exercise: self)
           matching_exercise
         end
