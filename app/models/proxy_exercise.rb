@@ -61,6 +61,7 @@ class ProxyExercise < ActiveRecord::Base
         recommended_exercise
       end
     end
+    private :find_matching_exercise
 
     def select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
       topic_knowledge_user_and_max = get_user_knowledge_and_max_knowledge(user, exercises_user_has_accessed)
@@ -93,6 +94,7 @@ class ProxyExercise < ActiveRecord::Base
       Rails.logger.info("relative improvements #{relative_knowledge_improvement.map{|k,v| k.id.to_s + ':' + v.to_s}}")
       best_matching_exercise
     end
+    private :select_best_matching_exercise
 
     def find_best_exercise(relative_knowledge_improvement, highest_difficulty_user_has_accessed)
       Rails.logger.info("select most appropiate exercise for user. his highest difficulty was #{highest_difficulty_user_has_accessed}")
@@ -111,6 +113,7 @@ class ProxyExercise < ActiveRecord::Base
       Rails.logger.info("no match, select easiest exercise as fallback #{easiest_exercise.id}")
       easiest_exercise
     end
+    private :find_best_exercise
 
     # [score][quantile]
     def scoring_matrix
@@ -126,6 +129,7 @@ class ProxyExercise < ActiveRecord::Base
     def scoring_matrix_quantiles
       [0.2,0.4,0.6,0.8]
     end
+    private :scoring_matrix_quantiles
 
     def score(user, ex)
       points_ratio =  ex.maximum_score(user) / ex.maximum_score.to_f
@@ -149,6 +153,7 @@ class ProxyExercise < ActiveRecord::Base
           "score: #{scoring_matrix[points_ratio_index][quantile_index]}")
       scoring_matrix[points_ratio_index][quantile_index]
     end
+    private :score
 
     def get_relative_knowledge_loss(user, exercises)
       # initialize knowledge for each tag with 0
@@ -170,6 +175,7 @@ class ProxyExercise < ActiveRecord::Base
       end
       relative_loss
     end
+    private :get_relative_knowledge_loss
 
     def get_user_knowledge_and_max_knowledge(user, exercises)
       # initialize knowledge for each tag with 0
@@ -191,6 +197,7 @@ class ProxyExercise < ActiveRecord::Base
       end
       {user_topic_knowledge: topic_knowledge_loss_user, max_topic_knowledge: topic_knowledge_max}
     end
+    private :get_user_knowledge_and_max_knowledge
 
     def select_easiest_exercise(exercises)
       exercises.order(:expected_difficulty).first
