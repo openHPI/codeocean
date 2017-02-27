@@ -96,7 +96,12 @@ class Exercise < ActiveRecord::Base
             GROUP BY user_id
       ) AS foo
     """)
-    quantiles.each_with_index.map{|q,i| Time.parse(result[i]["unnest"]).seconds_since_midnight}
+    if result.count > 0
+      quantiles.each_with_index.map{|q,i| Time.parse(result[i]["unnest"]).seconds_since_midnight}
+    else
+      quantiles.map{|q| 0}
+    end
+
   end
 
   def retrieve_working_time_statistics
@@ -121,8 +126,8 @@ class Exercise < ActiveRecord::Base
     @working_time_statistics[user_id]["working_time"]
   end
 
-  def average_working_time_for_only(user_id)
-    self.class.connection.execute("""
+  def accumulated_working_time_for_only(user_id)
+    Time.parse(self.class.connection.execute("""
       SELECT sum(working_time_new) AS working_time
       FROM
         (SELECT CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
@@ -132,7 +137,7 @@ class Exercise < ActiveRecord::Base
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
             WHERE exercise_id=#{id} and user_id=#{user_id} and user_type='ExternalUser') AS foo) AS bar
-    """).first["working_time"]
+    """).first["working_time"] || "00:00:00").seconds_since_midnight
   end
 
   def duplicate(attributes = {})

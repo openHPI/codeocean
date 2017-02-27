@@ -144,7 +144,7 @@ class ProxyExercise < ActiveRecord::Base
         return 0.0
       end
       points_ratio_index = ((scoring_matrix.size - 1)  * points_ratio).to_i
-      working_time_user = Time.parse(ex.average_working_time_for_only(user.id) || "00:00:00").seconds_since_midnight
+      working_time_user = ex.accumulated_working_time_for_only(user.id)
       quantiles_working_time = ex.get_quantiles(scoring_matrix_quantiles)
       quantile_index = quantiles_working_time.size
       quantiles_working_time.each_with_index do |quantile_time, i|
