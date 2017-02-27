@@ -168,8 +168,8 @@ class ExercisesController < ApplicationController
 
   def working_times
     working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user.id)
-    working_time_avg = @exercise.get_quantiles([0.75]).first
-    render(json: {working_time_avg: working_time_avg, working_time_accumulated: working_time_accumulated})
+    working_time_75_percentile = @exercise.get_quantiles([0.75]).first
+    render(json: {working_time_75_percentile: working_time_75_percentile, working_time_accumulated: working_time_accumulated})
   end
 
   def index

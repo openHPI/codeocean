@@ -584,9 +584,9 @@ configureEditors: function () {
             method: 'GET',
             url: $('#editor').data('working-times-url'),
             success: function (data) {
-                var avg = data['working_time_avg'];
+                var percentile75 = data['working_time_75_percentile'];
                 var accu = data['working_time_accumulated'];
-                $('#avg-working-time').text(`avg time: ${avg} and accumulated time: ${accu}`);
+                $('#avg-working-time').text(`75th percentile: ${percentile75} and accumulated time: ${accu}`);
                 setTimeout(function() {
                     $('#intervention-modal').modal('show')
                 }, 10000);
