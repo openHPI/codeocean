@@ -101,10 +101,10 @@ class ProxyExercise < ActiveRecord::Base
       sorted_exercises.each do |ex,diff|
         Rails.logger.info("review exercise #{ex.id} diff: #{ex.expected_difficulty}")
         if (ex.expected_difficulty - highest_difficulty_user_has_accessed) <= 1
-          Rails.logger.info("matched #{ex.id}")
+          Rails.logger.info("matched exercise #{ex.id}")
           return ex
         else
-          Rails.logger.info("ex #{ex.id} is too difficult")
+          Rails.logger.info("exercise #{ex.id} is too difficult")
         end
       end
       easiest_exercise = sorted_exercises.min_by{|k,v| v}.first
