@@ -28,6 +28,7 @@ describe SessionsController do
 
   describe 'POST #create_through_lti' do
     let(:exercise) { FactoryGirl.create(:dummy) }
+    let(:exercise2) { FactoryGirl.create(:dummy) }
     let(:nonce) { SecureRandom.hex }
     before(:each) { I18n.locale = I18n.default_locale }
 
@@ -134,6 +135,17 @@ describe SessionsController do
         FactoryGirl.create(:proxy_exercise, exercises: [exercise])
         post :create_through_lti, custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id
         expect(controller).to redirect_to(implement_exercise_path(exercise.id))
+      end
+
+      it 'recommends only exercises who are 1 degree more complicated than what user has seen' do
+        # dummy user has no exercises finished, therefore his highest difficulty is 0
+        FactoryGirl.create(:proxy_exercise, exercises: [exercise, exercise2])
+        exercise.expected_difficulty = 3
+        exercise.save
+        exercise2.expected_difficulty = 1
+        exercise2.save
+        post :create_through_lti, custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id
+        expect(controller).to redirect_to(implement_exercise_path(exercise2.id))
       end
     end
   end
