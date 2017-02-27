@@ -571,6 +571,29 @@ configureEditors: function () {
 
   },
 
+    /**
+     * interventions
+     * */
+    initializeInterventionTimer: function() {
+        $.ajax({
+            data: {
+                exercise_id: $('#editor').data('exercise-id'),
+                user_id: $('#editor').data('user-id')
+            },
+            dataType: 'json',
+            method: 'GET',
+            url: $('#editor').data('working-times-url'),
+            success: function (data) {
+                var avg = data['working_time_avg'];
+                var accu = data['working_time_accumulated'];
+                $('#avg-working-time').text(`avg time: ${avg} and accumulated time: ${accu}`);
+                setTimeout(function() {
+                    $('#intervention-modal').modal('show')
+                }, 10000);
+            }
+        });
+    },
+
 
   initializeEverything: function() {
     this.initializeRegexes();
@@ -585,6 +608,7 @@ configureEditors: function () {
     this.initializeDescriptionToggle();
     this.initializeSideBarTooltips();
     this.initializeTooltips();
+    this.initializeInterventionTimer();
     this.initPrompt();
     this.renderScore();
     this.showFirstFile();

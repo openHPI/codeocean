@@ -1,0 +1,13 @@
+/h5 = t('exercises.implement.comment.question')
+
+h5 = 'Aufpassen!'
+/textarea.form-control#question(style='resize:none;')
+p = 'Uns ist aufgefallen, dass Sie schon sehr lange an dieser Aufgabe sitzen. Wollen Sie nicht vielleicht mal eine Pause einlegen?'
+#avg-working-time
+
+/p = "AVG: #{@working_time_avg}"
+/p = "ACCUMULATED: #{@working_time_accumulated}"
+
+/ data-cause='requestComments' is not used here right now, we pass the button #requestComments (not askForCommentsButton) as initiator of the action.
+/ But if we use this button, it will work since the correct cause is supplied
+/button#askForCommentsButton.btn.btn-block.btn-primary(type='button' data-cause='requestComments' data-message-success=t('exercises.editor.request_for_comments_sent')) =t('exercises.implement.comment.request')
