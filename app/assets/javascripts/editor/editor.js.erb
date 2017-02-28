@@ -610,8 +610,6 @@ configureEditors: function () {
                     $('#intervention-modal').modal('show');
                     $.ajax({
                         data: {
-                            exercise_id: $('#editor').data('exercise-id'),
-                            user_id: $('#editor').data('user-id'),
                             intervention_type: 'BreakIntervention'
                         },
                         dataType: 'json',
@@ -624,8 +622,6 @@ configureEditors: function () {
                     $('#intervention-modal').modal('show');
                     $.ajax({
                         data: {
-                            exercise_id: $('#editor').data('exercise-id'),
-                            user_id: $('#editor').data('user-id'),
                             intervention_type: 'QuestionIntervention'
                         },
                         dataType: 'json',
