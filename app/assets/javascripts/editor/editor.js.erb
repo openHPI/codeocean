@@ -646,7 +646,9 @@ configureEditors: function () {
     this.initializeDescriptionToggle();
     this.initializeSideBarTooltips();
     this.initializeTooltips();
-    this.initializeInterventionTimer();
+    if ($('#editor').data('show-interventions') == true){
+        this.initializeInterventionTimer();
+    }
     this.initPrompt();
     this.renderScore();
     this.showFirstFile();
