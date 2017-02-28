@@ -96,6 +96,8 @@ en:
         message: Message
         name: Name
         regular_expression: Regular Expression
+      intervention:
+        name: Name
       internal_user:
         activated: Activated
         consumer: Consumer

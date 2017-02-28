@@ -75,6 +75,8 @@ de:
         message: Nachricht
         name: Name
         regular_expression: Regulärer Ausdruck
+      intervention:
+        name: Name
       internal_user:
         activated: Aktiviert
         consumer: Konsument

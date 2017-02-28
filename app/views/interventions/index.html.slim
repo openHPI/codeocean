@@ -1,0 +1,14 @@
+h1 = Intervention.model_name.human(count: 2)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.intervention.name')
+    tbody
+      - @interventions.each do |intervention|
+        tr
+          td = intervention.name
+          td = link_to(t('shared.show'), intervention)
+
+= render('shared/pagination', collection: @interventions)
