@@ -611,16 +611,26 @@ configureEditors: function () {
                     $.ajax({
                         data: {
                             exercise_id: $('#editor').data('exercise-id'),
-                            user_id: $('#editor').data('user-id')
+                            user_id: $('#editor').data('user-id'),
+                            intervention_type: 'BreakIntervention'
                         },
                         dataType: 'json',
                         type: 'POST',
-                        url: "localhost:3000/exercise/intervention"});
+                        url: $('#editor').data('intervention-save-url')});
                 }, timeUntilBreak);
 
                 setTimeout(function() {
                     $('#intervention-text').text(`Willst du eine Frage stellen?`);
-                    $('#intervention-modal').modal('show')
+                    $('#intervention-modal').modal('show');
+                    $.ajax({
+                        data: {
+                            exercise_id: $('#editor').data('exercise-id'),
+                            user_id: $('#editor').data('user-id'),
+                            intervention_type: 'QuestionIntervention'
+                        },
+                        dataType: 'json',
+                        type: 'POST',
+                        url: $('#editor').data('intervention-save-url')});
                 }, timeUntilAskQuestion);
             }
         });

@@ -173,12 +173,17 @@ class ExercisesController < ApplicationController
   end
 
   def intervention
-    uei = UserExerciseIntervention.new(
-        user: current_user, exercise: @exercise, intervention: Intervention.first,
-        accumulated_worktime: @exercise.accumulated_working_time_for_only(current_user))
+    intervention = Intervention.find_by_name(params[:intervention_type])
+    unless intervention.nil?
+      uei = UserExerciseIntervention.new(
+          user: current_user, exercise: @exercise, intervention: intervention,
+          accumulated_worktime_s: @exercise.accumulated_working_time_for_only(current_user))
+      uei.save
+      render(json: {success: 'true'})
+    else
+      render(json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"})
+    end
 
-    puts "user: #{current_user}, intervention: #{Intervention.first} #{uei.save}"
-    render(json: {success: 'true'})
   end
 
   def index
