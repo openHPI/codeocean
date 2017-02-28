@@ -16,7 +16,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
     define_method(action) { admin? || author?}
   end
 
-  [:implement?, :working_times?, :submit?, :reload?].each do |action|
+  [:implement?, :working_times?, :intervention?, :submit?, :reload?].each do |action|
     define_method(action) { everyone }
   end
 

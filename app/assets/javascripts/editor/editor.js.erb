@@ -545,12 +545,14 @@ configureEditors: function () {
     $('#output_sidebar_collapsed').addClass('hidden');
     $('#output_sidebar_uncollapsed').removeClass('hidden');
     $('#output_sidebar').removeClass('output-col-collapsed').addClass('output-col');
+    this.resizeAceEditors();
   },
 
   hideOutputBar: function() {
     $('#output_sidebar_collapsed').removeClass('hidden');
     $('#output_sidebar_uncollapsed').addClass('hidden');
     $('#output_sidebar').removeClass('output-col').addClass('output-col-collapsed');
+    this.resizeAceEditors();
   },
 
   initializeSideBarTooltips: function() {
@@ -587,15 +589,15 @@ configureEditors: function () {
                 var percentile75 = data['working_time_75_percentile'];
                 var accumulatedWorkTimeUser = data['working_time_accumulated'];
 
-                var timeUntilBreak = 15 * 60;
+                var timeUntilBreak = 15 * 60 * 1000;
 
                 if ((accumulatedWorkTimeUser - percentile75) > 0) {
                     // working time is already over 75 percentile
-                    var timeUntilAskQuestion = 7 * 60;
+                    var timeUntilAskQuestion = 10 * 60 * 1000;
                 } else {
                     // working time is less than 75 percentile
                     // ensure we give user at least 10 minutes before we bother the user
-                    var timeUntilAskQuestion = (percentile75 - accumulatedWorkTimeUser) > 10 * 60 ? (percentile75 - accumulatedWorkTimeUser) : 10 * 60;
+                    var timeUntilAskQuestion = (percentile75 - accumulatedWorkTimeUser) > 10 * 60 * 1000 ? (percentile75 - accumulatedWorkTimeUser) : 10 * 60 * 1000;
                 }
 
                 // if notifications are too close to each other, ensure some time differences between them
@@ -605,7 +607,15 @@ configureEditors: function () {
 
                 setTimeout(function() {
                     $('#intervention-text').text(`Willst du eine Pause machen?  75th percentile: ${percentile75} and accumulated time: ${accumulatedWorkTimeUser}`);
-                    $('#intervention-modal').modal('show')
+                    $('#intervention-modal').modal('show');
+                    $.ajax({
+                        data: {
+                            exercise_id: $('#editor').data('exercise-id'),
+                            user_id: $('#editor').data('user-id')
+                        },
+                        dataType: 'json',
+                        type: 'POST',
+                        url: "localhost:3000/exercise/intervention"});
                 }, timeUntilBreak);
 
                 setTimeout(function() {

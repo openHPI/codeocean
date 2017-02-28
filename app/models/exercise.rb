@@ -126,7 +126,8 @@ class Exercise < ActiveRecord::Base
     @working_time_statistics[user_id]["working_time"]
   end
 
-  def accumulated_working_time_for_only(user_id)
+  def accumulated_working_time_for_only(user)
+    user_type = user.external_user? ? "ExternalUser" : "InternalUser"
     Time.parse(self.class.connection.execute("""
       SELECT sum(working_time_new) AS working_time
       FROM
@@ -136,7 +137,7 @@ class Exercise < ActiveRecord::Base
                     (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
-            WHERE exercise_id=#{id} and user_id=#{user_id} and user_type='ExternalUser') AS foo) AS bar
+            WHERE exercise_id=#{id} and user_id=#{user.id} and user_type='#{user_type}') AS foo) AS bar
     """).first["working_time"] || "00:00:00").seconds_since_midnight
   end
 

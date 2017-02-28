@@ -6,7 +6,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :run, :statistics, :submit, :reload]
+  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :run, :statistics, :submit, :reload]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
 
@@ -167,9 +167,18 @@ class ExercisesController < ApplicationController
   end
 
   def working_times
-    working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user.id)
+    working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user)
     working_time_75_percentile = @exercise.get_quantiles([0.75]).first
     render(json: {working_time_75_percentile: working_time_75_percentile, working_time_accumulated: working_time_accumulated})
+  end
+
+  def intervention
+    uei = UserExerciseIntervention.new(
+        user: current_user, exercise: @exercise, intervention: Intervention.first,
+        accumulated_worktime: @exercise.accumulated_working_time_for_only(current_user))
+
+    puts "user: #{current_user}, intervention: #{Intervention.first} #{uei.save}"
+    render(json: {success: 'true'})
   end
 
   def index
