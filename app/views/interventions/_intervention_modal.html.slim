@@ -1,9 +1,14 @@
 /h5 = t('exercises.implement.comment.question')
 
-h5 = 'Hinweis'
 /textarea.form-control#question(style='resize:none;')
 #intervention-text
+= form_for(@search, multipart: true, target: "_blank") do |f|
+  .form-group
+    = f.text_field(:search, class: 'form-control', required: true)
+    = f.hidden_field :exercise_id
 
+  .actions
+    = f.submit(class: 'btn btn-default btn-search', value: 'Suche', model: @search.class.model_name.human)
 /p = "AVG: #{@working_time_avg}"
 /p = "ACCUMULATED: #{@working_time_accumulated}"
 

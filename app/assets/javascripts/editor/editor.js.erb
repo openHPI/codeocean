@@ -618,7 +618,7 @@ configureEditors: function () {
                 }, timeUntilBreak);
 
                 setTimeout(function() {
-                    $('#intervention-text').text(`Willst du eine Frage stellen?`);
+                    $('#intervention-text').html("Möchtest du eine Frage stellen?");
                     $('#intervention-modal').modal('show');
                     $.ajax({
                         data: {
@@ -630,6 +630,13 @@ configureEditors: function () {
                 }, timeUntilAskQuestion);
             }
         });
+    },
+
+    initializeSearchButton: function(){
+        $('.btn-search').button().click(function(){
+            var search = $('#search_search').val();
+            window.open(`https://open.hpi.de/courses/javaeinstieg2017/pinboard?query=${search}`, '_blank', 'toolbar=yes, location=yes, status=yes, menubar=yes, scrollbars=yes');
+        })
     },
 
 
@@ -648,6 +655,7 @@ configureEditors: function () {
     this.initializeTooltips();
     if ($('#editor').data('show-interventions') == true){
         this.initializeInterventionTimer();
+        this.initializeSearchButton();
     }
     this.initPrompt();
     this.renderScore();
