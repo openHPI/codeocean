@@ -23,6 +23,15 @@ div id='sidebar-uncollapsed' class=(@exercise.hide_file_tree ? 'hidden' : '')
 
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', icon: 'fa fa-download', id: 'download', label: t('exercises.editor.download'))
   = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
+  div.enforce-top-margin
+    = form_for(@search, multipart: true, target: "_blank") do |f|
+      .form-group
+        = f.hidden_field :exercise_id
+        = f.text_field(:search, class: 'form-control', id: "search-col", required: true, placeholder: "Probleme? Suche hier im Forum")
+      .actions
+        = button_tag(class: 'btn btn-block btn-primary btn-sm', id: 'btn-search-col', model: @search.class.model_name.human) do
+          i.fa.fa-search
+          = 'Suche im Forum'
 
 - if @exercise.allow_file_creation?
   = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))

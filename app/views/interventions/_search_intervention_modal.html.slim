@@ -4,11 +4,13 @@
 p = "Hast du Probleme beim Lösen der Aufgabe? Benutz doch einfach die Forensuche:"
 = form_for(@search, multipart: true, target: "_blank") do |f|
   .form-group
-    = f.text_field(:search, class: 'form-control', required: true)
+    = f.text_field(:search, class: 'form-control', id: 'search-modal', required: true)
     = f.hidden_field :exercise_id
 
   .actions
-    = f.submit(class: 'btn btn-default btn-search', value: 'Suche im Forum', model: @search.class.model_name.human)
+    = button_tag(class: 'btn btn-block btn-primary btn-sm', id: 'btn-search-modal', model: @search.class.model_name.human) do
+      i.fa.fa-search
+      = 'Suche im Forum'
 /p = "AVG: #{@working_time_avg}"
 /p = "ACCUMULATED: #{@working_time_accumulated}"
 
