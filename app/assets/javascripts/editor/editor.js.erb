@@ -606,8 +606,7 @@ configureEditors: function () {
                 }
 
                 setTimeout(function() {
-                    $('#intervention-text').text(`Willst du eine Pause machen?  75th percentile: ${percentile75} and accumulated time: ${accumulatedWorkTimeUser}`);
-                    $('#intervention-modal').modal('show');
+                    $('#break-intervention-modal').modal('show');
                     $.ajax({
                         data: {
                             intervention_type: 'BreakIntervention'
@@ -618,8 +617,7 @@ configureEditors: function () {
                 }, timeUntilBreak);
 
                 setTimeout(function() {
-                    $('#intervention-text').html("Möchtest du eine Frage stellen?");
-                    $('#intervention-modal').modal('show');
+                    $('#search-intervention-modal').modal('show');
                     $.ajax({
                         data: {
                             intervention_type: 'QuestionIntervention'
