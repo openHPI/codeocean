@@ -1,7 +1,7 @@
 /h5 = t('exercises.implement.comment.question')
 
 /textarea.form-control#question(style='resize:none;')
-p = "Hast du Probleme beim Lösen der Aufgabe? Benutz doch einfach die Forensuche:"
+p = "Benutz doch einfach die Forensuche! Du kannst auch jederzeit in der linken Spalte die Suche nutzen. Alternativ kannst du auch nach Kommentaren zu deinem Programm anfordern."
 = form_for(@search, multipart: true, target: "_blank") do |f|
   .form-group
     = f.text_field(:search, class: 'form-control', id: 'search-modal', required: true)
