@@ -1,19 +1,10 @@
-/h5 = t('exercises.implement.comment.question')
-
-/textarea.form-control#question(style='resize:none;')
 p = "Benutz doch einfach die Forensuche! Du kannst auch jederzeit in der linken Spalte die Suche nutzen. Alternativ kannst du auch nach Kommentaren zu deinem Programm anfordern."
 = form_for(@search, multipart: true, target: "_blank") do |f|
   .form-group
-    = f.text_field(:search, class: 'form-control', id: 'search-modal', required: true)
+    = f.text_field(:search, class: 'form-control', id: 'search-modal', required: true, placeholder: "Probleme? Suche hier im Forum",)
     = f.hidden_field :exercise_id
 
   .actions
     = button_tag(class: 'btn btn-block btn-primary btn-sm', id: 'btn-search-modal', model: @search.class.model_name.human) do
       i.fa.fa-search
       = 'Suche im Forum'
-/p = "AVG: #{@working_time_avg}"
-/p = "ACCUMULATED: #{@working_time_accumulated}"
-
-/ data-cause='requestComments' is not used here right now, we pass the button #requestComments (not askForCommentsButton) as initiator of the action.
-/ But if we use this button, it will work since the correct cause is supplied
-/button#askForCommentsButton.btn.btn-block.btn-primary(type='button' data-cause='requestComments' data-message-success=t('exercises.editor.request_for_comments_sent')) =t('exercises.implement.comment.request')
