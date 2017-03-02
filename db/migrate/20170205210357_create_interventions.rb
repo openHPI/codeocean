@@ -5,6 +5,7 @@ class CreateInterventions < ActiveRecord::Migration
       t.belongs_to :exercise
       t.belongs_to :intervention
       t.integer :accumulated_worktime_s
+      t.text :reason
       t.timestamps
     end
 

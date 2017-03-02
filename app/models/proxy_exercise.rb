@@ -1,12 +1,17 @@
 class ProxyExercise < ActiveRecord::Base
 
     after_initialize :generate_token
+    after_initialize :set_reason
 
     has_and_belongs_to_many :exercises
     has_many :user_proxy_exercise_exercises
 
     def count_files
         exercises.count
+    end
+
+    def set_reason
+      @reason = {}
     end
 
     def generate_token
@@ -37,9 +42,11 @@ class ProxyExercise < ActiveRecord::Base
                 find_matching_exercise(user)
               rescue #fallback
                 Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
+                @reason[:reason] = "fallback because of error"
+                @reason[:error] = "#{$!}"
                 exercises.shuffle.first
               end
-          user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matching_exercise, proxy_exercise: self)
+          user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
           matching_exercise
         end
       recommended_exercise
@@ -61,6 +68,8 @@ class ProxyExercise < ActiveRecord::Base
       Rails.logger.info("potential_recommended_exercises: #{potential_recommended_exercises.map{|e|e.id}}")
       # if all exercises contain tags which the user has never seen, recommend easiest exercise
       if potential_recommended_exercises.empty?
+        Rails.logger.info("matched easiest exercise in pool")
+        @reason[:reason] = "easiest exercise in pool. empty potential exercises"
         select_easiest_exercise(exercises)
       else
         recommended_exercise = select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
@@ -96,6 +105,11 @@ class ProxyExercise < ActiveRecord::Base
       end
       highest_difficulty_user_has_accessed =  exercises_user_has_accessed.map{|e| e.expected_difficulty}.sort.last || 0
       best_matching_exercise = find_best_exercise(relative_knowledge_improvement, highest_difficulty_user_has_accessed)
+      @reason[:reason] = "best matching exercise"
+      @reason[:highest_difficulty_user_has_accessed] = highest_difficulty_user_has_accessed
+      @reason[:current_users_knowledge_lack] = current_users_knowledge_lack
+      @reason[:relative_knowledge_improvement] = relative_knowledge_improvement
+
       Rails.logger.info("current users knowledge loss: " + current_users_knowledge_lack.map{|k,v| "#{k} => #{v}"}.to_s)
       Rails.logger.info("relative improvements #{relative_knowledge_improvement.map{|k,v| k.id.to_s + ':' + v.to_s}}")
       best_matching_exercise
