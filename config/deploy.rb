@@ -4,7 +4,7 @@ set :default_env, 'PATH' => '/usr/java/jdk1.8.0_40/bin:$PATH'
 set :deploy_to, '/var/www/app'
 set :keep_releases, 3
 set :linked_dirs, %w(log public/uploads tmp/cache tmp/files tmp/pids tmp/sockets)
-set :linked_files, %w(config/action_mailer.yml config/code_ocean.yml config/database.yml config/newrelic.yml config/secrets.yml config/sendmail.yml config/smtp.yml)
+set :linked_files, %w(config/action_mailer.yml config/docker.yml.erb  config/code_ocean.yml config/database.yml config/newrelic.yml config/secrets.yml config/sendmail.yml config/smtp.yml)
 set :log_level, :info
 set :puma_threads, [0, 16]
 set :repo_url, 'git@github.com:openHPI/codeocean.git'

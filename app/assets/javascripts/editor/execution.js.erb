@@ -6,8 +6,10 @@ CodeOceanEditorWebsocket = {
       sockURL.pathname = url;
       sockURL.protocol = '<%= DockerClient.config['ws_client_protocol'] %>';
 
-      //return the URL, but strip last # if there is one...
-      return sockURL.toString().replace(/#$/,'');
+      // strip anchor if it is in the url
+      sockURL.hash = ''
+
+      return sockURL.toString();
   },
 
   initializeSocket: function(url) {
