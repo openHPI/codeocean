@@ -605,7 +605,7 @@ configureEditors: function () {
                 }
 
                 // if notifications are too close to each other, ensure some time differences between them
-                if (Math.abs(timeUntilAskQuestion - timeUntilBreak) < 5){
+                if (Math.abs(timeUntilAskQuestion - timeUntilBreak) < 5 * 1000 * 60){
                     timeUntilBreak = timeUntilBreak * 2;
                 }
 
