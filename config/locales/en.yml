@@ -297,6 +297,11 @@ en:
         listing: Listing the newest comment requests
         request: "Request Comments"
         question: "Please shortly describe your problem or the program part you would like to get feedback for."
+      rfc_intervention:
+        text: "It looks like you may struggle with this exercise. If you like we can help you out!"
+      break_intervention:
+        title: "Break"
+        text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
     index:
       clone: Duplicate
       implement: Implement

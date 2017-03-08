@@ -275,7 +275,12 @@ de:
         removeAllOnLine: Meine Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
         request: "Kommentaranfrage stellen"
-        question: "Bitte beschreiben Sie kurz ihre Problem oder nennen Sie den Programmteil, zu dem sie Feedback wünschen."
+        question: "Bitte beschreiben Sie kurz ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen."
+      rfc_intervention:
+        text: "Es scheint so als würden sie Probleme mit der Aufgabe haben. Wenn Sie möchten, können wir Ihnen helfen!"
+      break_intervention:
+        title: "Pause"
+        text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht eine Pause machen um auf neue Gedanken zu kommen?"
     index:
       clone: Duplizieren
       implement: Implementieren
