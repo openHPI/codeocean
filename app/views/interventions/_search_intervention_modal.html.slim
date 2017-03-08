@@ -3,7 +3,7 @@ p = "Benutz doch einfach die Forensuche! Du kannst auch jederzeit in der linken 
   .input-group.enforce-top-margin
     = f.hidden_field :exercise_id
     .enforce-right-margin
-      = f.text_field(:search, class: 'form-control', id: 'search-modal', required: true, placeholder: "Probleme? Suche hier im Forum",)
+      = f.text_field(:search, class: 'form-control', id: 'search-modal', required: true, placeholder: t('search.search_in_forum'))
     .input-group-btn
       = button_tag(class: 'btn btn-block btn-primary', id: 'btn-search-modal', model: @search.class.model_name.human) do
         i.fa.fa-search

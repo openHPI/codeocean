@@ -346,6 +346,8 @@ de:
       success: Sie haben Ihr Passwort erfolgreich geändert.
     show:
       link: Profil
+  search:
+    search_in_forum: "Probleme? Suche hier im Forum"
   locales:
     de: Deutsch
     en: Englisch

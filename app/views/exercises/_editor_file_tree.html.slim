@@ -6,7 +6,7 @@ div id='sidebar-collapsed' class=(@exercise.hide_file_tree ? '' : 'hidden')
 
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-download', id: 'download-collapsed', label:'', title: t('exercises.editor.download'))
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-history', id: 'start-over-collapsed', label:'', title: t('exercises.editor.start_over'))
-  = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-search', id: 'sidebar-search-collapsed', label: '', title:'Suche im Forum')
+  = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-search', id: 'sidebar-search-collapsed', label: '', title: t('search.search_in_forum'))
 
 div id='sidebar-uncollapsed' class=(@exercise.hide_file_tree ? 'hidden' : '')
   = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
@@ -29,7 +29,7 @@ div id='sidebar-uncollapsed' class=(@exercise.hide_file_tree ? 'hidden' : '')
     .input-group.enforce-top-margin
       = f.hidden_field :exercise_id
       .enforce-right-margin
-        = f.text_field(:search, class: 'form-control', id: "search-col", required: true, placeholder: "Probleme? Suche hier im Forum")
+        = f.text_field(:search, class: 'form-control', id: "search-col", required: true, placeholder: t('search.search_in_forum'))
       .input-group-btn
         = button_tag(class: 'btn btn-primary', id: 'btn-search-col', model: @search.class.model_name.human) do
           i.fa.fa-search
