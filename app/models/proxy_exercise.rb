@@ -175,49 +175,43 @@ class ProxyExercise < ActiveRecord::Base
     end
     private :score
 
-    def get_relative_knowledge_loss(user, exercises)
-      # initialize knowledge for each tag with 0
-      all_used_tags = exercises.inject(Set.new){|tagset, ex| tagset.merge(ex.tags)}
-      topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
-      topic_knowledge_max = all_used_tags.map{|t| [t, 0]}.to_h
-      exercises.each do |ex|
-        user_score_factor = score(user, ex)
-        ex.tags.each do |t|
-          tag_ratio = ex.exercise_tags.where(tag: t).first.factor / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }
-          max_topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
-          topic_knowledge_loss_user[t] += (1 - user_score_factor) * max_topic_knowledge_ratio
-          topic_knowledge_max[t] += max_topic_knowledge_ratio
-        end
-      end
-      relative_loss = {}
-      all_used_tags.each do |t|
-        relative_loss[t] = topic_knowledge_loss_user[t] / topic_knowledge_max[t]
-      end
-      relative_loss
-    end
-    private :get_relative_knowledge_loss
-
     def get_user_knowledge_and_max_knowledge(user, exercises)
       # initialize knowledge for each tag with 0
-      all_used_tags = exercises.inject(Set.new){|tagset, ex| tagset.merge(ex.tags)}
-      topic_knowledge_loss_user = all_used_tags.map{|t| [t, 0]}.to_h
-      topic_knowledge_max = all_used_tags.map{|t| [t, 0]}.to_h
+      all_used_tags_with_count = {}
       exercises.each do |ex|
+        ex.tags.each do |t|
+          all_used_tags_with_count[t] ||= 0
+          all_used_tags_with_count[t] += 1
+        end
+      end
+      tags_counter = all_used_tags_with_count.keys.map{|tag| [tag,0]}.to_h
+      topic_knowledge_loss_user = all_used_tags_with_count.keys.map{|t| [t, 0]}.to_h
+      topic_knowledge_max = all_used_tags_with_count.keys.map{|t| [t, 0]}.to_h
+      exercises_sorted = exercises.sort_by { |ex| ex.time_maximum_score(user)}
+      exercises_sorted.each do |ex|
         Rails.logger.info("exercise: #{ex.id}: #{ex}")
         user_score_factor = score(user, ex)
         ex.tags.each do |t|
+          tags_counter[t] += 1
+          tag_diminishing_return_factor = tag_diminishing_return_function(tags_counter[t], all_used_tags_with_count[t])
           tag_ratio = ex.exercise_tags.where(tag: t).first.factor.to_f / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }.to_f
           Rails.logger.info("tag: #{t}, factor: #{ex.exercise_tags.where(tag: t).first.factor}, sumall: #{ex.exercise_tags.inject(0){|sum, et| sum += et.factor }}")
+          Rails.logger.info("tag #{t}, count #{tags_counter[t]}, max: #{all_used_tags_with_count[t]}, factor: #{tag_diminishing_return_factor}")
           Rails.logger.info("tag_ratio #{tag_ratio}")
           topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
           Rails.logger.info("topic_knowledge_ratio #{topic_knowledge_ratio}")
-          topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge_ratio
-          topic_knowledge_max[t] += topic_knowledge_ratio
+          topic_knowledge_loss_user[t] += (1 - user_score_factor) * topic_knowledge_ratio * tag_diminishing_return_factor
+          topic_knowledge_max[t] += topic_knowledge_ratio * tag_diminishing_return_factor
         end
       end
       {user_topic_knowledge: topic_knowledge_loss_user, max_topic_knowledge: topic_knowledge_max}
     end
     private :get_user_knowledge_and_max_knowledge
+
+    def tag_diminishing_return_function(count_tag, total_count_tag)
+      total_count_tag += 1 # bonus exercise comes on top
+      return 0.8/(1+(Math::E**(-10/(0.5*total_count_tag)*(count_tag-0.5*total_count_tag))))+0.2
+    end
 
     def select_easiest_exercise(exercises)
       exercises.order(:expected_difficulty).first
