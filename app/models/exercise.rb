@@ -57,6 +57,10 @@ class Exercise < ActiveRecord::Base
     return user_count == 0 ? 0 : submissions.count() / user_count.to_f()
   end
 
+  def time_maximum_score(user)
+    submissions.where(user: user).where("cause IN ('submit','assess')").where("score IS NOT NULL").order("score DESC, created_at ASC").first.created_at rescue Time.zone.at(0)
+  end
+
   def user_working_time_query
     """
       SELECT user_id,
