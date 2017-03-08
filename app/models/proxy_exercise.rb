@@ -210,7 +210,7 @@ class ProxyExercise < ActiveRecord::Base
 
     def tag_diminishing_return_function(count_tag, total_count_tag)
       total_count_tag += 1 # bonus exercise comes on top
-      return 0.8/(1+(Math::E**(-10/(0.5*total_count_tag)*(count_tag-0.5*total_count_tag))))+0.2
+      return 1/(1+(Math::E**(-3/(0.5*total_count_tag)*(count_tag-0.5*total_count_tag))))
     end
 
     def select_easiest_exercise(exercises)
