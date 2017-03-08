@@ -323,6 +323,9 @@ configureEditors: function () {
     var button = $('#requestComments');
     button.prop('disabled', true);
     button.on('click', function () {
+      if ($('#editor').data('show-interventions') == true){
+        $('#rfc_intervention_text').hide()
+      }
       $('#comment-modal').modal('show');
     });
 
@@ -589,15 +592,16 @@ configureEditors: function () {
                 var percentile75 = data['working_time_75_percentile'];
                 var accumulatedWorkTimeUser = data['working_time_accumulated'];
 
-                var timeUntilBreak = 15 * 60 * 1000;
+                var timeUntilBreak = 20 * 60 * 1000;
+                var minTimeUntilAskQuestion = 15 * 60 * 1000;
 
                 if ((accumulatedWorkTimeUser - percentile75) > 0) {
                     // working time is already over 75 percentile
-                    var timeUntilAskQuestion = 10 * 60 * 1000;
+                    var timeUntilAskQuestion = minTimeUntilAskQuestion;
                 } else {
                     // working time is less than 75 percentile
                     // ensure we give user at least 10 minutes before we bother the user
-                    var timeUntilAskQuestion = (percentile75 - accumulatedWorkTimeUser) > 10 * 60 * 1000 ? (percentile75 - accumulatedWorkTimeUser) : 10 * 60 * 1000;
+                    var timeUntilAskQuestion = (percentile75 - accumulatedWorkTimeUser) > minTimeUntilAskQuestion ? (percentile75 - accumulatedWorkTimeUser) : minTimeUntilAskQuestion;
                 }
 
                 // if notifications are too close to each other, ensure some time differences between them
@@ -616,15 +620,20 @@ configureEditors: function () {
                         url: $('#editor').data('intervention-save-url')});
                 }, timeUntilBreak);
 
+
                 setTimeout(function() {
-                    $('#search-intervention-modal').modal('show');
-                    $.ajax({
-                        data: {
-                            intervention_type: 'QuestionIntervention'
-                        },
-                        dataType: 'json',
-                        type: 'POST',
-                        url: $('#editor').data('intervention-save-url')});
+                    var button = $('#requestComments');
+                    if (!button.prop('disabled')){
+                        $('#rfc_intervention_text').show();
+                        $('#comment-modal').modal('show');
+                        $.ajax({
+                            data: {
+                                intervention_type: 'QuestionIntervention'
+                            },
+                            dataType: 'json',
+                            type: 'POST',
+                            url: $('#editor').data('intervention-save-url')});
+                    };
                 }, timeUntilAskQuestion);
             }
         });
@@ -633,11 +642,6 @@ configureEditors: function () {
     initializeSearchButton: function(){
         $('#btn-search-col').button().click(function(){
             var search = $('#search-col').val();
-            window.open(`https://open.hpi.de/courses/javaeinstieg2017/pinboard?query=${search}`, '_blank');
-        })
-
-        $('#btn-search-modal').button().click(function(){
-            var search = $('#search-modal').val();
             window.open(`https://open.hpi.de/courses/javaeinstieg2017/pinboard?query=${search}`, '_blank');
         })
 
