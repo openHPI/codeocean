@@ -9,6 +9,7 @@ class ExercisesController < ApplicationController
   before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :run, :statistics, :submit, :reload]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
+  before_action :set_course_token, only: [:implement]
 
   skip_before_filter :verify_authenticity_token, only: [:import_proforma_xml]
   skip_after_action :verify_authorized, only: [:import_proforma_xml]
@@ -155,12 +156,16 @@ class ExercisesController < ApplicationController
 
   def implement
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
+    user_got_enough_interventions = UserExerciseIntervention.where(exercise: @exercise, user: current_user).count >= 3
+    is_java_course = @course_token && @course_token.eql?(java_course_token)
+
     @show_interventions =
-      if UserExerciseIntervention.where(exercise: @exercise, user: current_user).count >= 3
+      if !is_java_course || user_got_enough_interventions
         "false"
       else
         "true"
       end
+
     @search = Search.new
     @search.exercise = @exercise
     @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
@@ -173,6 +178,22 @@ class ExercisesController < ApplicationController
       @user_id = current_user.id
     end
   end
+
+  def set_course_token
+    if @lti_parameters
+      lti_json = @lti_parameters.lti_parameters
+      @course_token =
+          if match = lti_json.match(/^.*courses\/([a-z0-9\-]+)\/sections/)
+            match.captures.first
+          else
+            java_course_token
+          end
+    else
+      # no consumer, therefore implementation with internal user
+      @course_token = java_course_token
+    end
+  end
+  private :set_course_token
 
   def working_times
     working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user)
@@ -356,6 +377,10 @@ class ExercisesController < ApplicationController
       end
     end
     redirect_to_lti_return_path
+  end
+
+  def java_course_token
+    "702cbd2a-c84c-4b37-923a-692d7d1532d0"
   end
 
 end

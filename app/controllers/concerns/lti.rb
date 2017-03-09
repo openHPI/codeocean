@@ -140,6 +140,7 @@ module Lti
 
     lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).to_json
     lti_parameters.save!
+    @lti_parameters = lti_parameters
 
     session[:consumer_id] = options[:consumer].id
     session[:external_user_id] = @current_user.id

@@ -601,11 +601,11 @@ configureEditors: function () {
                 } else {
                     // working time is less than 75 percentile
                     // ensure we give user at least 10 minutes before we bother the user
-                    var timeUntilAskQuestion = (percentile75 - accumulatedWorkTimeUser) > minTimeUntilAskQuestion ? (percentile75 - accumulatedWorkTimeUser) : minTimeUntilAskQuestion;
+                    var timeUntilAskForRFC = (percentile75 - accumulatedWorkTimeUser) > minTimeUntilAskQuestion ? (percentile75 - accumulatedWorkTimeUser) : minTimeUntilAskQuestion;
                 }
 
                 // if notifications are too close to each other, ensure some time differences between them
-                if (Math.abs(timeUntilAskQuestion - timeUntilBreak) < 5 * 1000 * 60){
+                if (Math.abs(timeUntilAskForRFC - timeUntilBreak) < 5 * 1000 * 60){
                     timeUntilBreak = timeUntilBreak * 2;
                 }
 
@@ -634,7 +634,7 @@ configureEditors: function () {
                             type: 'POST',
                             url: $('#editor').data('intervention-save-url')});
                     };
-                }, timeUntilAskQuestion);
+                }, timeUntilAskForRFC);
             }
         });
     },
@@ -642,7 +642,8 @@ configureEditors: function () {
     initializeSearchButton: function(){
         $('#btn-search-col').button().click(function(){
             var search = $('#search-col').val();
-            window.open(`https://open.hpi.de/courses/javaeinstieg2017/pinboard?query=${search}`, '_blank');
+            var course_token = $('#sidebar-collapsed').data('course_token')
+            window.open(`https://open.hpi.de/courses/${course_token}/pinboard?query=${search}`, '_blank');
         })
 
         $('#sidebar-search-collapsed').on('click',this.handleSideBarToggle.bind(this));
