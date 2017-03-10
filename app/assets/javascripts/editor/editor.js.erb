@@ -587,6 +587,7 @@ configureEditors: function () {
             },
             dataType: 'json',
             method: 'GET',
+            // get working times for this exercise
             url: $('#editor').data('working-times-url'),
             success: function (data) {
                 var percentile75 = data['working_time_75_percentile'];

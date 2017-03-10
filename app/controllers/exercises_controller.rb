@@ -20,6 +20,15 @@ class ExercisesController < ApplicationController
   end
   private :authorize!
 
+  def max_intervention_count
+    3
+  end
+
+
+  def java_course_token
+    "702cbd2a-c84c-4b37-923a-692d7d1532d0"
+  end
+
   def batch_update
     @exercises = Exercise.all
     authorize!
@@ -156,15 +165,10 @@ class ExercisesController < ApplicationController
 
   def implement
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
-    user_got_enough_interventions = UserExerciseIntervention.where(exercise: @exercise, user: current_user).count >= 3
+    user_got_enough_interventions = UserExerciseIntervention.where(exercise: @exercise, user: current_user).count >= max_intervention_count
     is_java_course = @course_token && @course_token.eql?(java_course_token)
 
-    @show_interventions =
-      if !is_java_course || user_got_enough_interventions
-        "false"
-      else
-        "true"
-      end
+    @show_interventions = (!is_java_course || user_got_enough_interventions) ? "false" : "true"
 
     @search = Search.new
     @search.exercise = @exercise
@@ -271,10 +275,10 @@ class ExercisesController < ApplicationController
   def collect_set_and_unset_exercise_tags
     @search = policy_scope(Tag).search(params[:q])
     @tags = @search.result.order(:name)
-    exercise_tags = @exercise.exercise_tags
-    tags_set = exercise_tags.collect{|e| e.tag}.to_set
-    tags_not_set = Tag.all.to_set.subtract tags_set
-    @exercise_tags = exercise_tags + tags_not_set.collect { |tag| ExerciseTag.new(exercise: @exercise, tag: tag)}
+    checked_exercise_tags = @exercise.exercise_tags
+    checked_tags = checked_exercise_tags.collect{|e| e.tag}.to_set
+    unchecked_tags = Tag.all.to_set.subtract checked_tags
+    @exercise_tags = checked_exercise_tags + unchecked_tags.collect { |tag| ExerciseTag.new(exercise: @exercise, tag: tag)}
   end
   private :collect_set_and_unset_exercise_tags
 
@@ -377,10 +381,6 @@ class ExercisesController < ApplicationController
       end
     end
     redirect_to_lti_return_path
-  end
-
-  def java_course_token
-    "702cbd2a-c84c-4b37-923a-692d7d1532d0"
   end
 
 end
