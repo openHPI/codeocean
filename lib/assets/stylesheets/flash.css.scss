@@ -1,3 +1,13 @@
 .flash {
   display: none;
 }
+
+.fixed_error_messages {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 2%;
+}
