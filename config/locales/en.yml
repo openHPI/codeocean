@@ -381,7 +381,13 @@ en:
         body: 'Please visit %{link} if you want to reset your password.'
         subject: Password reset instructions
   request_for_comments:
+    click_here: Click on this sidebar to comment!
     comments: Comments
+    howto: |
+     To leave comments to a specific code line, click on the respective line number. <br>
+     Enter your comment in the popup and save it by clicking "Comment this". <br>
+     Your comment will show up next to the line number as a speech bubble symbol.
+    howto_title: 'How to comment:'
     index:
       all: All Requests for Comments
       get_my_comment_requests: My Requests for Comments

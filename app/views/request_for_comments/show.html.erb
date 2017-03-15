@@ -41,14 +41,18 @@
         </ul>
       </h5>
   <% end %>
+  <h5>
+    <u><%= t('request_for_comments.howto_title') %></u><br> <%= render_markdown(t('request_for_comments.howto')) %>
+  </h5>
 </div>
-
+<hr>
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
 also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
 -->
 <% submission.files.each do |file| %>
-  <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %>
+  <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %><br>
+  &nbsp;&nbsp;<i class="fa fa-arrow-down" aria-hidden="true"></i> <%= t('request_for_comments.click_here') %>
   <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>' data-mode='<%=file.file_type.editor_mode%>'><%= file.content %>
   </div>
 <% end %>

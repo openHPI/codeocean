@@ -360,7 +360,13 @@ de:
         body: 'Bitte besuchen Sie %{link}, sofern Sie Ihr Passwort zurücksetzen wollen.'
         subject: Anweisungen zum Zurücksetzen Ihres Passworts
   request_for_comments:
+    click_here: Zum Kommentieren auf die Seitenleiste klicken!
     comments: Kommentare
+    howto: |
+      Um Kommentare zu einer Programmzeile hinzuzufügen, kann einfach auf die jeweilige Zeilennummer auf der linken Seite geklickt werden. <br>
+      Es öffnet sich ein Textfeld, in dem der Kommentar eingetragen werden kann. <br>
+      Mit "Kommentieren" wird der Kommentar dann gesichert und taucht als Sprechblase neben der Zeile auf.
+    howto_title: 'Anleitung:'
     index:
       get_my_comment_requests: Meine Kommentaranfragen
       all: "Alle Kommentaranfragen"
