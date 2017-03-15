@@ -1,3 +1,3 @@
-#flash.fixed_error_messages data-message-failure=t('shared.message_failure')
+#flash.fixed_error_messages.clickthrough data-message-failure=t('shared.message_failure')
   - %w[alert danger info notice success warning].each do |severity|
     p.alert.flash class="alert-#{{'alert' => 'warning', 'notice' => 'success'}.fetch(severity, severity)}" id="flash-#{severity}" = flash[severity]

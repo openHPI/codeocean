@@ -4,10 +4,16 @@
 
 .fixed_error_messages {
   position: fixed;
-  top: 0;
+  z-index: 1000;
+  top: 110px;
   left: 0;
   width: 100%;
   padding-left: 10%;
   padding-right: 10%;
-  padding-top: 2%;
+  padding-top: 0;
 }
+
+.clickthrough {
+  pointer-events: none;
+}
+
