@@ -15,5 +15,10 @@
 
 .clickthrough {
   pointer-events: none;
+
+  /* fixes for IE */
+  background:white;
+  opacity:0;
+  filter:Alpha(opacity=0);
 }
 
