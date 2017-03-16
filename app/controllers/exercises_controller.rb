@@ -6,7 +6,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit, :reload]
+  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :run, :statistics, :submit, :reload]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
 
@@ -54,6 +54,20 @@ class ExercisesController < ApplicationController
 
   def create
     @exercise = Exercise.new(exercise_params)
+    collect_set_and_unset_exercise_tags
+    myparam = exercise_params
+    checked_exercise_tags = @exercise_tags.select { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+
+    for et in checked_exercise_tags
+      et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
+      et.exercise = @exercise
+    end
+
+    myparam[:exercise_tags] = checked_exercise_tags
+    myparam.delete :tag_ids
+    removed_exercise_tags.map {|et| et.destroy}
+
     authorize!
     create_and_respond(object: @exercise)
   end
@@ -63,6 +77,7 @@ class ExercisesController < ApplicationController
   end
 
   def edit
+    collect_set_and_unset_exercise_tags
   end
 
   def import_proforma_xml
@@ -118,7 +133,8 @@ class ExercisesController < ApplicationController
   private :user_by_code_harbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:exercise][:expected_worktime_seconds] = params[:exercise][:expected_worktime_minutes].to_i * 60
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :expected_worktime_seconds, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :exercise_params
 
@@ -150,6 +166,12 @@ class ExercisesController < ApplicationController
     end
   end
 
+  def working_times
+    working_time_accumulated = Time.parse(@exercise.average_working_time_for_only(current_user.id) || "00:00:00").seconds_since_midnight
+    working_time_avg = Time.parse(@exercise.average_working_time || "00:00:00").seconds_since_midnight
+    render(json: {working_time_avg: working_time_avg, working_time_accumulated: working_time_accumulated})
+  end
+
   def index
     @search = policy_scope(Exercise).search(params[:q])
     @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page])
@@ -174,6 +196,8 @@ class ExercisesController < ApplicationController
 
   def new
     @exercise = Exercise.new
+    collect_set_and_unset_exercise_tags
+
     authorize!
   end
 
@@ -200,6 +224,16 @@ class ExercisesController < ApplicationController
     @file_types = FileType.all.order(:name)
   end
   private :set_file_types
+
+  def collect_set_and_unset_exercise_tags
+    @search = policy_scope(Tag).search(params[:q])
+    @tags = @search.result.order(:name)
+    exercise_tags = @exercise.exercise_tags
+    tags_set = exercise_tags.collect{|e| e.tag}.to_set
+    tags_not_set = Tag.all.to_set.subtract tags_set
+    @exercise_tags = exercise_tags + tags_not_set.collect { |tag| ExerciseTag.new(exercise: @exercise, tag: tag)}
+  end
+  private :collect_set_and_unset_exercise_tags
 
   def show
   end
@@ -252,7 +286,20 @@ class ExercisesController < ApplicationController
   private :transmit_lti_score
 
   def update
-    update_and_respond(object: @exercise, params: exercise_params)
+    collect_set_and_unset_exercise_tags
+    myparam = exercise_params
+    checked_exercise_tags = @exercise_tags.select { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+
+    for et in checked_exercise_tags
+      et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
+      et.exercise = @exercise
+    end
+
+    myparam[:exercise_tags] = checked_exercise_tags
+    myparam.delete :tag_ids
+    removed_exercise_tags.map {|et| et.destroy}
+    update_and_respond(object: @exercise, params: myparam)
   end
 
   def redirect_after_submit
