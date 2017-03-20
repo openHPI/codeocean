@@ -185,7 +185,7 @@ class ExercisesController < ApplicationController
 
   def set_course_token
     if @lti_parameters
-      lti_json = @lti_parameters.lti_parameters
+      lti_json = @lti_parameters.lti_parameters[:lis_outcome_service_url]
       @course_token =
           if match = lti_json.match(/^.*courses\/([a-z0-9\-]+)\/sections/)
             match.captures.first
