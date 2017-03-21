@@ -548,14 +548,12 @@ configureEditors: function () {
     $('#output_sidebar_collapsed').addClass('hidden');
     $('#output_sidebar_uncollapsed').removeClass('hidden');
     $('#output_sidebar').removeClass('output-col-collapsed').addClass('output-col');
-    this.resizeAceEditors();
   },
 
   hideOutputBar: function() {
     $('#output_sidebar_collapsed').removeClass('hidden');
     $('#output_sidebar_uncollapsed').addClass('hidden');
     $('#output_sidebar').removeClass('output-col').addClass('output-col-collapsed');
-    this.resizeAceEditors();
   },
 
   initializeSideBarTooltips: function() {
