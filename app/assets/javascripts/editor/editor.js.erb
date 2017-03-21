@@ -642,7 +642,7 @@ configureEditors: function () {
         $('#btn-search-col').button().click(function(){
             var search = $('#search-col').val();
             var course_token = $('#sidebar-collapsed').data('course_token')
-            window.open(`https://open.hpi.de/courses/${course_token}/pinboard?query=${search}`, '_blank');
+            window.open("https://open.hpi.de/courses/" + course_token + "/pinboard?query=" + search, '_blank');
         })
 
         $('#sidebar-search-collapsed').on('click',this.handleSideBarToggle.bind(this));
