@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214144837) do
+ActiveRecord::Schema.define(version: 20170228165741) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,21 +76,53 @@ ActiveRecord::Schema.define(version: 20161214144837) do
     t.boolean  "network_enabled"
   end
 
+  create_table "exercise_collections", force: :cascade do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "exercise_collections_exercises", id: false, force: :cascade do |t|
+    t.integer "exercise_collection_id"
+    t.integer "exercise_id"
+  end
+
+  add_index "exercise_collections_exercises", ["exercise_collection_id"], name: "index_exercise_collections_exercises_on_exercise_collection_id", using: :btree
+  add_index "exercise_collections_exercises", ["exercise_id"], name: "index_exercise_collections_exercises_on_exercise_id", using: :btree
+
+  create_table "exercise_tags", force: :cascade do |t|
+    t.integer "exercise_id"
+    t.integer "tag_id"
+    t.integer "factor",      default: 0
+  end
+
   create_table "exercises", force: :cascade do |t|
     t.text     "description"
     t.integer  "execution_environment_id"
-    t.string   "title",                    limit: 255
+    t.string   "title",                     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
     t.text     "instructions"
     t.boolean  "public"
-    t.string   "user_type",                limit: 255
-    t.string   "token",                    limit: 255
+    t.string   "user_type",                 limit: 255
+    t.string   "token",                     limit: 255
     t.boolean  "hide_file_tree"
     t.boolean  "allow_file_creation"
-    t.boolean  "allow_auto_completion",                default: false
+    t.boolean  "allow_auto_completion",                 default: false
+    t.integer  "expected_worktime_seconds",             default: 0
+    t.integer  "expected_difficulty",                   default: 1
   end
+
+  create_table "exercises_proxy_exercises", id: false, force: :cascade do |t|
+    t.integer  "proxy_exercise_id"
+    t.integer  "exercise_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "exercises_proxy_exercises", ["exercise_id"], name: "index_exercises_proxy_exercises_on_exercise_id", using: :btree
+  add_index "exercises_proxy_exercises", ["proxy_exercise_id"], name: "index_exercises_proxy_exercises_on_proxy_exercise_id", using: :btree
 
   create_table "external_users", force: :cascade do |t|
     t.integer  "consumer_id"
@@ -182,11 +214,26 @@ ActiveRecord::Schema.define(version: 20161214144837) do
   add_index "internal_users", ["remember_me_token"], name: "index_internal_users_on_remember_me_token", using: :btree
   add_index "internal_users", ["reset_password_token"], name: "index_internal_users_on_reset_password_token", using: :btree
 
+  create_table "interventions", force: :cascade do |t|
+    t.string   "name"
+    t.text     "markup"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "lti_parameters", force: :cascade do |t|
-    t.string   "external_user_id"
+    t.integer  "external_users_id"
     t.integer  "consumers_id"
     t.integer  "exercises_id"
-    t.jsonb    "lti_parameters",   default: {}, null: false
+    t.jsonb    "lti_parameters",    default: {}, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "proxy_exercises", force: :cascade do |t|
+    t.string   "title"
+    t.string   "description"
+    t.string   "token"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -203,6 +250,15 @@ ActiveRecord::Schema.define(version: 20161214144837) do
     t.integer  "submission_id"
   end
 
+  create_table "searches", force: :cascade do |t|
+    t.integer  "exercise_id", null: false
+    t.integer  "user_id",     null: false
+    t.string   "user_type",   null: false
+    t.string   "search"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "submissions", force: :cascade do |t|
     t.integer  "exercise_id"
     t.float    "score"
@@ -213,6 +269,12 @@ ActiveRecord::Schema.define(version: 20161214144837) do
     t.string   "user_type",   limit: 255
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "testruns", force: :cascade do |t|
     t.boolean  "passed"
     t.text     "output"
@@ -221,5 +283,36 @@ ActiveRecord::Schema.define(version: 20161214144837) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "user_exercise_feedbacks", force: :cascade do |t|
+    t.integer "exercise_id",          null: false
+    t.integer "user_id",              null: false
+    t.string  "user_type",            null: false
+    t.integer "difficulty"
+    t.integer "working_time_seconds"
+    t.string  "feedback_text"
+  end
+
+  create_table "user_exercise_interventions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.integer  "exercise_id"
+    t.integer  "intervention_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "user_proxy_exercise_exercises", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.integer  "proxy_exercise_id"
+    t.integer  "exercise_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_proxy_exercise_exercises", ["exercise_id"], name: "index_user_proxy_exercise_exercises_on_exercise_id", using: :btree
+  add_index "user_proxy_exercise_exercises", ["proxy_exercise_id"], name: "index_user_proxy_exercise_exercises_on_proxy_exercise_id", using: :btree
+  add_index "user_proxy_exercise_exercises", ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user_type_and_user_id", using: :btree
 
 end
