@@ -6,7 +6,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :run, :statistics, :submit, :reload]
+  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
@@ -223,7 +223,17 @@ class ExercisesController < ApplicationController
     else
       render(json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"})
     end
+  end
 
+  def search
+    search_text = params[:search_text]
+    search = Search.new(user: current_user, exercise: @exercise, search: search_text)
+
+    begin search.save
+      render(json: {success: 'true'})
+    rescue
+      render(json: {success: 'false', error: "could not save search: #{$!}"})
+    end
   end
 
   def index

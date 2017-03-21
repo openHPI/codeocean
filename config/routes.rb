@@ -62,6 +62,7 @@ Rails.application.routes.draw do
       get :implement
       get :working_times
       post :intervention
+      post :search
       get :statistics
       get :reload
       post :submit
