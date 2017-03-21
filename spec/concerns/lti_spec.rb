@@ -165,6 +165,7 @@ describe Lti do
 
     it 'stores data in the session' do
       controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user))
+      controller.instance_variable_set(:@exercise, FactoryGirl.create(:fibonacci))
       expect(controller.session).to receive(:[]=).with(:consumer_id, anything)
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
       controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters)
@@ -172,6 +173,8 @@ describe Lti do
 
     it 'it creates an LtiParameter Object' do
       before_count = LtiParameter.count
+      controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user))
+      controller.instance_variable_set(:@exercise, FactoryGirl.create(:fibonacci))
       controller.send(:store_lti_session_data, consumer: FactoryGirl.build(:consumer), parameters: parameters)
       expect(LtiParameter.count).to eq(before_count + 1)
     end

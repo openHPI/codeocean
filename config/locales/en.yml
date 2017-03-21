@@ -48,6 +48,7 @@ en:
       exercise:
         description: Description
         embedding_parameters: LTI Embedding Parameters
+        tags: Tags
         execution_environment: Execution Environment
         execution_environment_id: Execution Environment
         files: Files
@@ -55,10 +56,16 @@ en:
         instructions: Instructions
         maximum_score: Maximum Score
         public: Public
+        selection: Selected
         title: Title
         user: Author
         allow_auto_completion: "Allow auto completion"
         allow_file_creation: "Allow file creation"
+        difficulty: Difficulty
+        worktime: "Expected worktime in minutes"
+      proxy_exercise:
+        title: Title
+        files_count: Exercises Count
       external_user:
         consumer: Consumer
         email: Email
@@ -89,6 +96,8 @@ en:
         message: Message
         name: Name
         regular_expression: Regular Expression
+      intervention:
+        name: Name
       internal_user:
         activated: Activated
         consumer: Consumer
@@ -112,6 +121,10 @@ en:
         files: Files
         score: Score
         user: Author
+      tag:
+        name: Name
+        usage: Used
+        difficulty: Share on the Exercise
       file_template:
         name: "Name"
         file_type: "File Type"
@@ -132,6 +145,9 @@ en:
       exercise:
         one: Exercise
         other: Exercises
+      proxy_exercise:
+        one: Proxy Exercise
+        other: Proxy Exercises
       external_user:
         one: External User
         other: External Users
@@ -281,6 +297,11 @@ en:
         listing: Listing the newest comment requests
         request: "Request Comments"
         question: "Please shortly describe your problem or the program part you would like to get feedback for."
+      rfc_intervention:
+        text: "It looks like you may struggle with this exercise. If you like we can help you out!"
+      break_intervention:
+        title: "Break"
+        text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
     index:
       clone: Duplicate
       implement: Implement
@@ -311,6 +332,9 @@ en:
         tests: Unit Test Results
         time_difference: 'Working Time until here*'
         addendum: '* Deltas longer than 30 minutes are ignored.'
+  proxy_exercises:
+      index:
+        clone: Duplicate
   external_users:
     statistics:
       title: External User Statistics
@@ -348,6 +372,8 @@ en:
       success: You successfully changed your password.
     show:
       link: Profile
+  search:
+    search_in_forum: "Problems? Search here in forum"
   locales:
     de: German
     en: English

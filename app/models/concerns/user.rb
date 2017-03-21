@@ -8,6 +8,11 @@ module User
     has_many :exercises, as: :user
     has_many :file_types, as: :user
     has_many :submissions, as: :user
+    has_many :user_proxy_exercise_exercises, as: :user
+    has_many :user_exercise_interventions, as: :user
+    has_many :interventions, through: :user_exercise_interventions
+    accepts_nested_attributes_for :user_proxy_exercise_exercises
+
 
     scope :with_submissions, -> { where('id IN (SELECT user_id FROM submissions)') }
   end

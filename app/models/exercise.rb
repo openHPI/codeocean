@@ -12,6 +12,15 @@ class Exercise < ActiveRecord::Base
   belongs_to :execution_environment
   has_many :submissions
 
+  has_and_belongs_to_many :proxy_exercises
+  has_many :user_proxy_exercise_exercises
+  has_and_belongs_to_many :exercise_collections
+  has_many :user_exercise_interventions
+  has_many :interventions, through: :user_exercise_interventions
+  has_many :exercise_tags
+  has_many :tags, through: :exercise_tags
+  accepts_nested_attributes_for :exercise_tags
+
   has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
   has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions
   alias_method :users, :external_users
@@ -48,6 +57,10 @@ class Exercise < ActiveRecord::Base
     return user_count == 0 ? 0 : submissions.count() / user_count.to_f()
   end
 
+  def time_maximum_score(user)
+    submissions.where(user: user).where("cause IN ('submit','assess')").where("score IS NOT NULL").order("score DESC, created_at ASC").first.created_at rescue Time.zone.at(0)
+  end
+
   def user_working_time_query
     """
       SELECT user_id,
@@ -58,12 +71,41 @@ class Exercise < ActiveRecord::Base
          FROM
             (SELECT user_id,
                     id,
-                    (created_at - lag(created_at) over (PARTITION BY user_id
+                    (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
             WHERE exercise_id=#{id}) AS foo) AS bar
       GROUP BY user_id
     """
+  end
+
+  def get_quantiles(quantiles)
+    quantiles_str = "[" + quantiles.join(",") + "]"
+    result = self.class.connection.execute("""
+      SELECT unnest(PERCENTILE_CONT(ARRAY#{quantiles_str}) WITHIN GROUP (ORDER BY working_time))
+      FROM
+          (
+            SELECT user_id,
+                   sum(working_time_new) AS working_time
+            FROM
+              (SELECT user_id,
+                      CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
+               FROM
+                  (SELECT user_id,
+                          id,
+                          (created_at - lag(created_at) OVER (PARTITION BY user_id, exercise_id
+                                                              ORDER BY created_at)) AS working_time
+                  FROM submissions
+                  WHERE exercise_id=#{self.id} AND user_type = 'ExternalUser') AS foo) AS bar
+            GROUP BY user_id
+      ) AS foo
+    """)
+    if result.count > 0
+      quantiles.each_with_index.map{|q,i| Time.parse(result[i]["unnest"]).seconds_since_midnight}
+    else
+      quantiles.map{|q| 0}
+    end
+
   end
 
   def retrieve_working_time_statistics
@@ -88,23 +130,25 @@ class Exercise < ActiveRecord::Base
     @working_time_statistics[user_id]["working_time"]
   end
 
-  def average_working_time_for_only(user_id)
-    self.class.connection.execute("""
+  def accumulated_working_time_for_only(user)
+    user_type = user.external_user? ? "ExternalUser" : "InternalUser"
+    Time.parse(self.class.connection.execute("""
       SELECT sum(working_time_new) AS working_time
       FROM
         (SELECT CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT id,
-                    (created_at - lag(created_at) over (PARTITION BY user_id
+                    (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
-            WHERE exercise_id=#{id} and user_id=#{user_id}) AS foo) AS bar
-    """).first["working_time"]
+            WHERE exercise_id=#{id} and user_id=#{user.id} and user_type='#{user_type}') AS foo) AS bar
+    """).first["working_time"] || "00:00:00").seconds_since_midnight
   end
 
   def duplicate(attributes = {})
     exercise = dup
     exercise.attributes = attributes
+    exercise_tags.each  { |et| exercise.exercise_tags << et.dup }
     files.each { |file| exercise.files << file.dup }
     exercise
   end
@@ -162,8 +206,12 @@ class Exercise < ActiveRecord::Base
   end
   private :generate_token
 
-  def maximum_score
-    files.teacher_defined_tests.sum(:weight)
+  def maximum_score(user = nil)
+    if user
+      submissions.where(user: user).where("cause IN ('submit','assess')").where("score IS NOT NULL").order("score DESC").first.score || 0 rescue 0
+    else
+      files.teacher_defined_tests.sum(:weight)
+    end
   end
 
   def set_default_values

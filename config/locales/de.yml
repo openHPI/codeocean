@@ -27,6 +27,7 @@ de:
       exercise:
         description: Beschreibung
         embedding_parameters: Parameter für LTI-Einbettung
+        tags: Tags
         execution_environment: Ausführungsumgebung
         execution_environment_id: Ausführungsumgebung
         files: Dateien
@@ -34,10 +35,16 @@ de:
         instructions: Anweisungen
         maximum_score: Erreichbare Punktzahl
         public: Öffentlich
+        selection: Ausgewählt
         title: Titel
         user: Autor
         allow_auto_completion: "Autovervollständigung aktivieren"
         allow_file_creation: "Dateierstellung erlauben"
+        difficulty: Schwierigkeitsgrad
+        worktime: "vermutete Arbeitszeit in Minuten"
+      proxy_exercise:
+        title: Title
+        files_count: Anzahl der Aufgaben
       external_user:
         consumer: Konsument
         email: E-Mail
@@ -68,6 +75,8 @@ de:
         message: Nachricht
         name: Name
         regular_expression: Regulärer Ausdruck
+      intervention:
+        name: Name
       internal_user:
         activated: Aktiviert
         consumer: Konsument
@@ -91,6 +100,10 @@ de:
         files: Dateien
         score: Punktzahl
         user: Autor
+      tag:
+        name: Name
+        usage: Verwendet
+        difficulty: Anteil an der Aufgabe
       file_template:
         name: "Name"
         file_type: "Dateityp"
@@ -111,6 +124,9 @@ de:
       exercise:
         one: Aufgabe
         other: Aufgaben
+      proxy_exercise:
+        one: Proxy Aufgabe
+        other: Proxy Aufgaben
       external_user:
         one: Externer Nutzer
         other: Externe Nutzer
@@ -259,7 +275,12 @@ de:
         removeAllOnLine: Meine Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
         request: "Kommentaranfrage stellen"
-        question: "Bitte beschreiben Sie kurz ihre Problem oder nennen Sie den Programmteil, zu dem sie Feedback wünschen."
+        question: "Bitte beschreiben Sie kurz ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen."
+      rfc_intervention:
+        text: "Es scheint so als würden sie Probleme mit der Aufgabe haben. Wenn Sie möchten, können wir Ihnen helfen!"
+      break_intervention:
+        title: "Pause"
+        text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht eine Pause machen um auf neue Gedanken zu kommen?"
     index:
       clone: Duplizieren
       implement: Implementieren
@@ -290,6 +311,9 @@ de:
         tests: Unit Tests
         time_difference: 'Arbeitszeit bis hier*'
         addendum: '* Differenzen von mehr als 30 Minuten werden ignoriert.'
+  proxy_exercises:
+      index:
+        clone: Duplizieren
   external_users:
     statistics:
       title: Statistiken für Externe Benutzer
@@ -327,6 +351,8 @@ de:
       success: Sie haben Ihr Passwort erfolgreich geändert.
     show:
       link: Profil
+  search:
+    search_in_forum: "Probleme? Suche hier im Forum"
   locales:
     de: Deutsch
     en: Englisch
