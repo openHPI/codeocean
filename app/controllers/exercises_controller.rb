@@ -187,12 +187,17 @@ class ExercisesController < ApplicationController
     lti_parameters = LtiParameter.find_by(external_users_id: current_user.id,
                                           exercises_id: @exercise.id)
     if lti_parameters
-      lti_json = lti_parameters.lti_parameters["lis_outcome_service_url"]
+      lti_json = lti_parameters.lti_parameters["launch_presentation_return_url"]
+
       @course_token =
-          if match = lti_json.match(/^.*courses\/([a-z0-9\-]+)\/sections/)
-            match.captures.first
+          unless lti_json.nil?
+            if match = lti_json.match(/^.*courses\/([a-z0-9\-]+)\/sections/)
+              match.captures.first
+            else
+              java_course_token
+            end
           else
-            java_course_token
+            ""
           end
     else
       # no consumer, therefore implementation with internal user
