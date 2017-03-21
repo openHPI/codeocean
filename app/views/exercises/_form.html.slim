@@ -40,7 +40,7 @@
     = f.number_field "expected_worktime_minutes", value: @exercise.expected_worktime_seconds / 60, in: 1..1000, step: 1
   h2 Tags
   .table-responsive
-    table.table
+    table.table#tags-table
       thead
         tr
           th = t('activerecord.attributes.exercise.selection')
