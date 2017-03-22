@@ -228,7 +228,8 @@ $(function() {
   }
 
   if ($.isController('exercises')) {
-    if ($('table').isPresent()) {
+      // ignore tags table since it is in the dom before other tables
+    if ($('table:not(#tags-table)').isPresent()) {
       enableBatchUpdate();
     } else if ($('.edit_exercise, .new_exercise').isPresent()) {
       execution_environments = $('form').data('execution-environments');
