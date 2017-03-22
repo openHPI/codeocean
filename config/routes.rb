@@ -85,14 +85,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :searches do
-    member do
-      post :clone
-      get :reload
-      post :submit
-    end
-  end
-
   resources :interventions do
     member do
       post :clone
