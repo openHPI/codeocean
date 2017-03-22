@@ -62,6 +62,7 @@ Rails.application.routes.draw do
       get :implement
       get :working_times
       post :intervention
+      post :search
       get :statistics
       get :reload
       post :submit
@@ -77,14 +78,6 @@ Rails.application.routes.draw do
   end
 
   resources :tags do
-    member do
-      post :clone
-      get :reload
-      post :submit
-    end
-  end
-
-  resources :searches do
     member do
       post :clone
       get :reload
