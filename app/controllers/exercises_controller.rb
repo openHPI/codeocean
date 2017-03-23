@@ -21,7 +21,7 @@ class ExercisesController < ApplicationController
   private :authorize!
 
   def max_intervention_count
-    3
+    2
   end
 
 
@@ -168,7 +168,18 @@ class ExercisesController < ApplicationController
     user_got_enough_interventions = UserExerciseIntervention.where(exercise: @exercise, user: current_user).count >= max_intervention_count
     is_java_course = @course_token && @course_token.eql?(java_course_token)
 
-    @show_interventions = (!is_java_course || user_got_enough_interventions) ? "false" : "true"
+    user_intervention_group = UserGroupSeparator.getInterventionGroup(current_user)
+
+    case user_intervention_group
+      when :no_intervention
+        puts "non"
+      when :break_intervention
+        puts "break"
+        @show_break_interventions = (!is_java_course || user_got_enough_interventions) ? "false" : "true"
+      when :rfc_intervention
+        puts "rfc"
+        @show_rfc_interventions = (!is_java_course || user_got_enough_interventions) ? "false" : "true"
+    end
 
     @search = Search.new
     @search.exercise = @exercise
