@@ -280,7 +280,7 @@ de:
         text: "Es scheint so als würden sie Probleme mit der Aufgabe haben. Wenn Sie möchten, können wir Ihnen helfen!"
       break_intervention:
         title: "Pause"
-        text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht eine Pause machen um auf neue Gedanken zu kommen?"
+        text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
     index:
       clone: Duplizieren
       implement: Implementieren
