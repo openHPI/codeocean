@@ -13,6 +13,10 @@ class SubmissionsController < ApplicationController
   before_action :set_mime_type, only: [:download_file, :render_file]
   skip_before_action :verify_authenticity_token, only: [:download_file, :render_file]
 
+  def max_message_buffer_size
+    500
+  end
+
   def authorize!
     authorize(@submission || @submissions)
   end
@@ -172,15 +176,21 @@ class SubmissionsController < ApplicationController
   end
 
   def handle_message(message, tubesock, container)
+    @message_buffer ||= ""
     # Handle special commands first
     if (/^#exit/.match(message))
       kill_socket(tubesock)
+
       @docker_client.exit_container(container)
+      if !@message_buffer.blank?
+        Testrun.create(file: @file, submission: @submission, output: @message_buffer)
+      end
     else
       # Filter out information about run_command, test_command, user or working directory
       run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
       test_command = @submission.execution_environment.test_command % command_substitutions(params[:filename])
       if !(/root|workspace|#{run_command}|#{test_command}/.match(message))
+        @message_buffer += message if @message_buffer.size <= max_message_buffer_size
         parse_message(message, 'stdout', tubesock)
       end
     end
