@@ -681,6 +681,6 @@ configureEditors: function () {
 
     $(window).on("beforeunload", this.unloadAutoSave.bind(this));
     // create autosave when the editor is opened the first time
-    this.autosave().bind(this);
+    this.autosave();
   }
 };
