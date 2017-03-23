@@ -143,7 +143,7 @@ class SubmissionsController < ApplicationController
         tubesock.onmessage do |data|
           Rails.logger.info(Time.now.getutc.to_s + ": Client sending: " + data)
           # Check whether the client send a JSON command and kill container
-          # if the command is 'client_exit', send it to docker otherwise.
+          # if the command is 'client_kill', send it to docker otherwise.
           begin
             parsed = JSON.parse(data)
             if parsed['cmd'] == 'client_kill'
@@ -170,6 +170,9 @@ class SubmissionsController < ApplicationController
   end
 
   def kill_socket(tubesock)
+    # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
+    save_run_output
+
     # Hijacked connection needs to be notified correctly
     tubesock.send_data JSON.dump({'cmd' => 'exit'})
     tubesock.close
@@ -235,6 +238,12 @@ class SubmissionsController < ApplicationController
         socket.send_data JSON.dump(parsed)
         Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))
       end
+    end
+  end
+
+  def save_run_output
+    if !@message_buffer.blank?
+      Testrun.create(file: @file, submission: @submission, output: @message_buffer)
     end
   end
 
