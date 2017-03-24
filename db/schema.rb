@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170228165741) do
+ActiveRecord::Schema.define(version: 20170323130756) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -269,6 +269,9 @@ ActiveRecord::Schema.define(version: 20170228165741) do
     t.string   "user_type",   limit: 255
   end
 
+  add_index "submissions", ["exercise_id"], name: "index_submissions_on_exercise_id", using: :btree
+  add_index "submissions", ["user_id"], name: "index_submissions_on_user_id", using: :btree
+
   create_table "tags", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at"
@@ -309,6 +312,7 @@ ActiveRecord::Schema.define(version: 20170228165741) do
     t.integer  "exercise_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "reason"
   end
 
   add_index "user_proxy_exercise_exercises", ["exercise_id"], name: "index_user_proxy_exercise_exercises_on_exercise_id", using: :btree
