@@ -323,9 +323,7 @@ configureEditors: function () {
     var button = $('#requestComments');
     button.prop('disabled', true);
     button.on('click', function () {
-      if ($('#editor').data('show-interventions') == true){
-        $('#rfc_intervention_text').hide()
-      }
+      $('#rfc_intervention_text').hide()
       $('#comment-modal').modal('show');
     });
 
