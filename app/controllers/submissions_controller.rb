@@ -182,12 +182,13 @@ class SubmissionsController < ApplicationController
     @message_buffer ||= ""
     # Handle special commands first
     if (/^#exit/.match(message))
-      kill_socket(tubesock)
-
+      # Just call exit_container on the docker_client.
+      # Do not call kill_socket for the websocket to the client here.
+      # @docker_client.exit_container closes the socket to the container,
+      # kill_socket is called in the "on close handler" of the websocket to the container
       @docker_client.exit_container(container)
-      if !@message_buffer.blank?
-        Testrun.create(file: @file, submission: @submission, output: @message_buffer)
-      end
+    elsif /^#timeout/.match(message)
+      @message_buffer = 'timeout: ' + @message_buffer # add information that this run timed out to the buffer
     else
       # Filter out information about run_command, test_command, user or working directory
       run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
@@ -243,6 +244,7 @@ class SubmissionsController < ApplicationController
 
   def save_run_output
     if !@message_buffer.blank?
+      @message_buffer = @message_buffer[(0..max_message_buffer_size-1)] # trim the string to max_message_buffer_size chars
       Testrun.create(file: @file, submission: @submission, output: @message_buffer)
     end
   end

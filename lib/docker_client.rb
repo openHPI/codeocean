@@ -255,6 +255,12 @@ class DockerClient
             if(@tubesock)
               @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
             end
+            if(@socket)
+              @socket.send('#timeout')
+              #sleep one more second to ensure that the message reaches the submissions_controller.
+              sleep(1)
+              @socket.close
+            end
             kill_container(container)
           end
         #ensure
@@ -274,6 +280,7 @@ class DockerClient
     Rails.logger.debug('exiting container ' + container.to_s)
     # exit the timeout thread if it is still alive
     exit_thread_if_alive
+    @socket.close
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end
