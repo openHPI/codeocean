@@ -53,28 +53,43 @@ class ProxyExercise < ActiveRecord::Base
     end
 
     def find_matching_exercise(user)
-      exercises_user_has_accessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq
-      tags_user_has_seen = exercises_user_has_accessed.map{|ex| ex.tags}.uniq.flatten
-      Rails.logger.debug("exercises_user_has_accessed #{exercises_user_has_accessed.map{|e|e.id}.join(",")}")
+      user_group = UserGroupSeparator.getProxyExerciseGroup(user)
+      case user_group
+        when :dummy_assigment
+          rec_ex = select_easiest_exercise(exercises)
+          @reason[:reason] = "dummy group"
+          Rails.logger.debug("assigned user to dummy group, and gave him exercise: #{rec_ex.title}")
+          rec_ex
+        when :random_assigment
+          @reason[:reason] = "random group"
+          rec_ex = exercises.shuffle.first
+          Rails.logger.debug("assigned user to random group, and gave him exercise: #{rec_ex.title}")
+          rec_ex
+        when :recommended_assignment
+          exercises_user_has_accessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq.compact
+          tags_user_has_seen = exercises_user_has_accessed.map{|ex| ex.tags}.uniq.flatten
+          Rails.logger.debug("exercises_user_has_accessed #{exercises_user_has_accessed.map{|e|e.id}.join(",")}")
 
-      # find execises
-      potential_recommended_exercises = []
-      exercises.each do |ex|
-        ## find exercises which have only tags the user has already seen
-        if (ex.tags - tags_user_has_seen).empty?
-          potential_recommended_exercises << ex
-        end
+          # find execises
+          potential_recommended_exercises = []
+          exercises.each do |ex|
+            ## find exercises which have only tags the user has already seen
+            if (ex.tags - tags_user_has_seen).empty?
+              potential_recommended_exercises << ex
+            end
+          end
+          Rails.logger.debug("potential_recommended_exercises: #{potential_recommended_exercises.map{|e|e.id}}")
+          # if all exercises contain tags which the user has never seen, recommend easiest exercise
+          if potential_recommended_exercises.empty?
+            Rails.logger.debug("matched easiest exercise in pool")
+            @reason[:reason] = "easiest exercise in pool. empty potential exercises"
+            select_easiest_exercise(exercises)
+          else
+            recommended_exercise = select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
+            recommended_exercise
+          end
       end
-      Rails.logger.debug("potential_recommended_exercises: #{potential_recommended_exercises.map{|e|e.id}}")
-      # if all exercises contain tags which the user has never seen, recommend easiest exercise
-      if potential_recommended_exercises.empty?
-        Rails.logger.debug("matched easiest exercise in pool")
-        @reason[:reason] = "easiest exercise in pool. empty potential exercises"
-        select_easiest_exercise(exercises)
-      else
-        recommended_exercise = select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
-        recommended_exercise
-      end
+
     end
     private :find_matching_exercise
 
