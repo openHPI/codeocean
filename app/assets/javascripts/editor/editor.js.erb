@@ -613,7 +613,7 @@ configureEditors: function () {
                                 type: 'POST',
                                 url: $('#editor').data('intervention-save-url')
                             });
-                        }, 0);
+                        }, timeUntilIntervention);
                     } else if ($('#editor').data('rfc-interventions')) {
                         setTimeout(function () {
                             var button = $('#requestComments');
@@ -630,7 +630,7 @@ configureEditors: function () {
                                     url: $('#editor').data('intervention-save-url')
                                 });
                             };
-                        }, 0);
+                        }, timeUntilIntervention);
                     }
                 }
             });
