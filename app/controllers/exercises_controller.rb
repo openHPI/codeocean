@@ -172,12 +172,9 @@ class ExercisesController < ApplicationController
 
     case user_intervention_group
       when :no_intervention
-        puts "non"
       when :break_intervention
-        puts "break"
         @show_break_interventions = (!is_java_course || user_got_enough_interventions) ? "false" : "true"
       when :rfc_intervention
-        puts "rfc"
         @show_rfc_interventions = (!is_java_course || user_got_enough_interventions) ? "false" : "true"
     end
 
