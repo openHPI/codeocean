@@ -16,10 +16,13 @@ class UserGroupSeparator
   def self.getProxyExerciseGroup(user)
     lastDigitCreatedAt = user.created_at.to_i % 10
     if lastDigitCreatedAt < 2 # 0,1
+      puts "dummy"
       :dummy_assigment
     elsif lastDigitCreatedAt < 4 # 2,3
+      puts "random_assignment"
       :random_assigment
     else # 4,5,6,7,8,9
+      puts "recommended_assignment"
       :recommended_assignment
     end
   end
