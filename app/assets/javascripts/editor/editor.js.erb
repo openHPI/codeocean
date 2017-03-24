@@ -323,9 +323,7 @@ configureEditors: function () {
     var button = $('#requestComments');
     button.prop('disabled', true);
     button.on('click', function () {
-      if ($('#editor').data('show-interventions') == true){
-        $('#rfc_intervention_text').hide()
-      }
+      $('#rfc_intervention_text').hide()
       $('#comment-modal').modal('show');
     });
 
@@ -578,64 +576,63 @@ configureEditors: function () {
      * interventions
      * */
     initializeInterventionTimer: function() {
-        $.ajax({
-            data: {
-                exercise_id: $('#editor').data('exercise-id'),
-                user_id: $('#editor').data('user-id')
-            },
-            dataType: 'json',
-            method: 'GET',
-            // get working times for this exercise
-            url: $('#editor').data('working-times-url'),
-            success: function (data) {
-                var percentile75 = data['working_time_75_percentile'];
-                var accumulatedWorkTimeUser = data['working_time_accumulated'];
+        if ($('#editor').data('rfc-interventions') == true || $('#editor').data('break-interventions') == true) { // split in break or rfc intervention
+            $.ajax({
+                data: {
+                    exercise_id: $('#editor').data('exercise-id'),
+                    user_id: $('#editor').data('user-id')
+                },
+                dataType: 'json',
+                method: 'GET',
+                // get working times for this exercise
+                url: $('#editor').data('working-times-url'),
+                success: function (data) {
+                    var percentile75 = data['working_time_75_percentile'];
+                    var accumulatedWorkTimeUser = data['working_time_accumulated'];
 
-                var timeUntilBreak = 20 * 60 * 1000;
-                var minTimeUntilAskQuestion = 15 * 60 * 1000;
+                    var minTimeIntervention = 10 * 60 * 1000;
 
-                if ((accumulatedWorkTimeUser - percentile75) > 0) {
-                    // working time is already over 75 percentile
-                    var timeUntilAskQuestion = minTimeUntilAskQuestion;
-                } else {
-                    // working time is less than 75 percentile
-                    // ensure we give user at least 10 minutes before we bother the user
-                    var timeUntilAskForRFC = (percentile75 - accumulatedWorkTimeUser) > minTimeUntilAskQuestion ? (percentile75 - accumulatedWorkTimeUser) : minTimeUntilAskQuestion;
+                    if ((accumulatedWorkTimeUser - percentile75) > 0) {
+                        // working time is already over 75 percentile
+                        var timeUntilIntervention = minTimeIntervention;
+                    } else {
+                        // working time is less than 75 percentile
+                        // ensure we give user at least minTimeIntervention before we bother the user
+                        var timeUntilIntervention = Math.max(percentile75 - accumulatedWorkTimeUser, minTimeIntervention);
+                    }
+                    if ($('#editor').data('break-interventions')){
+                        setTimeout(function () {
+                            $('#break-intervention-modal').modal('show');
+                            $.ajax({
+                                data: {
+                                    intervention_type: 'BreakIntervention'
+                                },
+                                dataType: 'json',
+                                type: 'POST',
+                                url: $('#editor').data('intervention-save-url')
+                            });
+                        }, timeUntilIntervention);
+                    } else if ($('#editor').data('rfc-interventions')) {
+                        setTimeout(function () {
+                            var button = $('#requestComments');
+                            // only show intervention if user did not requested for a comment already
+                            if (!button.prop('disabled')) {
+                                $('#rfc_intervention_text').show();
+                                $('#comment-modal').modal('show');
+                                $.ajax({
+                                    data: {
+                                        intervention_type: 'QuestionIntervention'
+                                    },
+                                    dataType: 'json',
+                                    type: 'POST',
+                                    url: $('#editor').data('intervention-save-url')
+                                });
+                            };
+                        }, timeUntilIntervention);
+                    }
                 }
-
-                // if notifications are too close to each other, ensure some time differences between them
-                if (Math.abs(timeUntilAskForRFC - timeUntilBreak) < 5 * 1000 * 60){
-                    timeUntilBreak = timeUntilBreak * 2;
-                }
-
-                setTimeout(function() {
-                    $('#break-intervention-modal').modal('show');
-                    $.ajax({
-                        data: {
-                            intervention_type: 'BreakIntervention'
-                        },
-                        dataType: 'json',
-                        type: 'POST',
-                        url: $('#editor').data('intervention-save-url')});
-                }, timeUntilBreak);
-
-
-                setTimeout(function() {
-                    var button = $('#requestComments');
-                    if (!button.prop('disabled')){
-                        $('#rfc_intervention_text').show();
-                        $('#comment-modal').modal('show');
-                        $.ajax({
-                            data: {
-                                intervention_type: 'QuestionIntervention'
-                            },
-                            dataType: 'json',
-                            type: 'POST',
-                            url: $('#editor').data('intervention-save-url')});
-                    };
-                }, timeUntilAskForRFC);
-            }
-        });
+            });
+        }
     },
 
     initializeSearchButton: function(){
@@ -671,9 +668,7 @@ configureEditors: function () {
     this.initializeDescriptionToggle();
     this.initializeSideBarTooltips();
     this.initializeTooltips();
-    if ($('#editor').data('show-interventions') == true){
-        this.initializeInterventionTimer();
-    }
+    this.initializeInterventionTimer();
     this.initializeSearchButton();
     this.initPrompt();
     this.renderScore();
