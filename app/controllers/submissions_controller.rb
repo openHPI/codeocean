@@ -340,7 +340,7 @@ class SubmissionsController < ApplicationController
 
     remote_evaluation_mapping = RemoteEvaluationMapping.create(:user_id => user_id, :exercise_id => exercise_id)
 
-    # create id.co file
+    # create .co file
     path = "tmp/.co"
     # parse validation token
     content = "#{remote_evaluation_mapping.validation_token}\n"
