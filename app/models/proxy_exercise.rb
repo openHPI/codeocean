@@ -62,9 +62,9 @@ class ProxyExercise < ActiveRecord::Base
           rec_ex
         when :random_assigment
           @reason[:reason] = "random group"
-          rec_ex = exercises.shuffle.first
-          Rails.logger.debug("assigned user to random group, and gave him exercise: #{rec_ex.title}")
-          rec_ex
+          ex = exercises.where("expected_difficulty > 1").shuffle.first
+          Rails.logger.debug("assigned user to random group, and gave him exercise: #{ex.title}")
+          ex
         when :recommended_assignment
           exercises_user_has_accessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq.compact
           tags_user_has_seen = exercises_user_has_accessed.map{|ex| ex.tags}.uniq.flatten
