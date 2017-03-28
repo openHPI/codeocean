@@ -70,9 +70,9 @@ class ProxyExercise < ActiveRecord::Base
           tags_user_has_seen = exercises_user_has_accessed.map{|ex| ex.tags}.uniq.flatten
           Rails.logger.debug("exercises_user_has_accessed #{exercises_user_has_accessed.map{|e|e.id}.join(",")}")
 
-          # find execises
+          # find exercises
           potential_recommended_exercises = []
-          exercises.each do |ex|
+          exercises.where("expected_difficulty > 1").each do |ex|
             ## find exercises which have only tags the user has already seen
             if (ex.tags - tags_user_has_seen).empty?
               potential_recommended_exercises << ex
