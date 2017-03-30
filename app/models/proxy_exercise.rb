@@ -36,8 +36,22 @@ class ProxyExercise < ActiveRecord::Base
           Rails.logger.debug("retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}" )
           assigned_user_proxy_exercise.exercise
         else
-          Rails.logger.debug("find new matching exercise for user #{user.id}" )
           matching_exercise =
+            if (token.eql? "47f4c736")
+              group = UserGroupSeparator.getGroupWeek2Testing(user)
+              Rails.logger.debug("Bonus exercise 47f4c736 assigned user to group #{group}")
+              case group
+                when :group_a
+                  exercises.where(id: 348).first
+                when :group_b
+                  exercises.where(id: 349).first
+                when :group_c
+                  exercises.where(id: 350).first
+                when :group_d
+                  exercises.where(id: 351).first
+              end
+            else
+              Rails.logger.debug("find new matching exercise for user #{user.id}" )
               begin
                 find_matching_exercise(user)
               rescue #fallback
@@ -46,8 +60,11 @@ class ProxyExercise < ActiveRecord::Base
                 @reason[:error] = "#{$!}"
                 exercises.shuffle.first
               end
+            end
           user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
           matching_exercise
+
+
         end
       recommended_exercise
     end
