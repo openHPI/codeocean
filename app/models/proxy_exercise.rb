@@ -38,8 +38,9 @@ class ProxyExercise < ActiveRecord::Base
         else
           matching_exercise =
             if (token.eql? "47f4c736")
+              Rails.logger.debug("Proxy exercise with token 47f4c736, split user in groups..")
               group = UserGroupSeparator.getGroupWeek2Testing(user)
-              Rails.logger.debug("Bonus exercise 47f4c736 assigned user to group #{group}")
+              Rails.logger.debug("user assigned to group #{group}")
               case group
                 when :group_a
                   exercises.where(id: 348).first
