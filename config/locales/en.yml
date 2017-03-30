@@ -292,7 +292,9 @@ en:
         dialogtitle: Comment on this line
         others: Other comments on this line
         addyours: Add your comment
-        addComment: Comment this
+        addCommentExercise: Comment this exercise
+        addComment: You can give feedback to this exercise. Did you find this exercise particulary easy or difficult? Was the description easy to understand?
+        addCommentButton: Comment this
         removeAllOnLine: Remove my comments on this line
         listing: Listing the newest comment requests
         request: "Request Comments"
@@ -420,6 +422,7 @@ en:
     no_question: "The author did not enter a question for this request."
     mark_as_solved: "Mark this question as answered"
     solved: "This question has been answered"
+    comment_exercise: "I would like to give feedback for this exercise"
   sessions:
     create:
       failure: Invalid email or password.

@@ -270,8 +270,10 @@ de:
         line: Zeile
         dialogtitle: Kommentar hinzufügen
         others: Andere Kommentare auf dieser Zeile
+        addCommentExercise: Aufgabe kommentieren
         addyours: Fügen Sie Ihren Kommentar hinzu
-        addComment: Kommentieren
+        addComment: Hier haben Sie die Möglichkeit Ihr Feedback zu dieser Aufgabe zu geben. Fanden Sie die Aufgabe zu leicht oder schwer? War die Beschreibung eventuell nicht gut?
+        addCommentButton: Kommentar abschicken
         removeAllOnLine: Meine Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
         request: "Kommentaranfrage stellen"
@@ -399,6 +401,7 @@ de:
     no_question: "Der Autor hat keine Frage zu dieser Anfrage gestellt."
     mark_as_solved: "Diese Frage als beantwortet markieren"
     solved: "Diese Frage wurde erfolgreich beantwortet"
+    comment_exercise: "Ich möchte die Aufgabenstellung kommentieren"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

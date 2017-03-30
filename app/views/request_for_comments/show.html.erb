@@ -1,5 +1,5 @@
 <div class="list-group">
-  <h4 id ="exercise_caption" class="list-group-item-heading" data-rfc-id = "<%= @request_for_comment.id %>" ><%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %></h4>
+  <h4 id ="exercise_caption" class="list-group-item-heading" data-exercise-id="<%=@request_for_comment.exercise.id%>" data-comment-exercise-url="<%=create_comment_exercise_request_for_comment_path%>" data-rfc-id = "<%= @request_for_comment.id %>" ><%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %></h4>
   <p class="list-group-item-text">
       <%
         user = @request_for_comment.user
@@ -20,13 +20,17 @@
         <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
     <% end %>
   </h5>
+  <button class="btn btn-block btn-primary" id="comment-exercise-button"><%= t('request_for_comments.comment_exercise') %></button>
+
   <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
-      <button class="btn btn-default" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
+      <button class="btn btn-block btn-primary" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
   <% elsif  (@request_for_comment.solved?) %>
-          <button type="button" class="btn btn-success"><%= t('request_for_comments.solved') %></button>
+      <button type="button" class="btn btn-block btn-success"><%= t('request_for_comments.solved') %></button>
   <% else %>
 
   <% end %>
+
+
 
   <% if @current_user.admin?  && user.is_a?(ExternalUser) %>
       <br>
@@ -58,10 +62,13 @@ also, all settings from the rails model needed for the editor configuration in t
 <% end %>
 
 <%= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent') %>
+<%= render('shared/modal', id: 'comment-exercise-modal', title: t('exercises.implement.comment.addCommentExercise'), template: 'exercises/_comment_exercise_dialogcontent') %>
 
 <script type="text/javascript">
 
   var solvedButton = $('#mark-as-solved-button');
+  var commentOnExerciseButton = $('#comment-exercise-button');
+  var addCommentExerciseButton = $('#addCommentExerciseButton')
 
   solvedButton.on('click', function(event){
     var jqrequest = $.ajax({
@@ -76,6 +83,29 @@ also, all settings from the rails model needed for the editor configuration in t
       }
     });
   });
+
+  // comment exercise
+  commentOnExerciseButton.on('click', function(){
+      $('#comment-exercise-modal').modal('show');
+  })
+
+  addCommentExerciseButton.on('click', function(event){
+      var comment = $('#commentOnExercise').val();
+      var url = $('#exercise_caption').data('comment-exercise-url');
+      var jqrequest = $.ajax({
+          dataType: 'json',
+          method: 'POST',
+          url: url,
+          data: {
+              exercise_id: $('#exercise_caption').data('exercise-id'),
+              feedback_text: comment
+          },
+          dataType: 'json'
+      });
+      $('#comment-exercise-modal').modal('hide');
+  });
+
+
 
   // set file paths for ace
   var ACE_FILES_PATH = '/assets/ace/';
@@ -163,6 +193,27 @@ also, all settings from the rails model needed for the editor configuration in t
       setAnnotations(editor, file_id);
     });
     jqxhr.fail(ajaxError);
+  }
+
+  function createCommentOnExercise(file_id, row, editor, commenttext){
+      var jqxhr = $.ajax({
+          data: {
+              comment: {
+                  file_id: file_id,
+                  row: row,
+                  column: 0,
+                  text: commenttext,
+                  request_id: $('h4#exercise_caption').data('rfc-id')
+              }
+          },
+          dataType: 'json',
+          method: 'POST',
+          url:  "/comments"
+      });
+      jqxhr.done(function(response){
+          setAnnotations(editor, file_id);
+      });
+      jqxhr.fail(ajaxError);
   }
 
   function handleSidebarClick(e) {
