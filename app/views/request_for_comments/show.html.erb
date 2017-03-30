@@ -20,12 +20,12 @@
         <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
     <% end %>
   </h5>
-  <button class="btn btn-block btn-primary" id="comment-exercise-button"><%= t('request_for_comments.comment_exercise') %></button>
+  <button class="btn btn-warning" id="comment-exercise-button"><%= t('request_for_comments.comment_exercise') %></button>
 
   <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
-      <button class="btn btn-block btn-primary" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
+      <button class="btn btn-primary" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
   <% elsif  (@request_for_comment.solved?) %>
-      <button type="button" class="btn btn-block btn-success"><%= t('request_for_comments.solved') %></button>
+      <button type="button" class="btn btn-success"><%= t('request_for_comments.solved') %></button>
   <% else %>
 
   <% end %>
