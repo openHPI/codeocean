@@ -49,7 +49,7 @@ class CommentsController < ApplicationController
     @comment = Comment.new(comment_params_without_request_id)
 
     if comment_params[:request_id]
-      UserMailer.got_new_comment(@comment, RequestForComment.find(comment_params[:request_id]), current_user)
+      UserMailer.got_new_comment(@comment, RequestForComment.find(comment_params[:request_id]), current_user).deliver_now
     end
 
     respond_to do |format|
