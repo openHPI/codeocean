@@ -269,7 +269,7 @@ class Exercise < ActiveRecord::Base
             SELECT e.external_id AS external_user_id, f.user_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time
             FROM FILTERED_TIMES_UNTIL_MAX f, EXTERNAL_USERS e
             WHERE f.user_id = e.id GROUP BY e.external_id, f.user_id, exercise_id
-    """).first["working_time"] || "00:00:00").seconds_since_midnight
+    """).first["working_time"]).seconds_since_midnight rescue 0
   end
 
   def duplicate(attributes = {})
