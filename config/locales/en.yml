@@ -293,7 +293,7 @@ en:
         others: Other comments on this line
         addyours: Add your comment
         addCommentExercise: Comment this exercise
-        addComment: You can give feedback to this exercise. Did you find this exercise particulary easy or difficult? Was the description easy to understand?
+        addComment: You can give feedback to this exercise. Keep in mind that this should refer to the exercise and not to the solution of the participant. Did you find this exercise particulary easy or difficult? Was the description sufficient?
         addCommentButton: Comment this
         removeAllOnLine: Remove my comments on this line
         listing: Listing the newest comment requests
