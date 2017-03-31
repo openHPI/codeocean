@@ -32,6 +32,10 @@ class RequestForCommentsController < ApplicationController
     end
   end
 
+  def submit
+
+  end
+
   # GET /request_for_comments/1
   # GET /request_for_comments/1.json
   def show
@@ -63,6 +67,20 @@ class RequestForCommentsController < ApplicationController
     authorize!
   end
 
+  def create_comment_exercise
+    old = UserExerciseFeedback.find_by(exercise_id: params[:exercise_id], user_id: current_user.id, user_type: current_user.class.name)
+    if old
+      old.delete
+    end
+    uef = UserExerciseFeedback.new(comment_params)
+
+    if uef.save
+      render(json: {success: "true"})
+    else
+      render(json: {success: "false"})
+    end
+  end
+
   # DELETE /request_for_comments/1
   # DELETE /request_for_comments/1.json
   def destroy
@@ -72,6 +90,10 @@ class RequestForCommentsController < ApplicationController
       format.json { head :no_content }
     end
     authorize!
+  end
+
+  def comment_params
+    params.permit(:exercise_id, :feedback_text).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
 
   private
@@ -85,4 +107,5 @@ class RequestForCommentsController < ApplicationController
       # we are using the current_user.id here, since internal users are not able to create comments. The external_user.id is a primary key and does not require the consumer_id to be unique.
       params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name)
     end
+
 end

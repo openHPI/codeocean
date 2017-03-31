@@ -27,4 +27,8 @@ class RequestForCommentPolicy < ApplicationPolicy
   def index?
     everyone
   end
+
+  def create_comment_exercise?
+    everyone
+  end
 end
