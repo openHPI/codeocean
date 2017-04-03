@@ -21,7 +21,7 @@ class ExercisesController < ApplicationController
   private :authorize!
 
   def max_intervention_count
-    2
+    3
   end
 
 
