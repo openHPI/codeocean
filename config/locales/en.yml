@@ -114,6 +114,7 @@ en:
         username: Username
         requested_at: Request Date
         question: "Question"
+        close: Close window
       submission:
         cause: Cause
         code: Code

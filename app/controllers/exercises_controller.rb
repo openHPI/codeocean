@@ -21,7 +21,7 @@ class ExercisesController < ApplicationController
   private :authorize!
 
   def max_intervention_count
-    2
+    3
   end
 
 
@@ -165,7 +165,8 @@ class ExercisesController < ApplicationController
 
   def implement
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
-    user_got_enough_interventions = UserExerciseIntervention.where(exercise: @exercise, user: current_user).count >= max_intervention_count
+    user_solved_exercise = @exercise.has_user_solved(current_user)
+    user_got_enough_interventions = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count >= max_intervention_count
     is_java_course = @course_token && @course_token.eql?(java_course_token)
 
     user_intervention_group = UserGroupSeparator.getInterventionGroup(current_user)
@@ -173,9 +174,9 @@ class ExercisesController < ApplicationController
     case user_intervention_group
       when :no_intervention
       when :break_intervention
-        @show_break_interventions = (!is_java_course || user_got_enough_interventions) ? "false" : "true"
+        @show_break_interventions = (user_solved_exercise || !is_java_course || user_got_enough_interventions) ? "false" : "true"
       when :rfc_intervention
-        @show_rfc_interventions = (!is_java_course || user_got_enough_interventions) ? "false" : "true"
+        @show_rfc_interventions = (user_solved_exercise || !is_java_course || user_got_enough_interventions) ? "false" : "true"
     end
 
     @search = Search.new
