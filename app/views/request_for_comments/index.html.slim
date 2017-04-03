@@ -1,12 +1,20 @@
 h1 = RequestForComment.model_name.human(count: 2)
 
+= render(layout: 'shared/form_filters') do |f|
+  .form-group
+    = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'sr-only')
+    = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
+  .form-group
+    = f.label(:title_cont,  t('request_for_comments.solved'), class: 'sr-only')
+    = f.select(:solved_not_eq,  [[t('request_for_comments.show_all'), 2], [t('request_for_comments.show_unsolved'), 1], [t('request_for_comments.show_solved'), 0]])
+
 .table-responsive
   table.table.sortable
     thead
       tr
         th
           i class="fa fa-lightbulb-o" aria-hidden="true" title = t('request_for_comments.solved') align="right"
-        th = t('activerecord.attributes.request_for_comments.exercise')
+        th =  sort_link(@search, :title,  t('activerecord.attributes.request_for_comments.exercise'))
         th = t('activerecord.attributes.request_for_comments.question')
         th
           i class="fa fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"

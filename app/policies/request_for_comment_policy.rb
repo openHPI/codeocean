@@ -8,6 +8,10 @@ class RequestForCommentPolicy < ApplicationPolicy
     everyone
   end
 
+  def search?
+    everyone
+  end
+
   def show?
     everyone
   end

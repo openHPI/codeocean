@@ -146,6 +146,9 @@ de:
       internal_user:
         one: Interner Nutzer
         other: Interne Nutzer
+      request_for_comment:
+        one: Kommentaranfrage
+        other: Kommentaranfragen
       submission:
         one: Abgabe
         other: Abgaben
@@ -417,6 +420,9 @@ de:
       all: "Alle Kommentaranfragen"
     no_question: "Der Autor hat keine Frage zu dieser Anfrage gestellt."
     mark_as_solved: "Diese Frage als beantwortet markieren"
+    show_all: "Alle Anfragen anzeigen"
+    show_solved: "Nur gelöste Anfragen anzeigen"
+    show_unsolved: "Nur ungelöste Anfragen anzeigen"
     solved: "Diese Frage wurde erfolgreich beantwortet"
     comment_exercise: "Ich möchte die Aufgabenstellung kommentieren"
   sessions:
