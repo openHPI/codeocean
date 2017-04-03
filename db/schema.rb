@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170323130756) do
+ActiveRecord::Schema.define(version: 20170403162848) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -239,14 +239,14 @@ ActiveRecord::Schema.define(version: 20170323130756) do
   end
 
   create_table "request_for_comments", force: :cascade do |t|
-    t.integer  "user_id",                   null: false
-    t.integer  "exercise_id",               null: false
-    t.integer  "file_id",                   null: false
+    t.integer  "user_id",                                   null: false
+    t.integer  "exercise_id",                               null: false
+    t.integer  "file_id",                                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "user_type",     limit: 255
     t.text     "question"
-    t.boolean  "solved"
+    t.boolean  "solved",                    default: false
     t.integer  "submission_id"
   end
 
