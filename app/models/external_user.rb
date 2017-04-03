@@ -6,7 +6,7 @@ class ExternalUser < ActiveRecord::Base
 
   def displayname
     result = name
-    if(consumer.name == 'openHPI')
+    if(!consumer.nil? && consumer.name == 'openHPI')
       result = Rails.cache.fetch("#{cache_key}/displayname", expires_in: 12.hours) do
          Xikolo::UserClient.get(external_id.to_s)[:display_name]
       end
