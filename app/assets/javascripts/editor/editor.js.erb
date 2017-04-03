@@ -328,6 +328,9 @@ configureEditors: function () {
     });
 
     $('#askForCommentsButton').on('click', this.requestComments.bind(this));
+    $('#closeAskForCommentsButton').on('click', function(){
+        $('#comment-modal').modal('hide');
+    });
 
     setTimeout(function () {
       button.prop('disabled', false);
