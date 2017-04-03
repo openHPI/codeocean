@@ -341,6 +341,10 @@ class Exercise < ActiveRecord::Base
     end
   end
 
+  def has_user_solved(user)
+    return maximum_score(user).to_i == maximum_score.to_i
+  end
+
   def set_default_values
     set_default_values_if_present(public: false)
   end
