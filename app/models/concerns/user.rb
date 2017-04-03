@@ -26,6 +26,6 @@ module User
   end
 
   def to_s
-    name
+    displayname
   end
 end
