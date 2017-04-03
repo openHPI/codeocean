@@ -6,7 +6,7 @@ class ExternalUser < ActiveRecord::Base
 
   def displayname
     result = name
-    if(result == nil || discount == "")
+    if(result == nil || result == "")
       result = "User " + id.to_s
     end
     result
