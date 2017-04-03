@@ -377,7 +377,7 @@ de:
           <br>
           Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
           <br>
           Eine Übersicht Ihrer Kommentaranfragen gibt es hier: %{link_my_comments} <br>
           Alle Kommentaranfragen aller Benutzer finden Sie hier: %{link_all_comments} <br>
