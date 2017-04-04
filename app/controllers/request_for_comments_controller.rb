@@ -17,7 +17,8 @@ class RequestForCommentsController < ApplicationController
   end
 
   def get_my_comment_requests
-    @request_for_comments = RequestForComment.where(user_id: current_user.id).order('created_at DESC').paginate(page: params[:page])
+    @search = RequestForComment.where(user_id: current_user.id).order('created_at DESC').search(params[:q])
+    @request_for_comments = @search.result.paginate(page: params[:page])
     render 'index'
   end
 
