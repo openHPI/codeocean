@@ -579,7 +579,13 @@ configureEditors: function () {
      * interventions
      * */
     initializeInterventionTimer: function() {
+
         if ($('#editor').data('rfc-interventions') == true || $('#editor').data('break-interventions') == true) { // split in break or rfc intervention
+            window.onblur = function() { window.blurred = true; };
+            window.onfocus = function() { window.blurred = false; };
+
+            var delta = 100; // time in ms to wait for window event before time gets stopped
+            var tid;
             $.ajax({
                 data: {
                     exercise_id: $('#editor').data('exercise-id'),
@@ -603,36 +609,41 @@ configureEditors: function () {
                         // ensure we give user at least minTimeIntervention before we bother the user
                         var timeUntilIntervention = Math.max(percentile75 - accumulatedWorkTimeUser, minTimeIntervention);
                     }
-                    if ($('#editor').data('break-interventions')){
-                        setTimeout(function () {
-                            $('#break-intervention-modal').modal('show');
-                            $.ajax({
-                                data: {
-                                    intervention_type: 'BreakIntervention'
-                                },
-                                dataType: 'json',
-                                type: 'POST',
-                                url: $('#editor').data('intervention-save-url')
-                            });
-                        }, timeUntilIntervention);
-                    } else if ($('#editor').data('rfc-interventions')) {
-                        setTimeout(function () {
-                            var button = $('#requestComments');
-                            // only show intervention if user did not requested for a comment already
-                            if (!button.prop('disabled')) {
-                                $('#rfc_intervention_text').show();
-                                $('#comment-modal').modal('show');
+
+                    tid = setInterval(function() {
+                        if ( window.blurred ) { return; }
+                        timeUntilIntervention -= delta;
+                        if ( timeUntilIntervention <= 0 ) {
+                            clearInterval(tid);
+                            // timeUntilIntervention passed
+                            if ($('#editor').data('break-interventions')) {
+                                $('#break-intervention-modal').modal('show');
                                 $.ajax({
                                     data: {
-                                        intervention_type: 'QuestionIntervention'
+                                        intervention_type: 'BreakIntervention'
                                     },
                                     dataType: 'json',
                                     type: 'POST',
                                     url: $('#editor').data('intervention-save-url')
                                 });
-                            };
-                        }, timeUntilIntervention);
-                    }
+                            } else if ($('#editor').data('rfc-interventions')){
+                                var button = $('#requestComments');
+                                // only show intervention if user did not requested for a comment already
+                                if (!button.prop('disabled')) {
+                                    $('#rfc_intervention_text').show();
+                                    $('#comment-modal').modal('show');
+                                    $.ajax({
+                                        data: {
+                                            intervention_type: 'QuestionIntervention'
+                                        },
+                                        dataType: 'json',
+                                        type: 'POST',
+                                        url: $('#editor').data('intervention-save-url')
+                                    });
+                                };
+                            }
+                        }
+                    }, delta);
                 }
             });
         }
