@@ -1,6 +1,8 @@
 h1 = "#{@exercise} (external user #{@external_user})"
 - submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id).order("created_at")
 - current_submission = submissions.first
+- submissions_and_interventions = (submissions + UserExerciseIntervention.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)).sort_by { |a| a.created_at }
+
 - if current_submission
   - initial_files = current_submission.files.to_a
 
@@ -41,20 +43,26 @@ h1 = "#{@exercise} (external user #{@external_user})"
             - ['.time', '.cause', '.score', '.tests', '.time_difference'].each do |title|
               th.header = t(title)
         tbody
-          - deltas = submissions.map.with_index {|item, index| delta = item.created_at - submissions[index - 1].created_at if index > 0; if delta == nil or delta > 30*60 then 0 else delta end}
-          - submissions.each_with_index do |submission, index|
-            tr data-id=submission.id
-              td.clickable = submission.created_at.strftime("%F %T")
-              td = submission.cause
-              td = submission.score
-              td
-                -submission.testruns.each do |run|
-                  - if run.passed
-                    .unit-test-result.positive-result  title=run.output
-                  - else
-                    .unit-test-result.negative-result title=run.output
-              td = Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0
-              -working_times_until.push((Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0))
+          - deltas = submissions.map.with_index {|item, index| delta = item.created_at - submissions[index - 1].created_at if index > 0; if delta == nil or delta > 10*60 then 0 else delta end}
+          - submissions_and_interventions.each_with_index do |submission_or_intervention, index|
+            tr data-id=submission_or_intervention.id
+              td.clickable = submission_or_intervention.created_at.strftime("%F %T")
+              - if submission_or_intervention.is_a?(Submission)
+                td = submission_or_intervention.cause
+                td = submission_or_intervention.score
+                td
+                  -submission_or_intervention.testruns.each do |run|
+                    - if run.passed
+                      .unit-test-result.positive-result  title=run.output
+                    - else
+                      .unit-test-result.negative-result title=run.output
+                td = Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0
+                -working_times_until.push((Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0))
+              - elsif submission_or_intervention.is_a? UserExerciseIntervention
+                td = submission_or_intervention.intervention.name
+                td =
+                td =
+                td =
     p = t('.addendum')
     .hidden#wtimes data-working_times=ActiveSupport::JSON.encode(working_times_until);
     div#progress_chart.col-lg-12
