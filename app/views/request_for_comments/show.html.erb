@@ -141,7 +141,7 @@ also, all settings from the rails model needed for the editor configuration in t
     jqrequest.done(function(response){
       $.each(response, function(index, comment) {
         comment.className = "code-ocean_comment";
-        comment.text = comment.username + ": " + comment.text
+        comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n\t\t");
       });
 
       session.setAnnotations(response);
@@ -268,4 +268,20 @@ also, all settings from the rails model needed for the editor configuration in t
       text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
   };
+
+
+  function stringDivider(str, width, spaceReplacer) {
+    if (str.length>width) {
+      var p=width
+      for (;p>0 && str[p]!=' ';p--) {
+      }
+      if (p>0) {
+        var left = str.substring(0, p);
+        var right = str.substring(p+1);
+        return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+      }
+    }
+    return str;
+  }
+
 </script>
