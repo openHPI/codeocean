@@ -172,6 +172,7 @@ configureEditors: function () {
     $('.editor').each(function (index, element) {
       this.resizeParentOfAceEditor(element);
     }.bind(this));
+    window.dispatchEvent(new Event('resize'));
   },
 
   resizeParentOfAceEditor: function (element){
