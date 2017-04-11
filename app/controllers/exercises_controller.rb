@@ -164,6 +164,7 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def implement
+    redirect_to_user_feedback
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.has_user_solved(current_user)
     user_got_enough_interventions = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count >= max_intervention_count
@@ -407,6 +408,14 @@ class ExercisesController < ApplicationController
       end
     end
     redirect_to_lti_return_path
+  end
+
+  def redirect_to_user_feedback
+    if UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)
+      redirect_to(edit_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id}))
+    else
+      redirect_to(new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id}))
+    end
   end
 
 end

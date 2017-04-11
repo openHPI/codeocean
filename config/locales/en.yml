@@ -547,8 +547,12 @@ en:
   file_template:
     no_template_label: "Empty File"
   user_exercise_feedback:
+    choose: "choose one"
     easy: "it was easy"
     some_what_easy: "it was somewhat easy"
     some_what_difficult: "it was somewhat difficult"
     difficult: "difficult"
+    done: "done"
+    difficulty: "Difficulty of the exercise"
+    description: "Here you have the chance to comment on the exercise. Feel free to give us feedback on the exercise, the description or difficulty. Did you liked the question or was it too difficult or easy?"
 

@@ -1,4 +1,4 @@
-class TagPolicy < AdminOrAuthorPolicy
+class UserExerciseFeedbackPolicy < AdminOrAuthorPolicy
   def author?
     @user == @record.author
   end
@@ -6,6 +6,10 @@ class TagPolicy < AdminOrAuthorPolicy
 
   def batch_update?
     admin?
+  end
+
+  def create?
+    everyone
   end
 
   def show?
