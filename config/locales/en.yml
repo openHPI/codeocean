@@ -546,4 +546,9 @@ en:
     previous_label: '&#8592; Previous Page'
   file_template:
     no_template_label: "Empty File"
+  user_exercise_feedback:
+    easy: "it was easy"
+    some_what_easy: "it was somewhat easy"
+    some_what_difficult: "it was somewhat difficult"
+    difficult: "difficult"
 

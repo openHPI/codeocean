@@ -1,0 +1,8 @@
+= form_for(@uef) do |f|
+  = render('shared/form_errors', object: @uef)
+  .form-group
+    = f.label(:feedback_text)
+    = f.text_field(:feedback_text, class: 'form-control', required: true)
+    = f.label(:difficulty)
+    = f.text_field(:difficulty, class: 'form-control', required: true)
+  .actions = render('shared/submit_button', f: f, object: @uef)
