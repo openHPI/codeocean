@@ -173,6 +173,9 @@ en:
       submission:
         one: Submission
         other: Submissions
+      user_exercise_feedback:
+        one: Feedback
+        other: Feedback
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
@@ -548,11 +551,10 @@ en:
     no_template_label: "Empty File"
   user_exercise_feedback:
     choose: "choose one"
-    easy: "it was easy"
-    some_what_easy: "it was somewhat easy"
-    some_what_difficult: "it was somewhat difficult"
-    difficult: "difficult"
-    done: "done"
+    difficulty_easy: "it was too easy"
+    difficulty_some_what_easy: "it was somewhat easy"
+    difficulty_ok: "it was just right"
+    difficulty_some_what_difficult: "it was somewhat difficult"
+    difficult_too_difficult: "it was too difficult"
     difficulty: "Difficulty of the exercise"
     description: "Here you have the chance to comment on the exercise. Feel free to give us feedback on the exercise, the description or difficulty. Did you liked the question or was it too difficult or easy?"
-

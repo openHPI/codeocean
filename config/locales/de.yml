@@ -152,6 +152,9 @@ de:
       submission:
         one: Abgabe
         other: Abgaben
+      user_exercise_feedback:
+        one: Feedback
+        other: Feedback
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'
@@ -525,3 +528,12 @@ de:
     previous_label: '&#8592; Vorherige Seite'
   file_template:
     no_template_label: "Leere Datei"
+  user_exercise_feedback:
+    difficulty_easy: "es war zu einfach"
+    difficulty_some_what_easy: "es war etwas zu einfach"
+    difficulty_ok: "es war ok"
+    difficulty_some_what_difficult: "es war etwas zu schwer"
+    difficult_too_difficult: "es war zu schwer"
+    difficulty: "Schwierigkeit der Aufgabe"
+    description: "Wir freuen uns, wenn Sie uns hier Feedback zur Aufgabe zu geben.<br>Bitte beschreiben Sie, was Ihnen an der Aufgabe gefallen hat und was nicht. Gabs Schwierigkeiten bei der Aufgabe? War die Aufgabe zu leicht oder zu schwer?<br>Wir freuen uns über jedes Feedback."
+

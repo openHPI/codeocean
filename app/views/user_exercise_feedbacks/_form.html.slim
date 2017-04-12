@@ -1,11 +1,11 @@
 = form_for(@uef) do |f|
   = render('shared/form_errors', object: @uef)
   h4
-    p = t('user_exercise_feedback.description')
+    == t('user_exercise_feedback.description')
   .form-group
     = f.text_area(:feedback_text, class: 'form-control', required: true, :rows => "10")
     h4 = t('user_exercise_feedback.difficulty')
-    = f.collection_radio_buttons :difficulty, @texts, :to_s, :to_s, html_options={class: "radio-inline"}  do |b|
+    = f.collection_radio_buttons :difficulty, @texts, :first, :last, html_options={class: "radio-inline"}  do |b|
       = b.label(:class => 'radio') { b.radio_button + b.text }
     = f.hidden_field(:exercise_id, :value => @exercise.id)
   .actions = render('shared/submit_button', f: f, object: @uef)
