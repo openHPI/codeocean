@@ -185,7 +185,12 @@ class ProxyExercise < ActiveRecord::Base
     private :scoring_matrix_quantiles
 
     def score(user, ex)
-      points_ratio =  ex.maximum_score(user) / ex.maximum_score.to_f
+      max_score = ex.maximum_score.to_f
+      if max_score <= 0
+        Rails.logger.debug("scoring user #{user.id} for exercise #{ex.id}:  score: 0" )
+        return 0.0
+      end
+      points_ratio = ex.maximum_score(user) / max_score
       if points_ratio == 0.0
         Rails.logger.debug("scoring user #{user.id} for exercise #{ex.id}: points_ratio=#{points_ratio} score: 0" )
         return 0.0
