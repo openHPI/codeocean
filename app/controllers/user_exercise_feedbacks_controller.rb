@@ -25,17 +25,27 @@ class UserExerciseFeedbacksController < ApplicationController
   private :authorize!
 
   def create
-    exercise = Exercise.find(uef_params[:exercise_id])
-    if exercise
+    @exercise = Exercise.find(uef_params[:exercise_id])
+    rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
+    submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first rescue nil
+
+    if @exercise
       @uef = UserExerciseFeedback.new(uef_params)
       if validate_inputs(uef_params)
         authorize!
-        create_and_respond(object: @uef, path: proc{implement_exercise_path(exercise)})
+        path =
+          if rfc && submission && submission.normalized_score == 1.0
+            request_for_comment_path(rfc)
+          else
+            implement_exercise_path(@exercise)
+          end
+        create_and_respond(object: @uef, path: proc{path})
       else
         flash[:danger] = t('shared.message_failure')
         redirect_to(:back, id: uef_params[:exercise_id])
       end
     end
+
   end
 
   def destroy
@@ -62,9 +72,17 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def update
+    submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first rescue nil
+    rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
     authorize!
     if @exercise && validate_inputs(uef_params)
-      update_and_respond(object: @uef, params: uef_params, path: implement_exercise_path(@exercise))
+      path =
+          if rfc && submission && submission.normalized_score == 1.0
+            request_for_comment_path(rfc)
+          else
+            implement_exercise_path(@exercise)
+          end
+      update_and_respond(object: @uef, params: uef_params, path: path)
     else
       flash[:danger] = t('shared.message_failure')
       redirect_to(:back, id: uef_params[:exercise_id])

@@ -164,7 +164,6 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def implement
-    redirect_to_user_feedback
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.has_user_solved(current_user)
     user_got_enough_interventions = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count >= max_intervention_count
@@ -381,7 +380,11 @@ class ExercisesController < ApplicationController
     if @submission.normalized_score == 1.0
       # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
-      if current_user.respond_to? :external_id
+      # redirect 10 percent pseudorandomly to the feedback page
+      if ((current_user.id + @submission.exercise.created_at.to_i) % 10 == 1)
+        redirect_to_user_feedback
+        return
+      elsif current_user.respond_to? :external_id
         if rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise, user_id: current_user.id).first
           # set a message that informs the user that his own RFC should be closed.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
@@ -406,6 +409,10 @@ class ExercisesController < ApplicationController
           return
         end
       end
+    else
+      # redirect to feedback page if score is less than 100 percent
+      redirect_to_user_feedback
+      return
     end
     redirect_to_lti_return_path
   end

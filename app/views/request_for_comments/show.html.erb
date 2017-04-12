@@ -20,7 +20,6 @@
         <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
     <% end %>
   </h5>
-  <button class="btn btn-warning" id="comment-exercise-button"><%= t('request_for_comments.comment_exercise') %></button>
 
   <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
       <button class="btn btn-primary" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
@@ -62,7 +61,6 @@ also, all settings from the rails model needed for the editor configuration in t
 <% end %>
 
 <%= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent') %>
-<%= render('shared/modal', id: 'comment-exercise-modal', title: t('exercises.implement.comment.addCommentExercise'), template: 'exercises/_comment_exercise_dialogcontent') %>
 
 <script type="text/javascript">
 
@@ -83,29 +81,6 @@ also, all settings from the rails model needed for the editor configuration in t
       }
     });
   });
-
-  // comment exercise
-  commentOnExerciseButton.on('click', function(){
-      $('#comment-exercise-modal').modal('show');
-  })
-
-  addCommentExerciseButton.on('click', function(event){
-      var comment = $('#commentOnExercise').val();
-      var url = $('#exercise_caption').data('comment-exercise-url');
-      var jqrequest = $.ajax({
-          dataType: 'json',
-          method: 'POST',
-          url: url,
-          data: {
-              exercise_id: $('#exercise_caption').data('exercise-id'),
-              feedback_text: comment
-          },
-          dataType: 'json'
-      });
-      $('#comment-exercise-modal').modal('hide');
-  });
-
-
 
   // set file paths for ace
   var ACE_FILES_PATH = '/assets/ace/';
