@@ -11,6 +11,14 @@ class UserExerciseFeedbacksController < ApplicationController
      [4,t('user_exercise_feedback.difficult_too_difficult')]]
   end
 
+  def time_presets
+    [[0,t('user_exercise_feedback.estimated_time_less_5')],
+     [1,t('user_exercise_feedback.estimated_time_5_to_10')],
+     [2,t('user_exercise_feedback.estimated_time_10_to_20')],
+     [3,t('user_exercise_feedback.estimated_time_20_to_30')],
+     [4,t('user_exercise_feedback.estimated_time_more_30')]]
+  end
+
   def authorize!
     authorize(@uef)
   end
@@ -36,16 +44,18 @@ class UserExerciseFeedbacksController < ApplicationController
 
   def edit
     @texts = comment_presets.to_a
+    @times = time_presets.to_a
     authorize!
   end
 
   def uef_params
-    params[:user_exercise_feedback].permit(:feedback_text, :difficulty, :exercise_id).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:user_exercise_feedback].permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :uef_params
 
   def new
     @texts = comment_presets.to_a
+    @times = time_presets.to_a
     @uef = UserExerciseFeedback.new
     @exercise = Exercise.find(params[:user_exercise_feedback][:exercise_id])
     authorize!
@@ -68,11 +78,20 @@ class UserExerciseFeedbacksController < ApplicationController
   def set_user_exercise_feedback
     @exercise = Exercise.find(params[:user_exercise_feedback][:exercise_id])
     @uef = UserExerciseFeedback.find_by(exercise_id: params[:user_exercise_feedback][:exercise_id], user: current_user)
-    @selectedDifficulty = @uef.difficulty
   end
 
   def validate_inputs(uef_params)
-    (uef_params[:difficulty].to_i >= 0 && uef_params[:difficulty].to_i < comment_presets.size) rescue false
+    begin
+      if uef_params[:difficulty].to_i < 0 || uef_params[:difficulty].to_i >= comment_presets.size
+        return false
+      elsif uef_params[:user_estimated_worktime].to_i < 0 || uef_params[:user_estimated_worktime].to_i >= time_presets.size
+        return false
+      else
+        return true
+      end
+    rescue
+      return false
+    end
   end
 
 end

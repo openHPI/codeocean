@@ -535,5 +535,11 @@ de:
     difficulty_some_what_difficult: "es war etwas zu schwer"
     difficult_too_difficult: "es war zu schwer"
     difficulty: "Schwierigkeit der Aufgabe"
-    description: "Wir freuen uns, wenn Sie uns hier Feedback zur Aufgabe zu geben.<br>Bitte beschreiben Sie, was Ihnen an der Aufgabe gefallen hat und was nicht. Gabs Schwierigkeiten bei der Aufgabe? War die Aufgabe zu leicht oder zu schwer?<br>Wir freuen uns über jedes Feedback."
+    description: "Wir freuen uns, wenn Sie uns hier Feedback zur Aufgabe zu geben.<br><br>Bitte beschreiben Sie, was Ihnen an der Aufgabe gefallen hat und was nicht. Gabs Schwierigkeiten bei der Aufgabe? War die Aufgabe zu leicht oder zu schwer?<br>Wir freuen uns über jedes Feedback."
+    estimated_time_less_5: "weniger als 5 Minuten"
+    estimated_time_5_to_10: "zwischen 5 und 10 Minuten"
+    estimated_time_10_to_20: "zwischen 10 und 20 Minuten"
+    estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
+    estimated_time_more_30: "mehr als 30 Minuten"
+    working_time: "Geschätze Bearbeitungszeit für diese Aufgabe"
 

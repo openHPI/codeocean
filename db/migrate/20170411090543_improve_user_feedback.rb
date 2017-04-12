@@ -1,6 +1,5 @@
 class ImproveUserFeedback < ActiveRecord::Migration
   def change
-    remove_column :user_exercise_feedbacks, :difficulty
-    add_column :user_exercise_feedbacks, :difficulty, :string
+    add_column :user_exercise_feedbacks, :user_estimated_worktime, :integer
   end
 end
