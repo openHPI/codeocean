@@ -116,7 +116,14 @@ also, all settings from the rails model needed for the editor configuration in t
     jqrequest.done(function(response){
       $.each(response, function(index, comment) {
         comment.className = "code-ocean_comment";
-        comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n\t\t");
+
+        // if we have tabs or carriage returns in the comment, just add the name and leave it as it is. otherwise: format!
+        if(comment.text.includes("\n") || comment.text.includes("\t")){
+          comment.text = comment.username + ": " + comment.text;
+        } else {
+          comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n\t\t");
+        }
+
       });
 
       session.setAnnotations(response);
