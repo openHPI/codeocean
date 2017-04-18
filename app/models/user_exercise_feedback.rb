@@ -1,6 +1,6 @@
 class UserExerciseFeedback < ActiveRecord::Base
+  include Creation
 
-  belongs_to :user, polymorphic: true
   belongs_to :exercise
 
   validates :user_id, uniqueness: { scope: [:exercise_id, :user_type] }

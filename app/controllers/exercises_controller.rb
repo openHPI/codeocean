@@ -411,17 +411,22 @@ class ExercisesController < ApplicationController
       end
     else
       # redirect to feedback page if score is less than 100 percent
-      redirect_to_user_feedback
+       redirect_to_user_feedback
       return
     end
     redirect_to_lti_return_path
   end
 
   def redirect_to_user_feedback
-    if UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)
-      redirect_to(edit_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id}))
-    else
-      redirect_to(new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id}))
+    url = if UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)
+            edit_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id})
+          else
+            new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id})
+          end
+
+    respond_to do |format|
+      format.html { redirect_to(url) }
+      format.json { render(json: {redirect: url}) }
     end
   end
 
