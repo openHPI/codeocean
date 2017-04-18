@@ -230,6 +230,7 @@ also, all settings from the rails model needed for the editor configuration in t
 
       if (commenttext !== "") {
         createComment(file_id, row, editor, commenttext);
+        commentModal.find('textarea').val('') ;
         commentModal.modal('hide');
       }
     });
