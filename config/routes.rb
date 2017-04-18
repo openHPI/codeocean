@@ -86,6 +86,13 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :user_exercise_feedbacks do
+    member do
+      get :reload
+      post :submit
+    end
+  end
+
   resources :interventions do
     member do
       post :clone

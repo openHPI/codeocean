@@ -5,4 +5,7 @@ class UserExerciseFeedback < ActiveRecord::Base
 
   validates :user_id, uniqueness: { scope: [:exercise_id, :user_type] }
 
+  def to_s
+    "User Exercise Feedback"
+  end
 end
