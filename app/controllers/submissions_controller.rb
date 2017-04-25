@@ -72,7 +72,7 @@ class SubmissionsController < ApplicationController
       end
 
       # zip .co file
-      zio.put_next_entry(File.basename id_file)
+      zio.put_next_entry(".co")
       zio.write(File.read id_file)
       File.delete(id_file) if File.exist?(id_file)
 
@@ -362,7 +362,7 @@ class SubmissionsController < ApplicationController
     remote_evaluation_mapping = RemoteEvaluationMapping.create(:user_id => user_id, :exercise_id => exercise_id)
 
     # create .co file
-    path = "tmp/.co"
+    path = "tmp/" + user_id.to_s + ".co"
     # parse validation token
     content = "#{remote_evaluation_mapping.validation_token}\n"
     # parse remote request url
