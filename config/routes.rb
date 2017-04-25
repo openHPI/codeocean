@@ -140,4 +140,6 @@ Rails.application.routes.draw do
     end
   end
 
+  post "/evaluate", to: 'remote_evaluation#evaluate', via: [:post]
+
 end
