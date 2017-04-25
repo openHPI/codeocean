@@ -6,9 +6,10 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :run, :statistics, :submit, :reload]
+  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
+  before_action :set_course_token, only: [:implement]
 
   skip_before_filter :verify_authenticity_token, only: [:import_proforma_xml]
   skip_after_action :verify_authorized, only: [:import_proforma_xml]
@@ -18,6 +19,15 @@ class ExercisesController < ApplicationController
     authorize(@exercise || @exercises)
   end
   private :authorize!
+
+  def max_intervention_count
+    3
+  end
+
+
+  def java_course_token
+    "702cbd2a-c84c-4b37-923a-692d7d1532d0"
+  end
 
   def batch_update
     @exercises = Exercise.all
@@ -54,6 +64,20 @@ class ExercisesController < ApplicationController
 
   def create
     @exercise = Exercise.new(exercise_params)
+    collect_set_and_unset_exercise_tags
+    myparam = exercise_params
+    checked_exercise_tags = @exercise_tags.select { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+
+    for et in checked_exercise_tags
+      et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
+      et.exercise = @exercise
+    end
+
+    myparam[:exercise_tags] = checked_exercise_tags
+    myparam.delete :tag_ids
+    removed_exercise_tags.map {|et| et.destroy}
+
     authorize!
     create_and_respond(object: @exercise)
   end
@@ -63,6 +87,7 @@ class ExercisesController < ApplicationController
   end
 
   def edit
+    collect_set_and_unset_exercise_tags
   end
 
   def import_proforma_xml
@@ -118,7 +143,8 @@ class ExercisesController < ApplicationController
   private :user_by_code_harbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, files_attributes: file_attributes).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:exercise][:expected_worktime_seconds] = params[:exercise][:expected_worktime_minutes].to_i * 60
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :expected_worktime_seconds, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :exercise_params
 
@@ -139,6 +165,22 @@ class ExercisesController < ApplicationController
 
   def implement
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
+    user_solved_exercise = @exercise.has_user_solved(current_user)
+    user_got_enough_interventions = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count >= max_intervention_count
+    is_java_course = @course_token && @course_token.eql?(java_course_token)
+
+    user_intervention_group = UserGroupSeparator.getInterventionGroup(current_user)
+
+    case user_intervention_group
+      when :no_intervention
+      when :break_intervention
+        @show_break_interventions = (user_solved_exercise || !is_java_course || user_got_enough_interventions) ? "false" : "true"
+      when :rfc_intervention
+        @show_rfc_interventions = (user_solved_exercise || !is_java_course || user_got_enough_interventions) ? "false" : "true"
+    end
+
+    @search = Search.new
+    @search.exercise = @exercise
     @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:name_with_extension)
     @paths = collect_paths(@files)
@@ -147,6 +189,59 @@ class ExercisesController < ApplicationController
       @user_id = current_user.external_id
     else
       @user_id = current_user.id
+    end
+  end
+
+  def set_course_token
+    lti_parameters = LtiParameter.find_by(external_users_id: current_user.id,
+                                          exercises_id: @exercise.id)
+    if lti_parameters
+      lti_json = lti_parameters.lti_parameters["launch_presentation_return_url"]
+
+      @course_token =
+          unless lti_json.nil?
+            if match = lti_json.match(/^.*courses\/([a-z0-9\-]+)\/sections/)
+              match.captures.first
+            else
+              java_course_token
+            end
+          else
+            ""
+          end
+    else
+      # no consumer, therefore implementation with internal user
+      @course_token = java_course_token
+    end
+  end
+  private :set_course_token
+
+  def working_times
+    working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user)
+    working_time_75_percentile = @exercise.get_quantiles([0.75]).first
+    render(json: {working_time_75_percentile: working_time_75_percentile, working_time_accumulated: working_time_accumulated})
+  end
+
+  def intervention
+    intervention = Intervention.find_by_name(params[:intervention_type])
+    unless intervention.nil?
+      uei = UserExerciseIntervention.new(
+          user: current_user, exercise: @exercise, intervention: intervention,
+          accumulated_worktime_s: @exercise.accumulated_working_time_for_only(current_user))
+      uei.save
+      render(json: {success: 'true'})
+    else
+      render(json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"})
+    end
+  end
+
+  def search
+    search_text = params[:search_text]
+    search = Search.new(user: current_user, exercise: @exercise, search: search_text)
+
+    begin search.save
+      render(json: {success: 'true'})
+    rescue
+      render(json: {success: 'false', error: "could not save search: #{$!}"})
     end
   end
 
@@ -174,6 +269,8 @@ class ExercisesController < ApplicationController
 
   def new
     @exercise = Exercise.new
+    collect_set_and_unset_exercise_tags
+
     authorize!
   end
 
@@ -200,6 +297,16 @@ class ExercisesController < ApplicationController
     @file_types = FileType.all.order(:name)
   end
   private :set_file_types
+
+  def collect_set_and_unset_exercise_tags
+    @search = policy_scope(Tag).search(params[:q])
+    @tags = @search.result.order(:name)
+    checked_exercise_tags = @exercise.exercise_tags
+    checked_tags = checked_exercise_tags.collect{|e| e.tag}.to_set
+    unchecked_tags = Tag.all.to_set.subtract checked_tags
+    @exercise_tags = checked_exercise_tags + unchecked_tags.collect { |tag| ExerciseTag.new(exercise: @exercise, tag: tag)}
+  end
+  private :collect_set_and_unset_exercise_tags
 
   def show
   end
@@ -252,7 +359,20 @@ class ExercisesController < ApplicationController
   private :transmit_lti_score
 
   def update
-    update_and_respond(object: @exercise, params: exercise_params)
+    collect_set_and_unset_exercise_tags
+    myparam = exercise_params
+    checked_exercise_tags = @exercise_tags.select { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+
+    for et in checked_exercise_tags
+      et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
+      et.exercise = @exercise
+    end
+
+    myparam[:exercise_tags] = checked_exercise_tags
+    myparam.delete :tag_ids
+    removed_exercise_tags.map {|et| et.destroy}
+    update_and_respond(object: @exercise, params: myparam)
   end
 
   def redirect_after_submit
@@ -260,8 +380,12 @@ class ExercisesController < ApplicationController
     if @submission.normalized_score == 1.0
       # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
+      # redirect 10 percent pseudorandomly to the feedback page
       if current_user.respond_to? :external_id
-        if rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise, user_id: current_user.id).first
+        if ((current_user.id + @submission.exercise.created_at.to_i) % 10 == 1)
+          redirect_to_user_feedback
+          return
+        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise, user_id: current_user.id).first
           # set a message that informs the user that his own RFC should be closed.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
           flash.keep(:notice)
@@ -273,7 +397,7 @@ class ExercisesController < ApplicationController
           return
 
         # else: show open rfc for same exercise if available
-        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).where.not(question: nil).order("RANDOM()").first
+        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).where.not(question: nil).order("RANDOM()").find { | rfc_element |(rfc_element.comments_count < 5) }
           # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
           flash.keep(:notice)
@@ -285,8 +409,25 @@ class ExercisesController < ApplicationController
           return
         end
       end
+    else
+      # redirect to feedback page if score is less than 100 percent
+       redirect_to_user_feedback
+      return
     end
     redirect_to_lti_return_path
+  end
+
+  def redirect_to_user_feedback
+    url = if UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)
+            edit_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id})
+          else
+            new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id})
+          end
+
+    respond_to do |format|
+      format.html { redirect_to(url) }
+      format.json { render(json: {redirect: url}) }
+    end
   end
 
 end

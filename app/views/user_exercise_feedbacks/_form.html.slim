@@ -1,0 +1,23 @@
+= form_for(@uef) do |f|
+  div
+    span.badge.pull-right.score
+
+    h1 id="exercise-headline"
+      = t('activerecord.models.user_exercise_feedback.one') + " "
+      = link_to(@exercise.title, [:implement, @exercise])
+  = render('shared/form_errors', object: @uef)
+  h4
+    == t('user_exercise_feedback.description')
+  #description-panel.lead.description-panel
+    u = t('activerecord.attributes.exercise.description')
+    = render_markdown(@exercise.description)
+  .form-group
+    = f.text_area(:feedback_text, class: 'form-control', required: true, :rows => "10")
+    h4 = t('user_exercise_feedback.difficulty')
+    = f.collection_radio_buttons :difficulty, @texts, :first, :last, html_options={class: "radio-inline"}  do |b|
+      = b.label(:class => 'radio') { b.radio_button + b.text }
+    h4 = t('user_exercise_feedback.working_time')
+    = f.collection_radio_buttons :user_estimated_worktime, @times, :first, :last, html_options={class: "radio-inline"}  do |b|
+      = b.label(:class => 'radio') { b.radio_button + b.text }
+    = f.hidden_field(:exercise_id, :value => @exercise.id)
+  .actions = render('shared/submit_button', f: f, object: @uef)

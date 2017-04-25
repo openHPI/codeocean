@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :request_for_comments do
     member do
       get :mark_as_solved
+      post :create_comment_exercise
     end
   end
   resources :comments, except: [:destroy] do
@@ -60,7 +61,41 @@ Rails.application.routes.draw do
     member do
       post :clone
       get :implement
+      get :working_times
+      post :intervention
+      post :search
       get :statistics
+      get :reload
+      post :submit
+    end
+  end
+
+  resources :proxy_exercises do
+    member do
+      post :clone
+      get :reload
+      post :submit
+    end
+  end
+
+  resources :tags do
+    member do
+      post :clone
+      get :reload
+      post :submit
+    end
+  end
+
+  resources :user_exercise_feedbacks do
+    member do
+      get :reload
+      post :submit
+    end
+  end
+
+  resources :interventions do
+    member do
+      post :clone
       get :reload
       post :submit
     end

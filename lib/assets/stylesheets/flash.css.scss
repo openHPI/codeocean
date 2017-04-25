@@ -1,3 +1,26 @@
 .flash {
   display: none;
 }
+
+.fixed_error_messages {
+  position: fixed;
+  z-index: 1000;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  padding-left: 10%;
+  padding-right: 10%;
+  padding-top: 0;
+}
+
+.clickthrough {
+  pointer-events: none;
+
+  /* fixes for IE */
+  /*
+  background:white;
+  opacity:0;
+  filter:Alpha(opacity=0);
+  */
+}
+

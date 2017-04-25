@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   MEMBER_ACTIONS = [:destroy, :edit, :show, :update]
 
   after_action :verify_authorized, except: [:help, :welcome]
-  before_action :set_locale
+  before_action :set_locale, :allow_iframe_requests
   protect_from_forgery(with: :exception)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
 
@@ -28,5 +28,9 @@ class ApplicationController < ActionController::Base
   private :set_locale
 
   def welcome
+  end
+
+  def allow_iframe_requests
+    response.headers.delete('X-Frame-Options')
   end
 end

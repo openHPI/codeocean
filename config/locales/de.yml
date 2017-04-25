@@ -27,6 +27,7 @@ de:
       exercise:
         description: Beschreibung
         embedding_parameters: Parameter für LTI-Einbettung
+        tags: Tags
         execution_environment: Ausführungsumgebung
         execution_environment_id: Ausführungsumgebung
         files: Dateien
@@ -34,10 +35,16 @@ de:
         instructions: Anweisungen
         maximum_score: Erreichbare Punktzahl
         public: Öffentlich
+        selection: Ausgewählt
         title: Titel
         user: Autor
         allow_auto_completion: "Autovervollständigung aktivieren"
         allow_file_creation: "Dateierstellung erlauben"
+        difficulty: Schwierigkeitsgrad
+        worktime: "vermutete Arbeitszeit in Minuten"
+      proxy_exercise:
+        title: Title
+        files_count: Anzahl der Aufgaben
       external_user:
         consumer: Konsument
         email: E-Mail
@@ -68,6 +75,8 @@ de:
         message: Nachricht
         name: Name
         regular_expression: Regulärer Ausdruck
+      intervention:
+        name: Name
       internal_user:
         activated: Aktiviert
         consumer: Konsument
@@ -84,6 +93,7 @@ de:
         username: Benutzername
         requested_at: Angefragezeitpunkt
         question: "Frage"
+        close: "Fenster schließen"
       submission:
         cause: Anlass
         code: Code
@@ -91,6 +101,10 @@ de:
         files: Dateien
         score: Punktzahl
         user: Autor
+      tag:
+        name: Name
+        usage: Verwendet
+        difficulty: Anteil an der Aufgabe
       file_template:
         name: "Name"
         file_type: "Dateityp"
@@ -111,6 +125,9 @@ de:
       exercise:
         one: Aufgabe
         other: Aufgaben
+      proxy_exercise:
+        one: Proxy Aufgabe
+        other: Proxy Aufgaben
       external_user:
         one: Externer Nutzer
         other: Externe Nutzer
@@ -129,9 +146,15 @@ de:
       internal_user:
         one: Interner Nutzer
         other: Interne Nutzer
+      request_for_comment:
+        one: Kommentaranfrage
+        other: Kommentaranfragen
       submission:
         one: Abgabe
         other: Abgaben
+      user_exercise_feedback:
+        one: Feedback
+        other: Feedback
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'
@@ -254,12 +277,19 @@ de:
         line: Zeile
         dialogtitle: Kommentar hinzufügen
         others: Andere Kommentare auf dieser Zeile
+        addCommentExercise: Aufgabe kommentieren
         addyours: Fügen Sie Ihren Kommentar hinzu
-        addComment: Kommentieren
+        addComment: Hier haben Sie die Möglichkeit Ihr Feedback zu dieser Aufgabe zu geben. Dies bezieht sich ausdrücklich NICHT auf die hier sichtbare Lösung des Teilnehmers, sondern nur auf die Aufgabe. Fanden Sie die Aufgabe zu leicht oder schwer? War die Beschreibung der Aufgabe verständlich und vollständig?
+        addCommentButton: Kommentar abschicken
         removeAllOnLine: Meine Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
         request: "Kommentaranfrage stellen"
-        question: "Bitte beschreiben Sie kurz ihre Problem oder nennen Sie den Programmteil, zu dem sie Feedback wünschen."
+        question: "Bitte beschreiben Sie kurz ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen."
+      rfc_intervention:
+        text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. Wenn Sie möchten, können wir Ihnen helfen!"
+      break_intervention:
+        title: "Pause"
+        text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
     index:
       clone: Duplizieren
       implement: Implementieren
@@ -290,6 +320,9 @@ de:
         tests: Unit Tests
         time_difference: 'Arbeitszeit bis hier*'
         addendum: '* Differenzen von mehr als 30 Minuten werden ignoriert.'
+  proxy_exercises:
+      index:
+        clone: Duplizieren
   external_users:
     statistics:
       title: Statistiken für Externe Benutzer
@@ -327,6 +360,8 @@ de:
       success: Sie haben Ihr Passwort erfolgreich geändert.
     show:
       link: Profil
+  search:
+    search_in_forum: "Probleme? Suche hier im Forum"
   locales:
     de: Deutsch
     en: Englisch
@@ -343,7 +378,15 @@ de:
           Hallo %{receiver_displayname}, <br>
           <br>
           es gibt einen neuen Kommentar von %{commenting_user_displayname} zu Ihrer Kommentaranfrage auf CodeOcean. <br>
-          Sie finden ihn hier: %{link} <br>
+          <br>
+          %{commenting_user_displayname} schreibt: %{comment_text}<br>
+          <br>
+          Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
+          <br>
+          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Eine Übersicht Ihrer Kommentaranfragen gibt es hier: %{link_my_comments} <br>
+          Alle Kommentaranfragen aller Benutzer finden Sie hier: %{link_all_comments} <br>
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
           <br>
@@ -352,7 +395,15 @@ de:
           Dear %{receiver_displayname}, <br>
           <br>
           you received a new comment from %{commenting_user_displayname} to your request for comments on CodeOcean. <br>
-          You can find it here: %{link} <br>
+          <br>
+          %{commenting_user_displayname} wrote: %{comment_text} <br>
+          <br>
+          You can find your request for comments here: %{link_to_comment} <br>
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          An overview of all your comments can be accessed here: %{link_my_comments} <br>
+          All comments of all participants are available here: %{link_all_comments} <br>
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: Sie haben einen neuen Kommentar von %{commenting_user_displayname} auf CodeOcean erhalten.
@@ -360,13 +411,23 @@ de:
         body: 'Bitte besuchen Sie %{link}, sofern Sie Ihr Passwort zurücksetzen wollen.'
         subject: Anweisungen zum Zurücksetzen Ihres Passworts
   request_for_comments:
+    click_here: Zum Kommentieren auf die Seitenleiste klicken!
     comments: Kommentare
+    howto: |
+      Um Kommentare zu einer Programmzeile hinzuzufügen, kann einfach auf die jeweilige Zeilennummer auf der linken Seite geklickt werden. <br>
+      Es öffnet sich ein Textfeld, in dem der Kommentar eingetragen werden kann. <br>
+      Mit "Kommentieren" wird der Kommentar dann gesichert und taucht als Sprechblase neben der Zeile auf.
+    howto_title: 'Anleitung:'
     index:
       get_my_comment_requests: Meine Kommentaranfragen
       all: "Alle Kommentaranfragen"
     no_question: "Der Autor hat keine Frage zu dieser Anfrage gestellt."
     mark_as_solved: "Diese Frage als beantwortet markieren"
+    show_all: "Alle Anfragen anzeigen"
+    show_solved: "Nur gelöste Anfragen anzeigen"
+    show_unsolved: "Nur ungelöste Anfragen anzeigen"
     solved: "Diese Frage wurde erfolgreich beantwortet"
+    comment_exercise: "Ich möchte die Aufgabenstellung kommentieren"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.
@@ -467,3 +528,18 @@ de:
     previous_label: '&#8592; Vorherige Seite'
   file_template:
     no_template_label: "Leere Datei"
+  user_exercise_feedback:
+    difficulty_easy: "Die Aufgabe war zu einfach"
+    difficulty_some_what_easy: "Die Aufgabe war etwas zu einfach"
+    difficulty_ok: "Die Aufgabe war gut zu lösen"
+    difficulty_some_what_difficult: "Die Aufgabe war etwas zu schwer"
+    difficult_too_difficult: "Die Aufgabe war zu schwer"
+    difficulty: "Schwierigkeit der Aufgabe:"
+    description: "Ihre Punkte wurden übertragen. Wir würden uns freuen, wenn Sie uns hier Feedback zur Aufgabe geben.<br> Wenn sie das nicht möchten, können Sie das Fenster auch einfach schließen.<br><br>Bitte beschreiben Sie, was Ihnen an der Aufgabe gefallen hat und was nicht. Gab es Schwierigkeiten bei der Aufgabe? War die Aufgabe zu leicht oder zu schwer?<br>Wir freuen uns über jedes Feedback."
+    estimated_time_less_5: "weniger als 5 Minuten"
+    estimated_time_5_to_10: "zwischen 5 und 10 Minuten"
+    estimated_time_10_to_20: "zwischen 10 und 20 Minuten"
+    estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
+    estimated_time_more_30: "mehr als 30 Minuten"
+    working_time: "Geschätze Bearbeitungszeit für diese Aufgabe:"
+

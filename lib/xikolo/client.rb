@@ -10,7 +10,7 @@ class Xikolo::Client
   end
 
   def self.user_profile_url(user_id)
-    return url + 'users/' + user_id
+    return url + 'v2/users/' + user_id
   end
 
   def self.post_request(url, params)
@@ -38,11 +38,11 @@ class Xikolo::Client
   end
 
   def self.accept
-    'application/vnd.xikolo.v1, application/json'
+    'application/vnd.xikolo.v1, application/vnd.api+json, application/json'
   end
 
   def self.token
-    'Token token="'+Rails.application.secrets.openhpi_api_token+'"'
+    'Token token='+Rails.application.secrets.openhpi_api_token#+'"'
   end
 
   private

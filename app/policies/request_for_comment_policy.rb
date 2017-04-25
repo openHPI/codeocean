@@ -8,6 +8,10 @@ class RequestForCommentPolicy < ApplicationPolicy
     everyone
   end
 
+  def search?
+    everyone
+  end
+
   def show?
     everyone
   end
@@ -25,6 +29,10 @@ class RequestForCommentPolicy < ApplicationPolicy
   end
 
   def index?
+    everyone
+  end
+
+  def create_comment_exercise?
     everyone
   end
 end

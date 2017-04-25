@@ -25,7 +25,7 @@ module SubmissionScoring
 
   def feedback_message(file, score)
     set_locale
-    score == Assessor::MAXIMUM_SCORE ? I18n.t('exercises.implement.default_feedback') : file.feedback_message
+    score == Assessor::MAXIMUM_SCORE ? I18n.t('exercises.implement.default_feedback') : render_markdown(file.feedback_message)
   end
 
   def score_submission(submission)

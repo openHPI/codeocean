@@ -167,6 +167,14 @@ configureEditors: function () {
     $('button i.fa-spin').hide();
   },
 
+
+  resizeAceEditors: function (){
+    $('.editor').each(function (index, element) {
+      this.resizeParentOfAceEditor(element);
+    }.bind(this));
+    window.dispatchEvent(new Event('resize'));
+  },
+
   resizeParentOfAceEditor: function (element){
     // calculate needed size: window height - position of top of button-bar - 60 for bar itself and margins
     var windowHeight = window.innerHeight - $('#editor-buttons').offset().top - 60;
@@ -316,10 +324,14 @@ configureEditors: function () {
     var button = $('#requestComments');
     button.prop('disabled', true);
     button.on('click', function () {
+      $('#rfc_intervention_text').hide()
       $('#comment-modal').modal('show');
     });
 
     $('#askForCommentsButton').on('click', this.requestComments.bind(this));
+    $('#closeAskForCommentsButton').on('click', function(){
+        $('#comment-modal').modal('hide');
+    });
 
     setTimeout(function () {
       button.prop('disabled', false);
@@ -363,7 +375,7 @@ configureEditors: function () {
     panel.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
     panel.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
     panel.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
-    panel.find('.row .col-sm-9').eq(2).text(result.message);
+    panel.find('.row .col-sm-9').eq(2).html(result.message);
     if (result.error_messages) panel.find('.row .col-sm-9').eq(3).text(result.error_messages.join(', '));
     panel.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
   },
@@ -559,7 +571,103 @@ configureEditors: function () {
     $('#description-panel').toggleClass('description-panel');
     $('#description-symbol').toggleClass('fa-chevron-down');
     $('#description-symbol').toggleClass('fa-chevron-right');
+    // resize ace editors
+    this.resizeAceEditors();
+
   },
+
+    /**
+     * interventions
+     * */
+    initializeInterventionTimer: function() {
+
+        if ($('#editor').data('rfc-interventions') == true || $('#editor').data('break-interventions') == true) { // split in break or rfc intervention
+            window.onblur = function() { window.blurred = true; };
+            window.onfocus = function() { window.blurred = false; };
+
+            var delta = 100; // time in ms to wait for window event before time gets stopped
+            var tid;
+            $.ajax({
+                data: {
+                    exercise_id: $('#editor').data('exercise-id'),
+                    user_id: $('#editor').data('user-id')
+                },
+                dataType: 'json',
+                method: 'GET',
+                // get working times for this exercise
+                url: $('#editor').data('working-times-url'),
+                success: function (data) {
+                    var percentile75 = data['working_time_75_percentile'];
+                    var accumulatedWorkTimeUser = data['working_time_accumulated'];
+
+                    var minTimeIntervention = 10 * 60 * 1000;
+
+                    if ((accumulatedWorkTimeUser - percentile75) > 0) {
+                        // working time is already over 75 percentile
+                        var timeUntilIntervention = minTimeIntervention;
+                    } else {
+                        // working time is less than 75 percentile
+                        // ensure we give user at least minTimeIntervention before we bother the user
+                        var timeUntilIntervention = Math.max(percentile75 - accumulatedWorkTimeUser, minTimeIntervention);
+                    }
+
+                    tid = setInterval(function() {
+                        if ( window.blurred ) { return; }
+                        timeUntilIntervention -= delta;
+                        if ( timeUntilIntervention <= 0 ) {
+                            clearInterval(tid);
+                            // timeUntilIntervention passed
+                            if ($('#editor').data('break-interventions')) {
+                                $('#break-intervention-modal').modal('show');
+                                $.ajax({
+                                    data: {
+                                        intervention_type: 'BreakIntervention'
+                                    },
+                                    dataType: 'json',
+                                    type: 'POST',
+                                    url: $('#editor').data('intervention-save-url')
+                                });
+                            } else if ($('#editor').data('rfc-interventions')){
+                                var button = $('#requestComments');
+                                // only show intervention if user did not requested for a comment already
+                                if (!button.prop('disabled')) {
+                                    $('#rfc_intervention_text').show();
+                                    $('#comment-modal').modal('show');
+                                    $.ajax({
+                                        data: {
+                                            intervention_type: 'QuestionIntervention'
+                                        },
+                                        dataType: 'json',
+                                        type: 'POST',
+                                        url: $('#editor').data('intervention-save-url')
+                                    });
+                                };
+                            }
+                        }
+                    }, delta);
+                }
+            });
+        }
+    },
+
+    initializeSearchButton: function(){
+        $('#btn-search-col').button().click(function(){
+            var search = $('#search-input-text').val();
+            var course_token = $('#editor').data('course_token')
+            var save_search_url = $('#editor').data('search-save-url')
+            window.open("https://open.hpi.de/courses/" + course_token + "/pinboard?query=" + search, '_blank');
+            // save search
+            $.ajax({
+                data: {
+                    search_text: search
+                },
+                dataType: 'json',
+                type: 'POST',
+                url: save_search_url});
+        })
+
+        $('#sidebar-search-collapsed').on('click',this.handleSideBarToggle.bind(this));
+    },
 
 
   initializeEverything: function() {
@@ -575,10 +683,14 @@ configureEditors: function () {
     this.initializeDescriptionToggle();
     this.initializeSideBarTooltips();
     this.initializeTooltips();
+    this.initializeInterventionTimer();
+    this.initializeSearchButton();
     this.initPrompt();
     this.renderScore();
     this.showFirstFile();
 
     $(window).on("beforeunload", this.unloadAutoSave.bind(this));
+    // create autosave when the editor is opened the first time
+    this.autosave();
   }
 };

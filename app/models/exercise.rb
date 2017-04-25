@@ -12,6 +12,15 @@ class Exercise < ActiveRecord::Base
   belongs_to :execution_environment
   has_many :submissions
 
+  has_and_belongs_to_many :proxy_exercises
+  has_many :user_proxy_exercise_exercises
+  has_and_belongs_to_many :exercise_collections
+  has_many :user_exercise_interventions
+  has_many :interventions, through: :user_exercise_interventions
+  has_many :exercise_tags
+  has_many :tags, through: :exercise_tags
+  accepts_nested_attributes_for :exercise_tags
+
   has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
   has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions
   alias_method :users, :external_users
@@ -48,22 +57,143 @@ class Exercise < ActiveRecord::Base
     return user_count == 0 ? 0 : submissions.count() / user_count.to_f()
   end
 
+  def time_maximum_score(user)
+    submissions.where(user: user).where("cause IN ('submit','assess')").where("score IS NOT NULL").order("score DESC, created_at ASC").first.created_at rescue Time.zone.at(0)
+  end
+
   def user_working_time_query
     """
       SELECT user_id,
              sum(working_time_new) AS working_time
       FROM
         (SELECT user_id,
-                CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
+                CASE WHEN working_time >= '0:05:00' THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT user_id,
                     id,
-                    (created_at - lag(created_at) over (PARTITION BY user_id
+                    (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
             WHERE exercise_id=#{id}) AS foo) AS bar
       GROUP BY user_id
     """
+  end
+
+  def get_quantiles(quantiles)
+    quantiles_str = "[" + quantiles.join(",") + "]"
+    result = self.class.connection.execute("""
+            WITH working_time AS
+      (
+               SELECT   user_id,
+                        id,
+                        exercise_id,
+                        Max(score)                                                                                  AS max_score,
+                        (created_at - Lag(created_at) OVER (partition BY user_id, exercise_id ORDER BY created_at)) AS working_time
+               FROM     submissions
+               WHERE    exercise_id = #{id}
+               AND      user_type = 'ExternalUser'
+               GROUP BY user_id,
+                        id,
+                        exercise_id), max_points AS
+      (
+               SELECT   context_id  AS ex_id,
+                        Sum(weight) AS max_points
+               FROM     files
+               WHERE    context_type = 'Exercise'
+               AND      context_id = #{id}
+               AND      role = 'teacher_defined_test'
+               GROUP BY context_id),
+      -- filter for rows containing max points
+      time_max_score AS
+      (
+             SELECT *
+             FROM   working_time W1,
+                    max_points MS
+             WHERE  w1.exercise_id = ex_id
+             AND    w1.max_score = ms.max_points),
+      -- find row containing the first time max points
+      first_time_max_score AS
+      (
+             SELECT id,
+                    user_id,
+                    exercise_id,
+                    max_score,
+                    working_time,
+                    rn
+             FROM   (
+                             SELECT   id,
+                                      user_id,
+                                      exercise_id,
+                                      max_score,
+                                      working_time,
+                                      Row_number() OVER(partition BY user_id, exercise_id ORDER BY id ASC) AS rn
+                             FROM     time_max_score) T
+             WHERE  rn = 1), times_until_max_points AS
+      (
+             SELECT w.id,
+                    w.user_id,
+                    w.exercise_id,
+                    w.max_score,
+                    w.working_time,
+                    m.id AS reachedmax_at
+             FROM   working_time W,
+                    first_time_max_score M
+             WHERE  w.user_id = m.user_id
+             AND    w.exercise_id = m.exercise_id
+             AND    w.id <= m.id),
+      -- if user never makes it to max points, take all times
+      all_working_times_until_max AS (
+      (
+             SELECT id,
+                    user_id,
+                    exercise_id,
+                    max_score,
+                    working_time
+             FROM   times_until_max_points)
+      UNION ALL
+                (
+                       SELECT id,
+                              user_id,
+                              exercise_id,
+                              max_score,
+                              working_time
+                       FROM   working_time W1
+                       WHERE  NOT EXISTS
+                              (
+                                     SELECT 1
+                                     FROM   first_time_max_score F
+                                     WHERE  f.user_id = w1.user_id
+                                     AND    f.exercise_id = w1.exercise_id))), filtered_times_until_max AS
+      (
+             SELECT user_id,
+                    exercise_id,
+                    max_score,
+                    CASE
+                           WHEN working_time >= '0:05:00' THEN '0'
+                           ELSE working_time
+                    END AS working_time_new
+             FROM   all_working_times_until_max ), result AS
+      (
+               SELECT   e.external_id AS external_user_id,
+                        f.user_id,
+                        exercise_id,
+                        Max(max_score)        AS max_score,
+                        Sum(working_time_new) AS working_time
+               FROM     filtered_times_until_max f,
+                        external_users e
+               WHERE    f.user_id = e.id
+               GROUP BY e.external_id,
+                        f.user_id,
+                        exercise_id )
+      SELECT   unnest(percentile_cont(array#{quantiles_str}) within GROUP (ORDER BY working_time))
+      FROM     result
+    """)
+    if result.count > 0
+      quantiles.each_with_index.map{|q,i| Time.parse(result[i]["unnest"]).seconds_since_midnight}
+    else
+      quantiles.map{|q| 0}
+    end
+
   end
 
   def retrieve_working_time_statistics
@@ -88,23 +218,64 @@ class Exercise < ActiveRecord::Base
     @working_time_statistics[user_id]["working_time"]
   end
 
-  def average_working_time_for_only(user_id)
-    self.class.connection.execute("""
-      SELECT sum(working_time_new) AS working_time
-      FROM
-        (SELECT CASE WHEN working_time >= '0:30:00' THEN '0' ELSE working_time END AS working_time_new
-         FROM
-            (SELECT id,
-                    (created_at - lag(created_at) over (PARTITION BY user_id
-                                                        ORDER BY created_at)) AS working_time
-            FROM submissions
-            WHERE exercise_id=#{id} and user_id=#{user_id}) AS foo) AS bar
-    """).first["working_time"]
+  def accumulated_working_time_for_only(user)
+    user_type = user.external_user? ? "ExternalUser" : "InternalUser"
+    Time.parse(self.class.connection.execute("""
+        WITH WORKING_TIME AS
+        (SELECT user_id,
+                           id,
+                           exercise_id,
+                           max(score) AS max_score,
+                           (created_at - lag(created_at) OVER (PARTITION BY user_id, exercise_id
+                                                               ORDER BY created_at)) AS working_time
+                   FROM submissions
+                   WHERE exercise_id = #{id} AND user_id = #{user.id} AND user_type = '#{user_type}'
+                   GROUP BY user_id, id, exercise_id),
+        MAX_POINTS AS
+        (SELECT context_id AS ex_id, sum(weight) AS max_points FROM files WHERE context_type = 'Exercise' AND context_id = #{id} AND role = 'teacher_defined_test' GROUP BY context_id),
+
+        -- filter for rows containing max points
+        TIME_MAX_SCORE AS
+        (SELECT *
+        FROM WORKING_TIME W1, MAX_POINTS MS
+        WHERE W1.exercise_id = ex_id AND W1.max_score = MS.max_points),
+
+        -- find row containing the first time max points
+        FIRST_TIME_MAX_SCORE AS
+        ( SELECT id,USER_id,exercise_id,max_score,working_time, rn
+          FROM (
+            SELECT id,USER_id,exercise_id,max_score,working_time,
+                ROW_NUMBER() OVER(PARTITION BY user_id, exercise_id ORDER BY id ASC) AS rn
+            FROM TIME_MAX_SCORE) T
+         WHERE rn = 1),
+
+        TIMES_UNTIL_MAX_POINTS AS (
+            SELECT W.id, W.user_id, W.exercise_id, W.max_score, W.working_time, M.id AS reachedmax_at
+            FROM WORKING_TIME W, FIRST_TIME_MAX_SCORE M
+            WHERE W.user_id = M.user_id AND W.exercise_id = M.exercise_id AND W.id <= M.id),
+
+        -- if user never makes it to max points, take all times
+        ALL_WORKING_TIMES_UNTIL_MAX AS
+        ((SELECT id, user_id, exercise_id, max_score, working_time FROM TIMES_UNTIL_MAX_POINTS)
+        UNION ALL
+        (SELECT id, user_id, exercise_id, max_score, working_time FROM WORKING_TIME W1
+         WHERE NOT EXISTS (SELECT 1 FROM FIRST_TIME_MAX_SCORE F WHERE F.user_id = W1.user_id AND F.exercise_id = W1.exercise_id))),
+
+        FILTERED_TIMES_UNTIL_MAX AS
+        (
+        SELECT user_id,exercise_id, max_score, CASE WHEN working_time >= '0:05:00' THEN '0' ELSE working_time END AS working_time_new
+        FROM ALL_WORKING_TIMES_UNTIL_MAX
+        )
+            SELECT e.external_id AS external_user_id, f.user_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time
+            FROM FILTERED_TIMES_UNTIL_MAX f, EXTERNAL_USERS e
+            WHERE f.user_id = e.id GROUP BY e.external_id, f.user_id, exercise_id
+    """).first["working_time"]).seconds_since_midnight rescue 0
   end
 
   def duplicate(attributes = {})
     exercise = dup
     exercise.attributes = attributes
+    exercise_tags.each  { |et| exercise.exercise_tags << et.dup }
     files.each { |file| exercise.files << file.dup }
     exercise
   end
@@ -162,8 +333,16 @@ class Exercise < ActiveRecord::Base
   end
   private :generate_token
 
-  def maximum_score
-    files.teacher_defined_tests.sum(:weight)
+  def maximum_score(user = nil)
+    if user
+      submissions.where(user: user).where("cause IN ('submit','assess')").where("score IS NOT NULL").order("score DESC").first.score || 0 rescue 0
+    else
+      files.teacher_defined_tests.sum(:weight)
+    end
+  end
+
+  def has_user_solved(user)
+    return maximum_score(user).to_i == maximum_score.to_i
   end
 
   def set_default_values

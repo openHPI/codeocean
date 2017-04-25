@@ -1,0 +1,6 @@
+= form_for(@tag) do |f|
+  = render('shared/form_errors', object: @tag)
+  .form-group
+    = f.label(:name)
+    = f.text_field(:name, class: 'form-control', required: true)
+  .actions = render('shared/submit_button', f: f, object: @tag)

@@ -74,7 +74,12 @@ module Lti
   private :require_valid_consumer_key
 
   def require_valid_exercise_token
-    @exercise = Exercise.find_by(token: params[:custom_token])
+    proxy_exercise = ProxyExercise.find_by(token: params[:custom_token])
+    unless proxy_exercise.nil?
+      @exercise = proxy_exercise.get_matching_exercise(@current_user)
+    else
+      @exercise = Exercise.find_by(token: params[:custom_token])
+    end
     refuse_lti_launch(message: t('sessions.oauth.invalid_exercise_token')) unless @exercise
   end
   private :require_valid_exercise_token
@@ -129,19 +134,16 @@ module Lti
   private :set_current_user
 
   def store_lti_session_data(options = {})
-    exercise = Exercise.where(token: options[:parameters][:custom_token]).first
-    exercise_id = exercise.id unless exercise.nil?
-
-    current_user = ExternalUser.find_or_create_by(consumer_id: options[:consumer].id, external_id: options[:parameters][:user_id].to_s)
     lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,
-                                                    external_users_id: current_user.id,
-                                                    exercises_id: exercise_id)
+                                                    external_users_id: @current_user.id,
+                                                    exercises_id: @exercise.id)
 
     lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).to_json
     lti_parameters.save!
+    @lti_parameters = lti_parameters
 
     session[:consumer_id] = options[:consumer].id
-    session[:external_user_id] = current_user.id
+    session[:external_user_id] = @current_user.id
   end
   private :store_lti_session_data
 

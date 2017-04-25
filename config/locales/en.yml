@@ -48,6 +48,7 @@ en:
       exercise:
         description: Description
         embedding_parameters: LTI Embedding Parameters
+        tags: Tags
         execution_environment: Execution Environment
         execution_environment_id: Execution Environment
         files: Files
@@ -55,10 +56,16 @@ en:
         instructions: Instructions
         maximum_score: Maximum Score
         public: Public
+        selection: Selected
         title: Title
         user: Author
         allow_auto_completion: "Allow auto completion"
         allow_file_creation: "Allow file creation"
+        difficulty: Difficulty
+        worktime: "Expected worktime in minutes"
+      proxy_exercise:
+        title: Title
+        files_count: Exercises Count
       external_user:
         consumer: Consumer
         email: Email
@@ -89,6 +96,8 @@ en:
         message: Message
         name: Name
         regular_expression: Regular Expression
+      intervention:
+        name: Name
       internal_user:
         activated: Activated
         consumer: Consumer
@@ -105,6 +114,7 @@ en:
         username: Username
         requested_at: Request Date
         question: "Question"
+        close: Close window
       submission:
         cause: Cause
         code: Code
@@ -112,6 +122,10 @@ en:
         files: Files
         score: Score
         user: Author
+      tag:
+        name: Name
+        usage: Used
+        difficulty: Share on the Exercise
       file_template:
         name: "Name"
         file_type: "File Type"
@@ -132,6 +146,9 @@ en:
       exercise:
         one: Exercise
         other: Exercises
+      proxy_exercise:
+        one: Proxy Exercise
+        other: Proxy Exercises
       external_user:
         one: External User
         other: External Users
@@ -150,9 +167,15 @@ en:
       internal_user:
         one: Internal User
         other: Internal Users
+      request_for_comment:
+        one: Request for Comments
+        other: Requests for Comments
       submission:
         one: Submission
         other: Submissions
+      user_exercise_feedback:
+        one: Feedback
+        other: Feedback
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
@@ -276,11 +299,18 @@ en:
         dialogtitle: Comment on this line
         others: Other comments on this line
         addyours: Add your comment
-        addComment: Comment this
+        addCommentExercise: Comment this exercise
+        addComment: You can give feedback to this exercise. Keep in mind that this should refer to the exercise and not to the solution of the participant. Did you find this exercise particulary easy or difficult? Was the description sufficient?
+        addCommentButton: Comment this
         removeAllOnLine: Remove my comments on this line
         listing: Listing the newest comment requests
         request: "Request Comments"
         question: "Please shortly describe your problem or the program part you would like to get feedback for."
+      rfc_intervention:
+        text: "It looks like you may struggle with this exercise. If you like we can help you out!"
+      break_intervention:
+        title: "Break"
+        text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
     index:
       clone: Duplicate
       implement: Implement
@@ -311,6 +341,9 @@ en:
         tests: Unit Test Results
         time_difference: 'Working Time until here*'
         addendum: '* Deltas longer than 30 minutes are ignored.'
+  proxy_exercises:
+      index:
+        clone: Duplicate
   external_users:
     statistics:
       title: External User Statistics
@@ -348,6 +381,8 @@ en:
       success: You successfully changed your password.
     show:
       link: Profile
+  search:
+    search_in_forum: "Problems? Search here in forum"
   locales:
     de: German
     en: English
@@ -364,7 +399,15 @@ en:
           Hallo %{receiver_displayname}, <br>
           <br>
           es gibt einen neuen Kommentar von %{commenting_user_displayname} zu Ihrer Kommentaranfrage auf CodeOcean. <br>
-          Sie finden ihn hier: %{link} <br>
+          <br>
+          %{commenting_user_displayname} schreibt: %{comment_text}<br>
+          <br>
+          Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
+          <br>
+          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Eine Übersicht Ihrer Kommentaranfragen gibt es hier: %{link_my_comments} <br>
+          Alle Kommentaranfragen aller Benutzer finden Sie hier: %{link_all_comments} <br>
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
           <br>
@@ -373,7 +416,15 @@ en:
           Dear %{receiver_displayname}, <br>
           <br>
           you received a new comment from %{commenting_user_displayname} to your request for comments on CodeOcean. <br>
-          You can find it here: %{link} <br>
+          <br>
+          %{commenting_user_displayname} wrote: %{comment_text} <br>
+          <br>
+          You can find your request for comments here: %{link_to_comment} <br>
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          An overview of all your comments can be accessed here: %{link_my_comments} <br>
+          All comments of all participants are available here: %{link_all_comments} <br>
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: 'You received a new comment on CodeOcean from %{commenting_user_displayname}.'
@@ -381,13 +432,23 @@ en:
         body: 'Please visit %{link} if you want to reset your password.'
         subject: Password reset instructions
   request_for_comments:
+    click_here: Click on this sidebar to comment!
     comments: Comments
+    howto: |
+     To leave comments to a specific code line, click on the respective line number. <br>
+     Enter your comment in the popup and save it by clicking "Comment this". <br>
+     Your comment will show up next to the line number as a speech bubble symbol.
+    howto_title: 'How to comment:'
     index:
       all: All Requests for Comments
       get_my_comment_requests: My Requests for Comments
     no_question: "The author did not enter a question for this request."
     mark_as_solved: "Mark this question as answered"
+    show_all: "All requests"
+    show_solved: "Solved requests"
+    show_unsolved: "Unvsolved requests"
     solved: "This question has been answered"
+    comment_exercise: "I would like to give feedback for this exercise"
   sessions:
     create:
       failure: Invalid email or password.
@@ -488,4 +549,17 @@ en:
     previous_label: '&#8592; Previous Page'
   file_template:
     no_template_label: "Empty File"
-
+  user_exercise_feedback:
+    difficulty_easy: "the exercise was too easy"
+    difficulty_some_what_easy: "the exercise was somewhat easy"
+    difficulty_ok: "the difficulty of the exercise was just right"
+    difficulty_some_what_difficult: "the exercise was somewhat difficult"
+    difficult_too_difficult: "the exercise was too difficult"
+    difficulty: "Difficulty of the exercise:"
+    description: "Your points have been submitted. We kindly ask you for feedback for this exercise. <br> If you do not want to give feedback you can simply close this window.<br><br>Please describe what you liked on this exercise and what you did not. Was the exercise easy to understand or did you have problems understanding? How was the difficulty of the exercise to you?<br>We are happy about any feedback."
+    estimated_time_less_5: "less than 5 minutes"
+    estimated_time_5_to_10: "between 5 and 10 minutes"
+    estimated_time_10_to_20: "between 10 and 20 minutes"
+    estimated_time_20_to_30: "between 20 and 30 minutes"
+    estimated_time_more_30: "more than 30 minutes"
+    working_time: "Estimated time working on this exercise:"

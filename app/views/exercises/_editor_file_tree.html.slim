@@ -6,6 +6,8 @@ div id='sidebar-collapsed' class=(@exercise.hide_file_tree ? '' : 'hidden')
 
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-download', id: 'download-collapsed', label:'', title: t('exercises.editor.download'))
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-history', id: 'start-over-collapsed', label:'', title: t('exercises.editor.start_over'))
+  - if !@course_token.blank?
+    = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-search', id: 'sidebar-search-collapsed', label: '', title: t('search.search_in_forum'))
 
 div id='sidebar-uncollapsed' class=(@exercise.hide_file_tree ? 'hidden' : '')
   = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
@@ -23,6 +25,14 @@ div id='sidebar-uncollapsed' class=(@exercise.hide_file_tree ? 'hidden' : '')
 
   = render('editor_button', classes: 'btn-block btn-primary btn-sm enforce-top-margin', icon: 'fa fa-download', id: 'download', label: t('exercises.editor.download'))
   = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
+
+  - if !@course_token.blank?
+      .input-group.enforce-top-margin
+        .enforce-right-margin
+          = text_field_tag 'search-input-text', nil, placeholder: t('search.search_in_forum'), class: 'form-control'
+        .input-group-btn
+          = button_tag(class: 'btn btn-primary', id: 'btn-search-col') do
+            i.fa.fa-search
 
 - if @exercise.allow_file_creation?
   = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))

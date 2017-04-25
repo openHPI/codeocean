@@ -1,5 +1,5 @@
 <div class="list-group">
-  <h4 id ="exercise_caption" class="list-group-item-heading" data-rfc-id = "<%= @request_for_comment.id %>" ><%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %></h4>
+  <h4 id ="exercise_caption" class="list-group-item-heading" data-exercise-id="<%=@request_for_comment.exercise.id%>" data-comment-exercise-url="<%=create_comment_exercise_request_for_comment_path%>" data-rfc-id = "<%= @request_for_comment.id %>" ><%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %></h4>
   <p class="list-group-item-text">
       <%
         user = @request_for_comment.user
@@ -20,13 +20,16 @@
         <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
     <% end %>
   </h5>
+
   <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
-      <button class="btn btn-default" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
+      <button class="btn btn-primary" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
   <% elsif  (@request_for_comment.solved?) %>
-          <button type="button" class="btn btn-success"><%= t('request_for_comments.solved') %></button>
+      <button type="button" class="btn btn-success"><%= t('request_for_comments.solved') %></button>
   <% else %>
 
   <% end %>
+
+
 
   <% if @current_user.admin?  && user.is_a?(ExternalUser) %>
       <br>
@@ -41,14 +44,18 @@
         </ul>
       </h5>
   <% end %>
+  <h5>
+    <u><%= t('request_for_comments.howto_title') %></u><br> <%= render_markdown(t('request_for_comments.howto')) %>
+  </h5>
 </div>
-
+<hr>
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
 also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
 -->
 <% submission.files.each do |file| %>
-  <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %>
+  <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %><br>
+  &nbsp;&nbsp;<i class="fa fa-arrow-down" aria-hidden="true"></i> <%= t('request_for_comments.click_here') %>
   <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>' data-mode='<%=file.file_type.editor_mode%>'><%= file.content %>
   </div>
 <% end %>
@@ -58,6 +65,8 @@ also, all settings from the rails model needed for the editor configuration in t
 <script type="text/javascript">
 
   var solvedButton = $('#mark-as-solved-button');
+  var commentOnExerciseButton = $('#comment-exercise-button');
+  var addCommentExerciseButton = $('#addCommentExerciseButton')
 
   solvedButton.on('click', function(event){
     var jqrequest = $.ajax({
@@ -107,7 +116,14 @@ also, all settings from the rails model needed for the editor configuration in t
     jqrequest.done(function(response){
       $.each(response, function(index, comment) {
         comment.className = "code-ocean_comment";
-        comment.text = comment.username + ": " + comment.text
+
+        // if we have tabs or carriage returns in the comment, just add the name and leave it as it is. otherwise: format!
+        if(comment.text.includes("\n") || comment.text.includes("\t")){
+          comment.text = comment.username + ": " + comment.text;
+        } else {
+          comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n\t\t");
+        }
+
       });
 
       session.setAnnotations(response);
@@ -161,6 +177,27 @@ also, all settings from the rails model needed for the editor configuration in t
     jqxhr.fail(ajaxError);
   }
 
+  function createCommentOnExercise(file_id, row, editor, commenttext){
+      var jqxhr = $.ajax({
+          data: {
+              comment: {
+                  file_id: file_id,
+                  row: row,
+                  column: 0,
+                  text: commenttext,
+                  request_id: $('h4#exercise_caption').data('rfc-id')
+              }
+          },
+          dataType: 'json',
+          method: 'POST',
+          url:  "/comments"
+      });
+      jqxhr.done(function(response){
+          setAnnotations(editor, file_id);
+      });
+      jqxhr.fail(ajaxError);
+  }
+
   function handleSidebarClick(e) {
     var target  = e.domEvent.target;
     var editor =  e.editor;
@@ -193,6 +230,7 @@ also, all settings from the rails model needed for the editor configuration in t
 
       if (commenttext !== "") {
         createComment(file_id, row, editor, commenttext);
+        commentModal.find('textarea').val('') ;
         commentModal.modal('hide');
       }
     });
@@ -213,4 +251,20 @@ also, all settings from the rails model needed for the editor configuration in t
       text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
   };
+
+
+  function stringDivider(str, width, spaceReplacer) {
+    if (str.length>width) {
+      var p=width
+      for (;p>0 && str[p]!=' ';p--) {
+      }
+      if (p>0) {
+        var left = str.substring(0, p);
+        var right = str.substring(p+1);
+        return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+      }
+    }
+    return str;
+  }
+
 </script>

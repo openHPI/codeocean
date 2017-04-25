@@ -18,6 +18,6 @@ class UserMailer < ActionMailer::Base
     @commenting_user_displayname = commenting_user.displayname
     @comment_text = comment.text
     @rfc_link = request_for_comment_url(request_for_comment)
-    mail(subject: t('mailers.user_mailer.got_new_comment.subject', commenting_user_displayname: @commenting_user_displayname), to: request_for_comment.user.email).deliver
+    mail(subject: t('mailers.user_mailer.got_new_comment.subject', commenting_user_displayname: @commenting_user_displayname), to: request_for_comment.user.email)
   end
 end

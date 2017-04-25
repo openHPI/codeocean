@@ -13,6 +13,10 @@ class SubmissionsController < ApplicationController
   before_action :set_mime_type, only: [:download_file, :render_file]
   skip_before_action :verify_authenticity_token, only: [:download_file, :render_file]
 
+  def max_message_buffer_size
+    500
+  end
+
   def authorize!
     authorize(@submission || @submissions)
   end
@@ -156,7 +160,7 @@ class SubmissionsController < ApplicationController
         tubesock.onmessage do |data|
           Rails.logger.info(Time.now.getutc.to_s + ": Client sending: " + data)
           # Check whether the client send a JSON command and kill container
-          # if the command is 'client_exit', send it to docker otherwise.
+          # if the command is 'client_kill', send it to docker otherwise.
           begin
             parsed = JSON.parse(data)
             if parsed['cmd'] == 'client_kill'
@@ -183,21 +187,31 @@ class SubmissionsController < ApplicationController
   end
 
   def kill_socket(tubesock)
+    # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
+    save_run_output
+
     # Hijacked connection needs to be notified correctly
     tubesock.send_data JSON.dump({'cmd' => 'exit'})
     tubesock.close
   end
 
   def handle_message(message, tubesock, container)
+    @message_buffer ||= ""
     # Handle special commands first
-    if (/^exit/.match(message))
-      kill_socket(tubesock)
+    if (/^#exit/.match(message))
+      # Just call exit_container on the docker_client.
+      # Do not call kill_socket for the websocket to the client here.
+      # @docker_client.exit_container closes the socket to the container,
+      # kill_socket is called in the "on close handler" of the websocket to the container
       @docker_client.exit_container(container)
+    elsif /^#timeout/.match(message)
+      @message_buffer = 'timeout: ' + @message_buffer # add information that this run timed out to the buffer
     else
       # Filter out information about run_command, test_command, user or working directory
       run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
       test_command = @submission.execution_environment.test_command % command_substitutions(params[:filename])
       if !(/root|workspace|#{run_command}|#{test_command}/.match(message))
+        @message_buffer += message if @message_buffer.size <= max_message_buffer_size
         parse_message(message, 'stdout', tubesock)
       end
     end
@@ -242,6 +256,13 @@ class SubmissionsController < ApplicationController
         socket.send_data JSON.dump(parsed)
         Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))
       end
+    end
+  end
+
+  def save_run_output
+    if !@message_buffer.blank?
+      @message_buffer = @message_buffer[(0..max_message_buffer_size-1)] # trim the string to max_message_buffer_size chars
+      Testrun.create(file: @file, submission: @submission, output: @message_buffer)
     end
   end
 
