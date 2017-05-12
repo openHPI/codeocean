@@ -2,9 +2,9 @@
 
 # run like this:
 # cd path/to/project_root
-# .scripts/ubuntu.sh .
+# bash .scripts/ubuntu.sh .
 
-# CodeOcean Remote Client v0.6
+# CodeOcean Remote Client v0.7
 
 #file_info format: <path/to/file/><file_name>=<id> (src/frog.java=34)
 #file_path format: <path/to/file/><file_name>
@@ -61,5 +61,6 @@ done
 
 post_data="{\"remote_evaluation\": {\"validation_token\": \"$validation_token\",\"files_attributes\": [$files_attributes]}}"
 
-curl -H 'Content-Type: application/json' --data "$post_data" "$target_url"
+# "$(echo $post_data)" solves some whitespace issues
+curl -H 'Content-Type: application/json' --data "$(echo $post_data)" "$target_url"
 echo
