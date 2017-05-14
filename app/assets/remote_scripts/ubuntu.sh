@@ -9,6 +9,7 @@
 #file_info format: <path/to/file/><file_name>=<id> (src/frog.java=34)
 #file_path format: <path/to/file/><file_name>
 
+GLOBIGNORE="*"
 
 project_root="${1%/}"
 
