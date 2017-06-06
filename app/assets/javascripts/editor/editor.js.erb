@@ -91,7 +91,7 @@ configureEditors: function () {
   showOutput: function(event) {
     event.preventDefault();
     this.showOutputBar();
-    $('#output').scrollTo($(event.target).attr('href'));
+    $('body').scrollTo($(event.target).attr('href'));
   },
 
   renderProgressBar: function(score, maximum_score) {
