@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170403162848) do
+ActiveRecord::Schema.define(version: 20170608141612) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 20170403162848) do
   create_table "exercise_tags", force: :cascade do |t|
     t.integer "exercise_id"
     t.integer "tag_id"
-    t.integer "factor",      default: 0
+    t.integer "factor",      default: 1
   end
 
   create_table "exercises", force: :cascade do |t|
@@ -110,7 +110,7 @@ ActiveRecord::Schema.define(version: 20170403162848) do
     t.boolean  "hide_file_tree"
     t.boolean  "allow_file_creation"
     t.boolean  "allow_auto_completion",                 default: false
-    t.integer  "expected_worktime_seconds",             default: 0
+    t.integer  "expected_worktime_seconds",             default: 60
     t.integer  "expected_difficulty",                   default: 1
   end
 
@@ -247,15 +247,16 @@ ActiveRecord::Schema.define(version: 20170403162848) do
   end
 
   create_table "request_for_comments", force: :cascade do |t|
-    t.integer  "user_id",                                   null: false
-    t.integer  "exercise_id",                               null: false
-    t.integer  "file_id",                                   null: false
+    t.integer  "user_id",                                    null: false
+    t.integer  "exercise_id",                                null: false
+    t.integer  "file_id",                                    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "user_type",     limit: 255
+    t.string   "user_type",      limit: 255
     t.text     "question"
-    t.boolean  "solved",                    default: false
+    t.boolean  "solved",                     default: false
     t.integer  "submission_id"
+    t.text     "thank_you_note"
   end
 
   create_table "searches", force: :cascade do |t|
@@ -296,12 +297,13 @@ ActiveRecord::Schema.define(version: 20170403162848) do
   end
 
   create_table "user_exercise_feedbacks", force: :cascade do |t|
-    t.integer "exercise_id",          null: false
-    t.integer "user_id",              null: false
-    t.string  "user_type",            null: false
+    t.integer "exercise_id",             null: false
+    t.integer "user_id",                 null: false
+    t.string  "user_type",               null: false
     t.integer "difficulty"
     t.integer "working_time_seconds"
     t.string  "feedback_text"
+    t.integer "user_estimated_worktime"
   end
 
   create_table "user_exercise_interventions", force: :cascade do |t|
@@ -309,6 +311,8 @@ ActiveRecord::Schema.define(version: 20170403162848) do
     t.string   "user_type"
     t.integer  "exercise_id"
     t.integer  "intervention_id"
+    t.integer  "accumulated_worktime_s"
+    t.text     "reason"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

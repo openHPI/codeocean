@@ -24,6 +24,10 @@ class RequestForCommentPolicy < ApplicationPolicy
     admin? || author?
   end
 
+  def set_thank_you_note?
+    admin? || author?
+  end
+
   def edit?
     admin?
   end

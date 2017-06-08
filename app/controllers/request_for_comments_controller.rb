@@ -1,5 +1,5 @@
 class RequestForCommentsController < ApplicationController
-  before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy, :mark_as_solved]
+  before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy, :mark_as_solved, :set_thank_you_note]
 
   skip_after_action :verify_authorized
 
@@ -25,6 +25,18 @@ class RequestForCommentsController < ApplicationController
   def mark_as_solved
     authorize!
     @request_for_comment.solved = true
+    respond_to do |format|
+      if @request_for_comment.save
+        format.json { render :show, status: :ok, location: @request_for_comment }
+      else
+        format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def set_thank_you_note
+    authorize!
+    @request_for_comment.thank_you_note = params[:note]
     respond_to do |format|
       if @request_for_comment.save
         format.json { render :show, status: :ok, location: @request_for_comment }
