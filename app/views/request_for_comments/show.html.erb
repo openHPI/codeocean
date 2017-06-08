@@ -68,16 +68,17 @@ also, all settings from the rails model needed for the editor configuration in t
   var commentOnExerciseButton = $('#comment-exercise-button');
   var addCommentExerciseButton = $('#addCommentExerciseButton')
 
-  solvedButton.on('click', function(event){
-    var jqrequest = $.ajax({
+  solvedButton.on('click', function(){
+    $.ajax({
       dataType: 'json',
       method: 'GET',
       url: location + '/mark_as_solved'
-    });
-
-    jqrequest.done(function(response){
+    }).done(function(response){
       if(response.solved){
-        solvedButton.hide();
+        solvedButton.removeClass('btn-primary');
+        solvedButton.addClass('btn-success');
+        solvedButton.html('<%= t('request_for_comments.solved') %>');
+        solvedButton.off('click');
       }
     });
   });
@@ -89,7 +90,6 @@ also, all settings from the rails model needed for the editor configuration in t
   });
 
   var commentitor = $('.editor');
-  var userid = commentitor.data('user-id');
 
   commentitor.each(function (index, editor) {
     var currentEditor = ace.edit(editor);
@@ -203,9 +203,6 @@ also, all settings from the rails model needed for the editor configuration in t
     var editor =  e.editor;
 
     if (target.className.indexOf("ace_gutter-cell") == -1) return;
-    //if (!editor.isFocused()) return;
-    //if (e.clientX > 25 + target.getBoundingClientRect().left) return;
-
 
     var row = e.getDocumentPosition().row;
     e.stop();
@@ -250,12 +247,12 @@ also, all settings from the rails model needed for the editor configuration in t
     $.flash.danger({
       text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
-  };
+  }
 
 
   function stringDivider(str, width, spaceReplacer) {
     if (str.length>width) {
-      var p=width
+      var p=width;
       for (;p>0 && str[p]!=' ';p--) {
       }
       if (p>0) {
