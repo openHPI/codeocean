@@ -22,7 +22,18 @@
   </h5>
 
   <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
-      <button class="btn btn-primary" id="mark-as-solved-button"><%= t('request_for_comments.mark_as_solved') %></button>
+      <button class="btn btn-primary" id="mark-as-solved-button">
+        <%= t('request_for_comments.mark_as_solved') %>
+      </button>
+      <div id="thank-you-container">
+        <p>
+          <%= t('request_for_comments.write_a_thank_you_node') %>
+        </p>
+        <textarea id="thank-you-note"></textarea>
+        <button class="btn btn-default" id="send-thank-you-note">
+          <%= t('request_for_comments.send_thank_you_note') %>
+        </button>
+      </div>
   <% elsif  (@request_for_comment.solved?) %>
       <button type="button" class="btn btn-success"><%= t('request_for_comments.solved') %></button>
   <% else %>
