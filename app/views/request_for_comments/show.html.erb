@@ -90,8 +90,25 @@ also, all settings from the rails model needed for the editor configuration in t
         solvedButton.addClass('btn-success');
         solvedButton.html('<%= t('request_for_comments.solved') %>');
         solvedButton.off('click');
+        $('#thank-you-container').show();
       }
     });
+  });
+
+  $('#send-thank-you-note').on('click', function () {
+    var value = $('#thank-you-note').val();
+    if (value) {
+      $.ajax({
+        dataType: 'json',
+        method: 'POST',
+        url: location + '/set_thank_you_note',
+        data: {
+            note: value
+        }
+      }).done(function() {
+        $('#thank-you-container').hide();
+      });
+    }
   });
 
   // set file paths for ace
