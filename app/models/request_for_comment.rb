@@ -4,6 +4,8 @@ class RequestForComment < ActiveRecord::Base
   belongs_to :exercise
   belongs_to :file, class_name: 'CodeOcean::File'
 
+  has_many :comments, through: :submission
+
   scope :unsolved, -> { where(solved: [false, nil]) }
 
     def self.last_per_user(n = 5)
