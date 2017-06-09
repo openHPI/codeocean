@@ -465,6 +465,7 @@ de:
     comment_exercise: "Ich möchte die Aufgabenstellung kommentieren"
     write_a_thank_you_node: "Wenn Sie möchten, können Sie sich bei allen Kommentierenden bedanken:"
     send_thank_you_note: "Senden"
+    cancel_thank_you_note: "Nichts senden"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

@@ -30,8 +30,11 @@
           <%= t('request_for_comments.write_a_thank_you_node') %>
         </p>
         <textarea id="thank-you-note"></textarea>
-        <button class="btn btn-default" id="send-thank-you-note">
+        <button class="btn btn-primary" id="send-thank-you-note">
           <%= t('request_for_comments.send_thank_you_note') %>
+        </button>
+        <button class="btn btn-default" id="cancel-thank-you-note">
+          <%= t('request_for_comments.cancel_thank_you_note') %>
         </button>
       </div>
   <% elsif  (@request_for_comment.solved?) %>
@@ -77,7 +80,9 @@ also, all settings from the rails model needed for the editor configuration in t
 
   var solvedButton = $('#mark-as-solved-button');
   var commentOnExerciseButton = $('#comment-exercise-button');
-  var addCommentExerciseButton = $('#addCommentExerciseButton')
+  var addCommentExerciseButton = $('#addCommentExerciseButton');
+
+  var thankYouContainer = $('#thank-you-container');
 
   solvedButton.on('click', function(){
     $.ajax({
@@ -90,7 +95,7 @@ also, all settings from the rails model needed for the editor configuration in t
         solvedButton.addClass('btn-success');
         solvedButton.html('<%= t('request_for_comments.solved') %>');
         solvedButton.off('click');
-        $('#thank-you-container').show();
+        thankYouContainer.show();
       }
     });
   });
@@ -106,9 +111,13 @@ also, all settings from the rails model needed for the editor configuration in t
             note: value
         }
       }).done(function() {
-        $('#thank-you-container').hide();
+        thankYouContainer.hide();
       });
     }
+  });
+
+  $('#cancel-thank-you-note').on('click', function () {
+    thankYouContainer.hide();
   });
 
   // set file paths for ace

@@ -486,6 +486,7 @@ en:
     comment_exercise: "I would like to give feedback for this exercise"
     write_a_thank_you_node: "If you want, you can write a thank you note to all commentors:"
     send_thank_you_note: "Send"
+    cancel_thank_you_note: "Don't send"
   sessions:
     create:
       failure: Invalid email or password.
