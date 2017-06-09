@@ -20,4 +20,12 @@ class UserMailer < ActionMailer::Base
     @rfc_link = request_for_comment_url(request_for_comment)
     mail(subject: t('mailers.user_mailer.got_new_comment.subject', commenting_user_displayname: @commenting_user_displayname), to: request_for_comment.user.email)
   end
+
+  def send_thank_you_note(request_for_comments, receiver)
+    @receiver_displayname = receiver.displayname
+    @author = request_for_comments.user.displayname
+    @thank_you_note = request_for_comments.thank_you_note
+    @rfc_link = request_for_comment_url(request_for_comments)
+    mail(subject: t('mailers.user_mailer.send_thank_you_note.subject', author: @author), to: receiver.email)
+  end
 end
