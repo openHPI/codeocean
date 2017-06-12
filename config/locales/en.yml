@@ -431,6 +431,41 @@ en:
       reset_password:
         body: 'Please visit %{link} if you want to reset your password.'
         subject: Password reset instructions
+      send_thank_you_note:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          %{author} hat Ihnen für Ihren Kommentar auf CodeOcean gedankt. <br>
+          <br>
+          %{author} schreibt: %{thank_you_note}<br>
+          <br>
+          Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
+          <br>
+          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Danke, dass Sie anderen Nutzern von CodeOcean helfen!
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          %{author} thanks you for your comment. <br>
+          <br>
+          %{author} wrote: %{thank_you_note} <br>
+          <br>
+          You can find the request for comments here: %{link_to_comment} <br>
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          Thank you for helping other users on CodeOcean!
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: "%{author} says thank you!"
   request_for_comments:
     click_here: Click on this sidebar to comment!
     comments: Comments
@@ -449,6 +484,9 @@ en:
     show_unsolved: "Unvsolved requests"
     solved: "This question has been answered"
     comment_exercise: "I would like to give feedback for this exercise"
+    write_a_thank_you_node: "If you want, you can write a thank you note to all your commenters:"
+    send_thank_you_note: "Send"
+    cancel_thank_you_note: "Don't send"
   sessions:
     create:
       failure: Invalid email or password.

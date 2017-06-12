@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     member do
       get :mark_as_solved
       post :create_comment_exercise
+      post :set_thank_you_note
     end
   end
   resources :comments, except: [:destroy] do
