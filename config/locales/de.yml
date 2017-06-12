@@ -463,7 +463,7 @@ de:
     show_unsolved: "Nur ungelöste Anfragen anzeigen"
     solved: "Diese Frage wurde erfolgreich beantwortet"
     comment_exercise: "Ich möchte die Aufgabenstellung kommentieren"
-    write_a_thank_you_node: "Wenn Sie möchten, können Sie sich bei allen Kommentierenden bedanken:"
+    write_a_thank_you_node: "Wenn Sie möchten, können Sie sich bei allen Mitstudenten, die Ihnen bei der Beantwortung Ihrer Frage geholfen haben, bedanken:"
     send_thank_you_note: "Senden"
     cancel_thank_you_note: "Nichts senden"
   sessions:
