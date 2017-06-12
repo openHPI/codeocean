@@ -1,5 +1,10 @@
 <div class="list-group">
-  <h4 id ="exercise_caption" class="list-group-item-heading" data-exercise-id="<%=@request_for_comment.exercise.id%>" data-comment-exercise-url="<%=create_comment_exercise_request_for_comment_path%>" data-rfc-id = "<%= @request_for_comment.id %>" ><%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %></h4>
+  <h4 id ="exercise_caption" class="list-group-item-heading" data-exercise-id="<%=@request_for_comment.exercise.id%>" data-comment-exercise-url="<%=create_comment_exercise_request_for_comment_path%>" data-rfc-id = "<%= @request_for_comment.id %>" >
+    <% if (@request_for_comment.solved?) %>
+        <span class="fa fa-check" aria-hidden="true"></span>
+    <% end %>
+    <%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %>
+  </h4>
   <p class="list-group-item-text">
       <%
         user = @request_for_comment.user
@@ -37,10 +42,6 @@
           <%= t('request_for_comments.cancel_thank_you_note') %>
         </button>
       </div>
-  <% elsif  (@request_for_comment.solved?) %>
-      <button type="button" class="btn btn-success"><%= t('request_for_comments.solved') %></button>
-  <% else %>
-
   <% end %>
 
 
