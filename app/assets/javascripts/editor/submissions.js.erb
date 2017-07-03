@@ -196,6 +196,7 @@ CodeOceanEditorSubmissions = {
   unloadAutoSave: function() {
     if(this.autosaveTimer != null){
       this.autosave();
+      clearTimeout(this.autosaveTimer);
     }
   },
 
