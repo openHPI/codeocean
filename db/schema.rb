@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170608141612) do
+ActiveRecord::Schema.define(version: 20170703080355) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,22 @@ ActiveRecord::Schema.define(version: 20170608141612) do
     t.datetime "updated_at"
     t.string   "oauth_key",    limit: 255
     t.string   "oauth_secret", limit: 255
+  end
+
+  create_table "error_template_attributes", force: :cascade do |t|
+    t.integer  "error_template_id"
+    t.string   "key"
+    t.string   "regex"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  create_table "error_templates", force: :cascade do |t|
+    t.integer  "execution_environment_id"
+    t.string   "name"
+    t.string   "signature"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "errors", force: :cascade do |t|
@@ -266,6 +282,21 @@ ActiveRecord::Schema.define(version: 20170608141612) do
     t.string   "search"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "structured_error_attributes", force: :cascade do |t|
+    t.integer  "structured_error_id"
+    t.integer  "error_template_attribute_id"
+    t.string   "value"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  create_table "structured_errors", force: :cascade do |t|
+    t.integer  "error_template_id"
+    t.integer  "file_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "submissions", force: :cascade do |t|
