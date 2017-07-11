@@ -1,3 +1,3 @@
 class ErrorTemplateAttribute < ActiveRecord::Base
-  belongs_to :error_template
+  has_and_belongs_to_many :error_template
 end

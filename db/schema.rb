@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170703080355) do
+ActiveRecord::Schema.define(version: 20170711170928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,11 +48,17 @@ ActiveRecord::Schema.define(version: 20170703080355) do
   end
 
   create_table "error_template_attributes", force: :cascade do |t|
-    t.integer  "error_template_id"
     t.string   "key"
     t.string   "regex"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.text     "description"
+    t.boolean  "important"
+  end
+
+  create_table "error_template_attributes_templates", id: false, force: :cascade do |t|
+    t.integer "error_template_id",           null: false
+    t.integer "error_template_attribute_id", null: false
   end
 
   create_table "error_templates", force: :cascade do |t|
@@ -61,6 +67,8 @@ ActiveRecord::Schema.define(version: 20170703080355) do
     t.string   "signature"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.text     "description"
+    t.text     "hint"
   end
 
   create_table "errors", force: :cascade do |t|
