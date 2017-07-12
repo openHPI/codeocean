@@ -1,5 +1,5 @@
 class ErrorTemplatesController < ApplicationController
-  before_action :set_error_template, only: [:show, :edit, :update, :destroy]
+  before_action :set_error_template, only: [:show, :edit, :update, :destroy, :add_attribute, :remove_attribute]
 
   def authorize!
     authorize(@error_templates || @error_template)
@@ -69,6 +69,24 @@ class ErrorTemplatesController < ApplicationController
     @error_template.destroy
     respond_to do |format|
       format.html { redirect_to error_templates_url, notice: 'Error template was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  def add_attribute
+    authorize!
+    @error_template.error_template_attributes << ErrorTemplateAttribute.find(params['error_template_attribute_id'])
+    respond_to do |format|
+      format.html { redirect_to @error_template }
+      format.json { head :no_content }
+    end
+  end
+
+  def remove_attribute
+    authorize!
+    @error_template.error_template_attributes.delete(ErrorTemplateAttribute.find(params['error_template_attribute_id']))
+    respond_to do |format|
+      format.html { redirect_to @error_template }
       format.json { head :no_content }
     end
   end

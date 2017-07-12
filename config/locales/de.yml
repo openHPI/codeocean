@@ -600,3 +600,4 @@ de:
     hints:
       signature: "Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende \"/\""
     attributes: "Attribute"
+    add_attribute: "Attribut hinzufügen"

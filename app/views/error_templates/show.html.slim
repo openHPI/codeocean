@@ -31,4 +31,10 @@ h3
           td = attribute.description
           td = attribute.regex
           td = link_to(t('shared.show'), attribute)
-          td = "Remove"
+          td = link_to(t('shared.destroy'), attribute_error_template_url(:error_template_attribute_id => attribute.id), :method => :delete)
+
+#add-attribute
+  = collection_select({}, :error_template_attribute_id,
+          ErrorTemplateAttribute.where.not(id: @error_template.error_template_attributes.select(:id).to_a).order(:important, :key),
+          :id, :key, {include_blank: false}, class: '')
+  button.btn.btn-default = t('error_templates.add_attribute')

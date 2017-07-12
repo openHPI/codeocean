@@ -621,3 +621,4 @@ en:
     hints:
       signature: "A regular expression in Ruby syntax without leading and trailing \"/\""
     attributes: "Attributes"
+    add_attribute: "Add attribute"
