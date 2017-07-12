@@ -35,6 +35,6 @@ h3
 
 #add-attribute
   = collection_select({}, :error_template_attribute_id,
-          ErrorTemplateAttribute.where.not(id: @error_template.error_template_attributes.select(:id).to_a).order(:important, :key),
+          ErrorTemplateAttribute.where.not(id: @error_template.error_template_attributes.select(:id).to_a).order('important DESC', :key),
           :id, :key, {include_blank: false}, class: '')
   button.btn.btn-default = t('error_templates.add_attribute')
