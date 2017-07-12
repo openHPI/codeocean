@@ -109,6 +109,11 @@ de:
         name: "Name"
         file_type: "Dateityp"
         content: "Code"
+      error_template:
+        name: Name
+        signature: Regulärer Ausdruck
+        description: Beschreibung
+        hint: Hinweis
     models:
       code_harbor_link:
         one: CodeHarbor-Link
@@ -580,4 +585,6 @@ de:
     estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
     estimated_time_more_30: "mehr als 30 Minuten"
     working_time: "Geschätze Bearbeitungszeit für diese Aufgabe:"
-
+  error_templates:
+    hints:
+      signature: "Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende \"/\""

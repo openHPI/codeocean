@@ -1,0 +1,10 @@
+h1
+  = @error_template
+  = render('shared/edit_button', object: @error_template)
+
+= row(label: 'error_template.name', value: @error_template.name)
+= row(label: 'exercise.execution_environment', value: link_to(@error_template.execution_environment))
+- [:signature, :description, :hint].each do |attribute|
+  = row(label: "error_template.#{attribute}", value: @error_template.send(attribute))
+
+//todo: list attributes

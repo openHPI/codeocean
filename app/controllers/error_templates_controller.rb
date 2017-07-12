@@ -9,7 +9,7 @@ class ErrorTemplatesController < ApplicationController
   # GET /error_templates
   # GET /error_templates.json
   def index
-    @error_templates = ErrorTemplate.all
+    @error_templates = ErrorTemplate.all.order(:execution_environment_id, :name).paginate(page: params[:page])
     authorize!
   end
 
@@ -33,8 +33,8 @@ class ErrorTemplatesController < ApplicationController
   # POST /error_templates
   # POST /error_templates.json
   def create
-    authorize!
     @error_template = ErrorTemplate.new(error_template_params)
+    authorize!
 
     respond_to do |format|
       if @error_template.save
@@ -81,6 +81,6 @@ class ErrorTemplatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def error_template_params
-      params.fetch(:error_template, {})
+      params[:error_template].permit(:name, :execution_environment_id, :signature, :description, :hint)
     end
 end
