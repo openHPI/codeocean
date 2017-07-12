@@ -114,6 +114,11 @@ de:
         signature: Regulärer Ausdruck
         description: Beschreibung
         hint: Hinweis
+      error_template_attributes:
+        important: "Wichtig"
+        key: "Name"
+        description: "Beschreibung"
+        regex: "Regulärer Ausdruck"
     models:
       code_harbor_link:
         one: CodeHarbor-Link
@@ -588,3 +593,4 @@ de:
   error_templates:
     hints:
       signature: "Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende \"/\""
+    attributes: "Attribute"

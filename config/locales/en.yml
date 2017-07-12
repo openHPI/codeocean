@@ -135,6 +135,11 @@ en:
         signature: Signature Regular Expression
         description: Description
         hint: Hint
+      error_template_attributes:
+        important: "Important"
+        key: "Identifier"
+        description: "Description"
+        regex: "Regular Expression"
     models:
       code_harbor_link:
         one: CodeHarbor Link
@@ -609,3 +614,4 @@ en:
   error_templates:
     hints:
       signature: "A regular expression in Ruby syntax without leading and trailing \"/\""
+    attributes: "Attributes"

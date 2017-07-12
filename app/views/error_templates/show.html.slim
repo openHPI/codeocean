@@ -7,4 +7,25 @@ h1
 - [:signature, :description, :hint].each do |attribute|
   = row(label: "error_template.#{attribute}", value: @error_template.send(attribute))
 
-//todo: list attributes
+h3
+  = t 'error_templates.attributes'
+
+.table-responsive
+  table.sortable.table
+    thead
+      tr
+        th
+        th = t('activerecord.attributes.error_template_attributes.key')
+        th = t('activerecord.attributes.error_template_attributes.description')
+        th = t('activerecord.attributes.error_template_attributes.regex')
+    tbody
+      - @error_template.error_template_attributes.order(:important).each do |attribute|
+        tr
+          td
+            - if attribute.important
+              span class="fa fa-star" aria-hidden="true"
+            - else
+              span class="fa fa-star-o" aria-hidden="true"
+          td = attribute.key
+          td = attribute.description
+          td = attribute.regex
