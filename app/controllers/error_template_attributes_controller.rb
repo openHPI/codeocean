@@ -81,6 +81,6 @@ class ErrorTemplateAttributesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def error_template_attribute_params
-      params.fetch(:error_template_attribute, {})
+      params[:error_template_attribute].permit(:key, :description, :regex, :important)
     end
 end
