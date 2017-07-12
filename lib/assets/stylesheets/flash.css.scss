@@ -1,5 +1,12 @@
 .flash {
   display: none;
+
+  span.fa-times {
+    position: relative;
+    top: -1.2em;
+    float: right;
+    cursor: pointer;
+  }
 }
 
 .fixed_error_messages {
@@ -13,14 +20,4 @@
   padding-top: 0;
 }
 
-.clickthrough {
-  pointer-events: none;
-
-  /* fixes for IE */
-  /*
-  background:white;
-  opacity:0;
-  filter:Alpha(opacity=0);
-  */
-}
 
