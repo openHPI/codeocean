@@ -129,6 +129,12 @@ de:
       error:
         one: Fehler
         other: Fehler
+      error_template:
+        one: Fehlertemplate
+        other: Fehlertemplates
+      error_template_attribute:
+        one: Fehlertemplatettribut
+        other: Fehlertemplatettribute
       execution_environment:
         one: Ausführungsumgebung
         other: Ausführungsumgebungen

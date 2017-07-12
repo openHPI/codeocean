@@ -150,6 +150,12 @@ en:
       error:
         one: Error
         other: Errors
+      error_template:
+        one: Error Template
+        other: Error Templates
+      error_template_attribute:
+        one: Error Template Attribute
+        other: Error Template Attributes
       execution_environment:
         one: Execution Environment
         other: Execution Environments
