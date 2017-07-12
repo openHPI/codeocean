@@ -20,7 +20,7 @@ h3
         th = t('activerecord.attributes.error_template_attribute.regex')
         th colspan=3 = t('shared.actions')
     tbody
-      - @error_template.error_template_attributes.order(:important).each do |attribute|
+      - @error_template.error_template_attributes.order('important DESC', :key).each do |attribute|
         tr
           td
             - if attribute.important
