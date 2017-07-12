@@ -1,0 +1,3 @@
+class ErrorTemplatePolicy < AdminOnlyPolicy
+
+end

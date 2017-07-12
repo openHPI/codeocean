@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Error Templates</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @error_templates.each do |error_template| %>
+      <tr>
+        <td><%= link_to 'Show', error_template %></td>
+        <td><%= link_to 'Edit', edit_error_template_path(error_template) %></td>
+        <td><%= link_to 'Destroy', error_template, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Error template', new_error_template_path %>

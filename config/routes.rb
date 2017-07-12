@@ -1,6 +1,7 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
+  resources :error_templates
   resources :file_templates do
     collection do
       get 'by_file_type/:file_type_id', as: :by_file_type, action: :by_file_type
