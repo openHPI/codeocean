@@ -135,7 +135,7 @@ en:
         signature: Signature Regular Expression
         description: Description
         hint: Hint
-      error_template_attributes:
+      error_template_attribute:
         important: "Important"
         key: "Identifier"
         description: "Description"

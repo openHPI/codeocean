@@ -15,9 +15,9 @@ h3
     thead
       tr
         th
-        th = t('activerecord.attributes.error_template_attributes.key')
-        th = t('activerecord.attributes.error_template_attributes.description')
-        th = t('activerecord.attributes.error_template_attributes.regex')
+        th = t('activerecord.attributes.error_template_attribute.key')
+        th = t('activerecord.attributes.error_template_attribute.description')
+        th = t('activerecord.attributes.error_template_attribute.regex')
     tbody
       - @error_template.error_template_attributes.order(:important).each do |attribute|
         tr

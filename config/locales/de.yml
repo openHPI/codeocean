@@ -114,7 +114,7 @@ de:
         signature: Regulärer Ausdruck
         description: Beschreibung
         hint: Hinweis
-      error_template_attributes:
+      error_template_attribute:
         important: "Wichtig"
         key: "Name"
         description: "Beschreibung"
