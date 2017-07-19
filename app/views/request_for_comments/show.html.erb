@@ -134,6 +134,7 @@ also, all settings from the rails model needed for the editor configuration in t
     currentEditor.setReadOnly(true);
     // set editor mode (used for syntax highlighting
     currentEditor.getSession().setMode($(editor).data('mode'));
+    currentEditor.getSession().setOption("useWorker", false);
 
     setAnnotations(currentEditor, $(editor).data('file-id'));
     currentEditor.on("guttermousedown", handleSidebarClick);
