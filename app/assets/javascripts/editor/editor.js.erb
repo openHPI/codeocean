@@ -155,9 +155,9 @@ configureEditors: function () {
     if (!same) {
       this.publishCodeOceanEvent("codeocean_editor_paste", {
         text: pasteObject.text,
+        codeocean_user_id: $('#editor').data('user-id'),
         exercise: $('#editor').data('exercise-id'),
         file_id: "1"
-
       });
     }
   },
@@ -390,9 +390,7 @@ configureEditors: function () {
 
       var payload = {
         user: {
-          type: 'User',
-          uuid: $('#editor').data('user-id'),
-          external_id: $('#editor').data('user-external-id')
+          uuid: $('#editor').data('user-external-id')
         },
         verb: {
           type: eventName
