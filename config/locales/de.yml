@@ -444,7 +444,7 @@ de:
           Thank you for helping other users on CodeOcean!
           <br>
           This mail was automatically sent by CodeOcean. <br>
-        subject: "%{author} sagt danke!"
+        subject: "%{author} sagt Danke!"
   request_for_comments:
     click_here: Zum Kommentieren auf die Seitenleiste klicken!
     comments: Kommentare
