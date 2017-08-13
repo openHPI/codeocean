@@ -115,6 +115,7 @@ en:
         requested_at: Request Date
         question: "Question"
         close: Close window
+        last_update: "Last Update"
       submission:
         cause: Cause
         code: Code
