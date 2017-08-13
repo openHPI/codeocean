@@ -22,6 +22,20 @@ class RequestForCommentsController < ApplicationController
     render 'index'
   end
 
+  def get_rfcs_with_my_comments
+    @search = RequestForComment
+                  .joins(:comments)
+                  .where(comments: {user_id: current_user.id})
+                  .group('request_for_comments.id')
+                  .joins(:comments)
+                  .group('request_for_comments.id')
+                  .select('request_for_comments.*, max(comments.updated_at) as last_comment')
+                  .order('last_comment DESC')
+                  .search(params[:q])
+    @request_for_comments = @search.result.paginate(page: params[:page])
+    render 'index'
+  end
+
   def mark_as_solved
     authorize!
     @request_for_comment.solved = true

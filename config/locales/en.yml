@@ -478,6 +478,7 @@ en:
     index:
       all: All Requests for Comments
       get_my_comment_requests: My Requests for Comments
+      get_rfcs_with_my_comments: Requests for Comments I have commented on
     no_question: "The author did not enter a question for this request."
     mark_as_solved: "Mark this question as answered"
     show_all: "All requests"

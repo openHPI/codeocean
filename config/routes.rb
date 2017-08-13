@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     end
   end
   get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
+  get '/my_rfc_activity', as: 'my_rfc_activity', to: 'request_for_comments#get_rfcs_with_my_comments'
 
   delete '/comment_by_id', to: 'comments#destroy_by_id'
   put '/comments', to: 'comments#update'
