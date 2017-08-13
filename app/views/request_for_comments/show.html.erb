@@ -153,18 +153,37 @@ also, all settings from the rails model needed for the editor configuration in t
     });
 
     jqrequest.done(function(response){
-      $.each(response, function(index, comment) {
-        comment.className = "code-ocean_comment";
+      var comments = response.slice().sort(function (a, b) {
+          return a.row > b.row;
+      });
+      while (comments.length > 0) {
+        var cluster = [];
+        var clusterRow = comments[0].row;
+        while (comments.length > 0 && comments[0].row === clusterRow) {
+          cluster.push(comments.shift());
+        }
+        var popupContent = '';
+        cluster.forEach(function(comment) {
+          popupContent += '<p><b>' + comment.username + '</b>: ' + comment.text.replace(/\n/g, '<br>') + '<p>';
+        });
+        var icon = $('*[data-file-id="' + fileid + '"] > .ace_gutter > .ace_gutter-layer > .ace_gutter-cell:contains("' + (clusterRow + 1) + '")');
+        icon.popover({
+          content: popupContent,
+          html: true,
+          trigger: 'hover',
+          container: 'body'
+        });
+      }
 
+      $.each(response, function(index, comment) {
+        comment.className = 'code-ocean_comment';
         // if we have tabs or carriage returns in the comment, just add the name and leave it as it is. otherwise: format!
         if(comment.text.includes("\n") || comment.text.includes("\t")){
           comment.text = comment.username + ": " + comment.text;
         } else {
           comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n");
         }
-
       });
-
       session.setAnnotations(response);
     })
   }
