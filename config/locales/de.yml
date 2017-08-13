@@ -458,6 +458,7 @@ de:
       get_my_comment_requests: Meine Kommentaranfragen
       all: "Alle Kommentaranfragen"
       get_rfcs_with_my_comments: Kommentaranfragen die ich kommentiert habe
+      get_my_rfc_activity: "Meine Kommentaraktivität"
     no_question: "Der Autor hat keine Frage zu dieser Anfrage gestellt."
     mark_as_solved: "Diese Frage als beantwortet markieren"
     show_all: "Alle Anfragen anzeigen"
