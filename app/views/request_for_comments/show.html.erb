@@ -159,7 +159,7 @@ also, all settings from the rails model needed for the editor configuration in t
 
     jqrequest.done(function(response){
       var comments = response.slice().sort(function (a, b) {
-          return a.row > b.row;
+          return a.row - b.row;
       });
       while (comments.length > 0) {
         var cluster = [];
