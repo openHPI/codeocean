@@ -43,10 +43,11 @@ class RequestForCommentsController < ApplicationController
     @search = RequestForComment
                   .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
                   .where(comments: {user_id: current_user.id})
+                  .joins('join "submissions" s on s.id = request_for_comments.submission_id
+                          left outer join "files" f on f.context_id = s.id
+                          left outer join "comments" as c on c.file_id = f.id')
                   .group('request_for_comments.id')
-                  .joins(:comments)
-                  .group('request_for_comments.id')
-                  .select('request_for_comments.*, max(comments.updated_at) as last_comment')
+                  .select('request_for_comments.*, max(c.updated_at) as last_comment')
                   .search(params[:q])
     @request_for_comments = @search.result.order('last_comment DESC').paginate(page: params[:page])
     render 'index'
