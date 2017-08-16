@@ -64,6 +64,8 @@
   </h5>
 </div>
 <hr>
+
+<div class="hidden sanitizer"></div>
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
 also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
@@ -145,6 +147,13 @@ also, all settings from the rails model needed for the editor configuration in t
     $('.editor > .ace_gutter > .ace_gutter-layer > .ace_gutter-cell').popover('destroy');
   }
 
+  function preprocess(commentText) {
+      // sanitize comments to deal with XSS attacks:
+      commentText = $('div.sanitizer').text(commentText).html();
+      // display original line breaks:
+      return commentText.replace(/\n/g, '<br>');
+  }
+
   function setAnnotations(editor, fileid) {
     var session = editor.getSession();
 
@@ -169,7 +178,7 @@ also, all settings from the rails model needed for the editor configuration in t
         }
         var popupContent = '';
         cluster.forEach(function(comment) {
-          popupContent += '<p><b>' + comment.username + '</b>: ' + comment.text.replace(/\n/g, '<br>') + '<p>';
+          popupContent += '<p><b>' + comment.username + '</b>: ' + preprocess(comment.text) + '<p>';
         });
         var icon = $('*[data-file-id="' + fileid + '"] > .ace_gutter > .ace_gutter-layer > div:nth-child(' + (clusterRow + 1) + ')');
         icon.popover({
