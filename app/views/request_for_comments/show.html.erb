@@ -178,7 +178,8 @@ also, all settings from the rails model needed for the editor configuration in t
         }
         var popupContent = '';
         cluster.forEach(function(comment) {
-          popupContent += '<p><b>' + comment.username + '</b>: ' + preprocess(comment.text) + '<p>';
+            popupContent += '<p><div class="popover-username">' + comment.username + ':</div>' +
+                '<div class="popover-comment">' + preprocess(comment.text) + '</div><p>';
         });
         var icon = $('*[data-file-id="' + fileid + '"] > .ace_gutter > .ace_gutter-layer > div:nth-child(' + (clusterRow + 1) + ')');
         icon.popover({
