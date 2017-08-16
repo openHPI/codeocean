@@ -176,6 +176,9 @@ also, all settings from the rails model needed for the editor configuration in t
         while (comments.length > 0 && comments[0].row === clusterRow) {
           cluster.push(comments.shift());
         }
+        cluster = cluster.sort(function (a, b) {
+            return a.id - b.id;
+        });
         var popupContent = '';
         cluster.forEach(function(comment) {
             popupContent += '<p><div class="popover-username">' + comment.username + ':</div>' +
