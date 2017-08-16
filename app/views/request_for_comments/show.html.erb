@@ -140,6 +140,11 @@ also, all settings from the rails model needed for the editor configuration in t
     currentEditor.on("guttermousedown", handleSidebarClick);
   });
 
+  function cleanupPopovers() {
+    // remove all possible popovers
+    $('.editor > .ace_gutter > .ace_gutter-layer > .ace_gutter-cell').popover('destroy');
+  }
+
   function setAnnotations(editor, fileid) {
     var session = editor.getSession();
 
@@ -166,7 +171,7 @@ also, all settings from the rails model needed for the editor configuration in t
         cluster.forEach(function(comment) {
           popupContent += '<p><b>' + comment.username + '</b>: ' + comment.text.replace(/\n/g, '<br>') + '<p>';
         });
-        var icon = $('*[data-file-id="' + fileid + '"] > .ace_gutter > .ace_gutter-layer > .ace_gutter-cell:contains("' + (clusterRow + 1) + '")');
+        var icon = $('*[data-file-id="' + fileid + '"] > .ace_gutter > .ace_gutter-layer > div:nth-child(' + (clusterRow + 1) + ')');
         icon.popover({
           content: popupContent,
           html: true,
@@ -201,6 +206,7 @@ also, all settings from the rails model needed for the editor configuration in t
   }
 
   function deleteComment(file_id, row, editor) {
+    cleanupPopovers();
     var jqxhr = $.ajax({
       type: 'DELETE',
       url: "/comments",
@@ -215,6 +221,7 @@ also, all settings from the rails model needed for the editor configuration in t
   }
 
   function createComment(file_id, row, editor, commenttext){
+    cleanupPopovers();
     var jqxhr = $.ajax({
       data: {
         comment: {
