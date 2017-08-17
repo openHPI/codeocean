@@ -190,18 +190,19 @@ also, all settings from the rails model needed for the editor configuration in t
             if (index !== 0) {
                 popupContent += '<div class="popover-divider"></div>'
             }
-            popupContent += '<p>';
-            popupContent += '<div class="popover-username">' + comment.username + ':</div>' +
-                '<div class="popover-comment">' + preprocess(comment.text) + '</div>' +
-                '<div class="popover-footer">' +
-                  '<div class="popover-date">' + comment.date + '</div>';
+            popupContent += '<p class="comment">';
+            popupContent += '<div class="popover-header">' +
+                '<div class="popover-username">' + preprocess(comment.username) + '</div>' +
+                '<div class="popover-date">' + comment.date + '</div>';
             if (comment.updated) {
                 popupContent += '<div class="popover-updated">' +
                     '<i class="fa fa-pencil" aria-hidden="true"></i>' +
                     '<%= t('request_for_comments.comment_edited') %>' +
-                  '</div>'
+                    '</div>'
             }
-            popupContent += '</div></p>'
+            popupContent += '</div>';
+            popupContent += '<div class="popover-comment">' + preprocess(comment.text) + '</div>';
+            popupContent += '</p>';
         });
 
         // attach the popover to the ace sidebar (where the comment icon is displayed)
