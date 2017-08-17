@@ -180,9 +180,13 @@ also, all settings from the rails model needed for the editor configuration in t
             return a.id - b.id;
         });
         var popupContent = '';
-        cluster.forEach(function(comment) {
+        cluster.forEach(function(comment, index) {
+            if (index !== 0) {
+                popupContent += '<div class="popover-divider"></div>'
+            }
             popupContent += '<p><div class="popover-username">' + comment.username + ':</div>' +
-                '<div class="popover-comment">' + preprocess(comment.text) + '</div><p>';
+                '<div class="popover-comment">' + preprocess(comment.text) + '</div>' +
+                '<div class="popover-date">' + comment.date + '</div><p>';
         });
         var icon = $('*[data-file-id="' + fileid + '"] > .ace_gutter > .ace_gutter-layer > div:nth-child(' + (clusterRow + 1) + ')');
         icon.popover({
