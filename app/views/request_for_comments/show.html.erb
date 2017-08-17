@@ -167,18 +167,24 @@ also, all settings from the rails model needed for the editor configuration in t
     });
 
     jqrequest.done(function(response){
+      // comments need to be sorted to cluster them per line
       var comments = response.slice().sort(function (a, b) {
           return a.row - b.row;
       });
       while (comments.length > 0) {
+        // new cluster of comments
         var cluster = [];
         var clusterRow = comments[0].row;
+        // now collect all comments on this line
         while (comments.length > 0 && comments[0].row === clusterRow) {
           cluster.push(comments.shift());
         }
+        // sort the comments by creation date
         cluster = cluster.sort(function (a, b) {
             return a.id - b.id;
         });
+
+        // build the markup for the current line's popover
         var popupContent = '';
         cluster.forEach(function(comment, index) {
             if (index !== 0) {
@@ -197,10 +203,14 @@ also, all settings from the rails model needed for the editor configuration in t
             }
             popupContent += '</div></p>'
         });
-        var icon = $('*[data-file-id="' + fileid + '"] > .ace_gutter > .ace_gutter-layer > div:nth-child(' + (clusterRow + 1) + ')');
+
+        // attach the popover to the ace sidebar (where the comment icon is displayed)
+        var icon = $('*[data-file-id="' + fileid + '"]')          // the editor for this file
+                .find('.ace_gutter > .ace_gutter-layer')          // the sidebar
+                .find('div:nth-child(' + (clusterRow + 1) + ')'); // the correct line
         icon.popover({
           content: popupContent,
-          html: true,
+          html: true, // necessary to style comments. XSS is not possible due to comment pre-processing (sanitizing)
           trigger: 'hover',
           container: 'body'
         });
