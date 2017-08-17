@@ -184,9 +184,18 @@ also, all settings from the rails model needed for the editor configuration in t
             if (index !== 0) {
                 popupContent += '<div class="popover-divider"></div>'
             }
-            popupContent += '<p><div class="popover-username">' + comment.username + ':</div>' +
+            popupContent += '<p>';
+            popupContent += '<div class="popover-username">' + comment.username + ':</div>' +
                 '<div class="popover-comment">' + preprocess(comment.text) + '</div>' +
-                '<div class="popover-date">' + comment.date + '</div><p>';
+                '<div class="popover-footer">' +
+                  '<div class="popover-date">' + comment.date + '</div>';
+            if (comment.updated) {
+                popupContent += '<div class="popover-updated">' +
+                    '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                    '<%= t('request_for_comments.comment_edited') %>' +
+                  '</div>'
+            }
+            popupContent += '</div></p>'
         });
         var icon = $('*[data-file-id="' + fileid + '"] > .ace_gutter > .ace_gutter-layer > div:nth-child(' + (clusterRow + 1) + ')');
         icon.popover({

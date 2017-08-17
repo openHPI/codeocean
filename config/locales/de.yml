@@ -466,6 +466,7 @@ de:
     write_a_thank_you_node: "Wenn Sie möchten, können Sie sich bei allen Mitstudenten, die Ihnen bei der Beantwortung Ihrer Frage geholfen haben, bedanken:"
     send_thank_you_note: "Senden"
     cancel_thank_you_note: "Nichts senden"
+    comment_edited: "bearbeitet"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

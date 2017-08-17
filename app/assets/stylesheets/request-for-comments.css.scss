@@ -30,9 +30,18 @@
   word-wrap: break-word;
 }
 
+.popover-footer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
 .popover-date {
   color: #008cba;
-  margin-top: 10px;
+}
+
+.popover-updated {
+  font-style: italic;
 }
 
 .popover-divider {
