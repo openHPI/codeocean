@@ -20,6 +20,7 @@ h1 = RequestForComment.model_name.human(count: 2)
           i class="fa fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
         th = t('activerecord.attributes.request_for_comments.username')
         th = t('activerecord.attributes.request_for_comments.requested_at')
+        th = t('activerecord.attributes.request_for_comments.last_update')
     tbody
       - @request_for_comments.each do |request_for_comment|
         tr data-id=request_for_comment.id
@@ -36,5 +37,6 @@ h1 = RequestForComment.model_name.human(count: 2)
           td = request_for_comment.comments_count
           td = request_for_comment.user.displayname
           td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.created_at))
+          td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.last_comment.nil? ? request_for_comment.updated_at : request_for_comment.last_comment))
 
 = render('shared/pagination', collection: @request_for_comments)
