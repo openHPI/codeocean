@@ -202,7 +202,7 @@ class SubmissionsController < ApplicationController
     if !@message_buffer.blank?
       @submission.exercise.execution_environment.error_templates.each do |template|
         pattern = Regexp.new(template.signature).freeze
-        if pattern.match?(@message_buffer)
+        if pattern.match(@message_buffer)
           StructuredError.create_from_template(template, @message_buffer)
         end
       end
