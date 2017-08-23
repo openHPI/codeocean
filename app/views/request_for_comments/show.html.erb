@@ -64,6 +64,8 @@
   </h5>
 </div>
 <hr>
+
+<div class="hidden sanitizer"></div>
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
 also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
@@ -140,6 +142,18 @@ also, all settings from the rails model needed for the editor configuration in t
     currentEditor.on("guttermousedown", handleSidebarClick);
   });
 
+  function cleanupPopovers() {
+    // remove all possible popovers
+    $('.editor > .ace_gutter > .ace_gutter-layer > .ace_gutter-cell').popover('destroy');
+  }
+
+  function preprocess(commentText) {
+      // sanitize comments to deal with XSS attacks:
+      commentText = $('div.sanitizer').text(commentText).html();
+      // display original line breaks:
+      return commentText.replace(/\n/g, '<br>');
+  }
+
   function setAnnotations(editor, fileid) {
     var session = editor.getSession();
 
@@ -153,18 +167,65 @@ also, all settings from the rails model needed for the editor configuration in t
     });
 
     jqrequest.done(function(response){
-      $.each(response, function(index, comment) {
-        comment.className = "code-ocean_comment";
+      // comments need to be sorted to cluster them per line
+      var comments = response.slice().sort(function (a, b) {
+          return a.row - b.row;
+      });
+      while (comments.length > 0) {
+        // new cluster of comments
+        var cluster = [];
+        var clusterRow = comments[0].row;
+        // now collect all comments on this line
+        while (comments.length > 0 && comments[0].row === clusterRow) {
+          cluster.push(comments.shift());
+        }
+        // sort the comments by creation date
+        cluster = cluster.sort(function (a, b) {
+            return a.id - b.id;
+        });
 
+        // build the markup for the current line's popover
+        var popupContent = '';
+        cluster.forEach(function(comment, index) {
+            if (index !== 0) {
+                popupContent += '<div class="popover-divider"></div>'
+            }
+            popupContent += '<p class="comment">';
+            popupContent += '<div class="popover-header">' +
+                '<div class="popover-username">' + preprocess(comment.username) + '</div>' +
+                '<div class="popover-date">' + comment.date + '</div>';
+            if (comment.updated) {
+                popupContent += '<div class="popover-updated">' +
+                    '<i class="fa fa-pencil" aria-hidden="true"></i>' +
+                    '<%= t('request_for_comments.comment_edited') %>' +
+                    '</div>'
+            }
+            popupContent += '</div>';
+            popupContent += '<div class="popover-comment">' + preprocess(comment.text) + '</div>';
+            popupContent += '</p>';
+        });
+
+        // attach the popover to the ace sidebar (where the comment icon is displayed)
+        var icon = $('*[data-file-id="' + fileid + '"]')          // the editor for this file
+                .find('.ace_gutter > .ace_gutter-layer')          // the sidebar
+                .find('div:nth-child(' + (clusterRow + 1) + ')'); // the correct line
+        icon.popover({
+          content: popupContent,
+          html: true, // necessary to style comments. XSS is not possible due to comment pre-processing (sanitizing)
+          trigger: 'hover',
+          container: 'body'
+        });
+      }
+
+      $.each(response, function(index, comment) {
+        comment.className = 'code-ocean_comment';
         // if we have tabs or carriage returns in the comment, just add the name and leave it as it is. otherwise: format!
         if(comment.text.includes("\n") || comment.text.includes("\t")){
           comment.text = comment.username + ": " + comment.text;
         } else {
           comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n");
         }
-
       });
-
       session.setAnnotations(response);
     })
   }
@@ -182,6 +243,7 @@ also, all settings from the rails model needed for the editor configuration in t
   }
 
   function deleteComment(file_id, row, editor) {
+    cleanupPopovers();
     var jqxhr = $.ajax({
       type: 'DELETE',
       url: "/comments",
@@ -196,6 +258,7 @@ also, all settings from the rails model needed for the editor configuration in t
   }
 
   function createComment(file_id, row, editor, commenttext){
+    cleanupPopovers();
     var jqxhr = $.ajax({
       data: {
         comment: {
