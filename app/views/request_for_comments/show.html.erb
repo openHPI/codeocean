@@ -82,7 +82,6 @@ also, all settings from the rails model needed for the editor configuration in t
 <script type="text/javascript">
 
   var solvedButton = $('#mark-as-solved-button');
-  var commentOnExerciseButton = $('#comment-exercise-button');
   var addCommentExerciseButton = $('#addCommentExerciseButton');
 
   var thankYouContainer = $('#thank-you-container');
@@ -219,12 +218,6 @@ also, all settings from the rails model needed for the editor configuration in t
 
       $.each(response, function(index, comment) {
         comment.className = 'code-ocean_comment';
-        // if we have tabs or carriage returns in the comment, just add the name and leave it as it is. otherwise: format!
-        if(comment.text.includes("\n") || comment.text.includes("\t")){
-          comment.text = comment.username + ": " + comment.text;
-        } else {
-          comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n");
-        }
       });
       session.setAnnotations(response);
     })
@@ -277,27 +270,6 @@ also, all settings from the rails model needed for the editor configuration in t
       setAnnotations(editor, file_id);
     });
     jqxhr.fail(ajaxError);
-  }
-
-  function createCommentOnExercise(file_id, row, editor, commenttext){
-      var jqxhr = $.ajax({
-          data: {
-              comment: {
-                  file_id: file_id,
-                  row: row,
-                  column: 0,
-                  text: commenttext,
-                  request_id: $('h4#exercise_caption').data('rfc-id')
-              }
-          },
-          dataType: 'json',
-          method: 'POST',
-          url:  "/comments"
-      });
-      jqxhr.done(function(response){
-          setAnnotations(editor, file_id);
-      });
-      jqxhr.fail(ajaxError);
   }
 
   function handleSidebarClick(e) {
