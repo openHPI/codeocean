@@ -137,7 +137,7 @@ also, all settings from the rails model needed for the editor configuration in t
     currentEditor.getSession().setMode($(editor).data('mode'));
     currentEditor.getSession().setOption("useWorker", false);
 
-    currentEditor.annotationsByLine = {};
+    currentEditor.commentVisualsByLine = {};
     setAnnotations(currentEditor, $(editor).data('file-id'));
     currentEditor.on("guttermousedown", handleSidebarClick);
   });
@@ -226,13 +226,13 @@ also, all settings from the rails model needed for the editor configuration in t
     });
 
     jqrequest.done(function(response){
-      editor.annotationsByLine = clusterComments(response.slice());
-      for (var line in editor.annotationsByLine) {
-        if (editor.annotationsByLine.hasOwnProperty(line)) {
-          var htmlContent = generateCommentHtmlContent(editor.annotationsByLine[line]);
-          buildPopover(fileid, line, htmlContent);
-        }
-      }
+      editor.commentVisualsByLine = {};
+      var clusters = clusterComments(response.slice());
+      $.each(clusters, function (line, cluster) {
+        var htmlContent = generateCommentHtmlContent(cluster);
+        editor.commentVisualsByLine[line] = htmlContent;
+        buildPopover(fileid, line, htmlContent);
+      });
 
       $.each(response, function(index, comment) {
         comment.className = 'code-ocean_comment';
@@ -302,10 +302,9 @@ also, all settings from the rails model needed for the editor configuration in t
     var commentModal = $('#comment-modal');
 
     if (hasCommentsInRow(editor, row)) {
-      var rowComments = getCommentsForRow(editor, row);
-      var comments = _.pluck(rowComments, 'text').join('\n');
+      var htmlContent = editor.commentVisualsByLine[row];
       commentModal.find('#otherComments').show();
-      commentModal.find('#otherCommentsTextfield').text(comments);
+      commentModal.find('#otherComments > .container').html(htmlContent);
     } else {
       commentModal.find('#otherComments').hide();
     }

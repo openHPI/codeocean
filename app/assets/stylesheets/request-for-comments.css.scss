@@ -71,7 +71,8 @@ p.comment {
   }
 
   .container {
-    min-height: 300px;
+    width: 100%;
+    max-height: 300px;
     overflow-y: auto;
   }
 }
