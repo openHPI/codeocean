@@ -94,6 +94,7 @@ de:
         requested_at: Angefragezeitpunkt
         question: "Frage"
         close: "Fenster schließen"
+        last_update: "Letzte Aktivität"
       submission:
         cause: Anlass
         code: Code
@@ -460,7 +461,7 @@ de:
           Thank you for helping other users on CodeOcean!
           <br>
           This mail was automatically sent by CodeOcean. <br>
-        subject: "%{author} sagt danke!"
+        subject: "%{author} sagt Danke!"
   request_for_comments:
     click_here: Zum Kommentieren auf die Seitenleiste klicken!
     comments: Kommentare
@@ -472,6 +473,8 @@ de:
     index:
       get_my_comment_requests: Meine Kommentaranfragen
       all: "Alle Kommentaranfragen"
+      get_rfcs_with_my_comments: Kommentaranfragen die ich kommentiert habe
+      get_my_rfc_activity: "Meine Kommentaraktivität"
     no_question: "Der Autor hat keine Frage zu dieser Anfrage gestellt."
     mark_as_solved: "Diese Frage als beantwortet markieren"
     show_all: "Alle Anfragen anzeigen"
@@ -482,6 +485,7 @@ de:
     write_a_thank_you_node: "Wenn Sie möchten, können Sie sich bei allen Mitstudenten, die Ihnen bei der Beantwortung Ihrer Frage geholfen haben, bedanken:"
     send_thank_you_note: "Senden"
     cancel_thank_you_note: "Nichts senden"
+    comment_edited: "bearbeitet"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

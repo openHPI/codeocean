@@ -17,3 +17,50 @@
   width: 100%;
   height: 200px;
 }
+
+.ace_tooltip {
+  display: none !important;
+}
+
+p.comment {
+  width: 400px;
+}
+
+.popover-header {
+  width: 100%;
+  overflow: hidden;
+  padding-bottom: 10px;
+  margin: auto;
+}
+
+.popover-username {
+  font-weight: bold;
+  width: 60%;
+  float: left;
+}
+
+.popover-date {
+  text-align: right;
+  color: #008cba;
+  margin-left: 60%;
+  font-size: x-small;
+}
+
+.popover-updated {
+  text-align: right;
+  margin-left: 60%;
+  font-size: x-small;
+}
+
+.popover-comment {
+  word-wrap: break-word;
+  margin-bottom: 10px;
+}
+
+.popover-divider {
+  width: 100%;
+  height: 1px;
+  background-color: #008cba;
+  overflow: hidden;
+  margin-bottom: 10px;
+}

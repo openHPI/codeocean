@@ -19,6 +19,8 @@ class CommentsController < ApplicationController
       @comments = Comment.where(file_id: params[:file_id])
       @comments.map{|comment|
         comment.username = comment.user.displayname
+        comment.date = comment.created_at.strftime('%d.%m.%Y %k:%M')
+        comment.updated = (comment.created_at != comment.updated_at)
       }
     else
       @comments = []
