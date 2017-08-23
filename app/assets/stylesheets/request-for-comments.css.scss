@@ -64,3 +64,17 @@ p.comment {
   overflow: hidden;
   margin-bottom: 10px;
 }
+
+#otherComments {
+  h5 {
+    margin-top: 0px;
+  }
+}
+
+#myComment {
+  margin-bottom: 10px;
+
+  textarea {
+    resize: none;
+  }
+}

@@ -1,9 +1,10 @@
-h5 =t('exercises.implement.comment.addyours')
-
-textarea.form-control(style='resize:none;')
 #otherComments
   h5 =t('exercises.implement.comment.others')
   pre#otherCommentsTextfield
-p = ''
+
+#myComment
+  h5 =t('exercises.implement.comment.addyours')
+  textarea.form-control
+
 button#addCommentButton.btn.btn-block.btn-primary(type='button') =t('exercises.implement.comment.addCommentButton')
 button#removeAllButton.btn.btn-block.btn-warning(type='button') =t('exercises.implement.comment.removeAllOnLine')
