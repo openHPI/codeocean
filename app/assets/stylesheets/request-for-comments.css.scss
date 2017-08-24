@@ -65,9 +65,13 @@ p.comment {
   margin-bottom: 10px;
 }
 
+.popover-action-button {
+  display: none;
+}
+
 #otherComments {
   h5 {
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   .container {
@@ -75,6 +79,15 @@ p.comment {
     max-height: 200px;
     overflow-y: auto;
     border: 1px solid #cccccc;
+
+    .popover-actions {
+      display: flex;
+
+      .popover-action-button {
+        display: block;
+        margin-right: 5px;
+      }
+    }
   }
 }
 
