@@ -72,12 +72,14 @@ p.comment {
 
   .container {
     width: 100%;
-    max-height: 300px;
+    max-height: 200px;
     overflow-y: auto;
+    border: 1px solid #cccccc;
   }
 }
 
 #myComment {
+  margin-top: 20px;
   margin-bottom: 10px;
 
   textarea {
