@@ -21,6 +21,7 @@ class CommentsController < ApplicationController
         comment.username = comment.user.displayname
         comment.date = comment.created_at.strftime('%d.%m.%Y %k:%M')
         comment.updated = (comment.created_at != comment.updated_at)
+        comment.editable = comment.user == current_user
       }
     else
       @comments = []
