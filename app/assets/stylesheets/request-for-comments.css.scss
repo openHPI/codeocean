@@ -25,57 +25,57 @@
 .comment {
   width: 100%;
   min-width: 200px;
+
+  .comment-header {
+    width: 100%;
+    overflow: hidden;
+    padding-bottom: 10px;
+    margin: auto;
+
+    .comment-username {
+      font-weight: bold;
+      width: 60%;
+      float: left;
+    }
+
+    .comment-date {
+      text-align: right;
+      color: #008cba;
+      margin-left: 60%;
+      font-size: x-small;
+    }
+
+    .comment-updated {
+      text-align: right;
+      margin-left: 60%;
+      font-size: x-small;
+    }
+  }
+
+  .comment-content {
+    word-wrap: break-word;
+    margin-bottom: 10px;
+  }
+
+  .comment-editor {
+    width: 100%;
+    height: auto;
+    background-color: inherit;
+    border-style: hidden;
+  }
+
+  .comment-actions {
+    display: none;
+  }
 }
 
-.popover-header {
-  width: 100%;
-  overflow: hidden;
-  padding-bottom: 10px;
-  margin: auto;
-}
-
-.popover-username {
-  font-weight: bold;
-  width: 60%;
-  float: left;
-}
-
-.popover-date {
-  text-align: right;
-  color: #008cba;
-  margin-left: 60%;
-  font-size: x-small;
-}
-
-.popover-updated {
-  text-align: right;
-  margin-left: 60%;
-  font-size: x-small;
-}
-
-.popover-comment {
-  word-wrap: break-word;
-  margin-bottom: 10px;
-}
-
-.popover-comment-editor {
-  width: 100%;
-  height: auto;
-  background-color: inherit;
-  border-style: hidden;
-}
-
-.popover-divider {
+.comment-divider {
   width: 100%;
   height: 1px;
   background-color: #008cba;
   overflow: hidden;
   margin-top: 10px;
   margin-bottom: 10px;
-}
-
-.popover-action-button {
-  display: none;
 }
 
 #otherComments {
@@ -96,11 +96,10 @@
       font-style: italic;
     }
 
-    .popover-actions {
+    .comment-actions {
       display: flex;
 
-      .popover-action-button {
-        display: block;
+      button {
         margin-right: 5px;
       }
     }

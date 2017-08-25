@@ -182,25 +182,25 @@ also, all settings from the rails model needed for the editor configuration in t
     comments.forEach(function(comment, index) {
       var commentText = preprocess(comment.text);
       if (index !== 0) {
-        htmlContent += '<div class="popover-divider"></div>'
+        htmlContent += '<div class="comment-divider"></div>'
       }
       htmlContent += '<div class="comment">';
-      htmlContent += '<div class="popover-header">' +
-        '<div class="popover-username">' + preprocess(comment.username) + '</div>' +
-        '<div class="popover-date">' + comment.date + '</div>';
+      htmlContent += '<div class="comment-header">' +
+        '<div class="comment-username">' + preprocess(comment.username) + '</div>' +
+        '<div class="comment-date">' + comment.date + '</div>';
       if (comment.updated) {
-        htmlContent += '<div class="popover-updated">' +
+        htmlContent += '<div class="comment-updated">' +
           '<i class="fa fa-pencil" aria-hidden="true"></i>' +
           '<%= t('request_for_comments.comment_edited') %>' +
           '</div>'
       }
       htmlContent += '</div>' +
-          '<div class="popover-comment">' + commentText + '</div>' +
-          '<textarea class="hidden popover-comment-editor">' + commentText + '</textarea>';
+          '<div class="comment-content">' + commentText + '</div>' +
+          '<textarea class="hidden comment-editor">' + commentText + '</textarea>';
       if (comment.editable) {
-        htmlContent += '<div class="popover-actions">' +
-            '<button class="popover-action-button action-edit btn btn-xs btn-warning" data-comment-id=' + comment.id + '><%= t('shared.edit') %></button>' +
-            '<button class="popover-action-button action-delete btn btn-xs btn-danger" data-comment-id=' + comment.id + '><%= t('shared.destroy') %></button>' +
+        htmlContent += '<div class="comment-actions">' +
+            '<button class="action-edit btn btn-xs btn-warning" data-comment-id=' + comment.id + '><%= t('shared.edit') %></button>' +
+            '<button class="action-delete btn btn-xs btn-danger" data-comment-id=' + comment.id + '><%= t('shared.destroy') %></button>' +
           '</div>';
       }
       htmlContent += '</div>';
