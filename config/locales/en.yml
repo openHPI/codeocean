@@ -177,6 +177,9 @@ en:
       user_exercise_feedback:
         one: Feedback
         other: Feedback
+      comment:
+        one: Comment
+        other: Comments
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
@@ -605,3 +608,5 @@ en:
     estimated_time_20_to_30: "between 20 and 30 minutes"
     estimated_time_more_30: "more than 30 minutes"
     working_time: "Estimated time working on this exercise:"
+  comments:
+    deleted: "Deleted"

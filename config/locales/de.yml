@@ -156,6 +156,9 @@ de:
       user_exercise_feedback:
         one: Feedback
         other: Feedback
+      comment:
+        one: Kommentar
+        other: Kommentare
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'
@@ -584,4 +587,6 @@ de:
     estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
     estimated_time_more_30: "mehr als 30 Minuten"
     working_time: "Geschätze Bearbeitungszeit für diese Aufgabe:"
+  comments:
+    deleted: "Gelöscht"
 

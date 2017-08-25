@@ -90,6 +90,12 @@
     border: 1px solid #cccccc;
     padding: 15px;
 
+    .comment-removed {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+
     .popover-actions {
       display: flex;
 

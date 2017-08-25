@@ -308,11 +308,7 @@ also, all settings from the rails model needed for the editor configuration in t
           var commentId = $(event.target).data('comment-id');
           deleteComment(commentId, editor, fileid, function () {
             var parent = $(button).parent().parent();
-            parent.siblings().first().remove(); // potential divider
-            parent.remove(); // the comment itself
-            if (container.html() === '') {
-              otherComments.hide();
-            }
+            parent.html('<div class="comment-removed"><%= t('comments.deleted') %></div>');
           });
         });
       });
