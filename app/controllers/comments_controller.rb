@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :edit, :update, :destroy_by_id]
+  before_action :set_comment, only: [:show, :edit, :update, :destroy]
 
   # to disable authorization check: comment the line below back in
  # skip_after_action :verify_authorized
@@ -84,20 +84,11 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1
   # DELETE /comments/1.json
-  def destroy_by_id
+  def destroy
+    authorize!
     @comment.destroy
     respond_to do |format|
       format.html { head :no_content, notice: 'Comment was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
-
-  def destroy
-    @comments = Comment.where(file_id: params[:file_id], row: params[:row], user: current_user)
-    @comments.each { |comment| authorize comment; comment.destroy }
-    respond_to do |format|
-      #format.html { redirect_to comments_url, notice: 'Comments were successfully destroyed.' }
-      format.html { head :no_content, notice: 'Comments were successfully destroyed.' }
       format.json { head :no_content }
     end
   end
