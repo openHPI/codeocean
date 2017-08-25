@@ -22,8 +22,9 @@
   display: none !important;
 }
 
-p.comment {
-  width: 400px;
+.comment {
+  width: 100%;
+  min-width: 200px;
 }
 
 .popover-header {
@@ -57,11 +58,19 @@ p.comment {
   margin-bottom: 10px;
 }
 
+.popover-comment-editor {
+  width: 100%;
+  height: auto;
+  background-color: inherit;
+  border-style: hidden;
+}
+
 .popover-divider {
   width: 100%;
   height: 1px;
   background-color: #008cba;
   overflow: hidden;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 
@@ -79,6 +88,7 @@ p.comment {
     max-height: 200px;
     overflow-y: auto;
     border: 1px solid #cccccc;
+    padding: 15px;
 
     .popover-actions {
       display: flex;

@@ -180,10 +180,11 @@ also, all settings from the rails model needed for the editor configuration in t
   function generateCommentHtmlContent(comments) {
     var htmlContent = '';
     comments.forEach(function(comment, index) {
+      var commentText = preprocess(comment.text);
       if (index !== 0) {
         htmlContent += '<div class="popover-divider"></div>'
       }
-      htmlContent += '<p class="comment">';
+      htmlContent += '<div class="comment">';
       htmlContent += '<div class="popover-header">' +
         '<div class="popover-username">' + preprocess(comment.username) + '</div>' +
         '<div class="popover-date">' + comment.date + '</div>';
@@ -194,14 +195,15 @@ also, all settings from the rails model needed for the editor configuration in t
           '</div>'
       }
       htmlContent += '</div>' +
-          '<div class="popover-comment">' + preprocess(comment.text) + '</div>';
+          '<div class="popover-comment">' + commentText + '</div>' +
+          '<textarea class="hidden popover-comment-editor">' + commentText + '</textarea>';
       if (comment.editable) {
         htmlContent += '<div class="popover-actions">' +
-            '<button class="popover-action-button btn btn-xs btn-warning" id="edit-' + comment.id + '"><%= t('shared.edit') %></button>' +
-            '<button class="popover-action-button btn btn-xs btn-danger" id="delete-' + comment.id + '"><%= t('shared.destroy') %></button>' +
+            '<button class="popover-action-button action-edit btn btn-xs btn-warning" data-comment-id=' + comment.id + '><%= t('shared.edit') %></button>' +
+            '<button class="popover-action-button action-delete btn btn-xs btn-danger" data-comment-id=' + comment.id + '><%= t('shared.destroy') %></button>' +
           '</div>';
       }
-      htmlContent += '</p>';
+      htmlContent += '</div>';
     });
     return htmlContent;
   }
@@ -247,29 +249,15 @@ also, all settings from the rails model needed for the editor configuration in t
     })
   }
 
-  function hasCommentsInRow(editor, row){
-    return editor.getSession().getAnnotations().some(function(element) {
-      return element.row === row;
-    })
-  }
-
-  function getCommentsForRow(editor, row){
-    return editor.getSession().getAnnotations().filter(function(element) {
-      return element.row === row;
-    })
-  }
-
-  function deleteComment(file_id, row, editor) {
+  function deleteComment(commentId, editor, file_id, callback) {
     cleanupPopovers();
     var jqxhr = $.ajax({
       type: 'DELETE',
-      url: "/comments",
-      data: {
-        row: row,
-        file_id: file_id          }
+      url: "/comments/" + commentId
     });
-    jqxhr.done(function (response) {
+    jqxhr.done(function () {
       setAnnotations(editor, file_id);
+      callback();
     });
     jqxhr.fail(ajaxError);
   }
@@ -299,6 +287,7 @@ also, all settings from the rails model needed for the editor configuration in t
   function handleSidebarClick(e) {
     var target  = e.domEvent.target;
     var editor =  e.editor;
+    var fileid = $(editor.container).data('file-id');
 
     if (target.className.indexOf("ace_gutter-cell") == -1) return;
 
@@ -307,32 +296,40 @@ also, all settings from the rails model needed for the editor configuration in t
 
     var commentModal = $('#comment-modal');
 
-    if (hasCommentsInRow(editor, row)) {
-      var htmlContent = editor.commentVisualsByLine[row];
-      commentModal.find('#otherComments').show();
-      commentModal.find('#otherComments > .container').html(htmlContent);
+    var otherComments = commentModal.find('#otherComments');
+    var htmlContent = editor.commentVisualsByLine[row];
+    if (htmlContent) {
+      otherComments.show();
+      var container = otherComments.find('.container');
+      container.html(htmlContent);
+      var deleteButtons = container.find('.action-delete');
+      deleteButtons.each(function(index, button) {
+        $(button).on('click', function (event) {
+          var commentId = $(event.target).data('comment-id');
+          deleteComment(commentId, editor, fileid, function () {
+            var parent = $(button).parent().parent();
+            parent.siblings().first().remove(); // potential divider
+            parent.remove(); // the comment itself
+            if (container.html() === '') {
+              otherComments.hide();
+            }
+          });
+        });
+      });
     } else {
-      commentModal.find('#otherComments').hide();
+      otherComments.hide();
     }
 
-    commentModal.find('#addCommentButton').off('click');
-    commentModal.find('#removeAllButton').off('click');
-
-    commentModal.find('#addCommentButton').on('click', function(e){
-      var commenttext = commentModal.find('textarea').val();
-      var file_id = $(editor.container).data('file-id');
-
+    var addCommentButton = commentModal.find('#addCommentButton');
+    addCommentButton.off('click');
+    addCommentButton.on('click', function(){
+      var commentTextarea = commentModal.find('#myComment > textarea');
+      var commenttext = commentTextarea.val();
       if (commenttext !== "") {
-        createComment(file_id, row, editor, commenttext);
-        commentModal.find('textarea').val('') ;
+        createComment(fileid, row, editor, commenttext);
+        commentTextarea.val('') ;
         commentModal.modal('hide');
       }
-    });
-
-    commentModal.find('#removeAllButton').on('click', function(e){
-      var file_id = $(editor.container).data('file-id');
-      deleteComment(file_id, row, editor);
-      commentModal.modal('hide');
     });
 
     commentModal.modal('show');
