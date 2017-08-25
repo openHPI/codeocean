@@ -455,7 +455,7 @@ de:
     howto: |
       Um Kommentare zu einer Programmzeile hinzuzufügen, kann einfach auf die jeweilige Zeilennummer auf der linken Seite geklickt werden. <br>
       Es öffnet sich ein Textfeld, in dem der Kommentar eingetragen werden kann. <br>
-      Mit "Kommentieren" wird der Kommentar dann gesichert und taucht als Sprechblase neben der Zeile auf.
+      Mit "Kommentar abschicken" wird der Kommentar dann gesichert und taucht als Sprechblase neben der Zeile auf.
     howto_title: 'Anleitung:'
     index:
       get_my_comment_requests: Meine Kommentaranfragen
