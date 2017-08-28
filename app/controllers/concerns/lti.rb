@@ -42,12 +42,12 @@ module Lti
   private :external_user_email
 
   def external_user_name(provider)
+    # save person_name_full if supplied. this is the display_name, if it is set.
+    # else only save the firstname, we don't want lastnames (family names)
     if provider.lis_person_name_full
       provider.lis_person_name_full
-    elsif provider.lis_person_name_given && provider.lis_person_name_family
-      "#{provider.lis_person_name_given} #{provider.lis_person_name_family}"
     else
-      provider.lis_person_name_given || provider.lis_person_name_family
+      provider.lis_person_name_given
     end
   end
   private :external_user_name
