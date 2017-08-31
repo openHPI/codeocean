@@ -184,7 +184,7 @@ also, all settings from the rails model needed for the editor configuration in t
       if (index !== 0) {
         htmlContent += '<div class="comment-divider"></div>'
       }
-      htmlContent += '<div class="comment">';
+      htmlContent += '<div class="comment" data-comment-id=' + comment.id + '>';
       htmlContent += '<div class="comment-header">' +
         '<div class="comment-username">' + preprocess(comment.username) + '</div>' +
         '<div class="comment-date">' + comment.date + '</div>';
@@ -196,11 +196,11 @@ also, all settings from the rails model needed for the editor configuration in t
       }
       htmlContent += '</div>' +
           '<div class="comment-content">' + commentText + '</div>' +
-          '<textarea class="hidden comment-editor">' + commentText + '</textarea>';
+          '<textarea class="comment-editor">' + commentText + '</textarea>';
       if (comment.editable) {
         htmlContent += '<div class="comment-actions">' +
-            '<button class="action-edit btn btn-xs btn-warning" data-comment-id=' + comment.id + '><%= t('shared.edit') %></button>' +
-            '<button class="action-delete btn btn-xs btn-danger" data-comment-id=' + comment.id + '><%= t('shared.destroy') %></button>' +
+            '<button class="action-edit btn btn-xs btn-warning"><%= t('shared.edit') %></button>' +
+            '<button class="action-delete btn btn-xs btn-danger"><%= t('shared.destroy') %></button>' +
           '</div>';
       }
       htmlContent += '</div>';
@@ -302,15 +302,42 @@ also, all settings from the rails model needed for the editor configuration in t
       otherComments.show();
       var container = otherComments.find('.container');
       container.html(htmlContent);
+
       var deleteButtons = container.find('.action-delete');
-      deleteButtons.each(function(index, button) {
-        $(button).on('click', function (event) {
-          var commentId = $(event.target).data('comment-id');
-          deleteComment(commentId, editor, fileid, function () {
-            var parent = $(button).parent().parent();
-            parent.html('<div class="comment-removed"><%= t('comments.deleted') %></div>');
-          });
+      deleteButtons.on('click', function (event) {
+        var button = $(event.target);
+        var parent = $(button).parent().parent();
+        var commentId = parent.data('comment-id');
+
+        deleteComment(commentId, editor, fileid, function () {
+          parent.html('<div class="comment-removed"><%= t('comments.deleted') %></div>');
         });
+      });
+
+      var editButtons = container.find('.action-edit');
+      editButtons.on('click', function (event) {
+        var button = $(event.target);
+        var parent = $(button).parent().parent();
+        var commentId = parent.data('comment-id');
+        var currentlyEditing = button.data('editing');
+
+        var deleteButton = parent.find('.action-delete');
+        var commentContent = parent.find('.comment-content');
+        var commentEditor = parent.find('textarea.comment-editor');
+
+        if (currentlyEditing) {
+          button.text('<%= t('shared.edit') %>');
+          button.data('editing', false);
+          deleteButton.show();
+          commentContent.show();
+          commentEditor.hide();
+        } else {
+          button.text('<%= t('comments.save_update') %>');
+          button.data('editing', true);
+          deleteButton.hide();
+          commentContent.hide();
+          commentEditor.show();
+        }
       });
     } else {
       otherComments.hide();
