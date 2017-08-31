@@ -262,6 +262,24 @@ also, all settings from the rails model needed for the editor configuration in t
     jqxhr.fail(ajaxError);
   }
 
+  function updateComment(commentId, text, editor, file_id, callback) {
+    cleanupPopovers();
+    var jqxhr = $.ajax({
+      type: 'PATCH',
+      url: "/comments/" + commentId,
+      data: {
+        comment: {
+          text: text
+        }
+      }
+    });
+    jqxhr.done(function () {
+      setAnnotations(editor, file_id);
+      callback();
+    });
+    jqxhr.fail(ajaxError);
+  }
+
   function createComment(file_id, row, editor, commenttext){
     cleanupPopovers();
     var jqxhr = $.ajax({
@@ -324,13 +342,18 @@ also, all settings from the rails model needed for the editor configuration in t
         var deleteButton = parent.find('.action-delete');
         var commentContent = parent.find('.comment-content');
         var commentEditor = parent.find('textarea.comment-editor');
+        var commentUpdated = parent.find('.comment-updated');
 
         if (currentlyEditing) {
-          button.text('<%= t('shared.edit') %>');
-          button.data('editing', false);
-          deleteButton.show();
-          commentContent.show();
-          commentEditor.hide();
+          updateComment(commentId, commentEditor.val(), editor, fileid, function () {
+            button.text('<%= t('shared.edit') %>');
+            button.data('editing', false);
+            commentContent.text(commentEditor.val());
+            deleteButton.show();
+            commentContent.show();
+            commentEditor.hide();
+            commentUpdated.removeClass('hidden');
+          });
         } else {
           button.text('<%= t('comments.save_update') %>');
           button.data('editing', true);
