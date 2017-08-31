@@ -184,26 +184,23 @@ also, all settings from the rails model needed for the editor configuration in t
       if (index !== 0) {
         htmlContent += '<div class="comment-divider"></div>'
       }
-      htmlContent += '<div class="comment" data-comment-id=' + comment.id + '>';
-      htmlContent += '<div class="comment-header">' +
-        '<div class="comment-username">' + preprocess(comment.username) + '</div>' +
-        '<div class="comment-date">' + comment.date + '</div>';
-      if (comment.updated) {
-        htmlContent += '<div class="comment-updated">' +
-          '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-          '<%= t('request_for_comments.comment_edited') %>' +
-          '</div>'
-      }
-      htmlContent += '</div>' +
-          '<div class="comment-content">' + commentText + '</div>' +
-          '<textarea class="comment-editor">' + commentText + '</textarea>';
-      if (comment.editable) {
-        htmlContent += '<div class="comment-actions">' +
-            '<button class="action-edit btn btn-xs btn-warning"><%= t('shared.edit') %></button>' +
-            '<button class="action-delete btn btn-xs btn-danger"><%= t('shared.destroy') %></button>' +
-          '</div>';
-      }
-      htmlContent += '</div>';
+      htmlContent += '\
+        <div class="comment" data-comment-id=' + comment.id + '> \
+          <div class="comment-header"> \
+            <div class="comment-username">' + preprocess(comment.username) + '</div> \
+            <div class="comment-date">' + comment.date + '</div> \
+            <div class="comment-updated' + (comment.updated ? '' : ' hidden') + '"> \
+              <i class="fa fa-pencil" aria-hidden="true"></i> \
+              <%= t('request_for_comments.comment_edited') %> \
+            </div> \
+          </div> \
+          <div class="comment-content">' + commentText + '</div> \
+          <textarea class="comment-editor">' + commentText + '</textarea> \
+          <div class="comment-actions' + (comment.editable ? '' : ' hidden') + '"> \
+            <button class="action-edit btn btn-xs btn-warning"><%= t('shared.edit') %></button> \
+            <button class="action-delete btn btn-xs btn-danger"><%= t('shared.destroy') %></button> \
+          </div> \
+        </div>';
     });
     return htmlContent;
   }
