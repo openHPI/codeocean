@@ -22,6 +22,11 @@
   display: none !important;
 }
 
+.modal-content {
+  min-height: 512px;
+  min-width: 360px;
+}
+
 .comment {
   width: 100%;
   min-width: 200px;
