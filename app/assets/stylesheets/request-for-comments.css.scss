@@ -25,6 +25,25 @@
 .modal-content {
   min-height: 512px;
   min-width: 360px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+
+  .modal-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+
+    #otherComments {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+
+      .container {
+        flex-grow: 1;
+      }
+    }
+  }
 }
 
 .comment {
@@ -90,7 +109,6 @@
 
   .container {
     width: 100%;
-    max-height: 200px;
     overflow-y: auto;
     border: 1px solid #cccccc;
     padding: 15px;
@@ -117,5 +135,9 @@
 
   textarea {
     resize: none;
+  }
+
+  button {
+    margin-top: 10px;
   }
 }
