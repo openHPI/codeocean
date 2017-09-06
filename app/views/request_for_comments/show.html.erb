@@ -211,7 +211,15 @@ also, all settings from the rails model needed for the editor configuration in t
     return htmlContent;
   }
 
-  function buildPopover(fileid, line, htmlContent) {
+  function buildPopover(fileid, line, comments) {
+    // only display the newest three comments in preview
+    var maxComments = 3;
+    var htmlContent = generateCommentHtmlContent(comments.reverse().slice(0, maxComments));
+    if (comments.length > maxComments) {
+      // add a hint that there are more comments than shown here
+      htmlContent += '<div class="popover-footer"><%= t('request_for_comments.click_for_more_comments') %></div>'
+        .replace('${numComments}', comments.length - maxComments);
+    }
     // attach the popover to the ace sidebar (where the comment icon is displayed)
     var icon = $('*[data-file-id="' + fileid + '"]')          // the editor for this file
       .find('.ace_gutter > .ace_gutter-layer')                // the sidebar
@@ -240,9 +248,8 @@ also, all settings from the rails model needed for the editor configuration in t
       editor.commentVisualsByLine = {};
       var clusters = clusterComments(response.slice());
       $.each(clusters, function (line, cluster) {
-        var htmlContent = generateCommentHtmlContent(cluster);
-        editor.commentVisualsByLine[line] = htmlContent;
-        buildPopover(fileid, line, htmlContent);
+        editor.commentVisualsByLine[line] = generateCommentHtmlContent(cluster);
+        buildPopover(fileid, line, cluster);
       });
 
       $.each(response, function(index, comment) {

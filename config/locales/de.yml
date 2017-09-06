@@ -474,6 +474,7 @@ de:
     cancel_thank_you_note: "Nichts senden"
     comment_edited: "bearbeitet"
     modal_title: "Einen Kommentar in Zeile ${line} hinzufügen"
+    click_for_more_comments: "Klicken um ${numComments} weitere Kommentare zu sehen..."
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

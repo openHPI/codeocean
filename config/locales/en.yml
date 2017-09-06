@@ -495,6 +495,7 @@ en:
     cancel_thank_you_note: "Don't send"
     comment_edited: "edited"
     modal_title: "Add a comment to line ${line}"
+    click_for_more_comments: "Click to view ${numComments} more comments..."
   sessions:
     create:
       failure: Invalid email or password.
