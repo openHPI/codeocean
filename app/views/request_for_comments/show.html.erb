@@ -314,6 +314,7 @@ also, all settings from the rails model needed for the editor configuration in t
 
     var row = e.getDocumentPosition().row;
     e.stop();
+    $('.modal-title').text('<%= t('request_for_comments.modal_title') %>'.replace('${line}', row + 1));
 
     var commentModal = $('#comment-modal');
 

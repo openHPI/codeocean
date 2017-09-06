@@ -473,6 +473,7 @@ de:
     send_thank_you_note: "Senden"
     cancel_thank_you_note: "Nichts senden"
     comment_edited: "bearbeitet"
+    modal_title: "Einen Kommentar in Zeile ${line} hinzufügen"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.
