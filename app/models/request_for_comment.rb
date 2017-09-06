@@ -6,7 +6,6 @@ class RequestForComment < ActiveRecord::Base
 
   has_many :comments, through: :submission
   has_many :subscriptions
-  has_many :subscribers, through: :subscriptions, source: :user, source_type: ExternalUser
 
   scope :unsolved, -> { where(solved: [false, nil]) }
 
