@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170608141612) do
+ActiveRecord::Schema.define(version: 20170906124500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,30 @@ ActiveRecord::Schema.define(version: 20170608141612) do
     t.datetime "updated_at"
     t.string   "oauth_key",    limit: 255
     t.string   "oauth_secret", limit: 255
+  end
+
+  create_table "error_template_attributes", force: :cascade do |t|
+    t.string   "key"
+    t.string   "regex"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.text     "description"
+    t.boolean  "important"
+  end
+
+  create_table "error_template_attributes_templates", id: false, force: :cascade do |t|
+    t.integer "error_template_id",           null: false
+    t.integer "error_template_attribute_id", null: false
+  end
+
+  create_table "error_templates", force: :cascade do |t|
+    t.integer  "execution_environment_id"
+    t.string   "name"
+    t.string   "signature"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.text     "description"
+    t.text     "hint"
   end
 
   create_table "errors", force: :cascade do |t|
@@ -268,6 +292,22 @@ ActiveRecord::Schema.define(version: 20170608141612) do
     t.datetime "updated_at"
   end
 
+  create_table "structured_error_attributes", force: :cascade do |t|
+    t.integer  "structured_error_id"
+    t.integer  "error_template_attribute_id"
+    t.string   "value"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.boolean  "match"
+  end
+
+  create_table "structured_errors", force: :cascade do |t|
+    t.integer  "error_template_id"
+    t.integer  "file_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
   create_table "submissions", force: :cascade do |t|
     t.integer  "exercise_id"
     t.float    "score"
@@ -280,6 +320,15 @@ ActiveRecord::Schema.define(version: 20170608141612) do
 
   add_index "submissions", ["exercise_id"], name: "index_submissions_on_exercise_id", using: :btree
   add_index "submissions", ["user_id"], name: "index_submissions_on_user_id", using: :btree
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.integer  "request_for_comment_id"
+    t.string   "type"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
 
   create_table "tags", force: :cascade do |t|
     t.string   "name",       null: false

@@ -5,6 +5,8 @@ class RequestForComment < ActiveRecord::Base
   belongs_to :file, class_name: 'CodeOcean::File'
 
   has_many :comments, through: :submission
+  has_many :subscriptions
+  has_many :subscribers, through: :subscriptions, source: :user, source_type: ExternalUser
 
   scope :unsolved, -> { where(solved: [false, nil]) }
 
