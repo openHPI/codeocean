@@ -313,6 +313,7 @@ also, all settings from the rails model needed for the editor configuration in t
   }
 
   function subscribeToRFC(subscriptionType, checkbox){
+    checkbox.attr("disabled", true);
     var jqxhr = $.ajax({
       data: {
         subscription: {
@@ -324,9 +325,33 @@ also, all settings from the rails model needed for the editor configuration in t
       method: 'POST',
       url:  "/subscriptions.json"
     });
-    jqxhr.fail(function() {
+    jqxhr.done(function(subscription) {
+      checkbox.data('subscription', subscription.id);
+      checkbox.attr("disabled", false);
+    });
+    jqxhr.fail(function(response) {
       checkbox.prop('checked', false);
-      ajaxError(arguments);
+      checkbox.attr("disabled", false);
+      ajaxError(response);
+    });
+  }
+
+  function unsubscribeFromRFC(checkbox) {
+    checkbox.attr("disabled", true);
+    var subscriptionId = checkbox.data('subscription');
+    var jqxhr = $.ajax({
+      url:  '/subscriptions/' + subscriptionId + '/unsubscribe.json'
+    });
+    jqxhr.done(function(response) {
+      checkbox.prop('checked', false);
+      checkbox.data('subscription', null);
+      checkbox.attr("disabled", false);
+      $.flash.success({text: response.message});
+    });
+    jqxhr.fail(function(response) {
+      checkbox.prop('checked', true);
+      checkbox.attr("disabled", false);
+      ajaxError(response);
     });
   }
 
@@ -396,12 +421,13 @@ also, all settings from the rails model needed for the editor configuration in t
     }
 
     var subscribeCheckbox = commentModal.find('#subscribe');
+    subscribeCheckbox.prop('checked', subscribeCheckbox.data('subscription'));
     subscribeCheckbox.off('change');
     subscribeCheckbox.on('change', function() {
       if (this.checked) {
         subscribeToRFC('author', $(this));
       } else {
-        // unsubscribe
+        unsubscribeFromRFC($(this));
       }
     });
 
