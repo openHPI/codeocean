@@ -456,7 +456,7 @@ de:
           <br>
           Hallo %{receiver_displayname}, <br>
           <br>
-          es gibt einen neuen Kommentar von %{author_displayname} zu einer Kommentaranfrage auf CodeOcean, die Sie aboniert haben. <br>
+          es gibt einen neuen Kommentar von %{author_displayname} zu einer Kommentaranfrage auf CodeOcean, die Sie abonniert haben. <br>
           <br>
           %{author_displayname} schreibt: %{comment_text}<br>
           <br>
@@ -485,7 +485,7 @@ de:
           All comments of all participants are available here: %{link_all_comments} <br>
           <br>
           This mail was automatically sent by CodeOcean. <br>
-        subject: "%{author_displayname} hat einen neuen Kommentar in einer Diskussion veröffentlicht, die Sie aboniert haben."
+        subject: "%{author_displayname} hat einen neuen Kommentar in einer Diskussion veröffentlicht, die Sie abonniert haben."
   request_for_comments:
     click_here: Zum Kommentieren auf die Seitenleiste klicken!
     comments: Kommentare

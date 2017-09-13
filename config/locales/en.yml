@@ -477,7 +477,7 @@ en:
           <br>
           Hallo %{receiver_displayname}, <br>
           <br>
-          es gibt einen neuen Kommentar von %{author_displayname} zu einer Kommentaranfrage auf CodeOcean, die Sie aboniert haben. <br>
+          es gibt einen neuen Kommentar von %{author_displayname} zu einer Kommentaranfrage auf CodeOcean, die Sie abonniert haben. <br>
           <br>
           %{author_displayname} schreibt: %{comment_text}<br>
           <br>
