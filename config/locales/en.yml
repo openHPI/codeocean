@@ -651,3 +651,6 @@ en:
   comments:
     deleted: "Deleted"
     save_update: "Save"
+  subscriptions:
+    successfully_unsubscribed: "You successfully unsubscribed from this Request for Comment"
+    subscription_not_existent: "The subscription you want to unsubscribe from does not exist."

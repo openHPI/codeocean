@@ -18,6 +18,34 @@ class SubscriptionsController < ApplicationController
     authorize!
   end
 
+  # DELETE /subscriptions/1
+  # DELETE /subscriptions/1.json
+  def destroy
+    begin
+      @subscription = Subscription.find(params[:id])
+    rescue
+      skip_authorization
+      respond_to do |format|
+        format.html { redirect_to request_for_comments_url, alert: t('subscriptions.subscription_not_existent') }
+        format.json { head :internal_server_error }
+      end
+    else
+      authorize!
+      rfc = @subscription.try(:request_for_comment)
+      if @subscription.destroy
+        respond_to do |format|
+          format.html { redirect_to request_for_comment_url(rfc), notice: t('subscriptions.successfully_unsubscribed') }
+          format.json { head :destroyed }
+        end
+      else
+        respond_to do |format|
+          format.html { redirect_to request_for_comment_url(rfc), :flash => { :danger => t('shared.message_failure') } }
+          format.json { head :internal_server_error }
+        end
+      end
+    end
+  end
+
   def set_subscription
     @subscription = Subscription.find(params[:id])
     authorize!

@@ -630,4 +630,7 @@ de:
   comments:
     deleted: "Gelöscht"
     save_update: "Speichern"
+  subscriptions:
+    successfully_unsubscribed: "Ihr Abonnement für weitere Kommentare auf dieser Kommentaranfrage wurde erfolgreich beendet."
+    subscription_not_existent: "Das Abonnement, von dem Sie sich abmelden wollen, existiert nicht."
 
