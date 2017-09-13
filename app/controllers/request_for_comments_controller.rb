@@ -1,4 +1,5 @@
 class RequestForCommentsController < ApplicationController
+  include SubmissionScoring
   before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy, :mark_as_solved, :set_thank_you_note]
 
   skip_after_action :verify_authorized
@@ -107,6 +108,10 @@ class RequestForCommentsController < ApplicationController
     @request_for_comment = RequestForComment.new(request_for_comment_params)
     respond_to do |format|
       if @request_for_comment.save
+        # create thread here and execute tests. A run is triggered from the frontend and does not need to be handled here.
+        Thread.new do
+          score_submission(@request_for_comment.submission)
+        end
         format.json { render :show, status: :created, location: @request_for_comment }
       else
         format.html { render :new }
