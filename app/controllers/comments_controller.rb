@@ -126,7 +126,9 @@ class CommentsController < ApplicationController
           :user_id => commenter.id, :user_type => commenter.class.name)
       subscriptions.each do |subscription|
         if (subscription.subscription_type == 'author' and current_user == request_for_comment.user) or subscription.subscription_type == 'all'
-          UserMailer.got_new_comment_for_subscription(comment, subscription, current_user).deliver_now
+          if subscription.user != current_user
+            UserMailer.got_new_comment_for_subscription(comment, subscription, current_user).deliver_now
+          end
         end
       end
     end
