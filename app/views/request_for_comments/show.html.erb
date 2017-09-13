@@ -312,6 +312,24 @@ also, all settings from the rails model needed for the editor configuration in t
     jqxhr.fail(ajaxError);
   }
 
+  function subscribeToRFC(subscriptionType, checkbox){
+    var jqxhr = $.ajax({
+      data: {
+        subscription: {
+          request_for_comments_id: $('h4#exercise_caption').data('rfc-id'),
+          subscription_type: subscriptionType
+        }
+      },
+      dataType: 'json',
+      method: 'POST',
+      url:  "/subscriptions.json"
+    });
+    jqxhr.fail(function() {
+      checkbox.prop('checked', false);
+      ajaxError(arguments);
+    });
+  }
+
   function handleSidebarClick(e) {
     var target  = e.domEvent.target;
     var editor =  e.editor;
@@ -376,6 +394,16 @@ also, all settings from the rails model needed for the editor configuration in t
     } else {
       otherComments.hide();
     }
+
+    var subscribeCheckbox = commentModal.find('#subscribe');
+    subscribeCheckbox.off('change');
+    subscribeCheckbox.on('change', function() {
+      if (this.checked) {
+        subscribeToRFC('author', $(this));
+      } else {
+        // unsubscribe
+      }
+    });
 
     var addCommentButton = commentModal.find('#addCommentButton');
     addCommentButton.off('click');
