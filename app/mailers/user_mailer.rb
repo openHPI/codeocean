@@ -22,7 +22,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def got_new_comment_for_subscription(comment, request_for_comment, from_user, to_user)
-    @receiver_displayname = user.displayname
+    @receiver_displayname = to_user.displayname
     @author_displayname = from_user.displayname
     @comment_text = comment.text
     @rfc_link = request_for_comment_url(request_for_comment)
