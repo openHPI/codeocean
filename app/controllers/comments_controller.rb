@@ -51,12 +51,16 @@ class CommentsController < ApplicationController
   def create
     @comment = Comment.new(comment_params_without_request_id)
 
-    if comment_params[:request_id]
-      UserMailer.got_new_comment(@comment, RequestForComment.find(comment_params[:request_id]), current_user).deliver_now
-    end
-
     respond_to do |format|
       if @comment.save
+
+
+        if comment_params[:request_id]
+          request_for_comment = RequestForComment.find(comment_params[:request_id])
+          send_mail_to_author @comment, request_for_comment
+          send_mail_to_subscribers @comment, request_for_comment
+        end
+
         format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
         format.json { render :show, status: :created, location: @comment }
       else
@@ -94,19 +98,39 @@ class CommentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_comment
-      @comment = Comment.find(params[:id])
-    end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_comment
+    @comment = Comment.find(params[:id])
+  end
 
   def comment_params_without_request_id
     comment_params.except :request_id
   end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def comment_params
-      #params.require(:comment).permit(:user_id, :file_id, :row, :column, :text)
-      # fuer production mode, damit böse menschen keine falsche user_id uebergeben:
-      params.require(:comment).permit(:file_id, :row, :column, :text, :request_id).merge(user_id: current_user.id, user_type: current_user.class.name)
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def comment_params
+    #params.require(:comment).permit(:user_id, :file_id, :row, :column, :text)
+    # fuer production mode, damit böse menschen keine falsche user_id uebergeben:
+    params.require(:comment).permit(:file_id, :row, :column, :text, :request_id).merge(user_id: current_user.id, user_type: current_user.class.name)
+  end
+
+  def send_mail_to_author(comment, request_for_comment)
+    if current_user != request_for_comment.user
+      UserMailer.got_new_comment(comment, request_for_comment, current_user).deliver_now
     end
+  end
+
+  def send_mail_to_subscribers(comment, request_for_comment)
+    request_for_comment.commenters.each do |commenter|
+      subscriptions = Subscription.where(
+          :request_for_comment_id => request_for_comment.id,
+          :user_id => commenter.id, :user_type => commenter.class.name)
+      subscriptions.each do |subscription|
+        if (subscription.type == 'author' and current_user == request_for_comment.user) or subscription.type == 'all'
+          UserMailer.got_new_comment_for_subscription(comment, request_for_comment, request_for_comment.user, current_user).deliver_now
+        end
+      end
+    end
+  end
 end
