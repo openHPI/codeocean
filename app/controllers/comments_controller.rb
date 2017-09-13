@@ -53,8 +53,6 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       if @comment.save
-
-
         if comment_params[:request_id]
           request_for_comment = RequestForComment.find(comment_params[:request_id])
           send_mail_to_author @comment, request_for_comment
