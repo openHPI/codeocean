@@ -262,7 +262,7 @@ class SubmissionsController < ApplicationController
   def save_run_output
     if !@message_buffer.blank?
       @message_buffer = @message_buffer[(0..max_message_buffer_size-1)] # trim the string to max_message_buffer_size chars
-      Testrun.create(file: @file, submission: @submission, output: @message_buffer)
+      Testrun.create(file: @file, cause: 'run', submission: @submission, output: @message_buffer)
     end
   end
 
