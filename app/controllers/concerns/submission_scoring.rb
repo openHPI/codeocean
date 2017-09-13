@@ -9,7 +9,7 @@ module SubmissionScoring
         assessment = assessor.assess(output)
         passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score] > 0))
         testrun_output = passed ? nil : output[:stderr]
-        Testrun.new(submission: submission, file: file, passed: passed, output: testrun_output).save
+        Testrun.new(submission: submission, cause: 'assess', file: file, passed: passed, output: testrun_output).save
         output.merge!(assessment)
         output.merge!(filename: file.name_with_extension, message: feedback_message(file, output[:score]), weight: file.weight)
       end
