@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   delete '/comment_by_id', to: 'comments#destroy_by_id'
   put '/comments', to: 'comments#update'
 
+  resources :subscriptions
+
   root to: 'application#welcome'
 
   namespace :admin do
