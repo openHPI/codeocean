@@ -38,6 +38,14 @@ class RequestForComment < ActiveRecord::Base
     submission.files.map { |file| file.comments.size}.sum
   end
 
+  def commenters
+    commenters = []
+    comments.distinct.to_a.each {|comment|
+      commenters.append comment.user
+    }
+    commenters.uniq {|user| user.id}
+  end
+
   def to_s
     "RFC-" + self.id.to_s
   end
