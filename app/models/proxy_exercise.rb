@@ -37,35 +37,17 @@ class ProxyExercise < ActiveRecord::Base
           assigned_user_proxy_exercise.exercise
         else
           matching_exercise =
-            if (token.eql? "47f4c736")
-              Rails.logger.debug("Proxy exercise with token 47f4c736, split user in groups..")
-              group = UserGroupSeparator.getGroupWeek2Testing(user)
-              Rails.logger.debug("user assigned to group #{group}")
-              case group
-                when :group_a
-                  exercises.where(id: 348).first
-                when :group_b
-                  exercises.where(id: 349).first
-                when :group_c
-                  exercises.where(id: 350).first
-                when :group_d
-                  exercises.where(id: 351).first
-              end
-            else
               Rails.logger.debug("find new matching exercise for user #{user.id}" )
               begin
                 find_matching_exercise(user)
-              rescue #fallback
+              rescue => e #fallback
                 Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
                 @reason[:reason] = "fallback because of error"
-                @reason[:error] = "#{$!}"
-                exercises.shuffle.first
+                @reason[:error] = "#{$!}:\n\t#{e.backtrace.join("\n\t")}"
+                exercises.where("expected_difficulty > 1").shuffle.first # difficulty should be > 1 to prevent dummy exercise from being chosen.
               end
-            end
           user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
           matching_exercise
-
-
         end
       recommended_exercise
     end
@@ -136,6 +118,7 @@ class ProxyExercise < ActiveRecord::Base
           relative_knowledge_improvement[potex] += old_relative_loss_tag - new_relative_loss_tag
         end
       end
+
       highest_difficulty_user_has_accessed =  exercises_user_has_accessed.map{|e| e.expected_difficulty}.sort.last || 0
       best_matching_exercise = find_best_exercise(relative_knowledge_improvement, highest_difficulty_user_has_accessed)
       @reason[:reason] = "best matching exercise"

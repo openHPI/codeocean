@@ -153,6 +153,9 @@ de:
       submission:
         one: Abgabe
         other: Abgaben
+      tag:
+        one: Tag
+        other: Tags
       user_exercise_feedback:
         one: Feedback
         other: Feedback
