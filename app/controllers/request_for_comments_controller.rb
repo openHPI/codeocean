@@ -22,7 +22,7 @@ class RequestForCommentsController < ApplicationController
                           request_for_comments.submission_id, request_for_comments.row_number') # ugly, but rails wants it this way
                   .select('request_for_comments.*, max(comments.updated_at) as last_comment')
                   .search(params[:q])
-    @request_for_comments = @search.result.order('created_at DESC').paginate(page: params[:page])
+    @request_for_comments = @search.result.order('created_at DESC').paginate(page: params[:page], total_entries: @search.result.length)
     authorize!
   end
 
