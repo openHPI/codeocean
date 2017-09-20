@@ -146,41 +146,14 @@ also, all settings from the rails model needed for the editor configuration in t
     currentEditor.commentVisualsByLine = {};
     setAnnotations(currentEditor, $(editor).data('file-id'));
     currentEditor.on("guttermousedown", handleSidebarClick);
+    currentEditor.on("guttermousemove", showPopover);
   });
-
-  function cleanupPopovers() {
-    // remove all possible popovers
-    $('.editor > .ace_gutter > .ace_gutter-layer > .ace_gutter-cell').popover('destroy');
-  }
 
   function preprocess(commentText) {
     // sanitize comments to deal with XSS attacks:
     commentText = $('div.sanitizer').text(commentText).html();
     // display original line breaks:
     return commentText.replace(/\n/g, '<br>');
-  }
-
-  function clusterComments(comments) {
-    var clusters = {};
-    // comments need to be sorted to cluster them per line
-    comments.sort(function (a, b) {
-      return a.row - b.row;
-    });
-    while (comments.length > 0) {
-      // new cluster of comments
-      var cluster = [];
-      var clusterRow = comments[0].row;
-      // now collect all comments on this line
-      while (comments.length > 0 && comments[0].row === clusterRow) {
-          cluster.push(comments.shift());
-      }
-      // sort the comments by creation date
-      cluster = cluster.sort(function (a, b) {
-        return a.id - b.id;
-      });
-      clusters[clusterRow] = cluster;
-    }
-    return clusters;
   }
 
   function generateCommentHtmlContent(comments) {
@@ -211,23 +184,19 @@ also, all settings from the rails model needed for the editor configuration in t
     return htmlContent;
   }
 
-  function buildPopover(fileid, line, comments) {
+  function buildPopover(comments, where) {
     // only display the newest three comments in preview
     var maxComments = 3;
     var htmlContent = generateCommentHtmlContent(comments.reverse().slice(0, maxComments));
     if (comments.length > maxComments) {
       // add a hint that there are more comments than shown here
       htmlContent += '<div class="popover-footer"><%= t('request_for_comments.click_for_more_comments') %></div>'
-        .replace('${numComments}', comments.length - maxComments);
+        .replace('${numComments}', String(comments.length - maxComments));
     }
-    // attach the popover to the ace sidebar (where the comment icon is displayed)
-    var icon = $('*[data-file-id="' + fileid + '"]')          // the editor for this file
-      .find('.ace_gutter > .ace_gutter-layer')                // the sidebar
-      .find('div:nth-child(' + (parseInt(line) + 1) + ')');   // the correct line
-    icon.popover({
+    where.popover({
       content: htmlContent,
       html: true, // necessary to style comments. XSS is not possible due to comment pre-processing (sanitizing)
-      trigger: 'hover',
+      trigger: 'manual', // can only be triggered by $(where).popover('show' | 'hide')
       container: 'body'
     });
   }
@@ -245,22 +214,20 @@ also, all settings from the rails model needed for the editor configuration in t
     });
 
     jqrequest.done(function(response){
-      editor.commentVisualsByLine = {};
-      var clusters = clusterComments(response.slice());
-      $.each(clusters, function (line, cluster) {
-        editor.commentVisualsByLine[line] = generateCommentHtmlContent(cluster);
-        buildPopover(fileid, line, cluster);
-      });
-
       $.each(response, function(index, comment) {
         comment.className = 'code-ocean_comment';
       });
       session.setAnnotations(response);
+    });
+  }
+
+  function getCommentsForRow(editor, row){
+    return editor.getSession().getAnnotations().filter(function(element) {
+      return element.row === row;
     })
   }
 
   function deleteComment(commentId, editor, file_id, callback) {
-    cleanupPopovers();
     var jqxhr = $.ajax({
       type: 'DELETE',
       url: "/comments/" + commentId
@@ -273,7 +240,6 @@ also, all settings from the rails model needed for the editor configuration in t
   }
 
   function updateComment(commentId, text, editor, file_id, callback) {
-    cleanupPopovers();
     var jqxhr = $.ajax({
       type: 'PATCH',
       url: "/comments/" + commentId,
@@ -291,7 +257,6 @@ also, all settings from the rails model needed for the editor configuration in t
   }
 
   function createComment(file_id, row, editor, commenttext){
-    cleanupPopovers();
     var jqxhr = $.ajax({
       data: {
         comment: {
@@ -306,7 +271,7 @@ also, all settings from the rails model needed for the editor configuration in t
       method: 'POST',
       url:  "/comments"
     });
-    jqxhr.done(function(response){
+    jqxhr.done(function(){
       setAnnotations(editor, file_id);
     });
     jqxhr.fail(ajaxError);
@@ -355,12 +320,44 @@ also, all settings from the rails model needed for the editor configuration in t
     });
   }
 
+  var lastRow = null;
+  var lastTarget = null;
+  function showPopover(e) {
+    var target  = e.domEvent.target;
+    var row = e.getDocumentPosition().row;
+
+    if (target.className.indexOf('ace_gutter-cell') === -1 || lastRow === row) {
+      return;
+    }
+    if (lastTarget === target) {
+      // sometimes the row gets updated before the DOM event target, so we need to wait for it to change
+      return;
+    }
+    lastRow = row;
+
+    var editor = e.editor;
+    var comments = getCommentsForRow(editor, row);
+    buildPopover(comments, $(target));
+    lastTarget = target;
+
+    $(target).popover('show');
+    $(target).on('mouseleave', function () {
+      $(this).off('mouseleave');
+      $(this).popover('destroy');
+    });
+  }
+
+  $('.ace_gutter').on('mouseleave', function () {
+    lastRow = null;
+    lastTarget = null;
+  });
+
   function handleSidebarClick(e) {
     var target  = e.domEvent.target;
+    if (target.className.indexOf('ace_gutter-cell') === -1) return;
+
     var editor =  e.editor;
     var fileid = $(editor.container).data('file-id');
-
-    if (target.className.indexOf("ace_gutter-cell") == -1) return;
 
     var row = e.getDocumentPosition().row;
     e.stop();
@@ -369,7 +366,7 @@ also, all settings from the rails model needed for the editor configuration in t
     var commentModal = $('#comment-modal');
 
     var otherComments = commentModal.find('#otherComments');
-    var htmlContent = editor.commentVisualsByLine[row];
+    var htmlContent = generateCommentHtmlContent(getCommentsForRow(editor, row));
     if (htmlContent) {
       otherComments.show();
       var container = otherComments.find('.container');
@@ -452,21 +449,6 @@ also, all settings from the rails model needed for the editor configuration in t
     $.flash.danger({
       text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
-  }
-
-
-  function stringDivider(str, width, spaceReplacer) {
-    if (str.length>width) {
-      var p=width;
-      for (;p>0 && str[p]!=' ';p--) {
-      }
-      if (p>0) {
-        var left = str.substring(0, p);
-        var right = str.substring(p+1);
-        return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
-      }
-    }
-    return str;
   }
 
 </script>
