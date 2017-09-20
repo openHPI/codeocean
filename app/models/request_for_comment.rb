@@ -5,6 +5,7 @@ class RequestForComment < ActiveRecord::Base
   belongs_to :file, class_name: 'CodeOcean::File'
 
   has_many :comments, through: :submission
+  has_many :subscriptions
 
   scope :unsolved, -> { where(solved: [false, nil]) }
 
@@ -35,6 +36,14 @@ class RequestForComment < ActiveRecord::Base
 
   def comments_count
     submission.files.map { |file| file.comments.size}.sum
+  end
+
+  def commenters
+    commenters = []
+    comments.distinct.to_a.each {|comment|
+      commenters.append comment.user
+    }
+    commenters.uniq {|user| user.id}
   end
 
   def to_s

@@ -159,6 +159,9 @@ de:
       user_exercise_feedback:
         one: Feedback
         other: Feedback
+      comment:
+        one: Kommentar
+        other: Kommentare
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'
@@ -449,13 +452,48 @@ de:
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: "%{author} sagt Danke!"
+      got_new_comment_for_subscription:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          es gibt einen neuen Kommentar von %{author_displayname} zu einer Kommentaranfrage auf CodeOcean, die Sie abonniert haben. <br>
+          <br>
+          %{author_displayname} schreibt: %{comment_text}<br>
+          <br>
+          Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
+          <br>
+          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Wenn Sie keine weiteren Benachrichtigungen zu dieser Anfrage erhalten möchten, klicken Sie bitte hier: %{unsubscribe_link}
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          you received a new comment from %{author_displayname} to a request for comments on CodeOcean that you have subscribed to. <br>
+          <br>
+          %{author_displayname} wrote: %{comment_text} <br>
+          <br>
+          You can find the request for comments here: %{link_to_comment} <br>
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          If you don't want to be notified about further comments, please click here: %{unsubscribe_link}
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: "%{author_displayname} hat einen neuen Kommentar in einer Diskussion veröffentlicht, die Sie abonniert haben."
   request_for_comments:
     click_here: Zum Kommentieren auf die Seitenleiste klicken!
     comments: Kommentare
     howto: |
       Um Kommentare zu einer Programmzeile hinzuzufügen, kann einfach auf die jeweilige Zeilennummer auf der linken Seite geklickt werden. <br>
       Es öffnet sich ein Textfeld, in dem der Kommentar eingetragen werden kann. <br>
-      Mit "Kommentieren" wird der Kommentar dann gesichert und taucht als Sprechblase neben der Zeile auf.
+      Mit "Kommentar abschicken" wird der Kommentar dann gesichert und taucht als Sprechblase neben der Zeile auf.
     howto_title: 'Anleitung:'
     index:
       get_my_comment_requests: Meine Kommentaranfragen
@@ -473,6 +511,9 @@ de:
     send_thank_you_note: "Senden"
     cancel_thank_you_note: "Nichts senden"
     comment_edited: "bearbeitet"
+    modal_title: "Einen Kommentar in Zeile ${line} hinzufügen"
+    click_for_more_comments: "Klicken um ${numComments} weitere Kommentare zu sehen..."
+    subscribe_to_author: "Bei neuen Kommentaren des Autors per E-Mail benachrichtigt werden"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.
@@ -587,4 +628,10 @@ de:
     estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
     estimated_time_more_30: "mehr als 30 Minuten"
     working_time: "Geschätze Bearbeitungszeit für diese Aufgabe:"
+  comments:
+    deleted: "Gelöscht"
+    save_update: "Speichern"
+  subscriptions:
+    successfully_unsubscribed: "Ihr Abonnement für weitere Kommentare auf dieser Kommentaranfrage wurde erfolgreich beendet."
+    subscription_not_existent: "Das Abonnement, von dem Sie sich abmelden wollen, existiert nicht."
 

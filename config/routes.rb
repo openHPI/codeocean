@@ -14,16 +14,18 @@ Rails.application.routes.draw do
       post :set_thank_you_note
     end
   end
-  resources :comments, except: [:destroy] do
-    collection do
-      delete :destroy
-    end
-  end
+  resources :comments
   get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
   get '/my_rfc_activity', as: 'my_rfc_activity', to: 'request_for_comments#get_rfcs_with_my_comments'
 
   delete '/comment_by_id', to: 'comments#destroy_by_id'
   put '/comments', to: 'comments#update'
+
+  resources :subscriptions do
+    member do
+      get :unsubscribe, to: 'subscriptions#destroy'
+    end
+  end
 
   root to: 'application#welcome'
 

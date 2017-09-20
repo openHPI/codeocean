@@ -81,8 +81,13 @@ also, all settings from the rails model needed for the editor configuration in t
 
 <script type="text/javascript">
 
+  $('.modal-content').draggable({
+    handle: '.modal-header'
+  }).resizable({
+    autoHide: true
+  });
+
   var solvedButton = $('#mark-as-solved-button');
-  var commentOnExerciseButton = $('#comment-exercise-button');
   var addCommentExerciseButton = $('#addCommentExerciseButton');
 
   var thankYouContainer = $('#thank-you-container');
@@ -138,102 +143,82 @@ also, all settings from the rails model needed for the editor configuration in t
     currentEditor.getSession().setMode($(editor).data('mode'));
     currentEditor.getSession().setOption("useWorker", false);
 
+    currentEditor.commentVisualsByLine = {};
     setAnnotations(currentEditor, $(editor).data('file-id'));
     currentEditor.on("guttermousedown", handleSidebarClick);
+    currentEditor.on("guttermousemove", showPopover);
   });
 
-  function cleanupPopovers() {
-    // remove all possible popovers
-    $('.editor > .ace_gutter > .ace_gutter-layer > .ace_gutter-cell').popover('destroy');
+  function preprocess(commentText) {
+    // sanitize comments to deal with XSS attacks:
+    commentText = $('div.sanitizer').text(commentText).html();
+    // display original line breaks:
+    return commentText.replace(/\n/g, '<br>');
   }
 
-  function preprocess(commentText) {
-      // sanitize comments to deal with XSS attacks:
-      commentText = $('div.sanitizer').text(commentText).html();
-      // display original line breaks:
-      return commentText.replace(/\n/g, '<br>');
+  function generateCommentHtmlContent(comments) {
+    var htmlContent = '';
+    comments.forEach(function(comment, index) {
+      var commentText = preprocess(comment.text);
+      if (index !== 0) {
+        htmlContent += '<div class="comment-divider"></div>'
+      }
+      htmlContent += '\
+        <div class="comment" data-comment-id=' + comment.id + '> \
+          <div class="comment-header"> \
+            <div class="comment-username">' + preprocess(comment.username) + '</div> \
+            <div class="comment-date">' + comment.date + '</div> \
+            <div class="comment-updated' + (comment.updated ? '' : ' hidden') + '"> \
+              <i class="fa fa-pencil" aria-hidden="true"></i> \
+              <%= t('request_for_comments.comment_edited') %> \
+            </div> \
+          </div> \
+          <div class="comment-content">' + commentText + '</div> \
+          <textarea class="comment-editor">' + commentText + '</textarea> \
+          <div class="comment-actions' + (comment.editable ? '' : ' hidden') + '"> \
+            <button class="action-edit btn btn-xs btn-warning"><%= t('shared.edit') %></button> \
+            <button class="action-delete btn btn-xs btn-danger"><%= t('shared.destroy') %></button> \
+          </div> \
+        </div>';
+    });
+    return htmlContent;
+  }
+
+  function buildPopover(comments, where) {
+    // only display the newest three comments in preview
+    var maxComments = 3;
+    var htmlContent = generateCommentHtmlContent(comments.reverse().slice(0, maxComments));
+    if (comments.length > maxComments) {
+      // add a hint that there are more comments than shown here
+      htmlContent += '<div class="popover-footer"><%= t('request_for_comments.click_for_more_comments') %></div>'
+        .replace('${numComments}', String(comments.length - maxComments));
+    }
+    where.popover({
+      content: htmlContent,
+      html: true, // necessary to style comments. XSS is not possible due to comment pre-processing (sanitizing)
+      trigger: 'manual', // can only be triggered by $(where).popover('show' | 'hide')
+      container: 'body'
+    });
   }
 
   function setAnnotations(editor, fileid) {
     var session = editor.getSession();
 
     var jqrequest = $.ajax({
-        dataType: 'json',
-        method: 'GET',
-        url: '/comments',
-        data: {
-          file_id: fileid
-        }
+      dataType: 'json',
+      method: 'GET',
+      url: '/comments',
+      data: {
+        file_id: fileid
+      }
     });
 
     jqrequest.done(function(response){
-      // comments need to be sorted to cluster them per line
-      var comments = response.slice().sort(function (a, b) {
-          return a.row - b.row;
-      });
-      while (comments.length > 0) {
-        // new cluster of comments
-        var cluster = [];
-        var clusterRow = comments[0].row;
-        // now collect all comments on this line
-        while (comments.length > 0 && comments[0].row === clusterRow) {
-          cluster.push(comments.shift());
-        }
-        // sort the comments by creation date
-        cluster = cluster.sort(function (a, b) {
-            return a.id - b.id;
-        });
-
-        // build the markup for the current line's popover
-        var popupContent = '';
-        cluster.forEach(function(comment, index) {
-            if (index !== 0) {
-                popupContent += '<div class="popover-divider"></div>'
-            }
-            popupContent += '<p class="comment">';
-            popupContent += '<div class="popover-header">' +
-                '<div class="popover-username">' + preprocess(comment.username) + '</div>' +
-                '<div class="popover-date">' + comment.date + '</div>';
-            if (comment.updated) {
-                popupContent += '<div class="popover-updated">' +
-                    '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-                    '<%= t('request_for_comments.comment_edited') %>' +
-                    '</div>'
-            }
-            popupContent += '</div>';
-            popupContent += '<div class="popover-comment">' + preprocess(comment.text) + '</div>';
-            popupContent += '</p>';
-        });
-
-        // attach the popover to the ace sidebar (where the comment icon is displayed)
-        var icon = $('*[data-file-id="' + fileid + '"]')          // the editor for this file
-                .find('.ace_gutter > .ace_gutter-layer')          // the sidebar
-                .find('div:nth-child(' + (clusterRow + 1) + ')'); // the correct line
-        icon.popover({
-          content: popupContent,
-          html: true, // necessary to style comments. XSS is not possible due to comment pre-processing (sanitizing)
-          trigger: 'hover',
-          container: 'body'
-        });
-      }
-
       $.each(response, function(index, comment) {
         comment.className = 'code-ocean_comment';
-        // if we have tabs or carriage returns in the comment, just add the name and leave it as it is. otherwise: format!
-        if(comment.text.includes("\n") || comment.text.includes("\t")){
-          comment.text = comment.username + ": " + comment.text;
-        } else {
-          comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n");
-        }
       });
       session.setAnnotations(response);
-    })
-  }
-
-  function hasCommentsInRow(editor, row){
-    return editor.getSession().getAnnotations().some(function(element) {
-      return element.row === row;
-    })
+    });
   }
 
   function getCommentsForRow(editor, row){
@@ -242,23 +227,36 @@ also, all settings from the rails model needed for the editor configuration in t
     })
   }
 
-  function deleteComment(file_id, row, editor) {
-    cleanupPopovers();
+  function deleteComment(commentId, editor, file_id, callback) {
     var jqxhr = $.ajax({
       type: 'DELETE',
-      url: "/comments",
-      data: {
-        row: row,
-        file_id: file_id          }
+      url: "/comments/" + commentId
     });
-    jqxhr.done(function (response) {
+    jqxhr.done(function () {
       setAnnotations(editor, file_id);
+      callback();
+    });
+    jqxhr.fail(ajaxError);
+  }
+
+  function updateComment(commentId, text, editor, file_id, callback) {
+    var jqxhr = $.ajax({
+      type: 'PATCH',
+      url: "/comments/" + commentId,
+      data: {
+        comment: {
+          text: text
+        }
+      }
+    });
+    jqxhr.done(function () {
+      setAnnotations(editor, file_id);
+      callback();
     });
     jqxhr.fail(ajaxError);
   }
 
   function createComment(file_id, row, editor, commenttext){
-    cleanupPopovers();
     var jqxhr = $.ajax({
       data: {
         comment: {
@@ -273,71 +271,173 @@ also, all settings from the rails model needed for the editor configuration in t
       method: 'POST',
       url:  "/comments"
     });
-    jqxhr.done(function(response){
+    jqxhr.done(function(){
       setAnnotations(editor, file_id);
     });
     jqxhr.fail(ajaxError);
   }
 
-  function createCommentOnExercise(file_id, row, editor, commenttext){
-      var jqxhr = $.ajax({
-          data: {
-              comment: {
-                  file_id: file_id,
-                  row: row,
-                  column: 0,
-                  text: commenttext,
-                  request_id: $('h4#exercise_caption').data('rfc-id')
-              }
-          },
-          dataType: 'json',
-          method: 'POST',
-          url:  "/comments"
-      });
-      jqxhr.done(function(response){
-          setAnnotations(editor, file_id);
-      });
-      jqxhr.fail(ajaxError);
+  function subscribeToRFC(subscriptionType, checkbox){
+    checkbox.attr("disabled", true);
+    var jqxhr = $.ajax({
+      data: {
+        subscription: {
+          request_for_comment_id: $('h4#exercise_caption').data('rfc-id'),
+          subscription_type: subscriptionType
+        }
+      },
+      dataType: 'json',
+      method: 'POST',
+      url:  "/subscriptions.json"
+    });
+    jqxhr.done(function(subscription) {
+      checkbox.data('subscription', subscription.id);
+      checkbox.attr("disabled", false);
+    });
+    jqxhr.fail(function(response) {
+      checkbox.prop('checked', false);
+      checkbox.attr("disabled", false);
+      ajaxError(response);
+    });
   }
+
+  function unsubscribeFromRFC(checkbox) {
+    checkbox.attr("disabled", true);
+    var subscriptionId = checkbox.data('subscription');
+    var jqxhr = $.ajax({
+      url:  '/subscriptions/' + subscriptionId + '/unsubscribe.json'
+    });
+    jqxhr.done(function(response) {
+      checkbox.prop('checked', false);
+      checkbox.data('subscription', null);
+      checkbox.attr("disabled", false);
+      $.flash.success({text: response.message});
+    });
+    jqxhr.fail(function(response) {
+      checkbox.prop('checked', true);
+      checkbox.attr("disabled", false);
+      ajaxError(response);
+    });
+  }
+
+  var lastRow = null;
+  var lastTarget = null;
+  function showPopover(e) {
+    var target  = e.domEvent.target;
+    var row = e.getDocumentPosition().row;
+
+    if (target.className.indexOf('ace_gutter-cell') === -1 || lastRow === row) {
+      return;
+    }
+    if (lastTarget === target) {
+      // sometimes the row gets updated before the DOM event target, so we need to wait for it to change
+      return;
+    }
+    lastRow = row;
+
+    var editor = e.editor;
+    var comments = getCommentsForRow(editor, row);
+    buildPopover(comments, $(target));
+    lastTarget = target;
+
+    $(target).popover('show');
+    $(target).on('mouseleave', function () {
+      $(this).off('mouseleave');
+      $(this).popover('destroy');
+    });
+  }
+
+  $('.ace_gutter').on('mouseleave', function () {
+    lastRow = null;
+    lastTarget = null;
+  });
 
   function handleSidebarClick(e) {
     var target  = e.domEvent.target;
-    var editor =  e.editor;
+    if (target.className.indexOf('ace_gutter-cell') === -1) return;
 
-    if (target.className.indexOf("ace_gutter-cell") == -1) return;
+    var editor =  e.editor;
+    var fileid = $(editor.container).data('file-id');
 
     var row = e.getDocumentPosition().row;
     e.stop();
+    $('.modal-title').text('<%= t('request_for_comments.modal_title') %>'.replace('${line}', row + 1));
 
     var commentModal = $('#comment-modal');
 
-    if (hasCommentsInRow(editor, row)) {
-      var rowComments = getCommentsForRow(editor, row);
-      var comments = _.pluck(rowComments, 'text').join('\n');
-      commentModal.find('#otherComments').show();
-      commentModal.find('#otherCommentsTextfield').text(comments);
+    var otherComments = commentModal.find('#otherComments');
+    var htmlContent = generateCommentHtmlContent(getCommentsForRow(editor, row));
+    if (htmlContent) {
+      otherComments.show();
+      var container = otherComments.find('.container');
+      container.html(htmlContent);
+
+      var deleteButtons = container.find('.action-delete');
+      deleteButtons.on('click', function (event) {
+        var button = $(event.target);
+        var parent = $(button).parent().parent();
+        var commentId = parent.data('comment-id');
+
+        deleteComment(commentId, editor, fileid, function () {
+          parent.html('<div class="comment-removed"><%= t('comments.deleted') %></div>');
+        });
+      });
+
+      var editButtons = container.find('.action-edit');
+      editButtons.on('click', function (event) {
+        var button = $(event.target);
+        var parent = $(button).parent().parent();
+        var commentId = parent.data('comment-id');
+        var currentlyEditing = button.data('editing');
+
+        var deleteButton = parent.find('.action-delete');
+        var commentContent = parent.find('.comment-content');
+        var commentEditor = parent.find('textarea.comment-editor');
+        var commentUpdated = parent.find('.comment-updated');
+
+        if (currentlyEditing) {
+          updateComment(commentId, commentEditor.val(), editor, fileid, function () {
+            button.text('<%= t('shared.edit') %>');
+            button.data('editing', false);
+            commentContent.text(commentEditor.val());
+            deleteButton.show();
+            commentContent.show();
+            commentEditor.hide();
+            commentUpdated.removeClass('hidden');
+          });
+        } else {
+          button.text('<%= t('comments.save_update') %>');
+          button.data('editing', true);
+          deleteButton.hide();
+          commentContent.hide();
+          commentEditor.show();
+        }
+      });
     } else {
-      commentModal.find('#otherComments').hide();
+      otherComments.hide();
     }
 
-    commentModal.find('#addCommentButton').off('click');
-    commentModal.find('#removeAllButton').off('click');
-
-    commentModal.find('#addCommentButton').on('click', function(e){
-      var commenttext = commentModal.find('textarea').val();
-      var file_id = $(editor.container).data('file-id');
-
-      if (commenttext !== "") {
-        createComment(file_id, row, editor, commenttext);
-        commentModal.find('textarea').val('') ;
-        commentModal.modal('hide');
+    var subscribeCheckbox = commentModal.find('#subscribe');
+    subscribeCheckbox.prop('checked', subscribeCheckbox.data('subscription'));
+    subscribeCheckbox.off('change');
+    subscribeCheckbox.on('change', function() {
+      if (this.checked) {
+        subscribeToRFC('author', $(this));
+      } else {
+        unsubscribeFromRFC($(this));
       }
     });
 
-    commentModal.find('#removeAllButton').on('click', function(e){
-      var file_id = $(editor.container).data('file-id');
-      deleteComment(file_id, row, editor);
-      commentModal.modal('hide');
+    var addCommentButton = commentModal.find('#addCommentButton');
+    addCommentButton.off('click');
+    addCommentButton.on('click', function(){
+      var commentTextarea = commentModal.find('#myComment > textarea');
+      var commenttext = commentTextarea.val();
+      if (commenttext !== "") {
+        createComment(fileid, row, editor, commenttext);
+        commentTextarea.val('') ;
+        commentModal.modal('hide');
+      }
     });
 
     commentModal.modal('show');
@@ -349,21 +449,6 @@ also, all settings from the rails model needed for the editor configuration in t
     $.flash.danger({
       text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
-  }
-
-
-  function stringDivider(str, width, spaceReplacer) {
-    if (str.length>width) {
-      var p=width;
-      for (;p>0 && str[p]!=' ';p--) {
-      }
-      if (p>0) {
-        var left = str.substring(0, p);
-        var right = str.substring(p+1);
-        return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
-      }
-    }
-    return str;
   }
 
 </script>
