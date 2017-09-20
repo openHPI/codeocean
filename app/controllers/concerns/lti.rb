@@ -104,7 +104,7 @@ module Lti
   private :return_to_consumer
 
   def send_score(exercise_id, score, user_id)
-    ::NewRelic::Agent.add_custom_parameters({ score: score, session: session })
+    ::NewRelic::Agent.add_custom_attributes({ score: score, session: session })
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
 
     if session[:consumer_id]

@@ -344,7 +344,7 @@ class ExercisesController < ApplicationController
   end
 
   def transmit_lti_score
-    ::NewRelic::Agent.add_custom_parameters({ submission: @submission.id, normalized_score: @submission.normalized_score })
+    ::NewRelic::Agent.add_custom_attributes({ submission: @submission.id, normalized_score: @submission.normalized_score })
     response = send_score(@submission.exercise_id, @submission.normalized_score, @submission.user_id)
 
     if response[:status] == 'success'
