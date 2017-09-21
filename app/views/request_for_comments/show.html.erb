@@ -27,21 +27,7 @@
   </h5>
 
   <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
-      <button class="btn btn-primary" id="mark-as-solved-button">
-        <%= t('request_for_comments.mark_as_solved') %>
-      </button>
-      <div id="thank-you-container">
-        <p>
-          <%= t('request_for_comments.write_a_thank_you_node') %>
-        </p>
-        <textarea id="thank-you-note"></textarea>
-        <button class="btn btn-primary" id="send-thank-you-note">
-          <%= t('request_for_comments.send_thank_you_note') %>
-        </button>
-        <button class="btn btn-default" id="cancel-thank-you-note">
-          <%= t('request_for_comments.cancel_thank_you_note') %>
-        </button>
-      </div>
+      <%= render('mark_as_solved') %>
   <% end %>
 
   <% if @current_user.admin? && user.is_a?(ExternalUser) %>
