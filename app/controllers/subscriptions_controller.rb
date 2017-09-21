@@ -32,7 +32,8 @@ class SubscriptionsController < ApplicationController
     else
       authorize!
       rfc = @subscription.try(:request_for_comment)
-      if @subscription.destroy
+      @subscription.deleted = true
+      if @subscription.save
         respond_to do |format|
           format.html { redirect_to request_for_comment_url(rfc), notice: t('subscriptions.successfully_unsubscribed') }
           format.json { render json: {message: t('subscriptions.successfully_unsubscribed')}, status: :ok}
@@ -55,7 +56,7 @@ class SubscriptionsController < ApplicationController
   def subscription_params
     current_user_id = current_user.try(:id)
     current_user_class_name = current_user.try(:class).try(:name)
-    params[:subscription].permit(:request_for_comment_id, :subscription_type).merge(user_id: current_user_id, user_type: current_user_class_name)
+    params[:subscription].permit(:request_for_comment_id, :subscription_type).merge(user_id: current_user_id, user_type: current_user_class_name, deleted: false)
   end
   private :subscription_params
 end

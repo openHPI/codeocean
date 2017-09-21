@@ -121,13 +121,16 @@ class CommentsController < ApplicationController
 
   def send_mail_to_subscribers(comment, request_for_comment)
     request_for_comment.commenters.each do |commenter|
+      already_sent_mail = false
       subscriptions = Subscription.where(
           :request_for_comment_id => request_for_comment.id,
-          :user_id => commenter.id, :user_type => commenter.class.name)
+          :user_id => commenter.id, :user_type => commenter.class.name,
+          :deleted => false)
       subscriptions.each do |subscription|
         if (subscription.subscription_type == 'author' and current_user == request_for_comment.user) or subscription.subscription_type == 'all'
-          if subscription.user != current_user
+          unless subscription.user == current_user or already_sent_mail
             UserMailer.got_new_comment_for_subscription(comment, subscription, current_user).deliver_now
+            already_sent_mail = true
           end
         end
       end
