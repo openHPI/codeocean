@@ -1,6 +1,6 @@
 <div class="list-group">
   <h4 id ="exercise_caption" class="list-group-item-heading" data-exercise-id="<%=@request_for_comment.exercise.id%>" data-comment-exercise-url="<%=create_comment_exercise_request_for_comment_path%>" data-rfc-id = "<%= @request_for_comment.id %>" >
-    <% if (@request_for_comment.solved?) %>
+    <% if @request_for_comment.solved? %>
         <span class="fa fa-check" aria-hidden="true"></span>
     <% end %>
     <%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %>
@@ -26,7 +26,7 @@
     <% end %>
   </h5>
 
-  <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
+  <% if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved? %>
       <%= render('mark_as_solved') %>
   <% end %>
 
