@@ -260,6 +260,8 @@ de:
         path: 'Pfad der Datei im Projektverzeichnis. Kann auch leer gelassen werden.'
     form:
       add_file: Datei hinzufügen
+      tags: "Tags"
+      click_to_collapse: "Zum Aus-/Einklappen hier klicken..."
     implement:
       alert:
         text: 'Ihr Browser unterstützt nicht alle Funktionalitäten, die %{application_name} benötigt. Bitte nutzen Sie einen modernen Browser, um %{application_name} zu besuchen.'
