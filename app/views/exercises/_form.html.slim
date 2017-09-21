@@ -38,19 +38,28 @@
   .form-group
     = f.label(t('activerecord.attributes.exercise.worktime'))
     = f.number_field "expected_worktime_minutes", value: @exercise.expected_worktime_seconds / 60, in: 1..1000, step: 1
+
   h2 Tags
-  .table-responsive
-    table.table#tags-table
-      thead
-        tr
-          th = t('activerecord.attributes.exercise.selection')
-          th = sort_link(@search, :title, t('activerecord.attributes.tag.name'))
-          th = t('activerecord.attributes.tag.difficulty')
-        = collection_check_boxes :exercise, :tag_ids, @exercise_tags, :tag_id, :id do |b|
-          tr
-            td = b.check_box
-            td = b.object.tag.name
-            td = number_field "tag_factors[#{b.object.tag.id}]", :factor, :value => b.object.factor, in: 1..10, step: 1
+  ul.list-unstyled.panel-group
+    li.panel.panel-default
+      .panel-heading role="tab" id="heading"
+        a.file-heading data-toggle="collapse" href="#tag-collapse"
+          div.clearfix role="button"
+            span Click to expand/collapse...
+      .panel-collapse.collapse id="tag-collapse" role="tabpanel"
+        .table-responsive
+          table.table#tags-table
+            thead
+              tr
+                th = t('activerecord.attributes.exercise.selection')
+                th = sort_link(@search, :title, t('activerecord.attributes.tag.name'))
+                th = t('activerecord.attributes.tag.difficulty')
+              = collection_check_boxes :exercise, :tag_ids, @exercise_tags, :tag_id, :id do |b|
+                tr
+                  td = b.check_box
+                  td = b.object.tag.name
+                  td = number_field "tag_factors[#{b.object.tag.id}]", :factor, :value => b.object.factor, in: 1..10, step: 1
+
   h2 = t('activerecord.attributes.exercise.files')
   ul#files.list-unstyled.panel-group
     = f.fields_for :files do |files_form|
