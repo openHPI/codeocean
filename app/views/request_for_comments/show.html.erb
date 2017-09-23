@@ -47,7 +47,7 @@
         <h5><%= t('request_for_comments.runtime_output') %></h5>
         <div class="testrun-output">
           <% output_runs.each do |testrun| %>
-            <p><%= testrun.try(:message) or t('request_for_comments.no_output') %></p>
+            <p><%= testrun.try(:output) or t('request_for_comments.no_output') %></p>
           <% end %>
         </div>
       <% end %>
