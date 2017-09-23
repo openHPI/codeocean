@@ -9,6 +9,7 @@
       <%
         user = @request_for_comment.user
         submission =  @request_for_comment.submission
+        testruns = Testrun.where(:submission_id => @request_for_comment.submission)
       %>
     <%= user.displayname %> | <%= @request_for_comment.created_at.localtime %>
 
@@ -37,6 +38,31 @@
   <h5>
     <u><%= t('request_for_comments.howto_title') %></u><br> <%= render_markdown(t('request_for_comments.howto')) %>
   </h5>
+
+  <!-- check cause: assess/run; display success, output (if any), make collapsible-->
+  <% if testruns.size > 0 %>
+    <div class="testrun-container">
+      <% output_runs = testruns.select { |run| run.cause == 'run' } %>
+      <% if output_runs.size > 0 %>
+        <h5><%= t('request_for_comments.runtime_output') %></h5>
+        <div class="testrun-output">
+          <% output_runs.each do |testrun| %>
+            <p><%= testrun.try(:message) or t('request_for_comments.no_output') %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% assess_runs = testruns.select { |run| run.cause == 'assess' } %>
+      <% if assess_runs.size > 0 %>
+        <h5><%= t('request_for_comments.test_results') %></h5>
+        <div class="testrun-assess-results">
+          <% assess_runs.each do |testrun| %>
+            <div class="result <%= testrun.passed ? 'passed' : 'failed' %>" title="<%= testrun.output %>"></div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 <hr>
 

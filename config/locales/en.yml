@@ -514,6 +514,9 @@ en:
     modal_title: "Add a comment to line ${line}"
     click_for_more_comments: "Click to view ${numComments} more comments..."
     subscribe_to_author: "Receive E-Mail notifications for new comments of the original author"
+    no_output: "No output."
+    runtime_output: "Runtime Output"
+    test_results: "Test Results"
   sessions:
     create:
       failure: Invalid email or password.

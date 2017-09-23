@@ -514,6 +514,9 @@ de:
     modal_title: "Einen Kommentar in Zeile ${line} hinzufügen"
     click_for_more_comments: "Klicken um ${numComments} weitere Kommentare zu sehen..."
     subscribe_to_author: "Bei neuen Kommentaren des Autors per E-Mail benachrichtigt werden"
+    no_output: "Keine Ausgabe."
+    runtime_output: "Programmausgabe"
+    test_results: "Testergebnisse"
   sessions:
     create:
       failure: Fehlerhafte E-Mail oder Passwort.

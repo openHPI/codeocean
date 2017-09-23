@@ -151,3 +151,39 @@ input#subscribe {
   color: #008cba;
   margin-top: 10px;
 }
+
+.testrun-assess-results {
+
+  display: flex;
+
+  .result {
+    margin-right: 10px;
+    width: 10px;
+    height: 10px;
+  }
+
+  .passed {
+    border-radius: 50%;
+    background-color: #8efa00;
+    -webkit-box-shadow: 0 0 11px 1px rgba(44,222,0,1);
+    -moz-box-shadow: 0 0 11px 1px rgba(44,222,0,1);
+    box-shadow: 0 0 11px 1px rgba(44,222,0,1);
+  }
+
+  .unknown {
+    border-radius: 50%;
+    background-color: #ffca00;
+    -webkit-box-shadow: 0 0 11px 1px rgb(255, 202, 0);
+    -moz-box-shadow: 0 0 11px 1px rgb(255, 202, 0);
+    box-shadow: 0 0 11px 1px rgb(255, 202, 0);
+  }
+
+  .failed {
+    border-radius: 50%;
+    background-color: #ff2600;
+    -webkit-box-shadow: 0 0 11px 1px rgba(222,0,0,1);
+    -moz-box-shadow: 0 0 11px 1px rgba(222,0,0,1);
+    box-shadow: 0 0 11px 1px rgba(222,0,0,1);
+  }
+
+}
