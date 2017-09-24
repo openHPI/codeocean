@@ -14,55 +14,67 @@
     <%= user.displayname %> | <%= @request_for_comment.created_at.localtime %>
 
   </p>
-
-  <h5>
-    <u><%= t('activerecord.attributes.exercise.description') %>:</u> <%= render_markdown(@request_for_comment.exercise.description) %>
-  </h5>
-
-  <h5>
-    <% if @request_for_comment.question and not @request_for_comment.question == '' %>
-        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  "<%= @request_for_comment.question %>"
-    <% else %>
-        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
-    <% end %>
-  </h5>
-
-  <% if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved? %>
-      <%= render('mark_as_solved') %>
-  <% end %>
-
-  <% if @current_user.admin? && user.is_a?(ExternalUser) %>
-    <%= render('admin_menu') %>
-  <% end %>
-
-  <h5>
-    <u><%= t('request_for_comments.howto_title') %></u><br> <%= render_markdown(t('request_for_comments.howto')) %>
-  </h5>
-
-  <!-- check cause: assess/run; display success, output (if any), make collapsible-->
-  <% if testruns.size > 0 %>
-    <div class="testrun-container">
-      <% output_runs = testruns.select { |run| run.cause == 'run' } %>
-      <% if output_runs.size > 0 %>
-        <h5><%= t('request_for_comments.runtime_output') %></h5>
-        <div class="testrun-output">
-          <% output_runs.each do |testrun| %>
-            <p><%= testrun.try(:output) or t('request_for_comments.no_output') %></p>
-          <% end %>
-        </div>
-      <% end %>
-
-      <% assess_runs = testruns.select { |run| run.cause == 'assess' } %>
-      <% if assess_runs.size > 0 %>
-        <h5><%= t('request_for_comments.test_results') %></h5>
-        <div class="testrun-assess-results">
-          <% assess_runs.each do |testrun| %>
-            <div class="result <%= testrun.passed ? 'passed' : 'failed' %>" title="<%= testrun.output %>"></div>
-          <% end %>
-        </div>
-      <% end %>
+  <div class="rfc">
+    <div class="description">
+      <h5>
+        <%= t('activerecord.attributes.exercise.description') %>:
+      </h5>
+      <div class="text">
+        <%= render_markdown(@request_for_comment.exercise.description) %>
+      </div>
     </div>
-  <% end %>
+
+    <div class="question">
+      <h5>
+        <%= t('activerecord.attributes.request_for_comments.question')%>:
+      </h5>
+      <div class="text">
+        <%= @request_for_comment.question or t('request_for_comments.no_question')%>
+      </div>
+    </div>
+
+    <% if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved? %>
+        <%= render('mark_as_solved') %>
+    <% end %>
+
+    <% if @current_user.admin? && user.is_a?(ExternalUser) %>
+        <%= render('admin_menu') %>
+    <% end %>
+
+    <div class="howto">
+      <h5>
+        <%= t('request_for_comments.howto_title') %>
+      </h5>
+      <div class="text">
+        <%= render_markdown(t('request_for_comments.howto')) %>
+      </div>
+    </div>
+
+    <!-- check cause: assess/run; display success, output (if any), make collapsible-->
+    <% if testruns.size > 0 %>
+      <div class="testrun-container">
+        <% output_runs = testruns.select { |run| run.cause == 'run' } %>
+        <% if output_runs.size > 0 %>
+          <h5><%= t('request_for_comments.runtime_output') %></h5>
+          <div class="testrun-output text">
+            <% output_runs.each do |testrun| %>
+                <p><%= testrun.try(:output) or t('request_for_comments.no_output') %></p>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% assess_runs = testruns.select { |run| run.cause == 'assess' } %>
+        <% if assess_runs.size > 0 %>
+          <h5><%= t('request_for_comments.test_results') %></h5>
+          <div class="testrun-assess-results">
+            <% assess_runs.each do |testrun| %>
+                <div class="result <%= testrun.passed ? 'passed' : 'failed' %>" title="<%= testrun.output %>"></div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>
 <hr>
 

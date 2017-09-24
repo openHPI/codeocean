@@ -152,6 +152,28 @@ input#subscribe {
   margin-top: 10px;
 }
 
+.rfc {
+
+  h5 {
+    text-decoration: underline;
+  }
+
+  .text {
+    font-size: larger;
+  }
+
+  .question {
+    display: flex;
+    align-items: baseline;
+
+    .text {
+      margin-left: 10px;
+    }
+
+  }
+
+}
+
 .testrun-assess-results {
 
   display: flex;
