@@ -1,6 +1,6 @@
 <div class="list-group">
   <h4 id ="exercise_caption" class="list-group-item-heading" data-exercise-id="<%=@request_for_comment.exercise.id%>" data-comment-exercise-url="<%=create_comment_exercise_request_for_comment_path%>" data-rfc-id = "<%= @request_for_comment.id %>" >
-    <% if (@request_for_comment.solved?) %>
+    <% if @request_for_comment.solved? %>
         <span class="fa fa-check" aria-hidden="true"></span>
     <% end %>
     <%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %>
@@ -9,61 +9,75 @@
       <%
         user = @request_for_comment.user
         submission =  @request_for_comment.submission
+        testruns = Testrun.where(:submission_id => @request_for_comment.submission)
       %>
     <%= user.displayname %> | <%= @request_for_comment.created_at.localtime %>
-
   </p>
-
-  <h5>
-    <u><%= t('activerecord.attributes.exercise.description') %>:</u> <%= render_markdown(@request_for_comment.exercise.description) %>
-  </h5>
-
-  <h5>
-    <% if @request_for_comment.question and not @request_for_comment.question == '' %>
-        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  "<%= @request_for_comment.question %>"
-    <% else %>
-        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
-    <% end %>
-  </h5>
-
-  <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
-      <button class="btn btn-primary" id="mark-as-solved-button">
-        <%= t('request_for_comments.mark_as_solved') %>
-      </button>
-      <div id="thank-you-container">
-        <p>
-          <%= t('request_for_comments.write_a_thank_you_node') %>
-        </p>
-        <textarea id="thank-you-note"></textarea>
-        <button class="btn btn-primary" id="send-thank-you-note">
-          <%= t('request_for_comments.send_thank_you_note') %>
-        </button>
-        <button class="btn btn-default" id="cancel-thank-you-note">
-          <%= t('request_for_comments.cancel_thank_you_note') %>
-        </button>
-      </div>
-  <% end %>
-
-
-
-  <% if @current_user.admin?  && user.is_a?(ExternalUser) %>
-      <br>
-      <br>
-      <h4>Admin Menu</h4>
+  <div class="rfc">
+    <div class="description">
       <h5>
-        <ul>
-          <li><%= link_to "User's current status of this exercise", statistics_external_user_exercise_path(id: @request_for_comment.exercise_id, external_user_id: @request_for_comment.user_id) %></li>
-          <li><%= link_to "All exercises of this user", statistics_external_user_path(id: @request_for_comment.user_id) %></li> <br>
-          <li><%= link_to "Implement the exercise yourself", implement_exercise_path(id: @request_for_comment.exercise_id) %> </li>
-          <li><%= link_to "Show the exercise", exercise_path(id: @request_for_comment.exercise_id) %> </li>
-        </ul>
+        <%= t('activerecord.attributes.exercise.description') %>
       </h5>
-  <% end %>
-  <h5>
-    <u><%= t('request_for_comments.howto_title') %></u><br> <%= render_markdown(t('request_for_comments.howto')) %>
-  </h5>
+      <div class="text">
+        <span class="fa fa-chevron-up collapse-button"></span>
+        <%= render_markdown(@request_for_comment.exercise.description) %>
+      </div>
+    </div>
+
+    <div class="question">
+      <h5>
+        <%= t('activerecord.attributes.request_for_comments.question')%>
+      </h5>
+      <div class="text">
+        <%= @request_for_comment.question or t('request_for_comments.no_question')%>
+      </div>
+    </div>
+
+    <% if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved? %>
+        <%= render('mark_as_solved') %>
+    <% end %>
+    
+    <% if testruns.size > 0 %>
+      <div class="testruns">
+        <% output_runs = testruns.select { |run| run.cause == 'run' } %>
+        <% if output_runs.size > 0 %>
+          <h5><%= t('request_for_comments.runtime_output') %></h5>
+          <div class="testrun-output text">
+            <span class="fa fa-chevron-up collapse-button"></span>
+            <% output_runs.each do |testrun| %>
+              <pre><%= testrun.try(:output) or t('request_for_comments.no_output') %></pre>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% assess_runs = testruns.select { |run| run.cause == 'assess' } %>
+        <% if assess_runs.size > 0 %>
+          <h5><%= t('request_for_comments.test_results') %></h5>
+          <div class="testrun-assess-results">
+            <% assess_runs.each do |testrun| %>
+                <div class="result <%= testrun.passed ? 'passed' : 'failed' %>" title="<%= testrun.output %>"></div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @current_user.admin? && user.is_a?(ExternalUser) %>
+        <%= render('admin_menu') %>
+    <% end %>
+
+    <hr>
+
+    <div class="howto">
+      <h5>
+        <%= t('request_for_comments.howto_title') %>
+      </h5>
+      <div class="text">
+        <%= render_markdown(t('request_for_comments.howto')) %>
+      </div>
+    </div>
+  </div>
 </div>
-<hr>
 
 <div class="hidden sanitizer"></div>
 <!--
@@ -126,6 +140,12 @@ also, all settings from the rails model needed for the editor configuration in t
 
   $('#cancel-thank-you-note').on('click', function () {
     thankYouContainer.hide();
+  });
+
+  $('.text > .collapse-button').on('click', function(e) {
+    $(this).toggleClass('fa-chevron-down');
+    $(this).toggleClass('fa-chevron-up');
+    $(this).parent().toggleClass('collapsed');
   });
 
   // set file paths for ace

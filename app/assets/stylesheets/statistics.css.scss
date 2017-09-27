@@ -42,6 +42,14 @@ div.positive-result {
   box-shadow: 0px 0px 11px 1px rgba(44,222,0,1);
 }
 
+div.unknown-result {
+  border-radius: 50%;
+  background-color: #ffca00;
+  -webkit-box-shadow: 0px 0px 11px 1px rgb(255, 202, 0);
+  -moz-box-shadow: 0px 0px 11px 1px rgb(255, 202, 0);
+  box-shadow: 0px 0px 11px 1px rgb(255, 202, 0);
+}
+
 div.negative-result {
   border-radius: 50%;
   background-color: #ff2600;

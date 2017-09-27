@@ -59,8 +59,6 @@ CodeOceanEditorCodePilot = {
   }
 };
 
-//Request for comments does currently not work on staging platform (no relative root_url used here).
-//To fix this rely on ruby routes
 CodeOceanEditorRequestForComments = {
   requestComments: function () {
     var user_id = $('#editor').data('user-id');
@@ -83,6 +81,8 @@ CodeOceanEditorRequestForComments = {
       }).done(function () {
         this.hideSpinner();
         $.flash.success({text: $('#askForCommentsButton').data('message-success')});
+        // trigger a run
+        this.runSubmission.call(this, submission);
       }.bind(this)).error(this.ajaxError.bind(this));
     };
 

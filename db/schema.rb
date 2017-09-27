@@ -304,6 +304,7 @@ ActiveRecord::Schema.define(version: 20170920145852) do
     t.integer  "submission_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "cause"
   end
 
   create_table "user_exercise_feedbacks", force: :cascade do |t|
