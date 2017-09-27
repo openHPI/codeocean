@@ -74,6 +74,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :exercise_collections
+
   resources :proxy_exercises do
     member do
       post :clone
