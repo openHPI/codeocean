@@ -12,21 +12,21 @@
         testruns = Testrun.where(:submission_id => @request_for_comment.submission)
       %>
     <%= user.displayname %> | <%= @request_for_comment.created_at.localtime %>
-
   </p>
   <div class="rfc">
     <div class="description">
       <h5>
-        <%= t('activerecord.attributes.exercise.description') %>:
+        <%= t('activerecord.attributes.exercise.description') %>
       </h5>
       <div class="text">
+        <span class="fa fa-chevron-up collapse-button"></span>
         <%= render_markdown(@request_for_comment.exercise.description) %>
       </div>
     </div>
 
     <div class="question">
       <h5>
-        <%= t('activerecord.attributes.request_for_comments.question')%>:
+        <%= t('activerecord.attributes.request_for_comments.question')%>
       </h5>
       <div class="text">
         <%= @request_for_comment.question or t('request_for_comments.no_question')%>
@@ -39,13 +39,14 @@
 
     <!-- check cause: assess/run; display success, output (if any), make collapsible-->
     <% if testruns.size > 0 %>
-      <div class="testrun-container">
+      <div class="testruns">
         <% output_runs = testruns.select { |run| run.cause == 'run' } %>
         <% if output_runs.size > 0 %>
           <h5><%= t('request_for_comments.runtime_output') %></h5>
           <div class="testrun-output text">
+            <span class="fa fa-chevron-up collapse-button"></span>
             <% output_runs.each do |testrun| %>
-                <p><%= testrun.try(:output) or t('request_for_comments.no_output') %></p>
+              <pre><%= testrun.try(:output) or t('request_for_comments.no_output') %></pre>
             <% end %>
           </div>
         <% end %>
@@ -140,6 +141,12 @@ also, all settings from the rails model needed for the editor configuration in t
 
   $('#cancel-thank-you-note').on('click', function () {
     thankYouContainer.hide();
+  });
+
+  $('.text > .collapse-button').on('click', function(e) {
+    $(this).toggleClass('fa-chevron-down');
+    $(this).toggleClass('fa-chevron-up');
+    $(this).parent().toggleClass('collapsed');
   });
 
   // set file paths for ace
