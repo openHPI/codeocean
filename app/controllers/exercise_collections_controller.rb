@@ -3,7 +3,7 @@ class ExerciseCollectionsController < ApplicationController
   before_action :set_exercise_collection, only: [:show]
 
   def index
-    @exercise_collections = ExerciseCollection.all
+    @exercise_collections = ExerciseCollection.all.paginate(:page => params[:page])
     authorize!
   end
 
