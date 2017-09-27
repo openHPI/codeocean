@@ -42,6 +42,7 @@ en:
         allow_file_creation: "Allow file creation"
         difficulty: Difficulty
         worktime: "Expected worktime in minutes"
+        token: "Exercise Token"
       proxy_exercise:
         title: Title
         files_count: Exercises Count
