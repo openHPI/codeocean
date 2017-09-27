@@ -37,19 +37,6 @@
         <%= render('mark_as_solved') %>
     <% end %>
 
-    <% if @current_user.admin? && user.is_a?(ExternalUser) %>
-        <%= render('admin_menu') %>
-    <% end %>
-
-    <div class="howto">
-      <h5>
-        <%= t('request_for_comments.howto_title') %>
-      </h5>
-      <div class="text">
-        <%= render_markdown(t('request_for_comments.howto')) %>
-      </div>
-    </div>
-
     <!-- check cause: assess/run; display success, output (if any), make collapsible-->
     <% if testruns.size > 0 %>
       <div class="testrun-container">
@@ -74,9 +61,23 @@
         <% end %>
       </div>
     <% end %>
+
+    <% if @current_user.admin? && user.is_a?(ExternalUser) %>
+        <%= render('admin_menu') %>
+    <% end %>
+
+    <hr>
+
+    <div class="howto">
+      <h5>
+        <%= t('request_for_comments.howto_title') %>
+      </h5>
+      <div class="text">
+        <%= render_markdown(t('request_for_comments.howto')) %>
+      </div>
+    </div>
   </div>
 </div>
-<hr>
 
 <div class="hidden sanitizer"></div>
 <!--
