@@ -42,6 +42,7 @@ en:
         allow_file_creation: "Allow file creation"
         difficulty: Difficulty
         worktime: "Expected worktime in minutes"
+        token: "Exercise Token"
       proxy_exercise:
         title: Title
         files_count: Exercises Count
@@ -260,6 +261,8 @@ en:
         path: "The file's path in the project tree. Can be left blank."
     form:
       add_file: Add file
+      tags: "Tags"
+      click_to_collapse: "Click to expand/collapse..."
     implement:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'

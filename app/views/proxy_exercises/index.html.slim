@@ -10,7 +10,7 @@ h1 = ProxyExercise.model_name.human(count: 2)
     thead
       tr
         th = sort_link(@search, :title, t('activerecord.attributes.proxy_exercise.title'))
-        th = "Token"
+        th = t('activerecord.attributes.exercise.token')
         th = t('activerecord.attributes.proxy_exercise.files_count')
         th colspan=6 = t('shared.actions')
     tbody
