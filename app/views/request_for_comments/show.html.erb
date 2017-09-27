@@ -36,8 +36,7 @@
     <% if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved? %>
         <%= render('mark_as_solved') %>
     <% end %>
-
-    <!-- check cause: assess/run; display success, output (if any), make collapsible-->
+    
     <% if testruns.size > 0 %>
       <div class="testruns">
         <% output_runs = testruns.select { |run| run.cause == 'run' } %>
