@@ -291,52 +291,87 @@ class Exercise < ActiveRecord::Base
     exercise
   end
 
-  def determine_file_role_from_proforma_file(task_node, file_node)
-    file_id = file_node.xpath('@id')
-    file_class = file_node.xpath('@class').first.value
-    comment = file_node.xpath('@comment').first.value
-    is_referenced_by_test = task_node.xpath("p:tests/p:test/p:filerefs/p:fileref[@id=#{file_id}]")
-    is_referenced_by_model_solution = task_node.xpath("p:model-solutions/p:model-solution/p:filerefs/p:fileref[@id=#{file_id}]")
-    if is_referenced_by_test && (file_class == 'internal')
+  def from_proforma_xml(xml)
+    doc = Nokogiri::XML(xml)
+    doc.collect_namespaces
+
+    self.attributes = {
+        title: doc.xpath('/p:task/p:meta-data/p:title/text()'),
+        description: doc.xpath('/p:task/p:description/text()')
+    }
+    prog_language = doc.xpath('/p:task/p:proglang/text()').to_s
+    version = doc.xpath('/p:task/p:proglang/@version').first.value
+    exec_environment = ExecutionEnvironment.where('language = ? AND version = ?', prog_language, version).take
+    if exec_environment
+      exec_environment_id = exec_environment.id
+    else
+      exec_environment_id = 1
+    end
+    self.execution_environment_id = exec_environment_id
+
+    add_files_xml(doc)
+
+  end
+
+  def add_files_xml(xml)
+    xml.xpath('/p:task/p:files/p:file').each do |file|
+      role = determine_file_role_from_proforma_file(xml, file)
+      filename_attribute = file.xpath('@filename').first
+      if filename_attribute
+        filename = filename_attribute.value
+        if filename.include? '/'
+          path_name_split = filename.split (/\/(?=[^\/]*$)/)
+          path = path_name_split.first
+          name_with_type = path_name_split.second
+        else
+          path = ''
+          name_with_type = filename
+        end
+        if name_with_type.include? '.'
+          name_type_split = name_with_type.split('.')
+          name = name_type_split.first
+          type = name_type_split.second
+        else
+          name = name_with_type
+          type = ''
+        end
+      else
+        path = ''
+        name = ''
+        type = ''
+      end
+
+      file_id = file.xpath('@id').first.value
+      file_class = file.xpath('@class').first.value
+      content = file.xpath('text()').first
+      feedback_message = xml.xpath("//p:test/p:test-configuration/p:filerefs/p:fileref[@refid='#{file_id}']/../../c:feedback-message/text()")
+      files.build({
+          content: content,
+          name: name,
+          path: path,
+          file_type: FileType.find_by(file_extension: ".#{type}"),
+          role: role,
+          feedback_message: (role == 'teacher_defined_test') ? feedback_message : nil,
+          hidden: file_class == 'internal',
+          read_only: false })
+    end
+  end
+
+  def determine_file_role_from_proforma_file(xml, file)
+    file_id = file.xpath('@id').first.value
+    file_class = file.xpath('@class').first.value
+    comment = file.xpath('@comment').first.try(:value)
+    is_referenced_by_test = xml.xpath("//p:test/p:test-configuration/p:filerefs/p:fileref[@refid='#{file_id}']")
+    is_referenced_by_model_solution = xml.xpath("//p:model-solution/p:filerefs/p:fileref[@refid='#{file_id}']")
+    if !is_referenced_by_test.empty? && (file_class == 'internal')
       return 'teacher_defined_test'
-    elsif is_referenced_by_model_solution && (file_class == 'internal')
+    elsif !is_referenced_by_model_solution.empty? && (file_class == 'internal')
       return 'reference_implementation'
     elsif (file_class == 'template') && (comment == 'main')
       return 'main_file'
     elsif (file_class == 'internal') && (comment == 'main')
     end
     return 'regular_file'
-  end
-
-  def from_proforma_xml(xml_string)
-    # how to extract the proforma functionality into a different module in rails?
-    xml = Nokogiri::XML(xml_string)
-    xml.collect_namespaces
-    task_node = xml.xpath('/root/p:task')
-    description = task_node.xpath('p:description/text()')[0].content
-    self.attributes = {
-      title: task_node.xpath('p:meta-data/p:title/text()')[0].content,
-      description: description,
-      instructions: description
-    }
-    task_node.xpath('p:files/p:file').all? { |file|
-      file_name_split = file.xpath('@filename').first.value.split('.')
-      file_class = file.xpath('@class').first.value
-      role = determine_file_role_from_proforma_file(task_node, file)
-      feedback_message_nodes = task_node.xpath("p:tests/p:test/p:test-configuration/c:feedback-message/text()")
-      files.build({
-        name: file_name_split.first,
-        content: file.xpath('text()').first.content,
-        read_only: false,
-        hidden: file_class == 'internal',
-        role: role,
-        feedback_message: (role == 'teacher_defined_test') ? feedback_message_nodes.first.content : nil,
-        file_type: FileType.where(
-          file_extension: ".#{file_name_split.second}"
-        ).take
-      })
-    }
-    self.execution_environment_id = 1
   end
 
   def generate_token
