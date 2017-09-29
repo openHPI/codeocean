@@ -72,7 +72,7 @@ class DockerClient
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
-    socket_url = DockerClient.config['ws_host'] + '/containers/' + @container.id + '/attach/ws?' + query_params
+    socket_url = DockerClient.config['ws_host'] + '/v1.27/containers/' + @container.id + '/attach/ws?' + query_params
     socket = Faye::WebSocket::Client.new(socket_url, [], :headers => headers)
 
     Rails.logger.debug "Opening Websocket on URL " + socket_url
@@ -399,6 +399,9 @@ class DockerClient
       output = container.exec(['bash', '-c', command])
       Rails.logger.debug "output from container.exec"
       Rails.logger.debug output
+      if(output == nil)
+        kill_container(container)
+      end
       result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'), stderr: output[1].join.force_encoding('utf-8')}
     end
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
