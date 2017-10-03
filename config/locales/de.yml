@@ -41,7 +41,6 @@ de:
         allow_auto_completion: "Autovervollständigung aktivieren"
         allow_file_creation: "Dateierstellung erlauben"
         difficulty: Schwierigkeitsgrad
-        worktime: "vermutete Arbeitszeit in Minuten"
         token: "Aufgaben-Token"
       proxy_exercise:
         title: Title

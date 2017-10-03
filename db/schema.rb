@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170920145852) do
+ActiveRecord::Schema.define(version: 20171002131135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,13 @@ ActiveRecord::Schema.define(version: 20170920145852) do
     t.datetime "updated_at"
     t.string   "oauth_key",    limit: 255
     t.string   "oauth_secret", limit: 255
+  end
+
+  create_table "copy_paste_events", id: false, force: :cascade do |t|
+    t.integer  "exercise_id"
+    t.string   "text"
+    t.integer  "user_id"
+    t.datetime "created_at"
   end
 
   create_table "errors", force: :cascade do |t|
@@ -99,19 +106,18 @@ ActiveRecord::Schema.define(version: 20170920145852) do
   create_table "exercises", force: :cascade do |t|
     t.text     "description"
     t.integer  "execution_environment_id"
-    t.string   "title",                     limit: 255
+    t.string   "title",                    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
     t.text     "instructions"
     t.boolean  "public"
-    t.string   "user_type",                 limit: 255
-    t.string   "token",                     limit: 255
+    t.string   "user_type",                limit: 255
+    t.string   "token",                    limit: 255
     t.boolean  "hide_file_tree"
     t.boolean  "allow_file_creation"
-    t.boolean  "allow_auto_completion",                 default: false
-    t.integer  "expected_worktime_seconds",             default: 60
-    t.integer  "expected_difficulty",                   default: 1
+    t.boolean  "allow_auto_completion",                default: false
+    t.integer  "expected_difficulty",                  default: 1
   end
 
   create_table "exercises_proxy_exercises", id: false, force: :cascade do |t|
@@ -123,6 +129,11 @@ ActiveRecord::Schema.define(version: 20170920145852) do
 
   add_index "exercises_proxy_exercises", ["exercise_id"], name: "index_exercises_proxy_exercises_on_exercise_id", using: :btree
   add_index "exercises_proxy_exercises", ["proxy_exercise_id"], name: "index_exercises_proxy_exercises_on_proxy_exercise_id", using: :btree
+
+  create_table "external_user_skill_level", id: false, force: :cascade do |t|
+    t.string  "external_user_id"
+    t.integer "skill_level"
+  end
 
   create_table "external_users", force: :cascade do |t|
     t.integer  "consumer_id"
@@ -341,5 +352,30 @@ ActiveRecord::Schema.define(version: 20170920145852) do
   add_index "user_proxy_exercise_exercises", ["exercise_id"], name: "index_user_proxy_exercise_exercises_on_exercise_id", using: :btree
   add_index "user_proxy_exercise_exercises", ["proxy_exercise_id"], name: "index_user_proxy_exercise_exercises_on_proxy_exercise_id", using: :btree
   add_index "user_proxy_exercise_exercises", ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user_type_and_user_id", using: :btree
+
+  create_table "user_proxy_exercise_exercises_copy", id: false, force: :cascade do |t|
+    t.integer  "id"
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.integer  "proxy_exercise_id"
+    t.integer  "exercise_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.json     "reason"
+    t.json     "reason_json"
+  end
+
+  create_table "wk_with_wk_until_rfc", id: false, force: :cascade do |t|
+    t.string  "external_user_id",             limit: 255
+    t.integer "user_id"
+    t.integer "exercise_id"
+    t.float   "max_score"
+    t.float   "max_reachable_points"
+    t.string  "working_time"
+    t.string  "working_time_until_rfc"
+    t.string  "working_time_until_rfc_reply"
+    t.time    "percentile75"
+    t.time    "percentile90"
+  end
 
 end
