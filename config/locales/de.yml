@@ -111,6 +111,11 @@ de:
         name: "Name"
         file_type: "Dateityp"
         content: "Code"
+      exercise_collections:
+        id: "ID"
+        name: "Name"
+        updated_at: "Letzte Änderung"
+        exercises: "Aufgaben"
     models:
       code_harbor_link:
         one: CodeHarbor-Link
@@ -127,6 +132,9 @@ de:
       exercise:
         one: Aufgabe
         other: Aufgaben
+      exercise_collection:
+        one: Aufgabesammlung
+        other: Aufgabensammlungen
       proxy_exercise:
         one: Proxy Aufgabe
         other: Proxy Aufgaben

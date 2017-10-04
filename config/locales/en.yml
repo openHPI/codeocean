@@ -111,6 +111,11 @@ en:
         name: "Name"
         file_type: "File Type"
         content: "Content"
+      exercise_collections:
+        id: "ID"
+        name: "Name"
+        updated_at: "Last Update"
+        exercises: "Exercises"
     models:
       code_harbor_link:
         one: CodeHarbor Link
@@ -127,6 +132,9 @@ en:
       exercise:
         one: Exercise
         other: Exercises
+      exercise_collection:
+        one: Exercise Collection
+        other: Exercise Collections
       proxy_exercise:
         one: Proxy Exercise
         other: Proxy Exercises
