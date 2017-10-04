@@ -1,7 +1,7 @@
 class ExerciseCollectionsController < ApplicationController
   include CommonBehavior
 
-  before_action :set_exercise_collection, only: [:show, :edit, :update]
+  before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy]
 
   def index
     @exercise_collections = ExerciseCollection.all.paginate(:page => params[:page])
@@ -9,6 +9,22 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def show
+  end
+
+  def new
+    @exercise_collection = ExerciseCollection.new
+    authorize!
+  end
+
+  def create
+    @exercise_collection = ExerciseCollection.new(exercise_collection_params)
+    authorize!
+    create_and_respond(object: @exercise_collection)
+  end
+
+  def destroy
+    authorize!
+    destroy_and_respond(object: @exercise_collection)
   end
 
   def edit
@@ -30,6 +46,6 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def exercise_collection_params
-    params[:exercise_collection].permit(:name, :exercise_ids)
+    params[:exercise_collection].permit(:name, :exercise_ids => [])
   end
 end
