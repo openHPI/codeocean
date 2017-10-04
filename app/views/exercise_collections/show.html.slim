@@ -8,4 +8,4 @@ h1
 h4 = t('activerecord.attributes.exercise_collections.exercises')
 ul.list-unstyled
   - @exercise_collection.exercises.sort_by{|c| c.title}.each do |exercise|
-    li = exercise
+    li = link_to(exercise, exercise)
