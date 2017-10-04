@@ -29,7 +29,8 @@
         <%= t('activerecord.attributes.request_for_comments.question')%>
       </h5>
       <div class="text">
-        <%= @request_for_comment.question or t('request_for_comments.no_question')%>
+        <% question = @request_for_comment.question %>
+        <%= question.nil? or question.empty? ? t('request_for_comments.no_question') : question %>
       </div>
     </div>
 
