@@ -99,14 +99,14 @@ ActiveRecord::Schema.define(version: 20171002131135) do
   create_table "exercises", force: :cascade do |t|
     t.text     "description"
     t.integer  "execution_environment_id"
-    t.string   "title",                    limit: 255
+    t.string   "title",                     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
     t.text     "instructions"
     t.boolean  "public"
-    t.string   "user_type",                limit: 255
-    t.string   "token",                    limit: 255
+    t.string   "user_type",                 limit: 255
+    t.string   "token",                     limit: 255
     t.boolean  "hide_file_tree"
     t.boolean  "allow_file_creation"
     t.boolean  "allow_auto_completion",                default: false
