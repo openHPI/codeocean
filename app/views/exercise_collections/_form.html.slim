@@ -1,4 +1,4 @@
-- exercises = Exercise.all
+- exercises = Exercise.order(:title)
 
 = form_for(@exercise_collection, data: {exercises: exercises}, multipart: true) do |f|
   = render('shared/form_errors', object: @exercise_collection)
