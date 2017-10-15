@@ -1,0 +1,7 @@
+== t('mailers.user_mailer.got_new_comment_for_subscription.body',
+        receiver_displayname: @receiver_displayname, link_to_comment: link_to(@rfc_link, @rfc_link),
+        unsubscribe_link: link_to(@unsubscribe_link, @unsubscribe_link),
+        author_displayname: @author_displayname,
+        comment_text: @comment_text,
+        link_my_comments: link_to(t('request_for_comments.index.get_my_comment_requests'), my_request_for_comments_url),
+        link_all_comments: link_to(t('request_for_comments.index.all'), request_for_comments_url) )

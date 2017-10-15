@@ -14,6 +14,7 @@
 //
 //= require ace/ace
 //= require chosen.jquery.min
+//= require jquery-ui.min
 //= require d3
 //= require jquery.turbolinks
 //= require jquery_ujs

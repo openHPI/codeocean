@@ -1,6 +1,6 @@
 <div class="list-group">
   <h4 id ="exercise_caption" class="list-group-item-heading" data-exercise-id="<%=@request_for_comment.exercise.id%>" data-comment-exercise-url="<%=create_comment_exercise_request_for_comment_path%>" data-rfc-id = "<%= @request_for_comment.id %>" >
-    <% if (@request_for_comment.solved?) %>
+    <% if @request_for_comment.solved? %>
         <span class="fa fa-check" aria-hidden="true"></span>
     <% end %>
     <%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %>
@@ -9,61 +9,76 @@
       <%
         user = @request_for_comment.user
         submission =  @request_for_comment.submission
+        testruns = Testrun.where(:submission_id => @request_for_comment.submission)
       %>
     <%= user.displayname %> | <%= @request_for_comment.created_at.localtime %>
-
   </p>
-
-  <h5>
-    <u><%= t('activerecord.attributes.exercise.description') %>:</u> <%= render_markdown(@request_for_comment.exercise.description) %>
-  </h5>
-
-  <h5>
-    <% if @request_for_comment.question and not @request_for_comment.question == '' %>
-        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  "<%= @request_for_comment.question %>"
-    <% else %>
-        <u><%= t('activerecord.attributes.request_for_comments.question')%>:</u>  <%= t('request_for_comments.no_question') %>
-    <% end %>
-  </h5>
-
-  <% if (policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?)  %>
-      <button class="btn btn-primary" id="mark-as-solved-button">
-        <%= t('request_for_comments.mark_as_solved') %>
-      </button>
-      <div id="thank-you-container">
-        <p>
-          <%= t('request_for_comments.write_a_thank_you_node') %>
-        </p>
-        <textarea id="thank-you-note"></textarea>
-        <button class="btn btn-primary" id="send-thank-you-note">
-          <%= t('request_for_comments.send_thank_you_note') %>
-        </button>
-        <button class="btn btn-default" id="cancel-thank-you-note">
-          <%= t('request_for_comments.cancel_thank_you_note') %>
-        </button>
-      </div>
-  <% end %>
-
-
-
-  <% if @current_user.admin?  && user.is_a?(ExternalUser) %>
-      <br>
-      <br>
-      <h4>Admin Menu</h4>
+  <div class="rfc">
+    <div class="description">
       <h5>
-        <ul>
-          <li><%= link_to "User's current status of this exercise", statistics_external_user_exercise_path(id: @request_for_comment.exercise_id, external_user_id: @request_for_comment.user_id) %></li>
-          <li><%= link_to "All exercises of this user", statistics_external_user_path(id: @request_for_comment.user_id) %></li> <br>
-          <li><%= link_to "Implement the exercise yourself", implement_exercise_path(id: @request_for_comment.exercise_id) %> </li>
-          <li><%= link_to "Show the exercise", exercise_path(id: @request_for_comment.exercise_id) %> </li>
-        </ul>
+        <%= t('activerecord.attributes.exercise.description') %>
       </h5>
-  <% end %>
-  <h5>
-    <u><%= t('request_for_comments.howto_title') %></u><br> <%= render_markdown(t('request_for_comments.howto')) %>
-  </h5>
+      <div class="text">
+        <span class="fa fa-chevron-up collapse-button"></span>
+        <%= render_markdown(@request_for_comment.exercise.description) %>
+      </div>
+    </div>
+
+    <div class="question">
+      <h5>
+        <%= t('activerecord.attributes.request_for_comments.question')%>
+      </h5>
+      <div class="text">
+        <% question = @request_for_comment.question %>
+        <%= question.nil? or question.empty? ? t('request_for_comments.no_question') : question %>
+      </div>
+    </div>
+
+    <% if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved? %>
+        <%= render('mark_as_solved') %>
+    <% end %>
+    
+    <% if testruns.size > 0 %>
+      <div class="testruns">
+        <% output_runs = testruns.select { |run| run.cause == 'run' } %>
+        <% if output_runs.size > 0 %>
+          <h5><%= t('request_for_comments.runtime_output') %></h5>
+          <div class="testrun-output text">
+            <span class="fa fa-chevron-up collapse-button"></span>
+            <% output_runs.each do |testrun| %>
+              <pre><%= testrun.try(:output) or t('request_for_comments.no_output') %></pre>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% assess_runs = testruns.select { |run| run.cause == 'assess' } %>
+        <% if assess_runs.size > 0 %>
+          <h5><%= t('request_for_comments.test_results') %></h5>
+          <div class="testrun-assess-results">
+            <% assess_runs.each do |testrun| %>
+                <div class="result <%= testrun.passed ? 'passed' : 'failed' %>" title="<%= testrun.output %>"></div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @current_user.admin? && user.is_a?(ExternalUser) %>
+        <%= render('admin_menu') %>
+    <% end %>
+
+    <hr>
+
+    <div class="howto">
+      <h5>
+        <%= t('request_for_comments.howto_title') %>
+      </h5>
+      <div class="text">
+        <%= render_markdown(t('request_for_comments.howto')) %>
+      </div>
+    </div>
+  </div>
 </div>
-<hr>
 
 <div class="hidden sanitizer"></div>
 <!--
@@ -81,8 +96,13 @@ also, all settings from the rails model needed for the editor configuration in t
 
 <script type="text/javascript">
 
+  $('.modal-content').draggable({
+    handle: '.modal-header'
+  }).resizable({
+    autoHide: true
+  });
+
   var solvedButton = $('#mark-as-solved-button');
-  var commentOnExerciseButton = $('#comment-exercise-button');
   var addCommentExerciseButton = $('#addCommentExerciseButton');
 
   var thankYouContainer = $('#thank-you-container');
@@ -123,6 +143,12 @@ also, all settings from the rails model needed for the editor configuration in t
     thankYouContainer.hide();
   });
 
+  $('.text > .collapse-button').on('click', function(e) {
+    $(this).toggleClass('fa-chevron-down');
+    $(this).toggleClass('fa-chevron-up');
+    $(this).parent().toggleClass('collapsed');
+  });
+
   // set file paths for ace
   var ACE_FILES_PATH = '/assets/ace/';
   _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
@@ -138,102 +164,82 @@ also, all settings from the rails model needed for the editor configuration in t
     currentEditor.getSession().setMode($(editor).data('mode'));
     currentEditor.getSession().setOption("useWorker", false);
 
+    currentEditor.commentVisualsByLine = {};
     setAnnotations(currentEditor, $(editor).data('file-id'));
     currentEditor.on("guttermousedown", handleSidebarClick);
+    currentEditor.on("guttermousemove", showPopover);
   });
 
-  function cleanupPopovers() {
-    // remove all possible popovers
-    $('.editor > .ace_gutter > .ace_gutter-layer > .ace_gutter-cell').popover('destroy');
+  function preprocess(commentText) {
+    // sanitize comments to deal with XSS attacks:
+    commentText = $('div.sanitizer').text(commentText).html();
+    // display original line breaks:
+    return commentText.replace(/\n/g, '<br>');
   }
 
-  function preprocess(commentText) {
-      // sanitize comments to deal with XSS attacks:
-      commentText = $('div.sanitizer').text(commentText).html();
-      // display original line breaks:
-      return commentText.replace(/\n/g, '<br>');
+  function generateCommentHtmlContent(comments) {
+    var htmlContent = '';
+    comments.forEach(function(comment, index) {
+      var commentText = preprocess(comment.text);
+      if (index !== 0) {
+        htmlContent += '<div class="comment-divider"></div>'
+      }
+      htmlContent += '\
+        <div class="comment" data-comment-id=' + comment.id + '> \
+          <div class="comment-header"> \
+            <div class="comment-username">' + preprocess(comment.username) + '</div> \
+            <div class="comment-date">' + comment.date + '</div> \
+            <div class="comment-updated' + (comment.updated ? '' : ' hidden') + '"> \
+              <i class="fa fa-pencil" aria-hidden="true"></i> \
+              <%= t('request_for_comments.comment_edited') %> \
+            </div> \
+          </div> \
+          <div class="comment-content">' + commentText + '</div> \
+          <textarea class="comment-editor">' + commentText + '</textarea> \
+          <div class="comment-actions' + (comment.editable ? '' : ' hidden') + '"> \
+            <button class="action-edit btn btn-xs btn-warning"><%= t('shared.edit') %></button> \
+            <button class="action-delete btn btn-xs btn-danger"><%= t('shared.destroy') %></button> \
+          </div> \
+        </div>';
+    });
+    return htmlContent;
+  }
+
+  function buildPopover(comments, where) {
+    // only display the newest three comments in preview
+    var maxComments = 3;
+    var htmlContent = generateCommentHtmlContent(comments.reverse().slice(0, maxComments));
+    if (comments.length > maxComments) {
+      // add a hint that there are more comments than shown here
+      htmlContent += '<div class="popover-footer"><%= t('request_for_comments.click_for_more_comments') %></div>'
+        .replace('${numComments}', String(comments.length - maxComments));
+    }
+    where.popover({
+      content: htmlContent,
+      html: true, // necessary to style comments. XSS is not possible due to comment pre-processing (sanitizing)
+      trigger: 'manual', // can only be triggered by $(where).popover('show' | 'hide')
+      container: 'body'
+    });
   }
 
   function setAnnotations(editor, fileid) {
     var session = editor.getSession();
 
     var jqrequest = $.ajax({
-        dataType: 'json',
-        method: 'GET',
-        url: '/comments',
-        data: {
-          file_id: fileid
-        }
+      dataType: 'json',
+      method: 'GET',
+      url: '/comments',
+      data: {
+        file_id: fileid
+      }
     });
 
     jqrequest.done(function(response){
-      // comments need to be sorted to cluster them per line
-      var comments = response.slice().sort(function (a, b) {
-          return a.row - b.row;
-      });
-      while (comments.length > 0) {
-        // new cluster of comments
-        var cluster = [];
-        var clusterRow = comments[0].row;
-        // now collect all comments on this line
-        while (comments.length > 0 && comments[0].row === clusterRow) {
-          cluster.push(comments.shift());
-        }
-        // sort the comments by creation date
-        cluster = cluster.sort(function (a, b) {
-            return a.id - b.id;
-        });
-
-        // build the markup for the current line's popover
-        var popupContent = '';
-        cluster.forEach(function(comment, index) {
-            if (index !== 0) {
-                popupContent += '<div class="popover-divider"></div>'
-            }
-            popupContent += '<p class="comment">';
-            popupContent += '<div class="popover-header">' +
-                '<div class="popover-username">' + preprocess(comment.username) + '</div>' +
-                '<div class="popover-date">' + comment.date + '</div>';
-            if (comment.updated) {
-                popupContent += '<div class="popover-updated">' +
-                    '<i class="fa fa-pencil" aria-hidden="true"></i>' +
-                    '<%= t('request_for_comments.comment_edited') %>' +
-                    '</div>'
-            }
-            popupContent += '</div>';
-            popupContent += '<div class="popover-comment">' + preprocess(comment.text) + '</div>';
-            popupContent += '</p>';
-        });
-
-        // attach the popover to the ace sidebar (where the comment icon is displayed)
-        var icon = $('*[data-file-id="' + fileid + '"]')          // the editor for this file
-                .find('.ace_gutter > .ace_gutter-layer')          // the sidebar
-                .find('div:nth-child(' + (clusterRow + 1) + ')'); // the correct line
-        icon.popover({
-          content: popupContent,
-          html: true, // necessary to style comments. XSS is not possible due to comment pre-processing (sanitizing)
-          trigger: 'hover',
-          container: 'body'
-        });
-      }
-
       $.each(response, function(index, comment) {
         comment.className = 'code-ocean_comment';
-        // if we have tabs or carriage returns in the comment, just add the name and leave it as it is. otherwise: format!
-        if(comment.text.includes("\n") || comment.text.includes("\t")){
-          comment.text = comment.username + ": " + comment.text;
-        } else {
-          comment.text = comment.username + ": " + stringDivider(comment.text, 80, "\n");
-        }
       });
       session.setAnnotations(response);
-    })
-  }
-
-  function hasCommentsInRow(editor, row){
-    return editor.getSession().getAnnotations().some(function(element) {
-      return element.row === row;
-    })
+    });
   }
 
   function getCommentsForRow(editor, row){
@@ -242,23 +248,36 @@ also, all settings from the rails model needed for the editor configuration in t
     })
   }
 
-  function deleteComment(file_id, row, editor) {
-    cleanupPopovers();
+  function deleteComment(commentId, editor, file_id, callback) {
     var jqxhr = $.ajax({
       type: 'DELETE',
-      url: "/comments",
-      data: {
-        row: row,
-        file_id: file_id          }
+      url: "/comments/" + commentId
     });
-    jqxhr.done(function (response) {
+    jqxhr.done(function () {
       setAnnotations(editor, file_id);
+      callback();
+    });
+    jqxhr.fail(ajaxError);
+  }
+
+  function updateComment(commentId, text, editor, file_id, callback) {
+    var jqxhr = $.ajax({
+      type: 'PATCH',
+      url: "/comments/" + commentId,
+      data: {
+        comment: {
+          text: text
+        }
+      }
+    });
+    jqxhr.done(function () {
+      setAnnotations(editor, file_id);
+      callback();
     });
     jqxhr.fail(ajaxError);
   }
 
   function createComment(file_id, row, editor, commenttext){
-    cleanupPopovers();
     var jqxhr = $.ajax({
       data: {
         comment: {
@@ -273,71 +292,173 @@ also, all settings from the rails model needed for the editor configuration in t
       method: 'POST',
       url:  "/comments"
     });
-    jqxhr.done(function(response){
+    jqxhr.done(function(){
       setAnnotations(editor, file_id);
     });
     jqxhr.fail(ajaxError);
   }
 
-  function createCommentOnExercise(file_id, row, editor, commenttext){
-      var jqxhr = $.ajax({
-          data: {
-              comment: {
-                  file_id: file_id,
-                  row: row,
-                  column: 0,
-                  text: commenttext,
-                  request_id: $('h4#exercise_caption').data('rfc-id')
-              }
-          },
-          dataType: 'json',
-          method: 'POST',
-          url:  "/comments"
-      });
-      jqxhr.done(function(response){
-          setAnnotations(editor, file_id);
-      });
-      jqxhr.fail(ajaxError);
+  function subscribeToRFC(subscriptionType, checkbox){
+    checkbox.attr("disabled", true);
+    var jqxhr = $.ajax({
+      data: {
+        subscription: {
+          request_for_comment_id: $('h4#exercise_caption').data('rfc-id'),
+          subscription_type: subscriptionType
+        }
+      },
+      dataType: 'json',
+      method: 'POST',
+      url:  "/subscriptions.json"
+    });
+    jqxhr.done(function(subscription) {
+      checkbox.data('subscription', subscription.id);
+      checkbox.attr("disabled", false);
+    });
+    jqxhr.fail(function(response) {
+      checkbox.prop('checked', false);
+      checkbox.attr("disabled", false);
+      ajaxError(response);
+    });
   }
+
+  function unsubscribeFromRFC(checkbox) {
+    checkbox.attr("disabled", true);
+    var subscriptionId = checkbox.data('subscription');
+    var jqxhr = $.ajax({
+      url:  '/subscriptions/' + subscriptionId + '/unsubscribe.json'
+    });
+    jqxhr.done(function(response) {
+      checkbox.prop('checked', false);
+      checkbox.data('subscription', null);
+      checkbox.attr("disabled", false);
+      $.flash.success({text: response.message});
+    });
+    jqxhr.fail(function(response) {
+      checkbox.prop('checked', true);
+      checkbox.attr("disabled", false);
+      ajaxError(response);
+    });
+  }
+
+  var lastRow = null;
+  var lastTarget = null;
+  function showPopover(e) {
+    var target  = e.domEvent.target;
+    var row = e.getDocumentPosition().row;
+
+    if (target.className.indexOf('ace_gutter-cell') === -1 || lastRow === row) {
+      return;
+    }
+    if (lastTarget === target) {
+      // sometimes the row gets updated before the DOM event target, so we need to wait for it to change
+      return;
+    }
+    lastRow = row;
+
+    var editor = e.editor;
+    var comments = getCommentsForRow(editor, row);
+    buildPopover(comments, $(target));
+    lastTarget = target;
+
+    $(target).popover('show');
+    $(target).on('mouseleave', function () {
+      $(this).off('mouseleave');
+      $(this).popover('destroy');
+    });
+  }
+
+  $('.ace_gutter').on('mouseleave', function () {
+    lastRow = null;
+    lastTarget = null;
+  });
 
   function handleSidebarClick(e) {
     var target  = e.domEvent.target;
-    var editor =  e.editor;
+    if (target.className.indexOf('ace_gutter-cell') === -1) return;
 
-    if (target.className.indexOf("ace_gutter-cell") == -1) return;
+    var editor =  e.editor;
+    var fileid = $(editor.container).data('file-id');
 
     var row = e.getDocumentPosition().row;
     e.stop();
+    $('.modal-title').text('<%= t('request_for_comments.modal_title') %>'.replace('${line}', row + 1));
 
     var commentModal = $('#comment-modal');
 
-    if (hasCommentsInRow(editor, row)) {
-      var rowComments = getCommentsForRow(editor, row);
-      var comments = _.pluck(rowComments, 'text').join('\n');
-      commentModal.find('#otherComments').show();
-      commentModal.find('#otherCommentsTextfield').text(comments);
+    var otherComments = commentModal.find('#otherComments');
+    var htmlContent = generateCommentHtmlContent(getCommentsForRow(editor, row));
+    if (htmlContent) {
+      otherComments.show();
+      var container = otherComments.find('.container');
+      container.html(htmlContent);
+
+      var deleteButtons = container.find('.action-delete');
+      deleteButtons.on('click', function (event) {
+        var button = $(event.target);
+        var parent = $(button).parent().parent();
+        var commentId = parent.data('comment-id');
+
+        deleteComment(commentId, editor, fileid, function () {
+          parent.html('<div class="comment-removed"><%= t('comments.deleted') %></div>');
+        });
+      });
+
+      var editButtons = container.find('.action-edit');
+      editButtons.on('click', function (event) {
+        var button = $(event.target);
+        var parent = $(button).parent().parent();
+        var commentId = parent.data('comment-id');
+        var currentlyEditing = button.data('editing');
+
+        var deleteButton = parent.find('.action-delete');
+        var commentContent = parent.find('.comment-content');
+        var commentEditor = parent.find('textarea.comment-editor');
+        var commentUpdated = parent.find('.comment-updated');
+
+        if (currentlyEditing) {
+          updateComment(commentId, commentEditor.val(), editor, fileid, function () {
+            button.text('<%= t('shared.edit') %>');
+            button.data('editing', false);
+            commentContent.text(commentEditor.val());
+            deleteButton.show();
+            commentContent.show();
+            commentEditor.hide();
+            commentUpdated.removeClass('hidden');
+          });
+        } else {
+          button.text('<%= t('comments.save_update') %>');
+          button.data('editing', true);
+          deleteButton.hide();
+          commentContent.hide();
+          commentEditor.show();
+        }
+      });
     } else {
-      commentModal.find('#otherComments').hide();
+      otherComments.hide();
     }
 
-    commentModal.find('#addCommentButton').off('click');
-    commentModal.find('#removeAllButton').off('click');
-
-    commentModal.find('#addCommentButton').on('click', function(e){
-      var commenttext = commentModal.find('textarea').val();
-      var file_id = $(editor.container).data('file-id');
-
-      if (commenttext !== "") {
-        createComment(file_id, row, editor, commenttext);
-        commentModal.find('textarea').val('') ;
-        commentModal.modal('hide');
+    var subscribeCheckbox = commentModal.find('#subscribe');
+    subscribeCheckbox.prop('checked', subscribeCheckbox.data('subscription'));
+    subscribeCheckbox.off('change');
+    subscribeCheckbox.on('change', function() {
+      if (this.checked) {
+        subscribeToRFC('author', $(this));
+      } else {
+        unsubscribeFromRFC($(this));
       }
     });
 
-    commentModal.find('#removeAllButton').on('click', function(e){
-      var file_id = $(editor.container).data('file-id');
-      deleteComment(file_id, row, editor);
-      commentModal.modal('hide');
+    var addCommentButton = commentModal.find('#addCommentButton');
+    addCommentButton.off('click');
+    addCommentButton.on('click', function(){
+      var commentTextarea = commentModal.find('#myComment > textarea');
+      var commenttext = commentTextarea.val();
+      if (commenttext !== "") {
+        createComment(fileid, row, editor, commenttext);
+        commentTextarea.val('') ;
+        commentModal.modal('hide');
+      }
     });
 
     commentModal.modal('show');
@@ -349,21 +470,6 @@ also, all settings from the rails model needed for the editor configuration in t
     $.flash.danger({
       text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
-  }
-
-
-  function stringDivider(str, width, spaceReplacer) {
-    if (str.length>width) {
-      var p=width;
-      for (;p>0 && str[p]!=' ';p--) {
-      }
-      if (p>0) {
-        var left = str.substring(0, p);
-        var right = str.substring(p+1);
-        return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
-      }
-    }
-    return str;
   }
 
 </script>

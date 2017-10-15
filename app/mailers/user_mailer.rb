@@ -21,6 +21,15 @@ class UserMailer < ActionMailer::Base
     mail(subject: t('mailers.user_mailer.got_new_comment.subject', commenting_user_displayname: @commenting_user_displayname), to: request_for_comment.user.email)
   end
 
+  def got_new_comment_for_subscription(comment, subscription, from_user)
+    @receiver_displayname = subscription.user.displayname
+    @author_displayname = from_user.displayname
+    @comment_text = comment.text
+    @rfc_link = request_for_comment_url(subscription.request_for_comment)
+    @unsubscribe_link = unsubscribe_subscription_url(subscription)
+    mail(subject: t('mailers.user_mailer.got_new_comment_for_subscription.subject', author_displayname: @author_displayname), to: subscription.user.email)
+  end
+
   def send_thank_you_note(request_for_comments, receiver)
     @receiver_displayname = receiver.displayname
     @author = request_for_comments.user.displayname

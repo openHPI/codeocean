@@ -1,24 +1,3 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more, please read the Rails Internationalization guide
-# available at http://guides.rubyonrails.org/i18n.html.
-
 en:
   activerecord:
     attributes:
@@ -63,6 +42,7 @@ en:
         allow_file_creation: "Allow file creation"
         difficulty: Difficulty
         worktime: "Expected worktime in minutes"
+        token: "Exercise Token"
       proxy_exercise:
         title: Title
         files_count: Exercises Count
@@ -141,6 +121,11 @@ en:
         key: "Identifier"
         description: "Description"
         regex: "Regular Expression"
+      exercise_collections:
+        id: "ID"
+        name: "Name"
+        updated_at: "Last Update"
+        exercises: "Exercises"
     models:
       code_harbor_link:
         one: CodeHarbor Link
@@ -163,6 +148,9 @@ en:
       exercise:
         one: Exercise
         other: Exercises
+      exercise_collection:
+        one: Exercise Collection
+        other: Exercise Collections
       proxy_exercise:
         one: Proxy Exercise
         other: Proxy Exercises
@@ -190,9 +178,15 @@ en:
       submission:
         one: Submission
         other: Submissions
+      tag:
+        one: Tag
+        other: Tags
       user_exercise_feedback:
         one: Feedback
         other: Feedback
+      comment:
+        one: Comment
+        other: Comments
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
@@ -291,6 +285,8 @@ en:
         path: "The file's path in the project tree. Can be left blank."
     form:
       add_file: Add file
+      tags: "Tags"
+      click_to_collapse: "Click to expand/collapse..."
     implement:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'
@@ -483,6 +479,41 @@ en:
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: "%{author} says thank you!"
+      got_new_comment_for_subscription:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          es gibt einen neuen Kommentar von %{author_displayname} zu einer Kommentaranfrage auf CodeOcean, die Sie abonniert haben. <br>
+          <br>
+          %{author_displayname} schreibt: %{comment_text}<br>
+          <br>
+          Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
+          <br>
+          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Wenn Sie keine weiteren Benachrichtigungen zu dieser Anfrage erhalten möchten, klicken Sie bitte hier: %{unsubscribe_link}
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          you received a new comment from %{author_displayname} to a request for comments on CodeOcean that you have subscribed to. <br>
+          <br>
+          %{author_displayname} wrote: %{comment_text} <br>
+          <br>
+          You can find the request for comments here: %{link_to_comment} <br>
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          If you don't want to be notified about further comments, please click here: %{unsubscribe_link}
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: "%{author_displayname} has posted a new comment to a discussion you subscribed to on CodeOcean."
   request_for_comments:
     click_here: Click on this sidebar to comment!
     comments: Comments
@@ -490,7 +521,7 @@ en:
      To leave comments to a specific code line, click on the respective line number. <br>
      Enter your comment in the popup and save it by clicking "Comment this". <br>
      Your comment will show up next to the line number as a speech bubble symbol.
-    howto_title: 'How to comment:'
+    howto_title: 'How to comment'
     index:
       all: All Requests for Comments
       get_my_comment_requests: My Requests for Comments
@@ -507,6 +538,12 @@ en:
     send_thank_you_note: "Send"
     cancel_thank_you_note: "Don't send"
     comment_edited: "edited"
+    modal_title: "Add a comment to line ${line}"
+    click_for_more_comments: "Click to view ${numComments} more comments..."
+    subscribe_to_author: "Receive E-Mail notifications for new comments of the original author"
+    no_output: "No output."
+    runtime_output: "Runtime Output"
+    test_results: "Test Results"
   sessions:
     create:
       failure: Invalid email or password.
@@ -626,3 +663,9 @@ en:
       signature: "A regular expression in Ruby syntax without leading and trailing \"/\""
     attributes: "Attributes"
     add_attribute: "Add attribute"
+  comments:
+    deleted: "Deleted"
+    save_update: "Save"
+  subscriptions:
+    successfully_unsubscribed: "You successfully unsubscribed from this Request for Comment"
+    subscription_not_existent: "The subscription you want to unsubscribe from does not exist."

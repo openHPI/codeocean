@@ -1,0 +1,3 @@
+class ExerciseCollectionPolicy < AdminOnlyPolicy
+
+end

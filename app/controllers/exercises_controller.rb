@@ -20,7 +20,7 @@ class ExercisesController < ApplicationController
   end
   private :authorize!
 
-  def max_intervention_count
+  def max_intervention_count_per_day
     3
   end
 
@@ -166,7 +166,7 @@ class ExercisesController < ApplicationController
   def implement
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.has_user_solved(current_user)
-    user_got_enough_interventions = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count >= max_intervention_count
+    user_got_enough_interventions = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count >= max_intervention_count_per_day
     is_java_course = @course_token && @course_token.eql?(java_course_token)
 
     user_intervention_group = UserGroupSeparator.getInterventionGroup(current_user)
@@ -203,7 +203,7 @@ class ExercisesController < ApplicationController
             if match = lti_json.match(/^.*courses\/([a-z0-9\-]+)\/sections/)
               match.captures.first
             else
-              java_course_token
+              ""
             end
           else
             ""
@@ -344,7 +344,7 @@ class ExercisesController < ApplicationController
   end
 
   def transmit_lti_score
-    ::NewRelic::Agent.add_custom_parameters({ submission: @submission.id, normalized_score: @submission.normalized_score })
+    ::NewRelic::Agent.add_custom_attributes({ submission: @submission.id, normalized_score: @submission.normalized_score })
     response = send_score(@submission.exercise_id, @submission.normalized_score, @submission.user_id)
 
     if response[:status] == 'success'

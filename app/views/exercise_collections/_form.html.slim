@@ -1,0 +1,11 @@
+- exercises = Exercise.order(:title)
+
+= form_for(@exercise_collection, data: {exercises: exercises}, multipart: true) do |f|
+  = render('shared/form_errors', object: @exercise_collection)
+  .form-group
+    = f.label(:name)
+    = f.text_field(:name, class: 'form-control', required: true)
+  .form-group
+    = f.label(:exercises)
+    = f.collection_select(:exercise_ids, exercises, :id, :title, {}, {class: 'form-control', multiple: true})
+  .actions = render('shared/submit_button', f: f, object: @exercise_collection)

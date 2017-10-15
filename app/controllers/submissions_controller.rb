@@ -13,8 +13,12 @@ class SubmissionsController < ApplicationController
   before_action :set_mime_type, only: [:download_file, :render_file]
   skip_before_action :verify_authenticity_token, only: [:download_file, :render_file]
 
-  def max_message_buffer_size
-    500
+  def max_run_output_buffer_size
+    if(@submission.cause == 'requestComments')
+      5000
+    else
+      500
+    end
   end
 
   def authorize!
@@ -210,7 +214,7 @@ class SubmissionsController < ApplicationController
   end
 
   def handle_message(message, tubesock, container)
-    @message_buffer ||= ""
+    @run_output ||= ""
     # Handle special commands first
     if (/^#exit/.match(message))
       # Just call exit_container on the docker_client.
@@ -219,19 +223,19 @@ class SubmissionsController < ApplicationController
       # kill_socket is called in the "on close handler" of the websocket to the container
       @docker_client.exit_container(container)
     elsif /^#timeout/.match(message)
-      @message_buffer = 'timeout: ' + @message_buffer # add information that this run timed out to the buffer
+      @run_output = 'timeout: ' + @run_output # add information that this run timed out to the buffer
     else
       # Filter out information about run_command, test_command, user or working directory
       run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
       test_command = @submission.execution_environment.test_command % command_substitutions(params[:filename])
       if !(/root|workspace|#{run_command}|#{test_command}/.match(message))
-        @message_buffer += message if @message_buffer.size <= max_message_buffer_size
         parse_message(message, 'stdout', tubesock)
       end
     end
   end
 
   def parse_message(message, output_stream, socket, recursive = true)
+    parsed = '';
     begin
       parsed = JSON.parse(message)
       if(parsed.class == Hash && parsed.key?('cmd'))
@@ -270,13 +274,16 @@ class SubmissionsController < ApplicationController
         socket.send_data JSON.dump(parsed)
         Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))
       end
+    ensure
+      # save the data that was send to the run_output if there is enough space left. this will be persisted as a testrun with cause "run"
+      @run_output += JSON.dump(parsed) if @run_output.size <= max_run_output_buffer_size
     end
   end
 
   def save_run_output
-    if !@message_buffer.blank?
-      @message_buffer = @message_buffer[(0..max_message_buffer_size-1)] # trim the string to max_message_buffer_size chars
-      Testrun.create(file: @file, submission: @submission, output: @message_buffer)
+    if !@run_output.blank?
+      @run_output = @run_output[(0..max_run_output_buffer_size-1)] # trim the string to max_message_buffer_size chars
+      Testrun.create(file: @file, cause: 'run', submission: @submission, output: @run_output)
     end
   end
 

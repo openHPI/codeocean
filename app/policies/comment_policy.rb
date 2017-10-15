@@ -12,12 +12,8 @@ class CommentPolicy < ApplicationPolicy
     everyone
   end
 
-  [:new?, :destroy?, :update?].each do |action|
+  [:new?, :destroy?, :update?, :edit?].each do |action|
     define_method(action) { admin? || author? }
-  end
-
-  def edit?
-    admin?
   end
 
   def index?

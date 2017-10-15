@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :edit, :update, :destroy_by_id]
+  before_action :set_comment, only: [:show, :edit, :update, :destroy]
 
   # to disable authorization check: comment the line below back in
  # skip_after_action :verify_authorized
@@ -21,6 +21,7 @@ class CommentsController < ApplicationController
         comment.username = comment.user.displayname
         comment.date = comment.created_at.strftime('%d.%m.%Y %k:%M')
         comment.updated = (comment.created_at != comment.updated_at)
+        comment.editable = comment.user == current_user
       }
     else
       @comments = []
@@ -50,12 +51,14 @@ class CommentsController < ApplicationController
   def create
     @comment = Comment.new(comment_params_without_request_id)
 
-    if comment_params[:request_id]
-      UserMailer.got_new_comment(@comment, RequestForComment.find(comment_params[:request_id]), current_user).deliver_now
-    end
-
     respond_to do |format|
       if @comment.save
+        if comment_params[:request_id]
+          request_for_comment = RequestForComment.find(comment_params[:request_id])
+          send_mail_to_author @comment, request_for_comment
+          send_mail_to_subscribers @comment, request_for_comment
+        end
+
         format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
         format.json { render :show, status: :created, location: @comment }
       else
@@ -83,7 +86,8 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1
   # DELETE /comments/1.json
-  def destroy_by_id
+  def destroy
+    authorize!
     @comment.destroy
     respond_to do |format|
       format.html { head :no_content, notice: 'Comment was successfully destroyed.' }
@@ -91,30 +95,45 @@ class CommentsController < ApplicationController
     end
   end
 
-  def destroy
-    @comments = Comment.where(file_id: params[:file_id], row: params[:row], user: current_user)
-    @comments.each { |comment| authorize comment; comment.destroy }
-    respond_to do |format|
-      #format.html { redirect_to comments_url, notice: 'Comments were successfully destroyed.' }
-      format.html { head :no_content, notice: 'Comments were successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
-
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_comment
-      @comment = Comment.find(params[:id])
-    end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_comment
+    @comment = Comment.find(params[:id])
+  end
 
   def comment_params_without_request_id
     comment_params.except :request_id
   end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def comment_params
-      #params.require(:comment).permit(:user_id, :file_id, :row, :column, :text)
-      # fuer production mode, damit böse menschen keine falsche user_id uebergeben:
-      params.require(:comment).permit(:file_id, :row, :column, :text, :request_id).merge(user_id: current_user.id, user_type: current_user.class.name)
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def comment_params
+    #params.require(:comment).permit(:user_id, :file_id, :row, :column, :text)
+    # fuer production mode, damit böse menschen keine falsche user_id uebergeben:
+    params.require(:comment).permit(:file_id, :row, :column, :text, :request_id).merge(user_id: current_user.id, user_type: current_user.class.name)
+  end
+
+  def send_mail_to_author(comment, request_for_comment)
+    if current_user != request_for_comment.user
+      UserMailer.got_new_comment(comment, request_for_comment, current_user).deliver_now
     end
+  end
+
+  def send_mail_to_subscribers(comment, request_for_comment)
+    request_for_comment.commenters.each do |commenter|
+      already_sent_mail = false
+      subscriptions = Subscription.where(
+          :request_for_comment_id => request_for_comment.id,
+          :user_id => commenter.id, :user_type => commenter.class.name,
+          :deleted => false)
+      subscriptions.each do |subscription|
+        if (subscription.subscription_type == 'author' and current_user == request_for_comment.user) or subscription.subscription_type == 'all'
+          unless subscription.user == current_user or already_sent_mail
+            UserMailer.got_new_comment_for_subscription(comment, subscription, current_user).deliver_now
+            already_sent_mail = true
+          end
+        end
+      end
+    end
+  end
 end

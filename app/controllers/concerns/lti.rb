@@ -42,12 +42,12 @@ module Lti
   private :external_user_email
 
   def external_user_name(provider)
+    # save person_name_full if supplied. this is the display_name, if it is set.
+    # else only save the firstname, we don't want lastnames (family names)
     if provider.lis_person_name_full
       provider.lis_person_name_full
-    elsif provider.lis_person_name_given && provider.lis_person_name_family
-      "#{provider.lis_person_name_given} #{provider.lis_person_name_family}"
     else
-      provider.lis_person_name_given || provider.lis_person_name_family
+      provider.lis_person_name_given
     end
   end
   private :external_user_name
@@ -104,7 +104,7 @@ module Lti
   private :return_to_consumer
 
   def send_score(exercise_id, score, user_id)
-    ::NewRelic::Agent.add_custom_parameters({ score: score, session: session })
+    ::NewRelic::Agent.add_custom_attributes({ score: score, session: session })
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
 
     if session[:consumer_id]

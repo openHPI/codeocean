@@ -1,0 +1,11 @@
+h1
+  = @exercise_collection
+  = render('shared/edit_button', object: @exercise_collection)
+
+= row(label: 'exercise_collections.name', value: @exercise_collection.name)
+= row(label: 'exercise_collections.updated_at', value: @exercise_collection.updated_at)
+
+h4 = t('activerecord.attributes.exercise_collections.exercises')
+ul.list-unstyled
+  - @exercise_collection.exercises.sort_by{|c| c.title}.each do |exercise|
+    li = link_to(exercise, exercise)

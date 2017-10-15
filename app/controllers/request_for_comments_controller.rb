@@ -1,4 +1,5 @@
 class RequestForCommentsController < ApplicationController
+  include SubmissionScoring
   before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy, :mark_as_solved, :set_thank_you_note]
 
   skip_after_action :verify_authorized
@@ -22,7 +23,7 @@ class RequestForCommentsController < ApplicationController
                           request_for_comments.submission_id, request_for_comments.row_number') # ugly, but rails wants it this way
                   .select('request_for_comments.*, max(comments.updated_at) as last_comment')
                   .search(params[:q])
-    @request_for_comments = @search.result.order('created_at DESC').paginate(page: params[:page])
+    @request_for_comments = @search.result.order('created_at DESC').paginate(page: params[:page], total_entries: @search.result.length)
     authorize!
   end
 
@@ -68,11 +69,8 @@ class RequestForCommentsController < ApplicationController
   def set_thank_you_note
     authorize!
     @request_for_comment.thank_you_note = params[:note]
-    commenters = []
-    @request_for_comment.comments.distinct.to_a.each {|comment|
-      commenters.append comment.user
-    }
-    commenters = commenters.uniq {|user| user.id}
+
+    commenters = @request_for_comment.commenters
     commenters.each {|commenter| UserMailer.send_thank_you_note(@request_for_comment, commenter).deliver_now}
 
     respond_to do |format|
@@ -110,6 +108,10 @@ class RequestForCommentsController < ApplicationController
     @request_for_comment = RequestForComment.new(request_for_comment_params)
     respond_to do |format|
       if @request_for_comment.save
+        # create thread here and execute tests. A run is triggered from the frontend and does not need to be handled here.
+        Thread.new do
+          score_submission(@request_for_comment.submission)
+        end
         format.json { render :show, status: :created, location: @request_for_comment }
       else
         format.html { render :new }

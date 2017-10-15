@@ -142,19 +142,21 @@ CodeOceanEditorSubmissions = {
    * Execution-Logic
    */
   runCode: function(event) {
-      event.preventDefault();
-      if ($('#run').is(':visible')) {
-        this.createSubmission('#run', null, function(response) {
-          //Run part starts here
-          $('#stop').data('url', response.stop_url);
-          this.running = true;
-          this.showSpinner($('#run'));
-          $('#score_div').addClass('hidden');
-          this.toggleButtonStates();
-          var url = response.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
-          this.initializeSocketForRunning(url);
-        }.bind(this));
-      }
+    event.preventDefault();
+    if ($('#run').is(':visible')) {
+      this.createSubmission('#run', null, this.runSubmission.bind(this));
+    }
+  },
+
+  runSubmission: function (submission) {
+    //Run part starts here
+    $('#stop').data('url', submission.stop_url);
+    this.running = true;
+    this.showSpinner($('#run'));
+    $('#score_div').addClass('hidden');
+    this.toggleButtonStates();
+    var url = submission.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
+    this.initializeSocketForRunning(url);
   },
 
   saveCode: function(event) {

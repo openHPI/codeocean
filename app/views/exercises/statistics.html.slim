@@ -35,7 +35,7 @@ h1 = @exercise
       tbody
         - @exercise.send(symbol).distinct().each do |user|
           - if user_statistics[user.id] then us = user_statistics[user.id] else us = {"maximum_score" => nil, "runs" => nil}
-          - label = current_user.teacher? ? "#{user.name}" : "#{user.name} (#{user.email})"
+          - label = "#{user.displayname}"
           tr
             td = link_to_if symbol==:external_users, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
             td = us['maximum_score'] or 0

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170719133351) do
+ActiveRecord::Schema.define(version: 20170920145852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -321,6 +321,16 @@ ActiveRecord::Schema.define(version: 20170719133351) do
   add_index "submissions", ["exercise_id"], name: "index_submissions_on_exercise_id", using: :btree
   add_index "submissions", ["user_id"], name: "index_submissions_on_user_id", using: :btree
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.integer  "request_for_comment_id"
+    t.string   "subscription_type"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.boolean  "deleted"
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at"
@@ -334,6 +344,7 @@ ActiveRecord::Schema.define(version: 20170719133351) do
     t.integer  "submission_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "cause"
   end
 
   create_table "user_exercise_feedbacks", force: :cascade do |t|
