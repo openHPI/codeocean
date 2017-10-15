@@ -119,6 +119,7 @@ de:
       user_exercise_feedback:
         user: "Autor"
         exercise: "Aufgabe"
+        feedback_text: "Feedback Text"
     models:
       code_harbor_link:
         one: CodeHarbor-Link

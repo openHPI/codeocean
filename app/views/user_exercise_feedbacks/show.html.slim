@@ -1,0 +1,7 @@
+h2 = @uef
+
+= row(label: 'activerecord.attributes.user_exercise_feedback.exercise', value: link_to(@uef.exercise.title, @uef.exercise))
+= row(label: 'user_exercise_feedback.user', value: @uef.user)
+= row(label: 'activerecord.attributes.user_exercise_feedback.feedback_text', value: @uef.feedback_text)
+= row(label: 'user_exercise_feedback.difficulty', value: @uef.difficulty)
+= row(label: 'user_exercise_feedback.working_time', value: @uef.user_estimated_worktime)

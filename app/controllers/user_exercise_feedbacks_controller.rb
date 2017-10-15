@@ -1,8 +1,8 @@
 class UserExerciseFeedbacksController < ApplicationController
   include CommonBehavior
 
-  before_action :set_user_exercise_feedback, only: [:show, :edit, :update]
-  before_action :set_user_exercise_feedback_by_id, only: [:destroy]
+  before_action :set_user_exercise_feedback, only: [:edit, :update]
+  before_action :set_user_exercise_feedback_by_id, only: [:show, :destroy]
 
   def comment_presets
     [[0,t('user_exercise_feedback.difficulty_easy')],
