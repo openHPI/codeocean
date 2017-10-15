@@ -116,6 +116,9 @@ en:
         name: "Name"
         updated_at: "Last Update"
         exercises: "Exercises"
+      user_exercise_feedback:
+        user: "Author"
+        exercise: "Exercise"
     models:
       code_harbor_link:
         one: CodeHarbor Link
