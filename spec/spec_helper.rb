@@ -82,4 +82,6 @@ RSpec.configure do |config|
     # a real object. This is generally recommended.
     mocks.verify_partial_doubles = true
   end
+
+  config.example_status_persistence_file_path = 'tmp/rspec_persistence_file.txt'
 end
