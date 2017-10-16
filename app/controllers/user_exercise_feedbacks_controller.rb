@@ -21,7 +21,8 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def index
-    @uefs = UserExerciseFeedback.order(:id).paginate(page: params[:page])
+    @search = UserExerciseFeedback.all.search params[:q]
+    @uefs = @search.result.includes(:execution_environment).order(:id).paginate(page: params[:page])
     authorize!
   end
 

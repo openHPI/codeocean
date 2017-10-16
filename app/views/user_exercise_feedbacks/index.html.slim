@@ -1,5 +1,13 @@
 h1 = UserExerciseFeedback.model_name.human(count: 2)
 
+= render(layout: 'shared/form_filters') do |f|
+  .form-group
+    = f.label(:execution_environment_id_eq, t('activerecord.attributes.exercise.execution_environment'), class: 'sr-only')
+    = f.collection_select(:execution_environment_id_eq, ExecutionEnvironment.with_exercises, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.exercise.execution_environment'))
+  .form-group
+    = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'sr-only')
+    = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
+
 .table-responsive
   table.table
     thead
