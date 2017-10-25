@@ -72,7 +72,7 @@ class ProxyExercise < ActiveRecord::Base
 
           # find exercises
           potential_recommended_exercises = []
-          exercises.where("expected_difficulty > 1").each do |ex|
+          exercises.where("expected_difficulty >= 1").each do |ex|
             ## find exercises which have only tags the user has already seen
             if (ex.tags - tags_user_has_seen).empty?
               potential_recommended_exercises << ex
