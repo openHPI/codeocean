@@ -37,8 +37,8 @@ class ProxyExercise < ActiveRecord::Base
           assigned_user_proxy_exercise.exercise
         else
           matching_exercise =
-              Rails.logger.debug("find new matching exercise for user #{user.id}" )
               begin
+                Rails.logger.debug("find new matching exercise for user #{user.id}" )
                 find_matching_exercise(user)
               rescue => e #fallback
                 Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
@@ -85,8 +85,7 @@ class ProxyExercise < ActiveRecord::Base
             @reason[:reason] = "easiest exercise in pool. empty potential exercises"
             select_easiest_exercise(exercises)
           else
-            recommended_exercise = select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
-            recommended_exercise
+            select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
           end
       end
 
