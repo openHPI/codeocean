@@ -24,6 +24,9 @@ class ExercisesController < ApplicationController
     3
   end
 
+  MAX_EXERCISE_FEEDBACKS = 20
+  MAX_COMMENTS_PER_REQUEST = 5
+
 
   def java_course_token
     "702cbd2a-c84c-4b37-923a-692d7d1532d0"
@@ -382,7 +385,7 @@ class ExercisesController < ApplicationController
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
       # redirect 10 percent pseudorandomly to the feedback page
       if current_user.respond_to? :external_id
-        if ((current_user.id + @submission.exercise.created_at.to_i) % 10 == 1)
+        if (((current_user.id + @submission.exercise.created_at.to_i) % 10 == 1) && @exercise.user_exercise_feedbacks.size <= MAX_EXERCISE_FEEDBACKS)
           redirect_to_user_feedback
           return
         elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise, user_id: current_user.id).first
@@ -397,22 +400,28 @@ class ExercisesController < ApplicationController
           return
 
         # else: show open rfc for same exercise if available
-        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).where.not(question: nil).order("RANDOM()").find { | rfc_element |(rfc_element.comments_count < 5) }
-          # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
-          flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
-          flash.keep(:notice)
+        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).where.not(question: nil).order("RANDOM()").find { | rfc_element |(rfc_element.comments_count < MAX_COMMENTS_PER_REQUEST) }
+          if(not rfc.nil?)
+            # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
+            flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
+            flash.keep(:notice)
 
-          respond_to do |format|
-            format.html { redirect_to(rfc) }
-            format.json { render(json: {redirect: url_for(rfc)}) }
+            respond_to do |format|
+              format.html { redirect_to(rfc) }
+              format.json { render(json: {redirect: url_for(rfc)}) }
+            end
+            return
           end
-          return
         end
       end
     else
       # redirect to feedback page if score is less than 100 percent
-       redirect_to_user_feedback
-      return
+       if @exercise.user_exercise_feedbacks.size <= 50
+         redirect_to_user_feedback
+       else
+         redirect_to_lti_return_path
+       end
+       return
     end
     redirect_to_lti_return_path
   end
