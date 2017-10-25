@@ -1,0 +1,28 @@
+h1 = ErrorTemplateAttribute.model_name.human(count: 2)
+
+.table-responsive
+  table.sortable.table
+    thead
+      tr
+        th
+        th = t('activerecord.attributes.error_template_attribute.key')
+        th = t('activerecord.attributes.error_template_attribute.description')
+        th = t('activerecord.attributes.error_template_attribute.regex')
+        th colspan=5 = t('shared.actions')
+    tbody
+      - @error_template_attributes.each do |error_template_attribute|
+        tr
+          td
+            - if error_template_attribute.important
+              span class="fa fa-star" aria-hidden="true"
+            - else
+              span class="fa fa-star-o" aria-hidden="true"
+          td = error_template_attribute.key
+          td = error_template_attribute.description
+          td = error_template_attribute.regex
+          td = link_to(t('shared.show'), error_template_attribute)
+          td = link_to(t('shared.edit'), edit_error_template_attribute_path(error_template_attribute))
+          td = link_to(t('shared.destroy'), error_template_attribute, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+
+= render('shared/pagination', collection: @error_template_attributes)
+p = render('shared/new_button', model: ErrorTemplateAttribute)

@@ -11,6 +11,7 @@ class ExecutionEnvironment < ActiveRecord::Base
   has_many :exercises
   belongs_to :file_type
   has_many :hints
+  has_many :error_templates
 
   scope :with_exercises, -> { where('id IN (SELECT execution_environment_id FROM exercises)') }
 

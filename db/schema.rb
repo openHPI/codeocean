@@ -47,6 +47,30 @@ ActiveRecord::Schema.define(version: 20170920145852) do
     t.string   "oauth_secret", limit: 255
   end
 
+  create_table "error_template_attributes", force: :cascade do |t|
+    t.string   "key"
+    t.string   "regex"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.text     "description"
+    t.boolean  "important"
+  end
+
+  create_table "error_template_attributes_templates", id: false, force: :cascade do |t|
+    t.integer "error_template_id",           null: false
+    t.integer "error_template_attribute_id", null: false
+  end
+
+  create_table "error_templates", force: :cascade do |t|
+    t.integer  "execution_environment_id"
+    t.string   "name"
+    t.string   "signature"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.text     "description"
+    t.text     "hint"
+  end
+
   create_table "errors", force: :cascade do |t|
     t.integer  "execution_environment_id"
     t.text     "message"
@@ -266,6 +290,22 @@ ActiveRecord::Schema.define(version: 20170920145852) do
     t.string   "search"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "structured_error_attributes", force: :cascade do |t|
+    t.integer  "structured_error_id"
+    t.integer  "error_template_attribute_id"
+    t.string   "value"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.boolean  "match"
+  end
+
+  create_table "structured_errors", force: :cascade do |t|
+    t.integer  "error_template_id"
+    t.integer  "file_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
   end
 
   create_table "submissions", force: :cascade do |t|

@@ -111,6 +111,16 @@ de:
         name: "Name"
         file_type: "Dateityp"
         content: "Code"
+      error_template:
+        name: Name
+        signature: Regulärer Ausdruck
+        description: Beschreibung
+        hint: Hinweis
+      error_template_attribute:
+        important: "Wichtig"
+        key: "Name"
+        description: "Beschreibung"
+        regex: "Regulärer Ausdruck"
       exercise_collections:
         id: "ID"
         name: "Name"
@@ -126,6 +136,12 @@ de:
       error:
         one: Fehler
         other: Fehler
+      error_template:
+        one: Fehlertemplate
+        other: Fehlertemplates
+      error_template_attribute:
+        one: Fehlertemplatettribut
+        other: Fehlertemplatettribute
       execution_environment:
         one: Ausführungsumgebung
         other: Ausführungsumgebungen
@@ -642,10 +658,14 @@ de:
     estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
     estimated_time_more_30: "mehr als 30 Minuten"
     working_time: "Geschätze Bearbeitungszeit für diese Aufgabe:"
+  error_templates:
+    hints:
+      signature: "Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende \"/\""
+    attributes: "Attribute"
+    add_attribute: "Attribut hinzufügen"
   comments:
     deleted: "Gelöscht"
     save_update: "Speichern"
   subscriptions:
     successfully_unsubscribed: "Ihr Abonnement für weitere Kommentare auf dieser Kommentaranfrage wurde erfolgreich beendet."
     subscription_not_existent: "Das Abonnement, von dem Sie sich abmelden wollen, existiert nicht."
-

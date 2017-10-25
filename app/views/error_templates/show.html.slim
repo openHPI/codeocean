@@ -1,0 +1,40 @@
+h1
+  = @error_template
+  = render('shared/edit_button', object: @error_template)
+
+= row(label: 'error_template.name', value: @error_template.name)
+= row(label: 'exercise.execution_environment', value: link_to(@error_template.execution_environment))
+- [:signature, :description, :hint].each do |attribute|
+  = row(label: "error_template.#{attribute}", value: @error_template.send(attribute))
+
+h3
+  = t 'error_templates.attributes'
+
+.table-responsive
+  table.sortable.table
+    thead
+      tr
+        th
+        th = t('activerecord.attributes.error_template_attribute.key')
+        th = t('activerecord.attributes.error_template_attribute.description')
+        th = t('activerecord.attributes.error_template_attribute.regex')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @error_template.error_template_attributes.order('important DESC', :key).each do |attribute|
+        tr
+          td
+            - if attribute.important
+              span class="fa fa-star" aria-hidden="true"
+            - else
+              span class="fa fa-star-o" aria-hidden="true"
+          td = attribute.key
+          td = attribute.description
+          td = attribute.regex
+          td = link_to(t('shared.show'), attribute)
+          td = link_to(t('shared.destroy'), attribute_error_template_url(:error_template_attribute_id => attribute.id), :method => :delete)
+
+#add-attribute
+  = collection_select({}, :error_template_attribute_id,
+          ErrorTemplateAttribute.where.not(id: @error_template.error_template_attributes.select(:id).to_a).order('important DESC', :key),
+          :id, :key, {include_blank: false}, class: '')
+  button.btn.btn-default = t('error_templates.add_attribute')

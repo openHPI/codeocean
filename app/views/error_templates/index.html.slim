@@ -1,0 +1,22 @@
+h1 = ErrorTemplate.model_name.human(count: 2)
+
+.table-responsive
+  table.sortable.table
+    thead
+      tr
+        th = t('activerecord.attributes.error_template.name')
+        th = t('activerecord.attributes.error_template.description')
+        th = t('activerecord.attributes.exercise.execution_environment')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @error_templates.each do |error_template|
+        tr
+          td = error_template.name
+          td = error_template.description
+          td = link_to(error_template.execution_environment)
+          td = link_to(t('shared.show'), error_template)
+          td = link_to(t('shared.edit'), edit_error_template_path(error_template))
+          td = link_to(t('shared.destroy'), error_template, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+
+= render('shared/pagination', collection: @error_templates)
+p = render('shared/new_button', model: ErrorTemplate)

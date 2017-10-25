@@ -1,0 +1,19 @@
+= form_for(@error_template) do |f|
+  = render('shared/form_errors', object: @error_template)
+  .form-group
+    = f.label(:name)
+    = f.text_field(:name, class: 'form-control', required: true)
+  .form-group
+    = f.label(:execution_environment_id)
+    = f.collection_select(:execution_environment_id, ExecutionEnvironment.all.order(:name), :id, :name, {include_blank: false}, class: 'form-control')
+  .form-group
+    = f.label(:signature)
+    = f.text_field(:signature, class: 'form-control')
+    .help-block == t('error_templates.hints.signature')
+  .form-group
+    = f.label(:description)
+    = f.text_field(:description, class: 'form-control')
+  .form-group
+    = f.label(:hint)
+    = f.text_field(:hint, class: 'form-control')
+  .actions = render('shared/submit_button', f: f, object: @error_template)
