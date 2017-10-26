@@ -63,16 +63,6 @@ describe Submission do
     end
   end
 
-  [:score, :stop].each do |action|
-    describe "##{action}_url" do
-      let(:url) { submission.send(:"#{action}_url") }
-
-      it "corresponds to the #{action} path" do
-        expect(url).to eq(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission))
-      end
-    end
-  end
-
   describe '#siblings' do
     let(:siblings) { described_class.find_by(user: user).siblings }
     let(:user) { FactoryGirl.create(:external_user) }

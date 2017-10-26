@@ -206,6 +206,16 @@ describe SubmissionsController do
         end
       end
     end
+
+    [:score, :stop].each do |action|
+      describe "##{action}_url" do
+        let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
+
+        it "corresponds to the #{action} path" do
+          expect(url).to eq(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission))
+        end
+      end
+    end
   end
 
   describe 'GET #score' do
