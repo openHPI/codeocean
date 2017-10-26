@@ -184,13 +184,17 @@ describe SubmissionsController do
   end
 
   describe 'GET #show.json' do
+    # Render views requested in controller tests in order to get json responses
+    # https://github.com/rails/jbuilder/issues/32
+    render_views
+
     before(:each) { get :show, id: submission.id, format: :json }
     expect_assigns(submission: :submission)
     expect_status(200)
 
     [:render, :run, :test].each do |action|
       describe "##{action}_url" do
-        let(:url) { response.body.send(:"#{action}_url") }
+        let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
 
         it "starts like the #{action} path" do
           filename = File.basename(__FILE__)
