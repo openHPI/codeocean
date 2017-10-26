@@ -83,5 +83,6 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  # Save test results to persistence file to enable usage of --next-failure flag in local testing/debugging
   config.example_status_persistence_file_path = 'tmp/rspec_persistence_file.txt'
 end
