@@ -6,7 +6,7 @@ class SubmissionsController < ApplicationController
   include SubmissionScoring
   include Tubesock::Hijack
 
-  before_action :set_submission, only: [:download, :download_file, :render_file, :run, :score, :show, :statistics, :stop, :test]
+  before_action :set_submission, only: [:download, :download_file, :render_file, :run, :score, :extract_errors, :show, :statistics, :stop, :test]
   before_action :set_docker_client, only: [:run, :test]
   before_action :set_files, only: [:download, :download_file, :render_file, :show]
   before_action :set_file, only: [:download_file, :render_file]
@@ -191,12 +191,26 @@ class SubmissionsController < ApplicationController
   end
 
   def kill_socket(tubesock)
+    # search for errors and save them as StructuredError (for scoring runs see submission_scoring.rb)
+    extract_errors
+
     # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
     save_run_output
 
     # Hijacked connection needs to be notified correctly
     tubesock.send_data JSON.dump({'cmd' => 'exit'})
     tubesock.close
+  end
+
+  def extract_errors
+    if !@message_buffer.blank?
+      @submission.exercise.execution_environment.error_templates.each do |template|
+        pattern = Regexp.new(template.signature).freeze
+        if pattern.match(@message_buffer)
+          StructuredError.create_from_template(template, @message_buffer)
+        end
+      end
+    end
   end
 
   def handle_message(message, tubesock, container)

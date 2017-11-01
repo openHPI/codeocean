@@ -111,6 +111,16 @@ en:
         name: "Name"
         file_type: "File Type"
         content: "Content"
+      error_template:
+        name: Name
+        signature: Signature Regular Expression
+        description: Description
+        hint: Hint
+      error_template_attribute:
+        important: "Important"
+        key: "Identifier"
+        description: "Description"
+        regex: "Regular Expression"
       exercise_collections:
         id: "ID"
         name: "Name"
@@ -130,6 +140,12 @@ en:
       error:
         one: Error
         other: Errors
+      error_template:
+        one: Error Template
+        other: Error Templates
+      error_template_attribute:
+        one: Error Template Attribute
+        other: Error Template Attributes
       execution_environment:
         one: Execution Environment
         other: Execution Environments
@@ -646,6 +662,11 @@ en:
     estimated_time_20_to_30: "between 20 and 30 minutes"
     estimated_time_more_30: "more than 30 minutes"
     working_time: "Estimated time working on this exercise:"
+  error_templates:
+    hints:
+      signature: "A regular expression in Ruby syntax without leading and trailing \"/\""
+    attributes: "Attributes"
+    add_attribute: "Add attribute"
   comments:
     deleted: "Deleted"
     save_update: "Save"

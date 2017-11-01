@@ -1,0 +1,8 @@
+h1
+  = @error_template_attribute
+  = render('shared/edit_button', object: @error_template_attribute)
+
+- [:key, :description, :regex, :important].each do |attribute|
+  = row(label: "error_template_attribute.#{attribute}", value: @error_template_attribute.send(attribute))
+
+// todo: used by
