@@ -39,7 +39,6 @@ class ProxyExercise < ActiveRecord::Base
           Rails.logger.debug("find new matching exercise for user #{user.id}" )
           matching_exercise =
               begin
-                Rails.logger.debug("find new matching exercise for user #{user.id}" )
                 find_matching_exercise(user)
               rescue => e #fallback
                 Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
