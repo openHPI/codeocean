@@ -316,10 +316,10 @@ describe ExercisesController do
 
   describe 'redirect after submit' do
 
-    let!(:submission_with_created_at_to_receive_feedback) { FactoryGirl.create(:submission, exercise_id: exercise.id, user_id: user.id, user_type: user.class.name, created_at: (10 - (user.id % 10))) }
+    let!(:submission_with_created_at_to_receive_feedback) { FactoryGirl.create(:submission, exercise_id: exercise.id, user_id: user.id, user_type: user.class.name, created_at: (11 - (user.id % 10))) }
 
     let(:exercise_with_user_feedbacks) { FactoryGirl.build(:dummy_with_user_feedbacks, submission: submission_with_created_at_to_receive_feedback) }
-    let(:exercise_with_21_user_feedbacks) { FactoryGirl.build(:dummy_with_user_feedbacks, user_exercise_feedback_count: 21) }
+    let(:exercise_with_21_user_feedbacks) { FactoryGirl.build(:dummy_with_user_feedbacks, user_exercise_feedback_count: 21, submission: submission_with_created_at_to_receive_feedback)) }
 
 
 
