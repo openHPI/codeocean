@@ -76,6 +76,7 @@ Rails.application.routes.draw do
       post :intervention
       post :search
       get :statistics
+      get :feedback
       get :reload
       post :submit
     end

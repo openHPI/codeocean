@@ -20,6 +20,7 @@ class Exercise < ActiveRecord::Base
   has_many :exercise_tags
   has_many :tags, through: :exercise_tags
   accepts_nested_attributes_for :exercise_tags
+  has_many :user_exercise_feedbacks
 
   has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
   has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions
