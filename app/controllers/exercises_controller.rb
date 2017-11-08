@@ -376,7 +376,7 @@ class ExercisesController < ApplicationController
 
   def redirect_after_submit
     Rails.logger.debug('Redirecting user with score:s ' + @submission.normalized_score.to_s)
-    if submission.normalized_score == 1.0
+    if @submission.normalized_score == 1.0
       # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
       # redirect 10 percent pseudorandomly to the feedback page
