@@ -328,6 +328,7 @@ en:
       clone: Duplicate
       implement: Implement
       test_files: Test Files
+      feedback: Feedback
     statistics:
       average_score: Average Score
       final_submissions: Final Submissions
