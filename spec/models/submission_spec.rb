@@ -85,4 +85,53 @@ describe Submission do
       expect(submission.to_s).to eq(described_class.model_name.human)
     end
   end
+
+  describe '#redirect_to_feedback?' do
+
+    context 'with no exercise feedback' do
+      let(:exercise) {FactoryGirl.create(:dummy)}
+      let(:user) {FactoryGirl.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10)}
+      let(:submission) {FactoryGirl.build(:submission, exercise: exercise, user: user)}
+
+      it 'sends 10% of users to feedback page' do
+        expect(submission.send(:redirect_to_feedback?)).to be_truthy
+      end
+
+      it 'does not redirect other users' do
+        9.times do |i|
+          submission = FactoryGirl.build(:submission, exercise: exercise, user: FactoryGirl.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
+          expect(submission.send(:redirect_to_feedback?)).to be_falsey
+        end
+      end
+    end
+
+    context 'with little exercise feedback' do
+      let(:exercise) {FactoryGirl.create(:dummy_with_user_feedbacks)}
+      let(:user) {FactoryGirl.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10)}
+      let(:submission) {FactoryGirl.build(:submission, exercise: exercise, user: user)}
+
+      it 'sends 10% of users to feedback page' do
+        expect(submission.send(:redirect_to_feedback?)).to be_truthy
+      end
+
+      it 'does not redirect other users' do
+        9.times do |i|
+          submission = FactoryGirl.build(:submission, exercise: exercise, user: FactoryGirl.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
+          expect(submission.send(:redirect_to_feedback?)).to be_falsey
+        end
+      end
+    end
+
+    context 'with enough exercise feedback' do
+      let(:exercise) {FactoryGirl.create(:dummy_with_user_feedbacks, user_feedbacks_count: 42)}
+      let(:user) {FactoryGirl.create(:external_user)}
+
+      it 'sends nobody to feedback page' do
+        30.times do |i|
+          submission = FactoryGirl.create(:submission, exercise: exercise, user: FactoryGirl.create(:external_user))
+          expect(submission.send(:redirect_to_feedback?)).to be_falsey
+        end
+      end
+    end
+  end
 end

@@ -38,6 +38,24 @@ FactoryGirl.define do
     association :execution_environment, factory: :ruby
     instructions
     title 'Dummy'
+
+    factory :dummy_with_user_feedbacks do
+      # user_feedbacks_count is declared as a transient attribute and available in
+      # attributes on the factory, as well as the callback via the evaluator
+      transient do
+        user_feedbacks_count 5
+      end
+
+      # the after(:create) yields two values; the exercise instance itself and the
+      # evaluator, which stores all values from the factory, including transient
+      # attributes; `create_list`'s second argument is the number of records
+      # to create and we make sure the user_exercise_feedback is associated properly to the exercise
+      after(:create) do |exercise, evaluator|
+        create_list(:user_exercise_feedback, evaluator.user_feedbacks_count, exercise: exercise)
+      end
+
+    end
+
   end
 
   factory :even_odd, class: Exercise do

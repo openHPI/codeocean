@@ -37,6 +37,8 @@ class Exercise < ActiveRecord::Base
 
   @working_time_statistics = nil
 
+  MAX_EXERCISE_FEEDBACKS = 20
+
 
   def average_percentage
     if average_score and maximum_score != 0.0 and submissions.exists?(cause: 'submit')
@@ -361,5 +363,9 @@ class Exercise < ActiveRecord::Base
     end
   end
   private :valid_main_file?
+
+  def needs_more_feedback
+    user_exercise_feedbacks.size <= MAX_EXERCISE_FEEDBACKS
+  end
 
 end

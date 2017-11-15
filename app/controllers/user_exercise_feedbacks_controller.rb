@@ -2,6 +2,7 @@ class UserExerciseFeedbacksController < ApplicationController
   include CommonBehavior
 
   before_action :set_user_exercise_feedback, only: [:edit, :update]
+  before_action :set_user_exercise_feedback_by_id, only: [:show, :destroy]
 
   def comment_presets
     [[0,t('user_exercise_feedback.difficulty_easy')],
@@ -19,10 +20,15 @@ class UserExerciseFeedbacksController < ApplicationController
      [4,t('user_exercise_feedback.estimated_time_more_30')]]
   end
 
-  def authorize!
-    authorize(@uef)
+  def index
+    @search = UserExerciseFeedback.all.search params[:q]
+    @uefs = @search.result.includes(:execution_environment).order(:id).paginate(page: params[:page])
+    authorize!
   end
-  private :authorize!
+
+  def show
+    authorize!
+  end
 
   def create
     @exercise = Exercise.find(uef_params[:exercise_id])
@@ -49,7 +55,8 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def destroy
-    destroy_and_respond(object: @tag)
+    authorize!
+    destroy_and_respond(object: @uef)
   end
 
   def edit
@@ -57,11 +64,6 @@ class UserExerciseFeedbacksController < ApplicationController
     @times = time_presets.to_a
     authorize!
   end
-
-  def uef_params
-    params[:user_exercise_feedback].permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime).merge(user_id: current_user.id, user_type: current_user.class.name)
-  end
-  private :uef_params
 
   def new
     @texts = comment_presets.to_a
@@ -89,6 +91,12 @@ class UserExerciseFeedbacksController < ApplicationController
     end
   end
 
+  private
+
+  def authorize!
+    authorize(@uef || @uefs)
+  end
+
   def to_s
     name
   end
@@ -96,6 +104,14 @@ class UserExerciseFeedbacksController < ApplicationController
   def set_user_exercise_feedback
     @exercise = Exercise.find(params[:user_exercise_feedback][:exercise_id])
     @uef = UserExerciseFeedback.find_by(exercise_id: params[:user_exercise_feedback][:exercise_id], user: current_user)
+  end
+
+  def set_user_exercise_feedback_by_id
+    @uef = UserExerciseFeedback.find(params[:id])
+  end
+
+  def uef_params
+    params[:user_exercise_feedback].permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
 
   def validate_inputs(uef_params)
