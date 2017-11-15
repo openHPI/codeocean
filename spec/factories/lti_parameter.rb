@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   LTI_PARAMETERS = {
       lis_result_sourcedid: "c2db0c7c-4411-4b27-a52b-ddfc3dc32065",

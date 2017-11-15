@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :node_js_invalid_assignment, class: Hint do
     association :execution_environment, factory: :node_js
     english

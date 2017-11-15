@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 describe HintsController do
-  let(:execution_environment) { FactoryGirl.create(:ruby) }
-  let(:hint) { FactoryGirl.create(:ruby_syntax_error) }
-  let(:user) { FactoryGirl.create(:admin) }
+  let(:execution_environment) { FactoryBot.create(:ruby) }
+  let(:hint) { FactoryBot.create(:ruby_syntax_error) }
+  let(:user) { FactoryBot.create(:admin) }
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
     context 'with a valid hint' do
-      let(:request) { proc { post :create, execution_environment_id: execution_environment.id, hint: FactoryGirl.attributes_for(:ruby_syntax_error) } }
+      let(:request) { proc { post :create, execution_environment_id: execution_environment.id, hint: FactoryBot.attributes_for(:ruby_syntax_error) } }
       before(:each) { request.call }
 
       expect_assigns(execution_environment: :execution_environment)
@@ -38,7 +38,7 @@ describe HintsController do
     expect_assigns(hint: Hint)
 
     it 'destroys the hint' do
-      hint = FactoryGirl.create(:ruby_syntax_error)
+      hint = FactoryBot.create(:ruby_syntax_error)
       expect { delete :destroy, execution_environment_id: execution_environment.id, id: hint.id }.to change(Hint, :count).by(-1)
     end
 
@@ -55,7 +55,7 @@ describe HintsController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryGirl.create_pair(:ruby_syntax_error) }
+    before(:all) { FactoryBot.create_pair(:ruby_syntax_error) }
     before(:each) { get :index, execution_environment_id: execution_environment.id }
 
     expect_assigns(execution_environment: :execution_environment)
@@ -84,7 +84,7 @@ describe HintsController do
 
   describe 'PUT #update' do
     context 'with a valid hint' do
-      before(:each) { put :update, execution_environment_id: execution_environment.id, hint: FactoryGirl.attributes_for(:ruby_syntax_error), id: hint.id }
+      before(:each) { put :update, execution_environment_id: execution_environment.id, hint: FactoryBot.attributes_for(:ruby_syntax_error), id: hint.id }
 
       expect_assigns(execution_environment: :execution_environment)
       expect_assigns(hint: Hint)

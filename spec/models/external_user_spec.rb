@@ -13,7 +13,7 @@ describe ExternalUser do
 
   describe '#admin?' do
     it 'is false' do
-      expect(FactoryGirl.build(:external_user).admin?).to be false
+      expect(FactoryBot.build(:external_user).admin?).to be false
     end
   end
 
@@ -31,7 +31,7 @@ describe ExternalUser do
 
   describe '#teacher?' do
     it 'is false' do
-      expect(FactoryGirl.build(:external_user).teacher?).to be false
+      expect(FactoryBot.build(:external_user).teacher?).to be false
     end
   end
 end

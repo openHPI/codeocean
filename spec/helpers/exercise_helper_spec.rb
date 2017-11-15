@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe ExerciseHelper do
   describe '#embedding_parameters' do
-    let(:exercise) { FactoryGirl.build(:dummy) }
+    let(:exercise) { FactoryBot.build(:dummy) }
 
     it 'contains the locale' do
       expect(embedding_parameters(exercise)).to start_with("locale=#{I18n.locale}")

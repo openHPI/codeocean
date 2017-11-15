@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe SubmissionsController do
-  let(:submission) { FactoryGirl.create(:submission) }
-  let(:user) { FactoryGirl.create(:admin) }
+  let(:submission) { FactoryBot.create(:submission) }
+  let(:user) { FactoryBot.create(:admin) }
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
@@ -11,8 +11,8 @@ describe SubmissionsController do
     end
 
     context 'with a valid submission' do
-      let(:exercise) { FactoryGirl.create(:hello_world) }
-      let(:request) { proc { post :create, format: :json, submission: FactoryGirl.attributes_for(:submission, exercise_id: exercise.id) } }
+      let(:exercise) { FactoryBot.create(:hello_world) }
+      let(:request) { proc { post :create, format: :json, submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id) } }
       before(:each) { request.call }
 
       expect_assigns(submission: Submission)
@@ -42,7 +42,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
+      let(:submission) { FactoryBot.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
       before(:each) { get :download_file, filename: file.name_with_extension, id: submission.id }
 
       context 'for a binary file' do
@@ -74,7 +74,7 @@ describe SubmissionsController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryGirl.create_pair(:submission) }
+    before(:all) { FactoryBot.create_pair(:submission) }
     before(:each) { get :index }
 
     expect_assigns(submissions: Submission.all)
@@ -92,7 +92,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
+      let(:submission) { FactoryBot.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
       before(:each) { get :render_file, filename: file.name_with_extension, id: submission.id }
 
       context 'for a binary file' do

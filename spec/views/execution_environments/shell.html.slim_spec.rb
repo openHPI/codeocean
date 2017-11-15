@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'execution_environments/shell.html.slim' do
-  let(:execution_environment) { FactoryGirl.create(:ruby) }
+  let(:execution_environment) { FactoryBot.create(:ruby) }
 
   before(:each) do
     assign(:execution_environment, execution_environment)

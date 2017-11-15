@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :coffee_script, class: ExecutionEnvironment do
     created_by_teacher
     default_memory_limit

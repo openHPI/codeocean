@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe ExternalUsersController do
-  let(:user) { FactoryGirl.build(:admin) }
-  let!(:users) { FactoryGirl.create_pair(:external_user) }
+  let(:user) { FactoryBot.build(:admin) }
+  let!(:users) { FactoryBot.create_pair(:external_user) }
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'GET #index' do

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :admin, class: InternalUser do
     activated_user
     email 'admin@example.org'
