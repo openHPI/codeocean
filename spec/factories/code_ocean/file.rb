@@ -1,7 +1,7 @@
 require 'seeds_helper'
 
 module CodeOcean
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :file, class: CodeOcean::File do
       content ''
       association :context, factory: :submission

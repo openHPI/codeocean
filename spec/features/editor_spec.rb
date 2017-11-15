@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 describe 'Editor', js: true do
-  let(:exercise) { FactoryGirl.create(:audio_video, instructions: Forgery(:lorem_ipsum).sentence) }
-  let(:user) { FactoryGirl.create(:teacher) }
+  let(:exercise) { FactoryBot.create(:audio_video, instructions: Forgery(:lorem_ipsum).sentence) }
+  let(:user) { FactoryBot.create(:teacher) }
 
   before(:each) do
     visit(sign_in_path)
     fill_in('email', with: user.email)
-    fill_in('password', with: FactoryGirl.attributes_for(:teacher)[:password])
+    fill_in('password', with: FactoryBot.attributes_for(:teacher)[:password])
     click_button(I18n.t('sessions.new.link'))
     visit(implement_exercise_path(exercise))
   end

@@ -1,7 +1,7 @@
 require 'highline/import'
 
 # consumers
-FactoryGirl.create(:consumer)
+FactoryBot.create(:consumer)
 
 # users
 email = ask('Enter admin email: ')
@@ -11,7 +11,7 @@ passwords = ['password', 'password confirmation'].map do |attribute|
 end
 
 if passwords.uniq.length == 1
-  FactoryGirl.create(:admin, email: email, name: 'Administrator', password: passwords.first)
+  FactoryBot.create(:admin, email: email, name: 'Administrator', password: passwords.first)
 else
   abort('Passwords do not match!')
 end

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ApplicationController do
   describe '#current_user' do
     context 'with an external user' do
-      let(:external_user) { FactoryGirl.create(:external_user) }
+      let(:external_user) { FactoryBot.create(:external_user) }
       before(:each) { session[:external_user_id] = external_user.id }
 
       it 'returns the external user' do
@@ -12,7 +12,7 @@ describe ApplicationController do
     end
 
     context 'without an external user' do
-      let(:internal_user) { FactoryGirl.create(:teacher) }
+      let(:internal_user) { FactoryBot.create(:teacher) }
       before(:each) { login_user(internal_user) }
 
       it 'returns the internal user' do

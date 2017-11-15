@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 describe FileTypesController do
-  let(:file_type) { FactoryGirl.create(:dot_rb) }
-  let(:user) { FactoryGirl.create(:admin) }
+  let(:file_type) { FactoryBot.create(:dot_rb) }
+  let(:user) { FactoryBot.create(:admin) }
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
     context 'with a valid file type' do
-      let(:request) { proc { post :create, file_type: FactoryGirl.attributes_for(:dot_rb) } }
+      let(:request) { proc { post :create, file_type: FactoryBot.attributes_for(:dot_rb) } }
       before(:each) { request.call }
 
       expect_assigns(editor_modes: Array)
@@ -36,7 +36,7 @@ describe FileTypesController do
     expect_assigns(file_type: FileType)
 
     it 'destroys the file type' do
-      file_type = FactoryGirl.create(:dot_rb)
+      file_type = FactoryBot.create(:dot_rb)
       expect { delete :destroy, id: file_type.id }.to change(FileType, :count).by(-1)
     end
 
@@ -53,7 +53,7 @@ describe FileTypesController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryGirl.create_pair(:dot_rb) }
+    before(:all) { FactoryBot.create_pair(:dot_rb) }
     before(:each) { get :index }
 
     expect_assigns(file_types: FileType.all)
@@ -80,7 +80,7 @@ describe FileTypesController do
 
   describe 'PUT #update' do
     context 'with a valid file type' do
-      before(:each) { put :update, file_type: FactoryGirl.attributes_for(:dot_rb), id: file_type.id }
+      before(:each) { put :update, file_type: FactoryBot.attributes_for(:dot_rb), id: file_type.id }
 
       expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)

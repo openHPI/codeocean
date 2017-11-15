@@ -1,15 +1,15 @@
 require 'rails_helper'
 
 describe ExecutionEnvironmentsController do
-  let(:execution_environment) { FactoryGirl.create(:ruby) }
-  let(:user) { FactoryGirl.create(:admin) }
+  let(:execution_environment) { FactoryBot.create(:ruby) }
+  let(:user) { FactoryBot.create(:admin) }
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
     before(:each) { expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
 
     context 'with a valid execution environment' do
-      let(:request) { proc { post :create, execution_environment: FactoryGirl.attributes_for(:ruby) } }
+      let(:request) { proc { post :create, execution_environment: FactoryBot.attributes_for(:ruby) } }
       before(:each) { request.call }
 
       expect_assigns(docker_images: Array)
@@ -37,7 +37,7 @@ describe ExecutionEnvironmentsController do
     expect_assigns(execution_environment: :execution_environment)
 
     it 'destroys the execution environment' do
-      execution_environment = FactoryGirl.create(:ruby)
+      execution_environment = FactoryBot.create(:ruby)
       expect { delete :destroy, id: execution_environment.id }.to change(ExecutionEnvironment, :count).by(-1)
     end
 
@@ -72,7 +72,7 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryGirl.create_pair(:ruby) }
+    before(:all) { FactoryBot.create_pair(:ruby) }
     before(:each) { get :index }
 
     expect_assigns(execution_environments: ExecutionEnvironment.all)
@@ -150,7 +150,7 @@ describe ExecutionEnvironmentsController do
     context 'with a valid execution environment' do
       before(:each) do
         expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
-        put :update, execution_environment: FactoryGirl.attributes_for(:ruby), id: execution_environment.id
+        put :update, execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id
       end
 
       expect_assigns(docker_images: Array)

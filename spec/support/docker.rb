@@ -1,5 +1,5 @@
 CONTAINER = Docker::Container.send(:new, Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex)
-IMAGE = Docker::Image.new(Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex, 'RepoTags' => [FactoryGirl.attributes_for(:ruby)[:docker_image]])
+IMAGE = Docker::Image.new(Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex, 'RepoTags' => [FactoryBot.attributes_for(:ruby)[:docker_image]])
 
 RSpec.configure do |config|
   config.before(:each) do |example|

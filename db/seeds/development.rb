@@ -1,9 +1,9 @@
 # consumers
-FactoryGirl.create(:consumer)
-FactoryGirl.create(:consumer, name: 'openSAP')
+FactoryBot.create(:consumer)
+FactoryBot.create(:consumer, name: 'openSAP')
 
 # users
-[:admin, :external_user, :teacher].each { |factory_name| FactoryGirl.create(factory_name) }
+[:admin, :external_user, :teacher].each { |factory_name| FactoryBot.create(factory_name) }
 
 # execution environments
 ExecutionEnvironment.create_factories
@@ -12,7 +12,7 @@ ExecutionEnvironment.create_factories
 Error.create_factories
 
 # exercises
-@exercises = find_factories_by_class(Exercise).map(&:name).map { |factory_name| [factory_name, FactoryGirl.create(factory_name)] }.to_h
+@exercises = find_factories_by_class(Exercise).map(&:name).map { |factory_name| [factory_name, FactoryBot.create(factory_name)] }.to_h
 
 # file types
 FileType.create_factories
@@ -21,4 +21,4 @@ FileType.create_factories
 Hint.create_factories
 
 # submissions
-FactoryGirl.create(:submission, exercise: @exercises[:fibonacci])
+FactoryBot.create(:submission, exercise: @exercises[:fibonacci])

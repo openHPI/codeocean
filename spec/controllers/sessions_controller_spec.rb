@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 describe SessionsController do
-  let(:consumer) { FactoryGirl.create(:consumer) }
+  let(:consumer) { FactoryBot.create(:consumer) }
 
   describe 'POST #create' do
     let(:password) { user_attributes[:password] }
     let(:user) { InternalUser.create(user_attributes) }
-    let(:user_attributes) { FactoryGirl.attributes_for(:teacher) }
+    let(:user_attributes) { FactoryBot.attributes_for(:teacher) }
 
     context 'with valid credentials' do
       before(:each) do
@@ -27,8 +27,8 @@ describe SessionsController do
   end
 
   describe 'POST #create_through_lti' do
-    let(:exercise) { FactoryGirl.create(:dummy) }
-    let(:exercise2) { FactoryGirl.create(:dummy) }
+    let(:exercise) { FactoryBot.create(:dummy) }
+    let(:exercise2) { FactoryBot.create(:dummy) }
     let(:nonce) { SecureRandom.hex }
     before(:each) { I18n.locale = I18n.default_locale }
 
@@ -73,7 +73,7 @@ describe SessionsController do
     context 'with valid launch parameters' do
       let(:locale) { :de }
       let(:request) { post :create_through_lti, custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id }
-      let(:user) { FactoryGirl.create(:external_user, consumer_id: consumer.id) }
+      let(:user) { FactoryBot.create(:external_user, consumer_id: consumer.id) }
       before(:each) { expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
 
       it 'assigns the current user' do
@@ -132,14 +132,14 @@ describe SessionsController do
       end
 
       it 'redirects to recommended exercise if requested token of proxy exercise' do
-        FactoryGirl.create(:proxy_exercise, exercises: [exercise])
+        FactoryBot.create(:proxy_exercise, exercises: [exercise])
         post :create_through_lti, custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id
         expect(controller).to redirect_to(implement_exercise_path(exercise.id))
       end
 
       it 'recommends only exercises who are 1 degree more complicated than what user has seen' do
         # dummy user has no exercises finished, therefore his highest difficulty is 0
-        FactoryGirl.create(:proxy_exercise, exercises: [exercise, exercise2])
+        FactoryBot.create(:proxy_exercise, exercises: [exercise, exercise2])
         exercise.expected_difficulty = 3
         exercise.save
         exercise2.expected_difficulty = 1
@@ -191,7 +191,7 @@ describe SessionsController do
 
   describe 'GET #destroy_through_lti' do
     let(:request) { proc { get :destroy_through_lti, consumer_id: consumer.id, submission_id: submission.id } }
-    let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:dummy)) }
+    let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:dummy)) }
 
     before(:each) do
       #Todo replace session with lti_parameter
@@ -225,7 +225,7 @@ describe SessionsController do
 
     context 'when a user is already logged in' do
       before(:each) do
-        expect(controller).to receive(:current_user).and_return(FactoryGirl.build(:teacher))
+        expect(controller).to receive(:current_user).and_return(FactoryBot.build(:teacher))
         get :new
       end
 

@@ -6,8 +6,8 @@ end
 
 describe SubmissionScoring do
   let(:controller) { Controller.new }
-  before(:all) { @submission = FactoryGirl.create(:submission, cause: 'submit') }
-  before(:each) { controller.instance_variable_set(:@current_user, FactoryGirl.create(:external_user)) }
+  before(:all) { @submission = FactoryBot.create(:submission, cause: 'submit') }
+  before(:each) { controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user)) }
 
   describe '#collect_test_results' do
     after(:each) { controller.send(:collect_test_results, @submission) }
