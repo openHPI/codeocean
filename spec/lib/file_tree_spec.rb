@@ -8,7 +8,7 @@ describe FileTree do
 
     context 'for a media file' do
       context 'for an audio file' do
-        let(:file) { FactoryBot.build(:file, file_type: FactoryGirl.build(:dot_mp3)) }
+        let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_mp3)) }
 
         it 'is an audio file icon' do
           expect(file_icon).to include('fa-file-audio-o')
@@ -16,7 +16,7 @@ describe FileTree do
       end
 
       context 'for an image file' do
-        let(:file) { FactoryBot.build(:file, file_type: FactoryGirl.build(:dot_jpg)) }
+        let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_jpg)) }
 
         it 'is an image file icon' do
           expect(file_icon).to include('fa-file-image-o')
@@ -24,7 +24,7 @@ describe FileTree do
       end
 
       context 'for a video file' do
-        let(:file) { FactoryBot.build(:file, file_type: FactoryGirl.build(:dot_mp4)) }
+        let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_mp4)) }
 
         it 'is a video file icon' do
           expect(file_icon).to include('fa-file-video-o')
@@ -42,7 +42,7 @@ describe FileTree do
       end
 
       context 'for an executable file' do
-        let(:file) { FactoryBot.build(:file, file_type: FactoryGirl.build(:dot_py)) }
+        let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_py)) }
 
         it 'is a code file icon' do
           expect(file_icon).to include('fa-file-code-o')
@@ -50,7 +50,7 @@ describe FileTree do
       end
 
       context 'for a renderable file' do
-        let(:file) { FactoryBot.build(:file, file_type: FactoryGirl.build(:dot_svg)) }
+        let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_svg)) }
 
         it 'is a text file icon' do
           expect(file_icon).to include('fa-file-text-o')
@@ -58,7 +58,7 @@ describe FileTree do
       end
 
       context 'for all other files' do
-        let(:file) { FactoryBot.build(:file, file_type: FactoryGirl.build(:dot_md)) }
+        let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_md)) }
 
         it 'is a generic file icon' do
           expect(file_icon).to include('fa-file-o')

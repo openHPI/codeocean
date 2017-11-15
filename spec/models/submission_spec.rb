@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Submission do
-  let(:submission) { FactoryBot.create(:submission, exercise: FactoryGirl.create(:dummy)) }
+  let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:dummy)) }
 
   it 'validates the presence of a cause' do
     expect(described_class.create.errors[:cause]).to be_present
@@ -69,7 +69,7 @@ describe Submission do
 
     before(:each) do
       10.times.each_with_index do |_, index|
-        FactoryBot.create(:submission, exercise: submission.exercise, user: (index.even? ? user : FactoryGirl.create(:external_user)))
+        FactoryBot.create(:submission, exercise: submission.exercise, user: (index.even? ? user : FactoryBot.create(:external_user)))
       end
     end
 
@@ -99,7 +99,7 @@ describe Submission do
 
       it 'does not redirect other users' do
         9.times do |i|
-          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryGirl.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
+          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end
@@ -116,7 +116,7 @@ describe Submission do
 
       it 'does not redirect other users' do
         9.times do |i|
-          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryGirl.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
+          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end
@@ -128,7 +128,7 @@ describe Submission do
 
       it 'sends nobody to feedback page' do
         30.times do |i|
-          submission = FactoryBot.create(:submission, exercise: exercise, user: FactoryGirl.create(:external_user))
+          submission = FactoryBot.create(:submission, exercise: exercise, user: FactoryBot.create(:external_user))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end

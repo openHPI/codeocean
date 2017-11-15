@@ -191,7 +191,7 @@ describe SessionsController do
 
   describe 'GET #destroy_through_lti' do
     let(:request) { proc { get :destroy_through_lti, consumer_id: consumer.id, submission_id: submission.id } }
-    let(:submission) { FactoryBot.create(:submission, exercise: FactoryGirl.create(:dummy)) }
+    let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:dummy)) }
 
     before(:each) do
       #Todo replace session with lti_parameter

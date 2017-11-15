@@ -42,7 +42,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:submission) { FactoryBot.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
+      let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
       before(:each) { get :download_file, filename: file.name_with_extension, id: submission.id }
 
       context 'for a binary file' do
@@ -92,7 +92,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:submission) { FactoryBot.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
+      let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
       before(:each) { get :render_file, filename: file.name_with_extension, id: submission.id }
 
       context 'for a binary file' do

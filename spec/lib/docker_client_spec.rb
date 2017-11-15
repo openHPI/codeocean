@@ -3,7 +3,7 @@ require 'seeds_helper'
 
 describe DockerClient, docker: true do
   let(:command) { 'whoami' }
-  let(:docker_client) { described_class.new(execution_environment: FactoryBot.build(:java), user: FactoryGirl.build(:admin)) }
+  let(:docker_client) { described_class.new(execution_environment: FactoryBot.build(:java), user: FactoryBot.build(:admin)) }
   let(:execution_environment) { FactoryBot.build(:java) }
   let(:image) { double }
   let(:submission) { FactoryBot.create(:submission) }

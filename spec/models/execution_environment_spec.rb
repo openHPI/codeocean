@@ -69,7 +69,7 @@ describe ExecutionEnvironment do
 
   describe '#valid_test_setup?' do
     context 'with a test command and a testing framework' do
-      before(:each) { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: FactoryGirl.attributes_for(:ruby)[:testing_framework]) }
+      before(:each) { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
 
       it 'is valid' do
         expect(execution_environment.errors[:test_command]).to be_blank

@@ -18,7 +18,7 @@ describe InternalUserPolicy do
     context 'with an admin user' do
       it 'grants access to no one' do
         [:admin, :external_user, :teacher].each do |factory_name|
-          expect(subject).not_to permit(FactoryBot.build(factory_name), FactoryGirl.build(:admin))
+          expect(subject).not_to permit(FactoryBot.build(factory_name), FactoryBot.build(:admin))
         end
       end
     end
@@ -27,7 +27,7 @@ describe InternalUserPolicy do
       it 'grants access to admins only' do
         expect(subject).to permit(FactoryBot.build(:admin), InternalUser.new)
         [:external_user, :teacher].each do |factory_name|
-          expect(subject).not_to permit(FactoryBot.build(factory_name), FactoryGirl.build(:teacher))
+          expect(subject).not_to permit(FactoryBot.build(factory_name), FactoryBot.build(:teacher))
         end
       end
     end
