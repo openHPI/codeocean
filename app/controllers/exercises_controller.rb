@@ -172,17 +172,17 @@ class ExercisesController < ApplicationController
     user_solved_exercise = @exercise.has_user_solved(current_user)
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user, exercise: @exercise).size >= max_intervention_count_per_exercise
-    user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day || user_got_intervention_in_exercise
-    is_java_course = @course_token && @course_token.eql?(java_course_token)
+    user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day or user_got_intervention_in_exercise
+    is_java_course = @course_token and @course_token.eql?(java_course_token)
 
     user_intervention_group = UserGroupSeparator.getInterventionGroup(current_user)
 
     case user_intervention_group
       when :no_intervention
       when :break_intervention
-        @show_break_interventions = (!user_solved_exercise && is_java_course && !user_got_enough_interventions) ? "true" : "false"
+        @show_break_interventions = (not user_solved_exercise and is_java_course and not user_got_enough_interventions) ? "true" : "false"
       when :rfc_intervention
-        @show_rfc_interventions = (!user_solved_exercise && is_java_course && !user_got_enough_interventions) ? "true" : "false"
+        @show_rfc_interventions = (not user_solved_exercise and is_java_course and not user_got_enough_interventions) ? "true" : "false"
     end
 
     @search = Search.new
