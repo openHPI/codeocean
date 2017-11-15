@@ -147,8 +147,7 @@ class ExercisesController < ApplicationController
   private :user_by_code_harbor_token
 
   def exercise_params
-    params[:exercise][:expected_worktime_seconds] = params[:exercise][:expected_worktime_minutes].to_i * 60
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :expected_worktime_seconds, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :exercise_params
 

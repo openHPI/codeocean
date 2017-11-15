@@ -41,7 +41,6 @@ en:
         allow_auto_completion: "Allow auto completion"
         allow_file_creation: "Allow file creation"
         difficulty: Difficulty
-        worktime: "Expected worktime in minutes"
         token: "Exercise Token"
       proxy_exercise:
         title: Title

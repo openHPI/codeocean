@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170920145852) do
+ActiveRecord::Schema.define(version: 20171002131135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,9 +133,8 @@ ActiveRecord::Schema.define(version: 20170920145852) do
     t.string   "token",                     limit: 255
     t.boolean  "hide_file_tree"
     t.boolean  "allow_file_creation"
-    t.boolean  "allow_auto_completion",                 default: false
-    t.integer  "expected_worktime_seconds",             default: 60
-    t.integer  "expected_difficulty",                   default: 1
+    t.boolean  "allow_auto_completion",                default: false
+    t.integer  "expected_difficulty",                  default: 1
   end
 
   create_table "exercises_proxy_exercises", id: false, force: :cascade do |t|
