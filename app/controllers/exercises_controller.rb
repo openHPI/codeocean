@@ -415,7 +415,7 @@ class ExercisesController < ApplicationController
       end
     else
       # redirect to feedback page if score is less than 100 percent
-       if @exercise.user_exercise_feedbacks.size <= 50
+       if @exercise.needs_more_feedback?
          redirect_to_user_feedback
        else
          redirect_to_lti_return_path
