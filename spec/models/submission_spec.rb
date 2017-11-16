@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Submission do
-  let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:dummy)) }
+  let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:dummy)) }
 
   it 'validates the presence of a cause' do
     expect(described_class.create.errors[:cause]).to be_present
@@ -16,23 +16,8 @@ describe Submission do
     expect(described_class.create.errors[:user_type]).to be_present
   end
 
-  [:render, :run, :test].each do |action|
-    describe "##{action}_url" do
-      let(:url) { submission.send(:"#{action}_url") }
-
-      it "starts like the #{action} path" do
-        filename = File.basename(__FILE__)
-        expect(url).to start_with(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission, filename).sub(filename, ''))
-      end
-
-      it 'ends with a placeholder' do
-        expect(url).to end_with(Submission::FILENAME_URL_PLACEHOLDER)
-      end
-    end
-  end
-
   describe '#main_file' do
-    let(:submission) { FactoryGirl.create(:submission) }
+    let(:submission) { FactoryBot.create(:submission) }
 
     it "returns the submission's main file" do
       expect(submission.main_file).to be_a(CodeOcean::File)
@@ -42,7 +27,7 @@ describe Submission do
 
   describe '#normalized_score' do
     context 'with a score' do
-      let(:submission) { FactoryGirl.create(:submission) }
+      let(:submission) { FactoryBot.create(:submission) }
       before(:each) { submission.score = submission.exercise.maximum_score / 2 }
 
       it 'returns the score as a value between 0 and 1' do
@@ -61,7 +46,7 @@ describe Submission do
 
   describe '#percentage' do
     context 'with a score' do
-      let(:submission) { FactoryGirl.create(:submission) }
+      let(:submission) { FactoryBot.create(:submission) }
       before(:each) { submission.score = submission.exercise.maximum_score / 2 }
 
       it 'returns the score expressed as a percentage' do
@@ -78,23 +63,13 @@ describe Submission do
     end
   end
 
-  [:score, :stop].each do |action|
-    describe "##{action}_url" do
-      let(:url) { submission.send(:"#{action}_url") }
-
-      it "corresponds to the #{action} path" do
-        expect(url).to eq(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission))
-      end
-    end
-  end
-
   describe '#siblings' do
     let(:siblings) { described_class.find_by(user: user).siblings }
-    let(:user) { FactoryGirl.create(:external_user) }
+    let(:user) { FactoryBot.create(:external_user) }
 
     before(:each) do
       10.times.each_with_index do |_, index|
-        FactoryGirl.create(:submission, exercise: submission.exercise, user: (index.even? ? user : FactoryGirl.create(:external_user)))
+        FactoryBot.create(:submission, exercise: submission.exercise, user: (index.even? ? user : FactoryBot.create(:external_user)))
       end
     end
 
@@ -108,6 +83,55 @@ describe Submission do
   describe '#to_s' do
     it "equals the class' model name" do
       expect(submission.to_s).to eq(described_class.model_name.human)
+    end
+  end
+
+  describe '#redirect_to_feedback?' do
+
+    context 'with no exercise feedback' do
+      let(:exercise) {FactoryBot.create(:dummy)}
+      let(:user) {FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10)}
+      let(:submission) {FactoryBot.build(:submission, exercise: exercise, user: user)}
+
+      it 'sends 10% of users to feedback page' do
+        expect(submission.send(:redirect_to_feedback?)).to be_truthy
+      end
+
+      it 'does not redirect other users' do
+        9.times do |i|
+          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
+          expect(submission.send(:redirect_to_feedback?)).to be_falsey
+        end
+      end
+    end
+
+    context 'with little exercise feedback' do
+      let(:exercise) {FactoryBot.create(:dummy_with_user_feedbacks)}
+      let(:user) {FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10)}
+      let(:submission) {FactoryBot.build(:submission, exercise: exercise, user: user)}
+
+      it 'sends 10% of users to feedback page' do
+        expect(submission.send(:redirect_to_feedback?)).to be_truthy
+      end
+
+      it 'does not redirect other users' do
+        9.times do |i|
+          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
+          expect(submission.send(:redirect_to_feedback?)).to be_falsey
+        end
+      end
+    end
+
+    context 'with enough exercise feedback' do
+      let(:exercise) {FactoryBot.create(:dummy_with_user_feedbacks, user_feedbacks_count: 42)}
+      let(:user) {FactoryBot.create(:external_user)}
+
+      it 'sends nobody to feedback page' do
+        30.times do |i|
+          submission = FactoryBot.create(:submission, exercise: exercise, user: FactoryBot.create(:external_user))
+          expect(submission.send(:redirect_to_feedback?)).to be_falsey
+        end
+      end
     end
   end
 end

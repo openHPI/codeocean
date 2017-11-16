@@ -2,7 +2,7 @@ require 'seeds_helper'
 
 def create_seed_file(exercise, path, file_attributes = {})
   file_extension = File.extname(path)
-  file_type = FactoryGirl.create(file_attributes[:file_type] || :"dot_#{file_extension.gsub('.', '')}")
+  file_type = FactoryBot.create(file_attributes[:file_type] || :"dot_#{file_extension.gsub('.', '')}")
   name = File.basename(path).gsub(file_extension, '')
   file_attributes.merge!(file_type: file_type, name: name, path: path.split('/')[1..-2].join('/'), role: file_attributes[:role] || 'regular_file')
   if file_type.binary?
@@ -13,7 +13,7 @@ def create_seed_file(exercise, path, file_attributes = {})
   exercise.add_file!(file_attributes)
 end
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :audio_video, class: Exercise do
     created_by_teacher
     description "Try HTML's audio and video capabilities."
@@ -38,6 +38,24 @@ FactoryGirl.define do
     association :execution_environment, factory: :ruby
     instructions
     title 'Dummy'
+
+    factory :dummy_with_user_feedbacks do
+      # user_feedbacks_count is declared as a transient attribute and available in
+      # attributes on the factory, as well as the callback via the evaluator
+      transient do
+        user_feedbacks_count 5
+      end
+
+      # the after(:create) yields two values; the exercise instance itself and the
+      # evaluator, which stores all values from the factory, including transient
+      # attributes; `create_list`'s second argument is the number of records
+      # to create and we make sure the user_exercise_feedback is associated properly to the exercise
+      after(:create) do |exercise, evaluator|
+        create_list(:user_exercise_feedback, evaluator.user_feedbacks_count, exercise: exercise)
+      end
+
+    end
+
   end
 
   factory :even_odd, class: Exercise do

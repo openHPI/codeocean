@@ -8,7 +8,7 @@ describe Admin::DashboardHelper do
   end
 
   describe '#docker_data' do
-    before(:each) { FactoryGirl.create(:ruby) }
+    before(:each) { FactoryBot.create(:ruby) }
 
     it 'contains an entry for every execution environment' do
       expect(docker_data.length).to eq(ExecutionEnvironment.count)

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe SubmissionsController do
-  let(:submission) { FactoryGirl.create(:submission) }
-  let(:user) { FactoryGirl.create(:admin) }
+  let(:submission) { FactoryBot.create(:submission) }
+  let(:user) { FactoryBot.create(:admin) }
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
@@ -11,8 +11,8 @@ describe SubmissionsController do
     end
 
     context 'with a valid submission' do
-      let(:exercise) { FactoryGirl.create(:hello_world) }
-      let(:request) { proc { post :create, format: :json, submission: FactoryGirl.attributes_for(:submission, exercise_id: exercise.id) } }
+      let(:exercise) { FactoryBot.create(:hello_world) }
+      let(:request) { proc { post :create, format: :json, submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id) } }
       before(:each) { request.call }
 
       expect_assigns(submission: Submission)
@@ -42,7 +42,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
+      let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
       before(:each) { get :download_file, filename: file.name_with_extension, id: submission.id }
 
       context 'for a binary file' do
@@ -74,7 +74,7 @@ describe SubmissionsController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryGirl.create_pair(:submission) }
+    before(:all) { FactoryBot.create_pair(:submission) }
     before(:each) { get :index }
 
     expect_assigns(submissions: Submission.all)
@@ -92,7 +92,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:submission) { FactoryGirl.create(:submission, exercise: FactoryGirl.create(:audio_video)) }
+      let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
       before(:each) { get :render_file, filename: file.name_with_extension, id: submission.id }
 
       context 'for a binary file' do
@@ -181,6 +181,41 @@ describe SubmissionsController do
     expect_assigns(submission: :submission)
     expect_status(200)
     expect_template(:show)
+  end
+
+  describe 'GET #show.json' do
+    # Render views requested in controller tests in order to get json responses
+    # https://github.com/rails/jbuilder/issues/32
+    render_views
+
+    before(:each) { get :show, id: submission.id, format: :json }
+    expect_assigns(submission: :submission)
+    expect_status(200)
+
+    [:render, :run, :test].each do |action|
+      describe "##{action}_url" do
+        let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
+
+        it "starts like the #{action} path" do
+          filename = File.basename(__FILE__)
+          expect(url).to start_with(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission, filename).sub(filename, ''))
+        end
+
+        it 'ends with a placeholder' do
+          expect(url).to end_with(Submission::FILENAME_URL_PLACEHOLDER)
+        end
+      end
+    end
+
+    [:score, :stop].each do |action|
+      describe "##{action}_url" do
+        let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
+
+        it "corresponds to the #{action} path" do
+          expect(url).to eq(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission))
+        end
+      end
+    end
   end
 
   describe 'GET #score' do

@@ -35,9 +35,6 @@
   .form-group
     = f.label(t('activerecord.attributes.exercise.difficulty'))
     = f.number_field :expected_difficulty, in: 1..10, step: 1
-  .form-group
-    = f.label(t('activerecord.attributes.exercise.worktime'))
-    = f.number_field "expected_worktime_minutes", value: @exercise.expected_worktime_seconds / 60, in: 1..1000, step: 1
 
   h2 = t('exercises.form.tags')
   ul.list-unstyled.panel-group

@@ -18,7 +18,6 @@ h1 = Exercise.model_name.human(count: 2)
         th = t('activerecord.attributes.exercise.maximum_score')
         th = t('activerecord.attributes.exercise.tags')
         th = t('activerecord.attributes.exercise.difficulty')
-        th = t('activerecord.attributes.exercise.worktime')
         th
           = t('activerecord.attributes.exercise.public')
           - if policy(Exercise).batch_update?
@@ -34,7 +33,6 @@ h1 = Exercise.model_name.human(count: 2)
           td = exercise.maximum_score
           td = exercise.exercise_tags.count
           td = exercise.expected_difficulty
-          td = (exercise.expected_worktime_seconds / 60).ceil
           td.public data-value=exercise.public? = symbol_for(exercise.public?)
           td = link_to(t('shared.edit'), edit_exercise_path(exercise)) if policy(exercise).edit?
           td = link_to(t('.implement'), implement_exercise_path(exercise)) if policy(exercise).implement?
@@ -47,6 +45,7 @@ h1 = Exercise.model_name.human(count: 2)
               span.sr-only Toggle Dropdown
               ul.dropdown-menu.pull-right role="menu"
                 li = link_to(t('shared.show'), exercise) if policy(exercise).show?
+                li = link_to(t('activerecord.models.user_exercise_feedback.other'), feedback_exercise_path(exercise)) if policy(exercise).feedback?
                 li = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(exercise).destroy?
                 li = link_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post) if policy(exercise).clone?
 

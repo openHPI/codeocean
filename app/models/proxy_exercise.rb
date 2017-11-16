@@ -36,8 +36,8 @@ class ProxyExercise < ActiveRecord::Base
           Rails.logger.debug("retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}" )
           assigned_user_proxy_exercise.exercise
         else
+          Rails.logger.debug("find new matching exercise for user #{user.id}" )
           matching_exercise =
-              Rails.logger.debug("find new matching exercise for user #{user.id}" )
               begin
                 find_matching_exercise(user)
               rescue => e #fallback
@@ -72,7 +72,7 @@ class ProxyExercise < ActiveRecord::Base
 
           # find exercises
           potential_recommended_exercises = []
-          exercises.where("expected_difficulty > 1").each do |ex|
+          exercises.where("expected_difficulty >= 1").each do |ex|
             ## find exercises which have only tags the user has already seen
             if (ex.tags - tags_user_has_seen).empty?
               potential_recommended_exercises << ex
@@ -85,8 +85,7 @@ class ProxyExercise < ActiveRecord::Base
             @reason[:reason] = "easiest exercise in pool. empty potential exercises"
             select_easiest_exercise(exercises)
           else
-            recommended_exercise = select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
-            recommended_exercise
+            select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
           end
       end
 

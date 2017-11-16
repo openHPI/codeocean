@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SubscriptionControllerTest < ActionController::TestCase
+class ErrorTemplateAttributeTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

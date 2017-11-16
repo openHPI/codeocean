@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Assessor do
-  let(:assessor) { described_class.new(execution_environment: FactoryGirl.build(:ruby)) }
+  let(:assessor) { described_class.new(execution_environment: FactoryBot.build(:ruby)) }
 
   describe '#assess' do
     let(:assess) { assessor.assess(stdout: stdout) }
@@ -53,7 +53,7 @@ describe Assessor do
 
     context 'with an execution environment without a testing framework adapter' do
       it 'raises an error' do
-        expect { described_class.new(execution_environment: FactoryGirl.build(:ruby, testing_framework: nil)) }.to raise_error(Assessor::Error)
+        expect { described_class.new(execution_environment: FactoryBot.build(:ruby, testing_framework: nil)) }.to raise_error(Assessor::Error)
       end
     end
   end

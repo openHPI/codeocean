@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :proxy_exercise, class: ProxyExercise do
     token 'dummytoken'
     title 'Dummy'

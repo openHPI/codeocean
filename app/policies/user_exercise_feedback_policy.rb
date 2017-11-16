@@ -1,8 +1,4 @@
-class UserExerciseFeedbackPolicy < ApplicationPolicy
-  def author?
-    @user == @record.author
-  end
-  private :author?
+class UserExerciseFeedbackPolicy < AdminOrAuthorPolicy
 
   def create?
     everyone
@@ -10,10 +6,6 @@ class UserExerciseFeedbackPolicy < ApplicationPolicy
 
   def new?
     everyone
-  end
-
-  [:show? ,:destroy?, :edit?, :update?].each do |action|
-    define_method(action) { admin? || author?}
   end
 
 end

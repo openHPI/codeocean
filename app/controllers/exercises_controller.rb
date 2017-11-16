@@ -6,7 +6,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload]
+  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
@@ -27,7 +27,6 @@ class ExercisesController < ApplicationController
   def max_intervention_count_per_exercise
     1
   end
-
 
   def java_course_token
     "702cbd2a-c84c-4b37-923a-692d7d1532d0"
@@ -94,6 +93,11 @@ class ExercisesController < ApplicationController
     collect_set_and_unset_exercise_tags
   end
 
+  def feedback
+    authorize!
+    @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page])
+  end
+
   def import_proforma_xml
     begin
       user = user_for_oauth2_request()
@@ -147,8 +151,7 @@ class ExercisesController < ApplicationController
   private :user_by_code_harbor_token
 
   def exercise_params
-    params[:exercise][:expected_worktime_seconds] = params[:exercise][:expected_worktime_minutes].to_i * 60
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :expected_worktime_seconds, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :exercise_params
 
@@ -388,10 +391,13 @@ class ExercisesController < ApplicationController
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
       # redirect 10 percent pseudorandomly to the feedback page
       if current_user.respond_to? :external_id
-        if ((current_user.id + @submission.exercise.created_at.to_i) % 10 == 1)
+        if @submission.redirect_to_feedback?
           redirect_to_user_feedback
           return
-        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise, user_id: current_user.id).first
+        end
+
+        rfc = @submission.own_unsolved_rfc
+        if rfc
           # set a message that informs the user that his own RFC should be closed.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
           flash.keep(:notice)
@@ -401,24 +407,30 @@ class ExercisesController < ApplicationController
             format.json { render(json: {redirect: url_for(rfc)}) }
           end
           return
+        end
 
         # else: show open rfc for same exercise if available
-        elsif rfc = RequestForComment.unsolved.where(exercise_id: @submission.exercise).where.not(question: nil).order("RANDOM()").find { | rfc_element |(rfc_element.comments_count < 5) }
+        rfc = @submission.unsolved_rfc
+        unless rfc.nil?
           # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
           flash.keep(:notice)
 
           respond_to do |format|
-            format.html { redirect_to(rfc) }
-            format.json { render(json: {redirect: url_for(rfc)}) }
+            format.html {redirect_to(rfc)}
+            format.json {render(json: {redirect: url_for(rfc)})}
           end
           return
         end
       end
     else
       # redirect to feedback page if score is less than 100 percent
-       redirect_to_user_feedback
-      return
+       if @exercise.needs_more_feedback?
+         redirect_to_user_feedback
+       else
+         redirect_to_lti_return_path
+       end
+       return
     end
     redirect_to_lti_return_path
   end

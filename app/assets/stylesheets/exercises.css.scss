@@ -94,3 +94,15 @@ a.file-heading {
   top: 100%;
   left: 0;
 }
+
+.feedback {
+  .text {
+    margin-bottom: 10px;
+  }
+  .difficulty {
+    font-weight: bold;
+  }
+  .worktime {
+    font-weight: bold;
+  }
+}

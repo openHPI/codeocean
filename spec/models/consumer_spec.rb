@@ -12,7 +12,7 @@ describe Consumer do
   end
 
   it 'validates the uniqueness of the OAuth key' do
-    consumer.update(oauth_key: FactoryGirl.create(:consumer).oauth_key)
+    consumer.update(oauth_key: FactoryBot.create(:consumer).oauth_key)
     expect(consumer.errors[:oauth_key]).to be_present
   end
 

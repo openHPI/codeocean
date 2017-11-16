@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 describe InternalUsersController do
-  let(:user) { FactoryGirl.build(:admin) }
-  let!(:users) { FactoryGirl.create_pair(:teacher) }
+  let(:user) { FactoryBot.build(:admin) }
+  let!(:users) { FactoryBot.create_pair(:teacher) }
 
   describe 'GET #activate' do
-    let(:user) { InternalUser.create(FactoryGirl.attributes_for(:teacher)) }
+    let(:user) { InternalUser.create(FactoryBot.attributes_for(:teacher)) }
 
     before(:each) do
       user.send(:setup_activation)
@@ -37,7 +37,7 @@ describe InternalUsersController do
   end
 
   describe 'PUT #activate' do
-    let(:user) { InternalUser.create(FactoryGirl.attributes_for(:teacher)) }
+    let(:user) { InternalUser.create(FactoryBot.attributes_for(:teacher)) }
     let(:password) { SecureRandom.hex }
 
     before(:each) do
@@ -103,7 +103,7 @@ describe InternalUsersController do
     before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      let(:request) { proc { post :create, internal_user: FactoryGirl.attributes_for(:teacher) } }
+      let(:request) { proc { post :create, internal_user: FactoryBot.attributes_for(:teacher) } }
       before(:each) { request.call }
 
       expect_assigns(user: InternalUser)
@@ -303,7 +303,7 @@ describe InternalUsersController do
     before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      before(:each) { put :update, internal_user: FactoryGirl.attributes_for(:teacher), id: users.first.id }
+      before(:each) { put :update, internal_user: FactoryBot.attributes_for(:teacher), id: users.first.id }
 
       expect_assigns(user: InternalUser)
       expect_redirect { user }

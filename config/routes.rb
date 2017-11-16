@@ -1,6 +1,13 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
+  resources :error_template_attributes
+  resources :error_templates do
+    member do
+      put 'attribute', to: 'error_templates#add_attribute'
+      delete 'attribute', to: 'error_templates#remove_attribute'
+    end
+  end
   resources :file_templates do
     collection do
       get 'by_file_type/:file_type_id', as: :by_file_type, action: :by_file_type
@@ -69,10 +76,13 @@ Rails.application.routes.draw do
       post :intervention
       post :search
       get :statistics
+      get :feedback
       get :reload
       post :submit
     end
   end
+
+  resources :exercise_collections
 
   resources :proxy_exercises do
     member do

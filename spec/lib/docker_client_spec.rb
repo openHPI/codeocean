@@ -3,10 +3,10 @@ require 'seeds_helper'
 
 describe DockerClient, docker: true do
   let(:command) { 'whoami' }
-  let(:docker_client) { described_class.new(execution_environment: FactoryGirl.build(:java), user: FactoryGirl.build(:admin)) }
-  let(:execution_environment) { FactoryGirl.build(:java) }
+  let(:docker_client) { described_class.new(execution_environment: FactoryBot.build(:java), user: FactoryBot.build(:admin)) }
+  let(:execution_environment) { FactoryBot.build(:java) }
   let(:image) { double }
-  let(:submission) { FactoryGirl.create(:submission) }
+  let(:submission) { FactoryBot.create(:submission) }
   let(:workspace_path) { '/tmp' }
 
   describe '.check_availability!' do
@@ -146,7 +146,7 @@ describe DockerClient, docker: true do
   end
 
   describe '#create_workspace_file' do
-    let(:file) { FactoryGirl.build(:file, content: 'puts 42') }
+    let(:file) { FactoryBot.build(:file, content: 'puts 42') }
     let(:file_path) { File.join(workspace_path, file.name_with_extension) }
     after(:each) { File.delete(file_path) }
 

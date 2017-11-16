@@ -2,17 +2,17 @@ require 'rails_helper'
 
 describe Exercise do
   let(:exercise) { described_class.create.tap { |exercise| exercise.update(public: nil, token: nil) } }
-  let(:users) { FactoryGirl.create_list(:external_user, 10) }
+  let(:users) { FactoryBot.create_list(:external_user, 10) }
 
   def create_submissions
     10.times do
-      FactoryGirl.create(:submission, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
+      FactoryBot.create(:submission, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
     end
   end
 
   it 'validates the number of main files' do
-    exercise = FactoryGirl.create(:dummy)
-    exercise.files += FactoryGirl.create_pair(:file)
+    exercise = FactoryBot.create(:dummy)
+    exercise.files += FactoryBot.create_pair(:file)
     expect(exercise).to receive(:valid_main_file?).and_call_original
     exercise.save
     expect(exercise.errors[:files]).to be_present
@@ -46,7 +46,7 @@ describe Exercise do
   end
 
   describe '#average_percentage' do
-    let(:exercise) { FactoryGirl.create(:fibonacci) }
+    let(:exercise) { FactoryBot.create(:fibonacci) }
 
     context 'without submissions' do
       it 'returns nil' do
@@ -65,7 +65,7 @@ describe Exercise do
   end
 
   describe '#average_score' do
-    let(:exercise) { FactoryGirl.create(:fibonacci) }
+    let(:exercise) { FactoryBot.create(:fibonacci) }
 
     context 'without submissions' do
       it 'returns nil' do
@@ -84,7 +84,7 @@ describe Exercise do
   end
 
   describe '#duplicate' do
-    let(:exercise) { FactoryGirl.create(:fibonacci) }
+    let(:exercise) { FactoryBot.create(:fibonacci) }
     after(:each) { exercise.duplicate }
 
     it 'duplicates the exercise' do

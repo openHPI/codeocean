@@ -20,6 +20,7 @@ class Exercise < ActiveRecord::Base
   has_many :exercise_tags
   has_many :tags, through: :exercise_tags
   accepts_nested_attributes_for :exercise_tags
+  has_many :user_exercise_feedbacks
 
   has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
   has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions
@@ -35,6 +36,8 @@ class Exercise < ActiveRecord::Base
   validates :token, presence: true, uniqueness: true
 
   @working_time_statistics = nil
+
+  MAX_EXERCISE_FEEDBACKS = 20
 
 
   def average_percentage
@@ -360,5 +363,9 @@ class Exercise < ActiveRecord::Base
     end
   end
   private :valid_main_file?
+
+  def needs_more_feedback
+    user_exercise_feedbacks.size <= MAX_EXERCISE_FEEDBACKS
+  end
 
 end

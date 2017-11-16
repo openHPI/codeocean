@@ -1,0 +1,24 @@
+h1 = ExerciseCollection.model_name.human(count: 2)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.exercise_collections.id')
+        th = t('activerecord.attributes.exercise_collections.name')
+        th = t('activerecord.attributes.exercise_collections.updated_at')
+        th = t('activerecord.attributes.exercise_collections.exercises')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @exercise_collections.each do |collection|
+        tr
+          td = collection.id
+          td = link_to(collection.name, collection)
+          td = collection.updated_at
+          td = collection.exercises.size
+          td = link_to(t('shared.show'), collection)
+          td = link_to(t('shared.edit'), edit_exercise_collection_path(collection))
+          td = link_to(t('shared.destroy'), collection, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+
+= render('shared/pagination', collection: @exercise_collections)
+p = render('shared/new_button', model: ExerciseCollection)
