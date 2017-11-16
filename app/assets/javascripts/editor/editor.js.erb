@@ -580,7 +580,7 @@ configureEditors: function () {
      * */
     initializeInterventionTimer: function() {
 
-        if ($('#editor').data('rfc-interventions') == true || $('#editor').data('break-interventions') == true) { // split in break or rfc intervention
+        if ($('#editor').data('rfc-interventions') || $('#editor').data('break-interventions')) { // split in break or rfc intervention
             window.onblur = function() { window.blurred = true; };
             window.onfocus = function() { window.blurred = false; };
 

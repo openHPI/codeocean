@@ -24,6 +24,10 @@ class ExercisesController < ApplicationController
     3
   end
 
+  def max_intervention_count_per_exercise
+    1
+  end
+
   def java_course_token
     "702cbd2a-c84c-4b37-923a-692d7d1532d0"
   end
@@ -169,17 +173,19 @@ class ExercisesController < ApplicationController
   def implement
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.has_user_solved(current_user)
-    user_got_enough_interventions = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count >= max_intervention_count_per_day
-    is_java_course = @course_token && @course_token.eql?(java_course_token)
+    count_interventions_today = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count
+    user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user, exercise: @exercise).size >= max_intervention_count_per_exercise
+    user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day or user_got_intervention_in_exercise
+    is_java_course = @course_token and @course_token.eql?(java_course_token)
 
     user_intervention_group = UserGroupSeparator.getInterventionGroup(current_user)
 
     case user_intervention_group
       when :no_intervention
       when :break_intervention
-        @show_break_interventions = (user_solved_exercise || !is_java_course || user_got_enough_interventions) ? "false" : "true"
+        @show_break_interventions = (not user_solved_exercise and is_java_course and not user_got_enough_interventions) ? "true" : "false"
       when :rfc_intervention
-        @show_rfc_interventions = (user_solved_exercise || !is_java_course || user_got_enough_interventions) ? "false" : "true"
+        @show_rfc_interventions = (not user_solved_exercise and is_java_course and not user_got_enough_interventions) ? "true" : "false"
     end
 
     @search = Search.new
