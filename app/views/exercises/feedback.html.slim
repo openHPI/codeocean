@@ -1,11 +1,12 @@
 h1 = @exercise
 
-ul.list-unstyled.panel-group#files
+ul.list-unstyled.panel-group
   - @feedbacks.each do |feedback|
     li.panel.panel-default
       .panel-heading role="tab" id="heading"
-        div.clearfix
-          span = feedback.user.name
+        div.clearfix.feedback-header
+          span.username = feedback.user.name
+          span.date = feedback.created_at
       .panel-collapse role="tabpanel"
         .panel-body.feedback
           .text = feedback.feedback_text

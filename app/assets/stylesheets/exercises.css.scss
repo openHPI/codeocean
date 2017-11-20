@@ -95,6 +95,17 @@ a.file-heading {
   left: 0;
 }
 
+.feedback-header {
+  display: flex;
+
+  .username {
+    flex-grow: 1;
+    font-weight: bold;
+  }
+
+  .date {}
+}
+
 .feedback {
   .text {
     margin-bottom: 10px;
