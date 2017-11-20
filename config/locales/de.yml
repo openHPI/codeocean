@@ -662,6 +662,7 @@ de:
     estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
     estimated_time_more_30: "mehr als 30 Minuten"
     working_time: "Geschätze Bearbeitungszeit für diese Aufgabe:"
+    no_feedback: "Es wurde noch kein Feedback zu dieser Aufgabe gegeben."
   error_templates:
     hints:
       signature: "Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende \"/\""

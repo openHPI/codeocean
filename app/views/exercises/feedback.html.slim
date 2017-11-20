@@ -1,6 +1,9 @@
 h1 = link_to(@exercise)
 = row(label: 'exercise.description', value: render_markdown(@exercise.description))
 
+- if @feedbacks.nil? or @feedbacks.size == 0
+  .no-feedback = t('user_exercise_feedback.no_feedback')
+
 ul.list-unstyled.panel-group
   - @feedbacks.each do |feedback|
     li.panel.panel-default

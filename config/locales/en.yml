@@ -662,6 +662,7 @@ en:
     estimated_time_20_to_30: "between 20 and 30 minutes"
     estimated_time_more_30: "more than 30 minutes"
     working_time: "Estimated time working on this exercise:"
+    no_feedback: "There is no feedback for this exercise yet."
   error_templates:
     hints:
       signature: "A regular expression in Ruby syntax without leading and trailing \"/\""
