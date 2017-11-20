@@ -9,7 +9,7 @@ ul.list-unstyled.panel-group
     li.panel.panel-default
       .panel-heading role="tab" id="heading"
         div.clearfix.feedback-header
-          span.username = feedback.user.name
+          span.username = link_to(feedback.user.name, statistics_external_user_exercise_path(id: @exercise.id, external_user_id: feedback.user.id))
           span.date = feedback.created_at
       .panel-collapse role="tabpanel"
         .panel-body.feedback
