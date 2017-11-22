@@ -104,7 +104,6 @@ ActiveRecord::Schema.define(version: 20171120153705) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "use_anomaly_detection", default: false
   end
 
   create_table "exercise_collections_exercises", id: false, force: :cascade do |t|
