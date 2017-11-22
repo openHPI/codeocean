@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171115121125) do
+ActiveRecord::Schema.define(version: 20171122124222) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -138,6 +138,8 @@ ActiveRecord::Schema.define(version: 20171115121125) do
     t.integer  "expected_worktime_seconds",             default: 60
     t.integer  "expected_difficulty",                   default: 1
   end
+
+  add_index "exercises", ["id"], name: "index_exercises_on_id", using: :btree
 
   create_table "exercises_proxy_exercises", id: false, force: :cascade do |t|
     t.integer  "proxy_exercise_id"
