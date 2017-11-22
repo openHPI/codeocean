@@ -390,7 +390,7 @@ class SubmissionsController < ApplicationController
     content += "#{request.base_url}/evaluate\n"
     @submission.files.each do |file|
       file_path = file.path.to_s == '' ? file.name_with_extension : File.join(file.path, file.name_with_extension)
-      content += "#{file_path}=#{file.id.to_s}\n"
+      content += "#{file_path}=#{file.file_id.to_s}\n"
     end
     File.open(path, "w+") do |f|
       f.write(content)
