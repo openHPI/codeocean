@@ -1,7 +1,6 @@
 h1
   = @code_harbor_link
   = render('shared/edit_button', object: @code_harbor_link) if policy(@code_harbor_link).edit?
-
-- %w[oauth2token].each do |attribute|
+- %w[push_url oauth2token].each do |attribute|
   = row(label: "code_harbor_link.#{attribute}") do
     = content_tag(:input, nil, class: 'form-control', readonly: true, value: @code_harbor_link.send(attribute))

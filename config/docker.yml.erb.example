@@ -7,7 +7,7 @@ default: &default
 
 development:
   <<: *default
-  host: tcp://127.0.0.1:2376
+  host: tcp://0.0.0.0:2376
   ws_host: ws://127.0.0.1:2376 #url to connect rails server to docker host
   ws_client_protocol: 'ws:' #set the websocket protocol to be used by the client to connect to the rails server (ws on development, wss on production)
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>

@@ -1,6 +1,9 @@
 = form_for(@code_harbor_link) do |f|
   = render('shared/form_errors', object: @code_harbor_link)
   .form-group
+    = f.label(:push_url)
+    = f.text_field(:push_url, class: 'form-control', required: true)
+  .form-group
     = f.label(:oauth2token)
     = f.text_field(:oauth2token, class: 'form-control', required: true)
   .actions = render('shared/submit_button', f: f, object: @code_harbor_link)

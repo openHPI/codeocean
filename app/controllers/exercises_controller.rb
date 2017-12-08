@@ -1,3 +1,5 @@
+require 'oauth2'
+
 class ExercisesController < ApplicationController
   include CommonBehavior
   include Lti
@@ -6,7 +8,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback]
+  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :push_proforma_xml]
   before_action :set_external_user, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
@@ -106,6 +108,15 @@ class ExercisesController < ApplicationController
     @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page])
   end
 
+  def push_proforma_xml
+    codeharbor_link = CodeHarborLink.find(params[:account_link])
+    oauth2Client = OAuth2::Client.new('client_id', 'client_secret', :site => account_link.push_url)
+    oauth2token = codeharbor_link[:oauth2token]
+    token = OAuth2::AccessToken.from_hash(oauth2Client, :access_token => oauth2token)
+    token.post(account_link.push_url, {body: @exercise.to_proforma_xml})
+    redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
+  end
+
   def import_proforma_xml
     begin
       user = user_for_oauth2_request()
@@ -115,10 +126,9 @@ class ExercisesController < ApplicationController
       exercise.user = user
       saved = exercise.save
       if saved
-        render :text => 'SUCCESS', :status => 200
+        render :text => t('exercises.import_proforma_xml.success'), :status => 200
       else
-        logger.info(exercise.errors.full_messages)
-        render :text => 'Invalid exercise', :status => 400
+        render :text => t('exercises.import_proforma_xml.invalid'), :status => 400
       end
     rescue => error
       if error.class == Hash
@@ -133,17 +143,17 @@ class ExercisesController < ApplicationController
   def user_for_oauth2_request
     authorizationHeader = request.headers['Authorization']
     if authorizationHeader == nil
-      raise ({status: 401, message: 'No Authorization header'})
+      raise ({status: 401, message: t('exercises.import_proforma_xml.no_header')})
     end
 
     oauth2Token = authorizationHeader.split(' ')[1]
     if oauth2Token == nil || oauth2Token.size == 0
-      raise ({status: 401, message: 'No token in Authorization header'})
+      raise ({status: 401, message: t('exercises.import_proforma_xml.no_token')})
     end
 
     user = user_by_code_harbor_token(oauth2Token)
     if user == nil
-      raise ({status: 401, message: 'Unknown OAuth2 token'})
+      raise ({status: 401, message: t('exercises.import_proforma_xml.unknown_token')})
     end
 
     return user
@@ -204,9 +214,6 @@ class ExercisesController < ApplicationController
       when :rfc_intervention_show_rfc
         @show_rfc_interventions = showInterventions
     end
-
-
-
 
     @search = Search.new
     @search.exercise = @exercise

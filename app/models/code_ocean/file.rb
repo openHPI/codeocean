@@ -64,6 +64,13 @@ module CodeOcean
       define_method("#{role}?") { self.role == role }
     end
 
+    def full_file_name
+      filename = ''
+      filename += "#{self.path}/" unless self.path.blank?
+      filename += "#{self.name}#{self.file_type.file_extension}"
+      filename
+    end
+
     def ancestor_id
       file_id || id
     end

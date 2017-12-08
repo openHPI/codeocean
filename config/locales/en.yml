@@ -2,6 +2,7 @@ en:
   activerecord:
     attributes:
       code_harbor_link:
+        push_url: Push URL
         oauth2token: OAuth2 Token
       consumer:
         name: Name
@@ -370,6 +371,14 @@ en:
         tests: Unit Test Results
         time_difference: 'Working Time until here*'
         addendum: '* Deltas longer than 10 minutes are ignored.'
+    push_proforma_xml:
+      notice: "Exercise pushed to %{link}"
+    import_proforma_xml:
+      success: "SUCCESS"
+      invalid: "Invalid exercise"
+      no_header: "No Authorization header"
+      no_token: "No token in Authorization header"
+      unknown_token: "Unknown OAuth2 token"
   proxy_exercises:
       index:
         clone: Duplicate

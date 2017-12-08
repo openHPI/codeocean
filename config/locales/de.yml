@@ -2,6 +2,7 @@ de:
   activerecord:
     attributes:
       code_harbor_link:
+        push_url: Push URL
         oauth2token: OAuth2 Token
       consumer:
         name: Name
@@ -143,21 +144,12 @@ de:
       error:
         one: Fehler
         other: Fehler
-      error_template:
-        one: Fehlertemplate
-        other: Fehlertemplates
-      error_template_attribute:
-        one: Fehlertemplatettribut
-        other: Fehlertemplatettribute
       execution_environment:
         one: Ausführungsumgebung
         other: Ausführungsumgebungen
       exercise:
         one: Aufgabe
         other: Aufgaben
-      exercise_collection:
-        one: Aufgabesammlung
-        other: Aufgabensammlungen
       proxy_exercise:
         one: Proxy Aufgabe
         other: Proxy Aufgaben
@@ -221,11 +213,6 @@ de:
       show: Dashboard
     sessions:
       destroy_through_lti: Code-Abgabe
-    statistics:
-      show: "Statistiken"
-      graphs: "Visualisierungen"
-      user_activity_history: Nutzeraktivitätshistorie
-      rfc_activity_history: Kommentaranfragenhistorie
   consumers:
     show:
       link: Konsument
@@ -336,8 +323,6 @@ de:
       break_intervention:
         title: "Pause"
         text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
-      error_hints:
-        heading: "Hinweise"
     index:
       clone: Duplizieren
       implement: Implementieren
@@ -370,6 +355,14 @@ de:
         tests: Unit Tests
         time_difference: 'Arbeitszeit bis hier*'
         addendum: '* Differenzen von mehr als 10 Minuten werden ignoriert.'
+    push_proforma_xml:
+      notice: "Übung exportiert nach %{link}"
+    import_proforma_xml:
+      success: "Übung wurde erfolgreich exportiert"
+      invalid: "Ungültige Übung"
+      no_header: "Authorization header fehlt"
+      no_token: "Kein Token im Authorization header"
+      unknown_token: "Unbekanntes OAuth2 Token"
   proxy_exercises:
       index:
         clone: Duplizieren

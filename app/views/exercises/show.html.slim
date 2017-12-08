@@ -7,6 +7,7 @@ h1
   - if policy(@exercise).edit?
     = render('shared/edit_button', object: @exercise)
 
+
 = row(label: 'exercise.title', value: @exercise.title)
 = row(label: 'exercise.user', value: link_to_if(policy(@exercise.author).show?, @exercise.author, @exercise.author))
 = row(label: 'exercise.description', value: render_markdown(@exercise.description))
@@ -38,3 +39,7 @@ ul.list-unstyled.panel-group#files
           - if policy(file).destroy?
             .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
           = render('shared/file', file: file)
+
+- if policy(@exercise).push_proforma_xml?
+  - CodeHarborLink.all.each do |acc_link|
+    = link_to "Link: " + acc_link.oauth2token, push_proforma_xml_exercise_path(account_link: acc_link), method: 'post'

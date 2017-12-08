@@ -4,11 +4,13 @@ h1 = CodeHarborLink.model_name.human(count: 2)
   table.table
     thead
       tr
+        th = t('activerecord.attributes.code_harbor_link.push_url')
         th = t('activerecord.attributes.code_harbor_link.oauth2token')
         th colspan=3 = t('shared.actions')
     tbody
       - @code_harbor_links.each do |code_harbor_link|
         tr
+          td = code_harbor_link.push_url
           td = code_harbor_link.oauth2token
           td = link_to(t('shared.show'), code_harbor_link)
           td = link_to(t('shared.edit'), edit_code_harbor_link_path(code_harbor_link))

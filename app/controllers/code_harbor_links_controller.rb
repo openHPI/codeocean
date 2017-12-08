@@ -63,6 +63,6 @@ class CodeHarborLinksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def code_harbor_link_params
-      params.require(:code_harbor_link).permit(:oauth2token)
+      params.require(:code_harbor_link).permit(:push_url, :oauth2token)
     end
 end
