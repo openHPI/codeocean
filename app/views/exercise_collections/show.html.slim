@@ -7,6 +7,20 @@ h1
 = row(label: 'exercise_collections.updated_at', value: @exercise_collection.updated_at)
 
 h4 = t('activerecord.attributes.exercise_collections.exercises')
-ul.list-unstyled
-  - @exercise_collection.exercises.sort_by{|c| c.title}.each do |exercise|
-    li = link_to(exercise, exercise)
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.exercise.title')
+        th = t('activerecord.attributes.exercise.execution_environment')
+        th = t('activerecord.attributes.exercise.user')
+        th = t('shared.actions')
+    tbody
+      - @exercises.sort_by{|c| c.title}.each do |exercise|
+        tr
+          td = link_to(exercise.title, exercise)
+          td = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
+          td = exercise.user.name
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise))
+        
+= render('shared/pagination', collection: @exercises)
