@@ -1,11 +1,15 @@
 - exercises = Exercise.order(:title)
+- users = InternalUser.order(:name)
 
-= form_for(@exercise_collection, data: {exercises: exercises}, multipart: true) do |f|
+= form_for(@exercise_collection, data: {exercises: exercises, users: users}, multipart: true) do |f|
   = render('shared/form_errors', object: @exercise_collection)
   .form-group
-    = f.label(:name)
+    = f.label(t('activerecord.attributes.exercise_collections.name'))
     = f.text_field(:name, class: 'form-control', required: true)
   .form-group
-    = f.label(:exercises)
+    = f.label(t('activerecord.attributes.exercise_collections.user'))
+    = f.collection_select(:user_id, users, :id, :name, {}, {class: 'form-control'})
+  .form-group
+    = f.label(t('activerecord.attributes.exercise_collections.exercises'))
     = f.collection_select(:exercise_ids, exercises, :id, :title, {}, {class: 'form-control', multiple: true})
   .actions = render('shared/submit_button', f: f, object: @exercise_collection)

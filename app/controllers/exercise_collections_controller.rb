@@ -46,6 +46,6 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def exercise_collection_params
-    params[:exercise_collection].permit(:name, :exercise_ids => [])
+    params[:exercise_collection].permit(:name, :user_id, :user_type, :exercise_ids => [])
   end
 end
