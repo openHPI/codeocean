@@ -124,6 +124,7 @@ en:
       exercise_collections:
         id: "ID"
         name: "Name"
+        user: "Associated User"
         updated_at: "Last Update"
         exercises: "Exercises"
     models:

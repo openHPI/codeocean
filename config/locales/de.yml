@@ -124,6 +124,7 @@ de:
       exercise_collections:
         id: "ID"
         name: "Name"
+        user: "Verantwortlicher"
         updated_at: "Letzte Änderung"
         exercises: "Aufgaben"
     models:
