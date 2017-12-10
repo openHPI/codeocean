@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171122124222) do
+ActiveRecord::Schema.define(version: 20171210172208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,7 +105,11 @@ ActiveRecord::Schema.define(version: 20171122124222) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "use_anomaly_detection", default: false
+    t.integer  "user_id"
+    t.string   "user_type"
   end
+
+  add_index "exercise_collections", ["user_type", "user_id"], name: "index_exercise_collections_on_user_type_and_user_id", using: :btree
 
   create_table "exercise_collections_exercises", id: false, force: :cascade do |t|
     t.integer "exercise_collection_id"
