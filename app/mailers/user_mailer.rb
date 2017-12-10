@@ -37,4 +37,11 @@ class UserMailer < ActionMailer::Base
     @rfc_link = request_for_comment_url(request_for_comments)
     mail(subject: t('mailers.user_mailer.send_thank_you_note.subject', author: @author), to: receiver.email)
   end
+  
+  def exercise_anomaly_detected(exercise_collection, anomalies)
+    @receiver_displayname = exercise_collection.user.displayname
+    @collection = exercise_collection
+    @anomalies = anomalies
+    mail(subject: t('mailers.user_mailer.exercise_anomaly_detected.subject', to: exercise_collection.user.email))
+  end
 end

@@ -37,7 +37,8 @@ namespace :detect_exercise_anomalies do
       anomalies = working_times.select do |exercise_id, working_time|
         working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
       end
-      puts anomalies
+
+      UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
     end
   end
 

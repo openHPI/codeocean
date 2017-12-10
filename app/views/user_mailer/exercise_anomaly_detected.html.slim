@@ -1,0 +1,13 @@
+== t('mailers.user_mailer.exercise_anomaly_detected.body1',
+        receiver_displayname: @receiver_displayname,
+        collection_name: @collection.name)
+
+- @anomalies.keys.each do | key |
+  =key
+  =@anomalies[key]
+
+== t('mailers.user_mailer.exercise_anomaly_detected.body2',
+        receiver_displayname: @receiver_displayname,
+        collection_name: @collection.name)
+
+== t('mailers.user_mailer.exercise_anomaly_detected.body3')

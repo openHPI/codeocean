@@ -515,6 +515,35 @@ en:
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: "%{author_displayname} has posted a new comment to a discussion you subscribed to on CodeOcean."
+      exercise_anomaly_detected:
+        subject: "Anomalies in exercises of your exercise collection"
+        body1: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          eine oder mehrere Aufgaben Ihrer Aufgabensammlung "%{collection_name}" zeigen Unregelmäßigkeiten in der Bearbeitungszeit. Möglicherweise sind sie zu schwer oder zu leicht.
+          <br>
+          Die Aufgaben sind:
+        body2: |
+          <br>
+          Falls Sie beim Klick auf einen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          at least one exercise in your exercise collection "%{collection_name}" has a much longer or much shorter average working time than the average. Perhaps they are too difficult or too easy.
+          <br>
+          The exercises are:
+        body3: |
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking a link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
   request_for_comments:
     click_here: Click on this sidebar to comment!
     comments: Comments
