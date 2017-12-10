@@ -38,7 +38,14 @@ namespace :detect_exercise_anomalies do
         working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
       end
 
+      puts "\t\tSending E-Mail..."
       UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
+
+      puts "\t\tResetting flag..."
+      collection.use_anomaly_detection = false
+      collection.save!
+
+      puts "\t\tDone."
     end
   end
 
