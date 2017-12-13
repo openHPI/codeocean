@@ -4,6 +4,8 @@ namespace :detect_exercise_anomalies do
     number_of_exercises = args.number_of_exercises
     number_of_solutions = args.number_of_solutions
 
+    puts "\tSearching for exercise collections with at least #{number_of_exercises} exercises and #{number_of_solutions} users."
+
     # These factors determine if an exercise is an anomaly, given the average working time (avg):
     # (avg * MIN_TIME_FACTOR) <= working_time <= (avg * MAX_TIME_FACTOR)
     MIN_TIME_FACTOR = 0.1
@@ -24,6 +26,8 @@ namespace :detect_exercise_anomalies do
                       .group('exercise_collections.id')
                       .having('count(exercises_with_submissions.id) > ?', number_of_exercises)
 
+    puts "\tFound #{collections.length}."
+
     collections.each do |collection|
       puts "\t- #{collection}"
       working_times = {}
@@ -38,15 +42,16 @@ namespace :detect_exercise_anomalies do
         working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
       end
 
-      puts "\t\tSending E-Mail..."
-      UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
+      if anomalies.length > 0
+        puts "\t\tSending E-Mail..."
+        UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
 
-      puts "\t\tResetting flag..."
-      collection.use_anomaly_detection = false
-      collection.save!
-
-      puts "\t\tDone."
+        puts "\t\tResetting flag..."
+        collection.use_anomaly_detection = false
+        collection.save!
+      end
     end
+    puts "\tDone."
   end
 
 end
