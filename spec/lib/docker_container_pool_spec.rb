@@ -9,7 +9,7 @@ describe DockerContainerPool do
   private :reload_class
 
   before(:each) do
-    @execution_environment = FactoryGirl.create(:ruby)
+    @execution_environment = FactoryBot.create(:ruby)
     reload_class
   end
 

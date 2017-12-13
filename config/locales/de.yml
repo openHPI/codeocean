@@ -41,7 +41,6 @@ de:
         allow_auto_completion: "Autovervollständigung aktivieren"
         allow_file_creation: "Dateierstellung erlauben"
         difficulty: Schwierigkeitsgrad
-        worktime: "vermutete Arbeitszeit in Minuten"
         token: "Aufgaben-Token"
       proxy_exercise:
         title: Title
@@ -128,6 +127,10 @@ de:
         use_anomaly_detection: "Abweichungen in der Arbeitszeit erkennen"
         updated_at: "Letzte Änderung"
         exercises: "Aufgaben"
+      user_exercise_feedback:
+        user: "Autor"
+        exercise: "Aufgabe"
+        feedback_text: "Feedback Text"
     models:
       code_harbor_link:
         one: CodeHarbor-Link
@@ -692,6 +695,7 @@ de:
     estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
     estimated_time_more_30: "mehr als 30 Minuten"
     working_time: "Geschätze Bearbeitungszeit für diese Aufgabe:"
+    no_feedback: "Es wurde noch kein Feedback zu dieser Aufgabe gegeben."
   error_templates:
     hints:
       signature: "Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende \"/\""

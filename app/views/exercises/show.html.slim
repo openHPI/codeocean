@@ -20,7 +20,6 @@ h1
 = row(label: 'exercise.embedding_parameters') do
   = content_tag(:input, nil, class: 'form-control', readonly: true, value: embedding_parameters(@exercise))
 = row(label: 'exercise.difficulty', value: @exercise.expected_difficulty)
-= row(label: 'exercise.worktime', value: "#{@exercise.expected_worktime_seconds/60} min")
 = row(label: 'exercise.tags', value: @exercise.exercise_tags.map{|et| "#{et.tag.name} (#{et.factor})"}.sort.join(", "))
 
 h2 = t('activerecord.attributes.exercise.files')

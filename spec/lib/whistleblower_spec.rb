@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Whistleblower do
-  let(:hint) { FactoryGirl.create(:ruby_no_method_error) }
+  let(:hint) { FactoryBot.create(:ruby_no_method_error) }
   let(:stderr) { "undefined method `foo' for main:Object (NoMethodError)" }
   let(:whistleblower) { described_class.new(execution_environment: hint.execution_environment) }
 

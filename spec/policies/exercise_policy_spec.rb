@@ -3,13 +3,13 @@ require 'rails_helper'
 describe ExercisePolicy do
   subject { described_class }
 
-let(:exercise) { FactoryGirl.build(:dummy) }
+let(:exercise) { FactoryBot.build(:dummy) }
   
   permissions :batch_update? do
     it 'grants access to admins only' do
-      expect(subject).to permit(FactoryGirl.build(:admin), exercise)
+      expect(subject).to permit(FactoryBot.build(:admin), exercise)
       [:external_user, :teacher].each do |factory_name|
-        expect(subject).not_to permit(FactoryGirl.build(factory_name), exercise)
+        expect(subject).not_to permit(FactoryBot.build(factory_name), exercise)
       end
     end
   end
@@ -17,15 +17,15 @@ let(:exercise) { FactoryGirl.build(:dummy) }
   [:create?, :index?, :new?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
-        expect(subject).to permit(FactoryGirl.build(:admin), exercise)
+        expect(subject).to permit(FactoryBot.build(:admin), exercise)
       end
 
       it 'grants access to teachers' do
-        expect(subject).to permit(FactoryGirl.build(:teacher), exercise)
+        expect(subject).to permit(FactoryBot.build(:teacher), exercise)
       end
 
       it 'does not grant access to external users' do
-        expect(subject).not_to permit(FactoryGirl.build(:external_user), exercise)
+        expect(subject).not_to permit(FactoryBot.build(:external_user), exercise)
       end
     end
   end
@@ -33,7 +33,7 @@ let(:exercise) { FactoryGirl.build(:dummy) }
   [:clone?, :destroy?, :edit?, :statistics?, :update?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
-        expect(subject).to permit(FactoryGirl.build(:admin), exercise)
+        expect(subject).to permit(FactoryBot.build(:admin), exercise)
       end
 
       it 'grants access to authors' do
@@ -42,7 +42,7 @@ let(:exercise) { FactoryGirl.build(:dummy) }
 
       it 'does not grant access to all other users' do
         [:external_user, :teacher].each do |factory_name|
-          expect(subject).not_to permit(FactoryGirl.build(factory_name), exercise)
+          expect(subject).not_to permit(FactoryBot.build(factory_name), exercise)
         end
       end
     end
@@ -51,7 +51,7 @@ let(:exercise) { FactoryGirl.build(:dummy) }
   [:show?].each do |action|
     permissions(action) do
       it 'not grants access to external users' do
-        expect(subject).not_to permit(FactoryGirl.build(:external_user), exercise)
+        expect(subject).not_to permit(FactoryBot.build(:external_user), exercise)
       end
     end
   end
@@ -60,7 +60,7 @@ let(:exercise) { FactoryGirl.build(:dummy) }
     permissions(action) do
       it 'grants access to anyone' do
         [:admin, :external_user, :teacher].each do |factory_name|
-          expect(subject).to permit(FactoryGirl.build(factory_name), Exercise.new)
+          expect(subject).to permit(FactoryBot.build(factory_name), Exercise.new)
         end
       end
     end
@@ -69,13 +69,13 @@ let(:exercise) { FactoryGirl.build(:dummy) }
   describe ExercisePolicy::Scope do
     describe '#resolve' do
       before(:all) do
-        @admin = FactoryGirl.create(:admin)
-        @external_user = FactoryGirl.create(:external_user)
-        @teacher = FactoryGirl.create(:teacher)
+        @admin = FactoryBot.create(:admin)
+        @external_user = FactoryBot.create(:external_user)
+        @teacher = FactoryBot.create(:teacher)
 
         [@admin, @teacher].each do |user|
           [true, false].each do |public|
-            FactoryGirl.create(:dummy, public: public, user_id: user.id, user_type: InternalUser.class.name)
+            FactoryBot.create(:dummy, public: public, user_id: user.id, user_type: InternalUser.class.name)
           end
         end
       end

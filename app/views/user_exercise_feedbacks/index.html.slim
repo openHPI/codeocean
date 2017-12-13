@@ -1,0 +1,27 @@
+h1 = UserExerciseFeedback.model_name.human(count: 2)
+
+= render(layout: 'shared/form_filters') do |f|
+  .form-group
+    = f.label(:execution_environment_id_eq, t('activerecord.attributes.exercise.execution_environment'), class: 'sr-only')
+    = f.collection_select(:execution_environment_id_eq, ExecutionEnvironment.with_exercises, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.exercise.execution_environment'))
+  .form-group
+    = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'sr-only')
+    = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th colspan=2 = t('activerecord.attributes.user_exercise_feedback.user')
+        th = t('activerecord.attributes.user_exercise_feedback.exercise')
+        th colspan=2 = t('shared.actions')
+    tbody
+      - @uefs.each do |uef|
+        tr
+          td = uef.user.id
+          td = uef.user.name
+          td = link_to(uef.exercise.title, uef.exercise)
+          td = link_to(t('shared.show'), uef)
+          td = link_to(t('shared.destroy'), uef, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+
+= render('shared/pagination', collection: @uefs)

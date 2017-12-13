@@ -1,15 +1,24 @@
-h1 = @exercise
+h1 = link_to(@exercise, exercise_path(@exercise))
 
-ul.list-unstyled.panel-group#files
-  - @feedbacks.each do |feedback|
-    li.panel.panel-default
-      .panel-heading role="tab" id="heading"
-        div.clearfix
-          span = feedback.user.name
-      .panel-collapse role="tabpanel"
-        .panel-body.feedback
-          .text = feedback.feedback_text
-          .difficulty = "#{t('user_exercise_feedback.difficulty')} #{feedback.difficulty}" if feedback.difficulty
-          .worktime = "#{t('user_exercise_feedback.working_time')} #{feedback.user_estimated_worktime}" if feedback.user_estimated_worktime
+.feedback-page
+  .header = t('activerecord.attributes.exercise.description')
+  .value = render_markdown(@exercise.description)
 
-= render('shared/pagination', collection: @feedbacks)
+  .header = t('activerecord.models.user_exercise_feedback.other')
+  - if @feedbacks.nil? or @feedbacks.size == 0
+    .no-feedback = t('user_exercise_feedback.no_feedback')
+
+  ul.list-unstyled.panel-group
+    - @feedbacks.each do |feedback|
+      li.panel.panel-default
+        .panel-heading role="tab" id="heading"
+          div.clearfix.feedback-header
+            span.username = link_to(feedback.user.name, statistics_external_user_exercise_path(id: @exercise.id, external_user_id: feedback.user.id))
+            span.date = feedback.created_at
+        .panel-collapse role="tabpanel"
+          .panel-body.feedback
+            .text = feedback.feedback_text
+            .difficulty = "#{t('user_exercise_feedback.difficulty')} #{feedback.difficulty}" if feedback.difficulty
+            .worktime = "#{t('user_exercise_feedback.working_time')} #{feedback.user_estimated_worktime}" if feedback.user_estimated_worktime
+
+  = render('shared/pagination', collection: @feedbacks)

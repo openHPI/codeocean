@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :dot_coffee, class: FileType do
     created_by_admin
     editor_mode 'ace/mode/coffee'

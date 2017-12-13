@@ -6,7 +6,7 @@ describe ExecutionEnvironment do
   it 'validates that the Docker image works', docker: true do
     expect(execution_environment).to receive(:validate_docker_image?).and_return(true)
     expect(execution_environment).to receive(:working_docker_image?)
-    execution_environment.update(docker_image: FactoryGirl.attributes_for(:ruby)[:docker_image])
+    execution_environment.update(docker_image: FactoryBot.attributes_for(:ruby)[:docker_image])
   end
 
   it 'validates the presence of a Docker image name' do
@@ -69,7 +69,7 @@ describe ExecutionEnvironment do
 
   describe '#valid_test_setup?' do
     context 'with a test command and a testing framework' do
-      before(:each) { execution_environment.update(test_command: FactoryGirl.attributes_for(:ruby)[:test_command], testing_framework: FactoryGirl.attributes_for(:ruby)[:testing_framework]) }
+      before(:each) { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
 
       it 'is valid' do
         expect(execution_environment.errors[:test_command]).to be_blank
@@ -77,7 +77,7 @@ describe ExecutionEnvironment do
     end
 
     context 'with a test command but no testing framework' do
-      before(:each) { execution_environment.update(test_command: FactoryGirl.attributes_for(:ruby)[:test_command], testing_framework: nil) }
+      before(:each) { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: nil) }
 
       it 'is invalid' do
         expect(execution_environment.errors[:test_command]).to be_present
@@ -85,7 +85,7 @@ describe ExecutionEnvironment do
     end
 
     context 'with no test command but a testing framework' do
-      before(:each) { execution_environment.update(test_command: nil, testing_framework: FactoryGirl.attributes_for(:ruby)[:testing_framework]) }
+      before(:each) { execution_environment.update(test_command: nil, testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
 
       it 'is invalid' do
         expect(execution_environment.errors[:test_command]).to be_present
@@ -113,7 +113,7 @@ describe ExecutionEnvironment do
     end
 
     it 'is true otherwise' do
-      execution_environment.docker_image = FactoryGirl.attributes_for(:ruby)[:docker_image]
+      execution_environment.docker_image = FactoryBot.attributes_for(:ruby)[:docker_image]
       allow(Rails.env).to receive(:test?).and_return(false)
       expect(execution_environment.send(:validate_docker_image?)).to be true
     end

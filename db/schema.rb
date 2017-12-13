@@ -128,19 +128,18 @@ ActiveRecord::Schema.define(version: 20171210172208) do
   create_table "exercises", force: :cascade do |t|
     t.text     "description"
     t.integer  "execution_environment_id"
-    t.string   "title",                     limit: 255
+    t.string   "title",                    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
     t.text     "instructions"
     t.boolean  "public"
-    t.string   "user_type",                 limit: 255
-    t.string   "token",                     limit: 255
+    t.string   "user_type",                limit: 255
+    t.string   "token",                    limit: 255
     t.boolean  "hide_file_tree"
     t.boolean  "allow_file_creation"
-    t.boolean  "allow_auto_completion",                 default: false
-    t.integer  "expected_worktime_seconds",             default: 60
-    t.integer  "expected_difficulty",                   default: 1
+    t.boolean  "allow_auto_completion",                default: false
+    t.integer  "expected_difficulty",                  default: 1
   end
 
   add_index "exercises", ["id"], name: "index_exercises_on_id", using: :btree
@@ -355,13 +354,15 @@ ActiveRecord::Schema.define(version: 20171210172208) do
   end
 
   create_table "user_exercise_feedbacks", force: :cascade do |t|
-    t.integer "exercise_id",             null: false
-    t.integer "user_id",                 null: false
-    t.string  "user_type",               null: false
-    t.integer "difficulty"
-    t.integer "working_time_seconds"
-    t.string  "feedback_text"
-    t.integer "user_estimated_worktime"
+    t.integer  "exercise_id",                                             null: false
+    t.integer  "user_id",                                                 null: false
+    t.string   "user_type",                                               null: false
+    t.integer  "difficulty"
+    t.integer  "working_time_seconds"
+    t.string   "feedback_text"
+    t.integer  "user_estimated_worktime"
+    t.datetime "created_at",              default: '2017-11-20 18:20:25', null: false
+    t.datetime "updated_at",              default: '2017-11-20 18:20:25', null: false
   end
 
   create_table "user_exercise_interventions", force: :cascade do |t|

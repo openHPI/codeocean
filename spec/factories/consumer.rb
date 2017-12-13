@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :consumer do
     name 'openHPI'
     oauth_key { SecureRandom.hex }

@@ -8,7 +8,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'concurrent-ruby', '~> 1.0.1'
 gem 'concurrent-ruby-ext', '~> 1.0.1', platform: :ruby
 gem 'docker-api','~> 1.25.0',  require: 'docker'
-gem 'factory_girl_rails', '~> 4.0'
+gem 'factory_bot_rails', '~> 4.8.2'
 gem 'forgery'
 gem 'highline'
 gem 'jbuilder', '~> 2.0'

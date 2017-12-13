@@ -4,9 +4,11 @@
 /config/secrets.yml
 /config/sendmail.yml
 /config/smtp.yml
-/config/docker.yml.erb
+/config/docker.yml*.erb
 /config/*.production.yml
 /config/*.staging.yml
+/config/*.staging-epic.yml
+/config/deploy/staging-epic.rb
 /coverage
 /log
 /public/assets
@@ -14,6 +16,7 @@
 /rubocop.html
 /tmp
 /vagrant/
+/.capistrano
 /.vagrant
 *.sublime-*
 /.idea
