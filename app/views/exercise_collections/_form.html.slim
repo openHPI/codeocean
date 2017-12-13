@@ -7,6 +7,9 @@
     = f.label(t('activerecord.attributes.exercise_collections.name'))
     = f.text_field(:name, class: 'form-control', required: true)
   .form-group
+    = f.label(t('activerecord.attributes.exercise_collections.use_anomaly_detection'))
+    = f.check_box(:use_anomaly_detection, {class: 'form-control'})
+  .form-group
     = f.label(t('activerecord.attributes.exercise_collections.user'))
     = f.collection_select(:user_id, users, :id, :name, {}, {class: 'form-control'})
   .form-group

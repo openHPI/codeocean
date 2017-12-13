@@ -125,6 +125,7 @@ en:
         id: "ID"
         name: "Name"
         user: "Associated User"
+        use_anomaly_detection: "Enable Worktime Anomaly Detection"
         updated_at: "Last Update"
         exercises: "Exercises"
     models:

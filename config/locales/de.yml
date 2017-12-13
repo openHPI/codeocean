@@ -125,6 +125,7 @@ de:
         id: "ID"
         name: "Name"
         user: "Verantwortlicher"
+        use_anomaly_detection: "Abweichungen in der Arbeitszeit erkennen"
         updated_at: "Letzte Änderung"
         exercises: "Aufgaben"
     models:
