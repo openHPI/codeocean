@@ -42,6 +42,6 @@ class UserMailer < ActionMailer::Base
     @receiver_displayname = exercise_collection.user.displayname
     @collection = exercise_collection
     @anomalies = anomalies
-    mail(subject: t('mailers.user_mailer.exercise_anomaly_detected.subject', to: exercise_collection.user.email))
+    mail(subject: t('mailers.user_mailer.exercise_anomaly_detected.subject'), to: exercise_collection.user.email)
   end
 end
