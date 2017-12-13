@@ -528,6 +528,7 @@ de:
           eine oder mehrere Aufgaben Ihrer Aufgabensammlung "%{collection_name}" zeigen Unregelmäßigkeiten in der Bearbeitungszeit. Möglicherweise sind sie zu schwer oder zu leicht.
           <br>
           Die Aufgaben sind:
+          <br>
         body2: |
           <br>
           Falls Sie beim Klick auf einen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
@@ -541,6 +542,7 @@ de:
           at least one exercise in your exercise collection "%{collection_name}" has a much longer or much shorter average working time than the average. Perhaps they are too difficult or too easy.
           <br>
           The exercises are:
+          <br>
         body3: |
           <br>
           If you receive an error that you are not authorized to perform this action when clicking a link, please log-in through any course exercise beforehand and click the link again. <br>
