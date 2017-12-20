@@ -42,7 +42,7 @@ namespace :detect_exercise_anomalies do
         working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
       end
 
-      if anomalies.length > 0
+      if anomalies.length > 0 and not collection.user.nil?
         puts "\t\tSending E-Mail..."
         UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
 
