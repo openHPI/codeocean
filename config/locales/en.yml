@@ -372,6 +372,7 @@ en:
         time_difference: 'Working Time until here*'
         addendum: '* Deltas longer than 10 minutes are ignored.'
     push_proforma_xml:
+      button: "Push Exercise"
       notice: "Exercise pushed to %{link}"
     import_proforma_xml:
       success: "SUCCESS"

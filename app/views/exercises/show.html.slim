@@ -39,7 +39,3 @@ ul.list-unstyled.panel-group#files
           - if policy(file).destroy?
             .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
           = render('shared/file', file: file)
-
-- if policy(@exercise).push_proforma_xml?
-  - CodeHarborLink.all.each do |acc_link|
-    = link_to "Link: " + acc_link.oauth2token, push_proforma_xml_exercise_path(account_link: acc_link), method: 'post'

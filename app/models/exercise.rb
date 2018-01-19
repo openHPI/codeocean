@@ -400,7 +400,7 @@ class Exercise < ActiveRecord::Base
         proforma.filerefs {
           proforma.fileref('refid' => test.id.to_s)
         }
-        xml['u'].unittest('framework' => 'JUnit 4', 'version' => '')
+        xml['u'].unittest('framework' => self.testing_framework.first, 'version' => self.testing_framework.second)
         xml['c'].send('feedback-message', test.feedback_message)
       }
     }
@@ -413,6 +413,19 @@ class Exercise < ActiveRecord::Base
         proforma.fileref('refid' => model_solution_file.id.to_s)
       }
     }
+  end
+
+  def testing_framework
+    case self.execution_environment.testing_framework
+      when 'RspecAdapter'
+        return 'Rspec', ''
+      when 'JunitAdapter'
+        return 'JUnit', '4'
+      when 'PyUnitAdapter'
+        return 'PyUnit', ''
+      else
+        return '', ''
+    end
   end
 
   def to_proforma_xml

@@ -48,6 +48,8 @@ h1 = Exercise.model_name.human(count: 2)
                 li = link_to(t('activerecord.models.user_exercise_feedback.other'), feedback_exercise_path(exercise)) if policy(exercise).feedback?
                 li = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(exercise).destroy?
                 li = link_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post) if policy(exercise).clone?
+                - CodeHarborLink.all.each do |acc_link|
+                  li = link_to t('exercises.push_proforma_xml.button'), push_proforma_xml_exercise_path(id: exercise, account_link: acc_link), method: 'post' if policy(exercise).push_proforma_xml?
 
 = render('shared/pagination', collection: @exercises)
 p = render('shared/new_button', model: Exercise)

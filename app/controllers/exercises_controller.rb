@@ -110,10 +110,10 @@ class ExercisesController < ApplicationController
 
   def push_proforma_xml
     codeharbor_link = CodeHarborLink.find(params[:account_link])
-    oauth2Client = OAuth2::Client.new('client_id', 'client_secret', :site => account_link.push_url)
+    oauth2Client = OAuth2::Client.new('client_id', 'client_secret', :site => codeharbor_link.push_url)
     oauth2token = codeharbor_link[:oauth2token]
     token = OAuth2::AccessToken.from_hash(oauth2Client, :access_token => oauth2token)
-    token.post(account_link.push_url, {body: @exercise.to_proforma_xml})
+    token.post(codeharbor_link.push_url, {body: @exercise.to_proforma_xml})
     redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
   end
 
