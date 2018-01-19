@@ -418,7 +418,7 @@ class Exercise < ActiveRecord::Base
   def to_proforma_xml
     builder = Nokogiri::XML::Builder.new do |xml|
       proforma = xml['p']
-      proforma.task('xmlns:p' => 'urn:proforma:task:v1.1', 'lang' => 'en', 'uuid' => SecureRandom.uuid,
+      proforma.task('xmlns:p' => 'urn:proforma:task:v1.1', 'lang' => 'de', 'uuid' => SecureRandom.uuid,
                     'xmlns:u' => 'urn:proforma:tests:unittest:v1.1', 'xmlns:c' => 'codeharbor'){
         proforma.description(self.description)
         execution_environment = self.execution_environment.name.split

@@ -12,7 +12,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
     @user.internal_user?
   end
 
-  [:clone?, :destroy?, :edit?, :statistics?, :update?, :feedback?, :push_proforma_xml?].each do |action|
+  [:clone?, :destroy?, :edit?, :statistics?, :update?, :push_proforma_xml?, :feedback?].each do |action|
     define_method(action) { admin? || author?}
   end
 
