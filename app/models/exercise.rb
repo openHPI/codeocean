@@ -383,12 +383,14 @@ class Exercise < ActiveRecord::Base
       comment = ''
     end
 
-    xml['p'].file(exercise_file.content,
+    xml['p'].file(
                   'filename' => exercise_file.full_file_name,
                   'id' => exercise_file.id,
                   'class' => proforma_file_class,
                   'comment' => comment
-    )
+    ) {
+      xml.cdata(exercise_file.content)
+    }
   end
 
   def build_proforma_xml_for_test(xml, test, index)
@@ -401,7 +403,9 @@ class Exercise < ActiveRecord::Base
           proforma.fileref('refid' => test.id.to_s)
         }
         xml['u'].unittest('framework' => self.testing_framework.first, 'version' => self.testing_framework.second)
-        xml['c'].send('feedback-message', test.feedback_message)
+        xml['c'].send('feedback-message') {
+          xml.cdata(test.feedback_message)
+        }
       }
     }
   end
@@ -429,11 +433,13 @@ class Exercise < ActiveRecord::Base
   end
 
   def to_proforma_xml
-    builder = Nokogiri::XML::Builder.new do |xml|
+    builder = Nokogiri::XML::Builder.new(:encoding => 'UTF-8') do |xml|
       proforma = xml['p']
       proforma.task('xmlns:p' => 'urn:proforma:task:v1.1', 'lang' => 'de', 'uuid' => SecureRandom.uuid,
                     'xmlns:u' => 'urn:proforma:tests:unittest:v1.1', 'xmlns:c' => 'codeharbor'){
-        proforma.description(self.description)
+        proforma.description {
+          proforma.cdata(self.description)
+        }
         execution_environment = self.execution_environment.name.split
         proforma.proglang(execution_environment.first, 'version' => execution_environment.second)
         proforma.send('submission-restrictions') {
