@@ -216,7 +216,7 @@ class SubmissionsController < ApplicationController
   def handle_message(message, tubesock, container)
     @run_output ||= ""
     # Handle special commands first
-    if (/^#exit/.match(message))
+    if /^#exit/.match(message)
       # Just call exit_container on the docker_client.
       # Do not call kill_socket for the websocket to the client here.
       # @docker_client.exit_container closes the socket to the container,
@@ -228,17 +228,17 @@ class SubmissionsController < ApplicationController
       # Filter out information about run_command, test_command, user or working directory
       run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
       test_command = @submission.execution_environment.test_command % command_substitutions(params[:filename])
-      if !(/root|workspace|#{run_command}|#{test_command}/.match(message))
+      unless /root|workspace|#{run_command}|#{test_command}/.match(message)
         parse_message(message, 'stdout', tubesock)
       end
     end
   end
 
   def parse_message(message, output_stream, socket, recursive = true)
-    parsed = '';
+    parsed = ''
     begin
       parsed = JSON.parse(message)
-      if(parsed.class == Hash && parsed.key?('cmd'))
+      if parsed.class == Hash and parsed.key?('cmd')
         socket.send_data message
         Rails.logger.info('parse_message sent: ' + message)
       else
@@ -248,24 +248,24 @@ class SubmissionsController < ApplicationController
       end
     rescue JSON::ParserError => e
       # Check wether the message contains multiple lines, if true try to parse each line
-      if ((recursive == true) && (message.include? "\n"))
+      if recursive and message.include? "\n"
         for part in message.split("\n")
           self.parse_message(part,output_stream,socket,false)
         end
-      elsif(message.include? "<img")
+      elsif message.include? '<img'
         #Rails.logger.info('img foung')
         @buffering = true
-        @buffer = ""
+        @buffer = ''
         @buffer += message
         #Rails.logger.info('Starting to buffer')
-      elsif(@buffering && (message.include? "/>"))
+      elsif @buffering and message.include? '/>'
         @buffer += message
         parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>@buffer}
         socket.send_data JSON.dump(parsed)
         #socket.send_data @buffer
         @buffering = false
         #Rails.logger.info('Sent complete buffer')
-      elsif(@buffering)
+      elsif @buffering
         @buffer += message
         #Rails.logger.info('Appending to buffer')
       else
@@ -281,7 +281,7 @@ class SubmissionsController < ApplicationController
   end
 
   def save_run_output
-    if !@run_output.blank?
+    unless @run_output.blank?
       @run_output = @run_output[(0..max_run_output_buffer_size-1)] # trim the string to max_message_buffer_size chars
       Testrun.create(file: @file, cause: 'run', submission: @submission, output: @run_output)
     end
