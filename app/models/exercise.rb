@@ -364,7 +364,7 @@ class Exercise < ActiveRecord::Base
   end
   private :valid_main_file?
 
-  def needs_more_feedback
+  def needs_more_feedback?
     user_exercise_feedbacks.size <= MAX_EXERCISE_FEEDBACKS
   end
 
