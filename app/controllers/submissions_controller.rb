@@ -203,18 +203,19 @@ class SubmissionsController < ApplicationController
   end
 
   def extract_errors
-    unless @run_output.blank?
+    unless @raw_output.blank?
       @submission.exercise.execution_environment.error_templates.each do |template|
         pattern = Regexp.new(template.signature).freeze
-        if pattern.match(@run_output)
-          StructuredError.create_from_template(template, @run_output)
+        if pattern.match(@raw_output)
+          StructuredError.create_from_template(template, @raw_output)
         end
       end
     end
   end
 
   def handle_message(message, tubesock, container)
-    @run_output ||= ""
+    @raw_output ||= ''
+    @run_output ||= ''
     # Handle special commands first
     if /^#exit/.match(message)
       # Just call exit_container on the docker_client.
@@ -275,6 +276,7 @@ class SubmissionsController < ApplicationController
         Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))
       end
     ensure
+      @raw_output += parsed['data'] if parsed.class == Hash and parsed.key? 'data'
       # save the data that was send to the run_output if there is enough space left. this will be persisted as a testrun with cause "run"
       @run_output += JSON.dump(parsed) if @run_output.size <= max_run_output_buffer_size
     end
