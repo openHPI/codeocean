@@ -5,3 +5,4 @@ require 'capistrano/puma/nginx'
 require 'capistrano/rails'
 require 'capistrano/rvm'
 require 'capistrano/upload-config'
+require "whenever/capistrano"

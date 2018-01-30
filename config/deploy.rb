@@ -9,6 +9,8 @@ set :log_level, :info
 set :puma_threads, [0, 16]
 set :repo_url, 'git@github.com:openHPI/codeocean.git'
 
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+
 namespace :deploy do
   before 'check:linked_files', 'config:push'
 

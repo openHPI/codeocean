@@ -59,6 +59,7 @@ end
 group :development, :test, :staging do
   gem 'byebug', platform: :ruby
   gem 'spring'
+  gem 'whenever', require: false
 end
 
 group :test do
