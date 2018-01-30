@@ -8,6 +8,7 @@ class Submission < ActiveRecord::Base
   belongs_to :exercise
 
   has_many :testruns
+  has_many :structured_errors
   has_many :comments, through: :files
 
   delegate :execution_environment, to: :exercise

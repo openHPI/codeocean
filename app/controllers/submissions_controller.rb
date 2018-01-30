@@ -202,17 +202,6 @@ class SubmissionsController < ApplicationController
     tubesock.close
   end
 
-  def extract_errors
-    unless @raw_output.blank?
-      @submission.exercise.execution_environment.error_templates.each do |template|
-        pattern = Regexp.new(template.signature).freeze
-        if pattern.match(@raw_output)
-          StructuredError.create_from_template(template, @raw_output)
-        end
-      end
-    end
-  end
-
   def handle_message(message, tubesock, container)
     @raw_output ||= ''
     @run_output ||= ''
@@ -286,6 +275,17 @@ class SubmissionsController < ApplicationController
     unless @run_output.blank?
       @run_output = @run_output[(0..max_run_output_buffer_size-1)] # trim the string to max_message_buffer_size chars
       Testrun.create(file: @file, cause: 'run', submission: @submission, output: @run_output)
+    end
+  end
+
+  def extract_errors
+    unless @raw_output.blank?
+      @submission.exercise.execution_environment.error_templates.each do |template|
+        pattern = Regexp.new(template.signature).freeze
+        if pattern.match(@raw_output)
+          StructuredError.create_from_template(template, @raw_output, @submission)
+        end
+      end
     end
   end
 
