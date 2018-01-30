@@ -17,7 +17,7 @@ gem 'jquery-turbolinks'
 gem 'ims-lti', '~> 1.1.0'
 gem 'kramdown'
 gem 'newrelic_rpm'
-gem 'pg', platform: :ruby
+gem 'pg', '< 1.0', platform: :ruby
 gem 'pry-byebug'
 gem 'puma', '~> 2.15.3'
 gem 'pundit'
