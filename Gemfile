@@ -41,6 +41,7 @@ gem 'nokogiri'
 gem 'd3-rails'
 gem 'rest-client'
 gem 'rubyzip'
+gem 'whenever', require: false
 
 group :development, :staging do
   gem 'better_errors', platform: :ruby
@@ -59,7 +60,6 @@ end
 group :development, :test, :staging do
   gem 'byebug', platform: :ruby
   gem 'spring'
-  gem 'whenever', require: false
 end
 
 group :test do
