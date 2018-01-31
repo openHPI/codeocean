@@ -306,7 +306,10 @@ ActiveRecord::Schema.define(version: 20180130172021) do
     t.integer  "file_id"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.integer  "submission_id"
   end
+
+  add_index "structured_errors", ["submission_id"], name: "index_structured_errors_on_submission_id", using: :btree
 
   create_table "submissions", force: :cascade do |t|
     t.integer  "exercise_id"
