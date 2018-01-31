@@ -48,6 +48,32 @@ namespace :detect_exercise_anomalies do
         puts "\t\tSending E-Mail to author (#{collection.user.displayname} <#{collection.user.email}>)..."
         UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
 
+        puts "\t\tSending E-Mails to best and worst performing users of each anomaly..."
+        anomalies.each do |exercise_id, average_working_time|
+          submissions = Submission.find_by_sql(['
+            select distinct s.*
+            from
+              (
+                select
+                    user_id,
+                    first_value(id) over (partition by user_id order by created_at desc) as fv
+                from submissions
+                where exercise_id = ?
+              ) as t
+              join submissions s on s.id = t.fv
+            where score is not null
+            order by score', exercise_id])
+          best_performers = submissions.first(10).to_a.map do |item|
+            item.user_id
+          end
+          worst_performers = submissions.last(10).to_a.map do |item|
+            item.user_id
+          end
+          puts "\t\tAnomaly in exercise #{exercise_id}:"
+          puts "\t\t\tbest performers: #{best_performers}"
+          puts "\t\t\tworst performers: #{worst_performers}"
+        end
+
         puts "\t\tResetting flag..."
         collection.use_anomaly_detection = false
         collection.save!
