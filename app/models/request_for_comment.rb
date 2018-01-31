@@ -52,6 +52,6 @@ class RequestForComment < ActiveRecord::Base
 
     private
     def self.row_number_user_sql
-      select("id, user_id, exercise_id, file_id, question, created_at, updated_at, user_type, solved, submission_id, row_number() OVER (PARTITION BY user_id ORDER BY created_at DESC) as row_number").to_sql
+      select("id, user_id, exercise_id, file_id, question, created_at, updated_at, user_type, solved, full_score_reached, submission_id, row_number() OVER (PARTITION BY user_id ORDER BY created_at DESC) as row_number").to_sql
     end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171120153705) do
+ActiveRecord::Schema.define(version: 20180130172021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -270,16 +270,17 @@ ActiveRecord::Schema.define(version: 20171120153705) do
   end
 
   create_table "request_for_comments", force: :cascade do |t|
-    t.integer  "user_id",                                    null: false
-    t.integer  "exercise_id",                                null: false
-    t.integer  "file_id",                                    null: false
+    t.integer  "user_id",                                        null: false
+    t.integer  "exercise_id",                                    null: false
+    t.integer  "file_id",                                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "user_type",      limit: 255
+    t.string   "user_type",          limit: 255
     t.text     "question"
-    t.boolean  "solved",                     default: false
+    t.boolean  "solved",                         default: false
     t.integer  "submission_id"
     t.text     "thank_you_note"
+    t.boolean  "full_score_reached",             default: false
   end
 
   create_table "searches", force: :cascade do |t|
@@ -354,8 +355,8 @@ ActiveRecord::Schema.define(version: 20171120153705) do
     t.integer  "working_time_seconds"
     t.string   "feedback_text"
     t.integer  "user_estimated_worktime"
-    t.datetime "created_at",              default: '2017-11-20 18:20:25', null: false
-    t.datetime "updated_at",              default: '2017-11-20 18:20:25', null: false
+    t.datetime "created_at",              default: '2018-01-30 17:39:22', null: false
+    t.datetime "updated_at",              default: '2018-01-30 17:39:22', null: false
   end
 
   create_table "user_exercise_interventions", force: :cascade do |t|

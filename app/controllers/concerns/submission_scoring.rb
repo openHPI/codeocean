@@ -47,6 +47,14 @@ module SubmissionScoring
       end
     end
     submission.update(score: score)
+    if submission.normalized_score == 1.0
+      Thread.new do
+        RequestForComment.where(exercise_id: submission.exercise_id, user_id: submission.user_id, user_type: submission.user_type).each{ |rfc|
+          rfc.full_score_reached = true
+          rfc.save
+        }
+      end
+    end
     outputs
   end
 end
