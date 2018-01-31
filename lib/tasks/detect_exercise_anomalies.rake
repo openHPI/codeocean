@@ -43,7 +43,9 @@ namespace :detect_exercise_anomalies do
       end
 
       if anomalies.length > 0 and not collection.user.nil?
-        puts "\t\tSending E-Mail..."
+        puts "\t\tAnomalies: #{anomalies}\n"
+
+        puts "\t\tSending E-Mail to author (#{collection.user.displayname} <#{collection.user.email}>)..."
         UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
 
         puts "\t\tResetting flag..."
