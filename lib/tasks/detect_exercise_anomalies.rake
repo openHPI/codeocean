@@ -76,19 +76,10 @@ namespace :detect_exercise_anomalies do
   def notify_users(collection, anomalies)
     puts "\t\tSending E-Mails to best and worst performing users of each anomaly..."
     anomalies.each do |exercise_id, average_working_time|
-      submissions = Submission.find_by_sql(['
-            select distinct s.*
-            from
-              (
-                select
-                    user_id,
-                    first_value(id) over (partition by user_id order by created_at desc) as fv
-                from submissions
-                where exercise_id = ?
-              ) as t
-              join submissions s on s.id = t.fv
-            where score is not null
-            order by score', exercise_id])
+      submissions = Exercise.find(exercise_id)
+                        .last_submission_per_user
+                        .where('score is not null')
+                        .order(:score)
       best_performers = submissions.first(10).to_a.map do |item|
         item.user_id
       end

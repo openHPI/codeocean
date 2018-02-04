@@ -368,4 +368,14 @@ class Exercise < ActiveRecord::Base
     user_exercise_feedbacks.size <= MAX_EXERCISE_FEEDBACKS
   end
 
+  def last_submission_per_user
+    Submission.joins("JOIN (
+          SELECT
+              user_id,
+              first_value(id) OVER (PARTITION BY user_id ORDER BY created_at DESC) AS fv
+          FROM submissions
+          WHERE exercise_id = #{id}
+        ) AS t ON t.fv = submissions.id").distinct
+  end
+
 end
