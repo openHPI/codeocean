@@ -5,6 +5,9 @@ namespace :detect_exercise_anomalies do
   MIN_TIME_FACTOR = 0.1
   MAX_TIME_FACTOR = 2
 
+  # Cache exercise working times, because queries are expensive and values do not change between collections
+  WORKING_TIME_CACHE = {}
+
   task :with_at_least, [:number_of_exercises, :number_of_solutions] => :environment do |task, args|
     number_of_exercises = args[:number_of_exercises]
     number_of_solutions = args[:number_of_solutions]
@@ -48,14 +51,21 @@ namespace :detect_exercise_anomalies do
     working_times = {}
     collection.exercises.each do |exercise|
       puts "\t\t> #{exercise.title}"
-      avgwt = exercise.average_working_time.split(':')
-      seconds = avgwt[0].to_i * 60 * 60 + avgwt[1].to_i * 60 + avgwt[2].to_f
-      working_times[exercise.id] = seconds
+      working_times[exercise.id] = get_working_time(exercise)
     end
     average = working_times.values.reduce(:+) / working_times.size
     working_times.select do |exercise_id, working_time|
       working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
     end
+  end
+
+  def get_working_time(exercise)
+    unless WORKING_TIME_CACHE.key?(exercise.id)
+      avgwt = exercise.average_working_time.split(':')
+      seconds = avgwt[0].to_i * 60 * 60 + avgwt[1].to_i * 60 + avgwt[2].to_f
+      WORKING_TIME_CACHE[exercise.id] = seconds
+    end
+    WORKING_TIME_CACHE[exercise.id]
   end
 
   def notify_collection_author(collection, anomalies)
