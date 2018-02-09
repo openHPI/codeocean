@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180130172021) do
+ActiveRecord::Schema.define(version: 20180202132034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -281,6 +281,7 @@ ActiveRecord::Schema.define(version: 20180130172021) do
     t.integer  "submission_id"
     t.text     "thank_you_note"
     t.boolean  "full_score_reached",             default: false
+    t.integer  "times_featured",                 default: 0
   end
 
   create_table "searches", force: :cascade do |t|
