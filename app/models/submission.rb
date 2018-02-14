@@ -8,6 +8,7 @@ class Submission < ActiveRecord::Base
   belongs_to :exercise
 
   has_many :testruns
+  has_many :structured_errors
   has_many :comments, through: :files
 
   delegate :execution_environment, to: :exercise
@@ -57,7 +58,7 @@ class Submission < ActiveRecord::Base
   end
 
   def redirect_to_feedback?
-    ((user_id + exercise.created_at.to_i) % 10 == 1) && exercise.needs_more_feedback
+    ((user_id + exercise.created_at.to_i) % 10 == 1) && exercise.needs_more_feedback?
   end
 
   def own_unsolved_rfc
