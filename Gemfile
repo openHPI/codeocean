@@ -45,7 +45,7 @@ gem 'rubyzip'
 group :development, :staging do
   gem 'better_errors', platform: :ruby
   gem 'binding_of_caller', platform: :ruby
-  gem 'capistrano', '~> 3.3.0'
+  gem 'capistrano'
   gem 'capistrano3-puma'
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
