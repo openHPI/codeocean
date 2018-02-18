@@ -356,9 +356,8 @@ GEM
     tubesock (0.2.7)
       rack (>= 1.5.0)
       websocket (>= 1.1.0)
-    turbolinks (5.0.1)
-      turbolinks-source (~> 5)
-    turbolinks-source (5.1.0)
+    turbolinks (2.5.4)
+      coffee-rails
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uglifier (4.1.6)
@@ -447,7 +446,7 @@ DEPENDENCIES
   spring
   thread_safe
   tubesock
-  turbolinks (< 5.1.0)
+  turbolinks (< 5.0.0)
   uglifier
   web-console
   will_paginate
