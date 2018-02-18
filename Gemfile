@@ -32,7 +32,7 @@ gem 'bootstrap_pagedown'
 gem 'pagedown-rails'
 gem 'sorcery'
 gem 'thread_safe'
-gem 'turbolinks', '< 5.0.0'
+gem 'turbolinks', '< 5.0.0' # newer versions prevent loading ACE if the page containing is not accessed directly / refreshed
 gem 'uglifier'
 gem 'will_paginate'
 gem 'tubesock'
