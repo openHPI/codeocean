@@ -1,17 +1,17 @@
 source 'https://rubygems.org'
 
 gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
-gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
-gem 'coffee-rails', '~> 4.0.0'
-gem 'concurrent-ruby', '~> 1.0.1'
-gem 'concurrent-ruby-ext', '~> 1.0.1', platform: :ruby
-gem 'docker-api','~> 1.25.0',  require: 'docker'
-gem 'factory_bot_rails', '~> 4.8.2'
+gem 'coffee-rails'
+gem 'concurrent-ruby'
+gem 'concurrent-ruby-ext', platform: :ruby
+gem 'docker-api','~> 1.25.0', require: 'docker'
+gem 'factory_bot_rails'
 gem 'forgery'
 gem 'highline'
-gem 'jbuilder', '~> 2.0'
+gem 'jbuilder'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
 gem 'ims-lti', '~> 1.1.0'
@@ -19,22 +19,22 @@ gem 'kramdown'
 gem 'newrelic_rpm'
 gem 'pg', '< 1.0', platform: :ruby
 gem 'pry-byebug'
-gem 'puma', '~> 2.15.3'
+gem 'puma'
 gem 'pundit'
-gem 'rails', '4.2.5'
-gem 'rails-i18n', '~> 4.0.0'
+gem 'rails', '4.2.10'
+gem 'rails-i18n'
 gem 'ransack'
 gem 'rubytree'
-gem 'sass-rails', '~> 4.0.3'
-gem 'sdoc', '~> 0.4.0', group: :doc
+gem 'sass-rails'
+gem 'sdoc', group: :doc
 gem 'slim'
 gem 'bootstrap_pagedown'
-gem 'pagedown-rails', '~> 1.1.4'
+gem 'pagedown-rails'
 gem 'sorcery'
 gem 'thread_safe'
-gem 'turbolinks'
-gem 'uglifier', '>= 1.3.0'
-gem 'will_paginate', '~> 3.0'
+gem 'turbolinks', '< 5.1.0'
+gem 'uglifier'
+gem 'will_paginate'
 gem 'tubesock'
 gem 'faye-websocket'
 gem 'nokogiri'
@@ -53,7 +53,7 @@ group :development, :staging do
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
-  gem 'web-console', '~> 2.0', platform: :ruby
+  gem 'web-console', platform: :ruby
 end
 
 group :development, :test, :staging do
