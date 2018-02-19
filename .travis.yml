@@ -6,7 +6,7 @@ services:
 addons:
   code_climate:
     repo_token: 53a2c2608c848714e96f6a1fc0365dcfdfec051f7827d50cea965ea625f49734
-  postgresql: "9.5"
+  postgresql: "10"
 
 before_install:
   - export DISPLAY=:99.0
@@ -32,9 +32,7 @@ before_script:
 cache: bundler
 language: ruby
 rvm:
-- 2.3.1
-# - 2.1.5
-# - 2.2.1
+- 2.3.6
   
 script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper --tag ~docker && CODECLIMATE_REPO_TOKEN=53a2c2608c848714e96f6a1fc0365dcfdfec051f7827d50cea965ea625f49734 bundle exec codeclimate-test-reporter
 # one of the solutions I've found
