@@ -13,8 +13,8 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 #  Config to run docker tests - doesn't work so far
-  - sudo apt-get update
-  - sudo apt-get upgrade lxc-docker
+#  - sudo apt-get update
+#  - sudo apt-get upgrade lxc-docker
   - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:4243 -H unix:///var/run/docker.sock --iptables=false"' | sudo tee /etc/default/docker > /dev/null
 #  - export DOCKER_HOST=tcp://192.168.23.75:2375
   - sudo service docker restart
