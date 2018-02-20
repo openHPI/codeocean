@@ -7,7 +7,7 @@ describe DockerClient, docker: true do
   let(:execution_environment) { FactoryBot.build(:java) }
   let(:image) { double }
   let(:submission) { FactoryBot.create(:submission) }
-  let(:workspace_path) { '/tmp' }
+  let(:workspace_path) { '/tmp/code_ocean_test' }
 
   describe '.check_availability!' do
     context 'when a socket error occurs' do
