@@ -37,7 +37,7 @@ language: ruby
 rvm:
 - 2.3.6
   
-script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper --tag docker && bundle exec codeclimate-test-reporter
+script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper && bundle exec codeclimate-test-reporter
 # one of the solutions I've found
 #  - sudo docker run --rm=true -v `pwd`:/ansible-apache:rw weldpua2008/docker-ansible:${OS_TYPE}${OS_VERSION}_v${ANSIBLE_VERSION} /bin/bash -c "/ansible-apache/tests/test-in-docker-image.sh ${OS_TYPE} ${OS_VERSION} ${ANSIBLE_VERSION}"
 
