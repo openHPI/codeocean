@@ -36,6 +36,7 @@ class Exercise < ActiveRecord::Base
   validates :token, presence: true, uniqueness: true
 
   @working_time_statistics = nil
+  attr_reader :working_time_statistics
 
   MAX_EXERCISE_FEEDBACKS = 20
 

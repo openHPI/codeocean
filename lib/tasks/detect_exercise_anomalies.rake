@@ -5,8 +5,15 @@ namespace :detect_exercise_anomalies do
   MIN_TIME_FACTOR = 0.1
   MAX_TIME_FACTOR = 2
 
+  # Determines how many users are picked from the best/average/worst performers of each anomaly for feedback
+  NUMBER_OF_USERS_PER_CLASS = 10
+
+  # Determines margin below which user working times will be considered data errors (e.g. copy/paste solutions)
+  MIN_USER_WORKING_TIME = 0.0
+
   # Cache exercise working times, because queries are expensive and values do not change between collections
   WORKING_TIME_CACHE = {}
+  AVERAGE_WORKING_TIME_CACHE = {}
 
   task :with_at_least, [:number_of_exercises, :number_of_solutions] => :environment do |task, args|
     number_of_exercises = args[:number_of_exercises]
@@ -23,7 +30,6 @@ namespace :detect_exercise_anomalies do
       anomalies = find_anomalies(collection)
 
       if anomalies.length > 0 and not collection.user.nil?
-        puts "\t\tAnomalies: #{anomalies}\n"
         notify_collection_author(collection, anomalies)
         notify_users(collection, anomalies)
         reset_anomaly_detection_flag(collection)
@@ -51,7 +57,7 @@ namespace :detect_exercise_anomalies do
     working_times = {}
     collection.exercises.each do |exercise|
       puts "\t\t> #{exercise.title}"
-      working_times[exercise.id] = get_working_time(exercise)
+      working_times[exercise.id] = get_average_working_time(exercise)
     end
     average = working_times.values.reduce(:+) / working_times.size
     working_times.select do |exercise_id, working_time|
@@ -59,11 +65,26 @@ namespace :detect_exercise_anomalies do
     end
   end
 
-  def get_working_time(exercise)
+  def time_to_f(timestamp)
+    unless timestamp.nil?
+      timestamp = timestamp.split(':')
+      return timestamp[0].to_i * 60 * 60 + timestamp[1].to_i * 60 + timestamp[2].to_f
+    end
+    nil
+  end
+
+  def get_average_working_time(exercise)
+    unless AVERAGE_WORKING_TIME_CACHE.key?(exercise.id)
+      seconds = time_to_f exercise.average_working_time
+      AVERAGE_WORKING_TIME_CACHE[exercise.id] = seconds
+    end
+    AVERAGE_WORKING_TIME_CACHE[exercise.id]
+  end
+
+  def get_user_working_times(exercise)
     unless WORKING_TIME_CACHE.key?(exercise.id)
-      avgwt = exercise.average_working_time.split(':')
-      seconds = avgwt[0].to_i * 60 * 60 + avgwt[1].to_i * 60 + avgwt[2].to_f
-      WORKING_TIME_CACHE[exercise.id] = seconds
+      exercise.retrieve_working_time_statistics
+      WORKING_TIME_CACHE[exercise.id] = exercise.working_time_statistics
     end
     WORKING_TIME_CACHE[exercise.id]
   end
@@ -76,20 +97,37 @@ namespace :detect_exercise_anomalies do
   def notify_users(collection, anomalies)
     puts "\t\tSending E-Mails to best and worst performing users of each anomaly..."
     anomalies.each do |exercise_id, average_working_time|
-      submissions = Exercise.find(exercise_id)
-                        .last_submission_per_user
-                        .where('score is not null')
-                        .order(:score)
-      best_performers = submissions.first(10).to_a.map do |item|
-        item.user_id
+      puts "\t\tAnomaly in exercise #{exercise_id} (avg: #{average_working_time} seconds):"
+      exercise = Exercise.find(exercise_id)
+      submissions = exercise.last_submission_per_user
+
+      users = performers_by_score(submissions, NUMBER_OF_USERS_PER_CLASS)
+      users = users.merge(performers_by_time(exercise, NUMBER_OF_USERS_PER_CLASS)) {|key, this, other| this + other}
+
+      [:best, :average, :worst].each do |sym|
+        segment = users[sym].uniq
+        puts "\t\t\t#{sym.to_s} performers: #{segment}"
       end
-      worst_performers = submissions.last(10).to_a.map do |item|
-        item.user_id
-      end
-      puts "\t\tAnomaly in exercise #{exercise_id}:"
-      puts "\t\t\tbest performers: #{best_performers}"
-      puts "\t\t\tworst performers: #{worst_performers}"
     end
+  end
+
+  def performers_by_score(submissions, n)
+    submissions = submissions.where('score is not null').order(:score)
+    best_performers = submissions.first(n).to_a.map {|item| item.user_id}
+    worst_performers = submissions.last(n).to_a.map {|item| item.user_id}
+
+    return {:best => best_performers, :average => [], :worst => worst_performers}
+  end
+
+  def performers_by_time(exercise, n)
+    working_times = get_user_working_times(exercise).values.map do |item|
+      {user_id: item['user_id'], time: time_to_f(item['working_time'])}
+    end
+    working_times.reject! {|item| item[:time].nil? or item[:time] <= MIN_USER_WORKING_TIME}
+    working_times.sort_by! {|item| item[:time]}
+
+    working_times.map! {|item| item[:user_id].to_i}
+    return {:best => working_times.first(n), :average => [], :worst => working_times.last(n)}
   end
 
   def reset_anomaly_detection_flag(collection)
