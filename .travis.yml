@@ -5,7 +5,8 @@ services:
 
 addons:
   code_climate:
-    repo_token: 53a2c2608c848714e96f6a1fc0365dcfdfec051f7827d50cea965ea625f49734
+    repo_token:
+      secure: "cZoMNjQKB/D7W4B7JDk9PXooy2WCDypu7R4C/Vi0DziZCU9HRwLbdt9aoH5hgHFa7Fe2rHFgflPAAP7h698ozvP0waFtPqLAj+PbEt27LbBDvW8JcvNkKXA0rj5wyTkzuc/0kD+kPB4oDXMak6gZlB9HCJDsa3kdXScQGTVuPdU="
   postgresql: "9.6"
 
 before_install:
