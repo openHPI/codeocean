@@ -19,7 +19,8 @@ before_install:
 #  - export DOCKER_HOST=tcp://192.168.23.75:2375
   - sudo service docker restart
   - sleep 5
-  - docker pull openhpi/docker_ruby
+  - docker pull openhpi/co_execenv_python
+  - docker pull openhpi/co_execenv_java
 
 before_script:
   - cp .rspec.travis .rspec
