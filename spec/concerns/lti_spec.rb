@@ -98,7 +98,7 @@ describe Lti do
     let(:consumer) { FactoryBot.create(:consumer) }
     let(:score) { 0.5 }
     let(:submission) { FactoryBot.create(:submission) }
-    let!(:lti_parameter) { FactoryBot.create(:lti_parameter)}
+    let!(:lti_parameter) { FactoryBot.create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.user_id, exercises_id: submission.exercise_id)}
 
     context 'with an invalid score' do
       it 'raises an exception' do
@@ -114,7 +114,6 @@ describe Lti do
 
         context 'when grading is not supported' do
           it 'returns a corresponding status' do
-            skip('ralf: this does not work, since send_score pulls data from the database, which then returns an empty array. On this is called .first, which returns nil and lets the test fail. Before Toms changes, this was taken from the session, which could be mocked')
             expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
             expect(controller.send(:send_score, submission.exercise_id, score, submission.user_id)[:status]).to eq('unsupported')
           end
@@ -133,12 +132,10 @@ describe Lti do
           end
 
           it 'sends the score' do
-            skip('ralf: this does not work, since send_score pulls data from the database, which then returns an empty array. On this is called .first, which returns nil and lets the test fail. Before Toms changes, this was taken from the session, which could be mocked')
             controller.send(:send_score, submission.exercise_id, score, submission.user_id)
           end
 
           it 'returns code, message, and status' do
-            skip('ralf: this does not work, since send_score pulls data from the database, which then returns an empty array. On this is called .first, which returns nil and lets the test fail. Before Toms changes, this was taken from the session, which could be mocked')
             result = controller.send(:send_score, submission.exercise_id, score, submission.user_id)
             expect(result[:code]).to eq(response.response_code)
             expect(result[:message]).to eq(response.body)
