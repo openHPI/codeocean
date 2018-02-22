@@ -15,7 +15,7 @@ namespace :deploy do
   after :compile_assets, :copy_vendor_assets do
     on roles(fetch(:assets_roles)) do
       within release_path do
-        execute :cp, 'vendor/assets/images/*', 'public/assets/'
+        execute :cp, '-r', 'vendor/assets/images/', 'public/assets/'
         execute :cp, '-r', 'vendor/assets/javascripts/ace', 'public/assets/'
       end
     end

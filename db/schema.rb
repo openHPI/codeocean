@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180202132034) do
+ActiveRecord::Schema.define(version: 20180222145909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -352,15 +352,15 @@ ActiveRecord::Schema.define(version: 20180202132034) do
   end
 
   create_table "user_exercise_feedbacks", force: :cascade do |t|
-    t.integer  "exercise_id",                                             null: false
-    t.integer  "user_id",                                                 null: false
-    t.string   "user_type",                                               null: false
+    t.integer  "exercise_id",             null: false
+    t.integer  "user_id",                 null: false
+    t.string   "user_type",               null: false
     t.integer  "difficulty"
     t.integer  "working_time_seconds"
     t.string   "feedback_text"
     t.integer  "user_estimated_worktime"
-    t.datetime "created_at",              default: '2018-01-30 17:39:22', null: false
-    t.datetime "updated_at",              default: '2018-01-30 17:39:22', null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "user_exercise_interventions", force: :cascade do |t|
