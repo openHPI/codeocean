@@ -14,7 +14,7 @@ gem 'highline'
 gem 'jbuilder'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
-gem 'ims-lti', '~> 1.1.0'
+gem 'ims-lti', '1.1.10'
 gem 'kramdown'
 gem 'newrelic_rpm'
 gem 'pg', '< 1.0', platform: :ruby
