@@ -124,8 +124,8 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.7.0)
     erubis (2.7.0)
-    eventmachine (1.2.5)
-    eventmachine (1.2.5-java)
+    eventmachine (1.0.9.1)
+    eventmachine (1.0.9.1-java)
     excon (0.60.0)
     execjs (2.7.0)
     factory_bot (4.8.2)
@@ -410,6 +410,7 @@ DEPENDENCIES
   d3-rails
   database_cleaner
   docker-api
+  eventmachine (= 1.0.9.1)
   factory_bot_rails
   faye-websocket
   forgery

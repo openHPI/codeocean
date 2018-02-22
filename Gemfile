@@ -14,7 +14,7 @@ gem 'highline'
 gem 'jbuilder'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
-gem 'ims-lti', '1.1.10'
+gem 'ims-lti', '1.1.10' # version 1.1.13 will crash, because @provider.valid_request?(request) on lti.rb line 89 will return false.
 gem 'kramdown'
 gem 'newrelic_rpm'
 gem 'pg', '< 1.0', platform: :ruby
@@ -37,6 +37,7 @@ gem 'uglifier'
 gem 'will_paginate'
 gem 'tubesock'
 gem 'faye-websocket'
+gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, version 1.25 still has an error in eventmachine.rb:202: [BUG] Segmentation fault, which is not yet fixed and causes the whole ruby process to crash
 gem 'nokogiri'
 gem 'd3-rails'
 gem 'rest-client'
