@@ -11,6 +11,10 @@ describe DockerClient, docker: true do
   let(:submission) { FactoryBot.create(:submission) }
   let(:workspace_path) { WORKSPACE_PATH }
 
+  before(:all) do
+    FileUtils.mkdir_p(WORKSPACE_PATH)
+  end
+
   after(:all) do
     FileUtils.rm_rf(WORKSPACE_PATH)
   end
