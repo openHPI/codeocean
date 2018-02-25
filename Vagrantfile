@@ -8,5 +8,5 @@ Vagrant.configure(2) do |config|
   end
   config.vm.network "private_network", ip: "192.168.59.104"
   # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.provision "shell", path: "provision.sh"
+  config.vm.provision "shell", path: "provision.sh", privileged: false
 end
