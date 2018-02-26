@@ -95,6 +95,8 @@ namespace :detect_exercise_anomalies do
   end
 
   def notify_users(collection, anomalies)
+    by_id_and_type = proc { |u| {user_id: u[:user_id], user_type: u[:user_type]} }
+
     puts "\t\tSending E-Mails to best and worst performing users of each anomaly..."
     anomalies.each do |exercise_id, average_working_time|
       puts "\t\tAnomaly in exercise #{exercise_id} (avg: #{average_working_time} seconds):"
@@ -107,33 +109,37 @@ namespace :detect_exercise_anomalies do
         users = users.merge(send(method, exercise, NUMBER_OF_USERS_PER_CLASS)) {|key, this, other| this + other}
       end
 
+      # write reasons for feedback emails to db
       users.keys.each do |key|
-        segment = users[key].uniq
-        puts "\t\t\t#{key.to_s} performers: #{segment}"
+        segment = users[key].uniq &by_id_and_type
         users_to_notify += segment
+        segment.each do |user|
+          reason = "{\"segment\": \"#{key.to_s}\", \"feature\": \"#{user[:reason]}\", value: \"#{user[:value]}\"}"
+          AnomalyNotification.create(user_id: user[:user_id], user_type: user[:user_type],
+                                     exercise: exercise, exercise_collection: collection, reason: reason)
+        end
       end
 
-      users_to_notify.uniq!
+      users_to_notify.uniq! &by_id_and_type
+      puts "\t\tAsked #{users_to_notify.size} users for feedback."
       # todo: send emails
     end
   end
 
   def performers_by_score(exercise, n)
-    submissions = exercise.last_submission_per_user.where('score is not null').order(:score)
-    best_performers = submissions.first(n).to_a.map {|item| item.user_id}
-    worst_performers = submissions.last(n).to_a.map {|item| item.user_id}
-
+    submissions = exercise.last_submission_per_user.where('score is not null').order(score: :desc)
+    map_block = proc {|item| {user_id: item.user_id, user_type: item.user_type, value: item.score, reason: 'score'}}
+    best_performers = submissions.first(n).to_a.map &map_block
+    worst_performers = submissions.last(n).to_a.map &map_block
     return {:best => best_performers, :worst => worst_performers}
   end
 
   def performers_by_time(exercise, n)
     working_times = get_user_working_times(exercise).values.map do |item|
-      {user_id: item['user_id'], time: time_to_f(item['working_time'])}
+      {user_id: item['user_id'], user_type: item['user_type'], value: time_to_f(item['working_time']), reason: 'time'}
     end
-    working_times.reject! {|item| item[:time].nil? or item[:time] <= MIN_USER_WORKING_TIME}
-    working_times.sort_by! {|item| item[:time]}
-
-    working_times.map! {|item| item[:user_id].to_i}
+    working_times.reject! {|item| item[:value].nil? or item[:value] <= MIN_USER_WORKING_TIME}
+    working_times.sort_by! {|item| item[:value]}
     return {:best => working_times.first(n), :worst => working_times.last(n)}
   end
 

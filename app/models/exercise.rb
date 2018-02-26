@@ -66,21 +66,24 @@ class Exercise < ActiveRecord::Base
   end
 
   def user_working_time_query
-    """
+    "
       SELECT user_id,
+             user_type,
              sum(working_time_new) AS working_time
       FROM
         (SELECT user_id,
+                user_type,
                 CASE WHEN working_time >= '0:05:00' THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT user_id,
+                    user_type,
                     id,
                     (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
             WHERE exercise_id=#{id}) AS foo) AS bar
-      GROUP BY user_id
-    """
+      GROUP BY user_id, user_type
+    "
   end
 
   def get_quantiles(quantiles)
@@ -203,7 +206,7 @@ class Exercise < ActiveRecord::Base
   def retrieve_working_time_statistics
     @working_time_statistics = {}
     self.class.connection.execute(user_working_time_query).each do |tuple|
-      @working_time_statistics[tuple["user_id"].to_i] = tuple
+      @working_time_statistics[tuple['user_id'].to_i] = tuple
     end
   end
 
@@ -373,6 +376,7 @@ class Exercise < ActiveRecord::Base
     Submission.joins("JOIN (
           SELECT
               user_id,
+              user_type,
               first_value(id) OVER (PARTITION BY user_id ORDER BY created_at DESC) AS fv
           FROM submissions
           WHERE exercise_id = #{id}

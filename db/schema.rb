@@ -11,10 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171210172208) do
+ActiveRecord::Schema.define(version: 20180226131340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "anomaly_notifications", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.integer  "exercise_id"
+    t.integer  "exercise_collection_id"
+    t.string   "reason"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "anomaly_notifications", ["exercise_collection_id"], name: "index_anomaly_notifications_on_exercise_collection_id", using: :btree
+  add_index "anomaly_notifications", ["exercise_id"], name: "index_anomaly_notifications_on_exercise_id", using: :btree
+  add_index "anomaly_notifications", ["user_type", "user_id"], name: "index_anomaly_notifications_on_user_type_and_user_id", using: :btree
 
   create_table "code_harbor_links", force: :cascade do |t|
     t.string   "oauth2token", limit: 255
