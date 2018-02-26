@@ -69,7 +69,8 @@ class UserExerciseFeedbacksController < ApplicationController
     @texts = comment_presets.to_a
     @times = time_presets.to_a
     @uef = UserExerciseFeedback.new
-    @exercise = Exercise.find(params[:user_exercise_feedback][:exercise_id])
+    exercise_id = if params[:user_exercise_feedback].nil? then params[:exercise_id] else params[:user_exercise_feedback][:exercise_id] end
+    @exercise = Exercise.find(exercise_id)
     authorize!
   end
 
