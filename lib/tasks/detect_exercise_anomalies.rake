@@ -1,4 +1,10 @@
+include Rails.application.routes.url_helpers
+
 namespace :detect_exercise_anomalies do
+  # uncomment for debug logging:
+  # logger           = Logger.new(STDOUT)
+  # logger.level     = Logger::DEBUG
+  # Rails.logger     = logger
 
   # These factors determine if an exercise is an anomaly, given the average working time (avg):
   # (avg * MIN_TIME_FACTOR) <= working_time <= (avg * MAX_TIME_FACTOR)
@@ -123,7 +129,8 @@ namespace :detect_exercise_anomalies do
       users_to_notify.uniq! &by_id_and_type
       users_to_notify.each do |u|
         user = u[:user_type] == InternalUser.name ? InternalUser.find(u[:user_id]) : ExternalUser.find(u[:user_id])
-        feedback_link = 'http://google.com'
+        host = CodeOcean::Application.config.action_mailer.default_url_options[:host]
+        feedback_link = url_for(action: :new, controller: :user_exercise_feedbacks, exercise_id: exercise.id, host: host)
         UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
       end
       puts "\t\tAsked #{users_to_notify.size} users for feedback."
