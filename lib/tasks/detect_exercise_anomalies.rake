@@ -121,8 +121,12 @@ namespace :detect_exercise_anomalies do
       end
 
       users_to_notify.uniq! &by_id_and_type
+      users_to_notify.each do |u|
+        user = u[:user_type] == InternalUser.name ? InternalUser.find(u[:user_id]) : ExternalUser.find(u[:user_id])
+        feedback_link = 'http://google.com'
+        UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
+      end
       puts "\t\tAsked #{users_to_notify.size} users for feedback."
-      # todo: send emails
     end
   end
 

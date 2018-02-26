@@ -44,4 +44,11 @@ class UserMailer < ActionMailer::Base
     @anomalies = anomalies
     mail(subject: t('mailers.user_mailer.exercise_anomaly_detected.subject'), to: exercise_collection.user.email)
   end
+
+  def exercise_anomaly_needs_feedback(user, exercise, link)
+    @receiver_displayname = user.displayname
+    @exercise_title = exercise.title
+    @link = link
+    mail(subject: t('mailers.user_mailer.exercise_anomaly_needs_feedback.subject'), to: user.email)
+  end
 end
