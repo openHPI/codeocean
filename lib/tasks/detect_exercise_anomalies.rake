@@ -99,24 +99,31 @@ namespace :detect_exercise_anomalies do
     anomalies.each do |exercise_id, average_working_time|
       puts "\t\tAnomaly in exercise #{exercise_id} (avg: #{average_working_time} seconds):"
       exercise = Exercise.find(exercise_id)
-      submissions = exercise.last_submission_per_user
+      users_to_notify = []
 
-      users = performers_by_score(submissions, NUMBER_OF_USERS_PER_CLASS)
-      users = users.merge(performers_by_time(exercise, NUMBER_OF_USERS_PER_CLASS)) {|key, this, other| this + other}
-
-      [:best, :average, :worst].each do |sym|
-        segment = users[sym].uniq
-        puts "\t\t\t#{sym.to_s} performers: #{segment}"
+      users = {}
+      [:performers_by_time, :performers_by_score].each do |method|
+        # merge users found by multiple methods returning a hash {best: [], worst: []}
+        users = users.merge(send(method, exercise, NUMBER_OF_USERS_PER_CLASS)) {|key, this, other| this + other}
       end
+
+      users.keys.each do |key|
+        segment = users[key].uniq
+        puts "\t\t\t#{key.to_s} performers: #{segment}"
+        users_to_notify += segment
+      end
+
+      users_to_notify.uniq!
+      # todo: send emails
     end
   end
 
-  def performers_by_score(submissions, n)
-    submissions = submissions.where('score is not null').order(:score)
+  def performers_by_score(exercise, n)
+    submissions = exercise.last_submission_per_user.where('score is not null').order(:score)
     best_performers = submissions.first(n).to_a.map {|item| item.user_id}
     worst_performers = submissions.last(n).to_a.map {|item| item.user_id}
 
-    return {:best => best_performers, :average => [], :worst => worst_performers}
+    return {:best => best_performers, :worst => worst_performers}
   end
 
   def performers_by_time(exercise, n)
@@ -127,7 +134,7 @@ namespace :detect_exercise_anomalies do
     working_times.sort_by! {|item| item[:time]}
 
     working_times.map! {|item| item[:user_id].to_i}
-    return {:best => working_times.first(n), :average => [], :worst => working_times.last(n)}
+    return {:best => working_times.first(n), :worst => working_times.last(n)}
   end
 
   def reset_anomaly_detection_flag(collection)
