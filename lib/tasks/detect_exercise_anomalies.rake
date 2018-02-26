@@ -147,9 +147,11 @@ namespace :detect_exercise_anomalies do
 
   def performers_by_time(exercise, n)
     working_times = get_user_working_times(exercise).values.map do |item|
-      {user_id: item['user_id'], user_type: item['user_type'], value: time_to_f(item['working_time']), reason: 'time'}
+      {user_id: item['user_id'], user_type: item['user_type'], score: item['score'].to_f,
+       value: time_to_f(item['working_time']), reason: 'time'}
     end
-    working_times.reject! {|item| item[:value].nil? or item[:value] <= MIN_USER_WORKING_TIME}
+    avg_score = exercise.average_score
+    working_times.reject! {|item| item[:value].nil? or item[:value] <= MIN_USER_WORKING_TIME or item[:score] < avg_score}
     working_times.sort_by! {|item| item[:value]}
     return {:best => working_times.first(n), :worst => working_times.last(n)}
   end

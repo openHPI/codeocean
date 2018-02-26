@@ -69,14 +69,17 @@ class Exercise < ActiveRecord::Base
     "
       SELECT user_id,
              user_type,
-             sum(working_time_new) AS working_time
+             SUM(working_time_new) AS working_time,
+             MAX(score) AS score
       FROM
         (SELECT user_id,
                 user_type,
+                score,
                 CASE WHEN working_time >= '0:05:00' THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT user_id,
                     user_type,
+                    score,
                     id,
                     (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
