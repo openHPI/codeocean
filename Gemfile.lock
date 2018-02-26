@@ -91,6 +91,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
+    capybara-selenium (0.0.6)
+      capybara
+      selenium-webdriver
     carrierwave (1.2.2)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
@@ -144,6 +147,7 @@ GEM
     forgery (0.7.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    headless (2.3.1)
     highline (1.7.10)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -404,6 +408,7 @@ DEPENDENCIES
   capistrano-upload-config
   capistrano3-puma
   capybara
+  capybara-selenium
   carrierwave
   codeclimate-test-reporter
   coffee-rails
@@ -416,6 +421,7 @@ DEPENDENCIES
   factory_bot_rails
   faye-websocket
   forgery
+  headless
   highline
   ims-lti (= 1.1.10)
   jbuilder
@@ -444,7 +450,6 @@ DEPENDENCIES
   rubyzip
   sass-rails
   sdoc
-  selenium-webdriver
   simplecov
   slim
   sorcery
