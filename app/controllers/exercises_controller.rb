@@ -28,10 +28,13 @@ class ExercisesController < ApplicationController
     1
   end
 
-  experimental_courses = {
-      "java17" => "702cbd2a-c84c-4b37-923a-692d7d1532d0",
-      "java1" => "0ea88ea9-979a-44a3-b0e4-84ba58e5a05e"
-  }
+  def experimental_courses
+    {
+        java17: "702cbd2a-c84c-4b37-923a-692d7d1532d0",
+        java1: "0ea88ea9-979a-44a3-b0e4-84ba58e5a05e"
+    }
+  end
+
 
   def experimental_course?(course_token)
     experimental_courses.has_value?(course_token)
@@ -183,23 +186,22 @@ class ExercisesController < ApplicationController
     user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day or user_got_intervention_in_exercise
     @is_experimental_course = @course_token and experimental_course?(@course_token)
 
-    user_intervention_group = UserGroupSeparator.getInterventionGroup(current_user)
-    @rfc_group = UserGroupSeparator.getRequestforCommentGroup(current_user)
+    @experiment_group = UserGroupSeparator.getInterventionGroup(current_user)
 
-    case user_intervention_group
-      when :no_intervention
+
+    case @experiment_group
+      # todo
+      when :no_intervention_hide_rfc
+        @hide_rfc_button = "true"
+      when :no_intervention_stale_rfc
       when :break_intervention
         @show_break_interventions = (is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
       when :rfc_intervention
         @show_rfc_interventions = (is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
     end
 
-    case rfc_group
-      when :hide_rfc
-        @hide_rfc_button = "true"
-      when :stale_rfc
-      when :show_rfc
-    end
+
+
 
     @search = Search.new
     @search.exercise = @exercise
@@ -232,7 +234,7 @@ class ExercisesController < ApplicationController
           end
     else
       # no consumer, therefore implementation with internal user
-      @course_token = java_course_token
+      @course_token = "702cbd2a-c84c-4b37-923a-692d7d1532d0"
     end
   end
   private :set_course_token

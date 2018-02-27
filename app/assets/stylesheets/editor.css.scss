@@ -47,8 +47,12 @@ button i.fa-spin {
     font-size: 80%;
   }
 
+  .button-two-only, .btn-group-two-only {
+    width: 50%;
+  }
+
   button, .btn-group {
-    width: 33.33333%;
+    width: 50%;
   }
 
   .btn-group {
