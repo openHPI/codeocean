@@ -416,6 +416,9 @@ class ExercisesController < ApplicationController
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
           flash.keep(:notice)
 
+          # increase counter 'times_featured' in rfc
+          rfc.increment!(:times_featured)
+
           respond_to do |format|
             format.html {redirect_to(rfc)}
             format.json {render(json: {redirect: url_for(rfc)})}

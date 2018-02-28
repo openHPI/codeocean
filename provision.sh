@@ -13,7 +13,7 @@ add-apt-repository ppa:chris-lea/node.js
 apt-get update
 
 # code_ocean
-apt-get install -y postgresql-client postgresql-9.5 postgresql-server-dev-9.5 vagrant
+apt-get install -y postgresql-client postgresql-10 postgresql-server-dev-10 vagrant
 
 # Docker
 if [ ! -f /etc/default/docker ]
@@ -49,18 +49,18 @@ apt-get install -y libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
 gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 curl -L https://get.rvm.io | bash -s stable
 source /etc/profile.d/rvm.sh
-rvm install 2.3.1
-rvm use 2.3.1 --default
+rvm install 2.3.6
+rvm use 2.3.6 --default
 ruby -v
 
 # rails
 apt-get -y install nodejs
-gem install rails -v 4.2.1
+gem install rails -v 4.2.10
 
 # drop postgres access control
-if  ! grep -q code_ocean /etc/postgresql/9.5/main/pg_hba.conf
+if  ! grep -q code_ocean /etc/postgresql/10/main/pg_hba.conf
 then
-  cat >/etc/postgresql/9.3/main/pg_hba.conf <<EOF
+  cat >/etc/postgresql/10/main/pg_hba.conf <<EOF
 # code_ocean: drop access control
 local all all trust
 host  all all 127.0.0.1/32 trust
@@ -110,7 +110,7 @@ passenger_root /usr/lib/ruby/vendor_ruby/phusion_passenger/locations.ini;
 server {
     server_name codeocean.local;
     root /vagrant/public;
-    passenger_ruby /usr/local/rvm/gems/ruby-2.1.5/wrappers/ruby;
+    passenger_ruby /usr/local/rvm/gems/ruby-2.3.6/wrappers/ruby;
     passenger_sticky_sessions on;
     passenger_enabled on;
     passenger_app_env development;

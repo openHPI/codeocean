@@ -27,6 +27,9 @@ h1 = RequestForComment.model_name.human(count: 2)
           - if request_for_comment.solved?
             td
               span class="fa fa-check" aria-hidden="true"
+          - elsif request_for_comment.full_score_reached
+            td
+              span class="fa fa-check" style="color:darkgrey" aria-hidden="true"
           - else
             td = ''
           td = link_to(request_for_comment.exercise.title, request_for_comment)

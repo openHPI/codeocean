@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180226131340) do
+ActiveRecord::Schema.define(version: 20180222145909) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -291,16 +291,18 @@ ActiveRecord::Schema.define(version: 20180226131340) do
   end
 
   create_table "request_for_comments", force: :cascade do |t|
-    t.integer  "user_id",                                    null: false
-    t.integer  "exercise_id",                                null: false
-    t.integer  "file_id",                                    null: false
+    t.integer  "user_id",                                        null: false
+    t.integer  "exercise_id",                                    null: false
+    t.integer  "file_id",                                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "user_type",      limit: 255
+    t.string   "user_type",          limit: 255
     t.text     "question"
-    t.boolean  "solved",                     default: false
+    t.boolean  "solved",                         default: false
     t.integer  "submission_id"
     t.text     "thank_you_note"
+    t.boolean  "full_score_reached",             default: false
+    t.integer  "times_featured",                 default: 0
   end
 
   create_table "searches", force: :cascade do |t|
@@ -326,7 +328,10 @@ ActiveRecord::Schema.define(version: 20180226131340) do
     t.integer  "file_id"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.integer  "submission_id"
   end
+
+  add_index "structured_errors", ["submission_id"], name: "index_structured_errors_on_submission_id", using: :btree
 
   create_table "submissions", force: :cascade do |t|
     t.integer  "exercise_id"
@@ -368,15 +373,15 @@ ActiveRecord::Schema.define(version: 20180226131340) do
   end
 
   create_table "user_exercise_feedbacks", force: :cascade do |t|
-    t.integer  "exercise_id",                                             null: false
-    t.integer  "user_id",                                                 null: false
-    t.string   "user_type",                                               null: false
+    t.integer  "exercise_id",             null: false
+    t.integer  "user_id",                 null: false
+    t.string   "user_type",               null: false
     t.integer  "difficulty"
     t.integer  "working_time_seconds"
     t.string   "feedback_text"
     t.integer  "user_estimated_worktime"
-    t.datetime "created_at",              default: '2017-11-20 18:20:25', null: false
-    t.datetime "updated_at",              default: '2017-11-20 18:20:25', null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "user_exercise_interventions", force: :cascade do |t|

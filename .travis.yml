@@ -5,20 +5,18 @@ services:
 
 addons:
   code_climate:
-    repo_token: 53a2c2608c848714e96f6a1fc0365dcfdfec051f7827d50cea965ea625f49734
-  postgresql: "9.5"
+    repo_token:
+      secure: "cZoMNjQKB/D7W4B7JDk9PXooy2WCDypu7R4C/Vi0DziZCU9HRwLbdt9aoH5hgHFa7Fe2rHFgflPAAP7h698ozvP0waFtPqLAj+PbEt27LbBDvW8JcvNkKXA0rj5wyTkzuc/0kD+kPB4oDXMak6gZlB9HCJDsa3kdXScQGTVuPdU="
+  postgresql: "9.6"
 
 before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
-#  Config to run docker tests - doesn't work so far
-#  - sudo apt-get update
-#  - sudo apt-get upgrade lxc-docker
-#  - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:4243 -H unix:///var/run/docker.sock --iptables=false"' | sudo tee /etc/default/docker > /dev/null
-#  - export DOCKER_HOST=tcp://192.168.23.75:2375
-#  - sudo service docker restart
-#  - sleep 5
-#  - docker pull openhpi/docker_ruby
+  - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2376 -H unix:///var/run/docker.sock --iptables=false"' | sudo tee /etc/default/docker > /dev/null
+  - sudo service docker restart
+  - sleep 5
+  - docker pull openhpi/co_execenv_python
+  - docker pull openhpi/co_execenv_java
 
 before_script:
   - cp .rspec.travis .rspec
@@ -26,18 +24,13 @@ before_script:
   - cp config/code_ocean.yml.travis config/code_ocean.yml
   - cp config/database.yml.travis config/database.yml
   - cp config/secrets.yml.travis config/secrets.yml
+  - cp config/docker.yml.erb.travis config/docker.yml.erb
   - psql --command='CREATE DATABASE travis_ci_test;' --username=postgres
   - bundle exec rake db:schema:load RAILS_ENV=test
 
 cache: bundler
 language: ruby
 rvm:
-- 2.3.1
-# - 2.1.5
-# - 2.2.1
+- 2.3.6
   
-script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper --tag ~docker
-# one of the solutions I've found
-#  - sudo docker run --rm=true -v `pwd`:/ansible-apache:rw weldpua2008/docker-ansible:${OS_TYPE}${OS_VERSION}_v${ANSIBLE_VERSION} /bin/bash -c "/ansible-apache/tests/test-in-docker-image.sh ${OS_TYPE} ${OS_VERSION} ${ANSIBLE_VERSION}"
-
-
+script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper && bundle exec codeclimate-test-reporter
