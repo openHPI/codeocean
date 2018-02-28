@@ -1,3 +1,8 @@
+#flash-container {
+  position: relative;
+  top: -21px;
+}
+
 .flash {
   display: none;
 
@@ -10,14 +15,10 @@
 }
 
 .fixed_error_messages {
-  position: fixed;
+  position: absolute;
   z-index: 1000;
-  top: 20px;
-  left: 0;
+  padding: inherit;
   width: 100%;
-  padding-left: 10%;
-  padding-right: 10%;
-  padding-top: 0;
 }
 
 

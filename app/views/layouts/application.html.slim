@@ -32,8 +32,8 @@ html lang='en'
             li = link_to(t('shared.help.link'), '#modal-help', data: {toggle: 'modal'})
             = render('session')
     .container data-controller=controller_name
-      = render('breadcrumbs')
       = render('flash')
+      = render('breadcrumbs')
     - if (controller_name == "exercises" && action_name == "implement")
       .container-fluid
         = yield
