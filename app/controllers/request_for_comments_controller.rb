@@ -22,6 +22,7 @@ class RequestForCommentsController < ApplicationController
     authorize!
   end
 
+  # GET /my_request_for_comments
   def get_my_comment_requests
     @search = RequestForComment
                   .with_last_activity
@@ -33,6 +34,7 @@ class RequestForCommentsController < ApplicationController
     render 'index'
   end
 
+  # GET /my_rfc_activity
   def get_rfcs_with_my_comments
     @search = RequestForComment
                   .with_last_activity
@@ -45,6 +47,7 @@ class RequestForCommentsController < ApplicationController
     render 'index'
   end
 
+  # GET /request_for_comments/1/mark_as_solved
   def mark_as_solved
     authorize!
     @request_for_comment.solved = true
@@ -57,6 +60,7 @@ class RequestForCommentsController < ApplicationController
     end
   end
 
+  # POST /request_for_comments/1/set_thank_you_note
   def set_thank_you_note
     authorize!
     @request_for_comment.thank_you_note = params[:note]
@@ -71,10 +75,6 @@ class RequestForCommentsController < ApplicationController
         format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
       end
     end
-  end
-
-  def submit
-
   end
 
   # GET /request_for_comments/1
@@ -137,10 +137,6 @@ class RequestForCommentsController < ApplicationController
     authorize!
   end
 
-  def comment_params
-    params.permit(:exercise_id, :feedback_text).merge(user_id: current_user.id, user_type: current_user.class.name)
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_request_for_comment
@@ -151,6 +147,10 @@ class RequestForCommentsController < ApplicationController
     def request_for_comment_params
       # we are using the current_user.id here, since internal users are not able to create comments. The external_user.id is a primary key and does not require the consumer_id to be unique.
       params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name)
+    end
+
+    def comment_params
+      params.permit(:exercise_id, :feedback_text).merge(user_id: current_user.id, user_type: current_user.class.name)
     end
 
 end
