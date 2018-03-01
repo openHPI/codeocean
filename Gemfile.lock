@@ -31,6 +31,7 @@ GEM
       activemodel (= 4.2.10)
       activesupport (= 4.2.10)
       arel (~> 6.0)
+    activerecord-deprecated_finders (1.0.4)
     activerecord-jdbc-adapter (50.0)
       activerecord (>= 2.2)
     activerecord-jdbcpostgresql-adapter (50.0)
@@ -388,6 +389,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-deprecated_finders
   activerecord-jdbcpostgresql-adapter
   autotest-rails
   bcrypt
