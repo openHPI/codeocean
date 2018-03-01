@@ -167,7 +167,7 @@ class SubmissionsController < ApplicationController
           # if the command is 'client_kill', send it to docker otherwise.
           begin
             parsed = JSON.parse(data)
-            if parsed['cmd'] == 'client_kill'
+            if parsed.class == Hash && parsed['cmd'] == 'client_kill'
               Rails.logger.debug("Client exited container.")
               @docker_client.kill_container(result[:container])
             else
