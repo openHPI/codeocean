@@ -47,24 +47,35 @@ module Proforma
 
     def get_filetype_from_filename_attribute(filename_attribute)
 
-      filename = filename_attribute.try(:value)
-      if filename
+      if filename_attribute
+        filename = filename_attribute.value
+        if filename.include? '/'
+          name_with_type = filename.split(/\/(?=[^\/]*$)/).second
+        else
+          name_with_type = filename
+        end
         if name_with_type.include? '.'
-          type = name_with_type.split(/(.*)\.([^.]*)$/).second
-          FileType.find_by(file_extension: ".#{type}")
+          type = name_with_type.split('.').second
+          return FileType.find_by(file_extension: ".#{type}")
         end
       end
-      return nil
+      return FileType.find_by(name: 'Makefile')
     end
 
     def get_filename_from_filename_attribute(filename_attribute)
 
-      filename = filename_attribute.try(:value)
-      if filename
-        name_with_type = filename.include? '/' ?
-          filename.split (/\/(?=[^\/]*$)/).second : filename
-        name = name_with_type.include? '.' ?
-          name_with_type.split('.').first : name_with_type
+      if filename_attribute
+        filename = filename_attribute.value
+        if filename.include? '/'
+          name_with_type = filename.split(/\/(?=[^\/]*$)/).second
+        else
+          name_with_type = filename
+        end
+        if name_with_type.include? '.'
+          name = name_with_type.split('.').first
+        else
+          name = name_with_type
+        end
         return name
       else
         ''
@@ -73,10 +84,10 @@ module Proforma
 
     def get_path_from_filename_attribute(filename_attribute)
 
-      filename = filename_attribute.try(:value)
-      if filename
+      if filename_attribute
+        filename = filename_attribute.value
         if filename.include? '/'
-          path  = filename.split (/\/(?=[^\/]*$)/).first
+          path = filename.split(/\/(?=[^\/]*$)/).first
           return path
         end
       end

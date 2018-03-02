@@ -47,7 +47,7 @@ describe Proforma::Importer do
 
       it 'has valid regular file' do
         file = exercise.files.find_by(role: 'regular_file')
-        imported_file = imported_exercise.files.find_by(role: 'regular_file')
+        imported_file = imported_exercise.files.find_by(name: 'explanation')
         expect(imported_file).not_to be_nil
         expect(file.name).to eq imported_file.name
         expect(file.file_type_id).to eq imported_file.file_type_id

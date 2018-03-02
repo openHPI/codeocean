@@ -201,7 +201,7 @@ FactoryBot.define do
     instructions
     title 'Codeharbor Export Test'
     after(:create) do |exercise|
-      create_seed_file(exercise, 'codeharbor_test/hello_world.java', role: 'main_file')
+      create_seed_file(exercise, 'codeharbor_test/hello_world.java', role: 'main_file', path: 'source/main')
       create_seed_file(exercise, 'codeharbor_test/explanation.txt', role: 'regular_file')
       create_seed_file(exercise, 'codeharbor_test/user_test.java', role: 'user_defined_test')
       create_seed_file(exercise, 'codeharbor_test/solution.java', hidden: true, role: 'reference_implementation')
