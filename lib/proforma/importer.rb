@@ -46,54 +46,41 @@ module Proforma
     end
 
     def get_filetype_from_filename_attribute(filename_attribute)
-      type = ''
-      if filename_attribute
-        filename = filename_attribute.value
-        if filename.include? '/'
-          path_name_split = filename.split (/\/(?=[^\/]*$)/)
-          name_with_type = path_name_split.second
-        else
-          name_with_type = filename
-        end
+
+      filename = filename_attribute.try(:value)
+      if filename
         if name_with_type.include? '.'
-          name_type_split = name_with_type.split('.')
-          type = name_type_split.second
+          type = name_with_type.split(/(.*)\.([^.]*)$/).second
+          FileType.find_by(file_extension: ".#{type}")
         end
       end
-      FileType.find_by(file_extension: ".#{type}")
+      return nil
     end
 
     def get_filename_from_filename_attribute(filename_attribute)
-      if filename_attribute
-        filename = filename_attribute.value
-        if filename.include? '/'
-          path_name_split = filename.split (/\/(?=[^\/]*$)/)
-          name_with_type = path_name_split.second
-        else
-          name_with_type = filename
-        end
-        if name_with_type.include? '.'
-          name_type_split = name_with_type.split('.')
-          name = name_type_split.first
-        else
-          name = name_with_type
-        end
+
+      filename = filename_attribute.try(:value)
+      if filename
+        name_with_type = filename.include? '/' ?
+          filename.split (/\/(?=[^\/]*$)/).second : filename
+        name = name_with_type.include? '.' ?
+          name_with_type.split('.').first : name_with_type
+        return name
       else
-        name = ''
+        ''
       end
-      name
     end
 
     def get_path_from_filename_attribute(filename_attribute)
-      path = ''
-      if filename_attribute
-        filename = filename_attribute.value
+
+      filename = filename_attribute.try(:value)
+      if filename
         if filename.include? '/'
-          path_name_split = filename.split (/\/(?=[^\/]*$)/)
-          path = path_name_split.first
+          path  = filename.split (/\/(?=[^\/]*$)/).first
+          return path
         end
       end
-      path
+      ''
     end
 
     def determine_file_role_from_proforma_file(xml, file)

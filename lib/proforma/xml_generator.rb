@@ -10,27 +10,43 @@ module Proforma
       return xml
     end
 
+    def build_proforma_xml_for_head(xml)
+      proforma = xml['p']
+      proforma.description {
+        proforma.cdata(@exercise.description)
+      }
+      execution_environment = @exercise.execution_environment.name.split
+      proforma.proglang(execution_environment.first, 'version' => execution_environment.second)
+      proforma.send('submission-restrictions') {
+        proforma.send('files-restriction') {
+          proforma.send('optional', 'filename' => '')
+        }
+      }
+    end
+
+    def build_proforma_xml_for_single_file(xml, file)
+      if file.role == 'main_file'
+        proforma_file_class = 'template'
+        comment = 'main'
+      else
+        proforma_file_class = 'internal'
+        comment = ''
+      end
+      xml['p'].file(
+          'filename' => file.full_file_name,
+          'id' => file.id,
+          'class' => proforma_file_class,
+          'comment' => comment
+      ) {
+        xml.cdata(file.content)
+      }
+    end
+
     def build_proforma_xml_for_exercise_files(xml)
       proforma = xml['p']
       proforma.files {
-
         @exercise.files.all? { |file|
-          if file.role == 'main_file'
-            proforma_file_class = 'template'
-            comment = 'main'
-          else
-            proforma_file_class = 'internal'
-            comment = ''
-          end
-
-          proforma.file(
-              'filename' => file.full_file_name,
-              'id' => file.id,
-              'class' => proforma_file_class,
-              'comment' => comment
-          ) {
-            xml.cdata(file.content)
-          }
+          build_proforma_xml_for_single_file(xml, file)
         }
 
         ### Set Placeholder file for placeholder solution-file and tests if there aren't any
@@ -51,7 +67,7 @@ module Proforma
               proforma.filerefs {
                 proforma.fileref('refid' => test.id.to_s)
               }
-              xml['u'].unittest('framework' => @exercise.testing_framework.first, 'version' => @exercise.testing_framework.second)
+              xml['u'].unittest('framework' => testing_framework.first, 'version' => testing_framework.second)
               xml['c'].send('feedback-message') {
                 xml.cdata(test.feedback_message)
               }
@@ -101,23 +117,10 @@ module Proforma
         proforma = xml['p']
         proforma.task('xmlns:p' => 'urn:proforma:task:v1.1', 'lang' => 'de', 'uuid' => SecureRandom.uuid,
                       'xmlns:u' => 'urn:proforma:tests:unittest:v1.1', 'xmlns:c' => 'codeharbor'){
-          proforma.description {
-            proforma.cdata(@exercise.description)
-          }
-          execution_environment = @exercise.execution_environment.name.split
-          proforma.proglang(execution_environment.first, 'version' => execution_environment.second)
-          proforma.send('submission-restrictions') {
-            proforma.send('files-restriction') {
-              proforma.send('optional', 'filename' => '')
-            }
-          }
-
+          build_proforma_xml_for_head(xml)
           build_proforma_xml_for_exercise_files(xml)
-
           build_proforma_xml_for_model_solutions(xml)
-
           build_proforma_xml_for_tests(xml)
-
           #xml['p'].send('grading-hints', 'max-rating' => @exercise.maxrating.to_s)
           proforma.send('meta-data') {
             proforma.title(@exercise.title)
