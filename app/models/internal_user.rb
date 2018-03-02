@@ -24,4 +24,8 @@ class InternalUser < ActiveRecord::Base
     name
   end
 
+  def codeharbor_links
+    CodeHarborLink.where(user_id: self)
+  end
+
 end

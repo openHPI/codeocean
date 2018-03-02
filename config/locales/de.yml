@@ -356,7 +356,7 @@ de:
         time_difference: 'Arbeitszeit bis hier*'
         addendum: '* Differenzen von mehr als 10 Minuten werden ignoriert.'
     push_proforma_xml:
-      button: "Übung exportieren"
+      button: "Exportieren nach Codeharbor"
       notice: "Übung exportiert nach %{link}"
     import_proforma_xml:
       success: "Übung wurde erfolgreich exportiert"

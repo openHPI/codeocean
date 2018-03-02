@@ -194,6 +194,21 @@ FactoryBot.define do
     end
   end
 
+  factory :codeharbor_test, class: Exercise do
+    created_by_teacher
+    description 'This is a test-exercise for export to codeharbor. All important fields are set. Replace the x with the right word.'
+    association :execution_environment, factory: :java
+    instructions
+    title 'Codeharbor Export Test'
+    after(:create) do |exercise|
+      create_seed_file(exercise, 'codeharbor_test/hello_world.java', role: 'main_file')
+      create_seed_file(exercise, 'codeharbor_test/explanation.txt', role: 'regular_file')
+      create_seed_file(exercise, 'codeharbor_test/user_test.java', role: 'user_defined_test')
+      create_seed_file(exercise, 'codeharbor_test/solution.java', hidden: true, role: 'reference_implementation')
+      create_seed_file(exercise, 'codeharbor_test/test.java', feedback_message: 'Your solution is not correct yet.', hidden: true, role: 'teacher_defined_test')
+    end
+  end
+
   trait :instructions do
     instructions { Forgery(:lorem_ipsum).words(Forgery(:basic).number(at_least: 50, at_most: 100)) }
   end

@@ -1,4 +1,6 @@
 require 'oauth2'
+require 'proforma/importer'
+require 'proforma/xml_generator'
 
 class ExercisesController < ApplicationController
   include CommonBehavior
@@ -113,7 +115,9 @@ class ExercisesController < ApplicationController
     oauth2Client = OAuth2::Client.new('client_id', 'client_secret', :site => codeharbor_link.push_url)
     oauth2token = codeharbor_link[:oauth2token]
     token = OAuth2::AccessToken.from_hash(oauth2Client, :access_token => oauth2token)
-    token.post(codeharbor_link.push_url, {body: @exercise.to_proforma_xml})
+    xml_generator = Proforma::XmlGenerator.new
+    xml_document = xml_generator.generate_xml(@exercise)
+    token.post(codeharbor_link.push_url, {body: xml_document})
     redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
   end
 
@@ -122,7 +126,8 @@ class ExercisesController < ApplicationController
       user = user_for_oauth2_request()
       exercise = Exercise.new
       request_body = request.body.read
-      exercise.from_proforma_xml(request_body)
+      importer = Proforma::Importer.new
+      exercise = importer.from_proforma_xml(exercise, request_body)
       exercise.user = user
       saved = exercise.save
       if saved
