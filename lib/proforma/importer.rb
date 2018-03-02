@@ -45,17 +45,29 @@ module Proforma
       end
     end
 
+    def split_up_filename(filename)
+      if filename.include? '/'
+        name_with_type = filename.split(/\/(?=[^\/]*$)/).second
+        path = filename.split(/\/(?=[^\/]*$)/).first
+      else
+        name_with_type = filename
+        path = ''
+      end
+      if name_with_type.include? '.'
+        name  = name_with_type.second.split('.').first
+        type = name_with_type.second.split('.').second
+      else
+        name = name_with_type
+        type = ''
+      end
+      return path, name, type
+    end
+
     def get_filetype_from_filename_attribute(filename_attribute)
 
       if filename_attribute
-        filename = filename_attribute.value
-        if filename.include? '/'
-          name_with_type = filename.split(/\/(?=[^\/]*$)/).second
-        else
-          name_with_type = filename
-        end
-        if name_with_type.include? '.'
-          type = name_with_type.split('.').second
+        type = split_up_filename(filename_attribute.value).third
+        if type != ''
           return FileType.find_by(file_extension: ".#{type}")
         end
       end
@@ -65,17 +77,7 @@ module Proforma
     def get_filename_from_filename_attribute(filename_attribute)
 
       if filename_attribute
-        filename = filename_attribute.value
-        if filename.include? '/'
-          name_with_type = filename.split(/\/(?=[^\/]*$)/).second
-        else
-          name_with_type = filename
-        end
-        if name_with_type.include? '.'
-          name = name_with_type.split('.').first
-        else
-          name = name_with_type
-        end
+        name = split_up_filename(filename_attribute.value).second
         return name
       else
         ''
@@ -85,11 +87,7 @@ module Proforma
     def get_path_from_filename_attribute(filename_attribute)
 
       if filename_attribute
-        filename = filename_attribute.value
-        if filename.include? '/'
-          path = filename.split(/\/(?=[^\/]*$)/).first
-          return path
-        end
+        path = split_up_filename(filename_attribute.value).first
       end
       ''
     end
