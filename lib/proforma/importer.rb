@@ -29,44 +29,71 @@ module Proforma
       xml.xpath('/p:task/p:files/p:file').each do |file|
         role = determine_file_role_from_proforma_file(xml, file)
         filename_attribute = file.xpath('@filename').first
-        if filename_attribute
-          filename = filename_attribute.value
-          if filename.include? '/'
-            path_name_split = filename.split (/\/(?=[^\/]*$)/)
-            path = path_name_split.first
-            name_with_type = path_name_split.second
-          else
-            path = ''
-            name_with_type = filename
-          end
-          if name_with_type.include? '.'
-            name_type_split = name_with_type.split('.')
-            name = name_type_split.first
-            type = name_type_split.second
-          else
-            name = name_with_type
-            type = ''
-          end
-        else
-          path = ''
-          name = ''
-          type = ''
-        end
-
         file_id = file.xpath('@id').first.value
         file_class = file.xpath('@class').first.value
         content = file.text
         feedback_message = xml.xpath("//p:test/p:test-configuration/p:filerefs/p:fileref[@refid='#{file_id}']/../../c:feedback-message").text
         @exercise.files.build({
                         content: content,
-                        name: name,
-                        path: path,
-                        file_type: FileType.find_by(file_extension: ".#{type}"),
+                        name: get_filename_from_filename_attribute(filename_attribute),
+                        path: get_path_from_filename_attribute(filename_attribute),
+                        file_type: get_filetype_from_filename_attribute(filename_attribute),
                         role: role,
                         feedback_message: (role == 'teacher_defined_test') ? feedback_message : nil,
                         hidden: file_class == 'internal',
                         read_only: false })
       end
+    end
+
+    def get_filetype_from_filename_attribute(filename_attribute)
+      type = ''
+      if filename_attribute
+        filename = filename_attribute.value
+        if filename.include? '/'
+          path_name_split = filename.split (/\/(?=[^\/]*$)/)
+          name_with_type = path_name_split.second
+        else
+          name_with_type = filename
+        end
+        if name_with_type.include? '.'
+          name_type_split = name_with_type.split('.')
+          type = name_type_split.second
+        end
+      end
+      FileType.find_by(file_extension: ".#{type}")
+    end
+
+    def get_filename_from_filename_attribute(filename_attribute)
+      if filename_attribute
+        filename = filename_attribute.value
+        if filename.include? '/'
+          path_name_split = filename.split (/\/(?=[^\/]*$)/)
+          name_with_type = path_name_split.second
+        else
+          name_with_type = filename
+        end
+        if name_with_type.include? '.'
+          name_type_split = name_with_type.split('.')
+          name = name_type_split.first
+        else
+          name = name_with_type
+        end
+      else
+        name = ''
+      end
+      name
+    end
+
+    def get_path_from_filename_attribute(filename_attribute)
+      path = ''
+      if filename_attribute
+        filename = filename_attribute.value
+        if filename.include? '/'
+          path_name_split = filename.split (/\/(?=[^\/]*$)/)
+          path = path_name_split.first
+        end
+      end
+      path
     end
 
     def determine_file_role_from_proforma_file(xml, file)
@@ -75,15 +102,17 @@ module Proforma
       comment = file.xpath('@comment').first.try(:value)
       is_referenced_by_test = xml.xpath("//p:test/p:test-configuration/p:filerefs/p:fileref[@refid='#{file_id}']")
       is_referenced_by_model_solution = xml.xpath("//p:model-solution/p:filerefs/p:fileref[@refid='#{file_id}']")
-      if !is_referenced_by_test.empty? && (file_class == 'internal')
-        return 'teacher_defined_test'
-      elsif !is_referenced_by_model_solution.empty? && (file_class == 'internal')
-        return 'reference_implementation'
+      if is_referenced_by_test.any? && (file_class == 'internal')
+        'teacher_defined_test'
+      elsif is_referenced_by_model_solution.any? && (file_class == 'internal')
+        'reference_implementation'
       elsif (file_class == 'template') && (comment == 'main')
-        return 'main_file'
+        'main_file'
       elsif (file_class == 'internal') && (comment == 'main')
+        ''
+      else
+        'regular_file'
       end
-      return 'regular_file'
     end
   end
 end

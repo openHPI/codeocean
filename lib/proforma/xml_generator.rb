@@ -10,48 +10,76 @@ module Proforma
       return xml
     end
 
-    def build_proforma_xml_for_exercise_file(xml, exercise_file)
-      if exercise_file.role == 'main_file'
-        proforma_file_class = 'template'
-        comment = 'main'
-      else
-        proforma_file_class = 'internal'
-        comment = ''
-      end
+    def build_proforma_xml_for_exercise_files(xml)
+      proforma = xml['p']
+      proforma.files {
 
-      xml['p'].file(
-          'filename' => exercise_file.full_file_name,
-          'id' => exercise_file.id,
-          'class' => proforma_file_class,
-          'comment' => comment
-      ) {
-        xml.cdata(exercise_file.content)
+        @exercise.files.all? { |file|
+          if file.role == 'main_file'
+            proforma_file_class = 'template'
+            comment = 'main'
+          else
+            proforma_file_class = 'internal'
+            comment = ''
+          end
+
+          proforma.file(
+              'filename' => file.full_file_name,
+              'id' => file.id,
+              'class' => proforma_file_class,
+              'comment' => comment
+          ) {
+            xml.cdata(file.content)
+          }
+        }
+
+        ### Set Placeholder file for placeholder solution-file and tests if there aren't any
+        if model_solution_files.blank?
+          proforma.file('', 'id' => '0', 'class' => 'internal')
+        end
       }
     end
 
-    def build_proforma_xml_for_test(xml, test, index)
+    def build_proforma_xml_for_tests(xml)
       proforma = xml['p']
-      proforma.test('id' => 't' + index.to_s) {
-        proforma.title('')
-        proforma.send('test-type', 'unittest')
-        proforma.send('test-configuration') {
-          proforma.filerefs {
-            proforma.fileref('refid' => test.id.to_s)
-          }
-          xml['u'].unittest('framework' => @exercise.testing_framework.first, 'version' => @exercise.testing_framework.second)
-          xml['c'].send('feedback-message') {
-            xml.cdata(test.feedback_message)
+      proforma.tests {
+        tests.each_with_index { |test, index|
+          proforma.test('id' => 't' + index.to_s) {
+            proforma.title('')
+            proforma.send('test-type', 'unittest')
+            proforma.send('test-configuration') {
+              proforma.filerefs {
+                proforma.fileref('refid' => test.id.to_s)
+              }
+              xml['u'].unittest('framework' => @exercise.testing_framework.first, 'version' => @exercise.testing_framework.second)
+              xml['c'].send('feedback-message') {
+                xml.cdata(test.feedback_message)
+              }
+            }
           }
         }
       }
     end
 
-    def build_proforma_xml_for_model_solution(xml, model_solution_file, index)
+    def build_proforma_xml_for_model_solutions(xml)
       proforma = xml['p']
-      proforma.send('model-solution', 'id' => 'm' + index.to_s) {
-        proforma.filerefs {
-          proforma.fileref('refid' => model_solution_file.id.to_s)
-        }
+      proforma.send('model-solutions') {
+        if model_solution_files.any?
+          model_solution_files.each_with_index { |model_solution_file, index|
+            proforma = xml['p']
+            proforma.send('model-solution', 'id' => 'm' + index.to_s) {
+              proforma.filerefs {
+                proforma.fileref('refid' => model_solution_file.id.to_s)
+              }
+            }
+          }
+        else ##Placeholder solution_file if there aren't any
+          proforma.send('model-solution', 'id' => 'm0') {
+            proforma.filerefs {
+              proforma.fileref('refid' => '0')
+            }
+          }
+        end
       }
     end
 
@@ -83,40 +111,14 @@ module Proforma
               proforma.send('optional', 'filename' => '')
             }
           }
-          proforma.files {
 
-            @exercise.files.all? { |file|
-              build_proforma_xml_for_exercise_file(xml, file)
-            }
+          build_proforma_xml_for_exercise_files(xml)
 
-            ### Set Placeholder file for placeholder solution-file and tests if there aren't any
-            if model_solution_files.blank?
-              proforma.file('', 'id' => '0', 'class' => 'internal')
-            end
-          }
+          build_proforma_xml_for_model_solutions(xml)
 
-          proforma.send('model-solutions') {
+          build_proforma_xml_for_tests(xml)
 
-            if model_solution_files.any?
-              model_solution_files.each_with_index { |model_solution_file, index|
-                build_proforma_xml_for_model_solution(xml, model_solution_file, index)
-              }
-            else ##Placeholder solution_file if there aren't any
-              proforma.send('model-solution', 'id' => 'm0') {
-                proforma.filerefs {
-                  proforma.fileref('refid' => '0')
-                }
-              }
-            end
-          }
-
-          proforma.tests {
-            tests.each_with_index { |test, index|
-              build_proforma_xml_for_test(proforma, test, index)
-            }
-          }
           #xml['p'].send('grading-hints', 'max-rating' => @exercise.maxrating.to_s)
-
           proforma.send('meta-data') {
             proforma.title(@exercise.title)
           }
