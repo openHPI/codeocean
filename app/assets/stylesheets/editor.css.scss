@@ -42,13 +42,14 @@ button i.fa-spin {
   background-color: #008CBA;
   margin-top: 0;
   width: 100%;
+  display: flex;
 
   button {
     font-size: 80%;
   }
 
   button, .btn-group {
-    width: 33.33333%;
+    flex-grow: 1;
   }
 
   .btn-group {
