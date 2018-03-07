@@ -2,12 +2,22 @@ require 'rails_helper'
 require 'seeds_helper'
 
 describe DockerClient, docker: true do
+  WORKSPACE_PATH = '/tmp/code_ocean_test'
+
   let(:command) { 'whoami' }
   let(:docker_client) { described_class.new(execution_environment: FactoryBot.build(:java), user: FactoryBot.build(:admin)) }
   let(:execution_environment) { FactoryBot.build(:java) }
   let(:image) { double }
   let(:submission) { FactoryBot.create(:submission) }
-  let(:workspace_path) { '/tmp' }
+  let(:workspace_path) { WORKSPACE_PATH }
+
+  before(:all) do
+    FileUtils.mkdir_p(WORKSPACE_PATH)
+  end
+
+  after(:all) do
+    FileUtils.rm_rf(WORKSPACE_PATH)
+  end
 
   describe '.check_availability!' do
     context 'when a socket error occurs' do
@@ -129,7 +139,7 @@ describe DockerClient, docker: true do
     after(:each) { docker_client.send(:create_workspace_files, container, submission) }
 
     it 'creates submission-specific directories' do
-      expect(Dir).to receive(:mkdir).at_least(:once)
+      expect(Dir).to receive(:mkdir).at_least(:once).and_call_original
     end
 
     it 'copies binary files' do

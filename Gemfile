@@ -7,6 +7,7 @@ gem 'carrierwave'
 gem 'coffee-rails'
 gem 'concurrent-ruby'
 gem 'concurrent-ruby-ext', platform: :ruby
+gem 'activerecord-deprecated_finders', require: 'active_record/deprecated_finders'
 gem 'docker-api', require: 'docker'
 gem 'factory_bot_rails'
 gem 'forgery'

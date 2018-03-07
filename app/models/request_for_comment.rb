@@ -11,7 +11,13 @@ class RequestForComment < ActiveRecord::Base
   scope :not_stale, -> { where("user_id%10 <2 OR user_id%10 >= 4").where(exercise.exercise_collections.none{|ec| ec.id = 3} } ########### todo
 
     def self.last_per_user(n = 5)
-      from("(#{row_number_user_sql}) as request_for_comments").where("row_number <= ?", n)
+      from("(#{row_number_user_sql}) as request_for_comments")
+          .where("row_number <= ?", n)
+          .group('request_for_comments.id, request_for_comments.user_id, request_for_comments.exercise_id,
+                  request_for_comments.file_id, request_for_comments.question, request_for_comments.created_at,
+          request_for_comments.updated_at, request_for_comments.user_type, request_for_comments.solved,
+          request_for_comments.full_score_reached, request_for_comments.submission_id, request_for_comments.row_number')
+          # ugly, but necessary
     end
 
   # not used right now, finds the last submission for the respective user and exercise.
@@ -45,6 +51,14 @@ class RequestForComment < ActiveRecord::Base
       commenters.append comment.user
     }
     commenters.uniq {|user| user.id}
+  end
+
+  def self.with_last_activity
+    self.joins('join "submissions" s on s.id = request_for_comments.submission_id
+                left outer join "files" f on f.context_id = s.id
+                left outer join "comments" c on c.file_id = f.id')
+        .group('request_for_comments.id')
+        .select('request_for_comments.*, max(c.updated_at) as last_comment')
   end
 
   def to_s
