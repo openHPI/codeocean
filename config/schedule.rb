@@ -19,7 +19,7 @@
 
 # Learn more: http://github.com/javan/whenever
 
-set :output, Whenever.path + '/log/whenever_$(date +%Y%m%d%H%M%S).log'
+set :output, Whenever.path + '/log/whenever/whenever_$(date +%Y%m%d%H%M%S).log'
 set :environment, ENV['RAILS_ENV'] if ENV['RAILS_ENV']
 
 every 1.day, at: '3:00 am' do
