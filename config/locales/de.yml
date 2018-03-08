@@ -327,6 +327,8 @@ de:
       break_intervention:
         title: "Pause"
         text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
+      error_hints:
+        heading: "Hinweise"
     index:
       clone: Duplizieren
       implement: Implementieren

@@ -327,6 +327,8 @@ en:
       break_intervention:
         title: "Break"
         text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
+      error_hints:
+        heading: "Hints"
     index:
       clone: Duplicate
       implement: Implement
