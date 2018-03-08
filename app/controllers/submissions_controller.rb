@@ -197,7 +197,9 @@ class SubmissionsController < ApplicationController
 
   def kill_socket(tubesock)
     # search for errors and save them as StructuredError (for scoring runs see submission_scoring.rb)
-    extract_errors
+    extract_errors.each do | error |
+      tubesock.send_data JSON.dump({cmd: 'hint', hint: error.hint})
+    end
 
     # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
     save_run_output
@@ -284,14 +286,16 @@ class SubmissionsController < ApplicationController
   end
 
   def extract_errors
+    results = []
     unless @raw_output.blank?
       @submission.exercise.execution_environment.error_templates.each do |template|
         pattern = Regexp.new(template.signature).freeze
         if pattern.match(@raw_output)
-          StructuredError.create_from_template(template, @raw_output, @submission)
+          results << StructuredError.create_from_template(template, @raw_output, @submission)
         end
       end
     end
+    results
   end
 
   def score
