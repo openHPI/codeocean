@@ -45,6 +45,7 @@ module Proforma
       end
     end
 
+
     def split_up_filename(filename)
       if filename.include? '/'
         name_with_type = filename.split(/\/(?=[^\/]*$)/).second
@@ -54,8 +55,8 @@ module Proforma
         path = ''
       end
       if name_with_type.include? '.'
-        name  = name_with_type.second.split('.').first
-        type = name_with_type.second.split('.').second
+        name  = name_with_type.split('.').first
+        type = name_with_type.split('.').second
       else
         name = name_with_type
         type = ''
@@ -96,11 +97,9 @@ module Proforma
       file_id = file.xpath('@id').first.value
       file_class = file.xpath('@class').first.value
       comment = file.xpath('@comment').first.try(:value)
-      is_referenced_by_test = xml.xpath("//p:test/p:test-configuration/p:filerefs/p:fileref[@refid='#{file_id}']")
-      is_referenced_by_model_solution = xml.xpath("//p:model-solution/p:filerefs/p:fileref[@refid='#{file_id}']")
-      if is_referenced_by_test.any? && (file_class == 'internal')
+      if teacher_defined_test?(xml, file_id, file_class)
         'teacher_defined_test'
-      elsif is_referenced_by_model_solution.any? && (file_class == 'internal')
+      elsif reference_implementation?(xml, file_id, file_class)
         'reference_implementation'
       elsif (file_class == 'template') && (comment == 'main')
         'main_file'
@@ -108,6 +107,24 @@ module Proforma
         ''
       else
         'regular_file'
+      end
+    end
+
+    def teacher_defined_test?(xml, file_id, file_class)
+      is_referenced_by_test = xml.xpath("//p:test/p:test-configuration/p:filerefs/p:fileref[@refid='#{file_id}']")
+      if is_referenced_by_test.any? && (file_class == 'internal')
+        true
+      else
+        false
+      end
+    end
+
+    def reference_implementation?(xml, file_id, file_class)
+      is_referenced_by_model_solution = xml.xpath("//p:model-solution/p:filerefs/p:fileref[@refid='#{file_id}']")
+      if is_referenced_by_model_solution.any? && (file_class == 'internal')
+        true
+      else
+        false
       end
     end
   end
