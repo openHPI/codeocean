@@ -364,6 +364,10 @@ de:
       no_header: "Authorization header fehlt"
       no_token: "Kein Token im Authorization header"
       unknown_token: "Unbekanntes OAuth2 Token"
+    default_execution_environment_warning: |
+      Für die Programmiersprache der Aufgabe wurde keine passende Ausführungsumgebung gefunden.
+      Vermutlich haben Sie eine Übung für eine nicht unterstützte Programmiersprache importiert.
+      Die Standardausführungsumgebung wurde gewählt, bitte wählen Sie die richtige Ausführungsumgebung oder entfernen Sie die Aufgabe.
   proxy_exercises:
       index:
         clone: Duplizieren

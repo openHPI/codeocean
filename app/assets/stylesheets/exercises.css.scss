@@ -164,3 +164,17 @@ a.file-heading {
     }
   }
 }
+
+.default-execution-environment-warning {
+  i {
+    color: red;
+  }
+  border-radius: 4px;
+  border: 2px solid red;
+  padding: 4px;
+
+  a {
+    float: right;
+    padding-right: 4px;
+  }
+}

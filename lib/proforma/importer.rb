@@ -16,6 +16,7 @@ module Proforma
       if exec_environment
         exec_environment_id = exec_environment.id
       else
+        @exercise.default_execution_environment = true
         exec_environment_id = 1
       end
       @exercise.execution_environment_id = exec_environment_id
@@ -78,11 +79,13 @@ module Proforma
 
         if filename_attribute
           type = split_up_filename(filename_attribute.value).third
-          if type != ''
-            return FileType.find_by(file_extension: ".#{type}")
-          end
+          filetype =  FileType.find_by(file_extension: ".#{type}")
         end
-        return FileType.find_by(name: 'Makefile')
+        if filetype
+          filetype
+        else
+          FileType.find_by(name: 'Makefile')
+        end
       end
 
       def get_name_from_filename(filename_attribute)

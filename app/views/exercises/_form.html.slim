@@ -11,7 +11,8 @@
     = f.pagedown_editor :description
   .form-group
     = f.label(:execution_environment_id)
-    = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {}, class: 'form-control')
+    = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {}, {class: 'form-control', onchange: "document.getElementById('execution_environment_flag').value = false"})
+    = f.hidden_field :default_execution_environment, value: true, id: 'execution_environment_flag'
   /.form-group
     = f.label(:instructions)
     = f.hidden_field(:instructions)

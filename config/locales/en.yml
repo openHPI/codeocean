@@ -380,6 +380,10 @@ en:
       no_header: "No Authorization header"
       no_token: "No token in Authorization header"
       unknown_token: "Unknown OAuth2 token"
+    default_execution_environment_warning: |
+      No matching execution environment found for the exercise’s programming language.
+      You probably have imported an exercise for a currently unsupported programming language.
+      The default execution environment has been selected, please select the best fitting execution environment or remove the exercise.
   proxy_exercises:
       index:
         clone: Duplicate
