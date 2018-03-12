@@ -28,30 +28,32 @@ module Proforma
     private
       def add_files_xml(xml)
         xml.xpath('/p:task/p:files/p:file').each do |file|
-          metadata = get_file_metadata(file)
-          role = determine_file_role_from_proforma_file(xml, metadata)
-          feedback_message = xml.xpath("//p:test/p:test-configuration/p:filerefs/p:fileref[@refid='#{metadata[:file_id]}']/../../c:feedback-message").text
-          filename = get_name_from_filename(metadata[:filename])
-          if filename != ''
-            @exercise.files.build({
-                            content: file.text,
-                            name: filename,
-                            path: get_path_from_filename(metadata[:filename]),
-                            file_type: get_filetype_from_filename(metadata[:filename]),
-                            role: role,
-                            feedback_message: (role == 'teacher_defined_test') ? feedback_message : nil,
-                            hidden: metadata[:file_class] == 'internal',
-                            read_only: false })
-          end
+          metadata = file_metadata(file)
+          file_attributes = file_attributes(xml, file,  metadata)
+          @exercise.files.build(file_attributes) unless file_attributes[:name] == ''
         end
       end
 
-      def get_file_metadata(file)
-        file_id = file.xpath('@id').first.value
-        file_class = file.xpath('@class').first.value
-        comment = file.xpath('@comment').first.try(:value)
-        filename = file.xpath('@filename').first
-        {:file_id => file_id, :file_class => file_class, :comment => comment, :filename => filename}
+      def file_metadata(file)
+        {
+            file_id: file.xpath('@id').first.value,
+            file_class: file.xpath('@class').first.value,
+            comment: file.xpath('@comment').first.try(:value),
+            filename: file.xpath('@filename').first}
+      end
+
+      def file_attributes(xml, file, metadata)
+        feedback_message = xml.xpath("//p:test/p:test-configuration/p:filerefs/p:fileref[@refid='#{metadata[:file_id]}']/../../c:feedback-message").text
+        role = determine_file_role_from_proforma_file(xml, metadata)
+        {
+            content: file.text,
+            name: get_name_from_filename(metadata[:filename]),
+            path: get_path_from_filename(metadata[:filename]),
+            file_type: get_filetype_from_filename(metadata[:filename]),
+            role: role,
+            feedback_message: (role == 'teacher_defined_test') ? feedback_message : nil,
+            hidden: metadata[:file_class] == 'internal',
+            read_only: false }
       end
 
       def split_up_filename(filename)
