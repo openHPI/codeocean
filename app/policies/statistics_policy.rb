@@ -1,0 +1,2 @@
+class StatisticsPolicy < AdminOnlyPolicy
+end

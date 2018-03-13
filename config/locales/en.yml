@@ -217,6 +217,8 @@ en:
       show: Dashboard
     sessions:
       destroy_through_lti: Code Submission
+    statistics:
+      show: "Statistics"
   consumers:
     show:
       link: Consumer
