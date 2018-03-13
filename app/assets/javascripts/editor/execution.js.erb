@@ -30,6 +30,7 @@ CodeOceanEditorWebsocket = {
   initializeSocketForScoring: function(url) {
     this.initializeSocket(url);
     this.websocket.on('default',this.handleScoringResponse.bind(this));
+    this.websocket.on('hint', this.showHint.bind(this));
     this.websocket.on('exit', this.handleExitCommand.bind(this));
   },
 

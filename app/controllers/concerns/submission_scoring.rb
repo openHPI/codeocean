@@ -13,7 +13,7 @@ module SubmissionScoring
           submission.exercise.execution_environment.error_templates.each do |template|
             pattern = Regexp.new(template.signature).freeze
             if pattern.match(testrun_output)
-              StructuredError.create_from_template(template, testrun_output)
+              StructuredError.create_from_template(template, testrun_output, submission)
             end
           end
         end
