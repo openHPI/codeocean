@@ -69,7 +69,7 @@ describe Proforma::XmlGenerator do
       it 'has one test file referenced by tests' do
         test_ref = xml.xpath('//p:test/p:test-configuration/p:filerefs/p:fileref[1]/@refid').first.value
         test = xml.xpath('p:files/p:file[@filename="test.java"]')
-        expect(test_ref.size()).to be 1
+        expect(test_ref).not_to be_nil
         expect(test.size()).to be 1
         expect(test.xpath('@id').first.value).to eq test_ref
         expect(test.text).to eq generator.tests.first.content
@@ -78,7 +78,7 @@ describe Proforma::XmlGenerator do
       it 'has one reference implementation referenced by model solutions' do
         solution_ref = xml.xpath('//p:model-solution/p:filerefs/p:fileref[1]/@refid').first.value
         solution = xml.xpath('p:files/p:file[@filename="solution.java"]')
-        expect(solution_ref.size()).to be 1
+        expect(solution_ref).not_to be_nil
         expect(solution.size()).to be 1
         expect(solution.xpath('@id').first.value).to eq solution_ref
         expect(solution.text).to eq generator.model_solution_files.first.content
