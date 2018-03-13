@@ -676,3 +676,13 @@ en:
   subscriptions:
     successfully_unsubscribed: "You successfully unsubscribed from this Request for Comment"
     subscription_not_existent: "The subscription you want to unsubscribe from does not exist."
+  statistics:
+    sections:
+      users: "Users"
+      exercises: "Exercises"
+      request_for_comments: "Requests for Comment"
+    entries:
+      exercises:
+        average_number_of_submissions: "Average Number of Submissions"
+      request_for_comments:
+        percent_solved: "Solved Requests"

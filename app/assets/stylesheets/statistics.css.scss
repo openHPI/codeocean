@@ -61,6 +61,10 @@ div.negative-result {
 /////////////////////////////////////////////////////////////////////////////////////////////
 // StatisticsController:
 
+#statistics-container {
+  margin-bottom: 40px;
+}
+
 .statistics-wrapper {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -81,7 +85,11 @@ div.negative-result {
       flex-grow: 1;
       font-size: 40px;
       vertical-align: middle;
-      line-height: 100px;
+      line-height: 50px;
+    }
+
+    > .title {
+      height: 42px;
     }
   }
 }

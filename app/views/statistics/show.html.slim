@@ -1,3 +1,9 @@
-h1 = t('shared.statistics')
 
-.statistics-wrapper
+#statistics-container
+  - statistics_data.each do | section |
+    h2 = section[:name]
+    .statistics-wrapper
+      - section[:entries].each do | entry |
+        div
+          .title = entry[:title]
+          .data = entry[:data].to_s + (entry[:unit] or '')
