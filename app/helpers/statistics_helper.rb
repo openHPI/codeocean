@@ -37,7 +37,9 @@ module StatisticsHelper
         {
             key: 'currently_active',
             name: t('statistics.entries.users.currently_active'),
-            data: ExternalUser.joins(:submissions).where(['submissions.created_at >= ?', DateTime.now - 5.minutes]).count
+            data: ExternalUser.joins(:submissions)
+                      .where(['submissions.created_at >= ?', DateTime.now - 5.minutes])
+                      .distinct('external_users.id').count
         }
     ]
   end
