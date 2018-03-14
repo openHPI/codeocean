@@ -1,0 +1,38 @@
+== t('mailers.user_mailer.exercise_anomaly_detected.body1',
+        receiver_displayname: @receiver_displayname,
+        collection_name: @collection.name)
+
+table(border=1)
+  thead
+    tr
+      td = t('activerecord.attributes.exercise.title', locale: :de)
+      td = t('exercises.statistics.average_worktime', locale: :de)
+      td = t('shared.actions', locale: :de)
+  tbody
+    - @anomalies.keys.each do | id |
+      - exercise = Exercise.find(id)
+      tr
+        td = link_to(exercise.title, exercise_path(exercise))
+        td = @anomalies[id]
+        td = link_to(t('shared.statistics', locale: :de), statistics_exercise_path(exercise))
+
+
+== t('mailers.user_mailer.exercise_anomaly_detected.body2',
+        receiver_displayname: @receiver_displayname,
+        collection_name: @collection.name)
+
+table(border=1)
+  thead
+    tr
+      td = t('activerecord.attributes.exercise.title', locale: :en)
+      td = t('exercises.statistics.average_worktime', locale: :en)
+      td = t('shared.actions', locale: :en)
+  tbody
+    - @anomalies.keys.each do | id |
+      - exercise = Exercise.find(id)
+      tr
+        td = link_to(exercise.title, exercise_path(exercise))
+        td = @anomalies[id]
+        td = link_to(t('shared.statistics', locale: :en), statistics_exercise_path(exercise))
+
+== t('mailers.user_mailer.exercise_anomaly_detected.body3')

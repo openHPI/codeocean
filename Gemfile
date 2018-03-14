@@ -43,6 +43,7 @@ gem 'nokogiri'
 gem 'd3-rails'
 gem 'rest-client'
 gem 'rubyzip'
+gem 'whenever', require: false
 
 group :development, :staging do
   gem 'better_errors', platform: :ruby
