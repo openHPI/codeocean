@@ -7,4 +7,6 @@
         a href=entry[:url]
           div data-key=entry[:key]
             .title = entry[:name]
-            .data = entry[:data].to_s + (entry[:unit] or '')
+            .data
+              span = entry[:data].to_s
+              span.unit = entry[:unit] if entry.key? :unit
