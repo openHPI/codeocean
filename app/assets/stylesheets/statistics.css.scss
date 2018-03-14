@@ -71,25 +71,29 @@ div.negative-result {
   grid-auto-rows: 150px;
   grid-gap: 10px;
 
-  > div {
-    border: 2px solid #0055ba;
-    border-radius: 5px;
-    background-color: #008cba;
-    padding: 1em;
+  > a {
     color: #fff;
-    display: flex;
-    flex-flow: column-reverse;
-    text-align: center;
+    text-decoration: none;
 
-    > .data {
-      flex-grow: 1;
-      font-size: 40px;
-      vertical-align: middle;
-      line-height: 50px;
-    }
+    > div {
+      border: 2px solid #0055ba;
+      border-radius: 5px;
+      background-color: #008cba;
+      padding: 1em;
+      display: flex;
+      flex-flow: column-reverse;
+      text-align: center;
 
-    > .title {
-      height: 42px;
+      > .data {
+        flex-grow: 1;
+        font-size: 40px;
+        vertical-align: middle;
+        line-height: 50px;
+      }
+
+      > .title {
+        height: 42px;
+      }
     }
   }
 }

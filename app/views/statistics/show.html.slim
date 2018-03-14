@@ -4,6 +4,7 @@
     h2 = section[:name]
     .statistics-wrapper data-key=section[:key]
       - section[:entries].each do | entry |
-        div data-key=entry[:key]
-          .title = entry[:name]
-          .data = entry[:data].to_s + (entry[:unit] or '')
+        a href=entry[:url]
+          div data-key=entry[:key]
+            .title = entry[:name]
+            .data = entry[:data].to_s + (entry[:unit] or '')
