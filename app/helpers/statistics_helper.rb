@@ -24,12 +24,12 @@ module StatisticsHelper
     [
         {
             key: 'internal_users',
-            title: t('activerecord.models.internal_user.other'),
+            name: t('activerecord.models.internal_user.other'),
             data: InternalUser.count
         },
         {
             key: 'external_users',
-            title: t('activerecord.models.external_user.other'),
+            name: t('activerecord.models.external_user.other'),
             data: ExternalUser.count
         }
     ]
@@ -39,12 +39,12 @@ module StatisticsHelper
     [
         {
             key: 'exercises',
-            title: t('activerecord.models.exercise.other'),
+            name: t('activerecord.models.exercise.other'),
             data: Exercise.count
         },
         {
             key: 'average_submissions',
-            title: t('statistics.entries.exercises.average_number_of_submissions'),
+            name: t('statistics.entries.exercises.average_number_of_submissions'),
             data: Submission.count / Exercise.count
         }
     ]
@@ -54,18 +54,18 @@ module StatisticsHelper
     [
         {
             key: 'rfcs',
-            title: t('activerecord.models.request_for_comment.other'),
+            name: t('activerecord.models.request_for_comment.other'),
             data: RequestForComment.count
         },
         {
             key: 'percent_solved',
-            title: t('statistics.entries.request_for_comments.percent_solved'),
+            name: t('statistics.entries.request_for_comments.percent_solved'),
             data: (100.0 / RequestForComment.count * RequestForComment.where(solved: true).count).round(2),
             unit: '%'
         },
         {
             key: 'comments',
-            title: t('activerecord.models.comment.other'),
+            name: t('activerecord.models.comment.other'),
             data: Comment.count
         },
     ]

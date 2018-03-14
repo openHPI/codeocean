@@ -2,8 +2,8 @@
 #statistics-container
   - statistics_data.each do | section |
     h2 = section[:name]
-    .statistics-wrapper
+    .statistics-wrapper data-key=section[:key]
       - section[:entries].each do | entry |
-        div
-          .title = entry[:title]
+        div data-key=entry[:key]
+          .title = entry[:name]
           .data = entry[:data].to_s + (entry[:unit] or '')
