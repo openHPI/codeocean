@@ -1,0 +1,6 @@
+h1 = @exercise_collection
+
+= row(label: 'exercise_collections.name', value: @exercise_collection.name)
+= row(label: 'exercise_collections.updated_at', value: @exercise_collection.updated_at)
+= row(label: 'exercise_collections.exercises', value: @exercise_collection.exercises.count)
+= row(label: 'exercises.statistics.average_worktime', value: @average.round(3).to_s + 's')

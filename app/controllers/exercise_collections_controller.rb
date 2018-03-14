@@ -1,7 +1,8 @@
 class ExerciseCollectionsController < ApplicationController
   include CommonBehavior
+  include TimeHelper
 
-  before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy]
+  before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy, :statistics]
 
   def index
     @exercise_collections = ExerciseCollection.all.paginate(:page => params[:page])
@@ -32,6 +33,14 @@ class ExerciseCollectionsController < ApplicationController
 
   def update
     update_and_respond(object: @exercise_collection, params: exercise_collection_params)
+  end
+
+  def statistics
+    @working_times = {}
+    @exercise_collection.exercises.each do |exercise|
+      @working_times[exercise.id] = time_to_f exercise.average_working_time
+    end
+    @average = @working_times.values.reduce(:+) / @working_times.size
   end
 
   private
