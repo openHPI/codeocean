@@ -687,5 +687,6 @@ de:
       request_for_comments:
         percent_solved: "Beantwortete Anfragen"
         percent_unsolved: "Unbeantwortete Anfragen"
+        percent_soft_solved: "Ungelöst mit voller Punktzahl"
       users:
         currently_active: "Aktiv (5 Minuten)"

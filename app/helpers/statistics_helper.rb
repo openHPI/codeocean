@@ -88,9 +88,16 @@ module StatisticsHelper
             url: request_for_comments_path + '?q%5Bsolved_not_eq%5D=0'
         },
         {
+            key: 'percent_soft_solved',
+            name: t('statistics.entries.request_for_comments.percent_soft_solved'),
+            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.where(full_score_reached: true).count).round(1),
+            unit: '%',
+            url: request_for_comments_path
+        },
+        {
             key: 'percent_unsolved',
             name: t('statistics.entries.request_for_comments.percent_unsolved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.where(solved: false).count).round(1),
+            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.count).round(1),
             unit: '%',
             url: request_for_comments_path + '?q%5Bsolved_not_eq%5D=1'
         },
