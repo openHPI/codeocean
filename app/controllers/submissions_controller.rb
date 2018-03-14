@@ -307,7 +307,8 @@ class SubmissionsController < ApplicationController
       Thread.new {
         tubesock.send_data JSON.dump(score_submission(@submission))
 
-        send_hints(tubesock, StructuredError.where(submission: @submission))
+        # To enable hints when scoring a submission, uncomment the next line:
+        #send_hints(tubesock, StructuredError.where(submission: @submission))
 
         tubesock.send_data JSON.dump({'cmd' => 'exit'})
       }
