@@ -106,6 +106,13 @@ module StatisticsHelper
             name: t('activerecord.models.comment.other'),
             data: Comment.count
         },
+        {
+            key: 'rfcs_with_comments',
+            name: t('statistics.entries.request_for_comments.with_comments'),
+            data: RequestForComment.joins('join "submissions" s on s.id = request_for_comments.submission_id
+                join "files" f on f.context_id = s.id and f.context_type = \'Submission\'
+                join "comments" c on c.file_id = f.id').group('request_for_comments.id').count.size
+        }
     ]
   end
 

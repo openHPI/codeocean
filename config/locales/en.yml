@@ -748,5 +748,6 @@ en:
         percent_solved: "Solved Requests"
         percent_unsolved: "Unsolved Requests"
         percent_soft_solved: "Unsolved with full score"
+        with_comments: "RfCs with Comments"
       users:
         currently_active: "Active (5 minutes)"
