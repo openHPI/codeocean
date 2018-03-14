@@ -10,7 +10,7 @@
 /config/*.staging-epic.yml
 /config/deploy/staging-epic.rb
 /coverage
-/log
+/log/*.*
 /public/assets
 /public/uploads
 /rubocop.html

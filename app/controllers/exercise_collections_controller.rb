@@ -10,6 +10,7 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def show
+    @exercises = @exercise_collection.exercises.paginate(:page => params[:page])
   end
 
   def new
@@ -55,6 +56,6 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def exercise_collection_params
-    params[:exercise_collection].permit(:name, :exercise_ids => [])
+    params[:exercise_collection].permit(:name, :use_anomaly_detection, :user_id, :user_type, :exercise_ids => []).merge(user_type: InternalUser.name)
   end
 end

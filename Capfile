@@ -6,6 +6,7 @@ require 'capistrano/puma/nginx'
 require 'capistrano/rails'
 require 'capistrano/rvm'
 require 'capistrano/upload-config'
+require 'whenever/capistrano'
 
 install_plugin Capistrano::SCM::Git
 install_plugin Capistrano::Puma
