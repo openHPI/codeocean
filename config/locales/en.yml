@@ -686,3 +686,6 @@ en:
         average_number_of_submissions: "Average Number of Submissions"
       request_for_comments:
         percent_solved: "Solved Requests"
+        percent_unsolved: "Unsolved Requests"
+      users:
+        currently_active: "Active (5 minutes)"

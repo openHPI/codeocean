@@ -686,3 +686,6 @@ de:
         average_number_of_submissions: "Durchschnittliche Zahl von Abgaben"
       request_for_comments:
         percent_solved: "Beantwortete Anfragen"
+        percent_unsolved: "Unbeantwortete Anfragen"
+      users:
+        currently_active: "Aktiv (5 Minuten)"

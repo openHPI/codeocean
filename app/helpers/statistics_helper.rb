@@ -33,6 +33,11 @@ module StatisticsHelper
             name: t('activerecord.models.external_user.other'),
             data: ExternalUser.count,
             url: external_users_path
+        },
+        {
+            key: 'currently_active',
+            name: t('statistics.entries.users.currently_active'),
+            data: ExternalUser.joins(:submissions).where(['submissions.created_at >= ?', DateTime.now - 5.minutes]).count
         }
     ]
   end
@@ -49,6 +54,18 @@ module StatisticsHelper
             key: 'average_submissions',
             name: t('statistics.entries.exercises.average_number_of_submissions'),
             data: Submission.count / Exercise.count
+        },
+        {
+            key: 'execution_environments',
+            name: t('activerecord.models.execution_environment.other'),
+            data: ExecutionEnvironment.count,
+            url: execution_environments_path
+        },
+        {
+            key: 'exercise_collections',
+            name: t('activerecord.models.exercise_collection.other'),
+            data: ExerciseCollection.count,
+            url: exercise_collections_path
         }
     ]
   end
@@ -64,9 +81,16 @@ module StatisticsHelper
         {
             key: 'percent_solved',
             name: t('statistics.entries.request_for_comments.percent_solved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.where(solved: true).count).round(2),
+            data: (100.0 / RequestForComment.count * RequestForComment.where(solved: true).count).round(1),
             unit: '%',
             url: request_for_comments_path + '?q%5Bsolved_not_eq%5D=0'
+        },
+        {
+            key: 'percent_unsolved',
+            name: t('statistics.entries.request_for_comments.percent_unsolved'),
+            data: (100.0 / RequestForComment.count * RequestForComment.where(solved: false).count).round(1),
+            unit: '%',
+            url: request_for_comments_path + '?q%5Bsolved_not_eq%5D=1'
         },
         {
             key: 'comments',
