@@ -55,7 +55,13 @@ module StatisticsHelper
         {
             key: 'average_submissions',
             name: t('statistics.entries.exercises.average_number_of_submissions'),
-            data: Submission.count / Exercise.count
+            data: (Submission.count.to_f / Exercise.count).round(2)
+        },
+        {
+            key: 'submissions_per_minute',
+            name: t('statistics.entries.exercises.submissions_per_minute'),
+            data: (Submission.where('created_at >= ?', DateTime.now - 1.hours).count.to_f / 60).round(2),
+            unit: '/min'
         },
         {
             key: 'execution_environments',

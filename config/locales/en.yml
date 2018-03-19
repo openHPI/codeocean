@@ -744,6 +744,7 @@ en:
     entries:
       exercises:
         average_number_of_submissions: "Average Number of Submissions"
+        submissions_per_minute: "Current Submission Volume (1h)"
       request_for_comments:
         percent_solved: "Solved Requests"
         percent_unsolved: "Unsolved Requests"

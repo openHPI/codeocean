@@ -744,6 +744,7 @@ de:
     entries:
       exercises:
         average_number_of_submissions: "Durchschnittliche Zahl von Abgaben"
+        submissions_per_minute: "Aktuelle Abgabenhäufigkeit (1h)"
       request_for_comments:
         percent_solved: "Beantwortete Anfragen"
         percent_unsolved: "Unbeantwortete Anfragen"
