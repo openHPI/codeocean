@@ -1,6 +1,5 @@
 class ExerciseCollectionsController < ApplicationController
   include CommonBehavior
-  include TimeHelper
 
   before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy, :statistics]
 
@@ -37,11 +36,6 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def statistics
-    @working_times = {}
-    @exercise_collection.exercises.each do |exercise|
-      @working_times[exercise.id] = time_to_f exercise.average_working_time
-    end
-    @average = @working_times.values.reduce(:+) / @working_times.size
   end
 
   private
