@@ -65,8 +65,7 @@ $(function() {
       .data(data)
       .enter()
       .append("rect")
-      .style("fill", "#008cba")
-      .style("cursor", "pointer")
+      .attr("class", "value-bar")
       .on("mousemove", function (d){
         tooltip
           .style("left", d3.event.pageX - 50 + "px")

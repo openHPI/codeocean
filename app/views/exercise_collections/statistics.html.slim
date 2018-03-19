@@ -7,3 +7,11 @@ h1 = @exercise_collection
 
 #graph
   #data.hidden(data-working-times=ActiveSupport::JSON.encode(@exercise_collection.exercise_working_times) data-average-working-time=@exercise_collection.average_working_time)
+  #legend
+    - {time: t('exercises.statistics.average_worktime'),
+        min: 'min. anomaly threshold',
+        avg: 'average time',
+        max: 'max. anomaly threshold'}.each_pair do |klass, label|
+      .legend-entry
+        div(class="box #{klass}")
+        .box-label = label
