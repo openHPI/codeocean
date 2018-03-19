@@ -38,18 +38,6 @@ $(function() {
           }
       }
 
-      // minutes_count[(maximum_minutes + 1)] = 0;
-      //$('.graph-functions').html("<p></p>")
-
-      // var minutes_count = new Array(10);
-      // var minutes_array_len = minutes_array.length;
-      // for (var i=0; i< minutes_count; i++){
-      //
-      //     for (var j = 0; j < minutes_array_len; j++){
-      //         if ()
-      //     }
-      // }
-
       function getWidth() {
           if (self.innerHeight) {
               return self.innerWidth;
@@ -81,22 +69,17 @@ $(function() {
 
           //var formatDate = d3.time.format("%M");
 
-          var x = d3.scale.linear()
+          var x = d3.scaleLinear()
               .range([0, width]);
-          var y = d3.scale.linear()
+          var y = d3.scaleLinear()
               .range([height, 0]); // - (height/20
-          var xAxis = d3.svg.axis()
-              .scale(x)
-              .orient("bottom")
-              .ticks(20);
-          var yAxis = d3.svg.axis()
-              .scale(y)
-              .orient("left")
+          var xAxis = d3.axisBottom(x).ticks(20);
+          var yAxis = d3.axisLeft(y)
               .ticks(20)
-              .innerTickSize(-width)
-              .outerTickSize(0);
+              .tickSizeInner(-width)
+              .tickSizeOuter(0);
 
-          var line = d3.svg.line()
+          var line = d3.line()
               .x(function (d, i) {
                   return x(i);
               })
@@ -225,7 +208,7 @@ $(function() {
           var x = d3.scale.ordinal()
               .rangeRoundBands([0, width], .1);
 
-          var y = d3.scale.linear()
+          var y = d3.scaleLinear()
               .range([0,height-(margin.top + margin.bottom)]);
 
 
@@ -236,7 +219,7 @@ $(function() {
 
 
           var yAxis = d3.svg.axis()
-              .scale(d3.scale.linear().domain([0,max_of_array]).range([height,0]))//y
+              .scale(d3.scaleLinear().domain([0,max_of_array]).range([height,0]))//y
               .orient("left")
               .ticks(10)
               .innerTickSize(-width);
@@ -299,7 +282,7 @@ $(function() {
               .text("Working Time (Minutes)")
               .style('font-size', 14);
 
-          y = d3.scale.linear()
+          y = d3.scaleLinear()
               .domain([(0),max_of_array])
               .range([0,height]);
 
