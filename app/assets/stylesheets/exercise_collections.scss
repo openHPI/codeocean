@@ -1,0 +1,22 @@
+path.line.minimum-working-time {
+  stroke: #8efa00;
+}
+
+path.line.average-working-time {
+  stroke: #ffca00;
+}
+
+path.line.maximum-working-time {
+  stroke: #ff2600;
+}
+
+.exercise-id-tooltip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #008cba;
+  padding: 14px;
+  text-align: center;
+}

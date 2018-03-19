@@ -4,3 +4,6 @@ h1 = @exercise_collection
 = row(label: 'exercise_collections.updated_at', value: @exercise_collection.updated_at)
 = row(label: 'exercise_collections.exercises', value: @exercise_collection.exercises.count)
 = row(label: 'exercises.statistics.average_worktime', value: @exercise_collection.average_working_time.round(3).to_s + 's')
+
+#graph
+  #data.hidden(data-working-times=ActiveSupport::JSON.encode(@exercise_collection.exercise_working_times) data-average-working-time=@exercise_collection.average_working_time)
