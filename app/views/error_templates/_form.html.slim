@@ -16,4 +16,5 @@
   .form-group
     = f.label(:hint)
     = f.text_field(:hint, class: 'form-control')
+    .help-block == t('error_templates.hints.hint_templates')
   .actions = render('shared/submit_button', f: f, object: @error_template)

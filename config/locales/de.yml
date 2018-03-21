@@ -331,6 +331,8 @@ de:
       break_intervention:
         title: "Pause"
         text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
+      error_hints:
+        heading: "Hinweise"
     index:
       clone: Duplizieren
       implement: Implementieren
@@ -728,6 +730,7 @@ de:
   error_templates:
     hints:
       signature: "Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende \"/\""
+      hint_templates: 'Attributnamen in {{doppelten geschweiften Klammern}} werden zur Laufzeit durch die jeweiligen Attributwerte ersetzt. Beispiel: "Der Fehler ist in Zeile {{Line}}." --(StructuredError: {Line: 4})--> "Der Fehler ist in Zeile 4."'
     attributes: "Attribute"
     add_attribute: "Attribut hinzufügen"
   comments:

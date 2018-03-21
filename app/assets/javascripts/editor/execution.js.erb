@@ -30,6 +30,7 @@ CodeOceanEditorWebsocket = {
   initializeSocketForScoring: function(url) {
     this.initializeSocket(url);
     this.websocket.on('default',this.handleScoringResponse.bind(this));
+    this.websocket.on('hint', this.showHint.bind(this));
     this.websocket.on('exit', this.handleExitCommand.bind(this));
   },
 
@@ -43,6 +44,7 @@ CodeOceanEditorWebsocket = {
     this.websocket.on('exit', this.handleExitCommand.bind(this));
     this.websocket.on('timeout', this.showTimeoutMessage.bind(this));
     this.websocket.on('status', this.showStatus.bind(this));
+    this.websocket.on('hint', this.showHint.bind(this));
   },
 
   handleExitCommand: function() {

@@ -47,6 +47,9 @@ div id='output_sidebar_uncollapsed' class='hidden col-sm-12 enforce-bottom-margi
       input#prompt-input.form-control type='text'
       span.input-group-btn
         button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
+    #error-hints
+      .heading = t('exercises.implement.error_hints.heading')
+      ul.body
     #output
       pre = t('exercises.implement.no_output_yet')
     - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]

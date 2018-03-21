@@ -197,7 +197,8 @@ class SubmissionsController < ApplicationController
 
   def kill_socket(tubesock)
     # search for errors and save them as StructuredError (for scoring runs see submission_scoring.rb)
-    extract_errors
+    errors = extract_errors
+    send_hints(tubesock, errors)
 
     # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
     save_run_output
@@ -284,14 +285,16 @@ class SubmissionsController < ApplicationController
   end
 
   def extract_errors
+    results = []
     unless @raw_output.blank?
       @submission.exercise.execution_environment.error_templates.each do |template|
         pattern = Regexp.new(template.signature).freeze
         if pattern.match(@raw_output)
-          StructuredError.create_from_template(template, @raw_output, @submission)
+          results << StructuredError.create_from_template(template, @raw_output, @submission)
         end
       end
     end
+    results
   end
 
   def score
@@ -303,8 +306,19 @@ class SubmissionsController < ApplicationController
       # to ensure responsiveness, we therefore open a thread here.
       Thread.new {
         tubesock.send_data JSON.dump(score_submission(@submission))
+
+        # To enable hints when scoring a submission, uncomment the next line:
+        #send_hints(tubesock, StructuredError.where(submission: @submission))
+
         tubesock.send_data JSON.dump({'cmd' => 'exit'})
       }
+    end
+  end
+
+  def send_hints(tubesock, errors)
+    errors = errors.to_a.uniq { |e| e.hint}
+    errors.each do | error |
+      tubesock.send_data JSON.dump({cmd: 'hint', hint: error.hint, description: error.error_template.description})
     end
   end
 
