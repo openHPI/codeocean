@@ -1,7 +1,7 @@
 class ExerciseCollectionsController < ApplicationController
   include CommonBehavior
 
-  before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy]
+  before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy, :statistics]
 
   def index
     @exercise_collections = ExerciseCollection.all.paginate(:page => params[:page])
@@ -33,6 +33,9 @@ class ExerciseCollectionsController < ApplicationController
 
   def update
     update_and_respond(object: @exercise_collection, params: exercise_collection_params)
+  end
+
+  def statistics
   end
 
   private

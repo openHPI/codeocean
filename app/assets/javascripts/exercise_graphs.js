@@ -1,9 +1,7 @@
 $(function() {
-    // http://localhost:3333/exercises/38/statistics good for testing
-    // originally at--> localhost:3333/exercises/69/statistics
+    // /exercises/38/statistics good for testing
 
     if ($.isController('exercises') && $('.graph-functions-2').isPresent()) {
-        // GET THE DATA
         var submissions = $('#data').data('submissions');
         var submissions_length = submissions.length;
 
@@ -14,10 +12,7 @@ $(function() {
         submissionsAutosaves = [];
         var maximumValue = 0;
 
-        var wtimes = $('#wtimes').data('working_times'); //.hidden#wtimes data-working_times=ActiveSupport::JSON.encode(working_times_until)
-        
-        // console.log(submissions);
-        // console.log(wtimes);
+        var wtimes = $('#wtimes').data('working_times');
 
         for (var i = 0;i<submissions_length;i++){
             var submission = submissions[i];
@@ -46,9 +41,6 @@ $(function() {
                 submissionsSaves.push(submissionArray[1]);
             }
         }
-        // console.log(submissionsScoreAndTimeAssess.length);
-        // console.log(submissionsScoreAndTimeSubmits);
-        // console.log(submissionsScoreAndTimeRuns);
 
         function get_minutes (time_stamp) {
             try {
@@ -94,33 +86,22 @@ $(function() {
                 height = (width * height_ratio) - margin.top - margin.bottom;
 
             // Set the ranges
-            var x = d3.scale.linear().range([0, width]);
-            var y = d3.scale.linear().range([height,0]);
+            var x = d3.scaleLinear().range([0, width]);
+            var y = d3.scaleLinear().range([height,0]);
 
-            //var x = d3.scale.linear()
+            //var x = d3.scaleLinear()
             //    .range([0, width]);
-            //var y = d3.scale.linear()
+            //var y = d3.scaleLinear()
             //    .range([0,height]); // - (height/20
 
-            var xAxis = d3.svg.axis()
-                .scale(x)
-                .orient("bottom")
-                .ticks(20);
-
-
-            var yAxis = d3.svg.axis()
-                .scale(d3.scale.linear().domain([0,maximumValue]).range([height,0]))//y
-                // .scale(y)
-                .orient("left")
+            var xAxis = d3.axisBottom(x).ticks(20);
+            var yAxis = d3.axisLeft()
+                .scale(d3.scaleLinear().domain([0,maximumValue]).range([height,0]))
                 .ticks(maximumValue)
-                .innerTickSize(-width)
-                .outerTickSize(0);
+                .tickSizeInner(-width)
+                .tickSizeOuter(0);
 
-            //var line = d3.svg.line()
-            //    .x(function(d) { return x(d.date); })
-            //    .y(function(d) { return y(d.close); });
-
-            var line = d3.svg.line()
+            var line = d3.line()
                 .x(function (d) {
                     // console.log(d[1]);
                     return x(d[1]);
@@ -288,23 +269,12 @@ $(function() {
                         .text(color_hash[String(i)][0]);
 
                 });
-
-
-
-            // function type(d) {
-            //     d.frequency = +d.frequency;
-            //     return d;
-            // }
-
-            //.on("mousemove", mMove)//new again
-            //.append("title");
-
         }
 
         try{
             graph_assesses();
         } catch(err){
-            alert("could not draw the graph");
+            console.error("Could not draw the graph", err);
         }
 
   }

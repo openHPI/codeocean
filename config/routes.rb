@@ -42,6 +42,8 @@ Rails.application.routes.draw do
 
   get '/help', to: 'application#help'
 
+  get 'statistics/', to: 'statistics#show'
+
   concern :statistics do
     member do
       get :statistics
@@ -82,7 +84,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :exercise_collections
+  resources :exercise_collections do
+    member do
+      get :statistics
+    end
+  end
 
   resources :proxy_exercises do
     member do

@@ -1,0 +1,102 @@
+$(function() {
+  if ($.isController('exercise_collections')) {
+    var data = $('#data').data('working-times');
+    var averageWorkingTimeValue = parseFloat($('#data').data('average-working-time'));
+
+    var margin = { top: 30, right: 40, bottom: 30, left: 50 },
+      width = 720 - margin.left - margin.right,
+      height = 500 - margin.top - margin.bottom;
+
+    var x = d3.scaleBand().range([0, width]);
+    var y = d3.scaleLinear().range([height, 0]);
+
+    var xAxis = d3.axisBottom(x);
+    var yAxisLeft = d3.axisLeft(y);
+
+    var tooltip = d3.select("#graph").append("div").attr("class", "exercise-id-tooltip");
+
+    var averageWorkingTime = d3.line()
+      .x(function (d) { return x(d.index) + x.bandwidth()/2; })
+      .y(function () { return y(averageWorkingTimeValue); });
+
+    var minWorkingTime = d3.line()
+      .x(function (d) { return x(d.index) + x.bandwidth()/2; })
+      .y(function () { return y(0.1*averageWorkingTimeValue); });
+
+    var maxWorkingTime = d3.line()
+      .x(function (d) { return x(d.index) + x.bandwidth()/2; })
+      .y(function () { return y(2*averageWorkingTimeValue); });
+
+    var svg = d3.select('#graph')
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+    // Get the data
+    data = Object.keys(data).map(function (key, index) {
+      return {
+        index: index,
+        exercise_id: parseInt(key),
+        working_time: parseFloat(data[key])
+      };
+    });
+
+    // Scale the range of the data
+    x.domain(data.map(function (d) { return d.index; }));
+    y.domain([0, d3.max(data, function (d) { return d.working_time; })]);
+
+    // Add the X Axis
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    // Add the Y Axis
+    svg.append("g")
+      .attr("class", "y axis")
+      .style("fill", "steelblue")
+      .call(yAxisLeft);
+
+    // Draw the bars
+    svg.selectAll("bar")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "value-bar")
+      .on("mousemove", function (d){
+        tooltip
+          .style("left", d3.event.pageX - 50 + "px")
+          .style("top", d3.event.pageY + 50 + "px")
+          .style("display", "inline-block")
+          .html("<%= I18n.t('activerecord.models.exercise.one') %> ID: " + d.exercise_id + "<br>" +
+            "<%= I18n.t('exercises.statistics.average_worktime') %>: " + d.working_time + "s");
+      })
+      .on("mouseout", function (){ tooltip.style("display", "none");})
+      .on("click", function (d) {
+        window.location.href = "/exercises/" + d.exercise_id + "/statistics";
+      })
+      .attr("x", function (d) { return x(d.index); })
+      .attr("width", x.bandwidth())
+      .attr("y", function (d) { return y(d.working_time); })
+      .attr("height", function (d) { return height - y(d.working_time); });
+
+    // Add the average working time path
+    svg.append("path")
+      .datum(data)
+      .attr("class", "line average-working-time")
+      .attr("d", averageWorkingTime);
+
+    // Add the anomaly paths (min/max average exercise working time)
+    svg.append("path")
+      .datum(data)
+      .attr("class", "line minimum-working-time")
+      .attr("d", minWorkingTime);
+    svg.append("path")
+      .datum(data)
+      .attr("class", "line maximum-working-time")
+      .attr("d", maxWorkingTime);
+  }
+});

@@ -1,0 +1,12 @@
+
+#statistics-container
+  - statistics_data.each do | section |
+    h2 = section[:name]
+    .statistics-wrapper data-key=section[:key]
+      - section[:entries].each do | entry |
+        a href=entry[:url]
+          div data-key=entry[:key]
+            .title = entry[:name]
+            .data
+              span = entry[:data].to_s
+              span.unit = entry[:unit] if entry.key? :unit

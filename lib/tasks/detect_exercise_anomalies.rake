@@ -22,6 +22,8 @@ namespace :detect_exercise_anomalies do
   AVERAGE_WORKING_TIME_CACHE = {}
 
   task :with_at_least, [:number_of_exercises, :number_of_solutions] => :environment do |task, args|
+    include TimeHelper
+
     number_of_exercises = args[:number_of_exercises]
     number_of_solutions = args[:number_of_solutions]
 
@@ -69,14 +71,6 @@ namespace :detect_exercise_anomalies do
     working_times.select do |exercise_id, working_time|
       working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
     end
-  end
-
-  def time_to_f(timestamp)
-    unless timestamp.nil?
-      timestamp = timestamp.split(':')
-      return timestamp[0].to_i * 60 * 60 + timestamp[1].to_i * 60 + timestamp[2].to_f
-    end
-    nil
   end
 
   def get_average_working_time(exercise)

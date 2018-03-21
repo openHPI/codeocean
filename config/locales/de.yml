@@ -219,6 +219,8 @@ de:
       show: Dashboard
     sessions:
       destroy_through_lti: Code-Abgabe
+    statistics:
+      show: "Statistiken"
   consumers:
     show:
       link: Konsument
@@ -734,3 +736,19 @@ de:
   subscriptions:
     successfully_unsubscribed: "Ihr Abonnement für weitere Kommentare auf dieser Kommentaranfrage wurde erfolgreich beendet."
     subscription_not_existent: "Das Abonnement, von dem Sie sich abmelden wollen, existiert nicht."
+  statistics:
+    sections:
+      users: "Benutzer"
+      exercises: "Aufgaben"
+      request_for_comments: "Kommentaranfragen"
+    entries:
+      exercises:
+        average_number_of_submissions: "Durchschnittliche Zahl von Abgaben"
+        submissions_per_minute: "Aktuelle Abgabenhäufigkeit (1h)"
+      request_for_comments:
+        percent_solved: "Beantwortete Anfragen"
+        percent_unsolved: "Unbeantwortete Anfragen"
+        percent_soft_solved: "Ungelöst mit voller Punktzahl"
+        with_comments: "Anfragen mit Kommentaren"
+      users:
+        currently_active: "Aktiv (5 Minuten)"

@@ -7,6 +7,7 @@
       ul.dropdown-menu role='menu'
         - if current_user.admin?
           li = link_to(t('breadcrumbs.dashboard.show'), admin_dashboard_path)
+          li = link_to(t('breadcrumbs.statistics.show'), statistics_path)
           li.divider
         - models = [ExecutionEnvironment, Exercise, ExerciseCollection, ProxyExercise, Tag, Consumer, CodeHarborLink, UserExerciseFeedback,
                 ErrorTemplate, ErrorTemplateAttribute, ExternalUser, FileType, FileTemplate, InternalUser].sort_by {|model| model.model_name.human(count: 2) }
