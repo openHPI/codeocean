@@ -11,6 +11,7 @@ en:
       error:
         message: Message
       execution_environment:
+        default_programming_language: Default for Programming Language?
         docker_image: Docker Image
         exposed_ports: Exposed Ports
         file_type: Default File Type
@@ -21,6 +22,7 @@ en:
         network_enabled: Network Enabled
         permitted_execution_time: Permitted Execution Time (in Seconds)
         pool_size: Docker Container Pool Size
+        programming_language: Programming Language
         run_command: Run Command
         test_command: Test Command
         testing_framework: Testing Framework
@@ -380,10 +382,8 @@ en:
       no_header: "No Authorization header"
       no_token: "No token in Authorization header"
       unknown_token: "Unknown OAuth2 token"
-    default_execution_environment_warning: |
-      No matching execution environment found for the exercise’s programming language.
-      You probably have imported an exercise for a currently unsupported programming language.
-      The default execution environment has been selected, please select the best fitting execution environment or remove the exercise.
+    no_execution_environment_warning: "Please choose an execution environment:"
+    please_choose: "Please choose:"
   proxy_exercises:
       index:
         clone: Duplicate

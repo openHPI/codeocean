@@ -98,6 +98,7 @@ GEM
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     chronic (0.10.2)
+    cocoon (1.2.11)
     codeclimate-test-reporter (1.0.7)
       simplecov
     coderay (1.1.2)
@@ -399,6 +400,7 @@ DEPENDENCIES
   capybara
   capybara-selenium (>= 0.0.6)
   carrierwave
+  cocoon
   codeclimate-test-reporter
   concurrent-ruby
   concurrent-ruby-ext

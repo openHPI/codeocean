@@ -12,12 +12,13 @@ h1
 = row(label: 'exercise.user', value: link_to_if(policy(@exercise.author).show?, @exercise.author, @exercise.author))
 = row(label: 'exercise.description', value: render_markdown(@exercise.description))
 = row(label: 'exercise.execution_environment') do
-  = link_to_if(policy(@exercise.execution_environment).show?, @exercise.execution_environment, @exercise.execution_environment)
-  - if @exercise.default_execution_environment
+  - if @exercise.execution_environment
+    = link_to_if(policy(@exercise.execution_environment).show?, @exercise.execution_environment, @exercise.execution_environment)
+  - else
     .default-execution-environment-warning
       i.fa.fa-warning
       span
-        = t('exercises.default_execution_environment_warning')
+        = t('exercises.no_execution_environment_warning')
         = ' '
         = link_to(t('shared.edit'), edit_exercise_path(@exercise))
 /= row(label: 'exercise.instructions', value: render_markdown(@exercise.instructions))

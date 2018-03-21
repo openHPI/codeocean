@@ -1,0 +1,10 @@
+.nested-fields
+  = f.hidden_field :name, class: 'hidden-name'
+  = f.hidden_field :version, class: 'hidden-version'
+  = f.hidden_field :default, class: 'hidden-default'
+  = f.hidden_field :_destroy
+  .col-md-4.name
+  .col-md-4.version
+  .col-md-2.default
+  .col-md-2
+    = link_to_remove_association "Remove", f

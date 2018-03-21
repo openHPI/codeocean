@@ -10,17 +10,6 @@ module Proforma
           title: doc.xpath('/p:task/p:meta-data/p:title').text,
           description: doc.xpath('/p:task/p:description').text
       }
-      prog_language = doc.xpath('/p:task/p:proglang').text
-      version = doc.xpath('/p:task/p:proglang/@version').first.value
-      exec_environment = ExecutionEnvironment.where(name: prog_language + ' ' + version).take
-      if exec_environment
-        exec_environment_id = exec_environment.id
-      else
-        @exercise.default_execution_environment = true
-        exec_environment_id = 1
-      end
-      @exercise.execution_environment_id = exec_environment_id
-
       add_files_xml(doc)
 
       return @exercise

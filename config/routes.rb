@@ -65,6 +65,9 @@ Rails.application.routes.draw do
       get :statistics
     end
 
+    collection do
+      get :proglang_versions
+    end
     resources :errors, only: [:create, :index, :show]
     resources :hints
   end

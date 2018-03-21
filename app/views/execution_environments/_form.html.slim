@@ -3,6 +3,38 @@
   .form-group
     = f.label(:name)
     = f.text_field(:name, class: 'form-control', required: true)
+
+  = f.label(:programming_language)
+  .form-row
+    .form-group.col-md-6
+      = f.label(:name)
+      = select_tag('name', options_for_select(ProgrammingLanguage.select(:name).distinct.collect{ |pl| [pl.name, pl.id]}), include_blank: true, class: 'proglang-select')
+    .form-group.col-md-4
+      = f.label(:version)
+      = select_tag('version', nil, include_blank: true, class: 'version-select', disabled: true)
+    .form-group.col-md-1
+      = f.label(:default)
+      .placeholder.form-control
+        .form-check
+          = check_box_tag('default', 1, false , class: 'default-checkbox form-check-input position-static')
+    .form-group.col-md-1
+      = f.label(:add)
+      .placeholder.form-control
+        = link_to_add_association 'Add', f, :programming_languages, {class: 'btn btn-default btn-xs add-button', disabled: true}
+  .prog-lang-table
+    .table-head
+      .col-md-4
+        = label_tag 'Name'
+      .col-md-4
+        = label_tag 'Version'
+      .col-md-2
+        = label_tag 'Default'
+      .col-md-2
+        = label_tag 'Remove'
+    .table-body
+      = f.fields_for :programming_languages do |programming_language|
+        = render 'programming_language_fields', f: programming_language
+
   .form-group
     = f.label(:file_type_id)
     = f.collection_select(:file_type_id, FileType.all.order(:name), :id, :name, {include_blank: true}, class: 'form-control')

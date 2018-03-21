@@ -20,6 +20,7 @@
 //= require jquery_ujs
 //= require jstree/jstree.min
 //= require turbolinks
+//= require cocoon
 //= require_tree ../../../lib
 //= require_tree .
 //= require bootstrap_pagedown

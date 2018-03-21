@@ -12,6 +12,7 @@ class ExecutionEnvironment < ActiveRecord::Base
   belongs_to :file_type
   has_many :hints
   has_many :error_templates
+  has_many :programming_languages, dependent: :destroy
 
   scope :with_exercises, -> { where('id IN (SELECT execution_environment_id FROM exercises)') }
 
@@ -24,6 +25,9 @@ class ExecutionEnvironment < ActiveRecord::Base
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
   validates :pool_size, numericality: {only_integer: true}, presence: true
   validates :run_command, presence: true
+
+  validates :programming_languages, presence: true
+  accepts_nested_attributes_for :programming_languages, reject_if: :all_blank, allow_destroy: true
 
   def set_default_values
     set_default_values_if_present(permitted_execution_time: 60, pool_size: 0)

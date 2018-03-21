@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180312135814) do
+ActiveRecord::Schema.define(version: 20180316134220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -276,6 +276,17 @@ ActiveRecord::Schema.define(version: 20180312135814) do
     t.datetime "updated_at"
   end
 
+  create_table "programming_languages", force: :cascade do |t|
+    t.string   "version"
+    t.string   "name"
+    t.integer  "execution_environment_id"
+    t.boolean  "default"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "programming_languages", ["execution_environment_id"], name: "index_programming_languages_on_execution_environment_id", using: :btree
+
   create_table "proxy_exercises", force: :cascade do |t|
     t.string   "title"
     t.string   "description"
@@ -410,4 +421,5 @@ ActiveRecord::Schema.define(version: 20180312135814) do
   add_index "user_proxy_exercise_exercises", ["proxy_exercise_id"], name: "index_user_proxy_exercise_exercises_on_proxy_exercise_id", using: :btree
   add_index "user_proxy_exercise_exercises", ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user_type_and_user_id", using: :btree
 
+  add_foreign_key "programming_languages", "execution_environments"
 end

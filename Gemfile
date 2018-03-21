@@ -44,6 +44,7 @@ gem 'rest-client'
 gem 'rubyzip'
 gem 'mnemosyne-ruby', '~> 1.0'
 gem 'whenever', require: false
+gem 'cocoon'
 
 group :development, :staging do
   gem 'better_errors', platform: :ruby

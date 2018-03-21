@@ -31,8 +31,8 @@ describe Proforma::Importer do
       expect(imported_exercise.description).to eq exercise.description
     end
 
-    it 'has valid execution environment' do
-      expect(imported_exercise.execution_environment_id).to eq exercise.execution_environment_id
+    it 'has no execution environment' do
+      expect(imported_exercise.execution_environment_id).to eq nil
     end
 
     describe 'files' do

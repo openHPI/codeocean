@@ -28,7 +28,15 @@ h1 = Exercise.model_name.human(count: 2)
       - @exercises.each do |exercise|
         tr data-id=exercise.id
           td = exercise.title
-          td = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
+          td
+            - if exercise.execution_environment
+              = link_to_if(policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
+            - else
+              i.fa.fa-warning style='color: zred;'
+              span
+                = t('exercises.please_choose')
+                = ' '
+                = link_to(t('shared.edit'), edit_exercise_path(exercise))
           td = exercise.files.teacher_defined_tests.count
           td = exercise.maximum_score
           td = exercise.exercise_tags.count
