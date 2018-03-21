@@ -5,7 +5,7 @@ then
   echo "Get apt-get sources for some docker dependencies..."
   cd /etc/apt/sources.list.d
   sudo touch backports.list
-  sudo sh -c 'echo "deb http://http.debian.net/debian stretch-backports main" > backports.list'
+  sudo sh -c 'echo "deb http://http.debian.net/debian jessie-backports main" > backports.list'
   sudo apt-get update
   echo "Done"
 
@@ -17,7 +17,7 @@ then
 
   #install docker dependencies
   echo "Install dependencies..."
-  sudo apt-get install -y --force-yes apt-transport-https ca-certificates gnupg2 dirmngr
+  sudo apt-get install -y --force-yes apt-transport-https ca-certificates gnupg2
   echo "Done"
 else
   echo "Docker dependencies already added."
@@ -30,7 +30,7 @@ then
   sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
   cd /etc/apt/sources.list.d
   sudo touch docker.list
-  sudo sh -c 'echo "deb https://apt.dockerproject.org/repo debian-stretch main" > docker.list'
+  sudo sh -c 'echo "deb https://apt.dockerproject.org/repo debian-jessie main" > docker.list'
   sudo apt-cache policy docker-engine
   sudo apt-get update
   echo "Done"
@@ -59,7 +59,7 @@ if [ ! -f /etc/systemd/system/docker.service.d/docker.conf ]
 # code_ocean: enable TCP
 [Service]
 ExecStart=
-ExecStart=/usr/bin/dockerd -H fd:// -D -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock
+ExecStart=/usr/bin/dockerd -H fd:// -D -H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock"
 EOF'
   sudo systemctl daemon-reload
   sudo service docker restart

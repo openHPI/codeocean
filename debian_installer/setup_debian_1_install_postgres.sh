@@ -11,7 +11,7 @@ then
   echo "Add Postgres sources..."
   cd /etc/apt/sources.list.d
   sudo touch pgdg.list
-  sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" > pgdg.list'
+  sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > pgdg.list'
   sudo wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
   sudo apt-get update
   echo "Done"
@@ -64,3 +64,6 @@ else
 fi
 
 # TODO: create test database
+
+
+

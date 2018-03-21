@@ -4,7 +4,7 @@
 #    - without GUI
 #    - without webserver (we do not want an apache2 but an nginx server)
 #    - with ssh ()
-# 2 Create 2 users
+# 2 Create 2 users 
 #    - debian/debian
 #    - root/root
 
@@ -27,8 +27,8 @@ exit
 # Running the following directly on the VM command line is inconvenient
 # Therefore enable login via ssh from Host
 
-# The best way to login to a guest Linux VirtualBox VM is port forwarding.
-# By default, you should have one interface already which is using NAT.
+# The best way to login to a guest Linux VirtualBox VM is port forwarding. 
+# By default, you should have one interface already which is using NAT. 
 # Then go to the Network settings and click the Port Forwarding button. Add a new Rule:
 
 # Protocol TCP Host port 3022, guest port 22, name ssh, other left blank.
@@ -39,7 +39,7 @@ exit
 # http://stackoverflow.com/questions/5906441/how-to-ssh-to-a-virtualbox-guest-externally-through-a-host
 #=======================================================================================================
 
-# Install postgres
+# Install postgres 
 # run script:
 debian_installer/setup_debian_1_install_postgres.sh
 
@@ -76,18 +76,18 @@ debian_installer/setup_debian_7_create_tables.sh
 # Add Port Forwarding for Rails server:
 
 # Protocol TCP Host port 3030, guest port 3000, name CodeOcean, other left blank.
-# That's all!
+# That's all! 
 # Start Puma server on VM (since we upgraded to rails 4.2.5, it is necessary to specify the address here as well. Otherwise, we can't connect from the host machine)
-# rails s -b 0.0.0.0 -p 3000 
+# rails s -b 0.0.0.0 -p 8080 
 
-# To connect to Ruby app use
+# To connect to Ruby app use 
 #http://127.0.0.1:3030
 
 
 #The following is required so that CodeOcean can connect back to openHPI local
 
 # Setup a second networking interface
-# 1. Host-only vboxnet0 (ip-address: 192.168.59.104)
+# 1. Host-only vboxnet0 (ip-address: 192.168.59.104)   
 # 2. NAT with all the portforwarding stuff as described above
 
 # Edit /etc/network/interfaces in Guest machine:
@@ -97,7 +97,7 @@ debian_installer/setup_debian_7_create_tables.sh
 # 2. edit network configuration:
 # sudoedit /etc/network/interfaces
 # and add the following lines:
-
+ 
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
@@ -123,7 +123,7 @@ iface eth0 inet static
 auto eth1
 iface eth1 inet dhcp
 
-# See also:
+# See also: 
 # http://askubuntu.com/questions/293816/in-virtualbox-how-do-i-set-up-host-only-virtual-machines-that-can-access-the-in
 
 # !!!!!Attention!!!!!!!!
@@ -139,7 +139,7 @@ iface eth1 inet dhcp
 # CodeOcean:
 # http://192.168.59.104:3030
 
-#TODO production:
+#TODO production: 
 # require passwd for sudo again.
 # cd /etc/sudoers.d
 # echo "debian ALL=(ALL:ALL) ALL" > debian
@@ -149,3 +149,17 @@ iface eth1 inet dhcp
 # echo "Install NGINX..."
 # sudo apt-get install -y --force-yes nginx
 # echo "Done"
+
+
+
+
+
+
+
+
+
+
+
+
+
+

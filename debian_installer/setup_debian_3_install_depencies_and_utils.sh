@@ -3,15 +3,15 @@ then
   echo "Get additional sources for apt-get"
   cd /etc/apt/sources.list.d
   sudo touch nonfree.list
-  sudo sh -c 'echo "deb http://http.debian.net/debian stretch main non-free contrib" > nonfree.list'
-  sudo sh -c 'echo "deb-src http://http.debian.net/debian stretch main non-free contrib" >> nonfree.list'
-  sudo sh -c 'echo "deb http://http.debian.net/debian stretch-updates main contrib non-free" >> nonfree.list'
-  sudo sh -c 'echo "deb-src http://http.debian.net/debian stretch-updates main contrib non-free" >> nonfree.list'
+  sudo sh -c 'echo "deb http://http.debian.net/debian jessie main non-free contrib" > nonfree.list'
+  sudo sh -c 'echo "deb-src http://http.debian.net/debian jessie main non-free contrib" >> nonfree.list'
+  sudo sh -c 'echo "deb http://http.debian.net/debian jessie-updates main contrib non-free" >> nonfree.list'
+  sudo sh -c 'echo "deb-src http://http.debian.net/debian jessie-updates main contrib non-free" >> nonfree.list'
   sudo apt-get update
-else
+else 
   # install utilities
   echo "Additional apt-get sources already added"
-fi
+fi 
 
 # install utilities
 echo "Install some utils..."
@@ -53,7 +53,7 @@ then
   ruby -v
   exec bash
   echo "Done"
-else
+else 
   echo "RVM and Ruby are already installed"
 fi
 
