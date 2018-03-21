@@ -13,7 +13,12 @@ class ExerciseCollection < ActiveRecord::Base
   end
 
   def average_working_time
-    exercise_working_times.values.reduce(:+) / exercises.size
+    if exercises.empty?
+      0
+    else
+      values = exercise_working_times.values.reject { |v| v.nil?}
+      values.reduce(:+) / exercises.size
+    end
   end
 
   def to_s
