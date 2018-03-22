@@ -4,7 +4,6 @@ gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'bcrypt'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
-gem 'coffee-rails'
 gem 'concurrent-ruby'
 gem 'concurrent-ruby-ext', platform: :ruby
 gem 'activerecord-deprecated_finders', require: 'active_record/deprecated_finders'
@@ -28,7 +27,7 @@ gem 'ransack'
 gem 'rubytree'
 gem 'sass-rails'
 gem 'sdoc', group: :doc
-gem 'slim'
+gem 'slim-rails'
 gem 'bootstrap_pagedown'
 gem 'pagedown-rails'
 gem 'sorcery'

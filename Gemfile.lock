@@ -320,6 +320,10 @@ GEM
     slim (3.0.9)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 1.3.3, < 2.1)
+    slim-rails (3.1.3)
+      actionpack (>= 3.1)
+      railties (>= 3.1)
+      slim (~> 3.0)
     sorcery (0.11.0)
       bcrypt (~> 3.1)
       oauth (~> 0.4, >= 0.4.4)
@@ -390,7 +394,6 @@ DEPENDENCIES
   capybara-selenium
   carrierwave
   codeclimate-test-reporter
-  coffee-rails
   concurrent-ruby
   concurrent-ruby-ext
   d3-rails (~> 4.0)
@@ -430,7 +433,7 @@ DEPENDENCIES
   sass-rails
   sdoc
   simplecov
-  slim
+  slim-rails
   sorcery
   spring
   thread_safe
