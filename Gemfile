@@ -67,12 +67,13 @@ end
 group :test do
   gem 'autotest-rails'
   gem 'capybara'
+  gem 'capybara-selenium'
+  gem 'headless'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
   gem 'rake'
   gem 'rspec-autotest'
   gem 'rspec-rails'
-  gem 'selenium-webdriver'
   gem 'simplecov', require: false
 end
