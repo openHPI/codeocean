@@ -8,7 +8,7 @@ class RequestForComment < ActiveRecord::Base
   has_many :subscriptions
 
   scope :unsolved, -> { where(solved: [false, nil]) }
-  scope :not_stale, -> { where("user_id%10 < 3").where(exercise.exercise_collections.none{|ec| ec.id = 3} }
+  scope :not_stale, -> { where("user_id%10 < 3").where(exercise.exercise_collections.none{|ec| ec.id = 3}) }
 
     def self.last_per_user(n = 5)
       from("(#{row_number_user_sql}) as request_for_comments")
