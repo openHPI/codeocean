@@ -188,16 +188,21 @@ class ExercisesController < ApplicationController
 
     @experiment_group = UserGroupSeparator.getInterventionGroup(current_user)
 
+    showInterventions = (is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
 
     case @experiment_group
-      # todo
+      when :rfc_intervention_stale_rfc
+        @show_rfc_interventions = showInterventions
+      when :break_intervention_stale_rfc
+        @show_break_interventions = showInterventions
+      when :no_intervention_stale_rfc
       when :no_intervention_hide_rfc
         @hide_rfc_button = "true"
-      when :no_intervention_stale_rfc
-      when :break_intervention
-        @show_break_interventions = (is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
-      when :rfc_intervention
-        @show_rfc_interventions = (is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
+      when :break_intervention_show_rfc
+        @show_break_interventions = showInterventions
+      when :no_intervention_show_rfc
+      when :rfc_intervention_show_rfc
+        @show_rfc_interventions = showInterventions
     end
 
 
