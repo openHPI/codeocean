@@ -188,7 +188,7 @@ class ExercisesController < ApplicationController
 
     @experiment_group = UserGroupSeparator.getInterventionGroup(current_user)
 
-    showInterventions = (is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
+    showInterventions = (@is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
 
     case @experiment_group
       when :rfc_intervention_stale_rfc
