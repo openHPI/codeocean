@@ -31,16 +31,4 @@ class UserGroupSeparator
       :recommended_assignment
     end
   end
-
-  def self.getRequestforCommentGroup(user)
-    lastDigitId = user.id % 10
-    if lastDigitId < 2 # 0,1
-      :hide_rfc
-    elsif lastDigitId < 4 # 2,3
-      :stale_rfc
-    else # 4,5,6,7,8,9
-      :show_rfc
-    end
-  end
-
 end
