@@ -1,57 +1,20 @@
-var setup_programming_language = (function() {
-    var select = $('.proglang-select');
-    select.chosen({
-        disable_search_threshold: 0,
-        no_results_text: "No results match. Press enter to add"
-    });
-
+var update_version_select = (function() {
     var version_select = $('.version-select');
-    version_select.chosen({
-        disable_search_threshold: -1,
-        no_results_text: "No results match. Press enter to add"
-    });
+    $(version_select).empty();
+    $(version_select).attr("disabled", false);
+});
 
-    function update_version_select() {
-        var version_select = $('.version-select');
-        $(version_select).empty();
-        $(version_select).attr("disabled", false);
-    }
 
-    var obs = $(select).chosen().data('chosen');
-    obs.search_field.on('keyup', function(e){
-        if (event.keyCode === 13) {
+var setup_programming_language = (function() {
 
-            var option = $("<option>").val(this.value).text(this.value);
-            // Add the new option
-            select.prepend(option);
-            // Automatically select it
-            select.find(option).prop('selected', true).change();
-            // Trigger the update
-            select.trigger("chosen:close");
-            select.trigger("chosen:updated");
-        }
-    });
+    var proglang_select = $('.proglang-select');
+    var version_select = $('.version-select');
 
-    var obs2 = $(version_select).chosen().data('chosen');
-    obs2.search_field.on('keyup', function(e){
-        if (event.keyCode === 13) {
-            var option = $("<option>").val(this.value).text(this.value);
-            // Add the new option
-            version_select.prepend(option);
-            // Automatically select it
-            version_select.find(option).prop('selected', true).change();
-            // Trigger the update
-            version_select.trigger("chosen:close");
-            version_select.trigger("chosen:updated");
-        }
-    });
-
-    select.change(function(){
-        var option = $(select).children(':selected').text();
-        console.log(option);
+    proglang_select.change(function(){
+        var option = $(proglang_select).children(':selected').text();
         $.ajax({
             type: "GET",
-            url: "/execution_environments/proglang_versions",
+            url: "/programming_languages/versions",
             data: {proglang: option},
             dataType: 'json',
             success: function (data) {
@@ -71,15 +34,68 @@ var setup_programming_language = (function() {
     });
 });
 
+var setup_new_options = (function($obj) {
+    var select_box = $obj.chosen().data('chosen');
+    select_box.search_field.on('keyup', function(e) {
+        if (event.keyCode === 13) {
+            console.log("Worse Fail");
+            console.log($obj);
+            var option = $("<option>").val(this.value).text(this.value);
+            // Add the new option
+            $($obj).prepend(option);
+            // Automatically select it
+            $($obj).find(option).prop('selected', true).change();
+            // Trigger the update
+            $obj.trigger("chosen:close");
+            $obj.trigger("chosen:updated");
+        }
+    });
+});
+
+var setup_chosen_fields = (function() {
+    var proglang_select = $('.proglang-select');
+    proglang_select.chosen({
+        disable_search_threshold: 0,
+        no_results_text: "No results match. Press enter to add"
+    });
+
+    var version_select = $('.version-select');
+    version_select.chosen({
+        disable_search_threshold: -1,
+        no_results_text: "No results match. Press enter to add"
+    });
+
+    setup_new_options(proglang_select);
+    setup_new_options(version_select);
+});
+
 var show_programming_language_values = (function() {
     $('.nested-fields').each(function() {
-        var name = $(this).find('.hidden-name').val();
-        var version = $(this).find('.hidden-version').val();
+        var prog_lang_id = $(this).find('.hidden-id').val();
         var is_default = $(this).find('.hidden-default').val();
-        $(this).find('.name').html(document.createTextNode(name));
-        $(this).find('.version').html(document.createTextNode(version));
-        $(this).find('.default').html(document.createTextNode(is_default ? "Yes" : "No"));
+        console.log(prog_lang_id);
+        var nested_field_node = this;
+        $.ajax({
+            type: 'GET',
+            url: "/programming_languages/" + prog_lang_id,
+            dataType: 'json',
+            success: function (data) {
+                $(nested_field_node).find('.name').html(document.createTextNode(data.name));
+                $(nested_field_node).find('.version').html(document.createTextNode(data.version));
+                $(nested_field_node).find('.default').html(document.createTextNode(is_default ? "Yes" : "No"));
+            }
+        });
     });
+});
+
+var show_error_message = (function(error) {
+    $('<div class="proglang-error alert alert-danger fade in">'+ error +'</div>')
+        .insertAfter('.prog-lang-form')
+        .delay(3000)
+        .slideUp('medium')
+        .queue(function() {
+            $(this).remove();
+        });
 });
 
 $(function() {
@@ -88,6 +104,7 @@ $(function() {
       new MarkdownEditor('#execution_environment_help');
       setup_programming_language();
       show_programming_language_values();
+      setup_chosen_fields();
     }
   }
 });
@@ -95,19 +112,33 @@ $(function() {
 
 $(function() {
     $("a.add_fields").
-    data("association-insertion-method", 'append').
-    data("association-insertion-node", '.table-body');
+        data("association-insertion-method", 'append').
+        data("association-insertion-node", '.table-body');
 
-    $('.table-body').on('cocoon:after-insert', function(e, added_task) {
+    $('.table-body').on('cocoon:before-insert', function(e, added_task) {
         // e.g. set the background of inserted task
         var name = $('.proglang-select :selected').text();
         var version = $('.version-select :selected').text();
         var is_default = $('.default-checkbox').prop("checked");
-        $(added_task).find('.name').html(document.createTextNode(name));
-        $(added_task).find('.version').html(document.createTextNode(version));
-        $(added_task).find('.default').html(document.createTextNode(is_default ? "Yes" : "No"));
-        $(added_task).find('.hidden-name').val(name);
-        $(added_task).find('.hidden-version').val(version);
-        $(added_task).find('.hidden-default').val(is_default);
+        $.ajax({
+            type: "POST",
+            url: "/programming_languages",
+            data: {name: name, version: version, is_default: is_default},
+            async: false,
+            dataType: 'json',
+            success: function(data) {
+                $(added_task).find('.name').html(document.createTextNode(name));
+                $(added_task).find('.version').html(document.createTextNode(version));
+                $(added_task).find('.default').html(document.createTextNode(is_default ? "Yes" : "No"));
+                $(added_task).find('.hidden-default').val(is_default);
+                $(added_task).find('.hidden-id').val(data.id);
+            },
+            error: function(xhr){
+                var errors = $.parseJSON(xhr.responseText).errors;
+                console.log(errors);
+                show_error_message(errors);
+                e.preventDefault();
+            }
+        });
     });
 });

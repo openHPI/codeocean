@@ -101,15 +101,8 @@ class ExecutionEnvironmentsController < ApplicationController
     }
   end
 
-  def proglang_versions
-    collection = ProgrammingLanguage.where(name: params[:proglang]).select(:version).distinct.to_json
-    respond_to do |format|
-      format.json { render json: collection}
-    end
-  end
-
   def execution_environment_params
-    params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework, programming_languages_attributes: [:id, :name, :version, :default, :_destroy]).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework, programming_languages_joins_attributes: [:id, :programming_language_id, :default, :_destroy]).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :execution_environment_params
 

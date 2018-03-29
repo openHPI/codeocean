@@ -12,7 +12,8 @@ class ExecutionEnvironment < ActiveRecord::Base
   belongs_to :file_type
   has_many :hints
   has_many :error_templates
-  has_many :programming_languages, dependent: :destroy
+  has_many :programming_languages_joins, dependent: :destroy
+  has_many :programming_languages, through: :programming_languages_joins
 
   scope :with_exercises, -> { where('id IN (SELECT execution_environment_id FROM exercises)') }
 
@@ -26,8 +27,8 @@ class ExecutionEnvironment < ActiveRecord::Base
   validates :pool_size, numericality: {only_integer: true}, presence: true
   validates :run_command, presence: true
 
-  validates :programming_languages, presence: true
-  accepts_nested_attributes_for :programming_languages, reject_if: :all_blank, allow_destroy: true
+  validates :programming_languages_joins, presence: true
+  accepts_nested_attributes_for :programming_languages_joins, reject_if: :all_blank, allow_destroy: true
 
   def set_default_values
     set_default_values_if_present(permitted_execution_time: 60, pool_size: 0)
@@ -58,4 +59,8 @@ class ExecutionEnvironment < ActiveRecord::Base
     errors.add(:docker_image, "error: #{error}")
   end
   private :working_docker_image?
+
+  def is_default_for(programming_language)
+    self.programming_languages_joins.find_by(programming_language: programming_language, default: true) ? true : false;
+  end
 end

@@ -65,11 +65,14 @@ Rails.application.routes.draw do
       get :statistics
     end
 
-    collection do
-      get :proglang_versions
-    end
     resources :errors, only: [:create, :index, :show]
     resources :hints
+  end
+
+  resources :programming_languages do
+    collection do
+      get :versions
+    end
   end
 
   post '/import_proforma_xml' => 'exercises#import_proforma_xml'

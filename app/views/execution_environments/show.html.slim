@@ -7,6 +7,8 @@ h1
 = row(label: 'execution_environment.programming_language') do
   - @execution_environment.programming_languages.each do |proglang|
     = proglang.name_with_version
+    - if @execution_environment.is_default_for(proglang)
+      = ' (default)'
     br
 //= row(label: 'execution_environment.default_programming_language', value: @execution_environment.programming_language.default ? 'shared.yes' : 'shared.no')
 = row(label: 'execution_environment.file_type', value: @execution_environment.file_type.present? ? link_to(@execution_environment.file_type, @execution_environment.file_type) : nil)
