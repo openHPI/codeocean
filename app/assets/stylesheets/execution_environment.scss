@@ -1,0 +1,49 @@
+.prog-lang-table {
+  margin: 0 0 20px 0;
+  width: 100%;
+  display: inline-block;
+  .table-head {
+    width: 100%;
+    display: inline-block;
+    border-bottom: 1px solid darkgray;
+    * {
+      padding: 0;
+    }
+  }
+  .table-body {
+    width: 100%;
+    * {
+      padding: 0;
+    }
+  }
+}
+.prog-lang-form{
+  display: inline-block;
+  width: 100%;
+  margin-bottom: 15px;
+  * {
+    margin-bottom: 0;
+    padding-left: 0;
+  }
+}
+
+.placeholder {
+  padding: 0;
+  visibility: hidden;
+  height: 30px;
+  .form-check-input {
+    visibility: visible;
+    height: 20px;
+    width: 20px;
+  }
+  a {
+    visibility: visible;
+    padding: 5px;
+    height: 30px;
+    min-width: 60px;
+    text-align: center;
+  }
+  input {
+    visibility: visible;
+  }
+}

@@ -4,34 +4,34 @@
     = f.label(:name)
     = f.text_field(:name, class: 'form-control', required: true)
 
-  = f.label(:programming_language)
+  = f.label(:programming_languages)
   .form-row
     .prog-lang-form
-      .form-group.col-md-6
-        = f.label(:name)
+      .form-group.col-md-6.pl-0.mb-0
+        = label(:programming_language, :name)
         = select_tag('name', options_for_select(ProgrammingLanguage.select(:name).distinct.collect{ |pl| [pl.name, pl.id]}), form: 'create-proglang', include_blank: true, class: 'proglang-select')
-      .form-group.col-md-4
-        = f.label(:version)
+      .form-group.col-md-4.mb-0
+        = label(:programming_language, :version)
         = select_tag('version', nil, include_blank: true, class: 'version-select', disabled: true)
-      .form-group.col-md-1
-        = f.label(:default)
+      .form-group.col-md-1.mb-0 title=t('execution_environments.tooltipDefault')
+        = label(:programming_language, :default)
         .placeholder.form-control
           .form-check
-            = check_box_tag('default', 1, false , class: 'default-checkbox form-check-input position-static')
-      .form-group.col-md-1
-        = f.label(:add)
+            = check_box_tag('default', 1, false , title: t('execution_environments.tooltipDefault'), class: 'default-checkbox form-check-input position-static')
+      .form-group.col-md-1.mb-0
+        = label_tag
         .placeholder.form-control
-          = link_to_add_association 'Add', f, :programming_languages_joins, {class: 'btn btn-default btn-xs add-button', disabled: true}
+          = link_to_add_association t('execution_environments.add'), f, :programming_languages_joins, {class: 'btn btn-default btn-xs add-button', disabled: true}
+      .help-block == t('.hints.programming_languages')
     .prog-lang-table
       .table-head
         .col-md-4
-          = label_tag 'Name'
+          = label(:programming_language, :name)
         .col-md-4
-          = label_tag 'Version'
-        .col-md-2
-          = label_tag 'Default'
-        .col-md-2
-          = label_tag 'Remove'
+          = label(:programming_language, :version)
+        .col-md-3
+          = label(:programming_language, :default)
+        .col-md-1
       .table-body
         = f.fields_for :programming_languages_joins do |programming_language_join|
           = render 'programming_languages_join_fields', f: programming_language_join

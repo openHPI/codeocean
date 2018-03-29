@@ -11,7 +11,6 @@ de:
       error:
         message: Nachricht
       execution_environment:
-        default_programming_language: Standard für Programmiersprache?
         docker_image: Docker-Image
         exposed_ports: Zugängliche Ports
         file_type: Standard-Dateityp
@@ -89,6 +88,10 @@ de:
         password: Passwort
         password_confirmation: Passwort-Bestätigung
         role: Rolle
+      programming_language:
+        name: Name
+        version: Version
+        default: Standard
       request_for_comments:
         comments: Kommentare
         exercise: Aufgabe
@@ -191,9 +194,14 @@ de:
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'
+      programming_languages:
+        error_message: Programmiersprache nicht gefunden
       models:
         exercise:
           at_most_one_main_file: dürfen höchstens eine Hauptdatei enthalten
+        programming_languages_join:
+          default_programming_language_validation: darf nur eine Standard-Programmierumgebung haben
+          only_one_default_execution_environment: Es darf nur eine Standard-Programmierumgebung pro Programmiersprache geben.
   admin:
     dashboard:
       show:
@@ -228,6 +236,7 @@ de:
         command: <em>filename</em> wird automatisch durch den richtigen Dateinamen ersetzt.
         docker_image: 'Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank">DockerHub</a> verfügbar ist.'
         exposed_ports: Während der Ausführung sind diese Ports für den Nutzer zugänglich.
+        programming_languages: Fügen Sie Programmiersprachen hinzu, für die die Ausführungsumgebung benutzt werden kann. Die erste Programmiersprache ist die Standard-Programmiersprache.
     index:
       shell: Shell
     shell:
@@ -243,6 +252,10 @@ de:
       percentage_correct: Prozent Korrekt
       runs: Durchschnittliche Anzahl von Versuchen
       worktime: Durchschnittliche Arbeitszeit
+    add: Hinzufügen
+    remove: Entfernen
+    default: Standard
+    tooltipDefault: Setzen Sie das Feld, wenn sie wollen, dass diese Ausführungsumgebung als Standard für die Programmiersprache benutzt wird.
   exercises:
     editor:
       collapse_action_sidebar: Aktions-Leiste Einklappen
@@ -677,6 +690,7 @@ de:
     message_failure: Leider ist ein Fehler auf unserer Plattform aufgetreten. Bitte probieren Sie es später noch einmal.
     new: Hinzufügen
     new_model: '%{model} hinzufügen'
+    "no": Nein
     number: Nummer
     object_cloned: '%{model} wurde erfolgreich dupliziert.'
     object_created: '%{model} wurde erfolgreich erstellt.'
@@ -693,7 +707,7 @@ de:
     upload_file: Datei hochladen
     time:
       before: "%{time} zuvor"
-    hide: "Verstecken"
+    "yes": Ja
   submissions:
     causes:
       autosave: Autosave

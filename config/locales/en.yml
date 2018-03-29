@@ -11,7 +11,6 @@ en:
       error:
         message: Message
       execution_environment:
-        default_programming_language: Default for Programming Language?
         docker_image: Docker Image
         exposed_ports: Exposed Ports
         file_type: Default File Type
@@ -22,7 +21,7 @@ en:
         network_enabled: Network Enabled
         permitted_execution_time: Permitted Execution Time (in Seconds)
         pool_size: Docker Container Pool Size
-        programming_language: Programming Language
+        programming_languages: Programming Languages
         run_command: Run Command
         test_command: Test Command
         testing_framework: Testing Framework
@@ -89,6 +88,10 @@ en:
         password: Password
         password_confirmation: Passwort Confirmation
         role: Role
+      programming_language:
+        name: Name
+        version: Version
+        default: Default
       request_for_comments:
         comments: Comments
         exercise: Exercise
@@ -200,9 +203,14 @@ en:
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
+      programming_languages:
+        error_message: Cannot find programming language
       models:
         exercise:
           at_most_one_main_file: must include at most one main file
+        programming_languages_join:
+          default_programming_language_validation: can only have one default execution environment
+          only_one_default_execution_environment: There can only be one default execution environment for any programming language.
   admin:
     dashboard:
       show:
@@ -242,6 +250,7 @@ en:
         command: <em>filename</em> is automatically replaced with the correct filename.
         docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank">DockerHub</a>.
         exposed_ports: During code execution these ports are accessible for the user.
+        programming_languages: Add programming languages that execution environment can be used for. First one will be the main programming language.
     index:
       shell: Shell
     shell:
@@ -257,6 +266,10 @@ en:
       percentage_correct: Percentage Correct
       runs: Average Number of Runs
       worktime: Average Working Time
+    add: Add
+    remove: Remove
+    default: Default
+    tooltipDefault: Set if you want the programming language to have this execution environment as default.
   exercises:
     editor:
       collapse_action_sidebar: Collapse Action Sidebar
@@ -693,6 +706,7 @@ en:
     message_failure: 'Sorry, something went wrong.'
     new: Add
     new_model: 'Add %{model}'
+    "no": 'No'
     number: Number
     object_cloned: '%{model} has successfully been duplicated.'
     object_created: '%{model} has successfully been created.'
@@ -709,7 +723,7 @@ en:
     upload_file: Upload file
     time:
       before: "%{time} ago"
-    hide: "Hide"
+    "yes": "Yes"
   submissions:
     causes:
       autosave: Autosave

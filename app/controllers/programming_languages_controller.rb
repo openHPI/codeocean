@@ -20,7 +20,7 @@ class ProgrammingLanguagesController < ApplicationController
       if @programming_language
         format.json {render json: @programming_language}
       else
-        format.json {render json: {errors: "Can't find programming language" }, status: :unprocessable_entity}
+        format.json {render json: {errors: t('activerecord.errors.programming_languages.error_message')}, status: :unprocessable_entity}
       end
     end
   end
@@ -29,8 +29,12 @@ class ProgrammingLanguagesController < ApplicationController
     @programming_language = ProgrammingLanguage.find_or_initialize_by(name: params[:name], version: params[:version])
     authorize!
     respond_to do |format|
-      if @programming_language.save && @programming_language.check_default(params[:is_default])
-        format.json { render json: @programming_language }
+      if @programming_language.save
+        if @programming_language.check_default(params[:is_default])
+          format.json { render json: @programming_language }
+        else
+          format.json { render json: {error: @programming_language.errors.full_messages}}
+        end
       else
         format.json { render json: {errors: @programming_language.errors.full_messages}, status: :unprocessable_entity }
       end

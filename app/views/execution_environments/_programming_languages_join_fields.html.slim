@@ -1,9 +1,20 @@
+- display_true = f.object.default ? "inline" : "none"
+- display_false = !f.object.default ? "inline" : "none"
+
 .nested-fields
   = f.hidden_field :programming_language_id, class: 'hidden-id'
   = f.hidden_field :default, class: 'hidden-default'
   = f.hidden_field :_destroy
-  .col-md-4.name
-  .col-md-4.version
-  .col-md-2.default
-  .col-md-2
-    = link_to_remove_association "Remove", f
+  - f.object.build_programming_language unless f.object.programming_language
+  = f.fields_for :programming_language do |ff|
+    .col-md-4.name
+      = ff.object.name
+    .col-md-4.version
+      = ff.object.version
+    .col-md-3.default
+      span.true style="display:#{display_true}"
+        = t('shared.yes')
+      span.false style="display:#{display_false}"
+        = t('shared.no')
+  .col-md-1
+    = link_to_remove_association t('execution_environments.remove'),  f

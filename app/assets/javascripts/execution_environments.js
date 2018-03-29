@@ -69,25 +69,6 @@ var setup_chosen_fields = (function() {
     setup_new_options(version_select);
 });
 
-var show_programming_language_values = (function() {
-    $('.nested-fields').each(function() {
-        var prog_lang_id = $(this).find('.hidden-id').val();
-        var is_default = $(this).find('.hidden-default').val();
-        console.log(prog_lang_id);
-        var nested_field_node = this;
-        $.ajax({
-            type: 'GET',
-            url: "/programming_languages/" + prog_lang_id,
-            dataType: 'json',
-            success: function (data) {
-                $(nested_field_node).find('.name').html(document.createTextNode(data.name));
-                $(nested_field_node).find('.version').html(document.createTextNode(data.version));
-                $(nested_field_node).find('.default').html(document.createTextNode(is_default ? "Yes" : "No"));
-            }
-        });
-    });
-});
-
 var show_error_message = (function(error) {
     $('<div class="proglang-error alert alert-danger fade in">'+ error +'</div>')
         .insertAfter('.prog-lang-form')
@@ -103,12 +84,11 @@ $(function() {
     if ($('.edit_execution_environment, .new_execution_environment').isPresent()) {
       new MarkdownEditor('#execution_environment_help');
       setup_programming_language();
-      show_programming_language_values();
+      //show_programming_language_values();
       setup_chosen_fields();
     }
   }
 });
-
 
 $(function() {
     $("a.add_fields").
@@ -127,16 +107,32 @@ $(function() {
             async: false,
             dataType: 'json',
             success: function(data) {
-                $(added_task).find('.name').html(document.createTextNode(name));
-                $(added_task).find('.version').html(document.createTextNode(version));
-                $(added_task).find('.default').html(document.createTextNode(is_default ? "Yes" : "No"));
-                $(added_task).find('.hidden-default').val(is_default);
-                $(added_task).find('.hidden-id').val(data.id);
+                if (data.error) {
+                    show_error_message(data.error);
+                    e.preventDefault();
+                }
+                else {
+                    $(added_task).find('.name').html(document.createTextNode(name));
+                    $(added_task).find('.version').html(document.createTextNode(version));
+                    //$(added_task).find('.default').html(document.createTextNode(is_default ? "Yes" : "No"));
+                    if(is_default) {
+                        $(added_task).find('.false').hide();
+                        $(added_task).find('.true').show();
+                    }
+                    else {
+                        $(added_task).find('.true').hide();
+                        $(added_task).find('.false').show();
+                    }
+                    $(added_task).find('.hidden-default').val(is_default);
+                    $(added_task).find('.hidden-id').val(data.id);
+                }
             },
             error: function(xhr){
                 var errors = $.parseJSON(xhr.responseText).errors;
                 console.log(errors);
-                show_error_message(errors);
+                for (var i = 0, len = errors.length; i < len; i++) {
+                    show_error_message(errors[i]);
+                }
                 e.preventDefault();
             }
         });

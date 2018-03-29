@@ -22,8 +22,8 @@ describe Exercise do
     expect(exercise.errors[:description]).to be_present
   end
 
-  it 'validates the presence of an execution environment' do
-    expect(exercise.errors[:execution_environment_id]).to be_present
+  it 'does not validate the presence of an execution environment' do
+    expect(exercise.errors[:execution_environment_id]).not_to be_present
   end
 
   it 'validates the presence of the public flag' do

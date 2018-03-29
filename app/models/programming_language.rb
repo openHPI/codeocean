@@ -10,8 +10,7 @@ class ProgrammingLanguage < ActiveRecord::Base
     if default == "true"
       default_entry = ProgrammingLanguagesJoin.find_by(programming_language: self, default: true)
       if default_entry
-        Rails.logger.debug "Show this message!"
-        self.errors.add(:base, "There can only be one default execution environment for any programming language.")
+        self.errors.add(:base, I18n.t('activerecord.errors.models.programming_languages_join.only_one_default_execution_environment'))
         return false
       end
     end

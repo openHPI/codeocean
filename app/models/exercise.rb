@@ -31,7 +31,6 @@ class Exercise < ActiveRecord::Base
 
   validate :valid_main_file?
   validates :description, presence: true
-  #validates :execution_environment_id, presence: true
   validates :public, boolean_presence: true
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true

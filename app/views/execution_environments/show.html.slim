@@ -4,13 +4,12 @@ h1
 
 = row(label: 'execution_environment.name', value: @execution_environment.name)
 = row(label: 'execution_environment.user', value: link_to(@execution_environment.author, @execution_environment.author))
-= row(label: 'execution_environment.programming_language') do
+= row(label: 'execution_environment.programming_languages') do
   - @execution_environment.programming_languages.each do |proglang|
     = proglang.name_with_version
     - if @execution_environment.is_default_for(proglang)
-      = ' (default)'
+      = ' (' + t('execution_environments.default') + ')'
     br
-//= row(label: 'execution_environment.default_programming_language', value: @execution_environment.programming_language.default ? 'shared.yes' : 'shared.no')
 = row(label: 'execution_environment.file_type', value: @execution_environment.file_type.present? ? link_to(@execution_environment.file_type, @execution_environment.file_type) : nil)
 - [:docker_image, :exposed_ports, :memory_limit, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command].each do |attribute|
   = row(label: "execution_environment.#{attribute}", value: @execution_environment.send(attribute))

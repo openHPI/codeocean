@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :programming_languages_join do
+  factory :'programming_languages_join.rb' do
     
   end
 end

@@ -22,6 +22,7 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def edit
+    @execution_environment.programming_languages_joins.includes(:programming_language)
   end
 
   def execute_command
