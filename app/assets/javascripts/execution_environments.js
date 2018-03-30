@@ -79,6 +79,11 @@ var show_error_message = (function(error) {
         });
 });
 
+var show_default = (function($show, $hide){
+    $hide.hide();
+    $show.show();
+});
+
 $(function() {
   if ($.isController('execution_environments')) {
     if ($('.edit_execution_environment, .new_execution_environment').isPresent()) {
@@ -115,14 +120,9 @@ $(function() {
                     $(added_task).find('.name').html(document.createTextNode(name));
                     $(added_task).find('.version').html(document.createTextNode(version));
                     //$(added_task).find('.default').html(document.createTextNode(is_default ? "Yes" : "No"));
-                    if(is_default) {
-                        $(added_task).find('.false').hide();
-                        $(added_task).find('.true').show();
-                    }
-                    else {
-                        $(added_task).find('.true').hide();
-                        $(added_task).find('.false').show();
-                    }
+                    var true_node = $(added_task).find('.true');
+                    var false_node = $(added_task).find('.false');
+                    is_default ? show_default(true_node, false_node) : show_default(false_node, true_node);
                     $(added_task).find('.hidden-default').val(is_default);
                     $(added_task).find('.hidden-id').val(data.id);
                 }

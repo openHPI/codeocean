@@ -37,8 +37,8 @@ module Proforma
         proforma.description {
           proforma.cdata(@exercise.description)
         }
-        execution_environment = @exercise.execution_environment.name.split
-        proforma.proglang(execution_environment.first, 'version' => execution_environment.second)
+        programming_language = @exercise.execution_environment.programming_languages.first
+        proforma.proglang(programming_language.name, 'version' => programming_language.version)
         proforma.send('submission-restrictions') {
           proforma.send('files-restriction') {
             proforma.send('optional', 'filename' => '')

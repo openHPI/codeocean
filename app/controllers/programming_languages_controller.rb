@@ -28,13 +28,12 @@ class ProgrammingLanguagesController < ApplicationController
   def create
     @programming_language = ProgrammingLanguage.find_or_initialize_by(name: params[:name], version: params[:version])
     authorize!
+    saved = @programming_language.save
     respond_to do |format|
-      if @programming_language.save
-        if @programming_language.check_default(params[:is_default])
+      if saved && @programming_language.check_default(params[:is_default])
           format.json { render json: @programming_language }
-        else
+      elsif saved
           format.json { render json: {error: @programming_language.errors.full_messages}}
-        end
       else
         format.json { render json: {errors: @programming_language.errors.full_messages}, status: :unprocessable_entity }
       end
