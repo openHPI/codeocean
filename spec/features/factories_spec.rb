@@ -5,3 +5,4 @@ describe 'Factories' do
     expect { FactoryBot.lint }.not_to raise_error
   end
 end
+
