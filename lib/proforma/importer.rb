@@ -12,7 +12,7 @@ module Proforma
       }
       prog_language = doc.xpath('/p:task/p:proglang').text
       version = doc.xpath('/p:task/p:proglang/@version').first.value
-      exec_environment = ProgrammingLanguagesJoin.joins(:programming_language).find_by(name: prog_language, version: version, default: true).select(:exec_environment)
+      exec_environment = ProgrammingLanguagesJoin.joins(:programming_language).find_by(programming_languages: {name: prog_language, version: version}, default: true).try(:execution_environment)
       @exercise.execution_environment = exec_environment
       add_files_xml(doc)
 

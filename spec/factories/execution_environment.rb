@@ -19,7 +19,7 @@ FactoryBot.define do
     run_command 'coffee'
     singleton_execution_environment
 
-    before(:create) do |coffee_script|
+    after(:build) do |coffee_script|
       create_programming_language_join(coffee_script, FactoryBot.create(:java_script_2_2), true)
     end
   end
@@ -39,7 +39,7 @@ FactoryBot.define do
     test_command 'rspec %{filename} --format documentation'
     testing_framework 'RspecAdapter'
 
-    before(:create) do |html|
+    after(:build) do |html|
       create_programming_language_join(html, FactoryBot.create(:html_5), true)
     end
   end
@@ -59,7 +59,7 @@ FactoryBot.define do
     test_command 'make test CLASS_NAME="%{class_name}" FILENAME="%{filename}"'
     testing_framework 'JunitAdapter'
 
-    before(:create) do |java|
+    after(:build) do |java|
       create_programming_language_join(java, FactoryBot.create(:java_8), true)
     end
   end
@@ -79,7 +79,7 @@ FactoryBot.define do
     test_command 'rspec %{filename} --format documentation'
     testing_framework 'RspecAdapter'
 
-    before(:create) do |jruby|
+    after(:build) do |jruby|
       create_programming_language_join(jruby, FactoryBot.create(:ruby_2_2), false)
     end
   end
@@ -97,7 +97,7 @@ FactoryBot.define do
     run_command 'node %{filename}'
     singleton_execution_environment
 
-    before(:create) do |node_js|
+    after(:build) do |node_js|
       create_programming_language_join(node_js, FactoryBot.create(:java_script_2_2), false)
     end
   end
@@ -117,7 +117,7 @@ FactoryBot.define do
     test_command 'python3 -m unittest --verbose %{module_name}'
     testing_framework 'PyUnitAdapter'
 
-    before(:create) do |python|
+    after(:build) do |python|
       create_programming_language_join(python, FactoryBot.create(:python_3_0), true)
     end
   end
@@ -136,8 +136,7 @@ FactoryBot.define do
     singleton_execution_environment
     test_command 'rspec %{filename} --format documentation'
     testing_framework 'RspecAdapter'
-
-    before(:create) do |ruby|
+    after(:build) do |ruby|
       create_programming_language_join(ruby, FactoryBot.create(:ruby_2_2), true)
     end
   end
@@ -158,7 +157,7 @@ FactoryBot.define do
     test_command 'rspec %{filename} --format documentation'
     testing_framework 'RspecAdapter'
 
-    before(:create) do |sinatra|
+    after(:build) do |sinatra|
       create_programming_language_join(sinatra, FactoryBot.create(:ruby_2_2), false)
     end
   end
@@ -178,7 +177,7 @@ FactoryBot.define do
     test_command 'ruby %{filename}'
     testing_framework 'SqlResultSetComparatorAdapter'
 
-    before(:create) do |sqlite|
+    after(:build) do |sqlite|
       create_programming_language_join(sqlite, FactoryBot.create(:sqlite_3), true)
     end
   end
