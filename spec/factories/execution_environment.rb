@@ -191,6 +191,6 @@ FactoryBot.define do
   end
 
   trait :singleton_execution_environment do
-    initialize_with { ExecutionEnvironment.where(name: name).first_or_create }
+    initialize_with { ExecutionEnvironment.where(name: name).first_or_initialize }
   end
 end
