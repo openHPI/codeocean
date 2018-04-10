@@ -66,7 +66,13 @@
           <h5><%= t('request_for_comments.test_results') %></h5>
           <div class="testrun-assess-results">
             <% assess_runs.each do |testrun| %>
-                <div class="result <%= testrun.passed ? 'passed' : 'failed' %>" title="<%= testrun.output %>"></div>
+              <div class="testrun-container">
+                <div class="result <%= testrun.passed ? 'passed' : 'failed' %>"></div>
+                <div class="collapsed testrun-output text">
+                  <span class="fa fa-chevron-down collapse-button"></span>
+                  <pre><%= testrun.output or t('request_for_comments.no_output')%></pre>
+                </div>
+              </div>
             <% end %>
           </div>
         <% end %>
