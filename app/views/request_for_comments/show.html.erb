@@ -43,8 +43,8 @@
         <% output_runs = testruns.select { |run| run.cause == 'run' } %>
         <% if output_runs.size > 0 %>
           <h5><%= t('request_for_comments.runtime_output') %></h5>
-          <div class="testrun-output text">
-            <span class="fa fa-chevron-up collapse-button"></span>
+          <div class="collapsed testrun-output text">
+            <span class="fa fa-chevron-down collapse-button"></span>
             <% output_runs.each do |testrun| %>
               <%
                 output = testrun.try(:output)
