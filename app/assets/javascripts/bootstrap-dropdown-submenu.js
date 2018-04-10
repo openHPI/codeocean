@@ -1,6 +1,9 @@
 $(document).ready(function () {
-  $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function (event) {
-    event.preventDefault();
+
+  function openSubMenu(event) {
+    if (this.pathname === '/') {
+      event.preventDefault();
+    }
     event.stopPropagation();
     $(this).parent().addClass('open');
 
@@ -13,5 +16,7 @@ $(document).ready(function () {
       var newpos = $(this).parent().width();
     }
     menu.css({left: newpos});
-  });
+  }
+
+  $('ul.dropdown-menu [data-toggle=dropdown]').on('click', openSubMenu).on('mouseenter', openSubMenu);
 });
