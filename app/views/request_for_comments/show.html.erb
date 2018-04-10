@@ -46,7 +46,17 @@
           <div class="testrun-output text">
             <span class="fa fa-chevron-up collapse-button"></span>
             <% output_runs.each do |testrun| %>
-              <pre><%= testrun.try(:output) or t('request_for_comments.no_output') %></pre>
+              <%
+                output = testrun.try(:output)
+                if output
+                  messages = output.scan(/{(?:(?:".+?":".+?")+?,?)+}/)
+                  messages.map! {|el| JSON.parse(el)}
+                  messages.keep_if {|message| message['cmd'] == 'write'}
+                  messages.map! {|message| message['data']}
+                  output = messages.join ''
+                end
+              %>
+              <pre><%= output or t('request_for_comments.no_output') %></pre>
             <% end %>
           </div>
         <% end %>
