@@ -1,7 +1,7 @@
 class StatisticsController < ApplicationController
   include StatisticsHelper
 
-  before_action :authorize!, only: [:graphs, :user_activity, :rfc_activity]
+  before_action :authorize!, only: [:show, :graphs, :user_activity, :rfc_activity]
 
   def policy_class
     StatisticsPolicy
