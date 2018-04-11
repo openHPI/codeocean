@@ -755,3 +755,9 @@ de:
         with_comments: "Anfragen mit Kommentaren"
       users:
         currently_active: "Aktiv (5 Minuten)"
+  navigation:
+    sections:
+      errors: "Fehler"
+      files: "Dateien"
+      users: "Benutzer"
+      integrations: "Integrationen"

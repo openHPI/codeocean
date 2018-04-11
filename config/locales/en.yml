@@ -755,3 +755,9 @@ en:
         with_comments: "RfCs with Comments"
       users:
         currently_active: "Active (5 minutes)"
+  navigation:
+    sections:
+      errors: "Errors"
+      files: "Files"
+      users: "Users"
+      integrations: "Integrations"
