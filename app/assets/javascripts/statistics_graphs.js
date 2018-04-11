@@ -60,7 +60,7 @@ $(document).ready(function () {
       if (! ($.isController('statistics') && $('#user-activity').isPresent())) {
         clearInterval(refreshInterval);
       } else {
-        var jqxhr = $.ajax({
+        var jqxhr = $.ajax('graphs/user-activity', {
           dataType: 'json',
           method: 'GET'
         });

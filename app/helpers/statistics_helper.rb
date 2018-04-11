@@ -122,7 +122,7 @@ module StatisticsHelper
     ]
   end
 
-  def graph_live_data
+  def user_activity_live_data
     [
         {
             key: 'active_in_last_hour',
@@ -138,6 +138,10 @@ module StatisticsHelper
             unit: '/min'
         }
     ]
+  end
+
+  def rfc_activity_live_data
+    []
   end
 
 end

@@ -44,6 +44,8 @@ Rails.application.routes.draw do
 
   get 'statistics/', to: 'statistics#show'
   get 'statistics/graphs', to: 'statistics#graphs'
+  get 'statistics/graphs/user-activity', to: 'statistics#user_activity'
+  get 'statistics/graphs/rfc-activity', to: 'statistics#rfc_activity'
 
   concern :statistics do
     member do
