@@ -135,13 +135,49 @@ module StatisticsHelper
             key: 'submissions_per_minute',
             name: t('statistics.entries.exercises.submissions_per_minute'),
             data: (Submission.where('created_at >= ?', DateTime.now - 1.hours).count.to_f / 60).round(2),
-            unit: '/min'
+            unit: '/min',
+            axis: 'right'
         }
     ]
   end
 
   def rfc_activity_live_data
-    []
+    [
+        {
+            key: 'rfcs',
+            name: t('activerecord.models.request_for_comment.other'),
+            data: RequestForComment.count,
+            url: request_for_comments_path
+        },
+        {
+            key: 'rfcs_with_comments',
+            name: t('statistics.entries.request_for_comments.with_comments'),
+            data: RequestForComment.joins('join "submissions" s on s.id = request_for_comments.submission_id
+                join "files" f on f.context_id = s.id and f.context_type = \'Submission\'
+                join "comments" c on c.file_id = f.id').group('request_for_comments.id').count.size
+        },
+        {
+            key: 'percent_solved',
+            name: t('statistics.entries.request_for_comments.percent_solved'),
+            data: (100.0 / RequestForComment.count * RequestForComment.where(solved: true).count).round(1),
+            unit: '%',
+            axis: 'right'
+        },
+        {
+            key: 'percent_soft_solved',
+            name: t('statistics.entries.request_for_comments.percent_soft_solved'),
+            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.where(full_score_reached: true).count).round(1),
+            unit: '%',
+            axis: 'right'
+        },
+        {
+            key: 'percent_unsolved',
+            name: t('statistics.entries.request_for_comments.percent_unsolved'),
+            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.count).round(1),
+            unit: '%',
+            axis: 'right'
+        }
+    ]
   end
 
 end

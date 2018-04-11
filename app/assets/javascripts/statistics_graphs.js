@@ -13,14 +13,13 @@ $(document).ready(function () {
       var groups;
 
       var buildChartGroups = function() {
-        initialData = initialData.sort(function (a, b) {return a.data - b.data});
-        return _.map(initialData, function(element, index) {
+        return _.map(initialData, function(element) {
           return {
             content: element.name + (element.unit ? ' [' + element.unit + ']' : ''),
             id: element.key,
             visible: false,
             options: {
-              yAxisOrientation: index >= initialData.length / 2 ? 'right' : 'left'
+              yAxisOrientation: element.axis ? element.axis : 'left'
             }
           };
         });
@@ -46,7 +45,6 @@ $(document).ready(function () {
           },
           end: vis.moment(),
           legend: true,
-          shaded: true,
           start: CHART_START
         });
       };
