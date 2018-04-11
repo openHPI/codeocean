@@ -13,4 +13,12 @@ class StatisticsController < ApplicationController
     end
   end
 
+  def graphs
+    authorize self
+    respond_to do |format|
+      format.html
+      format.json { render(json: graph_live_data) }
+    end
+  end
+
 end

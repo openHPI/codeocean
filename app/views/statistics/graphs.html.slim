@@ -1,0 +1,13 @@
+- content_for :head do
+  = javascript_include_tag(asset_path('vis.min.js', type: :javascript))
+  = stylesheet_link_tag(asset_path('vis.min.css', type: :stylesheet))
+
+.group
+  h1 User Activity
+  .spinner
+  .graph#user-activity
+
+.group
+  h1 RFC Activity
+  .spinner
+  .graph#rfc-activity

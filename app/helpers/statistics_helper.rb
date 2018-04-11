@@ -122,4 +122,22 @@ module StatisticsHelper
     ]
   end
 
+  def graph_live_data
+    [
+        {
+            key: 'active_in_last_hour',
+            name: t('statistics.entries.users.currently_active'),
+            data: ExternalUser.joins(:submissions)
+                      .where(['submissions.created_at >= ?', DateTime.now - 5.minutes])
+                      .distinct('external_users.id').count,
+        },
+        {
+            key: 'submissions_per_minute',
+            name: t('statistics.entries.exercises.submissions_per_minute'),
+            data: (Submission.where('created_at >= ?', DateTime.now - 1.hours).count.to_f / 60).round(2),
+            unit: '/min'
+        }
+    ]
+  end
+
 end

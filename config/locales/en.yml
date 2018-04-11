@@ -221,6 +221,7 @@ en:
       destroy_through_lti: Code Submission
     statistics:
       show: "Statistics"
+      graphs: "Graphs"
   consumers:
     show:
       link: Consumer
@@ -755,3 +756,4 @@ en:
         with_comments: "RfCs with Comments"
       users:
         currently_active: "Active (5 minutes)"
+        currently_active60: "Active (60 minutes)"

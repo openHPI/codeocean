@@ -221,6 +221,7 @@ de:
       destroy_through_lti: Code-Abgabe
     statistics:
       show: "Statistiken"
+      graphs: "Visualisierungen"
   consumers:
     show:
       link: Konsument
@@ -755,3 +756,4 @@ de:
         with_comments: "Anfragen mit Kommentaren"
       users:
         currently_active: "Aktiv (5 Minuten)"
+        currently_active60: "Aktiv (60 Minuten)"

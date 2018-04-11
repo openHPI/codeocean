@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   get '/help', to: 'application#help'
 
   get 'statistics/', to: 'statistics#show'
+  get 'statistics/graphs', to: 'statistics#graphs'
 
   concern :statistics do
     member do
