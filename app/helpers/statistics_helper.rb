@@ -39,7 +39,8 @@ module StatisticsHelper
             name: t('statistics.entries.users.currently_active'),
             data: ExternalUser.joins(:submissions)
                       .where(['submissions.created_at >= ?', DateTime.now - 5.minutes])
-                      .distinct('external_users.id').count
+                      .distinct('external_users.id').count,
+            url: 'statistics/graphs'
         }
     ]
   end
@@ -61,7 +62,8 @@ module StatisticsHelper
             key: 'submissions_per_minute',
             name: t('statistics.entries.exercises.submissions_per_minute'),
             data: (Submission.where('created_at >= ?', DateTime.now - 1.hours).count.to_f / 60).round(2),
-            unit: '/min'
+            unit: '/min',
+            url: 'statistics/graphs'
         },
         {
             key: 'execution_environments',
