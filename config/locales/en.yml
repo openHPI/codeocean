@@ -210,7 +210,7 @@ en:
           at_most_one_main_file: must include at most one main file
         programming_languages_join:
           default_programming_language_validation: can only have one default execution environment
-          only_one_default_execution_environment: There can only be one default execution environment for any programming language.
+          only_one_default_execution_environment: '%{execution_environment} is already the default execution environment for this programming language.'
   admin:
     dashboard:
       show:

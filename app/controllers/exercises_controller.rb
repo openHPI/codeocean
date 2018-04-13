@@ -117,7 +117,7 @@ class ExercisesController < ApplicationController
     token = OAuth2::AccessToken.from_hash(oauth2Client, :access_token => oauth2token)
     xml_generator = Proforma::XmlGenerator.new
     xml_document = xml_generator.generate_xml(@exercise)
-    token.post(codeharbor_link.push_url, {body: xml_document})
+    token.post(codeharbor_link.push_url, {body: xml_document, headers: {'Content-Type' => 'text/xml'}})
     redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
   end
 

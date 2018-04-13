@@ -36,10 +36,8 @@ var setup_programming_language = (function() {
 
 var setup_new_options = (function($obj) {
     var select_box = $obj.chosen().data('chosen');
-    select_box.search_field.on('keyup', function(e) {
+    select_box.search_field.on('keyup', function (e) {
         if (event.keyCode === 13) {
-            console.log("Worse Fail");
-            console.log($obj);
             var option = $("<option>").val(this.value).text(this.value);
             // Add the new option
             $($obj).prepend(option);
@@ -58,7 +56,6 @@ var setup_chosen_fields = (function() {
         disable_search_threshold: 0,
         no_results_text: "No results match. Press enter to add"
     });
-
     var version_select = $('.version-select');
     version_select.chosen({
         disable_search_threshold: -1,

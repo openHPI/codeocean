@@ -201,7 +201,7 @@ de:
           at_most_one_main_file: dürfen höchstens eine Hauptdatei enthalten
         programming_languages_join:
           default_programming_language_validation: darf nur eine Standard-Programmierumgebung haben
-          only_one_default_execution_environment: Es darf nur eine Standard-Programmierumgebung pro Programmiersprache geben.
+          only_one_default_execution_environment: '%{execution_environment} ist bereits die Standard-Programmierumgebung für diese Programmiersprache.'
   admin:
     dashboard:
       show:

@@ -10,7 +10,7 @@ class ProgrammingLanguage < ActiveRecord::Base
     if default == "true"
       default_entry = ProgrammingLanguagesJoin.find_by(programming_language: self, default: true)
       if default_entry
-        self.errors.add(:base, I18n.t('activerecord.errors.models.programming_languages_join.only_one_default_execution_environment'))
+        self.errors.add(:base, I18n.t('activerecord.errors.models.programming_languages_join.only_one_default_execution_environment', execution_environment: default_entry.execution_environment.name))
         return false
       end
     end
