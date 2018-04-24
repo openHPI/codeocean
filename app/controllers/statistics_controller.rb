@@ -1,7 +1,8 @@
 class StatisticsController < ApplicationController
   include StatisticsHelper
 
-  before_action :authorize!, only: [:show, :graphs, :user_activity, :rfc_activity]
+  before_action :authorize!, only: [:show, :graphs, :user_activity, :user_activity_history, :rfc_activity,
+                                    :rfc_activity_history]
 
   def policy_class
     StatisticsPolicy
@@ -23,10 +24,16 @@ class StatisticsController < ApplicationController
     end
   end
 
+  def user_activity_history
+  end
+
   def rfc_activity
     respond_to do |format|
       format.json { render(json: rfc_activity_live_data) }
     end
+  end
+
+  def rfc_activity_history
   end
 
   def authorize!

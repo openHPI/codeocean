@@ -1,15 +1,7 @@
 class StatisticsPolicy < AdminOnlyPolicy
 
-  def graphs?
-    admin?
-  end
-
-  def user_activity?
-    admin?
-  end
-
-  def rfc_activity?
-    admin?
+  [:graphs?, :user_activity?, :user_activity_history?, :rfc_activity?, :rfc_activity_history?].each do |action|
+    define_method(action) { admin? }
   end
 
 end

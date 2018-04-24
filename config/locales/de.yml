@@ -222,6 +222,8 @@ de:
     statistics:
       show: "Statistiken"
       graphs: "Visualisierungen"
+      user_activity_history: Nutzeraktivitätshistorie
+      rfc_activity_history: Kommentaranfragenhistorie
   consumers:
     show:
       link: Konsument
