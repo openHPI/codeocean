@@ -29,11 +29,20 @@ class StatisticsController < ApplicationController
 
   def rfc_activity
     respond_to do |format|
-      format.json { render(json: rfc_activity_live_data) }
+      format.json { render(json: rfc_activity_data) }
     end
   end
 
   def rfc_activity_history
+    respond_to do |format|
+      format.html { render 'rfc_activity_history' }
+      format.json do
+        range = params[:range] || 'year'
+        from = DateTime.strptime(params[:from], '%Y') rescue DateTime.new(0)
+        to = DateTime.strptime(params[:to], '%Y') rescue DateTime.now
+        render(json: ranged_rfc_data(range, from, to))
+      end
+    end
   end
 
   def authorize!
