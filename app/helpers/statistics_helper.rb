@@ -152,37 +152,37 @@ module StatisticsHelper
     ]
   end
 
-  def ranged_rfc_data(range='year', from=DateTime.new(0), to=DateTime.now)
+  def ranged_rfc_data(interval='year', from=DateTime.new(0), to=DateTime.now)
     [
         {
             key: 'rfcs',
             name: t('activerecord.models.request_for_comment.other'),
             data: RequestForComment.in_range(from, to)
-                      .select("date_trunc('#{range}', created_at) AS \"range\", count(id)")
-                      .group('range').order('range')
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key')
         },
         {
             key: 'rfcs_solved',
             name: t('statistics.entries.request_for_comments.percent_solved'),
             data: RequestForComment.in_range(from, to)
                       .where(solved: true)
-                      .select("date_trunc('#{range}', created_at) AS \"range\", count(id)")
-                      .group('range').order('range')
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key')
         },
         {
             key: 'rfcs_soft_solved',
             name: t('statistics.entries.request_for_comments.percent_soft_solved'),
             data: RequestForComment.in_range(from, to).unsolved
                       .where(full_score_reached: true)
-                      .select("date_trunc('#{range}', created_at) AS \"range\", count(id)")
-                      .group('range').order('range')
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key')
         },
         {
             key: 'rfcs_unsolved',
             name: t('statistics.entries.request_for_comments.percent_unsolved'),
             data: RequestForComment.in_range(from, to).unsolved
-                      .select("date_trunc('#{range}', created_at) AS \"range\", count(id)")
-                      .group('range').order('range')
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key')
         }
     ]
   end

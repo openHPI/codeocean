@@ -6,7 +6,7 @@
   .title
     h1 = t('statistics.graphs.rfc_activity')
   .spinner
-  .graph#rfc-activity
+  .graph#rfc-activity-history
   form
     .form-group
       label for="from-date" = t('.from')
@@ -15,8 +15,8 @@
       label for="to-date" = t('.to')
       input type="date" class="form-control" id="to-date" name="to" value=DateTime.now.to_date
     .form-group
-      label for="range" = t('.interval')
-      select class="form-control" id="range" name="range"
+      label for="interval" = t('.interval')
+      select class="form-control" id="interval" name="interval"
         = [:decade, :year, :month, :day, :hour, :minute, :second].each do | key |
           option selected=(key==:year) = key
     button type="submit" class="btn btn-primary" = t('.update')
