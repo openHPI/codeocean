@@ -81,45 +81,11 @@ module StatisticsHelper
   end
 
   def rfc_statistics
-    [
-        {
-            key: 'rfcs',
-            name: t('activerecord.models.request_for_comment.other'),
-            data: RequestForComment.count,
-            url: request_for_comments_path
-        },
-        {
-            key: 'percent_solved',
-            name: t('statistics.entries.request_for_comments.percent_solved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.where(solved: true).count).round(1),
-            unit: '%',
-            url: request_for_comments_path + '?q%5Bsolved_not_eq%5D=0'
-        },
-        {
-            key: 'percent_soft_solved',
-            name: t('statistics.entries.request_for_comments.percent_soft_solved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.where(full_score_reached: true).count).round(1),
-            unit: '%',
-            url: request_for_comments_path
-        },
-        {
-            key: 'percent_unsolved',
-            name: t('statistics.entries.request_for_comments.percent_unsolved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.count).round(1),
-            unit: '%',
-            url: request_for_comments_path + '?q%5Bsolved_not_eq%5D=1'
-        },
+    rfc_activity_data + [
         {
             key: 'comments',
             name: t('activerecord.models.comment.other'),
             data: Comment.count
-        },
-        {
-            key: 'rfcs_with_comments',
-            name: t('statistics.entries.request_for_comments.with_comments'),
-            data: RequestForComment.joins('join "submissions" s on s.id = request_for_comments.submission_id
-                join "files" f on f.context_id = s.id and f.context_type = \'Submission\'
-                join "comments" c on c.file_id = f.id').group('request_for_comments.id').count.size
         }
     ]
   end
@@ -143,41 +109,41 @@ module StatisticsHelper
     ]
   end
 
-  def rfc_activity_live_data
+  def rfc_activity_data(from=DateTime.new(0), to=DateTime.now)
     [
         {
             key: 'rfcs',
             name: t('activerecord.models.request_for_comment.other'),
-            data: RequestForComment.count,
+            data: RequestForComment.in_range(from, to).count,
             url: request_for_comments_path
-        },
-        {
-            key: 'rfcs_with_comments',
-            name: t('statistics.entries.request_for_comments.with_comments'),
-            data: RequestForComment.joins('join "submissions" s on s.id = request_for_comments.submission_id
-                join "files" f on f.context_id = s.id and f.context_type = \'Submission\'
-                join "comments" c on c.file_id = f.id').group('request_for_comments.id').count.size
         },
         {
             key: 'percent_solved',
             name: t('statistics.entries.request_for_comments.percent_solved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.where(solved: true).count).round(1),
+            data: (100.0 / RequestForComment.in_range(from, to).count * RequestForComment.in_range(from, to).where(solved: true).count).round(1),
             unit: '%',
             axis: 'right'
         },
         {
             key: 'percent_soft_solved',
             name: t('statistics.entries.request_for_comments.percent_soft_solved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.where(full_score_reached: true).count).round(1),
+            data: (100.0 / RequestForComment.in_range(from, to).count * RequestForComment.in_range(from, to).unsolved.where(full_score_reached: true).count).round(1),
             unit: '%',
             axis: 'right'
         },
         {
             key: 'percent_unsolved',
             name: t('statistics.entries.request_for_comments.percent_unsolved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.count).round(1),
+            data: (100.0 / RequestForComment.in_range(from, to).count * RequestForComment.in_range(from, to).unsolved.count).round(1),
             unit: '%',
             axis: 'right'
+        },
+        {
+            key: 'rfcs_with_comments',
+            name: t('statistics.entries.request_for_comments.with_comments'),
+            data: RequestForComment.in_range(from, to).joins('join "submissions" s on s.id = request_for_comments.submission_id
+                join "files" f on f.context_id = s.id and f.context_type = \'Submission\'
+                join "comments" c on c.file_id = f.id').group('request_for_comments.id').count.size
         }
     ]
   end
