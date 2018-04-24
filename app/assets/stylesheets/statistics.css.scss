@@ -102,6 +102,21 @@ div.negative-result {
   }
 }
 
+.group {
+  .title {
+    display: flex;
+    align-items: baseline;
+
+    h1 {
+      flex-grow: 1;
+    }
+
+    h2 {
+      font-size: medium;
+    }
+  }
+}
+
 .spinner {
   width: 40px;
   height: 40px;

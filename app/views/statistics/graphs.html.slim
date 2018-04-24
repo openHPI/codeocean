@@ -3,11 +3,15 @@
   = stylesheet_link_tag(asset_path('vis.min.css', type: :stylesheet))
 
 .group
-  h1 User Activity
+  .title
+    h1 = t('.user_activity')
+    a href='#' = t('.history')
   .spinner
   .graph#user-activity
 
 .group
-  h1 RFC Activity
+  .title
+    h1 = t('.rfc_activity')
+    a href='#' = t('.history')
   .spinner
   .graph#rfc-activity

@@ -757,3 +757,7 @@ en:
       users:
         currently_active: "Active (5 minutes)"
         currently_active60: "Active (60 minutes)"
+    graphs:
+      user_activity: "User Activity"
+      rfc_activity: "RfC Activity"
+      history: "History"
