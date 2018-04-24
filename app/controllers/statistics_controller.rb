@@ -37,9 +37,9 @@ class StatisticsController < ApplicationController
     respond_to do |format|
       format.html { render 'rfc_activity_history' }
       format.json do
-        interval = params[:interval] || 'year'
-        from = DateTime.strptime(params[:from], '%Y-%M-%D') rescue DateTime.new(0)
-        to = DateTime.strptime(params[:to], '%Y-%M-%D') rescue DateTime.now
+        interval = params[:interval].to_s.nil? ? 'year' : params[:interval]
+        from = DateTime.strptime(params[:from], '%Y-%m-%d') rescue DateTime.new(0)
+        to = DateTime.strptime(params[:to], '%Y-%m-%d') rescue DateTime.now
         render(json: ranged_rfc_data(interval, from, to))
       end
     end

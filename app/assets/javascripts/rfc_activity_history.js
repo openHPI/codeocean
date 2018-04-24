@@ -8,8 +8,6 @@ $(document).ready(function () {
     var graph;
     var groups;
 
-    var params = new URLSearchParams(window.location.search.slice(1));
-
     var buildChartGroups = function() {
       return _.map(chartData, function(element) {
         return {
@@ -39,12 +37,13 @@ $(document).ready(function () {
           style: 'circle'
         },
         legend: true,
-        start: params.get('from'),
-        end: params.get('to')
+        start: $('#from-date')[0].value,
+        end: $('#to-date')[0].value
       });
     };
 
     var refreshData = function(callback) {
+      var params = new URLSearchParams(window.location.search.slice(1));
       var jqxhr = $.ajax('rfc-activity-history.json', {
         dataType: 'json',
         data: {from: params.get('from'), to: params.get('to'), interval: params.get('interval')},
