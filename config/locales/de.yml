@@ -763,3 +763,8 @@ de:
       user_activity: "Nutzeraktivität"
       rfc_activity: "Kommentaranfragenaktivität"
       history: "Historie"
+    rfc_activity_history:
+      from: "Von"
+      to: "Bis"
+      interval: "Intervall"
+      update: "Aktualisieren"
