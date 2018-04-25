@@ -187,4 +187,25 @@ module StatisticsHelper
     ]
   end
 
+  def ranged_user_data(interval='year', from=DateTime.new(0), to=DateTime.now)
+    [
+        {
+            key: 'active',
+            name: t('statistics.entries.users.active'),
+            data: ExternalUser.joins(:submissions)
+                      .where(submissions: {created_at: from..to})
+                      .select("date_trunc('#{interval}', submissions.created_at) AS \"key\", count(distinct external_users.id) AS \"value\"")
+                      .group('key').order('key')
+        },
+        {
+            key: 'submissions',
+            name: t('statistics.entries.exercises.submissions'),
+            data: Submission.where(created_at: from..to)
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key'),
+            axis: 'right'
+        }
+    ]
+  end
+
 end

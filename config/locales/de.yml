@@ -751,6 +751,7 @@ de:
       exercises:
         average_number_of_submissions: "Durchschnittliche Zahl von Abgaben"
         submissions_per_minute: "Aktuelle Abgabenhäufigkeit (1h)"
+        submissions: "Abgaben"
       request_for_comments:
         percent_solved: "Beantwortete Anfragen"
         percent_unsolved: "Unbeantwortete Anfragen"
@@ -759,6 +760,7 @@ de:
       users:
         currently_active: "Aktiv (5 Minuten)"
         currently_active60: "Aktiv (60 Minuten)"
+        active: "Aktive Nutzer"
     graphs:
       user_activity: "Nutzeraktivität"
       rfc_activity: "Kommentaranfragenaktivität"

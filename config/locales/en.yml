@@ -751,6 +751,7 @@ en:
       exercises:
         average_number_of_submissions: "Average Number of Submissions"
         submissions_per_minute: "Current Submission Volume (1h)"
+        submissions: "Submissions"
       request_for_comments:
         percent_solved: "Solved Requests"
         percent_unsolved: "Unsolved Requests"
@@ -759,6 +760,7 @@ en:
       users:
         currently_active: "Active (5 minutes)"
         currently_active60: "Active (60 minutes)"
+        active: "Active Users"
     graphs:
       user_activity: "User Activity"
       rfc_activity: "RfC Activity"
