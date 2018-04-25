@@ -29,22 +29,21 @@ $(document).ready(function () {
         groups = new vis.DataSet(buildChartGroups());
         graph = new vis.Graph2d(document.getElementById(containerId), dataset, groups, {
           dataAxis: {
-            customRange: {
-              left: {
-                min: 0
-              },
-              right: {
-                min: 0
-              }
+            left: {
+              range: {min: 0}
             },
-            showMinorLabels: true
+            right: {
+              range: {min: 0}
+            },
+            showMinorLabels: true,
+            alignZeros: true
           },
           drawPoints: {
             style: 'circle'
           },
           legend: true,
-          start: $('#from-date')[0].value,
-          end: $('#to-date')[0].value
+          start: $('#from-date')[0].value || 0,
+          end: $('#to-date')[0].value || 0
         });
       };
 
