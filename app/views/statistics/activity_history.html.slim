@@ -4,9 +4,9 @@
 
 .group
   .title
-    h1 = t('statistics.graphs.rfc_activity')
+    h1 = t("statistics.graphs.#{resource}_activity")
   .spinner
-  .graph#rfc-activity-history
+  .graph id="#{resource}-activity-history"
   form
     .form-group
       label for="from-date" = t('.from')

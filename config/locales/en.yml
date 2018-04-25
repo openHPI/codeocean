@@ -765,7 +765,7 @@ en:
       user_activity: "User Activity"
       rfc_activity: "RfC Activity"
       history: "History"
-    rfc_activity_history:
+    activity_history:
       from: "From"
       to: "To"
       interval: "Interval"
