@@ -366,7 +366,7 @@ en:
         score: Score
         tests: Unit Test Results
         time_difference: 'Working Time until here*'
-        addendum: '* Deltas longer than 30 minutes are ignored.'
+        addendum: '* Deltas longer than 10 minutes are ignored.'
   proxy_exercises:
       index:
         clone: Duplicate
@@ -770,3 +770,9 @@ en:
       to: "To"
       interval: "Interval"
       update: "Update"
+  navigation:
+    sections:
+      errors: "Errors"
+      files: "Files"
+      users: "Users"
+      integrations: "Integrations"

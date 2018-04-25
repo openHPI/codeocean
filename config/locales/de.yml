@@ -366,7 +366,7 @@ de:
         score: Punktzahl
         tests: Unit Tests
         time_difference: 'Arbeitszeit bis hier*'
-        addendum: '* Differenzen von mehr als 30 Minuten werden ignoriert.'
+        addendum: '* Differenzen von mehr als 10 Minuten werden ignoriert.'
   proxy_exercises:
       index:
         clone: Duplizieren
@@ -770,3 +770,9 @@ de:
       to: "Bis"
       interval: "Intervall"
       update: "Aktualisieren"
+  navigation:
+    sections:
+      errors: "Fehler"
+      files: "Dateien"
+      users: "Benutzer"
+      integrations: "Integrationen"

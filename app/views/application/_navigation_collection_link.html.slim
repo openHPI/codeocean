@@ -1,0 +1,2 @@
+- if policy(model).index?
+  li = link_to(model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
