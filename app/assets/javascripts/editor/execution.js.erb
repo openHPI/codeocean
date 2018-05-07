@@ -4,7 +4,7 @@ CodeOceanEditorWebsocket = {
   createSocketUrl: function(url) {
       var sockURL = new URL(window.location);
       sockURL.pathname = url;
-      sockURL.protocol = '<%= DockerClient.config['ws_client_protocol'] %>';
+      sockURL.protocol = '<%= DockerClient.config['ws_client_protocol'].match(/(\w+):*\/*/)&.to_a&.at(1) %>:'
 
       // strip anchor if it is in the url
       sockURL.hash = ''
