@@ -66,6 +66,6 @@ class Submission < ActiveRecord::Base
   end
 
   def unsolved_rfc
-    RequestForComment.unsolved.not_stale.where(exercise_id: exercise).where.not(question: nil).order("RANDOM()").find { | rfc_element |(rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) }
+    RequestForComment.unsolved.not(:stale).where(exercise_id: exercise).where.not(question: nil).order("RANDOM()").find { | rfc_element |(rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) }
   end
 end
