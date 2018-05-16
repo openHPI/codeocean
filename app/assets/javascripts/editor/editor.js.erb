@@ -552,6 +552,10 @@ configureEditors: function () {
   },
 
   showWebsocketError: function() {
+    if (window.navigator.userAgent.indexOf('Edge') > -1) {
+      // Mute errors in Microsoft Edge
+      return;
+    }
     $.flash.danger({
       text: $('#flash').data('message-failure')
     });
