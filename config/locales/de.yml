@@ -635,7 +635,7 @@ de:
       score: Ihre Punktzahl
       success_with_outcome: 'Ihr Code wurde erfolgreich bewertet. Ihre Bewertung wurde an %{consumer} übermittelt.'
       success_without_outcome: Ihr Code wurde erfolgreich bewertet.
-      do_not_use_backbutton: Benutzen Sie nicht den "Zurück" Button des Browsers, um zu CodeOcean zurück zu kehren. Übungen müssen immer aus dem %{consumer} Kontext gestartet werden.
+      do_not_use_backbutton: 'Benutzen Sie nicht den "Zurück" Button des Browsers, um zu CodeOcean zurück zu kehren. Übungen müssen immer aus dem %{consumer} Kontext gestartet werden.'
     new:
       forgot_password: Passwort vergessen?
       headline: Anmelden
