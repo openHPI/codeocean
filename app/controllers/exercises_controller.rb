@@ -416,7 +416,7 @@ class ExercisesController < ApplicationController
           return
         end
 
-        if @is_experimental_course and @rfc_group == :hide_rfc
+        if @is_experimental_course and (@rfc_group == :hide_rfc)
           redirect_to_lti_return_path
           return
         end
