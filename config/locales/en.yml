@@ -351,6 +351,7 @@ en:
       average_worktime: Average Working Time
       internal_users: Internal Users
       external_users: External Users
+      finishing_rate: Finishing Rate
     submit:
       failure: An error occured while transmitting your score. Please try again later.
       full_score_redirect_to_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Another participant has a question concerning the exercise you just solved. Your help and comments will be greatly appreciated!

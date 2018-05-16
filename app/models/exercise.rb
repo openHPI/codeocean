@@ -352,7 +352,11 @@ class Exercise < ActiveRecord::Base
   end
 
   def has_user_solved(user)
-    return maximum_score(user).to_i == maximum_score.to_i
+    maximum_score(user).to_i == maximum_score.to_i
+  end
+
+  def finishers
+    ExternalUser.joins(:submissions).where(submissions: {exercise_id: id, score: maximum_score, cause: %w(submit assess)}).distinct
   end
 
   def set_default_values
