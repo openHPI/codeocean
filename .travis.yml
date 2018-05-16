@@ -8,6 +8,7 @@ addons:
     repo_token:
       secure: "cZoMNjQKB/D7W4B7JDk9PXooy2WCDypu7R4C/Vi0DziZCU9HRwLbdt9aoH5hgHFa7Fe2rHFgflPAAP7h698ozvP0waFtPqLAj+PbEt27LbBDvW8JcvNkKXA0rj5wyTkzuc/0kD+kPB4oDXMak6gZlB9HCJDsa3kdXScQGTVuPdU="
   postgresql: "9.6"
+  firefox: "latest"
 
 before_install:
   - export DISPLAY=:99.0
@@ -17,6 +18,12 @@ before_install:
   - sleep 5
   - docker pull openhpi/co_execenv_python
   - docker pull openhpi/co_execenv_java
+  - mkdir ~/geckodriver
+  - wget -O ~/geckodriver/download.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.18.0/geckodriver-v0.18.0-linux64.tar.gz
+  - tar -xvzf ~/geckodriver/download.tar.gz -C ~/geckodriver/
+  - rm ~/geckodriver/download.tar.gz
+  - chmod +x ~/geckodriver/geckodriver
+  - export PATH=~/geckodriver/:$PATH
 
 before_script:
   - cp .rspec.travis .rspec

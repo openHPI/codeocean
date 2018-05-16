@@ -108,5 +108,5 @@ CommandSocket.prototype.flush = function() {
  */
 CommandSocket.prototype.killWebSocket = function() {
   this.websocket.flush();
-  this.websocket.close();
+  this.websocket.close(1000);
 };

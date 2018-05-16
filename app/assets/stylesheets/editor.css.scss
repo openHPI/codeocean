@@ -193,3 +193,24 @@ button i.fa-spin {
 .enforce-bottom-margin {
   margin-bottom: 5px !important;
 }
+
+#error-hints {
+  display: none;
+  background-color: #FAFAFA;
+
+  .heading {
+    font-weight: bold;
+    font-size: larger;
+  }
+
+  ul.body {
+
+    li.hint {
+      .description {
+        font-style: italic;
+      }
+
+      .hint {}
+    }
+  }
+}

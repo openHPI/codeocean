@@ -1,0 +1,69 @@
+$time-color: #008cba;
+$min-color: #8efa00;
+$avg-color: #ffca00;
+$max-color: #ff2600;
+
+path.line.minimum-working-time {
+  stroke: $min-color;
+}
+
+path.line.average-working-time {
+  stroke: $avg-color;
+}
+
+path.line.maximum-working-time {
+  stroke: $max-color;
+}
+
+rect.value-bar {
+  fill: $time-color;
+  cursor: pointer;
+}
+
+#legend {
+  display: flex;
+  margin-top: 20px;
+
+  .legend-entry {
+    flex-grow: 1;
+    display: flex;
+
+    .box {
+      width: 20px;
+      height: 20px;
+      border: solid 1px #000;
+    }
+
+    .box.time {
+      background-color: $time-color;
+    }
+
+    .box.min {
+      background-color: $min-color;
+    }
+
+    .box.avg {
+      background-color: $avg-color;
+    }
+
+    .box.max {
+      background-color: $max-color;
+    }
+
+    .box-label {
+      margin-left: 5px;
+      margin-right: 15px;
+    }
+  }
+}
+
+.exercise-id-tooltip {
+  position: absolute;
+  display: none;
+  min-width: 80px;
+  height: auto;
+  background: none repeat scroll 0 0 #ffffff;
+  border: 1px solid #008cba;
+  padding: 14px;
+  text-align: center;
+}

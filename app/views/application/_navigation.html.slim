@@ -7,9 +7,11 @@
       ul.dropdown-menu role='menu'
         - if current_user.admin?
           li = link_to(t('breadcrumbs.dashboard.show'), admin_dashboard_path)
+          li = link_to(t('breadcrumbs.statistics.show'), statistics_path)
           li.divider
-        - models = [ExecutionEnvironment, Exercise, ExerciseCollection, ProxyExercise, Tag, Consumer, CodeHarborLink, UserExerciseFeedback,
-                ErrorTemplate, ErrorTemplateAttribute, ExternalUser, FileType, FileTemplate, InternalUser].sort_by {|model| model.model_name.human(count: 2) }
-        - models.each do |model|
-          - if policy(model).index?
-            li = link_to(model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+        = render('navigation_submenu', title: t('activerecord.models.exercise.other'), models: [Exercise, ExerciseCollection, ProxyExercise, Tag], link: exercises_path)
+        = render('navigation_submenu', title: t('navigation.sections.users'), models: [InternalUser, ExternalUser])
+        = render('navigation_collection_link', model: ExecutionEnvironment)
+        = render('navigation_submenu', title: t('navigation.sections.errors'), models: [ErrorTemplate, ErrorTemplateAttribute])
+        = render('navigation_submenu', title: t('navigation.sections.files'), models: [FileType, FileTemplate])
+        = render('navigation_submenu', title: t('navigation.sections.integrations'), models: [Consumer, CodeHarborLink])

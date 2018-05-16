@@ -8,6 +8,7 @@ class RequestForComment < ActiveRecord::Base
   has_many :subscriptions
 
   scope :unsolved, -> { where(solved: [false, nil]) }
+  scope :in_range, -> (from, to) { where(created_at: from..to) }
 
     def self.last_per_user(n = 5)
       from("(#{row_number_user_sql}) as request_for_comments")

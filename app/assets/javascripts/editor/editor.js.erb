@@ -476,6 +476,7 @@ configureEditors: function () {
     this.clearOutput();
     $('#hint').fadeOut();
     $('#flowrHint').fadeOut();
+    this.clearHints();
     this.showOutputBar();
   },
 
@@ -512,6 +513,30 @@ configureEditors: function () {
     }
   },
 
+  clearHints: function() {
+    var container = $('#error-hints');
+    container.find('ul.body > li.hint').remove();
+    container.fadeOut();
+  },
+
+  showHint: function(message) {
+    var template = function(description, hint) {
+      return '\
+           <li class="hint">\
+             <div class="description">\
+               ' + description + '\
+             </div>\
+             <div class="hint">\
+               ' + hint + '\
+             </div>\
+           </li>\
+         '
+    };
+    var container = $('#error-hints');
+    container.find('ul.body').append(template(message.description, message.hint));
+    container.fadeIn();
+  },
+
   showContainerDepletedMessage: function() {
     $.flash.danger({
       icon: ['fa', 'fa-clock-o'],
@@ -527,6 +552,10 @@ configureEditors: function () {
   },
 
   showWebsocketError: function() {
+    if (window.navigator.userAgent.indexOf('Edge') > -1) {
+      // Mute errors in Microsoft Edge
+      return;
+    }
     $.flash.danger({
       text: $('#flash').data('message-failure')
     });

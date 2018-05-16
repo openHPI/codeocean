@@ -2,9 +2,15 @@ script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"
 h1 = @exercise
 
 = row(label: '.participants', value: @exercise.users.distinct.count)
+
 - [:intermediate, :final].each do |scope|
   = row(label: ".#{scope}_submissions") do
     = "#{@exercise.submissions.send(scope).count} (#{t('.users', count: @exercise.submissions.send(scope).distinct.count(:user_id))})"
+
+= row(label: '.finishing_rate') do
+  p == @exercise.finishers.count ? "#{t('shared.out_of', maximum_value: @exercise.users.distinct.count, value: @exercise.finishers.count)} #{t('exercises.statistics.external_users')}" : empty
+  p = progress_bar((100.0 / @exercise.users.distinct.count * @exercise.finishers.count).round(2))
+
 = row(label: '.average_score') do
   p == @exercise.average_score ? t('shared.out_of', maximum_value: @exercise.maximum_score, value: @exercise.average_score.round(2)) : empty
   p = progress_bar(@exercise.average_percentage)

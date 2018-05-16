@@ -1,7 +1,7 @@
 class ExerciseCollectionsController < ApplicationController
   include CommonBehavior
 
-  before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy]
+  before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy, :statistics]
 
   def index
     @exercise_collections = ExerciseCollection.all.paginate(:page => params[:page])
@@ -9,6 +9,7 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def show
+    @exercises = @exercise_collection.exercises.paginate(:page => params[:page])
   end
 
   def new
@@ -34,6 +35,9 @@ class ExerciseCollectionsController < ApplicationController
     update_and_respond(object: @exercise_collection, params: exercise_collection_params)
   end
 
+  def statistics
+  end
+
   private
 
   def set_exercise_collection
@@ -46,6 +50,6 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def exercise_collection_params
-    params[:exercise_collection].permit(:name, :exercise_ids => [])
+    params[:exercise_collection].permit(:name, :use_anomaly_detection, :user_id, :user_type, :exercise_ids => []).merge(user_type: InternalUser.name)
   end
 end

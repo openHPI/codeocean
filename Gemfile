@@ -4,7 +4,6 @@ gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'bcrypt'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
-gem 'coffee-rails'
 gem 'concurrent-ruby'
 gem 'concurrent-ruby-ext', platform: :ruby
 gem 'activerecord-deprecated_finders', require: 'active_record/deprecated_finders'
@@ -28,7 +27,7 @@ gem 'ransack'
 gem 'rubytree'
 gem 'sass-rails'
 gem 'sdoc', group: :doc
-gem 'slim'
+gem 'slim-rails'
 gem 'bootstrap_pagedown'
 gem 'pagedown-rails'
 gem 'sorcery'
@@ -40,9 +39,10 @@ gem 'tubesock'
 gem 'faye-websocket'
 gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, version 1.2.5 still has an error in eventmachine.rb:202: [BUG] Segmentation fault, which is not yet fixed and causes the whole ruby process to crash
 gem 'nokogiri'
-gem 'd3-rails'
+gem 'd3-rails', '~>4.0'
 gem 'rest-client'
 gem 'rubyzip'
+gem 'whenever', require: false
 
 group :development, :staging do
   gem 'better_errors', platform: :ruby
@@ -66,12 +66,13 @@ end
 group :test do
   gem 'autotest-rails'
   gem 'capybara'
+  gem 'capybara-selenium'
+  gem 'headless'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
   gem 'rake'
   gem 'rspec-autotest'
   gem 'rspec-rails'
-  gem 'selenium-webdriver'
   gem 'simplecov', require: false
 end

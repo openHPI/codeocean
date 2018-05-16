@@ -1,0 +1,22 @@
+- content_for :head do
+  = javascript_include_tag(asset_path('vis.min.js', type: :javascript))
+  = stylesheet_link_tag(asset_path('vis.min.css', type: :stylesheet))
+
+.group
+  .title
+    h1 = t("statistics.graphs.#{resource}_activity")
+  .spinner
+  .graph id="#{resource}-activity-history"
+  form
+    .form-group
+      label for="from-date" = t('.from')
+      input type="date" class="form-control" id="from-date" name="from" value=(params[:from] || DateTime.new(2016).to_date)
+    .form-group
+      label for="to-date" = t('.to')
+      input type="date" class="form-control" id="to-date" name="to" value=(params[:to] || DateTime.now.to_date)
+    .form-group
+      label for="interval" = t('.interval')
+      select class="form-control" id="interval" name="interval"
+        = [:year, :quarter, :month, :day, :hour, :minute, :second].each do | key |
+          option selected=(key.to_s == params[:interval]) = key
+    button type="submit" class="btn btn-primary" = t('.update')

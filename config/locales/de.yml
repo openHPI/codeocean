@@ -123,6 +123,8 @@ de:
       exercise_collections:
         id: "ID"
         name: "Name"
+        user: "Verantwortlicher"
+        use_anomaly_detection: "Abweichungen in der Arbeitszeit erkennen"
         updated_at: "Letzte Änderung"
         exercises: "Aufgaben"
       user_exercise_feedback:
@@ -217,6 +219,11 @@ de:
       show: Dashboard
     sessions:
       destroy_through_lti: Code-Abgabe
+    statistics:
+      show: "Statistiken"
+      graphs: "Visualisierungen"
+      user_activity_history: Nutzeraktivitätshistorie
+      rfc_activity_history: Kommentaranfragenhistorie
   consumers:
     show:
       link: Konsument
@@ -327,6 +334,8 @@ de:
       break_intervention:
         title: "Pause"
         text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
+      error_hints:
+        heading: "Hinweise"
     index:
       clone: Duplizieren
       implement: Implementieren
@@ -344,7 +353,8 @@ de:
       worktime: Arbeitszeit
       average_worktime: Durchschnittliche Arbeitszeit
       internal_users: Interne Nutzer
-      external_user: Externe Nutzer
+      external_users: Externe Nutzer
+      finishing_rate: Abschlussrate
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
       full_score_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über ihre Hilfe und Kommentare freuen.
@@ -357,7 +367,7 @@ de:
         score: Punktzahl
         tests: Unit Tests
         time_difference: 'Arbeitszeit bis hier*'
-        addendum: '* Differenzen von mehr als 30 Minuten werden ignoriert.'
+        addendum: '* Differenzen von mehr als 10 Minuten werden ignoriert.'
   proxy_exercises:
       index:
         clone: Duplizieren
@@ -518,6 +528,64 @@ de:
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: "%{author_displayname} hat einen neuen Kommentar in einer Diskussion veröffentlicht, die Sie abonniert haben."
+      exercise_anomaly_detected:
+        subject: "Unregelmäßigkeiten in Aufgaben Ihrer Aufgabensammlung"
+        body1: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          eine oder mehrere Aufgaben Ihrer Aufgabensammlung "%{collection_name}" zeigen Unregelmäßigkeiten in der Bearbeitungszeit. Möglicherweise sind sie zu schwer oder zu leicht.
+          <br>
+          Die Aufgaben sind:
+          <br>
+        body2: |
+          <br>
+          Falls Sie beim Klick auf einen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          at least one exercise in your exercise collection "%{collection_name}" has a much longer or much shorter average working time than the average. Perhaps they are too difficult or too easy.
+          <br>
+          The exercises are:
+          <br>
+        body3: |
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking a link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+      exercise_anomaly_needs_feedback:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          um die Aufgaben auf CodeOcean weiter zu verbessern, benötigen wir Ihre Mithilfe. Bitte nehmen Sie sich ein paar Minuten Zeit um ein kurzes Feedback zu folgender Aufgabe zu geben:
+          <br>
+          %{exercise} - %{link}
+          <br>
+          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          we need your help to improve the quality of the exercises on CodeOcean. Please take a few minutes to give us feedback for the following exercise:
+          <br>
+          %{exercise} - %{link}
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: "Eine Aufgabe auf CodeOcean benötigt Ihr Feedback"
   request_for_comments:
     click_here: Zum Kommentieren auf die Seitenleiste klicken!
     comments: Kommentare
@@ -567,7 +635,7 @@ de:
       score: Ihre Punktzahl
       success_with_outcome: 'Ihr Code wurde erfolgreich bewertet. Ihre Bewertung wurde an %{consumer} übermittelt.'
       success_without_outcome: Ihr Code wurde erfolgreich bewertet.
-      do_not_use_backbutton: Benutzen Sie nicht den "Zurück" Button des Browsers, um zu CodeOcean zurück zu kehren. Übungen müssen immer aus dem %{consumer} Kontext gestartet werden.
+      do_not_use_backbutton: 'Benutzen Sie nicht den "Zurück" Button des Browsers, um zu CodeOcean zurück zu kehren. Übungen müssen immer aus dem %{consumer} Kontext gestartet werden.'
     new:
       forgot_password: Passwort vergessen?
       headline: Anmelden
@@ -666,6 +734,7 @@ de:
   error_templates:
     hints:
       signature: "Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende \"/\""
+      hint_templates: 'Attributnamen in {{doppelten geschweiften Klammern}} werden zur Laufzeit durch die jeweiligen Attributwerte ersetzt. Beispiel: "Der Fehler ist in Zeile {{Line}}." --(StructuredError: {Line: 4})--> "Der Fehler ist in Zeile 4."'
     attributes: "Attribute"
     add_attribute: "Attribut hinzufügen"
   comments:
@@ -674,3 +743,37 @@ de:
   subscriptions:
     successfully_unsubscribed: "Ihr Abonnement für weitere Kommentare auf dieser Kommentaranfrage wurde erfolgreich beendet."
     subscription_not_existent: "Das Abonnement, von dem Sie sich abmelden wollen, existiert nicht."
+  statistics:
+    sections:
+      users: "Benutzer"
+      exercises: "Aufgaben"
+      request_for_comments: "Kommentaranfragen"
+    entries:
+      exercises:
+        average_number_of_submissions: "Durchschnittliche Zahl von Abgaben"
+        submissions_per_minute: "Aktuelle Abgabenhäufigkeit (1h)"
+        submissions: "Abgaben"
+      request_for_comments:
+        percent_solved: "Beantwortete Anfragen"
+        percent_unsolved: "Unbeantwortete Anfragen"
+        percent_soft_solved: "Ungelöst mit voller Punktzahl"
+        with_comments: "Anfragen mit Kommentaren"
+      users:
+        currently_active: "Aktiv (5 Minuten)"
+        currently_active60: "Aktiv (60 Minuten)"
+        active: "Aktive Nutzer"
+    graphs:
+      user_activity: "Nutzeraktivität"
+      rfc_activity: "Kommentaranfragenaktivität"
+      history: "Historie"
+    activity_history:
+      from: "Von"
+      to: "Bis"
+      interval: "Intervall"
+      update: "Aktualisieren"
+  navigation:
+    sections:
+      errors: "Fehler"
+      files: "Dateien"
+      users: "Benutzer"
+      integrations: "Integrationen"
