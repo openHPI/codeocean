@@ -23,10 +23,8 @@ $(function() {
     groups = new vis.DataSet(buildChartGroups());
     graph = new vis.Graph2d(document.getElementById('graph'), dataset, groups, {
       dataAxis: {
-        customRange: {
-          left: {
-            min: 0
-          }
+        left: {
+          range: {min: 0}
         },
         showMinorLabels: false
       },

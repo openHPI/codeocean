@@ -221,6 +221,9 @@ en:
       destroy_through_lti: Code Submission
     statistics:
       show: "Statistics"
+      graphs: "Graphs"
+      user_activity_history: User Activity History
+      rfc_activity_history: RfC Activity History
   consumers:
     show:
       link: Consumer
@@ -749,6 +752,7 @@ en:
       exercises:
         average_number_of_submissions: "Average Number of Submissions"
         submissions_per_minute: "Current Submission Volume (1h)"
+        submissions: "Submissions"
       request_for_comments:
         percent_solved: "Solved Requests"
         percent_unsolved: "Unsolved Requests"
@@ -756,6 +760,17 @@ en:
         with_comments: "RfCs with Comments"
       users:
         currently_active: "Active (5 minutes)"
+        currently_active60: "Active (60 minutes)"
+        active: "Active Users"
+    graphs:
+      user_activity: "User Activity"
+      rfc_activity: "RfC Activity"
+      history: "History"
+    activity_history:
+      from: "From"
+      to: "To"
+      interval: "Interval"
+      update: "Update"
   navigation:
     sections:
       errors: "Errors"

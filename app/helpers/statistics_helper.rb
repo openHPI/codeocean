@@ -39,7 +39,8 @@ module StatisticsHelper
             name: t('statistics.entries.users.currently_active'),
             data: ExternalUser.joins(:submissions)
                       .where(['submissions.created_at >= ?', DateTime.now - 5.minutes])
-                      .distinct('external_users.id').count
+                      .distinct('external_users.id').count,
+            url: 'statistics/graphs'
         }
     ]
   end
@@ -61,7 +62,8 @@ module StatisticsHelper
             key: 'submissions_per_minute',
             name: t('statistics.entries.exercises.submissions_per_minute'),
             data: (Submission.where('created_at >= ?', DateTime.now - 1.hours).count.to_f / 60).round(2),
-            unit: '/min'
+            unit: '/min',
+            url: statistics_graphs_path
         },
         {
             key: 'execution_environments',
@@ -79,45 +81,129 @@ module StatisticsHelper
   end
 
   def rfc_statistics
+    rfc_activity_data + [
+        {
+            key: 'comments',
+            name: t('activerecord.models.comment.other'),
+            data: Comment.count
+        }
+    ]
+  end
+
+  def user_activity_live_data
+    [
+        {
+            key: 'active_in_last_hour',
+            name: t('statistics.entries.users.currently_active'),
+            data: ExternalUser.joins(:submissions)
+                      .where(['submissions.created_at >= ?', DateTime.now - 5.minutes])
+                      .distinct('external_users.id').count,
+        },
+        {
+            key: 'submissions_per_minute',
+            name: t('statistics.entries.exercises.submissions_per_minute'),
+            data: (Submission.where('created_at >= ?', DateTime.now - 1.hours).count.to_f / 60).round(2),
+            unit: '/min',
+            axis: 'right'
+        }
+    ]
+  end
+
+  def rfc_activity_data(from=DateTime.new(0), to=DateTime.now)
     [
         {
             key: 'rfcs',
             name: t('activerecord.models.request_for_comment.other'),
-            data: RequestForComment.count,
+            data: RequestForComment.in_range(from, to).count,
             url: request_for_comments_path
         },
         {
             key: 'percent_solved',
             name: t('statistics.entries.request_for_comments.percent_solved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.where(solved: true).count).round(1),
+            data: (100.0 / RequestForComment.in_range(from, to).count * RequestForComment.in_range(from, to).where(solved: true).count).round(1),
             unit: '%',
-            url: request_for_comments_path + '?q%5Bsolved_not_eq%5D=0'
+            axis: 'right',
+            url: statistics_graphs_path
         },
         {
             key: 'percent_soft_solved',
             name: t('statistics.entries.request_for_comments.percent_soft_solved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.where(full_score_reached: true).count).round(1),
+            data: (100.0 / RequestForComment.in_range(from, to).count * RequestForComment.in_range(from, to).unsolved.where(full_score_reached: true).count).round(1),
             unit: '%',
-            url: request_for_comments_path
+            axis: 'right',
+            url: statistics_graphs_path
         },
         {
             key: 'percent_unsolved',
             name: t('statistics.entries.request_for_comments.percent_unsolved'),
-            data: (100.0 / RequestForComment.count * RequestForComment.unsolved.count).round(1),
+            data: (100.0 / RequestForComment.in_range(from, to).count * RequestForComment.in_range(from, to).unsolved.count).round(1),
             unit: '%',
-            url: request_for_comments_path + '?q%5Bsolved_not_eq%5D=1'
-        },
-        {
-            key: 'comments',
-            name: t('activerecord.models.comment.other'),
-            data: Comment.count
+            axis: 'right',
+            url: statistics_graphs_path
         },
         {
             key: 'rfcs_with_comments',
             name: t('statistics.entries.request_for_comments.with_comments'),
-            data: RequestForComment.joins('join "submissions" s on s.id = request_for_comments.submission_id
+            data: RequestForComment.in_range(from, to).joins('join "submissions" s on s.id = request_for_comments.submission_id
                 join "files" f on f.context_id = s.id and f.context_type = \'Submission\'
-                join "comments" c on c.file_id = f.id').group('request_for_comments.id').count.size
+                join "comments" c on c.file_id = f.id').group('request_for_comments.id').count.size,
+            url: statistics_graphs_path
+        }
+    ]
+  end
+
+  def ranged_rfc_data(interval='year', from=DateTime.new(0), to=DateTime.now)
+    [
+        {
+            key: 'rfcs',
+            name: t('activerecord.models.request_for_comment.other'),
+            data: RequestForComment.in_range(from, to)
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key')
+        },
+        {
+            key: 'rfcs_solved',
+            name: t('statistics.entries.request_for_comments.percent_solved'),
+            data: RequestForComment.in_range(from, to)
+                      .where(solved: true)
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key')
+        },
+        {
+            key: 'rfcs_soft_solved',
+            name: t('statistics.entries.request_for_comments.percent_soft_solved'),
+            data: RequestForComment.in_range(from, to).unsolved
+                      .where(full_score_reached: true)
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key')
+        },
+        {
+            key: 'rfcs_unsolved',
+            name: t('statistics.entries.request_for_comments.percent_unsolved'),
+            data: RequestForComment.in_range(from, to).unsolved
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key')
+        }
+    ]
+  end
+
+  def ranged_user_data(interval='year', from=DateTime.new(0), to=DateTime.now)
+    [
+        {
+            key: 'active',
+            name: t('statistics.entries.users.active'),
+            data: ExternalUser.joins(:submissions)
+                      .where(submissions: {created_at: from..to})
+                      .select("date_trunc('#{interval}', submissions.created_at) AS \"key\", count(distinct external_users.id) AS \"value\"")
+                      .group('key').order('key')
+        },
+        {
+            key: 'submissions',
+            name: t('statistics.entries.exercises.submissions'),
+            data: Submission.where(created_at: from..to)
+                      .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+                      .group('key').order('key'),
+            axis: 'right'
         }
     ]
   end

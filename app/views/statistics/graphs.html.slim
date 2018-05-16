@@ -1,0 +1,17 @@
+- content_for :head do
+  = javascript_include_tag(asset_path('vis.min.js', type: :javascript))
+  = stylesheet_link_tag(asset_path('vis.min.css', type: :stylesheet))
+
+.group
+  .title
+    h1 = t('.user_activity')
+    a href=statistics_graphs_user_activity_history_path = t('.history')
+  .spinner
+  .graph#user-activity
+
+.group
+  .title
+    h1 = t('.rfc_activity')
+    a href=statistics_graphs_rfc_activity_history_path = t('.history')
+  .spinner
+  .graph#rfc-activity
