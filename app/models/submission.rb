@@ -70,6 +70,6 @@ class Submission < ActiveRecord::Base
     # RequestForComment.unsolved.not(:stale).where(exercise_id: exercise).where.not(question: nil).order("RANDOM()").find { | rfc_element |(rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) }
 
     # experimental query:
-    RequestForComment.unsolved.joins('JOIN exercise_collections_exercises ece ON ece.exercise_id = request_for_comments.exercise_id').where('ece.exercise_collection_id != 3 OR user_id%10 > 3').where.not(question: nil).order("RANDOM()").to_a
+    RequestForComment.unsolved.joins('JOIN exercise_collections_exercises ece ON ece.exercise_id = request_for_comments.exercise_id').where('ece.exercise_collection_id != 3 OR user_id%10 > 3').where.not(question: nil).order("RANDOM()").find { | rfc_element |(rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) }
   end
 end
