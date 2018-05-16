@@ -23,11 +23,3 @@ namespace :deploy do
     end
   end
 end
-
-namespace :whenever do
-  task :update_crontab do
-    run 'bundle exec whenever --update-crontab'
-  end
-end
-
-after 'deploy', 'whenever:update_crontab'
