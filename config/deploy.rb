@@ -19,7 +19,7 @@ namespace :deploy do
       within release_path do
         execute :cp, '-r', 'vendor/assets/images/', 'public/assets/'
         execute :cp, '-r', 'vendor/assets/javascripts/ace', 'public/assets/'
-        execute :mkdir, '/log/whenever'
+        #execute :mkdir, '/log/whenever' #release path seems to be the wrong place
       end
     end
   end
