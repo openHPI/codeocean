@@ -19,6 +19,7 @@ namespace :deploy do
       within release_path do
         execute :cp, '-r', 'vendor/assets/images/', 'public/assets/'
         execute :cp, '-r', 'vendor/assets/javascripts/ace', 'public/assets/'
+        execute :mkdir, '/log/whenever'
       end
     end
   end
