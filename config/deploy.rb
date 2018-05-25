@@ -19,16 +19,8 @@ namespace :deploy do
       within release_path do
         execute :cp, '-r', 'vendor/assets/images/', 'public/assets/'
         execute :cp, '-r', 'vendor/assets/javascripts/ace', 'public/assets/'
-        #execute :mkdir, '/log/whenever' #release path seems to be the wrong place
       end
     end
   end
 end
 
-namespace :whenever do
-  task :update_crontab do
-    run 'bundle exec whenever --update-crontab'
-  end
-end
-
-after 'deploy', 'whenever:update_crontab'
