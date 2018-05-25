@@ -22,4 +22,14 @@ namespace :deploy do
       end
     end
   end
+
+  task :create_whenever_log_dir do
+    on roles(:all) do
+      within release_path do
+        execute :mkdir, '-p', 'log/whenever'
+      end
+    end
+  end
 end
+
+after :deploy, 'deploy:create_whenever_log_dir'

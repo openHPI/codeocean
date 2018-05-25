@@ -9,7 +9,9 @@ h1 = @exercise
 
 = row(label: '.finishing_rate') do
   p == @exercise.finishers.count ? "#{t('shared.out_of', maximum_value: @exercise.users.distinct.count, value: @exercise.finishers.count)} #{t('exercises.statistics.external_users')}" : empty
-  p = progress_bar((100.0 / @exercise.users.distinct.count * @exercise.finishers.count).round(2))
+  - finishers_count = @exercise.users.distinct.count
+  - finishers_percentage = finishers_count == 0 ? 0 : (100.0 / finishers_count * @exercise.finishers.count).round(2)
+  p = progress_bar(finishers_percentage)
 
 = row(label: '.average_score') do
   p == @exercise.average_score ? t('shared.out_of', maximum_value: @exercise.maximum_score, value: @exercise.average_score.round(2)) : empty
