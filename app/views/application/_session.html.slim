@@ -8,9 +8,9 @@
       - if current_user.internal_user?
         li = link_to(t('consumers.show.link'), current_user.consumer) if current_user.consumer
         li = link_to(t('internal_users.show.link'), current_user)
-      li = link_to(t('request_for_comments.index.all'), request_for_comments_path)
+        li = link_to(t('request_for_comments.index.all'), request_for_comments_path)
+        li = link_to(t('request_for_comments.index.get_my_rfc_activity'), my_rfc_activity_path)
       li = link_to(t('request_for_comments.index.get_my_comment_requests'), my_request_for_comments_path)
-      li = link_to(t('request_for_comments.index.get_my_rfc_activity'), my_rfc_activity_path)
       - if current_user.internal_user?
         li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete)
 - else
