@@ -635,7 +635,7 @@ en:
       score: Your Score
       success_with_outcome: 'Your code has been successfully assessed. Your grade has been transmitted to %{consumer}.'
       success_without_outcome: Your code has been successfully assessed.
-      do_not_use_backbutton: "Never use the browser's \"Back\" button to get back to CodeOcean. Always start an exercise from within %{consumer}."
+      do_not_use_backbutton: "Never use the browser's \"Back\" button to get back to CodeOcean."
     new:
       forgot_password: Forgot password?
       headline: Sign In
