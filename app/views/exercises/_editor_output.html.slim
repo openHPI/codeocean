@@ -18,7 +18,7 @@ div id='output_sidebar_uncollapsed' class='hidden col-sm-12 enforce-bottom-margi
             = row(label: 'activerecord.attributes.submission.score', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
             = row(label: 'exercises.implement.feedback')
             = row(label: 'exercises.implement.error_messages')
-            = row(label: 'exercises.implement.output', value: link_to(t('shared.show'), '#'))
+           // = row(label: 'exercises.implement.output', value: link_to(t('shared.show'), '#'))
     #score data-maximum-score=@exercise.maximum_score data-score=@submission.try(:score)
       h4
         span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
