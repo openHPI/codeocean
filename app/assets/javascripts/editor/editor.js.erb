@@ -552,8 +552,8 @@ configureEditors: function () {
   },
 
   showWebsocketError: function() {
-    if (window.navigator.userAgent.indexOf('Edge') > -1) {
-      // Mute errors in Microsoft Edge
+    if (window.navigator.userAgent.indexOf('Edge') > -1 || window.navigator.userAgent.indexOf('Trident') > -1) {
+      // Mute errors in Microsoft Edge and Internet Explorer
       return;
     }
     $.flash.danger({
