@@ -8,7 +8,8 @@ li.panel.panel-default
   .panel-collapse.collapse class=('in' if f.object.name.nil?) id="collapse#{id}" role="tabpanel"
     .panel-body
       - if policy(f.object).destroy?
-        .clearfix = link_to(t('shared.destroy'), f.object, class: 'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+        .clearfix
+          .btn.btn-warning.btn-sm.pull-right.delete-file data-file-url=code_ocean_file_path(id) = t('shared.destroy')
       .form-group
         = f.label(:name, t('activerecord.attributes.file.name'))
         = f.text_field(:name, class: 'form-control')
