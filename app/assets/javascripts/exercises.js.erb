@@ -76,6 +76,40 @@ $(function() {
     initializeEditor(latestTextAreaIndex, $('#files .editor').last()[0]);
   };
 
+  var removeFileForm = function(fileUrl) {
+    // validate fileUrl
+    var matches = fileUrl.match(/files\/(\d+)/);
+    if (matches) {
+      // select the file form based on the delete button
+      var fileForm = $('*[data-file-url="' + fileUrl + '"]').parent().parent().parent();
+      fileForm.remove();
+
+      // now remove the hidden input representing the file
+      var fileId = matches[1];
+      var input = $('input[type="hidden"][value="' + fileId + '"]')
+      input.remove()
+    }
+  }
+
+  var deleteFile = function(event) {
+    event.preventDefault();
+    var fileUrl = $(this).data('file-url');
+
+    if (confirm('<%= I18n.t('shared.confirm_destroy') %>')) {
+      var jqxhr = $.ajax({
+        // normal file path (without json) would destroy the context object (the exercise) as well, due to redirection
+        // to the context after the :destroy action.
+        contentType: 'Application/json',
+        url: fileUrl + '.json',
+        method: 'DELETE'
+      });
+      jqxhr.done(function () {
+        removeFileForm(fileUrl)
+      });
+      jqxhr.fail(ajaxError);
+    }
+  }
+
   var ajaxError = function() {
     $.flash.danger({
       text: $('#flash').data('message-failure')
@@ -121,6 +155,7 @@ $(function() {
     $('form.edit_exercise, form.new_exercise').on('submit', function() {
       $('#dummies').html('');
     });
+    $('.delete-file').on('click', deleteFile);
   };
 
   var findFileTypeByFileExtension = function(file_extension) {
