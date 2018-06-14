@@ -186,11 +186,12 @@ class DockerClient
   end
 
   def self.destroy_container(container)
+    @socket.close
     Rails.logger.info('destroying container ' + container.to_s)
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
     clean_container_workspace(container)
-    if(container)
+    if container
       container.delete(force: true, v: true)
     end
   rescue Docker::Error::NotFoundError => error
