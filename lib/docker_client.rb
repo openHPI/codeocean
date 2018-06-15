@@ -186,7 +186,9 @@ class DockerClient
   end
 
   def self.destroy_container(container)
-    @socket.close
+    if @socket
+      @socket.close
+    end
     Rails.logger.info('destroying container ' + container.to_s)
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
