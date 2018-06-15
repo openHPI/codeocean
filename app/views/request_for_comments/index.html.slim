@@ -23,7 +23,7 @@ h1 = RequestForComment.model_name.human(count: 2)
         th = t('activerecord.attributes.request_for_comments.last_update')
     tbody
       - @request_for_comments.each do |request_for_comment|
-        tr data-id=request_for_comment.id
+        tr data-id=request_for_comment.id class=('do-not-answer' if ([:rfc_intervention_stale_rfc, :break_intervention_stale_rfc, :no_intervention_stale_rfc].include?(UserGroupSeparator.getInterventionGroup(current_user)) and current_user.internal_user?))
           - if request_for_comment.solved?
             td
               span class="fa fa-check" aria-hidden="true"
