@@ -474,8 +474,9 @@ class ExercisesController < ApplicationController
   end
 
   def redirect_to_user_feedback
-    url = if UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)
-            edit_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id})
+    uef = UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)
+    url = if uef
+            edit_user_exercise_feedback_path(uef)
           else
             new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id})
           end
