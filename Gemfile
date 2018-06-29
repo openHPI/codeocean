@@ -25,7 +25,7 @@ gem 'rails', '4.2.10'
 gem 'rails-i18n'
 gem 'ransack'
 gem 'rubytree'
-gem 'sass-rails'
+gem 'sass-rails', '>= 5.0.7'
 gem 'sdoc', group: :doc
 gem 'slim-rails'
 gem 'bootstrap_pagedown'
@@ -66,7 +66,7 @@ end
 group :test do
   gem 'autotest-rails'
   gem 'capybara'
-  gem 'capybara-selenium'
+  gem 'capybara-selenium', '>= 0.0.6'
   gem 'headless'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
