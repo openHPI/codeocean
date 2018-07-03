@@ -15,4 +15,24 @@
   .form-group
     = f.label(t('activerecord.attributes.exercise_collections.exercises'))
     = f.collection_select(:exercise_ids, exercises, :id, :title, {}, {class: 'form-control', multiple: true})
+
+  .table-responsive#exercise-list
+    table.table
+      thead
+        tr
+          th
+          th = t('activerecord.attributes.exercise_collection_item.exercise')
+          th = t('activerecord.attributes.exercise.user')
+          th colspan=2 = t('shared.actions')
+      tbody#sortable
+        - @exercise_collection.items.order(:position).each do |item|
+          tr
+            td
+              span.fa.fa-bars
+            td = item.exercise.title
+            td = item.exercise.author
+            td = link_to(t('shared.show'), item.exercise)
+            td
+              a.remove-exercise href="#" = t('shared.destroy')
+
   .actions = render('shared/submit_button', f: f, object: @exercise_collection)

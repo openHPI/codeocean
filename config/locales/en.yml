@@ -131,6 +131,8 @@ en:
         user: "Author"
         exercise: "Exercise"
         feedback_text: "Feedback Text"
+      exercise_collection_item:
+        exercise: "Exercise"
     models:
       code_harbor_link:
         one: CodeHarbor Link
