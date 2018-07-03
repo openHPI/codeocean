@@ -378,6 +378,10 @@ en:
       score: Score
       runs: Submissions
       worktime: Working Time
+    show:
+      loading_tag_statistics: "Loading tag statistics..."
+      tag_statistics: "Tag Statistics"
+      empty_tag_statistics: "No statistics available"
   files:
     roles:
       main_file: Main File

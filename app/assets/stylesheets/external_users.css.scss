@@ -1,0 +1,16 @@
+#no-elements {
+  display: none;
+}
+
+#tag-grid {
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  grid-column-gap: 10px;
+  grid-row-gap: 15px;
+
+  .progress {
+    .progress-bar {
+      min-width: 2em;
+    }
+  }
+}

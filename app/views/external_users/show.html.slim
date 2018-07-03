@@ -7,4 +7,11 @@ h1 = @user.name
 br
 = link_to(t('shared.statistics'), statistics_external_user_path(@user))
 
-.tag-grid
+br
+h4 = t('.tag_statistics')
+#loading
+  .spinner
+  = t('.loading_tag_statistics')
+#no-elements
+  = t('.empty_tag_statistics')
+#tag-grid
