@@ -1,7 +1,8 @@
 class ExerciseCollection < ActiveRecord::Base
   include TimeHelper
 
-  has_and_belongs_to_many :exercises
+  has_many :exercise_collection_items
+  has_many :exercises, through: :exercise_collection_items
   belongs_to :user, polymorphic: true
 
   def exercise_working_times
