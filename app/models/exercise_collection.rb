@@ -2,6 +2,7 @@ class ExerciseCollection < ActiveRecord::Base
   include TimeHelper
 
   has_many :exercise_collection_items
+  alias_method :items, :exercise_collection_items
   has_many :exercises, through: :exercise_collection_items
   belongs_to :user, polymorphic: true
 
