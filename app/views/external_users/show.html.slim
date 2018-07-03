@@ -6,3 +6,11 @@ h1 = @user.name
 
 br
 = link_to(t('shared.statistics'), statistics_external_user_path(@user))
+
+.tag-grid
+  - tag_stats = ProxyExercise.new().get_user_knowledge_and_max_knowledge(@user, @user.participations.uniq.compact)
+  - tag_stats[:user_topic_knowledge].each do |key, value|
+    //p = key.name.to_s + ' -> ' + value.to_s + " (of #{tag_stats[:max_topic_knowledge][key].to_s })"
+    .tag-details
+      = key.name.to_s
+      = progress_bar((100.0 / tag_stats[:max_topic_knowledge][key] * value).round(2))
