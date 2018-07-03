@@ -382,6 +382,7 @@ de:
       loading_tag_statistics: "Lade Lernbereichstatistiken"
       tag_statistics: "Lernbereichstatistiken"
       empty_tag_statistics: "Keine Statistiken verfügbar"
+      exercise_statistics: "Aufgabenstatistiken"
   files:
     roles:
       main_file: Hauptdatei
