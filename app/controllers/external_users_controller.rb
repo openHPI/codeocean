@@ -63,4 +63,20 @@ class ExternalUsersController < ApplicationController
     }
   end
 
+  def tag_statistics
+    @user = ExternalUser.find(params[:id])
+    authorize!
+
+    statistics = []
+    tags = ProxyExercise.new().get_user_knowledge_and_max_knowledge(@user, @user.participations.uniq.compact)
+    tags[:user_topic_knowledge].each_pair do |key, value|
+      statistics.append({:key => key.name.to_s, :value => (100.0 / tags[:max_topic_knowledge][key] * value).round})
+    end
+    statistics.sort_by! {|item| -item[:value]}
+
+    respond_to do |format|
+      format.json { render(json: statistics) }
+    end
+  end
+
 end
