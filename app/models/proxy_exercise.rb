@@ -214,8 +214,8 @@ class ProxyExercise < ActiveRecord::Base
         ex.tags.each do |t|
           tags_counter[t] += 1
           tag_diminishing_return_factor = tag_diminishing_return_function(tags_counter[t], all_used_tags_with_count[t])
-          tag_ratio = ex.exercise_tags.where(tag: t).first.factor.to_f / ex.exercise_tags.inject(0){|sum, et| sum += et.factor }.to_f
-          Rails.logger.debug("tag: #{t}, factor: #{ex.exercise_tags.where(tag: t).first.factor}, sumall: #{ex.exercise_tags.inject(0){|sum, et| sum += et.factor }}")
+          tag_ratio = ex.exercise_tags.where(tag: t).first.factor.to_f / ex.exercise_tags.inject(0){|sum, et| sum + et.factor }.to_f
+          Rails.logger.debug("tag: #{t}, factor: #{ex.exercise_tags.where(tag: t).first.factor}, sumall: #{ex.exercise_tags.inject(0){|sum, et| sum + et.factor }}")
           Rails.logger.debug("tag #{t}, count #{tags_counter[t]}, max: #{all_used_tags_with_count[t]}, factor: #{tag_diminishing_return_factor}")
           Rails.logger.debug("tag_ratio #{tag_ratio}")
           topic_knowledge_ratio = ex.expected_difficulty * tag_ratio
@@ -226,11 +226,10 @@ class ProxyExercise < ActiveRecord::Base
       end
       {user_topic_knowledge: topic_knowledge_loss_user, max_topic_knowledge: topic_knowledge_max}
     end
-    private :get_user_knowledge_and_max_knowledge
 
     def tag_diminishing_return_function(count_tag, total_count_tag)
       total_count_tag += 1 # bonus exercise comes on top
-      return 1/(1+(Math::E**(-3/(0.5*total_count_tag)*(count_tag-0.5*total_count_tag))))
+      1 / (1 + (Math::E**(-3 / (0.5 * total_count_tag) * (count_tag - 0.5 * total_count_tag))))
     end
 
     def select_easiest_exercise(exercises)

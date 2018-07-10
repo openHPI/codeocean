@@ -128,6 +128,9 @@ Rails.application.routes.draw do
 
   resources :external_users, only: [:index, :show], concerns: :statistics do
     resources :exercises, concerns: :statistics
+    member do
+      get :tag_statistics
+    end
   end
 
   namespace :code_ocean do
