@@ -61,16 +61,25 @@ namespace :detect_exercise_anomalies do
       .having('count(exercises_with_submissions.id) > ?', number_of_exercises)
   end
 
-  def find_anomalies(collection)
+  def collect_working_times(collection)
     working_times = {}
     collection.exercises.each do |exercise|
       puts "\t\t> #{exercise.title}"
       working_times[exercise.id] = get_average_working_time(exercise)
     end
-    average = working_times.values.reduce(:+) / working_times.size
-    working_times.select do |exercise_id, working_time|
-      working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
+    working_times
+  end
+
+  def find_anomalies(collection)
+    working_times = collect_working_times(collection)
+    values = working_times.values.reject {|value| value.nil?}
+    if values.size > 0
+      average = values.reduce(:+) / values.size
+      return working_times.select do |_, working_time|
+        working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
+      end
     end
+    {}
   end
 
   def get_average_working_time(exercise)
