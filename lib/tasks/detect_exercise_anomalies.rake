@@ -49,14 +49,14 @@ namespace :detect_exercise_anomalies do
   def get_collections(number_of_exercises, number_of_solutions)
     ExerciseCollection
       .where(:use_anomaly_detection => true)
-      .joins("join exercise_collections_exercises ece on exercise_collections.id = ece.exercise_collection_id
+      .joins("join exercise_collection_items eci on exercise_collections.id = eci.exercise_collection_id
                             join
                               (select e.id
                                from exercises e
                                  join submissions s on s.exercise_id = e.id
                                group by e.id
                                having count(s.user_id) > #{ExerciseCollection.sanitize(number_of_solutions)}
-                              ) as exercises_with_submissions on exercises_with_submissions.id = ece.exercise_id")
+                              ) as exercises_with_submissions on exercises_with_submissions.id = eci.exercise_id")
       .group('exercise_collections.id')
       .having('count(exercises_with_submissions.id) > ?', number_of_exercises)
   end
