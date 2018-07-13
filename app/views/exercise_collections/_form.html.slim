@@ -1,5 +1,3 @@
-- users = InternalUser.order(:name)
-
 = form_for(@exercise_collection, multipart: true) do |f|
   = render('shared/form_errors', object: @exercise_collection)
   .form-group
@@ -10,7 +8,7 @@
     = f.check_box(:use_anomaly_detection, {class: 'form-control'})
   .form-group
     = f.label(t('activerecord.attributes.exercise_collections.user'))
-    = f.collection_select(:user_id, users, :id, :name, {}, {class: 'form-control'})
+    = f.collection_select(:user_id, InternalUser.order(:name), :id, :name, {}, {class: 'form-control'})
 
   .table-responsive#exercise-list
     table.table
