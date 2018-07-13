@@ -29,6 +29,8 @@
             td
               a.remove-exercise href='#' = t('shared.destroy')
     button.btn.btn-primary type='button' data-toggle='modal' data-target='#add-exercise-modal' = t('exercise_collections.form.add_exercises')
+    .hidden
+      = f.collection_select(:exercise_ids, Exercise.all, :id, :title, {}, {class: 'form-control', multiple: true})
 
   .actions = render('shared/submit_button', f: f, object: @exercise_collection)
 

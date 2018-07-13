@@ -152,6 +152,7 @@ $(function() {
               '<td><a href="/exercises/' + exercise.id + '"><%= I18n.t('shared.show') %></td>' +
               '<td><a class="remove-exercise" href="#"><%= I18n.t('shared.destroy') %></td></tr>';
             exerciseList.find('tbody').append(template);
+            $('#exercise-list').find('option[value="' + exercise.id + '"]').prop('selected', true);
           }
         }
       });
