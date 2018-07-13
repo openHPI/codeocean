@@ -152,19 +152,19 @@ CodeOceanEditorEvaluation = {
     var element = this.findOrCreateOutputElement(index);
     if (!colorize) {
       if (output.stdout != undefined && output.stdout != '') {
-        element.append(output.stdout)
+        element.text(element.text() + output.stdout)
       }
 
       if (output.stderr != undefined && output.stderr != '') {
-        element.append('StdErr: ' + output.stderr);
+        element.text('StdErr: ' + element.text() + output.stderr);
       }
 
     } else if (output.stderr) {
-      element.addClass('text-warning').append(output.stderr);
+      element.addClass('text-warning').text(element.text() + output.stderr);
       this.flowrOutputBuffer += output.stderr;
       this.QaApiOutputBuffer.stderr += output.stderr;
     } else if (output.stdout) {
-      element.addClass('text-success').append(output.stdout);
+      element.addClass('text-success').text(element.text() + output.stdout);
       this.flowrOutputBuffer += output.stdout;
       this.QaApiOutputBuffer.stdout += output.stdout;
     } else {
