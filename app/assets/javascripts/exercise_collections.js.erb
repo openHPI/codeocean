@@ -1,11 +1,11 @@
 $(function() {
   if ($.isController('exercise_collections')) {
-    var data = $('#data');
+    var dataElement = $('#data');
     var exerciseList = $('#exercise-list');
 
-    if (data.isPresent()) {
-      data.data('working-times');
-      var averageWorkingTimeValue = parseFloat(data.data('average-working-time'));
+    if (dataElement.isPresent()) {
+      var data = dataElement.data('working-times');
+      var averageWorkingTimeValue = parseFloat(dataElement.data('average-working-time'));
 
       var margin = {top: 30, right: 40, bottom: 30, left: 50},
         width = 720 - margin.left - margin.right,
