@@ -784,3 +784,6 @@ en:
       files: "Files"
       users: "Users"
       integrations: "Integrations"
+  exercise_collections:
+    form:
+      add_exercises: "Aufgaben hinzufügen"

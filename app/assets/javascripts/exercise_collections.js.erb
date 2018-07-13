@@ -130,6 +130,31 @@ $(function() {
       var list = $("#sortable");
       list.sortable();
       list.disableSelection();
+
+      var addExercisesForm = $('#exercise-selection');
+      var addExercisesButton = $('#add-exercises');
+
+      var collectContainedExercises = function () {
+        return exerciseList.find('tbody > tr').toArray().map(function (item) {return $(item).data('id')});
+      }
+
+      addExercisesButton.on('click', function (e) {
+        e.preventDefault();
+        var collectionExercises = collectContainedExercises();
+        var selectedExercises = addExercisesForm.find('select')[0].selectedOptions;
+        for (var i = 0; i < selectedExercises.length; i++) {
+          var exercise = {id: selectedExercises[i].value, title: selectedExercises[i].label}
+          if (collectionExercises.indexOf(exercise.id) === -1) {
+            // only add exercises that are not already contained in the collection
+            var template = '<tr data-id="' + exercise.id + '">' +
+              '<td><span class="fa fa-bars"></span></td>' +
+              '<td>' + exercise.title + '</td>' +
+              '<td><a href="/exercises/' + exercise.id + '"><%= I18n.t('shared.show') %></td>' +
+              '<td><a class="remove-exercise" href="#"><%= I18n.t('shared.destroy') %></td></tr>';
+            exerciseList.find('tbody').append(template);
+          }
+        }
+      });
     }
   }
 });

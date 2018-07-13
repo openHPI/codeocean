@@ -1,4 +1,3 @@
-- exercises = Exercise.order(:title)
 - users = InternalUser.order(:name)
 
 = form_for(@exercise_collection, multipart: true) do |f|
@@ -12,9 +11,6 @@
   .form-group
     = f.label(t('activerecord.attributes.exercise_collections.user'))
     = f.collection_select(:user_id, users, :id, :name, {}, {class: 'form-control'})
-  .form-group
-    = f.label(t('activerecord.attributes.exercise_collections.exercises'))
-    = f.collection_select(:exercise_ids, exercises, :id, :title, {}, {class: 'form-control', multiple: true})
 
   .table-responsive#exercise-list
     table.table
@@ -22,17 +18,18 @@
         tr
           th
           th = t('activerecord.attributes.exercise_collection_item.exercise')
-          th = t('activerecord.attributes.exercise.user')
           th colspan=2 = t('shared.actions')
       tbody#sortable
         - @exercise_collection.items.order(:position).each do |item|
-          tr
+          tr data-id=item.exercise.id
             td
               span.fa.fa-bars
             td = item.exercise.title
-            td = item.exercise.author
             td = link_to(t('shared.show'), item.exercise)
             td
-              a.remove-exercise href="#" = t('shared.destroy')
+              a.remove-exercise href='#' = t('shared.destroy')
+    button.btn.btn-primary type='button' data-toggle='modal' data-target='#add-exercise-modal' = t('exercise_collections.form.add_exercises')
 
   .actions = render('shared/submit_button', f: f, object: @exercise_collection)
+
+= render('shared/modal', id: 'add-exercise-modal', title: t('.add_exercises'), template: 'exercise_collections/_add_exercise_modal')
