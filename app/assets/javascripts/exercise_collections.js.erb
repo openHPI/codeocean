@@ -127,8 +127,22 @@ $(function() {
         .attr("class", "line maximum-working-time")
         .attr("d", maxWorkingTime);
     } else if (exerciseList.isPresent()) {
+      var exerciseSelect = $('#exercise-select');
       var list = $("#sortable");
-      list.sortable();
+
+      var updateExerciseList = function () {
+        // remove all options from the hidden select and add all selected exercises in the new order
+        exerciseSelect.find('option').remove();
+        var exerciseIdsInSortedOrder = list.sortable('toArray', {attribute: 'data-id'});
+        for (var i = 0; i < exerciseIdsInSortedOrder.length; i += 1) {
+          exerciseSelect.append('<option value="' + exerciseIdsInSortedOrder[i] + '" selected></option>')
+        }
+      }
+
+      list.sortable({
+        items: 'tr',
+        update: updateExerciseList
+      });
       list.disableSelection();
 
       var addExercisesForm = $('#exercise-selection');
