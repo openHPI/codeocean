@@ -152,7 +152,8 @@ CodeOceanEditorEvaluation = {
     var element = this.findOrCreateOutputElement(index);
     if (!colorize) {
       if (output.stdout != undefined && output.stdout != '') {
-        element.text(element.text() + output.stdout)
+        element.append(output.stdout)
+        //element.text(element.text() + output.stdout)
       }
 
       if (output.stderr != undefined && output.stderr != '') {
