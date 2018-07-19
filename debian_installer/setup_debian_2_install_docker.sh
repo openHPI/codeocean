@@ -30,8 +30,10 @@ then
   sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
   cd /etc/apt/sources.list.d
   sudo touch docker.list
+  sudo sh -c 'echo "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main" > pgdg.list'  # xenial durch entsprechende ubuntuversion ersetzen
   sudo sh -c 'echo "deb https://apt.dockerproject.org/repo debian-jessie main" > docker.list'
   sudo apt-cache policy docker-engine
+  wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sodo apt-key add -
   sudo apt-get update
   echo "Done"
 else
