@@ -57,6 +57,10 @@ rect.value-bar {
   }
 }
 
+.table-responsive#exercise-list {
+  max-height: 512px;
+}
+
 .exercise-id-tooltip {
   position: absolute;
   display: none;
@@ -66,4 +70,20 @@ rect.value-bar {
   border: 1px solid #008cba;
   padding: 14px;
   text-align: center;
+}
+
+#exercise-list {
+  margin-bottom: 20px;
+}
+
+#add-exercise-list {
+  min-height: 450px;
+}
+
+.exercise-actions {
+  margin-bottom: 20px;
+
+  button {
+    margin-right: 10px;
+  }
 }
