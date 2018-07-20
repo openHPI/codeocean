@@ -56,6 +56,7 @@ $(function() {
         return {
           index: parseInt(key),
           exercise_id: parseInt(data[key]['exercise_id']),
+          exercise_title: data[key]['exercise_title'],
           working_time: parseFloat(data[key]['working_time'])
         };
       });
@@ -92,6 +93,7 @@ $(function() {
             .style("top", d3.event.pageY + 50 + "px")
             .style("display", "inline-block")
             .html("<%= I18n.t('activerecord.models.exercise.one') %> ID: " + d.exercise_id + "<br>" +
+              "<%= I18n.t('activerecord.attributes.exercise.title') %>: " + d.exercise_title + "<br>" +
               "<%= I18n.t('exercises.statistics.average_worktime') %>: " + d.working_time + "s");
         })
         .on("mouseout", function () {

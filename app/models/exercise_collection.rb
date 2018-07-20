@@ -6,19 +6,19 @@ class ExerciseCollection < ActiveRecord::Base
   has_many :exercises, through: :exercise_collection_items
   belongs_to :user, polymorphic: true
 
-  def exercise_working_times
-    working_times = {}
+  def collection_statistics
+    statistics = {}
     exercise_collection_items.each do |item|
-      working_times[item.position] = {exercise_id: item.exercise.id, working_time: time_to_f(item.exercise.average_working_time)}
+      statistics[item.position] = {exercise_id: item.exercise.id, exercise_title: item.exercise.title, working_time: time_to_f(item.exercise.average_working_time)}
     end
-    working_times
+    statistics
   end
 
   def average_working_time
     if exercises.empty?
       0
     else
-      values = exercise_working_times.values.reject { |o| o[:working_time].nil?}
+      values = collection_statistics.values.reject { |o| o[:working_time].nil?}
       sum = values.reduce(0) {|sum, item| sum + item[:working_time]}
       sum / values.size
     end
