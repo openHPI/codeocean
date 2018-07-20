@@ -21,29 +21,35 @@ namespace :detect_exercise_anomalies do
   WORKING_TIME_CACHE = {}
   AVERAGE_WORKING_TIME_CACHE = {}
 
-  task :with_at_least, [:number_of_exercises, :number_of_solutions] => :environment do |task, args|
+  task :with_at_least, [:number_of_exercises, :number_of_users] => :environment do |task, args|
     include TimeHelper
 
     number_of_exercises = args[:number_of_exercises]
-    number_of_solutions = args[:number_of_solutions]
+    number_of_users = args[:number_of_users]
 
-    puts "Searching for exercise collections with at least #{number_of_exercises} exercises and #{number_of_solutions} users."
+    log "Searching for exercise collections with at least #{number_of_exercises} exercises and #{number_of_users} users."
     # Get all exercise collections that have at least the specified amount of exercises and at least the specified
-    # number of submissions AND are flagged for anomaly detection
-    collections = get_collections(number_of_exercises, number_of_solutions)
-    puts "Found #{collections.length}."
+    # number of users AND are flagged for anomaly detection
+    collections = get_collections(number_of_exercises, number_of_users)
+    log "Found #{collections.length}."
 
     collections.each do |collection|
-      puts "\t- #{collection}"
+      log(collection, 1, '- ')
       anomalies = find_anomalies(collection)
 
-      if anomalies.length > 0 and not collection.user.nil?
-        notify_collection_author(collection, anomalies)
+      if anomalies.length > 0
+        unless collection.user.nil?
+          notify_collection_author(collection, anomalies)
+        end
         notify_users(collection, anomalies)
         reset_anomaly_detection_flag(collection)
       end
     end
-    puts 'Done.'
+    log 'Done.'
+  end
+
+  def log(message='', indent_level=0, prefix='')
+    puts("\t" * indent_level + "#{prefix}#{message}")
   end
 
   def get_collections(number_of_exercises, number_of_solutions)
@@ -64,7 +70,7 @@ namespace :detect_exercise_anomalies do
   def collect_working_times(collection)
     working_times = {}
     collection.exercises.each do |exercise|
-      puts "\t\t> #{exercise.title}"
+      log(exercise.title, 2, '> ')
       working_times[exercise.id] = get_average_working_time(exercise)
     end
     working_times
@@ -99,16 +105,16 @@ namespace :detect_exercise_anomalies do
   end
 
   def notify_collection_author(collection, anomalies)
-    puts "\t\tSending E-Mail to author (#{collection.user.displayname} <#{collection.user.email}>)..."
+    log("Sending E-Mail to author (#{collection.user.displayname} <#{collection.user.email}>)...", 2)
     UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
   end
 
   def notify_users(collection, anomalies)
     by_id_and_type = proc { |u| {user_id: u[:user_id], user_type: u[:user_type]} }
 
-    puts "\t\tSending E-Mails to best and worst performing users of each anomaly..."
+    log("Sending E-Mails to best and worst performing users of each anomaly...", 2)
     anomalies.each do |exercise_id, average_working_time|
-      puts "\t\tAnomaly in exercise #{exercise_id} (avg: #{average_working_time} seconds):"
+      log("Anomaly in exercise #{exercise_id} (avg: #{average_working_time} seconds):", 2)
       exercise = Exercise.find(exercise_id)
       users_to_notify = []
 
@@ -136,7 +142,7 @@ namespace :detect_exercise_anomalies do
         feedback_link = url_for(action: :new, controller: :user_exercise_feedbacks, exercise_id: exercise.id, host: host)
         UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
       end
-      puts "\t\tAsked #{users_to_notify.size} users for feedback."
+      log("Asked #{users_to_notify.size} users for feedback.", 2)
     end
   end
 
@@ -160,7 +166,7 @@ namespace :detect_exercise_anomalies do
   end
 
   def reset_anomaly_detection_flag(collection)
-    puts "\t\tResetting flag..."
+    log("Resetting flag...", 2)
     collection.use_anomaly_detection = false
     collection.save!
   end
