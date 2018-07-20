@@ -170,6 +170,15 @@ $(function() {
           }
         }
       });
+
+      $('.remove-exercise').on('click', function (e) {
+        e.preventDefault();
+
+        var row = $(this).parent().parent();
+        var exerciseId = row.data('id');
+        $('#exercise-list').find('option[value="' + exerciseId + '"]').prop('selected', false);
+        row.remove()
+      });
     }
   }
 });
