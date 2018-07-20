@@ -9,7 +9,6 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def show
-    @exercises = @exercise_collection.exercises.paginate(:page => params[:page])
   end
 
   def new
