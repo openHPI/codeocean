@@ -52,11 +52,11 @@ $(function() {
           "translate(" + margin.left + "," + margin.top + ")");
 
       // Get the data
-      data = Object.keys(data).map(function (key, index) {
+      data = Object.keys(data).map(function (key) {
         return {
-          index: index,
-          exercise_id: parseInt(key),
-          working_time: parseFloat(data[key])
+          index: parseInt(key),
+          exercise_id: parseInt(data[key]['exercise_id']),
+          working_time: parseFloat(data[key]['working_time'])
         };
       });
 

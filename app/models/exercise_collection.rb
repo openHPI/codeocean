@@ -8,8 +8,8 @@ class ExerciseCollection < ActiveRecord::Base
 
   def exercise_working_times
     working_times = {}
-    exercises.each do |exercise|
-      working_times[exercise.id] = time_to_f exercise.average_working_time
+    exercise_collection_items.each do |item|
+      working_times[item.position] = {exercise_id: item.exercise.id, working_time: time_to_f(item.exercise.average_working_time)}
     end
     working_times
   end
@@ -18,8 +18,9 @@ class ExerciseCollection < ActiveRecord::Base
     if exercises.empty?
       0
     else
-      values = exercise_working_times.values.reject { |v| v.nil?}
-      values.reduce(:+) / exercises.size
+      values = exercise_working_times.values.reject { |o| o[:working_time].nil?}
+      sum = values.reduce(0) {|sum, item| sum + item[:working_time]}
+      sum / values.size
     end
   end
 
