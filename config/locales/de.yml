@@ -787,3 +787,4 @@ de:
   exercise_collections:
     form:
       add_exercises: "Aufgaben hinzufügen"
+      sort_by_title: "Nach Titel sortieren"

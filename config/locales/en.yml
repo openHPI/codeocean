@@ -787,3 +787,4 @@ en:
   exercise_collections:
     form:
       add_exercises: "Add exercises"
+      sort_by_title: "Sort by title"

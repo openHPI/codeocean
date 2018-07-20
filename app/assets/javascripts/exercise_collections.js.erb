@@ -147,37 +147,58 @@ $(function() {
 
       var addExercisesForm = $('#exercise-selection');
       var addExercisesButton = $('#add-exercises');
+      var removeExerciseButtons = $('.remove-exercise');
+      var sortButton = $('#sort-button');
 
       var collectContainedExercises = function () {
         return exerciseList.find('tbody > tr').toArray().map(function (item) {return $(item).data('id')});
       }
 
+      var sortExercises = function() {
+        var listitems = $('tr', list);
+        listitems.sort(function (a, b) {
+          return ($(a).find('td:nth-child(2)').text().toUpperCase() > $(b).find('td:nth-child(2)').text().toUpperCase()) ? 1 : -1;
+        });
+        list.append(listitems);
+        list.sortable('refresh');
+        updateExerciseList();
+      }
+
+      var addExercise = function (id, title) {
+        var exercise = {id: id, title: title}
+        var collectionExercises = collectContainedExercises();
+        if (collectionExercises.indexOf(exercise.id) === -1) {
+          // only add exercises that are not already contained in the collection
+          var template = '<tr data-id="' + exercise.id + '">' +
+            '<td><span class="fa fa-bars"></span></td>' +
+            '<td>' + exercise.title + '</td>' +
+            '<td><a href="/exercises/' + exercise.id + '"><%= I18n.t('shared.show') %></td>' +
+            '<td><a class="remove-exercise" href="#"><%= I18n.t('shared.destroy') %></td></tr>';
+          exerciseList.find('tbody').append(template);
+          $('#exercise-list').find('option[value="' + exercise.id + '"]').prop('selected', true);
+        }
+      }
+
       addExercisesButton.on('click', function (e) {
         e.preventDefault();
-        var collectionExercises = collectContainedExercises();
         var selectedExercises = addExercisesForm.find('select')[0].selectedOptions;
         for (var i = 0; i < selectedExercises.length; i++) {
-          var exercise = {id: selectedExercises[i].value, title: selectedExercises[i].label}
-          if (collectionExercises.indexOf(exercise.id) === -1) {
-            // only add exercises that are not already contained in the collection
-            var template = '<tr data-id="' + exercise.id + '">' +
-              '<td><span class="fa fa-bars"></span></td>' +
-              '<td>' + exercise.title + '</td>' +
-              '<td><a href="/exercises/' + exercise.id + '"><%= I18n.t('shared.show') %></td>' +
-              '<td><a class="remove-exercise" href="#"><%= I18n.t('shared.destroy') %></td></tr>';
-            exerciseList.find('tbody').append(template);
-            $('#exercise-list').find('option[value="' + exercise.id + '"]').prop('selected', true);
-          }
+          addExercise(selectedExercises[i].value, selectedExercises[i].label);
         }
       });
 
-      $('.remove-exercise').on('click', function (e) {
+      removeExerciseButtons.on('click', function (e) {
         e.preventDefault();
 
         var row = $(this).parent().parent();
         var exerciseId = row.data('id');
         $('#exercise-list').find('option[value="' + exerciseId + '"]').prop('selected', false);
         row.remove()
+      });
+
+      sortButton.on('click', function (e) {
+        e.preventDefault();
+        sortExercises();
       });
     }
   }
