@@ -7,12 +7,14 @@ $(function() {
 
     var buildTagContainer = function(tag) {
       return '\
-        <div class="tag">\
-          <div class="name">' + tag.key + '</div>\
-          <div class="progress">\
-            <div class="progress-bar" role="progressbar" style="width:' + tag.value + '%">' + tag.value + '%</div>\
+        <a href="' + location.href +'/statistics?tag=' + tag.id + '">\
+          <div class="tag">\
+            <div class="name">' + tag.key + '</div>\
+            <div class="progress">\
+              <div class="progress-bar" role="progressbar" style="width:' + tag.value + '%">' + tag.value + '%</div>\
+            </div>\
           </div>\
-        </div>';
+        </a>';
     };
 
     var jqxhr = $.ajax(window.location.href + '/tag_statistics', {
