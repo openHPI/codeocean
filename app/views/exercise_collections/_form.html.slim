@@ -26,10 +26,11 @@
             td = link_to(t('shared.show'), item.exercise)
             td
               a.remove-exercise href='#' = t('shared.destroy')
+  .hidden
+    = f.collection_select(:exercise_ids, Exercise.all, :id, :title, {}, {id: 'exercise-select', class: 'form-control', multiple: true})
+  .exercise-actions
     button.btn.btn-primary type='button' data-toggle='modal' data-target='#add-exercise-modal' = t('exercise_collections.form.add_exercises')
     button.btn.btn-secondary#sort-button type='button' = t('exercise_collections.form.sort_by_title')
-    .hidden
-      = f.collection_select(:exercise_ids, Exercise.all, :id, :title, {}, {id: 'exercise-select', class: 'form-control', multiple: true})
 
   .actions = render('shared/submit_button', f: f, object: @exercise_collection)
 
