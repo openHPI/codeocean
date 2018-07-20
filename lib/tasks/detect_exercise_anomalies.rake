@@ -69,9 +69,9 @@ namespace :detect_exercise_anomalies do
 
   def collect_working_times(collection)
     working_times = {}
-    collection.exercises.each do |exercise|
-      log(exercise.title, 2, '> ')
-      working_times[exercise.id] = get_average_working_time(exercise)
+    collection.exercise_collection_items.order(:position).each do |eci|
+      log(eci.exercise.title, 2, '> ')
+      working_times[eci.exercise.id] = get_average_working_time(eci.exercise)
     end
     working_times
   end
