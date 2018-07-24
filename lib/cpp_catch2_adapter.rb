@@ -1,4 +1,4 @@
-class CppUnitAdapter < TestingFrameworkAdapter
+class CppCatch2Adapter < TestingFrameworkAdapter
   COUNT_REGEXP 	      = /in (\d+) test cases/ 
   FAILURES_REGEXP     = /test cases: (\d+) | (\d+) failed/
   BOTH_REGEXP		  = /test cases: (\d+) | (\d+) passed | (\d+) failed/
