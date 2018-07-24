@@ -83,4 +83,4 @@ if ! (docker images | grep -q co_execenv_python)
   echo "Done"
 else
   echo "Docker images already pulled"
-fi
+  fi
