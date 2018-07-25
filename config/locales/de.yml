@@ -131,6 +131,8 @@ de:
         user: "Autor"
         exercise: "Aufgabe"
         feedback_text: "Feedback Text"
+      exercise_collection_item:
+        exercise: "Aufgabe"
     models:
       code_harbor_link:
         one: CodeHarbor-Link
@@ -782,3 +784,7 @@ de:
       files: "Dateien"
       users: "Benutzer"
       integrations: "Integrationen"
+  exercise_collections:
+    form:
+      add_exercises: "Aufgaben hinzufügen"
+      sort_by_title: "Nach Titel sortieren"

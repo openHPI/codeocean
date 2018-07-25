@@ -36,15 +36,31 @@ class ProxyExercise < ActiveRecord::Base
           Rails.logger.debug("retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}" )
           assigned_user_proxy_exercise.exercise
         else
-          Rails.logger.debug("find new matching exercise for user #{user.id}" )
           matching_exercise =
-              begin
-                find_matching_exercise(user)
-              rescue => e #fallback
-                Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
-                @reason[:reason] = "fallback because of error"
-                @reason[:error] = "#{$!}:\n\t#{e.backtrace.join("\n\t")}"
-                exercises.where("expected_difficulty > 1").shuffle.first # difficulty should be > 1 to prevent dummy exercise from being chosen.
+              if (token.eql? "e85689d5")
+                Rails.logger.debug("Proxy exercise with token e85689d5, split user in groups..")
+                group = UserGroupSeparator.getGroupExerciseDescriptionTesting(user)
+                Rails.logger.debug("user assigned to group #{group}")
+                case group
+                  when :group_a
+                    exercises.where(id: 557).first
+                  when :group_b
+                    exercises.where(id: 558).first
+                  when :group_c
+                    exercises.where(id: 559).first
+                  when :group_d
+                    exercises.where(id: 560).first
+                end
+              else
+                Rails.logger.debug("find new matching exercise for user #{user.id}" )
+                begin
+                  find_matching_exercise(user)
+                rescue => e #fallback
+                  Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
+                  @reason[:reason] = "fallback because of error"
+                  @reason[:error] = "#{$!}:\n\t#{e.backtrace.join("\n\t")}"
+                  exercises.where("expected_difficulty > 1").shuffle.first # difficulty should be > 1 to prevent dummy exercise from being chosen.
+                end
               end
           user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
           matching_exercise

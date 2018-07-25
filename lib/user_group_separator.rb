@@ -31,4 +31,18 @@ class UserGroupSeparator
       :recommended_assignment
     end
   end
+
+  def self.getGroupExerciseDescriptionTesting(user)
+    groupById = user.id % 4
+    if groupById == 0
+      :group_a
+    elsif groupById == 1
+      :group_b
+    elsif groupById == 2
+      :group_c
+    else # 3
+      :group_d
+    end
+  end
+
 end

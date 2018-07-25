@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180515110030) do
+ActiveRecord::Schema.define(version: 20180703125302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,6 +114,15 @@ ActiveRecord::Schema.define(version: 20180515110030) do
     t.boolean  "network_enabled"
   end
 
+  create_table "exercise_collection_items", force: :cascade do |t|
+    t.integer "exercise_collection_id"
+    t.integer "exercise_id"
+    t.integer "position",               default: 0, null: false
+  end
+
+  add_index "exercise_collection_items", ["exercise_collection_id"], name: "index_exercise_collection_items_on_exercise_collection_id", using: :btree
+  add_index "exercise_collection_items", ["exercise_id"], name: "index_exercise_collection_items_on_exercise_id", using: :btree
+
   create_table "exercise_collections", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -124,14 +133,6 @@ ActiveRecord::Schema.define(version: 20180515110030) do
   end
 
   add_index "exercise_collections", ["user_type", "user_id"], name: "index_exercise_collections_on_user_type_and_user_id", using: :btree
-
-  create_table "exercise_collections_exercises", id: false, force: :cascade do |t|
-    t.integer "exercise_collection_id"
-    t.integer "exercise_id"
-  end
-
-  add_index "exercise_collections_exercises", ["exercise_collection_id"], name: "index_exercise_collections_exercises_on_exercise_collection_id", using: :btree
-  add_index "exercise_collections_exercises", ["exercise_id"], name: "index_exercise_collections_exercises_on_exercise_id", using: :btree
 
   create_table "exercise_tags", force: :cascade do |t|
     t.integer "exercise_id"
