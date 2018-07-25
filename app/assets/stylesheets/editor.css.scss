@@ -19,6 +19,7 @@ button i.fa-spin {
 
 .frame {
   display: none;
+  min-height: 300px;
 
   audio, img, video {
     max-width: 100%;
