@@ -28,7 +28,7 @@ gem 'rubytree'
 gem 'sass-rails', '>= 5.0.7'
 gem 'sdoc', group: :doc
 gem 'slim-rails'
-gem 'bootstrap_pagedown'
+gem 'bootstrap_pagedown', '>= 1.1.0'
 gem 'pagedown-rails'
 gem 'sorcery'
 gem 'thread_safe'
