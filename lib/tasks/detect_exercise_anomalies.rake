@@ -72,8 +72,8 @@ namespace :detect_exercise_anomalies do
 
   def find_anomalies(collection)
     working_times = collect_working_times(collection).reject {|_, value| value.nil?}
-    if working_times.size > 0
-      average = working_times.reduce(:+) / working_times.size
+    if working_times.values.size > 0
+      average = working_times.values.reduce(:+) / working_times.values.size
       return working_times.select do |_, working_time|
         working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
       end
