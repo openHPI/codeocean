@@ -131,6 +131,8 @@ en:
         user: "Author"
         exercise: "Exercise"
         feedback_text: "Feedback Text"
+      exercise_collection_item:
+        exercise: "Exercise"
     models:
       code_harbor_link:
         one: CodeHarbor Link
@@ -782,3 +784,7 @@ en:
       files: "Files"
       users: "Users"
       integrations: "Integrations"
+  exercise_collections:
+    form:
+      add_exercises: "Add exercises"
+      sort_by_title: "Sort by title"

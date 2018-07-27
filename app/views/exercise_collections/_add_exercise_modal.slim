@@ -1,0 +1,8 @@
+- exercises = Exercise.order(:title)
+
+form#exercise-selection
+  .form-group
+    span.label = t('activerecord.attributes.exercise_collections.exercises')
+    = collection_select({}, :exercise_ids, exercises, :id, :title, {}, {id: 'add-exercise-list', class: 'form-control', multiple: true})
+
+button.btn.btn-primary#add-exercises = t('exercise_collections.form.add_exercises')
