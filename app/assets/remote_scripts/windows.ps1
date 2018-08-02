@@ -62,6 +62,7 @@ function get_escaped_file_content ($file){
     $content = $content.replace('\', '\\')
     $content = $content -replace "`r`n", '\n'
     $content = $content -replace "`n", '\n'
+    $content = $content -replace "`t", '\t'
     $content = $content.replace('"', '\"')
     return $content
 }

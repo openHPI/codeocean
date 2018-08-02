@@ -34,7 +34,7 @@ CommandSocket.prototype.onMessage = function(event) {
 };
 
 /**
- * Parses a message, checks wether it contains multiple commands (seperated by linebreaks)
+ * Parses a message, checks whether it contains multiple commands (seperated by linebreaks)
  * This needs to be done because of the behavior of the docker-socket connection.
  * Because of this, sometimes multiple commands might be executed in one message.
  * @param message
