@@ -14,6 +14,8 @@ h1 = link_to(@exercise, exercise_path(@exercise))
         .panel-heading role="tab" id="heading"
           div.clearfix.feedback-header
             span.username = link_to(feedback.user.name, statistics_external_user_exercise_path(id: @exercise.id, external_user_id: feedback.user.id))
+            - if feedback.anomaly_notification
+              i class="fa fa-envelope-o" data-placement="top" data-toggle="tooltip" data-container="body" title=feedback.anomaly_notification.reason
             span.date = feedback.created_at
         .panel-collapse role="tabpanel"
           .panel-body.feedback
@@ -22,3 +24,5 @@ h1 = link_to(@exercise, exercise_path(@exercise))
             .worktime = "#{t('user_exercise_feedback.working_time')} #{feedback.user_estimated_worktime}" if feedback.user_estimated_worktime
 
   = render('shared/pagination', collection: @feedbacks)
+
+  script type="text/javascript" $(function () { $('[data-toggle="tooltip"]').tooltip() });
