@@ -695,6 +695,7 @@ en:
     upload_file: Upload file
     time:
       before: "%{time} ago"
+    hide: "Hide"
   submissions:
     causes:
       autosave: Autosave

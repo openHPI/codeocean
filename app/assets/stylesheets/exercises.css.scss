@@ -12,6 +12,34 @@ input[type='file'] {
   font-family: monospace;
 }
 
+.exercise {
+  border-radius: 3px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+  padding: 1px 10px 1px 10px;
+  margin-bottom: 10px;
+
+  a#toggle {
+    margin-bottom: 5px;
+    float: right;
+  }
+
+  a#toggle:before {
+    content: "(";
+  }
+
+  a#toggle:after {
+    content: ")";
+  }
+
+  h1#exercise-headline {
+    margin: 10px 0 10px 0;
+  }
+
+  .lead.description-panel-collapsed {
+    margin: 0;
+  }
+}
+
 // Graph Settings
 
 .axis path {
