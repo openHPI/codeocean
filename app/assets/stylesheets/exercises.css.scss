@@ -114,6 +114,7 @@ a.file-heading {
 
   .feedback-header {
     display: flex;
+    align-items: baseline;
 
     .username {
       flex-grow: 1;
