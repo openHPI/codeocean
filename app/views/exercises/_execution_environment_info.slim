@@ -1,0 +1,8 @@
+- if exercise.execution_environment
+  = link_to_if(policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
+- else
+  i.fa.fa-warning
+  span
+    = text
+    = ' '
+    = link_to(t('shared.edit'), edit_exercise_path(exercise))

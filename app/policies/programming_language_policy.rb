@@ -1,5 +1,9 @@
 class ProgrammingLanguagePolicy < AdminOrAuthorPolicy
-  [:create?, :versions?].each do |action|
-    define_method(action) { admin? || teacher? }
+  def versions?
+    admin? || teacher?
+  end
+
+  def create?
+    admin? || teacher?
   end
 end

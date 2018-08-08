@@ -13,8 +13,8 @@
       = ff.object.version
     .col-md-3.default
       span.true style="display:#{display_true}"
-        = t('shared.yes')
+        = symbol_for(true)
       span.false style="display:#{display_false}"
-        = t('shared.no')
+        = symbol_for(false)
   .col-md-1
     = link_to_remove_association t('execution_environments.remove'),  f

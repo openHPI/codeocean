@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180321161314) do
+ActiveRecord::Schema.define(version: 20180808151451) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,8 @@ ActiveRecord::Schema.define(version: 20180321161314) do
     t.datetime "updated_at"
     t.integer  "user_id"
     t.string   "push_url"
+    t.string   "client_id"
+    t.string   "client_secret"
   end
 
   add_index "code_harbor_links", ["user_id"], name: "index_code_harbor_links_on_user_id", using: :btree
@@ -154,8 +156,9 @@ ActiveRecord::Schema.define(version: 20180321161314) do
     t.string   "token",                    limit: 255
     t.boolean  "hide_file_tree"
     t.boolean  "allow_file_creation"
-    t.boolean  "allow_auto_completion",                default: false
-    t.integer  "expected_difficulty",                  default: 1
+    t.boolean  "allow_auto_completion",                     default: false
+    t.integer  "expected_difficulty",                       default: 1
+    t.boolean  "default_execution_environment",             default: false
   end
 
   add_index "exercises", ["id"], name: "index_exercises_on_id", using: :btree

@@ -237,6 +237,19 @@ en:
       graphs: "Graphs"
       user_activity_history: User Activity History
       rfc_activity_history: RfC Activity History
+  code_harbor_links:
+    generate: Generate
+    info:
+      push_url: |
+        The address on CodeHarbor side your exercise can be exported to. If you don't know what to write here, ask an admin.
+      name: |
+        Can be anything to Identify your account link.
+      token: |
+        Will be used to authenticate your export request. Has to be the same on both sides.
+      client_id:
+        Will be sent with your token. Can be automatically generated.
+      client_secret:
+        Will be sent with your token. Can be automatically generated.
   consumers:
     show:
       link: Consumer

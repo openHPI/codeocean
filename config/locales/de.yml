@@ -223,6 +223,19 @@ de:
       show: Dashboard
     sessions:
       destroy_through_lti: Code-Abgabe
+  code_harbor_links:
+    generate: Generieren
+    info:
+      push_url: |
+        Die Adresse auf CodeHarbor Seite zu der exportiert wird. Wenn Sie nicht wissen, was die Adresse ist, fragen Sie bitte einen Admin.
+      name: |
+        Tragen Sie hier bitte den Namen ein, der zur Identifikation des Links benutzt wird.
+      token: |
+        Wird benutzt um einen Export-Request zu authentifizieren. Muss der gleiche wie auf CodeHarbor Seite sein.
+      client_id:
+        Wird mit dem Token versendet. Kann automatisch generiert werden.
+      client_secret:
+        Wird mit dem Token versendet. Kann automatisch generiert werden.
   consumers:
     show:
       link: Konsument
@@ -690,7 +703,6 @@ de:
     message_failure: Leider ist ein Fehler auf unserer Plattform aufgetreten. Bitte probieren Sie es später noch einmal.
     new: Hinzufügen
     new_model: '%{model} hinzufügen'
-    "no": Nein
     number: Nummer
     object_cloned: '%{model} wurde erfolgreich dupliziert.'
     object_created: '%{model} wurde erfolgreich erstellt.'
@@ -707,7 +719,6 @@ de:
     upload_file: Datei hochladen
     time:
       before: "%{time} zuvor"
-    "yes": Ja
   submissions:
     causes:
       autosave: Autosave
