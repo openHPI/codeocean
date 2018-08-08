@@ -695,6 +695,7 @@ de:
     upload_file: Datei hochladen
     time:
       before: "%{time} zuvor"
+    hide: "Verstecken"
   submissions:
     causes:
       autosave: Autosave

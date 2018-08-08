@@ -1,14 +1,17 @@
 .row
   #editor-column.col-md-12
-    div
-      span.badge.pull-right.score
+    .exercise.clearfix
+      div
+        span.badge.pull-right.score
 
-      h1 id="exercise-headline"
-        i class="fa fa-chevron-down" id="description-symbol"
-        = @exercise
+        h1 id="exercise-headline"
+          i class="fa fa-chevron-down" id="description-symbol"
+          = @exercise.title
 
-    #description-panel.lead.description-panel
-      = render_markdown(@exercise.description)
+      #description-panel.lead.description-panel
+        = render_markdown(@exercise.description)
+
+      a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide') = t('shared.hide')
 
     #alert.alert.alert-danger role='alert'
       h4 = t('.alert.title')

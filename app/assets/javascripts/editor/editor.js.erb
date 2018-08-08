@@ -591,17 +591,16 @@ configureEditors: function () {
   },
 
   initializeDescriptionToggle: function() {
-    $('#exercise-headline').on('click',this.toggleDescriptionPanel.bind(this))
+    $('#exercise-headline').on('click', this.toggleDescriptionPanel.bind(this));
+    $('a#toggle').on('click', this.toggleDescriptionPanel.bind(this));
   },
 
   toggleDescriptionPanel: function() {
-    $('#description-panel').toggleClass('description-panel-collapsed');
-    $('#description-panel').toggleClass('description-panel');
-    $('#description-symbol').toggleClass('fa-chevron-down');
-    $('#description-symbol').toggleClass('fa-chevron-right');
-    // resize ace editors
+    $('#description-panel').toggleClass('description-panel-collapsed').toggleClass('description-panel');
+    $('#description-symbol').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
+    var toggle = $('a#toggle');
+    toggle.text(toggle.text() == toggle.data('hide') ? toggle.data('show') : toggle.data('hide'));
     this.resizeAceEditors();
-
   },
 
     /**
