@@ -14,12 +14,12 @@ class ExternalUsersController < ApplicationController
     authorize!
   end
 
-  def working_time_query
+  def working_time_query(tag=nil)
     """
     SELECT user_id,
-           exercise_id,
+           bar.exercise_id,
            max(score) as maximum_score,
-           count(id) as runs,
+           count(bar.id) as runs,
            sum(working_time_new) AS working_time
     FROM
       (SELECT user_id,
@@ -42,9 +42,12 @@ class ExternalUsersController < ApplicationController
             AND user_type = 'ExternalUser'
           GROUP BY exercise_id,
                    user_id,
-                   id) AS foo) AS bar
+                   id
+          ) AS foo
+      ) AS bar
+    #{tag.nil? ? '' : ' JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND et.tag_id = ' + tag + ' '}
     GROUP BY user_id,
-             exercise_id;
+             bar.exercise_id;
     """
   end
 
@@ -54,7 +57,7 @@ class ExternalUsersController < ApplicationController
 
     statistics = {}
 
-    ActiveRecord::Base.connection.execute(working_time_query).each do |tuple|
+    ActiveRecord::Base.connection.execute(working_time_query(params[:tag])).each do |tuple|
       statistics[tuple["exercise_id"].to_i] = tuple
     end
 
@@ -69,8 +72,8 @@ class ExternalUsersController < ApplicationController
 
     statistics = []
     tags = ProxyExercise.new().get_user_knowledge_and_max_knowledge(@user, @user.participations.uniq.compact)
-    tags[:user_topic_knowledge].each_pair do |key, value|
-      statistics.append({:key => key.name.to_s, :value => (100.0 / tags[:max_topic_knowledge][key] * value).round})
+    tags[:user_topic_knowledge].each_pair do |tag, value|
+      statistics.append({key: tag.name.to_s, value: (100.0 / tags[:max_topic_knowledge][tag] * value).round, id: tag.id})
     end
     statistics.sort_by! {|item| -item[:value]}
 
