@@ -1,0 +1,29 @@
+# Mnemosyne AMQP sink
+common: &common
+  # AMQP server endpoint
+  server: amqp://localhost
+  enabled: false
+
+  # Platform identifier to group applications
+  platform: codeocean
+
+  # AMQP exchange name, must be a topic exchange
+  # exchange: mnemosyne
+
+  # Application name, defaults to rails application name
+  application: app
+
+  # Hostname reported with traces, default to machine hostname
+  # hostname:
+
+development:
+  <<: *common
+
+test:
+  enabled: false
+
+staging:
+  <<: *common
+
+production:
+  <<: *common

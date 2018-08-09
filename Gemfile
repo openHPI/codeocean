@@ -42,6 +42,7 @@ gem 'nokogiri'
 gem 'd3-rails', '~>4.0'
 gem 'rest-client'
 gem 'rubyzip'
+gem 'mnemosyne-ruby', '~> 1.0'
 gem 'whenever', require: false
 
 group :development, :staging do
