@@ -1,6 +1,7 @@
 /config/action_mailer.yml
 /config/code_ocean.yml
 /config/database.yml
+/config/mnemosyne.yml
 /config/secrets.yml
 /config/sendmail.yml
 /config/smtp.yml
