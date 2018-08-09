@@ -8,6 +8,7 @@ set :linked_files, %w(config/action_mailer.yml config/docker.yml.erb  config/cod
 set :log_level, :info
 set :puma_threads, [0, 16]
 set :puma_workers, 4
+set :puma_preload_app, true
 set :repo_url, 'git@github.com:openHPI/codeocean.git'
 
 set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
