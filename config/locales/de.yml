@@ -149,12 +149,21 @@ de:
       error:
         one: Fehler
         other: Fehler
+      error_template:
+        one: Fehlertemplate
+        other: Fehlertemplates
+      error_template_attribute:
+        one: Fehlertemplatettribut
+        other: Fehlertemplatettribute
       execution_environment:
         one: Ausführungsumgebung
         other: Ausführungsumgebungen
       exercise:
         one: Aufgabe
         other: Aufgaben
+      exercise_collection:
+        one: Aufgabesammlung
+        other: Aufgabensammlungen
       proxy_exercise:
         one: Proxy Aufgabe
         other: Proxy Aufgaben
@@ -223,6 +232,11 @@ de:
       show: Dashboard
     sessions:
       destroy_through_lti: Code-Abgabe
+    statistics:
+      show: "Statistiken"
+      graphs: "Visualisierungen"
+      user_activity_history: Nutzeraktivitätshistorie
+      rfc_activity_history: Kommentaranfragenhistorie
   code_harbor_links:
     generate: Generieren
     info:
@@ -351,6 +365,8 @@ de:
       break_intervention:
         title: "Pause"
         text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
+      error_hints:
+        heading: "Hinweise"
     index:
       clone: Duplizieren
       implement: Implementieren
@@ -719,6 +735,7 @@ de:
     upload_file: Datei hochladen
     time:
       before: "%{time} zuvor"
+    hide: "Verstecken"
   submissions:
     causes:
       autosave: Autosave

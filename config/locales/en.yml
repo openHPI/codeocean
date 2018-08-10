@@ -719,7 +719,6 @@ en:
     message_failure: 'Sorry, something went wrong.'
     new: Add
     new_model: 'Add %{model}'
-    "no": 'No'
     number: Number
     object_cloned: '%{model} has successfully been duplicated.'
     object_created: '%{model} has successfully been created.'
@@ -736,7 +735,7 @@ en:
     upload_file: Upload file
     time:
       before: "%{time} ago"
-    "yes": "Yes"
+    hide: "Hide"
   submissions:
     causes:
       autosave: Autosave
