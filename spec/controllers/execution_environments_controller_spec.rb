@@ -10,7 +10,7 @@ describe ExecutionEnvironmentsController do
 
     context 'with a valid execution environment' do
       let(:programming_language) { FactoryBot.create(:ruby_2_2)}
-      let(:request) { proc { post :create, execution_environment: FactoryBot.attributes_for(:ruby, programming_languages_joins_attributes: [FactoryBot.attributes_for(:programming_languages_join, programming_language: programming_language)]) }}
+      let(:request) { proc { post :create, execution_environment: FactoryBot.attributes_for(:ruby, programming_languages_joins_attributes: [FactoryBot.attributes_for(:programming_languages_join, programming_language: programming_language, default: true)]) }}
       before(:each) { request.call }
 
       expect_assigns(docker_images: Array)
