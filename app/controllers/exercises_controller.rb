@@ -112,12 +112,13 @@ class ExercisesController < ApplicationController
 
   def push_proforma_xml
     codeharbor_link = CodeHarborLink.find(params[:account_link])
-    oauth2Client = OAuth2::Client.new(codeharbor_link.client_id, codeharbor_link.client_secret, :site => codeharbor_link.push_url)
+    oauth2_client = OAuth2::Client.new(codeharbor_link.client_id, codeharbor_link.client_secret, { :url => codeharbor_link.push_url, :ssl => {:verify => false}})
     oauth2token = codeharbor_link[:oauth2token]
-    token = OAuth2::AccessToken.from_hash(oauth2Client, :access_token => oauth2token)
+    token = OAuth2::AccessToken.from_hash(oauth2_client, :access_token => oauth2token)
     xml_generator = Proforma::XmlGenerator.new
     xml_document = xml_generator.generate_xml(@exercise)
-    token.post(codeharbor_link.push_url, {body: xml_document, headers: {'Content-Type' => 'text/xml'}})
+    request = token.post(codeharbor_link.push_url, {body: xml_document, headers: {'Content-Type' => 'text/xml'}})
+    puts request
     redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
   end
 
