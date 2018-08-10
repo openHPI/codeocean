@@ -18,7 +18,6 @@ describe ExecutionEnvironmentsController do
       expect_assigns(execution_environment: ExecutionEnvironment)
 
       it 'creates the execution environment' do
-        binding.pry
         expect { request.call }.to change(ExecutionEnvironment, :count).by(1)
       end
 
