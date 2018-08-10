@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20180808151451) do
   add_index "anomaly_notifications", ["user_type", "user_id"], name: "index_anomaly_notifications_on_user_type_and_user_id", using: :btree
 
   create_table "code_harbor_links", force: :cascade do |t|
-    t.string   "oauth2token", limit: 255
+    t.string   "oauth2token",   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
@@ -146,14 +146,14 @@ ActiveRecord::Schema.define(version: 20180808151451) do
   create_table "exercises", force: :cascade do |t|
     t.text     "description"
     t.integer  "execution_environment_id"
-    t.string   "title",                    limit: 255
+    t.string   "title",                         limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
     t.text     "instructions"
     t.boolean  "public"
-    t.string   "user_type",                limit: 255
-    t.string   "token",                    limit: 255
+    t.string   "user_type",                     limit: 255
+    t.string   "token",                         limit: 255
     t.boolean  "hide_file_tree"
     t.boolean  "allow_file_creation"
     t.boolean  "allow_auto_completion",                     default: false
