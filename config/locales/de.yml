@@ -4,6 +4,8 @@ de:
       code_harbor_link:
         push_url: Push URL
         oauth2token: OAuth2 Token
+        client_id: Client ID
+        client_secret: Client Secret
       consumer:
         name: Name
         oauth_key: OAuth Key
