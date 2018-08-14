@@ -158,7 +158,7 @@ configureEditors: function () {
         category: 'editor_paste',
         data: pasteObject.text,
         exercise_id: $('#editor').data('exercise-id'),
-        file_id: "1"
+        file_id: $(this).data('file-id')
       });
     }
   },
@@ -248,8 +248,8 @@ configureEditors: function () {
        */
 
       // editor itself
-      editor.on("paste", this.handlePasteEvent.bind(this));
-      editor.on("copy", this.handleCopyEvent.bind(this));
+      editor.on("paste", this.handlePasteEvent.bind(element));
+      editor.on("copy", this.handleCopyEvent.bind(element));
 
       // listener for autosave
       session.on("change", function (deltaObject) {
