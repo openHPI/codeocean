@@ -29,9 +29,10 @@ var CodeOceanEditor = {
 
   lastCopyText: null,
 
+  <% self.class.include Rails.application.routes.url_helpers %>
   <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
-  sendLearningAnalyticEvents: <%= @config['codeocean_events'] ? @config['codeocean_events']['enabled'] : false %>,
-  learningAnalyticsURL: "<%= @config['codeocean_events'] ? @config['codeocean_events']['url'] : "" %>",
+  sendEvents: <%= @config['codeocean_events'] ? @config['codeocean_events']['enabled'] : false %>,
+  eventURL: "<%= @config['codeocean_events'] ? events_path : '' %>",
 
 
 configureEditors: function () {
@@ -151,12 +152,12 @@ configureEditors: function () {
   handlePasteEvent: function (pasteObject) {
     var same = (this.lastCopyText === pasteObject.text);
 
-    // if the text is not copied from within the editor (from any file), send an event to lanalytics
+    // if the text is not copied from within the editor (from any file), send an event to the backend
     if (!same) {
-      this.publishCodeOceanEvent("codeocean_editor_paste", {
-        text: pasteObject.text,
-        codeocean_user_id: $('#editor').data('user-id'),
-        exercise: $('#editor').data('exercise-id'),
+      this.publishCodeOceanEvent({
+        category: 'editor_paste',
+        data: pasteObject.text,
+        exercise_id: $('#editor').data('exercise-id'),
         file_id: "1"
       });
     }
@@ -381,38 +382,18 @@ configureEditors: function () {
     //panel.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
   },
 
-  // move URL to config file, only fire event if desired.
-  publishCodeOceanEvent: function (eventName, contextData) {
-    if(this.sendLearningAnalyticEvents){
-
-      // enhance contextData hash with the user agent
-      contextData['user_agent'] = navigator.userAgent;
-
-      var payload = {
-        user: {
-          uuid: $('#editor').data('user-external-id')
-        },
-        verb: {
-          type: eventName
-        },
-        resource: {
-          type: 'page',
-          uuid: document.location.href
-        },
-        timestamp: new Date().toISOString(),
-        with_result: {},
-        in_context: contextData
-      };
-
-      $.ajax(this.learningAnalyticsURL, {
+  publishCodeOceanEvent: function (payload) {
+    if(this.sendEvents){
+      $.ajax(this.eventURL, {
         type: 'POST',
         cache: false,
         dataType: 'JSON',
-        data: payload,
-        success: {},
-        error: {}
-      })
-
+        data: {
+          event: payload
+        },
+        success: _.noop,
+        error: _.noop
+      });
     }
   },
 
