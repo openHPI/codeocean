@@ -150,11 +150,11 @@ configureEditors: function () {
   },
 
   handlePasteEvent: function (pasteObject) {
-    var same = (this.lastCopyText === pasteObject.text);
+    var same = (CodeOceanEditor.lastCopyText === pasteObject.text);
 
     // if the text is not copied from within the editor (from any file), send an event to the backend
     if (!same) {
-      this.publishCodeOceanEvent({
+      CodeOceanEditor.publishCodeOceanEvent({
         category: 'editor_paste',
         data: pasteObject.text,
         exercise_id: $('#editor').data('exercise-id'),
