@@ -36,8 +36,8 @@ class ProxyExercise < ActiveRecord::Base
           Rails.logger.debug("retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}" )
           assigned_user_proxy_exercise.exercise
         else
+          Rails.logger.debug("find new matching exercise for user #{user.id}" )
           matching_exercise =
-              Rails.logger.debug("find new matching exercise for user #{user.id}" )
               begin
                 find_matching_exercise(user)
               rescue => e #fallback
