@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180814154055) do
+ActiveRecord::Schema.define(version: 20180815115351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,10 +105,6 @@ ActiveRecord::Schema.define(version: 20180814154055) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
-
-  add_index "events", ["exercise_id"], name: "index_events_on_exercise_id", using: :btree
-  add_index "events", ["file_id"], name: "index_events_on_file_id", using: :btree
-  add_index "events", ["user_type", "user_id"], name: "index_events_on_user_type_and_user_id", using: :btree
 
   create_table "execution_environments", force: :cascade do |t|
     t.string   "docker_image",             limit: 255
