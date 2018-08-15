@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180703125302) do
+ActiveRecord::Schema.define(version: 20180815115351) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,6 +94,17 @@ ActiveRecord::Schema.define(version: 20180703125302) do
   end
 
   add_index "errors", ["submission_id"], name: "index_errors_on_submission_id", using: :btree
+
+  create_table "events", force: :cascade do |t|
+    t.string   "category"
+    t.string   "data"
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.integer  "exercise_id"
+    t.integer  "file_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "execution_environments", force: :cascade do |t|
     t.string   "docker_image",             limit: 255

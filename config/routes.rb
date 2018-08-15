@@ -168,6 +168,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :events, only: [:create]
+
   post "/evaluate", to: 'remote_evaluation#evaluate', via: [:post]
 
 end
