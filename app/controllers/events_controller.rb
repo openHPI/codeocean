@@ -20,8 +20,8 @@ class EventsController < ApplicationController
   end
 
   def event_params
-    params[:event].permit(:category, :data, :exercise_id, :file_id)
-        .merge(user_id: current_user&.id, user_type: current_user&.class.name)
+    params[:event]&.permit(:category, :data, :exercise_id, :file_id)
+        &.merge(user_id: current_user&.id, user_type: current_user&.class.name)
   end
   private :event_params
 
