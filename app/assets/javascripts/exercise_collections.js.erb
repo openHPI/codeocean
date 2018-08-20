@@ -187,6 +187,7 @@ $(function() {
         for (var i = 0; i < selectedExercises.length; i++) {
           addExercise(selectedExercises[i].value, selectedExercises[i].label);
         }
+        updateExerciseList();
       });
 
       removeExerciseButtons.on('click', function (e) {
@@ -195,7 +196,8 @@ $(function() {
         var row = $(this).parent().parent();
         var exerciseId = row.data('id');
         $('#exercise-list').find('option[value="' + exerciseId + '"]').prop('selected', false);
-        row.remove()
+        row.remove();
+        updateExerciseList();
       });
 
       sortButton.on('click', function (e) {
