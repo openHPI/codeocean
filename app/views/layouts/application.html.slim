@@ -26,9 +26,9 @@ html lang='en'
             i.fa.fa-code
             = application_name
         #navbar-collapse.collapse.navbar-collapse
-          = render('navigation')
+          = render('navigation', cached: true)
           ul.nav.navbar-nav.navbar-right
-            = render('locale_selector')
+            = render('locale_selector', cached: true)
             li = link_to(t('shared.help.link'), '#modal-help', data: {toggle: 'modal'})
             = render('session')
     .container data-controller=controller_name

@@ -3,4 +3,4 @@ li.dropdown.dropdown-submenu
   a href=link class="dropdown-toggle" data-toggle="dropdown" = title
   ul class="dropdown-menu"
     - models.each do |model|
-      = render('navigation_collection_link', model: model)
+      = render('navigation_collection_link', model: model, cached: true)
