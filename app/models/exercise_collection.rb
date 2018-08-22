@@ -3,7 +3,7 @@ class ExerciseCollection < ActiveRecord::Base
 
   has_many :exercise_collection_items
   alias_method :items, :exercise_collection_items
-  has_many :exercises, through: :exercise_collection_items
+  has_many :exercises, through: :exercise_collection_items, inverse_of: :exercise_collections
   belongs_to :user, polymorphic: true
 
   def collection_statistics
