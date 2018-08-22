@@ -17,9 +17,10 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def create
-    @exercise_collection = ExerciseCollection.new(exercise_collection_params)
+    @exercise_collection = ExerciseCollection.new
     authorize!
-    create_and_respond(object: @exercise_collection)
+    @exercise_collection.save
+    update_and_respond(object: @exercise_collection, params: exercise_collection_params)
   end
 
   def destroy
@@ -31,6 +32,7 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def update
+    authorize!
     update_and_respond(object: @exercise_collection, params: exercise_collection_params)
   end
 
