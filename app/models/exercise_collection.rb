@@ -1,7 +1,7 @@
 class ExerciseCollection < ActiveRecord::Base
   include TimeHelper
 
-  has_many :exercise_collection_items
+  has_many :exercise_collection_items, dependent: :delete_all
   alias_method :items, :exercise_collection_items
   has_many :exercises, through: :exercise_collection_items, inverse_of: :exercise_collections
   belongs_to :user, polymorphic: true

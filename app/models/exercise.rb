@@ -14,7 +14,7 @@ class Exercise < ActiveRecord::Base
 
   has_and_belongs_to_many :proxy_exercises
   has_many :user_proxy_exercise_exercises
-  has_many :exercise_collection_items
+  has_many :exercise_collection_items, dependent: :delete_all
   has_many :exercise_collections, through: :exercise_collection_items, inverse_of: :exercises
   has_many :user_exercise_interventions
   has_many :interventions, through: :user_exercise_interventions
