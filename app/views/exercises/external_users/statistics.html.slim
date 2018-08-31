@@ -39,8 +39,8 @@ h1 = "#{@exercise} (external user #{@external_user})"
             - ['.time', '.cause', '.score', '.tests', '.time_difference'].each do |title|
               th.header = t(title)
         tbody
-          - @submissions_and_interventions.each_with_index do |this, index|
-            - highlight = (index > 0 and @working_times_until[index] == @working_times_until[index - 1] and this.created_at > @submissions_and_interventions[index - 1].created_at)
+          - @all_events.each_with_index do |this, index|
+            - highlight = (index > 0 and @deltas[index] == 0 and this.created_at.to_s != @all_events[index - 1].created_at.to_s)
             tr data-id=this.id class=('highlight' if highlight)
               td.clickable = this.created_at.strftime("%F %T")
               - if this.is_a?(Submission)
@@ -49,7 +49,7 @@ h1 = "#{@exercise} (external user #{@external_user})"
                 td
                   -this.testruns.each do |run|
                     - if run.passed
-                      .unit-test-result.positive-result  title=run.output
+                      .unit-test-result.positive-result title=run.output
                     - else
                       .unit-test-result.unknown-result title=run.output
                 td = @working_times_until[index] if index > 0
@@ -57,7 +57,7 @@ h1 = "#{@exercise} (external user #{@external_user})"
                 td = this.intervention.name
                 td =
                 td =
-                td =
+                td = @working_times_until[index] if index > 0
     p = t('.addendum')
     .hidden#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until);
     div#progress_chart.col-lg-12

@@ -3,6 +3,7 @@ class ExercisesController < ApplicationController
   include Lti
   include SubmissionParameters
   include SubmissionScoring
+  include TimeHelper
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
@@ -347,14 +348,15 @@ class ExercisesController < ApplicationController
   def statistics
     if(@external_user)
       @submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id).order("created_at")
-      @submissions_and_interventions = (@submissions + UserExerciseIntervention.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)).sort_by { |a| a.created_at }
-      deltas = @submissions.map.with_index do |item, index|
-        delta = item.created_at - @submissions[index - 1].created_at if index > 0
+      interventions = UserExerciseIntervention.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
+      @all_events = (@submissions + interventions).sort_by { |a| a.created_at }
+      @deltas = @all_events.map.with_index do |item, index|
+        delta = item.created_at - @all_events[index - 1].created_at if index > 0
         if delta == nil or delta > 10 * 60 then 0 else delta end
       end
       @working_times_until = []
-      @submissions_and_interventions.each_with_index do |submission, index|
-        @working_times_until.push((Time.at(deltas[1..index].inject(:+)).utc.strftime("%H:%M:%S") if index > 0))
+      @all_events.each_with_index do |_, index|
+        @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index > 0))
       end
       render 'exercises/external_users/statistics'
     else
