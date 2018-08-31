@@ -348,14 +348,15 @@ class ExercisesController < ApplicationController
   def statistics
     if(@external_user)
       @submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id).order("created_at")
-      @submissions_and_interventions = (@submissions + UserExerciseIntervention.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)).sort_by { |a| a.created_at }
-      deltas = @submissions_and_interventions.map.with_index do |item, index|
-        delta = item.created_at - @submissions_and_interventions[index - 1].created_at if index > 0
+      interventions = UserExerciseIntervention.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
+      @all_events = (@submissions + interventions).sort_by { |a| a.created_at }
+      @deltas = @all_events.map.with_index do |item, index|
+        delta = item.created_at - @all_events[index - 1].created_at if index > 0
         if delta == nil or delta > 10 * 60 then 0 else delta end
       end
       @working_times_until = []
-      @submissions_and_interventions.each_with_index do |_, index|
-        @working_times_until.push((format_time_difference(deltas[0..index].inject(:+)) if index > 0))
+      @all_events.each_with_index do |_, index|
+        @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index > 0))
       end
       render 'exercises/external_users/statistics'
     else
