@@ -39,8 +39,8 @@ h1 = "#{@exercise} (external user #{@external_user})"
             - ['.time', '.cause', '.score', '.tests', '.time_difference'].each do |title|
               th.header = t(title)
         tbody
-          - @submissions_and_interventions.each_with_index do |this, index|
-            - highlight = (index > 0 and @working_times_until[index] == @working_times_until[index - 1] and this.created_at > @submissions_and_interventions[index - 1].created_at)
+          - @all_events.each_with_index do |this, index|
+            - highlight = (index > 0 and @deltas[index] == 0 and this.created_at.to_s != @all_events[index - 1].created_at.to_s)
             tr data-id=this.id class=('highlight' if highlight)
               td.clickable = this.created_at.strftime("%F %T")
               - if this.is_a?(Submission)
