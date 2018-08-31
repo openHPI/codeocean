@@ -9,4 +9,9 @@ module TimeHelper
     nil
   end
 
+  # given a delta in seconds, return a "Hours:Minutes:Seconds" representation
+  def format_time_difference(delta)
+    Time.at(delta).utc.strftime("%H:%M:%S")
+  end
+
 end
