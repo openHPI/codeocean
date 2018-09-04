@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180823135317) do
+ActiveRecord::Schema.define(version: 20180904115948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -285,6 +285,8 @@ ActiveRecord::Schema.define(version: 20180823135317) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "lti_parameters", ["external_users_id"], name: "index_lti_parameters_on_external_users_id", using: :btree
 
   create_table "proxy_exercises", force: :cascade do |t|
     t.string   "title"
