@@ -87,9 +87,6 @@ GEM
       rack (>= 1.6.0)
       rack-test (>= 0.6.3)
       xpath (~> 3.1)
-    capybara-selenium (0.0.6)
-      capybara
-      selenium-webdriver
     carrierwave (1.2.3)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
@@ -145,9 +142,9 @@ GEM
       domain_name (~> 0.5)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
-    ims-lti (1.1.10)
+    ims-lti (1.2.2)
       builder
-      oauth (~> 0.4.5)
+      oauth (>= 0.4.5, < 0.6)
     jaro_winkler (1.5.1)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
@@ -189,7 +186,7 @@ GEM
       mini_portile2 (~> 2.3.0)
     nyan-cat-formatter (0.12.0)
       rspec (>= 2.99, >= 2.14.2, < 4)
-    oauth (0.4.7)
+    oauth (0.5.4)
     oauth2 (1.4.0)
       faraday (>= 0.8, < 0.13)
       jwt (~> 1.0)
@@ -385,7 +382,6 @@ DEPENDENCIES
   capistrano-upload-config
   capistrano3-puma
   capybara
-  capybara-selenium (>= 0.0.6)
   carrierwave
   codeclimate-test-reporter
   concurrent-ruby
@@ -398,12 +394,12 @@ DEPENDENCIES
   forgery
   headless
   highline
-  ims-lti (= 1.1.10)
+  ims-lti (< 2.0.0)
   jbuilder
   jquery-rails
   jquery-turbolinks
   kramdown
-  mnemosyne-ruby (~> 1.0)
+  mnemosyne-ruby
   newrelic_rpm
   nokogiri
   nyan-cat-formatter
@@ -422,7 +418,8 @@ DEPENDENCIES
   rubocop-rspec
   rubytree
   rubyzip
-  sass-rails (>= 5.0.7)
+  sass-rails
+  selenium-webdriver
   simplecov
   slim-rails
   sorcery

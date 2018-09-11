@@ -11,7 +11,7 @@ gem 'highline'
 gem 'jbuilder'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
-gem 'ims-lti', '1.1.10' # version 1.1.13 will crash, because @provider.valid_request?(request) on lti.rb line 89 will return false.
+gem 'ims-lti', '< 2.0.0'
 gem 'kramdown'
 gem 'newrelic_rpm'
 gem 'pg', '< 1.0', platform: :ruby
@@ -22,7 +22,7 @@ gem 'rails', '4.2.10'
 gem 'rails-i18n'
 gem 'ransack'
 gem 'rubytree'
-gem 'sass-rails', '>= 5.0.7'
+gem 'sass-rails'
 gem 'slim-rails'
 gem 'bootstrap_pagedown'
 gem 'sorcery'
@@ -35,7 +35,7 @@ gem 'nokogiri'
 gem 'd3-rails', '~>4.0'
 gem 'rest-client'
 gem 'rubyzip'
-gem 'mnemosyne-ruby', '~> 1.0'
+gem 'mnemosyne-ruby'
 gem 'whenever', require: false
 
 group :development, :staging do
@@ -59,7 +59,7 @@ end
 group :test do
   gem 'autotest-rails'
   gem 'capybara'
-  gem 'capybara-selenium', '>= 0.0.6'
+  gem 'selenium-webdriver'
   gem 'headless'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
