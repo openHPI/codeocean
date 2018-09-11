@@ -16,10 +16,10 @@ end
 FactoryBot.define do
   factory :audio_video, class: Exercise do
     created_by_teacher
-    description "Try HTML's audio and video capabilities."
+    description { "Try HTML's audio and video capabilities." }
     association :execution_environment, factory: :html
-    instructions 'Build a simple website including an HTML <audio> and <video> element. Link the following media files: chai.ogg, devstories.mp4.'
-    title 'Audio & Video'
+    instructions { 'Build a simple website including an HTML <audio> and <video> element. Link the following media files: chai.ogg, devstories.mp4.' }
+    title { 'Audio & Video' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'audio_video/index.html', role: 'main_file')
@@ -34,16 +34,16 @@ FactoryBot.define do
 
   factory :dummy, class: Exercise do
     created_by_teacher
-    description 'Dummy'
+    description { 'Dummy' }
     association :execution_environment, factory: :ruby
     instructions
-    title 'Dummy'
+    title { 'Dummy' }
 
     factory :dummy_with_user_feedbacks do
       # user_feedbacks_count is declared as a transient attribute and available in
       # attributes on the factory, as well as the callback via the evaluator
       transient do
-        user_feedbacks_count 5
+        user_feedbacks_count { 5 }
       end
 
       # the after(:create) yields two values; the exercise instance itself and the
@@ -60,10 +60,10 @@ FactoryBot.define do
 
   factory :even_odd, class: Exercise do
     created_by_teacher
-    description 'Implement two methods even and odd which return whether a given number is even or odd, respectively.'
+    description { 'Implement two methods even and odd which return whether a given number is even or odd, respectively.' }
     association :execution_environment, factory: :python
     instructions
-    title 'Even/Odd'
+    title { 'Even/Odd' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'even_odd/exercise.py', role: 'main_file')
@@ -74,10 +74,10 @@ FactoryBot.define do
 
   factory :fibonacci, class: Exercise do
     created_by_teacher
-    description 'Implement a recursive function that calculates a requested Fibonacci number.'
+    description { 'Implement a recursive function that calculates a requested Fibonacci number.' }
     association :execution_environment, factory: :ruby
     instructions
-    title 'Fibonacci Sequence'
+    title { 'Fibonacci Sequence' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'fibonacci/exercise.rb', role: 'main_file')
@@ -90,10 +90,10 @@ FactoryBot.define do
 
   factory :files, class: Exercise do
     created_by_teacher
-    description 'Learn how to work with files.'
+    description { 'Learn how to work with files.' }
     association :execution_environment, factory: :ruby
     instructions
-    title 'Working with Files'
+    title { 'Working with Files' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'files/data.txt', read_only: true)
@@ -104,10 +104,10 @@ FactoryBot.define do
 
   factory :geolocation, class: Exercise do
     created_by_teacher
-    description "Use the HTML5 Geolocation API to get the user's geographical position."
+    description { "Use the HTML5 Geolocation API to get the user's geographical position." }
     association :execution_environment, factory: :html
     instructions
-    title 'Geolocation'
+    title { 'Geolocation' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'geolocation/index.html', role: 'main_file')
@@ -117,10 +117,10 @@ FactoryBot.define do
 
   factory :hello_world, class: Exercise do
     created_by_teacher
-    description "Write a simple 'Hello World' application."
+    description { "Write a simple 'Hello World' application." }
     association :execution_environment, factory: :ruby
     instructions
-    title 'Hello World'
+    title { 'Hello World' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'hello_world/exercise.rb', role: 'main_file')
@@ -130,10 +130,10 @@ FactoryBot.define do
 
   factory :math, class: Exercise do
     created_by_teacher
-    description 'Implement a recursive math library.'
+    description { 'Implement a recursive math library.' }
     association :execution_environment, factory: :java
     instructions
-    title 'Math'
+    title { 'Math' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'math/Makefile', file_type: :makefile, hidden: true, role: 'regular_file')
@@ -145,10 +145,10 @@ FactoryBot.define do
 
   factory :primes, class: Exercise do
     created_by_teacher
-    description 'Write a function that prints the first n prime numbers.'
+    description { 'Write a function that prints the first n prime numbers.' }
     association :execution_environment, factory: :node_js
     instructions
-    title 'Primes'
+    title { 'Primes' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'primes/exercise.js', role: 'main_file')
@@ -157,10 +157,10 @@ FactoryBot.define do
 
   factory :sql_select, class: Exercise do
     created_by_teacher
-    description 'Learn to use the SELECT statement.'
+    description { 'Learn to use the SELECT statement.' }
     association :execution_environment, factory: :sqlite
-    instructions "Write a query which selects the full rows for all people with the last name 'Doe'."
-    title 'SELECT'
+    instructions { "Write a query which selects the full rows for all people with the last name 'Doe'." }
+    title { 'SELECT' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'sql_select/exercise.sql', role: 'main_file')
@@ -171,10 +171,10 @@ FactoryBot.define do
 
   factory :tdd, class: Exercise do
     created_by_teacher
-    description 'Learn to appreciate test-driven development.'
+    description { 'Learn to appreciate test-driven development.' }
     association :execution_environment, factory: :ruby
-    instructions SeedsHelper.read_seed_file('tdd/instructions.md')
-    title 'Test-driven Development'
+    instructions { SeedsHelper.read_seed_file('tdd/instructions.md') }
+    title { 'Test-driven Development' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'tdd/exercise.rb', role: 'main_file')
@@ -184,10 +184,10 @@ FactoryBot.define do
 
   factory :web_app, class: Exercise do
     created_by_teacher
-    description 'Build a simple Web application with Sinatra.'
+    description { 'Build a simple Web application with Sinatra.' }
     association :execution_environment, factory: :sinatra
     instructions
-    title 'A Simple Web Application'
+    title { 'A Simple Web Application' }
 
     after(:create) do |exercise|
       create_seed_file(exercise, 'web_app/app.rb', role: 'main_file')

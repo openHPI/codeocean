@@ -11,10 +11,10 @@ FactoryBot.define do
     association :exercise, factory: :math
     association :external_user
 
-    lti_parameters LTI_PARAMETERS
+    lti_parameters { LTI_PARAMETERS }
 
     trait :without_outcome_service_url do
-      lti_parameters LTI_PARAMETERS.except(:lis_outcome_service_url)
+      lti_parameters { LTI_PARAMETERS.except(:lis_outcome_service_url) }
     end
   end
 end
