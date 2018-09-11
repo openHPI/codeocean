@@ -1,12 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'bcrypt'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
 gem 'concurrent-ruby'
-gem 'concurrent-ruby-ext', platform: :ruby
-gem 'activerecord-deprecated_finders', require: 'active_record/deprecated_finders'
 gem 'docker-api', require: 'docker'
 gem 'factory_bot_rails'
 gem 'forgery'
@@ -26,15 +23,11 @@ gem 'rails-i18n'
 gem 'ransack'
 gem 'rubytree'
 gem 'sass-rails', '>= 5.0.7'
-gem 'sdoc', group: :doc
 gem 'slim-rails'
-gem 'bootstrap_pagedown', '>= 1.1.0'
-gem 'pagedown-rails'
+gem 'bootstrap_pagedown'
 gem 'sorcery'
-gem 'thread_safe'
 gem 'turbolinks', '< 5.0.0' # newer versions prevent loading ACE if the page containing is not accessed directly / refreshed
 gem 'uglifier'
-gem 'will_paginate'
 gem 'tubesock'
 gem 'faye-websocket'
 gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, version 1.2.5 still has an error in eventmachine.rb:202: [BUG] Segmentation fault, which is not yet fixed and causes the whole ruby process to crash
@@ -60,7 +53,6 @@ group :development, :staging do
 end
 
 group :development, :test, :staging do
-  gem 'byebug', platform: :ruby
   gem 'spring'
 end
 
@@ -72,7 +64,6 @@ group :test do
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
-  gem 'rake'
   gem 'rspec-autotest'
   gem 'rspec-rails'
   gem 'simplecov', require: false

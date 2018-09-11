@@ -23,7 +23,4 @@
 //= require_tree ../../../lib
 //= require_tree .
 //= require bootstrap_pagedown
-//= require markdown.converter
-//= require markdown.sanitizer
-//= require markdown.editor
 //= require ace/ext-language_tools
