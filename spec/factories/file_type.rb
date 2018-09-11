@@ -190,8 +190,16 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  [:binary, :executable, :renderable].each do |attribute|
-    trait(attribute) { send(attribute, true) }
+  trait :binary do
+    binary { true }
+  end
+
+  trait :executable do
+    executable { true }
+  end
+
+  trait :renderable do
+    renderable { true }
   end
 
   trait :singleton_file_type do
