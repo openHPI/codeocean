@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :admin, class: InternalUser do
     activated_user
-    email 'admin@example.org'
+    email { 'admin@example.org' }
     generated_user_name
-    password 'admin'
-    role 'admin'
+    password { 'admin' }
+    role { 'admin' }
     singleton_internal_user
   end
 
@@ -13,8 +13,8 @@ FactoryBot.define do
     association :consumer
     generated_email
     generated_user_name
-    password 'teacher'
-    role 'teacher'
+    password { 'teacher' }
+    role { 'teacher' }
     singleton_internal_user
   end
 
