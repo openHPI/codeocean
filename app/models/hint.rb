@@ -1,4 +1,4 @@
-class Hint < ActiveRecord::Base
+class Hint < ApplicationRecord
   belongs_to :execution_environment
 
   validates :execution_environment_id, presence: true

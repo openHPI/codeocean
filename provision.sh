@@ -5,8 +5,8 @@
 ######## VERSION INFORMATION ########
 
 postgres_version=10
-ruby_version=2.3.6
-rails_version=4.2.10
+ruby_version=2.5.1
+rails_version=5.2.1
 
 ########## INSTALL SCRIPT ###########
 

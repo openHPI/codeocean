@@ -23,7 +23,7 @@ class FileTypesController < ApplicationController
   end
 
   def file_type_params
-    params[:file_type].permit(:binary, :editor_mode, :executable, :file_extension, :name, :indent_size, :renderable).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:file_type].permit(:binary, :editor_mode, :executable, :file_extension, :name, :indent_size, :renderable).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:file_type].present?
   end
   private :file_type_params
 

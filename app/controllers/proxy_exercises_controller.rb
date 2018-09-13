@@ -39,7 +39,7 @@ class ProxyExercisesController < ApplicationController
   end
 
   def proxy_exercise_params
-    params[:proxy_exercise].permit(:description, :title, :exercise_ids  => [])
+    params[:proxy_exercise].permit(:description, :title, :exercise_ids  => []) if params[:proxy_exercise].present?
   end
   private :proxy_exercise_params
 

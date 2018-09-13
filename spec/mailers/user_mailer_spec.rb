@@ -37,6 +37,11 @@ describe UserMailer do
   describe '#reset_password_email' do
     let(:mail) { described_class.reset_password_email(user) }
 
+    before(:each) do
+      user.send(:setup_activation)
+      user.save(validate: false)
+    end
+
     it 'sets the correct sender' do
       expect(mail.from).to include(CodeOcean::Application.config.action_mailer[:default_options][:from])
     end

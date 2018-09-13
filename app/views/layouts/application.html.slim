@@ -5,12 +5,8 @@ html lang='en'
     meta name='viewport' content='width=device-width, initial-scale=1'
     title = application_name
     link href=asset_path('favicon.png') rel='icon' type='image/png'
-    = stylesheet_link_tag(asset_path('bootstrap.min.css', type: :stylesheet))
-    = stylesheet_link_tag(asset_path('font-awesome.min.css', type: :stylesheet))
     = stylesheet_link_tag('application', media: 'all', 'data-turbolinks-track' => true)
     = javascript_include_tag('application', 'data-turbolinks-track' => true)
-    = javascript_include_tag(asset_path('underscore-min.js', type: :javascript))
-    = javascript_include_tag(asset_path('bootstrap.min.js', type: :javascript))
     = yield(:head)
     = csrf_meta_tags
   body

@@ -1,4 +1,4 @@
-class UserExerciseFeedback < ActiveRecord::Base
+class UserExerciseFeedback < ApplicationRecord
   include Creation
 
   belongs_to :exercise

@@ -14,11 +14,11 @@ gem 'jquery-turbolinks'
 gem 'ims-lti', '< 2.0.0'
 gem 'kramdown'
 gem 'newrelic_rpm'
-gem 'pg', '< 1.0', platform: :ruby
+gem 'pg'
 gem 'pry-byebug'
 gem 'puma'
 gem 'pundit'
-gem 'rails', '4.2.10'
+gem 'rails', '5.2.1'
 gem 'rails-i18n'
 gem 'ransack'
 gem 'rubytree'
@@ -28,19 +28,20 @@ gem 'bootstrap_pagedown'
 gem 'sorcery'
 gem 'turbolinks', '< 5.0.0' # newer versions prevent loading ACE if the page containing is not accessed directly / refreshed
 gem 'uglifier'
-gem 'tubesock'
+gem 'tubesock', git: 'https://github.com/gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
 gem 'faye-websocket'
-gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, version 1.2.5 still has an error in eventmachine.rb:202: [BUG] Segmentation fault, which is not yet fixed and causes the whole ruby process to crash
 gem 'nokogiri'
-gem 'd3-rails', '~>4.0'
+gem 'd3-rails'
 gem 'rest-client'
 gem 'rubyzip'
 gem 'mnemosyne-ruby'
 gem 'whenever', require: false
 
 group :development, :staging do
-  gem 'better_errors', platform: :ruby
-  gem 'binding_of_caller', platform: :ruby
+  gem 'bootsnap', require: false
+  gem 'listen'
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'capistrano'
   gem 'capistrano3-puma'
   gem 'capistrano-rails'
@@ -49,7 +50,7 @@ group :development, :staging do
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
-  gem 'web-console', platform: :ruby
+  gem 'web-console'
 end
 
 group :development, :test, :staging do
@@ -57,6 +58,7 @@ group :development, :test, :staging do
 end
 
 group :test do
+  gem 'rails-controller-testing'
   gem 'autotest-rails'
   gem 'capybara'
   gem 'selenium-webdriver'

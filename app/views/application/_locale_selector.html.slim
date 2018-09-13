@@ -4,4 +4,4 @@ li.dropdown
     span.caret
   ul.dropdown-menu role='menu'
     - I18n.available_locales.sort_by { |locale| t("locales.#{locale}") }.each do |locale|
-      li = link_to(t("locales.#{locale}"), url_for(params.merge(locale: locale)))
+      li = link_to(t("locales.#{locale}"), url_for(params.permit!.merge(locale: locale)))

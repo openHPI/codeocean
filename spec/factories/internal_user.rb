@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :admin, class: InternalUser do
     activated_user
+    association :consumer
     email { 'admin@example.org' }
     generated_user_name
     password { 'admin' }

@@ -17,27 +17,27 @@ describe ErrorTemplatesController do
   end
 
   it "should create error_template" do
-    expect { post :create, error_template: {  } }.to change(ErrorTemplate, :count).by(1)
+    expect { post :create, params: {error_template: { execution_environment_id: error_template.execution_environment.id } } }.to change(ErrorTemplate, :count).by(1)
     expect(response).to redirect_to(error_template_path(assigns(:error_template)))
   end
 
   it "should show error_template" do
-    get :show, id: error_template
+    get :show, params: { id: error_template }
     expect(response.status).to eq(200)
   end
 
   it "should get edit" do
-    get :edit, id: error_template
+    get :edit, params: { id: error_template }
     expect(response.status).to eq(200)
   end
 
   it "should update error_template" do
-    patch :update, id: error_template, error_template: {  }
+    patch :update, params: { id: error_template, error_template: FactoryBot.attributes_for(:error_template) }
     expect(response).to redirect_to(error_template_path(assigns(:error_template)))
   end
 
   it "should destroy error_template" do
-    expect { delete :destroy, id: error_template }.to change(ErrorTemplate, :count).by(-1)
+    expect { delete :destroy, params: { id: error_template } }.to change(ErrorTemplate, :count).by(-1)
     expect(response).to redirect_to(error_templates_path)
   end
 end

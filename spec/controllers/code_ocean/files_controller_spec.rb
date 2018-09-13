@@ -8,7 +8,7 @@ describe CodeOcean::FilesController do
     let(:submission) { FactoryBot.create(:submission, user: user) }
 
     context 'with a valid file' do
-      let(:request) { proc { post :create, code_ocean_file: FactoryBot.build(:file, context: submission).attributes, format: :json } }
+      let(:request) { proc { post :create, params: { code_ocean_file: FactoryBot.build(:file, context: submission).attributes, format: :json } } }
       before(:each) { request.call }
 
       expect_assigns(file: CodeOcean::File)
@@ -22,7 +22,7 @@ describe CodeOcean::FilesController do
     end
 
     context 'with an invalid file' do
-      before(:each) { post :create, code_ocean_file: {context_id: submission.id, context_type: Submission}, format: :json }
+      before(:each) { post :create, params: { code_ocean_file: {context_id: submission.id, context_type: Submission}, format: :json } }
 
       expect_assigns(file: CodeOcean::File)
       expect_json
@@ -32,7 +32,7 @@ describe CodeOcean::FilesController do
 
   describe 'DELETE #destroy' do
     let(:exercise) { FactoryBot.create(:fibonacci) }
-    let(:request) { proc { delete :destroy, id: exercise.files.first.id } }
+    let(:request) { proc { delete :destroy, params: { id: exercise.files.first.id } } }
     before(:each) { request.call }
 
     expect_assigns(file: CodeOcean::File)

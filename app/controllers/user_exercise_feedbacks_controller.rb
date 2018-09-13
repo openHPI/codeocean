@@ -112,7 +112,7 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def uef_params
-    params[:user_exercise_feedback].permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:user_exercise_feedback].permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:user_exercise_feedback].present?
   end
 
   def validate_inputs(uef_params)

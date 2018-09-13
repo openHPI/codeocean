@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :structured_error do
-    error_template { nil }
-    submission { nil }
+    association :error_template
+    association :submission
   end
 end

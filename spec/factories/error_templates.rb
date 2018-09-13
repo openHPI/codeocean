@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :error_template do
-    execution_environment { nil }
+    association :execution_environment, factory: :ruby
     name { "MyString" }
     signature { "MyString" }
   end

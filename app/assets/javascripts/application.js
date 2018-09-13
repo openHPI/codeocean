@@ -11,16 +11,23 @@
 // about supported directives.
 //
 //= require jquery
-//
-//= require ace/ace
-//= require chosen.jquery.min
-//= require jquery-ui.min
-//= require d3
 //= require jquery.turbolinks
 //= require jquery_ujs
-//= require jstree/jstree.min
-//= require turbolinks
-//= require_tree ../../../lib
-//= require_tree .
 //= require bootstrap_pagedown
+//= require d3
+//= require turbolinks
+//
+// lib/assets
+//= require flash
+//= require url
+//
+// vendor/assets
+//= require ace/ace
 //= require ace/ext-language_tools
+//= require jstree/jstree.min
+//= require bootstrap.min
+//= require chosen.jquery.min
+//= require jquery-ui.min
+//= require underscore.min
+//= require vis.min
+//= require_tree .

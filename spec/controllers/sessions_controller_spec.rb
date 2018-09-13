@@ -4,14 +4,14 @@ describe SessionsController do
   let(:consumer) { FactoryBot.create(:consumer) }
 
   describe 'POST #create' do
-    let(:password) { user_attributes[:password] }
-    let(:user) { InternalUser.create(user_attributes) }
-    let(:user_attributes) { FactoryBot.attributes_for(:teacher) }
+    let(:password) { FactoryBot.attributes_for(:teacher)[:password] }
+    let(:user) { InternalUser.create(user_attributes.merge(password: password)) }
+    let(:user_attributes) { FactoryBot.build(:teacher).attributes }
 
     context 'with valid credentials' do
       before(:each) do
         user.activate!
-        post :create, email: user.email, password: password, remember_me: 1
+        post :create, params: { email: user.email, password: password, remember_me: 1 }
       end
 
       expect_flash_message(:notice, :'sessions.create.success')
@@ -19,7 +19,7 @@ describe SessionsController do
     end
 
     context 'with invalid credentials' do
-      before(:each) { post :create, email: user.email, password: '', remember_me: 1 }
+      before(:each) { post :create, params: { email: user.email, password: '', remember_me: 1 } }
 
       expect_flash_message(:danger, :'sessions.create.failure')
       expect_template(:new)
@@ -42,14 +42,14 @@ describe SessionsController do
     context 'without a valid consumer key' do
       it 'refuses the LTI launch' do
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_consumer')).and_call_original
-        post :create_through_lti, oauth_consumer_key: SecureRandom.hex, oauth_signature: SecureRandom.hex
+        post :create_through_lti, params: { oauth_consumer_key: SecureRandom.hex, oauth_signature: SecureRandom.hex }
       end
     end
 
     context 'with an invalid OAuth signature' do
       it 'refuses the LTI launch' do
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_signature')).and_call_original
-        post :create_through_lti, oauth_consumer_key: consumer.oauth_key, oauth_signature: SecureRandom.hex
+        post :create_through_lti, params: { oauth_consumer_key: consumer.oauth_key, oauth_signature: SecureRandom.hex }
       end
     end
 
@@ -58,7 +58,7 @@ describe SessionsController do
         expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
         expect(NonceStore).to receive(:has?).with(nonce).and_return(true)
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.used_nonce')).and_call_original
-        post :create_through_lti, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex
+        post :create_through_lti, params: { oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex }
       end
     end
 
@@ -66,13 +66,13 @@ describe SessionsController do
       it 'refuses the LTI launch' do
         expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_exercise_token')).and_call_original
-        post :create_through_lti, custom_token: '', oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex
+        post :create_through_lti, params: { custom_token: '', oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex }
       end
     end
 
     context 'with valid launch parameters' do
       let(:locale) { :de }
-      let(:request) { post :create_through_lti, custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id }
+      let(:request) { post :create_through_lti, params: { custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id } }
       let(:user) { FactoryBot.create(:external_user, consumer_id: consumer.id) }
       before(:each) { expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
 
@@ -134,7 +134,7 @@ describe SessionsController do
       it 'redirects to recommended exercise if requested token of proxy exercise' do
         skip 'test is currently oscillating'
         FactoryBot.create(:proxy_exercise, exercises: [exercise])
-        post :create_through_lti, custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id
+        post :create_through_lti, params: { custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id }
         expect(controller).to redirect_to(implement_exercise_path(exercise.id))
       end
 
@@ -146,7 +146,7 @@ describe SessionsController do
         exercise.save
         exercise2.expected_difficulty = 1
         exercise2.save
-        post :create_through_lti, custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id
+        post :create_through_lti, params: { custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id }
         expect(controller).to redirect_to(implement_exercise_path(exercise2.id))
       end
     end
@@ -192,7 +192,7 @@ describe SessionsController do
   end
 
   describe 'GET #destroy_through_lti' do
-    let(:request) { proc { get :destroy_through_lti, consumer_id: consumer.id, submission_id: submission.id } }
+    let(:request) { proc { get :destroy_through_lti, params: { consumer_id: consumer.id, submission_id: submission.id } } }
     let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:dummy)) }
 
     before(:each) do

@@ -1,4 +1,4 @@
-class ExerciseTag < ActiveRecord::Base
+class ExerciseTag < ApplicationRecord
 
   belongs_to :tag
   belongs_to :exercise

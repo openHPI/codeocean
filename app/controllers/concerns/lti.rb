@@ -23,9 +23,9 @@ module Lti
       session.delete(:consumer_id)
       session.delete(:external_user_id)
     else
-      LtiParameter.destroy_all(consumers_id: consumer_id,
-                               external_users_id: user_id,
-                               exercises_id: exercise_id)
+      LtiParameter.where(consumers_id: consumer_id,
+                         external_users_id: user_id,
+                         exercises_id: exercise_id).destroy_all
     end
   end
   private :clear_lti_session_data
@@ -138,7 +138,7 @@ module Lti
                                                     external_users_id: @current_user.id,
                                                     exercises_id: @exercise.id)
 
-    lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).to_json
+    lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).permit!.to_h
     lti_parameters.save!
     @lti_parameters = lti_parameters
 

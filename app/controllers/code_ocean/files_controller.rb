@@ -41,7 +41,7 @@ module CodeOcean
     end
 
     def file_params
-      params[:code_ocean_file].permit(file_attributes).merge(context_type: 'Submission', role: 'user_defined_file')
+      params[:code_ocean_file].permit(file_attributes).merge(context_type: 'Submission', role: 'user_defined_file') if params[:code_ocean_file].present?
     end
     private :file_params
   end

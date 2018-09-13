@@ -272,7 +272,7 @@ class DockerClient
           end
         #ensure
         # guarantee that the thread is releasing the DB connection after it is done
-        # ActiveRecord::Base.connectionpool.releaseconnection
+        # ApplicationRecord.connectionpool.releaseconnection
         #end
       end
   end

@@ -6,8 +6,8 @@ describe ExercisesController do
   before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'PUT #batch_update' do
-    let(:attributes) { {public: true} }
-    let(:request) { proc { put :batch_update, exercises: {0 => attributes.merge(id: exercise.id)} } }
+    let(:attributes) { { 'public': 'true'} }
+    let(:request) { proc { put :batch_update, params: { exercises: {0 => attributes.merge(id: exercise.id)} } } }
     before(:each) { request.call }
 
     it 'updates the exercises' do
@@ -20,7 +20,7 @@ describe ExercisesController do
   end
 
   describe 'POST #clone' do
-    let(:request) { proc { post :clone, id: exercise.id } }
+    let(:request) { proc { post :clone, params: { id: exercise.id } } }
 
     context 'when saving succeeds' do
       before(:each) { request.call }
@@ -55,7 +55,7 @@ describe ExercisesController do
     let(:exercise_attributes) { FactoryBot.build(:dummy).attributes }
 
     context 'with a valid exercise' do
-      let(:request) { proc { post :create, exercise: exercise_attributes } }
+      let(:request) { proc { post :create, params: { exercise: exercise_attributes } } }
       before(:each) { request.call }
 
       expect_assigns(exercise: Exercise)
@@ -68,7 +68,7 @@ describe ExercisesController do
     end
 
     context 'when including a file' do
-      let(:request) { proc { post :create, exercise: exercise_attributes.merge(files_attributes: files_attributes) } }
+      let(:request) { proc { post :create, params: { exercise: exercise_attributes.merge(files_attributes: files_attributes) } } }
 
       context 'when specifying the file content within the form' do
         let(:files_attributes) { {'0' => FactoryBot.build(:file).attributes} }
@@ -114,7 +114,7 @@ describe ExercisesController do
     end
 
     context 'with an invalid exercise' do
-      before(:each) { post :create, exercise: {} }
+      before(:each) { post :create, params: { exercise: { } } }
 
       expect_assigns(exercise: Exercise)
       expect_status(200)
@@ -123,20 +123,20 @@ describe ExercisesController do
   end
 
   describe 'DELETE #destroy' do
-    before(:each) { delete :destroy, id: exercise.id }
+    before(:each) { delete :destroy, params: { id: exercise.id } }
 
     expect_assigns(exercise: :exercise)
 
     it 'destroys the exercise' do
       exercise = FactoryBot.create(:dummy)
-      expect { delete :destroy, id: exercise.id }.to change(Exercise, :count).by(-1)
+      expect { delete :destroy, params: { id: exercise.id } }.to change(Exercise, :count).by(-1)
     end
 
     expect_redirect(:exercises)
   end
 
   describe 'GET #edit' do
-    before(:each) { get :edit, id: exercise.id }
+    before(:each) { get :edit, params: { id: exercise.id } }
 
     expect_assigns(exercise: :exercise)
     expect_status(200)
@@ -144,7 +144,7 @@ describe ExercisesController do
   end
 
   describe 'GET #implement' do
-    let(:request) { proc { get :implement, id: exercise.id } }
+    let(:request) { proc { get :implement, params: { id: exercise.id } } }
 
     context 'with an exercise with visible files' do
       let(:exercise) { FactoryBot.create(:fibonacci) }
@@ -201,7 +201,7 @@ describe ExercisesController do
 
   describe 'GET #show' do
     context 'as admin' do
-      before(:each) { get :show, id: exercise.id }
+      before(:each) { get :show, params: { id: exercise.id } }
 
       expect_assigns(exercise: :exercise)
       expect_status(200)
@@ -211,7 +211,7 @@ describe ExercisesController do
 
   describe 'GET #reload' do
     context 'as anyone' do
-      before(:each) { get :reload, format: :json, id: exercise.id }
+      before(:each) { get :reload, format: :json, params: { id: exercise.id } }
 
       expect_assigns(exercise: :exercise)
       expect_status(200)
@@ -220,7 +220,7 @@ describe ExercisesController do
   end
 
   describe 'GET #statistics' do
-    before(:each) { get :statistics, id: exercise.id }
+    before(:each) { get :statistics, params: { id: exercise.id } }
 
     expect_assigns(exercise: :exercise)
     expect_status(200)
@@ -229,7 +229,7 @@ describe ExercisesController do
 
   describe 'POST #submit' do
     let(:output) { {} }
-    let(:request) { post :submit, format: :json, id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id} }
+    let(:request) { post :submit, format: :json, params: { id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id} } }
     let!(:external_user) { FactoryBot.create(:external_user) }
     let!(:lti_parameter) { FactoryBot.create(:lti_parameter, external_user: external_user, exercise: exercise) }
 
@@ -299,14 +299,14 @@ describe ExercisesController do
   describe 'PUT #update' do
     context 'with a valid exercise' do
       let(:exercise_attributes) { FactoryBot.build(:dummy).attributes }
-      before(:each) { put :update, exercise: exercise_attributes, id: exercise.id }
+      before(:each) { put :update, params: { exercise: exercise_attributes, id: exercise.id } }
 
       expect_assigns(exercise: Exercise)
       expect_redirect(:exercise)
     end
 
     context 'with an invalid exercise' do
-      before(:each) { put :update, exercise: {title: ''}, id: exercise.id }
+      before(:each) { put :update, params: { exercise: {title: ''}, id: exercise.id } }
 
       expect_assigns(exercise: Exercise)
       expect_status(200)

@@ -1,4 +1,4 @@
-class InternalUser < ActiveRecord::Base
+class InternalUser < ApplicationRecord
   include User
 
   authenticates_with_sorcery!

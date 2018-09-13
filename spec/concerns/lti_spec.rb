@@ -153,7 +153,7 @@ describe Lti do
   end
 
   describe '#store_lti_session_data' do
-    let(:parameters) { {} }
+    let(:parameters) { ActionController::Parameters.new({}) }
 
     it 'stores data in the session' do
       controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user))
