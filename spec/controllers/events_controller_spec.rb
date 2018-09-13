@@ -7,7 +7,7 @@ describe EventsController do
 
   describe 'POST #create' do
     context 'with a valid event' do
-      let(:request) { proc { post :create, event: {category: 'foo', data: 'bar', exercise_id: exercise.id, file_id: exercise.files[0].id} } }
+      let(:request) { proc { post :create, params: { event: {category: 'foo', data: 'bar', exercise_id: exercise.id, file_id: exercise.files[0].id} } } }
       before(:each) { request.call }
 
       expect_assigns(event: Event)
@@ -20,7 +20,7 @@ describe EventsController do
     end
 
     context 'with an invalid event' do
-      before(:each) { post :create, event: {exercise_id: 847482} }
+      before(:each) { post :create, params: { event: {exercise_id: 847482} } }
       expect_assigns(event: Event)
       expect_status(422)
     end

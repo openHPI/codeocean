@@ -1,4 +1,4 @@
-class AnomalyNotification < ActiveRecord::Base
+class AnomalyNotification < ApplicationRecord
   belongs_to :user, polymorphic: true
   belongs_to :exercise
   belongs_to :exercise_collection

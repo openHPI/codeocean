@@ -1,6 +1,6 @@
 require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
 
-class FileType < ActiveRecord::Base
+class FileType < ApplicationRecord
   include Creation
   include DefaultValues
 
@@ -11,7 +11,7 @@ class FileType < ActiveRecord::Base
   after_initialize :set_default_values
 
   has_many :execution_environments
-  has_many :files
+  has_many :files, class_name: 'CodeOcean::File'
   has_many :file_templates
 
   validates :binary, boolean_presence: true

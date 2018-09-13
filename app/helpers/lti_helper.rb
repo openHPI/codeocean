@@ -1,3 +1,5 @@
+require 'oauth/request_proxy/action_controller_request'
+
 module LtiHelper
   def lti_outcome_service?(exercise_id, external_user_id, consumer_id)
     return false if external_user_id == '' || consumer_id == ''

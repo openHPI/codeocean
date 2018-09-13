@@ -1,7 +1,7 @@
 require 'nokogiri'
 require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
 
-class Exercise < ActiveRecord::Base
+class Exercise < ApplicationRecord
   include Context
   include Creation
   include DefaultValues
@@ -23,8 +23,8 @@ class Exercise < ActiveRecord::Base
   accepts_nested_attributes_for :exercise_tags
   has_many :user_exercise_feedbacks
 
-  has_many :external_users, source: :user, source_type: ExternalUser, through: :submissions
-  has_many :internal_users, source: :user, source_type: InternalUser, through: :submissions
+  has_many :external_users, source: :user, source_type: 'ExternalUser', through: :submissions
+  has_many :internal_users, source: :user, source_type: 'InternalUser', through: :submissions
   alias_method :users, :external_users
 
   scope :with_submissions, -> { where('id IN (SELECT exercise_id FROM submissions)') }

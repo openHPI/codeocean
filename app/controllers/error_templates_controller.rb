@@ -99,6 +99,6 @@ class ErrorTemplatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def error_template_params
-      params[:error_template].permit(:name, :execution_environment_id, :signature, :description, :hint)
+      params[:error_template].permit(:name, :execution_environment_id, :signature, :description, :hint) if params[:error_template].present?
     end
 end

@@ -15,14 +15,14 @@ class ErrorsController < ApplicationController
         if hint
           render(json: {hint: hint})
         else
-          render(nothing: true, status: @error.save ? :created : :unprocessable_entity)
+          head (@error.save ? :created : :unprocessable_entity)
         end
       end
     end
   end
 
   def error_params
-    params[:error].permit(:message, :submission_id).merge(execution_environment_id: @execution_environment.id)
+    params[:error].permit(:message, :submission_id).merge(execution_environment_id: @execution_environment.id) if params[:error].present?
   end
   private :error_params
 

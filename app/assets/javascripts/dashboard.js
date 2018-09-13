@@ -51,6 +51,7 @@ $(function() {
     } else {
       var jqxhr = $.ajax({
         dataType: 'json',
+        url: 'dashboard',
         method: 'GET'
       });
       jqxhr.done(function(response) {

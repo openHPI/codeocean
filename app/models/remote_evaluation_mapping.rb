@@ -1,5 +1,5 @@
 # todo: reference to lti_param_model
-class RemoteEvaluationMapping < ActiveRecord::Base
+class RemoteEvaluationMapping < ApplicationRecord
   before_create :generate_token, unless: :validation_token?
   belongs_to :exercise
   belongs_to :user

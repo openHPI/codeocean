@@ -75,7 +75,7 @@ let(:exercise) { FactoryBot.build(:dummy) }
 
         [@admin, @teacher].each do |user|
           [true, false].each do |public|
-            FactoryBot.create(:dummy, public: public, user_id: user.id, user_type: InternalUser.class.name)
+            FactoryBot.create(:dummy, public: public, user_id: user.id, user_type: InternalUser.name)
           end
         end
       end

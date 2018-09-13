@@ -1,4 +1,4 @@
-class FileTemplate < ActiveRecord::Base
+class FileTemplate < ApplicationRecord
 
   belongs_to :file_type
 

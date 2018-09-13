@@ -1,4 +1,4 @@
-class Error < ActiveRecord::Base
+class Error < ApplicationRecord
   belongs_to :execution_environment
 
   scope :for_execution_environment, ->(execution_environment) { where(execution_environment_id: execution_environment.id) }
