@@ -42,6 +42,8 @@ Rails.application.routes.draw do
 
   get '/help', to: 'application#help'
 
+  get '/insights', to: 'flowr#insights'
+
   get 'statistics/', to: 'statistics#show'
   get 'statistics/graphs', to: 'statistics#graphs'
   get 'statistics/graphs/user-activity', to: 'statistics#user_activity'

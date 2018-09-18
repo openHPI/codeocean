@@ -8,7 +8,7 @@ class SubmissionPolicy < ApplicationPolicy
     everyone
   end
 
-  [:download?, :download_file?, :render_file?, :run?, :score?, :show?, :statistics?, :stop?, :test?].each do |action|
+  [:download?, :download_file?, :render_file?, :run?, :score?, :show?, :statistics?, :stop?, :test?, :insights?].each do |action|
     define_method(action) { admin? || author? }
   end
 
