@@ -50,6 +50,7 @@ sudo docker pull openhpi/docker_java
 sudo docker pull openhpi/docker_ruby
 sudo docker pull openhpi/docker_python
 sudo docker pull openhpi/co_execenv_python
+sudo docker pull openhpi/co_execenv_node
 sudo docker pull openhpi/co_execenv_java
 sudo docker pull openhpi/co_execenv_java_antlr
 
@@ -151,3 +152,8 @@ fi
 
 # Always set language to English
 sudo locale-gen en_US en_US.UTF-8
+
+# Add host as alias for localhost (allows sending a score to a local Xikolo instance)
+sudo tee /etc/hosts -a <<EOF
+192.168.59.1    localhost
+EOF
