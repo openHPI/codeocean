@@ -54,5 +54,5 @@ div id='output_sidebar_uncollapsed' class='hidden col-sm-12 enforce-bottom-margi
       pre = t('exercises.implement.no_output_yet')
     - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
       #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
-        .panel-heading = 'Gain more insights here'
+        .panel-heading = t('exercises.implement.flowr.heading')
         .panel-body
