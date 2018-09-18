@@ -1,36 +1,96 @@
 CodeOceanEditorFlowr = {
-  isFlowrEnabled: true,
-  flowrResultHtml: '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>',
+  isFlowrEnabled: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] %>,
+  flowrResultHtml:
+    '<div class="panel panel-default">' +
+      '<div id="{{headingId}}" role="tab" class="panel-heading">' +
+        '<h4 class="panel-title">' +
+          '<a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}">' +
+          '</a>' +
+        '</h4>' +
+      '</div>' +
+      '<div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse">' +
+        '<div class="panel-body"></div>' +
+      '</div>' +
+    '</div>',
 
+  getInsights: function () {
+    <% self.class.include Rails.application.routes.url_helpers %>
+    var flowrUrl = '<%= insights_path %>';
+    var stackOverflowUrl = 'http://api.stackexchange.com/2.2/search/advanced';
+
+    return jQuery.ajax({
+      dataType: "json",
+      url: flowrUrl,
+      data: {}
+    }).then(function (queries) {
+      var stackoverflowRequests = _.map(queries, function (index, query) {
+        var queryParams = {
+          accepted: true,
+          pagesize: 5,
+          order: 'desc',
+          sort: 'relevance',
+          site: 'stackoverflow',
+          answers: 1,
+          filter: '!23qca9v**HCO.ESF)dHfT',
+          q: query
+        }
+
+        return jQuery.ajax({
+          dataType: "json",
+          url: stackOverflowUrl,
+          data: queryParams
+        }).promise();
+      });
+      return jQuery.when.apply(jQuery, stackoverflowRequests);
+    });
+  },
+  collectResults: function(response) {
+    var results = [];
+    var addToResultsIfSuccessful = function (data, textStatus, jqXHR) {
+      if (jqXHR && jqXHR.status === 200) {
+        _.each(data.items, function (item) {
+          if (!_.contains(results, item)) {
+            results.push(item);
+          }
+        });
+      }
+    }
+
+    if (_.isArray(response[0])) {
+      // multiple queries
+      _.each(response, function (args) {
+        addToResultsIfSuccessful.apply(this, args)
+      });
+    } else {
+      // single query
+      addToResultsIfSuccessful.apply(this, response);
+    }
+    return results;
+  },
   handleStderrOutputForFlowr: function () {
-    if (!this.isFlowrEnabled) return;
+    if (! this.isFlowrEnabled) return;
 
-    var flowrUrl = $('#flowrHint').data('url');
     var flowrHintBody = $('#flowrHint .panel-body');
-    var queryParameters = {
-      query: this.flowrOutputBuffer
-    };
-
     flowrHintBody.empty();
+    var self = this;
 
-    jQuery.getJSON(flowrUrl, queryParameters, function (data) {
-      jQuery.each(data.queryResults, function (index, question) {
-        var collapsibleTileHtml = this.flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + question).replace(/{{headingId}}/g, 'heading-' + question);
+    this.getInsights().then(function () {
+      var results = self.collectResults(arguments);
+      _.each(results, function (result, index) {
+        var collapsibleTileHtml = self.flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
         var resultTile = $(collapsibleTileHtml);
 
-        resultTile.find('h4 > a').text(question.title + ' | Found via ' + question.source);
-        resultTile.find('.panel-body').html(question.body);
-        resultTile.find('.panel-body').append('<a href="' + question.url + '" class="btn btn-primary btn-block">Open this question</a>');
+        resultTile.find('h4 > a').text(result.title);
+        resultTile.find('.panel-body').html(result.body);
+        resultTile.find('.panel-body').append('<a href="https://stackoverflow.com/questions/' + result.question_id + '" class="btn btn-primary btn-block">Open this question</a>');
 
         flowrHintBody.append(resultTile);
       });
 
-      if (data.queryResults.length !== 0) {
+      if (results.length > 0) {
         $('#flowrHint').fadeIn();
       }
     });
-
-    this.flowrOutputBuffer = '';
   }
 };
 
