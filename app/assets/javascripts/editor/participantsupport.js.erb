@@ -67,6 +67,16 @@ CodeOceanEditorFlowr = {
     }
     return results;
   },
+  createEventHandler: function (eventType, data) {
+    return function () {
+      CodeOceanEditor.publishCodeOceanEvent({
+        category: eventType,
+        data: data,
+        exercise_id: $('#editor').data('exercise-id'),
+        file_id: null
+      });
+    };
+  },
   handleStderrOutputForFlowr: function () {
     if (! this.isFlowrEnabled) return;
 
@@ -80,9 +90,16 @@ CodeOceanEditorFlowr = {
         var collapsibleTileHtml = self.flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
         var resultTile = $(collapsibleTileHtml);
 
-        resultTile.find('h4 > a').text(result.title);
-        resultTile.find('.panel-body').html(result.body);
-        resultTile.find('.panel-body').append('<a href="https://stackoverflow.com/questions/' + result.question_id + '" class="btn btn-primary btn-block">Open this question</a>');
+        var questionUrl = 'https://stackoverflow.com/questions/' + result.question_id;
+
+        var header = resultTile.find('h4 > a');
+        header.text(result.title);
+        header.on('click', self.createEventHandler('editor_flowr_expand_question', questionUrl));
+
+        var body = resultTile.find('.panel-body');
+        body.html(result.body);
+        body.append('<a href="' + questionUrl + '" class="btn btn-primary btn-block">Open this question</a>');
+        body.find('.btn').on('click', self.createEventHandler('editor_flowr_click_question', questionUrl));
 
         flowrHintBody.append(resultTile);
       });
