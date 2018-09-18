@@ -3,6 +3,8 @@ FactoryBot.create(:consumer)
 FactoryBot.create(:consumer, name: 'openSAP')
 
 # users
+# Set default_url_options explicitly, required for rake task
+Rails.application.routes.default_url_options = Rails.application.config.action_mailer.default_url_options
 [:admin, :external_user, :teacher].each { |factory_name| FactoryBot.create(factory_name) }
 
 # execution environments
