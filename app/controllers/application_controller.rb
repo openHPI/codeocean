@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   after_action :verify_authorized, except: [:help, :welcome]
   before_action :set_locale, :allow_iframe_requests
-  protect_from_forgery(with: :exception)
+  protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
 
   def current_user

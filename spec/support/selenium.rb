@@ -8,9 +8,6 @@ if ENV['HEADLESS_TEST'] == 'true' || ENV['USER'] == 'vagrant'
   headless.start
 end
 
-#Capybara.server = :webrick
-# Capybara.server_port = 3333
-
 Capybara.register_driver :selenium do |app|
   profile = Selenium::WebDriver::Firefox::Profile.new
   profile['intl.accept_languages'] = 'en'
@@ -18,7 +15,7 @@ Capybara.register_driver :selenium do |app|
   options = Selenium::WebDriver::Firefox::Options.new
   options.profile = profile
   driver = Capybara::Selenium::Driver.new(app, browser: :firefox, desired_capabilities: capabilities, options: options)
-  #driver.browser.manage.window.resize_to(1280, 960)
+  driver.browser.manage.window.resize_to(1280, 960)
   driver
 end
 Capybara.javascript_driver = :selenium
