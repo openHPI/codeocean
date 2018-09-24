@@ -185,7 +185,7 @@ class ExercisesController < ApplicationController
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user, exercise: @exercise).size >= max_intervention_count_per_exercise
     user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day or user_got_intervention_in_exercise
 
-    @show_rfc_interventions = (not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
+    @show_rfc_interventions = (not user_solved_exercise and not user_got_enough_interventions).to_s
 
 
     @search = Search.new
