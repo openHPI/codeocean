@@ -25,7 +25,7 @@ h1
 h2 = t('activerecord.attributes.exercise.files')
 
 ul.list-unstyled.panel-group#files
-  - @exercise.files.order('name').each do |file|
+  - @exercise.files.each do |file|
     li.panel.panel-default
       .panel-heading role="tab" id="heading"
         a.file-heading data-toggle="collapse" data-parent="#files" href=".collapse#{file.id}"
