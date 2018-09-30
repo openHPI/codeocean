@@ -23,6 +23,5 @@
  *= require jquery-ui.min
  *= require jquery-ui.structure.min
  *= require style.min
- *= require vis.min
  *= require_tree .
 */

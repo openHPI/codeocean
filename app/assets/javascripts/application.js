@@ -11,11 +11,10 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery.turbolinks
 //= require jquery_ujs
+//= require turbolinks
 //= require bootstrap_pagedown
 //= require d3
-//= require turbolinks
 //
 // lib/assets
 //= require flash
@@ -29,5 +28,4 @@
 //= require chosen.jquery.min
 //= require jquery-ui.min
 //= require underscore.min
-//= require vis.min
 //= require_tree .

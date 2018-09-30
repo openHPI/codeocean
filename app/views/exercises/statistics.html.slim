@@ -1,4 +1,8 @@
-script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"
+- content_for :head do
+  // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
+     Otherwise, code might not be highlighted correctly (race condition)
+  meta name='turbolinks-visit-control' content='reload'
+  = javascript_include_tag(asset_path('d3-tip.js', type: :javascript))
 h1 = @exercise
 
 = row(label: '.participants', value: @exercise.users.distinct.count)
@@ -32,8 +36,8 @@ h1 = @exercise
     .graph-functions
     div#chart_1
     hr
-    /div#chart_2
-    /hr
+    div#chart_2
+    hr
   .table-responsive
     table.table.table-striped.sortable
       thead

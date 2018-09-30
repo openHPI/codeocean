@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
     if ($.isController('error_templates')) {
         $('#add-attribute').find('button').on('click', function () {
             $.ajax(location + '/attribute.json', {

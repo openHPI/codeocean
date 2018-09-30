@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
   var CHOSEN_OPTIONS = {
     allow_single_deselect: true,
     disable_search_threshold: 5,

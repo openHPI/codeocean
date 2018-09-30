@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).on('turbolinks:load', function() {
 
   var subMenusSelector = 'ul.dropdown-menu [data-toggle=dropdown]';
 
