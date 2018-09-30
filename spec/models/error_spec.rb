@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Error do
+describe CodeOcean::Error do
   let(:error) { described_class.create }
 
   it 'validates the presence of an execution environment' do

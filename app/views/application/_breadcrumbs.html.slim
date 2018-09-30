@@ -1,6 +1,6 @@
 - if current_user.try(:internal_user?)
   ul.breadcrumb
-    - if model = Kernel.const_get(controller_name.classify) rescue nil
+    - if model = Kernel.const_get(controller_path.classify) rescue nil
       - object = model.find_by(id: params[:id])
       - if model.try(:nested_resource?)
         li = model.model_name.human(count: 2)

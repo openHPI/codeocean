@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   delete '/comment_by_id', to: 'comments#destroy_by_id'
   put '/comments', to: 'comments#update'
 
-  resources :subscriptions do
+  resources :subscriptions, only: [:create, :destroy] do
     member do
       get :unsubscribe, to: 'subscriptions#destroy'
     end
@@ -39,8 +39,6 @@ Rails.application.routes.draw do
   namespace :admin do
     get 'dashboard', to: 'dashboard#show'
   end
-
-  get '/help', to: 'application#help'
 
   get 'statistics/', to: 'statistics#show'
   get 'statistics/graphs', to: 'statistics#graphs'
@@ -65,7 +63,7 @@ Rails.application.routes.draw do
       get :statistics
     end
 
-    resources :errors, only: [:create, :index, :show]
+    resources :errors, only: [:create, :index, :show], controller: 'code_ocean/errors'
     resources :hints
   end
 

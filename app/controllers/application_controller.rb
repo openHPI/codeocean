@@ -14,9 +14,6 @@ class ApplicationController < ActionController::Base
     @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources
   end
 
-  def help
-  end
-
   def render_not_authorized
     redirect_to(:root, alert: t('application.not_authorized'))
   end

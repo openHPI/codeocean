@@ -11,7 +11,7 @@ Rails.application.routes.default_url_options = Rails.application.config.action_m
 ExecutionEnvironment.create_factories
 
 # errors
-Error.create_factories
+CodeOcean::Error.create_factories
 
 # exercises
 @exercises = find_factories_by_class(Exercise).map(&:name).map { |factory_name| [factory_name, FactoryBot.create(factory_name)] }.to_h

@@ -10,7 +10,7 @@
           li = link_to(t('breadcrumbs.statistics.show'), statistics_path)
           li.divider
         = render('navigation_submenu', title: t('activerecord.models.exercise.other'),
-                models: [Exercise, ExerciseCollection, ProxyExercise, Tag], link: exercises_path, cached: true)
+                models: [Exercise, ExerciseCollection, ProxyExercise, Tag, Submission], link: exercises_path, cached: true)
         = render('navigation_submenu', title: t('navigation.sections.users'), models: [InternalUser, ExternalUser],
                 cached: true)
         = render('navigation_collection_link', model: ExecutionEnvironment, cached: true)
