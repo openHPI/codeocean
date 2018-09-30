@@ -41,7 +41,7 @@ gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket
 gem 'nokogiri'
 gem 'd3-rails', '~>4.0'
 gem 'rest-client'
-gem 'rubyzip'
+gem 'rubyzip', '>= 1.2.2'
 gem 'mnemosyne-ruby', '~> 1.0'
 gem 'whenever', require: false
 
