@@ -1,10 +1,10 @@
-h1 = ::Error.model_name.human(count: 2)
+h1 = CodeOcean::Error.model_name.human(count: 2)
 
 .table-responsive
   table.table
     thead
       tr
-        th = t('.count')
+        th = t('errors.index.count')
         th = t('activerecord.attributes.error.message')
         th = t('shared.created_at')
         th = t('shared.actions')
