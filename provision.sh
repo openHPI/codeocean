@@ -19,13 +19,18 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CA
 sudo apt-get -qq -y install apt-transport-https ca-certificates
 sudo sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main > /etc/apt/sources.list.d/passenger.list'
 
+# yarn & node
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+
 # rails
 sudo add-apt-repository -y ppa:chris-lea/node.js
 
 sudo apt-get -qq update
 
 # code_ocean
-sudo apt-get -qq -y install postgresql-client postgresql-$postgres_version postgresql-server-dev-$postgres_version vagrant
+sudo apt-get -qq -y install postgresql-client postgresql-$postgres_version postgresql-server-dev-$postgres_version vagrant yarn nodejs
 
 # Docker
 if [ ! -f /etc/default/docker ]

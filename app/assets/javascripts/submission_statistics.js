@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
 
   var ACE_FILES_PATH = '/assets/ace/';
   var THEME = 'ace/theme/textmate';

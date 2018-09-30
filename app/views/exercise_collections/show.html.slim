@@ -25,4 +25,4 @@ h4 = t('activerecord.attributes.exercise_collections.exercises')
           td = link_to(exercise.title, exercise)
           td = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
           td = exercise.user.name
-          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise))
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks' => "false")

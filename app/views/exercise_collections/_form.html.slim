@@ -23,7 +23,7 @@
             td
               span.fa.fa-bars
             td = item.exercise.title
-            td = link_to(t('shared.show'), item.exercise)
+            td = link_to(t('shared.show'), item.exercise, 'data-turbolinks' => "false")
             td
               a.remove-exercise href='#' = t('shared.destroy')
   .hidden
