@@ -47,6 +47,8 @@ module CodeOcean
       scope :"#{role}s", -> { where(role: role) }
     end
 
+    default_scope { order(name: :asc) }
+
     validates :feedback_message, if: :teacher_defined_test?, presence: true
     validates :feedback_message, absence: true, unless: :teacher_defined_test?
     validates :file_type_id, presence: true
