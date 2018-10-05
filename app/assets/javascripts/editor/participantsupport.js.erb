@@ -22,17 +22,17 @@ CodeOceanEditorFlowr = {
       dataType: "json",
       url: flowrUrl,
       data: {}
-    }).then(function (queries) {
-      var stackoverflowRequests = _.map(queries, function (index, query) {
+    }).then(function (insights) {
+      var stackoverflowRequests = _.map(insights, function (insight) {
         var queryParams = {
           accepted: true,
-          pagesize: 5,
+          pagesize: 3,
           order: 'desc',
           sort: 'relevance',
           site: 'stackoverflow',
           answers: 1,
           filter: '!23qca9v**HCO.ESF)dHfT',
-          q: query
+          q: insight.query
         }
 
         return jQuery.ajax({
