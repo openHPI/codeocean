@@ -340,6 +340,7 @@ de:
         heading: "Hinweise"
       flowr:
         heading: "Weitere Hinweise | Unterstützt von StackOverflow"
+        go_to_question: "Lösung ansehen"
     index:
       clone: Duplizieren
       implement: Implementieren

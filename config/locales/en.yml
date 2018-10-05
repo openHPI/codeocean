@@ -340,6 +340,7 @@ en:
         heading: "Hints"
       flowr:
         heading: "Gain more insights here | Powered by StackOverflow"
+        go_to_question: "Go to answer"
     index:
       clone: Duplicate
       implement: Implement

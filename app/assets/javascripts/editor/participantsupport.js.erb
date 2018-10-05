@@ -99,7 +99,8 @@ CodeOceanEditorFlowr = {
 
         var body = resultTile.find('.panel-body');
         body.html(result.body);
-        body.append('<a href="' + questionUrl + '" class="btn btn-primary btn-block">Open this question</a>');
+        body.append('<a href="' + questionUrl + '" class="btn btn-primary btn-block">' +
+          '<%= I18n.t('exercises.implement.flowr.go_to_question') %></a>');
         body.find('.btn').on('click', self.createEventHandler('editor_flowr_click_question', questionUrl));
 
         flowrHintBody.append(resultTile);
