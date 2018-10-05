@@ -26,12 +26,12 @@ CodeOceanEditorFlowr = {
       var stackoverflowRequests = _.map(insights, function (insight) {
         var queryParams = {
           accepted: true,
-          pagesize: 3,
+          pagesize: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:answers_per_query] %>,
           order: 'desc',
           sort: 'relevance',
           site: 'stackoverflow',
           answers: 1,
-          filter: '!23qca9v**HCO.ESF)dHfT',
+          filter: '!23qca9v**HCO.ESF)dHfT', // title, body, accepted answer
           q: insight.query
         }
 
@@ -87,7 +87,8 @@ CodeOceanEditorFlowr = {
     this.getInsights().then(function () {
       var results = self.collectResults(arguments);
       _.each(results, function (result, index) {
-        var collapsibleTileHtml = self.flowrResultHtml.replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
+        var collapsibleTileHtml = self.flowrResultHtml
+          .replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
         var resultTile = $(collapsibleTileHtml);
 
         var questionUrl = 'https://stackoverflow.com/questions/' + result.question_id;

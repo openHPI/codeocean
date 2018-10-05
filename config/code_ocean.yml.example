@@ -1,12 +1,14 @@
 default: &default
   flowr:
     enabled: false
+    answers_per_query: 3
   code_pilot:
     enabled: false
 
 development:
   flowr:
     enabled: true
+    answers_per_query: 3
   code_pilot:
     enabled: false
     url: //localhost:3000
