@@ -3,17 +3,17 @@
     - if model = Kernel.const_get(controller_path.classify) rescue nil
       - object = model.find_by(id: params[:id])
       - if model.try(:nested_resource?)
-        li = model.model_name.human(count: 2)
+        li.breadcrumb-item = model.model_name.human(count: 2)
         - if object
-          li = object
+          li.breadcrumb-item = object
       - else
-        li = link_to(model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+        li.breadcrumb-item = link_to(model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
         - if object
-          li = link_to(object, send(:"#{model.model_name.singular}_path", object))
-      li.active
+          li.breadcrumb-item = link_to(object, send(:"#{model.model_name.singular}_path", object))
+      li.breadcrumb-item.active
         - if I18n.translation_present?("shared.#{params[:action]}")
           = t("shared.#{params[:action]}")
         - else
           = t("#{controller_name}.index.#{params[:action]}")
     - else
-      li.active = t("breadcrumbs.#{controller_name}.#{params[:action]}")
+      li.breadcrumb-item.active = t("breadcrumbs.#{controller_name}.#{params[:action]}")

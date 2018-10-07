@@ -9,7 +9,7 @@ h1 = Consumer.model_name.human(count: 2)
     tbody
       - @consumers.each do |consumer|
         tr
-          td = consumer.name
+          td = link_to(consumer.name, consumer)
           td = link_to(t('shared.show'), consumer)
           td = link_to(t('shared.edit'), edit_consumer_path(consumer))
           td = link_to(t('shared.destroy'), consumer, data: {confirm: t('shared.confirm_destroy')}, method: :delete)

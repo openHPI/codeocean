@@ -1,12 +1,12 @@
 CodeOceanEditorFlowr = {
   isFlowrEnabled: true,
-  flowrResultHtml: '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="panel-body"></div></div></div>',
+  flowrResultHtml: '<div class="panel panel-default"><div id="{{headingId}}" role="tab" class="panel-heading"><h4 class="panel-title"><a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}"></a></h4></div><div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse"><div class="card-body"></div></div></div>',
 
   handleStderrOutputForFlowr: function () {
     if (!this.isFlowrEnabled) return;
 
     var flowrUrl = $('#flowrHint').data('url');
-    var flowrHintBody = $('#flowrHint .panel-body');
+    var flowrHintBody = $('#flowrHint .card-body');
     var queryParameters = {
       query: this.flowrOutputBuffer
     };
@@ -19,8 +19,8 @@ CodeOceanEditorFlowr = {
         var resultTile = $(collapsibleTileHtml);
 
         resultTile.find('h4 > a').text(question.title + ' | Found via ' + question.source);
-        resultTile.find('.panel-body').html(question.body);
-        resultTile.find('.panel-body').append('<a href="' + question.url + '" class="btn btn-primary btn-block">Open this question</a>');
+        resultTile.find('.card-body').html(question.body);
+        resultTile.find('.card-body').append('<a href="' + question.url + '" class="btn btn-primary btn-block">Open this question</a>');
 
         flowrHintBody.append(resultTile);
       });

@@ -155,7 +155,7 @@ CodeOceanEditorSubmissions = {
     $('#stop').data('url', submission.stop_url);
     this.running = true;
     this.showSpinner($('#run'));
-    $('#score_div').addClass('hidden');
+    $('#score_div').addClass('d-none');
     this.toggleButtonStates();
     var url = submission.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
     this.initializeSocketForRunning(url);
@@ -175,7 +175,7 @@ CodeOceanEditorSubmissions = {
     if ($('#test').is(':visible')) {
       this.createSubmission('#test', null, function(response) {
         this.showSpinner($('#test'));
-        $('#score_div').addClass('hidden');
+        $('#score_div').addClass('d-none');
         var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
         this.initializeSocketForTesting(url);
       }.bind(this));

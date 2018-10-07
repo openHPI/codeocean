@@ -1,7 +1,7 @@
-li.dropdown
-  a.dropdown-toggle data-toggle='dropdown' href='#'
+li.nav-item.dropdown
+  a.nav-link.dropdown-toggle.mx-3 data-toggle='dropdown' href='#'
     = t("locales.#{I18n.locale}")
     span.caret
-  ul.dropdown-menu role='menu'
+  ul.dropdown-menu.p-0.mt-1 role='menu'
     - I18n.available_locales.sort_by { |locale| t("locales.#{locale}") }.each do |locale|
-      li = link_to(t("locales.#{locale}"), url_for(params.permit!.merge(locale: locale)))
+      li = link_to(t("locales.#{locale}"), url_for(params.permit!.merge(locale: locale)), class: 'dropdown-item')

@@ -10,21 +10,21 @@ h1 = "#{@exercise} (external user #{@external_user})"
       - file_types.add(ActiveSupport::JSON.encode(file.file_type))
     - all_files.push(submission.files)
 
-  .hidden#data data-submissions=ActiveSupport::JSON.encode(@submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
+  .d-none#data data-submissions=ActiveSupport::JSON.encode(@submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
 
   #stats-editor.row
     - index = 0
     - all_files.each do |files|
-      .files class=(@exercise.hide_file_tree ? 'hidden col-sm-3' : 'col-sm-3') data-index=index data-entries=FileTree.new(files).to_js_tree
+      .files class=(@exercise.hide_file_tree ? 'd-none col-sm-3' : 'col-sm-3') data-index=index data-entries=FileTree.new(files).to_js_tree
       - index += 1
     div class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
       #current-file.editor
 
   .flex-container
-    button.btn.btn-default id='play-button'
+    button.btn.btn-secondary id='play-button'
       span.fa.fa-play
     #submissions-slider.flex-item
-      input type='range' orient='horizontal' list='datapoints' min=0 max=@submissions.length-1 value=0
+      input type='range' orient='horizontal' list='datapoints' min=0 max=@submissions.length-1 value=0 style="width: 100%"
       datalist#datapoints
         - index=0
         - @submissions.each do |submission|
@@ -59,7 +59,7 @@ h1 = "#{@exercise} (external user #{@external_user})"
                 td =
                 td = @working_times_until[index] if index > 0
     p = t('.addendum')
-    .hidden#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until);
+    .d-none#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until);
     div#progress_chart.col-lg-12
       .graph-functions-2
 

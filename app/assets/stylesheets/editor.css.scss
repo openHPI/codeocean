@@ -144,7 +144,8 @@ button i.fa-spin {
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
-  box-sizing: border-box
+  box-sizing: border-box;
+  margin-left: auto;
 }
 
 .output-col-collapsed {
@@ -155,7 +156,8 @@ button i.fa-spin {
   min-height: 1px;
   padding-left: 15px;
   padding-right: 15px;
-  box-sizing: border-box
+  box-sizing: border-box;
+  margin-left: auto;
 }
 
 .enforce-top-margin {
@@ -166,14 +168,14 @@ button i.fa-spin {
   margin-right: 10px !important;
 }
 
-.description-panel-collapsed {
+.description-card-collapsed {
   -webkit-transition: width 2s;
   transition: width 2s;
   height: 0px;
   visibility: hidden;
 }
 
-.description-panel {
+.description-card {
   height: auto;
   -webkit-transition: height 2s;
   transition: height 2s;

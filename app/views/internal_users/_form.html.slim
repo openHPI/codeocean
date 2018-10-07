@@ -5,7 +5,7 @@
     = f.collection_select(:consumer_id, Consumer.all.sort_by(&:name), :id, :name, {}, class: 'form-control')
   .form-group
     = f.label(:email)
-    = f.text_field(:email, class: 'form-control', required: true)
+    = f.email_field(:email, class: 'form-control', required: true)
   .form-group
     = f.label(:name)
     = f.text_field(:name, class: 'form-control', required: true)

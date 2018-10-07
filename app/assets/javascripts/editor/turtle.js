@@ -38,10 +38,10 @@ CodeOceanEditorTurtle = {
 
   showCanvas: function () {
     if ($('#turtlediv').isPresent()
-        && this.turtlecanvas.hasClass('hidden')) {
+        && this.turtlecanvas.hasClass('d-none')) {
       // initialize two-column layout
       $('#output-col1').addClass('col-lg-7 col-md-7 two-column');
-      this.turtlecanvas.removeClass('hidden');
+      this.turtlecanvas.removeClass('d-none');
     }
   }
 

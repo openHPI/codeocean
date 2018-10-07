@@ -2,13 +2,13 @@
   #editor-column.col-md-12
     .exercise.clearfix
       div
-        span.badge.pull-right.score
+        span.badge.badge-pill.float-right.score
 
         h1 id="exercise-headline"
           i class="fa fa-chevron-down" id="description-symbol"
           = @exercise.title
 
-      #description-panel.lead.description-panel
+      #description-card.lead.description-card
         = render_markdown(@exercise.description)
 
       a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide') = t('shared.hide')

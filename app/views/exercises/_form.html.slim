@@ -1,14 +1,14 @@
 - execution_environments = ExecutionEnvironment.where('file_type_id IS NOT NULL').select(:file_type_id, :id)
 - file_types = FileType.where('file_extension IS NOT NULL').select(:file_extension, :id)
 
-= form_for(@exercise, data: {execution_environments: execution_environments, file_types: file_types}, multipart: true) do |f|
+= form_for(@exercise, data: {execution_environments: execution_environments, file_types: file_types}, multipart: true, builder: PagedownFormBuilder) do |f|
   = render('shared/form_errors', object: @exercise)
   .form-group
     = f.label(:title)
     = f.text_field(:title, class: 'form-control', required: true)
   .form-group
     = f.label(:description)
-    = f.pagedown_editor :description
+    = f.pagedown :description, input_html: { preview: true, rows: 10 }
   .form-group
     = f.label(:execution_environment_id)
     = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {}, class: 'form-control')
@@ -16,34 +16,34 @@
     = f.label(:instructions)
     = f.hidden_field(:instructions)
     .form-control.markdown
-  .checkbox
-    label
-      = f.check_box(:public)
+  .form-check
+    label.form-check-label
+      = f.check_box(:public, class: 'form-check-input')
       = t('activerecord.attributes.exercise.public')
-  .checkbox
-    label
-      = f.check_box(:hide_file_tree)
+  .form-check
+    label.form-check-label
+      = f.check_box(:hide_file_tree, class: 'form-check-input')
       = t('activerecord.attributes.exercise.hide_file_tree')
-  .checkbox
-    label
-      = f.check_box(:allow_file_creation)
+  .form-check
+    label.form-check-label
+      = f.check_box(:allow_file_creation, class: 'form-check-input')
       = t('activerecord.attributes.exercise.allow_file_creation')
-  .checkbox
-    label
-      = f.check_box(:allow_auto_completion)
+  .form-check.mb-3
+    label.form-check-label
+      = f.check_box(:allow_auto_completion, class: 'form-check-input')
       = t('activerecord.attributes.exercise.allow_auto_completion')
   .form-group
     = f.label(t('activerecord.attributes.exercise.difficulty'))
-    = f.number_field :expected_difficulty, in: 1..10, step: 1
+    = f.number_field :expected_difficulty, in: 1..10, step: 1, class: 'form-control'
 
   h2 = t('exercises.form.tags')
-  ul.list-unstyled.panel-group
-    li.panel.panel-default
-      .panel-heading role="tab" id="heading"
+  ul.list-unstyled.card-group
+    li.card
+      .card-header role="tab" id="heading"
         a.file-heading data-toggle="collapse" href="#tag-collapse"
           div.clearfix role="button"
             span = t('exercises.form.click_to_collapse')
-      .panel-collapse.collapse id="tag-collapse" role="tabpanel"
+      .card-collapse.collapse id="tag-collapse" role="tabpanel"
         .table-responsive
           table.table#tags-table
             thead
@@ -55,15 +55,15 @@
                 tr
                   td = b.check_box
                   td = b.object.tag.name
-                  td = number_field "tag_factors[#{b.object.tag.id}]", :factor, :value => b.object.factor, in: 1..10, step: 1
+                  td = number_field "tag_factors[#{b.object.tag.id}]", :factor, :value => b.object.factor, in: 1..10, step: 1, class: 'form-control-sm'
 
   h2 = t('activerecord.attributes.exercise.files')
-  ul#files.list-unstyled.panel-group
+  ul#files.list-unstyled
     = f.fields_for :files do |files_form|
       = render('file_form', f: files_form)
 
-  a#add-file.btn.btn-default.btn-sm.pull-right href='#' = t('.add_file')
-  ul#dummies.hidden = f.fields_for(:files, CodeOcean::File.new, child_index: 'index') do |files_form|
+  a#add-file.btn.btn-secondary.btn-sm.float-right href='#' = t('.add_file')
+  ul#dummies.d-none = f.fields_for(:files, CodeOcean::File.new, child_index: 'index') do |files_form|
     = render('file_form', f: files_form)
 
   .actions = render('shared/submit_button', f: f, object: @exercise)

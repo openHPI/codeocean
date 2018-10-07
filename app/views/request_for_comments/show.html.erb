@@ -25,7 +25,7 @@
     </div>
 
     <div class="question">
-      <h5>
+      <h5 class="mt-4">
         <%= t('activerecord.attributes.request_for_comments.question')%>
       </h5>
       <div class="text">
@@ -42,7 +42,7 @@
       <div class="testruns">
         <% output_runs = testruns.select { |run| run.cause == 'run' } %>
         <% if output_runs.size > 0 %>
-          <h5><%= t('request_for_comments.runtime_output') %></h5>
+          <h5 class="mt-4"><%= t('request_for_comments.runtime_output') %></h5>
           <div class="collapsed testrun-output text">
             <span class="fa fa-chevron-down collapse-button"></span>
             <% output_runs.each do |testrun| %>
@@ -63,7 +63,7 @@
 
         <% assess_runs = testruns.select { |run| run.cause == 'assess' } %>
         <% if assess_runs.size > 0 %>
-          <h5><%= t('request_for_comments.test_results') %></h5>
+          <h5 class="mt-4"><%= t('request_for_comments.test_results') %></h5>
           <div class="testrun-assess-results">
             <% assess_runs.each do |testrun| %>
               <div class="testrun-container">
@@ -86,7 +86,7 @@
     <hr>
 
     <div class="howto">
-      <h5>
+      <h5 class="mt-4">
         <%= t('request_for_comments.howto_title') %>
       </h5>
       <div class="text">
@@ -96,7 +96,7 @@
   </div>
 </div>
 
-<div class="hidden sanitizer"></div>
+<div class="d-none sanitizer"></div>
 <!--
 do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
 also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
@@ -205,16 +205,16 @@ also, all settings from the rails model needed for the editor configuration in t
           <div class="comment-header"> \
             <div class="comment-username">' + preprocess(comment.username) + '</div> \
             <div class="comment-date">' + comment.date + '</div> \
-            <div class="comment-updated' + (comment.updated ? '' : ' hidden') + '"> \
+            <div class="comment-updated' + (comment.updated ? '' : ' d-none') + '"> \
               <i class="fa fa-pencil" aria-hidden="true"></i> \
               <%= t('request_for_comments.comment_edited') %> \
             </div> \
           </div> \
           <div class="comment-content">' + commentText + '</div> \
           <textarea class="comment-editor">' + commentText + '</textarea> \
-          <div class="comment-actions' + (comment.editable ? '' : ' hidden') + '"> \
-            <button class="action-edit btn btn-xs btn-warning"><%= t('shared.edit') %></button> \
-            <button class="action-delete btn btn-xs btn-danger"><%= t('shared.destroy') %></button> \
+          <div class="comment-actions' + (comment.editable ? '' : ' d-none') + '"> \
+            <button class="action-edit btn btn-sm btn-warning"><%= t('shared.edit') %></button> \
+            <button class="action-delete btn btn-sm btn-danger"><%= t('shared.destroy') %></button> \
           </div> \
         </div>';
     });
@@ -380,7 +380,7 @@ also, all settings from the rails model needed for the editor configuration in t
     $(target).popover('show');
     $(target).on('mouseleave', function () {
       $(this).off('mouseleave');
-      $(this).popover('destroy');
+      $(this).popover('dispose');
     });
   }
 
@@ -440,7 +440,7 @@ also, all settings from the rails model needed for the editor configuration in t
             deleteButton.show();
             commentContent.show();
             commentEditor.hide();
-            commentUpdated.removeClass('hidden');
+            commentUpdated.removeClass('d-none');
           });
         } else {
           button.text('<%= t('comments.save_update') %>');

@@ -11,7 +11,7 @@ h1 = FileType.model_name.human(count: 2)
     tbody
       - @file_types.each do |file_type|
         tr
-          td = file_type.name
+          td = link_to(file_type.name, file_type)
           td = link_to(file_type.author, file_type.author)
           td = file_type.file_extension
           td = link_to(t('shared.show'), file_type)
