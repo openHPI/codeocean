@@ -143,7 +143,7 @@ describe SubmissionsController do
 
   describe 'GET #run' do
     let(:filename) { submission.collect_files.detect(&:main_file?).name_with_extension }
-    let(:request) { get :run, params: { filename: filename }, id: submission.id }
+    let(:request) { get :run, params: { filename: filename , id: submission.id } }
 
     before(:each) do
       expect_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
@@ -176,7 +176,7 @@ describe SubmissionsController do
 
         it 'does not store the error' do
           pending("no server sent events used right now")
-          expect(Error).not_to receive(:create)
+          expect(CodeOcean::Error).not_to receive(:create)
         end
       end
 
@@ -187,7 +187,7 @@ describe SubmissionsController do
 
         it 'stores the error' do
           pending("no server sent events used right now")
-          expect(Error).to receive(:create).with(execution_environment_id: submission.exercise.execution_environment_id, message: stderr)
+          expect(CodeOcean::Error).to receive(:create).with(execution_environment_id: submission.exercise.execution_environment_id, message: stderr)
         end
       end
     end
