@@ -3,6 +3,13 @@ sudo: required
 services:
   - docker
 
+language: ruby
+rvm:
+- 2.5.1
+cache:
+  bundler: true
+  yarn: true
+
 addons:
   code_climate:
     repo_token:
@@ -25,6 +32,10 @@ before_install:
   - chmod +x ~/geckodriver/geckodriver
   - export PATH=~/geckodriver/:$PATH
 
+install:
+  - bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
+  - yarn install
+
 before_script:
   - cp .rspec.travis .rspec
   - cp config/action_mailer.yml.travis config/action_mailer.yml
@@ -36,9 +47,4 @@ before_script:
   - psql --command='CREATE DATABASE travis_ci_test;' --username=postgres
   - bundle exec rake db:schema:load RAILS_ENV=test
 
-cache: bundler
-language: ruby
-rvm:
-- 2.5.1
-  
 script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper && bundle exec codeclimate-test-reporter
