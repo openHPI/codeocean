@@ -3,15 +3,15 @@
   .form-group
     = f.label(:name)
     = f.text_field(:name, class: 'form-control', required: true)
-  .form
+  .form-group
     = f.label(:locale)
     = f.select(:locale, I18n.available_locales.map { |locale| [t("locales.#{locale}"), locale] }, {}, class: 'form-control')
   .form-group
     = f.label(:message)
     = f.text_field(:message, class: 'form-control', placeholder: "'$2' has no method '$1'.", required: true)
-    .help-block = t('.hints.message')
+    .help-block.form-text = t('.hints.message')
   .form-group
     = f.label(:regular_expression)
     = f.text_field(:regular_expression, class: 'form-control', placeholder: 'undefined method (\w+) for (\w+)', required: true)
-    .help-block = t('.hints.regular_expression')
+    .help-block.form-text = t('.hints.regular_expression')
   .actions = render('shared/submit_button', f: f, object: @hint)

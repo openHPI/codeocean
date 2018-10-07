@@ -127,7 +127,7 @@
   background-color:#f9f9f9
 }
 
-.ace_tooltip {
+:not(.allow_ace_tooltip) > .ace_tooltip {
   display: none !important;
 }
 

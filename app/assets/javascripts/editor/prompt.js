@@ -2,19 +2,19 @@ CodeOceanEditorPrompt = {
     prompt: '#prompt',
 
     showPrompt: function(msg) {
-        var label = $('#prompt .input-group-addon');
+        var label = $('#prompt .input-group-text');
         var prompt = $(this.prompt);
         label.text(msg.data || label.data('prompt'));
-        if (prompt.isPresent() && prompt.hasClass('hidden')) {
-            prompt.removeClass('hidden');
+        if (prompt.isPresent() && prompt.hasClass('d-none')) {
+            prompt.removeClass('d-none');
         }
         $('#prompt input').focus();
     },
 
     hidePrompt: function() {
         var prompt = $(this.prompt);
-        if (prompt.isPresent() && !prompt.hasClass('hidden')) {
-            prompt.addClass('hidden');
+        if (prompt.isPresent() && !prompt.hasClass('d-none')) {
+            prompt.addClass('d-none');
         }
     },
 

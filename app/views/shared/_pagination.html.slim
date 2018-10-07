@@ -1,3 +1,2 @@
-- if (pagination = will_paginate(collection, container: false)).present?
-  .text-center
-    ul.pagination = pagination
+- if (pagination = will_paginate(collection, container: false, renderer: WillPaginate::ActionView::Bootstrap4LinkRenderer)).present?
+  ul.pagination.justify-content-center = pagination

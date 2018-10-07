@@ -9,7 +9,7 @@ h1 = Submission.model_name.human(count: 2)
     = f.select(:cause_eq, Submission.select(:cause).distinct.map(&:cause).sort, class: 'form-control', prompt: t('activerecord.attributes.submission.cause'))
 
 .table-responsive
-  table.table
+  table.table.mt-4
     thead
       tr
         th = sort_link(@search, :exercise_id, t('activerecord.attributes.submission.exercise'))

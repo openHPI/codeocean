@@ -12,16 +12,16 @@
   .form-group
     = f.label(:indent_size)
     = f.number_field(:indent_size, class: 'form-control', placeholder: 2, required: true)
-  .checkbox
-    label
-      = f.check_box(:binary)
+  .form-check
+    label.form-check-label
+      = f.check_box(:binary, class: 'form-check-input')
       = t('activerecord.attributes.file_type.binary')
-  .checkbox
-    label
-      = f.check_box(:executable)
+  .form-check
+    label.form-check-label
+      = f.check_box(:executable, class: 'form-check-input')
       = t('activerecord.attributes.file_type.executable')
-  .checkbox
-    label
-      = f.check_box(:renderable)
+  .form-check.mb-3
+    label.form-check-label
+      = f.check_box(:renderable, class: 'form-check-input')
       = t('activerecord.attributes.file_type.renderable')
   .actions = render('shared/submit_button', f: f, object: @file_type)

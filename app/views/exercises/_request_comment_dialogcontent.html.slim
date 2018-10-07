@@ -2,7 +2,7 @@ h5#rfc_intervention_text style='display: none;' = t('exercises.implement.rfc_int
 h5 = t('exercises.implement.comment.question')
 
 
-textarea.form-control#question(style='resize:none;')
+textarea.form-control.flex-grow-1#question(style='resize:none;')
 p = ''
 / data-cause='requestComments' is not used here right now, we pass the button #requestComments (not askForCommentsButton) as initiator of the action. 
 / But if we use this button, it will work since the correct cause is supplied

@@ -9,7 +9,7 @@ CodeOceanEditorEvaluation = {
     this.clearScoringOutput();
     this.createSubmission('#assess', null, function (response) {
       this.showSpinner($('#assess'));
-      $('#score_div').removeClass('hidden');
+      $('#score_div').removeClass('d-none');
       var url = response.score_url;
       this.initializeSocketForScoring(url);
     }.bind(this));
@@ -26,9 +26,9 @@ CodeOceanEditorEvaluation = {
 
   printScoringResult: function (result, index) {
     $('#results').show();
-    var panel = $('#dummies').children().first().clone();
-    this.populatePanel(panel, result, index);
-    $('#results ul').first().append(panel);
+    var card = $('#dummies').children().first().clone();
+    this.populateCard(card, result, index);
+    $('#results ul').first().append(card);
   },
 
   printScoringResults: function (response) {
@@ -60,7 +60,7 @@ CodeOceanEditorEvaluation = {
   renderHint: function (object) {
     var hint = object.data || object.hint;
     if (hint) {
-      $('#hint .panel-body').text(hint);
+      $('#hint .card-body').text(hint);
       $('#hint').fadeIn();
     }
   },

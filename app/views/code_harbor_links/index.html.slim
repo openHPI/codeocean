@@ -9,7 +9,7 @@ h1 = CodeHarborLink.model_name.human(count: 2)
     tbody
       - @code_harbor_links.each do |code_harbor_link|
         tr
-          td = code_harbor_link.oauth2token
+          td = link_to(code_harbor_link.oauth2token, code_harbor_link)
           td = link_to(t('shared.show'), code_harbor_link)
           td = link_to(t('shared.edit'), edit_code_harbor_link_path(code_harbor_link))
           td = link_to(t('shared.destroy'), code_harbor_link, data: {confirm: t('shared.confirm_destroy')}, method: :delete)

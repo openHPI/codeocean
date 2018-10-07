@@ -32,7 +32,7 @@ h1 = @exercise
       -working_time = @exercise.average_working_time_for(user.id) or 0
       -working_time_array.push working_time
     hr
-    .hidden#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
+    .d-none#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
     .graph-functions
     div#chart_1
     hr
