@@ -1,116 +1,87 @@
-<div class="list-group">
-  <h4 id ="exercise_caption" class="list-group-item-heading" data-exercise-id="<%=@request_for_comment.exercise.id%>" data-comment-exercise-url="<%=create_comment_exercise_request_for_comment_path%>" data-rfc-id = "<%= @request_for_comment.id %>" >
-    <% if @request_for_comment.solved? %>
-        <span class="fa fa-check" aria-hidden="true"></span>
-    <% end %>
-    <%= link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise]) %>
-  </h4>
-  <p class="list-group-item-text">
-      <%
-        user = @request_for_comment.user
-        submission =  @request_for_comment.submission
-        testruns = Testrun.where(:submission_id => @request_for_comment.submission)
-      %>
-    <%= user.displayname %> | <%= @request_for_comment.created_at.localtime %>
-  </p>
-  <div class="rfc">
-    <div class="description">
-      <h5>
-        <%= t('activerecord.attributes.exercise.description') %>
-      </h5>
-      <div class="text">
-        <span class="fa fa-chevron-up collapse-button"></span>
-        <%= render_markdown(@request_for_comment.exercise.description) %>
-      </div>
-    </div>
+.list-group
+  h4#exercise_caption.list-group-item-heading data-comment-exercise-url=create_comment_exercise_request_for_comment_path data-exercise-id="#{@request_for_comment.exercise.id}" data-rfc-id="#{@request_for_comment.id}"
+    - if @request_for_comment.solved?
+      span.fa.fa-check aria-hidden="true"
+    = link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise])
+  p.list-group-item-text
+    - user = @request_for_comment.user
+    - submission =  @request_for_comment.submission
+    - testruns = Testrun.where(:submission_id => @request_for_comment.submission)
+    = user.displayname
+    | | #{@request_for_comment.created_at.localtime}
+  .rfc
+    .description
+      h5
+        = t('activerecord.attributes.exercise.description')
+      .text
+        span.fa.fa-chevron-up.collapse-button
+        = render_markdown(@request_for_comment.exercise.description)
 
-    <div class="question">
-      <h5 class="mt-4">
-        <%= t('activerecord.attributes.request_for_comments.question')%>
-      </h5>
-      <div class="text">
-        <% question = @request_for_comment.question %>
-        <%= question.nil? or question.empty? ? t('request_for_comments.no_question') : question %>
-      </div>
-    </div>
+    .question
+      h5.mt-4
+        = t('activerecord.attributes.request_for_comments.question')
+      .text
+        - question = @request_for_comment.question
+        = question.nil? or question.empty? ? t('request_for_comments.no_question') : question
 
-    <% if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved? %>
-        <%= render('mark_as_solved') %>
-    <% end %>
-    
-    <% if testruns.size > 0 %>
-      <div class="testruns">
-        <% output_runs = testruns.select { |run| run.cause == 'run' } %>
-        <% if output_runs.size > 0 %>
-          <h5 class="mt-4"><%= t('request_for_comments.runtime_output') %></h5>
-          <div class="collapsed testrun-output text">
-            <span class="fa fa-chevron-down collapse-button"></span>
-            <% output_runs.each do |testrun| %>
-              <%
-                output = testrun.try(:output)
-                if output
-                  messages = output.scan(/{(?:(?:".+?":".+?")+?,?)+}/)
-                  messages.map! {|el| JSON.parse(el)}
-                  messages.keep_if {|message| message['cmd'] == 'write'}
-                  messages.map! {|message| message['data']}
-                  output = messages.join ''
-                end
-              %>
-              <pre><%= output or t('request_for_comments.no_output') %></pre>
-            <% end %>
-          </div>
-        <% end %>
+    - if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?
+      = render('mark_as_solved')
 
-        <% assess_runs = testruns.select { |run| run.cause == 'assess' } %>
-        <% if assess_runs.size > 0 %>
-          <h5 class="mt-4"><%= t('request_for_comments.test_results') %></h5>
-          <div class="testrun-assess-results">
-            <% assess_runs.each do |testrun| %>
-              <div class="testrun-container">
-                <div class="result <%= testrun.passed ? 'passed' : 'failed' %>"></div>
-                <div class="collapsed testrun-output text">
-                  <span class="fa fa-chevron-down collapse-button"></span>
-                  <pre><%= testrun.output or t('request_for_comments.no_output')%></pre>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
+    - if testruns.size > 0
+      .testruns
+        - output_runs = testruns.select {|run| run.cause == 'run'}
+        - if output_runs.size > 0
+          h5.mt-4= t('request_for_comments.runtime_output')
+          .collapsed.testrun-output.text
+            span.fa.fa-chevron-down.collapse-button
+            - output_runs.each do |testrun|
+              - output = testrun.try(:output)
+              - if output
+                - messages = output.scan(/{(?:(?:".+?":".+?")+?,?)+}/)
+                - messages.map! {|el| JSON.parse(el)}
+                - messages.keep_if {|message| message['cmd'] == 'write'}
+                - messages.map! {|message| message['data']}
+                - output = messages.join ''
+              pre= output or t('request_for_comments.no_output')
 
-    <% if @current_user.admin? && user.is_a?(ExternalUser) %>
-        <%= render('admin_menu') %>
-    <% end %>
+        - assess_runs = testruns.select {|run| run.cause == 'assess'}
+        - if assess_runs.size > 0
+          h5.mt-4= t('request_for_comments.test_results')
+          .testrun-assess-results
+            - assess_runs.each do |testrun|
+              .testrun-container
+                div class=("result #{testrun.passed ? 'passed' : 'failed'}")
+                .collapsed.testrun-output.text
+                  span.fa.fa-chevron-down.collapse-button
+                  pre= testrun.output or t('request_for_comments.no_output')
 
-    <hr>
+    - if @current_user.admin? && user.is_a?(ExternalUser)
+      = render('admin_menu')
 
-    <div class="howto">
-      <h5 class="mt-4">
-        <%= t('request_for_comments.howto_title') %>
-      </h5>
-      <div class="text">
-        <%= render_markdown(t('request_for_comments.howto')) %>
-      </div>
-    </div>
-  </div>
-</div>
+    hr/
 
-<div class="d-none sanitizer"></div>
-<!--
-do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
-also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
--->
-<% submission.files.each do |file| %>
-  <%= (file.path or "") + "/" + file.name +  file.file_type.file_extension %><br>
-  &nbsp;&nbsp;<i class="fa fa-arrow-down" aria-hidden="true"></i> <%= t('request_for_comments.click_here') %>
-  <div id='commentitor' class='editor' data-read-only='true' data-file-id='<%=file.id%>' data-mode='<%=file.file_type.editor_mode%>'><%= file.content %>
-  </div>
-<% end %>
+    .howto
+      h5.mt-4
+        = t('request_for_comments.howto_title')
+      .text
+        = render_markdown(t('request_for_comments.howto'))
 
-<%= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent') %>
+.d-none.sanitizer
+/!
+  | do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
+  | also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
+- submission.files.each do |file|
+  = (file.path or "") + "/" + file.name +  file.file_type.file_extension
+  br/
+  |   
+  i.fa.fa-arrow-down aria-hidden="true"
+  = t('request_for_comments.click_here')
+  #commentitor.editor data-file-id="#{file.id}" data-mode="#{file.file_type.editor_mode}" data-read-only="true"
+    = file.content
 
-<script type="text/javascript">
+= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent')
+
+javascript:
 
   $('.modal-content').draggable({
     handle: '.modal-header'
@@ -132,7 +103,7 @@ also, all settings from the rails model needed for the editor configuration in t
       if(response.solved){
         solvedButton.removeClass('btn-primary');
         solvedButton.addClass('btn-success');
-        solvedButton.html('<%= t('request_for_comments.solved') %>');
+        solvedButton.html("#{t('request_for_comments.solved')}");
         solvedButton.off('click');
         thankYouContainer.show();
       }
@@ -207,14 +178,14 @@ also, all settings from the rails model needed for the editor configuration in t
             <div class="comment-date">' + comment.date + '</div> \
             <div class="comment-updated' + (comment.updated ? '' : ' d-none') + '"> \
               <i class="fa fa-pencil" aria-hidden="true"></i> \
-              <%= t('request_for_comments.comment_edited') %> \
+              #{{ t('request_for_comments.comment_edited') }} \
             </div> \
           </div> \
           <div class="comment-content">' + commentText + '</div> \
           <textarea class="comment-editor">' + commentText + '</textarea> \
           <div class="comment-actions' + (comment.editable ? '' : ' d-none') + '"> \
-            <button class="action-edit btn btn-sm btn-warning"><%= t('shared.edit') %></button> \
-            <button class="action-delete btn btn-sm btn-danger"><%= t('shared.destroy') %></button> \
+            <button class="action-edit btn btn-sm btn-warning">#{ t('shared.edit') }</button> \
+            <button class="action-delete btn btn-sm btn-danger">#{ t('shared.destroy') }</button> \
           </div> \
         </div>';
     });
@@ -227,7 +198,7 @@ also, all settings from the rails model needed for the editor configuration in t
     var htmlContent = generateCommentHtmlContent(comments.reverse().slice(0, maxComments));
     if (comments.length > maxComments) {
       // add a hint that there are more comments than shown here
-      htmlContent += '<div class="popover-footer"><%= t('request_for_comments.click_for_more_comments') %></div>'
+      htmlContent += '<div class="popover-footer">#{ t('request_for_comments.click_for_more_comments') }</div>'
         .replace('${numComments}', String(comments.length - maxComments));
     }
     where.popover({
@@ -398,7 +369,7 @@ also, all settings from the rails model needed for the editor configuration in t
 
     var row = e.getDocumentPosition().row;
     e.stop();
-    $('.modal-title').text('<%= t('request_for_comments.modal_title') %>'.replace('${line}', row + 1));
+    $('.modal-title').text("#{ t('request_for_comments.modal_title') }".replace('${line}', row + 1));
 
     var commentModal = $('#comment-modal');
 
@@ -416,7 +387,7 @@ also, all settings from the rails model needed for the editor configuration in t
         var commentId = parent.data('comment-id');
 
         deleteComment(commentId, editor, fileid, function () {
-          parent.html('<div class="comment-removed"><%= t('comments.deleted') %></div>');
+          parent.html('<div class="comment-removed">#{ t('comments.deleted') }</div>');
         });
       });
 
@@ -434,7 +405,7 @@ also, all settings from the rails model needed for the editor configuration in t
 
         if (currentlyEditing) {
           updateComment(commentId, commentEditor.val(), editor, fileid, function () {
-            button.text('<%= t('shared.edit') %>');
+            button.text("#{ t('shared.edit') }");
             button.data('editing', false);
             commentContent.text(commentEditor.val());
             deleteButton.show();
@@ -443,7 +414,7 @@ also, all settings from the rails model needed for the editor configuration in t
             commentUpdated.removeClass('d-none');
           });
         } else {
-          button.text('<%= t('comments.save_update') %>');
+          button.text("#{ t('comments.save_update') }");
           button.data('editing', true);
           deleteButton.hide();
           commentContent.hide();
@@ -487,5 +458,3 @@ also, all settings from the rails model needed for the editor configuration in t
       text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
   }
-
-</script>
