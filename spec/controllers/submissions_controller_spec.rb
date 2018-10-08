@@ -12,13 +12,13 @@ describe SubmissionsController do
 
     context 'with a valid submission' do
       let(:exercise) { FactoryBot.create(:hello_world) }
-      let(:request) { proc { post :create, format: :json, params: { submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id) } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, format: :json, params: { submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id) } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(submission: Submission)
 
       it 'creates the submission' do
-        expect { request.call }.to change(Submission, :count).by(1)
+        expect { perform_request.call }.to change(Submission, :count).by(1)
       end
 
       expect_json
@@ -143,7 +143,7 @@ describe SubmissionsController do
 
   describe 'GET #run' do
     let(:filename) { submission.collect_files.detect(&:main_file?).name_with_extension }
-    let(:request) { get :run, params: { filename: filename , id: submission.id } }
+    let(:perform_request) { get :run, params: { filename: filename , id: submission.id } }
 
     before(:each) do
       expect_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
@@ -152,7 +152,7 @@ describe SubmissionsController do
     context 'when no errors occur during execution' do
       before(:each) do
         expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
-        request
+        perform_request
       end
 
       pending("todo")
@@ -165,7 +165,7 @@ describe SubmissionsController do
         expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_yield(:stderr, stderr)
       end
 
-      after(:each) { request }
+      after(:each) { perform_request }
 
       context 'when the error is covered by a hint' do
         let(:hint) { "Your object 'main' of class 'Object' does not understand the method 'foo'." }
@@ -237,20 +237,20 @@ describe SubmissionsController do
   end
 
   describe 'GET #score' do
-    let(:request) { proc { get :score, params: { id: submission.id } } }
-    before(:each) { request.call }
+    let(:perform_request) { proc { get :score, params: { id: submission.id } } }
+    before(:each) { perform_request.call }
 
     pending("todo: mock puma webserver or encapsulate tubesock call (Tubesock::HijackNotAvailable)")
   end
 
   describe 'POST #stop' do
-    let(:request) { proc { post :stop, params: { container_id: CONTAINER.id, id: submission.id } } }
+    let(:perform_request) { proc { post :stop, params: { container_id: CONTAINER.id, id: submission.id } } }
 
     context 'when the container can be found' do
       before(:each) do
         expect(Docker::Container).to receive(:get).and_return(CONTAINER)
         #expect(Rails.logger).to receive(:debug).at_least(:once).and_call_original
-        request.call
+        perform_request.call
       end
 
       it 'renders nothing' do
@@ -263,7 +263,7 @@ describe SubmissionsController do
     context 'when the container cannot be found' do
       before(:each) do
         expect(Docker::Container).to receive(:get).and_raise(Docker::Error::NotFoundError)
-        request.call
+        perform_request.call
       end
 
       it 'renders nothing' do

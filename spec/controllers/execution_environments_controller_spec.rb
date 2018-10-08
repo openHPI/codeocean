@@ -9,14 +9,14 @@ describe ExecutionEnvironmentsController do
     before(:each) { expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
 
     context 'with a valid execution environment' do
-      let(:request) { proc { post :create, params: { execution_environment: FactoryBot.build(:ruby).attributes } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, params: { execution_environment: FactoryBot.build(:ruby).attributes } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(docker_images: Array)
       expect_assigns(execution_environment: ExecutionEnvironment)
 
       it 'creates the execution environment' do
-        expect { request.call }.to change(ExecutionEnvironment, :count).by(1)
+        expect { perform_request.call }.to change(ExecutionEnvironment, :count).by(1)
       end
 
       expect_redirect(ExecutionEnvironment.last)
