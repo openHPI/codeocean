@@ -18,3 +18,19 @@ window._ = _; // Publish underscore's `_` in global namespace
 // CSS
 import 'chosen-js/chosen.css';
 import 'jstree/dist/themes/default/style.min.css';
+
+// custom jquery-ui library for minimal mouse interaction support
+import 'jquery-ui/ui/widget'
+import 'jquery-ui/ui/data'
+import 'jquery-ui/ui/disable-selection'
+import 'jquery-ui/ui/scroll-parent'
+import 'jquery-ui/ui/widgets/draggable'
+import 'jquery-ui/ui/widgets/droppable'
+import 'jquery-ui/ui/widgets/resizable'
+import 'jquery-ui/ui/widgets/selectable'
+import 'jquery-ui/ui/widgets/sortable'
+import 'jquery-ui/themes/base/draggable.css'
+import 'jquery-ui/themes/base/core.css'
+import 'jquery-ui/themes/base/resizable.css'
+import 'jquery-ui/themes/base/selectable.css'
+import 'jquery-ui/themes/base/sortable.css'

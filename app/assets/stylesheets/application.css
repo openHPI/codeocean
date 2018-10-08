@@ -18,7 +18,5 @@
  * vendor/assets
  *= require font-awesome.min
  *= require google_opensans
- *= require jquery-ui.min
- *= require jquery-ui.structure.min
  *= require_tree .
 */
