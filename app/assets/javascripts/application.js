@@ -22,7 +22,6 @@
 // vendor/assets
 //= require ace/ace
 //= require ace/ext-language_tools
-//= require jstree/jstree.min
 //= require jquery-ui.min
 //= require underscore.min
 //= require_tree .

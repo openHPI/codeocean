@@ -11,6 +11,8 @@
 import 'jquery'
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'chosen-js/chosen.jquery';
+import 'jstree';
 
 // CSS
 import 'chosen-js/chosen.css';
+import 'jstree/dist/themes/default/style.min.css';
