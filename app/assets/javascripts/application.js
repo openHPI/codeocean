@@ -23,5 +23,4 @@
 //= require ace/ace
 //= require ace/ext-language_tools
 //= require jquery-ui.min
-//= require underscore.min
 //= require_tree .
