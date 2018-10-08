@@ -12,6 +12,8 @@ import 'jquery'
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'chosen-js/chosen.jquery';
 import 'jstree';
+import 'underscore';
+window._ = _; // Publish underscore's `_` in global namespace
 
 // CSS
 import 'chosen-js/chosen.css';

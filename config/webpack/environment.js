@@ -15,6 +15,7 @@ environment.plugins.prepend('Provide', new webpack.ProvidePlugin({
         jquery: 'jquery',
         'window.Tether': "tether",
         Popper: ['popper.js', 'default'], // for Bootstrap 4
+        _: 'underscore',
     })
 );
 
@@ -22,7 +23,8 @@ const envConfig = module.exports = environment;
 const aliasConfig = module.exports = {
     resolve: {
         alias: {
-            jquery: 'jquery/src/jquery'
+            jquery: 'jquery/src/jquery',
+            underscore: 'underscore/underscore',
         }
     }
 };
