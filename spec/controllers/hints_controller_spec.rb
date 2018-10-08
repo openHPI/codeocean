@@ -8,14 +8,14 @@ describe HintsController do
 
   describe 'POST #create' do
     context 'with a valid hint' do
-      let(:request) { proc { post :create, params: { execution_environment_id: execution_environment.id, hint: FactoryBot.attributes_for(:ruby_syntax_error) } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, params: { execution_environment_id: execution_environment.id, hint: FactoryBot.attributes_for(:ruby_syntax_error) } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(execution_environment: :execution_environment)
       expect_assigns(hint: Hint)
 
       it 'creates the hint' do
-        expect { request.call }.to change(Hint, :count).by(1)
+        expect { perform_request.call }.to change(Hint, :count).by(1)
       end
 
       expect_redirect(Hint.last)

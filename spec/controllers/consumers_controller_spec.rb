@@ -7,13 +7,13 @@ describe ConsumersController do
 
   describe 'POST #create' do
     context 'with a valid consumer' do
-      let(:request) { proc { post :create, params: { consumer: FactoryBot.attributes_for(:consumer) } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, params: { consumer: FactoryBot.attributes_for(:consumer) } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(consumer: Consumer)
 
       it 'creates the consumer' do
-        expect { request.call }.to change(Consumer, :count).by(1)
+        expect { perform_request.call }.to change(Consumer, :count).by(1)
       end
 
       expect_redirect(Consumer.last)

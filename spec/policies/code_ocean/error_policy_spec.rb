@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ErrorPolicy do
+describe CodeOcean::ErrorPolicy do
   subject { described_class }
 
   let(:error) { FactoryBot.build(:error) }

@@ -7,13 +7,13 @@ describe EventsController do
 
   describe 'POST #create' do
     context 'with a valid event' do
-      let(:request) { proc { post :create, params: { event: {category: 'foo', data: 'bar', exercise_id: exercise.id, file_id: exercise.files[0].id} } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, params: { event: {category: 'foo', data: 'bar', exercise_id: exercise.id, file_id: exercise.files[0].id} } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(event: Event)
 
       it 'creates the Event' do
-        expect { request.call }.to change(Event, :count).by(1)
+        expect { perform_request.call }.to change(Event, :count).by(1)
       end
 
       expect_status(201)

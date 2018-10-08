@@ -72,36 +72,36 @@ describe SessionsController do
 
     context 'with valid launch parameters' do
       let(:locale) { :de }
-      let(:request) { post :create_through_lti, params: { custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id } }
+      let(:perform_request) { post :create_through_lti, params: { custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id } }
       let(:user) { FactoryBot.create(:external_user, consumer_id: consumer.id) }
       before(:each) { expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
 
       it 'assigns the current user' do
-        request
+        perform_request
         expect(assigns(:current_user)).to be_an(ExternalUser)
         expect(session[:external_user_id]).to eq(user.id)
       end
 
       it 'sets the specified locale' do
         expect(controller).to receive(:set_locale).and_call_original
-        request
+        perform_request
         expect(I18n.locale).to eq(locale)
       end
 
       it 'assigns the exercise' do
-        request
+        perform_request
         expect(assigns(:exercise)).to eq(exercise)
       end
 
       it 'stores LTI parameters in the session' do
         #Todo replace session with lti_parameter /should be done already
         expect(controller).to receive(:store_lti_session_data)
-        request
+        perform_request
       end
 
       it 'stores the OAuth nonce' do
         expect(controller).to receive(:store_nonce).with(nonce)
-        request
+        perform_request
       end
 
       context 'when LTI outcomes are supported' do
@@ -109,7 +109,7 @@ describe SessionsController do
 
         before(:each) do
           expect(controller).to receive(:lti_outcome_service?).and_return(true)
-          request
+          perform_request
         end
 
         expect_flash_message(:notice, :message)
@@ -120,14 +120,14 @@ describe SessionsController do
 
         before(:each) do
           expect(controller).to receive(:lti_outcome_service?).and_return(false)
-          request
+          perform_request
         end
 
         expect_flash_message(:notice, :message)
       end
 
       it 'redirects to the requested exercise' do
-        request
+        perform_request
         expect(controller).to redirect_to(implement_exercise_path(exercise.id))
       end
 
@@ -192,7 +192,7 @@ describe SessionsController do
   end
 
   describe 'GET #destroy_through_lti' do
-    let(:request) { proc { get :destroy_through_lti, params: { consumer_id: consumer.id, submission_id: submission.id } } }
+    let(:perform_request) { proc { get :destroy_through_lti, params: { consumer_id: consumer.id, submission_id: submission.id } } }
     let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:dummy)) }
 
     before(:each) do
@@ -202,12 +202,12 @@ describe SessionsController do
       # session[:lti_parameters] = {}
     end
 
-    before(:each) { request.call }
+    before(:each) { perform_request.call }
 
     it 'clears the session' do
       #Todo replace session with lti_parameter /should be done already
       expect(controller).to receive(:clear_lti_session_data)
-      request.call
+      perform_request.call
     end
 
     expect_status(200)

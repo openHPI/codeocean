@@ -7,6 +7,7 @@
 postgres_version=10
 ruby_version=2.5.1
 rails_version=5.2.1
+geckodriver_version=0.23.0
 
 ########## INSTALL SCRIPT ###########
 
@@ -103,7 +104,7 @@ fi
 
 # Selenium tests
 sudo apt-get -qq -y install xvfb firefox
-wget --quiet -O ~/geckodriverdownload.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.19.1/geckodriver-v0.19.1-linux64.tar.gz
+wget --quiet -O ~/geckodriverdownload.tar.gz https://github.com/mozilla/geckodriver/releases/download/v$geckodriver_version/geckodriver-v$geckodriver_version-linux64.tar.gz
 sudo tar -xzf ~/geckodriverdownload.tar.gz -C /usr/local/bin
 rm ~/geckodriverdownload.tar.gz
 sudo chmod +x /usr/local/bin/geckodriver

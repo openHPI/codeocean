@@ -103,13 +103,13 @@ describe InternalUsersController do
     before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      let(:request) { proc { post :create, params: { internal_user: FactoryBot.build(:teacher).attributes } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, params: { internal_user: FactoryBot.build(:teacher).attributes } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(user: InternalUser)
 
       it 'creates the internal user' do
-        expect { request.call }.to change(InternalUser, :count).by(1)
+        expect { perform_request.call }.to change(InternalUser, :count).by(1)
       end
 
       it 'creates an inactive user' do
@@ -122,7 +122,7 @@ describe InternalUsersController do
 
       it 'sends an activation email' do
         expect_any_instance_of(InternalUser).to receive(:send_activation_needed_email!)
-        request.call
+        perform_request.call
       end
 
       expect_redirect(InternalUser.last)
@@ -187,13 +187,13 @@ describe InternalUsersController do
 
   describe 'POST #forgot_password' do
     context 'with an email address' do
-      let(:request) { proc { post :forgot_password, params: { email: user.email } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :forgot_password, params: { email: user.email } } }
+      before(:each) { perform_request.call }
 
       it 'delivers instructions to reset the password' do
         expect(InternalUser).to receive(:find_by).and_return(user)
         expect(user).to receive(:deliver_reset_password_instructions!)
-        request.call
+        perform_request.call
       end
 
       expect_redirect(:root)
@@ -264,8 +264,8 @@ describe InternalUsersController do
       let(:password) { 'foo' }
 
       context 'with a matching password confirmation' do
-        let(:request) { proc { put :reset_password, params: { internal_user: {password: password, password_confirmation: password}, id: user.id, token: user.reset_password_token } } }
-        before(:each) { request.call }
+        let(:perform_request) { proc { put :reset_password, params: { internal_user: {password: password, password_confirmation: password}, id: user.id, token: user.reset_password_token } } }
+        before(:each) { perform_request.call }
 
         expect_assigns(user: :user)
 

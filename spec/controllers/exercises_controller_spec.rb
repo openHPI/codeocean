@@ -7,12 +7,12 @@ describe ExercisesController do
 
   describe 'PUT #batch_update' do
     let(:attributes) { { 'public': 'true'} }
-    let(:request) { proc { put :batch_update, params: { exercises: {0 => attributes.merge(id: exercise.id)} } } }
-    before(:each) { request.call }
+    let(:perform_request) { proc { put :batch_update, params: { exercises: {0 => attributes.merge(id: exercise.id)} } } }
+    before(:each) { perform_request.call }
 
     it 'updates the exercises' do
       expect_any_instance_of(Exercise).to receive(:update).with(attributes)
-      request.call
+      perform_request.call
     end
 
     expect_json
@@ -20,16 +20,16 @@ describe ExercisesController do
   end
 
   describe 'POST #clone' do
-    let(:request) { proc { post :clone, params: { id: exercise.id } } }
+    let(:perform_request) { proc { post :clone, params: { id: exercise.id } } }
 
     context 'when saving succeeds' do
-      before(:each) { request.call }
+      before(:each) { perform_request.call }
 
       expect_assigns(exercise: Exercise)
 
       it 'clones the exercise' do
         expect_any_instance_of(Exercise).to receive(:duplicate).with(hash_including(public: false, user: user)).and_call_original
-        expect { request.call }.to change(Exercise, :count).by(1)
+        expect { perform_request.call }.to change(Exercise, :count).by(1)
       end
 
       it 'generates a new token' do
@@ -42,7 +42,7 @@ describe ExercisesController do
     context 'when saving fails' do
       before(:each) do
         expect_any_instance_of(Exercise).to receive(:save).and_return(false)
-        request.call
+        perform_request.call
       end
 
       expect_assigns(exercise: Exercise)
@@ -55,26 +55,26 @@ describe ExercisesController do
     let(:exercise_attributes) { FactoryBot.build(:dummy).attributes }
 
     context 'with a valid exercise' do
-      let(:request) { proc { post :create, params: { exercise: exercise_attributes } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, params: { exercise: exercise_attributes } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(exercise: Exercise)
 
       it 'creates the exercise' do
-        expect { request.call }.to change(Exercise, :count).by(1)
+        expect { perform_request.call }.to change(Exercise, :count).by(1)
       end
 
       expect_redirect(Exercise.last)
     end
 
     context 'when including a file' do
-      let(:request) { proc { post :create, params: { exercise: exercise_attributes.merge(files_attributes: files_attributes) } } }
+      let(:perform_request) { proc { post :create, params: { exercise: exercise_attributes.merge(files_attributes: files_attributes) } } }
 
       context 'when specifying the file content within the form' do
         let(:files_attributes) { {'0' => FactoryBot.build(:file).attributes} }
 
         it 'creates the file' do
-          expect { request.call }.to change(CodeOcean::File, :count)
+          expect { perform_request.call }.to change(CodeOcean::File, :count)
         end
       end
 
@@ -87,11 +87,11 @@ describe ExercisesController do
           let(:uploaded_file) { Rack::Test::UploadedFile.new(file_path, 'video/mp4', true) }
 
           it 'creates the file' do
-            expect { request.call }.to change(CodeOcean::File, :count)
+            expect { perform_request.call }.to change(CodeOcean::File, :count)
           end
 
           it 'assigns the native file' do
-            request.call
+            perform_request.call
             expect(Exercise.last.files.first.native_file).to be_a(FileUploader)
           end
         end
@@ -102,11 +102,11 @@ describe ExercisesController do
           let(:uploaded_file) { Rack::Test::UploadedFile.new(file_path, 'text/x-ruby', false) }
 
           it 'creates the file' do
-            expect { request.call }.to change(CodeOcean::File, :count)
+            expect { perform_request.call }.to change(CodeOcean::File, :count)
           end
 
           it 'assigns the file content' do
-            request.call
+            perform_request.call
             expect(Exercise.last.files.first.content).to eq(File.read(file_path))
           end
         end
@@ -144,11 +144,11 @@ describe ExercisesController do
   end
 
   describe 'GET #implement' do
-    let(:request) { proc { get :implement, params: { id: exercise.id } } }
+    let(:perform_request) { proc { get :implement, params: { id: exercise.id } } }
 
     context 'with an exercise with visible files' do
       let(:exercise) { FactoryBot.create(:fibonacci) }
-      before(:each) { request.call }
+      before(:each) { perform_request.call }
 
       expect_assigns(exercise: :exercise)
 
@@ -156,7 +156,7 @@ describe ExercisesController do
         let!(:submission) { FactoryBot.create(:submission, exercise_id: exercise.id, user_id: user.id, user_type: user.class.name) }
 
         it "populates the editors with the submission's files' content" do
-          request.call
+          perform_request.call
           expect(assigns(:files)).to eq(submission.files)
         end
       end
@@ -172,7 +172,7 @@ describe ExercisesController do
     end
 
     context 'with an exercise without visible files' do
-      before(:each) { request.call }
+      before(:each) { perform_request.call }
 
       expect_assigns(exercise: :exercise)
       expect_flash_message(:alert, :'exercises.implement.no_files')
@@ -229,7 +229,7 @@ describe ExercisesController do
 
   describe 'POST #submit' do
     let(:output) { {} }
-    let(:request) { post :submit, format: :json, params: { id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id} } }
+    let(:perform_request) { post :submit, format: :json, params: { id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id} } }
     let!(:external_user) { FactoryBot.create(:external_user) }
     let!(:lti_parameter) { FactoryBot.create(:lti_parameter, external_user: external_user, exercise: exercise) }
 
@@ -248,7 +248,7 @@ describe ExercisesController do
       context 'when the score transmission succeeds' do
         before(:each) do
           expect(controller).to receive(:send_score).and_return(status: 'success')
-          request
+          perform_request
         end
 
         expect_assigns(exercise: :exercise)
@@ -264,7 +264,7 @@ describe ExercisesController do
       context 'when the score transmission fails' do
         before(:each) do
           expect(controller).to receive(:send_score).and_return(status: 'unsupported')
-          request
+          perform_request
         end
 
         expect_assigns(exercise: :exercise)
@@ -282,7 +282,7 @@ describe ExercisesController do
       before(:each) do
         expect(controller).to receive(:lti_outcome_service?).and_return(false)
         expect(controller).not_to receive(:send_score)
-        request
+        perform_request
       end
 
       expect_assigns(exercise: :exercise)
