@@ -2,8 +2,8 @@
   // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
      Otherwise, the global variable `vis` might be uninitialized in the assets (race condition)
   meta name='turbolinks-visit-control' content='reload'
-  = javascript_include_tag(asset_path('vis.min.js', type: :javascript))
-  = stylesheet_link_tag(asset_path('vis.min.css', type: :stylesheet))
+  = javascript_pack_tag('vis', 'data-turbolinks-track': true)
+  = stylesheet_pack_tag('vis', media: 'all', 'data-turbolinks-track': true)
 
 .group
   .title
