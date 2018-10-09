@@ -5,17 +5,6 @@ Rails.application.config.tap do |config|
   # Version of your assets, change this if you want to expire all your assets.
   config.assets.version = '1.0'
 
-  # vis.js
-  config.assets.precompile += %w( vis.min.js )
-  config.assets.precompile += %w( vis.min.css )
-
-  # Highlight.js
-  config.assets.precompile += %w( highlight.min.js )
-  config.assets.precompile += %w( highlight-default.css )
-
-  # d3.tip
-  config.assets.precompile += %w( d3-tip.js )
-
   # Add additional assets to the asset load path.
   # config.assets.paths << Emoji.images_path
   # Add Yarn node_modules folder to the asset load path.
