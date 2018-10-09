@@ -4319,6 +4319,11 @@ onecolor@^3.0.4:
   resolved "https://registry.yarnpkg.com/onecolor/-/onecolor-3.1.0.tgz#b72522270a49569ac20d244b3cd40fe157fda4d2"
   integrity sha512-YZSypViXzu3ul5LMu/m6XjJ9ol8qAy9S2VjHl5E6UlhUH1KGKWabyEJifn0Jjpw23bYDzC2ucKMPGiH5kfwSGQ==
 
+opensans-webkit@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/opensans-webkit/-/opensans-webkit-1.0.1.tgz#c243d3fa22ddf05905a343b0a795d1cf0f9f209a"
+  integrity sha512-ecsSJBNrpKLjNZ/RKJVhmhHahpL8h/gPKoLzXw3nV2gAz0jf6g6zrqaRRrxHPtlMtE5qyOrF7oUP7ZkczcV4MA==
+
 opn@^5.1.0:
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/opn/-/opn-5.4.0.tgz#cb545e7aab78562beb11aa3bfabc7042e1761035"

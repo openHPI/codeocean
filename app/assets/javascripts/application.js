@@ -22,4 +22,6 @@
 // vendor/assets
 //= require ace/ace
 //= require ace/ext-language_tools
+//
+// app/assets
 //= require_tree .
