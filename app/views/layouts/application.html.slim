@@ -15,11 +15,11 @@ html lang='en'
   body
     nav.navbar.navbar-dark.bg-dark.navbar-expand-md.mb-4 role='navigation'
       .container
-        button.navbar-toggler data-target='#navbar-collapse' data-toggle='collapse' type='button' aria-expanded='false' aria-label='Toggle navigation'
-          span.navbar-toggler-icon.sr-only
         .navbar-brand
           i.fa.fa-code
           = application_name
+        button.navbar-toggler data-target='#navbar-collapse' data-toggle='collapse' type='button' aria-expanded='false' aria-label='Toggle navigation'
+          span.navbar-toggler-icon
         #navbar-collapse.collapse.navbar-collapse
           = render('navigation', cached: true)
           ul.nav.navbar-nav.ml-auto
