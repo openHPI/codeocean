@@ -16,7 +16,6 @@
  *= require flash
  *
  * vendor/assets
- *= require font-awesome.min
  *= require google_opensans
  *= require_tree .
 */
