@@ -63,7 +63,6 @@ group :test do
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'headless'
-  gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
   gem 'rspec-autotest'

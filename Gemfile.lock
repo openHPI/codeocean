@@ -97,7 +97,7 @@ GEM
       capistrano (~> 3.7)
       capistrano-bundler
       puma (~> 3.4)
-    capybara (3.8.2)
+    capybara (3.9.0)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -111,8 +111,6 @@ GEM
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     chronic (0.10.2)
-    codeclimate-test-reporter (1.0.8)
-      simplecov (<= 0.13)
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
     crass (1.0.4)
@@ -121,7 +119,7 @@ GEM
     database_cleaner (1.7.0)
     debug_inspector (0.0.3)
     diff-lcs (1.3)
-    docile (1.1.5)
+    docile (1.3.1)
     docker-api (1.34.2)
       excon (>= 0.47.0)
       multi_json
@@ -197,7 +195,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (5.4.0.347)
     nio4r (2.3.1)
-    nokogiri (1.8.4)
+    nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     nyan-cat-formatter (0.12.0)
       rspec (>= 2.99, >= 2.14.2, < 4)
@@ -285,7 +283,7 @@ GEM
       rspec-core (>= 2.99.0.beta1, < 4.0.0)
     rspec-core (3.8.0)
       rspec-support (~> 3.8.0)
-    rspec-expectations (3.8.1)
+    rspec-expectations (3.8.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-mocks (3.8.0)
@@ -308,7 +306,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    rubocop-rspec (1.29.1)
+    rubocop-rspec (1.30.0)
       rubocop (>= 0.58.0)
     ruby-progressbar (1.10.0)
     ruby_dep (1.5.0)
@@ -327,21 +325,21 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    selenium-webdriver (3.14.0)
+    selenium-webdriver (3.14.1)
       childprocess (~> 0.5)
-      rubyzip (~> 1.2)
-    simplecov (0.13.0)
-      docile (~> 1.1.0)
+      rubyzip (~> 1.2, >= 1.2.2)
+    simplecov (0.16.1)
+      docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    slim (3.0.9)
+    slim (4.0.1)
       temple (>= 0.7.6, < 0.9)
-      tilt (>= 1.3.3, < 2.1)
-    slim-rails (3.1.3)
+      tilt (>= 2.0.6, < 2.1)
+    slim-rails (3.2.0)
       actionpack (>= 3.1)
       railties (>= 3.1)
-      slim (~> 3.0)
+      slim (>= 3.0, < 5.0)
     sorcery (0.12.0)
       bcrypt (~> 3.1)
       oauth (~> 0.4, >= 0.4.4)
@@ -410,7 +408,6 @@ DEPENDENCIES
   capistrano3-puma
   capybara
   carrierwave
-  codeclimate-test-reporter
   concurrent-ruby
   d3-rails
   database_cleaner
