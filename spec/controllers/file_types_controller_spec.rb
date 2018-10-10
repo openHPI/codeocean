@@ -7,14 +7,14 @@ describe FileTypesController do
 
   describe 'POST #create' do
     context 'with a valid file type' do
-      let(:request) { proc { post :create, params: { file_type: FactoryBot.attributes_for(:dot_rb) } } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, params: { file_type: FactoryBot.attributes_for(:dot_rb) } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)
 
       it 'creates the file type' do
-        expect { request.call }.to change(FileType, :count).by(1)
+        expect { perform_request.call }.to change(FileType, :count).by(1)
       end
 
       expect_redirect(FileType.last)

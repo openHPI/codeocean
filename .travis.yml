@@ -3,10 +3,18 @@ sudo: required
 services:
   - docker
 
+language: ruby
+rvm:
+  - 2.5.1
+cache:
+  bundler: true
+  yarn: true
+
+env:
+  global:
+    - secure: "DkOGGPCrRgV08KGgav3Bl+keZQqb11TINQRVQS2aeMaYR5GW7Rt9zEcZzhUE0JdKVVOvm4Cclft7BO4OyMd6Cq9XnZkOOHY+Yn8Qv923761SKrRgkGUkO8eeVKMawAA8lS53XGrMZWCP2xaLsLQYq8xzinnE3GqstoZJaHLnqVs="
+
 addons:
-  code_climate:
-    repo_token:
-      secure: "cZoMNjQKB/D7W4B7JDk9PXooy2WCDypu7R4C/Vi0DziZCU9HRwLbdt9aoH5hgHFa7Fe2rHFgflPAAP7h698ozvP0waFtPqLAj+PbEt27LbBDvW8JcvNkKXA0rj5wyTkzuc/0kD+kPB4oDXMak6gZlB9HCJDsa3kdXScQGTVuPdU="
   postgresql: "9.6"
   firefox: "latest"
 
@@ -24,6 +32,12 @@ before_install:
   - rm ~/geckodriver/download.tar.gz
   - chmod +x ~/geckodriver/geckodriver
   - export PATH=~/geckodriver/:$PATH
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+
+install:
+  - bundle install --jobs=3 --retry=3 --deployment --path=${BUNDLE_PATH:-vendor/bundle}
+  - yarn install
 
 before_script:
   - cp .rspec.travis .rspec
@@ -35,10 +49,9 @@ before_script:
   - cp config/mnemosyne.yml.travis config/mnemosyne.yml
   - psql --command='CREATE DATABASE travis_ci_test;' --username=postgres
   - bundle exec rake db:schema:load RAILS_ENV=test
+  - ./cc-test-reporter before-build
 
-cache: bundler
-language: ruby
-rvm:
-- 2.5.1
-  
-script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper && bundle exec codeclimate-test-reporter
+script: bundle exec rspec --color --format documentation --require spec_helper --require rails_helper
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT

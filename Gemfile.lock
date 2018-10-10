@@ -73,11 +73,9 @@ GEM
       msgpack (~> 1.0)
     bootstrap-will_paginate (1.0.0)
       will_paginate
-    bootstrap_pagedown (1.1.0)
-      rails (>= 3.2)
     builder (3.2.3)
-    bunny (2.11.0)
-      amq-protocol (~> 2.3.0)
+    bunny (2.12.0)
+      amq-protocol (~> 2.3, >= 2.3.0)
     byebug (10.0.2)
     capistrano (3.11.0)
       airbrussh (>= 1.0.0)
@@ -99,7 +97,7 @@ GEM
       capistrano (~> 3.7)
       capistrano-bundler
       puma (~> 3.4)
-    capybara (3.7.2)
+    capybara (3.9.0)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -113,24 +111,15 @@ GEM
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     chronic (0.10.2)
-    codeclimate-test-reporter (1.0.8)
-      simplecov (<= 0.13)
     coderay (1.1.2)
-    coffee-rails (4.2.2)
-      coffee-script (>= 2.2.0)
-      railties (>= 4.0.0)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
     crass (1.0.4)
-    d3-rails (5.5.0)
+    d3-rails (5.7.0)
       railties (>= 3.1)
     database_cleaner (1.7.0)
     debug_inspector (0.0.3)
     diff-lcs (1.3)
-    docile (1.1.5)
+    docile (1.3.1)
     docker-api (1.34.2)
       excon (>= 0.47.0)
       multi_json
@@ -171,9 +160,6 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    jquery-turbolinks (2.1.0)
-      railties (>= 3.1.0)
-      turbolinks
     json (2.1.0)
     jwt (1.5.6)
     kramdown (1.17.0)
@@ -209,7 +195,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (5.4.0.347)
     nio4r (2.3.1)
-    nokogiri (1.8.4)
+    nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     nyan-cat-formatter (0.12.0)
       rspec (>= 2.99, >= 2.14.2, < 4)
@@ -220,6 +206,8 @@ GEM
       multi_json (~> 1.3)
       multi_xml (~> 0.5)
       rack (>= 1.2, < 3)
+    pagedown-bootstrap-rails (2.1.4)
+      railties (> 3.1)
     parallel (1.12.1)
     parser (2.5.1.2)
       ast (~> 2.4.0)
@@ -238,6 +226,8 @@ GEM
     rack (2.0.5)
     rack-mini-profiler (1.0.0)
       rack (>= 1.2.0)
+    rack-proxy (0.6.5)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.1)
@@ -293,7 +283,7 @@ GEM
       rspec-core (>= 2.99.0.beta1, < 4.0.0)
     rspec-core (3.8.0)
       rspec-support (~> 3.8.0)
-    rspec-expectations (3.8.1)
+    rspec-expectations (3.8.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.8.0)
     rspec-mocks (3.8.0)
@@ -308,7 +298,7 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
-    rubocop (0.59.1)
+    rubocop (0.59.2)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.5, != 2.5.1.1)
@@ -316,7 +306,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    rubocop-rspec (1.29.1)
+    rubocop-rspec (1.30.0)
       rubocop (>= 0.58.0)
     ruby-progressbar (1.10.0)
     ruby_dep (1.5.0)
@@ -324,7 +314,7 @@ GEM
       json (~> 2.1)
       structured_warnings (~> 0.3)
     rubyzip (1.2.2)
-    sass (3.5.7)
+    sass (3.6.0)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -335,21 +325,21 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
-    selenium-webdriver (3.14.0)
+    selenium-webdriver (3.14.1)
       childprocess (~> 0.5)
-      rubyzip (~> 1.2)
-    simplecov (0.13.0)
-      docile (~> 1.1.0)
+      rubyzip (~> 1.2, >= 1.2.2)
+    simplecov (0.16.1)
+      docile (~> 1.1)
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    slim (3.0.9)
+    slim (4.0.1)
       temple (>= 0.7.6, < 0.9)
-      tilt (>= 1.3.3, < 2.1)
-    slim-rails (3.1.3)
+      tilt (>= 2.0.6, < 2.1)
+    slim-rails (3.2.0)
       actionpack (>= 3.1)
       railties (>= 3.1)
-      slim (~> 3.0)
+      slim (>= 3.0, < 5.0)
     sorcery (0.12.0)
       bcrypt (~> 3.1)
       oauth (~> 0.4, >= 0.4.4)
@@ -371,8 +361,9 @@ GEM
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
-    turbolinks (2.5.4)
-      coffee-rails
+    turbolinks (5.2.0)
+      turbolinks-source (~> 5.2)
+    turbolinks-source (5.2.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uglifier (4.1.19)
@@ -386,6 +377,10 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
+    webpacker (3.5.5)
+      activesupport (>= 4.2)
+      rack-proxy (>= 0.6.1)
+      railties (>= 4.2)
     websocket (1.2.8)
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
@@ -406,7 +401,6 @@ DEPENDENCIES
   binding_of_caller
   bootsnap
   bootstrap-will_paginate
-  bootstrap_pagedown
   capistrano
   capistrano-rails
   capistrano-rvm
@@ -414,7 +408,6 @@ DEPENDENCIES
   capistrano3-puma
   capybara
   carrierwave
-  codeclimate-test-reporter
   concurrent-ruby
   d3-rails
   database_cleaner
@@ -427,13 +420,13 @@ DEPENDENCIES
   ims-lti (< 2.0.0)
   jbuilder
   jquery-rails
-  jquery-turbolinks
   kramdown
   listen
   mnemosyne-ruby
   newrelic_rpm
   nokogiri
   nyan-cat-formatter
+  pagedown-bootstrap-rails
   pg
   pry-byebug
   puma
@@ -457,9 +450,10 @@ DEPENDENCIES
   sorcery
   spring
   tubesock!
-  turbolinks (< 5.0.0)
+  turbolinks
   uglifier
   web-console
+  webpacker
   whenever
 
 BUNDLED WITH

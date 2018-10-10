@@ -12,7 +12,7 @@ h1 = InternalUser.model_name.human(count: 2)
     = f.select(:role_eq, User::ROLES.map { |role| [t("users.roles.#{role}"), role] }, {}, class: 'form-control', prompt: t('activerecord.attributes.internal_user.role'))
 
 .table-responsive
-  table.table
+  table.table.mt-4
     thead
       tr
         th = t('activerecord.attributes.internal_user.name')

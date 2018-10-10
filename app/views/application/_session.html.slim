@@ -1,19 +1,19 @@
 - if current_user
-  li.dropdown
-    a.dropdown-toggle data-toggle='dropdown' href='#'
+  li.nav-item.dropdown
+    a.nav-link.dropdown-toggle data-toggle='dropdown' href='#'
       i.fa.fa-user
       = current_user
       span.caret
-    ul.dropdown-menu role='menu'
+    ul.dropdown-menu.p-0.mt-1 role='menu'
       - if current_user.internal_user?
-        li = link_to(t('consumers.show.link'), current_user.consumer) if current_user.consumer
-        li = link_to(t('internal_users.show.link'), current_user)
-        li = link_to(t('request_for_comments.index.all'), request_for_comments_path)
-        li = link_to(t('request_for_comments.index.get_my_rfc_activity'), my_rfc_activity_path)
-      li = link_to(t('request_for_comments.index.get_my_comment_requests'), my_request_for_comments_path)
+        li = link_to(t('consumers.show.link'), current_user.consumer, class: 'dropdown-item') if current_user.consumer
+        li = link_to(t('internal_users.show.link'), current_user, class: 'dropdown-item')
+        li = link_to(t('request_for_comments.index.all'), request_for_comments_path, class: 'dropdown-item')
+        li = link_to(t('request_for_comments.index.get_my_rfc_activity'), my_rfc_activity_path, class: 'dropdown-item')
+      li = link_to(t('request_for_comments.index.get_my_comment_requests'), my_request_for_comments_path, class: 'dropdown-item')
       - if current_user.internal_user?
-        li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete)
+        li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
 - else
-  li = link_to(sign_in_path) do
+  li.nav-item = link_to(sign_in_path, class: 'nav-link') do
     i.fa.fa-sign-in
     = t('sessions.new.link')

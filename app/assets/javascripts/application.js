@@ -10,12 +10,10 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
-//= require jquery.turbolinks
 //= require jquery_ujs
-//= require bootstrap_pagedown
-//= require d3
 //= require turbolinks
+//= require pagedown_bootstrap
+//= require d3
 //
 // lib/assets
 //= require flash
@@ -24,10 +22,6 @@
 // vendor/assets
 //= require ace/ace
 //= require ace/ext-language_tools
-//= require jstree/jstree.min
-//= require bootstrap.min
-//= require chosen.jquery.min
-//= require jquery-ui.min
-//= require underscore.min
-//= require vis.min
+//
+// app/assets
 //= require_tree .

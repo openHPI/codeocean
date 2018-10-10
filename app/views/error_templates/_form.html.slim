@@ -9,12 +9,12 @@
   .form-group
     = f.label(:signature)
     = f.text_field(:signature, class: 'form-control')
-    .help-block == t('error_templates.hints.signature')
+    .help-block.form-text == t('error_templates.hints.signature')
   .form-group
     = f.label(:description)
     = f.text_field(:description, class: 'form-control')
   .form-group
     = f.label(:hint)
     = f.text_field(:hint, class: 'form-control')
-    .help-block == t('error_templates.hints.hint_templates')
+    .help-block.form-text == t('error_templates.hints.hint_templates')
   .actions = render('shared/submit_button', f: f, object: @error_template)

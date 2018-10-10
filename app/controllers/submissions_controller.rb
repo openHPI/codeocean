@@ -366,7 +366,7 @@ class SubmissionsController < ApplicationController
   end
 
   def store_error(stderr)
-    ::Error.create(submission_id: @submission.id, execution_environment_id: @submission.execution_environment.id, message: stderr)
+    CodeOcean::Error.create(submission_id: @submission.id, execution_environment_id: @submission.execution_environment.id, message: stderr)
   end
   private :store_error
 

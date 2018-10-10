@@ -15,7 +15,7 @@ h1 = ExecutionEnvironment.model_name.human(count: 2)
     tbody
       - @execution_environments.each do |execution_environment|
         tr
-          td = execution_environment.name
+          td = link_to(execution_environment.name, execution_environment)
           td = link_to(execution_environment.author, execution_environment.author)
           td = execution_environment.pool_size
           td = execution_environment.memory_limit

@@ -1,9 +1,8 @@
-br
-h4 Admin Menu
-h5
-  ul
-    li = link_to "User's current status of this exercise", statistics_external_user_exercise_path(id: @request_for_comment.exercise_id, external_user_id: @request_for_comment.user_id)
-    li = link_to "All exercises of this user", statistics_external_user_path(id: @request_for_comment.user_id)
-  ul
-    li = link_to "Implement the exercise yourself", implement_exercise_path(id: @request_for_comment.exercise_id)
-    li = link_to "Show the exercise", exercise_path(id: @request_for_comment.exercise_id)
+hr
+h5.mt-4 Admin Menu
+ul.text
+  li = link_to "User's current status of this exercise", statistics_external_user_exercise_path(id: @request_for_comment.exercise_id, external_user_id: @request_for_comment.user_id)
+  li = link_to "All exercises of this user", statistics_external_user_path(id: @request_for_comment.user_id)
+ul.text
+  li = link_to "Implement the exercise yourself", implement_exercise_path(id: @request_for_comment.exercise_id)
+  li = link_to "Show the exercise", exercise_path(id: @request_for_comment.exercise_id)

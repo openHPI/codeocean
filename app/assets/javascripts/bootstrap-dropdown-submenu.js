@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).on('turbolinks:load', function() {
 
   var subMenusSelector = 'ul.dropdown-menu [data-toggle=dropdown]';
 
@@ -14,7 +14,7 @@ $(document).ready(function () {
     var menu = $(this).parent().find("ul");
     var menupos = menu.offset();
 
-    var newPos;
+    var newPos = 0.0;
     if ((menupos.left + menu.width()) + 30 > $(window).width()) {
       newPos = -menu.width();
     } else {

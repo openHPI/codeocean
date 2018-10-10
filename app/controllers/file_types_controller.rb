@@ -38,7 +38,7 @@ class FileTypesController < ApplicationController
   end
 
   def set_editor_modes
-    @editor_modes = Dir.glob('vendor/assets/javascripts/ace/mode-*.js').map do |filename|
+    @editor_modes = Dir.glob('vendor/assets/javascripts/ace/mode-*.js').sort.map do |filename|
       name = filename.gsub(/\w+\/|mode-|.js$/, '')
       [name, "ace/mode/#{name}"]
     end

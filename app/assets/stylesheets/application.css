@@ -10,19 +10,11 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require bootstrap_pagedown
+ *= require pagedown_bootstrap
  *
  * lib/assets
  *= require flash
  *
- * vendor/assets
- *= require bootstrap.min
- *= require chosen.min
- *= require font-awesome.min
- *= require google_opensans
- *= require jquery-ui.min
- *= require jquery-ui.structure.min
- *= require style.min
- *= require vis.min
+ * app/assets
  *= require_tree .
 */
