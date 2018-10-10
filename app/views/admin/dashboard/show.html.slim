@@ -4,6 +4,15 @@
 
 h1 = t('breadcrumbs.dashboard.show')
 
+h2 Version
+
+div
+  = "Branch:"
+  pre = `git rev-parse --abbrev-ref HEAD`
+div
+  = "Commit:"
+  pre = `git log -n 1 --pretty`
+
 h2 Docker
 
 - if DockerContainerPool.config[:active]
