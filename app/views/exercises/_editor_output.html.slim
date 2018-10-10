@@ -32,7 +32,7 @@ div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom
         - if lti_outcome_service?(@exercise.id, external_user_id, consumer_id)
           p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
         - else
-          p.text-center = render('editor_button', classes: 'btn-lg btn-outline-warning disabled', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
+          p.text-center = render('editor_button', classes: 'btn-lg btn-secondary disabled', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
         hr
 
       div.enforce-big-top-margin
