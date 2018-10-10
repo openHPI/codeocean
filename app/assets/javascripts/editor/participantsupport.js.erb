@@ -26,7 +26,7 @@ CodeOceanEditorFlowr = {
       var stackoverflowRequests = _.map(insights, function (insight) {
         var queryParams = {
           accepted: true,
-          pagesize: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:answers_per_query] %>,
+          pagesize: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:answers_per_query] or 3 %>,
           order: 'desc',
           sort: 'relevance',
           site: 'stackoverflow',
