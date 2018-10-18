@@ -174,7 +174,7 @@ CodeOceanEditorSubmissions = {
       this.createSubmission('#test', null, function(response) {
         this.showSpinner($('#test'));
         $('#score_div').addClass('hidden');
-        var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filenamereplace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
+        var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
         this.initializeSocketForTesting(url);
       }.bind(this));
     }
