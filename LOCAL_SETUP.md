@@ -59,7 +59,7 @@ All problems that have occurred resulted from a more restrictive rights manageme
 ### Start server
 vagrant ssh  
 cd /vagrant  
-rails s -p 3000  
+rails s -p 3000 -b 0.0.0.0
 
 ### Login to CodeOcean
 192.168.59.104:3000  
