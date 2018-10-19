@@ -270,8 +270,8 @@ configureEditors: function () {
     $('#files').jstree($('#files').data('entries'));
     $('#files').on('click', 'li.jstree-leaf', function (event) {
       this.setActiveFile(
-        filename: $(event.target).parent().text(),
-        id: parseInt($(event.target).parent().attr('id'))
+        $(event.target).parent().text(),
+        parseInt($(event.target).parent().attr('id'))
       );
       var frame = $('[data-file-id="' + this.active_file.id + '"]').parent();
       this.showFrame(frame);
