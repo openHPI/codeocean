@@ -113,7 +113,9 @@ CodeOceanEditorSubmissions = {
         var file = _.find(response.files, function(file) {
           return file.id === file_id;
         });
-        editor.setValue(file.content);
+        if(file){
+            editor.setValue(file.content);
+        }
       }.bind(this));
     }.bind(this));
   },
