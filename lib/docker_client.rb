@@ -32,7 +32,11 @@ class DockerClient
   end
 
   def command_substitutions(filename)
-    {class_name: File.basename(filename, File.extname(filename)).camelize, filename: filename, module_name: File.basename(filename, File.extname(filename)).underscore}
+    {
+      class_name: File.basename(filename, File.extname(filename)).camelize,
+      filename: filename,
+      module_name: File.basename(filename, File.extname(filename)).underscore
+    }
   end
   private :command_substitutions
 
@@ -310,7 +314,8 @@ class DockerClient
     """
     Run commands by attaching a websocket to Docker.
     """
-    command = submission.execution_environment.run_command % command_substitutions(filename)
+    filepath = submission.collect_files.find{|f| f.name_with_extension == filename}.filepath
+    command = submission.execution_environment.run_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     open_websocket_connection(command, create_workspace_files, block)
     # actual run command is run in the submissions controller, after all listeners are attached.
@@ -320,7 +325,8 @@ class DockerClient
     """
     Stick to existing Docker API with exec command.
     """
-    command = submission.execution_environment.test_command % command_substitutions(filename)
+    filepath = submission.collect_files.find{|f| f.name_with_extension == filename}.filepath
+    command = submission.execution_environment.test_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_command(command, create_workspace_files, block)
   end

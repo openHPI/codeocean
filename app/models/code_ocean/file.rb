@@ -80,6 +80,14 @@ module CodeOcean
     end
     private :content_present?
 
+    def filepath
+      if path.present?
+        ::File.join(path, name_with_extension)
+      else
+        name_with_extension
+      end
+    end
+
     def hash_content
       self.hashed_content = Digest::MD5.new.hexdigest(file_type.try(:binary?) ? ::File.new(native_file.file.path, 'r').read : content)
     end

@@ -269,11 +269,11 @@ configureEditors: function () {
   initializeFileTree: function () {
     $('#files').jstree($('#files').data('entries'));
     $('#files').on('click', 'li.jstree-leaf', function (event) {
-      active_file = {
-        filename: $(event.target).parent().text(),
-        id: parseInt($(event.target).parent().attr('id'))
-      };
-      var frame = $('[data-file-id="' + active_file.id + '"]').parent();
+      this.setActiveFile(
+        $(event.target).parent().text(),
+        parseInt($(event.target).parent().attr('id'))
+      );
+      var frame = $('[data-file-id="' + this.active_file.id + '"]').parent();
       this.showFrame(frame);
       this.toggleButtonStates();
     }.bind(this));
