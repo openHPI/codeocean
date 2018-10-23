@@ -103,8 +103,8 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def set_user_exercise_feedback
-    @exercise = Exercise.find(params[:user_exercise_feedback][:exercise_id])
-    @uef = UserExerciseFeedback.find_by(exercise_id: params[:user_exercise_feedback][:exercise_id], user: current_user)
+    @uef = UserExerciseFeedback.find(params[:id])
+    @exercise = @uef.exercise
   end
 
   def set_user_exercise_feedback_by_id
