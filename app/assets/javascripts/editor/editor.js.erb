@@ -189,8 +189,8 @@ configureEditors: function () {
   },
 
   resizeParentOfAceEditor: function (element){
-    // calculate needed size: window height - position of top of button-bar - 60 for bar itself and margins
-    var windowHeight = window.innerHeight - $('#editor-buttons').offset().top - 60;
+    // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
+    var windowHeight = window.innerHeight - $(element).offset().top - $('#autosave-label').height() - 5;
     $(element).parent().height(windowHeight);
   },
 
@@ -609,6 +609,7 @@ configureEditors: function () {
     var toggle = $('a#toggle');
     toggle.text(toggle.text() == toggle.data('hide') ? toggle.data('show') : toggle.data('hide'));
     this.resizeAceEditors();
+    event.preventDefault();
   },
 
     /**
