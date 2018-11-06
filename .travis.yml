@@ -16,7 +16,7 @@ env:
 
 addons:
   postgresql: "9.6"
-  firefox: "latest"
+  firefox: "62.0.3"
 
 before_install:
   - export DISPLAY=:99.0
