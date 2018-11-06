@@ -10,10 +10,11 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
+ *= require pagedown_bootstrap
+ *
+ * lib/assets
+ *= require flash
+ *
+ * app/assets
  *= require_tree .
- *= require_tree ../../../lib
- *= require_tree ../../../vendor/assets/stylesheets/
- *= require_self
- *= require bootstrap_pagedown
- *= require markdown
 */

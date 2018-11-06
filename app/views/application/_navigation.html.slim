@@ -1,16 +1,16 @@
 - if current_user.try(:internal_user?)
   ul.nav.navbar-nav
-    li.dropdown
-      a.dropdown-toggle data-toggle='dropdown' href='#'
+    li.nav-item.dropdown
+      a.nav-link.dropdown-toggle.mx-3 data-toggle='dropdown' href='#'
         = t('shared.administration')
         span.caret
-      ul.dropdown-menu role='menu'
+      ul.dropdown-menu.p-0.mt-1 role='menu'
         - if current_user.admin?
-          li = link_to(t('breadcrumbs.dashboard.show'), admin_dashboard_path)
-          li = link_to(t('breadcrumbs.statistics.show'), statistics_path)
-          li.divider
+          li = link_to(t('breadcrumbs.dashboard.show'), admin_dashboard_path, class: 'dropdown-item', 'data-turbolinks' => "false")
+          li = link_to(t('breadcrumbs.statistics.show'), statistics_path, class: 'dropdown-item')
+          li.dropdown-divider role='separator'
         = render('navigation_submenu', title: t('activerecord.models.exercise.other'),
-                models: [Exercise, ExerciseCollection, ProxyExercise, Tag], link: exercises_path, cached: true)
+                models: [Exercise, ExerciseCollection, ProxyExercise, Tag, Submission], link: exercises_path, cached: true)
         = render('navigation_submenu', title: t('navigation.sections.users'), models: [InternalUser, ExternalUser],
                 cached: true)
         = render('navigation_collection_link', model: ExecutionEnvironment, cached: true)

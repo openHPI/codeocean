@@ -1,1 +1,3 @@
-= link_to(t('shared.edit'), local_assigns.fetch(:path, send(:"edit_#{object.class.name.underscore}_path", object)), class: 'btn btn-default pull-right')
+// default value for fetch will always be evaluated even if it is not returned
+- link_target = local_assigns.fetch(:path, false) || send(:"edit_#{object.class.name.underscore}_path", object)
+= link_to(t('shared.edit'), link_target, class: 'btn btn-secondary float-right')

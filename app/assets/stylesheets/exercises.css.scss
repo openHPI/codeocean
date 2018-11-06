@@ -35,9 +35,17 @@ input[type='file'] {
     margin: 10px 0 10px 0;
   }
 
-  .lead.description-panel-collapsed {
+  .lead.description-card-collapsed {
     margin: 0;
   }
+}
+
+[data-toggle="collapse"] .fa:before {
+  content: "\f139";
+}
+
+[data-toggle="collapse"].collapsed .fa:before {
+  content: "\f13a";
 }
 
 // Graph Settings

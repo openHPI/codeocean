@@ -1,4 +1,4 @@
-class ProxyExercise < ActiveRecord::Base
+class ProxyExercise < ApplicationRecord
 
     after_initialize :generate_token
     after_initialize :set_reason

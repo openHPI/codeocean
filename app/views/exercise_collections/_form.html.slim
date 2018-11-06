@@ -3,9 +3,10 @@
   .form-group
     = f.label(t('activerecord.attributes.exercise_collections.name'))
     = f.text_field(:name, class: 'form-control', required: true)
-  .form-group
-    = f.label(t('activerecord.attributes.exercise_collections.use_anomaly_detection'))
-    = f.check_box(:use_anomaly_detection, {class: 'form-control'})
+  .form-check.form-group
+    label.form-check-label
+      = f.check_box(:use_anomaly_detection, class: 'form-check-input')
+      = t('activerecord.attributes.exercise_collections.use_anomaly_detection')
   .form-group
     = f.label(t('activerecord.attributes.exercise_collections.user'))
     = f.collection_select(:user_id, InternalUser.order(:name), :id, :name, {}, {class: 'form-control'})
@@ -23,13 +24,13 @@
             td
               span.fa.fa-bars
             td = item.exercise.title
-            td = link_to(t('shared.show'), item.exercise)
+            td = link_to(t('shared.show'), item.exercise, 'data-turbolinks' => "false")
             td
               a.remove-exercise href='#' = t('shared.destroy')
-  .hidden
+  .d-none
     = f.collection_select(:exercise_ids, Exercise.all, :id, :title, {}, {id: 'exercise-select', class: 'form-control', multiple: true})
   .exercise-actions
-    button.btn.btn-primary type='button' data-toggle='modal' data-target='#add-exercise-modal' = t('exercise_collections.form.add_exercises')
+    button.btn.btn-outline-primary type='button' data-toggle='modal' data-target='#add-exercise-modal' = t('exercise_collections.form.add_exercises')
     button.btn.btn-secondary#sort-button type='button' = t('exercise_collections.form.sort_by_title')
 
   .actions = render('shared/submit_button', f: f, object: @exercise_collection)

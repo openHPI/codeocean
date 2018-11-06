@@ -11,7 +11,7 @@ h1 = ErrorTemplate.model_name.human(count: 2)
     tbody
       - @error_templates.each do |error_template|
         tr
-          td = error_template.name
+          td = link_to(error_template.name, error_template)
           td = error_template.description
           td = link_to(error_template.execution_environment)
           td = link_to(t('shared.show'), error_template)

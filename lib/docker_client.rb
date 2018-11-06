@@ -82,7 +82,7 @@ class DockerClient
     Rails.logger.debug "Opening Websocket on URL " + socket_url
 
     socket.on :error do |event|
-      Rails.logger.info "Websocket error: " + event.message
+      Rails.logger.info "Websocket error: " + event.message.to_s
     end
     socket.on :close do |event|
       Rails.logger.info "Websocket closed."
@@ -272,7 +272,7 @@ class DockerClient
           end
         #ensure
         # guarantee that the thread is releasing the DB connection after it is done
-        # ActiveRecord::Base.connectionpool.releaseconnection
+        # ApplicationRecord.connectionpool.releaseconnection
         #end
       end
   end

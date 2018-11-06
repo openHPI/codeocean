@@ -76,8 +76,8 @@ tr.highlight {
   grid-gap: 10px;
 
   > a {
-    color: #fff;
-    text-decoration: none;
+    color: #fff !important;
+    text-decoration: none !important;
 
     > div {
       border: 2px solid #0055ba;

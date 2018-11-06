@@ -1,53 +1,48 @@
 source 'https://rubygems.org'
 
-gem 'activerecord-jdbcpostgresql-adapter', platform: :jruby
 gem 'bcrypt'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
 gem 'concurrent-ruby'
-gem 'concurrent-ruby-ext', platform: :ruby
-gem 'activerecord-deprecated_finders', require: 'active_record/deprecated_finders'
 gem 'docker-api', require: 'docker'
 gem 'factory_bot_rails'
 gem 'forgery'
 gem 'highline'
 gem 'jbuilder'
 gem 'jquery-rails'
-gem 'jquery-turbolinks'
-gem 'ims-lti', '1.1.10' # version 1.1.13 will crash, because @provider.valid_request?(request) on lti.rb line 89 will return false.
+gem 'ims-lti', '< 2.0.0'
 gem 'kramdown'
 gem 'newrelic_rpm'
-gem 'pg', '< 1.0', platform: :ruby
+gem 'pg'
 gem 'pry-byebug'
 gem 'puma'
 gem 'pundit'
-gem 'rails', '4.2.10'
+gem 'rails', '5.2.1'
 gem 'rails-i18n'
 gem 'ransack'
 gem 'rubytree'
-gem 'sass-rails', '>= 5.0.7'
-gem 'sdoc', group: :doc
+gem 'sass-rails'
 gem 'slim-rails'
-gem 'bootstrap_pagedown', '>= 1.1.0'
-gem 'pagedown-rails'
+gem 'pagedown-bootstrap-rails'
 gem 'sorcery'
-gem 'thread_safe'
-gem 'turbolinks', '< 5.0.0' # newer versions prevent loading ACE if the page containing is not accessed directly / refreshed
+gem 'turbolinks'
 gem 'uglifier'
-gem 'will_paginate'
-gem 'tubesock'
+gem 'tubesock', git: 'https://github.com/gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
 gem 'faye-websocket'
-gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, version 1.2.5 still has an error in eventmachine.rb:202: [BUG] Segmentation fault, which is not yet fixed and causes the whole ruby process to crash
+gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, newer versions might crash or
 gem 'nokogiri'
-gem 'd3-rails', '~>4.0'
+gem 'd3-rails'
+gem 'webpacker'
 gem 'rest-client'
 gem 'rubyzip'
-gem 'mnemosyne-ruby', '~> 1.0'
+gem 'mnemosyne-ruby'
 gem 'whenever', require: false
 
 group :development, :staging do
-  gem 'better_errors', platform: :ruby
-  gem 'binding_of_caller', platform: :ruby
+  gem 'bootsnap', require: false
+  gem 'listen'
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'capistrano'
   gem 'capistrano3-puma'
   gem 'capistrano-rails'
@@ -56,23 +51,21 @@ group :development, :staging do
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
-  gem 'web-console', platform: :ruby
+  gem 'web-console'
 end
 
 group :development, :test, :staging do
-  gem 'byebug', platform: :ruby
   gem 'spring'
 end
 
 group :test do
+  gem 'rails-controller-testing'
   gem 'autotest-rails'
   gem 'capybara'
-  gem 'capybara-selenium', '>= 0.0.6'
+  gem 'selenium-webdriver'
   gem 'headless'
-  gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
-  gem 'rake'
   gem 'rspec-autotest'
   gem 'rspec-rails'
   gem 'simplecov', require: false

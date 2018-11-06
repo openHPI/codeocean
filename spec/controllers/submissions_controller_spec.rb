@@ -12,13 +12,13 @@ describe SubmissionsController do
 
     context 'with a valid submission' do
       let(:exercise) { FactoryBot.create(:hello_world) }
-      let(:request) { proc { post :create, format: :json, submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id) } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, format: :json, params: { submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id) } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(submission: Submission)
 
       it 'creates the submission' do
-        expect { request.call }.to change(Submission, :count).by(1)
+        expect { perform_request.call }.to change(Submission, :count).by(1)
       end
 
       expect_json
@@ -26,7 +26,7 @@ describe SubmissionsController do
     end
 
     context 'with an invalid submission' do
-      before(:each) { post :create, submission: {} }
+      before(:each) { post :create, params: { submission: {  } } }
 
       expect_assigns(submission: Submission)
       expect_json
@@ -36,21 +36,39 @@ describe SubmissionsController do
 
   describe 'GET #download_file' do
     context 'with an invalid filename' do
-      before(:each) { get :download_file, filename: SecureRandom.hex, id: submission.id }
+      before(:each) { get :download_file, params: { filename: SecureRandom.hex, id: submission.id } }
 
       expect_status(404)
     end
 
+    context 'with a valid binary filename' do
+      let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:sql_select)) }
+      before(:each) { get :download_file, params: { filename: file.name_with_extension, id: submission.id } }
+
+      context 'for a binary file' do
+        let(:file) { submission.collect_files.detect { |file| file.name == 'exercise' && file.file_type.file_extension == '.sql' } }
+
+        expect_assigns(file: :file)
+        expect_assigns(submission: :submission)
+        expect_content_type('application/octet-stream')
+        expect_status(200)
+
+        it 'sets the correct filename' do
+          expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file.name_with_extension}\"")
+        end
+      end
+    end
+
     context 'with a valid filename' do
       let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
-      before(:each) { get :download_file, filename: file.name_with_extension, id: submission.id }
+      before(:each) { get :download_file, params: { filename: file.name_with_extension, id: submission.id } }
 
       context 'for a binary file' do
         let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.mp4' } }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
-        expect_content_type('application/octet-stream')
+        expect_content_type('video/mp4')
         expect_status(200)
 
         it 'sets the correct filename' do
@@ -86,21 +104,21 @@ describe SubmissionsController do
     let(:file) { submission.files.first }
 
     context 'with an invalid filename' do
-      before(:each) { get :render_file, filename: SecureRandom.hex, id: submission.id }
+      before(:each) { get :render_file, params: { filename: SecureRandom.hex, id: submission.id } }
 
       expect_status(404)
     end
 
     context 'with a valid filename' do
       let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
-      before(:each) { get :render_file, filename: file.name_with_extension, id: submission.id }
+      before(:each) { get :render_file, params: { filename: file.name_with_extension, id: submission.id } }
 
       context 'for a binary file' do
         let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.mp4' } }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
-        expect_content_type('application/octet-stream')
+        expect_content_type('video/mp4')
         expect_status(200)
 
         it 'renders the file content' do
@@ -125,7 +143,7 @@ describe SubmissionsController do
 
   describe 'GET #run' do
     let(:filename) { submission.collect_files.detect(&:main_file?).name_with_extension }
-    let(:request) { get :run, filename: filename, id: submission.id }
+    let(:perform_request) { get :run, params: { filename: filename , id: submission.id } }
 
     before(:each) do
       expect_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
@@ -134,7 +152,7 @@ describe SubmissionsController do
     context 'when no errors occur during execution' do
       before(:each) do
         expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
-        request
+        perform_request
       end
 
       pending("todo")
@@ -147,7 +165,7 @@ describe SubmissionsController do
         expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_yield(:stderr, stderr)
       end
 
-      after(:each) { request }
+      after(:each) { perform_request }
 
       context 'when the error is covered by a hint' do
         let(:hint) { "Your object 'main' of class 'Object' does not understand the method 'foo'." }
@@ -158,7 +176,7 @@ describe SubmissionsController do
 
         it 'does not store the error' do
           pending("no server sent events used right now")
-          expect(Error).not_to receive(:create)
+          expect(CodeOcean::Error).not_to receive(:create)
         end
       end
 
@@ -169,14 +187,14 @@ describe SubmissionsController do
 
         it 'stores the error' do
           pending("no server sent events used right now")
-          expect(Error).to receive(:create).with(execution_environment_id: submission.exercise.execution_environment_id, message: stderr)
+          expect(CodeOcean::Error).to receive(:create).with(execution_environment_id: submission.exercise.execution_environment_id, message: stderr)
         end
       end
     end
   end
 
   describe 'GET #show' do
-    before(:each) { get :show, id: submission.id }
+    before(:each) { get :show, params: { id: submission.id } }
 
     expect_assigns(submission: :submission)
     expect_status(200)
@@ -188,7 +206,7 @@ describe SubmissionsController do
     # https://github.com/rails/jbuilder/issues/32
     render_views
 
-    before(:each) { get :show, id: submission.id, format: :json }
+    before(:each) { get :show, params: { id: submission.id }, format: :json }
     expect_assigns(submission: :submission)
     expect_status(200)
 
@@ -219,20 +237,20 @@ describe SubmissionsController do
   end
 
   describe 'GET #score' do
-    let(:request) { proc { get :score, id: submission.id } }
-    before(:each) { request.call }
+    let(:perform_request) { proc { get :score, params: { id: submission.id } } }
+    before(:each) { perform_request.call }
 
     pending("todo: mock puma webserver or encapsulate tubesock call (Tubesock::HijackNotAvailable)")
   end
 
   describe 'POST #stop' do
-    let(:request) { proc { post :stop, container_id: CONTAINER.id, id: submission.id } }
+    let(:perform_request) { proc { post :stop, params: { container_id: CONTAINER.id, id: submission.id } } }
 
     context 'when the container can be found' do
       before(:each) do
         expect(Docker::Container).to receive(:get).and_return(CONTAINER)
         #expect(Rails.logger).to receive(:debug).at_least(:once).and_call_original
-        request.call
+        perform_request.call
       end
 
       it 'renders nothing' do
@@ -245,7 +263,7 @@ describe SubmissionsController do
     context 'when the container cannot be found' do
       before(:each) do
         expect(Docker::Container).to receive(:get).and_raise(Docker::Error::NotFoundError)
-        request.call
+        perform_request.call
       end
 
       it 'renders nothing' do
@@ -269,7 +287,7 @@ describe SubmissionsController do
   end
 
   describe '#with_server_sent_events' do
-    let(:response) { ActionController::TestResponse.new }
+    let(:response) { ActionDispatch::TestResponse.new }
     before(:each) { allow(controller).to receive(:response).and_return(response) }
 
     context 'when no error occurs' do

@@ -6,15 +6,12 @@ class ApplicationController < ActionController::Base
 
   after_action :verify_authorized, except: [:help, :welcome]
   before_action :set_locale, :allow_iframe_requests
-  protect_from_forgery(with: :exception)
+  protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
 
   def current_user
     ::NewRelic::Agent.add_custom_attributes({ external_user_id: session[:external_user_id], session_user_id: session[:user_id] })
     @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources
-  end
-
-  def help
   end
 
   def render_not_authorized

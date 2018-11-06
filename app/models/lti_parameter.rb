@@ -1,4 +1,4 @@
-class LtiParameter < ActiveRecord::Base
+class LtiParameter < ApplicationRecord
   belongs_to :consumer, foreign_key: "consumers_id"
   belongs_to :exercise, foreign_key: "exercises_id"
   belongs_to :external_user, foreign_key: "external_users_id"

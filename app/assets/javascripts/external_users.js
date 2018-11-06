@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
   var grid = $('#tag-grid');
 
   if ($.isController('external_users') && grid.isPresent()) {

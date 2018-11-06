@@ -1,4 +1,4 @@
-class UserExerciseIntervention < ActiveRecord::Base
+class UserExerciseIntervention < ApplicationRecord
 
   belongs_to :user, polymorphic: true
   belongs_to :intervention

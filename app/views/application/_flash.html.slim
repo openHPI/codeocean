@@ -1,6 +1,7 @@
 #flash-container
   #flash.container.fixed_error_messages data-message-failure=t('shared.message_failure')
     - %w[alert danger info notice success warning].each do |severity|
-      div.alert.flash class="alert-#{{'alert' => 'warning', 'notice' => 'success'}.fetch(severity, severity)}"
-        p id="flash-#{severity}" = flash[severity]
-        span.fa.fa-times
+      div.alert.flash class="alert-#{{'alert' => 'warning', 'notice' => 'success'}.fetch(severity, severity)} alert-dismissible fade show"
+        p.mb-0 id="flash-#{severity}" = flash[severity]
+        button type="button" class="close" data-dismiss="alert" aria-label="Close"
+          span.text-white aria-hidden="true" &times;

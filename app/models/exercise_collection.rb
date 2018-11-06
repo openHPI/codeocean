@@ -1,4 +1,4 @@
-class ExerciseCollection < ActiveRecord::Base
+class ExerciseCollection < ApplicationRecord
   include TimeHelper
 
   has_many :exercise_collection_items, dependent: :delete_all

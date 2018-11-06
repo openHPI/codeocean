@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
   var CHART_START = window.vis ? vis.moment().add(-1, 'minute') : undefined;
   var DEFAULT_REFRESH_INTERVAL = 5000;
 
@@ -51,6 +51,7 @@ $(function() {
     } else {
       var jqxhr = $.ajax({
         dataType: 'json',
+        url: '/admin/dashboard',
         method: 'GET'
       });
       jqxhr.done(function(response) {

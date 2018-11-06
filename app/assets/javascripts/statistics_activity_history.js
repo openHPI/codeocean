@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).on('turbolinks:load', function() {
 
   function manageActivityHistory(prefix) {
     var containerId = prefix + '-activity-history';
@@ -49,7 +49,7 @@ $(document).ready(function () {
 
       var refreshData = function (callback) {
         var params = new URLSearchParams(window.location.search.slice(1));
-        var jqxhr = $.ajax(prefix + '-activity-history.json', {
+        var jqxhr = $.ajax('/statistics/graphs/' + prefix + '-activity-history.json', {
           dataType: 'json',
           data: {from: params.get('from'), to: params.get('to'), interval: params.get('interval')},
           method: 'GET'

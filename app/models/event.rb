@@ -1,7 +1,7 @@
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   belongs_to :user, polymorphic: true
   belongs_to :exercise
-  belongs_to :file
+  belongs_to :file, class_name: 'CodeOcean::File'
 
   validates :category, presence: true
   validates :data, presence: true

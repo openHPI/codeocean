@@ -14,8 +14,8 @@ describe DockerContainerPool do
   end
 
   it 'uses thread-safe data structures' do
-    expect(described_class.instance_variable_get(:@containers)).to be_a(ThreadSafe::Hash)
-    expect(described_class.instance_variable_get(:@containers)[@execution_environment.id]).to be_a(ThreadSafe::Array)
+    expect(described_class.instance_variable_get(:@containers)).to be_a(Concurrent::Hash)
+    expect(described_class.instance_variable_get(:@containers)[@execution_environment.id]).to be_a(Concurrent::Array)
   end
 
   describe '.clean_up' do

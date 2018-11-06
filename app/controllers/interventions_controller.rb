@@ -22,7 +22,7 @@ class InterventionsController < ApplicationController
   end
 
   def intervention_params
-    params[:intervention].permit(:name)
+    params[:intervention].permit(:name) if params[:intervention].present?
   end
   private :intervention_params
 

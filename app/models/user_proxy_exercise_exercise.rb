@@ -1,4 +1,4 @@
-class UserProxyExerciseExercise < ActiveRecord::Base
+class UserProxyExerciseExercise < ApplicationRecord
 
   belongs_to :user, polymorphic: true
   belongs_to :exercise

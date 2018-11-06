@@ -1,6 +1,9 @@
 - content_for :head do
-  = javascript_include_tag('http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js')
-  = stylesheet_link_tag('http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css')
+  // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
+     Otherwise, code might not be highlighted correctly (race condition)
+  meta name='turbolinks-visit-control' content='reload'
+  = javascript_pack_tag('highlight', 'data-turbolinks-track': true)
+  = stylesheet_pack_tag('highlight', media: 'all', 'data-turbolinks-track': true)
 
 h1
   = @exercise
@@ -9,7 +12,7 @@ h1
 
 = row(label: 'exercise.title', value: @exercise.title)
 = row(label: 'exercise.user', value: link_to_if(policy(@exercise.author).show?, @exercise.author, @exercise.author))
-= row(label: 'exercise.description', value: render_markdown(@exercise.description))
+= row(label: 'exercise.description', value: render_markdown(@exercise.description), class: 'm-0')
 = row(label: 'exercise.execution_environment', value: link_to_if(policy(@exercise.execution_environment).show?, @exercise.execution_environment, @exercise.execution_environment))
 /= row(label: 'exercise.instructions', value: render_markdown(@exercise.instructions))
 = row(label: 'exercise.maximum_score', value: @exercise.maximum_score)
@@ -17,24 +20,23 @@ h1
 = row(label: 'exercise.hide_file_tree', value: @exercise.hide_file_tree?)
 = row(label: 'exercise.allow_file_creation', value: @exercise.allow_file_creation?)
 = row(label: 'exercise.allow_auto_completion', value: @exercise.allow_auto_completion?)
-= row(label: 'exercise.embedding_parameters') do
-  = content_tag(:input, nil, class: 'form-control', readonly: true, value: embedding_parameters(@exercise))
 = row(label: 'exercise.difficulty', value: @exercise.expected_difficulty)
 = row(label: 'exercise.tags', value: @exercise.exercise_tags.map{|et| "#{et.tag.name} (#{et.factor})"}.sort.join(", "))
+= row(label: 'exercise.embedding_parameters', class: 'mb-4') do
+  = content_tag(:input, nil, class: 'form-control mb-4', readonly: true, value: embedding_parameters(@exercise))
 
-h2 = t('activerecord.attributes.exercise.files')
+h2.mt-4 = t('activerecord.attributes.exercise.files')
 
-ul.list-unstyled.panel-group#files
+ul.list-unstyled#files
   - @exercise.files.each do |file|
-    li.panel.panel-default
-      .panel-heading role="tab" id="heading"
-        a.file-heading data-toggle="collapse" data-parent="#files" href=".collapse#{file.id}"
+    li.card.mt-2
+      .card-header role="tab" id="heading"
+        a.file-heading.collapsed data-toggle="collapse" data-parent="#files" href=".collapse#{file.id}"
           div.clearfix role="button"
+            i class="fa" aria-hidden="true"
             span = file.name_with_extension
-            // probably set an icon here that shows that the rows can be collapsed
-            //span.pull-right.collapse.in class="collapse#{file.id}" &#9788
-      .panel-collapse.collapse class="collapse#{file.id}" role="tabpanel"
-        .panel-body
+      .card-collapse.collapse class="collapse#{file.id}" role="tabpanel"
+        .card-body
           - if policy(file).destroy?
-            .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm pull-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+            .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm float-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
           = render('shared/file', file: file)

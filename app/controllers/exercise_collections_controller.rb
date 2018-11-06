@@ -51,7 +51,7 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def exercise_collection_params
-    sanitized_params = params[:exercise_collection].permit(:name, :use_anomaly_detection, :user_id, :user_type, :exercise_ids => []).merge(user_type: InternalUser.name)
+    sanitized_params = params[:exercise_collection].present? ? params[:exercise_collection].permit(:name, :use_anomaly_detection, :user_id, :user_type, :exercise_ids => []).merge(user_type: InternalUser.name) : {}
     sanitized_params[:exercise_ids] = sanitized_params[:exercise_ids].reject {|v| v.nil? or v == ''}
     sanitized_params.tap {|p| p[:exercise_collection_items] = p[:exercise_ids].map.with_index {|_id, index| ExerciseCollectionItem.find_or_create_by(exercise_id: _id, exercise_collection_id: @exercise_collection.id, position: index)}; p.delete(:exercise_ids)}
   end

@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).on('turbolinks:load', function() {
   if ($.isController('statistics') && $('.graph#user-activity').isPresent()) {
 
     function manageGraph(containerId, url, refreshAfter) {
@@ -101,7 +101,7 @@ $(document).ready(function () {
       });
     }
 
-    manageGraph('user-activity', 'graphs/user-activity', 10);
-    manageGraph('rfc-activity', 'graphs/rfc-activity', 30);
+    manageGraph('user-activity', '/statistics/graphs/user-activity', 10);
+    manageGraph('rfc-activity', '/statistics/graphs/rfc-activity', 30);
   }
 });

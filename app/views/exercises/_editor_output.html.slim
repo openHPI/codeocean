@@ -1,58 +1,61 @@
 div id='output_sidebar_collapsed'
-  = render('editor_button', classes: 'btn-block btn-primary btn-sm', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
-div id='output_sidebar_uncollapsed' class='hidden col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output')
+  = render('editor_button', classes: 'btn-block btn-primary btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
+div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output')
   .row
-    = render('editor_button', classes: 'btn-block btn-primary btn-sm', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
+    = render('editor_button', classes: 'btn-block btn-primary btn', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
 
-  div.enforce-big-top-margin.hidden id='score_div'
-    #results
-      h2 = t('exercises.implement.results')
-      p.test-count == t('exercises.implement.test_count', count: 0)
-      ul.list-unstyled
-      ul#dummies.hidden.list-unstyled
-        li.panel.panel-default
-          .panel-heading
-            h3.panel-title == t('exercises.implement.file', filename: '', number: 0)
-          .panel-body
-            = row(label: 'exercises.implement.passed_tests', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
-            = row(label: 'activerecord.attributes.submission.score', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
-            = row(label: 'exercises.implement.feedback')
-            = row(label: 'exercises.implement.error_messages')
-            /= row(label: 'exercises.implement.output', value: link_to(t('shared.show'), '#'))
-    #score data-maximum-score=@exercise.maximum_score data-score=@submission.try(:score)
-      h4
-        span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
-        span.score
-      .progress
-        .progress-bar role='progressbar'
+  div.position-absolute.d-flex.mb-1.w-100 style="overflow: auto; left: 0; bottom: 0; height: calc(100% - 3rem);"
+    div.w-100
+      div.enforce-big-top-margin.d-none id='score_div'
+        #results
+          h2 = t('exercises.implement.results')
+          p.test-count == t('exercises.implement.test_count', count: 0)
+          ul.list-unstyled
+          ul#dummies.d-none.list-unstyled
+            li.card.mt-2
+              .card-header.py-2
+                h5.card-title.m-0 == t('exercises.implement.file', filename: '', number: 0)
+              .card-body.bg-white.text-dark
+                = row(label: 'exercises.implement.passed_tests', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
+                = row(label: 'activerecord.attributes.submission.score', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
+                = row(label: 'exercises.implement.feedback')
+                = row(label: 'exercises.implement.error_messages')
+                /= row(label: 'exercises.implement.output', value: link_to(t('shared.show'), '#'))
+        #score data-maximum-score=@exercise.maximum_score data-score=@submission.try(:score)
+          h4
+            span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
+            span.score
+          .progress
+            .progress-bar role='progressbar'
 
-    br
-    - if lti_outcome_service?(@exercise.id, external_user_id, consumer_id)
-      p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
-    - else
-      p.text-center = render('editor_button', classes: 'btn-lg btn-warning-outline', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
-    hr
+        br
+        - if lti_outcome_service?(@exercise.id, external_user_id, consumer_id)
+          p.text-center = render('editor_button', classes: 'btn-lg btn-success', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
+        - else
+          p.text-center = render('editor_button', classes: 'btn-lg btn-secondary disabled', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
+        hr
 
-  div.enforce-big-top-margin
-    #turtlediv
-      canvas#turtlecanvas.hidden width=400 height=400
-  div.enforce-big-top-margin
-    #hint
-      .panel.panel-warning
-        .panel-heading = t('exercises.implement.hint')
-        .panel-body
-  div.enforce-big-top-margin
-    #prompt.input-group.hidden
-      span.input-group-addon data-prompt=t('exercises.editor.input') = t('exercises.editor.input')
-      input#prompt-input.form-control type='text'
-      span.input-group-btn
-        button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
-    #error-hints
-      .heading = t('exercises.implement.error_hints.heading')
-      ul.body
-    #output
-      pre = t('exercises.implement.no_output_yet')
-    - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
-      #flowrHint.panel.panel-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
-        .panel-heading = 'Gain more insights here'
-        .panel-body
+      div.enforce-big-top-margin
+        #turtlediv
+          canvas#turtlecanvas.d-none width=400 height=400
+      div.enforce-big-top-margin
+        #hint
+          .card.bg-warning.text-white
+            .card-header = t('exercises.implement.hint')
+            .card-body
+      div.enforce-big-top-margin
+        #prompt.input-group.d-none
+          div.input-group-prepend
+            span.input-group-text data-prompt=t('exercises.editor.input') = t('exercises.editor.input')
+          input#prompt-input.form-control type='text'
+          span.input-group-btn
+            button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
+        #error-hints
+          .heading = t('exercises.implement.error_hints.heading')
+          ul.body
+        #output.mt-2
+          pre = t('exercises.implement.no_output_yet')
+        - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
+          #flowrHint.card.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+            .card-header = 'Gain more insights here'
+            .card-body

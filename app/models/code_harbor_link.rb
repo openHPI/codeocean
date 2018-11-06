@@ -1,4 +1,4 @@
-class CodeHarborLink < ActiveRecord::Base
+class CodeHarborLink < ApplicationRecord
   validates :oauth2token, presence: true
   validates :user_id, presence: true
 

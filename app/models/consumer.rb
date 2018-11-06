@@ -1,4 +1,4 @@
-class Consumer < ActiveRecord::Base
+class Consumer < ApplicationRecord
   has_many :users
 
   scope :with_users, -> { where('id IN (SELECT consumer_id FROM internal_users)') }
