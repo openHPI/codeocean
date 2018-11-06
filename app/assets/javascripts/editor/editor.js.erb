@@ -84,7 +84,7 @@ configureEditors: function () {
     if (result.stderr && !result.score) {
       return 'card bg-danger text-white';
     } else if (result.score < 1) {
-      return 'card bg-warning';
+      return 'card bg-warning text-white';
     } else {
       return 'card bg-success text-white';
     }
