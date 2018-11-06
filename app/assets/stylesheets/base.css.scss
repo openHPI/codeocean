@@ -30,7 +30,9 @@ span.caret {
 .btn {
   -webkit-font-smoothing: antialiased;
   font-weight: 500;
-  font-size: 0.875rem;
+  :not(.btn-lg) {
+    font-size: 0.875rem;
+  }
 }
 
 .progress {
