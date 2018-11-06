@@ -27,7 +27,7 @@ before_install:
   - docker pull openhpi/co_execenv_python
   - docker pull openhpi/co_execenv_java
   - mkdir ~/geckodriver
-  - wget -O ~/geckodriver/download.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
+  - wget -O ~/geckodriver/download.tar.gz https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-linux64.tar.gz
   - tar -xvzf ~/geckodriver/download.tar.gz -C ~/geckodriver/
   - rm ~/geckodriver/download.tar.gz
   - chmod +x ~/geckodriver/geckodriver
