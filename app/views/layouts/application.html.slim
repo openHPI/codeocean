@@ -13,7 +13,7 @@ html lang='en'
     = yield(:head)
     = csrf_meta_tags
   body
-    nav.navbar.navbar-dark.bg-dark.navbar-expand-md.mb-4 role='navigation'
+    nav.navbar.navbar-dark.bg-dark.navbar-expand-md.mb-4.py-1 role='navigation'
       .container
         .navbar-brand
           i.fa.fa-code
@@ -28,7 +28,7 @@ html lang='en'
             = render('session')
     .container data-controller=controller_name
       = render('flash')
-      = render('breadcrumbs')
+      = render('breadcrumbs') if current_user.try(:internal_user?)
     - if (controller_name == "exercises" && action_name == "implement")
       .container-fluid
         = yield
