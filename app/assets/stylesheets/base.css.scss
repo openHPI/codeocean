@@ -15,21 +15,35 @@ i.fa {
 pre {
   background-color: #FAFAFA;
   margin: 0;
-  padding: 0;
+  padding: .25rem!important;
+  border: 1px solid #CCCCCC;
 }
 
 span.caret {
   margin-left: 0.5em;
 }
 
+btn {
+  -webkit-font-smoothing: antialiased;
+  font-weight: 500;
+}
+
 .progress {
   margin: 0;
+  border: 1px solid #CCCCCC;
+  padding: 0.125rem !important;
+  height: 1.25rem !important;
 
   .progress-bar {
     line-height: initial;
     min-width: 2em;
     color: white;
   }
+}
+
+.nav-link {
+  -webkit-font-smoothing: antialiased;
+  font-weight: 500;
 }
 
 .attribute-row + .attribute-row {
