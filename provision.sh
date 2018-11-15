@@ -25,9 +25,6 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 
-# rails
-sudo add-apt-repository -y ppa:chris-lea/node.js
-
 sudo apt-get -qq update
 
 # code_ocean
@@ -76,7 +73,6 @@ sudo /usr/local/rvm/bin/rvm alias create default $ruby_version
 ruby -v
 
 # rails
-sudo apt-get -qq -y install nodejs
 sg rvm "/usr/local/rvm/rubies/ruby-$ruby_version/bin/gem install rails -v $rails_version"
 # sudo gem install bundler
 
