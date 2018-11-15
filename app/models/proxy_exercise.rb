@@ -36,31 +36,15 @@ class ProxyExercise < ApplicationRecord
           Rails.logger.debug("retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}" )
           assigned_user_proxy_exercise.exercise
         else
+          Rails.logger.debug("find new matching exercise for user #{user.id}" )
           matching_exercise =
-              if (token.eql? "e85689d5")
-                Rails.logger.debug("Proxy exercise with token e85689d5, split user in groups..")
-                group = UserGroupSeparator.getGroupExerciseDescriptionTesting(user)
-                Rails.logger.debug("user assigned to group #{group}")
-                case group
-                  when :group_a
-                    exercises.where(id: 557).first
-                  when :group_b
-                    exercises.where(id: 558).first
-                  when :group_c
-                    exercises.where(id: 559).first
-                  when :group_d
-                    exercises.where(id: 560).first
-                end
-              else
-                Rails.logger.debug("find new matching exercise for user #{user.id}" )
-                begin
-                  find_matching_exercise(user)
-                rescue => e #fallback
-                  Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
-                  @reason[:reason] = "fallback because of error"
-                  @reason[:error] = "#{$!}:\n\t#{e.backtrace.join("\n\t")}"
-                  exercises.where("expected_difficulty > 1").shuffle.first # difficulty should be > 1 to prevent dummy exercise from being chosen.
-                end
+              begin
+                find_matching_exercise(user)
+              rescue => e #fallback
+                Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$!}" )
+                @reason[:reason] = "fallback because of error"
+                @reason[:error] = "#{$!}:\n\t#{e.backtrace.join("\n\t")}"
+                exercises.where("expected_difficulty > 1").shuffle.first # difficulty should be > 1 to prevent dummy exercise from being chosen.
               end
           user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user, exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
           matching_exercise
@@ -69,42 +53,27 @@ class ProxyExercise < ApplicationRecord
     end
 
     def find_matching_exercise(user)
-      user_group = UserGroupSeparator.getProxyExerciseGroup(user)
-      case user_group
-        when :dummy_assigment
-          rec_ex = select_easiest_exercise(exercises)
-          @reason[:reason] = "dummy group"
-          Rails.logger.debug("assigned user to dummy group, and gave him exercise: #{rec_ex.title}")
-          rec_ex
-        when :random_assigment
-          @reason[:reason] = "random group"
-          ex = exercises.where("expected_difficulty > 1").shuffle.first
-          Rails.logger.debug("assigned user to random group, and gave him exercise: #{ex.title}")
-          ex
-        when :recommended_assignment
-          exercises_user_has_accessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq.compact
-          tags_user_has_seen = exercises_user_has_accessed.map{|ex| ex.tags}.uniq.flatten
-          Rails.logger.debug("exercises_user_has_accessed #{exercises_user_has_accessed.map{|e|e.id}.join(",")}")
+        exercises_user_has_accessed = user.submissions.where("cause IN ('submit','assess')").map{|s| s.exercise}.uniq.compact
+        tags_user_has_seen = exercises_user_has_accessed.map{|ex| ex.tags}.uniq.flatten
+        Rails.logger.debug("exercises_user_has_accessed #{exercises_user_has_accessed.map{|e|e.id}.join(",")}")
 
-          # find exercises
-          potential_recommended_exercises = []
-          exercises.where("expected_difficulty >= 1").each do |ex|
-            ## find exercises which have only tags the user has already seen
-            if (ex.tags - tags_user_has_seen).empty?
-              potential_recommended_exercises << ex
-            end
+        # find exercises
+        potential_recommended_exercises = []
+        exercises.where("expected_difficulty >= 1").each do |ex|
+          ## find exercises which have only tags the user has already seen
+          if (ex.tags - tags_user_has_seen).empty?
+            potential_recommended_exercises << ex
           end
-          Rails.logger.debug("potential_recommended_exercises: #{potential_recommended_exercises.map{|e|e.id}}")
-          # if all exercises contain tags which the user has never seen, recommend easiest exercise
-          if potential_recommended_exercises.empty?
-            Rails.logger.debug("matched easiest exercise in pool")
-            @reason[:reason] = "easiest exercise in pool. empty potential exercises"
-            select_easiest_exercise(exercises)
-          else
-            select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
-          end
-      end
-
+        end
+        Rails.logger.debug("potential_recommended_exercises: #{potential_recommended_exercises.map{|e|e.id}}")
+        # if all exercises contain tags which the user has never seen, recommend easiest exercise
+        if potential_recommended_exercises.empty?
+          Rails.logger.debug("matched easiest exercise in pool")
+          @reason[:reason] = "easiest exercise in pool. empty potential exercises"
+          select_easiest_exercise(exercises)
+        else
+          select_best_matching_exercise(user, exercises_user_has_accessed, potential_recommended_exercises)
+        end
     end
     private :find_matching_exercise
 

@@ -187,28 +187,8 @@ class ExercisesController < ApplicationController
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user, exercise: @exercise).size >= max_intervention_count_per_exercise
     user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day or user_got_intervention_in_exercise
-    @is_experimental_course = @course_token and experimental_course?(@course_token)
 
-    @experiment_group = UserGroupSeparator.getInterventionGroup(current_user)
-
-    showInterventions = (@is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
-
-    case @experiment_group
-      when :rfc_intervention_stale_rfc
-        @show_rfc_interventions = showInterventions
-      when :break_intervention_stale_rfc
-        @show_break_interventions = showInterventions
-      when :no_intervention_stale_rfc
-      when :no_intervention_hide_rfc
-        @hide_rfc_button = "true"
-      when :break_intervention_show_rfc
-        @show_break_interventions = showInterventions
-      when :no_intervention_show_rfc
-      when :rfc_intervention_show_rfc
-        @show_rfc_interventions = showInterventions
-    end
-
-
+    @show_rfc_interventions = (not user_solved_exercise and not user_got_enough_interventions).to_s
 
 
     @search = Search.new
@@ -427,11 +407,6 @@ class ExercisesController < ApplicationController
       if current_user.respond_to? :external_id
         if @submission.redirect_to_feedback?
           redirect_to_user_feedback
-          return
-        end
-
-        if @is_experimental_course and (@rfc_group == :hide_rfc)
-          redirect_to_lti_return_path
           return
         end
 
