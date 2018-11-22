@@ -1,4 +1,4 @@
-- if current_user.try(:internal_user?)
+- if current_user.try(:admin?) or current_user.try(:teacher?)
   ul.breadcrumb
     - if model = Kernel.const_get(controller_path.classify) rescue nil
       - object = model.find_by(id: params[:id])

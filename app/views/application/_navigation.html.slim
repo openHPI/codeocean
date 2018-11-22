@@ -1,4 +1,4 @@
-- if current_user.try(:internal_user?)
+- if current_user.try(:admin?) or current_user.try(:teacher?)
   ul.nav.navbar-nav
     li.nav-item.dropdown
       a.nav-link.dropdown-toggle.mx-3 data-toggle='dropdown' href='#'

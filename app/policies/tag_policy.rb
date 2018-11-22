@@ -9,7 +9,7 @@ class TagPolicy < AdminOrAuthorPolicy
   end
 
   def show?
-    @user.internal_user?
+    admin? || teacher?
   end
 
   [:clone?, :destroy?, :edit?, :update?].each do |action|
@@ -24,7 +24,7 @@ class TagPolicy < AdminOrAuthorPolicy
     def resolve
       if @user.admin?
         @scope.all
-      elsif @user.internal_user?
+      elsif @user.teacher?
         @scope.where('user_id = ? OR public = TRUE', @user.id)
       else
         @scope.none
