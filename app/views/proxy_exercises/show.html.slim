@@ -11,9 +11,12 @@ h1
     = render('shared/edit_button', object: @proxy_exercise)
 
 = row(label: 'exercise.title', value: @proxy_exercise.title)
+= row(label: 'exercise.user', value: link_to_if(policy(@proxy_exercise.author).show?, @proxy_exercise.author, @proxy_exercise.author))
 = row(label: 'proxy_exercise.files_count', value: @exercises.count)
+= row(label: 'exercise.public', value: @proxy_exercise.public?)
 = row(label: 'exercise.description', value: @proxy_exercise.description)
-= row(label: 'exercise.token', value: @proxy_exercise.token)
+= row(label: 'exercise.embedding_parameters', class: 'mb-4') do
+  = content_tag(:input, nil, class: 'form-control mb-4', readonly: true, value: embedding_parameters(@proxy_exercise))
 
 h2.mt-4 Exercises
 .table-responsive
