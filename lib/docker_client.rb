@@ -333,7 +333,14 @@ class DockerClient
 
   def self.find_image_by_tag(tag)
     # todo: cache this.
-    Docker::Image.all.detect { |image| image.info['RepoTags'].flatten.include?(tag) }
+    Docker::Image.all.detect do |image|
+      begin
+        image.info['RepoTags'].flatten.include?(tag)
+      rescue
+        # Skip image if it is not tagged
+        next
+      end
+    end
   end
 
   def self.generate_local_workspace_path
