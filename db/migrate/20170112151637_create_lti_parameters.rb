@@ -1,4 +1,4 @@
-class CreateLtiParameters < ActiveRecord::Migration
+class CreateLtiParameters < ActiveRecord::Migration[4.2]
   def change
     create_table :lti_parameters do |t|
       t.belongs_to :external_users

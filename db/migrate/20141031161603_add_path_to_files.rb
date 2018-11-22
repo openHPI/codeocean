@@ -1,4 +1,4 @@
-class AddPathToFiles < ActiveRecord::Migration
+class AddPathToFiles < ActiveRecord::Migration[4.2]
   def change
     add_column :files, :path, :string
   end

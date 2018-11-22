@@ -1,4 +1,4 @@
-class CreateInternalUsersTeams < ActiveRecord::Migration
+class CreateInternalUsersTeams < ActiveRecord::Migration[4.2]
   def change
     create_table :internal_users_teams do |t|
       t.belongs_to :internal_user, index: true

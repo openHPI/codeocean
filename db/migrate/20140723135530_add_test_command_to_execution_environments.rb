@@ -1,4 +1,4 @@
-class AddTestCommandToExecutionEnvironments < ActiveRecord::Migration
+class AddTestCommandToExecutionEnvironments < ActiveRecord::Migration[4.2]
   def change
     add_column :execution_environments, :test_command, :string
   end

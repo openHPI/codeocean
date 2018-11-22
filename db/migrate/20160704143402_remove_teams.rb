@@ -1,4 +1,4 @@
-class RemoveTeams < ActiveRecord::Migration
+class RemoveTeams < ActiveRecord::Migration[4.2]
   def change
     remove_reference :exercises, :team
     drop_table :teams

@@ -1,4 +1,4 @@
-class AddExecutableToFileTypes < ActiveRecord::Migration
+class AddExecutableToFileTypes < ActiveRecord::Migration[4.2]
   def change
     add_column :file_types, :executable, :boolean
   end

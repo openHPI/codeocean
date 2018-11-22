@@ -1,4 +1,4 @@
-class AddReferenceImplementationToExercises < ActiveRecord::Migration
+class AddReferenceImplementationToExercises < ActiveRecord::Migration[4.2]
   def change
     add_column :exercises, :reference_implementation, :text
   end

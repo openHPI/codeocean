@@ -1,4 +1,4 @@
-class AddHashedContentToFiles < ActiveRecord::Migration
+class AddHashedContentToFiles < ActiveRecord::Migration[4.2]
   def change
     add_column :files, :hashed_content, :string
 
