@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_not_authorized
-    redirect_to(:root, alert: t('application.not_authorized'))
+    redirect_to(request.referrer || :root, alert: t('application.not_authorized'))
   end
   private :render_not_authorized
 
