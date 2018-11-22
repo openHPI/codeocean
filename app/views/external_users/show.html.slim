@@ -3,6 +3,7 @@ h1 = @user.name
 = row(label: 'external_user.name', value: @user.name)
 //= row(label: 'external_user.email', value: @user.email)
 = row(label: 'external_user.consumer', value: link_to(@user.consumer, @user.consumer))
+= row(label: 'external_user.role', value: t("users.roles.#{@user.role}"))
 
 h4.mt-4 = link_to(t('.exercise_statistics'), statistics_external_user_path(@user))
 

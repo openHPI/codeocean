@@ -52,6 +52,21 @@ module Lti
   end
   private :external_user_name
 
+  def external_user_role(provider)
+    result = 'learner'
+    provider.roles.each do |role|
+      case role.downcase!
+      when 'administrator'
+        result = 'admin'
+      when 'instructor'
+        result = 'teacher' if result == 'learner'
+      else # 'learner'
+        next
+      end
+    end
+    result
+  end
+
   def refuse_lti_launch(options = {})
     return_to_consumer(lti_errorlog: options[:message], lti_errormsg: t('sessions.oauth.failure'))
   end
@@ -129,7 +144,7 @@ module Lti
 
   def set_current_user
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
-    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))
+    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider), role: external_user_role(@provider))
   end
   private :set_current_user
 
