@@ -1,5 +1,4 @@
-class ExternalUser < ApplicationRecord
-  include User
+class ExternalUser < User
 
   validates :consumer_id, presence: true
   validates :external_id, presence: true
