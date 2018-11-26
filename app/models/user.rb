@@ -4,6 +4,8 @@ class User < ApplicationRecord
   ROLES = %w(admin teacher)
 
   belongs_to :consumer
+  has_many :study_group_memberships, as: :user
+  has_many :study_groups, through: :study_group_memberships, as: :user
   has_many :exercises, as: :user
   has_many :file_types, as: :user
   has_many :submissions, as: :user

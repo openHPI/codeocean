@@ -6,6 +6,7 @@ class Submission < ApplicationRecord
   FILENAME_URL_PLACEHOLDER = '{filename}'
 
   belongs_to :exercise
+  belongs_to :study_group, optional: true
 
   has_many :testruns
   has_many :structured_errors

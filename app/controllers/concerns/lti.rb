@@ -52,6 +52,11 @@ module Lti
   end
   private :external_user_name
 
+  def mooc_course
+    # All Xikolo platforms set the custom_course to the course code
+   params[:custom_course]
+  end
+
   def refuse_lti_launch(options = {})
     return_to_consumer(lti_errorlog: options[:message], lti_errormsg: t('sessions.oauth.failure'))
   end
@@ -132,6 +137,13 @@ module Lti
     @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))
   end
   private :set_current_user
+
+  def set_study_group_membership
+    return if mooc_course
+    group = StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
+    group.users |= [@current_user] # add current user if not already member of the group
+    group.save
+  end
 
   def store_lti_session_data(options = {})
     lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,
