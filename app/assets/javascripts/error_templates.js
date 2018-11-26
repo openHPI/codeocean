@@ -8,9 +8,9 @@ $(document).on('turbolinks:load', function() {
                     dataType: 'json',
                     error_template_attribute_id: $('#add-attribute').find('select').val()
                 }
-            }).success(function () {
+            }).done(function () {
                 location.reload();
-            }).error(function (error) {
+            }).fail(function (error) {
                 $.flash.danger({text: error.statusText});
             });
         });

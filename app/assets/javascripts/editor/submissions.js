@@ -106,7 +106,7 @@ CodeOceanEditorSubmissions = {
     this.ajax({
       method: 'GET',
       url: $('#start-over').data('url')
-    }).success(function(response) {
+    }).done(function(response) {
       this.hideSpinner();
       _.each(this.editors, function(editor) {
         var file_id = $(editor.container).data('file-id');

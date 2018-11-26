@@ -436,7 +436,7 @@ configureEditors: function () {
       url: $('#editor').data('errors-url')
     });
     jqxhr.always(this.hideSpinner);
-    jqxhr.success(this.renderHint);
+    jqxhr.done(this.renderHint);
   },
 
   toggleButtonStates: function () {
