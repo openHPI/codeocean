@@ -83,7 +83,7 @@ CodeOceanEditorRequestForComments = {
         $.flash.success({text: $('#askForCommentsButton').data('message-success')});
         // trigger a run
         this.runSubmission.call(this, submission);
-      }.bind(this)).error(this.ajaxError.bind(this));
+      }.bind(this)).fail(this.ajaxError.bind(this));
     };
 
     this.createSubmission($('#requestComments'), null, createRequestForComments.bind(this));
