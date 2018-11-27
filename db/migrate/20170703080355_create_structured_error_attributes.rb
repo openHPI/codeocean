@@ -1,4 +1,4 @@
-class CreateStructuredErrorAttributes < ActiveRecord::Migration
+class CreateStructuredErrorAttributes < ActiveRecord::Migration[4.2]
   def change
     create_table :structured_error_attributes do |t|
       t.belongs_to :structured_error

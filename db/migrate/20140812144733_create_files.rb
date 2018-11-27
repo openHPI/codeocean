@@ -1,4 +1,4 @@
-class CreateFiles < ActiveRecord::Migration
+class CreateFiles < ActiveRecord::Migration[4.2]
   def change
     create_table :files do |t|
       t.text :content

@@ -1,4 +1,4 @@
-class AddNativeFileToFiles < ActiveRecord::Migration
+class AddNativeFileToFiles < ActiveRecord::Migration[4.2]
   def change
     add_column :files, :native_file, :string
   end

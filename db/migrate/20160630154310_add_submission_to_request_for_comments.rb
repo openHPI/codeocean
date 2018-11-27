@@ -1,4 +1,4 @@
-class AddSubmissionToRequestForComments < ActiveRecord::Migration
+class AddSubmissionToRequestForComments < ActiveRecord::Migration[4.2]
   def change
     add_reference :request_for_comments, :submission
   end

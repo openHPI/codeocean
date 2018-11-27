@@ -1,4 +1,4 @@
-class ChangeCommentTextAttributeToTextDatatype < ActiveRecord::Migration
+class ChangeCommentTextAttributeToTextDatatype < ActiveRecord::Migration[4.2]
   def up
     change_column :comments, :text, :text
   end

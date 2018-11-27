@@ -1,4 +1,4 @@
-class AddUserFeedback < ActiveRecord::Migration
+class AddUserFeedback < ActiveRecord::Migration[4.2]
   def change
     create_table :user_exercise_feedbacks do |t|
       t.belongs_to :exercise, null: false

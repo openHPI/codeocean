@@ -1,4 +1,4 @@
-class CreateProxyExercises < ActiveRecord::Migration
+class CreateProxyExercises < ActiveRecord::Migration[4.2]
   def change
     create_table :proxy_exercises do |t|
       t.string :title

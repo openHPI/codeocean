@@ -1,4 +1,4 @@
-class CreateInternalUsers < ActiveRecord::Migration
+class CreateInternalUsers < ActiveRecord::Migration[4.2]
   def change
     create_table :internal_users do |t|
       t.belongs_to :consumer

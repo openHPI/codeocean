@@ -1,4 +1,4 @@
-class AddIndentSizeToExecutionEnvironments < ActiveRecord::Migration
+class AddIndentSizeToExecutionEnvironments < ActiveRecord::Migration[4.2]
   def change
     add_column :execution_environments, :indent_size, :integer
   end

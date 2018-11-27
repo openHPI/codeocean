@@ -1,4 +1,4 @@
-class CreateAnomalyNotifications < ActiveRecord::Migration
+class CreateAnomalyNotifications < ActiveRecord::Migration[4.2]
   def change
     create_table :anomaly_notifications do |t|
       t.belongs_to :user, polymorphic: true, index: true

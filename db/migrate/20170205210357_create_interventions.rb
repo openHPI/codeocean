@@ -1,4 +1,4 @@
-class CreateInterventions < ActiveRecord::Migration
+class CreateInterventions < ActiveRecord::Migration[4.2]
   def change
     create_table :user_exercise_interventions do |t|
       t.belongs_to :user, polymorphic: true

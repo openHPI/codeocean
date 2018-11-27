@@ -1,4 +1,4 @@
-class CreateErrorTemplates < ActiveRecord::Migration
+class CreateErrorTemplates < ActiveRecord::Migration[4.2]
   def change
     create_table :error_templates do |t|
       t.belongs_to :execution_environment

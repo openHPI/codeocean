@@ -1,4 +1,4 @@
-class CreateHints < ActiveRecord::Migration
+class CreateHints < ActiveRecord::Migration[4.2]
   def change
     create_table :hints do |t|
       t.belongs_to :execution_environment

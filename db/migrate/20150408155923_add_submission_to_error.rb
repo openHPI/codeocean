@@ -1,4 +1,4 @@
-class AddSubmissionToError < ActiveRecord::Migration
+class AddSubmissionToError < ActiveRecord::Migration[4.2]
   def change
     add_reference :errors, :submission, index: true
   end
