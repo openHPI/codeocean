@@ -25,9 +25,6 @@ Exercise.create_factories
 # file types
 FileType.create_factories
 
-# hints
-Hint.create_factories
-
 # change all resources' author
 [ExecutionEnvironment, Exercise, FileType].each do |model|
   model.update_all(user_id: InternalUser.first.id)

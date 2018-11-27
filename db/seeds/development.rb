@@ -19,8 +19,5 @@ CodeOcean::Error.create_factories
 # file types
 FileType.create_factories
 
-# hints
-Hint.create_factories
-
 # submissions
 FactoryBot.create(:submission, exercise: @exercises[:fibonacci])

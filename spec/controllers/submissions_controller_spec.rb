@@ -167,28 +167,9 @@ describe SubmissionsController do
 
       after(:each) { perform_request }
 
-      context 'when the error is covered by a hint' do
-        let(:hint) { "Your object 'main' of class 'Object' does not understand the method 'foo'." }
-
-        before(:each) do
-          expect_any_instance_of(Whistleblower).to receive(:generate_hint).with(stderr).and_return(hint)
-        end
-
-        it 'does not store the error' do
-          pending("no server sent events used right now")
-          expect(CodeOcean::Error).not_to receive(:create)
-        end
-      end
-
-      context 'when the error is not covered by a hint' do
-        before(:each) do
-          expect_any_instance_of(Whistleblower).to receive(:generate_hint).with(stderr)
-        end
-
-        it 'stores the error' do
-          pending("no server sent events used right now")
-          expect(CodeOcean::Error).to receive(:create).with(execution_environment_id: submission.exercise.execution_environment_id, message: stderr)
-        end
+      it 'stores the error' do
+        pending("no server sent events used right now")
+        expect(CodeOcean::Error).to receive(:create).with(execution_environment_id: submission.exercise.execution_environment_id, message: stderr)
       end
     end
   end

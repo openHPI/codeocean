@@ -10,14 +10,9 @@ module CodeOcean
     def create
       @error = CodeOcean::Error.new(error_params)
       authorize!
-      hint = Whistleblower.new(execution_environment: @error.execution_environment).generate_hint(@error.message)
       respond_to do |format|
         format.json do
-          if hint
-            render(json: {hint: hint})
-          else
-            head (@error.save ? :created : :unprocessable_entity)
-          end
+          head (@error.save ? :created : :unprocessable_entity)
         end
       end
     end

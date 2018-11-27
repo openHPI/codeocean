@@ -128,11 +128,7 @@ class SubmissionsController < ApplicationController
     #   server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
 
     #   unless output[:stderr].nil?
-    #     if hint = Whistleblower.new(execution_environment: @submission.execution_environment).generate_hint(output[:stderr])
-    #       server_sent_event.write(hint, event: 'hint')
-    #     else
-    #       store_error(output[:stderr])
-    #     end
+    #     store_error(output[:stderr])
     #   end
     # end
 
