@@ -1,9 +1,4 @@
 class TagPolicy < AdminOrAuthorPolicy
-  def author?
-    @user == @record.author
-  end
-  private :author?
-
   def batch_update?
     admin?
   end

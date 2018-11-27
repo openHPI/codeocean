@@ -7,8 +7,8 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback]
-  before_action :set_external_user, only: [:statistics]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback]
+  before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
 
@@ -291,19 +291,19 @@ class ExercisesController < ApplicationController
   end
   private :set_execution_environments
 
-  def set_exercise
+  def set_exercise_and_authorize
     @exercise = Exercise.find(params[:id])
     authorize!
   end
-  private :set_exercise
+  private :set_exercise_and_authorize
 
-  def set_external_user
+  def set_external_user_and_authorize
     if params[:external_user_id]
       @external_user = ExternalUser.find(params[:external_user_id])
       authorize!
     end
   end
-  private :set_exercise
+  private :set_external_user_and_authorize
 
   def set_file_types
     @file_types = FileType.all.order(:name)
@@ -321,10 +321,11 @@ class ExercisesController < ApplicationController
   private :collect_set_and_unset_exercise_tags
 
   def show
+    # Show exercise details for teachers and admins
   end
 
-  #we might want to think about auth here
   def reload
+    # Returns JSON with original file content
   end
 
   def statistics
