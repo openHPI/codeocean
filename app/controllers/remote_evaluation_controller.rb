@@ -15,14 +15,12 @@ class RemoteEvaluationController < ApplicationController
 
     # todo extra: validiere, ob files wirklich zur Übung gehören (wenn allowNewFiles-flag nicht gesetzt ist)
     if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(:validation_token => validation_token))
-      puts remote_evaluation_mapping.exercise_id
-      puts remote_evaluation_mapping.user_id
 
       _params = remote_evaluation_params.except(:validation_token)
       _params[:exercise_id] = remote_evaluation_mapping.exercise_id
       _params[:user_id] = remote_evaluation_mapping.user_id
       _params[:cause] = "remoteAssess"
-      _params[:user_type] = "ExternalUser"
+      _params[:user_type] = remote_evaluation_mapping.user_type
 
       @submission = Submission.create(_params)
       render json: score_submission(@submission)

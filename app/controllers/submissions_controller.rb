@@ -398,13 +398,13 @@ class SubmissionsController < ApplicationController
   private :with_server_sent_events
 
   def create_remote_evaluation_mapping
-    user_id = @submission.user_id
+    user = @submission.user
     exercise_id = @submission.exercise_id
 
-    remote_evaluation_mapping = RemoteEvaluationMapping.create(:user_id => user_id, :exercise_id => exercise_id)
+    remote_evaluation_mapping = RemoteEvaluationMapping.create(user: user, exercise_id: exercise_id)
 
     # create .co file
-    path = "tmp/" + user_id.to_s + ".co"
+    path = "tmp/" + user.id.to_s + ".co"
     # parse validation token
     content = "#{remote_evaluation_mapping.validation_token}\n"
     # parse remote request url
