@@ -1,15 +1,20 @@
 CodeOceanEditorFlowr = {
   isFlowrEnabled: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] %>,
   flowrResultHtml:
-    '<div class="panel panel-default">' +
-      '<div id="{{headingId}}" role="tab" class="panel-heading">' +
-        '<h4 class="panel-title">' +
+    '<div class="card mb-2">' +
+      '<div id="{{headingId}}" role="tab" class="card-header">' +
+        '<div class="card-title mb-0">' +
           '<a data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="true" aria-controls="{{collapseId}}">' +
+            '<div class="clearfix" role="button">' +
+              '<i class="fa" aria-hidden="true" />' +
+              '<span>' +
+              '</span>' +
+            '</div>' +
           '</a>' +
-        '</h4>' +
+        '</div>' +
       '</div>' +
-      '<div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="panel-collapse collapse">' +
-        '<div class="panel-body"></div>' +
+      '<div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="card card-collapse collapse">' +
+        '<div class="card-body"></div>' +
       '</div>' +
     '</div>',
 
@@ -80,7 +85,7 @@ CodeOceanEditorFlowr = {
   handleStderrOutputForFlowr: function () {
     if (! this.isFlowrEnabled) return;
 
-    var flowrHintBody = $('#flowrHint .panel-body');
+    var flowrHintBody = $('#flowrHint .card-body');
     flowrHintBody.empty();
     var self = this;
 
@@ -92,11 +97,11 @@ CodeOceanEditorFlowr = {
         var resultTile = $(collapsibleTileHtml);
         var questionUrl = 'https://stackoverflow.com/questions/' + result.question_id;
 
-        var header = resultTile.find('h4 > a');
+        var header = resultTile.find('span');
         header.text(result.title);
         header.on('click', self.createEventHandler('editor_flowr_expand_question', questionUrl));
 
-        var body = resultTile.find('.panel-body');
+        var body = resultTile.find('.card-body');
         body.html(result.body);
         body.append('<a target="_blank" href="' + questionUrl + '" class="btn btn-primary btn-block">' +
           '<%= I18n.t('exercises.implement.flowr.go_to_question') %></a>');

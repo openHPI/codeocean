@@ -40,8 +40,6 @@ Rails.application.routes.draw do
     get 'dashboard', to: 'dashboard#show'
   end
 
-  get '/help', to: 'application#help'
-
   get '/insights', to: 'flowr#insights'
 
   get 'statistics/', to: 'statistics#show'
