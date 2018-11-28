@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
   // ruby part adds the relative_url_root, if it is set.
   var ACE_FILES_PATH = '<%= (defined?  Rails.application.config.relative_url_root) &&  Rails.application.config.relative_url_root != nil &&  Rails.application.config.relative_url_root != "" ?  Rails.application.config.relative_url_root : "" %>' + '/assets/ace/';
   var THEME = 'ace/theme/textmate';
@@ -66,10 +66,9 @@ $(function() {
     $('#files').append(html);
     $('#files li:last select[name*="file_type_id"]').val(getSelectedExecutionEnvironment().file_type_id);
     $('#files li:last select').chosen(window.CodeOcean.CHOSEN_OPTIONS);
+    $('#files li:last select').remove();
+    $('#files li:last>div:last').removeClass('in').addClass('show')
     $('body, html').scrollTo('#add-file');
-    // if we collapse the file forms by default, we need to click on the new element in order to open it.
-    // however, this crashes for more files (if we add several ones by clicking the add button more often), since the elements are probably not correctly added to the files list.
-    //$('#files li:last>div:first>a>div').click();
 
     // initialize the ace editor for the new textarea.
     // pass the correct index and the last ace editor under the node files. this is the last one, since we just added it.
@@ -93,7 +92,7 @@ $(function() {
 
   var deleteFile = function(event) {
     event.preventDefault();
-    var fileUrl = $(this).data('file-url');
+    var fileUrl = $(event.target).data('file-url');
 
     if (confirm('<%= I18n.t('shared.confirm_destroy') %>')) {
       var jqxhr = $.ajax({
@@ -139,9 +138,9 @@ $(function() {
   var enableBatchUpdate = function() {
     $('thead .batch a').on('click', function(event) {
       event.preventDefault();
-      if (!$(this).data('toggled')) {
-        $(this).data('toggled', true);
-        $(this).text($(this).data('text'));
+      if (!$(event.target).data('toggled')) {
+        $(event.target).data('toggled', true);
+        $(event.target).text($(event.target).data('text'));
         buildCheckboxes();
       } else {
         performBatchUpdate();
@@ -199,7 +198,7 @@ $(function() {
   var observeFileRoleChanges = function() {
     $(document).on('change', 'select[name$="[role]"]', function() {
       var is_test_file = $(this).val() === 'teacher_defined_test';
-      var parent = $(this).parents('.panel');
+      var parent = $(this).parents('.card');
       var fields = parent.find('.test-related-fields');
       if (is_test_file) {
         fields.slideDown();
@@ -262,17 +261,13 @@ $(function() {
       jqxhr.fail(ajaxError);
   }
 
-  if ($.isController('exercises')) {
+  if ($.isController('exercises') || $.isController('submissions')) {
       // ignore tags table since it is in the dom before other tables
     if ($('table:not(#tags-table)').isPresent()) {
       enableBatchUpdate();
     } else if ($('.edit_exercise, .new_exercise').isPresent()) {
       execution_environments = $('form').data('execution-environments');
       file_types = $('form').data('file-types');
-      // new MarkdownEditor('#exercise_instructions');
-      // new MarkdownEditor('#exercise_description')
-      // todo: add an ace editor for each file
-      new PagedownEditor('#exercise_description');
 
       enableInlineFileCreation();
       inferFileAttributes();

@@ -21,7 +21,7 @@ class InternalUsersController < ApplicationController
       if @user.update(params[:internal_user].permit(:password, :password_confirmation))
         @user.change_password!(params[:internal_user][:password])
         format.html { redirect_to(sign_in_path, notice: t('.success')) }
-        format.json { render(nothing: true, status: :ok) }
+        format.json { head :ok }
       else
         respond_with_invalid_object(format, object: @user, template: :reset_password)
       end
@@ -66,7 +66,7 @@ class InternalUsersController < ApplicationController
   end
 
   def internal_user_params
-    params[:internal_user].permit(:consumer_id, :email, :name, :role)
+    params[:internal_user].permit(:consumer_id, :email, :name, :role) if params[:internal_user].present?
   end
   private :internal_user_params
 
@@ -105,7 +105,7 @@ class InternalUsersController < ApplicationController
       if @user.update(params[:internal_user].permit(:password, :password_confirmation))
         @user.activate!
         format.html { redirect_to(sign_in_path, notice: t('.success')) }
-        format.json { render(nothing: true, status: :ok) }
+        format.json { head :ok }
       else
         respond_with_invalid_object(format, object: @user, template: :activate)
       end

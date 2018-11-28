@@ -1,6 +1,6 @@
-li.dropdown.dropdown-submenu
+li.dropdown-submenu
   - link = link.nil? ? "#" : link
-  a href=link class="dropdown-toggle" data-toggle="dropdown" = title
-  ul class="dropdown-menu"
+  a.dropdown-item.dropdown-toggle href=link data-toggle="dropdown" = title
+  ul.dropdown-menu.p-0
     - models.each do |model|
       = render('navigation_collection_link', model: model, cached: true)

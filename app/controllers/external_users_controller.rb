@@ -57,7 +57,7 @@ class ExternalUsersController < ApplicationController
 
     statistics = {}
 
-    ActiveRecord::Base.connection.execute(working_time_query(params[:tag])).each do |tuple|
+    ApplicationRecord.connection.execute(working_time_query(params[:tag])).each do |tuple|
       statistics[tuple["exercise_id"].to_i] = tuple
     end
 

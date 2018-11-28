@@ -1,4 +1,4 @@
-class SorceryCore < ActiveRecord::Migration
+class SorceryCore < ActiveRecord::Migration[4.2]
   def change
     InternalUser.delete_all
     add_column :internal_users, :crypted_password, :string, null: false

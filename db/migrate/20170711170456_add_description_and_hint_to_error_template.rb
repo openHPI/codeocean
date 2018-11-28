@@ -1,4 +1,4 @@
-class AddDescriptionAndHintToErrorTemplate < ActiveRecord::Migration
+class AddDescriptionAndHintToErrorTemplate < ActiveRecord::Migration[4.2]
   def change
     add_column :error_templates, :description, :text
     add_column :error_templates, :hint, :text

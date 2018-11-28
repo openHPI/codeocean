@@ -1,6 +1,6 @@
 require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
 
-class ExecutionEnvironment < ActiveRecord::Base
+class ExecutionEnvironment < ApplicationRecord
   include Creation
   include DefaultValues
 

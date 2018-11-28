@@ -1,34 +1,44 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
 
   var ACE_FILES_PATH = '/assets/ace/';
   var THEME = 'ace/theme/textmate';
 
   var currentSubmission = 0;
   var active_file = undefined;
-  var fileTrees = []
+  var fileTrees = [];
   var editor = undefined;
-  var fileTypeById = {}
+  var fileTypeById = {};
 
   var showActiveFile = function() {
     var session = editor.getSession();
-    var fileType = fileTypeById[active_file.file_type_id]
+    var fileType = fileTypeById[active_file.file_type_id];
     session.setMode(fileType.editor_mode);
     session.setTabSize(fileType.indent_size);
     session.setValue(active_file.content);
     session.setUseSoftTabs(true);
     session.setUseWrapMode(true);
 
+    // The event ready.jstree is fired too early and thus doesn't work.
+    var selectFileInJsTree = function() {
+      if (!filetree.hasClass('jstree-loading')) {
+        filetree.jstree("deselect_all");
+        filetree.jstree().select_node(active_file.file_id);
+      } else {
+        setTimeout(selectFileInJsTree, 250);
+      }
+    };
+
+    filetree = $(fileTrees[currentSubmission]);
+    selectFileInJsTree();
+    // Finally change jstree element to prevent flickering
     showFileTree(currentSubmission);
-    filetree = $(fileTrees[currentSubmission])
-    filetree.jstree("deselect_all");
-    filetree.jstree().select_node(active_file.file_id);
   };
 
   var initializeFileTree = function() {
     $('.files').each(function(index, element) {
       fileTree = $(element).jstree($(element).data('entries'));
       fileTree.on('click', 'li.jstree-leaf', function() {
-        var id = parseInt($(this).attr('id'))
+        var id = parseInt($(this).attr('id'));
         _.each(files[currentSubmission], function(file) {
           if (file.file_id === id) {
             active_file = file;
@@ -42,8 +52,8 @@ $(function() {
 
   var showFileTree = function(index) {
     $('.files').hide();
-    $(fileTrees[index].context).show();
-  }
+    $(fileTrees[index]).show();
+  };
 
   if ($.isController('exercises') && $('#timeline').isPresent()) {
 
@@ -85,7 +95,7 @@ $(function() {
         if (file.name === active_file.name) {
           fileIndex = index;
         }
-      })
+      });
       active_file = currentFiles[fileIndex];
       showActiveFile();
     });
@@ -94,10 +104,10 @@ $(function() {
       clearInterval(playInterval);
       playInterval = undefined;
       playButton.find('span.fa').removeClass('fa-pause').addClass('fa-play')
-    }
+    };
 
     playButton.on('click', function(event) {
-      if (playInterval == undefined) {
+      if (playInterval === undefined) {
         playInterval = setInterval(function() {
           if ($.isController('exercises') && $('#timeline').isPresent() && slider.val() < submissions.length - 1) {
             slider.val(parseInt(slider.val()) + 1);
@@ -112,7 +122,7 @@ $(function() {
       }
     });
 
-    active_file = files[0][0]
+    active_file = files[0][0];
     initializeFileTree();
     showActiveFile();
   }

@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   after_action :verify_authorized, except: [:help, :welcome]
   before_action :set_locale, :allow_iframe_requests
-  protect_from_forgery(with: :exception)
+  protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
 
   def current_user
@@ -14,11 +14,8 @@ class ApplicationController < ActionController::Base
     @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources
   end
 
-  def help
-  end
-
   def render_not_authorized
-    redirect_to(:root, alert: t('application.not_authorized'))
+    redirect_to(request.referrer || :root, alert: t('application.not_authorized'))
   end
   private :render_not_authorized
 

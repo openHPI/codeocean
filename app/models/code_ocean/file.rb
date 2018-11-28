@@ -15,7 +15,7 @@ module CodeOcean
     end
   end
 
-  class File < ActiveRecord::Base
+  class File < ApplicationRecord
     include DefaultValues
 
     DEFAULT_WEIGHT = 1.0
@@ -28,12 +28,11 @@ module CodeOcean
     before_validation :set_ancestor_values, if: :incomplete_descendent?
 
     belongs_to :context, polymorphic: true
-    belongs_to :execution_environment
-    belongs_to :file
+    belongs_to :file, class_name: 'CodeOcean::File', optional: true # This is only required for submissions and is validated below
     alias_method :ancestor, :file
     belongs_to :file_type
 
-    has_many :files
+    has_many :files, class_name: 'CodeOcean::File'
     has_many :testruns
     has_many :comments
     alias_method :descendants, :files
@@ -47,6 +46,8 @@ module CodeOcean
       scope :"#{role}s", -> { where(role: role) }
     end
 
+    default_scope { order(name: :asc) }
+
     validates :feedback_message, if: :teacher_defined_test?, presence: true
     validates :feedback_message, absence: true, unless: :teacher_defined_test?
     validates :file_type_id, presence: true
@@ -57,6 +58,7 @@ module CodeOcean
     validates :role, inclusion: {in: ROLES}
     validates :weight, if: :teacher_defined_test?, numericality: true, presence: true
     validates :weight, absence: true, unless: :teacher_defined_test?
+    validates :file, presence: true if :context.is_a?(Submission)
 
     validates_with FileNameValidator, fields: [:name, :path, :file_type_id]
 
@@ -77,6 +79,14 @@ module CodeOcean
       content? || native_file?
     end
     private :content_present?
+
+    def filepath
+      if path.present?
+        ::File.join(path, name_with_extension)
+      else
+        name_with_extension
+      end
+    end
 
     def hash_content
       self.hashed_content = Digest::MD5.new.hexdigest(file_type.try(:binary?) ? ::File.new(native_file.file.path, 'r').read : content)

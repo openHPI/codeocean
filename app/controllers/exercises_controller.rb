@@ -12,9 +12,9 @@ class ExercisesController < ApplicationController
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
 
-  skip_before_filter :verify_authenticity_token, only: [:import_proforma_xml]
+  skip_before_action :verify_authenticity_token, only: [:import_proforma_xml]
   skip_after_action :verify_authorized, only: [:import_proforma_xml]
-  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml]
+  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml], raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -77,7 +77,7 @@ class ExercisesController < ApplicationController
   def create
     @exercise = Exercise.new(exercise_params)
     collect_set_and_unset_exercise_tags
-    myparam = exercise_params
+    myparam = exercise_params.present? ? exercise_params : { }
     checked_exercise_tags = @exercise_tags.select { | et | myparam[:tag_ids].include? et.tag.id.to_s }
     removed_exercise_tags = @exercise_tags.reject { | et | myparam[:tag_ids].include? et.tag.id.to_s }
 
@@ -160,19 +160,21 @@ class ExercisesController < ApplicationController
   private :user_by_code_harbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?
   end
   private :exercise_params
 
   def handle_file_uploads
-    exercise_params[:files_attributes].try(:each) do |index, file_attributes|
-      if file_attributes[:content].respond_to?(:read)
-        file_params = params[:exercise][:files_attributes][index]
-        if FileType.find_by(id: file_attributes[:file_type_id]).try(:binary?)
-          file_params[:content] = nil
-          file_params[:native_file] = file_attributes[:content]
-        else
-          file_params[:content] = file_attributes[:content].read
+    if exercise_params
+      exercise_params[:files_attributes].try(:each) do |index, file_attributes|
+        if file_attributes[:content].respond_to?(:read)
+          file_params = params[:exercise][:files_attributes][index]
+          if FileType.find_by(id: file_attributes[:file_type_id]).try(:binary?)
+            file_params[:content] = nil
+            file_params[:native_file] = file_attributes[:content]
+          else
+            file_params[:content] = file_attributes[:content].read
+          end
         end
       end
     end
@@ -185,28 +187,8 @@ class ExercisesController < ApplicationController
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user, exercise: @exercise).size >= max_intervention_count_per_exercise
     user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day or user_got_intervention_in_exercise
-    @is_experimental_course = @course_token and experimental_course?(@course_token)
 
-    @experiment_group = UserGroupSeparator.getInterventionGroup(current_user)
-
-    showInterventions = (@is_experimental_course and not user_solved_exercise and not user_got_enough_interventions) ? "true" : "false"
-
-    case @experiment_group
-      when :rfc_intervention_stale_rfc
-        @show_rfc_interventions = showInterventions
-      when :break_intervention_stale_rfc
-        @show_break_interventions = showInterventions
-      when :no_intervention_stale_rfc
-      when :no_intervention_hide_rfc
-        @hide_rfc_button = "true"
-      when :break_intervention_show_rfc
-        @show_break_interventions = showInterventions
-      when :no_intervention_show_rfc
-      when :rfc_intervention_show_rfc
-        @show_rfc_interventions = showInterventions
-    end
-
-
+    @show_rfc_interventions = (not user_solved_exercise and not user_got_enough_interventions).to_s
 
 
     @search = Search.new
@@ -364,7 +346,7 @@ class ExercisesController < ApplicationController
       query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
               FROM submissions WHERE exercise_id = #{@exercise.id} GROUP BY
               user_id;"
-      ActiveRecord::Base.connection.execute(query).each do |tuple|
+      ApplicationRecord.connection.execute(query).each do |tuple|
         user_statistics[tuple["user_id"].to_i] = tuple
       end
       render locals: {
@@ -425,11 +407,6 @@ class ExercisesController < ApplicationController
       if current_user.respond_to? :external_id
         if @submission.redirect_to_feedback?
           redirect_to_user_feedback
-          return
-        end
-
-        if @is_experimental_course and (@rfc_group == :hide_rfc)
-          redirect_to_lti_return_path
           return
         end
 

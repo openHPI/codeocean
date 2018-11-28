@@ -1,7 +1,7 @@
-class Intervention < ActiveRecord::Base
+class Intervention < ApplicationRecord
 
   has_many :user_exercise_interventions
-  has_many :users, through: :user_exercise_interventions, source_type: "ExternalUser"
+  has_many :users, through: :user_exercise_interventions, source_type: 'ExternalUser'
 
   def to_s
     name

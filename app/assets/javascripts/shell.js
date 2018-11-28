@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
   var ENTER_KEY_CODE = 13;
 
   var clearOutput = function() {

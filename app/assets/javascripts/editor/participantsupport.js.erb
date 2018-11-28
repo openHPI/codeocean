@@ -90,7 +90,6 @@ CodeOceanEditorFlowr = {
         var collapsibleTileHtml = self.flowrResultHtml
           .replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
         var resultTile = $(collapsibleTileHtml);
-
         var questionUrl = 'https://stackoverflow.com/questions/' + result.question_id;
 
         var header = resultTile.find('h4 > a');
@@ -162,7 +161,7 @@ CodeOceanEditorRequestForComments = {
         $.flash.success({text: $('#askForCommentsButton').data('message-success')});
         // trigger a run
         this.runSubmission.call(this, submission);
-      }.bind(this)).error(this.ajaxError.bind(this));
+      }.bind(this)).fail(this.ajaxError.bind(this));
     };
 
     this.createSubmission($('#requestComments'), null, createRequestForComments.bind(this));

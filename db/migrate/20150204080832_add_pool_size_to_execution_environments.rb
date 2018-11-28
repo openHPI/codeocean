@@ -1,4 +1,4 @@
-class AddPoolSizeToExecutionEnvironments < ActiveRecord::Migration
+class AddPoolSizeToExecutionEnvironments < ActiveRecord::Migration[4.2]
   def change
     add_column :execution_environments, :pool_size, :integer
 

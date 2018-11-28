@@ -6,10 +6,10 @@ h1 = Submission.model_name.human(count: 2)
     = f.collection_select(:exercise_id_eq, Exercise.with_submissions, :id, :title, class: 'form-control', prompt: t('activerecord.attributes.submission.exercise'))
   .form-group
     = f.label(:cause_eq, t('activerecord.attributes.submission.cause'), class: 'sr-only')
-    = f.select(:cause_eq, Submission.all.map(&:cause).uniq.sort, class: 'form-control', prompt: t('activerecord.attributes.submission.cause'))
+    = f.select(:cause_eq, Submission.select(:cause).distinct.map(&:cause).sort, class: 'form-control', prompt: t('activerecord.attributes.submission.cause'))
 
 .table-responsive
-  table.table
+  table.table.mt-4
     thead
       tr
         th = sort_link(@search, :exercise_id, t('activerecord.attributes.submission.exercise'))

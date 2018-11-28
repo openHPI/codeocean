@@ -89,6 +89,6 @@ class FileTemplatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def file_template_params
-      params[:file_template].permit(:name, :file_type_id, :content)
+      params[:file_template].permit(:name, :file_type_id, :content) if params[:file_template].present?
     end
 end

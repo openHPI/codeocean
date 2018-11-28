@@ -33,6 +33,7 @@ var CodeOceanEditor = {
   <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
   sendEvents: <%= @config['codeocean_events'] ? @config['codeocean_events']['enabled'] : false %>,
   eventURL: "<%= @config['codeocean_events'] ? events_path : '' %>",
+  fileTypeURL: "<%= file_types_path %>",
 
 
 configureEditors: function () {
@@ -43,7 +44,7 @@ configureEditors: function () {
 
   confirmDestroy: function (event) {
     event.preventDefault();
-    if (confirm($(this).data('message-confirm'))) {
+    if (confirm($(event.target).data('message-confirm'))) {
       this.destroyFile();
     }
   },
@@ -63,7 +64,7 @@ configureEditors: function () {
     if ($('#output-' + index).isPresent()) {
       return $('#output-' + index);
     } else {
-      var element = $('<pre>').attr('id', 'output-' + index);
+      var element = $('<pre class="mt-2">').attr('id', 'output-' + index);
       $('#output').append(element);
       return element;
     }
@@ -79,13 +80,13 @@ configureEditors: function () {
     }
   },
 
-  getPanelClass: function (result) {
+  getCardClass: function (result) {
     if (result.stderr && !result.score) {
-      return 'panel-danger';
+      return 'card bg-danger text-white';
     } else if (result.score < 1) {
-      return 'panel-warning';
+      return 'card bg-warning text-white';
     } else {
-      return 'panel-success';
+      return 'card bg-success text-white';
     }
   },
 
@@ -107,11 +108,22 @@ configureEditors: function () {
     progress_bar.css('width', percentage + '%');
   },
 
+  // The event ready.jstree is fired too early and thus doesn't work.
+  selectFileInJsTree: function(filetree, file_id) {
+    if (!filetree.hasClass('jstree-loading')) {
+      filetree.jstree("deselect_all");
+      filetree.jstree().select_node(file_id);
+    } else {
+      setTimeout(this.selectFileInJsTree.bind(null, filetree, file_id), 250);
+    }
+  },
+
   showFirstFile: function() {
     var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
     var file_id = frame.find('.editor').data('file-id');
     this.setActiveFile(frame.data('filename'), file_id);
-    $('#files').jstree().select_node(file_id);
+    var filetree = $('#files');
+    this.selectFileInJsTree(filetree, file_id);
     this.showFrame(frame);
     this.toggleButtonStates();
   },
@@ -124,11 +136,11 @@ configureEditors: function () {
 
   getProgressBarClass: function (percentage) {
     if (percentage < this.ADEQUATE_PERCENTAGE) {
-      return 'progress-bar progress-bar-striped progress-bar-danger';
+      return 'progress-bar progress-bar-striped bg-danger';
     } else if (percentage < this.SUCCESSFULL_PERCENTAGE) {
-      return 'progress-bar progress-bar-striped progress-bar-warning';
+      return 'progress-bar progress-bar-striped bg-warning';
     } else {
-      return 'progress-bar progress-bar-striped progress-bar-success';
+      return 'progress-bar progress-bar-striped bg-success';
     }
   },
 
@@ -158,7 +170,7 @@ configureEditors: function () {
         category: 'editor_paste',
         data: pasteObject.text,
         exercise_id: $('#editor').data('exercise-id'),
-        file_id: $(this).data('file-id')
+        file_id: $(event.target).data('file-id')
       });
     }
   },
@@ -177,8 +189,8 @@ configureEditors: function () {
   },
 
   resizeParentOfAceEditor: function (element){
-    // calculate needed size: window height - position of top of button-bar - 60 for bar itself and margins
-    var windowHeight = window.innerHeight - $('#editor-buttons').offset().top - 60;
+    // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
+    var windowHeight = window.innerHeight - $(element).offset().top - $('#autosave-label').height() - 5;
     $(element).parent().height(windowHeight);
   },
 
@@ -266,14 +278,29 @@ configureEditors: function () {
     this.initializeRequestForComments()
   },
 
+  updateEditorModeToFileTypeID: function (editor, fileTypeID) {
+    var newMode = 'ace/mode/text'
+
+    $.ajax(this.fileTypeURL + '/' + fileTypeID, {
+      dataType: 'json'
+    }).done(function (data) {
+        if (data['editor_mode'] !== null) {
+          newMode = data['editor_mode'];
+        }
+    }).fail(_.noop)
+      .always(function () {
+        ace.edit(editor).session.setMode(newMode);
+    });
+  },
+
   initializeFileTree: function () {
     $('#files').jstree($('#files').data('entries'));
     $('#files').on('click', 'li.jstree-leaf', function (event) {
-      active_file = {
-        filename: $(event.target).parent().text(),
-        id: parseInt($(event.target).parent().attr('id'))
-      };
-      var frame = $('[data-file-id="' + active_file.id + '"]').parent();
+      this.setActiveFile(
+        $(event.target).parent().text(),
+        parseInt($(event.target).parent().attr('id'))
+      );
+      var frame = $('[data-file-id="' + this.active_file.id + '"]').parent();
       this.showFrame(frame);
       this.toggleButtonStates();
     }.bind(this));
@@ -296,8 +323,8 @@ configureEditors: function () {
 
   handleSideBarToggle: function() {
     $('#sidebar').toggleClass('sidebar-col').toggleClass('sidebar-col-collapsed');
-    $('#sidebar-collapsed').toggleClass('hidden');
-    $('#sidebar-uncollapsed').toggleClass('hidden');
+    $('#sidebar-collapsed').toggleClass('d-none');
+    $('#sidebar-uncollapsed').toggleClass('d-none');
   },
 
   initializeRegexes: function () {
@@ -369,17 +396,17 @@ configureEditors: function () {
     return Modernizr.websockets;
   },
 
-  populatePanel: function (panel, result, index) {
-    panel.removeClass('panel-default').addClass(this.getPanelClass(result));
-    panel.find('.panel-title .filename').text(result.filename);
-    panel.find('.panel-title .number').text(index + 1);
-    panel.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
-    panel.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
-    panel.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
-    panel.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
-    panel.find('.row .col-sm-9').eq(2).html(result.message);
-    if (result.error_messages) panel.find('.row .col-sm-9').eq(3).text(result.error_messages.join(' '));
-    //panel.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
+  populateCard: function (card, result, index) {
+    card.addClass(this.getCardClass(result));
+    card.find('.card-title .filename').text(result.filename);
+    card.find('.card-title .number').text(index + 1);
+    card.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
+    card.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
+    card.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
+    card.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
+    card.find('.row .col-sm-9').eq(2).html(result.message);
+    if (result.error_messages) card.find('.row .col-sm-9').eq(3).text(result.error_messages.join(' '));
+    //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
   },
 
   publishCodeOceanEvent: function (payload) {
@@ -409,7 +436,7 @@ configureEditors: function () {
       url: $('#editor').data('errors-url')
     });
     jqxhr.always(this.hideSpinner);
-    jqxhr.success(this.renderHint);
+    jqxhr.done(this.renderHint);
   },
 
   toggleButtonStates: function () {
@@ -556,14 +583,14 @@ configureEditors: function () {
   },
 
   showOutputBar: function() {
-    $('#output_sidebar_collapsed').addClass('hidden');
-    $('#output_sidebar_uncollapsed').removeClass('hidden');
+    $('#output_sidebar_collapsed').addClass('d-none');
+    $('#output_sidebar_uncollapsed').removeClass('d-none');
     $('#output_sidebar').removeClass('output-col-collapsed').addClass('output-col');
   },
 
   hideOutputBar: function() {
-    $('#output_sidebar_collapsed').removeClass('hidden');
-    $('#output_sidebar_uncollapsed').addClass('hidden');
+    $('#output_sidebar_collapsed').removeClass('d-none');
+    $('#output_sidebar_uncollapsed').addClass('d-none');
     $('#output_sidebar').removeClass('output-col').addClass('output-col-collapsed');
   },
 
@@ -572,16 +599,17 @@ configureEditors: function () {
   },
 
   initializeDescriptionToggle: function() {
-    $('#exercise-headline').on('click', this.toggleDescriptionPanel.bind(this));
-    $('a#toggle').on('click', this.toggleDescriptionPanel.bind(this));
+    $('#exercise-headline').on('click', this.toggleDescriptionCard.bind(this));
+    $('a#toggle').on('click', this.toggleDescriptionCard.bind(this));
   },
 
-  toggleDescriptionPanel: function() {
-    $('#description-panel').toggleClass('description-panel-collapsed').toggleClass('description-panel');
+  toggleDescriptionCard: function() {
+    $('#description-card').toggleClass('description-card-collapsed').toggleClass('description-card');
     $('#description-symbol').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
     var toggle = $('a#toggle');
     toggle.text(toggle.text() == toggle.data('hide') ? toggle.data('show') : toggle.data('hide'));
     this.resizeAceEditors();
+    event.preventDefault();
   },
 
     /**

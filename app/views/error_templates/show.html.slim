@@ -4,10 +4,12 @@ h1
 
 = row(label: 'error_template.name', value: @error_template.name)
 = row(label: 'exercise.execution_environment', value: link_to(@error_template.execution_environment))
-- [:signature, :description, :hint].each do |attribute|
+= row(label: "error_template.signature") do
+  code = @error_template.signature
+- [:description, :hint].each do |attribute|
   = row(label: "error_template.#{attribute}", value: @error_template.send(attribute))
 
-h3
+h2.mt-4
   = t 'error_templates.attributes'
 
 .table-responsive
@@ -27,9 +29,10 @@ h3
               span class="fa fa-star" aria-hidden="true"
             - else
               span class="fa fa-star-o" aria-hidden="true"
-          td = attribute.key
+          td = link_to(attribute.key, attribute)
           td = attribute.description
-          td = attribute.regex
+          td
+            code = attribute.regex
           td = link_to(t('shared.show'), attribute)
           td = link_to(t('shared.destroy'), attribute_error_template_url(:error_template_attribute_id => attribute.id), :method => :delete)
 
@@ -37,4 +40,4 @@ h3
   = collection_select({}, :error_template_attribute_id,
           ErrorTemplateAttribute.where.not(id: @error_template.error_template_attributes.select(:id).to_a).order('important DESC', :key),
           :id, :key, {include_blank: false}, class: '')
-  button.btn.btn-default = t('error_templates.add_attribute')
+  button.btn.btn-outline-primary = t('error_templates.add_attribute')

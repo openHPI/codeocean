@@ -1,4 +1,4 @@
-class AddUserIdToExercises < ActiveRecord::Migration
+class AddUserIdToExercises < ActiveRecord::Migration[4.2]
   def change
     add_reference :exercises, :user
   end

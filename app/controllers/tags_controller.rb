@@ -22,7 +22,7 @@ class TagsController < ApplicationController
   end
 
   def tag_params
-    params[:tag].permit(:name)
+    params[:tag].permit(:name) if params[:tag].present?
   end
   private :tag_params
 

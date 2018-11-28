@@ -1,8 +1,8 @@
 # todo: reference to lti_param_model
-class RemoteEvaluationMapping < ActiveRecord::Base
+class RemoteEvaluationMapping < ApplicationRecord
   before_create :generate_token, unless: :validation_token?
   belongs_to :exercise
-  belongs_to :user
+  belongs_to :user, polymorphic: true
 
   def generate_token
     self.validation_token = SecureRandom.urlsafe_base64

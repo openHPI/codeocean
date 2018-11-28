@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
     if ($.isController('error_templates')) {
         $('#add-attribute').find('button').on('click', function () {
             $.ajax(location + '/attribute.json', {
@@ -8,9 +8,9 @@ $(function() {
                     dataType: 'json',
                     error_template_attribute_id: $('#add-attribute').find('select').val()
                 }
-            }).success(function () {
+            }).done(function () {
                 location.reload();
-            }).error(function (error) {
+            }).fail(function (error) {
                 $.flash.danger({text: error.statusText});
             });
         });

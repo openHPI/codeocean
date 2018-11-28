@@ -4,9 +4,9 @@ h1 = @user.name
 //= row(label: 'external_user.email', value: @user.email)
 = row(label: 'external_user.consumer', value: link_to(@user.consumer, @user.consumer))
 
-h4 = link_to(t('.exercise_statistics'), statistics_external_user_path(@user))
+h4.mt-4 = link_to(t('.exercise_statistics'), statistics_external_user_path(@user))
 
-h4 = t('.tag_statistics')
+h4.mt-4 = t('.tag_statistics')
 #loading
   .spinner
   = t('.loading_tag_statistics')

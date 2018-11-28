@@ -1,17 +1,20 @@
 - content_for :head do
-  = javascript_include_tag(asset_path('vis.min.js', type: :javascript))
-  = stylesheet_link_tag(asset_path('vis.min.css', type: :stylesheet))
+  // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
+     Otherwise, the global variable `vis` might be uninitialized in the assets (race condition)
+  meta name='turbolinks-visit-control' content='reload'
+  = javascript_pack_tag('vis', 'data-turbolinks-track': true)
+  = stylesheet_pack_tag('vis', media: 'all', 'data-turbolinks-track': true)
 
 .group
   .title
     h1 = t('.user_activity')
     a href=statistics_graphs_user_activity_history_path = t('.history')
   .spinner
-  .graph#user-activity
+  .graph.mb-5#user-activity
 
 .group
   .title
     h1 = t('.rfc_activity')
     a href=statistics_graphs_rfc_activity_history_path = t('.history')
   .spinner
-  .graph#rfc-activity
+  .graph.mb-5#rfc-activity

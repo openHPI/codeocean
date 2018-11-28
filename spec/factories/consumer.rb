@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :consumer do
-    name 'openHPI'
+    name { 'openHPI' }
     oauth_key { SecureRandom.hex }
     oauth_secret { SecureRandom.hex }
     singleton_consumer

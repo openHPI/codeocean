@@ -1,4 +1,4 @@
-class CreateExecutionEnvironments < ActiveRecord::Migration
+class CreateExecutionEnvironments < ActiveRecord::Migration[4.2]
   def change
     create_table :execution_environments do |t|
       t.string :docker_image

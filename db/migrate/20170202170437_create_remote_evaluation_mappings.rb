@@ -1,4 +1,4 @@
-class CreateRemoteEvaluationMappings < ActiveRecord::Migration
+class CreateRemoteEvaluationMappings < ActiveRecord::Migration[4.2]
   def change
     create_table :remote_evaluation_mappings do |t|
       t.integer   "user_id",          null: false

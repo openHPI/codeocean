@@ -6,30 +6,30 @@ h1 = ProxyExercise.model_name.human(count: 2)
     = f.search_field(:title_cont, class: 'form-control', placeholder: t('activerecord.attributes.proxy_exercise.title'))
 
 .table-responsive
-  table.table
+  table.table.mt-4
     thead
       tr
-        th = sort_link(@search, :title, t('activerecord.attributes.proxy_exercise.title'))
-        th = t('activerecord.attributes.exercise.token')
-        th = t('activerecord.attributes.proxy_exercise.files_count')
-        th colspan=6 = t('shared.actions')
+        th.p-1 = sort_link(@search, :title, t('activerecord.attributes.proxy_exercise.title'))
+        th.p-1 = t('activerecord.attributes.exercise.token')
+        th.p-1 = t('activerecord.attributes.proxy_exercise.files_count')
+        th.p-1 colspan=6 = t('shared.actions')
     tbody
       - @proxy_exercises.each do |proxy_exercise|
         tr data-id=proxy_exercise.id
-          td = link_to(proxy_exercise.title,proxy_exercise)
-          td = proxy_exercise.token
-          td = proxy_exercise.count_files
-          td = link_to(t('shared.edit'), edit_proxy_exercise_path(proxy_exercise)) if policy(proxy_exercise).edit?
+          td.p-1.pt-2 = link_to(proxy_exercise.title,proxy_exercise)
+          td.p-1.pt-2 = proxy_exercise.token
+          td.p-1.pt-2 = proxy_exercise.count_files
+          td.p-1.pt-2 = link_to(t('shared.edit'), edit_proxy_exercise_path(proxy_exercise)) if policy(proxy_exercise).edit?
 
-          td
+          td.p-1
             .btn-group
-              button.btn.btn-primary-outline.btn-xs.dropdown-toggle data-toggle="dropdown" type="button" = t('shared.actions_button')
+              button.btn.btn-outline-primary.btn-sm.dropdown-toggle data-toggle="dropdown" type="button" = t('shared.actions_button')
               span.caret
               span.sr-only Toggle Dropdown
-              ul.dropdown-menu.pull-right role="menu"
-                li = link_to(t('shared.show'), proxy_exercise) if policy(proxy_exercise).show?
-                li = link_to(t('shared.destroy'), proxy_exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(proxy_exercise).destroy?
-                li = link_to(t('.clone'), clone_proxy_exercise_path(proxy_exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post) if policy(proxy_exercise).clone?
+              ul.dropdown-menu.float-right role="menu"
+                li = link_to(t('shared.show'), proxy_exercise, 'data-turbolinks' => "false", class: 'dropdown-item') if policy(proxy_exercise).show?
+                li = link_to(t('shared.destroy'), proxy_exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'dropdown-item') if policy(proxy_exercise).destroy?
+                li = link_to(t('.clone'), clone_proxy_exercise_path(proxy_exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post, class: 'dropdown-item') if policy(proxy_exercise).clone?
 
 = render('shared/pagination', collection: @proxy_exercises)
 p = render('shared/new_button', model: ProxyExercise)

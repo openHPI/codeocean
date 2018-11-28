@@ -32,7 +32,11 @@ class DockerClient
   end
 
   def command_substitutions(filename)
-    {class_name: File.basename(filename, File.extname(filename)).camelize, filename: filename, module_name: File.basename(filename, File.extname(filename)).underscore}
+    {
+      class_name: File.basename(filename, File.extname(filename)).camelize,
+      filename: filename,
+      module_name: File.basename(filename, File.extname(filename)).underscore
+    }
   end
   private :command_substitutions
 
@@ -78,7 +82,7 @@ class DockerClient
     Rails.logger.debug "Opening Websocket on URL " + socket_url
 
     socket.on :error do |event|
-      Rails.logger.info "Websocket error: " + event.message
+      Rails.logger.info "Websocket error: " + event.message.to_s
     end
     socket.on :close do |event|
       Rails.logger.info "Websocket closed."
@@ -268,7 +272,7 @@ class DockerClient
           end
         #ensure
         # guarantee that the thread is releasing the DB connection after it is done
-        # ActiveRecord::Base.connectionpool.releaseconnection
+        # ApplicationRecord.connectionpool.releaseconnection
         #end
       end
   end
@@ -310,7 +314,8 @@ class DockerClient
     """
     Run commands by attaching a websocket to Docker.
     """
-    command = submission.execution_environment.run_command % command_substitutions(filename)
+    filepath = submission.collect_files.find{|f| f.name_with_extension == filename}.filepath
+    command = submission.execution_environment.run_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     open_websocket_connection(command, create_workspace_files, block)
     # actual run command is run in the submissions controller, after all listeners are attached.
@@ -320,14 +325,22 @@ class DockerClient
     """
     Stick to existing Docker API with exec command.
     """
-    command = submission.execution_environment.test_command % command_substitutions(filename)
+    filepath = submission.collect_files.find{|f| f.name_with_extension == filename}.filepath
+    command = submission.execution_environment.test_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_command(command, create_workspace_files, block)
   end
 
   def self.find_image_by_tag(tag)
     # todo: cache this.
-    Docker::Image.all.detect { |image| image.info['RepoTags'].flatten.include?(tag) }
+    Docker::Image.all.detect do |image|
+      begin
+        image.info['RepoTags'].flatten.include?(tag)
+      rescue
+        # Skip image if it is not tagged
+        next
+      end
+    end
   end
 
   def self.generate_local_workspace_path

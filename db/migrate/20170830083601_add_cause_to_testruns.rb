@@ -1,4 +1,4 @@
-class AddCauseToTestruns < ActiveRecord::Migration
+class AddCauseToTestruns < ActiveRecord::Migration[4.2]
   def up
     add_column :testruns, :cause, :string
     Testrun.reset_column_information

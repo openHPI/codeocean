@@ -24,3 +24,9 @@
 /.vagrant
 *.iml
 *.DS_Store
+/node_modules
+/public/packs
+/public/packs-test
+/node_modules
+yarn-debug.log*
+.yarn-integrity

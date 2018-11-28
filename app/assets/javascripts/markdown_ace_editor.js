@@ -9,7 +9,7 @@
         });
         editor.setShowPrintMargin(false);
         var session = editor.getSession();
-        session.setMode('markdown');
+        session.setMode('ace/mode/markdown');
         session.setUseWrapMode(true);
         session.setValue($(selector).val());
     };

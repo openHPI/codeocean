@@ -1,4 +1,4 @@
-$(function() {
+$(document).on('turbolinks:load', function() {
     // http://localhost:3333/exercises/38/statistics good for testing
     // originally at--> localhost:3333/exercises/69/statistics
 
@@ -30,7 +30,7 @@ $(function() {
           var studentTime = minutes_array[i];
 
           for (var j = 0; j < studentTime; j++){
-              if (minutes_count[j] == undefined){
+              if (minutes_count[j] === undefined){
                   minutes_count[j] = 0;
               } else{
                   minutes_count[j] += 1;
@@ -173,23 +173,23 @@ $(function() {
       //}
 
       // DRAW THE SECOND GRAPH ------------------------------------------------------------------------------
-      //<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
       function draw_bar_graph() {
-          var group_incrament = 5;
-          var group_ranges = group_incrament; // just for the start
+          var number_of_bars = 40;
+          var group_increment = Math.ceil(maximum_minutes / number_of_bars); // range in minutes
+          var group_ranges = group_increment; // just for the start
           var minutes_array_for_bar = [];
 
           do {
               var section_value = 0;
               for (var i = 0; i < minutes_array.length; i++) {
-                  if ((minutes_array[i] < group_ranges) && (minutes_array[i] >= (group_ranges - group_incrament))) {
+                  if ((minutes_array[i] < group_ranges) && (minutes_array[i] >= (group_ranges - group_increment))) {
                       section_value++;
                   }
               }
               minutes_array_for_bar.push(section_value);
-              group_ranges += group_incrament;
+              group_ranges += group_increment;
           }
-          while (group_ranges < maximum_minutes + group_incrament);
+          while (group_ranges < maximum_minutes + group_increment);
 
           //console.log(minutes_array_for_bar); // this var used as the bars
           //minutes_array_for_bar = [39, 20, 28, 20, 39, 34, 26, 23, 16, 8];
@@ -199,30 +199,30 @@ $(function() {
 
 
           var width_ratio = .8;
+          if (getWidth()*width_ratio > 1000){
+              width_ratio = 1000/getWidth();
+          }
           var height_ratio = .7; // percent of height
 
           var margin = {top: 100, right: 20, bottom: 70, left: 70},//30,50
               width = (getWidth() * width_ratio) - margin.left - margin.right,
               height = (width * height_ratio) - margin.top - margin.bottom;
 
-          var x = d3.scale.ordinal()
-              .rangeRoundBands([0, width], .1);
+          var x = d3.scaleBand()
+              .range([0, width], .1);
 
           var y = d3.scaleLinear()
               .range([0,height-(margin.top + margin.bottom)]);
 
 
-          var xAxis = d3.svg.axis()
-              .scale(x)
-              .orient("bottom")
+          var xAxis = d3.axisBottom(x)
               .ticks(10);
 
 
-          var yAxis = d3.svg.axis()
-              .scale(d3.scaleLinear().domain([0,max_of_array]).range([height,0]))//y
-              .orient("left")
+          var yAxis = d3
+              .axisLeft(d3.scaleLinear().domain([0,max_of_array]).range([height,0]))//y
               .ticks(10)
-              .innerTickSize(-width);
+              .tickSizeInner(-width);
 
           var tip = d3.tip()
               .attr('class', 'd3-tip')
@@ -241,8 +241,8 @@ $(function() {
 
           x.domain(minutes_array_for_bar.map(function (d, i) {
               i++;
-              var high_side = i * group_incrament;
-              var low_side = high_side - group_incrament;
+              var high_side = i * group_increment;
+              var low_side = high_side - group_increment;
               return (low_side+"-"+high_side);
           }));
 
@@ -253,7 +253,14 @@ $(function() {
           svg.append("g")
               .attr("class", "x axis")
               .attr("transform", "translate(0," + height + ")")
-              .call(xAxis);
+              .call(xAxis)
+              .selectAll("text")
+              .style("text-anchor", "end")
+              .attr("dx", "-.8em")
+              .attr("dy", ".15em")
+              .attr("transform", function(d) {
+                  return "rotate(-45)"
+              });
 
           svg.append("g")
               .attr("class", "y axis")
@@ -278,7 +285,7 @@ $(function() {
               .attr("text-anchor", "middle")
               .attr("x", width / 2)
               .attr("y", height)
-              .attr("dy", ((height / 20) + 20) + 'px')
+              .attr("dy", ((height / 20) + 40) + 'px')
               .text("Working Time (Minutes)")
               .style('font-size', 14);
 
@@ -291,10 +298,10 @@ $(function() {
               .data(minutes_array_for_bar)
               .enter().append("rect")
               .attr("class", "bar")
-              .attr("x", function(d,i) {    var bar_incriment = width/ minutes_array_for_bar.length;
-                                            var bar_x = i * bar_incriment;
+              .attr("x", function(d,i) {    var bar_increment = width / minutes_array_for_bar.length;
+                                            var bar_x = i * bar_increment;
                                             return (bar_x)})
-              .attr("width", x.rangeBand())
+              .attr("width", x.bandwidth())
               .attr("y", function(d) { return height - y(d); })
               .attr("height", function(d) { return y(d); })
               .on('mouseover', tip.show)
@@ -311,7 +318,7 @@ $(function() {
               .style('text-decoration', 'underline');
 
       }
-      // draw_bar_graph();
+      draw_bar_graph();
   }
 
 });

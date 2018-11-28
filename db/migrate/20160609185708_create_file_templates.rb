@@ -1,4 +1,4 @@
-class CreateFileTemplates < ActiveRecord::Migration
+class CreateFileTemplates < ActiveRecord::Migration[4.2]
   def change
     create_table :file_templates do |t|
       t.string :name

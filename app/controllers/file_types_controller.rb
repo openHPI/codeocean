@@ -23,7 +23,7 @@ class FileTypesController < ApplicationController
   end
 
   def file_type_params
-    params[:file_type].permit(:binary, :editor_mode, :executable, :file_extension, :name, :indent_size, :renderable).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:file_type].permit(:binary, :editor_mode, :executable, :file_extension, :name, :indent_size, :renderable).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:file_type].present?
   end
   private :file_type_params
 
@@ -38,7 +38,7 @@ class FileTypesController < ApplicationController
   end
 
   def set_editor_modes
-    @editor_modes = Dir.glob('vendor/assets/javascripts/ace/mode-*.js').map do |filename|
+    @editor_modes = Dir.glob('vendor/assets/javascripts/ace/mode-*.js').sort.map do |filename|
       name = filename.gsub(/\w+\/|mode-|.js$/, '')
       [name, "ace/mode/#{name}"]
     end

@@ -23,7 +23,7 @@ class HintsController < ApplicationController
   end
 
   def hint_params
-    params[:hint].permit(:locale, :message, :name, :regular_expression).merge(execution_environment_id: @execution_environment.id)
+    params[:hint].permit(:locale, :message, :name, :regular_expression).merge(execution_environment_id: @execution_environment.id) if params[:hint].present?
   end
   private :hint_params
 

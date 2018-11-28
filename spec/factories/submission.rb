@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :submission do
-    cause 'save'
+    cause { 'save' }
     created_by_external_user
     association :exercise, factory: :math
 

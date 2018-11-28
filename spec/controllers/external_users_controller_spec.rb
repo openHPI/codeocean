@@ -14,7 +14,7 @@ describe ExternalUsersController do
   end
 
   describe 'GET #show' do
-    before(:each) { get :show, id: users.first.id }
+    before(:each) { get :show, params: { id: users.first.id } }
 
     expect_assigns(user: ExternalUser)
     expect_status(200)

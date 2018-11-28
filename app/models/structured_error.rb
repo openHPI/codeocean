@@ -1,7 +1,6 @@
-class StructuredError < ActiveRecord::Base
+class StructuredError < ApplicationRecord
   belongs_to :error_template
   belongs_to :submission
-  belongs_to :file, class_name: 'CodeOcean::File'
 
   has_many :structured_error_attributes
 

@@ -1,4 +1,4 @@
-class RequestForComment < ActiveRecord::Base
+class RequestForComment < ApplicationRecord
   include Creation
   belongs_to :submission
   belongs_to :exercise

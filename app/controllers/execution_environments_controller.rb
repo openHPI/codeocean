@@ -86,11 +86,11 @@ class ExecutionEnvironmentsController < ApplicationController
     working_time_statistics = {}
     user_statistics = {}
 
-    ActiveRecord::Base.connection.execute(working_time_query).each do |tuple|
+    ApplicationRecord.connection.execute(working_time_query).each do |tuple|
       working_time_statistics[tuple["exercise_id"].to_i] = tuple
     end
 
-    ActiveRecord::Base.connection.execute(user_query).each do |tuple|
+    ApplicationRecord.connection.execute(user_query).each do |tuple|
       user_statistics[tuple["exercise_id"].to_i] = tuple
     end
 
@@ -101,7 +101,7 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def execution_environment_params
-    params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(user_id: current_user.id, user_type: current_user.class.name)
+    params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:execution_environment].present?
   end
   private :execution_environment_params
 

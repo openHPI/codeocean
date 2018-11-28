@@ -7,20 +7,20 @@ describe ConsumersController do
 
   describe 'POST #create' do
     context 'with a valid consumer' do
-      let(:request) { proc { post :create, consumer: FactoryBot.attributes_for(:consumer) } }
-      before(:each) { request.call }
+      let(:perform_request) { proc { post :create, params: { consumer: FactoryBot.attributes_for(:consumer) } } }
+      before(:each) { perform_request.call }
 
       expect_assigns(consumer: Consumer)
 
       it 'creates the consumer' do
-        expect { request.call }.to change(Consumer, :count).by(1)
+        expect { perform_request.call }.to change(Consumer, :count).by(1)
       end
 
       expect_redirect(Consumer.last)
     end
 
     context 'with an invalid consumer' do
-      before(:each) { post :create, consumer: {} }
+      before(:each) { post :create, params: { consumer: {} } }
 
       expect_assigns(consumer: Consumer)
       expect_status(200)
@@ -29,20 +29,20 @@ describe ConsumersController do
   end
 
   describe 'DELETE #destroy' do
-    before(:each) { delete :destroy, id: consumer.id }
+    before(:each) { delete :destroy, params: { id: consumer.id } }
 
     expect_assigns(consumer: Consumer)
 
     it 'destroys the consumer' do
       consumer = FactoryBot.create(:consumer)
-      expect { delete :destroy, id: consumer.id }.to change(Consumer, :count).by(-1)
+      expect { delete :destroy, params: { id: consumer.id } }.to change(Consumer, :count).by(-1)
     end
 
     expect_redirect(:consumers)
   end
 
   describe 'GET #edit' do
-    before(:each) { get :edit, id: consumer.id }
+    before(:each) { get :edit, params: { id: consumer.id } }
 
     expect_assigns(consumer: Consumer)
     expect_status(200)
@@ -67,7 +67,7 @@ describe ConsumersController do
   end
 
   describe 'GET #show' do
-    before(:each) { get :show, id: consumer.id }
+    before(:each) { get :show, params: { id: consumer.id } }
 
     expect_assigns(consumer: :consumer)
     expect_status(200)
@@ -76,14 +76,14 @@ describe ConsumersController do
 
   describe 'PUT #update' do
     context 'with a valid consumer' do
-      before(:each) { put :update, consumer: FactoryBot.attributes_for(:consumer), id: consumer.id }
+      before(:each) { put :update, params: { consumer: FactoryBot.attributes_for(:consumer), id: consumer.id } }
 
       expect_assigns(consumer: Consumer)
       expect_redirect(:consumer)
     end
 
     context 'with an invalid consumer' do
-      before(:each) { put :update, consumer: {name: ''}, id: consumer.id }
+      before(:each) { put :update, params: { consumer: {name: ''}, id: consumer.id } }
 
       expect_assigns(consumer: Consumer)
       expect_status(200)

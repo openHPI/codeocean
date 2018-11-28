@@ -115,7 +115,7 @@ class SubmissionsController < ApplicationController
     if @file.native_file?
       send_file(@file.native_file.path, disposition: 'inline')
     else
-      render(text: @file.content)
+      render(plain: @file.content)
     end
   end
 
@@ -140,7 +140,7 @@ class SubmissionsController < ApplicationController
       # probably add:
       # ensure
       #   #guarantee that the thread is releasing the DB connection after it is done
-      #   ActiveRecord::Base.connectionpool.releaseconnection
+      #   ApplicationRecord.connectionpool.releaseconnection
       # end
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
 
@@ -329,7 +329,7 @@ class SubmissionsController < ApplicationController
 
   def set_file
     @file = @files.detect { |file| file.name_with_extension == params[:filename] }
-    render(nothing: true, status: 404) unless @file
+    head :not_found unless @file
   end
   private :set_file
 
@@ -362,11 +362,11 @@ class SubmissionsController < ApplicationController
     DockerClient.destroy_container(container)
   rescue Docker::Error::NotFoundError
   ensure
-    render(nothing: true)
+    head :ok
   end
 
   def store_error(stderr)
-    ::Error.create(submission_id: @submission.id, execution_environment_id: @submission.execution_environment.id, message: stderr)
+    CodeOcean::Error.create(submission_id: @submission.id, execution_environment_id: @submission.execution_environment.id, message: stderr)
   end
   private :store_error
 
@@ -398,13 +398,13 @@ class SubmissionsController < ApplicationController
   private :with_server_sent_events
 
   def create_remote_evaluation_mapping
-    user_id = @submission.user_id
+    user = @submission.user
     exercise_id = @submission.exercise_id
 
-    remote_evaluation_mapping = RemoteEvaluationMapping.create(:user_id => user_id, :exercise_id => exercise_id)
+    remote_evaluation_mapping = RemoteEvaluationMapping.create(user: user, exercise_id: exercise_id)
 
     # create .co file
-    path = "tmp/" + user_id.to_s + ".co"
+    path = "tmp/" + user.id.to_s + ".co"
     # parse validation token
     content = "#{remote_evaluation_mapping.validation_token}\n"
     # parse remote request url

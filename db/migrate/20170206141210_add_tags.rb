@@ -1,4 +1,4 @@
-class AddTags < ActiveRecord::Migration
+class AddTags < ActiveRecord::Migration[4.2]
 
   def change
     add_column :exercises, :expected_worktime_seconds, :integer, default: 60
