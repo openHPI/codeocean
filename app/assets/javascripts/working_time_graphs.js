@@ -1,18 +1,16 @@
 $(document).on('turbolinks:load', function() {
-    // http://localhost:3333/exercises/38/statistics good for testing
-    // originally at--> localhost:3333/exercises/69/statistics
+    // /38/statistics good for testing
 
-  if ($.isController('exercises') && $('.graph-functions').isPresent()) {
+  if ($.isController('exercises') && $('.working-time-graphs').isPresent()) {
       var working_times = $('#data').data('working-time');
       
-      function get_minutes (time_stamp){
+      function get_minutes (timestamp){
           try{
-              hours = time_stamp.split(":")[0];
-              minutes = time_stamp.split(":")[1];
-              seconds = time_stamp.split(":")[2];
+              hours = timestamp.split(":")[0];
+              minutes = timestamp.split(":")[1];
+              seconds = timestamp.split(":")[2];
 
-              minutes = parseFloat(hours * 60) + parseInt(minutes);
-              return minutes
+              return parseFloat(hours * 60) + parseInt(minutes);
           } catch (err){
               return 0;
           }
@@ -20,7 +18,7 @@ $(document).on('turbolinks:load', function() {
       }
 
       // GET ALL THE DATA ------------------------------------------------------------------------------
-      minutes_array = _.map(working_times,function(item){return get_minutes(item)});
+      minutes_array = _.map(working_times, function(item){return get_minutes(item)});
       minutes_array_length = minutes_array.length;
 
       maximum_minutes = _.max(minutes_array);
@@ -39,7 +37,7 @@ $(document).on('turbolinks:load', function() {
       }
 
       function getWidth() {
-          if (self.innerHeight) {
+          if (self.innerWidth) {
               return self.innerWidth;
           }
 
@@ -53,15 +51,12 @@ $(document).on('turbolinks:load', function() {
       }
 
       // DRAW THE LINE GRAPH ------------------------------------------------------------------------------
-      function draw_line_graph() {
+      function drawLineGraph() {
           var width_ratio = .8;
-          if (getWidth()*width_ratio > 1000){
-              width_ratio = 1000/getWidth();
+          if (getWidth() * width_ratio > 1000){
+              width_ratio = 1000 / getWidth();
           }
-          var height_ratio = .7; // percent of height
-
-          // currently sets as percentage of window width, however, unfortunately
-          // is not yet responsive
+          var height_ratio = .7;
 
           var margin = {top: 100, right: 20, bottom: 70, left: 70},//30,50
               width = (getWidth() * width_ratio) - margin.left - margin.right,
@@ -139,96 +134,66 @@ $(document).on('turbolinks:load', function() {
           svg.append("path")
               .datum(minutes_count)
               .attr("class", "line")
-              .attr('id', 'myPath')// new
+              .attr('id', 'myPath')
               .attr("stroke", "orange")
               .attr("stroke-width", 5)
-              .attr("fill", "none")// end new
-              .attr("d", line);//---
-          //.on("mousemove", mMove)//new again
-          //.append("title");
-
-          // function type(d) {
-          //     d.frequency = +d.frequency;
-          //     return d;
-          // }
+              .attr("fill", "none")
+              .attr("d", line);
       }
 
-      draw_line_graph();
-
-      // THIS SHOULD DISPLAY THE X AND Y VALUES BUT
-      // THE RESULTS ARE WRONG AT THE END FOR SOME REASON
-
-      //function mMove() {
-      //    var x_width = getWidth() * width_ratio;
-      //    //var x_value = m[0]*(minutes_count.length/x_width);
-      //
-      //    var y_height = x_width * height_ratio;
-      //    //var y_value = (((y_height - m[1])/y_height)*100);
-      //
-      //    //console.log('y is: ' + y_value);
-      //    var m = d3.mouse(this);
-      //    d3.select("#myPath").select("title")
-      //        .text((y_height-m[1])/(y_height) * 100 + "% of Students" +"\n"+
-      //              (m[0]*(minutes_count.length/x_width)) +" Minutes");//text(m[1]);
-      //}
+      drawLineGraph();
 
       // DRAW THE SECOND GRAPH ------------------------------------------------------------------------------
-      function draw_bar_graph() {
-          var number_of_bars = 40;
-          var group_increment = Math.ceil(maximum_minutes / number_of_bars); // range in minutes
-          var group_ranges = group_increment; // just for the start
-          var minutes_array_for_bar = [];
+      function drawBarGraph() {
+          var groupWidth = 5;
+          var groupRanges = 0;
+          var workingTimeGroups = [];
 
           do {
-              var section_value = 0;
+              var clusterCount = 0;
               for (var i = 0; i < minutes_array.length; i++) {
-                  if ((minutes_array[i] < group_ranges) && (minutes_array[i] >= (group_ranges - group_increment))) {
-                      section_value++;
+                  if ((minutes_array[i] > groupRanges) && (minutes_array[i] < (groupRanges + groupWidth))) {
+                      clusterCount++;
                   }
               }
-              minutes_array_for_bar.push(section_value);
-              group_ranges += group_increment;
+              workingTimeGroups.push(clusterCount);
+              groupRanges += groupWidth;
           }
-          while (group_ranges < maximum_minutes + group_increment);
+          while (groupRanges < maximum_minutes);
 
-          //console.log(minutes_array_for_bar); // this var used as the bars
-          //minutes_array_for_bar = [39, 20, 28, 20, 39, 34, 26, 23, 16, 8];
-
-          var max_of_array = Math.max.apply(Math, minutes_array_for_bar);
-          var min_of_array = Math.min.apply(Math, minutes_array_for_bar);
-
+          var maxStudentsInGroup = Math.max.apply(Math, workingTimeGroups);
 
           var width_ratio = .8;
-          if (getWidth()*width_ratio > 1000){
-              width_ratio = 1000/getWidth();
-          }
-          var height_ratio = .7; // percent of height
+          var height_ratio = .7;
 
-          var margin = {top: 100, right: 20, bottom: 70, left: 70},//30,50
+          var margin = {top: 100, right: 20, bottom: 70, left: 70},
               width = (getWidth() * width_ratio) - margin.left - margin.right,
               height = (width * height_ratio) - margin.top - margin.bottom;
 
           var x = d3.scaleBand()
-              .range([0, width], .1);
-
-          var y = d3.scaleLinear()
-              .range([0,height-(margin.top + margin.bottom)]);
-
+              .rangeRound([0, width])
+              .paddingInner(0.1)
+              .domain(workingTimeGroups.map(function (d, i) {
+                  return i * groupWidth;
+              }));
 
           var xAxis = d3.axisBottom(x)
+              .tickValues(x.domain().filter(function(d, i){
+                  return (d % 50) === 0
+              }));
+
+          var y = d3.scaleLinear()
+              .domain([0, maxStudentsInGroup])
+              .range([height, 0]);
+
+          var yAxis = d3.axisLeft(y)
               .ticks(10);
-
-
-          var yAxis = d3
-              .axisLeft(d3.scaleLinear().domain([0,max_of_array]).range([height,0]))//y
-              .ticks(10)
-              .tickSizeInner(-width);
 
           var tip = d3.tip()
               .attr('class', 'd3-tip')
               .offset([-10, 0])
               .html(function(d) {
-                  return "<strong>Students:</strong> <span style='color:orange'>" + d + "</span>";
+                  return "<strong>Students:</strong><span style='color:orange'>" + d + "</span>";
               });
 
           var svg = d3.select("#chart_2").append("svg")
@@ -239,40 +204,16 @@ $(document).on('turbolinks:load', function() {
 
           svg.call(tip);
 
-          x.domain(minutes_array_for_bar.map(function (d, i) {
-              i++;
-              var high_side = i * group_increment;
-              var low_side = high_side - group_increment;
-              return (low_side+"-"+high_side);
-          }));
-
-          y.domain(minutes_array_for_bar.map(function (d) {
-              return (d);
-          }));
-
           svg.append("g")
               .attr("class", "x axis")
               .attr("transform", "translate(0," + height + ")")
-              .call(xAxis)
-              .selectAll("text")
-              .style("text-anchor", "end")
-              .attr("dx", "-.8em")
-              .attr("dy", ".15em")
-              .attr("transform", function(d) {
-                  return "rotate(-45)"
-              });
+              .call(xAxis);
 
           svg.append("g")
               .attr("class", "y axis")
-              .call(yAxis)
-              .append("text")
-              .attr("transform", "rotate(-90)")
-              .attr("y", 6)
-              .attr("dy", ".71em");
-              //.style("text-anchor", "end")
-              //.text("Students");
+              .call(yAxis);
 
-          svg.append("text") // y axis label
+          svg.append("text")
               .attr("transform", "rotate(-90)")
               .attr("x", -height / 2)
               .attr("dy", "-3em")
@@ -280,45 +221,40 @@ $(document).on('turbolinks:load', function() {
               .text("Students")
               .style('font-size', 14);
 
-          svg.append("text")// x axis label
+          svg.append("text")
               .attr("class", "x axis")
               .attr("text-anchor", "middle")
               .attr("x", width / 2)
               .attr("y", height)
-              .attr("dy", ((height / 20) + 40) + 'px')
+              .attr("dy", ((height / 20) + 20) + 'px')
               .text("Working Time (Minutes)")
               .style('font-size', 14);
 
-          y = d3.scaleLinear()
-              .domain([(0),max_of_array])
-              .range([0,height]);
-
-
           svg.selectAll(".bar")
-              .data(minutes_array_for_bar)
+              .data(workingTimeGroups)
               .enter().append("rect")
               .attr("class", "bar")
-              .attr("x", function(d,i) {    var bar_increment = width / minutes_array_for_bar.length;
-                                            var bar_x = i * bar_increment;
-                                            return (bar_x)})
+              .attr("x", function(d, i) {
+                  return x(i * groupWidth);
+              })
               .attr("width", x.bandwidth())
-              .attr("y", function(d) { return height - y(d); })
-              .attr("height", function(d) { return y(d); })
-              .on('mouseover', tip.show)
+              .attr("y", function(d) { return y(d); })
+              .attr("height", function(d) { return height - y(d); })
+              .on('mouseenter', tip.show)
               .on('mouseout', tip.hide);
 
-          svg.append("text")// Title
+          svg.append("text")
               .attr("class", "x axis")
               .attr("text-anchor", "middle")
-              .attr("x", (width / 2))//+300)
+              .attr("x", (width / 2))
               .attr("y", 0)
               .attr("dy", '-1.5em')
               .text("Distribution of Time Spent by Students")
               .style('font-size', 20)
               .style('text-decoration', 'underline');
-
       }
-      draw_bar_graph();
+
+      drawBarGraph();
   }
 
 });
