@@ -157,21 +157,6 @@ describe SubmissionsController do
 
       pending("todo")
     end
-
-    context 'when an error occurs during execution' do
-      let(:stderr) { "undefined method `foo' for main:Object (NoMethodError)" }
-
-      before(:each) do
-        expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_yield(:stderr, stderr)
-      end
-
-      after(:each) { perform_request }
-
-      it 'stores the error' do
-        pending("no server sent events used right now")
-        expect(CodeOcean::Error).to receive(:create).with(execution_environment_id: submission.exercise.execution_environment_id, message: stderr)
-      end
-    end
   end
 
   describe 'GET #show' do

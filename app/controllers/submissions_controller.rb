@@ -126,10 +126,6 @@ class SubmissionsController < ApplicationController
 
     #   server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
     #   server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
-
-    #   unless output[:stderr].nil?
-    #     store_error(output[:stderr])
-    #   end
     # end
 
     hijack do |tubesock|
@@ -360,11 +356,6 @@ class SubmissionsController < ApplicationController
   ensure
     head :ok
   end
-
-  def store_error(stderr)
-    CodeOcean::Error.create(submission_id: @submission.id, execution_environment_id: @submission.execution_environment.id, message: stderr)
-  end
-  private :store_error
 
   def test
     hijack do |tubesock|

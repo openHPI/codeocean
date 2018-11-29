@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_27_160857) do
+ActiveRecord::Schema.define(version: 2018_11_29_093207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,15 +79,6 @@ ActiveRecord::Schema.define(version: 2018_11_27_160857) do
     t.datetime "updated_at", null: false
     t.text "description"
     t.text "hint"
-  end
-
-  create_table "errors", force: :cascade do |t|
-    t.integer "execution_environment_id"
-    t.text "message"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "submission_id"
-    t.index ["submission_id"], name: "index_errors_on_submission_id"
   end
 
   create_table "events", force: :cascade do |t|
