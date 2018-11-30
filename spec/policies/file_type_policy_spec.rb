@@ -5,23 +5,7 @@ describe FileTypePolicy do
 
   let(:file_type) { FactoryBot.build(:dot_rb) }
 
-  [:create?, :index?, :new?].each do |action|
-    permissions(action) do
-      it 'grants access to admins' do
-        expect(subject).to permit(FactoryBot.build(:admin), file_type)
-      end
-
-      it 'grants access to teachers' do
-        expect(subject).to permit(FactoryBot.build(:teacher), file_type)
-      end
-
-      it 'does not grant access to external users' do
-        expect(subject).not_to permit(FactoryBot.build(:external_user), file_type)
-      end
-    end
-  end
-
-  [:destroy?, :edit?, :show?, :update?].each do |action|
+  [:destroy?, :edit?, :update?, :new?, :create?, :index?, :show?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), file_type)

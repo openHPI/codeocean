@@ -63,7 +63,7 @@ module Lti
       else # 'learner'
         next
       end
-    end
+    end unless provider.roles.blank?
     result
   end
 

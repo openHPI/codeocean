@@ -1,9 +1,9 @@
 class ExecutionEnvironmentPolicy < AdminOnlyPolicy
-  [:execute_command?, :shell?, :statistics?].each do |action|
+  [:execute_command?, :shell?, :statistics?, :show?].each do |action|
     define_method(action) { admin? || author? }
   end
 
-  [:show?, :index?, :new?].each do |action|
+  [:index?].each do |action|
     define_method(action) { admin? || teacher? }
   end
 end

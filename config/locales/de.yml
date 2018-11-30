@@ -47,6 +47,7 @@ de:
         consumer: Konsument
         email: E-Mail
         name: Name
+        role: Rolle
       file:
         content: Inhalt
         feedback_message: Feedback-Nachricht

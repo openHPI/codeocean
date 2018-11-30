@@ -11,8 +11,8 @@ class RequestForCommentPolicy < ApplicationPolicy
     everyone
   end
 
-  [:destroy?].each do |action|
-    define_method(action) { admin? }
+  def destroy?
+    admin?
   end
 
   def mark_as_solved?

@@ -20,7 +20,7 @@ class ProxyExercisePolicy < AdminOrAuthorPolicy
       if @user.admin?
         @scope.all
       elsif @user.teacher?
-        @scope.where('user_id = ?', @user.id)
+        @scope.where('user_id = ? OR public = TRUE', @user.id)
       else
         @scope.none
       end

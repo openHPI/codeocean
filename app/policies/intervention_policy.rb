@@ -11,8 +11,8 @@ class InterventionPolicy < AdminOrAuthorPolicy
     define_method(action) { admin? || author?}
   end
 
-  [:reload?].each do |action|
-    define_method(action) { everyone }
+  def reload?
+    everyone
   end
 
   class Scope < Scope

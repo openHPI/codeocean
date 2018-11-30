@@ -23,11 +23,11 @@ describe 'Authorization' do
     let(:user) { FactoryBot.create(:teacher) }
     before(:each) { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 
-    [Consumer, InternalUser].each do |model|
+    [Consumer, InternalUser, ExecutionEnvironment, FileType].each do |model|
       expect_forbidden_path(:"new_#{model.model_name.singular}_path")
     end
 
-    [ExecutionEnvironment, Exercise, FileType].each do |model|
+    [Exercise].each do |model|
       expect_permitted_path(:"new_#{model.model_name.singular}_path")
     end
   end
