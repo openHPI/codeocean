@@ -1,0 +1,179 @@
+CodeOceanEditorFlowr = {
+  isFlowrEnabled: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] %>,
+  flowrResultHtml:
+    '<div class="card mb-2">' +
+      '<div id="{{headingId}}" role="tab" class="card-header">' +
+        '<div class="card-title mb-0">' +
+          '<a class="collapsed" data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="false" aria-controls="{{collapseId}}">' +
+            '<div class="clearfix" role="button">' +
+              '<i class="fa" aria-hidden="true" />' +
+              '<span>' +
+              '</span>' +
+            '</div>' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
+      '<div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="card card-collapse collapse">' +
+        '<div class="card-body"></div>' +
+      '</div>' +
+    '</div>',
+
+  getInsights: function () {
+    <% self.class.include Rails.application.routes.url_helpers %>
+    var flowrUrl = '<%= insights_path %>';
+    var stackOverflowUrl = 'http://api.stackexchange.com/2.2/search/advanced';
+
+    return jQuery.ajax({
+      dataType: "json",
+      url: flowrUrl,
+      data: {}
+    }).then(function (insights) {
+      var stackoverflowRequests = _.map(insights, function (insight) {
+        var queryParams = {
+          accepted: true,
+          pagesize: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:answers_per_query] or 3 %>,
+          order: 'desc',
+          sort: 'relevance',
+          site: 'stackoverflow',
+          answers: 1,
+          filter: '!23qca9v**HCO.ESF)dHfT', // title, body, accepted answer
+          q: insight.query
+        }
+
+        return jQuery.ajax({
+          dataType: "json",
+          url: stackOverflowUrl,
+          data: queryParams
+        }).promise();
+      });
+      return jQuery.when.apply(jQuery, stackoverflowRequests);
+    });
+  },
+  collectResults: function(response) {
+    var results = [];
+    var addToResultsIfSuccessful = function (data, textStatus, jqXHR) {
+      if (jqXHR && jqXHR.status === 200) {
+        _.each(data.items, function (item) {
+          if (!_.contains(results, item)) {
+            results.push(item);
+          }
+        });
+      }
+    }
+
+    if (_.isArray(response[0])) {
+      // multiple queries
+      _.each(response, function (args) {
+        addToResultsIfSuccessful.apply(this, args)
+      });
+    } else {
+      // single query
+      addToResultsIfSuccessful.apply(this, response);
+    }
+    return results;
+  },
+  createEventHandler: function (eventType, data) {
+    return function () {
+      CodeOceanEditor.publishCodeOceanEvent({
+        category: eventType,
+        data: data,
+        exercise_id: $('#editor').data('exercise-id'),
+        file_id: null
+      });
+    };
+  },
+  handleStderrOutputForFlowr: function () {
+    if (! this.isFlowrEnabled) return;
+
+    var flowrHintBody = $('#flowrHint .card-body');
+    flowrHintBody.empty();
+    var self = this;
+
+    this.getInsights().then(function () {
+      var results = self.collectResults(arguments);
+      _.each(results, function (result, index) {
+        var collapsibleTileHtml = self.flowrResultHtml
+          .replace(/{{collapseId}}/g, 'collapse-' + index).replace(/{{headingId}}/g, 'heading-' + index);
+        var resultTile = $(collapsibleTileHtml);
+        var questionUrl = 'https://stackoverflow.com/questions/' + result.question_id;
+
+        var header = resultTile.find('span');
+        header.text(result.title);
+        header.on('click', self.createEventHandler('editor_flowr_expand_question', questionUrl));
+
+        var body = resultTile.find('.card-body');
+        body.html(result.body);
+        body.append('<a target="_blank" href="' + questionUrl + '" class="btn btn-primary btn-block">' +
+          '<%= I18n.t('exercises.implement.flowr.go_to_question') %></a>');
+        body.find('.btn').on('click', self.createEventHandler('editor_flowr_click_question', questionUrl));
+
+        flowrHintBody.append(resultTile);
+      });
+
+      if (results.length > 0) {
+        $('#flowrHint').fadeIn();
+      }
+    });
+  }
+};
+
+CodeOceanEditorCodePilot = {
+  qa_api: undefined,
+  QaApiOutputBuffer: {'stdout': '', 'stderr': ''},
+
+  initializeCodePilot: function () {
+    if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined') && QaApi.isBrowserSupported()) {
+      $('#editor-column').addClass('col-md-10').removeClass('col-md-12');
+      $('#questions-column').addClass('col-md-2');
+
+      var node = document.getElementById('questions-holder');
+      var url = $('#questions-holder').data('url');
+
+      this.qa_api = new QaApi(node, url);
+    }
+  },
+
+  handleQaApiOutput: function () {
+    if (this.qa_api) {
+      this.qa_api.executeCommand('syncOutput', [[this.QaApiOutputBuffer]]);
+      // reset the object
+    }
+    this.QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
+  }
+};
+
+CodeOceanEditorRequestForComments = {
+  requestComments: function () {
+    var user_id = $('#editor').data('user-id');
+    var exercise_id = $('#editor').data('exercise-id');
+    var file_id = $('.editor').data('id');
+    var question = $('#question').val();
+
+    var createRequestForComments = function (submission) {
+      $.ajax({
+        method: 'POST',
+        url: '/request_for_comments',
+        data: {
+          request_for_comment: {
+            exercise_id: exercise_id,
+            file_id: file_id,
+            submission_id: submission.id,
+            question: question
+          }
+        }
+      }).done(function () {
+        this.hideSpinner();
+        $.flash.success({text: $('#askForCommentsButton').data('message-success')});
+        // trigger a run
+        this.runSubmission.call(this, submission);
+      }.bind(this)).fail(this.ajaxError.bind(this));
+    };
+
+    this.createSubmission($('#requestComments'), null, createRequestForComments.bind(this));
+
+    $('#comment-modal').modal('hide');
+    // we disabled the button to prevent that the user spams RFCs, but decided against this now.
+    //var button = $('#requestComments');
+    //button.prop('disabled', true);
+  },
+};

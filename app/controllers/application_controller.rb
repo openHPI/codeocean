@@ -14,8 +14,15 @@ class ApplicationController < ActionController::Base
     @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources
   end
 
+  def require_user!
+    raise Pundit::NotAuthorizedError unless current_user
+  end
+
   def render_not_authorized
-    redirect_to(request.referrer || :root, alert: t('application.not_authorized'))
+    respond_to do |format|
+      format.html { redirect_to(request.referrer || :root, alert: t('application.not_authorized')) }
+      format.json { render json: {error: t('application.not_authorized')}, status: :unauthorized }
+    end
   end
   private :render_not_authorized
 

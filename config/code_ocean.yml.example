@@ -1,13 +1,14 @@
 default: &default
   flowr:
     enabled: false
+    answers_per_query: 3
   code_pilot:
     enabled: false
 
 development:
   flowr:
-    enabled: false
-    url: http://example.org:3000/api/exceptioninfo?id=&lang=auto
+    enabled: true
+    answers_per_query: 3
   code_pilot:
     enabled: false
     url: //localhost:3000

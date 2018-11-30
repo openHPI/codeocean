@@ -338,6 +338,9 @@ en:
         text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
       error_hints:
         heading: "Hints"
+      flowr:
+        heading: "Gain more insights here | Powered by StackOverflow"
+        go_to_question: "Go to answer"
     index:
       clone: Duplicate
       implement: Implement

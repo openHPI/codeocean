@@ -164,12 +164,10 @@ CodeOceanEditorEvaluation = {
     } else if (output.stderr) {
         //element.addClass('text-warning').append(output.stderr);
         element.addClass('text-warning').text(element.text() + output.stderr);
-      this.flowrOutputBuffer += output.stderr;
       this.QaApiOutputBuffer.stderr += output.stderr;
     } else if (output.stdout) {
         //element.addClass('text-success').append(output.stdout);
         element.addClass('text-success').text(element.text() + output.stdout);
-      this.flowrOutputBuffer += output.stdout;
       this.QaApiOutputBuffer.stdout += output.stdout;
     } else {
       element.addClass('text-muted').text($('#output').data('message-no-output'));

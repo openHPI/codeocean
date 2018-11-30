@@ -34,7 +34,6 @@ div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom
         - else
           p.text-center = render('editor_button', classes: 'btn-lg btn-secondary disabled', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
         hr
-
       div.enforce-big-top-margin
         #turtlediv
           canvas#turtlecanvas.d-none width=400 height=400
@@ -56,6 +55,6 @@ div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom
         #output.mt-2
           pre = t('exercises.implement.no_output_yet')
         - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
-          #flowrHint.card.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
-            .card-header = 'Gain more insights here'
-            .card-body
+          #flowrHint.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+            .card-header = t('exercises.implement.flowr.heading')
+            .card-body.text-dark.bg-white
