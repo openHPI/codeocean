@@ -21,7 +21,7 @@ Rails.application.routes.draw do
       post :set_thank_you_note
     end
   end
-  resources :comments
+  resources :comments, defaults: { format: :json }
   get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
   get '/my_rfc_activity', as: 'my_rfc_activity', to: 'request_for_comments#get_rfcs_with_my_comments'
 

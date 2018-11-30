@@ -7,9 +7,9 @@
         - if object
           li.breadcrumb-item = object
       - else
-        li.breadcrumb-item = link_to(model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+        li.breadcrumb-item = link_to_if(policy(model).show?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
         - if object
-          li.breadcrumb-item = link_to(object, send(:"#{model.model_name.singular}_path", object))
+          li.breadcrumb-item = link_to_if(policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
       li.breadcrumb-item.active
         - if I18n.translation_present?("shared.#{params[:action]}")
           = t("shared.#{params[:action]}")

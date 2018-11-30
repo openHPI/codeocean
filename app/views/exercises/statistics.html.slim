@@ -49,7 +49,7 @@ h1 = @exercise
           - if user_statistics[user.id] then us = user_statistics[user.id] else us = {"maximum_score" => nil, "runs" => nil}
           - label = "#{user.displayname}"
           tr
-            td = link_to_if symbol==:external_users, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
+            td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
             td = us['maximum_score'] or 0
             td = us['runs']
             td = @exercise.average_working_time_for(user.id) or 0

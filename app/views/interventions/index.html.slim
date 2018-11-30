@@ -5,10 +5,11 @@ h1 = Intervention.model_name.human(count: 2)
     thead
       tr
         th = t('activerecord.attributes.intervention.name')
+        th = t('shared.actions')
     tbody
       - @interventions.each do |intervention|
         tr
-          td = intervention.name
-          td = link_to(t('shared.show'), intervention)
+          td = link_to_if policy(intervention).show?, intervention.name
+          td = link_to(t('shared.show'), intervention) if policy(intervention).show?
 
 = render('shared/pagination', collection: @interventions)

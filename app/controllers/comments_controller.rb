@@ -9,7 +9,6 @@ class CommentsController < ApplicationController
   end
   private :authorize!
 
-  # GET /comments
   # GET /comments.json
   def index
     file = CodeOcean::File.find(params[:file_id])
@@ -29,24 +28,11 @@ class CommentsController < ApplicationController
     authorize!
   end
 
-  # GET /comments/1
   # GET /comments/1.json
   def show
     authorize!
   end
 
-  # GET /comments/new
-  def new
-    @comment = Comment.new
-    authorize!
-  end
-
-  # GET /comments/1/edit
-  def edit
-    authorize!
-  end
-
-  # POST /comments
   # POST /comments.json
   def create
     @comment = Comment.new(comment_params_without_request_id)
@@ -59,40 +45,31 @@ class CommentsController < ApplicationController
           send_mail_to_subscribers @comment, request_for_comment
         end
 
-        format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
-        format.json { render :show, status: :created, location: @comment }
+        render :show, status: :created, location: @comment
       else
-        format.html { render :new }
-        format.json { render json: @comment.errors, status: :unprocessable_entity }
+        render json: @comment.errors, status: :unprocessable_entity
       end
     end
     authorize!
   end
 
-  # PATCH/PUT /comments/1
   # PATCH/PUT /comments/1.json
   def update
     respond_to do |format|
       if @comment.update(comment_params_without_request_id)
-        format.html { head :no_content, notice: 'Comment was successfully updated.' }
-        format.json { render :show, status: :ok, location: @comment }
+        render :show, status: :ok, location: @comment
       else
-        format.html { render :edit }
-        format.json { render json: @comment.errors, status: :unprocessable_entity }
+        render json: @comment.errors, status: :unprocessable_entity
       end
     end
     authorize!
   end
 
-  # DELETE /comments/1
   # DELETE /comments/1.json
   def destroy
     authorize!
     @comment.destroy
-    respond_to do |format|
-      format.html { head :no_content, notice: 'Comment was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    head :no_content
   end
 
   private

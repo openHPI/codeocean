@@ -14,7 +14,7 @@ h1 = @execution_environment
         - if wts then average_time = wts["average_time"] else 0
         - if wts then stddev_time = wts["stddev_time"] else 0
         tr
-          td = link_to exercise.title, controller: "exercises", action: "statistics", id: exercise.id, 'data-turbolinks' => "false"
+          td = link_to_if policy(exercise).show?, exercise.title, controller: "exercises", action: "statistics", id: exercise.id, 'data-turbolinks' => "false"
           td = us["users"]
           td = us["average_score"].to_f.round(4)
           td = us["maximum_score"].to_f.round(2)

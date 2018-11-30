@@ -30,7 +30,7 @@ h2 Docker
       tbody
         - ExecutionEnvironment.order(:name).each do |execution_environment|
           tr data-id=execution_environment.id
-            td.name = link_to(execution_environment, execution_environment)
+            td.name = link_to_if(policy(execution_environment).show?, execution_environment, execution_environment)
             td.pool-size
             td.quantity = progress_bar(0)
   h3 = t('.history')

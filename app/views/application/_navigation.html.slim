@@ -6,8 +6,8 @@
         span.caret
       ul.dropdown-menu.p-0.mt-1 role='menu'
         - if current_user.admin?
-          li = link_to(t('breadcrumbs.dashboard.show'), admin_dashboard_path, class: 'dropdown-item', 'data-turbolinks' => "false")
-          li = link_to(t('breadcrumbs.statistics.show'), statistics_path, class: 'dropdown-item')
+          li = link_to(t('breadcrumbs.dashboard.show'), admin_dashboard_path, class: 'dropdown-item', 'data-turbolinks' => "false") if policy([:admin, :dashboard]).show?
+          li = link_to(t('breadcrumbs.statistics.show'), statistics_path, class: 'dropdown-item') if policy(:statistics).show?
           li.dropdown-divider role='separator'
         = render('navigation_submenu', title: t('activerecord.models.exercise.other'),
                 models: [Exercise, ExerciseCollection, ProxyExercise, Tag, Submission], link: exercises_path, cached: true)

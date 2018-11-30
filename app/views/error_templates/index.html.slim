@@ -11,12 +11,12 @@ h1 = ErrorTemplate.model_name.human(count: 2)
     tbody
       - @error_templates.each do |error_template|
         tr
-          td = link_to(error_template.name, error_template)
+          td = link_to_if(policy(error_template).show?, error_template.name, error_template)
           td = error_template.description
           td = link_to(error_template.execution_environment)
-          td = link_to(t('shared.show'), error_template)
-          td = link_to(t('shared.edit'), edit_error_template_path(error_template))
-          td = link_to(t('shared.destroy'), error_template, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+          td = link_to(t('shared.show'), error_template) if policy(error_template).show?
+          td = link_to(t('shared.edit'), edit_error_template_path(error_template)) if policy(error_template).edit?
+          td = link_to(t('shared.destroy'), error_template, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(error_template).destroy?
 
 = render('shared/pagination', collection: @error_templates)
 p = render('shared/new_button', model: ErrorTemplate)

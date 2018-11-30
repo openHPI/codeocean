@@ -22,14 +22,12 @@ h1 = InternalUser.model_name.human(count: 2)
     tbody
       - @users.each do |user|
         tr
-          td = user.name
-          td = user.consumer ? link_to(user.consumer, user.consumer) : empty
+          td = link_to_if(policy(user).show?, user.name)
+          td = user.consumer ? link_to_if(policy(user.consumer).show?, user.consumer, user.consumer) : empty
           td = t("users.roles.#{user.role}")
-          td = link_to(t('shared.show'), user)
-          td = link_to(t('shared.edit'), edit_internal_user_path(user))
-          td
-            - if policy(user).destroy?
-              = link_to(t('shared.destroy'), user, data: {confirm: t('shared.confirm_destroy')}, method: :delete)
+          td = link_to(t('shared.show'), user) if policy(user).show?
+          td = link_to(t('shared.edit'), edit_internal_user_path(user)) if policy(user).edit?
+          td = link_to(t('shared.destroy'), user, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(user).destroy?
 
 = render('shared/pagination', collection: @users)
 p = render('shared/new_button', model: InternalUser)

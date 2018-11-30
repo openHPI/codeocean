@@ -1,4 +1,4 @@
-h1 = link_to(@exercise, exercise_path(@exercise))
+h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
 
 .feedback-page
   .header = t('activerecord.attributes.exercise.description')
