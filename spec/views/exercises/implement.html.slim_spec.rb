@@ -14,7 +14,6 @@ describe 'exercises/implement.html.slim' do
   end
 
   it 'contains the required editor data attributes' do
-    expect(rendered).to have_css("#editor[data-errors-url='#{execution_environment_errors_path(exercise.execution_environment)}']")
     expect(rendered).to have_css("#editor[data-exercise-id='#{exercise.id}']")
     expect(rendered).to have_css('#editor[data-message-timeout]')
     expect(rendered).to have_css("#editor[data-submissions-url='#{submissions_path}']")

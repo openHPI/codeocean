@@ -7,8 +7,6 @@ de:
         name: Name
         oauth_key: OAuth Key
         oauth_secret: OAuth Secret
-      error:
-        message: Nachricht
       execution_environment:
         docker_image: Docker-Image
         exposed_ports: Zugängliche Ports
@@ -140,9 +138,6 @@ de:
       consumer:
         one: Konsument
         other: Konsumenten
-      error:
-        one: Fehler
-        other: Fehler
       error_template:
         one: Fehlertemplate
         other: Fehlertemplates
@@ -229,10 +224,6 @@ de:
   consumers:
     show:
       link: Konsument
-  errors:
-    connection_refused: Verbindung abgelehnt
-    index:
-      count: Anzahl
   execution_environments:
     form:
       hints:
