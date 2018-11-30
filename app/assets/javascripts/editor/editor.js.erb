@@ -436,7 +436,6 @@ configureEditors: function () {
       url: $('#editor').data('errors-url')
     });
     jqxhr.always(this.hideSpinner);
-    jqxhr.done(this.renderHint);
   },
 
   toggleButtonStates: function () {
@@ -482,7 +481,6 @@ configureEditors: function () {
 
   resetOutputTab: function () {
     this.clearOutput();
-    $('#hint').fadeOut();
     $('#flowrHint').fadeOut();
     this.clearHints();
     this.showOutputBar();

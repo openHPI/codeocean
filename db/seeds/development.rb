@@ -10,17 +10,11 @@ Rails.application.routes.default_url_options = Rails.application.config.action_m
 # execution environments
 ExecutionEnvironment.create_factories
 
-# errors
-CodeOcean::Error.create_factories
-
 # exercises
 @exercises = find_factories_by_class(Exercise).map(&:name).map { |factory_name| [factory_name, FactoryBot.create(factory_name)] }.to_h
 
 # file types
 FileType.create_factories
-
-# hints
-Hint.create_factories
 
 # submissions
 FactoryBot.create(:submission, exercise: @exercises[:fibonacci])

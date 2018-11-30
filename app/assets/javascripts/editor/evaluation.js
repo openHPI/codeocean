@@ -57,14 +57,6 @@ CodeOceanEditorEvaluation = {
     }
   },
 
-  renderHint: function (object) {
-    var hint = object.data || object.hint;
-    if (hint) {
-      $('#hint .card-body').text(hint);
-      $('#hint').fadeIn();
-    }
-  },
-
   renderScore: function () {
     var score = parseFloat($('#score').data('score'));
     var maximum_score = parseFloat($('#score').data('maximum-score'));

@@ -64,9 +64,6 @@ Rails.application.routes.draw do
       post 'shell', as: :execute_command, action: :execute_command
       get :statistics
     end
-
-    resources :errors, only: [:create, :index, :show], controller: 'code_ocean/errors'
-    resources :hints
   end
 
   post '/import_proforma_xml' => 'exercises#import_proforma_xml'
