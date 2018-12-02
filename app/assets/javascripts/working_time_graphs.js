@@ -152,7 +152,7 @@ $(document).on('turbolinks:load', function() {
           do {
               var clusterCount = 0;
               for (var i = 0; i < minutes_array.length; i++) {
-                  if ((minutes_array[i] > groupRanges) && (minutes_array[i] < (groupRanges + groupWidth))) {
+                  if ((minutes_array[i] >= groupRanges) && (minutes_array[i] < (groupRanges + groupWidth))) {
                       clusterCount++;
                   }
               }
@@ -160,10 +160,33 @@ $(document).on('turbolinks:load', function() {
               groupRanges += groupWidth;
           }
           while (groupRanges < maximum_minutes);
+          console.log(maximum_minutes);
+
+          var clusterCount = 0,
+              sum = 0,
+              maxVal = 0;
+          for (var i = 0; i < minutes_array.length; i++) {
+              if (minutes_array[i] > maximum_minutes) {
+                  currentValue = minutes_array[i];
+                  sum += currentValue;
+                  if (currentValue > maxVal) {
+                      maxVal = currentValue;
+                  }
+                  clusterCount++;
+              }
+          }
+          // ToDo: Take care of x axis description if this is added
+          // workingTimeGroups.push(clusterCount);
 
           var maxStudentsInGroup = Math.max.apply(Math, workingTimeGroups);
 
           var width_ratio = .8;
+
+          // Scale width to fit into bootsrap container
+          if (getWidth() * width_ratio > 1000){
+              width_ratio = 1000 / getWidth();
+          }
+
           var height_ratio = .7;
 
           var margin = {top: 100, right: 20, bottom: 70, left: 70},
@@ -178,9 +201,11 @@ $(document).on('turbolinks:load', function() {
               }));
 
           var xAxis = d3.axisBottom(x)
+              .ticks(10)
               .tickValues(x.domain().filter(function(d, i){
-                  return (d % 50) === 0
-              }));
+                  return (d % 10) === 0
+              }))
+              .tickFormat(function(d) { return d + "-" + (d + groupWidth) });
 
           var y = d3.scaleLinear()
               .domain([0, maxStudentsInGroup])
@@ -193,7 +218,7 @@ $(document).on('turbolinks:load', function() {
               .attr('class', 'd3-tip')
               .offset([-10, 0])
               .html(function(d) {
-                  return "<strong>Students:</strong><span style='color:orange'>" + d + "</span>";
+                  return "<strong>Students: </strong><span style='color:orange'>" + d + "</span>";
               });
 
           var svg = d3.select("#chart_2").append("svg")
@@ -207,11 +232,22 @@ $(document).on('turbolinks:load', function() {
           svg.append("g")
               .attr("class", "x axis")
               .attr("transform", "translate(0," + height + ")")
-              .call(xAxis);
+              .call(xAxis)
+              .selectAll("text")
+              .style("text-anchor", "end")
+              .attr("dx", "-.8em")
+              .attr("dy", ".15em")
+              .attr("transform", function(d) {
+                  return "rotate(-45)"
+              });
 
           svg.append("g")
               .attr("class", "y axis")
-              .call(yAxis);
+              .call(yAxis)
+              .append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 6)
+              .attr("dy", ".71em");
 
           svg.append("text")
               .attr("transform", "rotate(-90)")
@@ -226,7 +262,7 @@ $(document).on('turbolinks:load', function() {
               .attr("text-anchor", "middle")
               .attr("x", width / 2)
               .attr("y", height)
-              .attr("dy", ((height / 20) + 20) + 'px')
+              .attr("dy", ((height / 20) + 40) + 'px')
               .text("Working Time (Minutes)")
               .style('font-size', 14);
 
