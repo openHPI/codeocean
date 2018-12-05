@@ -85,7 +85,7 @@ CodeOceanEditorSubmissions = {
   destroyFile: function() {
     this.createSubmission($('#destroy-file'), function(files) {
       return _.reject(files, function(file) {
-        return file.file_id === active_file.id;
+        return file.file_id === CodeOceanEditor.active_file.id;
       });
     }, window.CodeOcean.refresh);
   },
@@ -124,7 +124,7 @@ CodeOceanEditorSubmissions = {
     event.preventDefault();
     if ($('#render').is(':visible')) {
       this.createSubmission('#render', null, function (response) {
-        var url = response.render_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
+        var url = response.render_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
         var pop_up_window = window.open(url);
         if (pop_up_window) {
           pop_up_window.onerror = function (message) {
@@ -157,7 +157,7 @@ CodeOceanEditorSubmissions = {
     this.showSpinner($('#run'));
     $('#score_div').addClass('d-none');
     this.toggleButtonStates();
-    var url = submission.run_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
+    var url = submission.run_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
     this.initializeSocketForRunning(url);
   },
 
@@ -176,7 +176,7 @@ CodeOceanEditorSubmissions = {
       this.createSubmission('#test', null, function(response) {
         this.showSpinner($('#test'));
         $('#score_div').addClass('d-none');
-        var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, this.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
+        var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
         this.initializeSocketForTesting(url);
       }.bind(this));
     }
