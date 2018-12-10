@@ -10,17 +10,18 @@ div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom
         #results
           h2 = t('exercises.implement.results')
           p.test-count == t('exercises.implement.test_count', count: 0)
-          ul.list-unstyled
-          ul#dummies.d-none.list-unstyled
-            li.card.mt-2
-              .card-header.py-2
-                h5.card-title.m-0 == t('exercises.implement.file', filename: '', number: 0)
-              .card-body.bg-white.text-dark
-                = row(label: 'exercises.implement.passed_tests', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
-                = row(label: 'activerecord.attributes.submission.score', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
-                = row(label: 'exercises.implement.feedback')
-                = row(label: 'exercises.implement.error_messages')
-                /= row(label: 'exercises.implement.output', value: link_to(t('shared.show'), '#'))
+          - unless @embed_options[:hide_test_results]
+            ul.list-unstyled
+            ul#dummies.d-none.list-unstyled
+              li.card.mt-2
+                .card-header.py-2
+                  h5.card-title.m-0 == t('exercises.implement.file', filename: '', number: 0)
+                .card-body.bg-white.text-dark
+                  = row(label: 'exercises.implement.passed_tests', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
+                  = row(label: 'activerecord.attributes.submission.score', value: t('shared.out_of', maximum_value: 0, value: 0).html_safe)
+                  = row(label: 'exercises.implement.feedback')
+                  = row(label: 'exercises.implement.error_messages')
+                  /= row(label: 'exercises.implement.output', value: link_to(t('shared.show'), '#'))
         #score data-maximum-score=@exercise.maximum_score data-score=@submission.try(:score)
           h4
             span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
@@ -44,12 +45,13 @@ div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom
           input#prompt-input.form-control type='text'
           span.input-group-btn
             button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
-        #error-hints
-          .heading = t('exercises.implement.error_hints.heading')
-          ul.body
+        - unless @embed_options[:disable_hints]
+          #error-hints
+            .heading = t('exercises.implement.error_hints.heading')
+            ul.body
         #output.mt-2
           pre = t('exercises.implement.no_output_yet')
-        - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled]
+        - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] && !@embed_options[:disable_hints] && !@embed_options[:hide_test_results]
           #flowrHint.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
             .card-header = t('exercises.implement.flowr.heading')
             .card-body.text-dark.bg-white

@@ -8,7 +8,7 @@ class FlowrController < ApplicationController
                      .order('testruns.created_at DESC').first
 
     # Return if no submission was found
-    if submission.blank?
+    if submission.blank? || @embed_options[:disable_hints] || @embed_options[:hide_test_results]
       skip_authorization
       render json: [], status: :ok
       return

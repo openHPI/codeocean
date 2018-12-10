@@ -129,6 +129,11 @@ class SubmissionsController < ApplicationController
     # end
 
     hijack do |tubesock|
+      if @embed_options[:disable_run]
+        kill_socket(tubesock)
+        return
+      end
+
       # probably add:
       # ensure
       #   #guarantee that the thread is releasing the DB connection after it is done
@@ -291,6 +296,11 @@ class SubmissionsController < ApplicationController
 
   def score
     hijack do |tubesock|
+      if @embed_options[:disable_score]
+        kill_socket(tubesock)
+        return
+      end
+
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
       # tubesock is the socket to the client
 
@@ -308,6 +318,7 @@ class SubmissionsController < ApplicationController
   end
 
   def send_hints(tubesock, errors)
+    return if @embed_options[:disable_hints]
     errors = errors.to_a.uniq { |e| e.hint}
     errors.each do | error |
       tubesock.send_data JSON.dump({cmd: 'hint', hint: error.hint, description: error.error_template.description})

@@ -1,4 +1,4 @@
-#flash-container
+#flash-container.container
   #flash.container.fixed_error_messages data-message-failure=t('shared.message_failure')
     - %w[alert danger info notice success warning].each do |severity|
       div.alert.flash class="alert-#{{'alert' => 'warning', 'notice' => 'success'}.fetch(severity, severity)} alert-dismissible fade show"
