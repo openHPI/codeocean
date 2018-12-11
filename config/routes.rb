@@ -150,7 +150,7 @@ Rails.application.routes.draw do
   post '/lti/launch', as: 'lti_launch', to: 'sessions#create_through_lti'
   get '/lti/return', as: 'lti_return', to: 'sessions#destroy_through_lti'
   get '/sign_in', as: 'sign_in', to: 'sessions#new'
-  delete '/sign_out', as: 'sign_out', to: 'sessions#destroy'
+  match '/sign_out', as: 'sign_out', to: 'sessions#destroy', via: [:get, :delete]
 
   resources :submissions, only: [:create, :index, :show] do
     member do
