@@ -1,4 +1,10 @@
 class UserMailer < ActionMailer::Base
+
+  def mail(*args)
+    # used to prevent the delivery to pseudonymous users without a valid email address
+    super unless args.first[:to].blank?
+  end
+
   def activation_needed_email(user)
     @activation_url = activate_internal_user_url(user, token: user.activation_token)
     mail(subject: t('mailers.user_mailer.activation_needed.subject'), to: user.email)
