@@ -5,11 +5,10 @@ class ExternalUser < ApplicationRecord
   validates :external_id, presence: true
 
   def displayname
-    result = name
-    if(result == nil || result == "")
-      result = "User " + id.to_s
+    if name.blank?
+      "User " + id.to_s
+    else
+      name
     end
-    result
   end
-
 end
