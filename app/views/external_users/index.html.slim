@@ -10,7 +10,7 @@ h1 = ExternalUser.model_name.human(count: 2)
     tbody
       - @users.each do |user|
         tr
-          td = user.name
+          td = user.displayname
           td = link_to(user.consumer, user.consumer)
           td = link_to(t('shared.show'), user)
 

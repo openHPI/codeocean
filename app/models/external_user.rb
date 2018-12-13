@@ -10,5 +10,4 @@ class ExternalUser < User
       name
     end
   end
-
 end

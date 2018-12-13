@@ -19,6 +19,7 @@ describe Lti do
     it 'clears the session' do
       expect(controller.session).to receive(:delete).with(:consumer_id)
       expect(controller.session).to receive(:delete).with(:external_user_id)
+      expect(controller.session).to receive(:delete).with(:embed_options)
       controller.send(:clear_lti_session_data)
     end
   end

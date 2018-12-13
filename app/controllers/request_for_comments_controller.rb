@@ -96,6 +96,10 @@ class RequestForCommentsController < ApplicationController
   # POST /request_for_comments
   # POST /request_for_comments.json
   def create
+    # Consider all requests as JSON
+    request.format = 'json'
+    raise Pundit::NotAuthorizedError if @embed_options[:disable_rfc]
+
     @request_for_comment = RequestForComment.new(request_for_comment_params)
     respond_to do |format|
       if @request_for_comment.save

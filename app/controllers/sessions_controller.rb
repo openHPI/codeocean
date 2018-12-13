@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   include Lti
 
-  [:require_oauth_parameters, :require_valid_consumer_key, :require_valid_oauth_signature, :require_unique_oauth_nonce, :set_current_user, :set_study_group_membership, :require_valid_exercise_token].each do |method_name|
+  [:require_oauth_parameters, :require_valid_consumer_key, :require_valid_oauth_signature, :require_unique_oauth_nonce, :set_current_user, :require_valid_exercise_token, :set_study_group_membership, :set_embedding_options].each do |method_name|
     before_action(method_name, only: :create_through_lti)
   end
 

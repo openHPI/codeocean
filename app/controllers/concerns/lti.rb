@@ -22,6 +22,7 @@ module Lti
     if (exercise_id.nil?)
       session.delete(:consumer_id)
       session.delete(:external_user_id)
+      session.delete(:embed_options)
     else
       LtiParameter.where(consumers_id: consumer_id,
                          external_users_id: user_id,
@@ -138,12 +139,33 @@ module Lti
   end
   private :set_current_user
 
+
   def set_study_group_membership
     return if mooc_course
     group = StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
     group.users |= [@current_user] # add current user if not already member of the group
     group.save
   end
+
+  def set_embedding_options
+    @embed_options = {}
+    [:hide_navbar,
+     :hide_exercise_description,
+     :disable_run,
+     :disable_score,
+     :disable_rfc,
+     :disable_interventions,
+     :hide_sidebar,
+     :read_only,
+     :hide_test_results,
+     :disable_hints].each do |option|
+      value = params["custom_embed_options_#{option}".to_sym] == 'true'
+      # Optimize storage and save only those that are true, the session cookie is limited to 4KB
+      @embed_options[option] = value if value.present?
+    end
+    session[:embed_options] = @embed_options
+  end
+  private :set_embedding_options
 
   def store_lti_session_data(options = {})
     lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,

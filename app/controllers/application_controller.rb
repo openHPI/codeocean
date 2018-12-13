@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   MEMBER_ACTIONS = [:destroy, :edit, :show, :update]
 
   after_action :verify_authorized, except: [:help, :welcome]
-  before_action :set_locale, :allow_iframe_requests
+  before_action :set_locale, :allow_iframe_requests, :load_embed_options
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
 
@@ -38,4 +38,14 @@ class ApplicationController < ActionController::Base
   def allow_iframe_requests
     response.headers.delete('X-Frame-Options')
   end
+
+  def load_embed_options
+    if session[:embed_options].present? && session[:embed_options].is_a?(Hash)
+      @embed_options = session[:embed_options].symbolize_keys
+    else
+      @embed_options = {}
+    end
+    @embed_options
+  end
+  private :load_embed_options
 end

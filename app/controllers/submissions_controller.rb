@@ -122,13 +122,18 @@ class SubmissionsController < ApplicationController
   def run
     # TODO reimplement SSEs with websocket commands
     # with_server_sent_events do |server_sent_event|
-    #   output = @docker_client.execute_run_command(@submission, params[:filename])
+    #   output = @docker_client.execute_run_command(@submission, sanitize_filename)
 
     #   server_sent_event.write({stdout: output[:stdout]}, event: 'output') if output[:stdout]
     #   server_sent_event.write({stderr: output[:stderr]}, event: 'output') if output[:stderr]
     # end
 
     hijack do |tubesock|
+      if @embed_options[:disable_run]
+        kill_socket(tubesock)
+        return
+      end
+
       # probably add:
       # ensure
       #   #guarantee that the thread is releasing the DB connection after it is done
@@ -142,7 +147,7 @@ class SubmissionsController < ApplicationController
       # give the docker_client the tubesock object, so that it can send messages (timeout)
       @docker_client.tubesock = tubesock
 
-      result = @docker_client.execute_run_command(@submission, params[:filename])
+      result = @docker_client.execute_run_command(@submission, sanitize_filename)
       tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => result[:status]})
 
       if result[:status] == :container_running
@@ -195,6 +200,10 @@ class SubmissionsController < ApplicationController
     # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
     save_run_output
 
+    if @run_output.blank?
+      parse_message t('exercises.implement.no_output', timestamp: l(Time.now, format: :short)), 'stdout', tubesock
+    end
+
     # Hijacked connection needs to be notified correctly
     tubesock.send_data JSON.dump({'cmd' => 'exit'})
     tubesock.close
@@ -214,8 +223,8 @@ class SubmissionsController < ApplicationController
       @run_output = 'timeout: ' + @run_output # add information that this run timed out to the buffer
     else
       # Filter out information about run_command, test_command, user or working directory
-      run_command = @submission.execution_environment.run_command % command_substitutions(params[:filename])
-      test_command = @submission.execution_environment.test_command % command_substitutions(params[:filename])
+      run_command = @submission.execution_environment.run_command % command_substitutions(sanitize_filename)
+      test_command = @submission.execution_environment.test_command % command_substitutions(sanitize_filename)
       unless /root|workspace|#{run_command}|#{test_command}/.match(message)
         parse_message(message, 'stdout', tubesock)
       end
@@ -291,6 +300,11 @@ class SubmissionsController < ApplicationController
 
   def score
     hijack do |tubesock|
+      if @embed_options[:disable_score]
+        kill_socket(tubesock)
+        return
+      end
+
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
       # tubesock is the socket to the client
 
@@ -308,6 +322,7 @@ class SubmissionsController < ApplicationController
   end
 
   def send_hints(tubesock, errors)
+    return if @embed_options[:disable_hints]
     errors = errors.to_a.uniq { |e| e.hint}
     errors.each do | error |
       tubesock.send_data JSON.dump({cmd: 'hint', hint: error.hint, description: error.error_template.description})
@@ -320,7 +335,7 @@ class SubmissionsController < ApplicationController
   private :set_docker_client
 
   def set_file
-    @file = @files.detect { |file| file.name_with_extension == params[:filename] }
+    @file = @files.detect { |file| file.name_with_extension == sanitize_filename }
     head :not_found unless @file
   end
   private :set_file
@@ -361,7 +376,7 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
 
-      output = @docker_client.execute_test_command(@submission, params[:filename])
+      output = @docker_client.execute_test_command(@submission, sanitize_filename)
 
       # tubesock is the socket to the client
       tubesock.send_data JSON.dump(output)
@@ -404,5 +419,9 @@ class SubmissionsController < ApplicationController
       f.write(content)
     end
     path
+  end
+
+  def sanitize_filename
+    params[:filename].gsub(/\.json$/, '')
   end
 end

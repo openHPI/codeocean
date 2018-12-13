@@ -110,6 +110,10 @@ configureEditors: function () {
 
   // The event ready.jstree is fired too early and thus doesn't work.
   selectFileInJsTree: function(filetree, file_id) {
+    if (!filetree.is(':visible'))
+        // The left sidebar is not shown and thus the filetree is not rendered.
+        return;
+
     if (!filetree.hasClass('jstree-loading')) {
       filetree.jstree("deselect_all");
       filetree.jstree().select_node(file_id);
@@ -224,6 +228,11 @@ configureEditors: function () {
       // remove last (empty) that is there by default line
       document.removeLines(document.getLength() - 1, document.getLength() - 1);
       editor.setReadOnly($(element).data('read-only') !== undefined);
+      if (editor.getReadOnly()) {
+        editor.setHighlightActiveLine(false);
+        editor.setHighlightGutterLine(false);
+        editor.renderer.$cursorLayer.element.style.opacity = 0;
+      }
       editor.setShowPrintMargin(false);
       editor.setTheme(this.THEME);
 
@@ -458,7 +467,7 @@ configureEditors: function () {
 
     var editor = this.editor_for_file.get(file);
     editor.gotoLine(line, 0);
-
+    event.preventDefault();
   },
 
   augmentStacktraceInOutput: function () {
@@ -722,6 +731,7 @@ configureEditors: function () {
     this.initPrompt();
     this.renderScore();
     this.showFirstFile();
+    this.resizeAceEditors();
 
     $(window).on("beforeunload", this.unloadAutoSave.bind(this));
     // create autosave when the editor is opened the first time
