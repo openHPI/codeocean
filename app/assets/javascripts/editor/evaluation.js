@@ -27,8 +27,11 @@ CodeOceanEditorEvaluation = {
   printScoringResult: function (result, index) {
     $('#results').show();
     var card = $('#dummies').children().first().clone();
-    this.populateCard(card, result, index);
-    $('#results ul').first().append(card);
+    if (card.isPresent()) {
+        // the card won't be present if @embed_options[:hide_test_results] == true
+        this.populateCard(card, result, index);
+        $('#results ul').first().append(card);
+    }
   },
 
   printScoringResults: function (response) {
@@ -141,14 +144,19 @@ CodeOceanEditorEvaluation = {
   },
 
   printOutput: function (output, colorize, index) {
+    if (output.stderr === undefined && output.stdout === undefined) {
+        // Prevent empty element with no text at all
+        return;
+    }
+
     var element = this.findOrCreateOutputElement(index);
     if (!colorize) {
-      if (output.stdout != undefined && output.stdout != '') {
+      if (output.stdout !== undefined && output.stdout !== '') {
         //element.append(output.stdout)
         element.text(element.text() + output.stdout)
       }
 
-      if (output.stderr != undefined && output.stderr != '') {
+      if (output.stderr !== undefined && output.stderr !== '') {
         //element.append('StdErr: ' + output.stderr);
         element.text('StdErr: ' + element.text() + output.stderr);
       }

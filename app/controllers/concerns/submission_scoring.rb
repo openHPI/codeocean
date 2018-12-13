@@ -55,6 +55,11 @@ module SubmissionScoring
         }
       end
     end
+    if @embed_options.present? && @embed_options[:hide_test_results] && outputs.present?
+      outputs.each do |output|
+        output.except!(:error_messages, :count, :failed, :filename, :message, :passed, :stderr, :stdout)
+      end
+    end
     outputs
   end
 end

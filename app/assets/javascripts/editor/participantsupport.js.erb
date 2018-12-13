@@ -172,8 +172,9 @@ CodeOceanEditorRequestForComments = {
     this.createSubmission($('#requestComments'), null, createRequestForComments.bind(this));
 
     $('#comment-modal').modal('hide');
+    $('#question').val('');
     // we disabled the button to prevent that the user spams RFCs, but decided against this now.
     //var button = $('#requestComments');
     //button.prop('disabled', true);
-  },
+  }
 };
