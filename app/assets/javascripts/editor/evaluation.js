@@ -28,7 +28,7 @@ CodeOceanEditorEvaluation = {
     $('#results').show();
     var card = $('#dummies').children().first().clone();
     if (card.isPresent()) {
-        // the card won't be present if @embed_options[::hide_test_results] == true
+        // the card won't be present if @embed_options[:hide_test_results] == true
         this.populateCard(card, result, index);
         $('#results ul').first().append(card);
     }
