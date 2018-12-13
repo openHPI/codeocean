@@ -1,10 +1,15 @@
 class ProxyExercise < ApplicationRecord
+    include Creation
+    include DefaultValues
 
     after_initialize :generate_token
     after_initialize :set_reason
+    after_initialize :set_default_values
 
     has_and_belongs_to_many :exercises
     has_many :user_proxy_exercise_exercises
+
+    validates :public, boolean_presence: true
 
     def count_files
         exercises.count
@@ -18,6 +23,11 @@ class ProxyExercise < ApplicationRecord
       self.token ||= SecureRandom.hex(4)
     end
     private :generate_token
+
+    def set_default_values
+      set_default_values_if_present(public: false)
+    end
+    private :set_default_values
 
     def duplicate(attributes = {})
       proxy_exercise = dup
