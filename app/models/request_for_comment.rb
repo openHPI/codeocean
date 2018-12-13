@@ -47,10 +47,10 @@ class RequestForComment < ApplicationRecord
 
   def commenters
     commenters = []
-    comments.distinct.to_a.each {|comment|
+    comments.each {|comment|
       commenters.append comment.user
     }
-    commenters.uniq {|user| user.id}
+    commenters.uniq
   end
 
   def self.with_last_activity
