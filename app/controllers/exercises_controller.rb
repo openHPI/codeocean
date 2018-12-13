@@ -188,7 +188,15 @@ class ExercisesController < ApplicationController
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user, exercise: @exercise).size >= max_intervention_count_per_exercise
     user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day or user_got_intervention_in_exercise
 
-    @show_rfc_interventions = (not user_solved_exercise and not user_got_enough_interventions).to_s
+    unless @embed_options[:disable_interventions]
+      @show_rfc_interventions = (not user_solved_exercise and not user_got_enough_interventions).to_s
+      @show_break_interventions = false
+    else
+      @show_rfc_interventions = false
+      @show_break_interventions = false
+    end
+
+    @hide_rfc_button = @embed_options[:disable_rfc]
 
 
     @search = Search.new

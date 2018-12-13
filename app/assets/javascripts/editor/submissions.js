@@ -10,6 +10,7 @@ CodeOceanEditorSubmissions = {
    */
   createSubmission: function (initiator, filter, callback) {
     this.showSpinner(initiator);
+    var url = $(initiator).data('url') || $('#editor').data('submissions-url');
     var jqxhr = this.ajax({
       data: {
         submission: {
@@ -21,7 +22,7 @@ CodeOceanEditorSubmissions = {
       },
       dataType: 'json',
       method: 'POST',
-      url: $(initiator).data('url') || $('#editor').data('submissions-url')
+      url: url + '.json'
     });
     jqxhr.always(this.hideSpinner.bind(this));
     jqxhr.done(this.createSubmissionCallback.bind(this));

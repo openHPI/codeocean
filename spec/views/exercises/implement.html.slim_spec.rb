@@ -10,6 +10,7 @@ describe 'exercises/implement.html.slim' do
     assign(:exercise, exercise)
     assign(:files, files)
     assign(:paths, [])
+    assign(:embed_options, {})
     render
   end
 

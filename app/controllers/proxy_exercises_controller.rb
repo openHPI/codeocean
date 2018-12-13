@@ -9,7 +9,7 @@ class ProxyExercisesController < ApplicationController
   private :authorize!
 
   def clone
-    proxy_exercise = @proxy_exercise.duplicate(token: nil, exercises: @proxy_exercise.exercises)
+    proxy_exercise = @proxy_exercise.duplicate(public: false, token: nil, exercises: @proxy_exercise.exercises, user: current_user)
     proxy_exercise.send(:generate_token)
     if proxy_exercise.save
       redirect_to(proxy_exercise, notice: t('shared.object_cloned', model:  ProxyExercise.model_name.human))
@@ -39,7 +39,7 @@ class ProxyExercisesController < ApplicationController
   end
 
   def proxy_exercise_params
-    params[:proxy_exercise].permit(:description, :title, :exercise_ids  => []) if params[:proxy_exercise].present?
+    params[:proxy_exercise].permit(:description, :title, :public, :exercise_ids  => []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:proxy_exercise].present?
   end
   private :proxy_exercise_params
 

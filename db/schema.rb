@@ -264,6 +264,10 @@ ActiveRecord::Schema.define(version: 2018_11_29_093207) do
     t.string "token"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "user_type"
+    t.bigint "user_id"
+    t.boolean "public"
+    t.index ["user_type", "user_id"], name: "index_proxy_exercises_on_user_type_and_user_id"
   end
 
   create_table "remote_evaluation_mappings", force: :cascade do |t|

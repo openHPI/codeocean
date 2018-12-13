@@ -11,7 +11,7 @@ window.CodeOcean = {
 var ANIMATION_DURATION = 500;
 
 $.isController = function(name) {
-  return $('.container[data-controller="' + name + '"]').isPresent();
+  return $('div[data-controller="' + name + '"]').isPresent();
 };
 
 $.fn.isPresent = function() {

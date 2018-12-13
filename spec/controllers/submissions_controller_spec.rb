@@ -186,7 +186,7 @@ describe SubmissionsController do
         end
 
         it 'ends with a placeholder' do
-          expect(url).to end_with(Submission::FILENAME_URL_PLACEHOLDER)
+          expect(url).to end_with(Submission::FILENAME_URL_PLACEHOLDER + '.json')
         end
       end
     end
@@ -196,7 +196,7 @@ describe SubmissionsController do
         let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
 
         it "corresponds to the #{action} path" do
-          expect(url).to eq(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission))
+          expect(url).to eq(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission, format: :json))
         end
       end
     end

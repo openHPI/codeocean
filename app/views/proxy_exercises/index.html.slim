@@ -11,13 +11,17 @@ h1 = ProxyExercise.model_name.human(count: 2)
       tr
         th.p-1 = sort_link(@search, :title, t('activerecord.attributes.proxy_exercise.title'))
         th.p-1 = t('activerecord.attributes.exercise.token')
+        th.p-1 = t('activerecord.attributes.exercise.public')
         th.p-1 = t('activerecord.attributes.proxy_exercise.files_count')
         th.p-1 colspan=2 = t('shared.actions')
     tbody
       - @proxy_exercises.each do |proxy_exercise|
         tr data-id=proxy_exercise.id
           td.p-1.pt-2 = link_to_if(policy(proxy_exercise).show?, proxy_exercise.title, proxy_exercise)
-          td.p-1.pt-2 = proxy_exercise.token
+          td.p-1.pt-2
+            code
+              = proxy_exercise.token
+          td.p-1.pt-2.public data-value=proxy_exercise.public? = symbol_for(proxy_exercise.public?)
           td.p-1.pt-2 = proxy_exercise.count_files
           td.p-1.pt-2 = link_to(t('shared.edit'), edit_proxy_exercise_path(proxy_exercise)) if policy(proxy_exercise).edit?
 

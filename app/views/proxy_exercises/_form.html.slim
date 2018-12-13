@@ -6,6 +6,10 @@
   .form-group
     = f.label(:description)
     = f.pagedown :description, input_html: { preview: true, rows: 10 }
+  .form-check.mb-3
+    label.form-check-label
+      = f.check_box(:public, class: 'form-check-input')
+      = t('activerecord.attributes.exercise.public')
 
   h3 Exercises
   .table-responsive

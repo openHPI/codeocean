@@ -1,19 +1,20 @@
 - if current_user.try(:admin?) or current_user.try(:teacher?)
-  ul.breadcrumb
-    - if model = Kernel.const_get(controller_path.classify) rescue nil
-      - object = model.find_by(id: params[:id])
-      - if model.try(:nested_resource?)
-        li.breadcrumb-item = model.model_name.human(count: 2)
-        - if object
-          li.breadcrumb-item = object
-      - else
-        li.breadcrumb-item = link_to_if(policy(model).show?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
-        - if object
-          li.breadcrumb-item = link_to_if(policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
-      li.breadcrumb-item.active
-        - if I18n.translation_present?("shared.#{params[:action]}")
-          = t("shared.#{params[:action]}")
+  .container
+    ul.breadcrumb
+      - if model = Kernel.const_get(controller_path.classify) rescue nil
+        - object = model.find_by(id: params[:id])
+        - if model.try(:nested_resource?)
+          li.breadcrumb-item = model.model_name.human(count: 2)
+          - if object
+            li.breadcrumb-item = object
         - else
-          = t("#{controller_name}.index.#{params[:action]}")
-    - else
-      li.breadcrumb-item.active = t("breadcrumbs.#{controller_name}.#{params[:action]}")
+          li.breadcrumb-item = link_to_if(policy(model).show?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+          - if object
+            li.breadcrumb-item = link_to_if(policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
+        li.breadcrumb-item.active
+          - if I18n.translation_present?("shared.#{params[:action]}")
+            = t("shared.#{params[:action]}")
+          - else
+            = t("#{controller_name}.index.#{params[:action]}")
+      - else
+        li.breadcrumb-item.active = t("breadcrumbs.#{controller_name}.#{params[:action]}")
