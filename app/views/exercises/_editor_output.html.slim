@@ -1,6 +1,6 @@
 div id='output_sidebar_collapsed'
   = render('editor_button', classes: 'btn-block btn-primary btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
-div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output')
+div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output_yet')
   .row
     = render('editor_button', classes: 'btn-block btn-primary btn', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
 
