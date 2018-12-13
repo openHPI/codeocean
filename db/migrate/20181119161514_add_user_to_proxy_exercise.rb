@@ -3,7 +3,7 @@ class AddUserToProxyExercise < ActiveRecord::Migration[5.2]
     add_reference :proxy_exercises, :user,  polymorphic: true, index: true
     add_column :proxy_exercises, :public, :boolean, null: false, default: false
 
-    internal_user = InternalUser.find_by(id: 46)
+    internal_user = InternalUser.find_by(id: 46) || InternalUser.first
     ProxyExercise.update_all(user_id: internal_user.id, user_type: internal_user.class.name)
   end
 end
