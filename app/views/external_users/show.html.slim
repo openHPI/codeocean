@@ -1,6 +1,6 @@
-h1 = @user.name
+h1 = @user.displayname
 
-= row(label: 'external_user.name', value: @user.real_name)
+= row(label: 'external_user.name', value: @user.name)
 //= row(label: 'external_user.email', value: @user.email)
 = row(label: 'external_user.consumer', value: link_to(@user.consumer, @user.consumer))
 

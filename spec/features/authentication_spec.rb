@@ -38,8 +38,8 @@ describe 'Authentication' do
       visit(root_path)
     end
 
-    it "displays the user's name" do
-      expect(page).to have_content(user.name)
+    it "displays the user's displayname" do
+      expect(page).to have_content(user.displayname)
     end
 
     it 'displays a sign out link' do
