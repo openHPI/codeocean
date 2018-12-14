@@ -1,10 +1,3 @@
-- content_for :head do
-  // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
-     Otherwise, code might not be highlighted correctly (race condition)
-  meta name='turbolinks-visit-control' content='reload'
-  = javascript_pack_tag('highlight', 'data-turbolinks-track': true)
-  = stylesheet_pack_tag('highlight', media: 'all', 'data-turbolinks-track': true)
-
 h1
   = @proxy_exercise.title
   - if policy(@proxy_exercise).edit?

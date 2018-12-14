@@ -100,6 +100,12 @@ en:
         files: Files
         score: Score
         user: Author
+      study_group:
+        name: Name
+        external_id: External ID
+        consumer: Consumer
+        members: Members
+        member_count: Members Count
       tag:
         name: Name
         usage: Used
@@ -180,6 +186,9 @@ en:
       submission:
         one: Submission
         other: Submissions
+      study_group:
+        one: Study Group
+        other: Study Groups
       tag:
         one: Tag
         other: Tags

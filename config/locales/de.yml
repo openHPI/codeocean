@@ -100,6 +100,12 @@ de:
         files: Dateien
         score: Punktzahl
         user: Autor
+      study_group:
+        name: Name
+        external_id: Externe ID
+        consumer: Konsument
+        members: Mitglieder
+        member_count: Anzahl der Mitglieder
       tag:
         name: Name
         usage: Verwendet
@@ -180,6 +186,9 @@ de:
       submission:
         one: Abgabe
         other: Abgaben
+      study_group:
+        one: Lerngruppe
+        other: Lerngruppen
       tag:
         one: Tag
         other: Tags

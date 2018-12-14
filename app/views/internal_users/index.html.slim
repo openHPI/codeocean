@@ -3,7 +3,7 @@ h1 = InternalUser.model_name.human(count: 2)
 = render(layout: 'shared/form_filters') do |f|
   .form-group
     = f.label(:consumer_id_eq, t('activerecord.attributes.internal_user.consumer'), class: 'sr-only')
-    = f.collection_select(:consumer_id_eq, Consumer.with_users, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.internal_user.consumer'))
+    = f.collection_select(:consumer_id_eq, Consumer.with_internal_users, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.internal_user.consumer'))
   .form-group
     = f.label(:email_cont, t('activerecord.attributes.internal_user.email'), class: 'sr-only')
     = f.search_field(:email_cont, class: 'form-control', placeholder: t('activerecord.attributes.internal_user.email'))
