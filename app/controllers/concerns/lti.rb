@@ -58,7 +58,8 @@ module Lti
     provider.roles.each do |role|
       case role.downcase!
       when 'administrator'
-        result = 'admin'
+        # We don't want anyone to get admin privileges through LTI
+        result = 'teacher' if result == 'learner'
       when 'instructor'
         result = 'teacher' if result == 'learner'
       else # 'learner'
@@ -145,7 +146,11 @@ module Lti
 
   def set_current_user
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
-    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider), role: external_user_role(@provider))
+    external_role = external_user_role(@provider)
+    internal_role = @current_user.role
+    internal_role != 'admin' ? desired_role = external_role : desired_role = internal_role
+    # Update user with new information but change the role only if he is no admin user
+    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider), role: desired_role)
   end
   private :set_current_user
 
