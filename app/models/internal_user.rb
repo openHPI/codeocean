@@ -1,5 +1,4 @@
-class InternalUser < ApplicationRecord
-  include User
+class InternalUser < User
 
   authenticates_with_sorcery!
 

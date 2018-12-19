@@ -320,6 +320,24 @@ ActiveRecord::Schema.define(version: 2018_11_29_093207) do
     t.index ["submission_id"], name: "index_structured_errors_on_submission_id"
   end
 
+  create_table "study_group_memberships", force: :cascade do |t|
+    t.bigint "study_group_id"
+    t.string "user_type"
+    t.bigint "user_id"
+    t.index ["study_group_id"], name: "index_study_group_memberships_on_study_group_id"
+    t.index ["user_type", "user_id"], name: "index_study_group_memberships_on_user_type_and_user_id"
+  end
+
+  create_table "study_groups", force: :cascade do |t|
+    t.string "name"
+    t.string "external_id"
+    t.bigint "consumer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["consumer_id"], name: "index_study_groups_on_consumer_id"
+    t.index ["external_id", "consumer_id"], name: "index_study_groups_on_external_id_and_consumer_id", unique: true
+  end
+
   create_table "submissions", force: :cascade do |t|
     t.integer "exercise_id"
     t.float "score"
@@ -328,7 +346,9 @@ ActiveRecord::Schema.define(version: 2018_11_29_093207) do
     t.datetime "updated_at"
     t.string "cause", limit: 255
     t.string "user_type", limit: 255
+    t.bigint "study_group_id"
     t.index ["exercise_id"], name: "index_submissions_on_exercise_id"
+    t.index ["study_group_id"], name: "index_submissions_on_study_group_id"
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 

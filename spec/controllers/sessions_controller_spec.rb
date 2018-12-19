@@ -66,7 +66,7 @@ describe SessionsController do
       it 'refuses the LTI launch' do
         expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_exercise_token')).and_call_original
-        post :create_through_lti, params: { custom_token: '', oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex }
+        post :create_through_lti, params: { custom_token: '', oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: '123' }
       end
     end
 
