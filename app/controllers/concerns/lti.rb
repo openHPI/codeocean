@@ -161,8 +161,11 @@ module Lti
 
 
   def set_study_group_membership
-    return if mooc_course
-    group = StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
+    if mooc_course
+      group = StudyGroup.find_or_create_by(name: @provider.context_title, external_id: @provider.context_id, consumer: @consumer)
+    else
+      group = StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
+    end
     group.users |= [@current_user] # add current user if not already member of the group
     group.save
   end

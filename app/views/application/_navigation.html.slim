@@ -13,6 +13,7 @@
                 models: [Exercise, ExerciseCollection, ProxyExercise, Tag, Submission], link: exercises_path, cached: true)
         = render('navigation_submenu', title: t('navigation.sections.users'), models: [InternalUser, ExternalUser],
                 cached: true)
+        = render('navigation_collection_link', model: StudyGroup, cached: true)
         = render('navigation_collection_link', model: ExecutionEnvironment, cached: true)
         = render('navigation_submenu', title: t('navigation.sections.errors'),
                 models: [ErrorTemplate, ErrorTemplateAttribute], cached: true)
