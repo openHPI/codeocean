@@ -56,7 +56,7 @@ module Lti
   def external_user_role(provider)
     result = 'learner'
     provider.roles.each do |role|
-      case role.downcase!
+      case role.downcase
       when 'administrator'
         # We don't want anyone to get admin privileges through LTI
         result = 'teacher' if result == 'learner'
