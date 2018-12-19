@@ -108,12 +108,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :user_exercise_feedbacks do
-    member do
-      get :reload
-      post :submit
-    end
-  end
+  resources :user_exercise_feedbacks, except: [:show, :index]
 
   resources :external_users, only: [:index, :show], concerns: :statistics do
     resources :exercises, concerns: :statistics
