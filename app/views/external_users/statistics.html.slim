@@ -13,7 +13,7 @@ h1 = t('.title')
         - if statistics[exercise.id]
           - stats = statistics[exercise.id]
           tr
-            td = link_to exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
+            td = link_to_if policy(exercise).show?, exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
             td = stats["maximum_score"] or 0
             td = stats["runs"] or 0
             td = stats["working_time"] or 0

@@ -1,7 +1,7 @@
 class ProxyExercisesController < ApplicationController
   include CommonBehavior
 
-  before_action :set_exercise, only: MEMBER_ACTIONS + [:clone, :reload]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :reload]
 
   def authorize!
     authorize(@proxy_exercise || @proxy_exercises)
@@ -56,11 +56,11 @@ class ProxyExercisesController < ApplicationController
     authorize!
   end
 
-  def set_exercise
+  def set_exercise_and_authorize
     @proxy_exercise = ProxyExercise.find(params[:id])
     authorize!
   end
-  private :set_exercise
+  private :set_exercise_and_authorize
 
   def show
     @search = @proxy_exercise.exercises.search

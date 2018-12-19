@@ -10,8 +10,8 @@ h1 = ExternalUser.model_name.human(count: 2)
     tbody
       - @users.each do |user|
         tr
-          td = user.displayname
-          td = link_to(user.consumer, user.consumer)
-          td = link_to(t('shared.show'), user)
+          td = link_to_if(policy(user).show?, user.displayname)
+          td = link_to_if(policy(user.consumer).show?, user.consumer, user.consumer)
+          td = link_to(t('shared.show'), user) if policy(user).show?
 
 = render('shared/pagination', collection: @users)

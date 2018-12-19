@@ -5,7 +5,7 @@ describe ExecutionEnvironmentPolicy do
 
   let(:execution_environment) { FactoryBot.build(:ruby) }
 
-  [:create?, :index?, :new?].each do |action|
+  [:index?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), execution_environment)
@@ -21,7 +21,7 @@ describe ExecutionEnvironmentPolicy do
     end
   end
 
-  [:execute_command?, :shell?, :statistics?].each do |action|
+  [:execute_command?, :shell?, :statistics?, :show?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), execution_environment)
@@ -39,7 +39,7 @@ describe ExecutionEnvironmentPolicy do
     end
   end
 
-  [:destroy?, :edit?, :show?, :update?].each do |action|
+  [:destroy?, :edit?, :update?, :new?, :create?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), execution_environment)

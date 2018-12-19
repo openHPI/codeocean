@@ -169,6 +169,7 @@ ActiveRecord::Schema.define(version: 2018_11_29_093207) do
     t.string "name", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "role", default: "learner", null: false
   end
 
   create_table "file_templates", force: :cascade do |t|

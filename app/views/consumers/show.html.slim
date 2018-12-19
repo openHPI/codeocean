@@ -1,6 +1,6 @@
 h1
   = @consumer
-  = render('shared/edit_button', object: @consumer) if policy(@consumer).edit?
+  = render('shared/edit_button', object: @consumer)
 
 = row(label: 'consumer.name', value: @consumer.name)
 - %w[oauth_key oauth_secret].each do |attribute|

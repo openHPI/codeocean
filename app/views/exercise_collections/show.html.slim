@@ -3,7 +3,7 @@ h1
   = render('shared/edit_button', object: @exercise_collection)
 
 = row(label: 'exercise_collections.name', value: @exercise_collection.name)
-= row(label: 'exercise_collections.user', value: link_to(@exercise_collection.user.displayname, @exercise_collection.user)) unless @exercise_collection.user.nil?
+= row(label: 'exercise_collections.user', value: link_to_if(policy(@exercise_collection.user).show?, @exercise_collection.user.displayname, @exercise_collection.user)) unless @exercise_collection.user.nil?
 = row(label: 'exercise_collections.use_anomaly_detection', value: @exercise_collection.use_anomaly_detection)
 = row(label: 'exercise_collections.updated_at', value: @exercise_collection.updated_at)
 
@@ -22,7 +22,7 @@ h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
         - exercise = exercise_collection_item.exercise
         tr
           td = exercise_collection_item.position
-          td = link_to(exercise.title, exercise)
+          td = link_to_if(policy(exercise).show?, exercise.title, exercise)
           td = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
           td = link_to_if(exercise.user && policy(exercise.user).show?, exercise.user.displayname, exercise.user)
-          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks' => "false")
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks' => "false") if policy(exercise).statistics?

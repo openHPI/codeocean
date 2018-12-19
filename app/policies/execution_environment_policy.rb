@@ -1,14 +1,9 @@
 class ExecutionEnvironmentPolicy < AdminOnlyPolicy
-  def author?
-    @user == @record.author
-  end
-  private :author?
-
-  [:execute_command?, :shell?, :statistics?].each do |action|
+  [:execute_command?, :shell?, :statistics?, :show?].each do |action|
     define_method(action) { admin? || author? }
   end
 
-  [:create?, :index?, :new?].each do |action|
+  [:index?].each do |action|
     define_method(action) { admin? || teacher? }
   end
 end

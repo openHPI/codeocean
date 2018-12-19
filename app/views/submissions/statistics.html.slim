@@ -23,4 +23,4 @@ h2.mt-4 = t('.history')
             td = l(submission.created_at, format: :short)
             td = submission.score
             td = progress_bar(submission.percentage)
-            td = link_to(t('shared.show'), submission)
+            td = link_to(t('shared.show'), submission) if policy(submission).show?

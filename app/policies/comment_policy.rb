@@ -1,9 +1,4 @@
 class CommentPolicy < ApplicationPolicy
-  def author?
-    @user == @record.author
-  end
-  private :author?
-
   def create?
     everyone
   end

@@ -27,7 +27,7 @@ h1 = Exercise.model_name.human(count: 2)
     tbody
       - @exercises.each do |exercise|
         tr data-id=exercise.id
-          td.p-1.pt-2 = link_to(exercise.title, exercise, 'data-turbolinks' => "false") if policy(exercise).show?
+          td.p-1.pt-2 = link_to_if(policy(exercise).show?, exercise.title, exercise, 'data-turbolinks' => "false")
           td.p-1.pt-2 = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
           td.p-1.pt-2 = exercise.files.teacher_defined_tests.count
           td.p-1.pt-2 = exercise.maximum_score

@@ -45,6 +45,7 @@ class UserMailer < ActionMailer::Base
   end
   
   def exercise_anomaly_detected(exercise_collection, anomalies)
+    @user = exercise_collection.user
     @receiver_displayname = exercise_collection.user.displayname
     @collection = exercise_collection
     @anomalies = anomalies

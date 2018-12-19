@@ -33,6 +33,7 @@ class ApplicationController < ActionController::Base
   private :set_locale
 
   def welcome
+    # Show root page
   end
 
   def allow_iframe_requests

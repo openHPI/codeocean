@@ -1,6 +1,6 @@
 h1
   = @code_harbor_link
-  = render('shared/edit_button', object: @code_harbor_link) if policy(@code_harbor_link).edit?
+  = render('shared/edit_button', object: @code_harbor_link)
 
 - %w[oauth2token].each do |attribute|
   = row(label: "code_harbor_link.#{attribute}") do

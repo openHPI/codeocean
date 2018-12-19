@@ -19,16 +19,6 @@ class UserExerciseFeedbacksController < ApplicationController
      [4,t('user_exercise_feedback.estimated_time_more_30')]]
   end
 
-  def index
-    @search = UserExerciseFeedback.all.search params[:q]
-    @uefs = @search.result.includes(:execution_environment).order(:id).paginate(page: params[:page])
-    authorize!
-  end
-
-  def show
-    authorize!
-  end
-
   def create
     @exercise = Exercise.find(uef_params[:exercise_id])
     rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first

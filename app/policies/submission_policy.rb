@@ -1,9 +1,4 @@
 class SubmissionPolicy < ApplicationPolicy
-  def author?
-    @user == @record.author
-  end
-  private :author?
-
   def create?
     everyone
   end
@@ -16,4 +11,15 @@ class SubmissionPolicy < ApplicationPolicy
   def index?
     admin?
   end
+
+  def everyone_in_study_group
+    users_in_same_study_group = @record.study_groups.users
+    users_in_same_study_group.include? @user
+  end
+  private :everyone_in_study_group
+
+  def teacher_in_study_group
+    teacher? && everyone_in_study_group
+  end
+  private :teacher_in_study_group
 end

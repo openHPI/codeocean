@@ -47,6 +47,7 @@ en:
         consumer: Consumer
         email: Email
         name: Name
+        role: Role
       file:
         content: Content
         feedback_message: Feedback Message

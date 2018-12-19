@@ -22,7 +22,7 @@
       = collection_check_boxes :proxy_exercise, :exercise_ids, @exercises, :id, :title do |b|
         tr
           td = b.check_box
-          td = link_to(b.object, b.object)
+          td = link_to_if(policy(b.object).show?, b.object, b.object)
           td = l(b.object.created_at, format: :short)
 
   .actions = render('shared/submit_button', f: f, object: @proxy_exercise)

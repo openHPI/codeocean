@@ -32,8 +32,8 @@ h1 = RequestForComment.model_name.human(count: 2)
               span class="fa fa-check" style="color:darkgrey" aria-hidden="true"
           - else
             td = ''
-          td = link_to(request_for_comment.exercise.title, request_for_comment)
-          - if request_for_comment.has_attribute?(:question) && request_for_comment.question
+          td = link_to_if(policy(request_for_comment.exercise).show?, request_for_comment.exercise.title, request_for_comment)
+          - if request_for_comment.has_attribute?(:question) && request_for_comment.question.present?
             td = truncate(request_for_comment.question, length: 200)
           - else
             td = '-'

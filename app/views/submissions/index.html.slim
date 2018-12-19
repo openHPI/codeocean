@@ -21,12 +21,12 @@ h1 = Submission.model_name.human(count: 2)
     tbody
       - @submissions.each do |submission|
         tr
-          td = link_to(submission.exercise, submission.exercise)
-          td = link_to(submission.user, submission.user)
+          td = link_to_if(policy(submission.exercise).show?, submission.exercise, submission.exercise)
+          td = link_to_if(policy(submission.user).show?, submission.user, submission.user)
           td = t("submissions.causes.#{submission.cause}")
           td = submission.score
           td = l(submission.created_at, format: :short)
-          td = link_to(t('shared.show'), submission)
-          td = link_to(t('shared.statistics'), statistics_submission_path(submission))
+          td = link_to(t('shared.show'), submission) if policy(submission).show?
+          td = link_to(t('shared.statistics'), statistics_submission_path(submission)) if policy(submission).statistics?
 
 = render('shared/pagination', collection: @submissions)

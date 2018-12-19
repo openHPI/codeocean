@@ -7,8 +7,7 @@
 
 h1
   = @proxy_exercise.title
-  - if policy(@proxy_exercise).edit?
-    = render('shared/edit_button', object: @proxy_exercise)
+  = render('shared/edit_button', object: @proxy_exercise)
 
 = row(label: 'exercise.title', value: @proxy_exercise.title)
 = row(label: 'exercise.user', value: link_to_if(policy(@proxy_exercise.author).show?, @proxy_exercise.author, @proxy_exercise.author))
@@ -27,5 +26,5 @@ h2.mt-4 Exercises
         th = sort_link(@search, :created_at, t('shared.created_at'))
     - @proxy_exercise.exercises.each do |exercise|
       tr
-        td = link_to(exercise.title, exercise)
+        td = link_to_if(policy(exercise).show?, exercise.title, exercise)
         td = l(exercise.created_at, format: :short)

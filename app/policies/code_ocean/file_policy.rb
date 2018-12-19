@@ -4,6 +4,14 @@ module CodeOcean
       @user == @record.context.author
     end
 
+    def show?
+      if @record.context.is_a?(Exercise)
+        admin? || author? || !@record.hidden
+      else
+        admin? || author?
+      end
+    end
+
     def create?
       if @record.context.is_a?(Exercise)
         admin? || author?

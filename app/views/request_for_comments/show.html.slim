@@ -2,12 +2,12 @@
   h4#exercise_caption.list-group-item-heading data-comment-exercise-url=create_comment_exercise_request_for_comment_path data-exercise-id="#{@request_for_comment.exercise.id}" data-rfc-id="#{@request_for_comment.id}"
     - if @request_for_comment.solved?
       span.fa.fa-check aria-hidden="true"
-    = link_to(@request_for_comment.exercise.title, [:implement, @request_for_comment.exercise])
+    = link_to_if(policy(@request_for_comment.exercise).show?, @request_for_comment.exercise.title, [:implement, @request_for_comment.exercise])
   p.list-group-item-text
     - user = @request_for_comment.user
     - submission =  @request_for_comment.submission
     - testruns = Testrun.where(:submission_id => @request_for_comment.submission)
-    = user.displayname
+    = link_to_if(policy(user).show?, user.displayname, user)
     | | #{@request_for_comment.created_at.localtime}
   .rfc
     .description
@@ -22,7 +22,7 @@
         = t('activerecord.attributes.request_for_comments.question')
       .text
         - question = @request_for_comment.question
-        = question.nil? or question.empty? ? t('request_for_comments.no_question') : question
+        = question.blank? ? t('request_for_comments.no_question') : question
 
     - if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?
       = render('mark_as_solved')

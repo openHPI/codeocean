@@ -7,8 +7,7 @@
 
 h1
   = @exercise
-  - if policy(@exercise).edit?
-    = render('shared/edit_button', object: @exercise)
+  = render('shared/edit_button', object: @exercise)
 
 = row(label: 'exercise.title', value: @exercise.title)
 = row(label: 'exercise.user', value: link_to_if(policy(@exercise.author).show?, @exercise.author, @exercise.author))

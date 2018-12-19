@@ -1,6 +1,6 @@
 class AdminOrAuthorPolicy < ApplicationPolicy
   [:create?, :index?, :new?].each do |action|
-    define_method(action) { @user.internal_user? }
+    define_method(action) { admin? || teacher? }
   end
 
   [:destroy?, :edit?, :show?, :update?].each do |action|
