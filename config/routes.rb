@@ -16,9 +16,9 @@ Rails.application.routes.draw do
   resources :code_harbor_links
   resources :request_for_comments do
     member do
-      get :mark_as_solved
-      post :create_comment_exercise
-      post :set_thank_you_note
+      get :mark_as_solved, defaults: { format: :json }
+      post :create_comment_exercise, defaults: { format: :json }
+      post :set_thank_you_note, defaults: { format: :json }
     end
   end
   resources :comments, defaults: { format: :json }
@@ -96,17 +96,10 @@ Rails.application.routes.draw do
     member do
       post :clone
       get :reload
-      post :submit
     end
   end
 
-  resources :tags do
-    member do
-      post :clone
-      get :reload
-      post :submit
-    end
-  end
+  resources :tags
 
   resources :user_exercise_feedbacks, except: [:show, :index]
 
