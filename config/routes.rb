@@ -115,14 +115,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :interventions do
-    member do
-      post :clone
-      get :reload
-      post :submit
-    end
-  end
-
   resources :external_users, only: [:index, :show], concerns: :statistics do
     resources :exercises, concerns: :statistics
     member do
