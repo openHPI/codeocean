@@ -34,7 +34,7 @@ class DropErrors < ActiveRecord::Migration[5.2]
       submission = Submission.find_by(id: error.submission_id)
 
       # Validate that we have everything we need: the output, the submission and the execution environment
-      next if submission.exercise.execution_environment.blank?
+      next if submission.blank? || submission.exercise.execution_environment.blank?
 
       submissions_controller.instance_variable_set(:@raw_output, raw_output)
       submissions_controller.instance_variable_set(:@submission, submission)
