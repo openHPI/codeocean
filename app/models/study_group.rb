@@ -8,4 +8,12 @@ class StudyGroup < ApplicationRecord
   has_many :users, through: :study_group_memberships, source_type: 'ExternalUser'
   has_many :submissions
   belongs_to :consumer
+
+  def to_s
+    if name.blank?
+      "StudyGroup " + id.to_s
+    else
+      name
+    end
+  end
 end
