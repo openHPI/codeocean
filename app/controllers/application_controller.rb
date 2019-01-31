@@ -21,12 +21,12 @@ class ApplicationController < ActionController::Base
   def render_not_authorized
     respond_to do |format|
       format.html do
-        if request.referrer.present? && request.referrer.include?(request.base_url)
-          destination = request.referrer
+        # Prevent redirect loop
+        if request.url == request.referrer
+          redirect_to :root, alert: t('application.not_authorized')
         else
-          destination = :root
+          redirect_back fallback_location: :root, allow_other_host: false, alert: t('application.not_authorized')
         end
-        redirect_to(destination, alert: t('application.not_authorized'))
       end
       format.json { render json: {error: t('application.not_authorized')}, status: :unauthorized }
     end
