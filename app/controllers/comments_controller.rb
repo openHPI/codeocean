@@ -37,30 +37,26 @@ class CommentsController < ApplicationController
   def create
     @comment = Comment.new(comment_params_without_request_id)
 
-    respond_to do |format|
-      if @comment.save
-        if comment_params[:request_id]
-          request_for_comment = RequestForComment.find(comment_params[:request_id])
-          send_mail_to_author @comment, request_for_comment
-          send_mail_to_subscribers @comment, request_for_comment
-        end
-
-        render :show, status: :created, location: @comment
-      else
-        render json: @comment.errors, status: :unprocessable_entity
+    if @comment.save
+      if comment_params[:request_id]
+        request_for_comment = RequestForComment.find(comment_params[:request_id])
+        send_mail_to_author @comment, request_for_comment
+        send_mail_to_subscribers @comment, request_for_comment
       end
+
+      render :show, status: :created, location: @comment
+    else
+      render json: @comment.errors, status: :unprocessable_entity
     end
     authorize!
   end
 
   # PATCH/PUT /comments/1.json
   def update
-    respond_to do |format|
-      if @comment.update(comment_params_without_request_id)
-        render :show, status: :ok, location: @comment
-      else
-        render json: @comment.errors, status: :unprocessable_entity
-      end
+    if @comment.update(comment_params_without_request_id)
+      render :show, status: :ok, location: @comment
+    else
+      render json: @comment.errors, status: :unprocessable_entity
     end
     authorize!
   end

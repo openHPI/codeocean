@@ -26,7 +26,7 @@ Rails.application.routes.draw do
   get '/my_rfc_activity', as: 'my_rfc_activity', to: 'request_for_comments#get_rfcs_with_my_comments'
 
   delete '/comment_by_id', to: 'comments#destroy_by_id'
-  put '/comments', to: 'comments#update'
+  put '/comments', to: 'comments#update', defaults: { format: :json }
 
   resources :subscriptions, only: [:create, :destroy] do
     member do
