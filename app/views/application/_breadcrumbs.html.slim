@@ -8,7 +8,7 @@
           - if object
             li.breadcrumb-item = object
         - else
-          li.breadcrumb-item = link_to_if(policy(model).show?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+          li.breadcrumb-item = link_to_if(policy(model).index?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
           - if object
             li.breadcrumb-item = link_to_if(policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
         li.breadcrumb-item.active

@@ -15,7 +15,7 @@ class StudyGroupsController < ApplicationController
 
   def edit
     @search = @study_group.users.search(params[:q])
-    @members = StudyGroupMembership.where(user: @search.result)
+    @members = StudyGroupMembership.where(user: @search.result, study_group: @study_group)
   end
 
   def update
