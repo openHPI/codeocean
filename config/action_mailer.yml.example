@@ -7,6 +7,7 @@ development:
   <<: *default
   default_url_options:
     host: localhost
+  delivery_method: :test
 
 production:
   <<: *default
