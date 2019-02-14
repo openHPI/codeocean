@@ -9,6 +9,9 @@
     - testruns = Testrun.where(:submission_id => @request_for_comment.submission)
     = link_to_if(policy(user).show?, user.displayname, user)
     | | #{@request_for_comment.created_at.localtime}
+    - if @request_for_comment.submission.study_group.present? && policy(@request_for_comment.submission).show_study_group?
+      = ' | '
+      = link_to_if(policy(@request_for_comment.submission.study_group).show?, @request_for_comment.submission.study_group, @request_for_comment.submission.study_group)
   .rfc
     .description
       h5
