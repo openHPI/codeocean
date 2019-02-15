@@ -1,0 +1,21 @@
+h1
+  = t('.live_dashboard')
+
+div.teacher_dashboard data-exercise-id="#{@exercise.id}" data-study-group-id="#{@study_group_id}"
+
+h4
+  = t('.related_requests_for_comments')
+
+.table-responsive
+  table.table.table-hover.mt-4
+    thead
+      tr
+        th.text-center
+          i.mr-0 class="fa fa-lightbulb-o" aria-hidden="true" title = t('request_for_comments.solved')
+        th.text-center
+          i.mr-0 class="fa fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
+        th.col-12 = t('activerecord.attributes.request_for_comments.question')
+        th = t('activerecord.attributes.request_for_comments.username')
+        th.text-nowrap = t('activerecord.attributes.request_for_comments.requested_at')
+      tbody#posted_rfcs
+        = render(partial: 'request_for_comments/list_entry', collection: @request_for_comments, as: :request_for_comment)

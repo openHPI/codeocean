@@ -143,7 +143,7 @@ class RequestForCommentsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def request_for_comment_params
       # The study_group_id might not be present in the session (e.g. for internal users), resulting in session[:study_group_id] = nil which is intended.
-      params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name, study_group_id: session[:study_group_id])
+      params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name)
     end
 
     def comment_params

@@ -5,6 +5,7 @@ html lang='en'
     meta name='viewport' content='width=device-width, initial-scale=1'
     title = application_name
     link href=asset_path('favicon.png') rel='icon' type='image/png'
+    = action_cable_meta_tag
     = stylesheet_pack_tag('application', media: 'all', 'data-turbolinks-track': true)
     = stylesheet_pack_tag('stylesheets', media: 'all', 'data-turbolinks-track': true)
     = stylesheet_link_tag('application', media: 'all', 'data-turbolinks-track': true)
@@ -12,6 +13,7 @@ html lang='en'
     = javascript_include_tag('application', 'data-turbolinks-track': true)
     = yield(:head)
     = csrf_meta_tags
+    = timeago_script_tag
   body
     - unless @embed_options[:hide_navbar]
       nav.navbar.navbar-dark.bg-dark.navbar-expand-md.mb-4.py-1 role='navigation'

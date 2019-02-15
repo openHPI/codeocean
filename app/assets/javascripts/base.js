@@ -23,3 +23,9 @@ $.fn.scrollTo = function(selector) {
     scrollTop: $(selector).offset().top - $(this).offset().top + $(this).scrollTop()
   }, ANIMATION_DURATION);
 };
+
+$.fn.replaceWithPush = function(a) {
+    const $a = $(a);
+    this.replaceWith($a);
+    return $a;
+};

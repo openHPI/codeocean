@@ -14,6 +14,8 @@
 //= require turbolinks
 //= require pagedown_bootstrap
 //= require d3
+//= require rails-timeago
+//= require locales/jquery.timeago.de.js
 //
 // lib/assets
 //= require flash

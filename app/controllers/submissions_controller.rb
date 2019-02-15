@@ -201,6 +201,8 @@ class SubmissionsController < ApplicationController
     save_run_output
 
     if @run_output.blank?
+      @raw_output ||= ''
+      @run_output ||= ''
       parse_message t('exercises.implement.no_output', timestamp: l(Time.now, format: :short)), 'stdout', tubesock
     end
 

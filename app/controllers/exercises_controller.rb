@@ -7,7 +7,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard]
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
@@ -473,6 +473,15 @@ class ExercisesController < ApplicationController
       format.html { redirect_to(url) }
       format.json { render(json: {redirect: url}) }
     end
+  end
+
+  def study_group_dashboard
+    authorize!
+    @study_group_id = params[:study_group_id]
+    @request_for_comments = RequestForComment.
+            where(exercise: @exercise).includes(:submission).
+            where(submissions: {study_group_id: @study_group_id}).
+            order(created_at: :desc)
   end
 
 end

@@ -83,6 +83,7 @@ Rails.application.routes.draw do
       get :feedback
       get :reload
       post :submit
+      get 'study_group_dashboard/:study_group_id', to: 'exercises#study_group_dashboard'
     end
   end
 
@@ -151,4 +152,5 @@ Rails.application.routes.draw do
 
   post "/evaluate", to: 'remote_evaluation#evaluate', via: [:post]
 
+  mount ActionCable.server => '/cable'
 end

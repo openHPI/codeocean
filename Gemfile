@@ -37,6 +37,7 @@ gem 'rest-client'
 gem 'rubyzip'
 gem 'mnemosyne-ruby'
 gem 'whenever', require: false
+gem 'rails-timeago'
 
 group :development, :staging do
   gem 'bootsnap', require: false
