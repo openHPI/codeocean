@@ -62,21 +62,21 @@ GEM
     autotest-rails (4.2.1)
       ZenTest (~> 4.5)
     bcrypt (3.1.12)
-    better_errors (2.5.0)
+    better_errors (2.5.1)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
     bindex (0.5.0)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    bootsnap (1.4.0)
+    bootsnap (1.4.1)
       msgpack (~> 1.0)
     bootstrap-will_paginate (1.0.0)
       will_paginate
     builder (3.2.3)
-    bunny (2.13.0)
+    bunny (2.14.1)
       amq-protocol (~> 2.3, >= 2.3.0)
-    byebug (10.0.2)
+    byebug (11.0.0)
     capistrano (3.11.0)
       airbrussh (>= 1.0.0)
       i18n
@@ -96,7 +96,7 @@ GEM
       capistrano (~> 3.7)
       capistrano-bundler
       puma (~> 3.4)
-    capybara (3.13.2)
+    capybara (3.14.0)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -114,8 +114,6 @@ GEM
     coderay (1.1.2)
     concurrent-ruby (1.1.4)
     crass (1.0.4)
-    d3-rails (5.7.0)
-      railties (>= 3.1)
     database_cleaner (1.7.0)
     debug_inspector (0.0.3)
     diff-lcs (1.3)
@@ -129,7 +127,7 @@ GEM
     eventmachine (1.0.9.1)
     excon (0.62.0)
     execjs (2.7.0)
-    factory_bot (5.0.0)
+    factory_bot (5.0.2)
       activesupport (>= 4.2.0)
     factory_bot_rails (5.0.1)
       factory_bot (~> 5.0.0)
@@ -147,8 +145,10 @@ GEM
     highline (2.0.1)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (1.5.3)
+    i18n (1.6.0)
       concurrent-ruby (~> 1.0)
+    i18n-js (3.2.1)
+      i18n (>= 0.6.6)
     ims-lti (1.2.2)
       builder
       oauth (>= 0.4.5, < 0.6)
@@ -160,7 +160,7 @@ GEM
       rails-dom-testing (>= 1, < 3)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
-    json (2.1.0)
+    json (2.2.0)
     jwt (2.1.0)
     kramdown (2.1.0)
     listen (3.1.5)
@@ -185,7 +185,7 @@ GEM
     mnemosyne-ruby (1.5.1)
       activesupport (>= 4)
       bunny
-    msgpack (1.2.6)
+    msgpack (1.2.7)
     multi_json (1.13.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
@@ -193,7 +193,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.1.0)
     netrc (0.11.0)
-    newrelic_rpm (6.0.0.351)
+    newrelic_rpm (6.1.0.352)
     nio4r (2.3.1)
     nokogiri (1.10.1)
       mini_portile2 (~> 2.4.0)
@@ -208,7 +208,7 @@ GEM
       rack (>= 1.2, < 3)
     pagedown-bootstrap-rails (2.1.4)
       railties (> 3.1)
-    parallel (1.13.0)
+    parallel (1.14.0)
     parser (2.6.0.0)
       ast (~> 2.4.0)
     pg (1.1.4)
@@ -216,9 +216,10 @@ GEM
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
-    pry-byebug (3.6.0)
-      byebug (~> 10.0)
+    pry-byebug (3.7.0)
+      byebug (~> 11.0)
       pry (~> 0.10)
+    psych (3.1.0)
     public_suffix (3.0.3)
     puma (3.12.0)
     pundit (2.0.1)
@@ -302,11 +303,12 @@ GEM
       rspec-mocks (~> 3.8.0)
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
-    rubocop (0.64.0)
+    rubocop (0.65.0)
       jaro_winkler (~> 1.5.1)
       parallel (~> 1.10)
       parser (>= 2.5, != 2.5.1.1)
       powerpack (~> 0.1)
+      psych (>= 3.1.0)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.4.0)
@@ -361,7 +363,7 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     structured_warnings (0.3.0)
-    temple (0.8.0)
+    temple (0.8.1)
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.9)
@@ -381,7 +383,7 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
-    webpacker (3.5.5)
+    webpacker (4.0.2)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
@@ -413,7 +415,6 @@ DEPENDENCIES
   capybara
   carrierwave
   concurrent-ruby
-  d3-rails
   database_cleaner
   docker-api
   eventmachine (= 1.0.9.1)
@@ -422,6 +423,7 @@ DEPENDENCIES
   forgery
   headless
   highline
+  i18n-js
   ims-lti (< 2.0.0)
   jbuilder
   jquery-rails
