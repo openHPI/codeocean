@@ -378,7 +378,7 @@ de:
         score: Punktzahl
         tests: Unit Tests
         time_difference: 'Arbeitszeit bis hier*'
-        addendum: '* Differenzen von mehr als 10 Minuten werden ignoriert.'
+        addendum: '* Differenzen von mehr als %{delta} Minuten werden ignoriert.'
   proxy_exercises:
       index:
         clone: Duplizieren

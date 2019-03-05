@@ -343,7 +343,7 @@ class ExercisesController < ApplicationController
       @all_events = (@submissions + interventions).sort_by { |a| a.created_at }
       @deltas = @all_events.map.with_index do |item, index|
         delta = item.created_at - @all_events[index - 1].created_at if index > 0
-        if delta == nil or delta > 10 * 60 then 0 else delta end
+        if delta == nil or delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS then 0 else delta end
       end
       @working_times_until = []
       @all_events.each_with_index do |_, index|

@@ -76,7 +76,7 @@ class Exercise < ApplicationRecord
         (SELECT user_id,
                 user_type,
                 score,
-                CASE WHEN working_time >= '0:05:00' THEN '0' ELSE working_time END AS working_time_new
+                CASE WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT user_id,
                     user_type,
@@ -180,7 +180,7 @@ class Exercise < ApplicationRecord
                     exercise_id,
                     max_score,
                     CASE
-                           WHEN working_time >= '0:05:00' THEN '0'
+                           WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0'
                            ELSE working_time
                     END AS working_time_new
              FROM   all_working_times_until_max ), result AS
@@ -274,7 +274,7 @@ class Exercise < ApplicationRecord
 
         FILTERED_TIMES_UNTIL_MAX AS
         (
-        SELECT user_id,exercise_id, max_score, CASE WHEN working_time >= '0:05:00' THEN '0' ELSE working_time END AS working_time_new
+        SELECT user_id,exercise_id, max_score, CASE WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0' ELSE working_time END AS working_time_new
         FROM ALL_WORKING_TIMES_UNTIL_MAX
         )
             SELECT e.external_id AS external_user_id, f.user_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time

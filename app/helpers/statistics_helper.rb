@@ -1,5 +1,8 @@
 module StatisticsHelper
 
+  WORKING_TIME_DELTA_IN_SECONDS = 5.minutes
+  WORKING_TIME_DELTA_IN_SQL_INTERVAL = "'0:05:00'" # yes, a string with quotes
+
   def statistics_data
     [
         {

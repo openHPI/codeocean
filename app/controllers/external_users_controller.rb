@@ -27,7 +27,7 @@ class ExternalUsersController < ApplicationController
               score,
               id,
               CASE
-                  WHEN working_time >= '0:05:00' THEN '0'
+                  WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0'
                   ELSE working_time
               END AS working_time_new
        FROM
