@@ -15,7 +15,7 @@ class RequestForCommentsController < ApplicationController
     @search = RequestForComment
                   .last_per_user(2)
                   .with_last_activity
-                  .search(params[:q])
+                  .ransack(params[:q])
     @request_for_comments = @search.result
                                 .order('created_at DESC')
                                 .paginate(page: params[:page], total_entries: @search.result.length)
@@ -27,7 +27,7 @@ class RequestForCommentsController < ApplicationController
     @search = RequestForComment
                   .with_last_activity
                   .where(user_id: current_user.id)
-                  .search(params[:q])
+                  .ransack(params[:q])
     @request_for_comments = @search.result
                                 .order('created_at DESC')
                                 .paginate(page: params[:page])
@@ -40,7 +40,7 @@ class RequestForCommentsController < ApplicationController
                   .with_last_activity
                   .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
                   .where(comments: {user_id: current_user.id})
-                  .search(params[:q])
+                  .ransack(params[:q])
     @request_for_comments = @search.result
                                 .order('last_comment DESC')
                                 .paginate(page: params[:page])

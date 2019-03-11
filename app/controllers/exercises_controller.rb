@@ -266,7 +266,7 @@ class ExercisesController < ApplicationController
   end
 
   def index
-    @search = policy_scope(Exercise).search(params[:q])
+    @search = policy_scope(Exercise).ransack(params[:q])
     @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page])
     authorize!
   end
@@ -319,7 +319,7 @@ class ExercisesController < ApplicationController
   private :set_file_types
 
   def collect_set_and_unset_exercise_tags
-    @search = policy_scope(Tag).search(params[:q])
+    @search = policy_scope(Tag).ransack(params[:q])
     @tags = @search.result.order(:name)
     checked_exercise_tags = @exercise.exercise_tags
     checked_tags = checked_exercise_tags.collect{|e| e.tag}.to_set

@@ -4,17 +4,17 @@ class StudyGroupsController < ApplicationController
   before_action :set_group, only: MEMBER_ACTIONS
 
   def index
-    @search = StudyGroup.search(params[:q])
+    @search = StudyGroup.ransack(params[:q])
     @study_groups = @search.result.includes(:consumer).order(:name).paginate(page: params[:page])
     authorize!
   end
 
   def show
-    @search = @study_group.users.search(params[:q])
+    @search = @study_group.users.ransack(params[:q])
   end
 
   def edit
-    @search = @study_group.users.search(params[:q])
+    @search = @study_group.users.ransack(params[:q])
     @members = StudyGroupMembership.where(user: @search.result, study_group: @study_group)
   end
 
