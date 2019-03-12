@@ -25,6 +25,22 @@ class ApplicationPolicy
   end
   private :no_one
 
+  def everyone_in_study_group
+    study_group = @record.study_group
+    return false if study_group.blank?
+
+    users_in_same_study_group = study_group.users
+    return false if users_in_same_study_group.blank?
+
+    users_in_same_study_group.include? @user
+  end
+  private :everyone_in_study_group
+
+  def teacher_in_study_group
+    teacher? && everyone_in_study_group
+  end
+  private :teacher_in_study_group
+
   def initialize(user, record)
     @user = user
     @record = record

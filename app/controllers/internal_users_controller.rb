@@ -60,7 +60,7 @@ class InternalUsersController < ApplicationController
   end
 
   def index
-    @search = InternalUser.search(params[:q])
+    @search = InternalUser.ransack(params[:q])
     @users = @search.result.includes(:consumer).order(:name).paginate(page: params[:page])
     authorize!
   end

@@ -168,6 +168,7 @@ module Lti
     end
     group.users |= [@current_user] # add current user if not already member of the group
     group.save
+    session[:study_group_id] = group.id
   end
 
   def set_embedding_options

@@ -84,6 +84,10 @@ div#chart_2 {
   background-color: #FAFAFA;
 }
 
+div#chart_stacked {
+  max-height: 500px;
+  background-color: #FAFAFA;
+}
 
 a.file-heading {
   color: black !important;
@@ -115,7 +119,7 @@ a.file-heading {
 .d3-tip:after {
   box-sizing: border-box;
   display: inline;
-  font-size: 10px;
+  font-size: 14px;
   width: 100%;
   line-height: 1;
   color: rgba(0, 0, 0, 0.8);
@@ -126,7 +130,7 @@ a.file-heading {
 
 /* Style northward tooltips differently */
 .d3-tip.n:after {
-  margin: -1px 0 0 0;
+  margin: -3px 0 0 0;
   top: 100%;
   left: 0;
 }

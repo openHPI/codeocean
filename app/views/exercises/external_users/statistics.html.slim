@@ -58,7 +58,7 @@ h1 = "#{@exercise} (external user #{@external_user})"
                 td =
                 td =
                 td = @working_times_until[index] if index > 0
-    p = t('.addendum')
+    p = t('.addendum', delta: StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS / 60)
     .d-none#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until);
     div#progress_chart.col-lg-12
       .graph-functions-2

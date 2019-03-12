@@ -1,6 +1,7 @@
 class Submission < ApplicationRecord
   include Context
   include Creation
+  include ActionCableHelper
 
   CAUSES = %w(assess download file render run save submit test autosave requestComments remoteAssess)
   FILENAME_URL_PLACEHOLDER = '{filename}'
@@ -19,6 +20,8 @@ class Submission < ApplicationRecord
 
   validates :cause, inclusion: {in: CAUSES}
   validates :exercise_id, presence: true
+
+  after_save :trigger_working_times_action_cable
 
   MAX_COMMENTS_ON_RECOMMENDED_RFC = 5
 

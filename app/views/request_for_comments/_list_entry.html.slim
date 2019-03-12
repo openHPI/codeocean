@@ -1,0 +1,15 @@
+tr.table-row-clickable data-id=request_for_comment.id data-href=request_for_comment_path(request_for_comment)
+  td.p-2
+    - if request_for_comment.solved?
+      span.fa.fa-check.fa-2x.text-success aria-hidden="true"
+    - elsif request_for_comment.full_score_reached
+      span.fa.fa-check.fa-2x style="color:darkgrey" aria-hidden="true"
+    - else
+      = ''
+  td.text-center = request_for_comment.comments_count
+  - if request_for_comment.has_attribute?(:question) && request_for_comment.question.present?
+    td.text-primary = truncate(request_for_comment.question, length: 200)
+  - else
+    td.text-black-50.font-italic = t('request_for_comments.no_question')
+  td = request_for_comment.user
+  td = timeago_tag request_for_comment.created_at

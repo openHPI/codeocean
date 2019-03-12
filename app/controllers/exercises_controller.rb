@@ -7,7 +7,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard]
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
@@ -266,7 +266,7 @@ class ExercisesController < ApplicationController
   end
 
   def index
-    @search = policy_scope(Exercise).search(params[:q])
+    @search = policy_scope(Exercise).ransack(params[:q])
     @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page])
     authorize!
   end
@@ -319,7 +319,7 @@ class ExercisesController < ApplicationController
   private :set_file_types
 
   def collect_set_and_unset_exercise_tags
-    @search = policy_scope(Tag).search(params[:q])
+    @search = policy_scope(Tag).ransack(params[:q])
     @tags = @search.result.order(:name)
     checked_exercise_tags = @exercise.exercise_tags
     checked_tags = checked_exercise_tags.collect{|e| e.tag}.to_set
@@ -343,7 +343,7 @@ class ExercisesController < ApplicationController
       @all_events = (@submissions + interventions).sort_by { |a| a.created_at }
       @deltas = @all_events.map.with_index do |item, index|
         delta = item.created_at - @all_events[index - 1].created_at if index > 0
-        if delta == nil or delta > 10 * 60 then 0 else delta end
+        if delta == nil or delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS then 0 else delta end
       end
       @working_times_until = []
       @all_events.each_with_index do |_, index|
@@ -473,6 +473,17 @@ class ExercisesController < ApplicationController
       format.html { redirect_to(url) }
       format.json { render(json: {redirect: url}) }
     end
+  end
+
+  def study_group_dashboard
+    authorize!
+    @study_group_id = params[:study_group_id]
+    @request_for_comments = RequestForComment.
+            where(exercise: @exercise).includes(:submission).
+            where(submissions: {study_group_id: @study_group_id}).
+            order(created_at: :desc)
+
+    @graph_data = @exercise.get_working_times_for_study_group(@study_group_id)
   end
 
 end

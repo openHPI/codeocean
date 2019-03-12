@@ -33,7 +33,7 @@ class ProxyExercisesController < ApplicationController
   end
 
   def edit
-    @search = policy_scope(Exercise).search(params[:q])
+    @search = policy_scope(Exercise).ransack(params[:q])
     @exercises = @search.result.order(:title)
     authorize!
   end
@@ -44,14 +44,14 @@ class ProxyExercisesController < ApplicationController
   private :proxy_exercise_params
 
   def index
-    @search = policy_scope(ProxyExercise).search(params[:q])
+    @search = policy_scope(ProxyExercise).ransack(params[:q])
     @proxy_exercises = @search.result.order(:title).paginate(page: params[:page])
     authorize!
   end
 
   def new
     @proxy_exercise =  ProxyExercise.new
-    @search = policy_scope(Exercise).search(params[:q])
+    @search = policy_scope(Exercise).ransack(params[:q])
     @exercises = @search.result.order(:title)
     authorize!
   end
@@ -63,8 +63,8 @@ class ProxyExercisesController < ApplicationController
   private :set_exercise_and_authorize
 
   def show
-    @search = @proxy_exercise.exercises.search
-    @exercises = @proxy_exercise.exercises.search.result.order(:title) #@search.result.order(:title)
+    @search = @proxy_exercise.exercises.ransack
+    @exercises = @proxy_exercise.exercises.ransack.result.order(:title) #@search.result.order(:title)
   end
 
   #we might want to think about auth here

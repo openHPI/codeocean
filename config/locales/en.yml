@@ -101,6 +101,7 @@ en:
         files: Files
         score: Score
         user: Author
+        study_group: Study Group
       study_group:
         name: Name
         external_id: External ID
@@ -347,6 +348,7 @@ en:
       implement: Implement
       test_files: Test Files
       feedback: Feedback
+      study_group_dashboard: Live Dashboard
     statistics:
       average_score: Average Score
       final_submissions: Final Submissions
@@ -365,6 +367,13 @@ en:
       failure: An error occurred while transmitting your score. Please try again later.
       full_score_redirect_to_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Another participant has a question concerning the exercise you just solved. Your help and comments will be greatly appreciated!
       full_score_redirect_to_own_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Your question concerning the exercise is solved? If so, please share the essential insight with your fellows and mark the question as solved, before you close this window!
+    study_group_dashboard:
+      live_dashboard: Live Dashboard
+      time_spent_per_learner: Time spent per Learner
+      related_requests_for_comments: Related Requests for Comments
+      learner: Learner
+      time_spent_in_minutes: Time spent in Minutes
+      no_data_yet: No data available yet
     external_users:
       statistics:
         no_data_available: No data available.
@@ -373,7 +382,7 @@ en:
         score: Score
         tests: Unit Test Results
         time_difference: 'Working Time until here*'
-        addendum: '* Deltas longer than 10 minutes are ignored.'
+        addendum: "* Deltas longer than %{delta} minutes are ignored."
   proxy_exercises:
       index:
         clone: Duplicate

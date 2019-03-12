@@ -3,8 +3,8 @@ class ExercisePolicy < AdminOrAuthorPolicy
     admin?
   end
 
-  def show?
-    admin? || teacher?
+  [:show?, :study_group_dashboard?].each do |action|
+    define_method(action) { admin? || teacher? }
   end
 
   [:clone?, :destroy?, :edit?, :statistics?, :update?, :feedback?].each do |action|

@@ -3,8 +3,8 @@ class StudyGroupPolicy < AdminOnlyPolicy
     admin? || teacher?
   end
 
-  [:show?, :destroy?, :edit?, :update?].each do |action|
-    define_method(action) { admin? || @user.teacher? && @record.users.include?(@user) }
+  [:show?, :destroy?, :edit?, :update?, :stream_la?].each do |action|
+    define_method(action) { admin? || @user.teacher? && @record.present? && @record.users.include?(@user) }
   end
 
   class Scope < Scope

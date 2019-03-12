@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_29_093207) do
+ActiveRecord::Schema.define(version: 2019_02_13_131802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -292,6 +292,8 @@ ActiveRecord::Schema.define(version: 2018_11_29_093207) do
     t.text "thank_you_note"
     t.boolean "full_score_reached", default: false
     t.integer "times_featured", default: 0
+    t.index ["exercise_id"], name: "index_request_for_comments_on_exercise_id"
+    t.index ["submission_id"], name: "index_request_for_comments_on_submission_id"
   end
 
   create_table "searches", force: :cascade do |t|
@@ -415,4 +417,5 @@ ActiveRecord::Schema.define(version: 2018_11_29_093207) do
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user_type_and_user_id"
   end
 
+  add_foreign_key "submissions", "study_groups"
 end

@@ -1,5 +1,7 @@
 class RequestForComment < ApplicationRecord
   include Creation
+  include ActionCableHelper
+
   belongs_to :submission
   belongs_to :exercise
   belongs_to :file, class_name: 'CodeOcean::File'
@@ -9,6 +11,8 @@ class RequestForComment < ApplicationRecord
 
   scope :unsolved, -> { where(solved: [false, nil]) }
   scope :in_range, -> (from, to) { where(created_at: from..to) }
+
+  after_save :trigger_rfc_action_cable
 
     def self.last_per_user(n = 5)
       from("(#{row_number_user_sql}) as request_for_comments")

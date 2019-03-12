@@ -17,8 +17,9 @@ gem 'pg'
 gem 'pry-byebug'
 gem 'puma'
 gem 'pundit'
-gem 'rails', '5.2.1.1'
+gem 'rails', '5.2.2'
 gem 'rails-i18n'
+gem 'i18n-js'
 gem 'ransack'
 gem 'rubytree'
 gem 'sass-rails'
@@ -31,12 +32,12 @@ gem 'tubesock', git: 'https://github.com/gosukiwi/tubesock', branch: 'patch-1' #
 gem 'faye-websocket'
 gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, newer versions might crash or
 gem 'nokogiri'
-gem 'd3-rails'
 gem 'webpacker'
 gem 'rest-client'
 gem 'rubyzip'
 gem 'mnemosyne-ruby'
 gem 'whenever', require: false
+gem 'rails-timeago'
 
 group :development, :staging do
   gem 'bootsnap', require: false

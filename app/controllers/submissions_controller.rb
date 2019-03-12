@@ -106,7 +106,7 @@ class SubmissionsController < ApplicationController
   end
 
   def index
-    @search = Submission.search(params[:q])
+    @search = Submission.ransack(params[:q])
     @submissions = @search.result.includes(:exercise, :user).paginate(page: params[:page])
     authorize!
   end
@@ -201,6 +201,8 @@ class SubmissionsController < ApplicationController
     save_run_output
 
     if @run_output.blank?
+      @raw_output ||= ''
+      @run_output ||= ''
       parse_message t('exercises.implement.no_output', timestamp: l(Time.now, format: :short)), 'stdout', tubesock
     end
 

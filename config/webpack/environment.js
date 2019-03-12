@@ -18,6 +18,7 @@ environment.plugins.prepend('Provide', new webpack.ProvidePlugin({
         _: 'underscore',
         vis: 'vis',
         hljs: 'highlight.js',
+        d3: 'd3',
     })
 );
 

@@ -23,3 +23,14 @@ $.fn.scrollTo = function(selector) {
     scrollTop: $(selector).offset().top - $(this).offset().top + $(this).scrollTop()
   }, ANIMATION_DURATION);
 };
+
+// Same as $.replaceWith, just returns the new element instead of the deleted one
+$.fn.replaceWithAndReturnNewElement = function(a) {
+    const $a = $(a);
+    this.replaceWith($a);
+    return $a;
+};
+
+// Disable the use of web workers for JStree due to JS error
+// See https://github.com/vakata/jstree/issues/1717 for details
+$.jstree.defaults.core.worker = false;
