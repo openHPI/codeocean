@@ -31,7 +31,7 @@ $(document).on('turbolinks:load', function() {
             if ($row.length === 0) {
                 $row = $($('#posted_rfcs')[0].insertRow(0));
             }
-            $row = $row.replaceWithPush(data.html);
+            $row = $row.replaceWithAndReturnNewElement(data.html);
             $row.find('time').timeago();
             $row.click(function () {
                 Turbolinks.visit($(this).data("href"));
@@ -236,7 +236,7 @@ $(document).on('turbolinks:load', function() {
 
             $('#no_chart_data').addClass("d-none");
             transitionStacked();
-            // transitionGrouped();
+            // ToDo: Add button to switch using transitionGrouped();
 
             buildDictionary(additional_user_data);
         }

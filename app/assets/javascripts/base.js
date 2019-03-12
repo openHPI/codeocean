@@ -24,7 +24,8 @@ $.fn.scrollTo = function(selector) {
   }, ANIMATION_DURATION);
 };
 
-$.fn.replaceWithPush = function(a) {
+// Same as $.replaceWith, just returns the new element instead of the deleted one
+$.fn.replaceWithAndReturnNewElement = function(a) {
     const $a = $(a);
     this.replaceWith($a);
     return $a;
