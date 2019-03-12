@@ -90,6 +90,145 @@ class Exercise < ApplicationRecord
     "
   end
 
+  def study_group_working_time_query(exercise_id, study_group_id, additional_filter)
+    """
+    WITH working_time_between_submissions AS (
+      SELECT submissions.user_id,
+         submissions.user_type,
+         score,
+         created_at,
+         (created_at - lag(created_at) over (PARTITION BY submissions.user_id, exercise_id
+           ORDER BY created_at)) AS working_time
+  FROM submissions
+  WHERE exercise_id = #{exercise_id} AND study_group_id = #{study_group_id} #{additional_filter}),
+        working_time_with_deltas_ignored AS (
+          SELECT user_id,
+                 user_type,
+                 score,
+                 sum(CASE WHEN score IS NOT NULL THEN 1 ELSE 0 END)
+                     over (ORDER BY user_type, user_id, created_at)                 AS change_in_score,
+                 created_at,
+                 CASE WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0' ELSE working_time END AS working_time_filtered
+          FROM working_time_between_submissions
+        ),
+        working_times_with_score_expanded AS (
+          SELECT user_id,
+                 user_type,
+                 created_at,
+                 working_time_filtered,
+                 first_value(score)
+                             over (PARTITION BY user_type, user_id, change_in_score ORDER BY created_at ASC) AS corrected_score
+          FROM working_time_with_deltas_ignored
+        ),
+        working_times_with_duplicated_last_row_per_score AS (
+          SELECT *
+          FROM working_times_with_score_expanded
+          UNION ALL
+          -- Duplicate last row per score and make it unique by setting another created_at timestamp.
+          -- In addition, the working time is set to zero in order to prevent getting a wrong time.
+          -- This duplication is needed, as we will shift the scores and working times by one and need to ensure not to loose any information.
+          SELECT DISTINCT ON (user_type, user_id, corrected_score) user_id,
+                                                                   user_type,
+                                                                   created_at + INTERVAL '1us',
+                                                                   '00:00:00' as working_time_filtered,
+                                                                   corrected_score
+          FROM working_times_with_score_expanded
+        ),
+        working_times_with_score_not_null_and_shifted AS (
+          SELECT user_id,
+                 user_type,
+                 coalesce(lag(corrected_score) over (PARTITION BY user_type, user_id ORDER BY created_at ASC),
+                          0) AS shifted_score,
+                 created_at,
+                 working_time_filtered
+          FROM working_times_with_duplicated_last_row_per_score
+        ),
+        working_times_to_be_sorted AS (
+          SELECT user_id,
+                 user_type,
+                 shifted_score                                                          AS score,
+                 MIN(created_at)                                                        AS start_time,
+                 SUM(working_time_filtered)                                             AS working_time,
+                 SUM(SUM(working_time_filtered)) over (PARTITION BY user_type, user_id) AS total_working_time
+          FROM working_times_with_score_not_null_and_shifted
+          GROUP BY user_id, user_type, score
+        ),
+        working_times_with_index AS (
+          SELECT (dense_rank() over (ORDER BY total_working_time, user_type, user_id ASC) - 1) AS index,
+                 user_id,
+                 user_type,
+                 score,
+                 start_time,
+                 working_time,
+                 total_working_time
+          FROM working_times_to_be_sorted)
+        SELECT index,
+           user_id,
+           user_type,
+           name,
+           score,
+           start_time,
+           working_time,
+           total_working_time
+        FROM working_times_with_index
+           JOIN external_users ON user_type = 'ExternalUser' AND user_id = external_users.id
+        UNION ALL
+        SELECT index,
+           user_id,
+           user_type,
+           name,
+           score,
+           start_time,
+           working_time,
+           total_working_time
+        FROM working_times_with_index
+           JOIN internal_users ON user_type = 'InternalUser' AND user_id = internal_users.id
+        ORDER BY index, score ASC LIMIT 200;
+    """
+  end
+
+  def get_working_times_for_study_group(study_group_id, user = nil)
+    user_progress = []
+    additional_user_data = []
+    max_bucket = 4
+    maximum_score = self.maximum_score
+
+    if user.blank?
+      additional_filter = ''
+    else
+      additional_filter = "AND user_id = #{user.id} AND user_type = '#{user.class.name}'"
+    end
+
+    results = self.class.connection.execute(study_group_working_time_query(id, study_group_id, additional_filter)).each do |tuple|
+      if tuple['score'] <= maximum_score
+        bucket = tuple['score'] / maximum_score * max_bucket
+      else
+        bucket = max_bucket # maximum_score / maximum_score will always be 1
+      end
+
+      user_progress[bucket] ||= []
+      additional_user_data[bucket] ||= []
+      additional_user_data[max_bucket + 1] ||= []
+
+      user_progress[bucket][tuple['index']] = tuple["working_time"]
+      additional_user_data[bucket][tuple['index']] = {start_time: tuple["start_time"], score: tuple["score"]}
+      additional_user_data[max_bucket + 1][tuple['index']] = {id: tuple['user_id'], type: tuple['user_type'], name: tuple['name']}
+    end
+
+    if results.ntuples > 0
+      first_index = results[0]['index']
+      last_index = results[results.ntuples-1]['index']
+      buckets = last_index - first_index
+      user_progress.each do |timings_array|
+        if timings_array.present? && timings_array.length != buckets + 1
+          timings_array[buckets] = nil
+        end
+      end
+    end
+
+    {user_progress: user_progress, additional_user_data: additional_user_data}
+  end
+
   def get_quantiles(quantiles)
     quantiles_str = "[" + quantiles.join(",") + "]"
     result = self.class.connection.execute("""

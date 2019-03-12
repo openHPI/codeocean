@@ -482,6 +482,8 @@ class ExercisesController < ApplicationController
             where(exercise: @exercise).includes(:submission).
             where(submissions: {study_group_id: @study_group_id}).
             order(created_at: :desc)
+
+    @graph_data = @exercise.get_working_times_for_study_group(@study_group_id)
   end
 
 end

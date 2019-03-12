@@ -369,7 +369,11 @@ en:
       full_score_redirect_to_own_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Your question concerning the exercise is solved? If so, please share the essential insight with your fellows and mark the question as solved, before you close this window!
     study_group_dashboard:
       live_dashboard: Live Dashboard
+      time_spent_per_learner: Time spent per Learner
       related_requests_for_comments: Related Requests for Comments
+      learner: Learner
+      time_spent_in_minutes: Time spent in Minutes
+      no_data_yet: No data available yet
     external_users:
       statistics:
         no_data_available: No data available.

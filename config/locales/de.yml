@@ -369,7 +369,11 @@ de:
       full_score_redirect_to_own_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ihre Frage ist damit wahrscheinlich gelöst? Falls ja, fügen Sie doch den entscheidenden Kniff als Antwort hinzu und markieren die Frage als gelöst, bevor sie das Fenster schließen.
     study_group_dashboard:
       live_dashboard: Live Dashboard
+      time_spent_per_learner: Verwendete Zeit pro Lerner
       related_requests_for_comments: Zugehörige Kommentaranfragen
+      learner: Lerner
+      time_spent_in_minutes: benötigte Zeit in Minuten
+      no_data_yet: Bisher sind keine Daten verfügbar
     external_users:
       statistics:
         no_data_available: Keine Daten verfügbar.
