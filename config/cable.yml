@@ -1,10 +1,14 @@
 development:
-  adapter: async
+  adapter: postgresql
 
 test:
-  adapter: async
+  adapter: postgresql
+
+staging:
+  adapter: postgresql
 
 production:
-  adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
-  channel_prefix: code_ocean_production
+  adapter: postgresql # redis
+  # all other options below are only used for redis
+  # url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  # channel_prefix: code_ocean_production
