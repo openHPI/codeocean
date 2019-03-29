@@ -36,6 +36,6 @@ h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
           td = link_to_if(policy(exercise).show?, exercise.title, exercise)
           td = exercise.users.distinct.count
           td = exercise.submissions.send(:final).distinct.count(:user_id)
-          td = finishers_percentage = exercise.users.distinct.count == 0 ? 0 : (100.0 / exercise.users.distinct.count * exercise.finishers.count).round(2)
+          td = exercise.finishers_percentage
           td = exercise.average_percentage
           td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks' => "false") if policy(exercise).statistics?
