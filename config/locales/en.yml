@@ -35,7 +35,7 @@ en:
         hide_file_tree: Hide File Tree
         instructions: Instructions
         maximum_score: Maximum Score
-        number_of_users: "#Users"
+        number_of_users: "# Users"
         public: Public
         selection: Selected
         title: Title
