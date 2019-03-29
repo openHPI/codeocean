@@ -59,7 +59,7 @@ describe Exercise do
 
       it 'returns the average score expressed as a percentage' do
         maximum_percentages = exercise.submissions.group_by(&:user_id).values.map { |submission| submission.sort_by(&:score).last.score / exercise.maximum_score * 100 }
-        expect(exercise.average_percentage).to eq(maximum_percentages.average.round)
+        expect(exercise.average_percentage).to eq(maximum_percentages.average.round(2))
       end
     end
   end
