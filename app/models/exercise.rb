@@ -49,6 +49,14 @@ class Exercise < ApplicationRecord
       0
     end
   end
+  
+  def finishers_percentage
+    if users.distinct.count != 0
+      (100.0 / users.distinct.count * finishers.count).round(2)
+    else
+      0
+    end
+  end
 
   def average_score
     if submissions.exists?(cause: 'submit')
