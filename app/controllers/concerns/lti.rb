@@ -182,7 +182,8 @@ module Lti
      :hide_sidebar,
      :read_only,
      :hide_test_results,
-     :disable_hints].each do |option|
+     :disable_hints,
+     :disable_download].each do |option|
       value = params["custom_embed_options_#{option}".to_sym] == 'true'
       # Optimize storage and save only those that are true, the session cookie is limited to 4KB
       @embed_options[option] = value if value.present?

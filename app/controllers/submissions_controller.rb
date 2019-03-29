@@ -62,6 +62,10 @@ class SubmissionsController < ApplicationController
   end
 
   def download
+    if @embed_options[:disable_download]
+      raise Pundit::NotAuthorizedError
+    end
+
     # files = @submission.files.map{ }
     # zipline( files, 'submission.zip')
     # send_data(@file.content, filename: @file.name_with_extension)
@@ -98,6 +102,10 @@ class SubmissionsController < ApplicationController
   end
 
   def download_file
+    if @embed_options[:disable_download]
+      raise Pundit::NotAuthorizedError
+    end
+
     if @file.native_file?
       send_file(@file.native_file.path)
     else
