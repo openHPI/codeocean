@@ -15,3 +15,27 @@ h1 = @exercise_collection
       .legend-entry
         div(class="box #{klass}")
         .box-label = label
+
+h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
+.table-responsive#exercise-list
+  table.table.sortable
+    thead
+      tr
+        th = '#'
+        th = t('activerecord.attributes.exercise.title')
+        th = t('activerecord.attributes.exercise.number_of_users')
+        th = t('activerecord.attributes.exercise.distinct_final_submissions')
+        th = t('activerecord.attributes.exercise.finishing_rate')
+        th = t('activerecord.attributes.exercise.average_score_percentage')
+        th = t('shared.actions')
+    tbody
+      - @exercise_collection.items.sort_by{|item| item.position}.each do |exercise_collection_item|
+        - exercise = exercise_collection_item.exercise
+        tr
+          td = exercise_collection_item.position
+          td = link_to_if(policy(exercise).show?, exercise.title, exercise)
+          td = exercise.users.distinct.count
+          td = exercise.submissions.send(:final).distinct.count(:user_id)
+          td = exercise.finishers_percentage
+          td = exercise.average_percentage
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks' => "false") if policy(exercise).statistics?

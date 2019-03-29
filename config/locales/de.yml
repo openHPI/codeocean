@@ -23,8 +23,11 @@ de:
         testing_framework: Testing-Framework
         user: Autor
       exercise:
+        average_score_percentage: "Durchschnittliche Bewertung in Prozent"
         description: Beschreibung
+        distinct_final_submissions: "Endgültige Abgaben"
         embedding_parameters: Parameter für LTI-Einbettung
+        finishing_rate: "Abschlussquote"
         tags: Tags
         execution_environment: Ausführungsumgebung
         execution_environment_id: Ausführungsumgebung
@@ -32,6 +35,7 @@ de:
         hide_file_tree: Dateibaum verstecken
         instructions: Anweisungen
         maximum_score: Erreichbare Punktzahl
+        number_of_users: "# Nutzer"
         public: Öffentlich
         selection: Ausgewählt
         title: Titel
