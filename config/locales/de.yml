@@ -23,7 +23,7 @@ de:
         testing_framework: Testing-Framework
         user: Autor
       exercise:
-        average_score_percentage: "Durchschnittlicher %Score"
+        average_score_percentage: "Durchschnittliche Bewertung in Prozent"
         description: Beschreibung
         distinct_final_submissions: "Endgültige Abgaben"
         embedding_parameters: Parameter für LTI-Einbettung
