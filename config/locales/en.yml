@@ -23,8 +23,11 @@ en:
         testing_framework: Testing Framework
         user: Author
       exercise:
+        average_score_percentage: "Average Score Percentage"
         description: Description
+        distinct_final_submissions: "Distinct Final Submissions"
         embedding_parameters: LTI Embedding Parameters
+        finishing_rate: "Finishing Rate"
         tags: Tags
         execution_environment: Execution Environment
         execution_environment_id: Execution Environment
@@ -32,6 +35,7 @@ en:
         hide_file_tree: Hide File Tree
         instructions: Instructions
         maximum_score: Maximum Score
+        number_of_users: "#Users"
         public: Public
         selection: Selected
         title: Title
