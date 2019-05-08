@@ -208,7 +208,7 @@ class Exercise < ApplicationRecord
     end
 
     results = self.class.connection.execute(study_group_working_time_query(id, study_group_id, additional_filter)).each do |tuple|
-      if tuple['score'] <= maximum_score
+      if maximum_score > 0.0 && tuple['score'] <= maximum_score
         bucket = (tuple['score'] / maximum_score * max_bucket).round
       else
         bucket = max_bucket # maximum_score / maximum_score will always be 1
