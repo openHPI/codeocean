@@ -5,7 +5,7 @@
 ######## VERSION INFORMATION ########
 
 postgres_version=10
-ruby_version=2.6.1
+ruby_version=2.6.2
 rails_version=5.2.3
 geckodriver_version=0.24.0
 
@@ -33,6 +33,8 @@ sudo apt-get -qq -y install postgresql-client postgresql-$postgres_version postg
 # Docker
 if [ ! -f /etc/default/docker ]
 then
+    # If Docker doesn't start, check this article
+    # https://medium.com/@dirk.avery/docker-error-response-from-daemon-1d46235ff61d
     curl -sSL https://get.docker.com/ | sudo sh
 fi
 if ! grep code_ocean /etc/default/docker
@@ -56,6 +58,8 @@ sudo docker pull openhpi/co_execenv_python
 sudo docker pull openhpi/co_execenv_node
 sudo docker pull openhpi/co_execenv_java
 sudo docker pull openhpi/co_execenv_java_antlr
+sudo docker pull openhpi/co_execenv_ruby
+sudo docker pull openhpi/co_execenv_ruby:2.5
 
 # rvm
 sudo apt-get -qq -y install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev libgdbm-dev libncurses5-dev automake libtool bison libffi-dev
