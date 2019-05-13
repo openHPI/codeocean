@@ -147,7 +147,7 @@ GEM
       domain_name (~> 0.5)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
-    i18n-js (3.2.1)
+    i18n-js (3.2.2)
       i18n (>= 0.6.6)
     ims-lti (1.2.2)
       builder
