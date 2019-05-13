@@ -12,7 +12,7 @@
     "jquery-ui": "^1.12.1",
     "jstree": "^3.3.5",
     "opensans-webkit": "^1.0.1",
-    "popper.js": "^1.14.4",
+    "popper.js": "^1.15.0",
     "underscore": "^1.9.1",
     "vis": "^4.21.0",
     "webpack-merge": "^4.1.4"
