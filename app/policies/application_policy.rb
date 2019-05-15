@@ -41,10 +41,10 @@ class ApplicationPolicy
   end
   private :everyone_in_study_group
 
-  def teacher_in_study_group
+  def teacher_in_study_group?
     teacher? && everyone_in_study_group
   end
-  private :teacher_in_study_group
+  private :teacher_in_study_group?
 
   def initialize(user, record)
     @user = user
