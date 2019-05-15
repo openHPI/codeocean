@@ -27,7 +27,7 @@ module SubmissionScoring
   private :collect_test_results
 
   def execute_test_file(file, submission)
-    DockerClient.new(execution_environment: file.context.execution_environment, user: current_user).execute_test_command(submission, file.name_with_extension)
+    DockerClient.new(execution_environment: file.context.execution_environment).execute_test_command(submission, file.name_with_extension)
   end
   private :execute_test_file
 
