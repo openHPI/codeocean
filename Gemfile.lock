@@ -181,7 +181,7 @@ GEM
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
     minitest (5.11.3)
-    mnemosyne-ruby (1.6.2)
+    mnemosyne-ruby (1.7.0)
       activesupport (>= 4)
       bunny
     msgpack (1.2.10)
