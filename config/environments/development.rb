@@ -3,15 +3,15 @@ Rails.application.configure do
   config.webpacker.check_yarn_integrity = true
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.web_console.whitelisted_ips = '192.168.0.0/16'  
-  
+  config.web_console.whitelisted_ips = '192.168.0.0/16'
+
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
   # Do not eager load code on boot.
-  config.eager_load = false
+  config.eager_load = true
 
   # Show full error reports.
   config.consider_all_requests_local = true

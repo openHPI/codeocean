@@ -7,6 +7,15 @@ GIT
       rack (>= 1.5.0)
       websocket (>= 1.1.0)
 
+PATH
+  remote: ../proforma
+  specs:
+    proforma (0.1.0)
+      activemodel (~> 5.2.3)
+      activesupport (~> 5.2.3)
+      nokogiri (~> 1.10.2)
+      rubyzip (~> 1.2.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -430,6 +439,7 @@ DEPENDENCIES
   nyan-cat-formatter
   pagedown-bootstrap-rails
   pg
+  proforma!
   pry-byebug
   puma
   pundit

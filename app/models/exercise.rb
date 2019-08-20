@@ -31,7 +31,7 @@ class Exercise < ApplicationRecord
 
   validate :valid_main_file?
   validates :description, presence: true
-  validates :execution_environment_id, presence: true
+  # validates :execution_environment_id, presence: true # TODO make this conditional - but based on what?
   validates :public, boolean_presence: true
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
@@ -49,7 +49,7 @@ class Exercise < ApplicationRecord
       0
     end
   end
-  
+
   def finishers_percentage
     if users.distinct.count != 0
       (100.0 / users.distinct.count * finishers.count).round(2)

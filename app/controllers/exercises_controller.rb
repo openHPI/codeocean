@@ -108,27 +108,34 @@ class ExercisesController < ApplicationController
   end
 
   def import_proforma_xml
-    begin
-      user = user_for_oauth2_request()
-      exercise = Exercise.new
-      request_body = request.body.read
-      exercise.from_proforma_xml(request_body)
-      exercise.user = user
-      saved = exercise.save
-      if saved
-        render :text => 'SUCCESS', :status => 200
-      else
-        logger.info(exercise.errors.full_messages)
-        render :text => 'Invalid exercise', :status => 400
-      end
-    rescue => error
-      if error.class == Hash
-        render :text => error.message, :status => error.status
-      else
-        raise error
-        render :text => '', :status => 500
-      end
+    # begin
+    # user = user_for_oauth2_request
+    # exercise = Exercise.new
+    # request_body = request.body.read # needs to be some kind of a zip file
+
+    tempfile = Tempfile.new('codeharbor_import.zip')
+    tempfile.write request.body.read.force_encoding('UTF-8')
+    tempfile.rewind
+
+    exercise = ProformaService::Import.call(zip: tempfile, user: user_for_oauth2_request)
+    # exercise.from_proforma_xml(request_body)
+    # exercise.user = user
+    # saved = exercise.save
+    if exercise.save
+      # render text: 'SUCCESS', status: 200
+      render json: {status: 201}
+    else
+      logger.info(exercise.errors.full_messages)
+      render json: {status: 400}
     end
+    # rescue => error
+    #   if error.class == Hash
+    #     render :text => error.message, :status => error.status
+    #   else
+    #     raise error
+    #     render :text => '', :status => 500
+    #   end
+    # end
   end
 
   def user_for_oauth2_request
@@ -142,7 +149,7 @@ class ExercisesController < ApplicationController
       raise ({status: 401, message: 'No token in Authorization header'})
     end
 
-    user = user_by_code_harbor_token(oauth2Token)
+    user = user_by_codeharbor_token(oauth2Token)
     if user == nil
       raise ({status: 401, message: 'Unknown OAuth2 token'})
     end
@@ -151,13 +158,11 @@ class ExercisesController < ApplicationController
   end
   private :user_for_oauth2_request
 
-  def user_by_code_harbor_token(oauth2Token)
-    link = CodeHarborLink.where(:oauth2token => oauth2Token)[0]
-    if link != nil
-      return link.user
-    end
+  def user_by_codeharbor_token(oauth2_token)
+    link = CodeharborLink.where(oauth2token: oauth2_token)[0]
+    link&.user
   end
-  private :user_by_code_harbor_token
+  private :user_by_codeharbor_token
 
   def exercise_params
     params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?

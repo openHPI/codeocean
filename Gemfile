@@ -36,6 +36,7 @@ gem 'webpacker'
 gem 'rest-client'
 gem 'rubyzip'
 gem 'mnemosyne-ruby'
+gem 'proforma', path: '../proforma'
 gem 'whenever', require: false
 gem 'rails-timeago'
 
