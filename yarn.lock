@@ -2309,10 +2309,10 @@ d3-zoom@1:
     d3-selection "1"
     d3-transition "1"
 
-d3@^5.9.2:
-  version "5.9.2"
-  resolved "https://registry.yarnpkg.com/d3/-/d3-5.9.2.tgz#64e8a7e9c3d96d9e6e4999d2c8a2c829767e67f5"
-  integrity sha512-ydrPot6Lm3nTWH+gJ/Cxf3FcwuvesYQ5uk+j/kXEH/xbuYWYWTMAHTJQkyeuG8Y5WM5RSEYB41EctUrXQQytRQ==
+d3@^5.10.1:
+  version "5.10.1"
+  resolved "https://registry.yarnpkg.com/d3/-/d3-5.10.1.tgz#228aec9a8d1c984a4179ceb1ea98994835405594"
+  integrity sha512-6D2dphCERVIJAujrgORtT59SNTT4Eeh/If4BICTGc9FEpW2swoc8eE82os5E9s5Q7PjCykANH3c4KKQxYdOzoQ==
   dependencies:
     d3-array "1"
     d3-axis "1"
