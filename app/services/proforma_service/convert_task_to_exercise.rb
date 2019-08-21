@@ -21,19 +21,33 @@ module ProformaService
         title: @task.title,
         description: @task.description,
         instructions: @task.internal_description,
-        # exercise_files: task_files.values,
-        # execution_environment: execution_environment,
+        files: task_files
         # tests: tests,
+        # execution_environment: execution_environment,
         # state_list: @exercise.persisted? ? 'updated' : 'new'
       )
     end
 
     def task_files
-      @task_files ||= Hash[
-        @task.all_files.reject { |file| file.id == 'ms-placeholder-file' }.map do |task_file|
-          [task_file.id, exercise_file_from_task_file(task_file)]
-        end
-      ]
+      @task.all_files.map do |file|
+        CodeOcean::File.new(
+          context: @exercise,
+          file_type: FileType.find_by(file_extension: File.extname(file.filename)),
+          hidden: file.visible == 'no',
+          name: File.basename(file.filename, '.*'),
+          read_only: file.usage_by_lms != 'edit',
+          # native_file: somehting something,
+          role: file.internal_description.underscore.gsub(' ', '_'),
+          # feedback_message: #if file is testfilethingy take that message,
+          # weight: see above,
+          path: File.dirname(file.filename)
+        )
+      end
+      # @task_files ||= Hash[
+      #   @task.all_files.reject { |file| file.id == 'ms-placeholder-file' }.map do |task_file|
+      #     [task_file.id, exercise_file_from_task_file(task_file)]
+      #   end
+      # ]
     end
 
     def exercise_file_from_task_file(task_file)

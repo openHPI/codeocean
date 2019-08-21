@@ -9,7 +9,7 @@ class Exercise < ApplicationRecord
   after_initialize :generate_token
   after_initialize :set_default_values
 
-  belongs_to :execution_environment
+  belongs_to :execution_environment, optional: true
   has_many :submissions
 
   has_and_belongs_to_many :proxy_exercises

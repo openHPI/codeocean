@@ -12,7 +12,7 @@ h1
 = row(label: 'exercise.title', value: @exercise.title)
 = row(label: 'exercise.user', value: link_to_if(policy(@exercise.author).show?, @exercise.author, @exercise.author))
 = row(label: 'exercise.description', value: render_markdown(@exercise.description), class: 'm-0')
-= row(label: 'exercise.execution_environment', value: link_to_if(policy(@exercise.execution_environment).show?, @exercise.execution_environment, @exercise.execution_environment))
+= row(label: 'exercise.execution_environment', value: link_to_if(@exercise.execution_environment && policy(@exercise.execution_environment).show?, @exercise.execution_environment, @exercise.execution_environment))
 /= row(label: 'exercise.instructions', value: render_markdown(@exercise.instructions))
 = row(label: 'exercise.maximum_score', value: @exercise.maximum_score)
 = row(label: 'exercise.public', value: @exercise.public?)
