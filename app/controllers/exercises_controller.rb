@@ -123,10 +123,10 @@ class ExercisesController < ApplicationController
     # saved = exercise.save
     if exercise.save
       # render text: 'SUCCESS', status: 200
-      render json: {status: 201}
+      render json: {}, status: 201
     else
       logger.info(exercise.errors.full_messages)
-      render json: {status: 400}
+      render json: {}, status: 400
     end
     # rescue => error
     #   if error.class == Hash
