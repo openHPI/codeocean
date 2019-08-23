@@ -22,9 +22,6 @@ module ProformaService
         description: @task.description,
         instructions: @task.internal_description,
         files: files
-        # tests: tests,
-        # execution_environment: execution_environment,
-        # state_list: @exercise.persisted? ? 'updated' : 'new'
       )
     end
 
@@ -50,39 +47,21 @@ module ProformaService
     end
 
     def codeocean_file_from_task_file(file)
-
-      CodeOcean::File.new(
+      CodeOcean::File.new({
         context: @exercise,
-        content: file.content,
         file_type: FileType.find_by(file_extension: File.extname(file.filename)),
         hidden: file.visible == 'no',
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
-        # native_file: somehting something, uploader something
         role: file.internal_description.underscore.gsub(' ', '_'),
-        # feedback_message: file.purpose == 'test' ? file.test.feedback_message : nil,
-        # weight: file.test? ? 1.0 : nil,
         path: File.dirname(file.filename)
-      )
-
-      # ExerciseFile.new({
-      #   full_file_name: task_file.filename,
-      #   read_only: task_file.usage_by_lms.in?(%w[display download]),
-      #   hidden: task_file.visible == 'no',
-      #   role: task_file.internal_description
-      # }.tap do |params|
-      #   if task_file.binary
-      #     params[:attachment] = file_base64(task_file)
-      #     params[:attachment_file_name] = task_file.filename
-      #     params[:attachment_content_type] = task_file.mimetype
-      #   else
-      #     params[:content] = task_file.content
-      #   end
-      # end)
-    end
-
-    def file_base64(file)
-      "data:#{file.mimetype || 'image/jpeg'};base64,#{Base64.encode64(file.content)}"
+      }.tap do |params|
+        if file.binary
+          params[:native_file] = FileIO.new(file.content.force_encoding('UTF-8'), File.basename(file.filename))
+        else
+          params[:content] = file.content
+        end
+      end)
     end
   end
 end
