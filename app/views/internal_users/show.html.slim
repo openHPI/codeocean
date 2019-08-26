@@ -7,3 +7,9 @@ h1
 = row(label: 'internal_user.consumer', value: @user.consumer ? link_to_if(policy(@user.consumer).show?, @user.consumer, @user.consumer) : nil)
 = row(label: 'internal_user.role', value: t("users.roles.#{@user.role}"))
 = row(label: 'internal_user.activated', value: @user.activated?)
+
+- if @user.codeharbor_link.nil?
+
+  = row(label: 'codeharbor_link.new', value: link_to(t('codeharbor_link.new'), codeharbor_link_new_path, class: 'btn btn-secondary'))
+- else
+  = row(label: 'codeharbor_link.edit', value: link_to(t('codeharbor_link.edit'), edit_codeharbor_link_path(@user.codeharbor_link), class: 'btn btn-secondary'))

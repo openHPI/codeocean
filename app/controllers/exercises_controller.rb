@@ -108,34 +108,17 @@ class ExercisesController < ApplicationController
   end
 
   def import_proforma_xml
-    # begin
-    # user = user_for_oauth2_request
-    # exercise = Exercise.new
-    # request_body = request.body.read # needs to be some kind of a zip file
-
     tempfile = Tempfile.new('codeharbor_import.zip')
     tempfile.write request.body.read.force_encoding('UTF-8')
     tempfile.rewind
 
     exercise = ProformaService::Import.call(zip: tempfile, user: user_for_oauth2_request)
-    # exercise.from_proforma_xml(request_body)
-    # exercise.user = user
-    # saved = exercise.save
     if exercise.save
-      # render text: 'SUCCESS', status: 200
       render json: {}, status: 201
     else
       logger.info(exercise.errors.full_messages)
       render json: {}, status: 400
     end
-    # rescue => error
-    #   if error.class == Hash
-    #     render :text => error.message, :status => error.status
-    #   else
-    #     raise error
-    #     render :text => '', :status => 500
-    #   end
-    # end
   end
 
   def user_for_oauth2_request

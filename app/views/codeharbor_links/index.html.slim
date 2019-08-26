@@ -1,0 +1,18 @@
+h1 = CodeharborLink.model_name.human(count: 2)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = t('activerecord.attributes.codeharbor_link.oauth2token')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @codeharbor_links.each do |codeharbor_link|
+        tr
+          td = link_to_if(policy(codeharbor_link).show?, codeharbor_link.oauth2token, codeharbor_link)
+          td = link_to(t('shared.show'), codeharbor_link) if policy(codeharbor_link).show?
+          td = link_to(t('shared.edit'), edit_codeharbor_link_path(codeharbor_link)) if policy(codeharbor_link).edit?
+          td = link_to(t('shared.destroy'), codeharbor_link, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(codeharbor_link).destroy?
+
+= render('shared/pagination', collection: @codeharbor_links)
+p = render('shared/new_button', model: CodeharborLink)

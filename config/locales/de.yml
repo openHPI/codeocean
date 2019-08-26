@@ -1,7 +1,7 @@
 de:
   activerecord:
     attributes:
-      code_harbor_link:
+      codeharbor_link:
         oauth2token: OAuth2 Token
       consumer:
         name: Name

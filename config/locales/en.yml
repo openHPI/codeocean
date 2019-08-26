@@ -1,7 +1,7 @@
 en:
   activerecord:
     attributes:
-      code_harbor_link:
+      codeharbor_link:
         oauth2token: OAuth2 Token
       consumer:
         name: Name
@@ -240,6 +240,10 @@ en:
   consumers:
     show:
       link: Consumer
+  codeharbor_link:
+    profile_label: Codeharbor Link
+    new: Create link to Codeharbor
+    edit: Edit existing link
   execution_environments:
     form:
       hints:
