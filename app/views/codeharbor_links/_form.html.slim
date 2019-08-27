@@ -1,6 +1,28 @@
 = form_for(@codeharbor_link) do |f|
   = render('shared/form_errors', object: @codeharbor_link)
   .form-group
+    = f.label(:push_url)
+    = f.text_field :push_url, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.push_url'), class: 'form-control'
+  .form-group
     = f.label(:oauth2token)
-    = f.text_field(:oauth2token, class: 'form-control', required: true)
-  .actions = render('shared/submit_button', f: f, object: @codeharbor_link)
+    .input-group
+      = f.text_field(:oauth2token, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.token'), class: 'form-control oauth2-token')
+      .input-group-btn
+        = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-oauth2-token btn btn-default'
+  .field-element.form-group
+    = f.label(:client_id)
+    .input-group
+      = f.text_field(:client_id, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.client_id'), class: 'form-control client-id')
+      .input-group-btn
+        = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-client-id btn btn-default'
+  .field-element.form-group
+    = f.label(:client_secret)
+    .input-group
+      = f.text_field(:client_secret, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.client_secret'), class: 'form-control client-secret')
+      .input-group-btn
+        = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-client-secret btn btn-default'
+  .actions
+    = render('shared/submit_button', f: f, object: @codeharbor_link)
+    - if @codeharbor_link.persisted?
+      = link_to(t('codeharbor_link.delete'), codeharbor_link_path(@codeharbor_link), data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-danger pull-right')
+

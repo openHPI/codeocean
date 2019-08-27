@@ -7,14 +7,14 @@ class CodeharborLinksController < ApplicationController
   end
   private :authorize!
 
-  def index
-    @codeharbor_links = CodeharborLink.where(user_id: current_user.id).paginate(page: params[:page])
-    authorize!
-  end
+  # def index
+  #   @codeharbor_links = CodeharborLink.where(user_id: current_user.id).paginate(page: params[:page])
+  #   authorize!
+  # end
 
-  def show
-    authorize!
-  end
+  # def show
+  #   authorize!
+  # end
 
   def new
     @codeharbor_link = CodeharborLink.new
@@ -29,16 +29,16 @@ class CodeharborLinksController < ApplicationController
     @codeharbor_link = CodeharborLink.new(codeharbor_link_params)
     @codeharbor_link.user = current_user
     authorize!
-    create_and_respond(object: @codeharbor_link)
+    create_and_respond(object: @codeharbor_link, path: proc { @codeharbor_link.user })
   end
 
   def update
-    update_and_respond(object: @codeharbor_link, params: codeharbor_link_params)
+    update_and_respond(object: @codeharbor_link, params: codeharbor_link_params, path: @codeharbor_link.user)
     authorize!
   end
 
   def destroy
-    destroy_and_respond(object: @codeharbor_link)
+    destroy_and_respond(object: @codeharbor_link, path: @codeharbor_link.user)
   end
 
   private

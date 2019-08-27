@@ -2,6 +2,14 @@
 
 class CodeharborLinkPolicy < ApplicationPolicy
   def index?
+    false
+  end
+
+  def show?
+    false
+  end
+
+  def new?
     teacher?
   end
 
@@ -9,23 +17,15 @@ class CodeharborLinkPolicy < ApplicationPolicy
     teacher?
   end
 
-  def show?
-    teacher?
-  end
-
   def edit?
     teacher?
   end
 
-  def destroy?
-    teacher?
-  end
-
-  def new?
-    teacher?
-  end
-
   def update?
+    teacher?
+  end
+
+  def destroy?
     teacher?
   end
 end

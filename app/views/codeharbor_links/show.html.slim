@@ -1,7 +1,0 @@
-h1
-  = @codeharbor_link
-  = render('shared/edit_button', object: @codeharbor_link)
-
-- %w[oauth2token].each do |attribute|
-  = row(label: "codeharbor_link.#{attribute}") do
-    = content_tag(:input, nil, class: 'form-control', readonly: true, value: @codeharbor_link.send(attribute))

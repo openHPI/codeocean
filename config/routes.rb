@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       get 'by_file_type/:file_type_id', as: :by_file_type, action: :by_file_type
     end
   end
-  resources :codeharbor_links
+  resources :codeharbor_links, only: %i[new create edit update destroy]
   resources :request_for_comments do
     member do
       get :mark_as_solved, defaults: { format: :json }
