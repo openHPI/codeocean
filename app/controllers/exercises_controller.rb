@@ -107,6 +107,19 @@ class ExercisesController < ApplicationController
     @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page])
   end
 
+  def push_proforma_xml
+    codeharbor_link = CodeharborLink.find(params[:account_link])
+    oauth2_client = OAuth2::Client.new(codeharbor_link.client_id, codeharbor_link.client_secret, url: codeharbor_link.push_url, ssl: {verify: false})
+    oauth2token = codeharbor_link[:oauth2token]
+    token = OAuth2::AccessToken.from_hash(oauth2_client, access_token: oauth2token)
+
+    # xml_generator = Proforma::XmlGenerator.new
+    xml_document = xml_generator.generate_xml(@exercise)
+    request = token.post(codeharbor_link.push_url, body: xml_document, headers: {'Content-Type' => 'text/xml'})
+    puts request
+    redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
+  end
+
   def import_proforma_xml
     tempfile = Tempfile.new('codeharbor_import.zip')
     tempfile.write request.body.read.force_encoding('UTF-8')
@@ -122,22 +135,17 @@ class ExercisesController < ApplicationController
   end
 
   def user_for_oauth2_request
-    authorizationHeader = request.headers['Authorization']
-    if authorizationHeader == nil
-      raise ({status: 401, message: 'No Authorization header'})
-    end
+    authorization_header = request.headers['Authorization']
+    raise(status: 401, message: 'No Authorization header') if authorization_header.nil?
 
-    oauth2Token = authorizationHeader.split(' ')[1]
-    if oauth2Token == nil || oauth2Token.size == 0
-      raise ({status: 401, message: 'No token in Authorization header'})
-    end
+    oauth2_token = authorization_header.split(' ')[1]
+    raise(status: 401, message: 'No token in Authorization header') if oauth2_token.nil? || oauth2_token.size.zero?
 
-    user = user_by_codeharbor_token(oauth2Token)
-    if user == nil
-      raise ({status: 401, message: 'Unknown OAuth2 token'})
-    end
+    user = user_by_codeharbor_token(oauth2_token)
 
-    return user
+    raise(status: 401, message: 'Unknown OAuth2 token') if user.nil?
+
+    user
   end
   private :user_for_oauth2_request
 

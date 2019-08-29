@@ -21,15 +21,12 @@ $(document).on('turbolinks:load', function() {
             });
 
             var generateUUID = (function () { // Public Domain/MIT
-                // var d = getDate();
                 return replace('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx');
             });
 
             var generateRandomHex32 = (function () {
-                // var d = getDate();
                 return replace(Array(32).join('x'));
             });
-
 
 
             $('.generate-client-id').on('click', function () {

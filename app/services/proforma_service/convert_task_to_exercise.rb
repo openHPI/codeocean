@@ -53,7 +53,7 @@ module ProformaService
         hidden: file.visible == 'no',
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
-        role: file.internal_description.underscore.gsub(' ', '_'),
+        role: file.internal_description,
         path: File.dirname(file.filename)
       }.tap do |params|
         if file.binary
