@@ -50,6 +50,7 @@ group :development, :staging do
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
   gem 'capistrano-upload-config'
+  gem 'pry-rails'
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'

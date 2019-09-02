@@ -44,6 +44,7 @@ en:
         allow_file_creation: "Allow file creation"
         difficulty: Difficulty
         token: "Exercise Token"
+        uuid: UUID
       proxy_exercise:
         title: Title
         files_count: Exercises Count
@@ -315,6 +316,7 @@ en:
       request_for_comments_sent: "Request for comments sent."
     editor_file_tree:
       file_root: Files
+    export_codeharbor: Export to Codeharbor
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.

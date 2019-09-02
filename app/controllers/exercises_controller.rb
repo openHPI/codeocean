@@ -7,7 +7,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:push_proforma_xml, :clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard]
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
@@ -108,16 +108,29 @@ class ExercisesController < ApplicationController
   end
 
   def push_proforma_xml
-    codeharbor_link = CodeharborLink.find(params[:account_link])
-    oauth2_client = OAuth2::Client.new(codeharbor_link.client_id, codeharbor_link.client_secret, url: codeharbor_link.push_url, ssl: {verify: false})
-    oauth2token = codeharbor_link[:oauth2token]
-    token = OAuth2::AccessToken.from_hash(oauth2_client, access_token: oauth2token)
+    # codeharbor_link = current_user.codeharbor_link # CodeharborLink.find(params[:account_link])
 
-    # xml_generator = Proforma::XmlGenerator.new
-    xml_document = xml_generator.generate_xml(@exercise)
-    request = token.post(codeharbor_link.push_url, body: xml_document, headers: {'Content-Type' => 'text/xml'})
-    puts request
-    redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
+    error = ExerciseService::PushExternal.call(
+      zip: ProformaService::ExportTask.call(exercise: @exercise),
+      codeharbor_link: current_user.codeharbor_link
+    )
+    if error.nil?
+      redirect_to exercises_path, notice: 'klappt' # t('controllers.exercise.push_external_notice', account_link: account_link.readable)
+      # redirect_to @exercise, notice: 'klappt' # t('controllers.exercise.push_external_notice', account_link: account_link.readable)
+    else
+      # logger.debug(error)
+      redirect_to exercises_path, alert: 'klappt nicht' # t('controllers.account_links.not_working', account_link: account_link.readable)
+      # redirect_to @exercise, alert: 'klappt nicht' # t('controllers.account_links.not_working', account_link: account_link.readable)
+    end
+    # oauth2_client = OAuth2::Client.new(codeharbor_link.client_id, codeharbor_link.client_secret, url: codeharbor_link.push_url, ssl: {verify: false})
+    # oauth2token = codeharbor_link[:oauth2token]
+    # token = OAuth2::AccessToken.from_hash(oauth2_client, access_token: oauth2token)
+
+    # # xml_generator = Proforma::XmlGenerator.new
+    # xml_document = xml_generator.generate_xml(@exercise)
+    # request = token.post(codeharbor_link.push_url, body: xml_document, headers: {'Content-Type' => 'text/xml'})
+    # puts request
+    # redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
   end
 
   def import_proforma_xml

@@ -21,7 +21,8 @@ module ProformaService
         title: @task.title,
         description: @task.description,
         instructions: @task.internal_description,
-        files: files
+        files: files,
+        uuid: @task.uuid
       )
     end
 

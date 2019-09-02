@@ -226,6 +226,8 @@ GEM
     pry-byebug (3.7.0)
       byebug (~> 11.0)
       pry (~> 0.10)
+    pry-rails (0.3.9)
+      pry (>= 0.10.4)
     public_suffix (3.0.3)
     puma (3.12.1)
     pundit (2.0.1)
@@ -441,6 +443,7 @@ DEPENDENCIES
   pg
   proforma!
   pry-byebug
+  pry-rails
   puma
   pundit
   rack-mini-profiler

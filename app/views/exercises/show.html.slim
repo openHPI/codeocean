@@ -20,6 +20,7 @@ h1
 = row(label: 'exercise.allow_file_creation', value: @exercise.allow_file_creation?)
 = row(label: 'exercise.allow_auto_completion', value: @exercise.allow_auto_completion?)
 = row(label: 'exercise.difficulty', value: @exercise.expected_difficulty)
+= row(label: 'exercise.uuid', value: @exercise.uuid)
 = row(label: 'exercise.tags', value: @exercise.exercise_tags.map{|et| "#{et.tag.name} (#{et.factor})"}.sort.join(", "))
 = row(label: 'exercise.embedding_parameters', class: 'mb-4') do
   = content_tag(:input, nil, class: 'form-control mb-4', readonly: true, value: embedding_parameters(@exercise))

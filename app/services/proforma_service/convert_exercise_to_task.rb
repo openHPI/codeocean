@@ -4,6 +4,8 @@ require 'mimemagic'
 
 module ProformaService
   class ConvertExerciseToTask < ServiceBase
+    DEFAULT_LANGUAGE = 'de'
+
     def initialize(exercise: nil)
       @exercise = exercise
     end
@@ -20,75 +22,63 @@ module ProformaService
           title: @exercise.title,
           description: @exercise.description,
           internal_description: @exercise.instructions,
-
           # proglang: proglang,
           files: task_files,
-          # tests: tests,
-          # uuid: @exercise.uuid,
+          tests: tests,
+          uuid: uuid,
           # parent_uuid: parent_uuid,
-          # language: primary_description.language,
-          # model_solutions: model_solutions
+          language: DEFAULT_LANGUAGE,
+          model_solutions: model_solutions
         }.compact
       )
     end
 
-    def parent_uuid
-      @exercise.clone_relations.first&.origin&.uuid
-    end
-
-    def primary_description
-      @exercise.descriptions.select(&:primary?).first
-    end
-
-    def proglang
-      {name: @exercise.execution_environment.language, version: @exercise.execution_environment.version}
+    def uuid
+      @exercise.update(uuid: SecureRandom.uuid) if @exercise.uuid.nil?
+      @exercise.uuid
     end
 
     def model_solutions
-      @exercise.exercise_files.filter { |file| file.role == 'Reference Implementation' }.map do |file|
+      @exercise.files.filter { |file| file.role == 'reference_implementation' }.map do |file|
         Proforma::ModelSolution.new(
           id: "ms-#{file.id}",
-          files: [
-            Proforma::TaskFile.new(
-              id: file.id,
-              content: file.content,
-              filename: file.full_file_name,
-              used_by_grader: false,
-              usage_by_lms: 'display',
-              visible: 'delayed',
-              binary: false,
-              internal_description: file.role
-            )
-          ]
+          files: model_solution_file(file)
         )
       end
     end
 
+    def model_solution_file(file)
+      [
+        task_file(file).tap do |ms_file|
+          ms_file.used_by_grader = false
+          ms_file.usage_by_lms = 'display'
+          ms_file.visible = 'delayed'
+        end
+      ]
+    end
+
     def tests
-      @exercise.tests.map do |test|
+      @exercise.files.filter { |file| file.role == 'teacher_defined_test' }.map do |file|
         Proforma::Test.new(
-          id: test.id,
-          title: test.exercise_file.name,
-          files: test_file(test.exercise_file),
+          id: file.id,
+          title: file.name,
+          files: test_file(file),
           meta_data: {
-            'feedback-message' => test.feedback_message,
-            'testing-framework' => test.testing_framework&.name,
-            'testing-framework-version' => test.testing_framework&.version
+            'feedback-message' => file.feedback_message
+            # 'testing-framework' => test.testing_framework&.name,
+            # 'testing-framework-version' => test.testing_framework&.version
           }.compact
         )
       end
     end
 
     def test_file(file)
-      [Proforma::TaskFile.new(
-        id: file.id,
-        content: file.content,
-        filename: file.full_file_name,
-        used_by_grader: true,
-        visible: file.hidden ? 'no' : 'yes',
-        binary: false,
-        internal_description: file.role || 'Teacher-defined Test'
-      )]
+      [
+        task_file(file).tap do |t_file|
+          t_file.used_by_grader = true
+          t_file.internal_description = 'teacher_defined_test'
+        end
+      ]
     end
 
     def task_files
@@ -120,10 +110,6 @@ module ProformaService
           end
         end
       )
-    end
-
-    def attachment_content(file)
-      Paperclip.io_adapters.for(file.attachment).read
     end
   end
 end
