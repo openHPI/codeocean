@@ -1,20 +1,8 @@
+# frozen_string_literal: true
+
 class CodeharborLinksController < ApplicationController
   include CommonBehavior
-  before_action :set_codeharbor_link, only: [:show, :edit, :update, :destroy]
-
-  def authorize!
-    authorize(@codeharbor_link || @codeharbor_links)
-  end
-  private :authorize!
-
-  # def index
-  #   @codeharbor_links = CodeharborLink.where(user_id: current_user.id).paginate(page: params[:page])
-  #   authorize!
-  # end
-
-  # def show
-  #   authorize!
-  # end
+  before_action :set_codeharbor_link, only: %i[show edit update destroy]
 
   def new
     @codeharbor_link = CodeharborLink.new
@@ -33,8 +21,8 @@ class CodeharborLinksController < ApplicationController
   end
 
   def update
-    update_and_respond(object: @codeharbor_link, params: codeharbor_link_params, path: @codeharbor_link.user)
     authorize!
+    update_and_respond(object: @codeharbor_link, params: codeharbor_link_params, path: @codeharbor_link.user)
   end
 
   def destroy
@@ -42,6 +30,10 @@ class CodeharborLinksController < ApplicationController
   end
 
   private
+
+  def authorize!
+    authorize @codeharbor_link
+  end
 
   def set_codeharbor_link
     @codeharbor_link = CodeharborLink.find(params[:id])

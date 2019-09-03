@@ -2,7 +2,7 @@
 
 module ExerciseService
   class PushExternal < ServiceBase
-    CODEHARBOR_PUSH_LINK = 'http://localhost:3001/import_exercise'
+    CODEHARBOR_PUSH_LINK = Rails.env.production? ? 'https://codeharbor.openhpi.de/import_exercise' : 'http://localhost:3001/import_exercise'
     def initialize(zip:, codeharbor_link:)
       @zip = zip
       @codeharbor_link = codeharbor_link

@@ -316,7 +316,10 @@ en:
       request_for_comments_sent: "Request for comments sent."
     editor_file_tree:
       file_root: Files
-    export_codeharbor: Export to Codeharbor
+    export_codeharbor:
+      label: Export to Codeharbor
+      success: Successfully pushed the exercise to CodeHarbor.
+      fail: Failed to push the exercise to CodeHarbor.
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.

@@ -108,29 +108,15 @@ class ExercisesController < ApplicationController
   end
 
   def push_proforma_xml
-    # codeharbor_link = current_user.codeharbor_link # CodeharborLink.find(params[:account_link])
-
     error = ExerciseService::PushExternal.call(
       zip: ProformaService::ExportTask.call(exercise: @exercise),
       codeharbor_link: current_user.codeharbor_link
     )
     if error.nil?
-      redirect_to exercises_path, notice: 'klappt' # t('controllers.exercise.push_external_notice', account_link: account_link.readable)
-      # redirect_to @exercise, notice: 'klappt' # t('controllers.exercise.push_external_notice', account_link: account_link.readable)
+      redirect_to exercises_path, notice: t('exercises.export_codeharbor.success')
     else
-      # logger.debug(error)
-      redirect_to exercises_path, alert: 'klappt nicht' # t('controllers.account_links.not_working', account_link: account_link.readable)
-      # redirect_to @exercise, alert: 'klappt nicht' # t('controllers.account_links.not_working', account_link: account_link.readable)
+      redirect_to exercises_path, alert: t('exercises.export_codeharbor.fail')
     end
-    # oauth2_client = OAuth2::Client.new(codeharbor_link.client_id, codeharbor_link.client_secret, url: codeharbor_link.push_url, ssl: {verify: false})
-    # oauth2token = codeharbor_link[:oauth2token]
-    # token = OAuth2::AccessToken.from_hash(oauth2_client, access_token: oauth2token)
-
-    # # xml_generator = Proforma::XmlGenerator.new
-    # xml_document = xml_generator.generate_xml(@exercise)
-    # request = token.post(codeharbor_link.push_url, body: xml_document, headers: {'Content-Type' => 'text/xml'})
-    # puts request
-    # redirect_to @exercise, notice: t('exercises.push_proforma_xml.notice', link: codeharbor_link.push_url)
   end
 
   def import_proforma_xml
@@ -138,7 +124,10 @@ class ExercisesController < ApplicationController
     tempfile.write request.body.read.force_encoding('UTF-8')
     tempfile.rewind
 
-    exercise = ProformaService::Import.call(zip: tempfile, user: user_for_oauth2_request)
+    user = user_for_oauth2_request
+    return render json: {}, status: 401 if user.nil?
+
+    exercise = ProformaService::Import.call(zip: tempfile, user: user)
     if exercise.save
       render json: {}, status: 201
     else
@@ -149,16 +138,8 @@ class ExercisesController < ApplicationController
 
   def user_for_oauth2_request
     authorization_header = request.headers['Authorization']
-    raise(status: 401, message: 'No Authorization header') if authorization_header.nil?
-
-    oauth2_token = authorization_header.split(' ')[1]
-    raise(status: 401, message: 'No token in Authorization header') if oauth2_token.nil? || oauth2_token.size.zero?
-
-    user = user_by_codeharbor_token(oauth2_token)
-
-    raise(status: 401, message: 'Unknown OAuth2 token') if user.nil?
-
-    user
+    oauth2_token = authorization_header&.split(' ')&.second
+    user_by_codeharbor_token(oauth2_token)
   end
   private :user_for_oauth2_request
 
