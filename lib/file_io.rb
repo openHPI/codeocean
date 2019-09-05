@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# stole from: https://makandracards.com/makandra/50526-fileio-writing-strings-as-carrierwave-uploads
+# stolen from: https://makandracards.com/makandra/50526-fileio-writing-strings-as-carrierwave-uploads
 class FileIO < StringIO
   def initialize(stream, filename)
     super(stream)
