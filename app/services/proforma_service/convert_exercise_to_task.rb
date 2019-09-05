@@ -28,7 +28,8 @@ module ProformaService
           uuid: uuid,
           # parent_uuid: parent_uuid,
           language: DEFAULT_LANGUAGE,
-          model_solutions: model_solutions
+          model_solutions: model_solutions,
+          import_checksum: @exercise.import_checksum
         }.compact
       )
     end
