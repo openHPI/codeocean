@@ -22,7 +22,8 @@ module ProformaService
         description: @task.description,
         instructions: @task.internal_description,
         files: files,
-        uuid: @task.uuid
+        uuid: @task.uuid,
+        import_checksum: @task.checksum
       )
     end
 
