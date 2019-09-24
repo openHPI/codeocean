@@ -12,9 +12,9 @@ class ExercisesController < ApplicationController
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
 
-  skip_before_action :verify_authenticity_token, only: [:import_proforma_xml]
-  skip_after_action :verify_authorized, only: [:import_proforma_xml]
-  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml], raise: false
+  skip_before_action :verify_authenticity_token, only: [:import_proforma_xml, :import_uuid_check]
+  skip_after_action :verify_authorized, only: [:import_proforma_xml, :import_uuid_check]
+  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml, :import_uuid_check], raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -117,6 +117,15 @@ class ExercisesController < ApplicationController
     else
       redirect_to exercises_path, alert: t('exercises.export_codeharbor.fail')
     end
+  end
+
+  def import_uuid_check
+    uuid = params[:uuid]
+    exercise = Exercise.find_by(uuid: uuid)
+
+    return render json: {exercise_found: false, message: 'no_exercise'} if exercise.nil?
+
+    render json: {exercise_found: true, message: 'exercise found, be careful when overwriting or else!'}
   end
 
   def import_proforma_xml
