@@ -34,7 +34,7 @@ gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket
 gem 'nokogiri'
 gem 'webpacker'
 gem 'rest-client'
-gem 'rubyzip'
+gem 'rubyzip', '>= 1.3.0'
 gem 'mnemosyne-ruby'
 gem 'whenever', require: false
 gem 'rails-timeago'
@@ -63,7 +63,7 @@ group :test do
   gem 'rails-controller-testing'
   gem 'autotest-rails'
   gem 'capybara'
-  gem 'selenium-webdriver'
+  gem 'selenium-webdriver', '>= 3.142.3'
   gem 'headless'
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
