@@ -35,12 +35,12 @@ class Exercise < ApplicationRecord
   validates :public, boolean_presence: true
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
+  validates_uniqueness_of :uuid
 
   @working_time_statistics = nil
   attr_reader :working_time_statistics
 
   MAX_EXERCISE_FEEDBACKS = 20
-
 
   def average_percentage
     if average_score and maximum_score != 0.0 and submissions.exists?(cause: 'submit')

@@ -317,9 +317,11 @@ en:
     editor_file_tree:
       file_root: Files
     export_codeharbor:
+      check:
+        no_exercise: No exercise found
+      fail: Failed to push the exercise to CodeHarbor.
       label: Export to Codeharbor
       success: Successfully pushed the exercise to CodeHarbor.
-      fail: Failed to push the exercise to CodeHarbor.
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.

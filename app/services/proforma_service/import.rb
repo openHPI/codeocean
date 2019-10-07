@@ -11,8 +11,12 @@ module ProformaService
       if single_task?
         importer = Proforma::Importer.new(@zip)
         @task = importer.perform
-        exercise = ConvertTaskToExercise.call(task: @task, user: @user)
-        exercise.save!
+
+        exercise = Exercise.find_by(uuid: @task.uuid)
+        exercise_files = exercise&.files&.to_a
+
+        exercise = ConvertTaskToExercise.call(task: @task, user: @user, exercise: exercise)
+        exercise_files&.each(&:destroy) # feels suboptimal
 
         exercise
       else

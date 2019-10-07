@@ -123,7 +123,7 @@ class ExercisesController < ApplicationController
     uuid = params[:uuid]
     exercise = Exercise.find_by(uuid: uuid)
 
-    return render json: {exercise_found: false, message: 'no_exercise'} if exercise.nil?
+    return render json: {exercise_found: false, message: t('exercises.export_codeharbor.check.no_exercise')} if exercise.nil?
 
     render json: {exercise_found: true, message: 'exercise found, be careful when overwriting or else!'}
   end
@@ -136,13 +136,14 @@ class ExercisesController < ApplicationController
     user = user_for_oauth2_request
     return render json: {}, status: 401 if user.nil?
 
-    exercise = ProformaService::Import.call(zip: tempfile, user: user)
-    if exercise.save
-      render json: {}, status: 201
-    else
-      logger.info(exercise.errors.full_messages)
-      render json: {}, status: 400
+    exercise = nil
+    ActiveRecord::Base.transaction do
+      exercise = ::ProformaService::Import.call(zip: tempfile, user: user)
+      exercise.save!
+      return render json: {}, status: 201
     end
+    logger.info(exercise.errors.full_messages)
+    render json: {}, status: 400
   end
 
   def user_for_oauth2_request
