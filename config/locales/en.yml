@@ -316,9 +316,11 @@ en:
       request_for_comments_sent: "Request for comments sent."
     editor_file_tree:
       file_root: Files
-    export_codeharbor:
+    import_codeharbor:
       check:
-        no_exercise: No exercise found
+        no_exercise: No corresponding exercise found on Codeocean. Pushing this exercise will create a new one on Codeocean, which will be linked to this one on Codeharbor, any changes to either one can be pushed to the respective other platform.
+        exercise_found: A corresponding exercise has been found on Codeocean. You can either <ul><li>Create a new exercise as a duplicate of this one Codeharbor and push it to Codeocean, using the "Create new" button.</li><li>Overwrite the exercise on Codeocean, by pushing all changes. Only use "Overwrite" for bugfixes or very small changes - it will alter and may break published exercises.</li></ul>
+    export_codeharbor:
       fail: Failed to push the exercise to CodeHarbor.
       label: Export to Codeharbor
       success: Successfully pushed the exercise to CodeHarbor.

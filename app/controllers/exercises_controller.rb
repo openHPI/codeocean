@@ -123,9 +123,9 @@ class ExercisesController < ApplicationController
     uuid = params[:uuid]
     exercise = Exercise.find_by(uuid: uuid)
 
-    return render json: {exercise_found: false, message: t('exercises.export_codeharbor.check.no_exercise')} if exercise.nil?
+    return render json: {exercise_found: false, message: t('exercises.import_codeharbor.check.no_exercise')} if exercise.nil?
 
-    render json: {exercise_found: true, message: 'exercise found, be careful when overwriting or else!'}
+    render json: {exercise_found: true, message: t('exercises.import_codeharbor.check.exercise_found')}
   end
 
   def import_proforma_xml
