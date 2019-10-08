@@ -155,7 +155,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.integer "expected_difficulty", default: 1
     t.uuid "uuid"
     t.string "import_checksum"
-    t.boolean "unpublished"
+    t.boolean "unpublished", default: false
     t.index ["id"], name: "index_exercises_on_id"
   end
 
