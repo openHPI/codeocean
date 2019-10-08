@@ -36,7 +36,7 @@ gem 'webpacker'
 gem 'rest-client'
 gem 'rubyzip'
 gem 'mnemosyne-ruby'
-gem 'proforma', path: '../proforma'
+gem 'proforma', git: 'git://github.com/openHPI/proforma.git' # use version not master
 gem 'whenever', require: false
 gem 'rails-timeago'
 

@@ -1,4 +1,14 @@
 GIT
+  remote: git://github.com/openHPI/proforma.git
+  revision: 54a5bdf2bafebb548998c945ee68d099d85108df
+  specs:
+    proforma (0.1.0)
+      activemodel (~> 5.2.3)
+      activesupport (~> 5.2.3)
+      nokogiri (~> 1.10.2)
+      rubyzip (>= 1.2.2, < 2.1.0)
+
+GIT
   remote: https://github.com/gosukiwi/tubesock
   revision: 86a5ca4f7d3c3a7b9a727ad91df3b9b4912eda39
   branch: patch-1
@@ -6,15 +16,6 @@ GIT
     tubesock (0.2.7)
       rack (>= 1.5.0)
       websocket (>= 1.1.0)
-
-PATH
-  remote: ../proforma
-  specs:
-    proforma (0.1.0)
-      activemodel (~> 5.2.3)
-      activesupport (~> 5.2.3)
-      nokogiri (~> 1.10.2)
-      rubyzip (~> 1.2.2)
 
 GEM
   remote: https://rubygems.org/
