@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_05_152630) do
+ActiveRecord::Schema.define(version: 2019_10_08_163045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 2019_09_05_152630) do
     t.integer "expected_difficulty", default: 1
     t.uuid "uuid"
     t.string "import_checksum"
+    t.boolean "unpublished"
     t.index ["id"], name: "index_exercises_on_id"
   end
 
