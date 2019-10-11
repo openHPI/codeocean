@@ -31,7 +31,7 @@ class Exercise < ApplicationRecord
 
   validate :valid_main_file?
   validates :description, presence: true
-  validates :execution_environment_id, presence: true, if: -> { !unpublished? } # TODO make this conditional - but based on what?
+  validates :execution_environment_id, presence: true, if: -> { !unpublished? }
   validates :public, boolean_presence: true
   validates :unpublished, boolean_presence: true
   validates :title, presence: true

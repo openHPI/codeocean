@@ -45,6 +45,7 @@ en:
         difficulty: Difficulty
         token: "Exercise Token"
         uuid: UUID
+        unpublished: Unpublished
       proxy_exercise:
         title: Title
         files_count: Exercises Count
@@ -332,6 +333,8 @@ en:
       add_file: Add file
       tags: "Tags"
       click_to_collapse: "Click to expand/collapse..."
+      unpublish_warning: This will unpublish the exercise. Any student trying to implement it will get an error message, until it is published again.
+      no_execution_environment_selected: Select an execution environment before publishing the exercise.
     implement:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'
