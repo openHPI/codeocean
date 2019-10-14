@@ -120,12 +120,16 @@ class ExercisesController < ApplicationController
   end
 
   def import_uuid_check
+    user = user_for_oauth2_request
+    return render json: {}, status: 401 if user.nil?
+
     uuid = params[:uuid]
     exercise = Exercise.find_by(uuid: uuid)
 
     return render json: {exercise_found: false, message: t('exercises.import_codeharbor.check.no_exercise')} if exercise.nil?
+    return render json: {exercise_found: true, update_right: false, message: t('exercises.import_codeharbor.check.exercise_found_no_right')} unless ExercisePolicy.new(user, exercise).update?
 
-    render json: {exercise_found: true, message: t('exercises.import_codeharbor.check.exercise_found')}
+    render json: {exercise_found: true, update_right: true, message: t('exercises.import_codeharbor.check.exercise_found')}
   end
 
   def import_proforma_xml
