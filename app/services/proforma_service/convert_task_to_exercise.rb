@@ -5,7 +5,7 @@ module ProformaService
     def initialize(task:, user:, exercise: nil)
       @task = task
       @user = user
-      @exercise = exercise || Exercise.new
+      @exercise = exercise || Exercise.new(unpublished: true)
     end
 
     def execute

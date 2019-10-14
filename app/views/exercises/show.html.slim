@@ -24,7 +24,7 @@ h1
 = row(label: 'exercise.uuid', value: @exercise.uuid)
 = row(label: 'exercise.tags', value: @exercise.exercise_tags.map{|et| "#{et.tag.name} (#{et.factor})"}.sort.join(", "))
 = row(label: 'exercise.embedding_parameters', class: 'mb-4') do
-  = content_tag(:input, nil, class: 'form-control mb-4', readonly: true, value: @exercise.unpublished? ? 'Exercise is unpublished' : embedding_parameters(@exercise))
+  = content_tag(:input, nil, class: 'form-control mb-4', readonly: true, value: @exercise.unpublished? ? t('exercises.show.is_unpublished') : embedding_parameters(@exercise))
 
 h2.mt-4 = t('activerecord.attributes.exercise.files')
 

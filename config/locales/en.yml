@@ -383,6 +383,8 @@ en:
       test_files: Test Files
       feedback: Feedback
       study_group_dashboard: Live Dashboard
+    show:
+      is_unpublished: Exercise is unpublished
     statistics:
       average_score: Average Score
       final_submissions: Final Submissions
