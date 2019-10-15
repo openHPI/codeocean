@@ -145,9 +145,9 @@ GEM
     highline (2.0.2)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    i18n (1.6.0)
+    i18n (1.7.0)
       concurrent-ruby (~> 1.0)
-    i18n-js (3.2.2)
+    i18n-js (3.4.0)
       i18n (>= 0.6.6)
     ims-lti (1.2.2)
       builder
