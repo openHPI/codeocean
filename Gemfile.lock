@@ -426,6 +426,7 @@ DEPENDENCIES
   docker-api
   eventmachine (= 1.0.9.1)
   factory_bot_rails
+  faraday
   faye-websocket
   forgery
   headless

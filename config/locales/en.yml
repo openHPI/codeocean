@@ -326,6 +326,7 @@ en:
       fail: Failed to push the exercise to CodeHarbor.
       label: Export to Codeharbor
       success: Successfully pushed the exercise to CodeHarbor.
+      dialogtitle: Export to Codeharbor
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.

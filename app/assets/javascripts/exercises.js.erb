@@ -238,6 +238,48 @@ $(document).on('turbolinks:load', function() {
 
   };
 
+  var observeExportStartButtons = function(){
+    $('.export-start').on('click', function(e){
+      e.preventDefault();
+      $('#export-modal').modal({
+        height: 250
+      });
+      $('#export-modal').modal('show');
+      exportExerciseStart($(this).attr('data-exercise-id'));
+    });
+  }
+
+  var exportExerciseStart = function(exerciseID) {
+    var $exerciseDiv = $('#export-exercise');
+    // var accountLinkID = $exerciseDiv.attr('data-account-link');
+    var $messageDiv = $exerciseDiv.children('.export-message');
+    var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
+
+    $messageDiv.html('requesting status');
+    $actionsDiv.html('spinning');
+
+    return $.ajax({
+      type: 'POST',
+      url: '/exercises/' + exerciseID + '/export_external_check',
+      // data: {
+      //   account_link: accountLinkID
+      // },
+      dataType: 'json',
+      success: function(response) {
+        if (response.error) {
+          $messageDiv.html(response.error);
+          $actionsDiv.html('Retry?');
+        }
+        $messageDiv.html(response.message);
+        return $actionsDiv.html(response.actions);
+      },
+      error: function(a, b, c) {
+        return alert('error:' + c);
+      }
+    });
+  };
+
+
   var overrideTextareaTabBehavior = function() {
     $('.form-group textarea[name$="[content]"]').on('keydown', function(event) {
       if (event.which === TAB_KEY_CODE) {
@@ -293,6 +335,7 @@ $(document).on('turbolinks:load', function() {
       // ignore tags table since it is in the dom before other tables
     if ($('table:not(#tags-table)').isPresent()) {
       enableBatchUpdate();
+      observeExportStartButtons();
     } else if ($('.edit_exercise, .new_exercise').isPresent()) {
       execution_environments = $('form').data('execution-environments');
       file_types = $('form').data('file-types');
@@ -303,6 +346,7 @@ $(document).on('turbolinks:load', function() {
       observeExecutionEnvironment();
       observeUnpublishedState();
       overrideTextareaTabBehavior();
+
     } else if ($('#files.jstree').isPresent()) {
         var fileTypeSelect = $('#code_ocean_file_file_type_id');
         fileTypeSelect.on("change", function() {updateFileTemplates(fileTypeSelect.val())});

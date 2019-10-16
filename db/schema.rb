@@ -29,13 +29,11 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
   end
 
   create_table "codeharbor_links", force: :cascade do |t|
-    t.string "oauth2token", limit: 255
+    t.string "api_key", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "user_id"
     t.string "push_url"
-    t.string "client_id"
-    t.string "client_secret"
     t.index ["user_id"], name: "index_codeharbor_links_on_user_id"
   end
 

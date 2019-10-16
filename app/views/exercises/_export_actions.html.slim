@@ -1,0 +1,20 @@
+- if error
+    = button_tag type: 'button', class:'btn btn-primary pull-right export-button', onclick: "exportExerciseStart(#{exercise.id})" do
+      i.fa.fa-refresh.confirm-icon
+      = ' Retry'
+- else
+  - if exercise_found
+    - if update_right
+      = button_tag type: 'button', class:'btn btn-primary pull-right export-action export-button', data: {'export-type' => 'export'} do
+        i.fa.fa-check.confirm-icon
+        = ' Overwrite'
+    = button_tag type: 'button', class:'btn btn-primary pull-right export-action export-button', data: {'export-type' => 'create_new'} do
+      i.fa.fa-check.confirm-icon-alt
+      = ' Create new'
+  - else
+    = button_tag type: 'button', class:'btn btn-primary pull-right export-action export-button', data: {'export-type' => 'export'} do
+      i.fa.fa-check.confirm-icon
+      = ' Export'
+= button_tag type: 'submit', class:'btn btn-secondary pull-right export-button', data: {dismiss: 'modal'} do
+  i.fa.fa-remove.abort-icon
+  = ' Abort'

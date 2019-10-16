@@ -176,3 +176,30 @@ a.file-heading {
     }
   }
 }
+
+#export-modal {
+  .modal-content {
+    min-height: unset;
+    height: 300px;
+  }
+}
+
+#export-exercise{
+  display: flex;
+}
+
+.export-message {
+  flex-grow: 1;
+  font-size: 12px;
+  padding-right: 5px;
+}
+
+.export-exercise-actions {
+  max-width: 110px;
+  min-width: 110px;
+}
+
+.export-button {
+  font-size: 12px;
+  width: 100%;
+}
