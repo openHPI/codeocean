@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.datetime "updated_at"
     t.integer "user_id"
     t.string "push_url"
+    t.string "check_uuid_url"
     t.index ["user_id"], name: "index_codeharbor_links_on_user_id"
   end
 

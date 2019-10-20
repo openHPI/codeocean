@@ -46,7 +46,7 @@ h1 = Exercise.model_name.human(count: 2)
                 li = link_to(t('activerecord.models.user_exercise_feedback.other'), feedback_exercise_path(exercise), class: 'dropdown-item') if policy(exercise).feedback?
                 li = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'dropdown-item') if policy(exercise).destroy?
                 li = link_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post, class: 'dropdown-item') if policy(exercise).clone?
-                li = link_to(t('exercises.export_codeharbor.label'), '', class: 'dropdown-item export-start', data: {'exercise-id' => exercise.id}) if policy(exercise).push_proforma_xml?
+                li = link_to(t('exercises.export_codeharbor.label'), '', class: 'dropdown-item export-start', data: {'exercise-id' => exercise.id}) if policy(exercise).export_external_confirm?
 
 = render('shared/pagination', collection: @exercises)
 p = render('shared/new_button', model: Exercise)

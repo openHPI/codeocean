@@ -261,18 +261,16 @@ $(document).on('turbolinks:load', function() {
     var $messageDiv = $exerciseDiv.children('.export-message');
     var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
 
-    $messageDiv.html('requesting status');
-    $actionsDiv.html('spinning');
+    $messageDiv.removeClass('export-failure');
+
+    $messageDiv.html('<%= I18n.t('exercises.export_codeharbor.checking_codeharbor') %>');
+    $actionsDiv.html('<div class="spinner-border"></div>');
 
     return $.ajax({
       type: 'POST',
       url: '/exercises/' + exerciseID + '/export_external_check',
       dataType: 'json',
       success: function(response) {
-        if (response.error) {
-          $messageDiv.html(response.error);
-          $actionsDiv.html('Retry?');
-        }
         $messageDiv.html(response.message);
         return $actionsDiv.html(response.actions);
       },
@@ -380,7 +378,6 @@ $(document).on('turbolinks:load', function() {
       observeExecutionEnvironment();
       observeUnpublishedState();
       overrideTextareaTabBehavior();
-
     } else if ($('#files.jstree').isPresent()) {
         var fileTypeSelect = $('#code_ocean_file_file_type_id');
         fileTypeSelect.on("change", function() {updateFileTemplates(fileTypeSelect.val())});

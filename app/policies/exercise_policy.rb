@@ -7,7 +7,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
     define_method(action) { admin? || teacher? }
   end
 
-  [:clone?, :destroy?, :edit?, :statistics?, :update?, :feedback?, :push_proforma_xml?, :export_external_check?, :export_external_confirm?].each do |action|
+  [:clone?, :destroy?, :edit?, :statistics?, :update?, :feedback?, :export_external_check?, :export_external_confirm?].each do |action|
     define_method(action) { admin? || author? }
   end
 

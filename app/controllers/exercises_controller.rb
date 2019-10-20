@@ -7,7 +7,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:push_proforma_xml, :clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard, :export_external_check, :export_external_confirm]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard, :export_external_check, :export_external_confirm]
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
@@ -107,54 +107,37 @@ class ExercisesController < ApplicationController
     @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page])
   end
 
-  def push_proforma_xml
-    error = ExerciseService::PushExternal.call(
-      zip: ProformaService::ExportTask.call(exercise: @exercise),
-      codeharbor_link: current_user.codeharbor_link
-    )
-    if error.nil?
-      redirect_to exercises_path, notice: t('exercises.export_codeharbor.success')
-    else
-      redirect_to exercises_path, alert: t('exercises.export_codeharbor.fail')
-    end
-  end
-
   def export_external_check
     @codeharbor_link = current_user.codeharbor_link
-    url = 'http://localhost:3001/import_uuid_check'
-
-    conn = Faraday.new(url: url) do |faraday|
+    conn = Faraday.new(url: @codeharbor_link.check_uuid_url) do |faraday|
       faraday.options[:open_timeout] = 5
       faraday.options[:timeout] = 5
 
       faraday.adapter Faraday.default_adapter
     end
 
-    error = false
-    response_hash = {}
-    message = ''
-    begin
-      response = conn.post do |req|
-        req.headers['Content-Type'] = 'application/json'
-        req.headers['Authorization'] = 'Bearer ' + @codeharbor_link.api_key
-        req.body = {uuid: @exercise.uuid}.to_json
-      end
-      response_hash = JSON.parse(response.body, symbolize_names: true)
-      message = response_hash[:message]
-    rescue Faraday::Error => e
-      message = t('exercises.export_codeharbor.error', message: e.message)
-      error = true
-    end
+    codeharbor_check = begin
+                         response = conn.post do |req|
+                           req.headers['Content-Type'] = 'application/json'
+                           req.headers['Authorization'] = 'Bearer ' + @codeharbor_link.api_key
+                           req.body = {uuid: @exercise.uuid}.to_json
+                         end
+                         response_hash = JSON.parse(response.body, symbolize_names: true)
+
+                         {error: false}.merge(response_hash.slice(:message, :exercise_found, :update_right))
+                       rescue Faraday::Error => e
+                         {error: true, message: t('exercises.export_codeharbor.error', message: e.message)}
+                       end
 
     render json: {
-      message: message,
+      message: codeharbor_check[:message],
       actions: render_to_string(
         partial: 'export_actions',
         locals: {
           exercise: @exercise,
-          exercise_found: response_hash[:exercise_found],
-          update_right: response_hash[:update_right],
-          error: error,
+          exercise_found: codeharbor_check[:exercise_found],
+          update_right: codeharbor_check[:update_right],
+          error: codeharbor_check[:error],
           exported: false
         }
       )
@@ -179,15 +162,12 @@ class ExercisesController < ApplicationController
         message: t('exercises.export_codeharbor.successfully_exported', id: @exercise.id, title: @exercise.title),
         actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
       }
-      # @exercise, notice: t('controllers.exercise.push_external_notice', account_link: account_link.readable)
     else
-      # logger.debug(error)
       render json: {
         status: 'fail',
         message: t('exercises.export_codeharbor.export_failed', id: @exercise.id, title: @exercise.title, error: error),
         actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
       }
-      # redirect_to @exercise, alert: t('controllers.account_links.not_working', account_link: account_link.readable)
     end
   end
 

@@ -2,7 +2,6 @@
 
 module ExerciseService
   class PushExternal < ServiceBase
-    CODEHARBOR_PUSH_LINK = Rails.env.production? ? 'https://codeharbor.openhpi.de/import_exercise' : 'http://localhost:3001/import_exercise'
     def initialize(zip:, codeharbor_link:)
       @zip = zip
       @codeharbor_link = codeharbor_link
@@ -11,7 +10,7 @@ module ExerciseService
     def execute
       body = @zip.string
       begin
-        conn = Faraday.new(url: CODEHARBOR_PUSH_LINK) do |faraday|
+        conn = Faraday.new(url: @codeharbor_link.push_url) do |faraday|
           faraday.adapter Faraday.default_adapter
         end
 

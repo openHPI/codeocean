@@ -28,17 +28,8 @@ $(document).on('turbolinks:load', function() {
                 return replace(Array(32).join('x'));
             });
 
-
-            $('.generate-client-id').on('click', function () {
-                $('.client-id').val(generateUUID());
-            });
-
-            $('.generate-client-secret').on('click', function () {
-                $('.client-secret').val(generateRandomHex32());
-            });
-
-            $('.generate-oauth2-token').on('click', function () {
-                $('.oauth2-token').val(generateRandomHex32())
+            $('.generate-api_key').on('click', function () {
+                $('.api_key').val(generateRandomHex32())
             });
         }
     }

@@ -85,7 +85,6 @@ Rails.application.routes.draw do
       get :reload
       post :submit
       get 'study_group_dashboard/:study_group_id', to: 'exercises#study_group_dashboard'
-      post :push_proforma_xml
       post :export_external_check
       post :export_external_confirm
     end

@@ -179,8 +179,11 @@ a.file-heading {
 
 #export-modal {
   .modal-content {
-    min-height: unset;
-    height: 300px;
+    min-height: 300px;
+  }
+
+  .modal-body {
+    overflow: auto;
   }
 }
 

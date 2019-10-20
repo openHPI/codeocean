@@ -4,23 +4,14 @@
     = f.label(:push_url)
     = f.text_field :push_url, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.push_url'), class: 'form-control'
   .form-group
-    = f.label(:oauth2token)
+    = f.label(:check_uuid_url)
+    = f.text_field :check_uuid_url, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.check_uuid_url'), class: 'form-control'
+  .form-group
+    = f.label(:api_key)
     .input-group
-      = f.text_field(:oauth2token, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.token'), class: 'form-control oauth2-token')
+      = f.text_field(:api_key, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.token'), class: 'form-control api_key')
       .input-group-btn
-        = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-oauth2-token btn btn-default'
-  .field-element.form-group
-    = f.label(:client_id)
-    .input-group
-      = f.text_field(:client_id, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.client_id'), class: 'form-control client-id')
-      .input-group-btn
-        = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-client-id btn btn-default'
-  .field-element.form-group
-    = f.label(:client_secret)
-    .input-group
-      = f.text_field(:client_secret, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.client_secret'), class: 'form-control client-secret')
-      .input-group-btn
-        = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-client-secret btn btn-default'
+        = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-api_key btn btn-default'
   .actions
     = render('shared/submit_button', f: f, object: @codeharbor_link)
     - if @codeharbor_link.persisted?

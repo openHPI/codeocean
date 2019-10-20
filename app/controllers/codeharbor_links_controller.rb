@@ -5,7 +5,8 @@ class CodeharborLinksController < ApplicationController
   before_action :set_codeharbor_link, only: %i[show edit update destroy]
 
   def new
-    @codeharbor_link = CodeharborLink.new
+    base_url = CodeOcean::Config.new(:code_ocean).read[:codeharbor][:url]
+    @codeharbor_link = CodeharborLink.new(push_url: base_url + '/import_exercise', check_uuid_url: base_url + '/import_uuid_check')
     authorize!
   end
 
@@ -42,6 +43,6 @@ class CodeharborLinksController < ApplicationController
   end
 
   def codeharbor_link_params
-    params.require(:codeharbor_link).permit(:push_url, :oauth2token, :client_id, :client_secret)
+    params.require(:codeharbor_link).permit(:push_url, :check_uuid_url, :api_key)
   end
 end
