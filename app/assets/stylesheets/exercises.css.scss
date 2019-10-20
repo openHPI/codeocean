@@ -192,6 +192,14 @@ a.file-heading {
   flex-grow: 1;
   font-size: 12px;
   padding-right: 5px;
+  word-wrap: break-word;
+}
+.export-message + :empty {
+  max-width: 100%;
+}
+
+.export-exercise-actions:empty {
+  display: none;
 }
 
 .export-exercise-actions {
@@ -202,4 +210,14 @@ a.file-heading {
 .export-button {
   font-size: 12px;
   width: 100%;
+}
+
+.export-success {
+  color: darkgreen;
+  font-size: 12pt;
+  font-weight: 600;
+}
+
+.export-failure {
+  color: darkred;
 }

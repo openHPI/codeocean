@@ -7,14 +7,14 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:push_proforma_xml, :clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard, :export_external_check]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:push_proforma_xml, :clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard, :export_external_check, :export_external_confirm]
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
 
-  skip_before_action :verify_authenticity_token, only: [:import_proforma_xml, :import_uuid_check]
-  skip_after_action :verify_authorized, only: [:import_proforma_xml, :import_uuid_check]
-  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml, :import_uuid_check], raise: false
+  skip_before_action :verify_authenticity_token, only: [:import_proforma_xml, :import_uuid_check, :export_external_confirm]
+  skip_after_action :verify_authorized, only: [:import_proforma_xml, :import_uuid_check, :export_external_confirm]
+  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml, :import_uuid_check, :export_external_confirm], raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -141,8 +141,8 @@ class ExercisesController < ApplicationController
       end
       response_hash = JSON.parse(response.body, symbolize_names: true)
       message = response_hash[:message]
-    rescue Faraday::ClientError
-      message = 'an error occured'
+    rescue Faraday::Error => e
+      message = t('exercises.export_codeharbor.error', message: e.message)
       error = true
     end
 
@@ -154,15 +154,45 @@ class ExercisesController < ApplicationController
           exercise: @exercise,
           exercise_found: response_hash[:exercise_found],
           update_right: response_hash[:update_right],
-          error: error
+          error: error,
+          exported: false
         }
       )
 
     }, status: 200
   end
 
+  def export_external_confirm
+    push_type = params[:push_type]
+
+    return render :fail unless %w[create_new export].include? push_type
+
+    @exercise.uuid = SecureRandom.uuid if push_type == 'create_new'
+
+    error = ExerciseService::PushExternal.call(
+      zip: ProformaService::ExportTask.call(exercise: @exercise),
+      codeharbor_link: current_user.codeharbor_link
+    )
+    if error.nil?
+      render json: {
+        status: 'success',
+        message: t('exercises.export_codeharbor.successfully_exported', id: @exercise.id, title: @exercise.title),
+        actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
+      }
+      # @exercise, notice: t('controllers.exercise.push_external_notice', account_link: account_link.readable)
+    else
+      # logger.debug(error)
+      render json: {
+        status: 'fail',
+        message: t('exercises.export_codeharbor.export_failed', id: @exercise.id, title: @exercise.title, error: error),
+        actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
+      }
+      # redirect_to @exercise, alert: t('controllers.account_links.not_working', account_link: account_link.readable)
+    end
+  end
+
   def import_uuid_check
-    user = user_for_oauth2_request
+    user = user_from_api_key
     return render json: {}, status: 401 if user.nil?
 
     uuid = params[:uuid]
@@ -179,7 +209,7 @@ class ExercisesController < ApplicationController
     tempfile.write request.body.read.force_encoding('UTF-8')
     tempfile.rewind
 
-    user = user_for_oauth2_request
+    user = user_from_api_key
     return render json: {}, status: 401 if user.nil?
 
     exercise = nil
@@ -192,15 +222,15 @@ class ExercisesController < ApplicationController
     render json: {}, status: 400
   end
 
-  def user_for_oauth2_request
+  def user_from_api_key
     authorization_header = request.headers['Authorization']
-    oauth2_token = authorization_header&.split(' ')&.second
-    user_by_codeharbor_token(oauth2_token)
+    api_key = authorization_header&.split(' ')&.second
+    user_by_codeharbor_token(api_key)
   end
-  private :user_for_oauth2_request
+  private :user_from_api_key
 
-  def user_by_codeharbor_token(oauth2_token)
-    link = CodeharborLink.where(oauth2token: oauth2_token)[0]
+  def user_by_codeharbor_token(api_key)
+    link = CodeharborLink.find_by_api_key(api_key)
     link&.user
   end
   private :user_by_codeharbor_token

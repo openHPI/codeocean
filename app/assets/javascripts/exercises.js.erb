@@ -208,6 +208,7 @@ $(document).on('turbolinks:load', function() {
       }
     });
   };
+
   var old_execution_environment = $('#exercise_execution_environment_id').val();
   var observeExecutionEnvironment = function() {
     $('#exercise_execution_environment_id').on('change', function(){
@@ -238,20 +239,25 @@ $(document).on('turbolinks:load', function() {
 
   };
 
-  var observeExportStartButtons = function(){
+  var observeExportButtons = function(){
     $('.export-start').on('click', function(e){
       e.preventDefault();
       $('#export-modal').modal({
         height: 250
       });
       $('#export-modal').modal('show');
-      exportExerciseStart($(this).attr('data-exercise-id'));
+      exportExerciseStart($(this).data().exerciseId);
+    });
+    $('body').on('click', '.export-retry-button', function(){
+      exportExerciseStart($(this).data().exerciseId);
+    });
+    $('body').on('click', '.export-action', function(){
+      exportExerciseConfirm($(this).data().exerciseId, $(this).data().exportType);
     });
   }
 
   var exportExerciseStart = function(exerciseID) {
     var $exerciseDiv = $('#export-exercise');
-    // var accountLinkID = $exerciseDiv.attr('data-account-link');
     var $messageDiv = $exerciseDiv.children('.export-message');
     var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
 
@@ -261,9 +267,6 @@ $(document).on('turbolinks:load', function() {
     return $.ajax({
       type: 'POST',
       url: '/exercises/' + exerciseID + '/export_external_check',
-      // data: {
-      //   account_link: accountLinkID
-      // },
       dataType: 'json',
       success: function(response) {
         if (response.error) {
@@ -279,6 +282,37 @@ $(document).on('turbolinks:load', function() {
     });
   };
 
+  var exportExerciseConfirm = function(exerciseID, pushType) {
+    var $exerciseDiv = $('#export-exercise');
+    var $messageDiv = $exerciseDiv.children('.export-message');
+    var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
+
+    return $.ajax({
+      type: 'POST',
+      url: '/exercises/' + exerciseID + '/export_external_confirm',
+      data: {
+        push_type: pushType
+      },
+      dataType: 'json',
+      success: function(response) {
+        $messageDiv.html(response.message)
+        $actionsDiv.html(response.actions);
+
+        if(response.status == 'success') {
+          $messageDiv.addClass('export-success');
+          setTimeout((function() {
+            $('#export-modal').modal('hide');
+            $messageDiv.html('').removeClass('export-success');
+          }), 3000);
+        } else {
+          $messageDiv.addClass('export-failure');
+        }
+      },
+      error: function(a, b, c) {
+        return alert('error:' + c);
+      }
+    });
+  };
 
   var overrideTextareaTabBehavior = function() {
     $('.form-group textarea[name$="[content]"]').on('keydown', function(event) {
@@ -335,7 +369,7 @@ $(document).on('turbolinks:load', function() {
       // ignore tags table since it is in the dom before other tables
     if ($('table:not(#tags-table)').isPresent()) {
       enableBatchUpdate();
-      observeExportStartButtons();
+      observeExportButtons();
     } else if ($('.edit_exercise, .new_exercise').isPresent()) {
       execution_environments = $('form').data('execution-environments');
       file_types = $('form').data('file-types');

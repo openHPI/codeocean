@@ -327,6 +327,9 @@ en:
       label: Export to Codeharbor
       success: Successfully pushed the exercise to CodeHarbor.
       dialogtitle: Export to Codeharbor
+      successfully_exported: 'Exercise has successfully been exported.<br>ID: %{id}<br>Title: %{title}'
+      export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
+      error: 'An error occurred while contacting Codeharbor<br>Error: %{message}'
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.

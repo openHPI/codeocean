@@ -9,19 +9,22 @@ module ExerciseService
     end
 
     def execute
-      oauth2_client = OAuth2::Client.new(@codeharbor_link.client_id, @codeharbor_link.client_secret, site: CODEHARBOR_PUSH_LINK)
-      oauth2_token = @codeharbor_link[:oauth2token]
-      token = OAuth2::AccessToken.from_hash(oauth2_client, access_token: oauth2_token)
       body = @zip.string
       begin
-        token.post(
-          CODEHARBOR_PUSH_LINK,
-          body: body,
-          headers: {'Content-Type' => 'application/zip', 'Content-Length' => body.length.to_s}
-        )
-        return nil
+        conn = Faraday.new(url: CODEHARBOR_PUSH_LINK) do |faraday|
+          faraday.adapter Faraday.default_adapter
+        end
+
+        response = conn.post do |request|
+          request.headers['Content-Type'] = 'application/zip'
+          request.headers['Content-Length'] = body.length.to_s
+          request.headers['Authorization'] = 'Bearer ' + @codeharbor_link.api_key
+          request.body = body
+        end
+
+        return response.success? ? nil : response.body
       rescue StandardError => e
-        return e
+        return e.message
       end
     end
   end
