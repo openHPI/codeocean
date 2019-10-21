@@ -331,6 +331,12 @@ en:
       export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
       error: 'An error occurred while contacting Codeharbor<br>Error: %{message}'
       checking_codeharbor: Checking whether exercise exists on Codeharbor.
+      buttons:
+        retry: ' Retry'
+        export: ' Export'
+        create_new: ' Create new'
+        close: ' Close'
+        abort: ' Abort'
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.
@@ -341,6 +347,7 @@ en:
       click_to_collapse: "Click to expand/collapse..."
       unpublish_warning: This will unpublish the exercise. Any student trying to implement it will get an error message, until it is published again.
       no_execution_environment_selected: Select an execution environment before publishing the exercise.
+      none: None
     implement:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'

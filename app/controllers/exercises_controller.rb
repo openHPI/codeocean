@@ -141,7 +141,6 @@ class ExercisesController < ApplicationController
           exported: false
         }
       )
-
     }, status: 200
   end
 

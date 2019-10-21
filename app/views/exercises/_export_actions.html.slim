@@ -1,18 +1,18 @@
 - if error
     = button_tag type: 'button', class:'btn btn-primary pull-right export-button export-retry-button', data: {exercise_id: exercise.id} do
       i.fa.fa-refresh.confirm-icon
-      = ' Retry'
+      = t('exercises.export_codeharbor.buttons.retry')
 - else
   - unless exported
     - if update_right
       = button_tag type: 'button', class:'btn btn-primary pull-right export-action export-button', data: {exercise_id: exercise.id, export_type: 'export'} do
         i.fa.fa-check.confirm-icon
-        = ' Export'
+        = t('exercises.export_codeharbor.buttons.export')
     - else
       = button_tag type: 'button', class:'btn btn-primary pull-right export-action export-button', data: {exercise_id: exercise.id, export_type: 'create_new'} do
         i.fa.fa-check.confirm-icon
-        = ' Create new'
+        = t('exercises.export_codeharbor.buttons.create_new')
 
 = button_tag type: 'submit', class:'btn btn-secondary pull-right export-button', data: {dismiss: 'modal'} do
   i.fa.fa-remove.abort-icon
-  = exported ? ' Close' : ' Abort'
+  = exported ? t('exercises.export_codeharbor.buttons.close') : t('exercises.export_codeharbor.buttons.abort')

@@ -55,8 +55,8 @@ module ProformaService
       end
 
       filenames.select { |f| f[/\.xml$/] }.any?
-    # rescue Zip::Error
-    # raise Proforma::InvalidZip
+    rescue Zip::Error
+      raise Proforma::InvalidZip
     end
   end
 end
