@@ -12,9 +12,9 @@ class ExercisesController < ApplicationController
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
 
-  skip_before_action :verify_authenticity_token, only: [:import_proforma_xml, :import_uuid_check, :export_external_confirm]
-  skip_after_action :verify_authorized, only: [:import_proforma_xml, :import_uuid_check, :export_external_confirm]
-  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml, :import_uuid_check, :export_external_confirm], raise: false
+  skip_before_action :verify_authenticity_token, only: [:import_exercise, :import_uuid_check, :export_external_confirm]
+  skip_after_action :verify_authorized, only: [:import_exercise, :import_uuid_check, :export_external_confirm]
+  skip_after_action :verify_policy_scoped, only: [:import_exercise, :import_uuid_check, :export_external_confirm], raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -35,7 +35,6 @@ class ExercisesController < ApplicationController
         java1: "0ea88ea9-979a-44a3-b0e4-84ba58e5a05e"
     }
   end
-
 
   def experimental_course?(course_token)
     experimental_courses.has_value?(course_token)
@@ -183,7 +182,7 @@ class ExercisesController < ApplicationController
     render json: {exercise_found: true, update_right: true, message: t('exercises.import_codeharbor.check.exercise_found')}
   end
 
-  def import_proforma_xml
+  def import_exercise
     tempfile = Tempfile.new('codeharbor_import.zip')
     tempfile.write request.body.read.force_encoding('UTF-8')
     tempfile.rewind

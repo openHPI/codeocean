@@ -66,7 +66,7 @@ Rails.application.routes.draw do
     end
   end
 
-  post '/import_proforma_xml' => 'exercises#import_proforma_xml'
+  post '/import_exercise' => 'exercises#import_exercise'
   post '/import_uuid_check' => 'exercises#import_uuid_check'
 
   resources :exercises do

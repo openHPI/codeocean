@@ -330,7 +330,7 @@ en:
       successfully_exported: 'Exercise has successfully been exported.<br>ID: %{id}<br>Title: %{title}'
       export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
       error: 'An error occurred while contacting Codeharbor<br>Error: %{message}'
-      checking_codeharbor: Checking whether exercise exists on Codeharbor.
+      checking_codeharbor: Checking if the exercise exists on Codeharbor.
       buttons:
         retry: ' Retry'
         export: ' Export'
