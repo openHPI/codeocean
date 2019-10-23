@@ -20,7 +20,9 @@ addons:
   firefox: "62.0.3"
 
 before_install:
-  - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2376 -H unix:///var/run/docker.sock --iptables=false"' | sudo tee /etc/default/docker > /dev/null
+  - sudo sed -i '/ExecStart=\/usr\/bin\/dockerd -H fd:\/\//c\ExecStart=\/usr\/bin\/dockerd' /lib/systemd/system/docker.service
+  - sudo systemctl daemon-reload
+  - "echo '{\"hosts\": [\"tcp://127.0.0.1:2376\", \"unix:///var/run/docker.sock\"], \"iptables\": false}' | sudo tee /etc/docker/daemon.json  > /dev/null"
   - sudo service docker restart
   - sleep 5
   - docker pull openhpi/co_execenv_python
