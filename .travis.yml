@@ -2,6 +2,7 @@ sudo: required
 
 services:
   - docker
+  - xvfb
 
 language: ruby
 rvm:
@@ -19,8 +20,6 @@ addons:
   firefox: "62.0.3"
 
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
   - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2376 -H unix:///var/run/docker.sock --iptables=false"' | sudo tee /etc/default/docker > /dev/null
   - sudo service docker restart
   - sleep 5
