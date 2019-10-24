@@ -332,11 +332,11 @@ en:
       error: 'An error occurred while contacting Codeharbor<br>Error: %{message}'
       checking_codeharbor: Checking if the exercise exists on Codeharbor.
       buttons:
-        retry: ' Retry'
-        export: ' Export'
-        create_new: ' Create new'
-        close: ' Close'
-        abort: ' Abort'
+        retry: Retry
+        export: Export
+        create_new: Create new
+        close: Close
+        abort: Abort
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.
