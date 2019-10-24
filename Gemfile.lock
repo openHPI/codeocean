@@ -128,7 +128,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.9.0)
-    eventmachine (1.0.9.1)
+    eventmachine (1.2.7)
     excon (0.67.0)
     execjs (2.7.0)
     factory_bot (5.1.1)
@@ -431,7 +431,7 @@ DEPENDENCIES
   concurrent-ruby
   database_cleaner
   docker-api
-  eventmachine (= 1.0.9.1)
+  eventmachine (= 1.2.7)
   factory_bot_rails
   faye-websocket
   forgery

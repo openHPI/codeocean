@@ -30,7 +30,7 @@ gem 'turbolinks'
 gem 'uglifier'
 gem 'tubesock', git: 'https://github.com/gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
 gem 'faye-websocket'
-gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, newer versions might crash or
+gem 'eventmachine', '1.2.7' # explicitly added, this is used by faye-websocket, newer versions might crash or
 gem 'nokogiri'
 gem 'webpacker'
 gem 'rest-client'
