@@ -107,26 +107,7 @@ class ExercisesController < ApplicationController
   end
 
   def export_external_check
-    @codeharbor_link = current_user.codeharbor_link
-    conn = Faraday.new(url: @codeharbor_link.check_uuid_url) do |faraday|
-      faraday.options[:open_timeout] = 5
-      faraday.options[:timeout] = 5
-
-      faraday.adapter Faraday.default_adapter
-    end
-
-    codeharbor_check = begin
-                         response = conn.post do |req|
-                           req.headers['Content-Type'] = 'application/json'
-                           req.headers['Authorization'] = 'Bearer ' + @codeharbor_link.api_key
-                           req.body = {uuid: @exercise.uuid}.to_json
-                         end
-                         response_hash = JSON.parse(response.body, symbolize_names: true)
-
-                         {error: false}.merge(response_hash.slice(:message, :exercise_found, :update_right))
-                       rescue Faraday::Error => e
-                         {error: true, message: t('exercises.export_codeharbor.error', message: e.message)}
-                       end
+    codeharbor_check = ExerciseService::CheckExternal.call(uuid: @exercise.uuid, codeharbor_link: current_user.codeharbor_link)
 
     render json: {
       message: codeharbor_check[:message],
@@ -196,8 +177,12 @@ class ExercisesController < ApplicationController
       exercise.save!
       return render json: {}, status: 201
     end
-    logger.info(exercise.errors.full_messages)
-    render json: {}, status: 400
+    # logger.info(exercise.errors.full_messages)
+    # render json: {}, status: 400
+  rescue Proforma::ProformaError
+    render json: t('exercises.export_codeharbor.export_errors.invalid'), status: 400
+  rescue StandardError
+    render json: t('exercises.export_codeharbor.export_errors.internal_error'), status: 500
   end
 
   def user_from_api_key

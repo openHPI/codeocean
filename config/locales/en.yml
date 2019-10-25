@@ -337,6 +337,9 @@ en:
         create_new: Create new
         close: Close
         abort: Abort
+      export_errors:
+        invalid: Invalid exercise
+        internal_error: An internal error occurred on Codeharbor while importing the exercise.
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.
