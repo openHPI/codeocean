@@ -141,7 +141,7 @@ GEM
     faye-websocket (0.10.9)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
-    ffi (1.11.1)
+    ffi (1.11.2)
     forgery (0.7.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
@@ -188,7 +188,7 @@ GEM
     mini_magick (4.9.5)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    minitest (5.12.2)
+    minitest (5.13.0)
     minitest-autotest (1.1.1)
       minitest-server (~> 1.0)
       path_expander (~> 1.0)
@@ -207,7 +207,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (6.7.0.359)
     nio4r (2.5.2)
-    nokogiri (1.10.4)
+    nokogiri (1.10.5)
       mini_portile2 (~> 2.4.0)
     nyan-cat-formatter (0.12.0)
       rspec (>= 2.99, >= 2.14.2, < 4)
@@ -270,7 +270,7 @@ GEM
     rails-i18n (5.1.3)
       i18n (>= 0.7, < 2)
       railties (>= 5.0, < 6)
-    rails-timeago (2.17.1)
+    rails-timeago (2.18.0)
       actionpack (>= 3.1)
       activesupport (>= 3.1)
     railties (5.2.3)
@@ -280,7 +280,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.19.0, < 2.0)
     rainbow (3.0.0)
-    rake (13.0.0)
+    rake (13.0.1)
     ransack (2.3.0)
       actionpack (>= 5.0)
       activerecord (>= 5.0)
@@ -396,7 +396,7 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
-    webpacker (4.0.7)
+    webpacker (4.2.0)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
@@ -426,13 +426,13 @@ DEPENDENCIES
   capistrano-rvm
   capistrano-upload-config
   capistrano3-puma
-  capybara
+  capybara (>= 3.29.0)
   carrierwave
   concurrent-ruby
   database_cleaner
   docker-api
   eventmachine (= 1.0.9.1)
-  factory_bot_rails
+  factory_bot_rails (>= 5.1.1)
   faye-websocket
   forgery
   headless
@@ -440,42 +440,42 @@ DEPENDENCIES
   i18n-js
   ims-lti (< 2.0.0)
   jbuilder
-  jquery-rails
+  jquery-rails (>= 4.3.5)
   kramdown
   listen
   mnemosyne-ruby
   newrelic_rpm
-  nokogiri
+  nokogiri (>= 1.10.5)
   nyan-cat-formatter
-  pagedown-bootstrap-rails
+  pagedown-bootstrap-rails (>= 2.1.4)
   pg
   pry-byebug
   puma
   pundit
   rack-mini-profiler
   rails (= 5.2.3)
-  rails-controller-testing
-  rails-i18n
-  rails-timeago
-  ransack
+  rails-controller-testing (>= 1.0.4)
+  rails-i18n (>= 5.1.3)
+  rails-timeago (>= 2.17.1)
+  ransack (>= 2.3.0)
   rest-client
   rspec-autotest
-  rspec-rails
+  rspec-rails (>= 3.9.0)
   rubocop
   rubocop-rspec
   rubytree
   rubyzip
-  sass-rails
+  sass-rails (>= 6.0.0)
   selenium-webdriver
   simplecov
-  slim-rails
+  slim-rails (>= 3.2.0)
   sorcery
   spring
   tubesock!
   turbolinks
   uglifier
-  web-console
-  webpacker
+  web-console (>= 3.7.0)
+  webpacker (>= 4.0.7)
   whenever
 
 BUNDLED WITH
