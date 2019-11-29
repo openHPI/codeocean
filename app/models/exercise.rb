@@ -493,10 +493,15 @@ class Exercise < ApplicationRecord
 
   def maximum_score(user = nil)
     if user
+      # FIXME: where(user: user) will not work here!
       submissions.where(user: user).where("cause IN ('submit','assess')").where("score IS NOT NULL").order("score DESC").first.score || 0 rescue 0
     else
       files.teacher_defined_tests.sum(:weight)
     end
+  end
+
+  def final_submission(user)
+    submissions.final.where(user_id: user.id, user_type: user.class.name).order(created_at: :desc).first
   end
 
   def has_user_solved(user)

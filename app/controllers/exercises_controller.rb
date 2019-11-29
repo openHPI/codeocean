@@ -105,6 +105,9 @@ class ExercisesController < ApplicationController
   def feedback
     authorize!
     @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page])
+    @submissions = @feedbacks.map do |feedback|
+      feedback.exercise.final_submission(feedback.user)
+    end
   end
 
   def import_proforma_xml

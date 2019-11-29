@@ -4,12 +4,15 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
   .header = t('activerecord.attributes.exercise.description')
   .value = render_markdown(@exercise.description)
 
-  .header = t('activerecord.models.user_exercise_feedback.other')
+  span.header.col-sm-3.pl-0 = "#{t('activerecord.attributes.exercise.maximum_score')}"
+  span.col-sm-9 = @exercise.maximum_score
+
+  .header.mt-3 = t('activerecord.models.user_exercise_feedback.other')
   - if @feedbacks.nil? or @feedbacks.size == 0
     .no-feedback = t('user_exercise_feedback.no_feedback')
 
   ul.list-unstyled
-    - @feedbacks.each do |feedback|
+    - @feedbacks.each_with_index do |feedback, index|
       li.card.mt-2
         .card-header role="tab" id="heading"
           div.clearfix.feedback-header
@@ -22,6 +25,9 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
             .text = feedback.feedback_text
             .difficulty = "#{t('user_exercise_feedback.difficulty')} #{feedback.difficulty}" if feedback.difficulty
             .worktime = "#{t('user_exercise_feedback.working_time')} #{feedback.user_estimated_worktime}" if feedback.user_estimated_worktime
+        .card-footer
+          span.points = "#{t('exercises.statistics.score')}: #{@submissions[index].score}"
+          span.working_time.pull-right = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user.id) or 0}"
 
   = render('shared/pagination', collection: @feedbacks)
 
