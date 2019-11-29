@@ -24,7 +24,7 @@ h1 = @exercise
 = row(label: '.average_worktime') do
   p = @exercise.average_working_time
 
-- Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
+- Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair if current_user.admin? do |symbol, label|
   strong = label
   -if symbol==:external_users
     -working_time_array = []
