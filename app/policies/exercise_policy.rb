@@ -3,11 +3,11 @@ class ExercisePolicy < AdminOrAuthorPolicy
     admin?
   end
 
-  [:show?, :study_group_dashboard?].each do |action|
+  [:show?, :study_group_dashboard?, :feedback?, :requests_for_comments?, :statistics?].each do |action|
     define_method(action) { admin? || teacher? }
   end
 
-  [:clone?, :destroy?, :edit?, :statistics?, :update?, :feedback?].each do |action|
+  [:clone?, :destroy?, :edit?, :update?].each do |action|
     define_method(action) { admin? || author? }
   end
 

@@ -38,18 +38,19 @@ h1 = @exercise
     hr
     div#chart_2
     hr
-  .table-responsive
-    table.table.table-striped.sortable
-      thead
-        tr
-          - ['.user', '.score', '.runs', '.worktime'].each do |title|
-            th.header = t(title)
-      tbody
-        - @exercise.send(symbol).distinct().each do |user|
-          - if user_statistics[user.id] then us = user_statistics[user.id] else us = {"maximum_score" => nil, "runs" => nil}
-          - label = "#{user.displayname}"
+  - if current_user.admin?
+    .table-responsive
+      table.table.table-striped.sortable
+        thead
           tr
-            td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
-            td = us['maximum_score'] or 0
-            td = us['runs']
-            td = @exercise.average_working_time_for(user.id) or 0
+            - ['.user', '.score', '.runs', '.worktime'].each do |title|
+              th.header = t(title)
+        tbody
+          - @exercise.send(symbol).distinct().each do |user|
+            - if user_statistics[user.id] then us = user_statistics[user.id] else us = {"maximum_score" => nil, "runs" => nil}
+            - label = "#{user.displayname}"
+            tr
+              td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
+              td = us['maximum_score'] or 0
+              td = us['runs']
+              td = @exercise.average_working_time_for(user.id) or 0

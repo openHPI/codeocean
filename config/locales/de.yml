@@ -353,6 +353,7 @@ de:
       implement: Implementieren
       test_files: Test-Dateien
       feedback: Feedback
+      requests_for_comments: Kommentaranfragen
       study_group_dashboard: Live Dashboard
     statistics:
       average_score: Durchschnittliche Punktzahl
