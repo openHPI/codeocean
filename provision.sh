@@ -5,9 +5,9 @@
 ######## VERSION INFORMATION ########
 
 postgres_version=10
-ruby_version=2.6.2
+ruby_version=2.6.3
 rails_version=5.2.3
-geckodriver_version=0.24.0
+geckodriver_version=0.26.0
 
 ########## INSTALL SCRIPT ###########
 

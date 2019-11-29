@@ -6,7 +6,7 @@ services:
 
 language: ruby
 rvm:
-  - 2.6.2
+  - 2.6.3
 cache:
   bundler: true
   yarn: true
@@ -16,8 +16,8 @@ env:
     - secure: "DkOGGPCrRgV08KGgav3Bl+keZQqb11TINQRVQS2aeMaYR5GW7Rt9zEcZzhUE0JdKVVOvm4Cclft7BO4OyMd6Cq9XnZkOOHY+Yn8Qv923761SKrRgkGUkO8eeVKMawAA8lS53XGrMZWCP2xaLsLQYq8xzinnE3GqstoZJaHLnqVs="
 
 addons:
-  postgresql: "9.6"
-  firefox: "62.0.3"
+  postgresql: "10"
+  firefox: "latest-esr"
 
 before_install:
   - sudo sed -i '/ExecStart=\/usr\/bin\/dockerd -H fd:\/\//c\ExecStart=\/usr\/bin\/dockerd' /lib/systemd/system/docker.service
