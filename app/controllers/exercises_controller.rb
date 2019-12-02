@@ -353,6 +353,7 @@ class ExercisesController < ApplicationController
 
   def statistics
     if(@external_user)
+      authorize(@external_user, :statistics?)
       @submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id).order("created_at")
       interventions = UserExerciseIntervention.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
       @all_events = (@submissions + interventions).sort_by { |a| a.created_at }
