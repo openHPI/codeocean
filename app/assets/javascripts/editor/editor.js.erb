@@ -252,7 +252,11 @@ configureEditors: function () {
       this.editors.push(editor);
       this.editor_for_file.set($(element).parent().data('filename'), editor);
       var session = editor.getSession();
-      session.setMode($(element).data('mode'));
+      var mode = $(element).data('mode')
+      session.setMode(mode);
+      if (mode === 'ace/mode/python') {
+        editor.setTheme('ace/theme/tomorrow')
+      }
       session.setTabSize($(element).data('indent-size'));
       session.setUseSoftTabs(true);
       session.setUseWrapMode(true);
