@@ -7,10 +7,12 @@ GIT
       rack (>= 1.5.0)
       websocket (>= 1.1.0)
 
-PATH
-  remote: ../proforma
+GIT
+  remote: https://github.com/openHPI/proforma.git
+  revision: 6784ace5bb4449fd53f419fa1eb40dfc04e8f086
+  tag: v0.3.2
   specs:
-    proforma (0.1.0)
+    proforma (0.3.2)
       activemodel (~> 5.2.3)
       activesupport (~> 5.2.3)
       nokogiri (~> 1.10.2)

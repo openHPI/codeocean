@@ -177,11 +177,10 @@ class ExercisesController < ApplicationController
       exercise.save!
       return render json: {}, status: 201
     end
-    # logger.info(exercise.errors.full_messages)
-    # render json: {}, status: 400
   rescue Proforma::ProformaError
     render json: t('exercises.export_codeharbor.export_errors.invalid'), status: 400
   rescue StandardError
+    logger.info(exercise.errors.full_messages)
     render json: t('exercises.export_codeharbor.export_errors.internal_error'), status: 500
   end
 
