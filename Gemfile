@@ -64,6 +64,7 @@ end
 
 group :test do
   gem 'rails-controller-testing'
+  gem 'autotest' # required by autotest-rails
   gem 'autotest-rails'
   gem 'capybara'
   gem 'selenium-webdriver'

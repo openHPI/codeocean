@@ -20,8 +20,8 @@ class SessionsController < ApplicationController
   def create_through_lti
     store_lti_session_data(consumer: @consumer, parameters: params)
     store_nonce(params[:oauth_nonce])
-    if params[:redirect_target]
-      redirect_to(params[:redirect_target])
+    if params[:custom_redirect_target]
+      redirect_to(params[:custom_redirect_target])
     else
       redirect_to(implement_exercise_path(@exercise),
                   notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, @current_user.id , @consumer.id) ? 'with' : 'without'}_outcome",

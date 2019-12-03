@@ -2,10 +2,11 @@ sudo: required
 
 services:
   - docker
+  - xvfb
 
 language: ruby
 rvm:
-  - 2.6.2
+  - 2.6.3
 cache:
   bundler: true
   yarn: true
@@ -15,13 +16,13 @@ env:
     - secure: "DkOGGPCrRgV08KGgav3Bl+keZQqb11TINQRVQS2aeMaYR5GW7Rt9zEcZzhUE0JdKVVOvm4Cclft7BO4OyMd6Cq9XnZkOOHY+Yn8Qv923761SKrRgkGUkO8eeVKMawAA8lS53XGrMZWCP2xaLsLQYq8xzinnE3GqstoZJaHLnqVs="
 
 addons:
-  postgresql: "9.6"
-  firefox: "62.0.3"
+  postgresql: "10"
+  firefox: "latest-esr"
 
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-  - echo 'DOCKER_OPTS="-H tcp://127.0.0.1:2376 -H unix:///var/run/docker.sock --iptables=false"' | sudo tee /etc/default/docker > /dev/null
+  - sudo sed -i '/ExecStart=\/usr\/bin\/dockerd -H fd:\/\//c\ExecStart=\/usr\/bin\/dockerd' /lib/systemd/system/docker.service
+  - sudo systemctl daemon-reload
+  - "echo '{\"hosts\": [\"tcp://127.0.0.1:2376\", \"unix:///var/run/docker.sock\"], \"iptables\": false}' | sudo tee /etc/docker/daemon.json  > /dev/null"
   - sudo service docker restart
   - sleep 5
   - docker pull openhpi/co_execenv_python

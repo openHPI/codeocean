@@ -7,7 +7,7 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :study_group_dashboard, :export_external_check, :export_external_confirm]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :requests_for_comments, :study_group_dashboard, :export_external_check, :export_external_confirm]
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
@@ -104,6 +104,21 @@ class ExercisesController < ApplicationController
   def feedback
     authorize!
     @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page])
+    @submissions = @feedbacks.map do |feedback|
+      feedback.exercise.final_submission(feedback.user)
+    end
+  end
+
+  def requests_for_comments
+    authorize!
+    @search = RequestForComment
+                  .with_last_activity
+                  .where(exercise: @exercise)
+                  .ransack(params[:q])
+    @request_for_comments = @search.result
+                                .order('last_comment DESC')
+                                .paginate(page: params[:page])
+    render 'request_for_comments/index'
   end
 
   def export_external_check
@@ -377,6 +392,7 @@ class ExercisesController < ApplicationController
 
   def statistics
     if(@external_user)
+      authorize(@external_user, :statistics?)
       @submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id).order("created_at")
       interventions = UserExerciseIntervention.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
       @all_events = (@submissions + interventions).sort_by { |a| a.created_at }
