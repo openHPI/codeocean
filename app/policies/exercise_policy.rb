@@ -8,7 +8,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
   end
 
   [:clone?, :destroy?, :edit?, :update?].each do |action|
-    define_method(action) { admin? || author? }
+    define_method(action) { admin? || teacher_in_study_group || author? }
   end
 
   [:implement?, :working_times?, :intervention?, :search?, :submit?, :reload?].each do |action|

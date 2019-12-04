@@ -26,11 +26,16 @@ class ApplicationPolicy
   private :no_one
 
   def everyone_in_study_group
-    study_group = @record.study_group
-    return false if study_group.blank?
+    if @record.respond_to? :study_group # e.g. submission
+      study_group = @record.study_group
+      return false if study_group.blank?
 
-    users_in_same_study_group = study_group.users
-    return false if users_in_same_study_group.blank?
+      users_in_same_study_group = study_group.users
+    else # e.g. exercise
+      study_groups = @record.user.study_groups
+      users_in_same_study_group = study_groups.collect{ |study_group|
+        study_group.users}.flatten
+    end
 
     users_in_same_study_group.include? @user
   end
