@@ -123,14 +123,13 @@ class ExercisesController < ApplicationController
 
   def export_external_check
     codeharbor_check = ExerciseService::CheckExternal.call(uuid: @exercise.uuid, codeharbor_link: current_user.codeharbor_link)
-
     render json: {
       message: codeharbor_check[:message],
       actions: render_to_string(
         partial: 'export_actions',
         locals: {
           exercise: @exercise,
-          exercise_found: codeharbor_check[:exercise_found],
+          # exercise_found: codeharbor_check[:exercise_found],
           update_right: codeharbor_check[:update_right],
           error: codeharbor_check[:error],
           exported: false
@@ -142,7 +141,7 @@ class ExercisesController < ApplicationController
   def export_external_confirm
     push_type = params[:push_type]
 
-    return render :fail unless %w[create_new export].include? push_type
+    return render json: {}, status: 500 unless %w[create_new export].include? push_type
 
     @exercise.uuid = SecureRandom.uuid if push_type == 'create_new'
 
@@ -195,7 +194,6 @@ class ExercisesController < ApplicationController
   rescue Proforma::ProformaError
     render json: t('exercises.export_codeharbor.export_errors.invalid'), status: 400
   rescue StandardError
-    logger.info(exercise.errors.full_messages)
     render json: t('exercises.export_codeharbor.export_errors.internal_error'), status: 500
   end
 

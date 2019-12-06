@@ -128,6 +128,8 @@ GEM
     chronic (0.10.2)
     coderay (1.1.2)
     concurrent-ruby (1.1.5)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     crass (1.0.5)
     database_cleaner (1.7.0)
     debug_inspector (0.0.3)
@@ -156,6 +158,7 @@ GEM
     forgery (0.7.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    hashdiff (1.0.0)
     headless (2.3.1)
     highline (2.0.3)
     http-accept (1.7.0)
@@ -348,6 +351,7 @@ GEM
       json (~> 2.1)
       structured_warnings (~> 0.3)
     rubyzip (2.0.0)
+    safe_yaml (1.0.5)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
     sassc (2.2.1)
@@ -409,6 +413,10 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
+    webmock (3.7.6)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
     webpacker (4.2.0)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
@@ -491,6 +499,7 @@ DEPENDENCIES
   turbolinks
   uglifier
   web-console
+  webmock
   webpacker
   whenever
 

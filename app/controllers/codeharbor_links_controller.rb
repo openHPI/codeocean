@@ -18,7 +18,7 @@ class CodeharborLinksController < ApplicationController
     @codeharbor_link = CodeharborLink.new(codeharbor_link_params)
     @codeharbor_link.user = current_user
     authorize!
-    create_and_respond(object: @codeharbor_link, path: proc { @codeharbor_link.user })
+    create_and_respond(object: @codeharbor_link, path: -> { @codeharbor_link.user })
   end
 
   def update

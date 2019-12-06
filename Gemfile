@@ -74,4 +74,5 @@ group :test do
   gem 'rspec-autotest'
   gem 'rspec-rails'
   gem 'simplecov', require: false
+  gem 'webmock'
 end
