@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 class CodeharborLinkPolicy < ApplicationPolicy
   def index?
     false
@@ -18,14 +16,20 @@ class CodeharborLinkPolicy < ApplicationPolicy
   end
 
   def edit?
-    teacher?
+    owner?
   end
 
   def update?
-    teacher?
+    owner?
   end
 
   def destroy?
-    teacher?
+    owner?
+  end
+
+  private
+
+  def owner?
+    @record.reload.user == @user
   end
 end

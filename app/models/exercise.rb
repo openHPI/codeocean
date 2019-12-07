@@ -31,12 +31,12 @@ class Exercise < ApplicationRecord
 
   validate :valid_main_file?
   validates :description, presence: true
-  validates :execution_environment_id, presence: true, if: -> { !unpublished? }
+  validates :execution_environment, presence: true, if: -> { !unpublished? }
   validates :public, boolean_presence: true
   validates :unpublished, boolean_presence: true
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
-  validates_uniqueness_of :uuid
+  validates_uniqueness_of :uuid, if: -> { uuid.present? }
 
   @working_time_statistics = nil
   attr_reader :working_time_statistics

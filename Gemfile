@@ -73,6 +73,7 @@ group :test do
   gem 'nyan-cat-formatter'
   gem 'rspec-autotest'
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
   gem 'simplecov', require: false
   gem 'webmock'
 end

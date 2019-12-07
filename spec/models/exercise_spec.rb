@@ -22,10 +22,6 @@ describe Exercise do
     expect(exercise.errors[:description]).to be_present
   end
 
-  it 'validates the presence of an execution environment' do
-    expect(exercise.errors[:execution_environment_id]).to be_present
-  end
-
   it 'validates the presence of the public flag' do
     expect(exercise.errors[:public]).to be_present
     exercise.update(public: false)
@@ -43,6 +39,30 @@ describe Exercise do
   it 'validates the presence of a user' do
     expect(exercise.errors[:user_id]).to be_present
     expect(exercise.errors[:user_type]).to be_present
+  end
+
+  context 'when exercise is unpublished' do
+    subject { FactoryBot.build(:dummy, unpublished: true) }
+
+    it { is_expected.not_to validate_presence_of(:execution_environment) }
+  end
+
+  context 'when exercise is not unpublished' do
+    subject { FactoryBot.build(:dummy, unpublished: false) }
+
+    it { is_expected.to validate_presence_of(:execution_environment) }
+  end
+
+  context 'with uuid' do
+    subject { FactoryBot.build(:dummy, uuid: SecureRandom.uuid) }
+
+    it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
+  end
+
+  context 'without uuid' do
+    subject { FactoryBot.build(:dummy, uuid: nil) }
+
+    it { is_expected.not_to validate_uniqueness_of(:uuid) }
   end
 
   describe '#average_percentage' do
