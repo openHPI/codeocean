@@ -46,3 +46,5 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+WebMock.allow_net_connect!
