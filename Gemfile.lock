@@ -318,6 +318,8 @@ GEM
       rspec-mocks (~> 3.9.0)
     rspec-autotest (1.0.2)
       rspec-core (>= 2.99.0.beta1, < 4.0.0)
+    rspec-collection_matchers (1.1.3)
+      rspec-expectations (>= 2.99.0.beta1)
     rspec-core (3.9.0)
       rspec-support (~> 3.9.0)
     rspec-expectations (3.9.0)
@@ -486,6 +488,7 @@ DEPENDENCIES
   ransack
   rest-client
   rspec-autotest
+  rspec-collection_matchers
   rspec-rails
   rubocop
   rubocop-rspec

@@ -329,7 +329,7 @@ en:
       dialogtitle: Export to Codeharbor
       successfully_exported: 'Exercise has been successfully exported.<br>ID: %{id}<br>Title: %{title}'
       export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
-      error: 'An error occurred while contacting Codeharbor<br>Error: %{message}'
+      error: 'An error occurred while contacting Codeharbor'
       checking_codeharbor: Checking if the exercise exists on Codeharbor.
       buttons:
         retry: Retry

@@ -12,7 +12,7 @@ module ProformaService
         importer = Proforma::Importer.new(@zip)
         @task = importer.perform
 
-        exercise = Exercise.find_by(uuid: @task.uuid)
+        exercise = base_exercise
         exercise_files = exercise&.files&.to_a
 
         exercise = ConvertTaskToExercise.call(task: @task, user: @user, exercise: exercise)
@@ -25,6 +25,17 @@ module ProformaService
     end
 
     private
+
+    def base_exercise
+      exercise = Exercise.find_by(uuid: @task.uuid)
+      if exercise
+        return exercise if ExercisePolicy.new(@user, exercise).update?
+
+        return Exercise.new(uuid: SecureRandom.uuid, unpublished: true)
+      end
+
+      Exercise.new(uuid: @task.uuid || SecureRandom.uuid, unpublished: true)
+    end
 
     def import_multi
       Zip::File.open(@zip.path) do |zip_file|

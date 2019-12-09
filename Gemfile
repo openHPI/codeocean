@@ -72,6 +72,7 @@ group :test do
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
   gem 'rspec-autotest'
+  gem 'rspec-collection_matchers'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false

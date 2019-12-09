@@ -17,9 +17,9 @@ module ExerciseService
           request.body = body
         end
 
-        return response.success? ? nil : response.body
+        response.success? ? nil : response.body
       rescue StandardError => e
-        return e.message
+        e.message
       end
     end
 

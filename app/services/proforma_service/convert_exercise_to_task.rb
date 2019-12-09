@@ -22,11 +22,9 @@ module ProformaService
           title: @exercise.title,
           description: @exercise.description,
           internal_description: @exercise.instructions,
-          # proglang: proglang,
           files: task_files,
           tests: tests,
           uuid: uuid,
-          # parent_uuid: parent_uuid,
           language: DEFAULT_LANGUAGE,
           model_solutions: model_solutions,
           import_checksum: @exercise.import_checksum
@@ -66,8 +64,6 @@ module ProformaService
           files: test_file(file),
           meta_data: {
             'feedback-message' => file.feedback_message
-            # 'testing-framework' => test.testing_framework&.name,
-            # 'testing-framework-version' => test.testing_framework&.version
           }.compact
         )
       end

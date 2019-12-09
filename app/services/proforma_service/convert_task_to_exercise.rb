@@ -22,7 +22,6 @@ module ProformaService
         description: @task.description,
         instructions: @task.internal_description,
         files: files,
-        uuid: @task.uuid,
         import_checksum: @task.checksum
       )
     end
@@ -56,10 +55,10 @@ module ProformaService
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
         role: file.internal_description,
-        path: File.dirname(file.filename)
+        path: File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename)
       }.tap do |params|
         if file.binary
-          params[:native_file] = FileIO.new(file.content.force_encoding('UTF-8'), File.basename(file.filename))
+          params[:native_file] = FileIO.new(file.content.dup.force_encoding('UTF-8'), File.basename(file.filename))
         else
           params[:content] = file.content
         end
