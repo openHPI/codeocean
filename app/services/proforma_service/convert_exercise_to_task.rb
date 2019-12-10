@@ -88,13 +88,17 @@ module ProformaService
     def task_file(file)
       task_file = Proforma::TaskFile.new(
         id: file.id,
-        filename: file.path.present? && file.path != '.' ? ::File.join(file.path, file.name_with_extension) : file.name_with_extension,
+        filename: filename(file),
         usage_by_lms: file.read_only ? 'display' : 'edit',
         visible: file.hidden ? 'no' : 'yes',
         internal_description: file.role || 'regular_file'
       )
       add_content_to_task_file(file, task_file)
       task_file
+    end
+
+    def filename(file)
+      file.path.present? && file.path != '.' ? ::File.join(file.path, file.name_with_extension) : file.name_with_extension
     end
 
     def add_content_to_task_file(file, task_file)
