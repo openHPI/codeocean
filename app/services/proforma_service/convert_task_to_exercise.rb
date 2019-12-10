@@ -48,7 +48,7 @@ module ProformaService
     end
 
     def codeocean_file_from_task_file(file)
-      CodeOcean::File.new({
+      codeocean_file = CodeOcean::File.new(
         context: @exercise,
         file_type: FileType.find_by(file_extension: File.extname(file.filename)),
         hidden: file.visible == 'no',
@@ -56,13 +56,13 @@ module ProformaService
         read_only: file.usage_by_lms != 'edit',
         role: file.internal_description,
         path: File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename)
-      }.tap do |params|
-        if file.binary
-          params[:native_file] = FileIO.new(file.content.dup.force_encoding('UTF-8'), File.basename(file.filename))
-        else
-          params[:content] = file.content
-        end
-      end)
+      )
+      if file.binary
+        codeocean_file.native_file = FileIO.new(file.content.dup.force_encoding('UTF-8'), File.basename(file.filename))
+      else
+        codeocean_file.content = file.content
+      end
+      codeocean_file
     end
   end
 end

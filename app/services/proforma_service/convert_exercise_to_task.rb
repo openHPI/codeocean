@@ -86,27 +86,29 @@ module ProformaService
     end
 
     def task_file(file)
-      Proforma::TaskFile.new(
-        {
-          id: file.id,
-          filename: file.path.present? && file.path != '.' ? ::File.join(file.path, file.name_with_extension) : file.name_with_extension,
-          usage_by_lms: file.read_only ? 'display' : 'edit',
-          visible: file.hidden ? 'no' : 'yes',
-          internal_description: file.role || 'regular_file'
-        }.tap do |params|
-          if file.native_file.present?
-            file = ::File.new(file.native_file.file.path, 'r')
-            params[:content] = file.read
-            params[:used_by_grader] = false
-            params[:binary] = true
-            params[:mimetype] = MimeMagic.by_magic(file).type
-          else
-            params[:content] = file.content
-            params[:used_by_grader] = true
-            params[:binary] = false
-          end
-        end
+      task_file = Proforma::TaskFile.new(
+        id: file.id,
+        filename: file.path.present? && file.path != '.' ? ::File.join(file.path, file.name_with_extension) : file.name_with_extension,
+        usage_by_lms: file.read_only ? 'display' : 'edit',
+        visible: file.hidden ? 'no' : 'yes',
+        internal_description: file.role || 'regular_file'
       )
+      add_content_to_task_file(file, task_file)
+      task_file
+    end
+
+    def add_content_to_task_file(file, task_file)
+      if file.native_file.present?
+        file = ::File.new(file.native_file.file.path, 'r')
+        task_file.content = file.read
+        task_file.used_by_grader = false
+        task_file.binary = true
+        task_file.mimetype = MimeMagic.by_magic(file).type
+      else
+        task_file.content = file.content
+        task_file.used_by_grader = true
+        task_file.binary = false
+      end
     end
   end
 end
