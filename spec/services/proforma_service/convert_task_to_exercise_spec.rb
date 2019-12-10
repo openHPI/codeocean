@@ -69,7 +69,7 @@ describe ProformaService::ConvertTaskToExercise do
         Proforma::TaskFile.new(
           id: 'id',
           content: content,
-          filename: 'filename.txt',
+          filename: "#{path}filename.txt",
           used_by_grader: 'used_by_grader',
           visible: 'yes',
           usage_by_lms: usage_by_lms,
@@ -82,6 +82,7 @@ describe ProformaService::ConvertTaskToExercise do
       let(:mimetype) { 'mimetype' }
       let(:binary) { false }
       let(:content) { 'content' }
+      let(:path) {}
 
       it 'creates an exercise with a file that has the correct attributes' do
         expect(convert_to_exercise_service.files.first).to have_attributes(
@@ -90,12 +91,29 @@ describe ProformaService::ConvertTaskToExercise do
           role: 'regular_file',
           hidden: false,
           read_only: true,
-          file_type: be_a(FileType).and(have_attributes(file_extension: '.txt'))
+          file_type: be_a(FileType).and(have_attributes(file_extension: '.txt')),
+          path: nil
         )
       end
 
       it 'creates a new Exercise on save' do
         expect { convert_to_exercise_service.save! }.to change(Exercise, :count).by(1)
+      end
+
+      context 'when path is folder/' do
+        let(:path) { 'folder/' }
+
+        it 'creates an exercise with a file that has the correct path' do
+          expect(convert_to_exercise_service.files.first).to have_attributes(path: 'folder')
+        end
+      end
+
+      context 'when path is ./' do
+        let(:path) { './' }
+
+        it 'creates an exercise with a file that has the correct path' do
+          expect(convert_to_exercise_service.files.first).to have_attributes(path: nil)
+        end
       end
 
       context 'when file is very large' do
