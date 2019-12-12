@@ -13,7 +13,7 @@
     "jstree": "^3.3.8",
     "opensans-webkit": "^1.0.1",
     "popper.js": "^1.15.0",
-    "snyk": "^1.256.0",
+    "snyk": "^1.258.2",
     "underscore": "^1.9.1",
     "vis": "^4.21.0",
     "webpack-merge": "^4.1.4"
@@ -25,7 +25,7 @@
     "webpack": "./bin/webpack",
     "webpack-dev-server": "./bin/webpack-dev-server",
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "prepublish": "yarn run snyk-protect"
   },
   "snyk": true
 }
