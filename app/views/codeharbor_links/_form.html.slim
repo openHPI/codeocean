@@ -9,7 +9,7 @@
   .form-group
     = f.label(:api_key)
     .input-group
-      = f.text_field(:api_key, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.token'), class: 'form-control api_key')
+      = f.text_field(:api_key, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.api_key'), class: 'form-control api_key')
       .input-group-btn
         = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-api_key btn btn-default'
   .actions

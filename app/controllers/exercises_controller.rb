@@ -192,9 +192,9 @@ class ExercisesController < ApplicationController
       return render json: {}, status: 201
     end
   rescue Proforma::ProformaError
-    render json: t('exercises.export_codeharbor.export_errors.invalid'), status: 400
+    render json: t('exercises.import_codeharbor.import_errors.invalid'), status: 400
   rescue StandardError
-    render json: t('exercises.export_codeharbor.export_errors.internal_error'), status: 500
+    render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: 500
   end
 
   def user_from_api_key

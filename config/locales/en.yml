@@ -245,18 +245,9 @@ en:
   codeharbor_link:
     generate: Generate
     info:
-      push_url: |
-        The url from Codeharbor where your exercise can be exported to. If you don't know what to write here, ask an admin.
-      check_uuid_url: |
-        The url from Codeharbor where we can check if the exercise already exists. If you don't know what to write here, ask an admin.
-      name: |
-        Can be anything to Identify your account link.
-      token: |
-        Will be used to authenticate your export request. Has to be the same on both sides.
-      client_id:
-        Will be sent with your token. Can be automatically generated.
-      client_secret:
-        Will be sent with your token. Can be automatically generated.
+      push_url: The url from Codeharbor where your exercise can be exported to. If you don't know what to write here, ask an admin.
+      check_uuid_url: The url from Codeharbor where we can check if the exercise already exists. If you don't know what to write here, ask an admin.
+      api_key: Will be used to authenticate your export request. Has to be the same on both sides.
     profile_label: Codeharbor Link
     new: Create link to Codeharbor
     edit: Edit existing link
@@ -321,9 +312,9 @@ en:
       file_root: Files
     import_codeharbor:
       check:
-        no_exercise: No corresponding exercise found on Codeocean. Pushing this exercise will create a new one on Codeocean, which will be linked to this one on Codeharbor, any changes to either one can be pushed to the respective other platform.
-        exercise_found: A corresponding exercise has been found on Codeocean. You can either <ul><li>Create a new exercise as a duplicate of this one on Codeharbor and push it to Codeocean, using the "Create new" button.</li><li>Overwrite the exercise on Codeocean, by pushing all changes. Only use "Overwrite" for bugfixes or very small changes - it will alter and may break published exercises.</li></ul>
-        exercise_found_no_right: A corresponding exercise has been found on Codeocean, but you don't have the rights to edit it. You can only <ul><li>Create a new exercise as a duplicate of this one on Codeharbor and push it to Codeocean, using the "Create new" button.</li></ul>
+        no_exercise: No corresponding exercise found on Codeharbor. Pushing this exercise will create a new exercise on Codeharbor, which will be linked to this one on Codeocean. Any changes to either one can be pushed to the respective other platform.
+        exercise_found: 'A corresponding exercise has been found on Codeharbor. You can export the exercise to transfer all changes made on Codeocean to Codeharbor. Careful: This will overwrite all potential changes made on Codeharbor.'
+        exercise_found_no_right: A corresponding exercise has been found on Codeharbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the exercise on Codeharbor.
     export_codeharbor:
       label: Export to Codeharbor
       dialogtitle: Export to Codeharbor
