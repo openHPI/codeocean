@@ -1,3 +1,5 @@
+# TODO: Identify how the following line influences our tests:
+# https://github.com/openHPI/codeocean/pull/345#issuecomment-509706348
 include Rails.application.routes.url_helpers
 
 namespace :detect_exercise_anomalies do
