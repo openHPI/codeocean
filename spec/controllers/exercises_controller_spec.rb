@@ -350,7 +350,7 @@ describe ExercisesController do
           include('button').and(include('Abort')).and(include('Retry'))
         )
         expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
-          not_include('Create new').and(not_include('Export')).and(not_include('Hide'))
+          not_include('Export').and(not_include('Hide'))
         )
       end
     end
@@ -362,7 +362,7 @@ describe ExercisesController do
         post_request
         expect(JSON.parse(response.body).symbolize_keys[:message]).to eq('message')
         expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
-          include('button').and(include('Abort')).and(include('Create new'))
+          include('button').and(include('Abort'))
         )
         expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
           not_include('Retry').and(not_include('Export')).and(not_include('Hide'))
@@ -375,8 +375,7 @@ describe ExercisesController do
     render_views
 
     let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
-    let(:post_request) { post :export_external_confirm, params: {push_type: push_type, id: exercise.id, codeharbor_link: codeharbor_link.id} }
-    let(:push_type) { 'create_new' }
+    let(:post_request) { post :export_external_confirm, params: {id: exercise.id, codeharbor_link: codeharbor_link.id} }
     let(:error) {}
     let(:zip) { 'zip' }
 
@@ -407,15 +406,6 @@ describe ExercisesController do
         expect(JSON.parse(response.body).symbolize_keys[:actions]).to(not_include('Abort'))
       end
     end
-
-    context 'without push_type' do
-      let(:push_type) {}
-
-      it 'responds with status 500' do
-        post_request
-        expect(response).to have_http_status(:internal_server_error)
-      end
-    end
   end
 
   describe '#import_uuid_check' do
@@ -433,7 +423,6 @@ describe ExercisesController do
 
       expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be true
       expect(JSON.parse(response.body).symbolize_keys[:update_right]).to be true
-      expect(JSON.parse(response.body).symbolize_keys[:message]).to(include('has been found').and(include('Overwrite')))
     end
 
     context 'when api_key is incorrect' do
@@ -445,7 +434,7 @@ describe ExercisesController do
       end
     end
 
-    context 'when the user is cannot update the exercise' do
+    context 'when the user cannot update the exercise' do
       let(:codeharbor_link) { FactoryBot.create(:codeharbor_link, api_key: 'anotherkey') }
 
       it 'renders correct response' do
@@ -454,7 +443,6 @@ describe ExercisesController do
 
         expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be true
         expect(JSON.parse(response.body).symbolize_keys[:update_right]).to be false
-        expect(JSON.parse(response.body).symbolize_keys[:message]).to(include('has been found').and(not_include('Overwrite')))
       end
     end
 
@@ -466,7 +454,6 @@ describe ExercisesController do
         expect(response).to have_http_status(:success)
 
         expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be false
-        expect(JSON.parse(response.body).symbolize_keys[:message]).to(include('No corresponding exercise'))
       end
     end
   end

@@ -129,7 +129,7 @@ class ExercisesController < ApplicationController
         partial: 'export_actions',
         locals: {
           exercise: @exercise,
-          # exercise_found: codeharbor_check[:exercise_found],
+          exercise_found: codeharbor_check[:exercise_found],
           update_right: codeharbor_check[:update_right],
           error: codeharbor_check[:error],
           exported: false
@@ -139,11 +139,7 @@ class ExercisesController < ApplicationController
   end
 
   def export_external_confirm
-    push_type = params[:push_type]
-
-    return render json: {}, status: 500 unless %w[create_new export].include? push_type
-
-    @exercise.uuid = SecureRandom.uuid if push_type == 'create_new'
+    @exercise.uuid = SecureRandom.uuid if @exercise.uuid.nil?
 
     error = ExerciseService::PushExternal.call(
       zip: ProformaService::ExportTask.call(exercise: @exercise),
@@ -155,6 +151,7 @@ class ExercisesController < ApplicationController
         message: t('exercises.export_codeharbor.successfully_exported', id: @exercise.id, title: @exercise.title),
         actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
       }
+      @exercise.save
     else
       render json: {
         status: 'fail',
@@ -171,10 +168,10 @@ class ExercisesController < ApplicationController
     uuid = params[:uuid]
     exercise = Exercise.find_by(uuid: uuid)
 
-    return render json: {exercise_found: false, message: t('exercises.import_codeharbor.check.no_exercise')} if exercise.nil?
-    return render json: {exercise_found: true, update_right: false, message: t('exercises.import_codeharbor.check.exercise_found_no_right')} unless ExercisePolicy.new(user, exercise).update?
+    return render json: {exercise_found: false} if exercise.nil?
+    return render json: {exercise_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
 
-    render json: {exercise_found: true, update_right: true, message: t('exercises.import_codeharbor.check.exercise_found')}
+    render json: {exercise_found: true, update_right: true}
   end
 
   def import_exercise

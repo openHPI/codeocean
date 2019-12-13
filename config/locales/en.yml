@@ -311,10 +311,9 @@ en:
     editor_file_tree:
       file_root: Files
     import_codeharbor:
-      check:
-        no_exercise: No corresponding exercise found on Codeharbor. Pushing this exercise will create a new exercise on Codeharbor, which will be linked to this one on Codeocean. Any changes to either one can be pushed to the respective other platform.
-        exercise_found: 'A corresponding exercise has been found on Codeharbor. You can export the exercise to transfer all changes made on Codeocean to Codeharbor. Careful: This will overwrite all potential changes made on Codeharbor.'
-        exercise_found_no_right: A corresponding exercise has been found on Codeharbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the exercise on Codeharbor.
+      import_errors:
+        invalid: Invalid exercise
+        internal_error: An internal error occurred on Codeharbor while importing the exercise.
     export_codeharbor:
       label: Export to Codeharbor
       dialogtitle: Export to Codeharbor
@@ -325,12 +324,12 @@ en:
       buttons:
         retry: Retry
         export: Export
-        create_new: Create new
         close: Close
         abort: Abort
-      export_errors:
-        invalid: Invalid exercise
-        internal_error: An internal error occurred on Codeharbor while importing the exercise.
+      check:
+        no_exercise: No corresponding exercise found on Codeharbor. Pushing this exercise will create a new exercise on Codeharbor, which will be linked to this one on Codeocean. Any changes to either one can be pushed to the respective other platform.
+        exercise_found: 'A corresponding exercise has been found on Codeharbor. You can export the exercise to transfer all changes made on Codeocean to Codeharbor. Careful: This will overwrite all potential changes made on Codeharbor.'
+        exercise_found_no_right: A corresponding exercise has been found on Codeharbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the exercise on Codeharbor.
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.

@@ -311,10 +311,6 @@ de:
     editor_file_tree:
       file_root: Dateien
     import_codeharbor:
-      check:
-        no_exercise: Auf Codeharbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf Codeharbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
-        exercise_found: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen die auf Codeocean vorgenommen wurden, exportiert und die Aufgabe auf Codeharbor überschrieben.
-        exercise_found_no_right: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
       import_errors:
         invalid: Fehlerhafte Aufgabe
         internal_error: Beim Import der Aufgabe ist ein interner Fehler aufgetreten.
@@ -328,9 +324,12 @@ de:
       buttons:
         retry: Erneut probieren
         export: Export
-        create_new: Neu erstellen
         close: Schließen
         abort: Abbrechen
+      check:
+        no_exercise: Auf Codeharbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf Codeharbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
+        exercise_found: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen, die auf Codeocean vorgenommen wurden, exportiert und die Aufgabe auf Codeharbor überschrieben.
+        exercise_found_no_right: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
     file_form:
       hints:
         feedback_message: Diese Nachricht wird als Tipp zu fehlschlagenden Tests angezeigt.

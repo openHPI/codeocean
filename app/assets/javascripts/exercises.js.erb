@@ -251,7 +251,7 @@ $(document).on('turbolinks:load', function() {
       exportExerciseStart($(this).data().exerciseId);
     });
     $('body').on('click', '.export-action', function(){
-      exportExerciseConfirm($(this).data().exerciseId, $(this).data().exportType);
+      exportExerciseConfirm($(this).data().exerciseId);
     });
   }
 
@@ -279,7 +279,7 @@ $(document).on('turbolinks:load', function() {
     });
   };
 
-  var exportExerciseConfirm = function(exerciseID, pushType) {
+  var exportExerciseConfirm = function(exerciseID) {
     var $exerciseDiv = $('#export-exercise');
     var $messageDiv = $exerciseDiv.children('.export-message');
     var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
@@ -287,9 +287,6 @@ $(document).on('turbolinks:load', function() {
     return $.ajax({
       type: 'POST',
       url: '/exercises/' + exerciseID + '/export_external_confirm',
-      data: {
-        push_type: pushType
-      },
       dataType: 'json',
       success: function(response) {
         $messageDiv.html(response.message)
