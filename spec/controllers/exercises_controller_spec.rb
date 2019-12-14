@@ -460,7 +460,7 @@ describe ExercisesController do
 
   describe 'POST #import_exercise' do
     let(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
-    let(:imported_exercise) { exercise }
+    let!(:imported_exercise) { FactoryBot.create(:fibonacci) }
     let(:post_request) { post :import_exercise, body: zip_file_content }
     let(:zip_file_content) { 'zipped task xml' }
     let(:headers) { {'Authorization' => "Bearer #{codeharbor_link.api_key}"} }
@@ -497,6 +497,13 @@ describe ExercisesController do
         expect(response).to have_http_status(:internal_server_error)
       end
     end
-  end
 
+    context 'when the imported exercise is invalid' do
+      before { allow(ProformaService::Import).to receive(:call) { imported_exercise.tap { |e| e.files = [] }.tap { |e| e.title = nil } } }
+
+      it 'responds with correct status code' do
+        expect { post_request }.not_to(change { imported_exercise.reload.files.count })
+      end
+    end
+  end
 end
