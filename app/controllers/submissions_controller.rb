@@ -235,7 +235,11 @@ class SubmissionsController < ApplicationController
       # Filter out information about run_command, test_command, user or working directory
       run_command = @submission.execution_environment.run_command % command_substitutions(sanitize_filename)
       test_command = @submission.execution_environment.test_command % command_substitutions(sanitize_filename)
-      unless /root|workspace|#{run_command}|#{test_command}/.match(message)
+      if test_command.blank?
+        # If no test command is set, use the run_command for the RegEx below. Otherwise, no output will be displayed!
+        test_command = run_command
+      end
+      unless /root|workspace|#{run_command.gsub('.', '\.')}|#{test_command}/.match(message)
         parse_message(message, 'stdout', tubesock)
       end
     end
