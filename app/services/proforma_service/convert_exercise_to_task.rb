@@ -26,8 +26,7 @@ module ProformaService
           tests: tests,
           uuid: uuid,
           language: DEFAULT_LANGUAGE,
-          model_solutions: model_solutions,
-          import_checksum: @exercise.import_checksum
+          model_solutions: model_solutions
         }.compact
       )
     end

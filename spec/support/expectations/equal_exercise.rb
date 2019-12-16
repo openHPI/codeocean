@@ -37,6 +37,6 @@ RSpec::Matchers.define :be_an_equal_exercise_as do |exercise|
   def attributes_and_associations(object)
     object.attributes.dup.tap do |attributes|
       attributes[:files] = object.files if defined? object.files
-    end.except('id', 'created_at', 'updated_at', 'exercise_id', 'uuid', 'import_checksum')
+    end.except('id', 'created_at', 'updated_at', 'exercise_id', 'uuid')
   end
 end

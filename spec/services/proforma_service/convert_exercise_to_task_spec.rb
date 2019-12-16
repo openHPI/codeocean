@@ -40,8 +40,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
         # parent_uuid: exercise.clone_relations.first&.origin&.uuid,
         files: [],
         tests: [],
-        model_solutions: [],
-        import_checksum: exercise.import_checksum
+        model_solutions: []
       )
     end
 

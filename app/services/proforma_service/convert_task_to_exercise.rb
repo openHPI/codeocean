@@ -21,8 +21,7 @@ module ProformaService
         title: @task.title,
         description: @task.description,
         instructions: @task.internal_description,
-        files: files,
-        import_checksum: @task.checksum
+        files: files
       )
     end
 

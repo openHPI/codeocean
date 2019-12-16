@@ -39,9 +39,7 @@ describe ProformaService::ConvertTaskToExercise do
         language: 'language',
         model_solutions: model_solutions,
         files: files,
-        tests: tests,
-        import_checksum: 'import_checksum',
-        checksum: 'checksum'
+        tests: tests
       )
     end
     let(:user) { FactoryBot.create(:teacher) }
