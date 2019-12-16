@@ -129,7 +129,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.9.0)
     eventmachine (1.0.9.1)
-    excon (0.69.1)
+    excon (0.71.0)
     execjs (2.7.0)
     factory_bot (5.1.1)
       activesupport (>= 4.2.0)
