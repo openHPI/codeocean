@@ -128,42 +128,14 @@ describe ProformaService::Import do
       it { is_expected.to be_an_equal_exercise_as exercise }
     end
 
-    # context 'when zip contains multiple tasks' do
-    #   let(:exporter) { ProformaService::ExportTasks.call(exercises: [exercise, exercise2]).string }
-
-    #   let(:exercise2) do
-    #     FactoryBot.create(:dummy,
-    #                       instruction: 'instruction2',
-    #                       execution_environment: execution_environment,
-    #                       exercise_files: [],
-    #                       tests: [],
-    #                       user: user)
-    #   end
-
-    #   it 'imports the exercises from zip containing multiple zips' do
-    #     expect(import_service).to all be_an(Exercise)
-    #   end
-
-    #   it 'imports the zip exactly how they were exported' do
-    #     expect(import_service).to all be_an_equal_exercise_as(exercise).or be_an_equal_exercise_as(exercise2)
-    #   end
-
-    #   context 'when a exercise has files and tests' do
-    #     let(:files) { [FactoryBot.build(:file), FactoryBot.build(:file, role: 'regular_file')] }
-    #     let(:tests) { FactoryBot.build_list(:codeharbor_test, 2) }
-
-    #     it 'imports the zip exactly how the were exported' do
-    #       expect(import_service).to all be_an_equal_exercise_as(exercise).or be_an_equal_exercise_as(exercise2)
-    #     end
-    #   end
-    # end
-
     context 'when task in zip has a different uuid' do
       let(:uuid) { SecureRandom.uuid }
       let(:new_uuid) { SecureRandom.uuid }
+      let(:imported_exercise) { import_service }
 
       before do
         exercise.update(uuid: new_uuid)
+        imported_exercise.save!
       end
 
       it 'creates a new Exercise' do
@@ -173,16 +145,18 @@ describe ProformaService::Import do
 
     context 'when task in zip has the same uuid and nothing has changed' do
       let(:uuid) { SecureRandom.uuid }
+      let(:imported_exercise) { import_service }
 
       it 'updates the old Exercise' do
-        expect(import_service.id).to be exercise.id
+        imported_exercise.save!
+        expect(imported_exercise.id).to be exercise.id
       end
 
       context 'when another user imports the exercise' do
         let(:import_user) { FactoryBot.create(:teacher) }
 
-        it 'creates a new Exercise' do
-          expect(import_service.id).not_to be exercise.id
+        it 'raises a validation error' do
+          expect { imported_exercise.save! } .to raise_error ActiveRecord::RecordInvalid
         end
       end
     end

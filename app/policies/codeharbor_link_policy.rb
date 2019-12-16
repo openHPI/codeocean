@@ -8,11 +8,11 @@ class CodeharborLinkPolicy < ApplicationPolicy
   end
 
   def new?
-    teacher?
+    teacher? || admin?
   end
 
   def create?
-    teacher?
+    teacher? || admin?
   end
 
   def edit?

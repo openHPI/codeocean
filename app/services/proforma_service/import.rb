@@ -28,13 +28,9 @@ module ProformaService
 
     def base_exercise
       exercise = Exercise.find_by(uuid: @task.uuid)
-      if exercise
-        return exercise if ExercisePolicy.new(@user, exercise).update?
+      return exercise if exercise && ExercisePolicy.new(@user, exercise).update?
 
-        return Exercise.new(uuid: SecureRandom.uuid, unpublished: true)
-      end
-
-      Exercise.new(uuid: @task.uuid || SecureRandom.uuid, unpublished: true)
+      Exercise.new(uuid: @task.uuid, unpublished: true)
     end
 
     def import_multi
