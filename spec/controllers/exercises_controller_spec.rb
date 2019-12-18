@@ -489,6 +489,15 @@ describe ExercisesController do
       end
     end
 
+    context 'when import fails with ExerciseNotOwned' do
+      before { allow(ProformaService::Import).to receive(:call).and_raise(Proforma::ExerciseNotOwned) }
+
+      it 'responds with correct status code' do
+        post_request
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
     context 'when import fails due to another error' do
       before { allow(ProformaService::Import).to receive(:call).and_raise(StandardError) }
 

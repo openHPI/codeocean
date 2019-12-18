@@ -188,6 +188,8 @@ class ExercisesController < ApplicationController
       exercise.save!
       return render json: {}, status: 201
     end
+  rescue Proforma::ExerciseNotOwned
+    render json: {}, status: 401
   rescue Proforma::ProformaError
     render json: t('exercises.import_codeharbor.import_errors.invalid'), status: 400
   rescue StandardError

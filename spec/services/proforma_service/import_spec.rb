@@ -155,8 +155,8 @@ describe ProformaService::Import do
       context 'when another user imports the exercise' do
         let(:import_user) { FactoryBot.create(:teacher) }
 
-        it 'raises a validation error' do
-          expect { imported_exercise.save! } .to raise_error ActiveRecord::RecordInvalid
+        it 'raises a proforma error' do
+          expect { imported_exercise.save! } .to raise_error Proforma::ExerciseNotOwned
         end
       end
     end
