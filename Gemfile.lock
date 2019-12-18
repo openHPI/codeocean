@@ -9,12 +9,12 @@ GIT
 
 GIT
   remote: https://github.com/openHPI/proforma.git
-  revision: 6784ace5bb4449fd53f419fa1eb40dfc04e8f086
-  tag: v0.3.2
+  revision: b09c9fcc1fdb314fc1fb1396e7d0bb2d70e376c5
+  tag: v0.4
   specs:
-    proforma (0.3.2)
-      activemodel (~> 5.2.3)
-      activesupport (~> 5.2.3)
+    proforma (0.4)
+      activemodel (>= 5.2.3, < 6.1.0)
+      activesupport (>= 5.2.3, < 6.1.0)
       nokogiri (~> 1.10.2)
       rubyzip (>= 1.2.2, < 2.1.0)
 

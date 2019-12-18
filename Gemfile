@@ -37,7 +37,7 @@ gem 'rest-client'
 gem 'rubyzip'
 gem 'mnemosyne-ruby'
 gem 'faraday'
-gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.3.2'
+gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.4'
 gem 'whenever', require: false
 gem 'rails-timeago'
 
