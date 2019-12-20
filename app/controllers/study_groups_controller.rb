@@ -4,7 +4,7 @@ class StudyGroupsController < ApplicationController
   before_action :set_group, only: MEMBER_ACTIONS
 
   def index
-    @search = StudyGroup.ransack(params[:q])
+    @search = policy_scope(StudyGroup).ransack(params[:q])
     @study_groups = @search.result.includes(:consumer).order(:name).paginate(page: params[:page])
     authorize!
   end

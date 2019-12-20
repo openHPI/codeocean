@@ -14,6 +14,6 @@ class SubmissionPolicy < ApplicationPolicy
 
 
   def show_study_group?
-    admin? || teacher_in_study_group
+    admin? || teacher_in_study_group?
   end
 end

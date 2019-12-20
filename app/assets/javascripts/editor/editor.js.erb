@@ -174,7 +174,7 @@ configureEditors: function () {
         category: 'editor_paste',
         data: pasteObject.text,
         exercise_id: $('#editor').data('exercise-id'),
-        file_id: $(event.target).data('file-id')
+        file_id: $(event.target).parent().data('file-id')
       });
     }
   },
