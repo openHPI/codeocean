@@ -1,7 +1,7 @@
 en:
   activerecord:
     attributes:
-      code_harbor_link:
+      codeharbor_link:
         oauth2token: OAuth2 Token
       consumer:
         name: Name
@@ -44,6 +44,8 @@ en:
         allow_file_creation: "Allow file creation"
         difficulty: Difficulty
         token: "Exercise Token"
+        uuid: UUID
+        unpublished: Unpublished
       proxy_exercise:
         title: Title
         files_count: Exercises Count
@@ -240,6 +242,16 @@ en:
   consumers:
     show:
       link: Consumer
+  codeharbor_link:
+    generate: Generate
+    info:
+      push_url: The url from Codeharbor where your exercise can be exported to. If you don't know what to write here, ask an admin.
+      check_uuid_url: The url from Codeharbor where we can check if the exercise already exists. If you don't know what to write here, ask an admin.
+      api_key: Will be used to authenticate your export request. Has to be the same on both sides.
+    profile_label: Codeharbor Link
+    new: Create link to Codeharbor
+    edit: Edit existing link
+    delete: Remove Codeharbor link
   execution_environments:
     form:
       hints:
@@ -298,6 +310,26 @@ en:
       request_for_comments_sent: "Request for comments sent."
     editor_file_tree:
       file_root: Files
+    import_codeharbor:
+      import_errors:
+        invalid: Invalid exercise
+        internal_error: An internal error occurred on Codeharbor while importing the exercise.
+    export_codeharbor:
+      label: Export to Codeharbor
+      dialogtitle: Export to Codeharbor
+      successfully_exported: 'Exercise has been successfully exported.<br>ID: %{id}<br>Title: %{title}'
+      export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
+      error: 'An error occurred while contacting Codeharbor'
+      checking_codeharbor: Checking if the exercise exists on Codeharbor.
+      buttons:
+        retry: Retry
+        export: Export
+        close: Close
+        abort: Abort
+      check:
+        no_exercise: No corresponding exercise found on Codeharbor. Pushing this exercise will create a new exercise on Codeharbor, which will be linked to this one on Codeocean. Any changes to either one can be pushed to the respective other platform.
+        exercise_found: 'A corresponding exercise has been found on Codeharbor. You can export the exercise to transfer all changes made on Codeocean to Codeharbor. Careful: This will overwrite all potential changes made on Codeharbor.'
+        exercise_found_no_right: A corresponding exercise has been found on Codeharbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the exercise on Codeharbor.
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.
@@ -306,6 +338,9 @@ en:
       add_file: Add file
       tags: "Tags"
       click_to_collapse: "Click to expand/collapse..."
+      unpublish_warning: This will unpublish the exercise. Any student trying to implement it will get an error message, until it is published again.
+      no_execution_environment_selected: Select an execution environment before publishing the exercise.
+      none: None
     implement:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'
@@ -355,6 +390,8 @@ en:
       feedback: Feedback
       requests_for_comments: Requests for Comments
       study_group_dashboard: Live Dashboard
+    show:
+      is_unpublished: Exercise is unpublished
     statistics:
       average_score: Average Score
       final_submissions: Final Submissions

@@ -3,3 +3,5 @@ test:
     enabled: false
   code_pilot:
     enabled: false
+  codeharbor:
+    url: http://test.url

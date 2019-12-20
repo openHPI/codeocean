@@ -209,6 +209,105 @@ $(document).on('turbolinks:load', function() {
     });
   };
 
+  var old_execution_environment = $('#exercise_execution_environment_id').val();
+  var observeExecutionEnvironment = function() {
+    $('#exercise_execution_environment_id').on('change', function(){
+      new_execution_environment = $('#exercise_execution_environment_id').val();
+
+      if(new_execution_environment == '' && !$('#exercise_unpublished').prop('checked')){
+        if(confirm('<%= I18n.t('exercises.form.unpublish_warning') %>')){
+          $('#exercise_unpublished').prop('checked', true);
+        } else {
+          return $('#exercise_execution_environment_id').val(old_execution_environment).trigger("chosen:updated");
+        }
+      }
+      old_execution_environment = new_execution_environment;
+    });
+  };
+
+  var observeUnpublishedState = function() {
+    $('#exercise_unpublished').on('change', function(){
+      if($('#exercise_unpublished').prop('checked')){
+        if(!confirm('<%= I18n.t('exercises.form.unpublish_warning') %>')){
+          $('#exercise_unpublished').prop('checked', false);
+        }
+      } else if($('#exercise_execution_environment_id').val() == '') {
+        alert('<%= I18n.t('exercises.form.no_execution_environment_selected') %>');
+        $('#exercise_unpublished').prop('checked', true);
+      }
+    })
+  };
+
+  var observeExportButtons = function(){
+    $('.export-start').on('click', function(e){
+      e.preventDefault();
+      $('#export-modal').modal({
+        height: 250
+      });
+      $('#export-modal').modal('show');
+      exportExerciseStart($(this).data().exerciseId);
+    });
+    $('body').on('click', '.export-retry-button', function(){
+      exportExerciseStart($(this).data().exerciseId);
+    });
+    $('body').on('click', '.export-action', function(){
+      exportExerciseConfirm($(this).data().exerciseId);
+    });
+  }
+
+  var exportExerciseStart = function(exerciseID) {
+    var $exerciseDiv = $('#export-exercise');
+    var $messageDiv = $exerciseDiv.children('.export-message');
+    var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
+
+    $messageDiv.removeClass('export-failure');
+
+    $messageDiv.html('<%= I18n.t('exercises.export_codeharbor.checking_codeharbor') %>');
+    $actionsDiv.html('<div class="spinner-border"></div>');
+
+    return $.ajax({
+      type: 'POST',
+      url: '/exercises/' + exerciseID + '/export_external_check',
+      dataType: 'json',
+      success: function(response) {
+        $messageDiv.html(response.message);
+        return $actionsDiv.html(response.actions);
+      },
+      error: function(a, b, c) {
+        return alert('error:' + c);
+      }
+    });
+  };
+
+  var exportExerciseConfirm = function(exerciseID) {
+    var $exerciseDiv = $('#export-exercise');
+    var $messageDiv = $exerciseDiv.children('.export-message');
+    var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
+
+    return $.ajax({
+      type: 'POST',
+      url: '/exercises/' + exerciseID + '/export_external_confirm',
+      dataType: 'json',
+      success: function(response) {
+        $messageDiv.html(response.message)
+        $actionsDiv.html(response.actions);
+
+        if(response.status == 'success') {
+          $messageDiv.addClass('export-success');
+          setTimeout((function() {
+            $('#export-modal').modal('hide');
+            $messageDiv.html('').removeClass('export-success');
+          }), 3000);
+        } else {
+          $messageDiv.addClass('export-failure');
+        }
+      },
+      error: function(a, b, c) {
+        return alert('error:' + c);
+      }
+    });
+  };
+
   var overrideTextareaTabBehavior = function() {
     $('.form-group textarea[name$="[content]"]').on('keydown', function(event) {
       if (event.which === TAB_KEY_CODE) {
@@ -264,6 +363,7 @@ $(document).on('turbolinks:load', function() {
       // ignore tags table since it is in the dom before other tables
     if ($('table:not(#tags-table)').isPresent()) {
       enableBatchUpdate();
+      observeExportButtons();
     } else if ($('.edit_exercise, .new_exercise').isPresent()) {
       execution_environments = $('form').data('execution-environments');
       file_types = $('form').data('file-types');
@@ -271,6 +371,8 @@ $(document).on('turbolinks:load', function() {
       enableInlineFileCreation();
       inferFileAttributes();
       observeFileRoleChanges();
+      observeExecutionEnvironment();
+      observeUnpublishedState();
       overrideTextareaTabBehavior();
     } else if ($('#files.jstree').isPresent()) {
         var fileTypeSelect = $('#code_ocean_file_file_type_id');

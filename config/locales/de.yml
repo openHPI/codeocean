@@ -1,7 +1,7 @@
 de:
   activerecord:
     attributes:
-      code_harbor_link:
+      codeharbor_link:
         oauth2token: OAuth2 Token
       consumer:
         name: Name
@@ -44,6 +44,8 @@ de:
         allow_file_creation: "Dateierstellung erlauben"
         difficulty: Schwierigkeitsgrad
         token: "Aufgaben-Token"
+        uuid: UUID
+        unpublished: Deaktiviert
       proxy_exercise:
         title: Title
         files_count: Anzahl der Aufgaben
@@ -240,6 +242,16 @@ de:
   consumers:
     show:
       link: Konsument
+  codeharbor_link:
+    generate: Generieren
+    info:
+      push_url: Die Url von Codeharbor zu der die Aufgabe exportiert werden soll. Bei Unklarheiten bitte an einen Admin wenden.
+      check_uuid_url: Die Url von Codeharbor an der geprüft werden kann, ob die Aufgabe schon existiert. Bei Unklarheiten bitte an einen Admin wenden.
+      api_key: Wird zum Authentifizieren gegenüber Codeharbor genutzt. Auf Codeharbor muss der gleiche Key eingetragen sein.
+    profile_label: Codeharbor Link
+    new: Neue Codeharbor Link anlegen
+    edit: Codeharbor Link bearbeiten
+    delete: Codeharbor Link entfernen
   execution_environments:
     form:
       hints:
@@ -298,6 +310,26 @@ de:
       request_for_comments_sent: "Kommentaranfrage gesendet."
     editor_file_tree:
       file_root: Dateien
+    import_codeharbor:
+      import_errors:
+        invalid: Fehlerhafte Aufgabe
+        internal_error: Beim Import der Aufgabe ist ein interner Fehler aufgetreten.
+    export_codeharbor:
+      label: Zu Codeharbor exportieren
+      dialogtitle: Zu Codeharbor exportieren
+      successfully_exported: 'Aufgabe wurde erfolgreich exportiert.<br>ID: %{id}<br>Title: %{title}'
+      export_failed: 'Export ist fehlgeschlagen.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
+      error: Es ist ein Fehler bei der Kommunikation mit Codeharbor aufgetreten.
+      checking_codeharbor: Es wird geprüft, ob auf Codeharbor eine korrespondierende Aufgabe gefunden werden kann.
+      buttons:
+        retry: Erneut probieren
+        export: Export
+        close: Schließen
+        abort: Abbrechen
+      check:
+        no_exercise: Auf Codeharbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf Codeharbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
+        exercise_found: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen, die auf Codeocean vorgenommen wurden, exportiert und die Aufgabe auf Codeharbor überschrieben.
+        exercise_found_no_right: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
     file_form:
       hints:
         feedback_message: Diese Nachricht wird als Tipp zu fehlschlagenden Tests angezeigt.
@@ -306,6 +338,9 @@ de:
       add_file: Datei hinzufügen
       tags: "Tags"
       click_to_collapse: "Zum Aus-/Einklappen hier klicken..."
+      unpublish_warning: Mit dieser Aktion wird die Aufgabe deaktiviert. Jeder Student, der versucht sie zu implementieren wird eine Fehlermeldung bekommen, bis die Aufgabe wieder aktiviert wurde.
+      no_execution_environment_selected: Bitte eine Ausführungsumgebung auswählen, bevor die Aufgabe aktiviert wird.
+      none: Keine
     implement:
       alert:
         text: 'Ihr Browser unterstützt nicht alle Funktionalitäten, die %{application_name} benötigt. Bitte nutzen Sie einen modernen Browser, um %{application_name} zu besuchen.'
@@ -355,6 +390,8 @@ de:
       feedback: Feedback
       requests_for_comments: Kommentaranfragen
       study_group_dashboard: Live Dashboard
+    show:
+      is_unpublished: Aufgabe ist deaktiviert
     statistics:
       average_score: Durchschnittliche Punktzahl
       final_submissions: Finale Abgaben

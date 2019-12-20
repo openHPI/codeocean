@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :user_proxy_exercise_exercises, as: :user
   has_many :user_exercise_interventions, as: :user
   has_many :interventions, through: :user_exercise_interventions
+  has_one :codeharbor_link, dependent: :destroy
   accepts_nested_attributes_for :user_proxy_exercise_exercises
 
 

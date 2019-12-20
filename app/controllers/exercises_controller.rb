@@ -7,14 +7,14 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: [:create, :update]
   before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :requests_for_comments, :study_group_dashboard]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :requests_for_comments, :study_group_dashboard, :export_external_check, :export_external_confirm]
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: [:create, :edit, :new, :update]
   before_action :set_course_token, only: [:implement]
 
-  skip_before_action :verify_authenticity_token, only: [:import_proforma_xml]
-  skip_after_action :verify_authorized, only: [:import_proforma_xml]
-  skip_after_action :verify_policy_scoped, only: [:import_proforma_xml], raise: false
+  skip_before_action :verify_authenticity_token, only: [:import_exercise, :import_uuid_check, :export_external_confirm]
+  skip_after_action :verify_authorized, only: [:import_exercise, :import_uuid_check, :export_external_confirm]
+  skip_after_action :verify_policy_scoped, only: [:import_exercise, :import_uuid_check, :export_external_confirm], raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -35,7 +35,6 @@ class ExercisesController < ApplicationController
         java1: "0ea88ea9-979a-44a3-b0e4-84ba58e5a05e"
     }
   end
-
 
   def experimental_course?(course_token)
     experimental_courses.has_value?(course_token)
@@ -122,60 +121,96 @@ class ExercisesController < ApplicationController
     render 'request_for_comments/index'
   end
 
-  def import_proforma_xml
-    begin
-      user = user_for_oauth2_request()
-      exercise = Exercise.new
-      request_body = request.body.read
-      exercise.from_proforma_xml(request_body)
-      exercise.user = user
-      saved = exercise.save
-      if saved
-        render :text => 'SUCCESS', :status => 200
-      else
-        logger.info(exercise.errors.full_messages)
-        render :text => 'Invalid exercise', :status => 400
-      end
-    rescue => error
-      if error.class == Hash
-        render :text => error.message, :status => error.status
-      else
-        raise error
-        render :text => '', :status => 500
-      end
+  def export_external_check
+    codeharbor_check = ExerciseService::CheckExternal.call(uuid: @exercise.uuid, codeharbor_link: current_user.codeharbor_link)
+    render json: {
+      message: codeharbor_check[:message],
+      actions: render_to_string(
+        partial: 'export_actions',
+        locals: {
+          exercise: @exercise,
+          exercise_found: codeharbor_check[:exercise_found],
+          update_right: codeharbor_check[:update_right],
+          error: codeharbor_check[:error],
+          exported: false
+        }
+      )
+    }, status: 200
+  end
+
+  def export_external_confirm
+    @exercise.uuid = SecureRandom.uuid if @exercise.uuid.nil?
+
+    error = ExerciseService::PushExternal.call(
+      zip: ProformaService::ExportTask.call(exercise: @exercise),
+      codeharbor_link: current_user.codeharbor_link
+    )
+    if error.nil?
+      render json: {
+        status: 'success',
+        message: t('exercises.export_codeharbor.successfully_exported', id: @exercise.id, title: @exercise.title),
+        actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
+      }
+      @exercise.save
+    else
+      render json: {
+        status: 'fail',
+        message: t('exercises.export_codeharbor.export_failed', id: @exercise.id, title: @exercise.title, error: error),
+        actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
+      }
     end
   end
 
-  def user_for_oauth2_request
-    authorizationHeader = request.headers['Authorization']
-    if authorizationHeader == nil
-      raise ({status: 401, message: 'No Authorization header'})
-    end
+  def import_uuid_check
+    user = user_from_api_key
+    return render json: {}, status: 401 if user.nil?
 
-    oauth2Token = authorizationHeader.split(' ')[1]
-    if oauth2Token == nil || oauth2Token.size == 0
-      raise ({status: 401, message: 'No token in Authorization header'})
-    end
+    uuid = params[:uuid]
+    exercise = Exercise.find_by(uuid: uuid)
 
-    user = user_by_code_harbor_token(oauth2Token)
-    if user == nil
-      raise ({status: 401, message: 'Unknown OAuth2 token'})
-    end
+    return render json: {exercise_found: false} if exercise.nil?
+    return render json: {exercise_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
 
-    return user
+    render json: {exercise_found: true, update_right: true}
   end
-  private :user_for_oauth2_request
 
-  def user_by_code_harbor_token(oauth2Token)
-    link = CodeHarborLink.where(:oauth2token => oauth2Token)[0]
-    if link != nil
-      return link.user
+  def import_exercise
+    tempfile = Tempfile.new('codeharbor_import.zip')
+    tempfile.write request.body.read.force_encoding('UTF-8')
+    tempfile.rewind
+
+    user = user_from_api_key
+    return render json: {}, status: 401 if user.nil?
+
+    exercise = nil
+    ActiveRecord::Base.transaction do
+      exercise = ::ProformaService::Import.call(zip: tempfile, user: user)
+      exercise.save!
+      return render json: {}, status: 201
     end
+  rescue Proforma::ExerciseNotOwned
+    render json: {}, status: 401
+  rescue Proforma::ProformaError
+    render json: t('exercises.import_codeharbor.import_errors.invalid'), status: 400
+  rescue StandardError
+    render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: 500
   end
-  private :user_by_code_harbor_token
+
+  def user_from_api_key
+    authorization_header = request.headers['Authorization']
+    api_key = authorization_header&.split(' ')&.second
+    user_by_codeharbor_token(api_key)
+  end
+  private :user_from_api_key
+
+  def user_by_codeharbor_token(api_key)
+    link = CodeharborLink.find_by_api_key(api_key)
+    link&.user
+  end
+  private :user_by_codeharbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?
   end
   private :exercise_params
 
@@ -197,6 +232,7 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def implement
+    redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? # TODO TESTESTEST
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.has_user_solved(current_user)
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count

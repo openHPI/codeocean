@@ -36,6 +36,8 @@ gem 'webpacker'
 gem 'rest-client'
 gem 'rubyzip'
 gem 'mnemosyne-ruby'
+gem 'faraday'
+gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.4'
 gem 'whenever', require: false
 gem 'rails-timeago'
 
@@ -49,6 +51,7 @@ group :development, :staging do
   gem 'capistrano-rails'
   gem 'capistrano-rvm'
   gem 'capistrano-upload-config'
+  gem 'pry-rails'
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
@@ -69,6 +72,9 @@ group :test do
   gem 'database_cleaner'
   gem 'nyan-cat-formatter'
   gem 'rspec-autotest'
+  gem 'rspec-collection_matchers'
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
   gem 'simplecov', require: false
+  gem 'webmock'
 end

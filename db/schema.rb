@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_13_131802) do
+ActiveRecord::Schema.define(version: 2019_10_08_163045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,12 +28,14 @@ ActiveRecord::Schema.define(version: 2019_02_13_131802) do
     t.index ["user_type", "user_id"], name: "index_anomaly_notifications_on_user_type_and_user_id"
   end
 
-  create_table "code_harbor_links", force: :cascade do |t|
-    t.string "oauth2token", limit: 255
+  create_table "codeharbor_links", force: :cascade do |t|
+    t.string "api_key", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "user_id"
-    t.index ["user_id"], name: "index_code_harbor_links_on_user_id"
+    t.string "push_url"
+    t.string "check_uuid_url"
+    t.index ["user_id"], name: "index_codeharbor_links_on_user_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -150,6 +152,8 @@ ActiveRecord::Schema.define(version: 2019_02_13_131802) do
     t.boolean "allow_file_creation"
     t.boolean "allow_auto_completion", default: false
     t.integer "expected_difficulty", default: 1
+    t.uuid "uuid"
+    t.boolean "unpublished", default: false
     t.index ["id"], name: "index_exercises_on_id"
   end
 

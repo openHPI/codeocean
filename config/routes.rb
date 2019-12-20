@@ -13,7 +13,7 @@ Rails.application.routes.draw do
       get 'by_file_type/:file_type_id', as: :by_file_type, action: :by_file_type
     end
   end
-  resources :code_harbor_links
+  resources :codeharbor_links, only: %i[new create edit update destroy]
   resources :request_for_comments do
     member do
       get :mark_as_solved, defaults: { format: :json }
@@ -66,7 +66,8 @@ Rails.application.routes.draw do
     end
   end
 
-  post '/import_proforma_xml' => 'exercises#import_proforma_xml'
+  post '/import_exercise' => 'exercises#import_exercise'
+  post '/import_uuid_check' => 'exercises#import_uuid_check'
 
   resources :exercises do
     collection do
@@ -85,6 +86,8 @@ Rails.application.routes.draw do
       get :reload
       post :submit
       get 'study_group_dashboard/:study_group_id', to: 'exercises#study_group_dashboard'
+      post :export_external_check
+      post :export_external_confirm
     end
   end
 

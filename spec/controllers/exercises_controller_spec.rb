@@ -313,4 +313,206 @@ describe ExercisesController do
       expect_template(:edit)
     end
   end
+
+  RSpec::Matchers.define_negated_matcher :not_include, :include
+  # RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = 99999
+
+  describe 'POST #export_external_check' do
+    render_views
+
+    let(:post_request) { post :export_external_check, params: { id: exercise.id } }
+    let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
+    let(:external_check_hash) { {message: message, exercise_found: true, update_right: update_right, error: error} }
+    let(:message) { 'message' }
+    let(:update_right) { true }
+    let(:error) {}
+
+    before { allow(ExerciseService::CheckExternal).to receive(:call).with(uuid: exercise.uuid, codeharbor_link: codeharbor_link).and_return(external_check_hash) }
+
+    it 'renders the correct contents as json' do
+      post_request
+      expect(JSON.parse(response.body).symbolize_keys[:message]).to eq('message')
+      expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
+        include('button').and(include('Abort').and(include('Export')))
+      )
+      expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
+        not_include('Retry').and(not_include('Hide'))
+      )
+    end
+
+    context 'when there is an error' do
+      let(:error) { 'error' }
+
+      it 'renders the correct contents as json' do
+        post_request
+        expect(JSON.parse(response.body).symbolize_keys[:message]).to eq('message')
+        expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
+          include('button').and(include('Abort')).and(include('Retry'))
+        )
+        expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
+          not_include('Export').and(not_include('Hide'))
+        )
+      end
+    end
+
+    context 'when update_right is false' do
+      let(:update_right) { false }
+
+      it 'renders the correct contents as json' do
+        post_request
+        expect(JSON.parse(response.body).symbolize_keys[:message]).to eq('message')
+        expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
+          include('button').and(include('Abort'))
+        )
+        expect(JSON.parse(response.body).symbolize_keys[:actions]).to(
+          not_include('Retry').and(not_include('Export')).and(not_include('Hide'))
+        )
+      end
+    end
+  end
+
+  describe '#export_external_confirm' do
+    render_views
+
+    let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
+    let(:post_request) { post :export_external_confirm, params: {id: exercise.id, codeharbor_link: codeharbor_link.id} }
+    let(:error) {}
+    let(:zip) { 'zip' }
+
+    before do
+      allow(ProformaService::ExportTask).to receive(:call).with(exercise: exercise).and_return(zip)
+      allow(ExerciseService::PushExternal).to receive(:call).with(zip: zip, codeharbor_link: codeharbor_link).and_return(error)
+    end
+
+    it 'renders correct response' do
+      post_request
+
+      expect(response).to have_http_status(:success)
+      expect(JSON.parse(response.body).symbolize_keys[:message]).to(include('successfully exported'))
+      expect(JSON.parse(response.body).symbolize_keys[:status]).to(eql('success'))
+      expect(JSON.parse(response.body).symbolize_keys[:actions]).to(include('button').and(include('Close')))
+      expect(JSON.parse(response.body).symbolize_keys[:actions]).to(not_include('Retry').and(not_include('Abort')))
+    end
+
+    context 'when an error occurs' do
+      let(:error) { 'exampleerror' }
+
+      it 'renders correct response' do
+        post_request
+        expect(response).to have_http_status(:success)
+        expect(JSON.parse(response.body).symbolize_keys[:message]).to(include('failed').and(include('exampleerror')))
+        expect(JSON.parse(response.body).symbolize_keys[:status]).to(eql('fail'))
+        expect(JSON.parse(response.body).symbolize_keys[:actions]).to(include('button').and(include('Retry')).and(include('Close')))
+        expect(JSON.parse(response.body).symbolize_keys[:actions]).to(not_include('Abort'))
+      end
+    end
+  end
+
+  describe '#import_uuid_check' do
+    let(:exercise) { FactoryBot.create(:dummy, uuid: SecureRandom.uuid) }
+    let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
+    let(:uuid) { exercise.reload.uuid }
+    let(:post_request) { post :import_uuid_check, params: {uuid: uuid} }
+    let(:headers) { {'Authorization' => "Bearer #{codeharbor_link.api_key}"} }
+
+    before { request.headers.merge! headers }
+
+    it 'renders correct response' do
+      post_request
+      expect(response).to have_http_status(:success)
+
+      expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be true
+      expect(JSON.parse(response.body).symbolize_keys[:update_right]).to be true
+    end
+
+    context 'when api_key is incorrect' do
+      let(:headers) { {'Authorization' => 'Bearer XXXXXX'} }
+
+      it 'renders correct response' do
+        post_request
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'when the user cannot update the exercise' do
+      let(:codeharbor_link) { FactoryBot.create(:codeharbor_link, api_key: 'anotherkey') }
+
+      it 'renders correct response' do
+        post_request
+        expect(response).to have_http_status(:success)
+
+        expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be true
+        expect(JSON.parse(response.body).symbolize_keys[:update_right]).to be false
+      end
+    end
+
+    context 'when the searched exercise does not exist' do
+      let(:uuid) { 'anotheruuid' }
+
+      it 'renders correct response' do
+        post_request
+        expect(response).to have_http_status(:success)
+
+        expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be false
+      end
+    end
+  end
+
+  describe 'POST #import_exercise' do
+    let(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
+    let!(:imported_exercise) { FactoryBot.create(:fibonacci) }
+    let(:post_request) { post :import_exercise, body: zip_file_content }
+    let(:zip_file_content) { 'zipped task xml' }
+    let(:headers) { {'Authorization' => "Bearer #{codeharbor_link.api_key}"} }
+
+    before do
+      request.headers.merge! headers
+      allow(ProformaService::Import).to receive(:call).and_return(imported_exercise)
+    end
+
+    it 'responds with correct status code' do
+      post_request
+      expect(response).to have_http_status(:created)
+    end
+
+    it 'calls service' do
+      post_request
+      expect(ProformaService::Import).to have_received(:call).with(zip: be_a(Tempfile).and(has_content(zip_file_content)), user: user)
+    end
+
+    context 'when import fails with ProformaError' do
+      before { allow(ProformaService::Import).to receive(:call).and_raise(Proforma::PreImportValidationError) }
+
+      it 'responds with correct status code' do
+        post_request
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+
+    context 'when import fails with ExerciseNotOwned' do
+      before { allow(ProformaService::Import).to receive(:call).and_raise(Proforma::ExerciseNotOwned) }
+
+      it 'responds with correct status code' do
+        post_request
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'when import fails due to another error' do
+      before { allow(ProformaService::Import).to receive(:call).and_raise(StandardError) }
+
+      it 'responds with correct status code' do
+        post_request
+        expect(response).to have_http_status(:internal_server_error)
+      end
+    end
+
+    context 'when the imported exercise is invalid' do
+      before { allow(ProformaService::Import).to receive(:call) { imported_exercise.tap { |e| e.files = [] }.tap { |e| e.title = nil } } }
+
+      it 'responds with correct status code' do
+        expect { post_request }.not_to(change { imported_exercise.reload.files.count })
+      end
+    end
+  end
 end

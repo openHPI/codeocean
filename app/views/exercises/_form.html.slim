@@ -11,7 +11,7 @@
     = f.pagedown :description, input_html: { preview: true, rows: 10 }
   .form-group
     = f.label(:execution_environment_id)
-    = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {}, class: 'form-control')
+    = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {include_blank: t('exercises.form.none')}, class: 'form-control')
   /.form-group
     = f.label(:instructions)
     = f.hidden_field(:instructions)
@@ -20,6 +20,10 @@
     label.form-check-label
       = f.check_box(:public, class: 'form-check-input')
       = t('activerecord.attributes.exercise.public')
+  .form-check
+    label.form-check-label
+      = f.check_box(:unpublished, class: 'form-check-input')
+      = t('activerecord.attributes.exercise.unpublished')
   .form-check
     label.form-check-label
       = f.check_box(:hide_file_tree, class: 'form-check-input')

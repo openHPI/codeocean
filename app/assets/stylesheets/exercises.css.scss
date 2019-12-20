@@ -176,3 +176,51 @@ a.file-heading {
     }
   }
 }
+
+#export-modal {
+  .modal-content {
+    min-height: 300px;
+  }
+
+  .modal-body {
+    overflow: auto;
+  }
+}
+
+#export-exercise{
+  display: flex;
+}
+
+.export-message {
+  flex-grow: 1;
+  font-size: 12px;
+  padding-right: 5px;
+  word-wrap: break-word;
+}
+.export-message + :empty {
+  max-width: 100%;
+}
+
+.export-exercise-actions:empty {
+  display: none;
+}
+
+.export-exercise-actions {
+  max-width: 110px;
+  min-width: 110px;
+}
+
+.export-button {
+  font-size: 12px;
+  width: 100%;
+}
+
+.export-success {
+  color: darkgreen;
+  font-size: 12pt;
+  font-weight: 600;
+}
+
+.export-failure {
+  color: darkred;
+}

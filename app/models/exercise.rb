@@ -9,7 +9,7 @@ class Exercise < ApplicationRecord
   after_initialize :generate_token
   after_initialize :set_default_values
 
-  belongs_to :execution_environment
+  belongs_to :execution_environment, optional: true
   has_many :submissions
 
   has_and_belongs_to_many :proxy_exercises
@@ -31,16 +31,17 @@ class Exercise < ApplicationRecord
 
   validate :valid_main_file?
   validates :description, presence: true
-  validates :execution_environment_id, presence: true
+  validates :execution_environment, presence: true, if: -> { !unpublished? }
   validates :public, boolean_presence: true
+  validates :unpublished, boolean_presence: true
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
+  validates_uniqueness_of :uuid, if: -> { uuid.present? }
 
   @working_time_statistics = nil
   attr_reader :working_time_statistics
 
   MAX_EXERCISE_FEEDBACKS = 20
-
 
   def average_percentage
     if average_score and maximum_score != 0.0 and submissions.exists?(cause: 'submit')
@@ -49,7 +50,7 @@ class Exercise < ApplicationRecord
       0
     end
   end
-  
+
   def finishers_percentage
     if users.distinct.count != 0
       (100.0 / users.distinct.count * finishers.count).round(2)

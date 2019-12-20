@@ -4,7 +4,7 @@ describe ExercisePolicy do
   subject { described_class }
 
 let(:exercise) { FactoryBot.build(:dummy) }
-  
+
   permissions :batch_update? do
     it 'grants access to admins only' do
       expect(subject).to permit(FactoryBot.build(:admin), exercise)
@@ -30,7 +30,7 @@ let(:exercise) { FactoryBot.build(:dummy) }
     end
   end
 
-  [:clone?, :destroy?, :edit?, :update?].each do |action|
+  [:clone?, :destroy?, :edit?, :update?, :export_external_check?, :export_external_confirm?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), exercise)
