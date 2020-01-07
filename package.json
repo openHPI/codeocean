@@ -14,7 +14,7 @@
     "opensans-webkit": "^1.0.1",
     "popper.js": "^1.15.0",
     "snyk": "^1.274.0",
-    "underscore": "^1.9.1",
+    "underscore": "^1.9.2",
     "vis": "^4.21.0",
     "webpack-merge": "^4.1.4"
   },
