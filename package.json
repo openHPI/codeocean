@@ -13,7 +13,7 @@
     "jstree": "^3.3.8",
     "opensans-webkit": "^1.0.1",
     "popper.js": "^1.15.0",
-    "snyk": "^1.277.2",
+    "snyk": "^1.277.3",
     "underscore": "^1.9.2",
     "vis": "^4.21.0",
     "webpack-merge": "^4.1.4"
