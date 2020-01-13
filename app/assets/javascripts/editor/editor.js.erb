@@ -418,7 +418,29 @@ configureEditors: function () {
     card.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
     card.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
     card.find('.row .col-sm-9').eq(2).html(result.message);
-    if (result.error_messages) card.find('.row .col-sm-9').eq(3).text(result.error_messages.join(' '));
+
+    // Add error message from code to card
+    if (result.error_messages) {
+        const targetNode = card.find('.row .col-sm-9').eq(3);
+
+        // one or more errors?
+        if (result.error_messages.length > 1) {
+            // delete all current elements
+            targetNode.text('');
+            // create a new list and appand each element
+            const ul = document.createElement("ul");
+            ul.setAttribute('class', 'error_messages_list');
+            result.error_messages.forEach(function (item) {
+                var li = document.createElement("li");
+                var text = document.createTextNode(item);
+                li.appendChild(text);
+                ul.append(li);
+            })
+            targetNode.append(ul);
+        } else {
+            targetNode.text(result.error_messages.join(''));
+        }
+    }
     //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
   },
 
