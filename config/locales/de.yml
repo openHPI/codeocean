@@ -139,7 +139,9 @@ de:
         use_anomaly_detection: "Abweichungen in der Arbeitszeit erkennen"
         updated_at: "Letzte Änderung"
         exercises: "Aufgaben"
+        solutions: "Gesamtanzahl Lösungsversuche"
         submissions: "Gesamtanzahl Submissions"
+        users: "Teilnehmer"
       user_exercise_feedback:
         user: "Autor"
         exercise: "Aufgabe"
@@ -372,7 +374,7 @@ de:
         removeAllOnLine: Meine Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
         request: "Kommentaranfrage stellen"
-        question: "Bitte beschreiben Sie kurz ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen."
+        question: "Bitte beschreiben Sie kurz ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
       rfc_intervention:
         text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. Wenn Sie möchten, können wir Ihnen helfen!"
       break_intervention:

@@ -139,7 +139,9 @@ en:
         use_anomaly_detection: "Enable Worktime Anomaly Detection"
         updated_at: "Last Update"
         exercises: "Exercises"
+        solutions: "Solution Attempts (accumulated)"
         submissions: "Submissions (accumulated)"
+        users: "Users"
       user_exercise_feedback:
         user: "Author"
         exercise: "Exercise"
@@ -372,7 +374,7 @@ en:
         removeAllOnLine: Remove my comments on this line
         listing: Listing the newest comment requests
         request: "Request Comments"
-        question: "Please shortly describe your problem or the program part you would like to get feedback for."
+        question: "Please shortly describe your problem or the program part you would like to get feedback for. Your program code and potential error messages are automatically appended to your request."
       rfc_intervention:
         text: "It looks like you may struggle with this exercise. If you like we can help you out!"
       break_intervention:
