@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'bcrypt'
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
-gem 'concurrent-ruby'
 gem 'docker-api', require: 'docker'
 gem 'factory_bot_rails'
 gem 'forgery'
@@ -12,7 +11,6 @@ gem 'jbuilder'
 gem 'jquery-rails'
 gem 'ims-lti', '< 2.0.0'
 gem 'kramdown'
-gem 'newrelic_rpm'
 gem 'pg'
 gem 'pry-byebug'
 gem 'puma'
@@ -35,11 +33,16 @@ gem 'nokogiri'
 gem 'webpacker'
 gem 'rest-client'
 gem 'rubyzip'
-gem 'mnemosyne-ruby'
 gem 'faraday'
 gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.4'
 gem 'whenever', require: false
 gem 'rails-timeago'
+
+# Error Tracing
+gem 'concurrent-ruby'
+gem 'mnemosyne-ruby'
+gem 'newrelic_rpm'
+gem 'sentry-raven'
 
 group :development, :staging do
   gem 'bootsnap', require: false
