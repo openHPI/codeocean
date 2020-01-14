@@ -12,6 +12,8 @@ development:
   code_pilot:
     enabled: false
     url: //localhost:3000
+  codeharbor:
+    url: https://codeharbor.openhpi.de
 
 production:
   <<: *default
