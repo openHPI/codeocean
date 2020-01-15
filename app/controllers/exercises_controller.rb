@@ -466,7 +466,7 @@ class ExercisesController < ApplicationController
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
       # redirect 10 percent pseudorandomly to the feedback page
       if current_user.respond_to? :external_id
-        if @submission.redirect_to_feedback?
+        if @submission.redirect_to_feedback? && !@embed_options[:disable_redirect_to_feedback]
           redirect_to_user_feedback
           return
         end
@@ -486,7 +486,7 @@ class ExercisesController < ApplicationController
 
         # else: show open rfc for same exercise if available
         rfc = @submission.unsolved_rfc
-        unless rfc.nil?
+        unless rfc.nil? || @embed_options[:disable_redirect_to_rfcs] || @embed_options[:disable_rfc]
           # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
           flash.keep(:notice)
@@ -503,7 +503,7 @@ class ExercisesController < ApplicationController
       end
     else
       # redirect to feedback page if score is less than 100 percent
-       if @exercise.needs_more_feedback?
+       if @exercise.needs_more_feedback? && !@embed_options[:disable_redirect_to_feedback]
          redirect_to_user_feedback
        else
          redirect_to_lti_return_path
