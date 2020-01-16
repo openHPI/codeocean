@@ -448,6 +448,7 @@ en:
       main_file: Main File
       reference_implementation: Reference Implementation
       regular_file: Regular File
+      executable_file: Executable File (similar to Main File)
       teacher_defined_test: Test for Assessment
       user_defined_file: User-defined File
       user_defined_test: User-defined Test

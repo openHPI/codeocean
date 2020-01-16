@@ -389,7 +389,7 @@ configureEditors: function () {
   },
 
   isActiveFileRunnable: function () {
-    return this.isActiveFileExecutable() && ['main_file', 'user_defined_file'].includes(this.active_frame.data('role'));
+    return this.isActiveFileExecutable() && ['main_file', 'user_defined_file', 'executable_file'].includes(this.active_frame.data('role'));
   },
 
   isActiveFileStoppable: function () {
