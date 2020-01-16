@@ -19,7 +19,7 @@ module CodeOcean
     include DefaultValues
 
     DEFAULT_WEIGHT = 1.0
-    ROLES = %w(main_file reference_implementation regular_file teacher_defined_test user_defined_file user_defined_test)
+    ROLES = %w(main_file reference_implementation regular_file executable_file teacher_defined_test user_defined_file user_defined_test)
     TEACHER_DEFINED_ROLES = ROLES - %w(user_defined_file)
 
     after_initialize :set_default_values

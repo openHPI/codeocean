@@ -448,6 +448,7 @@ de:
       main_file: Hauptdatei
       reference_implementation: Referenzimplementierung
       regular_file: Normale Datei
+      executable_file: Ausführbare Datei (analog zur Hauptdatei)
       teacher_defined_test: Test als Bewertungsgrundlage
       user_defined_file: Benutzerdefinierte Datei
       user_defined_test: Benutzerdefinierter Test
