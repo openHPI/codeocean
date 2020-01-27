@@ -4,6 +4,17 @@ $(document).on('turbolinks:load', function() {
         const exercise_id = $('.teacher_dashboard').data().exerciseId;
         const study_group_id = $('.teacher_dashboard').data().studyGroupId;
 
+        $("tbody#posted_rfcs").children().each(function() {
+            let $row = $(this);
+            addClickEventToRfCEntry($row);
+        });
+
+        function addClickEventToRfCEntry($row) {
+            $row.click(function () {
+                Turbolinks.visit($(this).data("href"));
+            });
+        }
+
         const specific_channel = { channel: "LaExercisesChannel", exercise_id: exercise_id, study_group_id: study_group_id };
 
 
@@ -33,9 +44,7 @@ $(document).on('turbolinks:load', function() {
             }
             $row = $row.replaceWithAndReturnNewElement(data.html);
             $row.find('time').timeago();
-            $row.click(function () {
-                Turbolinks.visit($(this).data("href"));
-            });
+            addClickEventToRfCEntry($row);
         }
 
         function handleWorkingTimeUpdate(data) {
