@@ -279,7 +279,8 @@ en:
     editor:
       collapse_action_sidebar: Collapse Action Sidebar
       collapse_output_sidebar: Collapse Output Sidebar
-      confirm_start_over: Do you really want to start over?
+      confirm_start_over: Do you really want to start over? Your complete progress will be reset. You cannot undo this action.
+      confirm_start_over_active_file: Do you really want to reset this file? You cannot undo this action.
       confirm_submit: Do you really want to submit your code for grading?
       create_file: New File
       depleted: All execution environments are busy. Please try again later.
@@ -301,6 +302,7 @@ en:
       score: Score
       send: Send
       start_over: Start over
+      start_over_active_file: Reset this file
       stop: Stop
       submit: Submit Code For Assessment
       test: Test

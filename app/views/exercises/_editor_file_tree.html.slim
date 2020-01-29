@@ -9,6 +9,7 @@ div id='sidebar-collapsed' class=(@exercise.hide_file_tree ? '' : 'd-none')
   = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-history', id: 'start-over-collapsed', label:'', title: t('exercises.editor.start_over'))
   //- if !@course_token.blank?
     = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-search', id: 'sidebar-search-collapsed', label: '', title: t('search.search_in_forum'))
+  = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over_active_file'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-file-excel', id: 'start-over-active-file-collapsed', label: '', title: t('exercises.editor.start_over_active_file'))
 
 div id='sidebar-uncollapsed' class=(@exercise.hide_file_tree ? 'd-none' : '')
   = render('editor_button', classes: 'btn-block btn-primary btn', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
@@ -27,6 +28,7 @@ div id='sidebar-uncollapsed' class=(@exercise.hide_file_tree ? 'd-none' : '')
   - unless @embed_options[:disable_download]
     = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', icon: 'fa fa-download', id: 'download', label: t('exercises.editor.download'))
   = render('editor_button', classes: 'btn-block btn-primary btn', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
+  = render('editor_button', classes: 'btn-block btn-primary btn', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over_active_file'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-file-excel', id: 'start-over-active-file', label: t('exercises.editor.start_over_active_file'))
 
   //- if !@course_token.blank?
       .input-group.enforce-top-margin
