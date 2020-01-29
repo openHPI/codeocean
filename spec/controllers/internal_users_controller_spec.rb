@@ -166,6 +166,8 @@ describe InternalUsersController do
   describe 'GET #forgot_password' do
     context 'when no user is logged in' do
       before(:each) do
+        allow(controller).to receive(:set_raven_context).and_return(nil)
+
         expect(controller).to receive(:current_user).and_return(nil)
         get :forgot_password
       end
@@ -176,6 +178,8 @@ describe InternalUsersController do
 
     context 'when a user is already logged in' do
       before(:each) do
+        allow(controller).to receive(:set_raven_context).and_return(nil)
+
         expect(controller).to receive(:current_user).and_return(user)
         get :forgot_password
       end
