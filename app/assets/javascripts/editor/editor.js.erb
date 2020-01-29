@@ -57,6 +57,13 @@ configureEditors: function () {
     }
   },
 
+  confirmResetActiveFile: function (event) {
+    event.preventDefault();
+    if (confirm($('#start-over-active-file').data('message-confirm'))) {
+        this.resetCode(true); // delete only active file
+    }
+  },
+
   fileActionsAvailable: function () {
     return this.isActiveFileRenderable() || this.isActiveFileRunnable() || this.isActiveFileStoppable() || this.isActiveFileTestable();
   },
@@ -361,6 +368,9 @@ configureEditors: function () {
     $('#save').on('click', this.saveCode.bind(this));
     $('#start-over').on('click', this.confirmReset.bind(this));
     $('#start-over-collapsed').on('click', this.confirmReset.bind(this));
+    $('#start-over-active-file').on('click', this.confirmResetActiveFile.bind(this));
+    $('#start-over-active-file-collapsed').on('click', this.confirmResetActiveFile.bind(this));
+
   },
 
   initializeRequestForComments: function () {

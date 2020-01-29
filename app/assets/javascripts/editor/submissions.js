@@ -102,7 +102,7 @@ CodeOceanEditorSubmissions = {
     });
   },
 
-  resetCode: function() {
+  resetCode: function(onlyActiveFile = false) {
     this.showSpinner(this);
     this.ajax({
       method: 'GET',
@@ -114,7 +114,7 @@ CodeOceanEditorSubmissions = {
         var file = _.find(response.files, function(file) {
           return file.id === file_id;
         });
-        if(file){
+        if(file && !onlyActiveFile || file && file.id === CodeOceanEditor.active_file.id){
             editor.setValue(file.content);
         }
       }.bind(this));
