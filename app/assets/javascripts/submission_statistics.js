@@ -87,7 +87,7 @@ $(document).on('turbolinks:load', function() {
       });
     });
 
-    slider.on('change', function(event) {
+    const onSliderChange = function(event) {
       currentSubmission = slider.val();
       var currentFiles = files[currentSubmission];
       var fileIndex = 0;
@@ -98,7 +98,9 @@ $(document).on('turbolinks:load', function() {
       });
       active_file = currentFiles[fileIndex];
       showActiveFile();
-    });
+    };
+
+    slider.on('change', onSliderChange);
 
     stopReplay = function() {
       clearInterval(playInterval);
@@ -108,6 +110,12 @@ $(document).on('turbolinks:load', function() {
 
     playButton.on('click', function(event) {
       if (playInterval === undefined) {
+        // Reset slider if showing newest submission.
+        if (parseInt(slider.val()) === submissions.length - 1) {
+          slider.val(0);
+          onSliderChange();
+        }
+
         playInterval = setInterval(function() {
           if ($.isController('exercises') && $('#timeline').isPresent() && slider.val() < submissions.length - 1) {
             slider.val(parseInt(slider.val()) + 1);
@@ -115,7 +123,7 @@ $(document).on('turbolinks:load', function() {
           } else {
             stopReplay();
           }
-        }, 5000);
+        }, 1000);
         playButton.find('span.fa').removeClass('fa-play').addClass('fa-pause')
       } else {
         stopReplay();
@@ -125,6 +133,10 @@ $(document).on('turbolinks:load', function() {
     active_file = files[0][0];
     initializeFileTree();
     showActiveFile();
+
+    // Start with newest submission
+    slider.val(submissions.length - 1);
+    onSliderChange();
   }
 
 });
