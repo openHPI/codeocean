@@ -232,7 +232,7 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def implement
-    redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? # TODO TESTESTEST
+    redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? && current_user.role != 'admin' && current_user.role != 'teacher' # TODO TESTESTEST
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.has_user_solved(current_user)
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count
