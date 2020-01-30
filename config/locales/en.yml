@@ -301,7 +301,7 @@ en:
       save: Save
       score: Score
       send: Send
-      start_over: Start over
+      start_over: Reset all files
       start_over_active_file: Reset this file
       stop: Stop
       submit: Submit Code For Assessment
@@ -363,6 +363,7 @@ en:
       results: Results
       start: Start Coding
       test_count: '<span class="number">%{count}</span> test files have been executed.'
+      unpublished: The selected exercises has been deactivated. Hence, you cannot implement this exercise at the moment.
       workspace: Workspace
       comment:
         a_comment: comment

@@ -301,7 +301,7 @@ de:
       save: Speichern
       score: Bewerten
       send: Senden
-      start_over: Von vorne anfangen
+      start_over: Alle Dateien zurücksetzen
       start_over_active_file: Diese Datei zurücksetzen
       stop: Stoppen
       submit: Code zur Bewertung abgeben
@@ -363,6 +363,7 @@ de:
       results: Ergebnisse
       start: Mit dem Programmieren beginnen
       test_count: '<span class="number">%{count}</span> Test-Dateien wurden ausgeführt.'
+      unpublished: Die gewählte Aufgabe wurde deaktiviert und kann daher derzeit nicht bearbeitet werden.
       workspace: Arbeitsbereich
       comment:
         a_comment: Kommentar
