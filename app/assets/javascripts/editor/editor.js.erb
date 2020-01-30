@@ -59,7 +59,9 @@ configureEditors: function () {
 
   confirmResetActiveFile: function (event) {
     event.preventDefault();
-    if (confirm($('#start-over-active-file').data('message-confirm'))) {
+    let message = $('#start-over-active-file').data('message-confirm');
+    message = message.replace('%{filename}', CodeOceanEditor.active_file.filename.replace(/#$/,''))
+    if (confirm(message)) {
         this.resetCode(true); // delete only active file
     }
   },
