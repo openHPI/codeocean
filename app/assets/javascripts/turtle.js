@@ -9,6 +9,40 @@ function Turtle(pipe, canvas) {
     this.canvas = canvas; // jQuery object
     this.items = [];
     this.canvas.off('click');
+
+    let sendEvent = function (x, y) {
+        pipe.send(JSON.stringify({
+            'cmd': 'canvasevent',
+            'type': '<Button-1>',
+            'x': x,
+            'y': y
+        }));
+        pipe.send('\n');
+    };
+
+    $(document).keydown(function(e) {
+        switch(e.which) {
+            case 37: // left
+                sendEvent(150, 170);
+                break;
+
+            case 38: // up
+                sendEvent(170, 150);
+                break;
+
+            case 39: // right
+                sendEvent(190, 170);
+                break;
+
+            case 40: // down
+                sendEvent(170, 190);
+                break;
+
+            default: return; // exit this handler for other keys
+        }
+        e.preventDefault(); // prevent the default action (scroll / move caret)
+    });
+
     this.canvas.click(function (e) {
         if (e.eventPhase !== 2) {
             return;
@@ -27,13 +61,7 @@ function Turtle(pipe, canvas) {
             xpos = e.offsetX;
             ypos = e.offsetY;
         }
-        pipe.send(JSON.stringify({
-            'cmd': 'canvasevent',
-            'type': '<Button-1>',
-            'x': xpos - dx,
-            'y': ypos - dy
-        }));
-        pipe.send('\n');
+        sendEvent(xpos - dx, ypos - dy);
     });
 }
 
