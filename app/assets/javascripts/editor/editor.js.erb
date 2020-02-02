@@ -488,6 +488,7 @@ configureEditors: function () {
 
   toggleButtonStates: function () {
     $('#destroy-file').prop('disabled', this.active_frame.data('role') !== 'user_defined_file');
+    $('#start-over-active-file').prop('disabled', this.active_frame.data('role') === 'user_defined_file');
     $('#dummy').toggle(!this.fileActionsAvailable());
     $('#render').toggle(this.isActiveFileRenderable());
     $('#run').toggle(this.isActiveFileRunnable() && !this.running);
