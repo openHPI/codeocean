@@ -155,7 +155,7 @@ module Lti
     internal_role = @current_user.role
     internal_role != 'admin' ? desired_role = external_role : desired_role = internal_role
     # Update user with new information but change the role only if he is no admin user
-    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))# TODO , role: desired_role)
+    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider), role: desired_role)
   end
   private :set_current_user
 
