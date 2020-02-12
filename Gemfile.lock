@@ -107,7 +107,7 @@ GEM
     childprocess (3.0.0)
     chronic (0.10.2)
     coderay (1.1.2)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.6)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
