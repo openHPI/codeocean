@@ -3,10 +3,13 @@ var editor;
 var pipeurl;
 var filename;
 var pendingChanges = -1;
+var devicePixelRatio = window.devicePixelRatio || 1;
 
 function Turtle(pipe, canvas) {
     var dx, dy, xpos, ypos;
     this.canvas = canvas; // jQuery object
+    this.height;
+    this.width;
     this.items = [];
     this.canvas.off('click');
 
@@ -48,9 +51,9 @@ function Turtle(pipe, canvas) {
             return;
         }
         e.stopPropagation();
-        dx = this.width / 2;
-        dy = this.height / 2;
-        if(e.offsetX==undefined)
+        dx = this.width / (2 * devicePixelRatio);
+        dy = this.height / (2 * devicePixelRatio);
+        if(e.offsetX===undefined)
         {
             var offset = canvas.offset();
             xpos = e.pageX-offset.left;
@@ -68,11 +71,16 @@ function Turtle(pipe, canvas) {
 Turtle.prototype.update = function () {
     var i, k, canvas, ctx, dx, dy, item, c, length;
     canvas = this.canvas[0];
+    canvas.width = this.get_width() * devicePixelRatio;
+    canvas.height = this.get_height() * devicePixelRatio;
+    canvas.style.width = `${this.get_width()}px`;
+    canvas.style.height = `${this.get_height()}px`;
     ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.scale(devicePixelRatio, devicePixelRatio);
     length = this.items.length;
-    dx = canvas.width / 2;
-    dy = canvas.height / 2;
+    dx = canvas.width / (2 * devicePixelRatio);
+    dy = canvas.height / (2 * devicePixelRatio);
     for (i = 0; i < length; i += 1) {
         item = this.items[i];
         c = item.coords;
@@ -110,11 +118,17 @@ Turtle.prototype.update = function () {
 }
 
 Turtle.prototype.get_width = function () {
-    return this.canvas[0].width;
+    if (this.width === undefined) {
+        this.width = this.canvas[0].width;
+    }
+    return this.width;
 }
 
 Turtle.prototype.get_height = function () {
-    return this.canvas[0].height;
+    if (this.height === undefined) {
+        this.height = this.canvas[0].height;
+    }
+    return this.height;
 }
 
 Turtle.prototype.delete = function (item) {
