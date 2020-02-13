@@ -76,7 +76,7 @@ Turtle.prototype.update = function () {
     canvas.style.width = `${this.get_width()}px`;
     canvas.style.height = `${this.get_height()}px`;
     ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, this.width, this.width);
     ctx.scale(devicePixelRatio, devicePixelRatio);
     length = this.items.length;
     dx = canvas.width / (2 * devicePixelRatio);
