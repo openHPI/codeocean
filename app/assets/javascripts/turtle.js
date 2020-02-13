@@ -27,19 +27,19 @@ function Turtle(pipe, canvas) {
     $(document).keydown(function(e) {
         switch(e.which) {
             case 37: // left
-                sendEvent(150, 170);
+                sendEvent(140, 160);
                 break;
 
             case 38: // up
-                sendEvent(170, 150);
+                sendEvent(160, 140);
                 break;
 
             case 39: // right
-                sendEvent(190, 170);
+                sendEvent(180, 160);
                 break;
 
             case 40: // down
-                sendEvent(170, 190);
+                sendEvent(160, 180);
                 break;
 
             default: return; // exit this handler for other keys
