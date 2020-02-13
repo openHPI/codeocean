@@ -3,13 +3,14 @@ var editor;
 var pipeurl;
 var filename;
 var pendingChanges = -1;
+var height;
+var width;
 var devicePixelRatio = window.devicePixelRatio || 1;
 
 function Turtle(pipe, canvas) {
     var dx, dy, xpos, ypos;
     this.canvas = canvas; // jQuery object
-    this.height;
-    this.width;
+
     this.items = [];
     this.canvas.off('click');
 
@@ -76,7 +77,7 @@ Turtle.prototype.update = function () {
     canvas.style.width = `${this.get_width()}px`;
     canvas.style.height = `${this.get_height()}px`;
     ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, this.width, this.width);
+    ctx.clearRect(0, 0, this.get_width(), this.get_height());
     ctx.scale(devicePixelRatio, devicePixelRatio);
     length = this.items.length;
     dx = canvas.width / (2 * devicePixelRatio);
@@ -118,17 +119,17 @@ Turtle.prototype.update = function () {
 }
 
 Turtle.prototype.get_width = function () {
-    if (this.width === undefined) {
-        this.width = this.canvas[0].width;
+    if (width === undefined) {
+        width = this.canvas[0].width;
     }
-    return this.width;
+    return width;
 }
 
 Turtle.prototype.get_height = function () {
-    if (this.height === undefined) {
-        this.height = this.canvas[0].height;
+    if (height === undefined) {
+        height = this.canvas[0].height;
     }
-    return this.height;
+    return height;
 }
 
 Turtle.prototype.delete = function (item) {
