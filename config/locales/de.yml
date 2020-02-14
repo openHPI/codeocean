@@ -377,9 +377,9 @@ de:
         removeAllOnLine: Meine Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
         request: "Kommentaranfrage stellen"
-        question: "Bitte beschreiben Sie kurz ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
+        question: "Bitte beschreiben Sie kurz ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. </br> </br> Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
       rfc_intervention:
-        text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. Wenn Sie möchten, können wir Ihnen helfen!"
+        text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. </br> Wenn Sie möchten, können wir Ihnen helfen! </br> </br> Bitte beschreiben Sie kurz ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. </br> </br> Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
       break_intervention:
         title: "Pause"
         text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
