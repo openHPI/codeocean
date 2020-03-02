@@ -199,7 +199,7 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (6.9.0.363)
     nio4r (2.5.2)
-    nokogiri (1.10.8)
+    nokogiri (1.10.9)
       mini_portile2 (~> 2.4.0)
     nyan-cat-formatter (0.12.0)
       rspec (>= 2.99, >= 2.14.2, < 4)
