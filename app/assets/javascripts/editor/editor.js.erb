@@ -418,7 +418,8 @@ configureEditors: function () {
 
   isBrowserSupported: function () {
     //  websockets are used for run, score and test
-    return Modernizr.websockets;
+    // Also exclude IE and IE 11
+    return Modernizr.websockets && window.navigator.userAgent.indexOf("MSIE") <= 0 && !navigator.userAgent.match(/Trident\/7\./);
   },
 
   populateCard: function (card, result, index) {
@@ -723,7 +724,7 @@ configureEditors: function () {
                                         type: 'POST',
                                         url: $('#editor').data('intervention-save-url')
                                     });
-                                };
+                                }
                             }
                         }
                     }, delta);

@@ -16,9 +16,8 @@ $(document).on('turbolinks:load', function() {
 
   if ($('#editor').isPresent() && CodeOceanEditor) {
     if (CodeOceanEditor.isBrowserSupported()) {
+      $('#alert').hide();
       CodeOceanEditor.initializeEverything();
-    } else {
-      $('#alert').show();
     }
   }
 });
