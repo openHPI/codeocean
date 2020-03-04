@@ -147,7 +147,13 @@ class SubmissionsController < ApplicationController
       #   #guarantee that the thread is releasing the DB connection after it is done
       #   ApplicationRecord.connectionpool.releaseconnection
       # end
-      Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+      unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+        Thread.new do
+          EventMachine.run
+        ensure
+          ActiveRecord::Base.connection_pool.release_connection
+        end
+      end
 
 
       # socket is the socket into the container, tubesock is the socket to the client
@@ -319,19 +325,27 @@ class SubmissionsController < ApplicationController
         return
       end
 
-      Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+      unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+        Thread.new do
+          EventMachine.run
+        ensure
+          ActiveRecord::Base.connection_pool.release_connection
+        end
+      end
       # tubesock is the socket to the client
 
       # the score_submission call will end up calling docker exec, which is blocking.
       # to ensure responsiveness, we therefore open a thread here.
-      Thread.new {
+      Thread.new do
         tubesock.send_data JSON.dump(score_submission(@submission))
 
         # To enable hints when scoring a submission, uncomment the next line:
         #send_hints(tubesock, StructuredError.where(submission: @submission))
 
         tubesock.send_data JSON.dump({'cmd' => 'exit'})
-      }
+      ensure
+        ActiveRecord::Base.connection_pool.release_connection
+      end
     end
   end
 
@@ -388,7 +402,13 @@ class SubmissionsController < ApplicationController
 
   def test
     hijack do |tubesock|
-      Thread.new { EventMachine.run } unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+      unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+        Thread.new do
+          EventMachine.run
+        ensure
+          ActiveRecord::Base.connection_pool.release_connection
+        end
+      end
 
       output = @docker_client.execute_test_command(@submission, sanitize_filename)
 

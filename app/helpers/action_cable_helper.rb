@@ -1,17 +1,20 @@
+# frozen_string_literal: true
 module ActionCableHelper
-def trigger_rfc_action_cable
-  Thread.new do
-    # Context: RfC
-    if submission.study_group_id.present?
-      ActionCable.server.broadcast(
-          "la_exercises_#{exercise_id}_channel_study_group_#{submission.study_group_id}",
-          type: :rfc,
-          id: id,
-          html: (ApplicationController.render(partial: 'request_for_comments/list_entry',
-                                              locals: {request_for_comment: self})))
+  def trigger_rfc_action_cable
+    Thread.new do
+      # Context: RfC
+      if submission.study_group_id.present?
+        ActionCable.server.broadcast(
+            "la_exercises_#{exercise_id}_channel_study_group_#{submission.study_group_id}",
+            type: :rfc,
+            id: id,
+            html: ApplicationController.render(partial: 'request_for_comments/list_entry',
+                                               locals: {request_for_comment: self}))
+      end
+    ensure
+      ActiveRecord::Base.connection_pool.release_connection
     end
   end
-end
 
   def trigger_rfc_action_cable_from_comment
     # Context: Comment
@@ -27,6 +30,8 @@ end
             type: :working_times,
             working_time_data: exercise.get_working_times_for_study_group(study_group_id, user))
       end
+    ensure
+      ActiveRecord::Base.connection_pool.release_connection
     end
   end
 end

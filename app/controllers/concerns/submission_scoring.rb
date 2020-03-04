@@ -53,6 +53,8 @@ module SubmissionScoring
           rfc.full_score_reached = true
           rfc.save
         }
+      ensure
+        ActiveRecord::Base.connection_pool.release_connection
       end
     end
     if @embed_options.present? && @embed_options[:hide_test_results] && outputs.present?

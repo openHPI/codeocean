@@ -99,6 +99,8 @@ class RequestForCommentsController < ApplicationController
         # create thread here and execute tests. A run is triggered from the frontend and does not need to be handled here.
         Thread.new do
           score_submission(@request_for_comment.submission)
+        ensure
+          ActiveRecord::Base.connection_pool.release_connection
         end
         format.json { render :show, status: :created, location: @request_for_comment }
       else
@@ -136,18 +138,18 @@ class RequestForCommentsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_request_for_comment
-      @request_for_comment = RequestForComment.find(params[:id])
-    end
+  def set_request_for_comment
+    @request_for_comment = RequestForComment.find(params[:id])
+  end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def request_for_comment_params
-      # The study_group_id might not be present in the session (e.g. for internal users), resulting in session[:study_group_id] = nil which is intended.
-      params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name)
-    end
+  def request_for_comment_params
+    # The study_group_id might not be present in the session (e.g. for internal users), resulting in session[:study_group_id] = nil which is intended.
+    params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name)
+  end
 
-    def comment_params
-      params.permit(:exercise_id, :feedback_text).merge(user_id: current_user.id, user_type: current_user.class.name)
-    end
+  def comment_params
+    params.permit(:exercise_id, :feedback_text).merge(user_id: current_user.id, user_type: current_user.class.name)
+  end
 
 end
