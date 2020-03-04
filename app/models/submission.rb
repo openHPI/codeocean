@@ -5,6 +5,8 @@ class Submission < ApplicationRecord
 
   CAUSES = %w(assess download file render run save submit test autosave requestComments remoteAssess)
   FILENAME_URL_PLACEHOLDER = '{filename}'
+  MAX_COMMENTS_ON_RECOMMENDED_RFC = 5
+  OLDEST_RFC_TO_SHOW = 6.months
 
   belongs_to :exercise
   belongs_to :study_group, optional: true
@@ -23,7 +25,6 @@ class Submission < ApplicationRecord
 
   after_save :trigger_working_times_action_cable
 
-  MAX_COMMENTS_ON_RECOMMENDED_RFC = 5
 
   def build_files_hash(files, attribute)
     files.map(&attribute.to_proc).zip(files).to_h
@@ -70,6 +71,6 @@ class Submission < ApplicationRecord
   end
 
   def unsolved_rfc
-    RequestForComment.unsolved.where(exercise_id: exercise).where.not(question: nil).order("RANDOM()").find { | rfc_element |( (rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) && (!rfc_element.question.empty?)) }
+    RequestForComment.unsolved.where(exercise_id: exercise).where.not(question: nil).where(created_at: OLDEST_RFC_TO_SHOW.ago..Time.current).order("RANDOM()").find { | rfc_element |( (rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) && (!rfc_element.question.empty?)) }
   end
 end
