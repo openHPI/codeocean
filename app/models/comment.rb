@@ -7,6 +7,5 @@ class Comment < ApplicationRecord
 
   belongs_to :file, class_name: 'CodeOcean::File'
   belongs_to :user, polymorphic: true
-
-  after_save :trigger_rfc_action_cable_from_comment
+  # after_save :trigger_rfc_action_cable_from_comment
 end
