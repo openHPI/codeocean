@@ -24,6 +24,8 @@ module Lti
       session.delete(:consumer_id)
       session.delete(:external_user_id)
       session.delete(:embed_options)
+      session.delete(:lti_exercise_id)
+      session.delete(:lti_parameters_id)
     else
       LtiParameter.where(consumers_id: consumer_id,
                          external_users_id: user_id,
@@ -223,6 +225,7 @@ module Lti
 
     session[:consumer_id] = options[:consumer].id
     session[:external_user_id] = @current_user.id
+    session[:lti_parameters_id] = lti_parameters.id
   end
 
   private :store_lti_session_data

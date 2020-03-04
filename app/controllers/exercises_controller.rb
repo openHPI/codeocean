@@ -331,7 +331,8 @@ class ExercisesController < ApplicationController
       submission: @submission.inspect,
       params: params.as_json,
       current_user: current_user,
-      lti_exercise_id: session[:lti_exercise_id]
+      lti_exercise_id: session[:lti_exercise_id],
+      lti_parameters_id: session[:lti_parameters_id]
     )
 
     lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],

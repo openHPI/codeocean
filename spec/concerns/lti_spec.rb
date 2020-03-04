@@ -20,6 +20,8 @@ describe Lti do
       expect(controller.session).to receive(:delete).with(:consumer_id)
       expect(controller.session).to receive(:delete).with(:external_user_id)
       expect(controller.session).to receive(:delete).with(:embed_options)
+      expect(controller.session).to receive(:delete).with(:lti_exercise_id)
+      expect(controller.session).to receive(:delete).with(:lti_parameters_id)
       controller.send(:clear_lti_session_data)
     end
   end
@@ -161,6 +163,7 @@ describe Lti do
       controller.instance_variable_set(:@exercise, FactoryBot.create(:fibonacci))
       expect(controller.session).to receive(:[]=).with(:consumer_id, anything)
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
+      expect(controller.session).to receive(:[]=).with(:lti_parameters_id, anything)
       controller.send(:store_lti_session_data, consumer: FactoryBot.build(:consumer), parameters: parameters)
     end
 
