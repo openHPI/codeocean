@@ -13,6 +13,7 @@ module Lti
       IMS::LTI::ToolProvider.new(options[:consumer].oauth_key, options[:consumer].oauth_secret, options[:parameters])
     end
   end
+
   private :build_tool_provider
 
   # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
@@ -29,6 +30,7 @@ module Lti
                          exercises_id: exercise_id).destroy_all
     end
   end
+
   private :clear_lti_session_data
 
   def consumer_return_url(provider, options = {})
@@ -40,6 +42,7 @@ module Lti
   def external_user_email(provider)
     provider.lis_person_contact_email_primary
   end
+
   private :external_user_email
 
   def external_user_name(provider)
@@ -51,6 +54,7 @@ module Lti
       provider.lis_person_name_given
     end
   end
+
   private :external_user_name
 
   def external_user_role(provider)
@@ -71,45 +75,51 @@ module Lti
 
   def mooc_course
     # All Xikolo platforms set the custom_course to the course code
-   params[:custom_course]
+    params[:custom_course]
   end
 
   def refuse_lti_launch(options = {})
     return_to_consumer(lti_errorlog: options[:message], lti_errormsg: t('sessions.oauth.failure'))
   end
+
   private :refuse_lti_launch
 
   def require_oauth_parameters
     refuse_lti_launch(message: t('sessions.oauth.missing_parameters')) unless params[:oauth_consumer_key] && params[:oauth_signature]
   end
+
   private :require_oauth_parameters
 
   def require_unique_oauth_nonce
     refuse_lti_launch(message: t('sessions.oauth.used_nonce')) if NonceStore.has?(params[:oauth_nonce])
   end
+
   private :require_unique_oauth_nonce
 
   def require_valid_consumer_key
     @consumer = Consumer.find_by(oauth_key: params[:oauth_consumer_key])
     refuse_lti_launch(message: t('sessions.oauth.invalid_consumer')) unless @consumer
   end
+
   private :require_valid_consumer_key
 
   def require_valid_exercise_token
     proxy_exercise = ProxyExercise.find_by(token: params[:custom_token])
-    unless proxy_exercise.nil?
-      @exercise = proxy_exercise.get_matching_exercise(@current_user)
-    else
-      @exercise = Exercise.find_by(token: params[:custom_token])
-    end
+    @exercise = unless proxy_exercise.nil?
+                  proxy_exercise.get_matching_exercise(@current_user)
+                else
+                  Exercise.find_by(token: params[:custom_token])
+                end
     refuse_lti_launch(message: t('sessions.oauth.invalid_exercise_token')) unless @exercise
   end
+
   private :require_valid_exercise_token
 
   def require_valid_oauth_signature
     @provider = build_tool_provider(consumer: @consumer, parameters: params)
     refuse_lti_launch(message: t('sessions.oauth.invalid_signature')) unless @provider.valid_request?(request)
   end
+
   private :require_valid_oauth_signature
 
   def return_to_consumer(options = {})
@@ -123,10 +133,11 @@ module Lti
       redirect_to(:root)
     end
   end
+
   private :return_to_consumer
 
   def send_score(exercise_id, score, user_id)
-    ::NewRelic::Agent.add_custom_attributes({ score: score, session: session })
+    ::NewRelic::Agent.add_custom_attributes({score: score, session: session})
     fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
 
     if session[:consumer_id]
@@ -147,25 +158,30 @@ module Lti
       {status: 'unsupported'}
     end
   end
+
   private :send_score
 
   def set_current_user
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
     external_role = external_user_role(@provider)
     internal_role = @current_user.role
-    internal_role != 'admin' ? desired_role = external_role : desired_role = internal_role
+    desired_role = internal_role != 'admin' ? external_role : internal_role
     # Update user with new information but change the role only if he is no admin user
     @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider), role: desired_role)
   end
+
   private :set_current_user
 
 
   def set_study_group_membership
-    if mooc_course
-      group = StudyGroup.find_or_create_by(name: @provider.context_title, external_id: @provider.context_id, consumer: @consumer)
-    else
-      group = StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
-    end
+    group = if mooc_course
+              # Ensure to find the group independent of the name and set it only once.
+              StudyGroup.find_or_create_by(external_id: @provider.context_id, consumer: @consumer) do |new_group|
+                new_group.name = @provider.context_title
+              end
+            else
+              StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
+            end
     group.users |= [@current_user] # add current user if not already member of the group
     group.save
     session[:study_group_id] = group.id
@@ -192,6 +208,7 @@ module Lti
     end
     session[:embed_options] = @embed_options
   end
+
   private :set_embedding_options
 
   def store_lti_session_data(options = {})
@@ -206,11 +223,13 @@ module Lti
     session[:consumer_id] = options[:consumer].id
     session[:external_user_id] = @current_user.id
   end
+
   private :store_lti_session_data
 
   def store_nonce(nonce)
     NonceStore.add(nonce)
   end
+
   private :store_nonce
 
   class Error < RuntimeError
