@@ -110,7 +110,7 @@ module Lti
                 else
                   proxy_exercise.get_matching_exercise(@current_user)
                 end
-    session[:lti_exercise_id] = @exercise.id
+    session[:lti_exercise_id] = @exercise.id if @exercise
     refuse_lti_launch(message: t('sessions.oauth.invalid_exercise_token')) unless @exercise
   end
 
