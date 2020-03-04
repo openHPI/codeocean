@@ -23,7 +23,7 @@ class Submission < ApplicationRecord
   validates :cause, inclusion: {in: CAUSES}
   validates :exercise_id, presence: true
 
-  after_save :trigger_working_times_action_cable
+  # after_save :trigger_working_times_action_cable
 
 
   def build_files_hash(files, attribute)
