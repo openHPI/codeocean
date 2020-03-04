@@ -327,9 +327,9 @@ class ExercisesController < ApplicationController
       consumers_id: session[:consumer_id],
       external_users_id: @submission.user_id,
       exercises_id: @submission.exercise_id,
-      session: session,
-      submission: @submission,
-      params: params,
+      session: session.to_hash,
+      submission: @submission.inspect,
+      params: params.as_json,
       current_user: current_user,
       lti_exercise_id: session[:lti_exercise_id]
     )
