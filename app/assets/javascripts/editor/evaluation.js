@@ -7,6 +7,7 @@ CodeOceanEditorEvaluation = {
   scoreCode: function (event) {
     event.preventDefault();
     this.clearScoringOutput();
+    $('#submit').addClass("d-none");
     this.createSubmission('#assess', null, function (response) {
       this.showSpinner($('#assess'));
       $('#score_div').removeClass('d-none');
@@ -22,6 +23,7 @@ CodeOceanEditorEvaluation = {
     }, 0).toFixed(2);
     $('#score').data('score', score);
     this.renderScore();
+    $('#submit').removeClass("d-none");
   },
 
   printScoringResult: function (result, index) {
