@@ -42,7 +42,7 @@ gem 'rails-timeago'
 gem 'concurrent-ruby'
 gem 'mnemosyne-ruby'
 gem 'newrelic_rpm'
-gem 'sentry-raven'
+gem 'sentry-raven', '< 3'
 
 group :development, :staging do
   gem 'bootsnap', require: false
