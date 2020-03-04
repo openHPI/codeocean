@@ -105,11 +105,12 @@ module Lti
 
   def require_valid_exercise_token
     proxy_exercise = ProxyExercise.find_by(token: params[:custom_token])
-    @exercise = unless proxy_exercise.nil?
-                  proxy_exercise.get_matching_exercise(@current_user)
-                else
+    @exercise = if proxy_exercise.nil?
                   Exercise.find_by(token: params[:custom_token])
+                else
+                  proxy_exercise.get_matching_exercise(@current_user)
                 end
+    session[:lti_exercise_id] = @exercise.id
     refuse_lti_launch(message: t('sessions.oauth.invalid_exercise_token')) unless @exercise
   end
 

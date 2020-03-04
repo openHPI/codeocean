@@ -323,17 +323,30 @@ class ExercisesController < ApplicationController
   end
 
   def redirect_to_lti_return_path
-    lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
-                                       external_users_id: @submission.user_id,
-                                       exercises_id: @submission.exercise_id).first
+    begin
+      lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
+                                         external_users_id: @submission.user_id,
+                                         exercises_id: @submission.exercise_id).first
 
-    path = lti_return_path(consumer_id: session[:consumer_id],
-                           submission_id: @submission.id,
-                           url: consumer_return_url(build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]),
-                                                                        parameters: lti_parameter.lti_parameters)))
-    respond_to do |format|
-      format.html { redirect_to(path) }
-      format.json { render(json: {redirect: path}) }
+      path = lti_return_path(consumer_id: session[:consumer_id],
+                             submission_id: @submission.id,
+                             url: consumer_return_url(build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]),
+                                                                          parameters: lti_parameter.lti_parameters)))
+      respond_to do |format|
+        format.html { redirect_to(path) }
+        format.json { render(json: {redirect: path}) }
+      end
+    rescue StandardError
+      Raven.extra_context(
+        consumers_id: session[:consumer_id],
+        external_users_id: @submission.user_id,
+        exercises_id: @submission.exercise_id,
+        session: session,
+        submission: @submission,
+        params: params,
+        current_user: current_user,
+        lti_exercise_id: session[:lti_exercise_id]
+      )
     end
   end
   private :redirect_to_lti_return_path
