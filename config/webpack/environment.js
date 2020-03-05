@@ -19,6 +19,7 @@ environment.plugins.prepend('Provide', new webpack.ProvidePlugin({
         vis: 'vis',
         hljs: 'highlight.js',
         d3: 'd3',
+        Sentry: '@sentry/browser'
     })
 );
 

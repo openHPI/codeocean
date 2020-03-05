@@ -8,14 +8,16 @@
 // layout file, like app/views/layouts/application.html.slim
 
 // JS
-import 'jquery'
+import 'jquery';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'chosen-js/chosen.jquery';
 import 'jstree';
 import 'underscore';
-import 'd3'
+import 'd3';
+import '@sentry/browser';
 window._ = _; // Publish underscore's `_` in global namespace
 window.d3 = d3; // Publish d3 in global namespace
+window.Sentry = Sentry; // Publish sentry in global namespace
 
 // CSS
 import 'chosen-js/chosen.css';
