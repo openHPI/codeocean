@@ -40,9 +40,9 @@ gem 'rails-timeago'
 
 # Error Tracing
 gem 'concurrent-ruby'
-gem 'mnemosyne-ruby'
+gem 'mnemosyne-ruby', '>=1.10.0.beta1'
 gem 'newrelic_rpm'
-gem 'sentry-raven', '< 3'
+gem 'sentry-raven'
 
 group :development, :staging do
   gem 'bootsnap', require: false
