@@ -12,6 +12,6 @@ CodeOceanEditorAJAX = {
     $.flash.danger({
       text: message.length > 0 ? message : $('#flash').data('message-failure')
     });
-    Sentry.captureException(response);
+    Sentry.captureException(JSON.stringify(response));
   }
 };

@@ -572,7 +572,7 @@ configureEditors: function () {
         icon: ['fa', 'fa-bug'],
         text: $('#run').data('message-failure')
       });
-      Sentry.captureException(output);
+      Sentry.captureException(JSON.stringify(output));
     }
   },
 
@@ -622,7 +622,7 @@ configureEditors: function () {
     $.flash.danger({
       text: $('#flash').data('message-failure')
     });
-    Sentry.captureException(error);
+    Sentry.captureException(JSON.stringify(error));
   },
 
   showFileDialog: function(event) {
