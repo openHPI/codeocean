@@ -155,6 +155,13 @@ module Lti
     if provider.nil?
       {status: 'error'}
     elsif provider.outcome_service?
+      Raven.extra_context({
+                            provider: provider.inspect,
+                            score: score,
+                            lti_parameter: lti_parameter.inspect,
+                            session: session.to_hash,
+                            exercise_id: exercise_id
+                          })
       response = provider.post_replace_result!(score)
       {code: response.response_code, message: response.post_response.body, status: response.code_major}
     else

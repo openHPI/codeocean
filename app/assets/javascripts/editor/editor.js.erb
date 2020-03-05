@@ -436,14 +436,21 @@ configureEditors: function () {
     if (result.error_messages) {
         const targetNode = card.find('.row .col-sm-9').eq(3);
 
+        let errorMessagesToShow = [];
+        result.error_messages.forEach(function (item) {
+            if (item) {
+              errorMessagesToShow.push(item)
+            }
+        })
+
         // one or more errors?
-        if (result.error_messages.length > 1) {
+        if (errorMessagesToShow.length > 1) {
             // delete all current elements
             targetNode.text('');
             // create a new list and appand each element
             const ul = document.createElement("ul");
             ul.setAttribute('class', 'error_messages_list');
-            result.error_messages.forEach(function (item) {
+            errorMessagesToShow.forEach(function (item) {
                 var li = document.createElement("li");
                 var text = document.createTextNode(item);
                 li.appendChild(text);
@@ -451,7 +458,7 @@ configureEditors: function () {
             })
             targetNode.append(ul);
         } else {
-            targetNode.text(result.error_messages.join(''));
+            targetNode.text(errorMessagesToShow.join(''));
         }
     }
     //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
@@ -565,6 +572,7 @@ configureEditors: function () {
         icon: ['fa', 'fa-bug'],
         text: $('#run').data('message-failure')
       });
+      Sentry.captureException(output);
     }
   },
 
@@ -606,7 +614,7 @@ configureEditors: function () {
     });
   },
 
-  showWebsocketError: function() {
+  showWebsocketError: function(error) {
     if (window.navigator.userAgent.indexOf('Edge') > -1 || window.navigator.userAgent.indexOf('Trident') > -1) {
       // Mute errors in Microsoft Edge and Internet Explorer
       return;
@@ -614,6 +622,7 @@ configureEditors: function () {
     $.flash.danger({
       text: $('#flash').data('message-failure')
     });
+    Sentry.captureException(error);
   },
 
   showFileDialog: function(event) {
