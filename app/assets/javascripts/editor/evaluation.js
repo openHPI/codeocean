@@ -106,6 +106,7 @@ CodeOceanEditorEvaluation = {
     }
 
     this.websocket.killWebSocket();
+    this.websocket.onError(_.noop);
     this.running = false;
   },
 
