@@ -194,7 +194,6 @@ class SubmissionsController < ApplicationController
             socket.send data
             Rails.logger.debug('Rescued parsing error, sent the received client data to docker:' + data)
             Raven.extra_context(data: data)
-            Raven.capture_exception(error)
           end
         end
 
