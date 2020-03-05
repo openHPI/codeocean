@@ -192,7 +192,7 @@ module Lti
             else
               StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
             end
-    group.users |= [@current_user] # add current user if not already member of the group
+    group.users << @current_user unless group.users.include? @current_user
     group.save
     session[:study_group_id] = group.id
   end
