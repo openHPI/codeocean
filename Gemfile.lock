@@ -443,7 +443,7 @@ DEPENDENCIES
   jquery-rails
   kramdown
   listen
-  mnemosyne-ruby (>= 1.10.0.beta1)
+  mnemosyne-ruby
   newrelic_rpm
   nokogiri
   nyan-cat-formatter

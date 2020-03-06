@@ -40,7 +40,7 @@ gem 'rails-timeago'
 
 # Error Tracing
 gem 'concurrent-ruby'
-gem 'mnemosyne-ruby', '>=1.10.0.beta1'
+gem 'mnemosyne-ruby'
 gem 'newrelic_rpm'
 gem 'sentry-raven'
 
