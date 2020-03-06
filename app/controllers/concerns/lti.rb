@@ -26,11 +26,10 @@ module Lti
       session.delete(:embed_options)
       session.delete(:lti_exercise_id)
       session.delete(:lti_parameters_id)
-    else
-      LtiParameter.where(consumers_id: consumer_id,
-                         external_users_id: user_id,
-                         exercises_id: exercise_id).destroy_all
     end
+    LtiParameter.where(consumers_id: consumer_id,
+                       external_users_id: user_id,
+                       exercises_id: exercise_id).destroy_all
   end
 
   private :clear_lti_session_data
