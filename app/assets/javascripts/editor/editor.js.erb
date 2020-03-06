@@ -782,8 +782,9 @@ configureEditors: function () {
     this.showFirstFile();
     this.resizeAceEditors();
 
-    $(window).on("beforeunload", this.unloadAutoSave.bind(this));
+    window.addEventListener("beforeunload", this.unloadAutoSave.bind(this));
+    window.addEventListener("page:before-change", this.unloadAutoSave.bind(this));
     // create autosave when the editor is opened the first time
-    // TODO: this.autosave();
+    this.autosave();
   }
 };
