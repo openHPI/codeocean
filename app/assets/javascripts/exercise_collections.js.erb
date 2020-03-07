@@ -100,7 +100,7 @@ $(document).on('turbolinks:load', function() {
           tooltip.style("display", "none");
         })
         .on("click", function (d) {
-          window.location.href = "/exercises/" + d.exercise_id + "/statistics";
+          Turbolinks.visit("/exercises/" + d.exercise_id + "/statistics");
         })
         .attr("x", function (d) {
           return x(d.index);

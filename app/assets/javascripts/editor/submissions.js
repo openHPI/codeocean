@@ -186,8 +186,8 @@ CodeOceanEditorSubmissions = {
   submitCode: function() {
     this.createSubmission($('#submit'), null, function (response) {
       if (response.redirect) {
-        localStorage.removeItem('tab');
-        window.location = response.redirect;
+        Turbolinks.clearCache();
+        Turbolinks.visit(response.redirect);
       }
     })
   },
