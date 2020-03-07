@@ -341,6 +341,7 @@ configureEditors: function () {
   initializeSideBarCollapse: function() {
     $('#sidebar-collapse-collapsed').on('click',this.handleSideBarToggle.bind(this));
     $('#sidebar-collapse').on('click',this.handleSideBarToggle.bind(this))
+    $('#sidebar').on('transitionend',this.resizeAceEditors.bind(this));
   },
 
   handleSideBarToggle: function() {
@@ -637,6 +638,7 @@ configureEditors: function () {
   initializeOutputBarToggle: function() {
     $('#toggle-sidebar-output').on('click',this.hideOutputBar.bind(this));
     $('#toggle-sidebar-output-collapsed').on('click',this.showOutputBar.bind(this));
+    $('#output_sidebar').on('transitionend',this.resizeAceEditors.bind(this));
   },
 
   showOutputBar: function() {
