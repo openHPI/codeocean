@@ -136,6 +136,7 @@ CodeOceanEditorEvaluation = {
 
   clearOutput: function() {
     $('#output pre').remove();
+    CodeOceanEditorTurtle.hideCanvas();
   },
 
   clearScoringOutput: function() {

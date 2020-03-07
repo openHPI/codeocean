@@ -37,11 +37,15 @@ CodeOceanEditorTurtle = {
   },
 
   showCanvas: function () {
-    if ($('#turtlediv').isPresent()
-        && this.turtlecanvas.hasClass('d-none')) {
-      // initialize two-column layout
-      $('#output-col1').addClass('col-lg-7 col-md-7 two-column');
+    if ($('#turtlediv').isPresent() && this.turtlecanvas.hasClass('d-none')) {
       this.turtlecanvas.removeClass('d-none');
+    }
+  },
+
+  hideCanvas: function () {
+    const turtlecanvas = $('#turtlecanvas');
+    if ($('#turtlediv').isPresent() && !turtlecanvas.hasClass('d-none')) {
+      turtlecanvas.addClass('d-none');
     }
   }
 
