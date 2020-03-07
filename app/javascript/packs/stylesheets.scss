@@ -7,6 +7,7 @@
 // To reference this file, add <%= stylesheet_pack_tag 'stylesheets' %> to the appropriate
 // layout file, like app/views/layouts/application.html.slim
 
+$web-font-path: '';
 @import '~bootswatch/dist/yeti/variables';
 @import '~bootstrap/scss/bootstrap';
 @import '~bootswatch/dist/yeti/bootswatch';
