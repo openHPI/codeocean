@@ -7,7 +7,9 @@ var height;
 var width;
 var devicePixelRatio = window.devicePixelRatio || 1;
 
-function Turtle(pipe, canvas) {
+// The `unused_pipe_reference` might get outdated. Somehow...
+// Hence, we use the `CodeOceanEditorWebsocket.websocket`
+function Turtle(unused_pipe_reference, canvas) {
     var dx, dy, xpos, ypos;
     this.canvas = canvas; // jQuery object
 
@@ -15,13 +17,13 @@ function Turtle(pipe, canvas) {
     this.canvas.off('click');
 
     let sendEvent = function (x, y) {
-        pipe.send(JSON.stringify({
+        CodeOceanEditorWebsocket.websocket.send(JSON.stringify({
             'cmd': 'canvasevent',
             'type': '<Button-1>',
             'x': x,
             'y': y
         }));
-        pipe.send('\n');
+        CodeOceanEditorWebsocket.websocket.send('\n');
     };
 
     $(document).keydown(function(e) {
@@ -116,21 +118,21 @@ Turtle.prototype.update = function () {
             break;
         }
     }
-}
+};
 
 Turtle.prototype.get_width = function () {
     if (width === undefined) {
         width = this.canvas[0].width;
     }
     return width;
-}
+};
 
 Turtle.prototype.get_height = function () {
     if (height === undefined) {
         height = this.canvas[0].height;
     }
     return height;
-}
+};
 
 Turtle.prototype.delete = function (item) {
     if (item == 'all') {
@@ -138,12 +140,12 @@ Turtle.prototype.delete = function (item) {
     } else {
         delete this.items[item];
     }
-}
+};
 
 Turtle.prototype.create_image = function (image) {
     this.items.push({type:'image',image:image});
     return this.items.length - 1;
-}
+};
 
 Turtle.prototype.create_line = function () {
     this.items.push({type:'line',
@@ -152,7 +154,7 @@ Turtle.prototype.create_line = function () {
                      width:2,
                      capstyle:'round'});
     return this.items.length - 1;
-}
+};
 
 Turtle.prototype.create_polygon = function () {
     this.items.push({type:'polygon',
@@ -161,7 +163,7 @@ Turtle.prototype.create_polygon = function () {
                      coords:[0,0,0,0,0,0]
                     });
     return this.items.length - 1;
-}
+};
 
 // XXX might make this varargs as in Tkinter
 Turtle.prototype.coords = function (item, coords) {
@@ -169,11 +171,11 @@ Turtle.prototype.coords = function (item, coords) {
         return this.items[item].coords;
     }
     this.items[item].coords = coords;
-}
+};
 
 Turtle.prototype.itemconfigure = function (item, key, value) {
     this.items[item][key] = value;
-}
+};
 
 // value might be undefined
 Turtle.prototype.css = function (key, value) {
@@ -183,7 +185,7 @@ Turtle.prototype.css = function (key, value) {
         // jQuery return value is confusing when the css is set
         this.canvas.css(key, value);
     }
-}
+};
 
 function run(launchmsg) {
     var i, turtlescreen, msg, result, cmd;
