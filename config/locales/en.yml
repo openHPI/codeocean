@@ -739,6 +739,7 @@ en:
       link: Help
     index: Index
     message_failure: 'Sorry, something went wrong.'
+    websocket_failure: Sorry, a connection issue occoured. <a href="https://websocketstest.com">Please check WebSocket connections with this tool</a> and try again.
     new: Add
     new_model: 'Add %{model}'
     number: Number

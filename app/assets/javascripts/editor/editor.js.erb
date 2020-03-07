@@ -620,7 +620,8 @@ configureEditors: function () {
       return;
     }
     $.flash.danger({
-      text: $('#flash').data('message-failure')
+      text: $('#flash').data('websocket-failure'),
+      showPermanent: true
     });
     Sentry.captureException(JSON.stringify(error));
   },

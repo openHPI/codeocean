@@ -739,6 +739,7 @@ de:
       link: Hilfe
     index: Index
     message_failure: Leider ist ein Fehler auf unserer Plattform aufgetreten. Bitte probieren Sie es später noch einmal.
+    websocket_failure: Leider ist ein Verbindungsproblem aufgetreten. <a href="https://websocketstest.com">Bitte überprüfen Sie Websocket-Verbindungen mit diesem Tool</a> und versuchen Sie es erneut.
     new: Hinzufügen
     new_model: '%{model} hinzufügen'
     number: Nummer

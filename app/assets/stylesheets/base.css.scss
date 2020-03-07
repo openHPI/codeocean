@@ -77,6 +77,11 @@ span.caret {
 
 .flash {
   font-size: 100%;
+
+  a, a:hover {
+    color: white;
+    font-weight: bold;
+  }
 }
 
 .markdown {
