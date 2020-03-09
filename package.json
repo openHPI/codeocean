@@ -14,7 +14,7 @@
     "jstree": "^3.3.9",
     "opensans-webkit": "^1.0.1",
     "popper.js": "^1.16.1",
-    "snyk": "^1.298.0",
+    "snyk": "^1.298.1",
     "underscore": "^1.9.2",
     "vis": "^4.21.0",
     "webpack-merge": "^4.1.4"
