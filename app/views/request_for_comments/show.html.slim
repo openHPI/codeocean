@@ -168,6 +168,11 @@ javascript:
     return commentText.replace(/\n/g, '<br>');
   }
 
+  function replaceNewlineTags(commentText) {
+    // display original line breaks as \n:
+    return commentText.replace(/<br>/g, '\n');
+  }
+
   function generateCommentHtmlContent(comments) {
     var htmlContent = '';
     comments.forEach(function(comment, index) {
@@ -182,14 +187,14 @@ javascript:
             <div class="comment-date">' + comment.date + '</div> \
             <div class="comment-updated' + (comment.updated ? '' : ' d-none') + '"> \
               <i class="fa fa-pencil" aria-hidden="true"></i> \
-              #{{ t('request_for_comments.comment_edited') }} \
+              #{{ t(';request_for_comments.comment_edited;') }} \
             </div> \
           </div> \
           <div class="comment-content">' + commentText + '</div> \
           <textarea class="comment-editor">' + commentText + '</textarea> \
           <div class="comment-actions' + (comment.editable ? '' : ' d-none') + '"> \
-            <button class="action-edit btn btn-sm btn-warning">#{ t('shared.edit') }</button> \
-            <button class="action-delete btn btn-sm btn-danger">#{ t('shared.destroy') }</button> \
+            <button class="action-edit btn btn-sm btn-warning">#{ t(';shared.edit;') }</button> \
+            <button class="action-delete btn btn-sm btn-danger">#{ t(';shared.destroy;') }</button> \
           </div> \
         </div>';
     });
@@ -202,7 +207,7 @@ javascript:
     var htmlContent = generateCommentHtmlContent(comments.reverse().slice(0, maxComments));
     if (comments.length > maxComments) {
       // add a hint that there are more comments than shown here
-      htmlContent += '<div class="popover-footer">#{ t('request_for_comments.click_for_more_comments') }</div>'
+      htmlContent += '<div class="popover-footer">#{ t(';request_for_comments.click_for_more_comments;') }</div>'
         .replace('${numComments}', String(comments.length - maxComments));
     }
     where.popover({
@@ -391,7 +396,7 @@ javascript:
         var commentId = parent.data('comment-id');
 
         deleteComment(commentId, editor, fileid, function () {
-          parent.html('<div class="comment-removed">#{ t('comments.deleted') }</div>');
+          parent.html('<div class="comment-removed">#{ t(';comments.deleted;') }</div>';)
         });
       });
 
@@ -411,7 +416,7 @@ javascript:
           updateComment(commentId, commentEditor.val(), editor, fileid, function () {
             button.text("#{ t('shared.edit') }");
             button.data('editing', false);
-            commentContent.text(commentEditor.val());
+            commentContent.html(preprocess(commentEditor.val()));
             deleteButton.show();
             commentContent.show();
             commentEditor.hide();
@@ -422,6 +427,7 @@ javascript:
           button.data('editing', true);
           deleteButton.hide();
           commentContent.hide();
+          commentEditor.val(replaceNewlineTags(commentEditor.val()));
           commentEditor.show();
         }
       });
