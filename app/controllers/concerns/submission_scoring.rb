@@ -2,26 +2,30 @@ require 'concurrent/future'
 
 module SubmissionScoring
   def collect_test_results(submission)
-    submission.collect_files.select(&:teacher_defined_test?).map do |file|
-      future = Concurrent::Future.execute do
-        assessor = Assessor.new(execution_environment: submission.execution_environment)
-        output = execute_test_file(file, submission)
-        assessment = assessor.assess(output)
-        passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score] > 0))
-        testrun_output = passed ? nil : 'message: ' + output[:message].to_s + "\n stdout: " + output[:stdout].to_s + "\n stderr: " + output[:stderr].to_s
-        unless testrun_output.blank?
-          submission.exercise.execution_environment.error_templates.each do |template|
-            pattern = Regexp.new(template.signature).freeze
-            if pattern.match(testrun_output)
-              StructuredError.create_from_template(template, testrun_output, submission)
+    Mnemosyne.trace 'custom.codeocean.collect_test_results', meta: { submission: submission.id } do
+      submission.collect_files.select(&:teacher_defined_test?).map do |file|
+        future = Concurrent::Future.execute do
+          Mnemosyne.trace 'custom.codeocean.collect_test_results_block', meta: { file: file.id, submission: submission.id } do
+            assessor = Assessor.new(execution_environment: submission.execution_environment)
+            output = execute_test_file(file, submission)
+            assessment = assessor.assess(output)
+            passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score] > 0))
+            testrun_output = passed ? nil : 'message: ' + output[:message].to_s + "\n stdout: " + output[:stdout].to_s + "\n stderr: " + output[:stderr].to_s
+            unless testrun_output.blank?
+              submission.exercise.execution_environment.error_templates.each do |template|
+                pattern = Regexp.new(template.signature).freeze
+                if pattern.match(testrun_output)
+                  StructuredError.create_from_template(template, testrun_output, submission)
+                end
+              end
             end
+            Testrun.new(submission: submission, cause: 'assess', file: file, passed: passed, output: testrun_output).save
+            output.merge!(assessment)
+            output.merge!(filename: file.name_with_extension, message: feedback_message(file, output[:score]), weight: file.weight)
           end
         end
-        Testrun.new(submission: submission, cause: 'assess', file: file, passed: passed, output: testrun_output).save
-        output.merge!(assessment)
-        output.merge!(filename: file.name_with_extension, message: feedback_message(file, output[:score]), weight: file.weight)
+        future.value
       end
-      future.value
     end
   end
   private :collect_test_results
