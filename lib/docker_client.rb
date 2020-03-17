@@ -26,7 +26,12 @@ class DockerClient
 
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
-      Pathname.new(local_workspace_path).children.each{ |p| p.rmtree}
+      Pathname.new(local_workspace_path).children.each do |p|
+        p.rmtree
+      rescue Errno::ENOENT => error
+        Raven.capture_exception(error)
+        Rails.logger.error('clean_container_workspace: Got Errno::ENOENT: ' + error.to_s)
+      end
       #FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
   end
@@ -197,11 +202,16 @@ class DockerClient
     container.stop.kill
     container.port_bindings.values.each { |port| PortPool.release(port) }
     clean_container_workspace(container)
+
+    # Checks only if container assignment is not nil and not whether the container itself is still present.
     if container
       container.delete(force: true, v: true)
     end
   rescue Docker::Error::NotFoundError => error
     Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
+    Rails.logger.error('No further actions are done concerning that.')
+  rescue Docker::Error::ConflictError => error
+    Rails.logger.error('destroy_container: Rescued from Docker::Error::ConflictError: ' + error.to_s)
     Rails.logger.error('No further actions are done concerning that.')
   end
 
@@ -400,6 +410,7 @@ class DockerClient
     begin
       clean_container_workspace(container)
     rescue Docker::Error::NotFoundError => error
+      # FIXME: Create new container?
       Rails.logger.info('return_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
       Rails.logger.info('Nothing is done here additionally. The container will be exchanged upon its next retrieval.')
     end

@@ -52,13 +52,13 @@ class DockerContainerPool
   def self.create_container(execution_environment)
     Rails.logger.info('trying to create container for execution environment: ' + execution_environment.to_s)
     container = DockerClient.create_container(execution_environment)
-    container.status = 'available'
+    container.status = 'available' # FIXME: String vs Symbol usage?
     #Rails.logger.debug('created container ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
     container
   end
 
   def self.return_container(container, execution_environment)
-    container.status = 'available'
+    container.status = 'available' # FIXME: String vs Symbol usage?
     if(@containers[execution_environment.id] && !@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id].push(container)
     else
