@@ -23,9 +23,6 @@
   },
   "scripts": {
     "webpack": "./bin/webpack",
-    "webpack-dev-server": "./bin/webpack-dev-server",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
-  },
-  "snyk": true
+    "webpack-dev-server": "./bin/webpack-dev-server"
+  }
 }
