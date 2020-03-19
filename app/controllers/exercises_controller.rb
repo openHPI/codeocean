@@ -264,8 +264,8 @@ class ExercisesController < ApplicationController
   end
 
   def set_course_token
-    lti_parameters = LtiParameter.find_by(external_users_id: current_user.id,
-                                          exercises_id: @exercise.id)
+    lti_parameters = LtiParameter.where(external_users_id: current_user.id,
+                                          exercises_id: @exercise.id).last
     if lti_parameters
       lti_json = lti_parameters.lti_parameters["launch_presentation_return_url"]
 
@@ -337,7 +337,7 @@ class ExercisesController < ApplicationController
 
     lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
                                        external_users_id: @submission.user_id,
-                                       exercises_id: @submission.exercise_id).first
+                                       exercises_id: @submission.exercise_id).last
 
     path = lti_return_path(consumer_id: session[:consumer_id],
                            submission_id: @submission.id,

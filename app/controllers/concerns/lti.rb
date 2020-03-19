@@ -145,7 +145,7 @@ module Lti
     if session[:consumer_id]
       lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
                                          external_users_id: user_id,
-                                         exercises_id: exercise_id).first
+                                         exercises_id: exercise_id).last
 
       consumer = Consumer.find_by(id: session[:consumer_id])
       provider = build_tool_provider(consumer: consumer, parameters: lti_parameter.lti_parameters)
