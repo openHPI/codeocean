@@ -2,7 +2,8 @@ class PyUnitAdapter < TestingFrameworkAdapter
   COUNT_REGEXP = /Ran (\d+) test/
   FAILURES_REGEXP = /FAILED \(.*failures=(\d+).*\)/
   ERRORS_REGEXP = /FAILED \(.*errors=(\d+).*\)/
-  ASSERTION_ERROR_REGEXP = /AssertionError:\s(.*)/
+  # The regex below also catches new line separators.
+  ASSERTION_ERROR_REGEXP = /AssertionError:\s(.*)\s\s----------------------------------------------------------------------/s
 
   def self.framework_name
     'PyUnit'

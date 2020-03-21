@@ -440,7 +440,7 @@ configureEditors: function () {
         let errorMessagesToShow = [];
         result.error_messages.forEach(function (item) {
             if (item) {
-              errorMessagesToShow.push(item)
+              errorMessagesToShow.push(item.replace(/\n/g, '<br>'))
             }
         })
 
