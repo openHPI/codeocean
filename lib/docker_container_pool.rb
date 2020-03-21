@@ -4,6 +4,8 @@ require 'concurrent/timer_task'
 
 class DockerContainerPool
 
+  @semaphore = Concurrent::Semaphore.new(1)
+
   @containers = Concurrent::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, Concurrent::Array.new] }]
   #as containers are not containing containers in use
   @all_containers = Concurrent::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, Concurrent::Array.new] }]
@@ -30,23 +32,27 @@ class DockerContainerPool
   end
 
   def self.remove_from_all_containers(container, execution_environment)
-    @all_containers[execution_environment.id]-=[container]
+    @semaphore.acquire
+    @all_containers[execution_environment.id] -= [container]
     Rails.logger.debug('Removed container ' + container.to_s + ' from all_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in all_pool ' + @all_containers[execution_environment.id].size.to_s)
 
     if(@containers[execution_environment.id].include?(container))
-      @containers[execution_environment.id]-=[container]
+      @containers[execution_environment.id] -= [container]
       Rails.logger.debug('Removed container ' + container.to_s + ' from available_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in available_pool ' + @containers[execution_environment.id].size.to_s)
     end
+    @semaphore.release
   end
 
   def self.add_to_all_containers(container, execution_environment)
-    @all_containers[execution_environment.id]+=[container]
+    @semaphore.acquire
+    @all_containers[execution_environment.id] += [container]
     if(!@containers[execution_environment.id].include?(container))
-      @containers[execution_environment.id]+=[container]
+      @containers[execution_environment.id] += [container]
       #Rails.logger.debug('Added container ' + container.to_s + ' to all_pool for execution environment ' + execution_environment.to_s + '. Containers in all_pool: ' + @all_containers[execution_environment.id].size.to_s)
     else
       Rails.logger.info('failed trying to add existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
     end
+    @semaphore.release
   end
 
   def self.create_container(execution_environment)
@@ -58,18 +64,22 @@ class DockerContainerPool
   end
 
   def self.return_container(container, execution_environment)
+    @semaphore.acquire
     container.status = 'available' # FIXME: String vs Symbol usage?
     if(@containers[execution_environment.id] && !@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id].push(container)
     else
       Rails.logger.info('trying to return existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
     end
+    @semaphore.release
   end
 
   def self.get_container(execution_environment)
     # if pooling is active, do pooling, otherwise just create an container and return it
     if config[:active]
+      @semaphore.acquire
       container = @containers[execution_environment.id].try(:shift) || nil
+      @semaphore.release
       Rails.logger.debug('get_container fetched container  ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
       # just access and the following if we got a container. Otherwise, the execution_environment might be just created and not fully exist yet.
       if(container)
@@ -80,12 +90,12 @@ class DockerContainerPool
             Rails.logger.debug('get_container remaining avail. containers:  ' + @containers[execution_environment.id].size.to_s)
             Rails.logger.debug('get_container all container count: ' + @all_containers[execution_environment.id].size.to_s)
           else
-            Rails.logger.error('docker_container_pool.get_container retrieved a container not running. Container will be removed from list:  ' +  container.to_s)
+            Rails.logger.error('docker_container_pool.get_container retrieved a container not running. Container will be removed from list:  ' + container.to_s)
             #TODO: check in which state the container actually is and treat it accordingly (dead,... => destroy?)
             container = replace_broken_container(container, execution_environment)
           end
         rescue Docker::Error::NotFoundError => error
-          Rails.logger.error('docker_container_pool.get_container rescued from Docker::Error::NotFoundError. Most likely, the container is not there any longer. Removing faulty entry from list: ' +  container.to_s)
+          Rails.logger.error('docker_container_pool.get_container rescued from Docker::Error::NotFoundError. Most likely, the container is not there any longer. Removing faulty entry from list: ' + container.to_s)
           container = replace_broken_container(container, execution_environment)
         end
       end
@@ -119,9 +129,10 @@ class DockerContainerPool
   end
 
   def self.refill_for_execution_environment(execution_environment)
+    @semaphore.acquire
     refill_count = [execution_environment.pool_size - @all_containers[execution_environment.id].length, config[:refill][:batch_size]].min
     if refill_count > 0
-      Rails.logger.info('Adding ' + refill_count.to_s + ' containers for execution_environment ' +  execution_environment.name )
+      Rails.logger.info('Adding ' + refill_count.to_s + ' containers for execution_environment ' + execution_environment.name )
       c = refill_count.times.map { create_container(execution_environment) }
       #Rails.logger.info('Created containers: ' + c.to_s )
       @containers[execution_environment.id] += c
@@ -129,6 +140,7 @@ class DockerContainerPool
       #Rails.logger.debug('@containers  for ' + execution_environment.name.to_s + ' (' + @containers.object_id.to_s + ') has the following content: '+ @containers[execution_environment.id].to_s)
       #Rails.logger.debug('@all_containers for '  + execution_environment.name.to_s + ' (' + @all_containers.object_id.to_s + ') has the following content: ' + @all_containers[execution_environment.id].to_s)
     end
+    @semaphore.release
   end
 
   def self.start_refill_task
