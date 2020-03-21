@@ -4,6 +4,11 @@ require 'concurrent/timer_task'
 
 class DockerContainerPool
 
+  # Always use a semaphore when dealing with write access to `@containers` or `@all_containers` or read access if that involves creating a new container
+  # Some methods have the `bypass_semaphore` flag which should be rarely used. It was introduced when adding the semaphore to the `replace_broken_container` method.
+  # From there, it was added to `remove_from_all_containers` and `add_to_all_containers` first. That ensures, replacing is atomic.
+  # When `replace_broken_container` was extended to check the total amount of containers first, the `bypass_semaphore` flag was also added to `get_container` and
+  # back to `replace_broken_container`. When the semaphore is not released, no container operations can be done!
   @semaphore = Concurrent::Semaphore.new(1)
 
   @containers = Concurrent::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, Concurrent::Array.new] }]
@@ -74,12 +79,12 @@ class DockerContainerPool
     @semaphore.release
   end
 
-  def self.get_container(execution_environment)
+  def self.get_container(execution_environment, bypass_semaphore: false)
     # if pooling is active, do pooling, otherwise just create an container and return it
     if config[:active]
-      @semaphore.acquire
+      @semaphore.acquire unless bypass_semaphore
       container = @containers[execution_environment.id].try(:shift) || nil
-      @semaphore.release
+      @semaphore.release unless bypass_semaphore
       Rails.logger.debug('get_container fetched container  ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
       # just access and the following if we got a container. Otherwise, the execution_environment might be just created and not fully exist yet.
       if(container)
@@ -92,11 +97,11 @@ class DockerContainerPool
           else
             Rails.logger.error('docker_container_pool.get_container retrieved a container not running. Container will be removed from list:  ' + container.to_s)
             #TODO: check in which state the container actually is and treat it accordingly (dead,... => destroy?)
-            container = replace_broken_container(container, execution_environment)
+            container = replace_broken_container(container, execution_environment, bypass_semaphore: bypass_semaphore)
           end
         rescue Docker::Error::NotFoundError => error
           Rails.logger.error('docker_container_pool.get_container rescued from Docker::Error::NotFoundError. Most likely, the container is not there any longer. Removing faulty entry from list: ' + container.to_s)
-          container = replace_broken_container(container, execution_environment)
+          container = replace_broken_container(container, execution_environment, bypass_semaphore: bypass_semaphore)
         end
       end
       # returning nil is no problem. then the pool is just depleted.
@@ -106,21 +111,21 @@ class DockerContainerPool
     end
   end
 
-  def self.replace_broken_container(container, execution_environment)
-    @semaphore.acquire
+  def self.replace_broken_container(container, execution_environment, bypass_semaphore: false)
+    # See note at the top for `bypass_semaphore`
+    @semaphore.acquire unless bypass_semaphore
     remove_from_all_containers(container, execution_environment, bypass_semaphore: true)
     missing_counter_count = execution_environment.pool_size - @all_containers[execution_environment.id].length
     if missing_counter_count > 0
       Rails.logger.error('Creating a new container and returning that.')
       new_container = create_container(execution_environment)
       DockerContainerPool.add_to_all_containers(new_container, execution_environment, bypass_semaphore: true)
-      @semaphore.release
-      new_container
     else
       Rails.logger.error('Broken container removed for ' + execution_environment.to_s + ' but not creating a new one. Currently, ' + missing_counter_count.abs + ' more containers than the configured pool size are available.')
-      @semaphore.release
-      get_container(execution_environment)
+      new_container = get_container(execution_environment, bypass_semaphore: true)
     end
+    @semaphore.release unless bypass_semaphore
+    new_container
   end
 
   def self.quantities
