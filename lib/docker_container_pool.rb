@@ -117,7 +117,7 @@ class DockerContainerPool
       @semaphore.release
       new_container
     else
-      Rails.logger.error('Broken container removed for ' + execution_environment.to_s + ' but not creating a new one. Currently, ' + abs(missing_counter_count) + ' more containers than the configured pool size are available.')
+      Rails.logger.error('Broken container removed for ' + execution_environment.to_s + ' but not creating a new one. Currently, ' + missing_counter_count.abs + ' more containers than the configured pool size are available.')
       @semaphore.release
       get_container(execution_environment)
     end
