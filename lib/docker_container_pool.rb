@@ -31,8 +31,8 @@ class DockerContainerPool
     @all_containers
   end
 
-  def self.remove_from_all_containers(container, execution_environment)
-    @semaphore.acquire
+  def self.remove_from_all_containers(container, execution_environment, bypass_semaphore: false)
+    @semaphore.acquire unless bypass_semaphore
     @all_containers[execution_environment.id] -= [container]
     Rails.logger.debug('Removed container ' + container.to_s + ' from all_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in all_pool ' + @all_containers[execution_environment.id].size.to_s)
 
@@ -40,19 +40,19 @@ class DockerContainerPool
       @containers[execution_environment.id] -= [container]
       Rails.logger.debug('Removed container ' + container.to_s + ' from available_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in available_pool ' + @containers[execution_environment.id].size.to_s)
     end
-    @semaphore.release
+    @semaphore.release unless bypass_semaphore
   end
 
-  def self.add_to_all_containers(container, execution_environment)
-    @semaphore.acquire
+  def self.add_to_all_containers(container, execution_environment, bypass_semaphore: false)
+    @semaphore.acquire unless bypass_semaphore
     @all_containers[execution_environment.id] += [container]
     if(!@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id] += [container]
       #Rails.logger.debug('Added container ' + container.to_s + ' to all_pool for execution environment ' + execution_environment.to_s + '. Containers in all_pool: ' + @all_containers[execution_environment.id].size.to_s)
     else
-      Rails.logger.info('failed trying to add existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
+      Rails.logger.error('failed trying to add existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
     end
-    @semaphore.release
+    @semaphore.release unless bypass_semaphore
   end
 
   def self.create_container(execution_environment)
@@ -69,7 +69,7 @@ class DockerContainerPool
     if(@containers[execution_environment.id] && !@containers[execution_environment.id].include?(container))
       @containers[execution_environment.id].push(container)
     else
-      Rails.logger.info('trying to return existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
+      Rails.logger.error('trying to return existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
     end
     @semaphore.release
   end
@@ -107,11 +107,20 @@ class DockerContainerPool
   end
 
   def self.replace_broken_container(container, execution_environment)
-    remove_from_all_containers(container, execution_environment)
-    Rails.logger.error('Creating a new container and returning that.')
-    new_container = create_container(execution_environment)
-    DockerContainerPool.add_to_all_containers(new_container, execution_environment)
-    new_container
+    @semaphore.acquire
+    remove_from_all_containers(container, execution_environment, bypass_semaphore: true)
+    missing_counter_count = execution_environment.pool_size - @all_containers[execution_environment.id].length
+    if missing_counter_count > 0
+      Rails.logger.error('Creating a new container and returning that.')
+      new_container = create_container(execution_environment)
+      DockerContainerPool.add_to_all_containers(new_container, execution_environment, bypass_semaphore: true)
+      @semaphore.release
+      new_container
+    else
+      Rails.logger.error('Broken container removed for ' + execution_environment.to_s + ' but not creating a new one. Currently, ' + abs(missing_counter_count) + ' more containers than the configured pool size are available.')
+      @semaphore.release
+      get_container(execution_environment)
+    end
   end
 
   def self.quantities
