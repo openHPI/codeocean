@@ -278,7 +278,9 @@ class DockerClient
               sleep(1)
               @socket.close
             end
-            kill_container(container)
+            Thread.new do
+              kill_container(container)
+            end
           end
         #ensure
         # guarantee that the thread is releasing the DB connection after it is done
