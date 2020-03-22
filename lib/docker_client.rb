@@ -306,7 +306,8 @@ class DockerClient
     Rails.logger.info('killing container ' + container.to_s)
     # remove container from pool, then destroy it
     if (DockerContainerPool.config[:active])
-      DockerContainerPool.remove_from_all_containers(container, @execution_environment)
+      DockerContainerPool.semaphore.acquire
+      DockerContainerPool.remove_from_all_containers(container, @execution_environment, bypass_semaphore: true)
     end
 
     self.class.destroy_container(container)
@@ -315,7 +316,8 @@ class DockerClient
     if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
       # create new container and add it to @all_containers and @containers.
       container = self.class.create_container(@execution_environment)
-      DockerContainerPool.add_to_all_containers(container, @execution_environment)
+      DockerContainerPool.add_to_all_containers(container, @execution_environment, bypass_semaphore: true)
+      DockerContainerPool.semaphore.release
     end
     exit_thread_if_alive
   end
@@ -439,7 +441,8 @@ class DockerClient
 
     # remove container from pool, then destroy it
     if (DockerContainerPool.config[:active])
-      DockerContainerPool.remove_from_all_containers(container, @execution_environment)
+      DockerContainerPool.semaphore.acquire
+      DockerContainerPool.remove_from_all_containers(container, @execution_environment, bypass_semaphore: true)
     end
 
     # destroy container
@@ -449,7 +452,8 @@ class DockerClient
     if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
       # create new container and add it to @all_containers and @containers.
       container = self.class.create_container(@execution_environment)
-      DockerContainerPool.add_to_all_containers(container, @execution_environment)
+      DockerContainerPool.add_to_all_containers(container, @execution_environment, bypass_semaphore: true)
+      DockerContainerPool.semaphore.release
     end
     {status: :timeout}
   end

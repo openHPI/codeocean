@@ -36,6 +36,10 @@ class DockerContainerPool
     @all_containers
   end
 
+  def self.semaphore
+    @semaphore
+  end
+
   def self.remove_from_all_containers(container, execution_environment, bypass_semaphore: false)
     @semaphore.acquire unless bypass_semaphore
     @all_containers[execution_environment.id] -= [container]
