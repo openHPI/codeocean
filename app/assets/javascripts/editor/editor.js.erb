@@ -453,13 +453,13 @@ configureEditors: function () {
             ul.setAttribute('class', 'error_messages_list');
             errorMessagesToShow.forEach(function (item) {
                 var li = document.createElement("li");
-                var text = document.createTextNode(item);
-                li.appendChild(text);
+                var text = $.parseHTML(item);
+                $(li).append(text);
                 ul.append(li);
             })
             targetNode.append(ul);
         } else {
-            targetNode.text(errorMessagesToShow.join(''));
+            targetNode.html(errorMessagesToShow.join(''));
         }
     }
     //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
