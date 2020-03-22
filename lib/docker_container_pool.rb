@@ -49,8 +49,12 @@ class DockerContainerPool
 
   def self.release_semaphore
     Rails.logger.info("Semaphore - Release: Trying " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
-    @semaphore.release
-    Rails.logger.info("Semaphore - Release: Done " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
+    if @semaphore.available_permits < 1
+      @semaphore.release
+      Rails.logger.info("Semaphore - Release: Done " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
+    else
+      Rails.logger.info("Semaphore - Release: Failed " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
+    end
   end
 
   def self.remove_from_all_containers(container, execution_environment, bypass_semaphore: false)
