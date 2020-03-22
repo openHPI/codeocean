@@ -316,8 +316,15 @@ class DockerClient
       DockerContainerPool.remove_from_all_containers(container, @execution_environment, bypass_semaphore: true)
       # create new container and add it to @all_containers and @containers.
       # ToDo: How long does creating a new cotainer take? We're still locking the semaphore.
-      new_container = self.class.create_container(@execution_environment)
-      DockerContainerPool.add_to_all_containers(new_container, @execution_environment, bypass_semaphore: true)
+
+      missing_counter_count = execution_environment.pool_size - @all_containers[execution_environment.id].length
+      if missing_counter_count > 0
+        Rails.logger.error('kill_container: Creating a new container.')
+        new_container = self.class.create_container(@execution_environment)
+        DockerContainerPool.add_to_all_containers(new_container, @execution_environment, bypass_semaphore: true)
+      else
+        Rails.logger.error('Container killed and removed for ' + execution_environment.to_s + ' but not creating a new one. Currently, ' + missing_counter_count.abs + ' more containers than the configured pool size are available.')
+      end
       DockerContainerPool.release_semaphore
     end
 
