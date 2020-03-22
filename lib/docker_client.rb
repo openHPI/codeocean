@@ -25,7 +25,7 @@ class DockerClient
     #container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
 
     local_workspace_path = local_workspace_path(container)
-    if local_workspace_path &&  Pathname.new(local_workspace_path).exist?
+    if local_workspace_path && Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each do |p|
         p.rmtree
       rescue Errno::ENOENT => error
@@ -38,11 +38,12 @@ class DockerClient
 
   def command_substitutions(filename)
     {
-      class_name: File.basename(filename, File.extname(filename)).camelize,
-      filename: filename,
-      module_name: File.basename(filename, File.extname(filename)).underscore
+        class_name: File.basename(filename, File.extname(filename)).camelize,
+        filename: filename,
+        module_name: File.basename(filename, File.extname(filename)).underscore
     }
   end
+
   private :command_substitutions
 
   def self.config
@@ -51,29 +52,29 @@ class DockerClient
 
   def self.container_creation_options(execution_environment)
     {
-      'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
-      'Memory' => execution_environment.memory_limit.megabytes,
-      'NetworkDisabled' => !execution_environment.network_enabled?,
-      #'HostConfig' => { 'CpusetCpus' => '0', 'CpuQuota' => 10000 },
-      #DockerClient.config['allowed_cpus']
-      'OpenStdin' => true,
-      'StdinOnce' => true,
-      # required to expose standard streams over websocket
-      'AttachStdout' => true,
-      'AttachStdin' => true,
-      'AttachStderr' => true,
-      'Tty' => true
+        'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
+        'Memory' => execution_environment.memory_limit.megabytes,
+        'NetworkDisabled' => !execution_environment.network_enabled?,
+        #'HostConfig' => { 'CpusetCpus' => '0', 'CpuQuota' => 10000 },
+        #DockerClient.config['allowed_cpus']
+        'OpenStdin' => true,
+        'StdinOnce' => true,
+        # required to expose standard streams over websocket
+        'AttachStdout' => true,
+        'AttachStdin' => true,
+        'AttachStderr' => true,
+        'Tty' => true
     }
   end
 
   def self.container_start_options(execution_environment, local_workspace_path)
     {
-      'Binds' => mapped_directories(local_workspace_path),
-      'PortBindings' => mapped_ports(execution_environment)
+        'Binds' => mapped_directories(local_workspace_path),
+        'PortBindings' => mapped_ports(execution_environment)
     }
   end
 
-  def create_socket(container, stderr=false)
+  def create_socket(container, stderr = false)
     # todo factor out query params
     # todo separate stderr
     query_params = 'logs=0&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
@@ -136,6 +137,7 @@ class DockerClient
   rescue Docker::Error::NotFoundError => error
     Rails.logger.info('create_workspace_files: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
   end
+
   private :create_workspace_files
 
   def create_workspace_file(options = {})
@@ -144,51 +146,52 @@ class DockerClient
     file.write(options[:file].content)
     file.close
   end
+
   private :create_workspace_file
 
   def create_workspace_files_transmit(container, submission)
     begin
-    # create a temporary dir, put all files in it, and put it into the container. the dir is automatically removed when leaving the block.
-    Dir.mktmpdir {|dir|
-      submission.collect_files.each do |file|
-        disk_file = File.new(dir + '/' + (file.path || '') + file.name_with_extension, 'w')
-        disk_file.write(file.content)
-        disk_file.close
-      end
+      # create a temporary dir, put all files in it, and put it into the container. the dir is automatically removed when leaving the block.
+      Dir.mktmpdir { |dir|
+        submission.collect_files.each do |file|
+          disk_file = File.new(dir + '/' + (file.path || '') + file.name_with_extension, 'w')
+          disk_file.write(file.content)
+          disk_file.close
+        end
 
 
-      begin
-        # create target folder, TODO re-active this when we remove shared folder bindings
-        #container.exec(['bash', '-c', 'mkdir ' + CONTAINER_WORKSPACE_PATH])
-        #container.exec(['bash', '-c', 'chown -R python ' + CONTAINER_WORKSPACE_PATH])
-        #container.exec(['bash', '-c', 'chgrp -G python ' + CONTAINER_WORKSPACE_PATH])
-      rescue StandardError => error
-        Rails.logger.error('create workspace folder: Rescued from StandardError: ' + error.to_s)
-      end
+        begin
+          # create target folder, TODO re-active this when we remove shared folder bindings
+          #container.exec(['bash', '-c', 'mkdir ' + CONTAINER_WORKSPACE_PATH])
+          #container.exec(['bash', '-c', 'chown -R python ' + CONTAINER_WORKSPACE_PATH])
+          #container.exec(['bash', '-c', 'chgrp -G python ' + CONTAINER_WORKSPACE_PATH])
+        rescue StandardError => error
+          Rails.logger.error('create workspace folder: Rescued from StandardError: ' + error.to_s)
+        end
 
-      #sleep 1000
+        #sleep 1000
 
-      begin
-        # tar the files in dir and put the tar to CONTAINER_WORKSPACE_PATH in the container
-        container.archive_in(dir, CONTAINER_WORKSPACE_PATH, overwrite: false)
+        begin
+          # tar the files in dir and put the tar to CONTAINER_WORKSPACE_PATH in the container
+          container.archive_in(dir, CONTAINER_WORKSPACE_PATH, overwrite: false)
 
-      rescue StandardError => error
-        Rails.logger.error('insert tar: Rescued from StandardError: ' + error.to_s)
-      end
+        rescue StandardError => error
+          Rails.logger.error('insert tar: Rescued from StandardError: ' + error.to_s)
+        end
 
-      #Rails.logger.info('command: tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH)
+        #Rails.logger.info('command: tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH)
 
-      begin
-        # untar the tar file placed in the CONTAINER_WORKSPACE_PATH
-        container.exec(['bash', '-c', 'tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH])
-      rescue StandardError => error
-        Rails.logger.error('untar: Rescued from StandardError: ' + error.to_s)
-      end
+        begin
+          # untar the tar file placed in the CONTAINER_WORKSPACE_PATH
+          container.exec(['bash', '-c', 'tar -xf ' + CONTAINER_WORKSPACE_PATH + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH])
+        rescue StandardError => error
+          Rails.logger.error('untar: Rescued from StandardError: ' + error.to_s)
+        end
 
 
-      #sleep 1000
+        #sleep 1000
 
-    }
+      }
     rescue StandardError => error
       Rails.logger.error('create_workspace_files_transmit: Rescued from StandardError: ' + error.to_s)
     end
@@ -258,39 +261,39 @@ class DockerClient
   end
 
   def kill_after_timeout(container)
-    """
+    "" "
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
-    """
-      @thread = Thread.new do
-        #begin
-          timeout = @execution_environment.permitted_execution_time.to_i # seconds
-          sleep(timeout)
-          if container.status != :returned
-            Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
-            # send timeout to the tubesock socket
-            if(@tubesock)
-              @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
-            end
-            if(@socket)
-              @socket.send('#timeout')
-              #sleep one more second to ensure that the message reaches the submissions_controller.
-              sleep(1)
-              @socket.close
-            end
-            Thread.new do
-              kill_container(container)
-            end
-          end
-        #ensure
-        # guarantee that the thread is releasing the DB connection after it is done
-        # ApplicationRecord.connectionpool.releaseconnection
-        #end
+    " ""
+    @thread = Thread.new do
+      #begin
+      timeout = @execution_environment.permitted_execution_time.to_i # seconds
+      sleep(timeout)
+      if container.status != :returned
+        Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
+        # send timeout to the tubesock socket
+        if (@tubesock)
+          @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
+        end
+        if (@socket)
+          @socket.send('#timeout')
+          #sleep one more second to ensure that the message reaches the submissions_controller.
+          sleep(1)
+          @socket.close
+        end
+        Thread.new do
+          kill_container(container)
+        end
       end
+      #ensure
+      # guarantee that the thread is releasing the DB connection after it is done
+      # ApplicationRecord.connectionpool.releaseconnection
+      #end
+    end
   end
 
   def exit_thread_if_alive
-    if(@thread && @thread.alive?)
+    if (@thread && @thread.alive?)
       @thread.exit
     end
   end
@@ -324,10 +327,10 @@ class DockerClient
   end
 
   def execute_run_command(submission, filename, &block)
-    """
+    "" "
     Run commands by attaching a websocket to Docker.
-    """
-    filepath = submission.collect_files.find{|f| f.name_with_extension == filename}.filepath
+    " ""
+    filepath = submission.collect_files.find { |f| f.name_with_extension == filename }.filepath
     command = submission.execution_environment.run_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     open_websocket_connection(command, create_workspace_files, block)
@@ -335,10 +338,10 @@ class DockerClient
   end
 
   def execute_test_command(submission, filename, &block)
-    """
+    "" "
     Stick to existing Docker API with exec command.
-    """
-    filepath = submission.collect_files.find{|f| f.name_with_extension == filename}.filepath
+    " ""
+    filepath = submission.collect_files.find { |f| f.name_with_extension == filename }.filepath
     command = submission.execution_environment.test_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
     execute_command(command, create_workspace_files, block)
@@ -386,6 +389,7 @@ class DockerClient
   def local_file_path(options = {})
     File.join(self.class.local_workspace_path(options[:container]), options[:file].path || '', options[:file].name_with_extension)
   end
+
   private :local_file_path
 
   def self.local_workspace_path(container)
@@ -420,6 +424,7 @@ class DockerClient
     DockerContainerPool.return_container(container, execution_environment)
     container.status = :returned
   end
+
   #private :return_container
 
   def send_command(command, container, &block)
@@ -445,7 +450,9 @@ class DockerClient
     kill_container(container)
     {status: :timeout}
   end
+
   private :send_command
 
-  class Error < RuntimeError; end
+  class Error < RuntimeError;
+  end
 end
