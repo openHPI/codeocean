@@ -9,6 +9,7 @@ class DockerContainerPool
   # From there, it was added to `remove_from_all_containers` and `add_to_all_containers` first. That ensures, replacing is atomic.
   # When `replace_broken_container` was extended to check the total amount of containers first, the `bypass_semaphore` flag was also added to `get_container` and
   # back to `replace_broken_container`. When the semaphore is not released, no container operations can be done!
+  # Furthermore, the semaphore is used when killing a container in the DockerClient.
   @semaphore = Concurrent::Semaphore.new(1)
 
   @containers = Concurrent::Hash[ExecutionEnvironment.all.map { |execution_environment| [execution_environment.id, Concurrent::Array.new] }]
