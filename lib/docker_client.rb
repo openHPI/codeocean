@@ -306,7 +306,7 @@ class DockerClient
     Rails.logger.info('killing container ' + container.to_s)
     # remove container from pool, then destroy it
     if (DockerContainerPool.config[:active])
-      DockerContainerPool.semaphore.acquire
+      DockerContainerPool.acquire_semaphore
       DockerContainerPool.remove_from_all_containers(container, @execution_environment, bypass_semaphore: true)
     end
 
@@ -317,7 +317,7 @@ class DockerClient
       # create new container and add it to @all_containers and @containers.
       container = self.class.create_container(@execution_environment)
       DockerContainerPool.add_to_all_containers(container, @execution_environment, bypass_semaphore: true)
-      DockerContainerPool.semaphore.release
+      DockerContainerPool.release_semaphore
     end
     exit_thread_if_alive
   end
