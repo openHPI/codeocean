@@ -303,23 +303,22 @@ class DockerClient
   end
 
   def kill_container(container)
+    exit_thread_if_alive
     Rails.logger.info('killing container ' + container.to_s)
     # remove container from pool, then destroy it
     if (DockerContainerPool.config[:active])
       DockerContainerPool.acquire_semaphore
       DockerContainerPool.remove_from_all_containers(container, @execution_environment, bypass_semaphore: true)
-    end
-
-    self.class.destroy_container(container)
-
-    # if we recylce containers, we start a fresh one
-    if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
       # create new container and add it to @all_containers and @containers.
-      container = self.class.create_container(@execution_environment)
-      DockerContainerPool.add_to_all_containers(container, @execution_environment, bypass_semaphore: true)
+      # ToDo: How long does creating a new cotainer take? We're still locking the semaphore.
+      new_container = self.class.create_container(@execution_environment)
+      DockerContainerPool.add_to_all_containers(new_container, @execution_environment, bypass_semaphore: true)
       DockerContainerPool.release_semaphore
     end
-    exit_thread_if_alive
+
+    Thread.new do
+      self.class.destroy_container(container)
+    end
   end
 
   def execute_run_command(submission, filename, &block)
