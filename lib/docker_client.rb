@@ -423,38 +423,25 @@ class DockerClient
 
   def send_command(command, container, &block)
     result = {status: :failed, stdout: '', stderr: ''}
+    output = nil
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
       #TODO: check phusion doku again if we need -i -t options here
       output = container.exec(['bash', '-c', command])
-      Rails.logger.debug "output from container.exec"
-      Rails.logger.debug output
-      if(output == nil)
-        kill_container(container)
-      end
+    end
+    Rails.logger.debug "output from container.exec"
+    Rails.logger.debug output
+    if output == nil
+      kill_container(container)
+    else
       result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'), stderr: output[1].join.force_encoding('utf-8')}
     end
+
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
     result
   rescue Timeout::Error
     Rails.logger.info('got timeout error for container ' + container.to_s)
-
-    # remove container from pool, then destroy it
-    if (DockerContainerPool.config[:active])
-      DockerContainerPool.semaphore.acquire
-      DockerContainerPool.remove_from_all_containers(container, @execution_environment, bypass_semaphore: true)
-    end
-
-    # destroy container
-    self.class.destroy_container(container)
-
-    # if we recylce containers, we start a fresh one
-    if(DockerContainerPool.config[:active] && RECYCLE_CONTAINERS)
-      # create new container and add it to @all_containers and @containers.
-      container = self.class.create_container(@execution_environment)
-      DockerContainerPool.add_to_all_containers(container, @execution_environment, bypass_semaphore: true)
-      DockerContainerPool.semaphore.release
-    end
+    kill_container(container)
     {status: :timeout}
   end
   private :send_command
