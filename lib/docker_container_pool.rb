@@ -61,11 +61,11 @@ class DockerContainerPool
 
   def self.remove_from_all_containers(container, execution_environment, bypass_semaphore: false)
     acquire_semaphore unless bypass_semaphore
-    @all_containers[execution_environment.id] -= [container]
+    @all_containers[execution_environment.id].delete(container)
     Rails.logger.debug('Removed container ' + container.to_s + ' from all_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in all_pool ' + @all_containers[execution_environment.id].size.to_s)
 
-    if(@containers[execution_environment.id].include?(container))
-      @containers[execution_environment.id] -= [container]
+    if @containers[execution_environment.id].include?(container)
+      @containers[execution_environment.id].delete(container)
       Rails.logger.debug('Removed container ' + container.to_s + ' from available_pool for execution environment ' + execution_environment.to_s + '. Remaining containers in available_pool ' + @containers[execution_environment.id].size.to_s)
     end
     release_semaphore unless bypass_semaphore
@@ -73,9 +73,9 @@ class DockerContainerPool
 
   def self.add_to_all_containers(container, execution_environment, bypass_semaphore: false)
     acquire_semaphore unless bypass_semaphore
-    @all_containers[execution_environment.id] += [container]
-    if(!@containers[execution_environment.id].include?(container))
-      @containers[execution_environment.id] += [container]
+    @all_containers[execution_environment.id].push(container)
+    if !@containers[execution_environment.id].include?(container)
+      @containers[execution_environment.id].push(container)
       #Rails.logger.debug('Added container ' + container.to_s + ' to all_pool for execution environment ' + execution_environment.to_s + '. Containers in all_pool: ' + @all_containers[execution_environment.id].size.to_s)
     else
       Rails.logger.error('failed trying to add existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
@@ -94,7 +94,7 @@ class DockerContainerPool
   def self.return_container(container, execution_environment)
     acquire_semaphore
     container.status = 'available' # FIXME: String vs Symbol usage?
-    if(@containers[execution_environment.id] && !@containers[execution_environment.id].include?(container))
+    if @containers[execution_environment.id] && !@containers[execution_environment.id].include?(container)
       @containers[execution_environment.id].push(container)
     else
       Rails.logger.error('trying to return existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
@@ -170,10 +170,10 @@ class DockerContainerPool
     refill_count = [execution_environment.pool_size - @all_containers[execution_environment.id].length, config[:refill][:batch_size]].min
     if refill_count > 0
       Rails.logger.info('Adding ' + refill_count.to_s + ' containers for execution_environment ' + execution_environment.name )
-      c = refill_count.times.map { create_container(execution_environment) }
-      #Rails.logger.info('Created containers: ' + c.to_s )
-      @containers[execution_environment.id] += c
-      @all_containers[execution_environment.id] += c
+      multiple_containers = refill_count.times.map { create_container(execution_environment) }
+      #Rails.logger.info('Created containers: ' + multiple_containers.to_s )
+      @containers[execution_environment.id].concat(multiple_containers)
+      @all_containers[execution_environment.id].concat(multiple_containers)
       #Rails.logger.debug('@containers  for ' + execution_environment.name.to_s + ' (' + @containers.object_id.to_s + ') has the following content: '+ @containers[execution_environment.id].to_s)
       #Rails.logger.debug('@all_containers for '  + execution_environment.name.to_s + ' (' + @all_containers.object_id.to_s + ') has the following content: ' + @all_containers[execution_environment.id].to_s)
     end
