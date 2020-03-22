@@ -37,6 +37,7 @@ class DockerContainerPool
   end
 
   def self.acquire_semaphore
+    return
     Rails.logger.info("Semaphore - Acquire: Trying " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
     got_semaphore = @semaphore.try_acquire(1, 20)
     if got_semaphore
@@ -47,6 +48,7 @@ class DockerContainerPool
   end
 
   def self.release_semaphore
+    return
     Rails.logger.info("Semaphore - Release: Trying " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
     if @semaphore.available_permits < 1
       @semaphore.release
