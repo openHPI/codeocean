@@ -38,19 +38,19 @@ class DockerContainerPool
   end
 
   def self.acquire_semaphore
-    Rails.logger.info("Semaphore - Acquire: Trying " + @semaphore.to_s + " for " + caller_locations(1, 1)[0].label)
+    Rails.logger.info("Semaphore - Acquire: Trying " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
     got_semaphore = @semaphore.try_acquire(1, 20)
     if got_semaphore
-      Rails.logger.info("Semaphore - Acquire: Got " + @semaphore.to_s + " for " + caller_locations(1, 1)[0].label)
+      Rails.logger.info("Semaphore - Acquire: Got " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
     else
-      Rails.logger.error("Semaphore - Acquire: Failed " + @semaphore.to_s + " for " + caller_locations(1, 1)[0].label)
+      Rails.logger.error("Semaphore - Acquire: Failed " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
     end
   end
 
   def self.release_semaphore
-    Rails.logger.info("Semaphore - Release: Trying " + @semaphore.to_s + " for " + caller_locations(1, 1)[0].label)
+    Rails.logger.info("Semaphore - Release: Trying " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
     @semaphore.release
-    Rails.logger.info("Semaphore - Release: Done " + @semaphore.to_s + " for " + caller_locations(1, 1)[0].label)
+    Rails.logger.info("Semaphore - Release: Done " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
   end
 
   def self.remove_from_all_containers(container, execution_environment, bypass_semaphore: false)
