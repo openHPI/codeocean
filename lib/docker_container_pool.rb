@@ -39,7 +39,7 @@ class DockerContainerPool
 
   def self.acquire_semaphore
     Rails.logger.info("Semaphore - Acquire: Trying " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
-    got_semaphore = @semaphore.try_acquire(1, 20)
+    got_semaphore = @semaphore.try_acquire(1, 10)
     if got_semaphore
       Rails.logger.info("Semaphore - Acquire: Got " + @semaphore.inspect.to_s + " for " + caller_locations(1, 1)[0].label)
     else
