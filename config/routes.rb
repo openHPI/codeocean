@@ -38,6 +38,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     get 'dashboard', to: 'dashboard#show'
+    get 'dashboard/dump_docker', to: 'dashboard#dump_docker'
   end
 
   get '/insights', to: 'flowr#insights'
