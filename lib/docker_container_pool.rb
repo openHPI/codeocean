@@ -88,7 +88,7 @@ class DockerContainerPool
 
   def self.return_container(container, execution_environment)
     container.status = 'available' # FIXME: String vs Symbol usage?
-    if @containers[execution_environment.id] && !@containers[execution_environment.id].include?(container)
+    if @containers[execution_environment.id] && !@containers[execution_environment.id].include?(container) && container.re_use
       @containers[execution_environment.id].push(container)
     else
       Rails.logger.error('trying to return existing container ' + container.to_s + ' to execution_environment ' + execution_environment.to_s)
@@ -101,11 +101,11 @@ class DockerContainerPool
       container = @containers[execution_environment.id].try(:shift) || nil
       Rails.logger.debug('get_container fetched container  ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
       # just access and the following if we got a container. Otherwise, the execution_environment might be just created and not fully exist yet.
-      if(container)
+      if (container)
         begin
           # check whether the container is running. exited containers go to the else part.
           # Dead containers raise a NotFOundError on the container.json call. This is handled in the rescue block.
-          if(container.json['State']['Running'])
+          if (container.json['State']['Running'])
             Rails.logger.debug('get_container remaining avail. containers:  ' + @containers[execution_environment.id].size.to_s)
             Rails.logger.debug('get_container all container count: ' + @all_containers[execution_environment.id].size.to_s)
           else
@@ -135,7 +135,7 @@ class DockerContainerPool
       new_container = create_container(execution_environment)
       DockerContainerPool.add_to_all_containers(new_container, execution_environment)
     else
-      Rails.logger.error('Broken container removed for ' + execution_environment.to_s + ' but not creating a new one. Currently, ' + missing_counter_count.abs + ' more containers than the configured pool size are available.')
+      Rails.logger.error('Broken container removed for ' + execution_environment.to_s + ' but not creating a new one. Currently, ' + missing_counter_count.abs.to_s + ' more containers than the configured pool size are available.')
       new_container = get_container(execution_environment, bypass_semaphore: true)
     end
     release_semaphore unless bypass_semaphore
@@ -144,6 +144,14 @@ class DockerContainerPool
 
   def self.quantities
     @containers.map { |key, value| [key, value.length] }.to_h
+  end
+
+  def self.dump_info
+    {
+        process: $$,
+        containers: @containers.as_json,
+        all_containers: @all_containers.as_json
+    }
   end
 
   def self.refill
@@ -160,7 +168,7 @@ class DockerContainerPool
     acquire_semaphore
     refill_count = [execution_environment.pool_size - @all_containers[execution_environment.id].length, config[:refill][:batch_size]].min
     if refill_count > 0
-      Rails.logger.info('Adding ' + refill_count.to_s + ' containers for execution_environment ' + execution_environment.name )
+      Rails.logger.info('Adding ' + refill_count.to_s + ' containers for execution_environment ' + execution_environment.name)
       multiple_containers = refill_count.times.map { create_container(execution_environment) }
       #Rails.logger.info('Created containers: ' + multiple_containers.to_s )
       @containers[execution_environment.id].concat(multiple_containers)

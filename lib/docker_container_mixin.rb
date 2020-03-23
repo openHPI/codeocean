@@ -2,6 +2,7 @@ module DockerContainerMixin
 
   attr_accessor :start_time
   attr_accessor :status
+  attr_accessor :re_use
 
   def binds
     json['HostConfig']['Binds']

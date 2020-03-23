@@ -9,6 +9,9 @@ class DockerClient
   MINIMUM_MEMORY_LIMIT = 4
   RECYCLE_CONTAINERS = true
   RETRY_COUNT = 2
+  MINIMUM_CONTAINER_LIFETIME = 10.minutes
+  MAXIMUM_CONTAINER_LIFETIME = 20.minutes
+  SELF_DESTROY_GRACE_PERIOD = 2.minutes
 
   attr_reader :container
   attr_reader :socket
@@ -116,6 +119,34 @@ class DockerClient
     container.start(container_start_options(execution_environment, local_workspace_path))
     container.start_time = Time.now
     container.status = :created
+    container.re_use = true
+
+    # TODO:
+    # - gerade benutzt? 15 Min -> Status setzen und prüfen (return beachten) -> 2 hart killen
+    # - schon weg?
+    Thread.new do
+      timeout = Random.rand(MINIMUM_CONTAINER_LIFETIME..MAXIMUM_CONTAINER_LIFETIME) # seconds
+      sleep(timeout)
+      container.re_use = false
+      if container.status != :executing
+        new(execution_environment: execution_environment).kill_container(container, false)
+        Rails.logger.info('Killing container in status ' + container.status + ' after ' + (Time.now - container.start_time).to_s + ' seconds.')
+      else
+        Thread.new do
+          timeout = SELF_DESTROY_GRACE_PERIOD.to_i
+          sleep(timeout)
+          new(execution_environment: execution_environment).kill_container(container, false)
+          Rails.logger.info('Force killing container in status ' + container.status + ' after ' + Time.now - container.start_time + ' seconds.')
+        ensure
+          # guarantee that the thread is releasing the DB connection after it is done
+          ActiveRecord::Base.connection_pool.release_connection
+        end
+      end
+    ensure
+      # guarantee that the thread is releasing the DB connection after it is done
+      ActiveRecord::Base.connection_pool.release_connection
+    end
+
     container
   rescue Docker::Error::NotFoundError => error
     Rails.logger.error('create_container: Got Docker::Error::NotFoundError: ' + error.to_s)
@@ -307,7 +338,7 @@ class DockerClient
     (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end
 
-  def kill_container(container)
+  def kill_container(container, create_new = true)
     exit_thread_if_alive
     Rails.logger.info('killing container ' + container.to_s)
     # remove container from pool, then destroy it
@@ -317,13 +348,15 @@ class DockerClient
       # create new container and add it to @all_containers and @containers.
       # ToDo: How long does creating a new cotainer take? We're still locking the semaphore.
 
-      missing_counter_count = execution_environment.pool_size - @all_containers[execution_environment.id].length
-      if missing_counter_count > 0
+      missing_counter_count = @execution_environment.pool_size - DockerContainerPool.all_containers[@execution_environment.id].length
+      if missing_counter_count > 0 && create_new
         Rails.logger.error('kill_container: Creating a new container.')
         new_container = self.class.create_container(@execution_environment)
         DockerContainerPool.add_to_all_containers(new_container, @execution_environment)
+      elsif !create_new
+        Rails.logger.error('Container killed and removed for ' + @execution_environment.to_s + ' but not creating a new one. Currently, ' + missing_counter_count.abs.to_s + ' more containers than the configured pool size are available.')
       else
-        Rails.logger.error('Container killed and removed for ' + execution_environment.to_s + ' but not creating a new one. Currently, ' + missing_counter_count.abs + ' more containers than the configured pool size are available.')
+        Rails.logger.error('Container killed and removed for ' + @execution_environment.to_s + ' but not creating a new one as per request. Currently, ' + missing_counter_count.to_s + ' containers are missing compared to the configured pool size are available. Negative number means they are too much containers')
       end
       DockerContainerPool.release_semaphore
     end
