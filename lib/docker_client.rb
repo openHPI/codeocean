@@ -121,9 +121,6 @@ class DockerClient
     container.status = :created
     container.re_use = true
 
-    # TODO:
-    # - gerade benutzt? 15 Min -> Status setzen und prüfen (return beachten) -> 2 hart killen
-    # - schon weg?
     Thread.new do
       timeout = Random.rand(MINIMUM_CONTAINER_LIFETIME..MAXIMUM_CONTAINER_LIFETIME) # seconds
       sleep(timeout)
@@ -302,6 +299,7 @@ class DockerClient
       if container.status != :returned
         Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
         # send timeout to the tubesock socket
+        # FIXME: 2nd thread to notify user.
         if @tubesock
           @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
         end
@@ -416,6 +414,7 @@ class DockerClient
   end
 
   def self.initialize_environment
+    # TODO: Move to DockerContainerPool
     unless config[:connection_timeout] && config[:workspace_root]
       fail(Error, 'Docker configuration missing!')
     end
