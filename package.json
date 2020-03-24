@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.1",
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "@rails/webpacker": "4.2",
     "@sentry/browser": "^5.15.0",
     "bootstrap": "^4.1.3",
