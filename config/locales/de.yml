@@ -283,7 +283,7 @@ de:
       confirm_start_over_active_file: Wollen Sie wirklich den Inhalt der ausgewählten Datei '%{filename}' löschen? Diese Aktion kann nicht rückgängig gemacht werden.
       confirm_submit: Wollen Sie Ihren Code wirklich zur Bewertung abgeben?
       create_file: Neue Datei
-      depleted: Alle Ausführungsausgebungen sind momentan in Benutzung. Probiere es später nochmal.
+      depleted: Alle Ausführungsumgebungen sind momentan in Benutzung. Probiere es später nochmal.
       destroy_file: Datei löschen
       download: Herunterladen
       dummy: Keine Aktion
