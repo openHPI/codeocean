@@ -4,6 +4,5 @@ return if Rake.application.top_level_tasks.to_s.include?('db:')
 
 if ApplicationRecord.connection.tables.present? &&
     DockerContainerPool.config[:active]
-  DockerContainerPool.start_refill_task
-  at_exit { DockerContainerPool.clean_up }
+  # no op
 end
