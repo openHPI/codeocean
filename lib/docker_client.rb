@@ -230,13 +230,15 @@ class DockerClient
       @socket.close
     end
     Rails.logger.info('destroying container ' + container.to_s)
-    container.stop.kill
-    container.port_bindings.values.each { |port| PortPool.release(port) }
-    clean_container_workspace(container)
 
     # Checks only if container assignment is not nil and not whether the container itself is still present.
-    if container
+    if container && !DockerContainerPool.config[:active]
+      clean_container_workspace(container)
+      container.stop.kill
+      container.port_bindings.values.each { |port| PortPool.release(port) }
       container.delete(force: true, v: true)
+    elsif container
+      DockerContainerPool.destroy_container(container)
     end
   rescue Docker::Error::NotFoundError => error
     Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
@@ -339,29 +341,7 @@ class DockerClient
   def kill_container(container, create_new = true)
     exit_thread_if_alive
     Rails.logger.info('killing container ' + container.to_s)
-    # remove container from pool, then destroy it
-    if (DockerContainerPool.config[:active])
-      DockerContainerPool.acquire_semaphore
-      DockerContainerPool.remove_from_all_containers(container, @execution_environment)
-      # create new container and add it to @all_containers and @containers.
-      # ToDo: How long does creating a new cotainer take? We're still locking the semaphore.
-
-      missing_counter_count = @execution_environment.pool_size - DockerContainerPool.all_containers[@execution_environment.id].length
-      if missing_counter_count > 0 && create_new
-        Rails.logger.error('kill_container: Creating a new container.')
-        new_container = self.class.create_container(@execution_environment)
-        DockerContainerPool.add_to_all_containers(new_container, @execution_environment)
-      elsif !create_new
-        Rails.logger.error('Container killed and removed for ' + @execution_environment.to_s + ' but not creating a new one. Currently, ' + missing_counter_count.abs.to_s + ' more containers than the configured pool size are available.')
-      else
-        Rails.logger.error('Container killed and removed for ' + @execution_environment.to_s + ' but not creating a new one as per request. Currently, ' + missing_counter_count.to_s + ' containers are missing compared to the configured pool size are available. Negative number means they are too much containers')
-      end
-      DockerContainerPool.release_semaphore
-    end
-
-    Thread.new do
-      self.class.destroy_container(container)
-    end
+    self.class.destroy_container(container)
   end
 
   def execute_run_command(submission, filename, &block)
