@@ -230,12 +230,12 @@ class DockerClient
       @socket.close
     end
     Rails.logger.info('destroying container ' + container.to_s)
-    container.stop.kill
-    container.port_bindings.values.each { |port| PortPool.release(port) }
-    clean_container_workspace(container)
 
     # Checks only if container assignment is not nil and not whether the container itself is still present.
     if container && !DockerContainerPool.config[:active]
+      clean_container_workspace(container)
+      container.stop.kill
+      container.port_bindings.values.each { |port| PortPool.release(port) }
       container.delete(force: true, v: true)
     elsif container
       DockerContainerPool.destroy_container(container)
