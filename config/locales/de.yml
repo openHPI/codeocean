@@ -823,6 +823,8 @@ de:
       exercises:
         average_number_of_submissions: "Durchschnittliche Zahl von Abgaben"
         submissions_per_minute: "Aktuelle Abgabenhäufigkeit (1h)"
+        autosaves_per_minute: "Aktuelle Autosaves (1h)"
+        container_requests_per_minute: "Aktuelle Containeranfragen (1h)"
         submissions: "Abgaben"
       request_for_comments:
         percent_solved: "Beantwortete Anfragen"

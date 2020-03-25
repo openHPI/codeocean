@@ -69,6 +69,18 @@ module StatisticsHelper
             url: statistics_graphs_path
         },
         {
+            key: 'autosaves_per_minute',
+            name: t('statistics.entries.exercises.autosaves_per_minute'),
+            data: (Submission.where('created_at >= ?', DateTime.now - 1.hours).where(cause: 'autosave').count.to_f / 60).round(2),
+            unit: '/min'
+        },
+        {
+            key: 'container_requests_per_minute',
+            name: t('statistics.entries.exercises.container_requests_per_minute'),
+            data: (Testrun.where('created_at >= ?', DateTime.now - 1.hours).count.to_f / 60).round(2),
+            unit: '/min'
+        },
+        {
             key: 'execution_environments',
             name: t('activerecord.models.execution_environment.other'),
             data: ExecutionEnvironment.count,

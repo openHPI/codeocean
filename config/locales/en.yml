@@ -823,6 +823,8 @@ en:
       exercises:
         average_number_of_submissions: "Average Number of Submissions"
         submissions_per_minute: "Current Submission Volume (1h)"
+        autosaves_per_minute: "Current Autosave Volume (1h)"
+        container_requests_per_minute: "Container Request Volume (1h)"
         submissions: "Submissions"
       request_for_comments:
         percent_solved: "Solved Requests"
