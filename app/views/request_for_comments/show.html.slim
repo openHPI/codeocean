@@ -40,12 +40,17 @@
             - output_runs.each do |testrun|
               - output = testrun.try(:output)
               - if output
-                // (?:\\"|.) is required to correctly identify " within the output.
-                - messages = output.scan(/{(?:(?:"(?:\\"|.)+?":"(?:\\"|.)+?")+?,?)+}/)
-                - messages.map! {|el| JSON.parse(el)}
-                - messages.keep_if {|message| message['cmd'] == 'write'}
-                - messages.map! {|message| message['data']}
-                - output = messages.join ''
+                - puts output
+                - begin
+                  - Timeout::timeout(2) do
+                    // (?:\\"|.) is required to correctly identify " within the output.
+                    // The outer (?:   |\d+?) is used to correctly identify integers within the JSON
+                    - messages = output.scan(/{(?:(?:"(?:\\"|.)+?":(?:"(?:\\"|.)+?"|\d+?|\[.*?\]))+?,?)+}/)
+                    - messages.map! {|el| JSON.parse(el)}
+                    - messages.keep_if {|message| message['cmd'] == 'write'}
+                    - messages.map! {|message| message['data']}
+                    - output = messages.join ''
+                - rescue Timeout::Error
               pre= output or t('request_for_comments.no_output')
 
         - assess_runs = testruns.select {|run| run.cause == 'assess'}
