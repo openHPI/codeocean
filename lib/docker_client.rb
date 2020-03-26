@@ -256,13 +256,21 @@ class DockerClient
   #only used by score
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
+    container_request_time = Time.now
     @container = DockerContainerPool.get_container(@execution_environment)
+    waiting_for_container_time = Time.now - container_request_time
     if @container
       @container.status = :executing
       before_execution_block.try(:call)
-      send_command(command, @container, &output_consuming_block)
+      execution_request_time = Time.now
+      command_result = send_command(command, @container, &output_consuming_block)
+      container_execution_time = Time.now - execution_request_time
+
+      command_result.merge!(waiting_for_container_time: waiting_for_container_time)
+      command_result.merge!(container_execution_time: container_execution_time)
+      command_result
     else
-      {status: :container_depleted}
+      {status: :container_depleted, waiting_for_container_time: waiting_for_container_time, container_execution_time: nil}
     end
   rescue Excon::Errors::SocketError => error
     # socket errors seems to be normal when using exec

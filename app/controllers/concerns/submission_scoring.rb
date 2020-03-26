@@ -19,7 +19,15 @@ module SubmissionScoring
                 end
               end
             end
-            Testrun.new(submission: submission, cause: 'assess', file: file, passed: passed, output: testrun_output).save
+            Testrun.new(
+              submission: submission,
+              cause: 'assess',
+              file: file,
+              passed: passed,
+              output: testrun_output,
+              container_execution_time: output[:container_execution_time],
+              waiting_for_container_time: output[:waiting_for_container_time]
+            ).save
             output.merge!(assessment)
             output.merge!(filename: file.name_with_extension, message: feedback_message(file, output[:score]), weight: file.weight)
           end

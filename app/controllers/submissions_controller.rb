@@ -161,8 +161,10 @@ class SubmissionsController < ApplicationController
       # give the docker_client the tubesock object, so that it can send messages (timeout)
       @docker_client.tubesock = tubesock
 
+      container_request_time = Time.now
       result = @docker_client.execute_run_command(@submission, sanitize_filename)
       tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => result[:status]})
+      @waiting_for_container_time = Time.now - container_request_time
 
       if result[:status] == :container_running
         socket = result[:socket]
@@ -199,6 +201,7 @@ class SubmissionsController < ApplicationController
 
         # Send command after all listeners are attached.
         # Newline required to flush
+        @execution_request_time = Time.now
         socket.send command + "\n"
         Rails.logger.info('Sent command: ' + command.to_s)
       else
@@ -208,6 +211,7 @@ class SubmissionsController < ApplicationController
   end
 
   def kill_socket(tubesock)
+    @container_execution_time = Time.now - @execution_request_time unless @execution_request_time.blank?
     # search for errors and save them as StructuredError (for scoring runs see submission_scoring.rb)
     errors = extract_errors
     send_hints(tubesock, errors)
@@ -302,7 +306,14 @@ class SubmissionsController < ApplicationController
   def save_run_output
     unless @run_output.blank?
       @run_output = @run_output[(0..max_run_output_buffer_size-1)] # trim the string to max_message_buffer_size chars
-      Testrun.create(file: @file, cause: 'run', submission: @submission, output: @run_output)
+      Testrun.create(
+        file: @file,
+        cause: 'run',
+        submission: @submission,
+        output: @run_output,
+        container_execution_time: @container_execution_time,
+        waiting_for_container_time: @waiting_for_container_time
+      )
     end
   end
 
