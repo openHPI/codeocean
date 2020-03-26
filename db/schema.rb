@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_08_163045) do
+ActiveRecord::Schema.define(version: 2020_03_26_115249) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "anomaly_notifications", force: :cascade do |t|
+  create_table "anomaly_notifications", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.string "user_type"
     t.integer "exercise_id"
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["user_type", "user_id"], name: "index_anomaly_notifications_on_user_type_and_user_id"
   end
 
-  create_table "codeharbor_links", force: :cascade do |t|
+  create_table "codeharbor_links", id: :serial, force: :cascade do |t|
     t.string "api_key", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["user_id"], name: "index_codeharbor_links_on_user_id"
   end
 
-  create_table "comments", force: :cascade do |t|
+  create_table "comments", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "file_id"
     t.string "user_type", limit: 255
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "consumers", force: :cascade do |t|
+  create_table "consumers", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.string "oauth_secret", limit: 255
   end
 
-  create_table "error_template_attributes", force: :cascade do |t|
+  create_table "error_template_attributes", id: :serial, force: :cascade do |t|
     t.string "key"
     t.string "regex"
     t.datetime "created_at", null: false
@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.integer "error_template_attribute_id", null: false
   end
 
-  create_table "error_templates", force: :cascade do |t|
+  create_table "error_templates", id: :serial, force: :cascade do |t|
     t.integer "execution_environment_id"
     t.string "name"
     t.string "signature"
@@ -83,7 +83,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.text "hint"
   end
 
-  create_table "events", force: :cascade do |t|
+  create_table "events", id: :serial, force: :cascade do |t|
     t.string "category"
     t.string "data"
     t.integer "user_id"
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "execution_environments", force: :cascade do |t|
+  create_table "execution_environments", id: :serial, force: :cascade do |t|
     t.string "docker_image", limit: 255
     t.string "name", limit: 255
     t.datetime "created_at"
@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.boolean "network_enabled"
   end
 
-  create_table "exercise_collection_items", force: :cascade do |t|
+  create_table "exercise_collection_items", id: :serial, force: :cascade do |t|
     t.integer "exercise_collection_id"
     t.integer "exercise_id"
     t.integer "position", default: 0, null: false
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["exercise_id"], name: "index_exercise_collection_items_on_exercise_id"
   end
 
-  create_table "exercise_collections", force: :cascade do |t|
+  create_table "exercise_collections", id: :serial, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -131,13 +131,13 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["user_type", "user_id"], name: "index_exercise_collections_on_user_type_and_user_id"
   end
 
-  create_table "exercise_tags", force: :cascade do |t|
+  create_table "exercise_tags", id: :serial, force: :cascade do |t|
     t.integer "exercise_id"
     t.integer "tag_id"
     t.integer "factor", default: 1
   end
 
-  create_table "exercises", force: :cascade do |t|
+  create_table "exercises", id: :serial, force: :cascade do |t|
     t.text "description"
     t.integer "execution_environment_id"
     t.string "title", limit: 255
@@ -166,7 +166,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["proxy_exercise_id"], name: "index_exercises_proxy_exercises_on_proxy_exercise_id"
   end
 
-  create_table "external_users", force: :cascade do |t|
+  create_table "external_users", id: :serial, force: :cascade do |t|
     t.integer "consumer_id"
     t.string "email", limit: 255
     t.string "external_id", limit: 255
@@ -176,7 +176,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.string "role", default: "learner", null: false
   end
 
-  create_table "file_templates", force: :cascade do |t|
+  create_table "file_templates", id: :serial, force: :cascade do |t|
     t.string "name", limit: 255
     t.text "content"
     t.integer "file_type_id"
@@ -184,7 +184,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.datetime "updated_at"
   end
 
-  create_table "file_types", force: :cascade do |t|
+  create_table "file_types", id: :serial, force: :cascade do |t|
     t.string "editor_mode", limit: 255
     t.string "file_extension", limit: 255
     t.integer "indent_size"
@@ -198,7 +198,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.boolean "binary"
   end
 
-  create_table "files", force: :cascade do |t|
+  create_table "files", id: :serial, force: :cascade do |t|
     t.text "content"
     t.integer "context_id"
     t.string "context_type", limit: 255
@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["context_id", "context_type"], name: "index_files_on_context_id_and_context_type"
   end
 
-  create_table "internal_users", force: :cascade do |t|
+  create_table "internal_users", id: :serial, force: :cascade do |t|
     t.integer "consumer_id"
     t.string "email", limit: 255
     t.string "name", limit: 255
@@ -245,14 +245,14 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["reset_password_token"], name: "index_internal_users_on_reset_password_token"
   end
 
-  create_table "interventions", force: :cascade do |t|
+  create_table "interventions", id: :serial, force: :cascade do |t|
     t.string "name"
     t.text "markup"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "lti_parameters", force: :cascade do |t|
+  create_table "lti_parameters", id: :serial, force: :cascade do |t|
     t.integer "external_users_id"
     t.integer "consumers_id"
     t.integer "exercises_id"
@@ -262,7 +262,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["external_users_id"], name: "index_lti_parameters_on_external_users_id"
   end
 
-  create_table "proxy_exercises", force: :cascade do |t|
+  create_table "proxy_exercises", id: :serial, force: :cascade do |t|
     t.string "title"
     t.string "description"
     t.string "token"
@@ -270,11 +270,11 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.datetime "updated_at"
     t.string "user_type"
     t.bigint "user_id"
-    t.boolean "public"
+    t.boolean "public", default: false, null: false
     t.index ["user_type", "user_id"], name: "index_proxy_exercises_on_user_type_and_user_id"
   end
 
-  create_table "remote_evaluation_mappings", force: :cascade do |t|
+  create_table "remote_evaluation_mappings", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "exercise_id", null: false
     t.string "validation_token", null: false
@@ -283,7 +283,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.string "user_type"
   end
 
-  create_table "request_for_comments", force: :cascade do |t|
+  create_table "request_for_comments", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "exercise_id", null: false
     t.integer "file_id", null: false
@@ -300,7 +300,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["submission_id"], name: "index_request_for_comments_on_submission_id"
   end
 
-  create_table "searches", force: :cascade do |t|
+  create_table "searches", id: :serial, force: :cascade do |t|
     t.integer "exercise_id", null: false
     t.integer "user_id", null: false
     t.string "user_type", null: false
@@ -309,7 +309,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.datetime "updated_at"
   end
 
-  create_table "structured_error_attributes", force: :cascade do |t|
+  create_table "structured_error_attributes", id: :serial, force: :cascade do |t|
     t.integer "structured_error_id"
     t.integer "error_template_attribute_id"
     t.string "value"
@@ -318,7 +318,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.boolean "match"
   end
 
-  create_table "structured_errors", force: :cascade do |t|
+  create_table "structured_errors", id: :serial, force: :cascade do |t|
     t.integer "error_template_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -344,7 +344,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["external_id", "consumer_id"], name: "index_study_groups_on_external_id_and_consumer_id", unique: true
   end
 
-  create_table "submissions", force: :cascade do |t|
+  create_table "submissions", id: :serial, force: :cascade do |t|
     t.integer "exercise_id"
     t.float "score"
     t.integer "user_id"
@@ -358,7 +358,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 
-  create_table "subscriptions", force: :cascade do |t|
+  create_table "subscriptions", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.string "user_type"
     t.integer "request_for_comment_id"
@@ -368,13 +368,13 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.boolean "deleted"
   end
 
-  create_table "tags", force: :cascade do |t|
+  create_table "tags", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "testruns", force: :cascade do |t|
+  create_table "testruns", id: :serial, force: :cascade do |t|
     t.boolean "passed"
     t.text "output"
     t.integer "file_id"
@@ -382,10 +382,12 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "cause"
+    t.interval "container_execution_time"
+    t.interval "waiting_for_container_time"
     t.index ["submission_id"], name: "index_testruns_on_submission_id"
   end
 
-  create_table "user_exercise_feedbacks", force: :cascade do |t|
+  create_table "user_exercise_feedbacks", id: :serial, force: :cascade do |t|
     t.integer "exercise_id", null: false
     t.integer "user_id", null: false
     t.string "user_type", null: false
@@ -397,7 +399,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_exercise_interventions", force: :cascade do |t|
+  create_table "user_exercise_interventions", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.string "user_type"
     t.integer "exercise_id"
@@ -408,7 +410,7 @@ ActiveRecord::Schema.define(version: 2019_10_08_163045) do
     t.datetime "updated_at"
   end
 
-  create_table "user_proxy_exercise_exercises", force: :cascade do |t|
+  create_table "user_proxy_exercise_exercises", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.string "user_type"
     t.integer "proxy_exercise_id"
