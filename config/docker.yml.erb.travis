@@ -3,6 +3,7 @@ default: &default
   connection_timeout: 3
   pool:
     active: false
+    location: http://localhost:3000
   ports: !ruby/range 4500..4600
 
 development:
