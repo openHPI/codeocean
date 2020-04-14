@@ -273,7 +273,7 @@ describe DockerClient, docker: true do
 
     it 'executes the test command' do
       expect(submission.execution_environment).to receive(:test_command).and_call_original
-      expect(docker_client).to receive(:send_command).with(kind_of(String), kind_of(Docker::Container))
+      expect(docker_client).to receive(:send_command).with(kind_of(String), kind_of(Docker::Container)).and_return({})
     end
   end
 
