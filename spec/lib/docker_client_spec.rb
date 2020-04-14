@@ -205,7 +205,7 @@ describe DockerClient, docker: true do
     end
 
     it 'sends the command' do
-      expect(docker_client).to receive(:send_command).with(command, kind_of(Docker::Container))
+      expect(docker_client).to receive(:send_command).with(command, kind_of(Docker::Container)).and_return({})
       execute_arbitrary_command
     end
 
@@ -213,14 +213,14 @@ describe DockerClient, docker: true do
       let(:error) { Excon::Errors::SocketError.new(SocketError.new) }
 
       context 'when retries are left' do
-        let(:result) { 42 }
+        let(:result) { { status: "ok", stdout: 42 } }
 
         before(:each) do
           expect(docker_client).to receive(:send_command).and_raise(error).and_return(result)
         end
 
         it 'retries to execute the command' do
-          expect(execute_arbitrary_command).to eq(result)
+          expect(execute_arbitrary_command[:stdout]).to eq(result[:stdout])
         end
       end
 

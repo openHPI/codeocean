@@ -52,9 +52,16 @@ class DockerContainerPool
   def self.quantities
     response = JSON.parse(Faraday.get(config[:location] + "/docker_container_pool/quantities").body)
     response.transform_keys(&:to_i)
+  rescue StandardError => e
+    Raven.extra_context({response: response.inspect})
+    Raven.capture_exception(e)
+    []
   end
 
   def self.dump_info
     JSON.parse(Faraday.get(config[:location] + "/docker_container_pool/dump_info").body)
+  rescue StandardError => e
+    Raven.capture_exception(e)
+    nil
   end
 end

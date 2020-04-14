@@ -248,12 +248,13 @@ class DockerClient
     Rails.logger.error('No further actions are done concerning that.')
   end
 
-  #currently only used to check if containers have been started correctly, or other internal checks
+  # currently only used to check if containers have been started correctly, or other internal checks
+  # also used for the admin shell to any container
   def execute_arbitrary_command(command, &block)
     execute_command(command, nil, block)
   end
 
-  #only used by score
+  # only used by score and execute_arbitrary_command
   def execute_command(command, before_execution_block, output_consuming_block)
     #tries ||= 0
     container_request_time = Time.now
