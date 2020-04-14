@@ -15,17 +15,31 @@ class DockerContainerPool
     container.status = 'available' # FIXME: String vs Symbol usage?
     #Rails.logger.debug('created container ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
     container
+  rescue StandardError => e
+    Raven.extra_context({container: container.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
+    Raven.capture_exception(e)
+    nil
   end
 
   def self.return_container(container, execution_environment)
     Faraday.get(config[:location] + "/docker_container_pool/return_container/" + container.id)
+  rescue StandardError => e
+    Raven.extra_context({container: container.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
+    Raven.capture_exception(e)
+    nil
   end
 
   def self.get_container(execution_environment)
     # if pooling is active, do pooling, otherwise just create an container and return it
     if config[:active]
-      container_id = JSON.parse(Faraday.get(config[:location] + "/docker_container_pool/get_container/" + execution_environment.id.to_s).body)['id']
-      Docker::Container.get(container_id) unless container_id.blank?
+      begin
+        container_id = JSON.parse(Faraday.get(config[:location] + "/docker_container_pool/get_container/" + execution_environment.id.to_s).body)['id']
+        Docker::Container.get(container_id) unless container_id.blank?
+      rescue StandardError => e
+        Raven.extra_context({container_id: container_id.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
+        Raven.capture_exception(e)
+        nil
+      end
     else
       create_container(execution_environment)
     end
