@@ -31,10 +31,11 @@ class ApplicationPolicy
       return false if study_group.blank?
 
       users_in_same_study_group = study_group.users
+    elsif @record.respond_to? :users # e.g. study_group
+      users_in_same_study_group = @record.users
     else # e.g. exercise
       study_groups = @record.user.study_groups
-      users_in_same_study_group = study_groups.collect{ |study_group|
-        study_group.users}.flatten
+      users_in_same_study_group = study_groups.collect(&:users).flatten
     end
 
     users_in_same_study_group.include? @user
