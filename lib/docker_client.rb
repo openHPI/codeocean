@@ -31,9 +31,9 @@ class DockerClient
     if local_workspace_path && Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each do |p|
         p.rmtree
-      rescue Errno::ENOENT => error
+      rescue Errno::ENOENT, Errno::EACCES => error
         Raven.capture_exception(error)
-        Rails.logger.error('clean_container_workspace: Got Errno::ENOENT: ' + error.to_s)
+        Rails.logger.error("clean_container_workspace: Got #{error.class.to_s}: #{error.to_s}")
       end
       #FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
