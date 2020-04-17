@@ -29,10 +29,10 @@ $(document).on('turbolinks:load', function () {
     };
 
     var handleResponse = function (response) {
-        if (response.status === 'ok') {
-            printOutput(response);
-        } else if (response.status === 'timeout') {
+        if (response.status === 'timeout') {
             printTimeout(response);
+        } else {
+            printOutput(response);
         }
     };
 
