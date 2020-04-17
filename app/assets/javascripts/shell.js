@@ -42,18 +42,26 @@ $(document).on('turbolinks:load', function () {
 
     var printOutput = function (output) {
         if (output) {
-            var element = $('<p>');
-            if (output.stderr) {
-                element.addClass('text-warning');
-                element.html(output.stderr);
-            } else if (output.stdout) {
+            if (output.stdout) {
+                var element = $('<p>');
                 element.addClass('text-success');
                 element.html(output.stdout);
-            } else {
+                $('#output').append(element);
+            }
+
+            if (output.stderr) {
+                var element = $('<p>');
+                element.addClass('text-warning');
+                element.html(output.stderr);
+                $('#output').append(element);
+            }
+
+            if (!output.stdout && !output.stderr) {
+                var element = $('<p>');
                 element.addClass('text-muted');
                 element.html($('#output').data('message-no-output'));
+                $('#output').append(element);
             }
-            $('#output').append(element);
         }
     };
 
