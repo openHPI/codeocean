@@ -162,6 +162,7 @@ class DockerClient
         create_workspace_file(container: container, file: file)
       end
     end
+    FileUtils.chmod_R('+rwX', self.class.local_workspace_path(container))
   rescue Docker::Error::NotFoundError => error
     Rails.logger.info('create_workspace_files: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
   end
