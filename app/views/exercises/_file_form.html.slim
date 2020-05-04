@@ -11,8 +11,7 @@ li.card.mt-2
           span = f.object.name_with_extension
         - else
           span = f.object.name
-  // FIXME: Re-add .collapse
-  .card-collapse class=('in' if f.object.name.nil?) id="collapse#{f.index}" role="tabpanel"
+  .card-collapse.collapse class=('in' if f.object.name.nil?) id="collapse#{f.index}" role="tabpanel"
     .card-body
       - if policy(f.object).destroy? && id.present?
         .clearfix

@@ -46,8 +46,7 @@ ul.list-unstyled#files
           div.clearfix role="button"
             i class="fa" aria-hidden="true"
             span = file.name_with_extension
-      // FIXME: Re-add .collapse
-      .card-collapse class="collapse#{file.id}" role="tabpanel"
+      .card-collapse.collapse class="collapse#{file.id}" role="tabpanel"
         .card-body
           - if policy(file).destroy?
             .clearfix = link_to(t('shared.destroy'), file, class:'btn btn-warning btn-sm float-right', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
