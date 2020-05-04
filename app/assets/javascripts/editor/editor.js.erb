@@ -1,591 +1,593 @@
 var CodeOceanEditor = {
-  //ACE-Editor-Path
-  // ruby part adds the relative_url_root, if it is set.
-  ACE_FILES_PATH: '<%= (defined? Rails.application.config.relative_url_root) && Rails.application.config.relative_url_root != nil && Rails.application.config.relative_url_root != "" ? Rails.application.config.relative_url_root : "" %>' + '/assets/ace/',
-  THEME: 'ace/theme/textmate',
+    //ACE-Editor-Path
+    // ruby part adds the relative_url_root, if it is set.
+    ACE_FILES_PATH: '<%= (defined? Rails.application.config.relative_url_root) && Rails.application.config.relative_url_root != nil && Rails.application.config.relative_url_root != "" ? Rails.application.config.relative_url_root : "" %>' + '/assets/ace/',
+    THEME: 'ace/theme/textmate',
 
-  //Color-Encoding for Percentages in Progress Bars (For submissions)
-  ADEQUATE_PERCENTAGE: 50,
-  SUCCESSFULL_PERCENTAGE: 90,
+    //Color-Encoding for Percentages in Progress Bars (For submissions)
+    ADEQUATE_PERCENTAGE: 50,
+    SUCCESSFULL_PERCENTAGE: 90,
 
-  //Key-Codes (for Hotkeys)
-  ALT_R_KEY_CODE: 174,
-  ALT_S_KEY_CODE: 8218,
-  ALT_T_KEY_CODE: 8224,
-  ENTER_KEY_CODE: 13,
+    //Key-Codes (for Hotkeys)
+    ALT_R_KEY_CODE: 174,
+    ALT_S_KEY_CODE: 8218,
+    ALT_T_KEY_CODE: 8224,
+    ENTER_KEY_CODE: 13,
 
-  //Request-For-Comments-Configuration
-  REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
-  REQUEST_TOOLTIP_TIME: 5000,
+    //Request-For-Comments-Configuration
+    REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
+    REQUEST_TOOLTIP_TIME: 5000,
 
-  editors: [],
-  editor_for_file: new Map(),
-  regex_for_language: new Map(),
-  tracepositions_regex: undefined,
+    editors: [],
+    editor_for_file: new Map(),
+    regex_for_language: new Map(),
+    tracepositions_regex: undefined,
 
-  active_file: undefined,
-  active_frame: undefined,
-  running: false,
+    active_file: undefined,
+    active_frame: undefined,
+    running: false,
 
-  lastCopyText: null,
+    lastCopyText: null,
 
-  <% self.class.include Rails.application.routes.url_helpers %>
-  <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
-  sendEvents: <%= @config['codeocean_events'] ? @config['codeocean_events']['enabled'] : false %>,
-  eventURL: "<%= @config['codeocean_events'] ? events_path : '' %>",
-  fileTypeURL: "<%= file_types_path %>",
-
-
-configureEditors: function () {
-    _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
-      ace.config.set(attribute, this.ACE_FILES_PATH);
-    }.bind(this));
-  },
-
-  confirmDestroy: function (event) {
-    event.preventDefault();
-    if (confirm($(event.target).data('message-confirm'))) {
-      this.destroyFile();
-    }
-  },
-
-  confirmReset: function (event) {
-    event.preventDefault();
-    if (confirm($('#start-over').data('message-confirm'))) {
-      this.resetCode();
-    }
-  },
-
-  confirmResetActiveFile: function (event) {
-    event.preventDefault();
-    let message = $('#start-over-active-file').data('message-confirm');
-    message = message.replace('%{filename}', CodeOceanEditor.active_file.filename.replace(/#$/,''))
-    if (confirm(message)) {
-        this.resetCode(true); // delete only active file
-    }
-  },
-
-  fileActionsAvailable: function () {
-    return this.isActiveFileRenderable() || this.isActiveFileRunnable() || this.isActiveFileStoppable() || this.isActiveFileTestable();
-  },
-
-  findOrCreateOutputElement: function (index) {
-    if ($('#output-' + index).isPresent()) {
-      return $('#output-' + index);
-    } else {
-      var element = $('<pre class="mt-2">').attr('id', 'output-' + index);
-      $('#output').append(element);
-      return element;
-    }
-  },
-
-  findOrCreateRenderElement: function (index) {
-    if ($('#render-' + index).isPresent()) {
-      return $('#render-' + index);
-    } else {
-      var element = $('<div>').attr('id', 'render-' + index);
-      $('#render').append(element);
-      return element;
-    }
-  },
-
-  getCardClass: function (result) {
-    if (result.stderr && !result.score) {
-      return 'card bg-danger text-white';
-    } else if (result.score < 1) {
-      return 'card bg-warning text-white';
-    } else {
-      return 'card bg-success text-white';
-    }
-  },
-
-  showOutput: function(event) {
-    event.preventDefault();
-    this.showOutputBar();
-    $('body').scrollTo($(event.target).attr('href'));
-  },
-
-  renderProgressBar: function(score, maximum_score) {
-    var percentage = score / maximum_score * 100;
-    var progress_bar = $('#score .progress-bar');
-    progress_bar.removeClass().addClass(this.getProgressBarClass(percentage));
-    progress_bar.attr({
-      'aria-valuemax': maximum_score,
-      'aria-valuemin': 0,
-      'aria-valuenow': score
-    });
-    progress_bar.css('width', percentage + '%');
-  },
-
-  // The event ready.jstree is fired too early and thus doesn't work.
-  selectFileInJsTree: function(filetree, file_id) {
-    if (!filetree.is(':visible'))
-        // The left sidebar is not shown and thus the filetree is not rendered.
-        return;
-
-    if (!filetree.hasClass('jstree-loading')) {
-      filetree.jstree("deselect_all");
-      filetree.jstree().select_node(file_id);
-    } else {
-      setTimeout(this.selectFileInJsTree.bind(null, filetree, file_id), 250);
-    }
-  },
-
-  showFirstFile: function() {
-    var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
-    var file_id = frame.find('.editor').data('file-id');
-    this.setActiveFile(frame.data('filename'), file_id);
-    var filetree = $('#files');
-    this.selectFileInJsTree(filetree, file_id);
-    this.showFrame(frame);
-    this.toggleButtonStates();
-  },
-
-  showFrame: function(frame) {
-    this.active_frame = frame;
-    $('.frame').hide();
-    frame.show();
-  },
-
-  getProgressBarClass: function (percentage) {
-    if (percentage < this.ADEQUATE_PERCENTAGE) {
-      return 'progress-bar progress-bar-striped bg-danger';
-    } else if (percentage < this.SUCCESSFULL_PERCENTAGE) {
-      return 'progress-bar progress-bar-striped bg-warning';
-    } else {
-      return 'progress-bar progress-bar-striped bg-success';
-    }
-  },
-
-  handleKeyPress: function (event) {
-    if (event.which === this.ALT_R_KEY_CODE) {
-      $('#run').trigger('click');
-    } else if (event.which === this.ALT_S_KEY_CODE) {
-      $('#assess').trigger('click');
-    } else if (event.which === this.ALT_T_KEY_CODE) {
-      $('#test').trigger('click');
-    } else {
-      return;
-    }
-    event.preventDefault();
-  },
-
-  handleCopyEvent: function (text) {
-    this.lastCopyText = text;
-  },
-
-  handlePasteEvent: function (pasteObject) {
-    var same = (CodeOceanEditor.lastCopyText === pasteObject.text);
-
-    // if the text is not copied from within the editor (from any file), send an event to the backend
-    if (!same) {
-      CodeOceanEditor.publishCodeOceanEvent({
-        category: 'editor_paste',
-        data: pasteObject.text,
-        exercise_id: $('#editor').data('exercise-id'),
-        file_id: $(event.target).parent().data('file-id')
-      });
-    }
-  },
-
-  hideSpinner: function () {
-    $('button i.fa').show();
-    $('button i.fa-spin').hide();
-  },
+    <% self.class.include Rails.application.routes.url_helpers %>
+    <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
+    sendEvents: <%= @config['codeocean_events'] ? @config['codeocean_events']['enabled'] : false %>,
+    eventURL: "<%= @config['codeocean_events'] ? events_path : '' %>",
+    fileTypeURL: "<%= file_types_path %>",
 
 
-  resizeAceEditors: function (){
-    $('.editor').each(function (index, element) {
-      this.resizeParentOfAceEditor(element);
-    }.bind(this));
-    window.dispatchEvent(new Event('resize'));
-  },
-
-  resizeParentOfAceEditor: function (element){
-    // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
-    var windowHeight = window.innerHeight - $(element).offset().top - $('#autosave-label').height() - 5;
-    $(element).parent().height(windowHeight);
-  },
-
-  initializeEditors: function () {
-    this.editors = [];
-    $('.editor').each(function (index, element) {
-
-      // Resize frame on load
-      this.resizeParentOfAceEditor(element);
-
-      // Resize frame on window size change
-      $(window).resize(function(){
-        this.resizeParentOfAceEditor(element);
-      }.bind(this));
-
-      var editor = ace.edit(element);
-
-      if (this.qa_api) {
-        editor.getSession().on("change", function (deltaObject) {
-          this.qa_api.executeCommand('syncEditor', [this.active_file, deltaObject]);
+    configureEditors: function () {
+        _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
+            ace.config.set(attribute, this.ACE_FILES_PATH);
         }.bind(this));
-      }
+    },
 
-      var document = editor.getSession().getDocument();
-      // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
-      var file_id = $(element).data('file-id');
-      var content = $('.editor-content[data-file-id=' + file_id + ']');
-      this.setActiveFile($(element).parent().data('filename'), file_id);
-
-      document.insertLines(0, content.text().split(/\n/));
-      // remove last (empty) that is there by default line
-      document.removeLines(document.getLength() - 1, document.getLength() - 1);
-      editor.setReadOnly($(element).data('read-only') !== undefined);
-      if (editor.getReadOnly()) {
-        editor.setHighlightActiveLine(false);
-        editor.setHighlightGutterLine(false);
-        editor.renderer.$cursorLayer.element.style.opacity = 0;
-      }
-      editor.setShowPrintMargin(false);
-      editor.setTheme(this.THEME);
-
-
-
-      // set options for autocompletion
-      if($(element).data('allow-auto-completion')){
-        editor.setOptions({
-          enableBasicAutocompletion: true,
-          enableSnippets: false,
-          enableLiveAutocompletion: true
-        });
-      }
-
-
-      editor.commands.bindKey("ctrl+alt+0", null);
-      this.editors.push(editor);
-      this.editor_for_file.set($(element).parent().data('filename'), editor);
-      var session = editor.getSession();
-      var mode = $(element).data('mode')
-      session.setMode(mode);
-      if (mode === 'ace/mode/python') {
-        editor.setTheme('ace/theme/tomorrow')
-      }
-      session.setTabSize($(element).data('indent-size'));
-      session.setUseSoftTabs(true);
-      session.setUseWrapMode(true);
-
-      // set regex for parsing error traces based on the mode of the main file.
-      if ($(element).parent().data('role') == "main_file") {
-        this.tracepositions_regex = this.regex_for_language.get($(element).data('mode'));
-      }
-
-      var file_id = $(element).data('id');
-
-      /*
-       * Register event handlers
-       */
-
-      // editor itself
-      editor.on("paste", this.handlePasteEvent.bind(element));
-      editor.on("copy", this.handleCopyEvent.bind(element));
-
-      // listener for autosave
-      session.on("change", function (deltaObject) {
-        this.resetSaveTimer();
-      }.bind(this));
-    }.bind(this));
-  },
-
-  initializeEventHandlers: function () {
-    $(document).on('click', '#results a', this.showOutput.bind(this));
-    $(document).on('keypress', this.handleKeyPress.bind(this));
-    this.initializeFileTreeButtons();
-    this.initializeWorkspaceButtons();
-    this.initializeRequestForComments()
-  },
-
-  updateEditorModeToFileTypeID: function (editor, fileTypeID) {
-    var newMode = 'ace/mode/text'
-
-    $.ajax(this.fileTypeURL + '/' + fileTypeID, {
-      dataType: 'json'
-    }).done(function (data) {
-        if (data['editor_mode'] !== null) {
-          newMode = data['editor_mode'];
+    confirmDestroy: function (event) {
+        event.preventDefault();
+        if (confirm($(event.target).data('message-confirm'))) {
+            this.destroyFile();
         }
-    }).fail(_.noop)
-      .always(function () {
-        ace.edit(editor).session.setMode(newMode);
-    });
-  },
+    },
 
-  initializeFileTree: function () {
-    $('#files').jstree($('#files').data('entries'));
-    $('#files').on('click', 'li.jstree-leaf', function (event) {
-      this.setActiveFile(
-        $(event.target).parent().text(),
-        parseInt($(event.target).parent().attr('id'))
-      );
-      var frame = $('[data-file-id="' + this.active_file.id + '"]').parent();
-      this.showFrame(frame);
-      this.toggleButtonStates();
-    }.bind(this));
-  },
+    confirmReset: function (event) {
+        event.preventDefault();
+        if (confirm($('#start-over').data('message-confirm'))) {
+            this.resetCode();
+        }
+    },
 
-  initializeFileTreeButtons: function () {
-    $('#create-file').on('click', this.showFileDialog.bind(this));
-    $('#create-file-collapsed').on('click', this.showFileDialog.bind(this));
-    $('#destroy-file').on('click', this.confirmDestroy.bind(this));
-    $('#destroy-file-collapsed').on('click', this.confirmDestroy.bind(this));
-    $('#download').on('click', this.downloadCode.bind(this));
-    $('#download-collapsed').on('click', this.downloadCode.bind(this));
-    $('#request-for-comments').on('click', this.requestComments.bind(this));
-  },
+    confirmResetActiveFile: function (event) {
+        event.preventDefault();
+        let message = $('#start-over-active-file').data('message-confirm');
+        message = message.replace('%{filename}', CodeOceanEditor.active_file.filename.replace(/#$/, ''))
+        if (confirm(message)) {
+            this.resetCode(true); // delete only active file
+        }
+    },
 
-  initializeSideBarCollapse: function() {
-    $('#sidebar-collapse-collapsed').on('click',this.handleSideBarToggle.bind(this));
-    $('#sidebar-collapse').on('click',this.handleSideBarToggle.bind(this))
-    $('#sidebar').on('transitionend',this.resizeAceEditors.bind(this));
-  },
+    fileActionsAvailable: function () {
+        return this.isActiveFileRenderable() || this.isActiveFileRunnable() || this.isActiveFileStoppable() || this.isActiveFileTestable();
+    },
 
-  handleSideBarToggle: function() {
-    $('#sidebar').toggleClass('sidebar-col').toggleClass('sidebar-col-collapsed');
-    $('#sidebar-collapsed').toggleClass('d-none');
-    $('#sidebar-uncollapsed').toggleClass('d-none');
-  },
-
-  initializeRegexes: function () {
-    this.regex_for_language.set("ace/mode/python", /File "(.+?)", line (\d+)/g);
-    this.regex_for_language.set("ace/mode/java", /(.*\.java):(\d+):/g);
-  },
-
-  initializeTooltips: function () {
-    $('[data-tooltip]').tooltip();
-  },
-
-
-  initializeWorkspaceButtons: function () {
-    $('#submit').on('click', this.submitCode.bind(this));
-    $('#assess').on('click', this.scoreCode.bind(this));
-    $('#dropdown-render, #render').on('click', this.renderCode.bind(this));
-    $('#dropdown-run, #run').on('click', this.runCode.bind(this));
-    $('#dropdown-stop, #stop').on('click', this.stopCode.bind(this));
-    $('#dropdown-test, #test').on('click', this.testCode.bind(this));
-    $('#save').on('click', this.saveCode.bind(this));
-    $('#start-over').on('click', this.confirmReset.bind(this));
-    $('#start-over-collapsed').on('click', this.confirmReset.bind(this));
-    $('#start-over-active-file').on('click', this.confirmResetActiveFile.bind(this));
-    $('#start-over-active-file-collapsed').on('click', this.confirmResetActiveFile.bind(this));
-
-  },
-
-  initializeRequestForComments: function () {
-    var button = $('#requestComments');
-    button.prop('disabled', true);
-    button.on('click', function () {
-      $('#rfc_intervention_text').hide()
-      $('#comment-modal').modal('show');
-    });
-
-    $('#askForCommentsButton').on('click', this.requestComments.bind(this));
-    $('#closeAskForCommentsButton').on('click', function(){
-        $('#comment-modal').modal('hide');
-    });
-
-    setTimeout(function () {
-      button.prop('disabled', false);
-      button.tooltip('show');
-      setTimeout(function() {
-        button.tooltip('hide');
-      }, this.REQUEST_TOOLTIP_TIME);
-    }.bind(this), this.REQUEST_FOR_COMMENTS_DELAY);
-  },
-
-  isActiveFileRenderable: function () {
-    return 'renderable' in this.active_frame.data();
-  },
-
-  isActiveFileRunnable: function () {
-    return this.isActiveFileExecutable() && ['main_file', 'user_defined_file', 'executable_file'].includes(this.active_frame.data('role'));
-  },
-
-  isActiveFileStoppable: function () {
-    return this.isActiveFileRunnable() && this.running;
-  },
-
-  isActiveFileSubmission: function () {
-    return ['Submission'].includes(this.active_frame.data('contextType'));
-  },
-
-  isActiveFileTestable: function () {
-    return this.isActiveFileExecutable() && ['teacher_defined_test', 'user_defined_test'].includes(this.active_frame.data('role'));
-  },
-
-  isBrowserSupported: function () {
-    //  websockets are used for run, score and test
-    // Also exclude IE and IE 11
-    return Modernizr.websockets && window.navigator.userAgent.indexOf("MSIE") <= 0 && !navigator.userAgent.match(/Trident\/7\./);
-  },
-
-  populateCard: function (card, result, index) {
-    card.addClass(this.getCardClass(result));
-    card.find('.card-title .filename').text(result.filename);
-    card.find('.card-title .number').text(index + 1);
-    card.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
-    card.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
-    card.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
-    card.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
-    card.find('.row .col-sm-9').eq(2).html(result.message);
-
-    // Add error message from code to card
-    if (result.error_messages) {
-        const targetNode = card.find('.row .col-sm-9').eq(3);
-
-        let errorMessagesToShow = [];
-        result.error_messages.forEach(function (item) {
-            if (item) {
-              errorMessagesToShow.push(item.replace(/\n/g, '<br>'))
-            }
-        })
-
-        // one or more errors?
-        if (errorMessagesToShow.length > 1) {
-            // delete all current elements
-            targetNode.text('');
-            // create a new list and appand each element
-            const ul = document.createElement("ul");
-            ul.setAttribute('class', 'error_messages_list');
-            errorMessagesToShow.forEach(function (item) {
-                var li = document.createElement("li");
-                var text = $.parseHTML(item);
-                $(li).append(text);
-                ul.append(li);
-            })
-            targetNode.append(ul);
+    findOrCreateOutputElement: function (index) {
+        if ($('#output-' + index).isPresent()) {
+            return $('#output-' + index);
         } else {
-            targetNode.html(errorMessagesToShow.join(''));
+            var element = $('<pre class="mt-2">').attr('id', 'output-' + index);
+            $('#output').append(element);
+            return element;
         }
-    }
-    //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
-  },
+    },
 
-  publishCodeOceanEvent: function (payload) {
-    if(this.sendEvents){
-      $.ajax(this.eventURL, {
-        type: 'POST',
-        cache: false,
-        dataType: 'JSON',
-        data: {
-          event: payload
-        },
-        success: _.noop,
-        error: _.noop
-      });
-    }
-  },
-
-  sendError: function (message, submission_id) {
-    this.showSpinner($('#render'));
-    var jqxhr = this.ajax({
-      data: {
-        error: {
-          message: message,
-          submission_id: submission_id
+    findOrCreateRenderElement: function (index) {
+        if ($('#render-' + index).isPresent()) {
+            return $('#render-' + index);
+        } else {
+            var element = $('<div>').attr('id', 'render-' + index);
+            $('#render').append(element);
+            return element;
         }
-      },
-      url: $('#editor').data('errors-url')
-    });
-    jqxhr.always(this.hideSpinner);
-  },
+    },
 
-  toggleButtonStates: function () {
-    $('#destroy-file').prop('disabled', this.active_frame.data('role') !== 'user_defined_file');
-    $('#start-over-active-file').prop('disabled', this.active_frame.data('role') === 'user_defined_file');
-    $('#dummy').toggle(!this.fileActionsAvailable());
-    $('#render').toggle(this.isActiveFileRenderable());
-    $('#run').toggle(this.isActiveFileRunnable() && !this.running);
-    $('#stop').toggle(this.isActiveFileStoppable());
-    $('#test').toggle(this.isActiveFileTestable());
-  },
-
-  jumpToSourceLine: function (event) {
-    var file = $(event.target).data('file');
-    var line = $(event.target).data('line');
-
-    // set active file, only needed for codepilot, so skipped for now
-
-    var frame = $('div.frame[data-filename="' + file + '"]');
-    this.showFrame(frame);
-
-    var editor = this.editor_for_file.get(file);
-    editor.gotoLine(line, 0);
-    event.preventDefault();
-  },
-
-  augmentStacktraceInOutput: function () {
-    if (this.tracepositions_regex) {
-      var element = $('#output>pre');
-      var text = element.text();
-      element.on("click", "a", this.jumpToSourceLine.bind(this));
-
-      var matches;
-
-      while (matches = this.tracepositions_regex.exec(text)) {
-        var frame = $('div.frame[data-filename="' + matches[1] + '"]')
-
-        if (frame.length > 0) {
-          element.html(text.replace(matches[0], "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>"));
+    getCardClass: function (result) {
+        if (result.stderr && !result.score) {
+            return 'card bg-danger text-white';
+        } else if (result.score < 1) {
+            return 'card bg-warning text-white';
+        } else {
+            return 'card bg-success text-white';
         }
-      }
-    }
-  },
+    },
 
-  resetOutputTab: function () {
-    this.clearOutput();
-    $('#flowrHint').fadeOut();
-    this.clearHints();
-    this.showOutputBar();
-  },
+    showOutput: function (event) {
+        event.preventDefault();
+        this.showOutputBar();
+        $('body').scrollTo($(event.target).attr('href'));
+    },
 
-  isActiveFileBinary: function () {
-    return 'binary' in this.active_frame.data();
-  },
+    renderProgressBar: function (score, maximum_score) {
+        var percentage = score / maximum_score * 100;
+        var progress_bar = $('#score .progress-bar');
+        progress_bar.removeClass().addClass(this.getProgressBarClass(percentage));
+        progress_bar.attr({
+            'aria-valuemax': maximum_score,
+            'aria-valuemin': 0,
+            'aria-valuenow': score
+        });
+        progress_bar.css('width', percentage + '%');
+    },
 
-  isActiveFileExecutable: function () {
-    return 'executable' in this.active_frame.data();
-  },
+    // The event ready.jstree is fired too early and thus doesn't work.
+    selectFileInJsTree: function (filetree, file_id) {
+        if (!filetree.is(':visible'))
+            // The left sidebar is not shown and thus the filetree is not rendered.
+            return;
 
-  setActiveFile: function (filename, fileId) {
-    this.active_file = {
-      filename: filename,
-      id: fileId
-    };
-  },
+        if (!filetree.hasClass('jstree-loading')) {
+            filetree.jstree("deselect_all");
+            filetree.jstree().select_node(file_id);
+        } else {
+            setTimeout(this.selectFileInJsTree.bind(null, filetree, file_id), 250);
+        }
+    },
 
-  showSpinner: function(initiator) {
-    $(initiator).find('i.fa').hide();
-    $(initiator).find('i.fa-spin').show();
-  },
+    showFirstFile: function () {
+        var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
+        var file_id = frame.find('.editor').data('file-id');
+        this.setActiveFile(frame.data('filename'), file_id);
+        var filetree = $('#files');
+        this.selectFileInJsTree(filetree, file_id);
+        this.showFrame(frame);
+        this.toggleButtonStates();
+    },
 
-  showStatus: function(output) {
-    if (output.status === 'timeout') {
-      this.showTimeoutMessage();
-    } else if (output.status === 'container_depleted') {
-      this.showContainerDepletedMessage();
-    } else if (output.stderr) {
-      $.flash.danger({
-        icon: ['fa', 'fa-bug'],
-        text: $('#run').data('message-failure')
-      });
-      Sentry.captureException(JSON.stringify(output));
-    }
-  },
+    showFrame: function (frame) {
+        this.active_frame = frame;
+        $('.frame').hide();
+        frame.show();
+    },
 
-  clearHints: function() {
-    var container = $('#error-hints');
-    container.find('ul.body > li.hint').remove();
-    container.fadeOut();
-  },
+    getProgressBarClass: function (percentage) {
+        if (percentage < this.ADEQUATE_PERCENTAGE) {
+            return 'progress-bar progress-bar-striped bg-danger';
+        } else if (percentage < this.SUCCESSFULL_PERCENTAGE) {
+            return 'progress-bar progress-bar-striped bg-warning';
+        } else {
+            return 'progress-bar progress-bar-striped bg-success';
+        }
+    },
 
-  showHint: function(message) {
-    var template = function(description, hint) {
-      return '\
+    handleKeyPress: function (event) {
+        if (event.which === this.ALT_R_KEY_CODE) {
+            $('#run').trigger('click');
+        } else if (event.which === this.ALT_S_KEY_CODE) {
+            $('#assess').trigger('click');
+        } else if (event.which === this.ALT_T_KEY_CODE) {
+            $('#test').trigger('click');
+        } else {
+            return;
+        }
+        event.preventDefault();
+    },
+
+    handleCopyEvent: function (text) {
+        this.lastCopyText = text;
+    },
+
+    handlePasteEvent: function (pasteObject) {
+        var same = (CodeOceanEditor.lastCopyText === pasteObject.text);
+
+        // if the text is not copied from within the editor (from any file), send an event to the backend
+        if (!same) {
+            CodeOceanEditor.publishCodeOceanEvent({
+                category: 'editor_paste',
+                data: pasteObject.text,
+                exercise_id: $('#editor').data('exercise-id'),
+                file_id: $(event.target).parent().data('file-id')
+            });
+        }
+    },
+
+    hideSpinner: function () {
+        $('button i.fa').show();
+        $('button i.fa-spin').hide();
+    },
+
+
+    resizeAceEditors: function () {
+        $('.editor').each(function (index, element) {
+            this.resizeParentOfAceEditor(element);
+        }.bind(this));
+        window.dispatchEvent(new Event('resize'));
+    },
+
+    resizeParentOfAceEditor: function (element) {
+        // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
+        var windowHeight = window.innerHeight - $(element).offset().top - $('#autosave-label').height() - 5;
+        $(element).parent().height(windowHeight);
+    },
+
+    initializeEditors: function () {
+        this.editors = [];
+        $('.editor').each(function (index, element) {
+
+            // Resize frame on load
+            this.resizeParentOfAceEditor(element);
+
+            // Resize frame on window size change
+            $(window).resize(function () {
+                this.resizeParentOfAceEditor(element);
+            }.bind(this));
+
+            var editor = ace.edit(element);
+
+            if (this.qa_api) {
+                editor.getSession().on("change", function (deltaObject) {
+                    this.qa_api.executeCommand('syncEditor', [this.active_file, deltaObject]);
+                }.bind(this));
+            }
+
+            var document = editor.getSession().getDocument();
+            // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
+            var file_id = $(element).data('file-id');
+            var content = $('.editor-content[data-file-id=' + file_id + ']');
+            this.setActiveFile($(element).parent().data('filename'), file_id);
+
+            document.insertLines(0, content.text().split(/\n/));
+            // remove last (empty) that is there by default line
+            document.removeLines(document.getLength() - 1, document.getLength() - 1);
+            editor.setReadOnly($(element).data('read-only') !== undefined);
+            if (editor.getReadOnly()) {
+                editor.setHighlightActiveLine(false);
+                editor.setHighlightGutterLine(false);
+                editor.renderer.$cursorLayer.element.style.opacity = 0;
+            }
+            editor.setShowPrintMargin(false);
+            editor.setTheme(this.THEME);
+
+
+            // set options for autocompletion
+            if ($(element).data('allow-auto-completion')) {
+                editor.setOptions({
+                    enableBasicAutocompletion: true,
+                    enableSnippets: false,
+                    enableLiveAutocompletion: true
+                });
+            }
+
+
+            editor.commands.bindKey("ctrl+alt+0", null);
+            this.editors.push(editor);
+            this.editor_for_file.set($(element).parent().data('filename'), editor);
+            var session = editor.getSession();
+            var mode = $(element).data('mode')
+            session.setMode(mode);
+            if (mode === 'ace/mode/python') {
+                editor.setTheme('ace/theme/tomorrow')
+            }
+            session.setTabSize($(element).data('indent-size'));
+            session.setUseSoftTabs(true);
+            session.setUseWrapMode(true);
+
+            // set regex for parsing error traces based on the mode of the main file.
+            if ($(element).parent().data('role') == "main_file") {
+                this.tracepositions_regex = this.regex_for_language.get($(element).data('mode'));
+            }
+
+            var file_id = $(element).data('id');
+
+            /*
+             * Register event handlers
+             */
+
+            // editor itself
+            editor.on("paste", this.handlePasteEvent.bind(element));
+            editor.on("copy", this.handleCopyEvent.bind(element));
+
+            // listener for autosave
+            session.on("change", function (deltaObject) {
+                this.resetSaveTimer();
+            }.bind(this));
+        }.bind(this));
+    },
+
+    initializeEventHandlers: function () {
+        $(document).on('click', '#results a', this.showOutput.bind(this));
+        $(document).on('keypress', this.handleKeyPress.bind(this));
+        this.initializeFileTreeButtons();
+        this.initializeWorkspaceButtons();
+        this.initializeRequestForComments()
+    },
+
+    updateEditorModeToFileTypeID: function (editor, fileTypeID) {
+        var newMode = 'ace/mode/text'
+
+        $.ajax(this.fileTypeURL + '/' + fileTypeID, {
+            dataType: 'json'
+        }).done(function (data) {
+            if (data['editor_mode'] !== null) {
+                newMode = data['editor_mode'];
+            }
+        }).fail(_.noop)
+            .always(function () {
+                ace.edit(editor).session.setMode(newMode);
+            });
+    },
+
+    initializeFileTree: function () {
+        $('#files').jstree($('#files').data('entries'));
+        $('#files').on('click', 'li.jstree-leaf', function (event) {
+            this.setActiveFile(
+                $(event.target).parent().text(),
+                parseInt($(event.target).parent().attr('id'))
+            );
+            var frame = $('[data-file-id="' + this.active_file.id + '"]').parent();
+            this.showFrame(frame);
+            this.toggleButtonStates();
+        }.bind(this));
+    },
+
+    initializeFileTreeButtons: function () {
+        $('#create-file').on('click', this.showFileDialog.bind(this));
+        $('#create-file-collapsed').on('click', this.showFileDialog.bind(this));
+        $('#destroy-file').on('click', this.confirmDestroy.bind(this));
+        $('#destroy-file-collapsed').on('click', this.confirmDestroy.bind(this));
+        $('#download').on('click', this.downloadCode.bind(this));
+        $('#download-collapsed').on('click', this.downloadCode.bind(this));
+        $('#request-for-comments').on('click', this.requestComments.bind(this));
+    },
+
+    initializeSideBarCollapse: function () {
+        $('#sidebar-collapse-collapsed').on('click', this.handleSideBarToggle.bind(this));
+        $('#sidebar-collapse').on('click', this.handleSideBarToggle.bind(this))
+        $('#sidebar').on('transitionend', this.resizeAceEditors.bind(this));
+    },
+
+    handleSideBarToggle: function () {
+        $('#sidebar').toggleClass('sidebar-col').toggleClass('sidebar-col-collapsed');
+        $('#sidebar-collapsed').toggleClass('d-none');
+        $('#sidebar-uncollapsed').toggleClass('d-none');
+    },
+
+    initializeRegexes: function () {
+        this.regex_for_language.set("ace/mode/python", /File "(.+?)", line (\d+)/g);
+        this.regex_for_language.set("ace/mode/java", /(.*\.java):(\d+):/g);
+    },
+
+    initializeTooltips: function () {
+        $('[data-tooltip]').tooltip();
+    },
+
+
+    initializeWorkspaceButtons: function () {
+        $('#submit').on('click', this.submitCode.bind(this));
+        $('#assess').on('click', this.scoreCode.bind(this));
+        $('#dropdown-render, #render').on('click', this.renderCode.bind(this));
+        $('#dropdown-run, #run').on('click', this.runCode.bind(this));
+        $('#dropdown-stop, #stop').on('click', this.stopCode.bind(this));
+        $('#dropdown-test, #test').on('click', this.testCode.bind(this));
+        $('#save').on('click', this.saveCode.bind(this));
+        $('#start-over').on('click', this.confirmReset.bind(this));
+        $('#start-over-collapsed').on('click', this.confirmReset.bind(this));
+        $('#start-over-active-file').on('click', this.confirmResetActiveFile.bind(this));
+        $('#start-over-active-file-collapsed').on('click', this.confirmResetActiveFile.bind(this));
+
+    },
+
+    initializeRequestForComments: function () {
+        var button = $('#requestComments');
+        button.prop('disabled', true);
+        button.on('click', function () {
+            $('#rfc_intervention_text').hide()
+            $('#comment-modal').modal('show');
+        });
+
+        $('#askForCommentsButton').on('click', this.requestComments.bind(this));
+        $('#closeAskForCommentsButton').on('click', function () {
+            $('#comment-modal').modal('hide');
+        });
+
+        setTimeout(function () {
+            button.prop('disabled', false);
+            button.tooltip('show');
+            setTimeout(function () {
+                button.tooltip('hide');
+            }, this.REQUEST_TOOLTIP_TIME);
+        }.bind(this), this.REQUEST_FOR_COMMENTS_DELAY);
+    },
+
+    isActiveFileRenderable: function () {
+        return 'renderable' in this.active_frame.data();
+    },
+
+    isActiveFileRunnable: function () {
+        return this.isActiveFileExecutable() && ['main_file', 'user_defined_file', 'executable_file'].includes(this.active_frame.data('role'));
+    },
+
+    isActiveFileStoppable: function () {
+        return this.isActiveFileRunnable() && this.running;
+    },
+
+    isActiveFileSubmission: function () {
+        return ['Submission'].includes(this.active_frame.data('contextType'));
+    },
+
+    isActiveFileTestable: function () {
+        return this.isActiveFileExecutable() && ['teacher_defined_test', 'user_defined_test'].includes(this.active_frame.data('role'));
+    },
+
+    isBrowserSupported: function () {
+        //  websockets are used for run, score and test
+        // Also exclude IE and IE 11
+        return Modernizr.websockets && window.navigator.userAgent.indexOf("MSIE") <= 0 && !navigator.userAgent.match(/Trident\/7\./);
+    },
+
+    populateCard: function (card, result, index) {
+        card.addClass(this.getCardClass(result));
+        card.find('.card-title .filename').text(result.filename);
+        card.find('.card-title .number').text(index + 1);
+        card.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
+        card.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
+        card.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
+        card.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
+        card.find('.row .col-sm-9').eq(2).html(result.message);
+
+        // Add error message from code to card
+        if (result.error_messages) {
+            const targetNode = card.find('.row .col-sm-9').eq(3);
+
+            let errorMessagesToShow = [];
+            result.error_messages.forEach(function (item) {
+                if (item) {
+                    errorMessagesToShow.push(item.replace(/\n/g, '<br>'))
+                }
+            })
+
+            // one or more errors?
+            if (errorMessagesToShow.length > 1) {
+                // delete all current elements
+                targetNode.text('');
+                // create a new list and appand each element
+                const ul = document.createElement("ul");
+                ul.setAttribute('class', 'error_messages_list');
+                errorMessagesToShow.forEach(function (item) {
+                    var li = document.createElement("li");
+                    var text = $.parseHTML(item);
+                    $(li).append(text);
+                    ul.append(li);
+                })
+                targetNode.append(ul);
+            } else {
+                targetNode.html(errorMessagesToShow.join(''));
+            }
+        }
+        //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
+    },
+
+    publishCodeOceanEvent: function (payload) {
+        if (this.sendEvents) {
+            $.ajax(this.eventURL, {
+                type: 'POST',
+                cache: false,
+                dataType: 'JSON',
+                data: {
+                    event: payload
+                },
+                success: _.noop,
+                error: _.noop
+            });
+        }
+    },
+
+    sendError: function (message, submission_id) {
+        this.showSpinner($('#render'));
+        var jqxhr = this.ajax({
+            data: {
+                error: {
+                    message: message,
+                    submission_id: submission_id
+                }
+            },
+            url: $('#editor').data('errors-url')
+        });
+        jqxhr.always(this.hideSpinner);
+    },
+
+    toggleButtonStates: function () {
+        $('#destroy-file').prop('disabled', this.active_frame.data('role') !== 'user_defined_file');
+        $('#start-over-active-file').prop('disabled', this.active_frame.data('role') === 'user_defined_file');
+        $('#dummy').toggle(!this.fileActionsAvailable());
+        $('#render').toggle(this.isActiveFileRenderable());
+        $('#run').toggle(this.isActiveFileRunnable() && !this.running);
+        $('#stop').toggle(this.isActiveFileStoppable());
+        $('#test').toggle(this.isActiveFileTestable());
+    },
+
+    jumpToSourceLine: function (event) {
+        var file = $(event.target).data('file');
+        var line = $(event.target).data('line');
+
+        // set active file, only needed for codepilot, so skipped for now
+
+        var frame = $('div.frame[data-filename="' + file + '"]');
+        this.showFrame(frame);
+
+        var editor = this.editor_for_file.get(file);
+        editor.gotoLine(line, 0);
+        event.preventDefault();
+    },
+
+    augmentStacktraceInOutput: function () {
+        if (this.tracepositions_regex) {
+            $('#output>pre').each($.proxy(function(index, element) {
+                element = $(element)
+                const text = element.text();
+                element.on("click", "a", this.jumpToSourceLine.bind(this));
+
+                let matches;
+
+                while (matches = this.tracepositions_regex.exec(text)) {
+                    const frame = $('div.frame[data-filename="' + matches[1] + '"]')
+
+                    if (frame.length > 0) {
+                        element.html(text.replace(new RegExp(matches[0], 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>"));
+                    }
+                }
+
+            }, this));
+        }
+    },
+
+    resetOutputTab: function () {
+        this.clearOutput();
+        $('#flowrHint').fadeOut();
+        this.clearHints();
+        this.showOutputBar();
+    },
+
+    isActiveFileBinary: function () {
+        return 'binary' in this.active_frame.data();
+    },
+
+    isActiveFileExecutable: function () {
+        return 'executable' in this.active_frame.data();
+    },
+
+    setActiveFile: function (filename, fileId) {
+        this.active_file = {
+            filename: filename,
+            id: fileId
+        };
+    },
+
+    showSpinner: function (initiator) {
+        $(initiator).find('i.fa').hide();
+        $(initiator).find('i.fa-spin').show();
+    },
+
+    showStatus: function (output) {
+        if (output.status === 'timeout') {
+            this.showTimeoutMessage();
+        } else if (output.status === 'container_depleted') {
+            this.showContainerDepletedMessage();
+        } else if (output.stderr) {
+            $.flash.danger({
+                icon: ['fa', 'fa-bug'],
+                text: $('#run').data('message-failure')
+            });
+            Sentry.captureException(JSON.stringify(output));
+        }
+    },
+
+    clearHints: function () {
+        var container = $('#error-hints');
+        container.find('ul.body > li.hint').remove();
+        container.fadeOut();
+    },
+
+    showHint: function (message) {
+        var template = function (description, hint) {
+            return '\
            <li class="hint">\
              <div class="description">\
                ' + description + '\
@@ -595,90 +597,94 @@ configureEditors: function () {
              </div>\
            </li>\
          '
-    };
-    var container = $('#error-hints');
-    container.find('ul.body').append(template(message.description, message.hint));
-    container.fadeIn();
-  },
+        };
+        var container = $('#error-hints');
+        container.find('ul.body').append(template(message.description, message.hint));
+        container.fadeIn();
+    },
 
-  showContainerDepletedMessage: function() {
-    $.flash.danger({
-      icon: ['fa', 'fa-clock-o'],
-      text: $('#editor').data('message-depleted')
-    });
-  },
+    showContainerDepletedMessage: function () {
+        $.flash.danger({
+            icon: ['fa', 'fa-clock-o'],
+            text: $('#editor').data('message-depleted')
+        });
+    },
 
-  showTimeoutMessage: function() {
-    $.flash.info({
-      icon: ['fa', 'fa-clock-o'],
-      text: $('#editor').data('message-timeout')
-    });
-  },
+    showTimeoutMessage: function () {
+        $.flash.info({
+            icon: ['fa', 'fa-clock-o'],
+            text: $('#editor').data('message-timeout')
+        });
+    },
 
-  showWebsocketError: function(error) {
-    if (window.navigator.userAgent.indexOf('Edge') > -1 || window.navigator.userAgent.indexOf('Trident') > -1) {
-      // Mute errors in Microsoft Edge and Internet Explorer
-      return;
-    }
-    $.flash.danger({
-      text: $('#flash').data('websocket-failure'),
-      showPermanent: true
-    });
-    Sentry.captureException(JSON.stringify(error));
-  },
+    showWebsocketError: function (error) {
+        if (window.navigator.userAgent.indexOf('Edge') > -1 || window.navigator.userAgent.indexOf('Trident') > -1) {
+            // Mute errors in Microsoft Edge and Internet Explorer
+            return;
+        }
+        $.flash.danger({
+            text: $('#flash').data('websocket-failure'),
+            showPermanent: true
+        });
+        Sentry.captureException(JSON.stringify(error));
+    },
 
-  showFileDialog: function(event) {
-    event.preventDefault();
-    this.createSubmission('#create-file', null, function(response) {
-      $('#code_ocean_file_context_id').val(response.id);
-      $('#modal-file').modal('show');
-    }.bind(this));
-  },
+    showFileDialog: function (event) {
+        event.preventDefault();
+        this.createSubmission('#create-file', null, function (response) {
+            $('#code_ocean_file_context_id').val(response.id);
+            $('#modal-file').modal('show');
+        }.bind(this));
+    },
 
-  initializeOutputBarToggle: function() {
-    $('#toggle-sidebar-output').on('click',this.hideOutputBar.bind(this));
-    $('#toggle-sidebar-output-collapsed').on('click',this.showOutputBar.bind(this));
-    $('#output_sidebar').on('transitionend',this.resizeAceEditors.bind(this));
-  },
+    initializeOutputBarToggle: function () {
+        $('#toggle-sidebar-output').on('click', this.hideOutputBar.bind(this));
+        $('#toggle-sidebar-output-collapsed').on('click', this.showOutputBar.bind(this));
+        $('#output_sidebar').on('transitionend', this.resizeAceEditors.bind(this));
+    },
 
-  showOutputBar: function() {
-    $('#output_sidebar_collapsed').addClass('d-none');
-    $('#output_sidebar_uncollapsed').removeClass('d-none');
-    $('#output_sidebar').removeClass('output-col-collapsed').addClass('output-col');
-  },
+    showOutputBar: function () {
+        $('#output_sidebar_collapsed').addClass('d-none');
+        $('#output_sidebar_uncollapsed').removeClass('d-none');
+        $('#output_sidebar').removeClass('output-col-collapsed').addClass('output-col');
+    },
 
-  hideOutputBar: function() {
-    $('#output_sidebar_collapsed').removeClass('d-none');
-    $('#output_sidebar_uncollapsed').addClass('d-none');
-    $('#output_sidebar').removeClass('output-col').addClass('output-col-collapsed');
-  },
+    hideOutputBar: function () {
+        $('#output_sidebar_collapsed').removeClass('d-none');
+        $('#output_sidebar_uncollapsed').addClass('d-none');
+        $('#output_sidebar').removeClass('output-col').addClass('output-col-collapsed');
+    },
 
-  initializeSideBarTooltips: function() {
-    $('[data-toggle="tooltip"]').tooltip()
-  },
+    initializeSideBarTooltips: function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    },
 
-  initializeDescriptionToggle: function() {
-    $('#exercise-headline').on('click', this.toggleDescriptionCard.bind(this));
-    $('a#toggle').on('click', this.toggleDescriptionCard.bind(this));
-  },
+    initializeDescriptionToggle: function () {
+        $('#exercise-headline').on('click', this.toggleDescriptionCard.bind(this));
+        $('a#toggle').on('click', this.toggleDescriptionCard.bind(this));
+    },
 
-  toggleDescriptionCard: function() {
-    $('#description-card').toggleClass('description-card-collapsed').toggleClass('description-card');
-    $('#description-symbol').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
-    var toggle = $('a#toggle');
-    toggle.text(toggle.text() == toggle.data('hide') ? toggle.data('show') : toggle.data('hide'));
-    this.resizeAceEditors();
-    event.preventDefault();
-  },
+    toggleDescriptionCard: function () {
+        $('#description-card').toggleClass('description-card-collapsed').toggleClass('description-card');
+        $('#description-symbol').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
+        var toggle = $('a#toggle');
+        toggle.text(toggle.text() == toggle.data('hide') ? toggle.data('show') : toggle.data('hide'));
+        this.resizeAceEditors();
+        event.preventDefault();
+    },
 
     /**
      * interventions
      * */
-    initializeInterventionTimer: function() {
+    initializeInterventionTimer: function () {
 
         if ($('#editor').data('rfc-interventions') || $('#editor').data('break-interventions')) { // split in break or rfc intervention
-            window.onblur = function() { window.blurred = true; };
-            window.onfocus = function() { window.blurred = false; };
+            window.onblur = function () {
+                window.blurred = true;
+            };
+            window.onfocus = function () {
+                window.blurred = false;
+            };
 
             var delta = 100; // time in ms to wait for window event before time gets stopped
             var tid;
@@ -706,10 +712,12 @@ configureEditors: function () {
                         var timeUntilIntervention = Math.max(percentile75 - accumulatedWorkTimeUser, minTimeIntervention);
                     }
 
-                    tid = setInterval(function() {
-                        if ( window.blurred ) { return; }
+                    tid = setInterval(function () {
+                        if (window.blurred) {
+                            return;
+                        }
                         timeUntilIntervention -= delta;
-                        if ( timeUntilIntervention <= 0 ) {
+                        if (timeUntilIntervention <= 0) {
                             clearInterval(tid);
                             // timeUntilIntervention passed
                             if ($('#editor').data('break-interventions')) {
@@ -722,7 +730,7 @@ configureEditors: function () {
                                     type: 'POST',
                                     url: $('#editor').data('intervention-save-url')
                                 });
-                            } else if ($('#editor').data('rfc-interventions')){
+                            } else if ($('#editor').data('rfc-interventions')) {
                                 var button = $('#requestComments');
                                 // only show intervention if user did not requested for a comment already
                                 if (!button.prop('disabled')) {
@@ -745,8 +753,8 @@ configureEditors: function () {
         }
     },
 
-    initializeSearchButton: function(){
-        $('#btn-search-col').button().click(function(){
+    initializeSearchButton: function () {
+        $('#btn-search-col').button().click(function () {
             var search = $('#search-input-text').val();
             var course_token = $('#editor').data('course_token')
             var save_search_url = $('#editor').data('search-save-url')
@@ -758,36 +766,37 @@ configureEditors: function () {
                 },
                 dataType: 'json',
                 type: 'POST',
-                url: save_search_url});
+                url: save_search_url
+            });
         })
 
-        $('#sidebar-search-collapsed').on('click',this.handleSideBarToggle.bind(this));
+        $('#sidebar-search-collapsed').on('click', this.handleSideBarToggle.bind(this));
     },
 
 
-  initializeEverything: function() {
-    this.initializeRegexes();
-    this.initializeCodePilot();
-    $('.score, #development-environment').show();
-    this.configureEditors();
-    this.initializeEditors();
-    this.initializeEventHandlers();
-    this.initializeFileTree();
-    this.initializeSideBarCollapse();
-    this.initializeOutputBarToggle();
-    this.initializeDescriptionToggle();
-    this.initializeSideBarTooltips();
-    this.initializeTooltips();
-    this.initializeInterventionTimer();
-    this.initializeSearchButton();
-    this.initPrompt();
-    this.renderScore();
-    this.showFirstFile();
-    this.resizeAceEditors();
+    initializeEverything: function () {
+        this.initializeRegexes();
+        this.initializeCodePilot();
+        $('.score, #development-environment').show();
+        this.configureEditors();
+        this.initializeEditors();
+        this.initializeEventHandlers();
+        this.initializeFileTree();
+        this.initializeSideBarCollapse();
+        this.initializeOutputBarToggle();
+        this.initializeDescriptionToggle();
+        this.initializeSideBarTooltips();
+        this.initializeTooltips();
+        this.initializeInterventionTimer();
+        this.initializeSearchButton();
+        this.initPrompt();
+        this.renderScore();
+        this.showFirstFile();
+        this.resizeAceEditors();
 
-    window.addEventListener("beforeunload", this.unloadAutoSave.bind(this));
-    window.addEventListener("page:before-change", this.unloadAutoSave.bind(this));
-    // create autosave when the editor is opened the first time
-    this.autosave();
-  }
+        window.addEventListener("beforeunload", this.unloadAutoSave.bind(this));
+        window.addEventListener("page:before-change", this.unloadAutoSave.bind(this));
+        // create autosave when the editor is opened the first time
+        this.autosave();
+    }
 };
