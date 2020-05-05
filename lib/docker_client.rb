@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'concurrent'
 require 'pathname'
 
 class DockerClient
-  CONTAINER_WORKSPACE_PATH = '/workspace' #'/home/python/workspace' #'/tmp/workspace'
+  CONTAINER_WORKSPACE_PATH = '/workspace' # '/home/python/workspace' #'/tmp/workspace'
   DEFAULT_MEMORY_LIMIT = 256
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
@@ -25,25 +27,25 @@ class DockerClient
 
   def self.clean_container_workspace(container)
     # remove files when using transferral via Docker API archive_in (transmit)
-    #container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
+    # container.exec(['bash', '-c', 'rm -rf ' + CONTAINER_WORKSPACE_PATH + '/*'])
 
     local_workspace_path = local_workspace_path(container)
     if local_workspace_path && Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each do |p|
         p.rmtree
-      rescue Errno::ENOENT, Errno::EACCES => error
-        Raven.capture_exception(error)
-        Rails.logger.error("clean_container_workspace: Got #{error.class.to_s}: #{error.to_s}")
+      rescue Errno::ENOENT, Errno::EACCES => e
+        Raven.capture_exception(e)
+        Rails.logger.error("clean_container_workspace: Got #{e.class}: #{e}")
       end
-      #FileUtils.rmdir(Pathname.new(local_workspace_path))
+      # FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
   end
 
   def command_substitutions(filename)
     {
-        class_name: File.basename(filename, File.extname(filename)).camelize,
-        filename: filename,
-        module_name: File.basename(filename, File.extname(filename)).underscore
+      class_name: File.basename(filename, File.extname(filename)).camelize,
+      filename: filename,
+      module_name: File.basename(filename, File.extname(filename)).underscore
     }
   end
 
@@ -55,30 +57,30 @@ class DockerClient
 
   def self.container_creation_options(execution_environment)
     {
-        'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
-        'Memory' => execution_environment.memory_limit.megabytes,
-        'NetworkDisabled' => !execution_environment.network_enabled?,
-        #'HostConfig' => { 'CpusetCpus' => '0', 'CpuQuota' => 10000 },
-        #DockerClient.config['allowed_cpus']
-        'OpenStdin' => true,
-        'StdinOnce' => true,
-        # required to expose standard streams over websocket
-        'AttachStdout' => true,
-        'AttachStdin' => true,
-        'AttachStderr' => true,
-        'Tty' => true
+      'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
+      'Memory' => execution_environment.memory_limit.megabytes,
+      'NetworkDisabled' => !execution_environment.network_enabled?,
+      # 'HostConfig' => { 'CpusetCpus' => '0', 'CpuQuota' => 10000 },
+      # DockerClient.config['allowed_cpus']
+      'OpenStdin' => true,
+      'StdinOnce' => true,
+      # required to expose standard streams over websocket
+      'AttachStdout' => true,
+      'AttachStdin' => true,
+      'AttachStderr' => true,
+      'Tty' => true
     }
   end
 
   def self.container_start_options(execution_environment, local_workspace_path)
     {
-        'Binds' => mapped_directories(local_workspace_path),
-        'PortBindings' => mapped_ports(execution_environment)
+      'Binds' => mapped_directories(local_workspace_path),
+      'PortBindings' => mapped_ports(execution_environment)
     }
   end
 
   def create_socket(container, stderr = false)
-    # todo factor out query params
+    # TODO: factor out query params
     # todo separate stderr
     query_params = 'logs=0&stream=1&' + (stderr ? 'stderr=1' : 'stdout=1&stdin=1')
 
@@ -86,18 +88,18 @@ class DockerClient
     headers = {'Origin' => 'http://localhost'}
 
     socket_url = DockerClient.config['ws_host'] + '/v1.27/containers/' + @container.id + '/attach/ws?' + query_params
-    socket = Faye::WebSocket::Client.new(socket_url, [], :headers => headers)
+    socket = Faye::WebSocket::Client.new(socket_url, [], headers: headers)
 
-    Rails.logger.debug "Opening Websocket on URL " + socket_url
+    Rails.logger.debug 'Opening Websocket on URL ' + socket_url
 
     socket.on :error do |event|
-      Rails.logger.info "Websocket error: " + event.message.to_s
+      Rails.logger.info 'Websocket error: ' + event.message.to_s
     end
-    socket.on :close do |event|
-      Rails.logger.info "Websocket closed."
+    socket.on :close do |_event|
+      Rails.logger.info 'Websocket closed.'
     end
-    socket.on :open do |event|
-      Rails.logger.info "Websocket created."
+    socket.on :open do |_event|
+      Rails.logger.info 'Websocket created.'
       kill_after_timeout(container)
     end
     socket
@@ -109,8 +111,8 @@ class DockerClient
 
   def self.create_container(execution_environment)
     tries ||= 0
-    #Rails.logger.info "docker_client: self.create_container with creation options:"
-    #Rails.logger.info(container_creation_options(execution_environment))
+    # Rails.logger.info "docker_client: self.create_container with creation options:"
+    # Rails.logger.info(container_creation_options(execution_environment))
     container = Docker::Container.create(container_creation_options(execution_environment))
     # container.start sometimes creates the passed local_workspace_path on disk (depending on the setup).
     # this is however not guaranteed and caused issues on the server already. Therefore create the necessary folders manually!
@@ -145,15 +147,15 @@ class DockerClient
     end
 
     container
-  rescue Docker::Error::NotFoundError => error
-    Rails.logger.error('create_container: Got Docker::Error::NotFoundError: ' + error.to_s)
+  rescue Docker::Error::NotFoundError => e
+    Rails.logger.error('create_container: Got Docker::Error::NotFoundError: ' + e.to_s)
     destroy_container(container)
-    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
+    # (tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
   def create_workspace_files(container, submission)
-    #clear directory (it should be empty anyhow)
-    #Pathname.new(self.class.local_workspace_path(container)).children.each{ |p| p.rmtree}
+    # clear directory (it should be empty anyhow)
+    # Pathname.new(self.class.local_workspace_path(container)).children.each{ |p| p.rmtree}
     submission.collect_files.each do |file|
       FileUtils.mkdir_p(File.join(self.class.local_workspace_path(container), file.path || ''))
       if file.file_type.binary?
@@ -163,14 +165,14 @@ class DockerClient
       end
     end
     FileUtils.chmod_R('+rwX', self.class.local_workspace_path(container))
-  rescue Docker::Error::NotFoundError => error
-    Rails.logger.info('create_workspace_files: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
+  rescue Docker::Error::NotFoundError => e
+    Rails.logger.info('create_workspace_files: Rescued from Docker::Error::NotFoundError: ' + e.to_s)
   end
 
   private :create_workspace_files
 
   def create_workspace_file(options = {})
-    #TODO: try catch i/o exception and log failed attempts
+    # TODO: try catch i/o exception and log failed attempts
     file = File.new(local_file_path(options), 'w')
     file.write(options[:file].content)
     file.close
@@ -179,57 +181,49 @@ class DockerClient
   private :create_workspace_file
 
   def create_workspace_files_transmit(container, submission)
-    begin
-      # create a temporary dir, put all files in it, and put it into the container. the dir is automatically removed when leaving the block.
-      Dir.mktmpdir { |dir|
-        submission.collect_files.each do |file|
-          disk_file = File.new(dir + '/' + (file.path || '') + file.name_with_extension, 'w')
-          disk_file.write(file.content)
-          disk_file.close
-        end
+    # create a temporary dir, put all files in it, and put it into the container. the dir is automatically removed when leaving the block.
+    Dir.mktmpdir do |dir|
+      submission.collect_files.each do |file|
+        disk_file = File.new(dir + '/' + (file.path || '') + file.name_with_extension, 'w')
+        disk_file.write(file.content)
+        disk_file.close
+      end
 
+      begin
+        # create target folder, TODO re-active this when we remove shared folder bindings
+        # container.exec(['bash', '-c', 'mkdir ' + CONTAINER_WORKSPACE_PATH])
+        # container.exec(['bash', '-c', 'chown -R python ' + CONTAINER_WORKSPACE_PATH])
+        # container.exec(['bash', '-c', 'chgrp -G python ' + CONTAINER_WORKSPACE_PATH])
+      rescue StandardError => e
+        Rails.logger.error('create workspace folder: Rescued from StandardError: ' + e.to_s)
+      end
 
-        begin
-          # create target folder, TODO re-active this when we remove shared folder bindings
-          #container.exec(['bash', '-c', 'mkdir ' + CONTAINER_WORKSPACE_PATH])
-          #container.exec(['bash', '-c', 'chown -R python ' + CONTAINER_WORKSPACE_PATH])
-          #container.exec(['bash', '-c', 'chgrp -G python ' + CONTAINER_WORKSPACE_PATH])
-        rescue StandardError => error
-          Rails.logger.error('create workspace folder: Rescued from StandardError: ' + error.to_s)
-        end
+      # sleep 1000
 
-        #sleep 1000
+      begin
+        # tar the files in dir and put the tar to CONTAINER_WORKSPACE_PATH in the container
+        container.archive_in(dir, CONTAINER_WORKSPACE_PATH, overwrite: false)
+      rescue StandardError => e
+        Rails.logger.error('insert tar: Rescued from StandardError: ' + e.to_s)
+      end
 
-        begin
-          # tar the files in dir and put the tar to CONTAINER_WORKSPACE_PATH in the container
-          container.archive_in(dir, CONTAINER_WORKSPACE_PATH, overwrite: false)
+      # Rails.logger.info('command: tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH)
 
-        rescue StandardError => error
-          Rails.logger.error('insert tar: Rescued from StandardError: ' + error.to_s)
-        end
+      begin
+        # untar the tar file placed in the CONTAINER_WORKSPACE_PATH
+        container.exec(['bash', '-c', 'tar -xf ' + CONTAINER_WORKSPACE_PATH + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH])
+      rescue StandardError => e
+        Rails.logger.error('untar: Rescued from StandardError: ' + e.to_s)
+      end
 
-        #Rails.logger.info('command: tar -xf ' + CONTAINER_WORKSPACE_PATH  + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH)
-
-        begin
-          # untar the tar file placed in the CONTAINER_WORKSPACE_PATH
-          container.exec(['bash', '-c', 'tar -xf ' + CONTAINER_WORKSPACE_PATH + '/' + dir.split('/tmp/')[1] + ' -C ' + CONTAINER_WORKSPACE_PATH])
-        rescue StandardError => error
-          Rails.logger.error('untar: Rescued from StandardError: ' + error.to_s)
-        end
-
-
-        #sleep 1000
-
-      }
-    rescue StandardError => error
-      Rails.logger.error('create_workspace_files_transmit: Rescued from StandardError: ' + error.to_s)
+      # sleep 1000
     end
+  rescue StandardError => e
+    Rails.logger.error('create_workspace_files_transmit: Rescued from StandardError: ' + e.to_s)
   end
 
   def self.destroy_container(container)
-    if @socket
-      @socket.close
-    end
+    @socket&.close
     Rails.logger.info('destroying container ' + container.to_s)
 
     # Checks only if container assignment is not nil and not whether the container itself is still present.
@@ -241,11 +235,11 @@ class DockerClient
     elsif container
       DockerContainerPool.destroy_container(container)
     end
-  rescue Docker::Error::NotFoundError => error
-    Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
+  rescue Docker::Error::NotFoundError => e
+    Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + e.to_s)
     Rails.logger.error('No further actions are done concerning that.')
-  rescue Docker::Error::ConflictError => error
-    Rails.logger.error('destroy_container: Rescued from Docker::Error::ConflictError: ' + error.to_s)
+  rescue Docker::Error::ConflictError => e
+    Rails.logger.error('destroy_container: Rescued from Docker::Error::ConflictError: ' + e.to_s)
     Rails.logger.error('No further actions are done concerning that.')
   end
 
@@ -257,7 +251,7 @@ class DockerClient
 
   # only used by score and execute_arbitrary_command
   def execute_command(command, before_execution_block, output_consuming_block)
-    #tries ||= 0
+    # tries ||= 0
     container_request_time = Time.now
     @container = DockerContainerPool.get_container(@execution_environment)
     waiting_for_container_time = Time.now - container_request_time
@@ -274,23 +268,23 @@ class DockerClient
     else
       {status: :container_depleted, waiting_for_container_time: waiting_for_container_time, container_execution_time: nil}
     end
-  rescue Excon::Errors::SocketError => error
+  rescue Excon::Errors::SocketError => e
     # socket errors seems to be normal when using exec
     # so lets ignore them for now
-    #(tries += 1) <= RETRY_COUNT ? retry : raise(error)
+    # (tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
 
-  #called when the user clicks the "Run" button
-  def open_websocket_connection(command, before_execution_block, output_consuming_block)
+  # called when the user clicks the "Run" button
+  def open_websocket_connection(command, before_execution_block, _output_consuming_block)
     @container = DockerContainerPool.get_container(@execution_environment)
     if @container
       @container.status = :executing
       # do not use try here, directly call the passed proc and rescue from the error in order to log the problem.
-      #before_execution_block.try(:call)
+      # before_execution_block.try(:call)
       begin
         before_execution_block.call
-      rescue StandardError => error
-        Rails.logger.error('execute_websocket_command: Rescued from StandardError caused by before_execution_block.call: ' + error.to_s)
+      rescue StandardError => e
+        Rails.logger.error('execute_websocket_command: Rescued from StandardError caused by before_execution_block.call: ' + e.to_s)
       end
       # TODO: catch exception if socket could not be created
       @socket ||= create_socket(@container)
@@ -301,10 +295,10 @@ class DockerClient
   end
 
   def kill_after_timeout(container)
-    "" "
+    """
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
-    " ""
+    """
     @thread = Thread.new do
       timeout = @execution_environment.permitted_execution_time.to_i # seconds
       sleep(timeout)
@@ -312,14 +306,16 @@ class DockerClient
         Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
         # send timeout to the tubesock socket
         # FIXME: 2nd thread to notify user.
-        if @tubesock
-          @tubesock.send_data JSON.dump({'cmd' => 'timeout'})
-        end
+        @tubesock&.send_data JSON.dump({'cmd' => 'timeout'})
         if @socket
-          @socket.send('#timeout')
-          #sleep one more second to ensure that the message reaches the submissions_controller.
-          sleep(1)
-          @socket.close
+          begin
+            @socket.send('#timeout')
+            # sleep one more second to ensure that the message reaches the submissions_controller.
+            sleep(1)
+            @socket.close
+          rescue RuntimeError => e
+            Rails.logger.error(e)
+          end
         end
         Thread.new do
           kill_container(container)
@@ -334,9 +330,7 @@ class DockerClient
   end
 
   def exit_thread_if_alive
-    if (@thread && @thread.alive?)
-      @thread.exit
-    end
+    @thread.exit if @thread&.alive?
   end
 
   def exit_container(container)
@@ -345,19 +339,19 @@ class DockerClient
     exit_thread_if_alive
     @socket.close
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
-    (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
+    DockerContainerPool.config[:active] && RECYCLE_CONTAINERS ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
   end
 
-  def kill_container(container, create_new = true)
+  def kill_container(container, _create_new = true)
     exit_thread_if_alive
     Rails.logger.info('killing container ' + container.to_s)
     self.class.destroy_container(container)
   end
 
   def execute_run_command(submission, filename, &block)
-    "" "
+    """
     Run commands by attaching a websocket to Docker.
-    " ""
+    """
     filepath = submission.collect_files.find { |f| f.name_with_extension == filename }.filepath
     command = submission.execution_environment.run_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
@@ -366,9 +360,9 @@ class DockerClient
   end
 
   def execute_test_command(submission, filename, &block)
-    "" "
+    """
     Stick to existing Docker API with exec command.
-    " ""
+    """
     filepath = submission.collect_files.find { |f| f.name_with_extension == filename }.filepath
     command = submission.execution_environment.test_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
@@ -376,14 +370,12 @@ class DockerClient
   end
 
   def self.find_image_by_tag(tag)
-    # todo: cache this.
+    # TODO: cache this.
     Docker::Image.all.detect do |image|
-      begin
-        image.info['RepoTags'].flatten.include?(tag)
-      rescue
-        # Skip image if it is not tagged
-        next
-      end
+      image.info['RepoTags'].flatten.include?(tag)
+    rescue StandardError
+      # Skip image if it is not tagged
+      next
     end
   end
 
@@ -397,19 +389,18 @@ class DockerClient
 
   def initialize(options = {})
     @execution_environment = options[:execution_environment]
-    # todo: eventually re-enable this if it is cached. But in the end, we do not need this.
+    # TODO: eventually re-enable this if it is cached. But in the end, we do not need this.
     # docker daemon got much too much load. all not 100% necessary calls to the daemon were removed.
-    #@image = self.class.find_image_by_tag(@execution_environment.docker_image)
-    #fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
+    # @image = self.class.find_image_by_tag(@execution_environment.docker_image)
+    # fail(Error, "Cannot find image #{@execution_environment.docker_image}!") unless @image
   end
 
   def self.initialize_environment
     # TODO: Move to DockerContainerPool
-    unless config[:connection_timeout] && config[:workspace_root]
-      fail(Error, 'Docker configuration missing!')
-    end
+    raise(Error, 'Docker configuration missing!') unless config[:connection_timeout] && config[:workspace_root]
+
     Docker.url = config[:host] if config[:host]
-    # todo: availability check disabled for performance reasons. Reconsider if this is necessary.
+    # TODO: availability check disabled for performance reasons. Reconsider if this is necessary.
     # docker daemon got much too much load. all not 100% necessary calls to the daemon were removed.
     # check_availability!
     FileUtils.mkdir_p(LOCAL_WORKSPACE_ROOT)
@@ -445,34 +436,34 @@ class DockerClient
     Rails.logger.debug('returning container ' + container.to_s)
     begin
       clean_container_workspace(container)
-    rescue Docker::Error::NotFoundError => error
+    rescue Docker::Error::NotFoundError => e
       # FIXME: Create new container?
-      Rails.logger.info('return_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
+      Rails.logger.info('return_container: Rescued from Docker::Error::NotFoundError: ' + e.to_s)
       Rails.logger.info('Nothing is done here additionally. The container will be exchanged upon its next retrieval.')
     end
     DockerContainerPool.return_container(container, execution_environment)
     container.status = :returned
   end
 
-  #private :return_container
+  # private :return_container
 
-  def send_command(command, container, &block)
+  def send_command(command, container)
     result = {status: :failed, stdout: '', stderr: ''}
     output = nil
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
-      #TODO: check phusion doku again if we need -i -t options here
+      # TODO: check phusion doku again if we need -i -t options here
       output = container.exec(['bash', '-c', command])
     end
-    Rails.logger.debug "output from container.exec"
+    Rails.logger.debug 'output from container.exec'
     Rails.logger.debug output
-    if output == nil
+    if output.nil?
       kill_container(container)
     else
       result = {status: output[2] == 0 ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'), stderr: output[1].join.force_encoding('utf-8')}
     end
 
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
-    (DockerContainerPool.config[:active] && RECYCLE_CONTAINERS) ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
+    DockerContainerPool.config[:active] && RECYCLE_CONTAINERS ? self.class.return_container(container, @execution_environment) : self.class.destroy_container(container)
     result
   rescue Timeout::Error
     Rails.logger.info('got timeout error for container ' + container.to_s)
@@ -482,6 +473,5 @@ class DockerClient
 
   private :send_command
 
-  class Error < RuntimeError;
-  end
+  class Error < RuntimeError; end
 end
