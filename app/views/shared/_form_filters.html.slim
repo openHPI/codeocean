@@ -1,9 +1,11 @@
-.card.card-body.bg-light
-  = search_form_for(@search, class: 'clearfix filter-form form-inline') do |f|
-    = yield(f)
-    .btn-group.ml-auto
-      button.btn.btn-primary type='submit' = t('shared.apply_filters')
-      button.btn.btn-primary.dropdown-toggle data-toggle='dropdown' type='button'
-      ul.dropdown-menu role='menu'
-        li
-          a.dropdown-item href=request.path = t('shared.reset_filters')
+.card.card-body.bg-light.flex-row.container.row.mx-0
+  = search_form_for(@search, class: 'clearfix filter-form form-inline w-100') do |f|
+    .col-sm.p-0
+      = yield(f)
+    .col-sm-auto.p-0
+      .btn-group.ml-auto
+        button.btn.btn-primary type='submit' = t('shared.apply_filters')
+        button.btn.btn-primary.dropdown-toggle data-toggle='dropdown' type='button'
+        ul.dropdown-menu role='menu'
+          li
+            a.dropdown-item href=request.path = t('shared.reset_filters')

@@ -5,7 +5,8 @@ class ExternalUsersController < ApplicationController
   private :authorize!
 
   def index
-    @users = ExternalUser.all.includes(:consumer).paginate(page: params[:page])
+    @search = ExternalUser.ransack(params[:q])
+    @users = @search.result.includes(:consumer).paginate(page: params[:page])
     authorize!
   end
 

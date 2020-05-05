@@ -12,8 +12,12 @@
 }
 
 .filter-form {
-  .form-group:not(:last-child) {
-    margin-right: 1em;
+  .form-group {
+    margin-bottom: 1em;
+
+    &:not(:last-child) {
+      margin-right: 1em;
+    }
   }
 
   input, select {

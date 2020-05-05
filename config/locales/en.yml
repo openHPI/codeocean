@@ -52,6 +52,7 @@ en:
       external_user:
         consumer: Consumer
         email: Email
+        external_id: External ID
         name: Name
         role: Role
       file:

@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   self.abstract_class = true
 
-  ROLES = %w(admin teacher)
+  ROLES = %w(admin teacher learner)
 
   belongs_to :consumer
   has_many :study_group_memberships, as: :user
