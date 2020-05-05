@@ -9,12 +9,9 @@ h1 = t('breadcrumbs.dashboard.show')
 
 h2 Version
 
-div
-  = "Branch:"
-  pre = `git rev-parse --abbrev-ref HEAD`
-div
-  = "Commit:"
-  pre = `git log -n 1 --pretty`
+div.mb-4
+  = "Release:"
+  pre = Raven.configuration.release
 
 h2 Docker
 
