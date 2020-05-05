@@ -3,7 +3,9 @@ html lang='en'
   head
     meta charset='utf8'
     meta name='viewport' content='width=device-width, initial-scale=1'
-    title = application_name
+    = render('breadcrumbs_and_title')
+    title
+      = yield(:title)
     link href=asset_path('favicon.png') rel='icon' type='image/png'
     = action_cable_meta_tag
     = stylesheet_pack_tag('application', media: 'all', 'data-turbolinks-track': true)
@@ -49,7 +51,7 @@ html lang='en'
               = render('session')
     div data-controller=controller_name
       = render('flash')
-      = render('breadcrumbs') if (current_user.try(:admin?) or current_user.try(:teacher?)) && !@embed_options[:hide_navbar]
+      = yield(:breadcrumbs)
     - if (controller_name == "exercises" && action_name == "implement")
       .container-fluid
         = yield

@@ -1,0 +1,32 @@
+- if model = Kernel.const_get(controller_path.classify) rescue nil
+  - object = model.find_by(id: params[:id])
+  - if model.try(:nested_resource?)
+    - root_element = model.model_name.human(count: 2)
+    - if object
+      - current_element = object
+  - else
+    - root_element = link_to_if(policy(model).index?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+    - if object
+      - current_element = link_to_if(policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
+  - if I18n.translation_present?("shared.#{params[:action]}")
+    - active_action = t("shared.#{params[:action]}")
+  - else
+    - active_action = t("#{controller_name}.index.#{params[:action]}")
+- else
+  - active_action = t("breadcrumbs.#{controller_name}.#{params[:action]}")
+
+
+- title = "#{active_action} - #{application_name}"
+- content_for :breadcrumbs do
+  - if current_user.try(:admin?) or current_user.try(:teacher?) && !@embed_options[:hide_navbar]
+    .container
+      ul.breadcrumb
+        - if root_element.present?
+          li.breadcrumb-item = root_element
+          - if current_element.present?
+            li.breadcrumb-item = current_element
+            - title = "#{object} - #{title}"
+          - else
+            - title = "#{model.model_name.human(count: 2)} - #{title}"
+        li.breadcrumb-item.active = active_action
+- content_for :title, title
