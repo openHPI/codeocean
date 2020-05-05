@@ -51,7 +51,8 @@ html lang='en'
               = render('session')
     div data-controller=controller_name
       = render('flash')
-      = yield(:breadcrumbs)
+      - if current_user.try(:admin?) or current_user.try(:teacher?) && !@embed_options[:hide_navbar]
+        = yield(:breadcrumbs)
     - if (controller_name == "exercises" && action_name == "implement")
       .container-fluid
         = yield
