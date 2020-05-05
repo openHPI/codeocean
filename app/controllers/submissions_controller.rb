@@ -297,9 +297,9 @@ class SubmissionsController < ApplicationController
         Rails.logger.info('parse_message sent: ' + JSON.dump(parsed))
       end
     ensure
-      @raw_output += parsed['data'] if parsed.class == Hash and parsed.key? 'data'
+      @raw_output += parsed['data'].to_s if parsed.class == Hash and parsed.key? 'data'
       # save the data that was send to the run_output if there is enough space left. this will be persisted as a testrun with cause "run"
-      @run_output += JSON.dump(parsed) if @run_output.size <= max_run_output_buffer_size
+      @run_output += JSON.dump(parsed).to_s if @run_output.size <= max_run_output_buffer_size
     end
   end
 
