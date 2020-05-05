@@ -1,12 +1,13 @@
 h1 = RequestForComment.model_name.human(count: 2)
 
 = render(layout: 'shared/form_filters') do |f|
-  .form-group
-    = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'sr-only')
-    = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
-  .form-group
-    = f.label(:title_cont,  t('request_for_comments.solved'), class: 'sr-only')
-    = f.select(:solved_not_eq,  [[t('request_for_comments.show_all'), 2], [t('request_for_comments.show_unsolved'), 1], [t('request_for_comments.show_solved'), 0]])
+  .row.px-3
+    .form-group
+      = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'sr-only')
+      = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
+    .form-group
+      = f.label(:title_cont,  t('request_for_comments.solved'), class: 'sr-only')
+      = f.select(:solved_not_eq,  [[t('request_for_comments.show_all'), 2], [t('request_for_comments.show_unsolved'), 1], [t('request_for_comments.show_solved'), 0]])
 
 .table-responsive
   table.table.sortable.mt-4

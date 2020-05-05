@@ -1,9 +1,10 @@
 h1 = ProxyExercise.model_name.human(count: 2)
 
 = render(layout: 'shared/form_filters') do |f|
-  .form-group
-    = f.label(:title_cont, t('activerecord.attributes.proxy_exercise.title'), class: 'sr-only')
-    = f.search_field(:title_cont, class: 'form-control', placeholder: t('activerecord.attributes.proxy_exercise.title'))
+  .row.px-3
+    .form-group
+      = f.label(:title_cont, t('activerecord.attributes.proxy_exercise.title'), class: 'sr-only')
+      = f.search_field(:title_cont, class: 'form-control', placeholder: t('activerecord.attributes.proxy_exercise.title'))
 
 .table-responsive
   table.table.mt-4
