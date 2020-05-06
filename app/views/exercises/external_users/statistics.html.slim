@@ -1,4 +1,4 @@
-h1 = "#{@exercise} (external user #{@external_user})"
+h1 = "#{@exercise} (external user #{link_to_if(policy(@external_user).show?, @external_user.displayname, @external_user)})"
 - current_submission = @submissions.first
 - if current_submission
   - initial_files = current_submission.files.to_a

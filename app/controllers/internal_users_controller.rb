@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InternalUsersController < ApplicationController
   include CommonBehavior
 
@@ -5,7 +7,7 @@ class InternalUsersController < ApplicationController
   before_action :require_reset_password_token, only: :reset_password
   before_action :set_user, only: MEMBER_ACTIONS
   skip_before_action :verify_authenticity_token, only: :activate
-  skip_after_action :verify_authorized, only: [:activate, :forgot_password, :reset_password]
+  after_action :verify_authorized, except: %i[activate forgot_password reset_password]
 
   def activate
     set_up_password if request.patch? || request.put?
@@ -48,8 +50,7 @@ class InternalUsersController < ApplicationController
     destroy_and_respond(object: @user)
   end
 
-  def edit
-  end
+  def edit; end
 
   def forgot_password
     if request.get?
@@ -119,8 +120,7 @@ class InternalUsersController < ApplicationController
   end
   private :set_user
 
-  def show
-  end
+  def show; end
 
   def update
     update_and_respond(object: @user, params: internal_user_params)

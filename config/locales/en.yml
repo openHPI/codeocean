@@ -236,6 +236,7 @@ en:
     dashboard:
       show: Dashboard
     sessions:
+      new: Sign In
       destroy_through_lti: Code Submission
     statistics:
       show: "Statistics"
@@ -464,6 +465,8 @@ en:
         message: This message is used as an error explanation. Placeholders are automatically replaced by regular expression matches.
         regular_expression: This regular expression is used to extract relevant identifiers from the error message.
   internal_users:
+    index:
+      forgot_password: Reset Password
     activate:
       headline: Complete Registration
       submit: Set Password

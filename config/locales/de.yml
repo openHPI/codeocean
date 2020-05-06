@@ -236,6 +236,7 @@ de:
     dashboard:
       show: Dashboard
     sessions:
+      new: Anmelden
       destroy_through_lti: Code-Abgabe
     statistics:
       show: "Statistiken"
@@ -464,6 +465,8 @@ de:
         message: Diese Nachricht wird als Erklärung des aufgetretenen Fehlers angezeigt. Platzhalter werden automatisch durch Funde des regulären Ausdrucks ersetzt.
         regular_expression: Dieser reguläre Ausdruck wird auf die Fehlermeldung angewendet, um relevante Bezeicher zu extrahieren.
   internal_users:
+    index:
+      forgot_password: Passwort zurücksetzen
     activate:
       headline: Registrierung abschließen
       submit: Passwort speichern
