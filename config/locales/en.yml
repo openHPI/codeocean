@@ -35,6 +35,8 @@ en:
         hide_file_tree: Hide File Tree
         instructions: Instructions
         maximum_score: Maximum Score
+        submission_deadline: Submission Deadline
+        late_submission_deadline: Late Submission Deadline
         number_of_users: "# Users"
         public: Public
         selection: Selected
@@ -216,6 +218,8 @@ en:
       models:
         exercise:
           at_most_one_main_file: must include at most one main file
+          late_submission_deadline_not_alone: must not be used without a regular submission deadline
+          late_submission_deadline_not_before_submission_deadline: must not be before the submission deadline passed
   admin:
     dashboard:
       show:
@@ -347,6 +351,9 @@ en:
       unpublish_warning: This will unpublish the exercise. Any student trying to implement it will get an error message, until it is published again.
       no_execution_environment_selected: Select an execution environment before publishing the exercise.
       none: None
+      hints:
+        submission_deadline: A date and time in UTC to close the submission. Any submission obtained after the deadline will be considered late.
+        late_submission_deadline: A grace period for submissions in UTC. The late submission deadline should not be set or any timestamp before the original submission deadline. After the late submission deadline passed, any new submissions are prevented.
     implement:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'
@@ -406,7 +413,7 @@ en:
       participants: Participating Users
       users: '%{count} distinct users'
       user: User
-      score: Score
+      score: Maximum Score
       runs: Runs
       worktime: Working Time
       average_worktime: Average Working Time
@@ -426,12 +433,17 @@ en:
       no_data_yet: No data available yet
     external_users:
       statistics:
-        no_data_available: No data available.
+        no_data_available: No data available or insufficient permissions
         time: Time
         cause: Cause
         score: Score
         tests: Unit Test Results
         time_difference: 'Working Time until here*'
+        legend: 'Legend:'
+        no_deadline: No Deadline
+        before_deadline: On Time
+        within_grace_period: Within Grace Period
+        after_late_deadline: Too Late
         addendum: "* Deltas longer than %{delta} minutes are ignored."
   proxy_exercises:
       index:
@@ -440,7 +452,7 @@ en:
     statistics:
       title: External User Statistics
       exercise: Exercise
-      score: Score
+      score: Maximum Score
       runs: Submissions
       worktime: Working Time
     show:

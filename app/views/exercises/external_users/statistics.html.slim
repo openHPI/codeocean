@@ -1,4 +1,4 @@
-h1 = "#{@exercise} (external user #{link_to_if(policy(@external_user).show?, @external_user.displayname, @external_user)})"
+h1 = "#{@exercise} (external user #{link_to_if(policy(@external_user).show?, @external_user.displayname, @external_user)})".html_safe
 - current_submission = @submissions.first
 - if current_submission
   - initial_files = current_submission.files.to_a
@@ -36,32 +36,54 @@ h1 = "#{@exercise} (external user #{link_to_if(policy(@external_user).show?, @ex
       table.table
         thead
           tr
-            - ['.time', '.cause', '.score', '.tests', '.time_difference'].each do |title|
-              th.header = t(title)
+            th.header = t('.time')
+            th.header = t('.cause')
+            th.header = t('.score')
+            th.header = t('.tests')
+            th.header = t('.time_difference') if policy(@exercise).detailed_statistics?
         tbody
           - @all_events.each_with_index do |this, index|
             - highlight = (index > 0 and @deltas[index] == 0 and this.created_at.to_s != @all_events[index - 1].created_at.to_s)
-            tr data-id=this.id class=('highlight' if highlight)
+            - row_classes = ''
+            - row_classes += ' highlight' if highlight
+            - row_classes += ' before_deadline' if this.is_a?(Submission) && this.before_deadline?
+            - row_classes += ' within_grace_period' if this.is_a?(Submission) && this.within_grace_period?
+            - row_classes += ' after_late_deadline' if this.is_a?(Submission) && this.after_late_deadline?
+            tr data-id=this.id class=row_classes
               td.clickable = this.created_at.strftime("%F %T")
               - if this.is_a?(Submission)
                 td = this.cause
                 td = this.score
-                td
+                td.align-middle
                   -this.testruns.each do |run|
                     - if run.passed
                       .unit-test-result.positive-result title=run.output
                     - else
                       .unit-test-result.unknown-result title=run.output
-                td = @working_times_until[index] if index > 0
+                td = @working_times_until[index] if index > 0 if policy(@exercise).detailed_statistics?
               - elsif this.is_a? UserExerciseIntervention
                 td = this.intervention.name
                 td =
                 td =
-                td = @working_times_until[index] if index > 0
-    p = t('.addendum', delta: StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS / 60)
-    .d-none#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until);
-    div#progress_chart.col-lg-12
-      .graph-functions-2
+                td = @working_times_until[index] if index > 0 if policy(@exercise).detailed_statistics?
+    small
+      b
+        = t('.legend')
+      .container.px-0.border
+        .row.w-100.mx-0
+          .col-sm-3.py-2
+            = t('.no_deadline')
+          .col-sm-3.before_deadline.py-2
+            = t('.before_deadline')
+          .col-sm-3.within_grace_period.py-2
+            = t('.within_grace_period')
+          .col-sm-3.after_late_deadline.py-2
+            = t('.after_late_deadline')
+    - if current_user.try(:admin?)
+      p = t('.addendum', delta: StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS / 60)
+      .d-none#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until);
+      div#progress_chart.col-lg-12
+        .graph-functions-2
 
 - else
   p = t('.no_data_available')

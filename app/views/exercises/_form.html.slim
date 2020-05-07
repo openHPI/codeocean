@@ -16,6 +16,16 @@
     = f.label(:instructions)
     = f.hidden_field(:instructions)
     .form-control.markdown
+  .form-group
+    = f.label(:submission_deadline)
+    .chosen-inline
+      = f.datetime_select(:submission_deadline, include_blank: true)
+    .help-block.form-text == t('.hints.submission_deadline')
+  .form-group
+    = f.label(:late_submission_deadline)
+    .chosen-inline
+      = f.datetime_select(:late_submission_deadline, include_blank: true)
+    .help-block.form-text == t('.hints.late_submission_deadline')
   .form-check
     label.form-check-label
       = f.check_box(:public, class: 'form-check-input')

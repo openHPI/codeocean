@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_26_115249) do
+ActiveRecord::Schema.define(version: 2020_05_06_093054) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,6 +154,8 @@ ActiveRecord::Schema.define(version: 2020_03_26_115249) do
     t.integer "expected_difficulty", default: 1
     t.uuid "uuid"
     t.boolean "unpublished", default: false
+    t.datetime "submission_deadline"
+    t.datetime "late_submission_deadline"
     t.index ["id"], name: "index_exercises_on_id"
   end
 
@@ -423,5 +425,6 @@ ActiveRecord::Schema.define(version: 2020_03_26_115249) do
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user_type_and_user_id"
   end
 
+  add_foreign_key "request_for_comments", "submissions", name: "request_for_comments_submissions_id_fk"
   add_foreign_key "submissions", "study_groups"
 end

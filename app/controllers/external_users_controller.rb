@@ -6,7 +6,7 @@ class ExternalUsersController < ApplicationController
 
   def index
     @search = ExternalUser.ransack(params[:q])
-    @users = @search.result.includes(:consumer).paginate(page: params[:page])
+    @users = @search.result.in_study_group_of(current_user).includes(:consumer).paginate(page: params[:page])
     authorize!
   end
 
@@ -41,6 +41,7 @@ class ExternalUsersController < ApplicationController
           FROM submissions
           WHERE user_id = #{@user.id}
             AND user_type = 'ExternalUser'
+          #{!current_user.admin? ? "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'" : ''}
           GROUP BY exercise_id,
                    user_id,
                    id

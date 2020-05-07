@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExercisesController < ApplicationController
   include CommonBehavior
   include Lti
@@ -5,16 +7,16 @@ class ExercisesController < ApplicationController
   include SubmissionScoring
   include TimeHelper
 
-  before_action :handle_file_uploads, only: [:create, :update]
-  before_action :set_execution_environments, only: [:create, :edit, :new, :update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + [:clone, :implement, :working_times, :intervention, :search, :run, :statistics, :submit, :reload, :feedback, :requests_for_comments, :study_group_dashboard, :export_external_check, :export_external_confirm]
+  before_action :handle_file_uploads, only: %i[create update]
+  before_action :set_execution_environments, only: %i[create edit new update]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + %i[clone implement working_times intervention search run statistics submit reload feedback requests_for_comments study_group_dashboard export_external_check export_external_confirm]
   before_action :set_external_user_and_authorize, only: [:statistics]
-  before_action :set_file_types, only: [:create, :edit, :new, :update]
+  before_action :set_file_types, only: %i[create edit new update]
   before_action :set_course_token, only: [:implement]
 
-  skip_before_action :verify_authenticity_token, only: [:import_exercise, :import_uuid_check, :export_external_confirm]
-  skip_after_action :verify_authorized, only: [:import_exercise, :import_uuid_check, :export_external_confirm]
-  skip_after_action :verify_policy_scoped, only: [:import_exercise, :import_uuid_check, :export_external_confirm], raise: false
+  skip_before_action :verify_authenticity_token, only: %i[import_exercise import_uuid_check export_external_confirm]
+  skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check export_external_confirm]
+  skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check export_external_confirm], raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -31,13 +33,13 @@ class ExercisesController < ApplicationController
 
   def experimental_courses
     {
-        java17: "702cbd2a-c84c-4b37-923a-692d7d1532d0",
-        java1: "0ea88ea9-979a-44a3-b0e4-84ba58e5a05e"
+      java17: '702cbd2a-c84c-4b37-923a-692d7d1532d0',
+      java1: '0ea88ea9-979a-44a3-b0e4-84ba58e5a05e'
     }
   end
 
   def experimental_course?(course_token)
-    experimental_courses.has_value?(course_token)
+    experimental_courses.value?(course_token)
   end
 
   def batch_update
@@ -76,18 +78,18 @@ class ExercisesController < ApplicationController
   def create
     @exercise = Exercise.new(exercise_params)
     collect_set_and_unset_exercise_tags
-    myparam = exercise_params.present? ? exercise_params : { }
-    checked_exercise_tags = @exercise_tags.select { | et | myparam[:tag_ids].include? et.tag.id.to_s }
-    removed_exercise_tags = @exercise_tags.reject { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+    myparam = exercise_params.present? ? exercise_params : {}
+    checked_exercise_tags = @exercise_tags.select { |et| myparam[:tag_ids].include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject { |et| myparam[:tag_ids].include? et.tag.id.to_s }
 
-    for et in checked_exercise_tags
+    checked_exercise_tags.each do |et|
       et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
       et.exercise = @exercise
     end
 
     myparam[:exercise_tags] = checked_exercise_tags
     myparam.delete :tag_ids
-    removed_exercise_tags.map {|et| et.destroy}
+    removed_exercise_tags.map(&:destroy)
 
     authorize!
     create_and_respond(object: @exercise)
@@ -112,12 +114,12 @@ class ExercisesController < ApplicationController
   def requests_for_comments
     authorize!
     @search = RequestForComment
-                  .with_last_activity
-                  .where(exercise: @exercise)
-                  .ransack(params[:q])
+              .with_last_activity
+              .where(exercise: @exercise)
+              .ransack(params[:q])
     @request_for_comments = @search.result
-                                .order('last_comment DESC')
-                                .paginate(page: params[:page])
+                                   .order('last_comment DESC')
+                                   .paginate(page: params[:page])
     render 'request_for_comments/index'
   end
 
@@ -210,7 +212,7 @@ class ExercisesController < ApplicationController
   private :user_by_codeharbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, :tag_ids => []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :submission_deadline, :late_submission_deadline, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, tag_ids: []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?
   end
   private :exercise_params
 
@@ -232,23 +234,22 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def implement
-    redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? && current_user.role != 'admin' && current_user.role != 'teacher' # TODO TESTESTEST
+    redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? && current_user.role != 'admin' && current_user.role != 'teacher' # TODO: TESTESTEST
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.has_user_solved(current_user)
-    count_interventions_today = UserExerciseIntervention.where(user: current_user).where("created_at >= ?", Time.zone.now.beginning_of_day).count
+    count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?', Time.zone.now.beginning_of_day).count
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user, exercise: @exercise).size >= max_intervention_count_per_exercise
-    user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day or user_got_intervention_in_exercise
+    (user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day) || user_got_intervention_in_exercise
 
-    unless @embed_options[:disable_interventions]
-      @show_rfc_interventions = (not user_solved_exercise and not user_got_enough_interventions).to_s
+    if @embed_options[:disable_interventions]
+      @show_rfc_interventions = false
       @show_break_interventions = false
     else
-      @show_rfc_interventions = false
+      @show_rfc_interventions = (!user_solved_exercise && !user_got_enough_interventions).to_s
       @show_break_interventions = false
     end
 
     @hide_rfc_button = @embed_options[:disable_rfc]
-
 
     @search = Search.new
     @search.exercise = @exercise
@@ -256,32 +257,32 @@ class ExercisesController < ApplicationController
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:name_with_extension)
     @paths = collect_paths(@files)
 
-    if current_user.respond_to? :external_id
-      @user_id = current_user.external_id
-    else
-      @user_id = current_user.id
-    end
+    @user_id = if current_user.respond_to? :external_id
+                 current_user.external_id
+               else
+                 current_user.id
+               end
   end
 
   def set_course_token
     lti_parameters = LtiParameter.where(external_users_id: current_user.id,
-                                          exercises_id: @exercise.id).last
+                                        exercises_id: @exercise.id).last
     if lti_parameters
-      lti_json = lti_parameters.lti_parameters["launch_presentation_return_url"]
+      lti_json = lti_parameters.lti_parameters['launch_presentation_return_url']
 
       @course_token =
-          unless lti_json.nil?
-            if match = lti_json.match(/^.*courses\/([a-z0-9\-]+)\/sections/)
-              match.captures.first
-            else
-              ""
-            end
+        if lti_json.nil?
+          ''
+        else
+          if match = lti_json.match(%r{^.*courses/([a-z0-9\-]+)/sections})
+            match.captures.first
           else
-            ""
+            ''
           end
+        end
     else
       # no consumer, therefore implementation with internal user
-      @course_token = "702cbd2a-c84c-4b37-923a-692d7d1532d0"
+      @course_token = '702cbd2a-c84c-4b37-923a-692d7d1532d0'
     end
   end
   private :set_course_token
@@ -294,14 +295,15 @@ class ExercisesController < ApplicationController
 
   def intervention
     intervention = Intervention.find_by_name(params[:intervention_type])
-    unless intervention.nil?
+    if intervention.nil?
+      render(json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"})
+    else
       uei = UserExerciseIntervention.new(
-          user: current_user, exercise: @exercise, intervention: intervention,
-          accumulated_worktime_s: @exercise.accumulated_working_time_for_only(current_user))
+        user: current_user, exercise: @exercise, intervention: intervention,
+        accumulated_worktime_s: @exercise.accumulated_working_time_for_only(current_user)
+      )
       uei.save
       render(json: {success: 'true'})
-    else
-      render(json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"})
     end
   end
 
@@ -310,9 +312,9 @@ class ExercisesController < ApplicationController
     search = Search.new(user: current_user, exercise: @exercise, search: search_text)
 
     begin search.save
-      render(json: {success: 'true'})
-    rescue
-      render(json: {success: 'false', error: "could not save search: #{$!}"})
+          render(json: {success: 'true'})
+    rescue StandardError
+      render(json: {success: 'false', error: "could not save search: #{$ERROR_INFO}"})
     end
   end
 
@@ -386,9 +388,9 @@ class ExercisesController < ApplicationController
     @search = policy_scope(Tag).ransack(params[:q])
     @tags = @search.result.order(:name)
     checked_exercise_tags = @exercise.exercise_tags
-    checked_tags = checked_exercise_tags.collect{|e| e.tag}.to_set
+    checked_tags = checked_exercise_tags.collect(&:tag).to_set
     unchecked_tags = Tag.all.to_set.subtract checked_tags
-    @exercise_tags = checked_exercise_tags + unchecked_tags.collect { |tag| ExerciseTag.new(exercise: @exercise, tag: tag)}
+    @exercise_tags = checked_exercise_tags + unchecked_tags.collect { |tag| ExerciseTag.new(exercise: @exercise, tag: tag) }
   end
   private :collect_set_and_unset_exercise_tags
 
@@ -401,27 +403,39 @@ class ExercisesController < ApplicationController
   end
 
   def statistics
-    if(@external_user)
+    if @external_user
       authorize(@external_user, :statistics?)
-      @submissions = Submission.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id).order("created_at")
-      interventions = UserExerciseIntervention.where("user_id = ?  AND exercise_id = ?", @external_user.id, @exercise.id)
-      @all_events = (@submissions + interventions).sort_by { |a| a.created_at }
-      @deltas = @all_events.map.with_index do |item, index|
-        delta = item.created_at - @all_events[index - 1].created_at if index > 0
-        if delta == nil or delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS then 0 else delta end
-      end
-      @working_times_until = []
-      @all_events.each_with_index do |_, index|
-        @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index > 0))
+      if policy(@exercise).detailed_statistics?
+        @submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
+        interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id, @exercise.id)
+        @all_events = (@submissions + interventions).sort_by(&:created_at)
+        @deltas = @all_events.map.with_index do |item, index|
+          delta = item.created_at - @all_events[index - 1].created_at if index > 0
+          delta.nil? || (delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS) ? 0 : delta
+        end
+        @working_times_until = []
+        @all_events.each_with_index do |_, index|
+          @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index > 0))
+        end
+      else
+        latest_submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).final.latest
+        relevant_submissions = latest_submissions.before_deadline.or(latest_submissions.within_grace_period).or(latest_submissions.after_late_deadline)
+        @submissions = relevant_submissions.sort_by(&:created_at)
+        @all_events = @submissions
       end
       render 'exercises/external_users/statistics'
     else
       user_statistics = {}
+      additional_filter = if policy(@exercise).detailed_statistics?
+                            ''
+                          else
+                            "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"
+                          end
       query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
-              FROM submissions WHERE exercise_id = #{@exercise.id} GROUP BY
+              FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter} GROUP BY
               user_id;"
       ApplicationRecord.connection.execute(query).each do |tuple|
-        user_statistics[tuple["user_id"].to_i] = tuple
+        user_statistics[tuple['user_id'].to_i] = tuple
       end
       render locals: {
         user_statistics: user_statistics
@@ -441,7 +455,7 @@ class ExercisesController < ApplicationController
   end
 
   def transmit_lti_score
-    ::NewRelic::Agent.add_custom_attributes({ submission: @submission.id, normalized_score: @submission.normalized_score })
+    ::NewRelic::Agent.add_custom_attributes({submission: @submission.id, normalized_score: @submission.normalized_score})
     response = send_score(@submission.exercise_id, @submission.normalized_score, @submission.user_id)
 
     if response[:status] == 'success'
@@ -458,17 +472,17 @@ class ExercisesController < ApplicationController
   def update
     collect_set_and_unset_exercise_tags
     myparam = exercise_params
-    checked_exercise_tags = @exercise_tags.select { | et | myparam[:tag_ids].include? et.tag.id.to_s }
-    removed_exercise_tags = @exercise_tags.reject { | et | myparam[:tag_ids].include? et.tag.id.to_s }
+    checked_exercise_tags = @exercise_tags.select { |et| myparam[:tag_ids].include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject { |et| myparam[:tag_ids].include? et.tag.id.to_s }
 
-    for et in checked_exercise_tags
+    checked_exercise_tags.each do |et|
       et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
       et.exercise = @exercise
     end
 
     myparam[:exercise_tags] = checked_exercise_tags
     myparam.delete :tag_ids
-    removed_exercise_tags.map {|et| et.destroy}
+    removed_exercise_tags.map(&:destroy)
     update_and_respond(object: @exercise, params: myparam)
   end
 
@@ -511,21 +525,21 @@ class ExercisesController < ApplicationController
 
           clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
           respond_to do |format|
-            format.html {redirect_to(rfc)}
-            format.json {render(json: {redirect: url_for(rfc)})}
+            format.html { redirect_to(rfc) }
+            format.json { render(json: {redirect: url_for(rfc)}) }
           end
           return
         end
       end
     else
       # redirect to feedback page if score is less than 100 percent
-       if @exercise.needs_more_feedback? && !@embed_options[:disable_redirect_to_feedback]
-         clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
-         redirect_to_user_feedback
-       else
-         redirect_to_lti_return_path
-       end
-       return
+      if @exercise.needs_more_feedback? && !@embed_options[:disable_redirect_to_feedback]
+        clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
+        redirect_to_user_feedback
+      else
+        redirect_to_lti_return_path
+      end
+      return
     end
     redirect_to_lti_return_path
   end
@@ -547,12 +561,11 @@ class ExercisesController < ApplicationController
   def study_group_dashboard
     authorize!
     @study_group_id = params[:study_group_id]
-    @request_for_comments = RequestForComment.
-            where(exercise: @exercise).includes(:submission).
-            where(submissions: {study_group_id: @study_group_id}).
-            order(created_at: :desc)
+    @request_for_comments = RequestForComment
+                            .where(exercise: @exercise).includes(:submission)
+                            .where(submissions: {study_group_id: @study_group_id})
+                            .order(created_at: :desc)
 
     @graph_data = @exercise.get_working_times_for_study_group(@study_group_id)
   end
-
 end

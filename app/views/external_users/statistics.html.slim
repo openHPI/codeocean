@@ -1,19 +1,30 @@
 h1 = t('.title')
 
-- exercises = Exercise.where(:id => @user.submissions.group(:exercise_id).select(:exercise_id).distinct)
+- submissions = Submission.where(user: @user).in_study_group_of(current_user)
+- exercises = Exercise.where(id: submissions.joins(:exercise).group(:exercise_id).select(:exercise_id).distinct)
+- if !policy(exercises.first).detailed_statistics?
+  - submissions = submissions.final
+- any_viewable_submission = submissions.first
 
-.table-responsive
-  table.table.table-striped.sortable
-    thead
-      tr
-        - ['.exercise', '.score', '.runs', '.worktime'].each do |title|
-          th.header = t(title)
-    tbody
-      - exercises.each do |exercise|
-        - if statistics[exercise.id]
-          - stats = statistics[exercise.id]
-          tr
-            td = link_to_if policy(exercise).show?, exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
-            td = stats["maximum_score"] or 0
-            td = stats["runs"] or 0
-            td = stats["working_time"] or 0
+- if any_viewable_submission && policy(any_viewable_submission).show_study_group?
+  .table-responsive
+    table.table.table-striped.sortable
+      thead
+        tr
+          th.header = t('.exercise')
+          th.header = t('.score')
+          th.header = t('.runs') if policy(exercises.first).detailed_statistics?
+          th.header = t('.worktime') if policy(exercises.first).detailed_statistics?
+      tbody
+        - exercises.each do |exercise|
+          // Grab any submission in context of study group (or all if admin). Then check for permission
+          - any_submission = submissions.where(exercise: exercise).first
+          - if any_submission && policy(any_submission).show_study_group? && statistics[exercise.id]
+            - stats = statistics[exercise.id]
+            tr
+              td = link_to exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
+              td = stats["maximum_score"] or 0
+              td = stats["runs"] or 0 if policy(exercises.first).detailed_statistics?
+              td = stats["working_time"] or 0 if policy(exercises.first).detailed_statistics?
+- else
+  = t('exercises.external_users.statistics.no_data_available')

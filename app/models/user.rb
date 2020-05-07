@@ -19,6 +19,8 @@ class User < ApplicationRecord
 
   scope :with_submissions, -> { where('id IN (SELECT user_id FROM submissions)') }
 
+  scope :in_study_group_of, ->(user) { joins(:study_group_memberships).where(study_group_memberships: {study_group_id: user.study_groups}) unless user.admin? }
+
   ROLES.each do |role|
     define_method("#{role}?") { try(:role) == role }
   end

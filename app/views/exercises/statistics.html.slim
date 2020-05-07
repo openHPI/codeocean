@@ -25,12 +25,13 @@ h1 = @exercise
   p = @exercise.average_working_time
 
 - Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
-  strong = label
-  -if symbol==:external_users
-    -working_time_array = []
+  - if symbol==:internal_users && current_user.admin?
+    strong = label
+  - if symbol==:external_users
+    - working_time_array = []
     - @exercise.send(symbol).distinct().each do |user|
-      -working_time = @exercise.average_working_time_for(user.id) or 0
-      -working_time_array.push working_time
+      - working_time = @exercise.average_working_time_for(user.id) or 0
+      - working_time_array.push working_time
     hr
     .d-none#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
     .working-time-graphs
@@ -38,19 +39,26 @@ h1 = @exercise
     hr
     div#chart_2
     hr
-  - if current_user.admin?
+  - submissions = Submission.where(user: @exercise.send(symbol).distinct, exercise: @exercise).in_study_group_of(current_user)
+  - if !policy(@exercise).detailed_statistics?
+    - submissions = submissions.final
+  - any_viewable_submission = submissions.first
+  - if any_viewable_submission
     .table-responsive
       table.table.table-striped.sortable
         thead
           tr
-            - ['.user', '.score', '.runs', '.worktime'].each do |title|
-              th.header = t(title)
+            th.header = t('.user')
+            th.header = t('.score')
+            th.header = t('.runs') if policy(@exercise).detailed_statistics?
+            th.header = t('.worktime') if policy(@exercise).detailed_statistics?
         tbody
-          - @exercise.send(symbol).distinct().each do |user|
+          - users = symbol.to_s.classify.constantize.where(id: submissions.joins(symbol).group(:user_id).select(:user_id).distinct)
+          - users.each do |user|
             - if user_statistics[user.id] then us = user_statistics[user.id] else us = {"maximum_score" => nil, "runs" => nil}
             - label = "#{user.displayname}"
             tr
               td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
               td = us['maximum_score'] or 0
-              td = us['runs']
-              td = @exercise.average_working_time_for(user.id) or 0
+              td = us['runs'] if policy(@exercise).detailed_statistics?
+              td = @exercise.average_working_time_for(user.id) or 0 if policy(@exercise).detailed_statistics?

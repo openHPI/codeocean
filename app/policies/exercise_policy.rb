@@ -11,6 +11,14 @@ class ExercisePolicy < AdminOrAuthorPolicy
     admin? || teacher_in_study_group?
   end
 
+  def submission_statistics?
+    admin? || teacher_in_study_group?
+  end
+
+  def detailed_statistics?
+    admin?
+  end
+
   [:clone?, :destroy?, :edit?, :update?, :export_external_check?, :export_external_confirm?].each do |action|
     define_method(action) { admin? || teacher_in_study_group? || author? }
   end

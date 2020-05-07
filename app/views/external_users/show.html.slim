@@ -1,7 +1,7 @@
 h1 = @user.displayname
 
 = row(label: 'external_user.name', value: @user.name)
-= row(label: 'external_user.email', value: @user.email)
+= row(label: 'external_user.email', value: @user.email) if current_user.admin?
 = row(label: 'external_user.external_id') do
   code
     = @user.external_id
@@ -10,10 +10,11 @@ h1 = @user.displayname
 
 h4.mt-4 = link_to(t('.exercise_statistics'), statistics_external_user_path(@user)) if policy(@user).statistics?
 
-h4.mt-4 = t('.tag_statistics')
-#loading
-  .spinner
-  = t('.loading_tag_statistics')
-#no-elements
-  = t('.empty_tag_statistics')
-#tag-grid
+- if current_user.admin?
+  h4.mt-4 = t('.tag_statistics')
+  #loading
+    .spinner
+    = t('.loading_tag_statistics')
+  #no-elements
+    = t('.empty_tag_statistics')
+  #tag-grid
