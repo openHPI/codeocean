@@ -42,14 +42,15 @@ h1 = @exercise
   - submissions = Submission.where(user: @exercise.send(symbol).distinct, exercise: @exercise).in_study_group_of(current_user)
   - if !policy(@exercise).detailed_statistics?
     - submissions = submissions.final
-  - any_viewable_submission = submissions.first
-  - if any_viewable_submission
+  - latest_submission = submissions.latest
+  - if latest_submission
     .table-responsive
       table.table.table-striped.sortable
         thead
           tr
             th.header = t('.user')
             th.header = t('.score')
+            th.header = t('.deadline')
             th.header = t('.runs') if policy(@exercise).detailed_statistics?
             th.header = t('.worktime') if policy(@exercise).detailed_statistics?
         tbody
@@ -60,5 +61,12 @@ h1 = @exercise
             tr
               td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
               td = us['maximum_score'] or 0
+              td.align-middle 
+                - if latest_submission.before_deadline?
+                  .unit-test-result.positive-result.before_deadline
+                - elsif latest_submission.within_grace_period?
+                  .unit-test-result.unknown-result.within_grace_period
+                - elsif latest_submission.after_late_deadline?
+                  .unit-test-result.negative-result.after_late_deadline
               td = us['runs'] if policy(@exercise).detailed_statistics?
               td = @exercise.average_working_time_for(user.id) or 0 if policy(@exercise).detailed_statistics?

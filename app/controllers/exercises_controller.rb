@@ -418,9 +418,11 @@ class ExercisesController < ApplicationController
           @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index > 0))
         end
       else
-        latest_submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).final.latest
-        relevant_submissions = latest_submissions.before_deadline.or(latest_submissions.within_grace_period).or(latest_submissions.after_late_deadline)
-        @submissions = relevant_submissions.sort_by(&:created_at)
+        final_submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).final
+        @submissions = []
+        @submissions.push final_submissions.before_deadline.latest
+        @submissions.push final_submissions.within_grace_period.latest
+        @submissions.push final_submissions.after_late_deadline.latest
         @all_events = @submissions
       end
       render 'exercises/external_users/statistics'

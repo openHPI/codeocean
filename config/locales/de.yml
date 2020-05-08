@@ -414,6 +414,7 @@ de:
       users: '%{count} verschiedene Nutzer'
       user: Nutzer
       score: Maximale Punktzahl
+      deadline: Abgabefrist
       runs: Versuche
       worktime: Arbeitszeit
       average_worktime: Durchschnittliche Arbeitszeit
@@ -434,7 +435,7 @@ de:
     external_users:
       statistics:
         no_data_available: Keine Daten verfügbar oder fehlende Berechtigungen.
-        time: Zeit
+        time: Zeit (UTC)
         cause: Grund
         score: Punktzahl
         tests: Unit Tests
@@ -453,6 +454,7 @@ de:
       title: Statistiken für Externe Benutzer
       exercise: Übung
       score: Maximale Punktzahl
+      deadline: Abgabefrist
       runs: Abgaben
       worktime: Arbeitszeit
     show:

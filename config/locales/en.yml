@@ -414,6 +414,7 @@ en:
       users: '%{count} distinct users'
       user: User
       score: Maximum Score
+      deadline: Deadline
       runs: Runs
       worktime: Working Time
       average_worktime: Average Working Time
@@ -434,7 +435,7 @@ en:
     external_users:
       statistics:
         no_data_available: No data available or insufficient permissions
-        time: Time
+        time: Time (UTC)
         cause: Cause
         score: Score
         tests: Unit Test Results
@@ -453,6 +454,7 @@ en:
       title: External User Statistics
       exercise: Exercise
       score: Maximum Score
+      deadline: Deadline
       runs: Submissions
       worktime: Working Time
     show:

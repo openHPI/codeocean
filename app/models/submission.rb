@@ -27,7 +27,7 @@ class Submission < ApplicationRecord
   scope :within_grace_period, -> { joins(:exercise).where('(submissions.updated_at > exercises.submission_deadline) AND (submissions.updated_at <= exercises.late_submission_deadline OR exercises.late_submission_deadline IS NULL)') }
   scope :after_late_deadline, -> { joins(:exercise).where('submissions.updated_at > exercises.late_submission_deadline') }
 
-  scope :latest, -> { order(updated_at: :desc).limit(1) }
+  scope :latest, -> { order(updated_at: :desc).first }
 
   scope :in_study_group_of, ->(user) { where(study_group_id: user.study_groups) unless user.admin? }
 

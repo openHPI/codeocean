@@ -43,7 +43,7 @@ h1 = "#{@exercise} (external user #{link_to_if(policy(@external_user).show?, @ex
             th.header = t('.time_difference') if policy(@exercise).detailed_statistics?
         tbody
           - @all_events.each_with_index do |this, index|
-            - highlight = (index > 0 and @deltas[index] == 0 and this.created_at.to_s != @all_events[index - 1].created_at.to_s)
+            - highlight = (index > 0 and @deltas.present? and @deltas[index] == 0 and this.created_at.to_s != @all_events[index - 1].created_at.to_s)
             - row_classes = ''
             - row_classes += ' highlight' if highlight
             - row_classes += ' before_deadline' if this.is_a?(Submission) && this.before_deadline?
