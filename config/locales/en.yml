@@ -311,6 +311,10 @@ en:
       start_over_active_file: Reset this file
       stop: Stop
       submit: Submit Code For Assessment
+      deadline: Deadline
+      submit_on_time: Submit Code for Assessment on Time
+      submit_within_grace_period: Submit Code for Assessment Within Grace Period
+      submit_after_late_deadline: Submit Code for Assessment After Deadline Passed
       test: Test
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
       exercise_deadline_passed: 'The score cannot be submitted.'
@@ -318,6 +322,10 @@ en:
         save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
         exercise_deadline_passed: 'Either the deadline has already passed or you did not directly access this page from the e-learning platform. (Did you use the Back button of your browser after submitting the score?)'
       request_for_comments_sent: "Request for comments sent."
+      hints:
+        submission_deadline: Any submission obtained after the deadline will be considered late.
+        late_submission_deadline: Any submission obtained after the deadline but before the late submission deadline will be considered as late and might only be scored with a penality. Any submission obtained after the late submission deadline might not be considered.
+        disclaimer: If unsure about a deadline, please contact a course instructor. The deadline shown here is only informational and information from the e-learning platform should always take precedence.
     editor_file_tree:
       file_root: Files
     import_codeharbor:
@@ -353,7 +361,7 @@ en:
       none: None
       hints:
         submission_deadline: A date and time in UTC to close the submission. Any submission obtained after the deadline will be considered late.
-        late_submission_deadline: A grace period for submissions in UTC. The late submission deadline should not be set or any timestamp before the original submission deadline. After the late submission deadline passed, any new submissions are prevented.
+        late_submission_deadline: A grace period for submissions in UTC. The late submission deadline should not be set or any timestamp before the original submission deadline. Any submission obtained after the deadline will be clearly marked.
     implement:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'

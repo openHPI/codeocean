@@ -311,6 +311,10 @@ de:
       start_over_active_file: Diese Datei zurücksetzen
       stop: Stoppen
       submit: Code zur Bewertung abgeben
+      deadline: Abgabefrist
+      submit_on_time: Code rechtzeitig zur Bewertung abgeben
+      submit_within_grace_period: Code innerhalb der Gnadenfrist zur Bewertung abgeben
+      submit_after_late_deadline: Code verspätet zur Bewertung abgeben
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
       exercise_deadline_passed: 'Das Ergebnis kann nicht übertragen werden.'
@@ -318,6 +322,10 @@ de:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
         exercise_deadline_passed: 'Entweder ist die Abgabefrist bereits abgelaufen oder Sie haben die Aufgabe nicht direkt über die E-Learning Plattform gestartet. (Möglicherweise haben Sie den Zurück Button Ihres Browsers benutzt nachdem Sie Ihre Aufgabe abgegeben haben?)'
       request_for_comments_sent: "Kommentaranfrage gesendet."
+      hints:
+        submission_deadline: Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet.
+        late_submission_deadline: Einreichungen nach der Abgabefrist und vor der verspäteten Abgabefrist werden als verspätet gekennzeichnet und möglicherweise nur mit Punktabzug gewertet. Abgaben nach der verspäteten Abgabefrist werden möglicherweise nicht berücksichtigt.
+        disclaimer: Bei Fragen zu der Abgabefrist wenden Sie sich bitte an einen Kursleiter. Die hier angezeigte Abgabefrist dient nur zur Information und Informationen aus der E-Learning Platform sollten immer Vorrang haben.
     editor_file_tree:
       file_root: Dateien
     import_codeharbor:
@@ -352,8 +360,8 @@ de:
       no_execution_environment_selected: Bitte eine Ausführungsumgebung auswählen, bevor die Aufgabe aktiviert wird.
       none: Keine
       hints:
-        submission_deadline: Ein Zeitpunkt in UTC, zu dem die Abgabe geschlossen wird. Einreichungen nach der Abgabefrist werden als verspätet gekennzeichnet.
-        late_submission_deadline: Eine Gnadenfrist für Abgaben in UTC. Die verlängerte Abgabefrist soll nicht vor der eigentlichen Abgabefrist liegen. Nachdem die Gnadenfrist verstichen ist, werden keine neuen Einreichungen mehr akzeptiert.
+        submission_deadline: Ein Zeitpunkt in UTC, zu dem die Abgabe geschlossen wird. Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet.
+        late_submission_deadline: Eine Gnadenfrist für Abgaben in UTC. Die verlängerte Abgabefrist soll nicht vor der eigentlichen Abgabefrist liegen. Abgaben nach der Abgabefrist werden deutlich gekennzeichnet.
     implement:
       alert:
         text: 'Ihr Browser unterstützt nicht alle Funktionalitäten, die %{application_name} benötigt. Bitte nutzen Sie einen modernen Browser, um %{application_name} zu besuchen.'

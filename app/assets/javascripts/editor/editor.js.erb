@@ -793,6 +793,7 @@ var CodeOceanEditor = {
         this.renderScore();
         this.showFirstFile();
         this.resizeAceEditors();
+        this.initializeDeadlines();
 
         window.addEventListener("beforeunload", this.unloadAutoSave.bind(this));
         window.addEventListener("page:before-change", this.unloadAutoSave.bind(this));

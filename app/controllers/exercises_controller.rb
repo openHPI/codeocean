@@ -420,9 +420,10 @@ class ExercisesController < ApplicationController
       else
         final_submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).final
         @submissions = []
-        @submissions.push final_submissions.before_deadline.latest
-        @submissions.push final_submissions.within_grace_period.latest
-        @submissions.push final_submissions.after_late_deadline.latest
+        %i[before_deadline within_grace_period after_late_deadline].each do |filter|
+          relevant_submission = final_submissions.send(filter).latest
+          @submissions.push relevant_submission if relevant_submission.present?
+        end
         @all_events = @submissions
       end
       render 'exercises/external_users/statistics'
