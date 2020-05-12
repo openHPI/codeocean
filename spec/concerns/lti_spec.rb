@@ -105,7 +105,8 @@ describe Lti do
 
     context 'with an invalid score' do
       it 'raises an exception' do
-        expect { controller.send(:send_score, submission.exercise_id, Lti::MAXIMUM_SCORE * 2, submission.user_id) }.to raise_error(Lti::Error)
+        allow(submission).to receive(:normalized_score).and_return Lti::MAXIMUM_SCORE * 2
+        expect { controller.send(:send_score, submission) }.to raise_error(Lti::Error)
       end
     end
 
@@ -118,7 +119,8 @@ describe Lti do
         context 'when grading is not supported' do
           it 'returns a corresponding status' do
             expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
-            expect(controller.send(:send_score, submission.exercise_id, score, submission.user_id)[:status]).to eq('unsupported')
+            allow(submission).to receive(:normalized_score).and_return score
+            expect(controller.send(:send_score, submission)[:status]).to eq('unsupported')
           end
         end
 
@@ -135,11 +137,13 @@ describe Lti do
           end
 
           it 'sends the score' do
-            controller.send(:send_score, submission.exercise_id, score, submission.user_id)
+            allow(submission).to receive(:normalized_score).and_return score
+            controller.send(:send_score, submission)
           end
 
           it 'returns code, message, and status' do
-            result = controller.send(:send_score, submission.exercise_id, score, submission.user_id)
+            allow(submission).to receive(:normalized_score).and_return score
+            result = controller.send(:send_score, submission)
             expect(result[:code]).to eq(response.response_code)
             expect(result[:message]).to eq(response.body)
             expect(result[:status]).to eq(response.code_major)
@@ -149,7 +153,8 @@ describe Lti do
 
       context 'without a tool consumer' do
         it 'returns a corresponding status' do
-          expect(controller.send(:send_score, submission.exercise_id, score, submission.user_id)[:status]).to eq('error')
+          allow(submission).to receive(:normalized_score).and_return score
+          expect(controller.send(:send_score, submission)[:status]).to eq('error')
         end
       end
     end

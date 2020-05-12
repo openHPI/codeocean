@@ -452,7 +452,8 @@ class DockerClient
     output = nil
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
       # TODO: check phusion doku again if we need -i -t options here
-      output = container.exec(['bash', '-c', command])
+      # https://stackoverflow.com/questions/363223/how-do-i-get-both-stdout-and-stderr-to-go-to-the-terminal-and-a-log-file
+      output = container.exec(['bash', '-c',  "#{command} 1> >(tee -a /tmp/stdout.log) 2> >(tee -a /tmp/stderr.log >&2); rm -f /tmp/std*.log"], tty: false)
     end
     Rails.logger.debug 'output from container.exec'
     Rails.logger.debug output
@@ -467,8 +468,10 @@ class DockerClient
     result
   rescue Timeout::Error
     Rails.logger.info('got timeout error for container ' + container.to_s)
+    stdout = container.exec(['cat', '/tmp/stdout.log'])[0].join.force_encoding('utf-8')
+    stderr = container.exec(['cat', '/tmp/stderr.log'])[0].join.force_encoding('utf-8')
     kill_container(container)
-    {status: :timeout}
+    {status: :timeout, stdout: stdout, stderr: stderr}
   end
 
   private :send_command

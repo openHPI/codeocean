@@ -459,9 +459,13 @@ class ExercisesController < ApplicationController
 
   def transmit_lti_score
     ::NewRelic::Agent.add_custom_attributes({submission: @submission.id, normalized_score: @submission.normalized_score})
-    response = send_score(@submission.exercise_id, @submission.normalized_score, @submission.user_id)
+    response = send_score(@submission)
 
     if response[:status] == 'success'
+      redirect_after_submit
+    elsif response[:status] == 'too late'
+      flash[:warning] = I18n.t('exercises.submit.too_late')
+      flash.keep(:warning)
       redirect_after_submit
     else
       respond_to do |format|

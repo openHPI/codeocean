@@ -39,7 +39,6 @@ CodeOceanEditorEvaluation = {
                 $('#submit').get(0).lastChild.nodeValue = I18n.t('exercises.editor.submit_within_grace_period');
             } else if (this.late_submission_deadline && now > this.late_submission_deadline || now > this.submission_deadline) {
                 // after_late_deadline
-                debugger;
                 $('#submit').removeClass("btn-success btn-warning btn-danger").addClass("btn-danger");
                 $('#submit').get(0).lastChild.nodeValue = I18n.t('exercises.editor.submit_after_late_deadline');
             }
