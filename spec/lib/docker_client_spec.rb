@@ -369,7 +369,10 @@ describe DockerClient, docker: true do
     end
 
     context 'when a timeout occurs' do
-      before(:each) { expect(container).to receive(:exec).and_raise(Timeout::Error) }
+      before(:each) do
+        expect(container).to receive(:exec).once.and_raise(Timeout::Error)
+        expect(container).to receive(:exec).twice.and_return([ [], [] ])
+      end
 
       it 'destroys the container asynchronously' do
         pending("Container is destroyed, but not as expected in this test. ToDo update this test.")
