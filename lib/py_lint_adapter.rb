@@ -11,11 +11,17 @@ class PyLintAdapter < TestingFrameworkAdapter
     count = captures.second
     passed = captures.first
     failed = count - passed
-    assertion_error_matches = output[:stdout].scan(ASSERTION_ERROR_REGEXP).map { |match|
-      test = match.first.strip
-      description = match.second.strip
-      "#{test}: #{description}"
-    }.flatten || []
+    begin
+      Timeout.timeout(2.seconds) do
+        assertion_error_matches = output[:stdout].scan(ASSERTION_ERROR_REGEXP).map { |match|
+          test = match.first.strip
+          description = match.second.strip
+          "#{test}: #{description}"
+        }.flatten || []
+      end
+    rescue Timeout::Error
+      assertion_error_matches = []
+    end
     {count: count, failed: failed, error_messages: assertion_error_matches}
   end
 end
