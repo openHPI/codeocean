@@ -9,6 +9,7 @@
 
 // JS
 import 'jquery';
+import 'jquery-ujs'
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'chosen-js/chosen.jquery';
 import 'jstree';
