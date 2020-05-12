@@ -26,16 +26,17 @@ class ApplicationPolicy
   private :no_one
 
   def everyone_in_study_group
+    # !! Order is important !!
     if @record.respond_to? :study_group # e.g. submission
       study_group = @record.study_group
       return false if study_group.blank?
 
       users_in_same_study_group = study_group.users
-    elsif @record.respond_to? :users # e.g. study_group
-      users_in_same_study_group = @record.users
     elsif @record.respond_to? :user # e.g. exercise
       study_groups = @record.user.study_groups
       users_in_same_study_group = study_groups.collect(&:users).flatten
+    elsif @record.respond_to? :users # e.g. study_group
+      users_in_same_study_group = @record.users
     elsif @record.respond_to? :study_groups # e.g. user
       study_groups = @record.study_groups
       users_in_same_study_group = study_groups.collect(&:users).flatten
