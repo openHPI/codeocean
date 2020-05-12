@@ -452,7 +452,8 @@ class DockerClient
     output = nil
     Timeout.timeout(@execution_environment.permitted_execution_time.to_i - 29) do
       # TODO: check phusion doku again if we need -i -t options here
-      output = container.exec(['bash', '-c',  "#{command} > /proc/1/fd/1 2> /proc/1/fd/2"], tty: false)
+      # https://stackoverflow.com/questions/363223/how-do-i-get-both-stdout-and-stderr-to-go-to-the-terminal-and-a-log-file
+      output = container.exec(['bash', '-c',  "#{command} 1> >(tee /proc/1/fd/1) 2> >(tee /proc/1/fd/2 >&2)"], tty: false)
     end
     Rails.logger.debug 'output from container.exec'
     Rails.logger.debug output
