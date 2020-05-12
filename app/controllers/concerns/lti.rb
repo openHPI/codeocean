@@ -16,8 +16,8 @@ module Lti
 
   private :build_tool_provider
 
-  # @submission.exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
-  # @submission.exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
+  # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
+  # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
   # Only the lti_parameters are deleted.
   def clear_lti_session_data(exercise_id = nil, user_id = nil, consumer_id = nil)
     if (exercise_id.nil?)
