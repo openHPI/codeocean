@@ -24,12 +24,14 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
             span.date = feedback.created_at
         .card-collapse role="tabpanel"
           .card-body.feedback
-            .text = feedback.feedback_text
+            .text = render_markdown(feedback.feedback_text)
             .difficulty = "#{t('user_exercise_feedback.difficulty')} #{comment_presets[feedback.difficulty].join(' - ')}" if feedback.difficulty
             .worktime = "#{t('user_exercise_feedback.working_time')} #{time_presets[feedback.user_estimated_worktime].join(' - ')}" if feedback.user_estimated_worktime
-        .card-footer
-          span.points = "#{t('exercises.statistics.score')}: #{@submissions[index].score}"
-          span.working_time.pull-right = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user.id) or 0}"
+        - if policy(@exercise).detailed_statistics?
+          .card-footer
+            div.clearfix.feedback-header
+              span.points.flex-grow-1 = "#{t('exercises.statistics.score')}: #{@submissions[index].score}"
+              span.working_time.pull-right = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user.id) or 0}"
 
   = render('shared/pagination', collection: @feedbacks)
 
