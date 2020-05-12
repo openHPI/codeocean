@@ -431,6 +431,7 @@ de:
       finishing_rate: Abschlussrate
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+      too_late: Ihre Abgabe wurde erfolgreich gespeichert, ging jedoch nach der Abgabefrist ein.
       full_score_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über ihre Hilfe und Kommentare freuen.
       full_score_redirect_to_own_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ihre Frage ist damit wahrscheinlich gelöst? Falls ja, fügen Sie doch den entscheidenden Kniff als Antwort hinzu und markieren die Frage als gelöst, bevor sie das Fenster schließen.
     study_group_dashboard:

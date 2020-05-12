@@ -450,9 +450,9 @@ class DockerClient
   def send_command(command, container)
     result = {status: :failed, stdout: '', stderr: ''}
     output = nil
-    Timeout.timeout(@execution_environment.permitted_execution_time.to_i) do
+    Timeout.timeout(@execution_environment.permitted_execution_time.to_i - 29) do
       # TODO: check phusion doku again if we need -i -t options here
-      output = container.exec(['bash', '-c', command])
+      output = container.exec(['bash', '-c',  "#{command} > /proc/1/fd/1 2> /proc/1/fd/2"], tty: false)
     end
     Rails.logger.debug 'output from container.exec'
     Rails.logger.debug output
@@ -467,8 +467,10 @@ class DockerClient
     result
   rescue Timeout::Error
     Rails.logger.info('got timeout error for container ' + container.to_s)
+    stdout = container.logs(stdout: true).force_encoding('utf-8').gsub(/.*\/workspace\$\ /, '')
+    stderr = container.logs(stderr: true).force_encoding('utf-8').gsub(/.*\/workspace\$\ /, '')
     kill_container(container)
-    {status: :timeout}
+    {status: :timeout, stdout: stdout, stderr: stderr}
   end
 
   private :send_command
