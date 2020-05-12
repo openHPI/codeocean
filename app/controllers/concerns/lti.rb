@@ -16,8 +16,8 @@ module Lti
 
   private :build_tool_provider
 
-  # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
-  # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
+  # @submission.exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
+  # @submission.exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
   # Only the lti_parameters are deleted.
   def clear_lti_session_data(exercise_id = nil, user_id = nil, consumer_id = nil)
     if (exercise_id.nil?)
@@ -138,14 +138,14 @@ module Lti
 
   private :return_to_consumer
 
-  def send_score(exercise_id, score, user_id)
-    ::NewRelic::Agent.add_custom_attributes({score: score, session: session})
-    fail(Error, "Score #{score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(score)
+  def send_score(submission)
+    ::NewRelic::Agent.add_custom_attributes({score: submission.normalized_score, session: session})
+    fail(Error, "Score #{submission.normalized_score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(submission.normalized_score)
 
     if session[:consumer_id]
       lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
-                                         external_users_id: user_id,
-                                         exercises_id: exercise_id).last
+                                         external_users_id: submission.user_id,
+                                         exercises_id: submission.exercise_id).last
 
       consumer = Consumer.find_by(id: session[:consumer_id])
       provider = build_tool_provider(consumer: consumer, parameters: lti_parameter.lti_parameters)
@@ -153,15 +153,17 @@ module Lti
 
     if provider.nil?
       {status: 'error'}
+    elsif submission.after_late_deadline?
+      {status: 'too late'}
     elsif provider.outcome_service?
       Raven.extra_context({
                             provider: provider.inspect,
-                            score: score,
+                            score: submission.normalized_score,
                             lti_parameter: lti_parameter.inspect,
                             session: session.to_hash,
-                            exercise_id: exercise_id
+                            exercise_id: submission.exercise_id
                           })
-      response = provider.post_replace_result!(score)
+      response = provider.post_replace_result!(submission.normalized_score)
       {code: response.response_code, message: response.post_response.body, status: response.code_major}
     else
       {status: 'unsupported'}
