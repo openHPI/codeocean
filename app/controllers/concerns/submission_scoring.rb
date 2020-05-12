@@ -57,7 +57,7 @@ module SubmissionScoring
           score += output[:score] * output[:weight]
         end
 
-        if output[:status] == :timeout
+        if output.present? && output[:status] == :timeout
           output[:stderr] += "\n\n#{t('exercises.editor.timeout', permitted_execution_time: submission.exercise.execution_environment.permitted_execution_time.to_s)}"
         end
       end
