@@ -15,8 +15,8 @@ class PyUnitAdapter < TestingFrameworkAdapter
     error_matches = ERRORS_REGEXP.match(output[:stderr])
     errors = error_matches ? error_matches.captures.try(:first).to_i : 0
     begin
-      Timeout.timeout(2.seconds) do
-        assertion_error_matches = output[:stderr].scan(ASSERTION_ERROR_REGEXP).map { |match|
+      assertion_error_matches = Timeout.timeout(2.seconds) do
+        output[:stderr].scan(ASSERTION_ERROR_REGEXP).map { |match|
           testname = match[1]
           error = match[3].strip
 
