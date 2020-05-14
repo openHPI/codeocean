@@ -4,7 +4,7 @@
     "@rails/webpacker": "^5.1.1",
     "@sentry/browser": "^5.15.5",
     "bootstrap": "^4.4.1",
-    "bootswatch": "^4.4.1",
+    "bootswatch": "^4.5.0",
     "chosen-js": "^1.8.7",
     "d3": "^5.16.0",
     "d3-tip": "^0.9.1",
