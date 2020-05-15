@@ -3,8 +3,6 @@
 /config/database.yml
 /config/mnemosyne.yml
 /config/secrets.yml
-/config/sendmail.yml
-/config/smtp.yml
 /config/docker.yml*.erb
 /config/*.production.yml
 /config/*.staging.yml

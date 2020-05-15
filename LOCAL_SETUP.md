@@ -138,7 +138,7 @@ admin@example.org:admin
   ```
 - Get a local copy of the config files:
   ```shell script
-  for f in action_mailer.yml database.yml secrets.yml sendmail.yml smtp.yml code_ocean.yml docker.yml.erb mnemosyne.yml
+  for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml
   do
     if [ ! -f config/$f ]
     then
