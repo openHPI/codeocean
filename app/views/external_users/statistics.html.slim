@@ -4,9 +4,8 @@ h1 = t('.title')
 - exercises = Exercise.where(id: submissions.joins(:exercise).group(:exercise_id).select(:exercise_id).distinct)
 - if !policy(exercises.first).detailed_statistics?
   - submissions = submissions.final
-- latest_viewable_submission = submissions.latest
 
-- if latest_viewable_submission && policy(latest_viewable_submission).show_study_group?
+- if submissions.any?
   .table-responsive
     table.table.table-striped.sortable
       thead
@@ -26,12 +25,14 @@ h1 = t('.title')
               td = link_to exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
               td = stats["maximum_score"] or 0
               td.align-middle
-                - if latest_viewable_submission.before_deadline?
-                  .unit-test-result.positive-result.before_deadline
-                - elsif latest_viewable_submission.within_grace_period?
-                  .unit-test-result.unknown-result.within_grace_period
-                - elsif latest_viewable_submission.after_late_deadline?
-                  .unit-test-result.negative-result.after_late_deadline
+                - latest_viewable_submission = submissions.where(exercise: exercise).final.latest
+                - if latest_viewable_submission.present?
+                  - if latest_viewable_submission.before_deadline?
+                    .unit-test-result.positive-result.before_deadline
+                  - elsif latest_viewable_submission.within_grace_period?
+                    .unit-test-result.unknown-result.within_grace_period
+                  - elsif latest_viewable_submission.after_late_deadline?
+                    .unit-test-result.negative-result.after_late_deadline
               td = stats["runs"] or 0 if policy(exercises.first).detailed_statistics?
               td = stats["working_time"] or 0 if policy(exercises.first).detailed_statistics?
 - else
