@@ -311,7 +311,7 @@ de:
       start_over_active_file: Diese Datei zurücksetzen
       stop: Stoppen
       submit: Code zur Bewertung abgeben
-      deadline: Abgabefrist
+      deadline: Deadline
       submit_on_time: Code rechtzeitig zur Bewertung abgeben
       submit_within_grace_period: Code innerhalb der Gnadenfrist zur Bewertung abgeben
       submit_after_late_deadline: Code verspätet zur Bewertung abgeben
@@ -324,8 +324,8 @@ de:
       request_for_comments_sent: "Kommentaranfrage gesendet."
       hints:
         submission_deadline: Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet.
-        late_submission_deadline: Einreichungen nach der Abgabefrist und vor der verspäteten Abgabefrist werden als verspätet gekennzeichnet und möglicherweise nur mit Punktabzug gewertet. Abgaben nach der verspäteten Abgabefrist werden möglicherweise nicht berücksichtigt.
-        disclaimer: Bei Fragen zu der Abgabefrist wenden Sie sich bitte an einen Kursleiter. Die hier angezeigte Abgabefrist dient nur zur Information und Informationen aus der E-Learning Platform sollten immer Vorrang haben.
+        late_submission_deadline: Abgaben nach der Abgabefrist und vor der verspäteten Abgabefrist werden als verspätet gekennzeichnet und möglicherweise nur mit Punktabzug gewertet. Abgaben nach der verspäteten Abgabefrist werden möglicherweise nicht berücksichtigt.
+        disclaimer: Bei Fragen zu Deadlines wenden Sie sich bitte an das Teaching Team. Die hier angezeigte Abgabefrist dient nur zur Information und Angaben auf der jeweiligen Kursseite in der E-Learning Platform sollen immer Vorrang haben.
     editor_file_tree:
       file_root: Dateien
     import_codeharbor:
