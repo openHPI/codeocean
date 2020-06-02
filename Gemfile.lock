@@ -366,7 +366,7 @@ GEM
       oauth (~> 0.4, >= 0.4.4)
       oauth2 (~> 1.0, >= 0.8.0)
     spring (2.1.0)
-    sprockets (4.0.0)
+    sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.1)
@@ -404,9 +404,9 @@ GEM
       railties (>= 5.2)
       semantic_range (>= 2.3.0)
     websocket (1.2.8)
-    websocket-driver (0.7.1)
+    websocket-driver (0.7.2)
       websocket-extensions (>= 0.1.0)
-    websocket-extensions (0.1.4)
+    websocket-extensions (0.1.5)
     whenever (1.0.0)
       chronic (>= 0.6.3)
     will_paginate (3.3.0)
@@ -434,7 +434,7 @@ DEPENDENCIES
   eventmachine (= 1.0.9.1)
   factory_bot_rails
   faraday
-  faye-websocket
+  faye-websocket (>= 0.10.9)
   forgery
   headless
   highline
@@ -485,4 +485,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   2.1.4
+   1.17.3
