@@ -5,7 +5,7 @@ github.com/rails/webpacker/blob/master/docs/webpack.md
 */
 
 const { environment } = require('@rails/webpacker');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 const webpack = require('webpack');
 
 // Add an additional plugin of your choosing : ProvidePlugin
