@@ -145,6 +145,10 @@
     display: flex;
     flex-direction: column;
 
+    pre {
+      overflow: initial;
+    }
+
     #otherComments {
       flex-grow: 1;
       display: flex;
