@@ -7,7 +7,7 @@ CodeOcean
 
 ## Introduction
 
-CodeOcean is a educational, web-based execution and development environment for practical programming exercises designed for the use in Massive Open Online Courses (MOOCs). 
+CodeOcean is an educational, web-based execution and development environment for practical programming exercises designed for the use in Massive Open Online Courses (MOOCs). 
 
 The programming courses offered on openHPI include practical programming exercises that are provided on a web-based code execution platform called CodeOcean. The platform has many advantages for learners and teachers alike:
 
