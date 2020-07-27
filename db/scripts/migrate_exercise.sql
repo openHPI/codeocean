@@ -86,3 +86,11 @@ BEGIN
 
 END;
 $$;
+
+/* Execute migration
+do $$
+begin
+	perform migrate_exercise(target_exercise := 237, duplicated_exercise := 695);
+end
+$$;
+*/
