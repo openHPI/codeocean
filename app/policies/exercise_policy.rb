@@ -4,7 +4,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
   end
 
   [:show?, :feedback?, :requests_for_comments?, :statistics?].each do |action|
-    define_method(action) { admin? || teacher? }
+    define_method(action) { admin? || teacher_in_study_group? || teacher? && @record.public? || author? }
   end
 
   def study_group_dashboard?

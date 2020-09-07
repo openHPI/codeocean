@@ -79,6 +79,8 @@ h1 = "#{@exercise} (external user #{link_to_if(policy(@external_user).show?, @ex
             = t('.within_grace_period')
           .col-sm-3.after_late_deadline.py-2
             = t('.after_late_deadline')
+      - unless current_user.try(:admin?)
+        p.mt-2 = t('.filter')
     - if current_user.try(:admin?)
       p = t('.addendum', delta: StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS / 60)
       .d-none#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until);

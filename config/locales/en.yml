@@ -455,6 +455,7 @@ en:
         within_grace_period: Within Grace Period
         after_late_deadline: Too Late
         addendum: "* Deltas longer than %{delta} minutes are ignored."
+        filter: "Remember: Only the last submission per deadline is shown."
   proxy_exercises:
       index:
         clone: Duplicate

@@ -21,8 +21,9 @@ h1 = @exercise
   p == @exercise.average_score ? t('shared.out_of', maximum_value: @exercise.maximum_score, value: @exercise.average_score.round(2)) : empty
   p = progress_bar(@exercise.average_percentage)
 
-= row(label: '.average_worktime') do
-  p = @exercise.average_working_time
+- if policy(@exercise).detailed_statistics?
+  = row(label: '.average_worktime') do
+    p = @exercise.average_working_time
 
 - Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
   - if symbol==:internal_users && current_user.admin?
