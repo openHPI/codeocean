@@ -18,7 +18,8 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
       li.card.mt-2
         .card-header role="tab" id="heading"
           div.clearfix.feedback-header
-            span.username = link_to(feedback.user.displayname, statistics_external_user_exercise_path(id: @exercise.id, external_user_id: feedback.user.id))
+            - if policy(@exercise).detailed_statistics?
+              span.username = link_to_if(policy(feedback.user).show?, feedback.user.displayname, statistics_external_user_exercise_path(id: @exercise.id, external_user_id: feedback.user.id))
             - if feedback.anomaly_notification
               i class="fa fa-envelope-o" data-placement="top" data-toggle="tooltip" data-container="body" title=feedback.anomaly_notification.reason
             span.date = feedback.created_at

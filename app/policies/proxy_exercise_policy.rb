@@ -4,7 +4,7 @@ class ProxyExercisePolicy < AdminOrAuthorPolicy
   end
 
   def show?
-    admin? || teacher?
+    admin? || teacher_in_study_group? || teacher? && @record.public? || author?
   end
 
   [:clone?, :destroy?, :edit?, :update?].each do |action|

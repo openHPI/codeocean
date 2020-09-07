@@ -455,6 +455,7 @@ de:
         within_grace_period: Abgabe innerhalb der Gnadenfrist
         after_late_deadline: Verspätete Abgabe
         addendum: '* Differenzen von mehr als %{delta} Minuten werden ignoriert.'
+        filter: "Hinweis: Nur die letzte Abgabe vor einer Abgabefrist ist sichtbar."
   proxy_exercises:
       index:
         clone: Duplizieren

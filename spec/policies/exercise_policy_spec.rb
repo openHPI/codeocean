@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ExercisePolicy do
   subject { described_class }
 
-let(:exercise) { FactoryBot.build(:dummy) }
+let(:exercise) { FactoryBot.build(:dummy, public: true) }
 
   permissions :batch_update? do
     it 'grants access to admins only' do
