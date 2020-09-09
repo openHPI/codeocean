@@ -60,17 +60,24 @@ module Lti
 
   def external_user_role(provider)
     result = 'learner'
-    provider.roles.each do |role|
-      case role.downcase
-      when 'administrator'
-        # We don't want anyone to get admin privileges through LTI
-        result = 'teacher' if result == 'learner'
-      when 'instructor'
-        result = 'teacher' if result == 'learner'
-      else # 'learner'
-        next
+    unless provider.roles.blank?
+      provider.roles.each do |role|
+        case role.downcase
+        when 'administrator'
+          # We don't want anyone to get admin privileges through LTI
+          result = 'teacher' if result == 'learner'
+        when 'instructor'
+          result = 'teacher' if result == 'learner'
+        else # 'learner'
+          next
+        end
       end
-    end unless provider.roles.blank?
+    end
+
+    if mooc_course && provider.context_id == '5414d426-32db-4491-8ed9-22ec528a9456'
+      # Hack for mooc.house course informatiktag2020, ToDo: remove after 2020-09-22
+      result = 'teacher'
+    end
     result
   end
 
