@@ -73,11 +73,6 @@ module Lti
         end
       end
     end
-
-    if mooc_course && provider.context_id == '5414d426-32db-4491-8ed9-22ec528a9456'
-      # Hack for mooc.house course informatiktag2020, ToDo: remove after 2020-09-22
-      result = 'teacher'
-    end
     result
   end
 
