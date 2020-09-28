@@ -1,9 +1,12 @@
+# frozen_string_literal: true
 require 'rails_helper'
 require 'seeds_helper'
 
-describe DockerClient, docker: true do
-  WORKSPACE_PATH = '/tmp/code_ocean_test'
+# rubocop:disable RSpec/MultipleMemoizedHelpers
 
+WORKSPACE_PATH = Rails.root.join('tmp', 'files', Rails.env, 'code_ocean_test')
+
+describe DockerClient, docker: true do
   let(:command) { 'whoami' }
   let(:docker_client) { described_class.new(execution_environment: FactoryBot.build(:java), user: FactoryBot.build(:admin)) }
   let(:execution_environment) { FactoryBot.build(:java) }
@@ -11,12 +14,12 @@ describe DockerClient, docker: true do
   let(:submission) { FactoryBot.create(:submission) }
   let(:workspace_path) { WORKSPACE_PATH }
 
-  before(:all) do
-    FileUtils.mkdir_p(WORKSPACE_PATH)
-  end
-
-  after(:all) do
-    FileUtils.rm_rf(WORKSPACE_PATH)
+  before do
+    allow(described_class).to receive(:container_creation_options).and_wrap_original do |original_method, *args, &block|
+      result = original_method.call(*args, &block)
+      result['NanoCPUs'] = 2 * 1_000_000_000 # CPU quota in units of 10^-9 CPUs.
+      result
+    end
   end
 
   describe '.check_availability!' do
@@ -36,7 +39,7 @@ describe DockerClient, docker: true do
   end
 
   describe '.container_creation_options' do
-    let(:container_creation_options) { described_class.container_creation_options(execution_environment) }
+    let(:container_creation_options) { described_class.container_creation_options(execution_environment, workspace_path) }
 
     it 'specifies the Docker image' do
       expect(container_creation_options).to include('Image' => described_class.find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first)
@@ -53,17 +56,13 @@ describe DockerClient, docker: true do
     it 'specifies to open the standard input stream once' do
       expect(container_creation_options).to include('OpenStdin' => true, 'StdinOnce' => true)
     end
-  end
-
-  describe '.container_start_options' do
-    let(:container_start_options) { described_class.container_start_options(execution_environment, '') }
 
     it 'specifies mapped directories' do
-      expect(container_start_options).to include('Binds' => kind_of(Array))
+      expect(container_creation_options).to include('Binds' => kind_of(Array))
     end
 
     it 'specifies mapped ports' do
-      expect(container_start_options).to include('PortBindings' => kind_of(Hash))
+      expect(container_creation_options).to include('PortBindings' => kind_of(Hash))
     end
   end
 
@@ -82,14 +81,21 @@ describe DockerClient, docker: true do
     end
 
     it 'creates a container' do
-      expect(described_class).to receive(:container_creation_options).with(execution_environment).and_call_original
+      local_workspace_path = File.join(workspace_path, 'example').to_s
+      FileUtils.mkdir_p(workspace_path)
+      allow(described_class).to receive(:generate_local_workspace_path).and_return(local_workspace_path)
+      expect(described_class).to receive(:container_creation_options).with(execution_environment, local_workspace_path)
+                                     .and_wrap_original do |original_method, *args, &block|
+        result = original_method.call(*args, &block)
+        result['NanoCPUs'] = 2 * 1_000_000_000 # CPU quota in units of 10^-9 CPUs.
+        result
+      end
       expect(Docker::Container).to receive(:create).with(kind_of(Hash)).and_call_original
       create_container
     end
 
     it 'starts the container' do
-      expect(described_class).to receive(:container_start_options).with(execution_environment, kind_of(String)).and_call_original
-      expect_any_instance_of(Docker::Container).to receive(:start).with(kind_of(Hash)).and_call_original
+      expect_any_instance_of(Docker::Container).to receive(:start).and_call_original
       create_container
     end
 
@@ -162,6 +168,7 @@ describe DockerClient, docker: true do
 
     it 'creates a file' do
       expect(described_class).to receive(:local_workspace_path).at_least(:once).and_return(workspace_path)
+      FileUtils.mkdir_p(workspace_path)
       docker_client.send(:create_workspace_file, container: CONTAINER, file: file)
       expect(File.exist?(file_path)).to be true
       expect(File.new(file_path, 'r').read).to eq(file.content)
@@ -172,12 +179,8 @@ describe DockerClient, docker: true do
     let(:container) { described_class.create_container(execution_environment) }
     after(:each) { described_class.destroy_container(container) }
 
-    it 'stops the container' do
-      expect(container).to receive(:stop).and_return(container)
-    end
-
     it 'kills running processes' do
-      expect(container).to receive(:kill)
+      expect(container).to receive(:kill).and_return(container)
     end
 
     it 'releases allocated ports' do
@@ -213,7 +216,7 @@ describe DockerClient, docker: true do
       let(:error) { Excon::Errors::SocketError.new(SocketError.new) }
 
       context 'when retries are left' do
-        let(:result) { { status: "ok", stdout: 42 } }
+        let(:result) { {status: "ok", stdout: 42} }
 
         before(:each) do
           expect(docker_client).to receive(:send_command).and_raise(error).and_return(result)
@@ -279,7 +282,7 @@ describe DockerClient, docker: true do
 
   describe '.generate_local_workspace_path' do
     it 'includes the correct workspace root' do
-      expect(described_class.generate_local_workspace_path).to start_with(DockerClient::LOCAL_WORKSPACE_ROOT.to_s)
+      expect(described_class.generate_local_workspace_path.to_s).to start_with(DockerClient::LOCAL_WORKSPACE_ROOT.to_s)
     end
 
     it 'includes a UUID' do
@@ -321,7 +324,7 @@ describe DockerClient, docker: true do
   describe '.mapped_directories' do
     it 'returns a unique mapping' do
       mapping = described_class.mapped_directories(workspace_path).first
-      expect(mapping).to start_with(workspace_path)
+      expect(mapping).to start_with(workspace_path.to_s)
       expect(mapping).to end_with(DockerClient::CONTAINER_WORKSPACE_PATH)
     end
   end
@@ -371,7 +374,7 @@ describe DockerClient, docker: true do
     context 'when a timeout occurs' do
       before(:each) do
         expect(container).to receive(:exec).once.and_raise(Timeout::Error)
-        expect(container).to receive(:exec).twice.and_return([ [], [] ])
+        expect(container).to receive(:exec).twice.and_return([[], []])
       end
 
       it 'destroys the container asynchronously' do
@@ -401,3 +404,5 @@ describe DockerClient, docker: true do
     end
   end
 end
+
+# rubocop:enable RSpec/MultipleMemoizedHelpers

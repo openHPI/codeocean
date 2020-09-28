@@ -33,9 +33,9 @@ class DockerClient
     if local_workspace_path && Pathname.new(local_workspace_path).exist?
       Pathname.new(local_workspace_path).children.each do |p|
         p.rmtree
-      rescue Errno::ENOENT, Errno::EACCES => e
-        Raven.capture_exception(e)
-        Rails.logger.error("clean_container_workspace: Got #{e.class}: #{e}")
+      rescue Errno::ENOENT, Errno::EACCES => error
+        Raven.capture_exception(error)
+        Rails.logger.error("clean_container_workspace: Got #{error.class.to_s}: #{error.to_s}")
       end
       # FileUtils.rmdir(Pathname.new(local_workspace_path))
     end
@@ -55,12 +55,10 @@ class DockerClient
     @config ||= CodeOcean::Config.new(:docker).read(erb: true)
   end
 
-  def self.container_creation_options(execution_environment)
+  def self.container_creation_options(execution_environment, local_workspace_path)
     {
       'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
-      'Memory' => execution_environment.memory_limit.megabytes,
       'NetworkDisabled' => !execution_environment.network_enabled?,
-      # 'HostConfig' => { 'CpusetCpus' => '0', 'CpuQuota' => 10000 },
       # DockerClient.config['allowed_cpus']
       'OpenStdin' => true,
       'StdinOnce' => true,
@@ -68,14 +66,16 @@ class DockerClient
       'AttachStdout' => true,
       'AttachStdin' => true,
       'AttachStderr' => true,
-      'Tty' => true
-    }
-  end
-
-  def self.container_start_options(execution_environment, local_workspace_path)
-    {
+      'Tty' => true,
       'Binds' => mapped_directories(local_workspace_path),
-      'PortBindings' => mapped_ports(execution_environment)
+      'PortBindings' => mapped_ports(execution_environment),
+      # Resource limitations.
+      'NanoCPUs' => 4 * 1000000000, # CPU quota in units of 10^-9 CPUs.
+      'PidsLimit' => 100,
+      'KernelMemory' => execution_environment.memory_limit.megabytes, # if below Memory, the Docker host (!) might experience an OOM
+      'Memory' => execution_environment.memory_limit.megabytes,
+      'MemorySwap' => execution_environment.memory_limit.megabytes, # same value as Memory to disable Swap
+      'OomScoreAdj' => 500
     }
   end
 
@@ -111,31 +111,32 @@ class DockerClient
 
   def self.create_container(execution_environment)
     tries ||= 0
-    # Rails.logger.info "docker_client: self.create_container with creation options:"
-    # Rails.logger.info(container_creation_options(execution_environment))
-    container = Docker::Container.create(container_creation_options(execution_environment))
     # container.start sometimes creates the passed local_workspace_path on disk (depending on the setup).
     # this is however not guaranteed and caused issues on the server already. Therefore create the necessary folders manually!
     local_workspace_path = generate_local_workspace_path
     FileUtils.mkdir(local_workspace_path)
-    container.start(container_start_options(execution_environment, local_workspace_path))
+    FileUtils.chmod_R(0777, local_workspace_path)
+    container = Docker::Container.create(container_creation_options(execution_environment, local_workspace_path))
+    container.start
     container.start_time = Time.now
     container.status = :created
+    container.execution_environment = execution_environment
     container.re_use = true
+    container.docker_client = new(execution_environment: execution_environment)
 
     Thread.new do
       timeout = Random.rand(MINIMUM_CONTAINER_LIFETIME..MAXIMUM_CONTAINER_LIFETIME) # seconds
       sleep(timeout)
       container.re_use = false
       if container.status != :executing
-        new(execution_environment: execution_environment).kill_container(container, false)
-        Rails.logger.info('Killing container in status ' + container.status + ' after ' + (Time.now - container.start_time).to_s + ' seconds.')
+        container.docker_client.kill_container(container, false)
+        Rails.logger.info('Killing container in status ' + container.status.to_s + ' after ' + (Time.now - container.start_time).to_s + ' seconds.')
       else
         Thread.new do
           timeout = SELF_DESTROY_GRACE_PERIOD.to_i
           sleep(timeout)
-          new(execution_environment: execution_environment).kill_container(container, false)
-          Rails.logger.info('Force killing container in status ' + container.status + ' after ' + Time.now - container.start_time + ' seconds.')
+          container.docker_client.kill_container(container, false)
+          Rails.logger.info('Force killing container in status ' + container.status.to_s + ' after ' + (Time.now - container.start_time).to_s + ' seconds.')
         ensure
           # guarantee that the thread is releasing the DB connection after it is done
           ActiveRecord::Base.connection_pool.release_connection
@@ -147,8 +148,8 @@ class DockerClient
     end
 
     container
-  rescue Docker::Error::NotFoundError => e
-    Rails.logger.error('create_container: Got Docker::Error::NotFoundError: ' + e.to_s)
+  rescue Docker::Error::NotFoundError => error
+    Rails.logger.error('create_container: Got Docker::Error::NotFoundError: ' + error.to_s)
     destroy_container(container)
     # (tries += 1) <= RETRY_COUNT ? retry : raise(error)
   end
@@ -228,18 +229,26 @@ class DockerClient
 
     # Checks only if container assignment is not nil and not whether the container itself is still present.
     if container && !DockerContainerPool.config[:active]
-      clean_container_workspace(container)
-      container.stop.kill
+      container.kill
       container.port_bindings.values.each { |port| PortPool.release(port) }
-      container.delete(force: true, v: true)
+      begin
+        clean_container_workspace(container)
+        FileUtils.rmtree(local_workspace_path(container))
+      rescue Errno::ENOENT, Errno::EACCES => error
+        Raven.capture_exception(error)
+        Rails.logger.error("clean_container_workspace: Got #{error.class.to_s}: #{error.to_s}")
+      end
+
+      # Checks only if container assignment is not nil and not whether the container itself is still present.
+      container&.delete(force: true, v: true)
     elsif container
       DockerContainerPool.destroy_container(container)
     end
-  rescue Docker::Error::NotFoundError => e
-    Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + e.to_s)
+  rescue Docker::Error::NotFoundError => error
+    Rails.logger.error('destroy_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
     Rails.logger.error('No further actions are done concerning that.')
-  rescue Docker::Error::ConflictError => e
-    Rails.logger.error('destroy_container: Rescued from Docker::Error::ConflictError: ' + e.to_s)
+  rescue Docker::Error::ConflictError => error
+    Rails.logger.error('destroy_container: Rescued from Docker::Error::ConflictError: ' + error.to_s)
     Rails.logger.error('No further actions are done concerning that.')
   end
 
@@ -299,10 +308,12 @@ class DockerClient
     We need to start a second thread to kill the websocket connection,
     as it is impossible to determine whether further input is requested.
     """
+    container.status = :executing
     @thread = Thread.new do
-      timeout = @execution_environment.permitted_execution_time.to_i # seconds
+      timeout = (@execution_environment.permitted_execution_time.to_i)  # seconds
       sleep(timeout)
-      if container.status != :returned
+      container = ContainerPool.instance.translate(container.id)
+      if container && container.status != :available
         Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
         # send timeout to the tubesock socket
         # FIXME: 2nd thread to notify user.
@@ -322,6 +333,8 @@ class DockerClient
         ensure
           ActiveRecord::Base.connection_pool.release_connection
         end
+      else
+        Rails.logger.info('Container' + container.to_s + ' already removed.')
       end
     ensure
       # guarantee that the thread is releasing the DB connection after it is done
@@ -436,13 +449,13 @@ class DockerClient
     Rails.logger.debug('returning container ' + container.to_s)
     begin
       clean_container_workspace(container)
-    rescue Docker::Error::NotFoundError => e
+    rescue Docker::Error::NotFoundError => error
       # FIXME: Create new container?
-      Rails.logger.info('return_container: Rescued from Docker::Error::NotFoundError: ' + e.to_s)
+      Rails.logger.info('return_container: Rescued from Docker::Error::NotFoundError: ' + error.to_s)
       Rails.logger.info('Nothing is done here additionally. The container will be exchanged upon its next retrieval.')
     end
     DockerContainerPool.return_container(container, execution_environment)
-    container.status = :returned
+    container.status = :available
   end
 
   # private :return_container

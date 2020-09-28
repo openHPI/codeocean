@@ -52,4 +52,4 @@ staging:
 test:
   <<: *default
   host: tcp://127.0.0.1:2376
-  workspace_root: <%= File.join('/', 'shared', Rails.env) %>
+  workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
