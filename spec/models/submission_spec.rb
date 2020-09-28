@@ -126,6 +126,10 @@ describe Submission do
       let(:exercise) {FactoryBot.create(:dummy_with_user_feedbacks, user_feedbacks_count: 42)}
       let(:user) {FactoryBot.create(:external_user)}
 
+      before do
+        allow_any_instance_of(described_class).to receive(:redirect_to_feedback?).and_return(false)
+      end
+
       it 'sends nobody to feedback page' do
         30.times do |i|
           submission = FactoryBot.create(:submission, exercise: exercise, user: FactoryBot.create(:external_user))
