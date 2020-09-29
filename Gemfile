@@ -33,7 +33,7 @@ gem 'webpacker'
 gem 'rest-client'
 gem 'rubyzip'
 gem 'faraday'
-gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.4'
+gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.5'
 gem 'whenever', require: false
 gem 'rails-timeago'
 
