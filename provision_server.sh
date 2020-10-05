@@ -7,7 +7,7 @@
 postgres_version=12
 node_version=14
 ruby_version=2.7.0
-rails_version=5.2.4.3
+rails_version=5.2.4.4
 geckodriver_version=0.26.0
 
 ########## INSTALL SCRIPT ###########
@@ -40,21 +40,12 @@ curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo apt-key add -
 # Install packages
 apt-get -qq update
 apt-get -qq -y install postgresql-client postgresql-$postgres_version postgresql-server-dev-$postgres_version
-apt-get -qq -y install yarn nodejs nginx libpq-dev
+apt-get -qq -y install yarn nodejs nginx libpq-dev certbot
 
 # RVM
 gpg --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
 curl -sSL https://get.rvm.io | bash -s stable
 usermod -a -G rvm codeocean
-
-tee -a /etc/systemd/system/docker.service.d/override.conf <<EOF
-[Service]
-# Empty line is required
-ExecStart=
-ExecStart=/usr/bin/dockerd -H fd:// -H tcp://127.0.0.1:4243 --bip=10.151.0.1/16
-EOF
-systemctl daemon-reload
-service docker restart
 
 # Docker
 curl -sSL https://get.docker.com/ | sudo sh
@@ -65,6 +56,16 @@ tee -a /etc/docker/daemon.json <<EOF
         "userns-remap": "default"
 }
 EOF
+
+mkdir -p /etc/systemd/system/docker.service.d/
+tee -a /etc/systemd/system/docker.service.d/override.conf <<EOF
+[Service]
+# Empty line is required
+ExecStart=
+ExecStart=/usr/bin/dockerd -H fd:// -H tcp://127.0.0.1:4243 --bip=10.151.0.1/16
+EOF
+systemctl daemon-reload
+service docker restart
 
 
 tee -a /etc/sysctl.d/90-docker-keys-userns.conf <<EOF
@@ -231,14 +232,19 @@ tee -a  /usr/share/nginx/html/custom_50x.html <<EOF
 EOF
 
 
-mkdir /var/www
+
+systemctl enable codeocean.service
+systemctl enable dockercontainerpool.service
+
+mkdir -p /var/www/acme-challenges
 chown -R www-data:codeocean /var/www
 chmod -R 775 /var/www
 
 certbot certonly --webroot -w /var/www/acme-challenges/ --email email@example.org --rsa-key-size 4096 --agree-tos -d codeocean.openhpi.de
 systemctl daemon-reload
 
-# Deploy via Capistrano (both, CodeOcean and DockerContainerPool) and symlink Docker files:
+# Deploy via Capistrano (both, CodeOcean and DockerContainerPool) and symlink Docker files, depending on the environment:
 # ln -s /var/www/app/current/tmp/files/staging /var/www/dockercontainerpool/current/tmp/files/staging
+# ln -s /var/www/app/current/tmp/files/production /var/www/dockercontainerpool/current/tmp/files/production
 
 # Find more files in codeocean-deploy/config/backup
