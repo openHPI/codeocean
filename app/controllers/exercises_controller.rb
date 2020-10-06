@@ -14,7 +14,7 @@ class ExercisesController < ApplicationController
   before_action :set_file_types, only: %i[create edit new update]
   before_action :set_course_token, only: [:implement]
 
-  skip_before_action :verify_authenticity_token, only: %i[import_exercise import_uuid_check export_external_confirm]
+  skip_before_action :verify_authenticity_token, only: %i[import_exercise import_uuid_check export_external_confirm export_external_check]
   skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check export_external_confirm]
   skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check export_external_confirm], raise: false
 
