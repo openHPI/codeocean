@@ -50,7 +50,6 @@ module ProformaService
         task_file(file).tap do |ms_file|
           ms_file.used_by_grader = false
           ms_file.usage_by_lms = 'display'
-          ms_file.visible = 'delayed'
         end
       ]
     end
