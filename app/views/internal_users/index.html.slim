@@ -23,7 +23,7 @@ h1 = InternalUser.model_name.human(count: 2)
     tbody
       - @users.each do |user|
         tr
-          td = link_to_if(policy(user).show?, user.name)
+          td = link_to_if(policy(user).show?, user.name, user)
           td = user.consumer ? link_to_if(policy(user.consumer).show?, user.consumer, user.consumer) : empty
           td = t("users.roles.#{user.role}")
           td = link_to(t('shared.show'), user) if policy(user).show?
