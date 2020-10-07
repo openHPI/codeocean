@@ -4,6 +4,8 @@ default: &default
     answers_per_query: 3
   code_pilot:
     enabled: false
+  codeocean_events:
+    enabled: false
 
 development:
   flowr:

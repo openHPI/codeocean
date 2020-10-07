@@ -5,3 +5,5 @@ test:
     enabled: false
   codeharbor:
     url: http://test.url
+  codeocean_events:
+    enabled: false

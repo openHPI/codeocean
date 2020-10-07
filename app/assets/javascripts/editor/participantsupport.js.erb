@@ -21,7 +21,7 @@ CodeOceanEditorFlowr = {
   getInsights: function () {
     <% self.class.include Rails.application.routes.url_helpers %>
     var flowrUrl = '<%= insights_path %>';
-    var stackOverflowUrl = 'http://api.stackexchange.com/2.2/search/advanced';
+    var stackOverflowUrl = 'https://api.stackexchange.com/2.2/search/advanced';
 
     return jQuery.ajax({
       dataType: "json",
@@ -78,7 +78,7 @@ CodeOceanEditorFlowr = {
         category: eventType,
         data: data,
         exercise_id: $('#editor').data('exercise-id'),
-        file_id: null
+        file_id: CodeOceanEditor.active_file.id,
       });
     };
   },
