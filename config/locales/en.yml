@@ -121,6 +121,10 @@ en:
         name: Name
         usage: Used
         difficulty: Share on the Exercise
+      tip:
+        title: title
+        description: description
+        example: example
       file_template:
         name: "Name"
         file_type: "File Type"
@@ -215,6 +219,7 @@ en:
     errors:
       messages:
         together: 'has to be set along with %{attribute}'
+        at_least: 'or %{attribute} must be defined'
       models:
         exercise:
           at_most_one_main_file: must include at most one main file

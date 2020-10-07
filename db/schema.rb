@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_06_093054) do
+ActiveRecord::Schema.define(version: 2020_10_07_104221) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,6 +135,17 @@ ActiveRecord::Schema.define(version: 2020_05_06_093054) do
     t.integer "exercise_id"
     t.integer "tag_id"
     t.integer "factor", default: 1
+  end
+
+  create_table "exercise_tips", force: :cascade do |t|
+    t.bigint "exercise_id", null: false
+    t.bigint "tip_id", null: false
+    t.integer "rank", null: false
+    t.bigint "parent_exercise_tip_id"
+    t.index ["exercise_id", "tip_id", "rank"], name: "index_exercise_tips_on_exercise_id_and_tip_id_and_rank", unique: true
+    t.index ["exercise_id"], name: "index_exercise_tips_on_exercise_id"
+    t.index ["parent_exercise_tip_id"], name: "index_exercise_tips_on_parent_exercise_tip_id"
+    t.index ["tip_id"], name: "index_exercise_tips_on_tip_id"
   end
 
   create_table "exercises", id: :serial, force: :cascade do |t|
@@ -389,6 +400,19 @@ ActiveRecord::Schema.define(version: 2020_05_06_093054) do
     t.index ["submission_id"], name: "index_testruns_on_submission_id"
   end
 
+  create_table "tips", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.text "example"
+    t.bigint "file_type_id"
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["file_type_id"], name: "index_tips_on_file_type_id"
+    t.index ["user_type", "user_id"], name: "index_tips_on_user_type_and_user_id"
+  end
+
   create_table "user_exercise_feedbacks", id: :serial, force: :cascade do |t|
     t.integer "exercise_id", null: false
     t.integer "user_id", null: false
@@ -427,4 +451,5 @@ ActiveRecord::Schema.define(version: 2020_05_06_093054) do
 
   add_foreign_key "request_for_comments", "submissions", name: "request_for_comments_submissions_id_fk"
   add_foreign_key "submissions", "study_groups"
+  add_foreign_key "tips", "file_types"
 end

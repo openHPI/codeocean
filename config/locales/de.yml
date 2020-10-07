@@ -121,6 +121,10 @@ de:
         name: Name
         usage: Verwendet
         difficulty: Anteil an der Aufgabe
+      tip:
+        title: Titel
+        description: Beschreibung
+        example: Beispiel
       file_template:
         name: "Name"
         file_type: "Dateityp"
@@ -215,6 +219,7 @@ de:
     errors:
       messages:
         together: 'muss zusammen mit %{attribute} definiert werden'
+        at_least: 'oder %{attribute} muss definiert sein'
       models:
         exercise:
           at_most_one_main_file: dürfen höchstens eine Hauptdatei enthalten
