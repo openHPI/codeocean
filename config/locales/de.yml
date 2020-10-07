@@ -189,8 +189,8 @@ de:
         one: Dateityp
         other: Dateitypen
       hint:
-        one: Tipp
-        other: Tipps
+        one: Hinweis
+        other: Hinweise
       internal_user:
         one: Interner Nutzer
         other: Interne Nutzer
@@ -350,7 +350,7 @@ de:
         exercise_found_no_right: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
     file_form:
       hints:
-        feedback_message: Diese Nachricht wird als Tipp zu fehlschlagenden Tests angezeigt.
+        feedback_message: Diese Nachricht wird als Hinweis zu fehlschlagenden Tests angezeigt.
         path: 'Pfad der Datei im Projektverzeichnis. Kann auch leer gelassen werden.'
     form:
       add_file: Datei hinzufügen
@@ -370,7 +370,7 @@ de:
       error_messages: Fehlermeldungen
       feedback: Feedback
       file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
-      hint: Tipp
+      hint: Hinweis
       no_files: Die Aufgabe umfasst noch keine sichtbaren Dateien.
       no_output: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe.
       no_output_yet: Bisher existiert noch keine Ausgabe.
