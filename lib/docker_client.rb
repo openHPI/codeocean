@@ -312,7 +312,6 @@ class DockerClient
     @thread = Thread.new do
       timeout = (@execution_environment.permitted_execution_time.to_i)  # seconds
       sleep(timeout)
-      container = ContainerPool.instance.translate(container.id)
       if container && container.status != :available
         Rails.logger.info('Killing container after timeout of ' + timeout.to_s + ' seconds.')
         # send timeout to the tubesock socket
