@@ -251,18 +251,19 @@ class SubmissionsController < ApplicationController
         test_command = run_command
       end
       unless /root|workspace|#{run_command}|#{test_command}/.match(message)
-        parse_message(message, 'stdout', tubesock)
+        parse_message(message, 'stdout', tubesock, container)
       end
     end
   end
 
-  def parse_message(message, output_stream, socket, recursive = true)
+  def parse_message(message, output_stream, socket, container = nil, recursive = true)
     parsed = ''
     begin
       parsed = JSON.parse(message)
       if parsed.class == Hash and parsed.key?('cmd')
         socket.send_data message
         Rails.logger.info('parse_message sent: ' + message)
+        @docker_client.exit_container(container) if container && parsed['cmd'] == 'exit'
       else
         parsed = {'cmd'=>'write','stream'=>output_stream,'data'=>message}
         socket.send_data JSON.dump(parsed)
@@ -272,7 +273,7 @@ class SubmissionsController < ApplicationController
       # Check wether the message contains multiple lines, if true try to parse each line
       if recursive and message.include? "\n"
         for part in message.split("\n")
-          self.parse_message(part,output_stream,socket,false)
+          self.parse_message(part,output_stream,socket, container, false)
         end
       elsif message.include? '<img'
         #Rails.logger.info('img foung')
