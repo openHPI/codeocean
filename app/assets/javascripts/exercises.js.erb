@@ -30,7 +30,11 @@ $(document).on('turbolinks:load', function () {
         editor.setShowPrintMargin(false);
         editor.setTheme(THEME);
 
+        // For creating / editing an exercise
         var textarea = $('textarea[id="exercise_files_attributes_' + index + '_content"]');
+        if ($('.edit_tip, .new_tip').isPresent()) {
+            textarea = $('textarea[id="tip_example"]')
+        }
         var content = textarea.val();
 
         if (content != undefined) {
@@ -383,11 +387,11 @@ $(document).on('turbolinks:load', function () {
             observeExportButtons();
         }
         toggleCodeHeight();
-        if (window.hljs) {
-            highlightCode();
-        }
     }
 
+    if (window.hljs) {
+        highlightCode();
+    }
 
     if ($('#editor-edit').isPresent()) {
         configureEditors();

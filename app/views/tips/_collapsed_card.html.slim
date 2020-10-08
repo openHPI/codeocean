@@ -13,11 +13,11 @@
     .card-body.p-3
       h5
         = t('exercises.implement.tips.description')
-      = tip.description
+      = render_markdown(tip.description)
       - if tip.example?
-        h5.mt-2
+        h5
           = t('exercises.implement.tips.example')
         pre
-          code.mh-100 class="language-#{tip.file_type.editor_mode.gsub("ace/mode/", "")}"
+          code.mh-100 class="language-#{tip.file_type.programming_language}"
             = tip.example
       = render(partial: 'tips/collapsed_card', collection: exercise_tip.children, as: :exercise_tip)

@@ -1,0 +1,21 @@
+= form_for(@tip, builder: PagedownFormBuilder) do |f|
+  = render('shared/form_errors', object: @tip)
+  .form-group
+    = f.label(:title)
+    = f.text_field(:title, class: 'form-control', required: false)
+  .form-group
+    = f.label(:description)
+    = f.pagedown :description, input_html: { preview: true, rows: 5 }
+  .form-group
+    = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
+    = f.collection_select(:file_type_id, @file_types, :id, :name, {include_blank: true}, class: 'form-control')
+  .form-group
+    = f.label(:example)
+    = f.text_area(:example, class: 'code-field form-control', rows: 5, style: "display:none;", required: false)
+    #editor-edit.original-input data-file-id=@tip.id
+      #frames
+        .edit-frame
+          .editor-content.d-none
+          .editor.allow_ace_tooltip
+  .actions = render('shared/submit_button', f: f, object: @tip)
+  .editor

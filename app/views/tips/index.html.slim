@@ -1,0 +1,20 @@
+h1 = Tip.model_name.human(count: 2)
+
+.table-responsive
+  table.sortable.table
+    thead
+      tr
+        th = t('activerecord.attributes.tip.title')
+        th = t('activerecord.attributes.file.file_type')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @tips.each do |tip|
+        tr
+          td = link_to_if(policy(tip).show?, tip.title || tip.to_s, tip)
+          td = tip.file_type ? link_to_if(policy(tip.file_type).show?, tip.file_type.name, tip.file_type) : ''
+          td = link_to(t('shared.show'), tip) if policy(tip).show?
+          td = link_to(t('shared.edit'), edit_tip_path(tip)) if policy(tip).edit?
+          td = link_to(t('shared.destroy'), tip, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if tip.can_be_destroyed? &&  policy(tip).destroy?
+
+= render('shared/pagination', collection: @tips)
+p = render('shared/new_button', model: Tip, path: new_tip_path)

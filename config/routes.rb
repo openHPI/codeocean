@@ -107,6 +107,8 @@ Rails.application.routes.draw do
 
   resources :tags
 
+  resources :tips
+
   resources :user_exercise_feedbacks, except: [:show, :index]
 
   resources :external_users, only: [:index, :show], concerns: :statistics do

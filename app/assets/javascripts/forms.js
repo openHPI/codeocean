@@ -31,12 +31,16 @@ $(document).on('turbolinks:load', function() {
   });
 
   // enable chosen hook when editing an exercise to update ace code highlighting
-  if ($.isController('exercises') && $('.edit_exercise, .new_exercise').isPresent()) {
+  if ($.isController('exercises') && $('.edit_exercise, .new_exercise').isPresent() ||
+      $.isController('tips') && $('.edit_tip, .new_tip').isPresent()  ) {
       chosen_inputs.filter(function(){
           return $(this).attr('id').includes('file_type_id');
       }).on('change chosen:ready', function(event, parameter) {
           // Set ACE editor mode (for code highlighting) on change of file type and after initialization
           editorInstance = $(event.target).closest('.card-body').find('.editor')[0];
+          if (editorInstance === undefined) {
+              editorInstance = $(event.target).closest('.container').find('.editor')[0];
+          }
           selectedFileType = event.target.value;
           CodeOceanEditor.updateEditorModeToFileTypeID(editorInstance, selectedFileType);
       })

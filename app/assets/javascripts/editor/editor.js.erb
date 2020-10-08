@@ -315,6 +315,9 @@ var CodeOceanEditor = {
         }).fail(_.noop)
             .always(function () {
                 ace.edit(editor).session.setMode(newMode);
+                if (newMode === 'ace/mode/python') {
+                    ace.edit(editor).setTheme('ace/theme/tomorrow')
+                }
             });
     },
 

@@ -32,6 +32,10 @@ class FileType < ApplicationRecord
   end
   private :set_default_values
 
+  def programming_language
+    editor_mode.gsub('ace/mode/', '')
+  end
+
   def to_s
     name
   end

@@ -20,4 +20,9 @@ class Tip < ApplicationRecord
       "#{I18n.t('activerecord.models.tip.one')} #{id}"
     end
   end
+
+  def can_be_destroyed?
+    # This tip can only be destroyed if it is no parent to any other exercise tip
+    ExerciseTip.where(parent_exercise_tip: exercise_tips).none?
+  end
 end

@@ -5,10 +5,10 @@ module ApplicationHelper
     APPLICATION_NAME
   end
 
-  def code_tag(code)
+  def code_tag(code, language = nil)
     if code.present?
       content_tag(:pre) do
-        content_tag(:code, code)
+        content_tag(:code, code, class: "language-#{language}")
       end
     else
       empty
