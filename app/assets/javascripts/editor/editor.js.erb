@@ -468,6 +468,18 @@ var CodeOceanEditor = {
         //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
     },
 
+    createEventHandler: function (eventType, data) {
+        return function (event) {
+            CodeOceanEditor.publishCodeOceanEvent({
+                category: eventType,
+                data: data,
+                exercise_id: $('#editor').data('exercise-id'),
+                file_id: CodeOceanEditor.active_file.id,
+            });
+            event.stopPropagation();
+        };
+    },
+
     publishCodeOceanEvent: function (payload) {
         if (this.sendEvents) {
             $.ajax(this.eventURL, {
@@ -798,6 +810,7 @@ var CodeOceanEditor = {
         this.showFirstFile();
         this.resizeAceEditors();
         this.initializeDeadlines();
+        CodeOceanEditorTips.initializeEventHandlers();
 
         window.addEventListener("beforeunload", this.unloadAutoSave.bind(this));
         window.addEventListener("page:before-change", this.unloadAutoSave.bind(this));

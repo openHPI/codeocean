@@ -9,7 +9,7 @@
             = t('activerecord.models.tip.one')
             =< exercise_tip.rank
             = ": #{tip.title}" if tip.title?
-  .card.card-collapse.collapse id="tip-collapse-#{exercise_tip.id}" aria-labelledby="tip-heading-#{exercise_tip.id}" role="tabpanel"
+  .card.card-collapse.collapse id="tip-collapse-#{exercise_tip.id}" aria-labelledby="tip-heading-#{exercise_tip.id}" role="tabpanel" data-exercise-tip-id=exercise_tip.id
     .card-body.p-3
       h5
         = t('exercises.implement.tips.description')

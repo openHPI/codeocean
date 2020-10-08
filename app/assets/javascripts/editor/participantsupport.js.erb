@@ -72,16 +72,6 @@ CodeOceanEditorFlowr = {
     }
     return results;
   },
-  createEventHandler: function (eventType, data) {
-    return function () {
-      CodeOceanEditor.publishCodeOceanEvent({
-        category: eventType,
-        data: data,
-        exercise_id: $('#editor').data('exercise-id'),
-        file_id: CodeOceanEditor.active_file.id,
-      });
-    };
-  },
   handleStderrOutputForFlowr: function () {
     if (! this.isFlowrEnabled) return;
 
@@ -99,13 +89,13 @@ CodeOceanEditorFlowr = {
 
         var header = resultTile.find('span');
         header.text(result.title);
-        header.on('click', self.createEventHandler('editor_flowr_expand_question', questionUrl));
+        header.on('click', CodeOceanEditor.createEventHandler('editor_flowr_expand_question', questionUrl));
 
         var body = resultTile.find('.card-body');
         body.html(result.body);
         body.append('<a target="_blank" href="' + questionUrl + '" class="btn btn-primary btn-block">' +
           '<%= I18n.t('exercises.implement.flowr.go_to_question') %></a>');
-        body.find('.btn').on('click', self.createEventHandler('editor_flowr_click_question', questionUrl));
+        body.find('.btn').on('click', CodeOceanEditor.createEventHandler('editor_flowr_click_question', questionUrl));
 
         flowrHintBody.append(resultTile);
       });
@@ -178,3 +168,16 @@ CodeOceanEditorRequestForComments = {
     //button.prop('disabled', true);
   }
 };
+
+CodeOceanEditorTips = {
+    initializeEventHandlers: function() {
+        const card_headers = $('#tips .card-collapse');
+        for (let tip of card_headers) {
+            tip = $(tip)
+            tip.on('show.bs.collapse',
+                CodeOceanEditor.createEventHandler('editor_show_tip', tip.data('exercise-tip-id')));
+            tip.on('hide.bs.collapse',
+                CodeOceanEditor.createEventHandler('editor_hide_tip', tip.data('exercise-tip-id')));
+        }
+    }
+}
