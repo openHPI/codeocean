@@ -1,5 +1,5 @@
 - tip = exercise_tip.tip
-.card.mb-2
+.card class="#{exercise_tip.parent_exercise_tip_id? ? 'mt-2' : ''}"
   .card-header.p-2 id="tip-heading-#{exercise_tip.id}" role="tab"
     .card-title.mb-0
       a.collapsed aria-controls="tip-collapse-#{exercise_tip.id}" aria-expanded="false" data-parent="#tips" data-toggle="collapse" href="#tip-collapse-#{exercise_tip.id}"
@@ -20,5 +20,4 @@
         pre
           code.mh-100 class="language-#{tip.file_type.editor_mode.gsub("ace/mode/", "")}"
             = tip.example
-      .mb-4
       = render(partial: 'tips/collapsed_card', collection: exercise_tip.children, as: :exercise_tip)
