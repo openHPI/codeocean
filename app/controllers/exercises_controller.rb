@@ -262,6 +262,30 @@ class ExercisesController < ApplicationController
                else
                  current_user.id
                end
+
+    # Order of elements is important and will be kept
+    available_tips = ExerciseTip.where(exercise: @exercise)
+                                .order(rank: :asc, parent_exercise_tip_id: :asc)
+
+    # Transform result set in a hash and prepare (temporary) children array.
+    # The children array will contain the sorted list of nested tips,
+    # shown for learners in the output sidebar with cards.
+    # Hash - Key: exercise_tip.id, value: exercise_tip Object loaded from database
+    nested_tips = available_tips.each_with_object({}) do |exercise_tip, hash|
+      exercise_tip.children = []
+      hash[exercise_tip.id] = exercise_tip
+    end
+
+    available_tips.each do |tip|
+      # A tip without a parent cannot be a children
+      next if tip.parent_exercise_tip_id.blank?
+
+      # Link tips if they are related
+      nested_tips[tip.parent_exercise_tip_id].children << tip
+    end
+
+    # Return an array with top-level tips
+    @tips = nested_tips.values.select { |tip| tip.parent_exercise_tip_id.nil? }
   end
 
   def set_course_token

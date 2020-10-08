@@ -122,9 +122,14 @@ en:
         usage: Used
         difficulty: Share on the Exercise
       tip:
-        title: title
-        description: description
-        example: example
+        title: Title
+        description: Description
+        example: Example
+      exercise_tip:
+        tip: Tip
+        exercise: Exercise
+        rank: Rank
+        parent_exercise_tip: Parent Tip
       file_template:
         name: "Name"
         file_type: "File Type"
@@ -207,6 +212,9 @@ en:
       study_group:
         one: Study Group
         other: Study Groups
+      tip:
+        one: Tip
+        other: Tips
       tag:
         one: Tag
         other: Tags
@@ -407,6 +415,10 @@ en:
         text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
       error_hints:
         heading: "Hints"
+      tips:
+        heading: Tips
+        description: Description
+        example: Example
       flowr:
         heading: "Gain more insights here | Powered by StackOverflow"
         go_to_question: "Go to answer"

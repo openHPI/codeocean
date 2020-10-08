@@ -125,6 +125,11 @@ de:
         title: Titel
         description: Beschreibung
         example: Beispiel
+      exercise_tip:
+        tip: Tipp
+        exercise: Aufgabe
+        rank: Rang
+        parent_exercise_tip: Übergeordneter Tipp
       file_template:
         name: "Name"
         file_type: "Dateityp"
@@ -207,6 +212,9 @@ de:
       study_group:
         one: Lerngruppe
         other: Lerngruppen
+      tip:
+        one: Tipp
+        other: Tipps
       tag:
         one: Tag
         other: Tags
@@ -407,6 +415,10 @@ de:
         text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
       error_hints:
         heading: "Hinweise"
+      tips:
+        heading: Tipps
+        description: Erklärung
+        example: Beispiel
       flowr:
         heading: "Weitere Hinweise | Unterstützt von StackOverflow"
         go_to_question: "Lösung ansehen"
