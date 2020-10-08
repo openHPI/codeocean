@@ -16,24 +16,25 @@ html lang='en'
     = yield(:head)
     = csrf_meta_tags
     = timeago_script_tag
-    script type="text/javascript"
-      | I18n.defaultLocale = "#{I18n.default_locale}";
-      | I18n.locale = "#{I18n.locale}";
-      | Sentry.init({
-      |      dsn: 'https://637ca99538224b4bb28cd9e670e1b372@sentry.xikolo.de/33',
-      |      attachStacktrace: true,
-      |      release: "#{Raven.configuration.release}",
-      |      environment: "#{Raven.configuration.current_environment}",
-      |  });
-      - if @current_user
-        | Sentry.configureScope(function(scope) {
-        |   scope.setUser({
-        |      "id": "#{@current_user.id}",
-        |      "type": "#{@current_user.class.name}",
-        |      "username": "#{@current_user.displayname}",
-        |      "consumer": "#{@current_user.consumer.name}"
-        |    });
+    - unless Raven.configuration.current_environment == "development"
+      script type="text/javascript"
+        | I18n.defaultLocale = "#{I18n.default_locale}";
+        | I18n.locale = "#{I18n.locale}";
+        | Sentry.init({
+        |      dsn: 'https://637ca99538224b4bb28cd9e670e1b372@sentry.xikolo.de/33',
+        |      attachStacktrace: true,
+        |      release: "#{Raven.configuration.release}",
+        |      environment: "#{Raven.configuration.current_environment}",
         |  });
+        - if @current_user
+          | Sentry.configureScope(function(scope) {
+          |   scope.setUser({
+          |      "id": "#{@current_user.id}",
+          |      "type": "#{@current_user.class.name}",
+          |      "username": "#{@current_user.displayname}",
+          |      "consumer": "#{@current_user.consumer.name}"
+          |    });
+          |  });
   body
     - unless @embed_options[:hide_navbar]
       nav.navbar.navbar-dark.bg-dark.navbar-expand-md.mb-4.py-1 role='navigation'
