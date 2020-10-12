@@ -23,7 +23,7 @@ describe ProformaService::Import do
 
     let(:user) { FactoryBot.create(:teacher) }
     let(:import_user) { user }
-    let(:zip_file) { Tempfile.new('proforma_test_zip_file') }
+    let(:zip_file) { Tempfile.new('proforma_test_zip_file', encoding: 'ascii-8bit') }
     let(:exercise) do
       FactoryBot.create(:dummy,
                         instructions: 'instruction',
