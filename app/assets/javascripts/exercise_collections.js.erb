@@ -183,11 +183,13 @@ $(document).on('turbolinks:load', function() {
 
       addExercisesButton.on('click', function (e) {
         e.preventDefault();
-        var selectedExercises = addExercisesForm.find('select')[0].selectedOptions;
+        const selectedExercises = addExercisesForm.find('select')[0].selectedOptions;
         for (var i = 0; i < selectedExercises.length; i++) {
           addExercise(selectedExercises[i].value, selectedExercises[i].label);
         }
+        $('#add-exercise-modal').modal('hide')
         updateExerciseList();
+        addExercisesForm.find('select').val('').trigger("chosen:updated");
       });
 
       removeExerciseButtons.on('click', function (e) {
