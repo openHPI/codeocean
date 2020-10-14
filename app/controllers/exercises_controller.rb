@@ -239,18 +239,18 @@ class ExercisesController < ApplicationController
   private :handle_file_uploads
 
   def handle_exercise_tips
-    if exercise_params
-      begin
-        exercise_tips = JSON.parse(exercise_params[:tips])
-        # Order is important to ensure no foreign key restraints are violated during delete
-        previous_exercise_tips = ExerciseTip.where(exercise: @exercise).select(:id).order(rank: :desc).ids
-        remaining_exercise_tips = update_exercise_tips exercise_tips, nil, 1
-        # Destroy initializes each object and then calls a *single* SQL DELETE
-        ExerciseTip.destroy(previous_exercise_tips - remaining_exercise_tips)
-      rescue JSON::ParserError => e
-        flash[:danger] = "JSON error: #{e.message}"
-        redirect_to(edit_exercise_path(@exercise))
-      end
+    return unless exercise_params && exercise_params[:tips]
+
+    begin
+      exercise_tips = JSON.parse(exercise_params[:tips])
+      # Order is important to ensure no foreign key restraints are violated during delete
+      previous_exercise_tips = ExerciseTip.where(exercise: @exercise).select(:id).order(rank: :desc).ids
+      remaining_exercise_tips = update_exercise_tips exercise_tips, nil, 1
+      # Destroy initializes each object and then calls a *single* SQL DELETE
+      ExerciseTip.destroy(previous_exercise_tips - remaining_exercise_tips)
+    rescue JSON::ParserError => e
+      flash[:danger] = "JSON error: #{e.message}"
+      redirect_to(edit_exercise_path(@exercise))
     end
   end
   private :handle_exercise_tips
