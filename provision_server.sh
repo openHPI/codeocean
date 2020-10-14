@@ -4,9 +4,9 @@
 
 ######## VERSION INFORMATION ########
 
-postgres_version=12
+postgres_version=13
 node_version=14
-ruby_version=2.7.0
+ruby_version=2.7.2
 rails_version=5.2.4.4
 geckodriver_version=0.26.0
 
