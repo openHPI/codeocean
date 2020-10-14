@@ -3,7 +3,7 @@ require 'concurrent/future'
 module SubmissionScoring
   def collect_test_results(submission)
     # Mnemosyne.trace 'custom.codeocean.collect_test_results', meta: { submission: submission.id } do
-    submission.collect_files.select(&:teacher_defined_test?).map do |file|
+    submission.collect_files.select(&:teacher_defined_assessment?).map do |file|
       future = Concurrent::Future.execute do
         # Mnemosyne.trace 'custom.codeocean.collect_test_results_block', meta: { file: file.id, submission: submission.id } do
         assessor = Assessor.new(execution_environment: submission.execution_environment)

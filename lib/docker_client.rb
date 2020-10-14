@@ -376,10 +376,13 @@ class DockerClient
     """
     Stick to existing Docker API with exec command.
     """
-    filepath = submission.collect_files.find { |f| f.name_with_extension == filename }.filepath
+    file = submission.collect_files.find { |f| f.name_with_extension == filename }
+    filepath = file.filepath
     command = submission.execution_environment.test_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
-    execute_command(command, create_workspace_files, block)
+    test_result = execute_command(command, create_workspace_files, block)
+    test_result.merge!(file_role: file.role)
+    test_result
   end
 
   def self.find_image_by_tag(tag)

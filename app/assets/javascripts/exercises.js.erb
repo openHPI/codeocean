@@ -195,7 +195,7 @@ $(document).on('turbolinks:load', function () {
 
     var observeFileRoleChanges = function () {
         $(document).on('change', 'select[name$="[role]"]', function () {
-            var is_test_file = $(this).val() === 'teacher_defined_test';
+            var is_test_file = $(this).val() === 'teacher_defined_test' || $(this).val() === 'teacher_defined_linter';
             var parent = $(this).parents('.card');
             var fields = parent.find('.test-related-fields');
             if (is_test_file) {

@@ -13,7 +13,7 @@ describe SubmissionScoring do
     after(:each) { controller.send(:collect_test_results, @submission) }
 
     it 'executes every teacher-defined test file' do
-      @submission.collect_files.select(&:teacher_defined_test?).each do |file|
+      @submission.collect_files.select(&:teacher_defined_assessment?).each do |file|
         expect(controller).to receive(:execute_test_file).with(file, @submission).and_return({})
       end
     end
