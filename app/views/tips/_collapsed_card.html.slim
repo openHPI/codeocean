@@ -1,5 +1,5 @@
 - tip = exercise_tip.tip
-.card class="#{exercise_tip.parent_exercise_tip_id? ? 'mt-2' : ''}"
+.card class="#{exercise_tip.parent_exercise_tip_id? || exercise_tip.rank != 1 ? 'mt-2' : ''}"
   .card-header.p-2 id="tip-heading-#{exercise_tip.id}" role="tab"
     .card-title.mb-0
       a.collapsed aria-controls="tip-collapse-#{exercise_tip.id}" aria-expanded="false" data-parent="#tips" data-toggle="collapse" href="#tip-collapse-#{exercise_tip.id}"
@@ -11,9 +11,10 @@
             = ": #{tip.title}" if tip.title?
   .card.card-collapse.collapse id="tip-collapse-#{exercise_tip.id}" aria-labelledby="tip-heading-#{exercise_tip.id}" role="tabpanel" data-exercise-tip-id=exercise_tip.id
     .card-body.p-3
-      h5
-        = t('exercises.implement.tips.description')
-      = render_markdown(tip.description)
+      - if tip.description?
+        h5
+          = t('exercises.implement.tips.description')
+        = render_markdown(tip.description)
       - if tip.example?
         h5
           = t('exercises.implement.tips.example')

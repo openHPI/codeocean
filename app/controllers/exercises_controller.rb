@@ -13,6 +13,7 @@ class ExercisesController < ApplicationController
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: %i[create edit new update]
   before_action :set_course_token, only: [:implement]
+  before_action :set_available_tips, only: %i[implement show new edit]
 
   skip_before_action :verify_authenticity_token, only: %i[import_exercise import_uuid_check export_external_confirm export_external_check]
   skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check export_external_confirm]
@@ -78,6 +79,9 @@ class ExercisesController < ApplicationController
   def create
     @exercise = Exercise.new(exercise_params)
     collect_set_and_unset_exercise_tags
+    handle_exercise_tips
+    return if performed?
+
     myparam = exercise_params.present? ? exercise_params : {}
     checked_exercise_tags = @exercise_tags.select { |et| myparam[:tag_ids].include? et.tag.id.to_s }
     removed_exercise_tags = @exercise_tags.reject { |et| myparam[:tag_ids].include? et.tag.id.to_s }
@@ -89,6 +93,7 @@ class ExercisesController < ApplicationController
 
     myparam[:exercise_tags] = checked_exercise_tags
     myparam.delete :tag_ids
+    myparam.delete :tips
     removed_exercise_tags.map(&:destroy)
 
     authorize!
@@ -212,7 +217,7 @@ class ExercisesController < ApplicationController
   private :user_by_codeharbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :submission_deadline, :late_submission_deadline, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, files_attributes: file_attributes, tag_ids: []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?
+    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :submission_deadline, :late_submission_deadline, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :tips, files_attributes: file_attributes, tag_ids: []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?
   end
   private :exercise_params
 
@@ -232,6 +237,47 @@ class ExercisesController < ApplicationController
     end
   end
   private :handle_file_uploads
+
+  def handle_exercise_tips
+    if exercise_params
+      begin
+        exercise_tips = JSON.parse(exercise_params[:tips])
+        # Order is important to ensure no foreign key restraints are violated during delete
+        previous_exercise_tips = ExerciseTip.where(exercise: @exercise).select(:id).order(rank: :desc).ids
+        remaining_exercise_tips = update_exercise_tips exercise_tips, nil, 1
+        # Destroy initializes each object and then calls a *single* SQL DELETE
+        ExerciseTip.destroy(previous_exercise_tips - remaining_exercise_tips)
+      rescue JSON::ParserError => e
+        flash[:danger] = "JSON error: #{e.message}"
+        redirect_to(edit_exercise_path(@exercise))
+      end
+    end
+  end
+  private :handle_exercise_tips
+
+  def update_exercise_tips(exercise_tips, parent_exercise_tip_id, rank)
+    result = []
+    exercise_tips.each do |exercise_tip|
+      exercise_tip.symbolize_keys!
+      current_exercise_tip = ExerciseTip.find_or_initialize_by(id: exercise_tip[:id],
+                                     exercise: @exercise,
+                                     tip_id: exercise_tip[:tip_id])
+      current_exercise_tip.parent_exercise_tip_id = parent_exercise_tip_id
+      current_exercise_tip.rank = rank
+      rank += 1
+      unless current_exercise_tip.save
+        flash[:danger] = current_exercise_tip.errors.full_messages.join('. ')
+        redirect_to(edit_exercise_path(@exercise)) and return
+      end
+
+      children = update_exercise_tips exercise_tip[:children], current_exercise_tip.id, rank
+
+      result << current_exercise_tip.id
+      result += children
+    end
+    result
+  end
+  private :update_exercise_tips
 
   def implement
     redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? && current_user.role != 'admin' && current_user.role != 'teacher' # TODO: TESTESTEST
@@ -262,30 +308,6 @@ class ExercisesController < ApplicationController
                else
                  current_user.id
                end
-
-    # Order of elements is important and will be kept
-    available_tips = ExerciseTip.where(exercise: @exercise)
-                                .order(rank: :asc, parent_exercise_tip_id: :asc)
-
-    # Transform result set in a hash and prepare (temporary) children array.
-    # The children array will contain the sorted list of nested tips,
-    # shown for learners in the output sidebar with cards.
-    # Hash - Key: exercise_tip.id, value: exercise_tip Object loaded from database
-    nested_tips = available_tips.each_with_object({}) do |exercise_tip, hash|
-      exercise_tip.children = []
-      hash[exercise_tip.id] = exercise_tip
-    end
-
-    available_tips.each do |tip|
-      # A tip without a parent cannot be a children
-      next if tip.parent_exercise_tip_id.blank?
-
-      # Link tips if they are related
-      nested_tips[tip.parent_exercise_tip_id].children << tip
-    end
-
-    # Return an array with top-level tips
-    @tips = nested_tips.values.select { |tip| tip.parent_exercise_tip_id.nil? }
   end
 
   def set_course_token
@@ -310,6 +332,32 @@ class ExercisesController < ApplicationController
     end
   end
   private :set_course_token
+
+  def set_available_tips
+    # Order of elements is important and will be kept
+    available_tips = ExerciseTip.where(exercise: @exercise).order(rank: :asc)
+
+    # Transform result set in a hash and prepare (temporary) children array.
+    # The children array will contain the sorted list of nested tips,
+    # shown for learners in the output sidebar with cards.
+    # Hash - Key: exercise_tip.id, value: exercise_tip Object loaded from database
+    nested_tips = available_tips.each_with_object({}) do |exercise_tip, hash|
+      exercise_tip.children = []
+      hash[exercise_tip.id] = exercise_tip
+    end
+
+    available_tips.each do |tip|
+      # A tip without a parent cannot be a children
+      next if tip.parent_exercise_tip_id.blank?
+
+      # Link tips if they are related
+      nested_tips[tip.parent_exercise_tip_id].children << tip
+    end
+
+    # Return an array with top-level tips
+    @tips = nested_tips.values.select { |tip| tip.parent_exercise_tip_id.nil? }
+  end
+  private :set_available_tips
 
   def working_times
     working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user)
@@ -502,6 +550,9 @@ class ExercisesController < ApplicationController
 
   def update
     collect_set_and_unset_exercise_tags
+    handle_exercise_tips
+    return if performed?
+
     myparam = exercise_params
     checked_exercise_tags = @exercise_tags.select { |et| myparam[:tag_ids].include? et.tag.id.to_s }
     removed_exercise_tags = @exercise_tags.reject { |et| myparam[:tag_ids].include? et.tag.id.to_s }
@@ -513,6 +564,7 @@ class ExercisesController < ApplicationController
 
     myparam[:exercise_tags] = checked_exercise_tags
     myparam.delete :tag_ids
+    myparam.delete :tips
     removed_exercise_tags.map(&:destroy)
     update_and_respond(object: @exercise, params: myparam)
   end

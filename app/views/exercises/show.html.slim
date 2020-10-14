@@ -38,6 +38,9 @@ h1
 = row(label: 'exercise.embedding_parameters', class: 'mb-4') do
   = content_tag(:input, nil, class: 'form-control mb-4', readonly: true, value: @exercise.unpublished? ? t('exercises.show.is_unpublished') : embedding_parameters(@exercise))
 
+- unless @tips.blank?
+  = render(partial: 'tips_content')
+
 h2.mt-4 = t('activerecord.attributes.exercise.files')
 
 ul.list-unstyled#files

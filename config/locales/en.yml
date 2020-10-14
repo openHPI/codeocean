@@ -367,7 +367,9 @@ en:
         path: "The file's path in the project tree. Can be left blank."
     form:
       add_file: Add file
-      tags: "Tags"
+      add_tips: Add tips
+      tips: Tips
+      tags: Tags
       click_to_collapse: "Click to expand/collapse..."
       unpublish_warning: This will unpublish the exercise. Any student trying to implement it will get an error message, until it is published again.
       no_execution_environment_selected: Select an execution environment before publishing the exercise.

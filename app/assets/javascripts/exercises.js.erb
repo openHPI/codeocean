@@ -171,6 +171,87 @@ $(document).on('turbolinks:load', function () {
         }) || {};
     };
 
+    var initializeSortable = function() {
+        const nestedQuery = '.nested-sortable-list';
+        const root = document.getElementById('tip-list');
+        const containers = document.querySelectorAll(nestedQuery);
+
+        function serialize(sortable) {
+            let serialized = [];
+            const children = [].slice.call(sortable.children);
+            for (let i in children) {
+                const nested = children[i].querySelector(nestedQuery);
+                serialized.push({
+                    tip_id: children[i].dataset['tipId'],
+                    id: children[i].dataset['id'],
+                    children: nested ? serialize(nested) : []
+                });
+            }
+            return serialized
+        }
+
+        function updateTipsJSON(event) {
+            const input = $('#tips-json');
+            input.val(JSON.stringify(serialize(root)));
+            if (event) {
+                event.preventDefault();
+            }
+        }
+
+        function initializeSortable(element) {
+            new Sortable(element, {
+                group: 'nested',
+                animation: 150,
+                fallbackOnBody: true,
+                swapThreshold: 0.45,
+                handle: '.fa-bars',
+                onSort: updateTipsJSON
+            });
+        }
+
+        function removeTip(e) {
+            e.preventDefault();
+            const row = $(this).parent();
+            row.remove();
+            updateTipsJSON();
+        }
+
+        $('.remove-tip').on('click', removeTip);
+
+        function addTip(id, title) {
+            const tip = {id: id, title: title}
+            const template =
+                '<div class="list-group-item d-block" data-tip-id=' + tip.id + ' data-id="">' +
+                '<span class="fa fa-bars mr-3"></span>' + tip.title +
+                '<a class="fa fa-eye ml-2" href="/tips/' + tip.id + '" target="_blank"></a>' +
+                '<a class="fa fa-times ml-2 remove-tip" href="#""></a>' +
+                '<div class="list-group nested-sortable-list"></div>' +
+                '</div>';
+            const tipList = $('#tip-list').append(template);
+            tipList.find('.remove-tip').last().on('click', removeTip);
+            const nestedList = tipList.find('.nested-sortable-list').last().get()[0];
+            initializeSortable(nestedList);
+        }
+
+        $('#add-tips').on('click', function (e) {
+            e.preventDefault();
+            const chosenInputTips = $('#tip-selection').find('select');
+            const selectedTips = chosenInputTips[0].selectedOptions;
+            for (let i = 0; i < selectedTips.length; i++) {
+                addTip(selectedTips[i].value, selectedTips[i].label);
+            }
+            $('#add-tips-modal').modal('hide')
+            updateTipsJSON();
+            chosenInputTips.val('').trigger("chosen:updated");
+        });
+
+        for (let i = 0; i < containers.length; i++) {
+            initializeSortable(containers[i]);
+        }
+
+        updateTipsJSON();
+    };
+
     var highlightCode = function () {
         $('pre code').each(function (index, element) {
             hljs.highlightBlock(element);
@@ -371,6 +452,7 @@ $(document).on('turbolinks:load', function () {
             execution_environments = $('form').data('execution-environments');
             file_types = $('form').data('file-types');
 
+            initializeSortable();
             enableInlineFileCreation();
             inferFileAttributes();
             observeFileRoleChanges();

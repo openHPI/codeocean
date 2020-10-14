@@ -367,7 +367,9 @@ de:
         path: 'Pfad der Datei im Projektverzeichnis. Kann auch leer gelassen werden.'
     form:
       add_file: Datei hinzufügen
-      tags: "Tags"
+      add_tips: Tipps hinzufügen
+      tips: Tipps
+      tags: Tags
       click_to_collapse: "Zum Aus-/Einklappen hier klicken..."
       unpublish_warning: Mit dieser Aktion wird die Aufgabe deaktiviert. Jeder Student, der versucht sie zu implementieren wird eine Fehlermeldung bekommen, bis die Aufgabe wieder aktiviert wurde.
       no_execution_environment_selected: Bitte eine Ausführungsumgebung auswählen, bevor die Aufgabe aktiviert wird.

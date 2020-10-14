@@ -1,3 +1,9 @@
+- content_for :head do
+  // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
+     Otherwise, code might not be highlighted correctly (race condition)
+  meta name='turbolinks-visit-control' content='reload'
+  = javascript_pack_tag('sortable', 'data-turbolinks-track': true)
+
 - execution_environments = ExecutionEnvironment.where('file_type_id IS NOT NULL').select(:file_type_id, :id)
 - file_types = FileType.where('file_extension IS NOT NULL').select(:file_extension, :id)
 
@@ -71,6 +77,19 @@
                   td = b.object.tag.name
                   td = number_field "tag_factors[#{b.object.tag.id}]", :factor, :value => b.object.factor, in: 1..10, step: 1, class: 'form-control-sm'
 
+  h2 = t('.tips')
+  ul.list-unstyled.card-group
+    li.card
+      .card-header role="tab" id="tip-heading"
+        a.file-heading data-toggle="collapse" href="#tip-collapse"
+          div.clearfix role="button"
+            span = t('exercises.form.click_to_collapse')
+      .card-collapse.collapse.mx-2 id="tip-collapse" role="tabpanel"
+        = f.hidden_field(:tips, id: "tips-json", value: "")
+        .list-group.nested-sortable-list.mt-2#tip-list
+          = render(partial: 'tips/sortable_tip', collection: @tips, as: :exercise_tip)
+        button.btn.btn-outline-primary.my-2.w-100 type='button' data-toggle='modal' data-target='#add-tips-modal' = t('.add_tips')
+
   h2 = t('activerecord.attributes.exercise.files')
   ul#files.list-unstyled
     = f.fields_for :files do |files_form|
@@ -81,3 +100,5 @@
     = render('file_form', f: files_form)
 
   .actions = render('shared/submit_button', f: f, object: @exercise)
+
+= render('shared/modal', id: 'add-tips-modal', title: t('.add_tips'), template: 'exercises/_add_tip_modal')
