@@ -267,10 +267,11 @@ class ExercisesController < ApplicationController
       rank += 1
       unless current_exercise_tip.save
         flash[:danger] = current_exercise_tip.errors.full_messages.join('. ')
-        redirect_to(edit_exercise_path(@exercise)) and return
+        redirect_to(edit_exercise_path(@exercise)) and break
       end
 
       children = update_exercise_tips exercise_tip[:children], current_exercise_tip.id, rank
+      rank += children.length
 
       result << current_exercise_tip.id
       result += children
