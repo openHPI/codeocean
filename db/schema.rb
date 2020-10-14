@@ -142,7 +142,7 @@ ActiveRecord::Schema.define(version: 2020_10_07_104221) do
     t.bigint "tip_id", null: false
     t.integer "rank", null: false
     t.bigint "parent_exercise_tip_id"
-    t.index ["exercise_id", "tip_id", "rank"], name: "index_exercise_tips_on_exercise_id_and_tip_id_and_rank", unique: true
+    t.index ["exercise_id", "rank"], name: "index_exercise_tips_on_exercise_id_and_rank"
     t.index ["exercise_id"], name: "index_exercise_tips_on_exercise_id"
     t.index ["parent_exercise_tip_id"], name: "index_exercise_tips_on_parent_exercise_tip_id"
     t.index ["tip_id"], name: "index_exercise_tips_on_tip_id"
@@ -449,6 +449,9 @@ ActiveRecord::Schema.define(version: 2020_10_07_104221) do
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user_type_and_user_id"
   end
 
+  add_foreign_key "exercise_tips", "exercise_tips", column: "parent_exercise_tip_id"
+  add_foreign_key "exercise_tips", "exercises"
+  add_foreign_key "exercise_tips", "tips"
   add_foreign_key "request_for_comments", "submissions", name: "request_for_comments_submissions_id_fk"
   add_foreign_key "submissions", "study_groups"
   add_foreign_key "tips", "file_types"

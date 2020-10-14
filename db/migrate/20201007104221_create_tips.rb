@@ -12,11 +12,11 @@ class CreateTips < ActiveRecord::Migration[5.2]
     end
 
     create_table :exercise_tips do |t|
-      t.references :exercise, null: false
-      t.references :tip, null: false
+      t.references :exercise, null: false, foreign_key: true
+      t.references :tip, null: false, foreign_key: true
       t.integer :rank, null: false
       t.references :parent_exercise_tip, foreign_key: {to_table: :exercise_tips}
-      t.index %i[exercise_id tip_id rank], unique: true
+      t.index %i[exercise_id rank]
     end
   end
 end
