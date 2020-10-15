@@ -55,8 +55,6 @@ div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom
             ul.body
         #output.mt-2
           pre = t('exercises.implement.no_output_yet')
-        - unless @embed_options[:disable_hints] or @tips.blank?
-          = render(partial: 'tips_content')
         - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] && !@embed_options[:disable_hints] && !@embed_options[:hide_test_results]
           #flowrHint.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
             .card-header = t('exercises.implement.flowr.heading')

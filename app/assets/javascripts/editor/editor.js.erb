@@ -346,12 +346,20 @@ var CodeOceanEditor = {
 
     initializeSideBarCollapse: function () {
         $('#sidebar-collapse-collapsed').on('click', this.handleSideBarToggle.bind(this));
-        $('#sidebar-collapse').on('click', this.handleSideBarToggle.bind(this))
+        $('#sidebar-collapse').on('click', this.handleSideBarToggle.bind(this));
+        const tipButton = $('#tips-collapsed');
+        if (tipButton) {
+            tipButton.on('click', this.handleSideBarToggle.bind(this));
+        }
         $('#sidebar').on('transitionend', this.resizeAceEditors.bind(this));
     },
 
     handleSideBarToggle: function () {
-        $('#sidebar').toggleClass('sidebar-col').toggleClass('sidebar-col-collapsed');
+        const sidebar = $('#sidebar');
+        sidebar.toggleClass('sidebar-col').toggleClass('sidebar-col-collapsed');
+        if (sidebar.hasClass('w-25') || sidebar.hasClass('restore-to-w-25')) {
+            sidebar.toggleClass('w-25').toggleClass('restore-to-w-25');
+        }
         $('#sidebar-collapsed').toggleClass('d-none');
         $('#sidebar-uncollapsed').toggleClass('d-none');
     },
