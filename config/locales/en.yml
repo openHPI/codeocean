@@ -381,16 +381,20 @@ en:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'
         title: Your browser is not supported!
-      default_feedback: Well done. All tests have been passed.
+      default_test_feedback: Well done. All tests have been passed.
+      default_linter_feedback: Well done. The linter is completly satisfied.
       error_messages: Error Messages
+      messages: Messages
       feedback: Feedback
-      file: 'Test File <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
+      test_file: 'Test File <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
+      linter_file: 'Linter Feedback (not graded)<span class="number d-none">%{number}</span><span class="filename d-none">%{filename}</span>'
       hint: Hint
       no_files: The exercise does not comprise visible files yet.
       no_output: The last code run finished on %{timestamp} without any output.
       no_output_yet: There is no output yet.
       output: Program Output
       passed_tests: Passed Tests
+      code_rating: Code Rating
       progress: Progress
       results: Results
       start: Start Coding
@@ -500,6 +504,7 @@ en:
       teacher_defined_test: Test for Assessment
       user_defined_file: User-defined File
       user_defined_test: User-defined Test
+      teacher_defined_linter: Linter for Assessment
     error:
       filename: "The file could not be saved, because another file with the name '%{name}' already exists."
   hints:

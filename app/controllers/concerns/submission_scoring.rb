@@ -3,7 +3,7 @@ require 'concurrent/future'
 module SubmissionScoring
   def collect_test_results(submission)
     # Mnemosyne.trace 'custom.codeocean.collect_test_results', meta: { submission: submission.id } do
-    submission.collect_files.select(&:teacher_defined_test?).map do |file|
+    submission.collect_files.select(&:teacher_defined_assessment?).map do |file|
       future = Concurrent::Future.execute do
         # Mnemosyne.trace 'custom.codeocean.collect_test_results_block', meta: { file: file.id, submission: submission.id } do
         assessor = Assessor.new(execution_environment: submission.execution_environment)
@@ -29,7 +29,7 @@ module SubmissionScoring
             waiting_for_container_time: output[:waiting_for_container_time]
         ).save
         output.merge!(assessment)
-        output.merge!(filename: file.name_with_extension, message: feedback_message(file, output[:score]), weight: file.weight)
+        output.merge!(filename: file.name_with_extension, message: feedback_message(file, output), weight: file.weight)
         # end
       end
       future.value
@@ -45,9 +45,15 @@ module SubmissionScoring
 
   private :execute_test_file
 
-  def feedback_message(file, score)
+  def feedback_message(file, output)
     set_locale
-    score == Assessor::MAXIMUM_SCORE ? I18n.t('exercises.implement.default_feedback') : render_markdown(file.feedback_message)
+    if output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_test'
+      I18n.t('exercises.implement.default_test_feedback')
+    elsif output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_linter'
+      I18n.t('exercises.implement.default_linter_feedback')
+    else
+      render_markdown(file.feedback_message)
+    end
   end
 
   def score_submission(submission)

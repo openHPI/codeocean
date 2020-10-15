@@ -265,7 +265,7 @@ class Exercise < ApplicationRecord
                FROM     files
                WHERE    context_type = 'Exercise'
                AND      context_id = #{id}
-               AND      role = 'teacher_defined_test'
+               AND      role IN ('teacher_defined_test', 'teacher_defined_linter')
                GROUP BY context_id),
       -- filter for rows containing max points
       time_max_score AS
@@ -394,7 +394,7 @@ class Exercise < ApplicationRecord
                          WHERE exercise_id = #{id} AND user_id = #{user.id} AND user_type = '#{user_type}'
                          GROUP BY user_id, id, exercise_id),
               MAX_POINTS AS
-              (SELECT context_id AS ex_id, sum(weight) AS max_points FROM files WHERE context_type = 'Exercise' AND context_id = #{id} AND role = 'teacher_defined_test' GROUP BY context_id),
+              (SELECT context_id AS ex_id, sum(weight) AS max_points FROM files WHERE context_type = 'Exercise' AND context_id = #{id} AND role IN ('teacher_defined_test', 'teacher_defined_linter') GROUP BY context_id),
 
               -- filter for rows containing max points
               TIME_MAX_SCORE AS
@@ -508,7 +508,7 @@ class Exercise < ApplicationRecord
         0
       end
     else
-      files.teacher_defined_tests.sum(:weight)
+      files.teacher_defined_assessments.sum(:weight)
     end
   end
 

@@ -4,7 +4,7 @@
 = row(label: 'file.role', value: file.role? ? t("files.roles.#{file.role}") : '')
 = row(label: 'file.hidden', value: file.hidden)
 = row(label: 'file.read_only', value: file.read_only)
-- if file.teacher_defined_test?
+- if file.teacher_defined_assessment?
   = row(label: 'file.feedback_message', value: render_markdown(file.feedback_message), class: 'm-0')
   = row(label: 'file.weight', value: file.weight)
 = row(label: 'file.content', value: file.native_file? ? link_to_if(policy(file).show?, file.native_file.file.filename, file.native_file.url) : code_tag(file.content))

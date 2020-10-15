@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe ProformaService::ConvertTaskToExercise do
+  # ToDo: Add teacher_defined_linter for tests
+
   describe '.new' do
     subject(:convert_to_exercise_service) { described_class.new(task: task, user: user, exercise: exercise) }
 

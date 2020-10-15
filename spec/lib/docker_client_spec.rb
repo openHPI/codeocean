@@ -263,7 +263,7 @@ describe DockerClient, docker: true do
   end
 
   describe '#execute_test_command' do
-    let(:filename) { submission.exercise.files.detect { |file| file.role == 'teacher_defined_test' }.name_with_extension }
+    let(:filename) { submission.exercise.files.detect { |file| file.role == 'teacher_defined_test' || file.role == 'teacher_defined_linter' }.name_with_extension }
     after(:each) { docker_client.send(:execute_test_command, submission, filename) }
 
     it 'takes a container from the pool' do

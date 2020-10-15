@@ -37,12 +37,12 @@ li.card.mt-2
         label.form-check-label
           = f.check_box(:read_only, class: 'form-check-input')
           = t('activerecord.attributes.file.read_only')
-      .test-related-fields style="display: #{f.object.teacher_defined_test? ? 'initial' : 'none'};"
+      .test-related-fields style="display: #{f.object.teacher_defined_assessment? ? 'initial' : 'none'};"
         .form-group
           = f.label(:name, t('activerecord.attributes.file.feedback_message'))
           = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
           .help-block.form-text = t('.hints.feedback_message')
         .form-group
           = f.label(:role, t('activerecord.attributes.file.weight'))
-          = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
+          = f.number_field(:weight, class: 'form-control', min: 0, step: 'any')
       = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))

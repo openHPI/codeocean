@@ -55,7 +55,7 @@ module ProformaService
     end
 
     def tests
-      @exercise.files.filter { |file| file.role == 'teacher_defined_test' }.map do |file|
+      @exercise.files.filter { |file| file.role == 'teacher_defined_test' || file.role == 'teacher_defined_linter' }.map do |file|
         Proforma::Test.new(
           id: file.id,
           title: file.name,
@@ -78,7 +78,7 @@ module ProformaService
 
     def task_files
       @exercise.files
-               .filter { |file| !file.role.in? %w[reference_implementation teacher_defined_test] }.map do |file|
+               .filter { |file| !file.role.in? %w[reference_implementation teacher_defined_test teacher_defined_linter] }.map do |file|
         task_file(file)
       end
     end

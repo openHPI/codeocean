@@ -5,9 +5,10 @@ class PyUnitAndPyLintAdapter < TestingFrameworkAdapter
   end
 
   def parse_output(output)
-    PyLintAdapter.new.parse_output(output)
-  rescue NoMethodError
-    # The regex for PyLint failed and did not return any matches
-    PyUnitAdapter.new.parse_output(output)
+    if output[:file_role] == 'teacher_defined_linter'
+      PyLintAdapter.new.parse_output(output)
+    else
+      PyUnitAdapter.new.parse_output(output)
+    end
   end
 end

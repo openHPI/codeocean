@@ -241,7 +241,7 @@ describe SubmissionsController do
   end
 
   describe 'GET #test' do
-    let(:filename) { submission.collect_files.detect(&:teacher_defined_test?).name_with_extension }
+    let(:filename) { submission.collect_files.detect(&:teacher_defined_assessment?).name_with_extension }
     let(:output) { {} }
 
     before(:each) do
