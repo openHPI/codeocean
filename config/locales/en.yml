@@ -366,7 +366,8 @@ en:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'
         title: Your browser is not supported!
-      default_feedback: Well done. All tests have been passed.
+      default_test_feedback: Well done. All tests have been passed.
+      default_linter_feedback: Well done. The linter is completly satisfied.
       error_messages: Error Messages
       messages: Messages
       feedback: Feedback

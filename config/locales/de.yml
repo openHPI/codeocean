@@ -366,7 +366,8 @@ de:
       alert:
         text: 'Ihr Browser unterstützt nicht alle Funktionalitäten, die %{application_name} benötigt. Bitte nutzen Sie einen modernen Browser, um %{application_name} zu besuchen.'
         title: Ihr Browser wird nicht unterstützt!
-      default_feedback: Sehr gut. Alle Tests waren erfolgreich.
+      default_test_feedback: Sehr gut. Alle Tests waren erfolgreich.
+      default_linter_feedback: Sehr gut. Der Linter hat nichts mehr zu beanstanden.
       error_messages: Fehlermeldungen
       messages: Meldungen
       feedback: Feedback
