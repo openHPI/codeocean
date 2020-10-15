@@ -44,5 +44,5 @@ li.card.mt-2
           .help-block.form-text = t('.hints.feedback_message')
         .form-group
           = f.label(:role, t('activerecord.attributes.file.weight'))
-          = f.number_field(:weight, class: 'form-control', min: 1, step: 'any')
+          = f.number_field(:weight, class: 'form-control', min: 0, step: 'any')
       = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))

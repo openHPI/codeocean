@@ -48,7 +48,12 @@ CodeOceanEditorEvaluation = {
 
     printScoringResult: function (result, index) {
         $('#results').show();
-        var card = $('#dummies').children().first().clone();
+        let card;
+        if (result.file_role === 'teacher_defined_linter') {
+            card = $('#linter-dummies').children().first().clone();
+        } else {
+            card = $('#test-dummies').children().first().clone();
+        }
         if (card.isPresent()) {
             // the card won't be present if @embed_options[:hide_test_results] == true
             this.populateCard(card, result, index);
@@ -58,7 +63,7 @@ CodeOceanEditorEvaluation = {
 
     printScoringResults: function (response) {
         $('#results ul').first().html('');
-        $('.test-count .number').html(response.length);
+        $('.test-count .number').html(response.filter(function(x) { return x.file_role === 'teacher_defined_test'; }).length);
         this.clearOutput();
 
         _.each(response, function (result, index) {

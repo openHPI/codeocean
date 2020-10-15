@@ -368,14 +368,17 @@ de:
         title: Ihr Browser wird nicht unterstützt!
       default_feedback: Sehr gut. Alle Tests waren erfolgreich.
       error_messages: Fehlermeldungen
+      messages: Meldungen
       feedback: Feedback
-      file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
+      test_file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
+      linter_file: 'Linter-Feedback (ohne Punkte)<span class="number d-none">%{number}</span><span class="filename d-none">%{filename}</span>'
       hint: Tipp
       no_files: Die Aufgabe umfasst noch keine sichtbaren Dateien.
       no_output: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe.
       no_output_yet: Bisher existiert noch keine Ausgabe.
       output: Programm-Ausgabe
       passed_tests: Erfolgreiche Tests
+      code_rating: Code-Stil
       progress: Fortschritt
       results: Ergebnisse
       start: Mit dem Programmieren beginnen

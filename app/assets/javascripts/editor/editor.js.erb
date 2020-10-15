@@ -90,7 +90,9 @@ var CodeOceanEditor = {
     },
 
     getCardClass: function (result) {
-        if (result.stderr && !result.score) {
+        if (result.file_role === 'teacher_defined_linter') {
+            return 'card bg-info text-white'
+        } else if (result.stderr && !result.score) {
             return 'card bg-danger text-white';
         } else if (result.score < 1) {
             return 'card bg-warning text-white';
@@ -428,8 +430,13 @@ var CodeOceanEditor = {
         card.find('.card-title .number').text(index + 1);
         card.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
         card.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
-        card.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
-        card.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
+        if (result.weight !== 0) {
+            card.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
+            card.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
+        } else {
+            // Hide score row if no score could be achieved
+            card.find('.attribute-row.row').eq(1).addClass('d-none');
+        }
         card.find('.row .col-sm-9').eq(2).html(result.message);
 
         // Add error message from code to card
