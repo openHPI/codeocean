@@ -77,7 +77,7 @@ class ExercisesController < ApplicationController
   private :collect_paths
 
   def create
-    @exercise = Exercise.new(exercise_params.except(:tips))
+    @exercise = Exercise.new(exercise_params&.except(:tips))
     collect_set_and_unset_exercise_tags
     handle_exercise_tips
     return if performed?
