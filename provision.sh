@@ -2,6 +2,9 @@
 # rvm/rails installation from https://gorails.com/setup/ubuntu/14.04
 # passenger installation from https://www.phusionpassenger.com/library/install/nginx/install/oss/trusty/
 
+
+echo "OUTDATED - This script might be outdated due to the dedicated DockerContainerPool"
+
 ######## VERSION INFORMATION ########
 
 postgres_version=10

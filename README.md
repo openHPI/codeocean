@@ -20,6 +20,8 @@ CodeOcean is mainly used in the context of MOOCs (such as those offered on openH
 
 ## Development Setup
 
+Please refer to the [Local Setup Guide](LOCAL_SETUP.md) for more details. 
+
 ### Mandatory Steps
 
 - install the Docker client
@@ -46,24 +48,3 @@ In order to execute code submissions using Docker, source code files are written
 
 - create production configuration files (*database.production.yml*, …)
 - customize *config/deploy/production.rb* if you want to deploy using [Capistrano](http://capistranorb.com/)
-
-
-## Useful service maintenance commands
-
-- delete all containers (include running ones) `docker rm -f $(docker ps -aq)`
-- if the application is run as a service restart it by using `service codeocean restart`
-- `/etc/init.d/postgresql restart`
-- if deployed via capistrano you will find the logs at `/var/www/app/shared/log/` -> `production.log`
-
-## Roadmap
-
-1.1
-
- [x] WebSocket Suppport
- [x] Interactive Exercises
- [ ] Allow Disabling of File Creation
- [ ] Set Container Recyling per Environment
-
-
-
-

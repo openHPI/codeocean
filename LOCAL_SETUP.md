@@ -1,5 +1,8 @@
-Local Setup with Vagrant
-==========
+# Local Setup
+
+If available, we prefer a native setup for best performance and less technical issues. Please see below for some details.
+ 
+## Vagrant
 
 ## Install prerequisites
 Install Vagrant - https://www.vagrantup.com/docs/installation/  
@@ -98,7 +101,7 @@ admin@example.org:admin
   brew install docker
   open /Applications/Docker.app/
   ```
-- Install nginx and adopt its config to forward requests to the **RAW** docker UNIX socket (see [this issue](https://github.com/docker/for-mac/issues/1662) for more details):
+- Install nginx and adopt its config to forward requests to the **RAW** docker UNIX socket (see [this issue](https://github.com/docker/for-mac/issues/1662) for more details). Only required for macOS!
   ```shell script
   brew install nginx
   ```
@@ -136,7 +139,7 @@ admin@example.org:admin
   brew install geckodriver
   brew cask install firefox
   ```
-- Get a local copy of the config files:
+- Get a local copy of the config files and verify the settings:
   ```shell script
   for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml
   do
@@ -157,4 +160,8 @@ admin@example.org:admin
   rake db:schema:load
   rake db:migrate
   rake db:seed
+  ```
+- Start the server:
+  ```shell script
+  rails s
   ```
