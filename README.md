@@ -5,6 +5,8 @@ CodeOcean
 [![Code Climate](https://codeclimate.com/github/openHPI/codeocean/badges/gpa.svg)](https://codeclimate.com/github/openHPI/codeocean)
 [![Test Coverage](https://codeclimate.com/github/openHPI/codeocean/badges/coverage.svg)](https://codeclimate.com/github/openHPI/codeocean)
 
+![Learner Interface](docs/implement.png)
+
 ## Introduction
 
 CodeOcean is an educational, web-based execution and development environment for practical programming exercises designed for the use in Massive Open Online Courses (MOOCs). 
@@ -20,7 +22,7 @@ CodeOcean is mainly used in the context of MOOCs (such as those offered on openH
 
 ## Development Setup
 
-Please refer to the [Local Setup Guide](LOCAL_SETUP.md) for more details. 
+Please refer to the [Local Setup Guide](docs/LOCAL_SETUP.md) for more details. 
 
 ### Mandatory Steps
 
