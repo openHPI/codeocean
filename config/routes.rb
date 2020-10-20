@@ -17,7 +17,6 @@ Rails.application.routes.draw do
   resources :request_for_comments do
     member do
       get :mark_as_solved, defaults: { format: :json }
-      post :create_comment_exercise, defaults: { format: :json }
       post :set_thank_you_note, defaults: { format: :json }
     end
   end

@@ -1,7 +1,7 @@
 class UserExerciseFeedbacksController < ApplicationController
   include CommonBehavior
 
-  before_action :set_user_exercise_feedback, only: [:edit, :update, :show, :destroy]
+  before_action :set_user_exercise_feedback, only: [:edit, :update, :destroy]
 
   def comment_presets
     [[0,t('user_exercise_feedback.difficulty_easy')],
@@ -97,7 +97,26 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def uef_params
-    params[:user_exercise_feedback].permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:user_exercise_feedback].present?
+    return unless params[:user_exercise_feedback].present?
+
+    exercise_id = if params[:user_exercise_feedback].nil?
+                    params[:exercise_id]
+                  else
+                    params[:user_exercise_feedback][:exercise_id]
+                  end
+
+    user_id = current_user.id
+    user_type = current_user.class.name
+    latest_submission = Submission
+                        .where(user_id: user_id, user_type: user_type, exercise_id: exercise_id)
+                        .order(created_at: :desc).first
+
+    params[:user_exercise_feedback]
+      .permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime)
+      .merge(user_id: user_id,
+             user_type: user_type,
+             submission: latest_submission,
+             normalized_score: latest_submission.normalized_score)
   end
 
   def validate_inputs(uef_params)

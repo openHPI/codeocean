@@ -111,20 +111,6 @@ class RequestForCommentsController < ApplicationController
     authorize!
   end
 
-  def create_comment_exercise
-    old = UserExerciseFeedback.find_by(exercise_id: params[:exercise_id], user_id: current_user.id, user_type: current_user.class.name)
-    if old
-      old.delete
-    end
-    uef = UserExerciseFeedback.new(comment_params)
-
-    if uef.save
-      render(json: {success: "true"})
-    else
-      render(json: {success: "false"})
-    end
-  end
-
   # DELETE /request_for_comments/1
   # DELETE /request_for_comments/1.json
   def destroy
@@ -146,10 +132,6 @@ class RequestForCommentsController < ApplicationController
   def request_for_comment_params
     # The study_group_id might not be present in the session (e.g. for internal users), resulting in session[:study_group_id] = nil which is intended.
     params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name)
-  end
-
-  def comment_params
-    params.permit(:exercise_id, :feedback_text).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
 
 end
