@@ -101,9 +101,9 @@ class Submission < ApplicationRecord
   end
 
   def redirect_to_feedback?
-    # Redirect 10% of users to the exercise feedback page. Ensure, that always the
-    # same users get redirected per exercise and different users for different exercises.
-    # If desired, the number of feedbacks can be limited with exercise.needs_more_feedback?
+    # Redirect 10% of users to the exercise feedback page. Ensure, that always the same
+    # users get redirected per exercise and different users for different exercises. If
+    # desired, the number of feedbacks can be limited with exercise.needs_more_feedback?(submission)
     (user_id + exercise.created_at.to_i) % 10 == 1
   end
 

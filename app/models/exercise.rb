@@ -46,7 +46,7 @@ class Exercise < ApplicationRecord
   @working_time_statistics = nil
   attr_reader :working_time_statistics
 
-  MAX_EXERCISE_FEEDBACKS = 20
+  MAX_GROUP_EXERCISE_FEEDBACKS = 20
 
   def average_percentage
     if average_score && (maximum_score != 0.0) && submissions.exists?(cause: 'submit')
@@ -550,8 +550,12 @@ class Exercise < ApplicationRecord
   end
   private :valid_submission_deadlines?
 
-  def needs_more_feedback?
-    user_exercise_feedbacks.size <= MAX_EXERCISE_FEEDBACKS
+  def needs_more_feedback?(submission)
+    if submission.normalized_score == 1.00
+      user_exercise_feedbacks.final.size <= MAX_GROUP_EXERCISE_FEEDBACKS
+    else
+      user_exercise_feedbacks.intermediate.size <= MAX_GROUP_EXERCISE_FEEDBACKS
+    end
   end
 
   def last_submission_per_user

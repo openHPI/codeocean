@@ -617,7 +617,7 @@ class ExercisesController < ApplicationController
       end
     else
       # redirect to feedback page if score is less than 100 percent
-      if @exercise.needs_more_feedback? && !@embed_options[:disable_redirect_to_feedback]
+      if @exercise.needs_more_feedback?(@submission) && !@embed_options[:disable_redirect_to_feedback]
         clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
         redirect_to_user_feedback
       else

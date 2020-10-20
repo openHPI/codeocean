@@ -2,9 +2,13 @@ class UserExerciseFeedback < ApplicationRecord
   include Creation
 
   belongs_to :exercise
+  belongs_to :submission, optional: true
   has_one :execution_environment, through: :exercise
 
   validates :user_id, uniqueness: { scope: [:exercise_id, :user_type] }
+
+  scope :intermediate, -> { where.not(normalized_score: 1.00) }
+  scope :final, -> { where(normalized_score: 1.00) }
 
   def to_s
     "User Exercise Feedback"

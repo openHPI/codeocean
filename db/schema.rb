@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_07_104221) do
+ActiveRecord::Schema.define(version: 2020_10_19_090123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -423,6 +423,9 @@ ActiveRecord::Schema.define(version: 2020_10_07_104221) do
     t.integer "user_estimated_worktime"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "normalized_score"
+    t.bigint "submission_id"
+    t.index ["submission_id"], name: "index_user_exercise_feedbacks_on_submission_id"
   end
 
   create_table "user_exercise_interventions", id: :serial, force: :cascade do |t|
@@ -455,4 +458,5 @@ ActiveRecord::Schema.define(version: 2020_10_07_104221) do
   add_foreign_key "request_for_comments", "submissions", name: "request_for_comments_submissions_id_fk"
   add_foreign_key "submissions", "study_groups"
   add_foreign_key "tips", "file_types"
+  add_foreign_key "user_exercise_feedbacks", "submissions"
 end
