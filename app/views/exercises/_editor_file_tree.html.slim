@@ -5,7 +5,7 @@ div id='sidebar-collapsed' class=(@exercise.hide_file_tree && @tips.blank? ? '' 
     = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-cause' => 'file', :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus', id: 'create-file-collapsed', label:'', title: t('exercises.editor.create_file'))
 
   - unless @embed_options[:disable_hints] or @tips.blank?
-    = render('editor_button', classes: 'btn-block btn-success btn mb-4', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-lightbulb', id: 'tips-collapsed', label:'', title: t('exercises.form.tips'))
+    = render('editor_button', classes: 'btn-block btn-secondary btn mb-4', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-lightbulb', id: 'tips-collapsed', label:'', title: t('exercises.form.tips'))
 
   - unless @embed_options[:disable_download]
     = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-download', id: 'download-collapsed', label:'', title: t('exercises.editor.download'))
