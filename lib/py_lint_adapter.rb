@@ -1,6 +1,6 @@
 class PyLintAdapter < TestingFrameworkAdapter
   REGEXP = /Your code has been rated at (-?\d+\.?\d*)\/(\d+\.?\d*)/
-  ASSERTION_ERROR_REGEXP = /^.*?\.py:(\d+):.*?\([^,]*?,\ ([^,]*?),([^,]*?)\)\ (.*?)$/
+  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):.*?\([^,]*?,\ ([^,]*?),([^,]*?)\)\ (.*?)$/
 
   def self.framework_name
     'PyLint'
@@ -21,12 +21,13 @@ class PyLintAdapter < TestingFrameworkAdapter
     begin
       assertion_error_matches = Timeout.timeout(2.seconds) do
         output[:stdout].scan(ASSERTION_ERROR_REGEXP).map do |match|
-          line_no = match.first.strip
-          test = match.second.strip
+          file_name = match.first.strip
+          line_no = match.second.strip
+          test = match.third.strip
           # e.g. function name, nil if outside of a function. Not always available
-          context = match.third.strip.presence
-          description = match.fourth.strip
-          {test: test, description: description, context: context, line: line_no}
+          context = match.fourth.strip.presence
+          description = match.fifth.strip
+          {test: test, description: description, context: context, line: line_no, file: file_name}
         end || []
       end
     rescue Timeout::Error
