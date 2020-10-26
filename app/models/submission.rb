@@ -53,6 +53,11 @@ class Submission < ApplicationRecord
     collect_files.detect(&:main_file?)
   end
 
+  def file_by_name(file_path)
+    # expects the full file path incl. file extension
+    collect_files.detect { |file| file.filepath == file_path }
+  end
+
   def normalized_score
     ::NewRelic::Agent.add_custom_attributes({unnormalized_score: score})
     if !score.nil? && !exercise.maximum_score.nil? && (exercise.maximum_score > 0)
