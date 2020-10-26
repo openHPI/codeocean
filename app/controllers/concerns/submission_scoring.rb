@@ -12,14 +12,14 @@ module SubmissionScoring
         output = execute_test_file(file, submission)
         assessment = assessor.assess(output)
         passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
-        testrun_output = passed ? nil : 'message: ' + output[:message].to_s + "\n stdout: " + output[:stdout].to_s + "\n stderr: " + output[:stderr].to_s
+        testrun_output = passed ? nil : 'status: ' + output[:status].to_s + "\n stdout: " + output[:stdout].to_s + "\n stderr: " + output[:stderr].to_s
         unless testrun_output.blank?
           submission.exercise.execution_environment.error_templates.each do |template|
             pattern = Regexp.new(template.signature).freeze
             StructuredError.create_from_template(template, testrun_output, submission) if pattern.match(testrun_output)
           end
         end
-        Testrun.new(
+        testrun = Testrun.create(
           submission: submission,
           cause: 'assess', # Required to differ run and assess for RfC show
           file: file, # Test file that was executed
@@ -27,7 +27,10 @@ module SubmissionScoring
           output: testrun_output,
           container_execution_time: output[:container_execution_time],
           waiting_for_container_time: output[:waiting_for_container_time]
-        ).save
+        )
+
+        LinterCheckRun.create_from(testrun, assessment) if file.teacher_defined_linter?
+
         output.merge!(assessment)
         output.merge!(filename: file.name_with_extension, message: feedback_message(file, output), weight: file.weight)
         # end

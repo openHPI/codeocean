@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_19_090123) do
+ActiveRecord::Schema.define(version: 2020_10_26_184633) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -263,6 +263,26 @@ ActiveRecord::Schema.define(version: 2020_10_19_090123) do
     t.text "markup"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "linter_check_runs", force: :cascade do |t|
+    t.bigint "linter_check_id", null: false
+    t.string "scope"
+    t.integer "line"
+    t.text "result"
+    t.bigint "testrun_id", null: false
+    t.bigint "file_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["file_id"], name: "index_linter_check_runs_on_file_id"
+    t.index ["linter_check_id"], name: "index_linter_check_runs_on_linter_check_id"
+    t.index ["testrun_id"], name: "index_linter_check_runs_on_testrun_id"
+  end
+
+  create_table "linter_checks", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "code", null: false
+    t.string "severity"
   end
 
   create_table "lti_parameters", id: :serial, force: :cascade do |t|
