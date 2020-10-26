@@ -32,17 +32,6 @@ class ExercisesController < ApplicationController
     1
   end
 
-  def experimental_courses
-    {
-      java17: '702cbd2a-c84c-4b37-923a-692d7d1532d0',
-      java1: '0ea88ea9-979a-44a3-b0e4-84ba58e5a05e'
-    }
-  end
-
-  def experimental_course?(course_token)
-    experimental_courses.value?(course_token)
-  end
-
   def batch_update
     @exercises = Exercise.all
     authorize!
@@ -313,7 +302,7 @@ class ExercisesController < ApplicationController
     # Tips are collected and set with set_available_tips.
     # Delete tips for those users who should not see them.
     # Doing this here is beneficial because all other (admin) routes still work.
-    @tips = nil unless Python20CourseWeek.show_tips? @exercise, @user_id
+    @tips = nil unless Python20CourseWeek.show_tips? @exercise, current_user.id
   end
 
   def set_course_token
