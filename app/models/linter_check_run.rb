@@ -22,9 +22,9 @@ class LinterCheckRun < ApplicationRecord
         testrun: testrun,
         file: file
       )
+    rescue ActiveRecord::RecordInvalid
+      # Something bad happened. Probably, the RegEx in lib/py_lint_adapter.rb didn't work.
+      Raven.extra_context(testrun: testrun, linter_result: linter_result)
     end
-  rescue ActiveRecord::RecordInvalid
-    # Something bad happened. Probably, the RegEx in lib/py_lint_adapter.rb didn't work.
-    Raven.extra_context(testrun: testrun, linter_result: linter_result)
   end
 end
