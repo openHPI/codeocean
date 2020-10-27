@@ -55,6 +55,8 @@ class Submission < ApplicationRecord
 
   def file_by_name(file_path)
     # expects the full file path incl. file extension
+    # Caution: There must be no unnecessary path prefix included.
+    # Use `file.ext` rather than `./file.ext`
     collect_files.detect { |file| file.filepath == file_path }
   end
 
