@@ -97,6 +97,9 @@ Turtle.prototype.update = function () {
             if (item.fill) {
                 ctx.strokeStyle = item.fill;
             }
+            if (item.width) {
+                ctx.lineWidth = item.width;
+            }
 
             ctx.stroke();
             break;
@@ -111,6 +114,9 @@ Turtle.prototype.update = function () {
                 ctx.fillStyle = item.fill;
                 ctx.strokeStyle = item.fill;
                 ctx.fill();
+            }
+            if (item.width) {
+                ctx.lineWidth = item.width;
             }
             ctx.stroke();
             break;
