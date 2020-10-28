@@ -377,7 +377,7 @@ var CodeOceanEditor = {
 
 
     initializeWorkspaceButtons: function () {
-        $('#submit').on('click', this.submitCode.bind(this));
+        $('#submit').one('click', this.submitCode.bind(this));
         $('#assess').on('click', this.scoreCode.bind(this));
         $('#dropdown-render, #render').on('click', this.renderCode.bind(this));
         $('#dropdown-run, #run').on('click', this.runCode.bind(this));
