@@ -1,22 +1,25 @@
+# frozen_string_literal: true
+
 class UserExerciseFeedbacksController < ApplicationController
   include CommonBehavior
 
-  before_action :set_user_exercise_feedback, only: [:edit, :update, :destroy]
+  before_action :set_user_exercise_feedback, only: %i[edit update destroy]
+  before_action :set_presets, only: %i[new edit create update]
 
   def comment_presets
-    [[0,t('user_exercise_feedback.difficulty_easy')],
-     [1,t('user_exercise_feedback.difficulty_some_what_easy')],
-     [2,t('user_exercise_feedback.difficulty_ok')],
-     [3,t('user_exercise_feedback.difficulty_some_what_difficult')],
-     [4,t('user_exercise_feedback.difficult_too_difficult')]]
+    [[0, t('user_exercise_feedback.difficulty_easy')],
+     [1, t('user_exercise_feedback.difficulty_some_what_easy')],
+     [2, t('user_exercise_feedback.difficulty_ok')],
+     [3, t('user_exercise_feedback.difficulty_some_what_difficult')],
+     [4, t('user_exercise_feedback.difficult_too_difficult')]]
   end
 
   def time_presets
-    [[0,t('user_exercise_feedback.estimated_time_less_5')],
-     [1,t('user_exercise_feedback.estimated_time_5_to_10')],
-     [2,t('user_exercise_feedback.estimated_time_10_to_20')],
-     [3,t('user_exercise_feedback.estimated_time_20_to_30')],
-     [4,t('user_exercise_feedback.estimated_time_more_30')]]
+    [[0, t('user_exercise_feedback.estimated_time_less_5')],
+     [1, t('user_exercise_feedback.estimated_time_5_to_10')],
+     [2, t('user_exercise_feedback.estimated_time_10_to_20')],
+     [3, t('user_exercise_feedback.estimated_time_20_to_30')],
+     [4, t('user_exercise_feedback.estimated_time_more_30')]]
   end
 
   def create
@@ -24,25 +27,29 @@ class UserExerciseFeedbacksController < ApplicationController
 
     @exercise = Exercise.find(uef_params[:exercise_id])
     rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
-    submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first rescue nil
+    submission = begin
+                   current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
+                 rescue StandardError
+                   nil
+                 end
 
     if @exercise
-      @uef = UserExerciseFeedback.new(uef_params)
+      @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
+      @uef.update_attributes(uef_params)
+      authorize!
       if validate_inputs(uef_params)
-        authorize!
         path =
           if rfc && submission && submission.normalized_score == 1.0
             request_for_comment_path(rfc)
           else
             implement_exercise_path(@exercise)
           end
-        create_and_respond(object: @uef, path: proc{path})
+        create_and_respond(object: @uef, path: proc { path })
       else
         flash[:danger] = t('shared.message_failure')
-        redirect_to(:back, id: uef_params[:exercise_id])
+        redirect_back fallback_location: user_exercise_feedback_path(@uef)
       end
     end
-
   end
 
   def destroy
@@ -51,35 +58,39 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def edit
-    @texts = comment_presets.to_a
-    @times = time_presets.to_a
     authorize!
   end
 
   def new
-    @texts = comment_presets.to_a
-    @times = time_presets.to_a
-    @uef = UserExerciseFeedback.new
-    exercise_id = if params[:user_exercise_feedback].nil? then params[:exercise_id] else params[:user_exercise_feedback][:exercise_id] end
+    exercise_id = if params[:user_exercise_feedback].nil?
+                    params[:exercise_id]
+                  else
+                    params[:user_exercise_feedback][:exercise_id]
+                  end
     @exercise = Exercise.find(exercise_id)
+    @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
     authorize!
   end
 
   def update
-    submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first rescue nil
+    submission = begin
+                   current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
+                 rescue StandardError
+                   nil
+                 end
     rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
     authorize!
     if @exercise && validate_inputs(uef_params)
       path =
-          if rfc && submission && submission.normalized_score == 1.0
-            request_for_comment_path(rfc)
-          else
-            implement_exercise_path(@exercise)
-          end
+        if rfc && submission && submission.normalized_score == 1.0
+          request_for_comment_path(rfc)
+        else
+          implement_exercise_path(@exercise)
+        end
       update_and_respond(object: @uef, params: uef_params, path: path)
     else
       flash[:danger] = t('shared.message_failure')
-      redirect_to(:back, id: uef_params[:exercise_id])
+      redirect_back fallback_location: user_exercise_feedback_path(@uef)
     end
   end
 
@@ -96,6 +107,11 @@ class UserExerciseFeedbacksController < ApplicationController
   def set_user_exercise_feedback
     @uef = UserExerciseFeedback.find(params[:id])
     @exercise = @uef.exercise
+  end
+
+  def set_presets
+    @texts = comment_presets.to_a
+    @times = time_presets.to_a
   end
 
   def uef_params
@@ -122,17 +138,14 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def validate_inputs(uef_params)
-    begin
-      if uef_params[:difficulty].to_i < 0 || uef_params[:difficulty].to_i >= comment_presets.size
-        return false
-      elsif uef_params[:user_estimated_worktime].to_i < 0 || uef_params[:user_estimated_worktime].to_i >= time_presets.size
-        return false
-      else
-        return true
-      end
-    rescue
-      return false
+    if uef_params[:difficulty].to_i.negative? || uef_params[:difficulty].to_i >= comment_presets.size
+      false
+    elsif uef_params[:user_estimated_worktime].to_i.negative? || uef_params[:user_estimated_worktime].to_i >= time_presets.size
+      false
+    else
+      true
     end
+  rescue StandardError
+    false
   end
-
 end
