@@ -45,7 +45,7 @@
                   - Timeout::timeout(2) do
                     // (?:\\"|.) is required to correctly identify " within the output.
                     // The outer (?:   |\d+?) is used to correctly identify integers within the JSON
-                    - messages = output.scan(/{(?:(?:"(?:\\"|.)+?":(?:"(?:\\"|.)+?"|\d+?|\[.*?\]))+?,?)+}/)
+                    - messages = output.scan(/{(?:(?:"(?:\\"|.)+?":(?:"(?:\\"|.)*?"|\d+?|\[.*?\]))+?,?)+}/)
                     - messages.map! {|el| JSON.parse(el)}
                     - messages.keep_if {|message| message['cmd'] == 'write'}
                     - messages.map! {|message| message['data']}
