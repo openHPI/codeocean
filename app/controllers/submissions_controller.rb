@@ -8,8 +8,8 @@ class SubmissionsController < ApplicationController
 
   before_action :set_submission, only: [:download, :download_file, :render_file, :run, :score, :extract_errors, :show, :statistics, :stop, :test]
   before_action :set_docker_client, only: [:run, :test]
-  before_action :set_files, only: [:download, :download_file, :render_file, :show]
-  before_action :set_file, only: [:download_file, :render_file]
+  before_action :set_files, only: [:download, :download_file, :render_file, :show, :run]
+  before_action :set_file, only: [:download_file, :render_file, :run]
   before_action :set_mime_type, only: [:download_file, :render_file]
   skip_before_action :verify_authenticity_token, only: [:download_file, :render_file]
 
