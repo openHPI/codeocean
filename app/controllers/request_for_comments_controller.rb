@@ -2,7 +2,7 @@ class RequestForCommentsController < ApplicationController
   include SubmissionScoring
   before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy, :mark_as_solved, :set_thank_you_note]
 
-  skip_after_action :verify_authorized
+  before_action :require_user!
 
   def authorize!
     authorize(@request_for_comments || @request_for_comment)
@@ -26,11 +26,12 @@ class RequestForCommentsController < ApplicationController
   def get_my_comment_requests
     @search = RequestForComment
                   .with_last_activity
-                  .where(user_id: current_user.id)
+                  .where(user_id: current_user&.id)
                   .ransack(params[:q])
     @request_for_comments = @search.result
                                 .order('created_at DESC')
                                 .paginate(page: params[:page])
+    authorize!
     render 'index'
   end
 
@@ -44,6 +45,7 @@ class RequestForCommentsController < ApplicationController
     @request_for_comments = @search.result
                                 .order('last_comment DESC')
                                 .paginate(page: params[:page])
+    authorize!
     render 'index'
   end
 
@@ -83,10 +85,6 @@ class RequestForCommentsController < ApplicationController
     authorize!
   end
 
-  # GET /request_for_comments/1/edit
-  def edit
-  end
-
   # POST /request_for_comments.json
   def create
     # Consider all requests as JSON
@@ -107,17 +105,6 @@ class RequestForCommentsController < ApplicationController
         format.html { render :new }
         format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
       end
-    end
-    authorize!
-  end
-
-  # DELETE /request_for_comments/1
-  # DELETE /request_for_comments/1.json
-  def destroy
-    @request_for_comment.destroy
-    respond_to do |format|
-      format.html { redirect_to request_for_comments_url, notice: 'Request for comment was successfully destroyed.' }
-      format.json { head :no_content }
     end
     authorize!
   end

@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     end
   end
   resources :codeharbor_links, only: %i[new create edit update destroy]
-  resources :request_for_comments do
+  resources :request_for_comments, except: %i[edit destroy] do
     member do
       get :mark_as_solved, defaults: { format: :json }
       post :set_thank_you_note, defaults: { format: :json }
