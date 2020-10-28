@@ -34,4 +34,12 @@ class RequestForCommentPolicy < ApplicationPolicy
   def create_comment_exercise?
     everyone
   end
+
+  def get_my_comment_requests?
+    everyone
+  end
+
+  def get_rfcs_with_my_comments?
+    everyone
+  end
 end
