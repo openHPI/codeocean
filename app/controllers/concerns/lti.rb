@@ -155,8 +155,6 @@ module Lti
 
     if provider.nil?
       {status: 'error'}
-    elsif submission.after_late_deadline?
-      {status: 'too late'}
     elsif provider.outcome_service?
       Raven.extra_context({
                             provider: provider.inspect,
@@ -165,8 +163,20 @@ module Lti
                             session: session.to_hash,
                             exercise_id: submission.exercise_id
                           })
-      response = provider.post_replace_result!(submission.normalized_score)
-      {code: response.response_code, message: response.post_response.body, status: response.code_major}
+      normalized_lit_score = submission.normalized_score
+      if submission.before_deadline?
+        # Keep the full score
+      elsif submission.within_grace_period?
+        # Reduce score by 20%
+        normalized_lit_score *= 0.8
+      elsif submission.after_late_deadline?
+        # Reduce score by 100%
+        normalized_lit_score *= 0.0
+      else # no deadline
+        # Keep the full score
+      end
+      response = provider.post_replace_result!(normalized_lit_score)
+      {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lit_score}
     else
       {status: 'unsupported'}
     end

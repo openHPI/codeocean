@@ -336,8 +336,8 @@ en:
         exercise_deadline_passed: 'Either the deadline has already passed or you did not directly access this page from the e-learning platform. (Did you use the Back button of your browser after submitting the score?)'
       request_for_comments_sent: "Request for comments sent."
       hints:
-        submission_deadline: Any submission obtained after the deadline will be considered late.
-        late_submission_deadline: Any submission obtained after the deadline but before the late submission deadline will be considered as late and might only be scored with a penality. Any submission obtained after the late submission deadline might not be considered.
+        submission_deadline: Any submission obtained after the deadline will be considered late and no score will be sent to the e-learning platform.
+        late_submission_deadline: Any submission obtained after the deadline but before the late submission deadline will be considered as late and will only be scored with a penality of 20%. Any submission obtained after the late submission deadline will not be scored at all.
         disclaimer: If unsure about a deadline, please contact a course instructor. The deadline shown here is only informational and information from the e-learning platform should always take precedence.
     editor_file_tree:
       file_root: Files
@@ -375,8 +375,8 @@ en:
       no_execution_environment_selected: Select an execution environment before publishing the exercise.
       none: None
       hints:
-        submission_deadline: A date and time in UTC to close the submission. Any submission obtained after the deadline will be considered late.
-        late_submission_deadline: A grace period for submissions in UTC. The late submission deadline should not be set or any timestamp before the original submission deadline. Any submission obtained after the deadline will be clearly marked.
+        submission_deadline: A date and time in UTC to close the submission. Any submission obtained after the deadline will be considered late and the score sent to the e-learning platform will be reduced by 20%.
+        late_submission_deadline: A grace period for submissions in UTC. The late submission deadline should not be set or any timestamp before the original submission deadline. Any submission obtained after the deadline will be clearly marked and the score sent to the e-learning platform will be reduced by 100%.
     implement:
       alert:
         text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'

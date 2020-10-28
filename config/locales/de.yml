@@ -336,9 +336,9 @@ de:
         exercise_deadline_passed: 'Entweder ist die Abgabefrist bereits abgelaufen oder Sie haben die Aufgabe nicht direkt über die E-Learning Plattform gestartet. (Möglicherweise haben Sie den Zurück Button Ihres Browsers benutzt nachdem Sie Ihre Aufgabe abgegeben haben?)'
       request_for_comments_sent: "Kommentaranfrage gesendet."
       hints:
-        submission_deadline: Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet.
-        late_submission_deadline: Abgaben nach der Abgabefrist und vor der verspäteten Abgabefrist werden als verspätet gekennzeichnet und möglicherweise nur mit Punktabzug gewertet. Abgaben nach der verspäteten Abgabefrist werden möglicherweise nicht berücksichtigt.
-        disclaimer: Bei Fragen zu Deadlines wenden Sie sich bitte an das Teaching Team. Die hier angezeigte Abgabefrist dient nur zur Information und Angaben auf der jeweiligen Kursseite in der E-Learning Platform sollen immer Vorrang haben.
+        submission_deadline: Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet und die Punktzahl wird nicht an die E-Learning-Plattform übertragen.
+        late_submission_deadline: Abgaben nach der Abgabefrist und vor der verspäteten Abgabefrist werden als verspätet gekennzeichnet und mit einem 20%-Punktabzug gewertet. Abgaben nach der verspäteten Abgabefrist werden nicht mehr bepunktet.
+        disclaimer: Bei Fragen zu Deadlines wenden Sie sich bitte an das Teaching Team. Die hier angezeigte Abgabefrist dient nur zur Information und Angaben auf der jeweiligen Kursseite in der E-Learning-Plattform sollen immer Vorrang haben.
     editor_file_tree:
       file_root: Dateien
     import_codeharbor:
@@ -375,8 +375,8 @@ de:
       no_execution_environment_selected: Bitte eine Ausführungsumgebung auswählen, bevor die Aufgabe aktiviert wird.
       none: Keine
       hints:
-        submission_deadline: Ein Zeitpunkt in UTC, zu dem die Abgabe geschlossen wird. Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet.
-        late_submission_deadline: Eine Gnadenfrist für Abgaben in UTC. Die verlängerte Abgabefrist soll nicht vor der eigentlichen Abgabefrist liegen. Abgaben nach der Abgabefrist werden deutlich gekennzeichnet.
+        submission_deadline: Ein Zeitpunkt in UTC, zu dem die Abgabe geschlossen wird. Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet und nur mit 20% Punktabzug an die E-Learning-Plattform übertragen.
+        late_submission_deadline: Eine Gnadenfrist für Abgaben in UTC. Die verlängerte Abgabefrist soll nicht vor der eigentlichen Abgabefrist liegen. Abgaben nach der Abgabefrist werden deutlich gekennzeichnet und mit 100% Punktabzug an die E-Learning-Plattform übertragen.
     implement:
       alert:
         text: 'Ihr Browser unterstützt nicht alle Funktionalitäten, die %{application_name} benötigt. Bitte nutzen Sie einen modernen Browser, um %{application_name} zu besuchen.'

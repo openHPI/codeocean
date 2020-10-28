@@ -529,10 +529,11 @@ class ExercisesController < ApplicationController
     response = send_score(@submission)
 
     if response[:status] == 'success'
-      redirect_after_submit
-    elsif response[:status] == 'too late'
-      flash[:warning] = I18n.t('exercises.submit.too_late')
-      flash.keep(:warning)
+      if response[:score_sent] != @submission.normalized_score
+        # Score has been reduced due to the passed deadline
+        flash[:warning] = I18n.t('exercises.submit.too_late')
+        flash.keep(:warning)
+      end
       redirect_after_submit
     else
       respond_to do |format|
