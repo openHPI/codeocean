@@ -1,7 +1,7 @@
 $(document).on('turbolinks:load', function() {
     if ($.isController('error_templates')) {
         $('#add-attribute').find('button').on('click', function () {
-            $.ajax(location + '/attribute.json', {
+            $.ajax('//' + location.host + location.pathname + '/attribute.json', {
                 method: 'POST',
                 data: {
                     _method: 'PUT',

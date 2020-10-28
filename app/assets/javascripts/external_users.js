@@ -17,7 +17,7 @@ $(document).on('turbolinks:load', function() {
         </a>';
     };
 
-    var jqxhr = $.ajax(window.location.href + '/tag_statistics', {
+    var jqxhr = $.ajax('//' + location.host + location.pathname + '/tag_statistics', {
       dataType: 'json',
       method: 'GET'
     });
