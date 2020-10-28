@@ -88,7 +88,9 @@ class DockerClient
     headers = {'Origin' => 'http://localhost'}
 
     socket_url = DockerClient.config['ws_host'] + '/v1.27/containers/' + @container.id + '/attach/ws?' + query_params
-    socket = Faye::WebSocket::Client.new(socket_url, [], headers: headers)
+    # The ping value is measured in seconds and specifies how often a Ping frame should be sent.
+    # Internally, Faye::WebSocket uses EventMachine and the ping value is used to wake the EventMachine thread
+    socket = Faye::WebSocket::Client.new(socket_url, [], headers: headers, ping: 0.1)
 
     Rails.logger.debug 'Opening Websocket on URL ' + socket_url
 
