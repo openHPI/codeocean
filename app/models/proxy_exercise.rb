@@ -171,6 +171,8 @@ class ProxyExercise < ApplicationRecord
       if points_ratio == 0.0
         Rails.logger.debug("scoring user #{user.id} for exercise #{ex.id}: points_ratio=#{points_ratio} score: 0" )
         return 0.0
+      elsif points_ratio > 1.0
+        points_ratio = 1.0 # The score of the exercise was adjusted and is now lower than it was
       end
       points_ratio_index = ((scoring_matrix.size - 1)  * points_ratio).to_i
       working_time_user = ex.accumulated_working_time_for_only(user)

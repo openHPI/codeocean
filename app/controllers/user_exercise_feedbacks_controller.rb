@@ -20,6 +20,8 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def create
+    Raven.extra_context(params: uef_params)
+
     @exercise = Exercise.find(uef_params[:exercise_id])
     rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
     submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first rescue nil
