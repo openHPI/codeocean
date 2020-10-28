@@ -8,6 +8,8 @@ Rails.application.tap do |app|
   Raven.configure do |config|
     config.sanitize_fields = app.config.filter_parameters.map(&:to_s)
 
+    config.processors -= [Raven::Processor::PostData] # Do this to send POST data
+
     config.async = lambda do |event|
       pool.post { ::Raven.send_event(event) }
     end
