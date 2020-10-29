@@ -155,6 +155,7 @@ CodeOceanEditorSubmissions = {
    */
   runCode: function(event) {
     event.preventDefault();
+    this.stopCode(event);
     if ($('#run').is(':visible')) {
       this.createSubmission('#run', null, this.runSubmission.bind(this));
     }
