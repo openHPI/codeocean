@@ -6,6 +6,7 @@ CodeOceanEditorEvaluation = {
      */
     scoreCode: function (event) {
         event.preventDefault();
+        this.stopCode(event);
         this.clearScoringOutput();
         $('#submit').addClass("d-none");
         this.createSubmission('#assess', null, function (response) {
