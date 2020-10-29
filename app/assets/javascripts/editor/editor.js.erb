@@ -414,6 +414,9 @@ var CodeOceanEditor = {
     },
 
     isActiveFileRenderable: function () {
+        if (this.active_frame.data() === undefined) {
+            return false;
+        }
         return 'renderable' in this.active_frame.data();
     },
 
