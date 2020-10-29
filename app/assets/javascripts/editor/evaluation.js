@@ -126,7 +126,7 @@ CodeOceanEditorEvaluation = {
     },
 
     killWebsocket: function () {
-        if (this.websocket != null && this.websocket.getReadyState() != WebSocket.OPEN) {
+        if (this.websocket != null && this.websocket.getReadyState() !== WebSocket.OPEN) {
             return;
         }
 
