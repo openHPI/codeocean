@@ -93,7 +93,7 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
           context 'when user has codeharbor_link' do
             before { user.codeharbor_link = FactoryBot.build(:codeharbor_link) }
 
-            it 'does not grants access' do
+            it 'does not grant access' do
               expect(subject).not_to permit(user, exercise)
             end
           end
