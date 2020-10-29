@@ -10,7 +10,8 @@ rvm:
   - 2.7.2
 cache:
   bundler: true
-  yarn: true
+  directories:
+    - node_modules # NPM and yarn packages
 
 env:
   global:
