@@ -11,6 +11,15 @@ CodeOceanEditorSubmissions = {
   createSubmission: function (initiator, filter, callback) {
     this.showSpinner(initiator);
     var url = $(initiator).data('url') || $('#editor').data('submissions-url');
+
+    if (url === undefined) {
+        const data = {
+            initiator: initiator,
+            filter: filter,
+        }
+        Sentry.captureException(JSON.stringify(data));
+        return;
+    }
     var jqxhr = this.ajax({
       data: {
         submission: {
