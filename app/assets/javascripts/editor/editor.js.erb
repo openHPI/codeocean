@@ -660,7 +660,7 @@ var CodeOceanEditor = {
             text: $('#flash').data('websocket-failure'),
             showPermanent: true
         });
-        Sentry.captureException(JSON.stringify(error));
+        Sentry.captureException(JSON.stringify(error, ["message", "arguments", "type", "name", "data"]));
     },
 
     showFileDialog: function (event) {
