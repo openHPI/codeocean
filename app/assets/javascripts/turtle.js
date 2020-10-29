@@ -26,7 +26,12 @@ function Turtle(unused_pipe_reference, canvas) {
         CodeOceanEditorWebsocket.websocket.send('\n');
     };
 
-    $(document).keydown(function(e) {
+    this.handleArrowKeys = function(e) {
+        if (!CodeOceanEditorWebsocket.websocket ||
+            CodeOceanEditorWebsocket.websocket.getReadyState() !== WebSocket.OPEN) {
+            return;
+        }
+
         switch(e.which) {
             case 37: // left
                 sendEvent(140, 160);
@@ -47,7 +52,9 @@ function Turtle(unused_pipe_reference, canvas) {
             default: return; // exit this handler for other keys
         }
         e.preventDefault(); // prevent the default action (scroll / move caret)
-    });
+    }
+
+    $(document).keydown(this.handleArrowKeys);
 
     this.canvas.click(function (e) {
         if (e.eventPhase !== 2) {
