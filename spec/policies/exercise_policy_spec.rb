@@ -30,7 +30,7 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
     end
   end
 
-  [:clone?, :destroy?, :edit?, :update?, :export_external_check?, :export_external_confirm?].each do |action|
+  [:clone?, :destroy?, :edit?, :update?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), exercise)
@@ -43,6 +43,60 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
       it 'does not grant access to all other users' do
         [:external_user, :teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), exercise)
+        end
+      end
+    end
+  end
+
+  [:export_external_check?, :export_external_confirm?].each do |action|
+    permissions(action) do
+      context 'when user is author' do
+        let(:user) { exercise.author }
+
+        it 'does not grant access' do
+          expect(subject).not_to permit(user, exercise)
+        end
+
+        context 'when user has codeharbor_link' do
+          before { user.codeharbor_link = FactoryBot.build(:codeharbor_link) }
+
+          it 'grants access' do
+            expect(subject).to permit(user, exercise)
+          end
+        end
+      end
+
+      context 'when user is admin' do
+        let(:user) { FactoryBot.build(:admin) }
+
+        it 'does not grant access' do
+          expect(subject).not_to permit(user, exercise)
+        end
+
+        context 'when user has codeharbor_link' do
+          before { user.codeharbor_link = FactoryBot.build(:codeharbor_link) }
+
+          it 'grants access' do
+            expect(subject).to permit(user, exercise)
+          end
+        end
+      end
+
+      [:external_user, :teacher].each do |factory_name|
+        context "when user is #{factory_name}" do
+          let(:user) { FactoryBot.build(factory_name) }
+
+          it 'does not grant access' do
+            expect(subject).not_to permit(user, exercise)
+          end
+
+          context 'when user has codeharbor_link' do
+            before { user.codeharbor_link = FactoryBot.build(:codeharbor_link) }
+
+            it 'does not grants access' do
+              expect(subject).not_to permit(user, exercise)
+            end
+          end
         end
       end
     end
