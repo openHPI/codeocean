@@ -197,6 +197,7 @@ CodeOceanEditorSubmissions = {
     this.createSubmission($('#submit'), null, function (response) {
       if (response.redirect) {
         Turbolinks.clearCache();
+        clearTimeout(this.autosaveTimer);
         Turbolinks.visit(response.redirect);
       }
     })
