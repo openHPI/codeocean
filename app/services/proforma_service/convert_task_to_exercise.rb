@@ -47,9 +47,10 @@ module ProformaService
     end
 
     def codeocean_file_from_task_file(file)
+      extension = File.extname(file.filename)
       codeocean_file = CodeOcean::File.new(
         context: @exercise,
-        file_type: FileType.find_by(file_extension: File.extname(file.filename)),
+        file_type: file_type(extension),
         hidden: file.visible == 'no',
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
@@ -62,6 +63,11 @@ module ProformaService
         codeocean_file.content = file.content
       end
       codeocean_file
+    end
+
+    def file_type(extension)
+      FileType.find_by(file_extension: extension) ||
+        FileType.create(file_extension: extension, name: extension[1..-1], user: @user, indent_size: 4, editor_mode: 'ace/mode/plain_text')
     end
   end
 end
