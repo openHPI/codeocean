@@ -69,7 +69,7 @@ describe ProformaService::ConvertTaskToExercise do
         Proforma::TaskFile.new(
           id: 'id',
           content: content,
-          filename: "#{path}filename.txt",
+          filename: filename,
           used_by_grader: 'used_by_grader',
           visible: 'yes',
           usage_by_lms: usage_by_lms,
@@ -78,6 +78,7 @@ describe ProformaService::ConvertTaskToExercise do
           mimetype: mimetype
         )
       end
+      let(:filename) { "#{path}filename.txt" }
       let(:usage_by_lms) { 'display' }
       let(:mimetype) { 'mimetype' }
       let(:binary) { false }
@@ -146,6 +147,18 @@ describe ProformaService::ConvertTaskToExercise do
 
         it 'leaves exercise_files empty' do
           expect(convert_to_exercise_service.files).to be_empty
+        end
+      end
+
+      context 'when file has an unkown file_type' do
+        let(:filename) { 'unknown_file_type.asdf' }
+
+        it 'creates a new Exercise on save' do
+          expect { convert_to_exercise_service.save! }.to change(Exercise, :count).by(1)
+        end
+
+        it 'creates the missing FileType on save' do
+          expect { convert_to_exercise_service.save! }.to change(FileType, :count).by(1)
         end
       end
     end
