@@ -344,7 +344,7 @@ en:
     import_codeharbor:
       import_errors:
         invalid: Invalid exercise
-        internal_error: An internal error occurred on Codeharbor while importing the exercise.
+        internal_error: An internal error occurred on CodeOcean while importing the exercise.
     export_codeharbor:
       label: Export to Codeharbor
       dialogtitle: Export to Codeharbor

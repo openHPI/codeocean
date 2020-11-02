@@ -178,7 +178,6 @@ class ExercisesController < ApplicationController
     user = user_from_api_key
     return render json: {}, status: 401 if user.nil?
 
-    exercise = nil
     ActiveRecord::Base.transaction do
       exercise = ::ProformaService::Import.call(zip: tempfile, user: user)
       exercise.save!
@@ -188,7 +187,8 @@ class ExercisesController < ApplicationController
     render json: {}, status: 401
   rescue Proforma::ProformaError
     render json: t('exercises.import_codeharbor.import_errors.invalid'), status: 400
-  rescue StandardError
+  rescue StandardError => e
+    Raven.capture_exception(e)
     render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: 500
   end
 
