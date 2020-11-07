@@ -14,6 +14,7 @@ development:
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   pool:
     active: true
+    location: http://localhost:3000
     refill:
       async: false
       batch_size: 8
@@ -26,6 +27,7 @@ production:
   host: unix:///var/run/docker.sock
   pool:
     active: true
+    location: http://localhost:3000
     refill:
       async: false
       batch_size: 8
@@ -40,6 +42,7 @@ staging:
   host: unix:///var/run/docker.sock
   pool:
     active: true
+    location: http://localhost:3000
     refill:
       async: false
       batch_size: 8
