@@ -29,7 +29,10 @@ module SubmissionScoring
           waiting_for_container_time: output[:waiting_for_container_time]
         )
 
-        LinterCheckRun.create_from(testrun, assessment) if file.teacher_defined_linter?
+        if file.teacher_defined_linter?
+          LinterCheckRun.create_from(testrun, assessment)
+          assessment = assessor.translate_linter(assessment)
+        end
 
         output.merge!(assessment)
         output.merge!(filename: file.name_with_extension, message: feedback_message(file, output), weight: file.weight)

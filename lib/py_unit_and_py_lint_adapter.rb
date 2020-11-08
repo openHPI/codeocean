@@ -11,4 +11,8 @@ class PyUnitAndPyLintAdapter < TestingFrameworkAdapter
       PyUnitAdapter.new.parse_output(output)
     end
   end
+
+  def translate_linter(result)
+    PyLintAdapter.translate_linter(result)
+  end
 end
