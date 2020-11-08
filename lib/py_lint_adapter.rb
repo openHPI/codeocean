@@ -39,4 +39,44 @@ class PyLintAdapter < TestingFrameworkAdapter
     concatenated_errors = assertion_error_matches.map { |result| "#{result[:name]}: #{result[:result]}" }.flatten
     {count: count, failed: failed, error_messages: concatenated_errors, detailed_linter_results: assertion_error_matches}
   end
+
+  def self.translate_linter(assessment)
+    # The message will be translated once the results were stored in the database
+    # See SubmissionScoring for actual function call
+
+    assessment[:detailed_linter_results].map! do |message|
+      severity = message[:severity]
+      name = message[:name]
+
+      message[:severity] = I18n.t("linter.#{severity}.severity_name", locale: :de, default: message[:severity])
+      message[:name] = I18n.t("linter.#{severity}.#{name}.name", locale: :de, default: message[:name])
+
+      regex = I18n.t("linter.#{severity}.#{name}.regex", locale: :de, default: nil)&.strip
+
+      if regex.present?
+        captures = message[:result].match(Regexp.new(regex)).named_captures.symbolize_keys
+
+        replacement = captures.each do |key, value|
+          value&.replace I18n.t("linter.#{severity}.#{name}.#{key}.#{value}", default: value, locale: :de)
+        end
+      else
+        replacement = {}
+      end
+
+      replacement.merge!(locale: :de, default: message[:result])
+      message[:result] = I18n.t("linter.#{severity}.#{name}.replacement", replacement)
+      message
+    end
+
+    assessment[:error_messages] = assessment[:detailed_linter_results].map do |message|
+      "#{message[:name]}: #{message[:result]}"
+    end
+
+    assessment
+  rescue StandardError => e
+    # A key was not defined or something really bad happened
+    Raven.extra_context(assessment)
+    Raven.capture_exception(e)
+    assessment
+  end
 end
