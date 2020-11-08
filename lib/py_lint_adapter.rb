@@ -44,6 +44,8 @@ class PyLintAdapter < TestingFrameworkAdapter
     # The message will be translated once the results were stored in the database
     # See SubmissionScoring for actual function call
 
+    return assessment unless assessment[:detailed_linter_results].present?
+
     assessment[:detailed_linter_results].map! do |message|
       severity = message[:severity]
       name = message[:name]
