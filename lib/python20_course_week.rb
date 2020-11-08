@@ -8,7 +8,13 @@ class Python20CourseWeek
       1
     when /Python20 Aufgabe 2/
       2
-    when /Python20 Aufgabe 3/
+    when /Python20 Aufgabe 3.1/
+      nil # Explicitly enable everything (linter + tips if available)!
+    when /Python20 Aufgabe 3.2/
+      3
+    when /Python20 Aufgabe 3.3/
+      3
+    when /Python20 Aufgabe 3.4/
       3
     when /Python20 Aufgabe 4/
       4

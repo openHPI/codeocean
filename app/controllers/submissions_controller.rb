@@ -220,7 +220,9 @@ class SubmissionsController < ApplicationController
     # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
     save_run_output
 
-    if @run_output.blank?
+    # For Python containers, the @run_output is '{"cmd":"exit"}' as a string.
+    # If this is the case, we should consider it as blank
+    if @run_output.blank? || @run_output&.strip == '{"cmd":"exit"}'
       @raw_output ||= ''
       @run_output ||= ''
       parse_message t('exercises.implement.no_output', timestamp: l(Time.now, format: :short)), 'stdout', tubesock
