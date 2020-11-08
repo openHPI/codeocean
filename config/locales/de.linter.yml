@@ -81,7 +81,7 @@ de:
           expression cannot contain assignment, perhaps you meant: 'Die Anweisung kann keine Zuweisung enthalten, vielleicht meintest du folgendes: '
           f-string expression part cannot include a backslash: Ein Platzhalter in einem f-String kann keinen Backslash \ enthalten
           'f-string:': 'f-String:'
-          invalid character in identifier: Ungültiges Zeichen in Bezeichner
+          invalid character in identifier: Ungültiges Zeichen im Bezeichner
           invalid decimal literal: Ungültige Zahl # e.g. 100_years
           trailing comma not allowed without surrounding parentheses: Ein Komma am Ende einer Aufzählung ist ohne umgebende Klammern nicht erlaubt
           unexpected EOF while parsing: Es wurden weitere Zeichen in dem Quellcode erwartet, diese fehlten jedoch
@@ -94,14 +94,14 @@ de:
           function call: ' eine Funktion'
           literal: ' eine Zahl'
           operator: ' einen Operator'
-          set display: ' ein Set'
+          set display: ' einer Menge'
           list display: ' eine Liste'
           dict display: ' ein Dictionary'
           f-string expression: ' einem F-String'
           # the following are in the context of an f-string
           empty expression not allowed: ' eine leere Anweisung ist nicht erlaubt'
           single: ' eine einzelne "'
-          unmatched: ' unpassende '
+          unmatched: ' unpassende Klammer '
         explanation:
           Did you mean: '" fehlen. Vielleicht meintest du folgendes:'
           does not match opening parenthesis: ' passt nicht zu der öffnenden Klammer '
@@ -140,7 +140,7 @@ de:
         replacement: Entweder sollten alle return Anweisungen in einer Funktion ein Ergebnis zurückgeben oder keine Anweisung sollte einen Rückgabewert haben
       redefined-argument-from-local:
         example: Redefining argument with the local name 'Wort'
-        name: Überschreibung eines Arguments
+        name: Überschreiben eines Arguments
         regex: .*'(?<name>.*)'.*
         replacement: Das Argument '%{name}' wird überschrieben
     warning:
@@ -177,12 +177,12 @@ de:
         replacement: Ein einzelner String ohne Zuweisung hat keine Auswirkung
       redefined-builtin:
         example: Redefining built-in 'print'
-        name: Überschreibung
+        name: Überschreiben
         regex: .*'(?<builtin>.*)'.*
         replacement: Der interne Bezeichner '%{builtin}' wird überschrieben
       redefined-outer-name:
         example: Redefining name 'name' from outer scope (line 1)
-        name: Überschreibung eines äußeren Bezeichners
+        name: Überschreiben
         regex: .*'(?<name>.*)'.*\(line (?<line>\d*)\).*
         replacement: Der Bezeichner '%{name}', der bereits in Zeile %{line} definiert wurde, wird überschrieben
       self-assigning-variable:
@@ -194,7 +194,7 @@ de:
         example: Unreachable code
         name: Unerreichbar
         regex: .*
-        replacement: Die Anweisung wird nie ausgeführt werden
+        replacement: Die Anweisung wird nie ausgeführt
       undefined-loop-variable:
         example: Using possibly undefined loop variable 'i'
         name: Unbekannte Schleifenvariable
