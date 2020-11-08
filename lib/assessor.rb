@@ -4,7 +4,7 @@ class Assessor
   def assess(output)
     test_outcome = @testing_framework_adapter.test_outcome(output)
     test_outcome.merge(score: calculate_score(test_outcome))
-  rescue
+  rescue StandardError
     {score: 0}
   end
 
