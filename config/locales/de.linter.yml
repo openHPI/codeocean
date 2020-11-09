@@ -147,9 +147,9 @@ de:
       severity_name: Warnung
       bad-indentation:
         example: Bad indentation. Found 3 spaces, expected 4
-        name: Ungütlige Einrückung
-        regex: .*(?<actual>\d*).*(?<expected>\d*).*
-        replacement: Ungültige Einrückung. Statt '%{actual}' Leerzeichen wurden %{expected} Leerzeichen erwartet
+        name: Ungültige Einrückung
+        regex: .*(?<actual>\d+).*(?<expected>\d+).*
+        replacement: Statt %{actual} Leerzeichen wurden %{expected} Leerzeichen erwartet
       duplicate-key:
         example: Duplicate key 100 in dictionary
         name: Doppelter Schlüssel
@@ -204,7 +204,7 @@ de:
         example: Unnecessary semicolon
         name: Unnötiges Semikolon
         regex: .*
-        replacement: Das Semikolon ist unnötig
+        replacement: Am Ende einer Zeile sollte kein Semikolon stehen
       unused-argument:
         example: Unused argument 'laenge'
         name: Unbenutztes Argument
