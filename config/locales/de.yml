@@ -387,7 +387,8 @@ de:
       messages: Meldungen
       feedback: Feedback
       test_file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
-      linter_file: 'Linter-Feedback (ohne Punkte)<span class="number d-none">%{number}</span><span class="filename d-none">%{filename}</span>'
+      linter_file: 'Linter-Feedback <span class="number d-none">%{number}</span>(<span class="filename">%{filename}</span>)'
+      not_graded: ohne Punkte
       hint: Hinweis
       no_files: Die Aufgabe umfasst noch keine sichtbaren Dateien.
       no_output: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe.
