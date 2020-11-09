@@ -64,7 +64,7 @@ CodeOceanEditorEvaluation = {
 
     printScoringResults: function (response) {
         $('#results ul').first().html('');
-        $('.test-count .number').html(response.filter(function(x) { return x.file_role === 'teacher_defined_test'; }).length);
+        $('.test-count .number').html(response.filter(function(x) { return x && x.file_role === 'teacher_defined_test'; }).length);
         this.clearOutput();
 
         _.each(response, function (result, index) {
