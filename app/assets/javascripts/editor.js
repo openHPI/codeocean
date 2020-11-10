@@ -14,7 +14,7 @@ $(document).on('turbolinks:load', function(event) {
       CodeOceanEditorRequestForComments
   );
 
-  if ($('#editor').isPresent() && CodeOceanEditor && event.originalEvent.data.url.endsWith("/implement")) {
+  if ($('#editor').isPresent() && CodeOceanEditor && event.originalEvent.data.url.includes("/implement")) {
     if (CodeOceanEditor.isBrowserSupported()) {
       $('#alert').hide();
       // This call will (amon other things) initializeEditors and load the content except for the last line
