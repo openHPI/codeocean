@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbolinks:load', function(event) {
 
   //Merge all editor components.
   $.extend(
@@ -14,9 +14,12 @@ $(document).on('turbolinks:load', function() {
       CodeOceanEditorRequestForComments
   );
 
-  if ($('#editor').isPresent() && CodeOceanEditor) {
+  if ($('#editor').isPresent() && CodeOceanEditor && event.originalEvent.data.url.endsWith("/implement")) {
     if (CodeOceanEditor.isBrowserSupported()) {
       $('#alert').hide();
+      // This call will (amon other things) initializeEditors and load the content except for the last line
+      // It must not be called during page navigation. Otherwise, content will be duplicated!
+      // Search for insertLines and Turbolinks reload / cache control
       CodeOceanEditor.initializeEverything();
     }
   }
