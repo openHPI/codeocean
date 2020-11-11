@@ -4,7 +4,9 @@ CommandSocket = function(url, onOpen) {
   this.websocket.onopen = onOpen;
   this.websocket.onmessage = this.onMessage.bind(this);
   this.websocket.flush = function () {
-    this.send('\n');
+    if (this.readyState === this.OPEN) {
+        this.send('\n');
+    }
   }
 };
 
