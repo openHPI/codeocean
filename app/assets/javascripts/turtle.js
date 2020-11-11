@@ -148,7 +148,7 @@ Turtle.prototype.get_height = function () {
 };
 
 Turtle.prototype.delete = function (item) {
-    if (item == 'all') {
+    if (item === 'all') {
         this.items = [];
     } else {
         delete this.items[item];
@@ -209,7 +209,7 @@ function run(launchmsg) {
     output = $('#output');
     output.empty();
     if (typeof pipeurl === 'undefined') {
-        if (wp_port == '443') {
+        if (wp_port === '443') {
             pipeurl = 'wss://'+wp_hostname+'/pipe';
         } else {
             pipeurl = 'ws://'+wp_hostname+':'+wp_port+'/pipe';
@@ -222,7 +222,7 @@ function run(launchmsg) {
     };
     output.pipe.onmessage = function (response) {
         msg = JSON.parse(response.data);
-        if (msg.cmd == 'input') {
+        if (msg.cmd === 'input') {
             output.inputelem = $('<input>',{'size':40});
             submit = $('<input>',{'type':'submit'});
             submit.click(function (){
@@ -232,7 +232,7 @@ function run(launchmsg) {
                                                  'data':text}));
             });
         output.inputelem.keydown(function(event){
-                if(event.keyCode == 13){
+                if(event.keyCode === 13){
                     submit.click();
                 }
         });
@@ -240,8 +240,8 @@ function run(launchmsg) {
             output.input = $('<span>').append(output.inputelem).append(submit);
             output.append(output.input);
         output.inputelem.focus();
-        } else if (msg.cmd == 'stop') {
-            if (launchmsg.cmd == 'runscript') {
+        } else if (msg.cmd === 'stop') {
+            if (launchmsg.cmd === 'runscript') {
                 if (msg.timedout) {
                     output.append('<hr>Dein Programm hat zu lange gerechnet und wurde beendet.');
                 } else {
@@ -249,11 +249,11 @@ function run(launchmsg) {
                 }
             }
             output.pipe.close();
-        } else if (msg.cmd == 'passed') {
+        } else if (msg.cmd === 'passed') {
             $('#assess').html("Herzlich Glückwunsch! Dein Programm funktioniert korrekt.");
-        } else if (msg.cmd == 'failed') {
+        } else if (msg.cmd === 'failed') {
             $('#assess').html(msg.data);
-        } else if (msg.cmd == 'turtle') {
+        } else if (msg.cmd === 'turtle') {
             if (msg.action in turtlescreen) {
                 result = turtlescreen[msg.action].apply(turtlescreen, msg.args);
                 output.pipe.send(JSON.stringify({cmd:'result', 'result':result}));
@@ -261,16 +261,16 @@ function run(launchmsg) {
                 output.pipe.send(JSON.stringify({cmd:'exception', exception:'AttributeError',
                                                  message:msg.action}));
             }
-        } else if (msg.cmd == 'turtlebatch') {
+        } else if (msg.cmd === 'turtlebatch') {
             for (i=0; i < msg.batch.length; i += 1) {
                 cmd = msg.batch[i];
                 turtlescreen[cmd[0]].apply(turtlescreen, cmd[1]);
             }
         } else {
-            if(msg.stream == 'internal') {
+            if(msg.stream === 'internal') {
                 output.append('<hr><em>Interner Fehler (bitte melden):</em>\n');
             }
-        else if (msg.stream == 'stderr') {
+        else if (msg.stream === 'stderr') {
         showConsole();
         $('#consoleradio').prop('checked', 'checked');
         }
