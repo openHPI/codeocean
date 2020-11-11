@@ -180,10 +180,13 @@ Turtle.prototype.create_polygon = function () {
 
 // XXX might make this varargs as in Tkinter
 Turtle.prototype.coords = function (item, coords) {
-    if (coords === undefined) {
+    if (this.items[item] === undefined) {
+        return;
+    } else if (coords === undefined) {
         return this.items[item].coords;
+    } else {
+        this.items[item].coords = coords;
     }
-    this.items[item].coords = coords;
 };
 
 Turtle.prototype.itemconfigure = function (item, key, value) {
