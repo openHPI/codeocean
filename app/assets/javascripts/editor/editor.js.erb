@@ -180,10 +180,10 @@ var CodeOceanEditor = {
     },
 
     handleCopyEvent: function (text) {
-        this.lastCopyText = text;
+        CodeOceanEditor.lastCopyText = text;
     },
 
-    handlePasteEvent: function (pasteObject) {
+    handlePasteEvent: function (pasteObject, event) {
         var same = (CodeOceanEditor.lastCopyText === pasteObject.text);
 
         // if the text is not copied from within the editor (from any file), send an event to the backend
@@ -192,7 +192,7 @@ var CodeOceanEditor = {
                 category: 'editor_paste',
                 data: pasteObject.text,
                 exercise_id: $('#editor').data('exercise-id'),
-                file_id: $(event.target).parent().data('file-id')
+                file_id: $(event.container).data('file-id')
             });
         }
     },
