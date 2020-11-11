@@ -50,16 +50,16 @@ class PyLintAdapter < TestingFrameworkAdapter
       severity = message[:severity]
       name = message[:name]
 
-      message[:severity] = I18n.t("linter.#{severity}.severity_name", locale: :de, default: message[:severity])
-      message[:name] = I18n.t("linter.#{severity}.#{name}.name", locale: :de, default: message[:name])
+      message[:severity] = get_t("linter.#{severity}.severity_name", message[:severity])
+      message[:name] = get_t("linter.#{severity}.#{name}.name", message[:name])
 
-      regex = I18n.t("linter.#{severity}.#{name}.regex", locale: :de, default: nil)&.strip
+      regex = get_t("linter.#{severity}.#{name}.regex", nil)&.strip
 
       if regex.present?
         captures = message[:result].match(Regexp.new(regex)).named_captures.symbolize_keys
 
         replacement = captures.each do |key, value|
-          value&.replace I18n.t("linter.#{severity}.#{name}.#{key}.#{value}", default: value, locale: :de)
+          value&.replace get_t("linter.#{severity}.#{name}.#{key}.#{value}", value)
         end
       else
         replacement = {}
@@ -80,5 +80,11 @@ class PyLintAdapter < TestingFrameworkAdapter
     Raven.extra_context(assessment)
     Raven.capture_exception(e)
     assessment
+  end
+
+  def self.get_t(key, default)
+    translation = I18n.t(key, locale: :de, default: default)
+    Raven.capture_message({key: key, default: default}) if translation == default
+    translation
   end
 end
