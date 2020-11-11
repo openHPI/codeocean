@@ -27,6 +27,11 @@ module CommonBehavior
   def respond_with_invalid_object(format, options = {})
     format.html { render(options[:template]) }
     format.json { render(json: @object.errors, status: :unprocessable_entity) }
+    begin
+      @object.save!
+    rescue StandardError => e
+      Raven.capture_exception e
+    end
   end
 
   def respond_with_valid_object(format, options = {})
