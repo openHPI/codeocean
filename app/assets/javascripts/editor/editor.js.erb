@@ -629,10 +629,16 @@ var CodeOceanEditor = {
     },
 
     isActiveFileBinary: function () {
+        if (this.active_frame.data() === undefined) {
+            return false;
+        }
         return 'binary' in this.active_frame.data();
     },
 
     isActiveFileExecutable: function () {
+        if (this.active_frame.data() === undefined) {
+            return false;
+        }
         return 'executable' in this.active_frame.data();
     },
 
