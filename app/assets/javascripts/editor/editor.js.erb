@@ -136,7 +136,7 @@ var CodeOceanEditor = {
             filetree.jstree("deselect_all");
             filetree.jstree().select_node(file_id);
         } else {
-            setTimeout(this.selectFileInJsTree.bind(null, filetree, file_id), 250);
+            setTimeout(CodeOceanEditor.selectFileInJsTree.bind(null, filetree, file_id), 250);
         }
     },
 
