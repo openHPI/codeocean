@@ -84,7 +84,7 @@ class PyLintAdapter < TestingFrameworkAdapter
 
   def self.get_t(key, default)
     translation = I18n.t(key, locale: :de, default: default)
-    Raven.capture_message({key: key, default: default}) if translation == default
+    Raven.capture_message({key: key, default: default}.to_json) if translation == default
     translation
   end
 end
