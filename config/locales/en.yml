@@ -254,6 +254,7 @@ en:
       show: Dashboard
     sessions:
       new: Sign In
+      create: Sign In
       destroy_through_lti: Code Submission
     statistics:
       show: "Statistics"

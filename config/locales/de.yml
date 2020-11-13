@@ -254,6 +254,7 @@ de:
       show: Dashboard
     sessions:
       new: Anmelden
+      create: Anmelden
       destroy_through_lti: Code-Abgabe
     statistics:
       show: "Statistiken"
