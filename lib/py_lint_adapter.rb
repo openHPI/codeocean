@@ -83,8 +83,18 @@ class PyLintAdapter < TestingFrameworkAdapter
   end
 
   def self.get_t(key, default)
+    # key might be "linter.#{severity}.#{name}.#{key}.#{value}"
+    # or something like "linter.#{severity}.#{name}.replacement"
     translation = I18n.t(key, locale: :de, default: default)
-    Raven.capture_message({key: key, default: default}.to_json) if translation == default
+    keys = key.split('.')
+    final_key = keys.pop
+    if %w[severity_name name regex replacement].exclude? final_key
+      keys.pop # second last key, e.g. #{key}
+      log_missing = I18n.t(keys.append('log_missing').join('.'), locale: :de, default: true)
+    else
+      log_missing = true
+    end
+    Raven.capture_message({key: key, default: default}.to_json) if translation == default && log_missing
     translation
   end
 end
