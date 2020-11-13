@@ -48,6 +48,10 @@ CodeOceanEditorEvaluation = {
     },
 
     printScoringResult: function (result, index) {
+        if (result === undefined || result === null) {
+            return;
+        }
+
         $('#results').show();
         let card;
         if (result.file_role === 'teacher_defined_linter') {
