@@ -173,7 +173,7 @@ CodeOceanEditorEvaluation = {
     },
 
     printOutput: function (output, colorize, index) {
-        if (output === undefined || output.stderr === undefined && output.stdout === undefined) {
+        if (output === undefined || output === null || output.stderr === undefined && output.stdout === undefined) {
             // Prevent empty element with no text at all
             return;
         }
