@@ -89,8 +89,13 @@ class PyLintAdapter < TestingFrameworkAdapter
     keys = key.split('.')
     final_key = keys.pop
     if %w[severity_name name regex replacement].exclude? final_key
-      keys.pop # second last key, e.g. #{key}
-      log_missing = I18n.t(keys.append('log_missing').join('.'), locale: :de, default: true)
+      second_final = keys.pop # second last key, e.g. #{key}
+      # Check for known values from SyntaxError
+      log_missing = if %w[actual suggestion context line].exclude? second_final
+                      I18n.t(keys.append('log_missing').join('.'), locale: :de, default: true)
+                    else
+                      false
+                    end
     else
       log_missing = true
     end
