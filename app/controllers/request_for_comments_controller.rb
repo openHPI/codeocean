@@ -17,6 +17,7 @@ class RequestForCommentsController < ApplicationController
                   .with_last_activity
                   .ransack(params[:q])
     @request_for_comments = @search.result
+                                .where("question NOT LIKE '%#loesung%'")
                                 .order('created_at DESC')
                                 .paginate(page: params[:page], total_entries: @search.result.length)
     authorize!
