@@ -93,6 +93,9 @@ class RequestForCommentsController < ApplicationController
     raise Pundit::NotAuthorizedError if @embed_options[:disable_rfc]
 
     @request_for_comment = RequestForComment.new(request_for_comment_params)
+
+    @request_for_comment.solved = true if @request_for_comment.question.include?('#loesung')
+
     respond_to do |format|
       if @request_for_comment.save
         # create thread here and execute tests. A run is triggered from the frontend and does not need to be handled here.
