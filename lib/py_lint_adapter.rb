@@ -89,10 +89,7 @@ class PyLintAdapter < TestingFrameworkAdapter
     key.delete_suffix!(".#{default}") # Remove any custom prefix, might have no effect
     keys = key.split('.')
     final_key = keys.pop
-    log_missing = if %w[severity_name name regex replacement].include? final_key
-                    # Log missing predefined keys; they should exist
-                    I18n.t("#{key}.log_missing", locale: :de, default: true)
-                  elsif %w[actual suggestion context line].include?(final_key)
+    log_missing = if %w[actual suggestion context line].include?(final_key)
                     # SyntaxErrors: These are dynamic and won't get translated
                     false
                   else
