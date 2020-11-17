@@ -22,14 +22,14 @@ class PyLintAdapter < TestingFrameworkAdapter
       assertion_error_matches = Timeout.timeout(2.seconds) do
         output[:stdout].scan(ASSERTION_ERROR_REGEXP).map do |match|
           {
-            file_name: match[0].strip,
-            line: match[1].to_i,
-            severity: match[2].strip,
-            code: match[3].strip,
-            name: match[4].strip,
-            # e.g. function name, nil if outside of a function. Not always available
-            scope: match[5].strip.presence,
-            result: match[6].strip
+              file_name: match[0].strip,
+              line: match[1].to_i,
+              severity: match[2].strip,
+              code: match[3].strip,
+              name: match[4].strip,
+              # e.g. function name, nil if outside of a function. Not always available
+              scope: match[5].strip.presence,
+              result: match[6].strip
           }
         end || []
       end
@@ -86,19 +86,19 @@ class PyLintAdapter < TestingFrameworkAdapter
     # key might be "linter.#{severity}.#{name}.#{key}.#{value}"
     # or something like "linter.#{severity}.#{name}.replacement"
     translation = I18n.t(key, locale: :de, default: default)
+    key.delete_suffix!(".#{default}") # Remove any custom prefix, might have no effect
     keys = key.split('.')
     final_key = keys.pop
-    if %w[severity_name name regex replacement].exclude? final_key
-      second_final = keys.pop # second last key, e.g. #{key}
-      # Check for known values from SyntaxError
-      log_missing = if %w[actual suggestion context line].exclude? second_final
-                      I18n.t(keys.append('log_missing').join('.'), locale: :de, default: true)
-                    else
-                      false
-                    end
-    else
-      log_missing = true
-    end
+    log_missing = if %w[severity_name name regex replacement].include? final_key
+                    # Log missing predefined keys; they should exist
+                    I18n.t("#{key}.log_missing", locale: :de, default: true)
+                  elsif %w[actual suggestion context line].include?(final_key)
+                    # SyntaxErrors: These are dynamic and won't get translated
+                    false
+                  else
+                    # Read config key
+                    I18n.t(keys.append('log_missing').join('.'), locale: :de, default: true)
+                  end
     Raven.capture_message({key: key, default: default}.to_json) if translation == default && log_missing
     translation
   end
