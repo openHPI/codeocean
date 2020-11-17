@@ -69,7 +69,7 @@ de:
         example: Unable to import 'turtel'
         name: Import-Fehler
         regex: .*'(?<import>.*)'.*
-        replacement: Der Import von '%{import} ist fehlgeschlagen
+        replacement: Der Import von '%{import}' ist fehlgeschlagen
         log_missing: false
       syntax-error:
         example: EOL while scanning string literal (<unknown>, line 1)
