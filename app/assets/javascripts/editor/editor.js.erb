@@ -471,66 +471,67 @@ var CodeOceanEditor = {
                 }
             })
 
+            // delete all current elements
+            targetNode.text('');
+            // create a new list and append each element
+            const ul = document.createElement("ul");
+
+            // Extract detailed linter results
+            if (result.file_role === 'teacher_defined_linter') {
+                const detailed_linter_results = result.detailed_linter_results;
+                const severity_groups = detailed_linter_results.reduce(function(map, obj) {
+                    map[obj.severity] = map[obj.severity] || []
+                    map[obj.severity].push(obj);
+                    return map;
+                }, {});
+
+                for (let severity in severity_groups) {
+                    if (!severity_groups.hasOwnProperty(severity)) {
+                        continue;
+                    }
+                    const linter_results = severity_groups[severity]
+
+                    const li = document.createElement("li");
+                    const text = $.parseHTML(`<u>${severity}:</u>`);
+                    $(li).append(text);
+                    ul.append(li);
+
+                    const sub_ul = document.createElement("ul");
+                    sub_ul.setAttribute('class', 'error_messages_list');
+                    for (let check_run of linter_results) {
+                        const sub_li = document.createElement("li");
+
+                        let scope = '';
+                        if (check_run.scope) {
+                             scope = `, ${check_run.scope}()`;
+                        }
+                        const context = `${check_run.file_name}: ${check_run.line}${scope}`;
+                        const line_link = `<a href='#' data-file='${check_run.file_name}' data-line='${check_run.line}'>${context}</a>`;
+                        const message = `${check_run.name}: ${check_run.result} (${line_link})`;
+                        const sub_text = $.parseHTML(message);
+                        $(sub_li).append(sub_text).on("click", "a", this.jumpToSourceLine.bind(this));
+                        sub_ul.append(sub_li);
+                    }
+                    li.append(sub_ul);
+                }
+
+            // Just show standard results for normal test results
+            } else {
+              errorMessagesToShow.forEach(function (item) {
+                  var li = document.createElement("li");
+                  var text = $.parseHTML(item);
+                  $(li).append(text);
+                  ul.append(li);
+              })
+            }
+
             // one or more errors?
             if (errorMessagesToShow.length > 1) {
-                // delete all current elements
-                targetNode.text('');
-                // create a new list and append each element
-                const ul = document.createElement("ul");
                 ul.setAttribute('class', 'error_messages_list');
-
-                // Extract detailed linter results
-                if (result.file_role === 'teacher_defined_linter') {
-                    const detailed_linter_results = result.detailed_linter_results;
-                    const severity_groups = detailed_linter_results.reduce(function(map, obj) {
-                        map[obj.severity] = map[obj.severity] || []
-                        map[obj.severity].push(obj);
-                        return map;
-                    }, {});
-
-                    for (let severity in severity_groups) {
-                        if (!severity_groups.hasOwnProperty(severity)) {
-                            continue;
-                        }
-                        const linter_results = severity_groups[severity]
-
-                        const li = document.createElement("li");
-                        const text = $.parseHTML(`<u>${severity}:</u>`);
-                        $(li).append(text);
-                        ul.append(li);
-
-                        const sub_ul = document.createElement("ul");
-                        sub_ul.setAttribute('class', 'error_messages_list');
-                        for (let check_run of linter_results) {
-                            const sub_li = document.createElement("li");
-
-                            let scope = '';
-                            if (check_run.scope) {
-                                 scope = `, ${check_run.scope}()`;
-                            }
-                            const context = `${check_run.file_name}: ${check_run.line}${scope}`;
-                            const line_link = `<a href='#' data-file='${check_run.file_name}' data-line='${check_run.line}'>${context}</a>`;
-                            const message = `${check_run.name}: ${check_run.result} (${line_link})`;
-                            const sub_text = $.parseHTML(message);
-                            $(sub_li).append(sub_text).on("click", "a", this.jumpToSourceLine.bind(this));
-                            sub_ul.append(sub_li);
-                        }
-                        li.append(sub_ul);
-                    }
-
-                // Just show standard results for normal test results
-                } else {
-                  errorMessagesToShow.forEach(function (item) {
-                      var li = document.createElement("li");
-                      var text = $.parseHTML(item);
-                      $(li).append(text);
-                      ul.append(li);
-                  })
-                }
-                targetNode.append(ul);
             } else {
-                targetNode.html(errorMessagesToShow.join(''));
+                ul.setAttribute('class', 'single_error_message');
             }
+            targetNode.append(ul);
         }
         //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
     },
