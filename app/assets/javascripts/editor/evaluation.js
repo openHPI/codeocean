@@ -154,7 +154,7 @@ CodeOceanEditorEvaluation = {
     },
 
     printWebsocketOutput: function (msg) {
-        if (!msg.data) {
+        if (!msg.data || msg.data === "\r") {
             return;
         }
         msg.data = msg.data.replace(/(\r)/gm, "\n");
