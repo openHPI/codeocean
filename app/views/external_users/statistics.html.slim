@@ -2,7 +2,7 @@ h1 = t('.title')
 
 - submissions = Submission.where(user: @user).in_study_group_of(current_user)
 - exercises = Exercise.where(id: submissions.joins(:exercise).group(:exercise_id).select(:exercise_id).distinct)
-- if !policy(exercises.first).detailed_statistics?
+- if !policy(exercises.reject(&:nil?).first).detailed_statistics?
   - submissions = submissions.final
 
 - if submissions.any?
