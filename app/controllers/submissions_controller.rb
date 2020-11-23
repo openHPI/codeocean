@@ -222,7 +222,7 @@ class SubmissionsController < ApplicationController
 
     # For Python containers, the @run_output is '{"cmd":"exit"}' as a string.
     # If this is the case, we should consider it as blank
-    if @run_output.blank? || @run_output&.strip == '{"cmd":"exit"}'
+    if @run_output.blank? || @run_output&.strip == '{"cmd":"exit"}' || @run_output&.strip == 'timeout:'
       @raw_output ||= ''
       @run_output ||= ''
       parse_message t('exercises.implement.no_output', timestamp: l(Time.now, format: :short)), 'stdout', tubesock
@@ -237,7 +237,7 @@ class SubmissionsController < ApplicationController
     @raw_output ||= ''
     @run_output ||= ''
     # Handle special commands first
-    if /^#exit/.match(message)
+    if /^#exit|^{"cmd": "exit"}/.match(message)
       # Just call exit_container on the docker_client.
       # Do not call kill_socket for the websocket to the client here.
       # @docker_client.exit_container closes the socket to the container,
