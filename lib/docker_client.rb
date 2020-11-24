@@ -9,7 +9,7 @@ class DockerClient
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
   LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
   MINIMUM_MEMORY_LIMIT = 4
-  RECYCLE_CONTAINERS = true
+  RECYCLE_CONTAINERS = false
   RETRY_COUNT = 2
   MINIMUM_CONTAINER_LIFETIME = 10.minutes
   MAXIMUM_CONTAINER_LIFETIME = 20.minutes
