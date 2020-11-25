@@ -26,7 +26,6 @@ class ApplicationController < ActionController::Base
     Raven.user_context(
       id: current_user.id,
       type: current_user.class.name,
-      email: current_user.email,
       username: current_user.displayname,
       consumer: current_user.consumer.name
     )
