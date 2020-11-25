@@ -393,7 +393,7 @@ class ExercisesController < ApplicationController
 
   def redirect_to_lti_return_path
     Raven.extra_context(
-      consumers_id: session[:consumer_id],
+      consumers_id: @submission.user&.consumer,
       external_users_id: @submission.user_id,
       exercises_id: @submission.exercise_id,
       session: session.to_hash,
@@ -404,15 +404,13 @@ class ExercisesController < ApplicationController
       lti_parameters_id: session[:lti_parameters_id]
     )
 
-    lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
-                                       external_users_id: @submission.user_id,
+    lti_parameter = LtiParameter.where(external_users_id: @submission.user_id,
                                        exercises_id: @submission.exercise_id).last
 
-    path = lti_return_path(consumer_id: session[:consumer_id],
-                           submission_id: @submission.id,
-                           url: consumer_return_url(build_tool_provider(consumer: Consumer.find_by(id: session[:consumer_id]),
+    path = lti_return_path(submission_id: @submission.id,
+                           url: consumer_return_url(build_tool_provider(consumer: @submission.user.consumer,
                                                                         parameters: lti_parameter.lti_parameters)))
-    clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
+    clear_lti_session_data(@submission.exercise_id, @submission.user_id)
     respond_to do |format|
       format.html { redirect_to(path) }
       format.json { render(json: {redirect: path}) }
@@ -517,7 +515,7 @@ class ExercisesController < ApplicationController
     @submission = Submission.create(submission_params)
     score_submission(@submission)
     current_user = ExternalUser.find(@submission.user_id)
-    if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id, current_user.consumer_id)
+    if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id)
       transmit_lti_score
     else
       redirect_after_submit
@@ -573,7 +571,7 @@ class ExercisesController < ApplicationController
       # redirect 10 percent pseudorandomly to the feedback page
       if current_user.respond_to? :external_id
         if @submission.redirect_to_feedback? && !@embed_options[:disable_redirect_to_feedback]
-          clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
+          clear_lti_session_data(@submission.exercise_id, @submission.user_id)
           redirect_to_user_feedback
           return
         end
@@ -584,7 +582,7 @@ class ExercisesController < ApplicationController
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
           flash.keep(:notice)
 
-          clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
+          clear_lti_session_data(@submission.exercise_id, @submission.user_id)
           respond_to do |format|
             format.html { redirect_to(rfc) }
             format.json { render(json: {redirect: url_for(rfc)}) }
@@ -602,7 +600,7 @@ class ExercisesController < ApplicationController
           # increase counter 'times_featured' in rfc
           rfc.increment!(:times_featured)
 
-          clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
+          clear_lti_session_data(@submission.exercise_id, @submission.user_id)
           respond_to do |format|
             format.html { redirect_to(rfc) }
             format.json { render(json: {redirect: url_for(rfc)}) }
@@ -613,7 +611,7 @@ class ExercisesController < ApplicationController
     else
       # redirect to feedback page if score is less than 100 percent
       if @exercise.needs_more_feedback?(@submission) && !@embed_options[:disable_redirect_to_feedback]
-        clear_lti_session_data(@submission.exercise_id, @submission.user_id, session[:consumer_id])
+        clear_lti_session_data(@submission.exercise_id, @submission.user_id)
         redirect_to_user_feedback
       else
         redirect_to_lti_return_path

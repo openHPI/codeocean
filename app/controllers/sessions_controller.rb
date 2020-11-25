@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
       redirect_to(params[:custom_redirect_target])
     else
       redirect_to(implement_exercise_path(@exercise),
-                  notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, @current_user.id , @consumer.id) ? 'with' : 'without'}_outcome",
+                  notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, @current_user.id) ? 'with' : 'without'}_outcome",
                   consumer: @consumer))
     end
   end
@@ -40,7 +40,7 @@ class SessionsController < ApplicationController
 
   def destroy_through_lti
     @submission = Submission.find(params[:submission_id])
-    clear_lti_session_data(@submission.exercise_id, @submission.user_id, params[:consumer_id])
+    clear_lti_session_data(@submission.exercise_id, @submission.user_id)
   end
 
   def new

@@ -200,7 +200,6 @@ describe SessionsController do
 
     before(:each) do
       #Todo replace session with lti_parameter
-      session[:consumer_id] = consumer.id
       #Todo create LtiParameter Object
       # session[:lti_parameters] = {}
     end

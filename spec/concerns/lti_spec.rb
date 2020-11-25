@@ -17,7 +17,6 @@ describe Lti do
 
   describe '#clear_lti_session_data' do
     it 'clears the session' do
-      expect(controller.session).to receive(:delete).with(:consumer_id)
       expect(controller.session).to receive(:delete).with(:external_user_id)
       expect(controller.session).to receive(:delete).with(:embed_options)
       expect(controller.session).to receive(:delete).with(:lti_exercise_id)
@@ -112,9 +111,6 @@ describe Lti do
 
     context 'with an valid score' do
       context 'with a tool consumer' do
-        before(:each) do
-          controller.session[:consumer_id] = consumer.id
-        end
 
         context 'when grading is not supported' do
           it 'returns a corresponding status' do
@@ -153,6 +149,8 @@ describe Lti do
 
       context 'without a tool consumer' do
         it 'returns a corresponding status' do
+          submission.user.consumer = nil
+
           allow(submission).to receive(:normalized_score).and_return score
           expect(controller.send(:send_score, submission)[:status]).to eq('error')
         end
@@ -166,7 +164,6 @@ describe Lti do
     it 'stores data in the session' do
       controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user))
       controller.instance_variable_set(:@exercise, FactoryBot.create(:fibonacci))
-      expect(controller.session).to receive(:[]=).with(:consumer_id, anything)
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
       expect(controller.session).to receive(:[]=).with(:lti_parameters_id, anything)
       controller.send(:store_lti_session_data, consumer: FactoryBot.build(:consumer), parameters: parameters)

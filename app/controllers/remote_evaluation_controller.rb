@@ -23,7 +23,7 @@ class RemoteEvaluationController < ApplicationController
 
     if @submission.present?
       current_user = @submission.user
-      if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id, current_user.consumer_id)
+      if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id)
         lti_response = send_score(@submission)
 
         if lti_response[:status] == 'success' and lti_response[:score_sent] != @submission.normalized_score

@@ -19,16 +19,14 @@ module Lti
   # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
   # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
   # Only the lti_parameters are deleted.
-  def clear_lti_session_data(exercise_id = nil, user_id = nil, consumer_id = nil)
+  def clear_lti_session_data(exercise_id = nil, user_id = nil)
     if (exercise_id.nil?)
-      session.delete(:consumer_id)
       session.delete(:external_user_id)
       session.delete(:embed_options)
       session.delete(:lti_exercise_id)
       session.delete(:lti_parameters_id)
     end
-    LtiParameter.where(consumers_id: consumer_id,
-                       external_users_id: user_id,
+    LtiParameter.where(external_users_id: user_id,
                        exercises_id: exercise_id).destroy_all
   end
 
@@ -242,7 +240,6 @@ module Lti
     lti_parameters.save!
     @lti_parameters = lti_parameters
 
-    session[:consumer_id] = options[:consumer].id
     session[:external_user_id] = @current_user.id
     session[:lti_parameters_id] = lti_parameters.id
   end

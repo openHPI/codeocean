@@ -237,7 +237,6 @@ describe ExercisesController do
       allow_any_instance_of(Submission).to receive(:normalized_score).and_return(1)
       expect(controller).to receive(:collect_test_results).and_return([{score: 1, weight: 1}])
       expect(controller).to receive(:score_submission).and_call_original
-      controller.session[:consumer_id] = external_user.consumer_id
     end
 
     context 'when LTI outcomes are supported' do
