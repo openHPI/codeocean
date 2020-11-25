@@ -3,7 +3,7 @@ class Submission < ApplicationRecord
   include Creation
   include ActionCableHelper
 
-  CAUSES = %w(assess download file render run save submit test autosave requestComments remoteAssess)
+  CAUSES = %w(assess download file render run save submit test autosave requestComments remoteAssess remoteSubmit)
   FILENAME_URL_PLACEHOLDER = '{filename}'
   MAX_COMMENTS_ON_RECOMMENDED_RFC = 5
   OLDEST_RFC_TO_SHOW = 6.months

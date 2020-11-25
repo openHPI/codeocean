@@ -157,6 +157,7 @@ Rails.application.routes.draw do
   resources :events, only: [:create]
 
   post "/evaluate", to: 'remote_evaluation#evaluate', via: [:post]
+  post "/submit", to: 'remote_evaluation#submit', via: [:post]
 
   mount ActionCable.server => '/cable'
 end

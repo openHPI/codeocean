@@ -144,13 +144,12 @@ module Lti
     ::NewRelic::Agent.add_custom_attributes({score: submission.normalized_score, session: session})
     fail(Error, "Score #{submission.normalized_score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(submission.normalized_score)
 
-    if session[:consumer_id]
-      lti_parameter = LtiParameter.where(consumers_id: session[:consumer_id],
+    if submission.user.consumer
+      lti_parameter = LtiParameter.where(consumers_id: submission.user.consumer.id,
                                          external_users_id: submission.user_id,
                                          exercises_id: submission.exercise_id).last
 
-      consumer = Consumer.find_by(id: session[:consumer_id])
-      provider = build_tool_provider(consumer: consumer, parameters: lti_parameter.lti_parameters)
+      provider = build_tool_provider(consumer: submission.user.consumer, parameters: lti_parameter.lti_parameters)
     end
 
     if provider.nil?
