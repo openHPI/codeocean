@@ -14,11 +14,10 @@ RailsAdmin.config do |config|
   ## == Pundit ==
   # config.authorize_with :pundit
   config.authorize_with do
-    redirect_to main_app.root_path unless current_user.admin?
-    # unless current_user.admin?
-    #   flash[:alert] = 'Access denied.'
-    #   redirect_to main_app.root_path
-    # end
+    unless current_user&.admin?
+      flash[:alert] = 'Access denied.'
+      redirect_to main_app.root_path
+    end
   end
 
   ## == PaperTrail ==

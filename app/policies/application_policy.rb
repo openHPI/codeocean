@@ -76,7 +76,4 @@ class ApplicationPolicy
     end
     private :require_user!
   end
-  [:dashboard?, :index?, :new?, :export?, :bulk_delete?, :show?, :edit?, :delete?, :show_in_app?,].each do |action|
-    define_method(action) { admin? }
-  end
 end

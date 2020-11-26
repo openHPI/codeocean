@@ -1,7 +1,6 @@
 FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
-  mount RailsAdmin::Engine => '/rails_admin', as: 'rails_admin'
   resources :error_template_attributes
   resources :error_templates do
     member do
@@ -161,4 +160,5 @@ Rails.application.routes.draw do
   post "/submit", to: 'remote_evaluation#submit', via: [:post]
 
   mount ActionCable.server => '/cable'
+  mount RailsAdmin::Engine => '/rails_admin', as: 'rails_admin'
 end
