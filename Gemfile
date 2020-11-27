@@ -36,6 +36,7 @@ gem 'faraday'
 gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.5'
 gem 'whenever', require: false
 gem 'rails-timeago'
+gem 'rails_admin', '~> 2.0'
 
 # Error Tracing
 gem 'concurrent-ruby'

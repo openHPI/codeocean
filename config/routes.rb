@@ -160,4 +160,5 @@ Rails.application.routes.draw do
   post "/submit", to: 'remote_evaluation#submit', via: [:post]
 
   mount ActionCable.server => '/cable'
+  mount RailsAdmin::Engine => '/rails_admin', as: 'rails_admin'
 end
