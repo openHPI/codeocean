@@ -21,8 +21,11 @@ class RemoteEvaluationController < ApplicationController
   def submit
     result = create_and_score_submission("remoteSubmit")
 
+    status = 201
+
     if @submission.present?
       current_user = @submission.user
+      score_achieved_percentage = @submission.normalized_score * 100
       if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id)
         lti_response = send_score(@submission)
 
@@ -36,15 +39,12 @@ class RemoteEvaluationController < ApplicationController
         end
         # ToDo: Delete LTI parameters?
       else
-        result = {message: "Your submission was successfully scored with #{@submission.normalized_score * 100}%. However, your score could not be sent to the e-Learning platform. Please reopen the exercise through the e-Learning platform and try again.", status: 410}
+        result = {message: "Your submission was successfully scored with #{score_achieved_percentage}%. However, your score could not be sent to the e-Learning platform. Please reopen the exercise through the e-Learning platform and try again.", status: 410}
       end
-    end
 
-    status = if result.is_a?(Hash) && result.has_key?(:status)
-               result[:status]
-             else
-               201
-             end
+      result.merge!({score: score_achieved_percentage})
+      status =  result[:status]
+    end
 
     render json: result, status: status
   end
