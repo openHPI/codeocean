@@ -830,7 +830,7 @@
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha512-5a6wqoJV/xEdbRNKVo6I4hO3VjyDq//8q2f9I6PBAvMesJHFauXDorcNCsr9RzvsZnaWi5NYCcfyqP1QeFHFbw==
 
-"@fortawesome/fontawesome-free@^5.14.0":
+"@fortawesome/fontawesome-free@^5.15.1":
   version "5.15.1"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.15.1.tgz#ccfef6ddbe59f8fe8f694783e1d3eb88902dc5eb"
   integrity sha512-OEdH7SyC1suTdhBGW91/zBfR6qaIhThbcN8PUXtXilY4GYnSBbVqOntdHbC1vXwsDnX0Qix2m2+DSU1J51ybOQ==
@@ -842,7 +842,7 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@rails/webpacker@^5.1.1":
+"@rails/webpacker@^5.2.1":
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/@rails/webpacker/-/webpacker-5.2.1.tgz#87cdbd4af2090ae2d74bdc51f6f04717d907c5b3"
   integrity sha512-rO0kOv0o4ESB8ZnKX+b54ZKogNJGWSMULGmsJacREfm9SahKEQwXBeHNsqSGtS9NAPsU6YUFhGKRd4i/kbMNrQ==
@@ -1530,12 +1530,12 @@ boolbase@^1.0.0, boolbase@~1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bootstrap@^4.5.1:
+bootstrap@^4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.5.3.tgz#c6a72b355aaf323920be800246a6e4ef30997fe6"
   integrity sha512-o9ppKQioXGqhw8Z7mah6KdTYpNQY//tipnkxppWhPbiSWdD+1raYsnhwEZjkTHYbGee4cVQ0Rx65EhOY/HNLcQ==
 
-bootswatch@^4.5.1:
+bootswatch@^4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/bootswatch/-/bootswatch-4.5.3.tgz#bd9bd4fa212bd5872c932be58ed54e376ee7ccc5"
   integrity sha512-gaB3gBSAegmYbk97aVELKcSKVdPjWsSY4yCITkUt/SqbqjtMU/HtIUszb4O9vzdbrfuVXThc/qCXzjoJaAPgiQ==
@@ -7388,9 +7388,9 @@ terser@^4.1.2:
     source-map-support "~0.5.12"
 
 terser@^5.3.4:
-  version "5.5.0"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.5.0.tgz#1406fcb4d4bc517add3b22a9694284c040e33448"
-  integrity sha512-eopt1Gf7/AQyPhpygdKePTzaet31TvQxXvrf7xYUvD/d8qkCJm4SKPDzu+GHK5ZaYTn8rvttfqaZc3swK21e5g==
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.5.1.tgz#540caa25139d6f496fdea056e414284886fb2289"
+  integrity sha512-6VGWZNVP2KTUcltUQJ25TtNjx/XgdDsBDKGt8nN0MpydU36LmbPPcMBd2kmtZNNGVVDLg44k7GKeHHj+4zPIBQ==
   dependencies:
     commander "^2.20.0"
     source-map "~0.7.2"
@@ -7862,7 +7862,7 @@ webpack-sources@^1.0.0, webpack-sources@^1.1.0, webpack-sources@^1.4.0, webpack-
     source-list-map "^2.0.0"
     source-map "~0.6.1"
 
-webpack@^4.44.1:
+webpack@^4.44.1, webpack@^4.44.2:
   version "4.44.2"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.44.2.tgz#6bfe2b0af055c8b2d1e90ed2cd9363f841266b72"
   integrity sha512-6KJVGlCxYdISyurpQ0IPTklv+DULv05rs2hseIXer6D7KrUicRDLFb4IUM1S6LUAKypPM/nSiVSuv8jHu1m3/Q==
