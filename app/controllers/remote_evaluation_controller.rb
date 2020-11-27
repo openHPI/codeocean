@@ -25,13 +25,14 @@ class RemoteEvaluationController < ApplicationController
 
     if @submission.present?
       current_user = @submission.user
-      score_achieved_percentage = @submission.normalized_score * 100
+      score_achieved_percentage = @submission.normalized_score
       if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id)
         lti_response = send_score(@submission)
 
         if lti_response[:status] == 'success' and lti_response[:score_sent] != @submission.normalized_score
           # Score has been reduced due to the passed deadline
           result = {message: I18n.t('exercises.submit.too_late'), status: 207}
+          score_achieved_percentage = lti_response[:score_sent]
         elsif lti_response[:status] == 'success'
           result = {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name), status: 202}
         else
@@ -42,7 +43,7 @@ class RemoteEvaluationController < ApplicationController
         result = {message: "Your submission was successfully scored with #{score_achieved_percentage}%. However, your score could not be sent to the e-Learning platform. Please reopen the exercise through the e-Learning platform and try again.", status: 410}
       end
 
-      result.merge!({score: score_achieved_percentage})
+      result.merge!({score: score_achieved_percentage * 100})
       status =  result[:status]
     end
 
