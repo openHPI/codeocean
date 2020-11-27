@@ -262,7 +262,7 @@ en:
       user_activity_history: User Activity History
       rfc_activity_history: RfC Activity History
     rails_admin:
-      show: "Rails admin"
+      show: "Rails Admin"
   consumers:
     show:
       link: Consumer
