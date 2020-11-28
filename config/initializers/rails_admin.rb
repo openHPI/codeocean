@@ -30,8 +30,11 @@ RailsAdmin.config do |config|
   # config.show_gravatar = true
 
   config.actions do
-    dashboard                     # mandatory
-    index                         # mandatory
+    # mandatory
+    dashboard do
+      statistics false
+    end
+    index # mandatory
     new
     export
     bulk_delete
@@ -50,10 +53,21 @@ RailsAdmin.config do |config|
     module WillPaginate
       module ActiveRecord
         module RelationMethods
-          def per(value = nil) per_page(value) end
-          def total_count() count end
-          def first_page?() self == first end
-          def last_page?() self == last end
+          def per(value = nil)
+            per_page(value)
+          end
+
+          def total_count()
+            count
+          end
+
+          def first_page?()
+            self == first
+          end
+
+          def last_page?()
+            self == last
+          end
         end
       end
       module CollectionMethods
