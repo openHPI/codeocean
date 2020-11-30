@@ -77,7 +77,6 @@ GEM
     autotest-rails (4.2.1)
       ZenTest (~> 4.5)
     bcrypt (3.1.16)
-    bcrypt_pbkdf (1.0.1)
     better_errors (2.9.1)
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
@@ -123,7 +122,6 @@ GEM
       multi_json
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
-    ed25519 (1.2.4)
     erubi (1.10.0)
     eventmachine (1.0.9.1)
     excon (0.78.0)
@@ -462,7 +460,6 @@ DEPENDENCIES
   autotest
   autotest-rails
   bcrypt
-  bcrypt_pbkdf
   better_errors
   binding_of_caller
   bootsnap
@@ -472,7 +469,6 @@ DEPENDENCIES
   concurrent-ruby
   database_cleaner
   docker-api
-  ed25519
   eventmachine (= 1.0.9.1)
   factory_bot_rails
   faraday
