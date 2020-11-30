@@ -56,10 +56,15 @@ class PyLintAdapter < TestingFrameworkAdapter
       regex = get_t("linter.#{severity}.#{name}.regex", nil)&.strip
 
       if regex.present?
-        captures = message[:result].match(Regexp.new(regex)).named_captures.symbolize_keys
+        captures = message[:result].match(Regexp.new(regex))&.named_captures&.symbolize_keys
 
-        replacement = captures.each do |key, value|
-          value&.replace get_t("linter.#{severity}.#{name}.#{key}.#{value}", value)
+        if captures.nil?
+          Raven.capture_message({regex: regex, message: message[:result]}.to_json)
+          replacement = {}
+        else
+          replacement = captures.each do |key, value|
+            value&.replace get_t("linter.#{severity}.#{name}.#{key}.#{value}", value)
+          end
         end
       else
         replacement = {}
