@@ -54,8 +54,6 @@ group :development, :staging do
   gem 'rubocop', require: false
   gem 'rubocop-rspec'
   gem 'web-console'
-  gem 'ed25519', require: false # For SSH deployment with ED25519 key
-  gem 'bcrypt_pbkdf', require: false # For SSH deployment with ED25519 key
 end
 
 group :development, :test, :staging do
