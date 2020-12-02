@@ -29,6 +29,10 @@ RailsAdmin.config do |config|
   ## To disable Gravatar integration in Navigation Bar set to false
   # config.show_gravatar = true
 
+  config.model 'CodeOcean::File' do
+    list { limited_pagination true }
+  end
+
   config.actions do
     # mandatory
     dashboard do
