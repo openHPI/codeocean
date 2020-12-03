@@ -3,11 +3,7 @@
 /config/database.yml
 /config/mnemosyne.yml
 /config/secrets.yml
-/config/docker.yml*.erb
-/config/*.production.yml
-/config/*.staging.yml
-/config/*.staging-epic.yml
-/config/deploy/staging-epic.rb
+/config/docker.yml.erb
 /coverage
 /log/*.*
 /public/assets
