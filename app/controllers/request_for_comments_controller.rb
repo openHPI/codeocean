@@ -27,7 +27,7 @@ class RequestForCommentsController < ApplicationController
   def get_my_comment_requests
     @search = RequestForComment
                   .with_last_activity
-                  .where(user_id: current_user&.id)
+                  .where(user: current_user)
                   .ransack(params[:q])
     @request_for_comments = @search.result
                                 .order('created_at DESC')
