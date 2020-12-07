@@ -72,7 +72,7 @@ jobs:
       - name: Create database
         env:
           RAILS_ENV: test
-        run: bundler exec rake db:schema:load RAILS_ENV=test
+        run: bundler exec rake db:schema:load
       - name: Run tests
         env:
           RAILS_ENV: test
