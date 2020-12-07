@@ -9,7 +9,10 @@ describe CodeOcean::FilesController do
 
     context 'with a valid file' do
       let(:perform_request) { proc { post :create, params: { code_ocean_file: FactoryBot.build(:file, context: submission).attributes, format: :json } } }
-      before(:each) { perform_request.call }
+      before(:each) do
+        submission.exercise.update(allow_file_creation: true)
+        perform_request.call
+      end
 
       expect_assigns(file: CodeOcean::File)
 
@@ -22,7 +25,10 @@ describe CodeOcean::FilesController do
     end
 
     context 'with an invalid file' do
-      before(:each) { post :create, params: { code_ocean_file: {context_id: submission.id, context_type: Submission}, format: :json } }
+      before(:each) do
+        submission.exercise.update(allow_file_creation: true)
+        post :create, params: { code_ocean_file: {context_id: submission.id, context_type: Submission}, format: :json }
+      end
 
       expect_assigns(file: CodeOcean::File)
       expect_json

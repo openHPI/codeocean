@@ -28,8 +28,24 @@ describe CodeOcean::FilePolicy do
     context 'as part of a submission' do
       let(:file) { submission.files.first }
 
-      it 'grants access to authors' do
-        expect(subject).to permit(submission.author, file)
+      context 'where file creation is allowed' do
+        before do
+          submission.exercise.update(allow_file_creation: true)
+        end
+
+        it 'grants access to authors' do
+          expect(subject).to permit(submission.author, file)
+        end
+      end
+
+      context 'where file creation is not allowed' do
+        before do
+          submission.exercise.update(allow_file_creation: false)
+        end
+
+        it 'grants access to authors' do
+          expect(subject).not_to permit(submission.author, file)
+        end
       end
 
       it 'does not grant access to all other users' do
