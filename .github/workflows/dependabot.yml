@@ -6,6 +6,8 @@ jobs:
   worker:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
       - name: Automerge dependabot dependencies
         uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
