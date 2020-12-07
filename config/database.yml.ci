@@ -1,5 +1,7 @@
 test:
   adapter: postgresql
-  database: travis_ci_test
+  database: postgres
   pool: 32
+  host: localhost
   username: postgres
+  password: postgres

@@ -1,0 +1,87 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    services:
+      db:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      co_execenv_python:
+        image: openhpi/co_execenv_python
+      co_execenv_java:
+        image: openhpi/co_execenv_java
+
+    steps:
+      - name: Configure Docker host
+        run: |
+          echo $'{"hosts": ["tcp://127.0.0.1:2376", "unix:///var/run/docker.sock"], "iptables": false, "live-restore": true}' | sudo tee /etc/docker/daemon.json
+          sudo mkdir -p /etc/systemd/system/docker.service.d
+          echo $'[Service]\nExecStart=\nExecStart=/usr/bin/dockerd --containerd /var/run/containerd/containerd.sock' | sudo tee /etc/systemd/system/docker.service.d/override.conf
+          sudo systemctl daemon-reload
+          sudo systemctl restart docker
+          docker restart $(docker ps -aq)
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - name: Manage yarn cache
+        uses: actions/cache@v2
+        # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install yarn packages
+        run: yarn install --pure-lockfile
+
+      - name: Prepare config files
+        run: |
+          cp config/action_mailer.yml.ci config/action_mailer.yml
+          cp config/code_ocean.yml.ci config/code_ocean.yml
+          cp config/database.yml.ci config/database.yml
+          cp config/secrets.yml.ci config/secrets.yml
+          cp config/docker.yml.erb.ci config/docker.yml.erb
+          cp config/mnemosyne.yml.ci config/mnemosyne.yml
+
+      - name: Create database
+        env:
+          RAILS_ENV: test
+        run: |
+          bundler exec rake db:schema:load RAILS_ENV=test
+      - name: Run tests
+        env:
+          RAILS_ENV: test
+          CC_TEST_REPORTER_ID: true
+        run: |
+          bundle exec rspec --color --format progress --require spec_helper --require rails_helper
+
+      - name: Send coverage to CodeClimate
+        uses: paambaati/codeclimate-action@v2.7.4
+        continue-on-error: true
+        if: ${{ success() || failure() }}
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
