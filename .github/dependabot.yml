@@ -1,0 +1,22 @@
+version: 2
+
+updates:
+  - package-ecosystem: bundler
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "09:00"
+      timezone: UTC
+    labels:
+      - dependencies
+      - ruby
+
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "09:00"
+      timezone: UTC
+    labels:
+      - dependencies
+      - javascript
