@@ -4,10 +4,14 @@ require 'concurrent'
 require 'pathname'
 
 class DockerClient
+  def self.config
+    @config ||= CodeOcean::Config.new(:docker).read(erb: true)
+  end
+
   CONTAINER_WORKSPACE_PATH = '/workspace' # '/home/python/workspace' #'/tmp/workspace'
   DEFAULT_MEMORY_LIMIT = 256
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
-  LOCAL_WORKSPACE_ROOT = Rails.root.join('tmp', 'files', Rails.env)
+  LOCAL_WORKSPACE_ROOT = File.expand_path(self.config[:workspace_root])
   MINIMUM_MEMORY_LIMIT = 4
   RECYCLE_CONTAINERS = false
   RETRY_COUNT = 2
@@ -50,10 +54,6 @@ class DockerClient
   end
 
   private :command_substitutions
-
-  def self.config
-    @config ||= CodeOcean::Config.new(:docker).read(erb: true)
-  end
 
   def self.container_creation_options(execution_environment, local_workspace_path)
     {
@@ -294,6 +294,9 @@ class DockerClient
       # before_execution_block.try(:call)
       begin
         before_execution_block.call
+      rescue FilepathError
+        # Prevent catching this error here
+        raise
       rescue StandardError => e
         Rails.logger.error('execute_websocket_command: Rescued from StandardError caused by before_execution_block.call: ' + e.to_s)
       end
@@ -424,19 +427,23 @@ class DockerClient
   end
 
   def local_file_path(options = {})
-    File.join(self.class.local_workspace_path(options[:container]), options[:file].path || '', options[:file].name_with_extension)
+    resulting_file_path = File.join(self.class.local_workspace_path(options[:container]), options[:file].path || '', options[:file].name_with_extension)
+    absolute_path = File.expand_path(resulting_file_path)
+    unless absolute_path.start_with? self.class.local_workspace_path(options[:container]).to_s
+      raise(FilepathError, 'Filepath not allowed')
+    end
+    absolute_path
   end
 
   private :local_file_path
 
   def self.local_workspace_path(container)
-    Pathname.new(container.binds.first.split(':').first.sub(config[:workspace_root], LOCAL_WORKSPACE_ROOT.to_s)) if container.binds.present?
+    Pathname.new(container.binds.first.split(':').first) if container.binds.present?
   end
 
   def self.mapped_directories(local_workspace_path)
-    remote_workspace_path = local_workspace_path.sub(LOCAL_WORKSPACE_ROOT.to_s, config[:workspace_root])
     # create the string to be returned
-    ["#{remote_workspace_path}:#{CONTAINER_WORKSPACE_PATH}"]
+    ["#{local_workspace_path}:#{CONTAINER_WORKSPACE_PATH}"]
   end
 
   def self.mapped_ports(execution_environment)
@@ -494,4 +501,5 @@ class DockerClient
   private :send_command
 
   class Error < RuntimeError; end
+  class FilepathError < RuntimeError; end
 end
