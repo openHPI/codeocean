@@ -64,6 +64,8 @@ $(document).on('turbolinks:load', function() {
         function drawGraph(graph_data) {
             const user_progress = graph_data['user_progress'];
             const additional_user_data = graph_data['additional_user_data'];
+            const user_info = additional_user_data.length - 1;
+            const learners = additional_user_data[user_info]
 
             function get_minutes (time_stamp) {
                 try {
@@ -83,7 +85,7 @@ $(document).on('turbolinks:load', function() {
             }
 
             function learners_name(index) {
-                return additional_user_data[additional_user_data.length - 1][index]["name"] + ", ID: " + additional_user_data[additional_user_data.length - 1][index]["id"];
+                return additional_user_data[user_info][index]["name"] + ", ID: " + additional_user_data[user_info][index]["id"];
             }
 
             function learners_time(group, index) {
@@ -201,7 +203,9 @@ $(document).on('turbolinks:load', function() {
             let tip = d3.tip()
                 .attr('class', 'd3-tip')
                 .offset([-10, 0])
-                .html(function(d, i, a) {
+                .html(function(_event, _d) {
+                    const e = rect.nodes();
+                    const i = e.indexOf(this) % learners.length;
                     return "<strong>Student: </strong><span style='color:orange'>" + learners_name(i) + "</span><br/>" +
                         "0: " + learners_time(0, i) + "<br/>" +
                         "1: " + learners_time(1, i) + "<br/>" +
