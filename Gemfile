@@ -27,7 +27,7 @@ gem 'turbolinks'
 gem 'uglifier'
 gem 'tubesock', git: 'https://github.com/gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
 gem 'faye-websocket'
-gem 'eventmachine', '1.0.9.1' # explicitly added, this is used by faye-websocket, newer versions might crash or
+gem 'eventmachine'
 gem 'nokogiri'
 gem 'webpacker'
 gem 'rest-client'
@@ -36,7 +36,7 @@ gem 'faraday'
 gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.5'
 gem 'whenever', require: false
 gem 'rails-timeago'
-gem 'rails_admin', '~> 2.0'
+gem 'rails_admin'
 
 # Error Tracing
 gem 'concurrent-ruby'

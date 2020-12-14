@@ -123,7 +123,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.10.0)
-    eventmachine (1.0.9.1)
+    eventmachine (1.2.7)
     excon (0.78.1)
     execjs (2.7.0)
     factory_bot (6.1.0)
@@ -469,7 +469,7 @@ DEPENDENCIES
   concurrent-ruby
   database_cleaner
   docker-api
-  eventmachine (= 1.0.9.1)
+  eventmachine
   factory_bot_rails
   faraday
   faye-websocket
@@ -497,7 +497,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-i18n
   rails-timeago
-  rails_admin (~> 2.0)
+  rails_admin
   ransack
   rest-client
   rspec-autotest
