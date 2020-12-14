@@ -217,7 +217,7 @@ $(document).on('turbolinks:load', function() {
           var tip = d3.tip()
               .attr('class', 'd3-tip')
               .offset([-10, 0])
-              .html(function(d) {
+              .html(function(_event, d) {
                   return "<strong>Students: </strong><span style='color:orange'>" + d + "</span>";
               });
 
