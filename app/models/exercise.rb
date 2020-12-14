@@ -353,7 +353,14 @@ class Exercise < ApplicationRecord
       FROM     result
     "'')
     if result.count > 0
-      quantiles.each_with_index.map { |_q, i| Time.parse(result[i]['unnest']).seconds_since_midnight }
+      begin
+        quantiles.each_with_index.map { |_q, i| Time.parse(result[i]['unnest']).seconds_since_midnight }
+      rescue ArgumentError => e
+        # result[i]['unnest'] might be an invalid time, but I don't know which
+        Raven.extra_context({quantiles: quantiles, result: result.to_json})
+        Raven.capture_exception(e)
+        quantiles.map { |_q| 0 }
+      end
     else
       quantiles.map { |_q| 0 }
     end
