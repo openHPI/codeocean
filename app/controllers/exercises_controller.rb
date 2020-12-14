@@ -469,6 +469,7 @@ class ExercisesController < ApplicationController
 
   def statistics
     if @external_user
+      # Render statistics page for one specific external user
       authorize(@external_user, :statistics?)
       if policy(@exercise).detailed_statistics?
         @submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
@@ -493,11 +494,15 @@ class ExercisesController < ApplicationController
       end
       render 'exercises/external_users/statistics'
     else
+      # Show general statistic page for specific exercise
       user_statistics = {}
       additional_filter = if policy(@exercise).detailed_statistics?
                             ''
-                          else
+                          elsif ! policy(@exercise).detailed_statistics? && current_user.study_groups > 0
                             "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"
+                          else
+                            # e.g. internal user without any study groups, show no submissions
+                            "AND FALSE"
                           end
       query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
               FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter} GROUP BY
