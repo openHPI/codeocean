@@ -1,4 +1,6 @@
 class ExternalUsersController < ApplicationController
+  before_action :require_user!
+
   def authorize!
     authorize(@user || @users)
   end
