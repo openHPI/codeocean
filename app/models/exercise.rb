@@ -354,12 +354,7 @@ class Exercise < ApplicationRecord
     "'')
     if result.count > 0
       begin
-        quantiles.each_with_index.map { |_q, i| Time.parse(result[i]['unnest']).seconds_since_midnight }
-      rescue ArgumentError => e
-        # result[i]['unnest'] might be an invalid time, but I don't know which
-        Raven.extra_context({quantiles: quantiles, result: result.to_json})
-        Raven.capture_exception(e)
-        quantiles.map { |_q| 0 }
+        quantiles.each_with_index.map { |_q, i| ActiveSupport::Duration.parse(result[i]['unnest']).to_f }
       end
     else
       quantiles.map { |_q| 0 }
@@ -389,7 +384,7 @@ class Exercise < ApplicationRecord
   def accumulated_working_time_for_only(user)
     user_type = user.external_user? ? 'ExternalUser' : 'InternalUser'
     begin
-      Time.parse(self.class.connection.execute(''"
+      ActiveSupport::Duration.parse(self.class.connection.execute(''"
               WITH WORKING_TIME AS
               (SELECT user_id,
                                  id,
@@ -438,7 +433,7 @@ class Exercise < ApplicationRecord
                   SELECT e.external_id AS external_user_id, f.user_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time
                   FROM FILTERED_TIMES_UNTIL_MAX f, EXTERNAL_USERS e
                   WHERE f.user_id = e.id GROUP BY e.external_id, f.user_id, exercise_id
-          "'').first['working_time']).seconds_since_midnight
+          "'').first['working_time']).to_f
     rescue StandardError
       0
     end
