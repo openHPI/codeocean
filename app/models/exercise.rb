@@ -245,7 +245,9 @@ class Exercise < ApplicationRecord
 
   def get_quantiles(quantiles)
     quantiles_str = '[' + quantiles.join(',') + ']'
-    result = self.class.connection.execute(''"
+    result = ActiveRecord::Base.transaction do
+      self.class.connection.execute(''"
+      SET LOCAL intervalstyle = 'iso_8601';
             WITH working_time AS
       (
                SELECT   user_id,
@@ -351,7 +353,8 @@ class Exercise < ApplicationRecord
                         exercise_id )
       SELECT   unnest(percentile_cont(array#{quantiles_str}) within GROUP (ORDER BY working_time))
       FROM     result
-    "'')
+      "'')
+    end
     if result.count > 0
       begin
         quantiles.each_with_index.map { |_q, i| ActiveSupport::Duration.parse(result[i]['unnest']).to_f }
@@ -384,7 +387,10 @@ class Exercise < ApplicationRecord
   def accumulated_working_time_for_only(user)
     user_type = user.external_user? ? 'ExternalUser' : 'InternalUser'
     begin
-      ActiveSupport::Duration.parse(self.class.connection.execute(''"
+      result = ActiveRecord::Base.transaction do
+        self.class.connection.execute(''"
+              BEGIN;
+              SET LOCAL intervalstyle = 'iso_8601';
               WITH WORKING_TIME AS
               (SELECT user_id,
                                  id,
@@ -433,7 +439,9 @@ class Exercise < ApplicationRecord
                   SELECT e.external_id AS external_user_id, f.user_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time
                   FROM FILTERED_TIMES_UNTIL_MAX f, EXTERNAL_USERS e
                   WHERE f.user_id = e.id GROUP BY e.external_id, f.user_id, exercise_id
-          "'').first['working_time']).to_f
+          "'')
+      end
+      ActiveSupport::Duration.parse(result.first['working_time']).to_f
     rescue StandardError
       0
     end
