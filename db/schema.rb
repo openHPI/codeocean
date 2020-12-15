@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_26_184633) do
+ActiveRecord::Schema.define(version: 2020_12_10_113500) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
   enable_extension "plpgsql"
 
   create_table "anomaly_notifications", id: :serial, force: :cascade do |t|
@@ -168,6 +169,8 @@ ActiveRecord::Schema.define(version: 2020_10_26_184633) do
     t.datetime "submission_deadline"
     t.datetime "late_submission_deadline"
     t.index ["id"], name: "index_exercises_on_id"
+    t.index ["id"], name: "index_unpublished_exercises", where: "(NOT unpublished)"
+    t.index ["title"], name: "index_exercises_on_title", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "exercises_proxy_exercises", id: false, force: :cascade do |t|
@@ -331,6 +334,7 @@ ActiveRecord::Schema.define(version: 2020_10_26_184633) do
     t.integer "times_featured", default: 0
     t.index ["exercise_id"], name: "index_request_for_comments_on_exercise_id"
     t.index ["submission_id"], name: "index_request_for_comments_on_submission_id"
+    t.index ["user_id", "user_type", "created_at"], name: "index_rfc_on_user_and_created_at", order: { created_at: :desc }
   end
 
   create_table "searches", id: :serial, force: :cascade do |t|
