@@ -1,6 +1,7 @@
 class RequestForCommentsController < ApplicationController
   include SubmissionScoring
   before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy, :mark_as_solved, :set_thank_you_note]
+  before_action :set_study_group_grouping, only: %i[index get_my_comment_requests get_rfcs_with_my_comments]
 
   before_action :require_user!
 
@@ -18,8 +19,12 @@ class RequestForCommentsController < ApplicationController
                   .ransack(params[:q])
     @request_for_comments = @search.result
                                 .where("question NOT LIKE '%#loesung%'")
+                                .joins(:exercise)
+                                .where(exercises: {unpublished: false})
+                                .includes(submission: [:study_group])
                                 .order('created_at DESC')
                                 .paginate(page: params[:page], total_entries: @search.result.length)
+
     authorize!
   end
 
@@ -125,4 +130,12 @@ class RequestForCommentsController < ApplicationController
     params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name)
   end
 
+  # The index page requires the grouping of the study groups
+  # The study groups are grouped by the current study group and other study groups of the user
+  def set_study_group_grouping
+    current_study_group = StudyGroup.find_by(id: session[:study_group_id])
+    my_study_groups = current_user.study_groups.reject { |group| group == current_study_group }
+    @study_groups_grouping = [[t('request_for_comments.index.study_groups.current'), Array(current_study_group)],
+                               [t('request_for_comments.index.study_groups.my'), my_study_groups]]
+  end
 end
