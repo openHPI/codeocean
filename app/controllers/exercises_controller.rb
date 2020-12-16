@@ -219,7 +219,7 @@ class ExercisesController < ApplicationController
             file_params[:content] = nil
             file_params[:native_file] = file_attributes[:content]
           else
-            file_params[:content] = file_attributes[:content].read
+            file_params[:content] = file_attributes[:content].read.encode.delete("\x00")
           end
         end
       end
