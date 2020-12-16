@@ -20,7 +20,7 @@ class Submission < ApplicationRecord
 
   delegate :execution_environment, to: :exercise
 
-  scope :final, -> { where(cause: 'submit') }
+  scope :final, -> { where(cause: %w[submit remoteSubmit]) }
   scope :intermediate, -> { where.not(cause: 'submit') }
 
   scope :before_deadline, -> { joins(:exercise).where('submissions.updated_at <= exercises.submission_deadline OR exercises.submission_deadline IS NULL') }
