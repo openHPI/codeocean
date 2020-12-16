@@ -368,6 +368,7 @@ en:
       hints:
         feedback_message: This message is used as a hint for failing tests.
         path: "The file's path in the project tree. Can be left blank."
+        upload: An uploaded file takes precedence over changes in the text area and will be visible once saved. The resulting file name and file type will be set to match the uploaded file automatically.
     form:
       add_file: Add file
       add_tips: Add tips

@@ -366,6 +366,7 @@ de:
       hints:
         feedback_message: Diese Nachricht wird als Hinweis zu fehlschlagenden Tests angezeigt.
         path: 'Pfad der Datei im Projektverzeichnis. Kann auch leer gelassen werden.'
+        upload: Eine hochgeladene Datei hat Vorrang vor Änderungen im Textfeld und wird nach dem Speichern sichtbar. Der Dateiname und die Dateiendung wird automatisch von der hochgeladenen Datei übernommen.
     form:
       add_file: Datei hinzufügen
       add_tips: Tipps hinzufügen
