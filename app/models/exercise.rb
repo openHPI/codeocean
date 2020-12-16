@@ -215,20 +215,23 @@ class Exercise < ApplicationRecord
                           "AND user_id = #{user.id} AND user_type = '#{user.class.name}'"
                         end
 
-    results = self.class.connection.execute(study_group_working_time_query(id, study_group_id, additional_filter)).each do |tuple|
-      bucket = if maximum_score > 0.0 && tuple['score'] <= maximum_score
-                 (tuple['score'] / maximum_score * max_bucket).round
-               else
-                 max_bucket # maximum_score / maximum_score will always be 1
-               end
+    results = ActiveRecord::Base.transaction do
+      self.class.connection.execute("SET LOCAL intervalstyle = 'postgres'")
+      self.class.connection.execute(study_group_working_time_query(id, study_group_id, additional_filter)).each do |tuple|
+        bucket = if maximum_score > 0.0 && tuple['score'] <= maximum_score
+                   (tuple['score'] / maximum_score * max_bucket).round
+                 else
+                   max_bucket # maximum_score / maximum_score will always be 1
+                 end
 
-      user_progress[bucket] ||= []
-      additional_user_data[bucket] ||= []
-      additional_user_data[max_bucket + 1] ||= []
+        user_progress[bucket] ||= []
+        additional_user_data[bucket] ||= []
+        additional_user_data[max_bucket + 1] ||= []
 
-      user_progress[bucket][tuple['index']] = tuple['working_time_per_score']
-      additional_user_data[bucket][tuple['index']] = {start_time: tuple['start_time'], score: tuple['score']}
-      additional_user_data[max_bucket + 1][tuple['index']] = {id: tuple['user_id'], type: tuple['user_type'], name: tuple['name']}
+        user_progress[bucket][tuple['index']] = tuple['working_time_per_score']
+        additional_user_data[bucket][tuple['index']] = {start_time: tuple['start_time'], score: tuple['score']}
+        additional_user_data[max_bucket + 1][tuple['index']] = {id: tuple['user_id'], type: tuple['user_type'], name: tuple['name']}
+      end
     end
 
     if results.ntuples > 0
@@ -366,17 +369,23 @@ class Exercise < ApplicationRecord
 
   def retrieve_working_time_statistics
     @working_time_statistics = {}
-    self.class.connection.execute(user_working_time_query).each do |tuple|
-      @working_time_statistics[tuple['user_id'].to_i] = tuple
+    ActiveRecord::Base.transaction do
+      self.class.connection.execute("SET LOCAL intervalstyle = 'postgres'")
+      self.class.connection.execute(user_working_time_query).each do |tuple|
+        @working_time_statistics[tuple['user_id'].to_i] = tuple
+      end
     end
   end
 
   def average_working_time
-    self.class.connection.execute(''"
+    ActiveRecord::Base.transaction do
+      self.class.connection.execute("SET LOCAL intervalstyle = 'postgres'")
+      self.class.connection.execute(''"
       SELECT avg(working_time) as average_time
       FROM
         (#{user_working_time_query}) AS baz;
     "'').first['average_time']
+    end
   end
 
   def average_working_time_for(user_id)
@@ -389,7 +398,6 @@ class Exercise < ApplicationRecord
     begin
       result = ActiveRecord::Base.transaction do
         self.class.connection.execute(''"
-              BEGIN;
               SET LOCAL intervalstyle = 'iso_8601';
               WITH WORKING_TIME AS
               (SELECT user_id,
@@ -531,7 +539,7 @@ class Exercise < ApplicationRecord
   end
 
   def finishers
-    ExternalUser.joins(:submissions).where(submissions: {exercise_id: id, score: maximum_score, cause: %w[submit assess]}).distinct
+    ExternalUser.joins(:submissions).where(submissions: {exercise_id: id, score: maximum_score, cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
   end
 
   def set_default_values
