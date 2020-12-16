@@ -1,9 +1,9 @@
 class RequestForCommentsController < ApplicationController
   include SubmissionScoring
-  before_action :set_request_for_comment, only: [:show, :edit, :update, :destroy, :mark_as_solved, :set_thank_you_note]
-  before_action :set_study_group_grouping, only: %i[index get_my_comment_requests get_rfcs_with_my_comments]
 
   before_action :require_user!
+  before_action :set_request_for_comment, only: [:show, :mark_as_solved, :set_thank_you_note]
+  before_action :set_study_group_grouping, only: %i[index get_my_comment_requests get_rfcs_with_my_comments]
 
   def authorize!
     authorize(@request_for_comments || @request_for_comment)
