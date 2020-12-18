@@ -2,7 +2,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "@rails/webpacker": "^5.2.1",
-    "@sentry/browser": "^5.29.1",
+    "@sentry/browser": "^5.29.2",
     "bootstrap": "^4.5.3",
     "bootswatch": "^4.5.3",
     "chosen-js": "^1.8.7",
