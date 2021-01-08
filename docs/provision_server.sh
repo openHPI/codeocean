@@ -1,6 +1,7 @@
 #!/bin/bash
-# rvm/rails installation from https://gorails.com/setup/ubuntu/14.04
-# passenger installation from https://www.phusionpassenger.com/library/install/nginx/install/oss/trusty/
+
+echo "This script shall not be run and is only included for general documentation purposes."
+exit 0
 
 ######## VERSION INFORMATION ########
 
