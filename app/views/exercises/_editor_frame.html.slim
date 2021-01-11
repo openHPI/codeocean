@@ -9,7 +9,7 @@
         - elsif file.file_type.video?
           = video_tag(file.native_file.url, controls: true)
       - else
-        = link_to(file.native_file.file.name_with_extension, file.native_file.url)
+        = link_to(file.native_file.file.filename, file.native_file.url)
   - else
     .editor-content.d-none data-file-id=file.ancestor_id = file.content
     .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-read-only=file.read_only data-allow-auto-completion=exercise.allow_auto_completion.to_s data-id=file.id
