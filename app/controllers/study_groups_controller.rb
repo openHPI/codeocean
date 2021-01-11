@@ -10,11 +10,11 @@ class StudyGroupsController < ApplicationController
   end
 
   def show
-    @search = @study_group.users.ransack(params[:q])
+    @search = @study_group.external_users.ransack(params[:q])
   end
 
   def edit
-    @search = @study_group.users.ransack(params[:q])
+    @search = @study_group.external_users.ransack(params[:q])
     @members = StudyGroupMembership.where(user: @search.result, study_group: @study_group)
   end
 
