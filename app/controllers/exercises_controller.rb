@@ -498,7 +498,7 @@ class ExercisesController < ApplicationController
       user_statistics = {}
       additional_filter = if policy(@exercise).detailed_statistics?
                             ''
-                          elsif ! policy(@exercise).detailed_statistics? && current_user.study_groups > 0
+                          elsif ! policy(@exercise).detailed_statistics? && current_user.study_groups.count > 0
                             "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"
                           else
                             # e.g. internal user without any study groups, show no submissions
