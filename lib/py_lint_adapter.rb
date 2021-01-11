@@ -34,6 +34,7 @@ class PyLintAdapter < TestingFrameworkAdapter
         end || []
       end
     rescue Timeout::Error
+      Raven.capture_message({stdout: output[:stdout], regex: ASSERTION_ERROR_REGEXP}.to_json)
       assertion_error_matches = []
     end
     concatenated_errors = assertion_error_matches.map { |result| "#{result[:name]}: #{result[:result]}" }.flatten
