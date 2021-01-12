@@ -318,7 +318,7 @@ en:
       run: Run
       run_failure: Your code could not be run.
       run_success: Your code was run on our servers.
-      requestComments: Request comments
+      requestComments: Request Comments
       requestCommentsTooltip: If you need help with your code, you can now request comments here!
       save: Save
       score: Score
