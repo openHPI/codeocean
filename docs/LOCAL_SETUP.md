@@ -116,7 +116,7 @@ admin@example.org:admin
     proxy_set_header Host $host;
     proxy_set_header X-NginX-Proxy true;
   
-    proxy_pass http://unix:/Usrers/<yourname>/Library/Containers/com.docker.docker/Data/docker.raw.sock;
+    proxy_pass http://unix:/Users/<yourname>/Library/Containers/com.docker.docker/Data/docker.raw.sock;
     proxy_redirect off;
   
     proxy_http_version 1.1;
