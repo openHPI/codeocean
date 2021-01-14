@@ -1,72 +1,66 @@
 # Local Setup
 
 If available, we prefer a native setup for best performance and less technical issues. Please see below for some details.
- 
+
 ## Vagrant
 
-## Install prerequisites
-Install Vagrant - https://www.vagrantup.com/docs/installation/  
-Install VirtualBox - https://www.virtualbox.org/wiki/Downloads
+### Install prerequisites
 
-## Install and setup
-### Clone repository   
-Create a local codeOceanRoot:   mkdir /path/to/CodeOcean  ==> codeOceanRoot = /path/to/CodeOcean   
-Clone Repository (https://github.com/openHPI/codeocean) to codeOceanRoot  
-cd codeOceanRoot  
+- [Install Vagrant](https://www.vagrantup.com/docs/installation)
+- [Install VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 
-### Get Vagrant base image 
-vagrant box add ubuntu/trusty64  
-vagrant up  
+### Clone repositories
 
-### Trouble shooting 
-(sometimes, particularly if VirtualBox is running under Windows as the host sysstem, parts of the provision script are) not executed.
-vagrant up does not show error messages but later on the trouble starts.
+The following two repositories have to be cloned in the same directory:
 
-ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled <= Failed (no such directory)  
+- [CodeOcean](https://github.com/openHPI/codeocean)
+- [DockerContainerPool](https://github.com/openHPI/dockercontainerpool)
 
-#### Make docker daemon useable without sudo
-Infos taken from: http://askubuntu.com/questions/477551/how-can-i-use-docker-without-sudo
+Vagrant assumes that these repositories are completely clean. For example, Vagrant will setup all configuration files in `config` (in both repositories) based on the examples provided in the same directory. Therefore it is **important** that these configuration files do not exist before running vagrant up. It is recommended to have a freshly cloned repository but you can also try to remove untracked files by running `git clean -xf` in both repositories.
 
-vagrant ssh 
-sudo groupadd docker
-sudo gpasswd -a ${USER} docker
-sudo service docker restart
-newgrp docker
+### Create and start VM
 
-apt-get install nginx  
-ln -s /etc/nginx/sites-available/code_ocean /etc/nginx/sites-enabled  
-
-#### If ruby version needs to be updated (as provision.sh is not up-to-date :( )
-Infos taken from: http://stackoverflow.com/questions/26242712/installing-rvm-getting-error-there-was-an-error23
-
-vagrant ssh
-rvm group add rvm "$USER"
-
-logout and login again
-rvm fix-permissions (not necessarily required)
-rvm install (requested ruby version)
-
-cd /vagrant
-gem install bundler
-bundle install
-
-#### Pending migrations
-vagrant ssh
-cd /vagrant
-rake db:migrate
-
-#### Missing config files or anything else goes wrong
-Check the according parts of the provision.sh file and try to re-run them directly in the vagrant VM.
-All problems that have occurred resulted from a more restrictive rights management in the VMs that run under a Windows host system.
+- Switch to the `codeocean` directory
+- Run `vagrant up`
+- If this command fails please try the following:
+  - Run `vagrant destroy -f` to remove the broken VM
+  - Make sure that both repositories are freshly cloned, for example by deleting and cloning them again
+  - Retry to execute `vagrant up`
+- The VM pulls only one docker image: [`openhpi/co_execenv_python:3.8`](https://hub.docker.com/layers/openhpi/co_execenv_python/3.8/images/sha256-b048f61d490d1b202016dc3bdf99a5169ec998109ae9bbae441c94bdec18e3d0)
 
 ### Start server
-vagrant ssh  
-cd /vagrant  
-rails s -p 3000 -b 0.0.0.0
 
-### Login to CodeOcean
-192.168.59.104:3000  
-admin@example.org:admin
+You can [configure vagrant as remote interpreter in RubyMine](https://www.jetbrains.com/help/ruby/configuring-language-interpreter.html#add_remote_ruby_interpreter) and start the rails server via RubyMine or you can start it manually from the command line:
+
+```bash
+vagrant ssh
+cd /home/vagrant/dockercontainerpool
+rails s -p 3100
+
+# using another ssh session
+cd /home/vagrant/codeocean
+rails s -p 3000 -b 0.0.0.0
+```
+
+The default credentials for the administrator are:
+
+- email: `admin@example.org`
+- password: `admin`
+
+## Execution Environments
+
+Every exercise is executed in an execution environment which is based on a docker image. In order to install a new image, have a look at the container of the openHPI team on [DockerHub](https://hub.docker.com/u/openhpi). For example you can add an [image for ruby](https://hub.docker.com/layers/openhpi/co_execenv_ruby/latest/images/sha256-70f597320567678bf8d0146d93fb1bd98457abe61c3b642e832d4e4fbe7f4526) by executing `docker pull openhpi/co_execenv_ruby:latest`.  
+After that make sure to configure the corresponding execution environment for the docker images you want to use in your CodeOcean instance. Therefore sign in on your running CodeOcean server as an administrator and select `Execution Environments` from the `Administration` dropdown. The `Docker Container Pool Size` should be greater than 0 for every execution environment you want to use.
+
+## Webpack
+
+This project uses `webpacker` to integrate Webpack with Rails to deliver Frontend assets. During development, the `webpack-dev-server` automatically launches together with the Rails server if not specified otherwise. In case of missing JavaScript or stylesheets or for hot reloading in the browser, you might want to start the `webpack-dev-server` manually *before starting Rails*:
+
+```shell script
+./bin/webpack-dev-server
+```
+
+This will launch a dedicated server on port 3035 (default setting) and allow incoming WebSocket connections from your browser.
 
 ## Native setup (for macOS)
 
@@ -165,13 +159,3 @@ admin@example.org:admin
   ```shell script
   rails s
   ```
-
-## Webpack
-
-This project uses `webpacker` to integrate Webpack with Rails to deliver Frontend assets. During development, the `webpack-dev-server` automatically launches togehter with the Rails server if not specified otherwise. In case of missing JavaScript or stylesheets or for hot reloading in the browser, you might want to start the `webpack-dev-server` manually *before starting Rails*:
-
-```shell script
-./bin/webpack-dev-server
-```
-
-This will launch a dedicated server on port 3035 (default setting) and allow incoming WebSocket connections from your browser.

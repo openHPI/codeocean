@@ -2,13 +2,13 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/bionic64"
+  config.vm.box = "ubuntu/focal64"
   config.vm.provider "virtualbox" do |v|
-    v.memory = 8192
-    v.cpus = 2
+    v.memory = 4096
+    v.cpus = 4
   end
-  config.vm.network "private_network", ip: "192.168.59.104"
-  config.vm.network "forwarded_port", guest: 3035, host: 3035
-  # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.provision "shell", path: "provision.sh", privileged: false
+  config.vm.network "forwarded_port", host_ip: "127.0.0.1", host: 3000, guest: 3000
+  config.vm.synced_folder ".", "/home/vagrant/codeocean"
+  config.vm.synced_folder "../dockercontainerpool", "/home/vagrant/dockercontainerpool"
+  config.vm.provision "shell", path: "provision/provision.vagrant.sh", privileged: false
 end

@@ -4,6 +4,7 @@ default: &default
   password: CHANGE_ME
   pool: 16
   username: postgres
+  host: localhost
 
 development:
   <<: *default
