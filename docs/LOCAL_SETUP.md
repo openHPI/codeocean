@@ -1,6 +1,6 @@
 # Local Setup
 
-If available, we prefer a native setup for best performance and less technical issues. Please see below for some details.
+For security reasons the Vagrant setup is recommended. But the native setup provides best performance and less technical issues. Please see below for some details.
 
 ## Vagrant
 
@@ -61,6 +61,144 @@ This project uses `webpacker` to integrate Webpack with Rails to deliver Fronten
 ```
 
 This will launch a dedicated server on port 3035 (default setting) and allow incoming WebSocket connections from your browser.
+
+## Native setup (for Ubuntu)
+
+Install all necessary dependencies:
+
+```bash
+sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev
+```
+
+### PostgreSQL
+
+```bash
+curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+sudo apt update && sudo apt install postgresql-client postgresql
+```
+
+- The installation should automatically start and enable the systemd service `postgresql` and create the user `postgres`
+- Check the systemd service with `systemctl status postgresql`
+- open `/etc/postgresql/13/main/pg_hba.conf` and replace all lines after the line starting with `# TYPE` with the following lines:
+
+  ```text
+  # code_ocean: drop access control
+  local all all trust
+  host  all all 127.0.0.1/32 trust
+  host  all all ::1/128 trust
+  ```
+
+- Restart postgresql with `systemctl restart postgresql`
+
+### Node
+
+```bash
+curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+echo "deb https://deb.nodesource.com/node_14.x $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+echo "deb-src https://deb.nodesource.com/node_14.x $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+sudo apt update && sudo apt install nodejs
+```
+
+Check the installation with `node -v`
+
+### Yarn
+
+```bash
+curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt update && sudo apt install yarn
+```
+
+Check the installation with `yarn -v`
+
+### Docker
+
+```bash
+curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io
+```
+
+- Get the path to the systemd service file `docker.service` using `systemctl status docker` (normally it is located at `/lib/systemd/system/docker.service`)
+- Add `-H tcp://127.0.0.1:2376` after `-H fd://` in this file
+- Add the following option to `/etc/docker/daemon.json` (or create the file if it does not exist yet):
+
+  ```text
+  {
+        "userns-remap": "default"
+  }
+  ```
+
+- Reload the service with `systemctl daemon-reload` and `systemctl restart docker`
+- Using `sudo lsof -Pi` you should see dockerd running on port 2376
+- Add yourself to the docker group:
+  - WARNING: your user will have [root access without providing a password](https://medium.com/@Affix/privilege-escallation-with-docker-56dc682a6e17)
+  - Execute: `sudo usermod -aG docker ${USER}`
+  - Logout and login again
+- Check the docker installation with `docker run hello-world` (without root privileges)
+
+### RVM and Ruby
+
+```bash
+curl -sSL https://rvm.io/mpapis.asc | gpg --import -
+curl -sSL https://rvm.io/pkuczynski.asc | gpg --import -
+curl -sSL https://get.rvm.io | bash -s stable
+source "$HOME/.profile"
+```
+
+- `type rvm | head -n 1` should return `rvm is a function` now
+- Install ruby with `rvm install 2.7.2`
+- Select the installed ruby version with `rvm use 2.7.2 --default`
+- Check the installed version with `rvm list` or `ruby -v`
+- Install [bundler](https://github.com/rubygems/bundler#installation-and-usage) with `gem install bundler`
+
+### Configure CodeOcean
+
+- Clone this repository and cd into it:
+
+  ```bash
+  git clone https://github.com/openHPI/codeocean.git
+  cd codeocean
+  ```
+
+- Create all necessary config files:
+
+  ```bash
+  for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml
+  do
+    if [ ! -f config/$f ]
+    then
+      cp config/$f.example config/$f
+    fi
+  done
+  ```
+
+- Install all dependencies:
+
+  ```bash
+  bundle install
+  yarn install
+  ```
+
+- Setup the local database:
+
+  ```bash
+  export RAILS_ENV=development
+  rake db:create
+  rake db:schema:load
+  rake db:migrate
+  rake db:seed
+  ```
+
+### Start CodeOcean
+
+- Start CodeOcean by executing `rails s` in the project root
+- Open `localhost:3000` in your browser
+- You can login as administrator with the user `admin@example.org` and the password `admin`
 
 ## Native setup (for macOS)
 
