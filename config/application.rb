@@ -6,6 +6,8 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+require 'telegraf/rails'
+
 module CodeOcean
   class Application < Rails::Application
     # Initialize configuration defaults
@@ -30,5 +32,7 @@ module CodeOcean
     config.assets.precompile += %w( markdown-buttons.png )
 
     config.action_cable.mount_path = '/cable'
+
+    config.telegraf.rack.tags = {application: 'codeocean'}
   end
 end
