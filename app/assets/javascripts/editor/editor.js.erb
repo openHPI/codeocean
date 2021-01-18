@@ -9,9 +9,9 @@ var CodeOceanEditor = {
     SUCCESSFULL_PERCENTAGE: 90,
 
     //Key-Codes (for Hotkeys)
-    ALT_R_KEY_CODE: 174,
-    ALT_S_KEY_CODE: 8218,
-    ALT_T_KEY_CODE: 8224,
+    R_KEY_CODE: 82,
+    S_KEY_CODE: 83,
+    T_KEY_CODE: 84,
     ENTER_KEY_CODE: 13,
 
     //Request-For-Comments-Configuration
@@ -167,11 +167,11 @@ var CodeOceanEditor = {
     },
 
     handleKeyPress: function (event) {
-        if (event.which === this.ALT_R_KEY_CODE) {
+        if (event.altKey && event.which === this.R_KEY_CODE) {
             $('#run').trigger('click');
-        } else if (event.which === this.ALT_S_KEY_CODE) {
+        } else if (event.altKey && event.which === this.S_KEY_CODE) {
             $('#assess').trigger('click');
-        } else if (event.which === this.ALT_T_KEY_CODE) {
+        } else if (event.altKey && event.which === this.T_KEY_CODE) {
             $('#test').trigger('click');
         } else {
             return;
@@ -302,7 +302,7 @@ var CodeOceanEditor = {
 
     initializeEventHandlers: function () {
         $(document).on('click', '#results a', this.showOutput.bind(this));
-        $(document).on('keypress', this.handleKeyPress.bind(this));
+        $(document).on('keydown', this.handleKeyPress.bind(this));
         this.initializeFileTreeButtons();
         this.initializeWorkspaceButtons();
         this.initializeRequestForComments()
