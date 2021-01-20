@@ -24,8 +24,8 @@ $(document).on('turbolinks:load', function () {
         var content = $('.editor-content[data-file-id=' + file_id + ']');
 
         document.insertLines(0, content.text().split(/\n/));
-        // remove last (empty) that is there by default line
-        document.removeLines(document.getLength() - 1, document.getLength() - 1);
+        // remove last (empty) that is there by default; disabled due to missing last line
+        // document.removeLines(document.getLength() - 1, document.getLength() - 1);
         editor.setReadOnly($(element).data('read-only') !== undefined);
         editor.setShowPrintMargin(false);
         editor.setTheme(THEME);
