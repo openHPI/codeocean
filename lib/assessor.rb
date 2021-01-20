@@ -27,8 +27,8 @@ class Assessor
     end
   end
 
-  def translate_linter(result)
-    @testing_framework_adapter.translate_linter(result)
+  def translate_linter(result, locale)
+    @testing_framework_adapter.translate_linter(result, locale)
   end
 
   class Error < RuntimeError; end

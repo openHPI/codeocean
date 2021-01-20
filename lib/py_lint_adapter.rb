@@ -41,9 +41,11 @@ class PyLintAdapter < TestingFrameworkAdapter
     {count: count, failed: failed, error_messages: concatenated_errors, detailed_linter_results: assertion_error_matches}
   end
 
-  def self.translate_linter(assessment)
+  def self.translate_linter(assessment, locale)
     # The message will be translated once the results were stored in the database
     # See SubmissionScoring for actual function call
+
+    I18n.locale = locale
 
     return assessment unless assessment[:detailed_linter_results].present?
 
@@ -71,7 +73,7 @@ class PyLintAdapter < TestingFrameworkAdapter
         replacement = {}
       end
 
-      replacement.merge!(locale: :de, default: message[:result])
+      replacement.merge!(default: message[:result])
       message[:result] = I18n.t("linter.#{severity}.#{name}.replacement", replacement)
       message
     end
@@ -91,7 +93,7 @@ class PyLintAdapter < TestingFrameworkAdapter
   def self.get_t(key, default)
     # key might be "linter.#{severity}.#{name}.#{key}.#{value}"
     # or something like "linter.#{severity}.#{name}.replacement"
-    translation = I18n.t(key, locale: :de, default: default)
+    translation = I18n.t(key, default: default)
     key.delete_suffix!(".#{default}") # Remove any custom prefix, might have no effect
     keys = key.split('.')
     final_key = keys.pop
@@ -100,7 +102,7 @@ class PyLintAdapter < TestingFrameworkAdapter
                     false
                   else
                     # Read config key
-                    I18n.t(keys.append('log_missing').join('.'), locale: :de, default: true)
+                    I18n.t(keys.append('log_missing').join('.'), default: true)
                   end
     Raven.capture_message({key: key, default: default}.to_json) if translation == default && log_missing
     translation

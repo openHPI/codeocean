@@ -12,7 +12,7 @@ class PyUnitAndPyLintAdapter < TestingFrameworkAdapter
     end
   end
 
-  def translate_linter(result)
-    PyLintAdapter.translate_linter(result)
+  def translate_linter(result, locale)
+    PyLintAdapter.translate_linter(result, locale)
   end
 end
