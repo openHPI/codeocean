@@ -57,9 +57,9 @@ h1 = "#{@exercise} (external user #{link_to_if(policy(@external_user).show?, @ex
                 td.align-middle
                   -this.testruns.includes(:file).order("files.name").each do |run|
                     - if run.passed
-                      .unit-test-result.positive-result title=[run.file.name_with_extension, run.output].join("\n").strip
+                      .unit-test-result.positive-result title=[run.file&.name_with_extension, run.output].join("\n").strip
                     - else
-                      .unit-test-result.unknown-result title=[run.file.name_with_extension, run.output].join("\n").strip
+                      .unit-test-result.unknown-result title=[run.file&.name_with_extension, run.output].join("\n").strip
                 td = @working_times_until[index] if index > 0 if policy(@exercise).detailed_statistics?
               - elsif this.is_a? UserExerciseIntervention
                 td = this.intervention.name
