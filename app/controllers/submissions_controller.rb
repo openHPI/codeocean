@@ -237,7 +237,7 @@ class SubmissionsController < ApplicationController
     @raw_output ||= ''
     @run_output ||= ''
     # Handle special commands first
-    if /^#exit|^{"cmd": "exit"}/.match(message)
+    if /^#exit|{"cmd": "exit"}/.match(message)
       # Just call exit_container on the docker_client.
       # Do not call kill_socket for the websocket to the client here.
       # @docker_client.exit_container closes the socket to the container,
