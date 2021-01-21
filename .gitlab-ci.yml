@@ -1,0 +1,50 @@
+default:
+  image: codemoon:latest
+
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+    # don't run a push pipeline if a merge request pipeline if a merge request exists
+      when: never
+    - when: always
+
+stages:
+  - lint
+  - test
+
+
+rubocop:
+  stage: lint
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID'
+      when: always
+    - when: never
+  script:
+    - source /home/codeocean/.rvm/scripts/rvm
+    - bundle install
+    - echo $CI_MERGE_REQUEST_DIFF_BASE_SHA
+    - DIFF=$(git diff --name-only --diff-filter=d $CI_MERGE_REQUEST_DIFF_BASE_SHA)
+    - echo $DIFF
+    - "if [[ ! -z $DIFF ]]; then bundle exec rubocop --force-exclusion --parallel --display-style-guide $DIFF; fi"
+
+
+rspec:
+  stage: test
+  before_script:
+    - sudo -u postgres /usr/lib/postgresql/13/bin/postgres -D /etc/postgresql/13/main/ &
+    - sleep 3
+    - sudo wrapdocker
+    - for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml; do if [ ! -f config/$f ]; then cp config/$f.ci config/$f; fi; done
+    - source /home/codeocean/.rvm/scripts/rvm
+    - bundle install
+    - yarn install
+    - export RAILS_ENV=test
+    - rake db:create
+    - rake db:schema:load
+    - rake db:migrate
+    - docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
+    - docker pull openhpi/co_execenv_python
+    - docker pull openhpi/co_execenv_java
+  script:
+    - rspec --format progress
+  coverage: '/\(\d+.\d+\%\) covered/'

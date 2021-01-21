@@ -1,5 +1,6 @@
 AllCops:
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
+  NewCops: enable
   Exclude:
     - bin/*
     - config/application.rb
@@ -10,11 +11,11 @@ AllCops:
     - tmp/**/*
     - vendor/**/*
     - node_modules/**/*
-Rails:
-  Enabled: true
 Layout/LineLength:
   Enabled: false
-require: rubocop-rspec
+require:
+    - rubocop-rspec
+    - rubocop-rails
 Style/Documentation:
   Enabled: false
 Layout/SpaceInsideHashLiteralBraces:
