@@ -7,7 +7,7 @@ h1
 = row(label: 'study_group.external_id') do
   code = @study_group.external_id
 = row(label: 'study_group.consumer', value: link_to_if(policy(@study_group).show?, @study_group.consumer, @study_group.consumer))
-= row(label: 'study_group.member_count', value: @study_group.users.count)
+= row(label: 'study_group.member_count', value: @study_group.user_count)
 
 
 h2.mt-4 = t('activerecord.attributes.study_group.members')
