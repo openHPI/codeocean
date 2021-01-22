@@ -31,20 +31,19 @@ class ApplicationPolicy
       study_group = @record.study_group
       return false if study_group.blank?
 
-      users_in_same_study_group = study_group.users
+      study_groups = [study_group]
     elsif @record.respond_to? :user # e.g. exercise
+      # ToDo: Add role to study_group_membership and use for check
       study_groups = @record.user.study_groups
-      users_in_same_study_group = study_groups.collect(&:users).flatten
     elsif @record.respond_to? :users # e.g. study_group
-      users_in_same_study_group = @record.users
+      study_groups = [@record]
     elsif @record.respond_to? :study_groups # e.g. user
       study_groups = @record.study_groups
-      users_in_same_study_group = study_groups.collect(&:users).flatten
     else
       return false
     end
 
-    users_in_same_study_group.include? @user
+    @user.study_groups.any?{|i| study_groups.include?(i) }
   end
   private :everyone_in_study_group
 
