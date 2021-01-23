@@ -328,7 +328,7 @@ var CodeOceanEditor = {
 
     initializeFileTree: function () {
         $('#files').jstree($('#files').data('entries'));
-        $('#files').on('click', 'li.jstree-leaf', function (event) {
+        $('#files').on('click', 'li.jstree-leaf > a', function (event) {
             this.setActiveFile(
                 $(event.target).parent().text(),
                 parseInt($(event.target).parent().attr('id'))
