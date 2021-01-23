@@ -11,6 +11,10 @@ class StudyGroup < ApplicationRecord
     external_users + internal_users
   end
 
+  def user_count
+    external_users.count + internal_users.count
+  end
+
   def to_s
     if name.blank?
       "StudyGroup " + id.to_s
