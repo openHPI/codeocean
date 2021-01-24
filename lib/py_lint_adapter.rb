@@ -102,7 +102,7 @@ class PyLintAdapter < TestingFrameworkAdapter
                     false
                   else
                     # Read config key
-                    I18n.t(keys.append('log_missing').join('.'), default: true)
+                    I18n.t(keys.append('log_missing').join('.'), default: false)
                   end
     Raven.capture_message({key: key, default: default}.to_json) if translation == default && log_missing
     translation
