@@ -45,7 +45,7 @@ class PyLintAdapter < TestingFrameworkAdapter
     # The message will be translated once the results were stored in the database
     # See SubmissionScoring for actual function call
 
-    I18n.locale = locale
+    I18n.locale = locale || I18n.default_locale
 
     return assessment unless assessment[:detailed_linter_results].present?
 
