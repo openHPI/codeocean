@@ -190,7 +190,10 @@ Turtle.prototype.coords = function (item, coords) {
 };
 
 Turtle.prototype.itemconfigure = function (item, key, value) {
-    this.items[item][key] = value;
+    const element = this.items[item];
+    if (element !== undefined) {
+        element[key] = value;
+    }
 };
 
 // value might be undefined
