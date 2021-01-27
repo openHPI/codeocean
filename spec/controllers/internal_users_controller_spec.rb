@@ -195,7 +195,7 @@ describe InternalUsersController do
       before(:each) { perform_request.call }
 
       it 'delivers instructions to reset the password' do
-        expect(InternalUser).to receive(:find_by).and_return(user)
+        expect(InternalUser).to receive(:where).and_return([user])
         expect(user).to receive(:deliver_reset_password_instructions!)
         perform_request.call
       end
