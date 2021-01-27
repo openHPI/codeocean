@@ -422,7 +422,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     structured_warnings (0.4.0)
-    telegraf (0.8.0)
+    telegraf (1.0.0)
       influxdb
     temple (0.8.2)
     thor (1.1.0)
