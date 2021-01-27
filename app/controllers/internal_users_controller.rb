@@ -40,7 +40,8 @@ class InternalUsersController < ApplicationController
 
   def deliver_reset_password_instructions
     if params[:email].present?
-      InternalUser.find_by(email: params[:email]).try(:deliver_reset_password_instructions!)
+      user = InternalUser.arel_table
+      InternalUser.where(user[:email].matches(params[:email])).first&.deliver_reset_password_instructions!
       redirect_to(:root, notice: t('.success'))
     end
   end
