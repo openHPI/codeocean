@@ -33,6 +33,6 @@ module CodeOcean
 
     config.action_cable.mount_path = '/cable'
 
-    config.telegraf.rack.tags = {application: 'codeocean'}
+    config.telegraf.tags = { application: 'codeocean' }
   end
 end
