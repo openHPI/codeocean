@@ -11,13 +11,17 @@
           span.badge.badge-pill.badge-primary.float-right.score
 
           h1 id="exercise-headline"
-            i class="fa fa-chevron-down" id="description-symbol"
+            i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa fa-chevron-right' : 'fa fa-chevron-down')
             = @exercise.title
 
-        #description-card.lead.description-card
+        #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
           = render_markdown(@exercise.description)
 
-        a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide') = t('shared.hide')
+        a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide')
+          - if @embed_options[:collapse_exercise_description]
+            = t('shared.show')
+          - else
+            = t('shared.hide')
 
     #alert.alert.alert-danger role='alert'
       h4 = t('.alert.title')

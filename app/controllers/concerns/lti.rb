@@ -211,6 +211,7 @@ module Lti
     @embed_options = {}
     %i[hide_navbar
        hide_exercise_description
+       collapse_exercise_description
        disable_run
        disable_score
        disable_rfc
