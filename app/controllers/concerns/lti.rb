@@ -22,6 +22,7 @@ module Lti
   def clear_lti_session_data(exercise_id = nil, user_id = nil)
     if (exercise_id.nil?)
       session.delete(:external_user_id)
+      session.delete(:study_group_id)
       session.delete(:embed_options)
       session.delete(:lti_exercise_id)
       session.delete(:lti_parameters_id)
