@@ -24,4 +24,4 @@
             = tip.example
       = render(partial: 'tips/collapsed_card',
               collection: exercise_tip.children, as: :exercise_tip,
-              locals: { tip_prefix: "#{index}." })
+              locals: { tip_prefix: "#{tip_prefix + index.to_s}." })
