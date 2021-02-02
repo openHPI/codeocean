@@ -253,7 +253,7 @@ class SubmissionsController < ApplicationController
         # If no test command is set, use the run_command for the RegEx below. Otherwise, no output will be displayed!
         test_command = run_command
       end
-      unless /root|workspace|#{run_command}|#{test_command}|bash: cmd:canvasevent: command not found/.match(message)
+      unless /root@|:\/workspace|#{run_command}|#{test_command}|bash: cmd:canvasevent: command not found/.match(message)
         parse_message(message, 'stdout', tubesock, container)
       end
     end
