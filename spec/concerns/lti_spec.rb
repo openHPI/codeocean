@@ -18,6 +18,7 @@ describe Lti do
   describe '#clear_lti_session_data' do
     it 'clears the session' do
       expect(controller.session).to receive(:delete).with(:external_user_id)
+      expect(controller.session).to receive(:delete).with(:study_group_id)
       expect(controller.session).to receive(:delete).with(:embed_options)
       expect(controller.session).to receive(:delete).with(:lti_exercise_id)
       expect(controller.session).to receive(:delete).with(:lti_parameters_id)
