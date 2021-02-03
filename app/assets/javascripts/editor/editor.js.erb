@@ -508,7 +508,7 @@ var CodeOceanEditor = {
                         const context = `${check_run.file_name}: ${check_run.line}${scope}`;
                         const line_link = `<a href='#' data-file='${check_run.file_name}' data-line='${check_run.line}'>${context}</a>`;
                         const message = `${check_run.name}: ${check_run.result} (${line_link})`;
-                        const sub_text = $.parseHTML(message);
+                        const sub_text = document.createTextNode(message);
                         $(sub_li).append(sub_text).on("click", "a", this.jumpToSourceLine.bind(this));
                         sub_ul.append(sub_li);
                     }
@@ -519,7 +519,7 @@ var CodeOceanEditor = {
             } else {
               errorMessagesToShow.forEach(function (item) {
                   var li = document.createElement("li");
-                  var text = $.parseHTML(item);
+                  var text = document.createTextNode(item);
                   $(li).append(text);
                   ul.append(li);
               })
