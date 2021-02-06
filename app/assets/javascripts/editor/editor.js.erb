@@ -370,7 +370,8 @@ var CodeOceanEditor = {
     },
 
     initializeRegexes: function () {
-        this.regex_for_language.set("ace/mode/python", /File "(.+?)", line (\d+)/g);
+        // These RegEx are run on the HTML escaped output!
+        this.regex_for_language.set("ace/mode/python", /File &quot;(.+?)&quot;, line (\d+)/g);
         this.regex_for_language.set("ace/mode/java", /(.*\.java):(\d+):/g);
     },
 
@@ -467,7 +468,7 @@ var CodeOceanEditor = {
             let errorMessagesToShow = [];
             result.error_messages.forEach(function (item) {
                 if (item) {
-                    errorMessagesToShow.push(item.replace(/\n/g, '<br>'))
+                    errorMessagesToShow.push(item)
                 }
             })
 
@@ -605,7 +606,8 @@ var CodeOceanEditor = {
         if (this.tracepositions_regex) {
             $('#output>pre').each($.proxy(function(index, element) {
                 element = $(element)
-                const text = element.text();
+                debugger;
+                const text = _.escape(element.text());
                 element.on("click", "a", this.jumpToSourceLine.bind(this));
 
                 let matches;
