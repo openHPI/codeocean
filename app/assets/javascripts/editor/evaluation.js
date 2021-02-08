@@ -208,6 +208,18 @@ CodeOceanEditorEvaluation = {
         }
     },
 
+    getDeadlineInformation: function(deadline, translation_key, otherwise) {
+        if (deadline !== undefined) {
+            let li = document.createElement("li");
+            this.submission_deadline = new Date(deadline);
+            const bullet_point = I18n.t('exercises.editor.hints.' + translation_key,
+                { deadline: I18n.l("time.formats.long", this.submission_deadline), otherwise: otherwise })
+            let text = $.parseHTML(bullet_point);
+            $(li).append(text);
+            return li;
+        }
+    },
+
     initializeDeadlines: function () {
         const deadline = $('#deadline');
         if (deadline) {
@@ -216,27 +228,14 @@ CodeOceanEditorEvaluation = {
 
             const ul = document.createElement("ul");
 
-            if (submission_deadline) {
-                this.submission_deadline = new Date(submission_deadline);
-                const date = `<b>${I18n.l("time.formats.long", this.submission_deadline)}</b>: ${I18n.t('activerecord.attributes.exercise.submission_deadline')}`;
-                const bullet_point = `${date}<br/><small>${I18n.t('exercises.editor.hints.submission_deadline')}</small>`;
-
-                let li = document.createElement("li");
-                let text = $.parseHTML(bullet_point);
-                $(li).append(text);
-                ul.append(li);
+            if (submission_deadline && late_submission_deadline) {
+                ul.append(this.getDeadlineInformation(submission_deadline, 'submission_deadline', ''));
+                ul.append(this.getDeadlineInformation(late_submission_deadline, 'late_submission_deadline', ''));
+            } else {
+                const otherwise_no_points = I18n.t('exercises.editor.hints.otherwise');
+                ul.append(this.getDeadlineInformation(submission_deadline, 'submission_deadline', otherwise_no_points));
             }
 
-            if (late_submission_deadline) {
-                this.late_submission_deadline = new Date(late_submission_deadline);
-                const date = `<b>${I18n.l("time.formats.long", this.late_submission_deadline)}</b>: ${I18n.t('activerecord.attributes.exercise.late_submission_deadline')}`;
-                const bullet_point = `${date}<br/><small>${I18n.t('exercises.editor.hints.late_submission_deadline')}</small>`;
-
-                let li = document.createElement("li");
-                let text = $.parseHTML(bullet_point);
-                $(li).append(text);
-                ul.append(li);
-            }
             $(ul).insertAfter($(deadline).children()[0]);
         }
     }

@@ -339,8 +339,9 @@ en:
         exercise_deadline_passed: 'Either the deadline has already passed or you did not directly access this page from the e-learning platform. (Did you use the Back button of your browser after submitting the score?)'
       request_for_comments_sent: "Request for comments sent."
       hints:
-        submission_deadline: Any submission obtained after the deadline will be considered late and a score of 0 points will be sent to the e-learning platform.
-        late_submission_deadline: Any submission obtained after the deadline but before the late submission deadline will be considered as late and will only be scored with a penality of 20%. Any submission obtained after the late submission deadline will have its score reduced by 100%.
+        submission_deadline: This exercise is due <b>%{deadline}</b>.<br/><small>Click 'submit' to transfer your score to the e-learning platform before this deadline passes. %{otherwise}</small>
+        late_submission_deadline: Until <b>%{deadline}</b>, 80% of your score will be awareded.<br/><small>If you miss this extended deadline and submit your score afterwards, 0 points will be transmitted.</small>
+        otherwise: Otherwise, a score of 0 points will be transmitted.
         disclaimer: If unsure about a deadline, please contact a course instructor. The deadline shown here is only informational and information from the e-learning platform should always take precedence.
     editor_file_tree:
       file_root: Files

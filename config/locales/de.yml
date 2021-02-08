@@ -339,8 +339,9 @@ de:
         exercise_deadline_passed: 'Entweder ist die Abgabefrist bereits abgelaufen oder Sie haben die Aufgabe nicht direkt über die E-Learning Plattform gestartet. (Möglicherweise haben Sie den Zurück Button Ihres Browsers benutzt nachdem Sie Ihre Aufgabe abgegeben haben?)'
       request_for_comments_sent: "Kommentaranfrage gesendet."
       hints:
-        submission_deadline: Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet und die Punktzahl wird bei der Übertragung an die E-Learning-Plattform auf 0 Punkte reduziert.
-        late_submission_deadline: Abgaben nach der Abgabefrist und vor der verspäteten Abgabefrist werden als verspätet gekennzeichnet und mit einem 20%-Punktabzug gewertet. Abgaben nach der verspäteten Abgabefrist werden mit 0 Punkten an die E-Learning-Plattform gesendet.
+        submission_deadline: Diese Abgabe ist am <b>%{deadline}</b> fällig.<br/><small>Klicken Sie daher rechtzeitig auf 'Abgeben', um Ihre Punktzahl an die E-Learning-Plattform zu übertragen. %{otherwise}</small>
+        late_submission_deadline: Bis <b>%{deadline}</b> werden 80% Ihrer Punktzahl anerkannt.<br/><small>Wenn Sie diese erweiterte Frist ungenutzt verstreichen lassen und Ihre Abgabe später einreichen, werden 0 Punkte übertragen.</small>
+        otherwise: Nach der Abgabefrist werden 0 Punkte übertragen.
         disclaimer: Bei Fragen zu Deadlines wenden Sie sich bitte an das Teaching Team. Die hier angezeigte Abgabefrist dient nur zur Information und Angaben auf der jeweiligen Kursseite in der E-Learning-Plattform sollen immer Vorrang haben.
     editor_file_tree:
       file_root: Dateien
