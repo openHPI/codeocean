@@ -1,5 +1,5 @@
 doctype html
-html lang='en'
+html lang="#{I18n.locale || I18n.default_locale}"
   head
     meta charset='utf8'
     meta name='viewport' content='width=device-width, initial-scale=1'
@@ -16,10 +16,10 @@ html lang='en'
     = yield(:head)
     = csrf_meta_tags
     = timeago_script_tag
-    - unless Raven.configuration.current_environment == "development"
-      script type="text/javascript"
-        | I18n.defaultLocale = "#{I18n.default_locale}";
-        | I18n.locale = "#{I18n.locale}";
+    script type="text/javascript"
+      | I18n.defaultLocale = "#{I18n.default_locale}";
+      | I18n.locale = "#{I18n.locale}";
+      - unless Raven.configuration.current_environment == "development"
         | Sentry.init({
         |      dsn: 'https://637ca99538224b4bb28cd9e670e1b372@sentry.xikolo.de/33',
         |      attachStacktrace: true,
