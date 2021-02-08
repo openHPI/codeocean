@@ -509,7 +509,7 @@ var CodeOceanEditor = {
                         const context = `${check_run.file_name}: ${check_run.line}${scope}`;
                         const line_link = `<a href='#' data-file='${check_run.file_name}' data-line='${check_run.line}'>${context}</a>`;
                         const message = `${check_run.name}: ${check_run.result} (${line_link})`;
-                        const sub_text = document.createTextNode(message);
+                        const sub_text = $.parseHTML(message);
                         $(sub_li).append(sub_text).on("click", "a", this.jumpToSourceLine.bind(this));
                         sub_ul.append(sub_li);
                     }
@@ -606,20 +606,21 @@ var CodeOceanEditor = {
         if (this.tracepositions_regex) {
             $('#output>pre').each($.proxy(function(index, element) {
                 element = $(element)
-                debugger;
+
                 const text = _.escape(element.text());
                 element.on("click", "a", this.jumpToSourceLine.bind(this));
 
                 let matches;
 
+                let augmented_text = text;
                 while (matches = this.tracepositions_regex.exec(text)) {
                     const frame = $('div.frame[data-filename="' + matches[1] + '"]')
 
                     if (frame.length > 0) {
-                        element.html(text.replace(new RegExp(matches[0], 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>"));
+                        augmented_text = augmented_text.replace(new RegExp(matches[0], 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>");
                     }
                 }
-
+                element.html(augmented_text);
             }, this));
         }
     },
