@@ -4,7 +4,7 @@ include Rails.application.routes.url_helpers
 
 namespace :detect_exercise_anomalies do
   # uncomment for debug logging:
-  # logger           = Logger.new(STDOUT)
+  # logger           = Logger.new($stdout)
   # logger.level     = Logger::DEBUG
   # Rails.logger     = logger
 
