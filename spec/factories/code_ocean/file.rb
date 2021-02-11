@@ -2,7 +2,7 @@ require 'seeds_helper'
 
 module CodeOcean
   FactoryBot.define do
-    factory :file, class: CodeOcean::File do
+    factory :file, class: 'CodeOcean::File' do
       content { '' }
       association :context, factory: :submission
       association :file_type, factory: :dot_rb
@@ -18,7 +18,7 @@ module CodeOcean
       end
     end
 
-    factory :test_file, class: CodeOcean::File do
+    factory :test_file, class: 'CodeOcean::File' do
       content { '' }
       association :context, factory: :dummy
       association :file_type, factory: :dot_rb

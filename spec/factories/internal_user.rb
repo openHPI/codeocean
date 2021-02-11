@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :admin, class: InternalUser do
+  factory :admin, class: 'InternalUser' do
     activated_user
     association :consumer
     email { 'admin@example.org' }
@@ -9,7 +9,7 @@ FactoryBot.define do
     singleton_internal_user
   end
 
-  factory :teacher, class: InternalUser do
+  factory :teacher, class: 'InternalUser' do
     activated_user
     association :consumer
     generated_email

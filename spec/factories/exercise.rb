@@ -14,7 +14,7 @@ def create_seed_file(exercise, path, file_attributes = {})
 end
 
 FactoryBot.define do
-  factory :audio_video, class: Exercise do
+  factory :audio_video, class: 'Exercise' do
     created_by_teacher
     description { "Try HTML's audio and video capabilities." }
     association :execution_environment, factory: :html
@@ -32,7 +32,7 @@ FactoryBot.define do
     end
   end
 
-  factory :dummy, class: Exercise do
+  factory :dummy, class: 'Exercise' do
     created_by_teacher
     description { 'Dummy' }
     association :execution_environment, factory: :ruby
@@ -58,7 +58,7 @@ FactoryBot.define do
 
   end
 
-  factory :even_odd, class: Exercise do
+  factory :even_odd, class: 'Exercise' do
     created_by_teacher
     description { 'Implement two methods even and odd which return whether a given number is even or odd, respectively.' }
     association :execution_environment, factory: :python
@@ -72,7 +72,7 @@ FactoryBot.define do
     end
   end
 
-  factory :fibonacci, class: Exercise do
+  factory :fibonacci, class: 'Exercise' do
     created_by_teacher
     description { 'Implement a recursive function that calculates a requested Fibonacci number.' }
     association :execution_environment, factory: :ruby
@@ -88,7 +88,7 @@ FactoryBot.define do
     end
   end
 
-  factory :files, class: Exercise do
+  factory :files, class: 'Exercise' do
     created_by_teacher
     description { 'Learn how to work with files.' }
     association :execution_environment, factory: :ruby
@@ -102,7 +102,7 @@ FactoryBot.define do
     end
   end
 
-  factory :geolocation, class: Exercise do
+  factory :geolocation, class: 'Exercise' do
     created_by_teacher
     description { "Use the HTML5 Geolocation API to get the user's geographical position." }
     association :execution_environment, factory: :html
@@ -115,7 +115,7 @@ FactoryBot.define do
     end
   end
 
-  factory :hello_world, class: Exercise do
+  factory :hello_world, class: 'Exercise' do
     created_by_teacher
     description { "Write a simple 'Hello World' application." }
     association :execution_environment, factory: :ruby
@@ -128,7 +128,7 @@ FactoryBot.define do
     end
   end
 
-  factory :math, class: Exercise do
+  factory :math, class: 'Exercise' do
     created_by_teacher
     description { 'Implement a recursive math library.' }
     association :execution_environment, factory: :java
@@ -143,7 +143,7 @@ FactoryBot.define do
     end
   end
 
-  factory :primes, class: Exercise do
+  factory :primes, class: 'Exercise' do
     created_by_teacher
     description { 'Write a function that prints the first n prime numbers.' }
     association :execution_environment, factory: :node_js
@@ -155,7 +155,7 @@ FactoryBot.define do
     end
   end
 
-  factory :sql_select, class: Exercise do
+  factory :sql_select, class: 'Exercise' do
     created_by_teacher
     description { 'Learn to use the SELECT statement.' }
     association :execution_environment, factory: :sqlite
@@ -169,7 +169,7 @@ FactoryBot.define do
     end
   end
 
-  factory :tdd, class: Exercise do
+  factory :tdd, class: 'Exercise' do
     created_by_teacher
     description { 'Learn to appreciate test-driven development.' }
     association :execution_environment, factory: :ruby
@@ -182,7 +182,7 @@ FactoryBot.define do
     end
   end
 
-  factory :web_app, class: Exercise do
+  factory :web_app, class: 'Exercise' do
     created_by_teacher
     description { 'Build a simple Web application with Sinatra.' }
     association :execution_environment, factory: :sinatra

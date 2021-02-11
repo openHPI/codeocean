@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :dot_coffee, class: FileType do
+  factory :dot_coffee, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/coffee' }
     executable
@@ -9,7 +9,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_gif, class: FileType do
+  factory :dot_gif, class: 'FileType' do
     binary
     created_by_admin
     file_extension { '.gif' }
@@ -18,7 +18,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_html, class: FileType do
+  factory :dot_html, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/html' }
     file_extension { '.html' }
@@ -28,7 +28,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_java, class: FileType do
+  factory :dot_java, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/java' }
     executable
@@ -38,7 +38,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_jpg, class: FileType do
+  factory :dot_jpg, class: 'FileType' do
     binary
     created_by_admin
     file_extension { '.jpg' }
@@ -47,7 +47,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_js, class: FileType do
+  factory :dot_js, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/javascript' }
     executable
@@ -57,7 +57,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_json, class: FileType do
+  factory :dot_json, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/javascript' }
     file_extension { '.json' }
@@ -67,7 +67,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_md, class: FileType do
+  factory :dot_md, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/markdown' }
     file_extension { '.md' }
@@ -76,7 +76,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_mp3, class: FileType do
+  factory :dot_mp3, class: 'FileType' do
     binary
     created_by_admin
     file_extension { '.mp3' }
@@ -85,7 +85,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_mp4, class: FileType do
+  factory :dot_mp4, class: 'FileType' do
     binary
     created_by_admin
     file_extension { '.mp4' }
@@ -94,7 +94,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_ogg, class: FileType do
+  factory :dot_ogg, class: 'FileType' do
     binary
     created_by_admin
     file_extension { '.ogg' }
@@ -103,7 +103,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_png, class: FileType do
+  factory :dot_png, class: 'FileType' do
     binary
     created_by_admin
     file_extension { '.png' }
@@ -112,7 +112,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_py, class: FileType do
+  factory :dot_py, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/python' }
     executable
@@ -122,7 +122,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_rb, class: FileType do
+  factory :dot_rb, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/ruby' }
     executable
@@ -132,7 +132,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_svg, class: FileType do
+  factory :dot_svg, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/svg' }
     file_extension { '.svg' }
@@ -142,7 +142,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_sql, class: FileType do
+  factory :dot_sql, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/sql' }
     executable
@@ -152,7 +152,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_txt, class: FileType do
+  factory :dot_txt, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/plain_text' }
     file_extension { '.txt' }
@@ -162,7 +162,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_webm, class: FileType do
+  factory :dot_webm, class: 'FileType' do
     binary
     created_by_admin
     file_extension { '.webm' }
@@ -171,7 +171,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :dot_xml, class: FileType do
+  factory :dot_xml, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/xml' }
     file_extension { '.xml' }
@@ -181,7 +181,7 @@ FactoryBot.define do
     singleton_file_type
   end
 
-  factory :makefile, class: FileType do
+  factory :makefile, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/makefile' }
     executable

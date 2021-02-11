@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :coffee_script, class: ExecutionEnvironment do
+  factory :coffee_script, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-coffee:latest' }
@@ -13,7 +13,7 @@ FactoryBot.define do
     singleton_execution_environment
   end
 
-  factory :html, class: ExecutionEnvironment do
+  factory :html, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-html:latest' }
@@ -29,7 +29,7 @@ FactoryBot.define do
     testing_framework { 'RspecAdapter' }
   end
 
-  factory :java, class: ExecutionEnvironment do
+  factory :java, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'openhpi/co_execenv_java:latest' }
@@ -45,7 +45,7 @@ FactoryBot.define do
     testing_framework { 'JunitAdapter' }
   end
 
-  factory :jruby, class: ExecutionEnvironment do
+  factory :jruby, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-jruby:latest' }
@@ -61,7 +61,7 @@ FactoryBot.define do
     testing_framework { 'RspecAdapter' }
   end
 
-  factory :node_js, class: ExecutionEnvironment do
+  factory :node_js, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-node:latest' }
@@ -75,7 +75,7 @@ FactoryBot.define do
     singleton_execution_environment
   end
 
-  factory :python, class: ExecutionEnvironment do
+  factory :python, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'openhpi/co_execenv_python:latest' }
@@ -91,7 +91,7 @@ FactoryBot.define do
     testing_framework { 'PyUnitAdapter' }
   end
 
-  factory :ruby, class: ExecutionEnvironment do
+  factory :ruby, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-ruby:latest' }
@@ -107,7 +107,7 @@ FactoryBot.define do
     testing_framework { 'RspecAdapter' }
   end
 
-  factory :sinatra, class: ExecutionEnvironment do
+  factory :sinatra, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-sinatra:latest' }
@@ -124,7 +124,7 @@ FactoryBot.define do
     testing_framework { 'RspecAdapter' }
   end
 
-  factory :sqlite, class: ExecutionEnvironment do
+  factory :sqlite, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-sqlite:latest' }
