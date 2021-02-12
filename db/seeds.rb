@@ -1,6 +1,6 @@
 def find_factories_by_class(klass)
   FactoryBot.factories.select do |factory|
-    factory.instance_variable_get(:@class_name) == klass || factory.instance_variable_get(:@name) == klass.model_name.singular.to_sym
+    factory.instance_variable_get(:@class_name).to_s == klass.to_s || factory.instance_variable_get(:@name) == klass.model_name.singular.to_sym
   end
 end
 
