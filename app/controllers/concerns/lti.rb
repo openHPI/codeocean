@@ -75,9 +75,9 @@ module Lti
     result
   end
 
-  def mooc_course
-    # All Xikolo platforms set the custom_course to the course code
-    params[:custom_course]
+  def context_id?
+    # All platforms (except HPI Schul-Cloud) set the context_id
+    params[:context_id]
   end
 
   def refuse_lti_launch(options = {})
@@ -195,13 +195,13 @@ module Lti
 
 
   def set_study_group_membership
-    group = if mooc_course
+    group = if not context_id?
+              StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
+            else
               # Ensure to find the group independent of the name and set it only once.
               StudyGroup.find_or_create_by(external_id: @provider.context_id, consumer: @consumer) do |new_group|
                 new_group.name = @provider.context_title
               end
-            else
-              StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
             end
     group.external_users << @current_user unless group.external_users.include? @current_user
     group.save
