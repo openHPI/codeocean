@@ -161,7 +161,7 @@ en:
       exercise_collection_item:
         exercise: "Exercise"
     models:
-      code_harbor_link:
+      codeharbor_link:
         one: CodeHarbor Link
         other: CodeHarbor Links
       consumer:
@@ -269,13 +269,13 @@ en:
   codeharbor_link:
     generate: Generate
     info:
-      push_url: The url from Codeharbor where your exercise can be exported to. If you don't know what to write here, ask an admin.
-      check_uuid_url: The url from Codeharbor where we can check if the exercise already exists. If you don't know what to write here, ask an admin.
+      push_url: The url from CodeHarbor where your exercise can be exported to. If you don't know what to write here, ask an admin.
+      check_uuid_url: The url from CodeHarbor where we can check if the exercise already exists. If you don't know what to write here, ask an admin.
       api_key: Will be used to authenticate your export request. Has to be the same on both sides.
-    profile_label: Codeharbor Link
-    new: Create link to Codeharbor
-    edit: Edit existing link
-    delete: Remove Codeharbor link
+    profile_label: CodeHarbor Link
+    new: Create link to CodeHarbor
+    edit: Edit existing CodeHarbor link
+    delete: Remove CodeHarbor link
   execution_environments:
     form:
       hints:
@@ -350,21 +350,21 @@ en:
         invalid: Invalid exercise
         internal_error: An internal error occurred on CodeOcean while importing the exercise.
     export_codeharbor:
-      label: Export to Codeharbor
-      dialogtitle: Export to Codeharbor
+      label: Export to CodeHarbor
+      dialogtitle: Export to CodeHarbor
       successfully_exported: 'Exercise has been successfully exported.<br>ID: %{id}<br>Title: %{title}'
       export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
-      error: 'An error occurred while contacting Codeharbor'
-      checking_codeharbor: Checking if the exercise exists on Codeharbor.
+      error: 'An error occurred while contacting CodeHarbor'
+      checking_codeharbor: Checking if the exercise exists on CodeHarbor.
       buttons:
         retry: Retry
         export: Export
         close: Close
         abort: Abort
       check:
-        no_exercise: No corresponding exercise found on Codeharbor. Pushing this exercise will create a new exercise on Codeharbor, which will be linked to this one on Codeocean. Any changes to either one can be pushed to the respective other platform.
-        exercise_found: 'A corresponding exercise has been found on Codeharbor. You can export the exercise to transfer all changes made on Codeocean to Codeharbor. Careful: This will overwrite all potential changes made on Codeharbor.'
-        exercise_found_no_right: A corresponding exercise has been found on Codeharbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the exercise on Codeharbor.
+        no_exercise: No corresponding exercise found on CodeHarbor. Pushing this exercise will create a new exercise on CodeHarbor, which will be linked to this one on Codeocean. Any changes to either one can be pushed to the respective other platform.
+        exercise_found: 'A corresponding exercise has been found on CodeHarbor. You can export the exercise to transfer all changes made on Codeocean to CodeHarbor. Careful: This will overwrite all potential changes made on CodeHarbor.'
+        exercise_found_no_right: A corresponding exercise has been found on CodeHarbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the exercise on CodeHarbor.
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.

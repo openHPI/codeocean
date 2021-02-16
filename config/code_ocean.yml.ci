@@ -4,6 +4,6 @@ test:
   code_pilot:
     enabled: false
   codeharbor:
-    url: http://test.url
+    enabled: true
   codeocean_events:
     enabled: false

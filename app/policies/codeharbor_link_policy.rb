@@ -8,23 +8,27 @@ class CodeharborLinkPolicy < ApplicationPolicy
   end
 
   def new?
-    teacher? || admin?
+    enabled? && (teacher? || admin?)
   end
 
   def create?
-    teacher? || admin?
+    enabled? && (teacher? || admin?)
   end
 
   def edit?
-    owner?
+    enabled? && owner?
   end
 
   def update?
-    owner?
+    enabled? && owner?
   end
 
   def destroy?
-    owner?
+    enabled? && owner?
+  end
+
+  def enabled?
+    CodeOcean::Config.new(:code_ocean).read[:codeharbor][:enabled]
   end
 
   private
