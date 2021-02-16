@@ -4,6 +4,6 @@ test:
   code_pilot:
     enabled: false
   codeharbor:
-    enabled: true
+    enabled: false
   codeocean_events:
     enabled: false
