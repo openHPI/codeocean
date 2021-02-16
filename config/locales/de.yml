@@ -161,7 +161,7 @@ de:
       exercise_collection_item:
         exercise: "Aufgabe"
     models:
-      code_harbor_link:
+      codeharbor_link:
         one: CodeHarbor-Link
         other: CodeHarbor-Links
       consumer:
@@ -269,13 +269,13 @@ de:
   codeharbor_link:
     generate: Generieren
     info:
-      push_url: Die Url von Codeharbor zu der die Aufgabe exportiert werden soll. Bei Unklarheiten bitte an einen Admin wenden.
-      check_uuid_url: Die Url von Codeharbor an der geprüft werden kann, ob die Aufgabe schon existiert. Bei Unklarheiten bitte an einen Admin wenden.
-      api_key: Wird zum Authentifizieren gegenüber Codeharbor genutzt. Auf Codeharbor muss der gleiche Key eingetragen sein.
-    profile_label: Codeharbor Link
-    new: Neue Codeharbor Link anlegen
-    edit: Codeharbor Link bearbeiten
-    delete: Codeharbor Link entfernen
+      push_url: Die Url von CodeHarbor zu der die Aufgabe exportiert werden soll. Bei Unklarheiten bitte an einen Admin wenden.
+      check_uuid_url: Die Url von CodeHarbor an der geprüft werden kann, ob die Aufgabe schon existiert. Bei Unklarheiten bitte an einen Admin wenden.
+      api_key: Wird zum Authentifizieren gegenüber CodeHarbor genutzt. Auf CodeHarbor muss der gleiche Key eingetragen sein.
+    profile_label: CodeHarbor-Link
+    new: Neuen CodeHarbor-Link anlegen
+    edit: CodeHarbor-Link bearbeiten
+    delete: CodeHarbor-Link entfernen
   execution_environments:
     form:
       hints:
@@ -350,21 +350,21 @@ de:
         invalid: Fehlerhafte Aufgabe
         internal_error: Beim Import der Aufgabe ist ein interner Fehler aufgetreten.
     export_codeharbor:
-      label: Zu Codeharbor exportieren
-      dialogtitle: Zu Codeharbor exportieren
+      label: Zu CodeHarbor exportieren
+      dialogtitle: Zu CodeHarbor exportieren
       successfully_exported: 'Aufgabe wurde erfolgreich exportiert.<br>ID: %{id}<br>Title: %{title}'
       export_failed: 'Export ist fehlgeschlagen.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
-      error: Es ist ein Fehler bei der Kommunikation mit Codeharbor aufgetreten.
-      checking_codeharbor: Es wird geprüft, ob auf Codeharbor eine korrespondierende Aufgabe gefunden werden kann.
+      error: Es ist ein Fehler bei der Kommunikation mit CodeHarbor aufgetreten.
+      checking_codeharbor: Es wird geprüft, ob auf CodeHarbor eine korrespondierende Aufgabe gefunden werden kann.
       buttons:
         retry: Erneut probieren
         export: Export
         close: Schließen
         abort: Abbrechen
       check:
-        no_exercise: Auf Codeharbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf Codeharbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
-        exercise_found: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen, die auf Codeocean vorgenommen wurden, exportiert und die Aufgabe auf Codeharbor überschrieben.
-        exercise_found_no_right: Auf Codeharbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
+        no_exercise: Auf CodeHarbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf CodeHarbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
+        exercise_found: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen, die auf Codeocean vorgenommen wurden, exportiert und die Aufgabe auf CodeHarbor überschrieben.
+        exercise_found_no_right: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
     file_form:
       hints:
         feedback_message: Diese Nachricht wird als Hinweis zu fehlschlagenden Tests angezeigt.

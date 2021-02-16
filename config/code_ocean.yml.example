@@ -4,6 +4,8 @@ default: &default
     answers_per_query: 3
   code_pilot:
     enabled: false
+  codeharbor:
+    enabled: false
   codeocean_events:
     enabled: false
 
@@ -15,6 +17,7 @@ development:
     enabled: false
     url: //localhost:3000
   codeharbor:
+    enabled: true
     url: https://codeharbor.openhpi.de
 
 production:

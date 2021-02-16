@@ -1,11 +1,23 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CodeharborLinksController do
   let(:user) { FactoryBot.create(:teacher) }
-  before(:each) { allow(controller).to receive(:current_user).and_return(user) }
 
-  describe 'GET #new' do
-    before { get :new }
+  let(:codeocean_config) { instance_double(CodeOcean::Config) }
+  let(:codeharbor_config) { {codeharbor: {enabled: true, url: 'http://test.url'}} }
+
+  before do
+    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+    allow(codeocean_config).to receive(:read).and_return(codeharbor_config)
+    allow(controller).to receive(:current_user).and_return(user)
+  end
+
+  context 'GET #new' do
+    before do
+      get :new
+    end
 
     expect_status(200)
   end
@@ -13,7 +25,7 @@ describe CodeharborLinksController do
   describe 'GET #edit' do
     let(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
 
-    before { get :edit, params: { id: codeharbor_link.id } }
+    before { get :edit, params: {id: codeharbor_link.id} }
 
     expect_status(200)
   end
@@ -52,9 +64,11 @@ describe CodeharborLinksController do
     it 'updates push_url' do
       expect { put_request }.to change { codeharbor_link.reload.push_url }.to('http://foo.bar/push')
     end
+
     it 'updates check_uuid_url' do
       expect { put_request }.to change { codeharbor_link.reload.check_uuid_url }.to('http://foo.bar/check')
     end
+
     it 'updates api_key' do
       expect { put_request }.to change { codeharbor_link.reload.api_key }.to('api_key')
     end
@@ -67,7 +81,7 @@ describe CodeharborLinksController do
       let(:params) { {push_url: '', check_uuid_url: '', api_key: ''} }
 
       it 'does not change codeharbor_link' do
-        expect { put_request }.not_to change { codeharbor_link.reload.attributes }
+        expect { put_request }.not_to(change { codeharbor_link.reload.attributes })
       end
 
       it 'redirects to user show' do
@@ -90,4 +104,3 @@ describe CodeharborLinksController do
     end
   end
 end
-
