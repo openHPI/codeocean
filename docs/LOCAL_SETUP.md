@@ -47,6 +47,14 @@ The default credentials for the administrator are:
 - email: `admin@example.org`
 - password: `admin`
 
+For exporting metrics, start the prometeus exporter by running
+
+```bash
+bundle exec prometheus_exporter
+```
+
+in the CodeOcean folder before starting CodeOcean.
+
 ## Execution Environments
 
 Every exercise is executed in an execution environment which is based on a docker image. In order to install a new image, have a look at the container of the openHPI team on [DockerHub](https://hub.docker.com/u/openhpi). For example you can add an [image for ruby](https://hub.docker.com/layers/openhpi/co_execenv_ruby/latest/images/sha256-70f597320567678bf8d0146d93fb1bd98457abe61c3b642e832d4e4fbe7f4526) by executing `docker pull openhpi/co_execenv_ruby:latest`.  

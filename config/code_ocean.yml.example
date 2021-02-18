@@ -19,9 +19,15 @@ development:
   codeharbor:
     enabled: true
     url: https://codeharbor.openhpi.de
+  prometheus_exporter:
+    enabled: false
 
 production:
   <<: *default
+  prometheus_exporter:
+    enabled: true
 
 test:
   <<: *default
+  prometheus_exporter:
+    enabled: false

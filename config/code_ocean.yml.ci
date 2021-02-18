@@ -7,3 +7,5 @@ test:
     enabled: false
   codeocean_events:
     enabled: false
+  prometheus_exporter:
+    enabled: false

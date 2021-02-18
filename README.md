@@ -9,7 +9,7 @@ CodeOcean
 
 ## Introduction
 
-CodeOcean is an educational, web-based execution and development environment for practical programming exercises designed for the use in Massive Open Online Courses (MOOCs). 
+CodeOcean is an educational, web-based execution and development environment for practical programming exercises designed for the use in Massive Open Online Courses (MOOCs).
 
 The programming courses offered on openHPI include practical programming exercises that are provided on a web-based code execution platform called CodeOcean. The platform has many advantages for learners and teachers alike:
 
@@ -22,7 +22,7 @@ CodeOcean is mainly used in the context of MOOCs (such as those offered on openH
 
 ## Development Setup
 
-Please refer to the [Local Setup Guide](docs/LOCAL_SETUP.md) for more details. 
+Please refer to the [Local Setup Guide](docs/LOCAL_SETUP.md) for more details.
 
 ### Mandatory Steps
 
@@ -50,3 +50,9 @@ In order to execute code submissions using Docker, source code files are written
 
 - create production configuration files (*database.production.yml*, …)
 - customize *config/deploy/production.rb* if you want to deploy using [Capistrano](http://capistranorb.com/)
+
+## Monitoring
+- We use a [Prometheus Exporter](https://github.com/discourse/prometheus_exporter) and a [Telegraf Client](https://github.com/jgraichen/telegraf-ruby)
+- The Telegraf client collects the data from the Prometheus endpoint, adds its own datasets and forwards them to an InfluxDB
+- The Prometheus Exporter must be started separately **before** running the Rails server via `bundle exec prometheus_exporter`
+- The InfluxDB data can be visualized using Grafana, for example. There is also an adapted [dashboard](docs/grafana/prometheus_exporter_grafana_dashboard.json) for this purpose

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -11,9 +13,10 @@ Rails.application.configure do
   #       your application in memory, allowing both threaded web servers
   #       and those relying on copy on write to perform better.
   #       Rake tasks automatically ignore this option for performance.
-  config.eager_load = false
+  # Eager load code for prometheus exporter
+  config.eager_load = true
 
-  #enable web console in staging
+  # enable web console in staging
   config.web_console.development_only = false
 
   # Show full error reports and disable caching.

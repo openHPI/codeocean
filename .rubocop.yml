@@ -20,3 +20,9 @@ Style/Documentation:
   Enabled: false
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
+RSpec/MultipleExpectations:
+  Max: 2
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*.rb'
+    - 'config/environments/*.rb'
