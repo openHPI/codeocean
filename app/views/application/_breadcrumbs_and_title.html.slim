@@ -9,11 +9,11 @@
     - if object
       - current_element = link_to_if(@current_user && policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
   - if I18n.translation_present?("shared.#{params[:action]}")
-    - active_action = t("shared.#{params[:action]}", model: model.model_name.human)
+    - active_action = t("shared.#{params[:action]}", model: model&.model_name&.human)
   - else
-    - active_action = t("#{controller_name}.index.#{params[:action]}", model: model.model_name.human)
+    - active_action = t("#{controller_name}.index.#{params[:action]}", model: model&.model_name&.human)
 - else
-  - active_action = t("breadcrumbs.#{controller_name}.#{params[:action]}", model: model.model_name.human)
+  - active_action = t("breadcrumbs.#{controller_name}.#{params[:action]}")
 
 
 - title = "#{active_action} - #{application_name}"
