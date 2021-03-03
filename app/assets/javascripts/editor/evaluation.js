@@ -212,11 +212,30 @@ CodeOceanEditorEvaluation = {
         if (deadline !== undefined) {
             let li = document.createElement("li");
             this.submission_deadline = new Date(deadline);
+            let deadline_text = I18n.l("time.formats.long", this.submission_deadline);
+            deadline_text += ` (${this.getUTCTime(this.submission_deadline, I18n.locale === 'en')})`;
             const bullet_point = I18n.t('exercises.editor.hints.' + translation_key,
-                { deadline: I18n.l("time.formats.long", this.submission_deadline), otherwise: otherwise })
+                { deadline: deadline_text, otherwise: otherwise })
             let text = $.parseHTML(bullet_point);
             $(li).append(text);
             return li;
+        }
+    },
+
+    getUTCTime: function(d, use_am_pm) {
+        let hour = d.getUTCHours();
+        const pm = hour >= 12;
+        let hour12 = hour % 12;
+        if (!hour12) {
+            hour12 += 12;
+        }
+        hour = hour.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false})
+        const minute = d.getUTCMinutes().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false})
+        const second = d.getUTCSeconds().toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false})
+        if (use_am_pm) {
+            return `${hour12}:${minute}:${second} ${pm ? 'pm' : 'am'} UTC`;
+        } else {
+            return `${hour}:${minute}:${second} UTC`;
         }
     },
 
