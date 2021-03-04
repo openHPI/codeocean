@@ -20,12 +20,12 @@ html lang="#{I18n.locale || I18n.default_locale}"
     script type="text/javascript"
       | I18n.defaultLocale = "#{I18n.default_locale}";
       | I18n.locale = "#{I18n.locale}";
-      - unless Raven.configuration.current_environment == "development"
+      - unless Sentry.configuration.environment == "development"
         | Sentry.init({
         |      dsn: 'https://637ca99538224b4bb28cd9e670e1b372@sentry.xikolo.de/33',
         |      attachStacktrace: true,
-        |      release: "#{Raven.configuration.release}",
-        |      environment: "#{Raven.configuration.current_environment}",
+        |      release: "#{Sentry.configuration.release}",
+        |      environment: "#{Sentry.configuration.environment}",
         |  });
         - if @current_user
           | Sentry.configureScope(function(scope) {

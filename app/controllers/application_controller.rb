@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
 
   after_action :verify_authorized, except: %i[help welcome]
-  before_action :set_raven_context, :set_locale, :allow_iframe_requests, :load_embed_options
+  before_action :set_sentry_context, :set_locale, :allow_iframe_requests, :load_embed_options
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
 
@@ -20,17 +20,17 @@ class ApplicationController < ActionController::Base
     raise Pundit::NotAuthorizedError unless current_user
   end
 
-  def set_raven_context
+  def set_sentry_context
     return if current_user.blank?
 
-    Raven.user_context(
+    Sentry.set_user(
       id: current_user.id,
       type: current_user.class.name,
       username: current_user.displayname,
       consumer: current_user.consumer.name
     )
   end
-  private :set_raven_context
+  private :set_sentry_context
 
   def render_not_authorized
     respond_to do |format|
@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   def set_locale
     session[:locale] = params[:custom_locale] || params[:locale] || session[:locale]
     I18n.locale = session[:locale] || I18n.default_locale
-    Raven.extra_context(locale: I18n.locale)
+    Sentry.set_extras(locale: I18n.locale)
   end
   private :set_locale
 
@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
                      else
                        {}
                      end
-    Raven.extra_context(@embed_options)
+    Sentry.set_extras(@embed_options)
     @embed_options
   end
   private :load_embed_options

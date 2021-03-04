@@ -40,7 +40,7 @@
             - output_runs.each do |testrun|
               - output = testrun.try(:output)
               - if output
-                - Raven.extra_context(output: output)
+                - Sentry.set_extras(output: output)
                 - begin
                   - Timeout::timeout(2) do
                     // (?:\\"|.) is required to correctly identify " within the output.

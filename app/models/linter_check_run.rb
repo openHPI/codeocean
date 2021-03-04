@@ -24,7 +24,7 @@ class LinterCheckRun < ApplicationRecord
       )
     rescue ActiveRecord::RecordInvalid
       # Something bad happened. Probably, the RegEx in lib/py_lint_adapter.rb didn't work.
-      Raven.extra_context(testrun: testrun, linter_result: linter_result)
+      Sentry.set_extras(testrun: testrun, linter_result: linter_result)
     end
   end
 end

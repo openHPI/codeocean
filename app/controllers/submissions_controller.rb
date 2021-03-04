@@ -196,7 +196,7 @@ class SubmissionsController < ApplicationController
           rescue JSON::ParserError => error
             socket.send data
             Rails.logger.debug('Rescued parsing error, sent the received client data to docker:' + data)
-            Raven.extra_context(data: data)
+            Sentry.set_extras(data: data)
           end
         end
 
@@ -417,7 +417,7 @@ class SubmissionsController < ApplicationController
     container = Docker::Container.get(params[:container_id])
     DockerClient.destroy_container(container)
   rescue Docker::Error::NotFoundError => error
-    Raven.capture_exception(error)
+    Sentry.capture_exception(error)
   ensure
     head :ok
   end
@@ -447,7 +447,7 @@ class SubmissionsController < ApplicationController
     yield(server_sent_event) if block_given?
     server_sent_event.write({code: 200}, event: 'close')
   rescue => exception
-    Raven.capture_exception(exception)
+    Sentry.capture_exception(exception)
     logger.error(exception.message)
     logger.error(exception.backtrace.join("\n"))
     server_sent_event.write({code: 500}, event: 'close')

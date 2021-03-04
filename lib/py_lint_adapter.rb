@@ -34,7 +34,7 @@ class PyLintAdapter < TestingFrameworkAdapter
         end || []
       end
     rescue Timeout::Error
-      Raven.capture_message({stdout: output[:stdout], regex: ASSERTION_ERROR_REGEXP}.to_json)
+      Sentry.capture_message({stdout: output[:stdout], regex: ASSERTION_ERROR_REGEXP}.to_json)
       assertion_error_matches = []
     end
     concatenated_errors = assertion_error_matches.map { |result| "#{result[:name]}: #{result[:result]}" }.flatten
@@ -62,7 +62,7 @@ class PyLintAdapter < TestingFrameworkAdapter
         captures = message[:result].match(Regexp.new(regex))&.named_captures&.symbolize_keys
 
         if captures.nil?
-          Raven.capture_message({regex: regex, message: message[:result]}.to_json)
+          Sentry.capture_message({regex: regex, message: message[:result]}.to_json)
           replacement = {}
         else
           replacement = captures.each do |key, value|
@@ -85,8 +85,8 @@ class PyLintAdapter < TestingFrameworkAdapter
     assessment
   rescue StandardError => e
     # A key was not defined or something really bad happened
-    Raven.extra_context(assessment)
-    Raven.capture_exception(e)
+    Sentry.set_extras(assessment)
+    Sentry.capture_exception(e)
     assessment
   end
 
@@ -104,7 +104,7 @@ class PyLintAdapter < TestingFrameworkAdapter
                     # Read config key
                     I18n.t(keys.append('log_missing').join('.'), default: false)
                   end
-    Raven.capture_message({key: key, default: default}.to_json) if translation == default && log_missing
+    Sentry.capture_message({key: key, default: default}.to_json) if translation == default && log_missing
     translation
   end
 end

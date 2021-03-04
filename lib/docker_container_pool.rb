@@ -16,16 +16,16 @@ class DockerContainerPool
     #Rails.logger.debug('created container ' + container.to_s + ' for execution environment ' + execution_environment.to_s)
     container
   rescue StandardError => e
-    Raven.extra_context({container: container.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
-    Raven.capture_exception(e)
+    Sentry.set_extras({container: container.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
+    Sentry.capture_exception(e)
     nil
   end
 
   def self.return_container(container, execution_environment)
     Faraday.get(config[:location] + "/docker_container_pool/return_container/" + container.id)
   rescue StandardError => e
-    Raven.extra_context({container: container.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
-    Raven.capture_exception(e)
+    Sentry.set_extras({container: container.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
+    Sentry.capture_exception(e)
     nil
   end
 
@@ -36,8 +36,8 @@ class DockerContainerPool
         container_id = JSON.parse(Faraday.get(config[:location] + "/docker_container_pool/get_container/" + execution_environment.id.to_s).body)['id']
         Docker::Container.get(container_id) unless container_id.blank?
       rescue StandardError => e
-        Raven.extra_context({container_id: container_id.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
-        Raven.capture_exception(e)
+        Sentry.set_extras({container_id: container_id.inspect, execution_environment: execution_environment.inspect, config: config.inspect})
+        Sentry.capture_exception(e)
         nil
       end
     else
@@ -53,15 +53,15 @@ class DockerContainerPool
     response = JSON.parse(Faraday.get(config[:location] + "/docker_container_pool/quantities").body)
     response.transform_keys(&:to_i)
   rescue StandardError => e
-    Raven.extra_context({response: response.inspect})
-    Raven.capture_exception(e)
+    Sentry.set_extras({response: response.inspect})
+    Sentry.capture_exception(e)
     []
   end
 
   def self.dump_info
     JSON.parse(Faraday.get(config[:location] + "/docker_container_pool/dump_info").body)
   rescue StandardError => e
-    Raven.capture_exception(e)
+    Sentry.capture_exception(e)
     nil
   end
 end

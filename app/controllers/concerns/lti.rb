@@ -154,7 +154,7 @@ module Lti
     if provider.nil?
       {status: 'error'}
     elsif provider.outcome_service?
-      Raven.extra_context({
+      Sentry.set_extras({
                             provider: provider.inspect,
                             score: submission.normalized_score,
                             lti_parameter: lti_parameter.inspect,

@@ -121,7 +121,7 @@ class ExecutionEnvironmentsController < ApplicationController
   rescue DockerClient::Error => error
     @docker_images = []
     flash[:warning] = error.message
-    Raven.capture_exception(error)
+    Sentry.capture_exception(error)
   end
   private :set_docker_images
 
