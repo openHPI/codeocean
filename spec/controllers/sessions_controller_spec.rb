@@ -155,7 +155,7 @@ describe SessionsController do
   describe 'DELETE #destroy' do
     let(:user) { double }
     before(:each) {
-      allow(controller).to receive(:set_raven_context).and_return(nil)
+      allow(controller).to receive(:set_sentry_context).and_return(nil)
       expect(controller).to receive(:current_user).at_least(:once).and_return(user)
     }
 
@@ -219,7 +219,7 @@ describe SessionsController do
   describe 'GET #new' do
     context 'when no user is logged in' do
       before(:each) do
-        allow(controller).to receive(:set_raven_context).and_return(nil)
+        allow(controller).to receive(:set_sentry_context).and_return(nil)
 
         expect(controller).to receive(:current_user).and_return(nil)
         get :new
@@ -231,7 +231,7 @@ describe SessionsController do
 
     context 'when a user is already logged in' do
       before(:each) do
-        allow(controller).to receive(:set_raven_context).and_return(nil)
+        allow(controller).to receive(:set_sentry_context).and_return(nil)
 
         expect(controller).to receive(:current_user).and_return(FactoryBot.build(:teacher))
         get :new

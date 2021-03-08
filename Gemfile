@@ -45,7 +45,8 @@ gem 'whenever', require: false
 gem 'concurrent-ruby'
 gem 'mnemosyne-ruby'
 gem 'newrelic_rpm'
-gem 'sentry-raven'
+gem 'sentry-rails'
+gem 'sentry-ruby'
 
 group :development, :staging do
   gem 'better_errors'

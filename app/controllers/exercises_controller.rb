@@ -188,7 +188,7 @@ class ExercisesController < ApplicationController
   rescue Proforma::ProformaError
     render json: t('exercises.import_codeharbor.import_errors.invalid'), status: 400
   rescue StandardError => e
-    Raven.capture_exception(e)
+    Sentry.capture_exception(e)
     render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: 500
   end
 
@@ -392,7 +392,7 @@ class ExercisesController < ApplicationController
   end
 
   def redirect_to_lti_return_path
-    Raven.extra_context(
+    Sentry.set_extras(
       consumers_id: @submission.user&.consumer,
       external_users_id: @submission.user_id,
       exercises_id: @submission.exercise_id,
