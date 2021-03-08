@@ -92,5 +92,13 @@ module SubmissionScoring
         output.except!(:error_messages, :count, :failed, :filename, :message, :passed, :stderr, :stdout)
       end
     end
+
+    # Return all test results except for those of a linter if not allowed
+    show_linter = Python20CourseWeek.show_linter? submission.exercise
+    outputs&.reject do |output|
+      next if show_linter || output.blank?
+
+      output[:file_role] == 'teacher_defined_linter'
+    end
   end
 end
