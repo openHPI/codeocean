@@ -298,11 +298,6 @@ class ExercisesController < ApplicationController
                else
                  current_user.id
                end
-
-    # Tips are collected and set with set_available_tips.
-    # Delete tips for those users who should not see them.
-    # Doing this here is beneficial because all other (admin) routes still work.
-    @tips = nil unless Python20CourseWeek.show_tips? @exercise, current_user.id
   end
 
   def set_course_token

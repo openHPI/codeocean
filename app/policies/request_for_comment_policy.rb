@@ -8,7 +8,7 @@ class RequestForCommentPolicy < ApplicationPolicy
   end
 
   def show?
-    admin? || teacher_in_study_group? || author? || everyone && @record.question&.exclude?('#loesung')
+    everyone
   end
 
   def destroy?

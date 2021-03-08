@@ -18,7 +18,6 @@ class RequestForCommentsController < ApplicationController
                   .with_last_activity
                   .ransack(params[:q])
     @request_for_comments = @search.result
-                                .where("question NOT LIKE '%#loesung%'")
                                 .joins(:exercise)
                                 .where(exercises: {unpublished: false})
                                 .includes(submission: [:study_group])
@@ -98,8 +97,6 @@ class RequestForCommentsController < ApplicationController
     raise Pundit::NotAuthorizedError if @embed_options[:disable_rfc]
 
     @request_for_comment = RequestForComment.new(request_for_comment_params)
-
-    @request_for_comment.solved = true if @request_for_comment.question.include?('#loesung')
 
     respond_to do |format|
       if @request_for_comment.save
