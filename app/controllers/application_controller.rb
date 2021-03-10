@@ -22,6 +22,10 @@ class ApplicationController < ActionController::Base
   end
 
   def set_sentry_context
+    ::Mnemosyne::Instrumenter.current_trace.meta['session_id'] = session[:session_id]
+    ::Mnemosyne::Instrumenter.current_trace.meta['csrf_token'] = session[:_csrf_token]
+    ::Mnemosyne::Instrumenter.current_trace.meta['external_user_id'] = session[:external_user_id]
+
     return if current_user.blank?
 
     Sentry.set_user(
