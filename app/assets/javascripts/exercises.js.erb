@@ -460,11 +460,13 @@ $(document).on('turbolinks:load', function () {
             observeUnpublishedState();
             overrideTextareaTabBehavior();
         } else if ($('#files.jstree').isPresent()) {
-            var fileTypeSelect = $('#code_ocean_file_file_type_id');
-            fileTypeSelect.on("change", function () {
-                updateFileTemplates(fileTypeSelect.val())
-            });
-            updateFileTemplates(fileTypeSelect.val());
+            const fileTypeSelect = $('#code_ocean_file_file_type_id');
+            if (fileTypeSelect.length > 0) {
+                fileTypeSelect.on("change", function () {
+                    updateFileTemplates(fileTypeSelect.val())
+                });
+                updateFileTemplates(fileTypeSelect.val());
+            }
         } else if ($('.export-start').isPresent()) {
             observeExportButtons();
         }
