@@ -38,6 +38,7 @@ class ApplicationController < ActionController::Base
   private :set_sentry_context
 
   def render_csrf_error
+    set_sentry_context
     render json: {error: 'CSRF validation failed!!', status: :unprocessable_entity, request_cookies: cookies, session_csrf: session['_csrf_token'], request_csrf: request_authenticity_tokens }, status: :unprocessable_entity
   end
   private :render_csrf_error
