@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   before_action :set_sentry_context, :set_locale, :allow_iframe_requests, :load_embed_options
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
+  rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
 
   def current_user
     ::NewRelic::Agent.add_custom_attributes(external_user_id: session[:external_user_id], session_user_id: session[:user_id])
@@ -31,6 +32,11 @@ class ApplicationController < ActionController::Base
     )
   end
   private :set_sentry_context
+
+  def render_csrf_error
+    render json: {error: 'CSRF validation failed!!', status: :unprocessable_entity, request_cookies: cookies, session_csrf: session['_csrf_token'], request_csrf: request_authenticity_tokens }, status: :unprocessable_entity
+  end
+  private :render_csrf_error
 
   def render_not_authorized
     respond_to do |format|
