@@ -278,7 +278,7 @@ class SubmissionsController < ApplicationController
         for part in message.split("\n")
           self.parse_message(part,output_stream,socket, container, false)
         end
-      elsif message.include?('<img') || message.start_with?('{"cmd":')
+      elsif message.include?('<img') || message.start_with?('{"cmd') || message.include?('"turtlebatch"')
         #Rails.logger.info('img foung')
         @buffering = true
         @buffer = ''
