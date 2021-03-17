@@ -17,7 +17,7 @@ FactoryBot.define do
   factory :audio_video, class: 'Exercise' do
     created_by_teacher
     description { "Try HTML's audio and video capabilities." }
-    association :execution_environment, factory: :html
+    execution_environment { association :html, user: user }
     instructions { 'Build a simple website including an HTML <audio> and <video> element. Link the following media files: chai.ogg, devstories.mp4.' }
     title { 'Audio & Video' }
 
@@ -35,7 +35,7 @@ FactoryBot.define do
   factory :dummy, class: 'Exercise' do
     created_by_teacher
     description { 'Dummy' }
-    association :execution_environment, factory: :ruby
+    execution_environment { association :ruby, user: user }
     instructions
     title { 'Dummy' }
 
@@ -61,7 +61,7 @@ FactoryBot.define do
   factory :even_odd, class: 'Exercise' do
     created_by_teacher
     description { 'Implement two methods even and odd which return whether a given number is even or odd, respectively.' }
-    association :execution_environment, factory: :python
+    execution_environment { association :python, user: user }
     instructions
     title { 'Even/Odd' }
 
@@ -75,7 +75,7 @@ FactoryBot.define do
   factory :fibonacci, class: 'Exercise' do
     created_by_teacher
     description { 'Implement a recursive function that calculates a requested Fibonacci number.' }
-    association :execution_environment, factory: :ruby
+    execution_environment { association :ruby, user: user }
     instructions
     title { 'Fibonacci Sequence' }
 
@@ -91,7 +91,7 @@ FactoryBot.define do
   factory :files, class: 'Exercise' do
     created_by_teacher
     description { 'Learn how to work with files.' }
-    association :execution_environment, factory: :ruby
+    execution_environment { association :ruby, user: user }
     instructions
     title { 'Working with Files' }
 
@@ -105,7 +105,7 @@ FactoryBot.define do
   factory :geolocation, class: 'Exercise' do
     created_by_teacher
     description { "Use the HTML5 Geolocation API to get the user's geographical position." }
-    association :execution_environment, factory: :html
+    execution_environment { association :html, user: user }
     instructions
     title { 'Geolocation' }
 
@@ -118,7 +118,7 @@ FactoryBot.define do
   factory :hello_world, class: 'Exercise' do
     created_by_teacher
     description { "Write a simple 'Hello World' application." }
-    association :execution_environment, factory: :ruby
+    execution_environment { association :ruby, user: user }
     instructions
     title { 'Hello World' }
 
@@ -131,7 +131,7 @@ FactoryBot.define do
   factory :math, class: 'Exercise' do
     created_by_teacher
     description { 'Implement a recursive math library.' }
-    association :execution_environment, factory: :java
+    execution_environment { association :java, user: user }
     instructions
     title { 'Math' }
 
@@ -146,7 +146,7 @@ FactoryBot.define do
   factory :primes, class: 'Exercise' do
     created_by_teacher
     description { 'Write a function that prints the first n prime numbers.' }
-    association :execution_environment, factory: :node_js
+    execution_environment { association :node_js, user: user }
     instructions
     title { 'Primes' }
 
@@ -158,7 +158,7 @@ FactoryBot.define do
   factory :sql_select, class: 'Exercise' do
     created_by_teacher
     description { 'Learn to use the SELECT statement.' }
-    association :execution_environment, factory: :sqlite
+    execution_environment { association :sqlite, user: user }
     instructions { "Write a query which selects the full rows for all people with the last name 'Doe'." }
     title { 'SELECT' }
 
@@ -172,7 +172,7 @@ FactoryBot.define do
   factory :tdd, class: 'Exercise' do
     created_by_teacher
     description { 'Learn to appreciate test-driven development.' }
-    association :execution_environment, factory: :ruby
+    execution_environment { association :ruby, user: user }
     instructions { SeedsHelper.read_seed_file('tdd/instructions.md') }
     title { 'Test-driven Development' }
 
@@ -185,7 +185,7 @@ FactoryBot.define do
   factory :web_app, class: 'Exercise' do
     created_by_teacher
     description { 'Build a simple Web application with Sinatra.' }
-    association :execution_environment, factory: :sinatra
+    execution_environment { association :sinatra, user: user }
     instructions
     title { 'A Simple Web Application' }
 
