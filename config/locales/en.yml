@@ -520,6 +520,7 @@ en:
         regular_expression: This regular expression is used to extract relevant identifiers from the error message.
   internal_users:
     index:
+      activate: Activate
       forgot_password: Reset Password
     activate:
       headline: Complete Registration

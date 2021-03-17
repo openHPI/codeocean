@@ -520,6 +520,7 @@ de:
         regular_expression: Dieser reguläre Ausdruck wird auf die Fehlermeldung angewendet, um relevante Bezeicher zu extrahieren.
   internal_users:
     index:
+      activate: Aktivieren
       forgot_password: Passwort zurücksetzen
     activate:
       headline: Registrierung abschließen
