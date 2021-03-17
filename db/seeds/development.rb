@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # consumers
 FactoryBot.create(:consumer)
 FactoryBot.create(:consumer, name: 'openSAP')

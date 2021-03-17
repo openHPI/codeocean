@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'seeds_helper'
 
 def create_seed_file(exercise, path, file_attributes = {})
@@ -53,9 +55,7 @@ FactoryBot.define do
       after(:create) do |exercise, evaluator|
         create_list(:user_exercise_feedback, evaluator.user_feedbacks_count, exercise: exercise)
       end
-
     end
-
   end
 
   factory :even_odd, class: 'Exercise' do
