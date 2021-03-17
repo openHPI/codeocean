@@ -42,10 +42,21 @@ cd /home/vagrant/codeocean
 rails s -p 3000 -b 0.0.0.0
 ```
 
-The default credentials for the administrator are:
+The default credentials for the internal users are the following: 
 
-- email: `admin@example.org`
-- password: `admin`
+- Administrator:  
+  email: `admin@example.org`  
+  password: `admin`
+- Teacher:  
+  email: `teacher@example.org`  
+  password: `teacher`
+- Learner:  
+  email: `learner@example.org`  
+  password: `learner`
+  
+Additional internal users can be created using the web interface. In development, the activation mail is printed to the console. Use the activation link found in that mail to set a password for a new user.
+
+#### Metrics
 
 For exporting metrics, start the prometeus exporter by running
 
