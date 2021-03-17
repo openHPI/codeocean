@@ -28,7 +28,7 @@ li.card.mt-2
         = f.collection_select(:file_type_id, @file_types, :id, :name, {}, class: 'form-control')
       .form-group
         = f.label(:role, t('activerecord.attributes.file.role'))
-        = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map { |role| [t("files.roles.#{role}"), role] }, {include_blank: true}, class: 'form-control')
+        = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map { |role| [t("files.roles.#{role}"), role] }, {}, class: 'form-control')
       .form-check
         label.form-check-label
           = f.check_box(:hidden, class: 'form-check-input')
