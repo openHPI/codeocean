@@ -19,6 +19,16 @@ FactoryBot.define do
     singleton_internal_user
   end
 
+  factory :learner, class: 'InternalUser' do
+    activated_user
+    association :consumer
+    generated_email
+    generated_user_name
+    password { 'learner' }
+    role { 'learner' }
+    singleton_internal_user
+  end
+
   trait :activated_user do
     after(:create, &:activate!)
   end
