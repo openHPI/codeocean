@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
 
   after_action :verify_authorized, except: %i[help welcome]
+  around_action :mnemosyne_trace
   before_action :set_sentry_context, :set_locale, :allow_iframe_requests, :load_embed_options
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
@@ -21,13 +22,17 @@ class ApplicationController < ActionController::Base
     raise Pundit::NotAuthorizedError unless current_user
   end
 
-  def set_sentry_context
+  def mnemosyne_trace
+    yield
+  ensure
     if ::Mnemosyne::Instrumenter.current_trace.present?
       ::Mnemosyne::Instrumenter.current_trace.meta['session_id'] = session[:session_id]
       ::Mnemosyne::Instrumenter.current_trace.meta['csrf_token'] = session[:_csrf_token]
       ::Mnemosyne::Instrumenter.current_trace.meta['external_user_id'] = session[:external_user_id]
     end
+  end
 
+  def set_sentry_context
     return if current_user.blank?
 
     Sentry.set_user(
