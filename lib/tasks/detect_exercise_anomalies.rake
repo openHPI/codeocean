@@ -1,6 +1,4 @@
-# TODO: Identify how the following line influences our tests:
-# https://github.com/openHPI/codeocean/pull/345#issuecomment-509706348
-include Rails.application.routes.url_helpers
+# frozen_string_literal: true
 
 namespace :detect_exercise_anomalies do
   # uncomment for debug logging:
@@ -63,7 +61,7 @@ namespace :detect_exercise_anomalies do
                                from exercises e
                                  join submissions s on s.exercise_id = e.id
                                group by e.id
-                               having count(s.user_id) > #{ExerciseCollection.sanitize(number_of_solutions)}
+                               having count(s.user_id) > #{ExerciseCollection.sanitize_sql(number_of_solutions)}
                               ) as exercises_with_submissions on exercises_with_submissions.id = eci.exercise_id")
       .group('exercise_collections.id')
       .having('count(exercises_with_submissions.id) > ?', number_of_exercises)
@@ -140,7 +138,7 @@ namespace :detect_exercise_anomalies do
       users_to_notify.each do |u|
         user = u[:user_type] == InternalUser.name ? InternalUser.find(u[:user_id]) : ExternalUser.find(u[:user_id])
         host = CodeOcean::Application.config.action_mailer.default_url_options[:host]
-        feedback_link = url_for(action: :new, controller: :user_exercise_feedbacks, exercise_id: exercise.id, host: host)
+        feedback_link = Rails.application.routes.url_helpers.url_for(action: :new, controller: :user_exercise_feedbacks, exercise_id: exercise.id, host: host)
         UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
       end
       log("Asked #{users_to_notify.size} users for feedback.", 2)

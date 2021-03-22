@@ -12,9 +12,9 @@ table(border=1)
     - @anomalies.keys.each do | id |
       - exercise = Exercise.find(id)
       tr
-        td = link_to_if(policy(@user, exercise).show?, exercise.title, exercise_path(exercise))
+        td = link_to_if(ExercisePolicy.new(@user, exercise).show?, exercise.title, exercise_url(exercise))
         td = @anomalies[id]
-        td = link_to_if(policy(@user, exercise).statistics?, t('shared.statistics', locale: :de), statistics_exercise_path(exercise))
+        td = link_to_if(ExercisePolicy.new(@user, exercise).statistics?, t('shared.statistics', locale: :de), statistics_exercise_url(exercise))
 
 
 == t('mailers.user_mailer.exercise_anomaly_detected.body2',
@@ -31,8 +31,8 @@ table(border=1)
     - @anomalies.keys.each do | id |
       - exercise = Exercise.find(id)
       tr
-        td = link_to_if(policy(@user, exercise).show?, exercise.title, exercise_path(exercise))
+        td = link_to_if(ExercisePolicy.new(@user, exercise).show?, exercise.title, exercise_url(exercise))
         td = @anomalies[id]
-        td = link_to_if(policy(@user, exercise).statistics?, t('shared.statistics', locale: :en), statistics_exercise_path(exercise))
+        td = link_to_if(ExercisePolicy.new(@user, exercise).statistics?, t('shared.statistics', locale: :en), statistics_exercise_url(exercise))
 
 == t('mailers.user_mailer.exercise_anomaly_detected.body3')
