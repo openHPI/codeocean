@@ -1,4 +1,6 @@
-FILENAME_REGEXP = /[\w\.]+/ unless Kernel.const_defined?(:FILENAME_REGEXP)
+# frozen_string_literal: true
+
+FILENAME_REGEXP = /[\w.]+/.freeze unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
   resources :error_template_attributes
@@ -16,18 +18,19 @@ Rails.application.routes.draw do
   resources :codeharbor_links, only: %i[new create edit update destroy]
   resources :request_for_comments, except: %i[edit destroy] do
     member do
-      get :mark_as_solved, defaults: { format: :json }
-      post :set_thank_you_note, defaults: { format: :json }
+      get :mark_as_solved, defaults: {format: :json}
+      post :set_thank_you_note, defaults: {format: :json}
     end
   end
-  resources :comments, defaults: { format: :json }
+  resources :comments, defaults: {format: :json}
   get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
   get '/my_rfc_activity', as: 'my_rfc_activity', to: 'request_for_comments#get_rfcs_with_my_comments'
+  get '/exercises/:exercise_id/request_for_comments', as: 'rfcs_for_exercise', to: 'request_for_comments#get_rfcs_for_exercise'
 
   delete '/comment_by_id', to: 'comments#destroy_by_id'
-  put '/comments', to: 'comments#update', defaults: { format: :json }
+  put '/comments', to: 'comments#update', defaults: {format: :json}
 
-  resources :subscriptions, only: [:create, :destroy] do
+  resources :subscriptions, only: %i[create destroy] do
     member do
       get :unsubscribe, to: 'subscriptions#destroy'
     end
@@ -55,7 +58,6 @@ Rails.application.routes.draw do
     end
   end
 
-
   resources :consumers
 
   resources :execution_environments do
@@ -71,7 +73,7 @@ Rails.application.routes.draw do
 
   resources :exercises do
     collection do
-      match '', to: 'exercises#batch_update', via: [:patch, :put]
+      match '', to: 'exercises#batch_update', via: %i[patch put]
     end
 
     member do
@@ -82,7 +84,6 @@ Rails.application.routes.draw do
       post :search
       get :statistics
       get :feedback
-      get :requests_for_comments
       get :reload
       post :submit
       get 'study_group_dashboard/:study_group_id', to: 'exercises#study_group_dashboard'
@@ -108,9 +109,9 @@ Rails.application.routes.draw do
 
   resources :tips
 
-  resources :user_exercise_feedbacks, except: [:show, :index]
+  resources :user_exercise_feedbacks, except: %i[show index]
 
-  resources :external_users, only: [:index, :show], concerns: :statistics do
+  resources :external_users, only: %i[index show], concerns: :statistics do
     resources :exercises, concerns: :statistics
     member do
       get :tag_statistics
@@ -118,28 +119,28 @@ Rails.application.routes.draw do
   end
 
   namespace :code_ocean do
-    resources :files, only: [:create, :destroy]
+    resources :files, only: %i[create destroy]
   end
 
   resources :file_types
 
   resources :internal_users do
     member do
-      match 'activate', to: 'internal_users#activate', via: [:get, :patch, :put]
-      match 'reset_password', to: 'internal_users#reset_password', via: [:get, :patch, :put]
+      match 'activate', to: 'internal_users#activate', via: %i[get patch put]
+      match 'reset_password', to: 'internal_users#reset_password', via: %i[get patch put]
     end
   end
 
-  match '/forgot_password', as: 'forgot_password', to: 'internal_users#forgot_password', via: [:get, :post]
+  match '/forgot_password', as: 'forgot_password', to: 'internal_users#forgot_password', via: %i[get post]
 
-  resources :sessions, only: [:create, :destroy, :new]
+  resources :sessions, only: %i[create destroy new]
 
   post '/lti/launch', as: 'lti_launch', to: 'sessions#create_through_lti'
   get '/lti/return', as: 'lti_return', to: 'sessions#destroy_through_lti'
   get '/sign_in', as: 'sign_in', to: 'sessions#new'
-  match '/sign_out', as: 'sign_out', to: 'sessions#destroy', via: [:get, :delete]
+  match '/sign_out', as: 'sign_out', to: 'sessions#destroy', via: %i[get delete]
 
-  resources :submissions, only: [:create, :index, :show] do
+  resources :submissions, only: %i[create index show] do
     member do
       get 'download', as: :download, action: :download
       get 'download/:filename', as: :download_file, constraints: {filename: FILENAME_REGEXP}, action: :download_file
@@ -152,12 +153,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :study_groups, only: [:index, :show, :edit, :destroy, :update]
+  resources :study_groups, only: %i[index show edit destroy update]
 
   resources :events, only: [:create]
 
-  post "/evaluate", to: 'remote_evaluation#evaluate', via: [:post]
-  post "/submit", to: 'remote_evaluation#submit', via: [:post]
+  post '/evaluate', to: 'remote_evaluation#evaluate', via: [:post]
+  post '/submit', to: 'remote_evaluation#submit', via: [:post]
 
   mount ActionCable.server => '/cable'
   mount RailsAdmin::Engine => '/rails_admin', as: 'rails_admin'

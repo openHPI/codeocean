@@ -726,6 +726,7 @@ de:
       all: "Alle Kommentaranfragen"
       get_rfcs_with_my_comments: Kommentaranfragen die ich kommentiert habe
       get_my_rfc_activity: "Meine Kommentaraktivität"
+      get_rfcs_for_exercise: "Übungsspezifische Kommentare"
       study_groups:
         placeholder: "Lerngruppe"
         current: "Aktuelle Lerngruppe"

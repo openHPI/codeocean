@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RequestForCommentPolicy < ApplicationPolicy
   def create?
     everyone

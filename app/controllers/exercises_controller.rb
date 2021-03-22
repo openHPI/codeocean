@@ -71,7 +71,7 @@ class ExercisesController < ApplicationController
     handle_exercise_tips
     return if performed?
 
-    myparam = exercise_params.present? ? exercise_params : {}
+    myparam = exercise_params.presence || {}
     checked_exercise_tags = @exercise_tags.select { |et| myparam[:tag_ids].include? et.tag.id.to_s }
     removed_exercise_tags = @exercise_tags.reject { |et| myparam[:tag_ids].include? et.tag.id.to_s }
 
@@ -105,18 +105,6 @@ class ExercisesController < ApplicationController
     end
   end
 
-  def requests_for_comments
-    authorize!
-    @search = RequestForComment
-              .with_last_activity
-              .where(exercise: @exercise)
-              .ransack(params[:q])
-    @request_for_comments = @search.result
-                                   .order('last_comment DESC')
-                                   .paginate(page: params[:page])
-    render 'request_for_comments/index'
-  end
-
   def export_external_check
     codeharbor_check = ExerciseService::CheckExternal.call(uuid: @exercise.uuid, codeharbor_link: current_user.codeharbor_link)
     render json: {
@@ -131,7 +119,7 @@ class ExercisesController < ApplicationController
           exported: false
         }
       )
-    }, status: 200
+    }, status: :ok
   end
 
   def export_external_confirm
@@ -159,7 +147,7 @@ class ExercisesController < ApplicationController
 
   def import_uuid_check
     user = user_from_api_key
-    return render json: {}, status: 401 if user.nil?
+    return render json: {}, status: :unauthorized if user.nil?
 
     uuid = params[:uuid]
     exercise = Exercise.find_by(uuid: uuid)
@@ -176,17 +164,17 @@ class ExercisesController < ApplicationController
     tempfile.rewind
 
     user = user_from_api_key
-    return render json: {}, status: 401 if user.nil?
+    return render json: {}, status: :unauthorized if user.nil?
 
     ActiveRecord::Base.transaction do
       exercise = ::ProformaService::Import.call(zip: tempfile, user: user)
       exercise.save!
-      return render json: {}, status: 201
+      return render json: {}, status: :created
     end
   rescue Proforma::ExerciseNotOwned
-    render json: {}, status: 401
+    render json: {}, status: :unauthorized
   rescue Proforma::ProformaError
-    render json: t('exercises.import_codeharbor.import_errors.invalid'), status: 400
+    render json: t('exercises.import_codeharbor.import_errors.invalid'), status: :bad_request
   rescue StandardError => e
     Sentry.capture_exception(e)
     render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: 500
@@ -200,7 +188,7 @@ class ExercisesController < ApplicationController
   private :user_from_api_key
 
   def user_by_codeharbor_token(api_key)
-    link = CodeharborLink.find_by_api_key(api_key)
+    link = CodeharborLink.find_by(api_key: api_key)
     link&.user
   end
   private :user_by_codeharbor_token
@@ -249,8 +237,8 @@ class ExercisesController < ApplicationController
     exercise_tips.each do |exercise_tip|
       exercise_tip.symbolize_keys!
       current_exercise_tip = ExerciseTip.find_or_initialize_by(id: exercise_tip[:id],
-                                     exercise: @exercise,
-                                     tip_id: exercise_tip[:tip_id])
+                                                               exercise: @exercise,
+                                                               tip_id: exercise_tip[:tip_id])
       current_exercise_tip.parent_exercise_tip_id = parent_exercise_tip_id
       current_exercise_tip.rank = rank
       rank += 1
@@ -309,12 +297,10 @@ class ExercisesController < ApplicationController
       @course_token =
         if lti_json.nil?
           ''
+        elsif match = lti_json.match(%r{^.*courses/([a-z0-9\-]+)/sections})
+          match.captures.first
         else
-          if match = lti_json.match(%r{^.*courses/([a-z0-9\-]+)/sections})
-            match.captures.first
-          else
-            ''
-          end
+          ''
         end
     else
       # no consumer, therefore implementation with internal user
@@ -356,7 +342,7 @@ class ExercisesController < ApplicationController
   end
 
   def intervention
-    intervention = Intervention.find_by_name(params[:intervention_type])
+    intervention = Intervention.find_by(name: params[:intervention_type])
     if intervention.nil?
       render(json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"})
     else
@@ -471,12 +457,12 @@ class ExercisesController < ApplicationController
         interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id, @exercise.id)
         @all_events = (@submissions + interventions).sort_by(&:created_at)
         @deltas = @all_events.map.with_index do |item, index|
-          delta = item.created_at - @all_events[index - 1].created_at if index > 0
+          delta = item.created_at - @all_events[index - 1].created_at if index.positive?
           delta.nil? || (delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS) ? 0 : delta
         end
         @working_times_until = []
         @all_events.each_with_index do |_, index|
-          @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index > 0))
+          @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index.positive?))
         end
       else
         final_submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).final
@@ -493,11 +479,11 @@ class ExercisesController < ApplicationController
       user_statistics = {}
       additional_filter = if policy(@exercise).detailed_statistics?
                             ''
-                          elsif ! policy(@exercise).detailed_statistics? && current_user.study_groups.count > 0
+                          elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
                             "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"
                           else
                             # e.g. internal user without any study groups, show no submissions
-                            "AND FALSE"
+                            'AND FALSE'
                           end
       query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
               FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter} GROUP BY
@@ -536,7 +522,7 @@ class ExercisesController < ApplicationController
     else
       respond_to do |format|
         format.html { redirect_to(implement_exercise_path(@submission.exercise)) }
-        format.json { render(json: {message: I18n.t('exercises.submit.failure')}, status: 503) }
+        format.json { render(json: {message: I18n.t('exercises.submit.failure')}, status: :service_unavailable) }
       end
     end
   end
@@ -564,7 +550,7 @@ class ExercisesController < ApplicationController
   end
 
   def redirect_after_submit
-    Rails.logger.debug('Redirecting user with score:s ' + @submission.normalized_score.to_s)
+    Rails.logger.debug("Redirecting user with score:s #{@submission.normalized_score}")
     if @submission.normalized_score == 1.0
       # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class RequestForCommentsController < ApplicationController
   include SubmissionScoring
 
   before_action :require_user!
-  before_action :set_request_for_comment, only: [:show, :mark_as_solved, :set_thank_you_note]
-  before_action :set_study_group_grouping, only: %i[index get_my_comment_requests get_rfcs_with_my_comments]
+  before_action :set_request_for_comment, only: %i[show mark_as_solved set_thank_you_note]
+  before_action :set_study_group_grouping, only: %i[index get_my_comment_requests get_rfcs_with_my_comments get_rfcs_for_exercise]
 
   def authorize!
     authorize(@request_for_comments || @request_for_comment)
@@ -14,9 +16,9 @@ class RequestForCommentsController < ApplicationController
   # GET /request_for_comments.json
   def index
     @search = RequestForComment
-                  .last_per_user(2)
-                  .with_last_activity
-                  .ransack(params[:q])
+              .last_per_user(2)
+              .with_last_activity
+              .ransack(params[:q])
     @request_for_comments = @search.result
                                 .joins(:exercise)
                                 .where(exercises: {unpublished: false})
@@ -30,12 +32,12 @@ class RequestForCommentsController < ApplicationController
   # GET /my_request_for_comments
   def get_my_comment_requests
     @search = RequestForComment
-                  .with_last_activity
-                  .where(user: current_user)
-                  .ransack(params[:q])
+              .with_last_activity
+              .where(user: current_user)
+              .ransack(params[:q])
     @request_for_comments = @search.result
-                                .order('created_at DESC')
-                                .paginate(page: params[:page])
+                                   .order('created_at DESC')
+                                   .paginate(page: params[:page])
     authorize!
     render 'index'
   end
@@ -43,14 +45,30 @@ class RequestForCommentsController < ApplicationController
   # GET /my_rfc_activity
   def get_rfcs_with_my_comments
     @search = RequestForComment
-                  .with_last_activity
-                  .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
-                  .where(comments: {user_id: current_user.id})
-                  .ransack(params[:q])
+              .with_last_activity
+              .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
+              .where(comments: {user_id: current_user.id})
+              .ransack(params[:q])
     @request_for_comments = @search.result
-                                .order('last_comment DESC')
-                                .paginate(page: params[:page])
+                                   .order('last_comment DESC')
+                                   .paginate(page: params[:page])
     authorize!
+    render 'index'
+  end
+
+  # GET /exercises/:id/request_for_comments
+  def get_rfcs_for_exercise
+    exercise = Exercise.find(params[:exercise_id])
+    @search = RequestForComment
+              .with_last_activity
+              .where(exercise_id: exercise.id)
+              .ransack(params[:q])
+    @request_for_comments = @search.result
+                                   .joins(:exercise)
+                                   .order('last_comment DESC')
+                                   .paginate(page: params[:page])
+    # let the exercise decide, whether its rfcs should be visible
+    authorize(exercise)
     render 'index'
   end
 
@@ -73,7 +91,7 @@ class RequestForCommentsController < ApplicationController
     @request_for_comment.thank_you_note = params[:note]
 
     commenters = @request_for_comment.commenters
-    commenters.each {|commenter| UserMailer.send_thank_you_note(@request_for_comment, commenter).deliver_now}
+    commenters.each { |commenter| UserMailer.send_thank_you_note(@request_for_comment, commenter).deliver_now }
 
     respond_to do |format|
       if @request_for_comment.save
@@ -116,12 +134,13 @@ class RequestForCommentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
+  # Use callbacks to share common setup or constraints between actions.
   def set_request_for_comment
     @request_for_comment = RequestForComment.find(params[:id])
   end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
+  # Never trust parameters from the scary internet, only allow the white list through.
   def request_for_comment_params
     # The study_group_id might not be present in the session (e.g. for internal users), resulting in session[:study_group_id] = nil which is intended.
     params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user_id: current_user.id, user_type: current_user.class.name)
@@ -133,6 +152,6 @@ class RequestForCommentsController < ApplicationController
     current_study_group = StudyGroup.find_by(id: session[:study_group_id])
     my_study_groups = current_user.study_groups.reject { |group| group == current_study_group }
     @study_groups_grouping = [[t('request_for_comments.index.study_groups.current'), Array(current_study_group)],
-                               [t('request_for_comments.index.study_groups.my'), my_study_groups]]
+                              [t('request_for_comments.index.study_groups.my'), my_study_groups]]
   end
 end

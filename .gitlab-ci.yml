@@ -26,7 +26,7 @@ rubocop:
     - DIFF=$(git diff --name-only --diff-filter=d $CI_MERGE_REQUEST_DIFF_BASE_SHA)
     - echo $DIFF
     - "if [[ ! -z $DIFF ]]; then bundle exec rubocop --force-exclusion --parallel --display-style-guide $DIFF; fi"
-
+  allow_failure: true
 
 rspec:
   stage: test

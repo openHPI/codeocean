@@ -14,7 +14,7 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
     end
   end
 
-  [:create?, :index?, :new?, :statistics?, :feedback?, :requests_for_comments?].each do |action|
+  [:create?, :index?, :new?, :statistics?, :feedback?, :get_rfcs_for_exercise?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), exercise)

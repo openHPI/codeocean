@@ -14,7 +14,7 @@ h1
       li = link_to(t('exercises.index.implement'), implement_exercise_path(@exercise), 'data-turbolinks' => "false", class: 'dropdown-item text-dark') if policy(@exercise).implement?
       li = link_to(t('shared.statistics'), statistics_exercise_path(@exercise), 'data-turbolinks' => "false", class: 'dropdown-item text-dark') if policy(@exercise).statistics?
       li = link_to(t('activerecord.models.user_exercise_feedback.other'), feedback_exercise_path(@exercise), class: 'dropdown-item text-dark') if policy(@exercise).feedback?
-      li = link_to(t('activerecord.models.request_for_comment.other'), requests_for_comments_exercise_path(@exercise), class: 'dropdown-item text-dark') if policy(@exercise).requests_for_comments?
+      li = link_to(t('activerecord.models.request_for_comment.other'), rfcs_for_exercise_path(@exercise), class: 'dropdown-item text-dark') if policy(@exercise).get_rfcs_for_exercise?
       li = link_to(t('shared.destroy'), @exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'dropdown-item text-dark') if policy(@exercise).destroy?
       li = link_to(t('exercises.index.clone'), clone_exercise_path(@exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post, class: 'dropdown-item text-dark') if policy(@exercise).clone?
       li = link_to(t('exercises.export_codeharbor.label'), '', class: 'dropdown-item export-start text-dark', data: {'exercise-id' => @exercise.id}) if policy(@exercise).export_external_confirm?

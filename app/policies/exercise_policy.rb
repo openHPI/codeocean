@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class ExercisePolicy < AdminOrAuthorPolicy
   def batch_update?
     admin?
   end
 
-  [:show?, :feedback?, :requests_for_comments?, :statistics?].each do |action|
+  %i[show? feedback? statistics? get_rfcs_for_exercise?].each do |action|
     define_method(action) { admin? || teacher_in_study_group? || teacher? && @record.public? || author? }
   end
 
@@ -19,15 +21,15 @@ class ExercisePolicy < AdminOrAuthorPolicy
     admin?
   end
 
-  [:clone?, :destroy?, :edit?, :update?].each do |action|
+  %i[clone? destroy? edit? update?].each do |action|
     define_method(action) { admin? || teacher_in_study_group? || author? }
   end
 
-  [:export_external_check?, :export_external_confirm?].each do |action|
+  %i[export_external_check? export_external_confirm?].each do |action|
     define_method(action) { (admin? || teacher_in_study_group? || author?) && @user.codeharbor_link }
   end
 
-  [:implement?, :working_times?, :intervention?, :search?, :submit?, :reload?].each do |action|
+  %i[implement? working_times? intervention? search? submit? reload?].each do |action|
     define_method(action) { everyone }
   end
 
