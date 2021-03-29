@@ -10,7 +10,7 @@ class SubmissionsController < ApplicationController
 
   before_action :set_submission,
     only: %i[download download_file render_file run score extract_errors show statistics test]
-  before_action :set_docker_client, only: %i[run test]
+  # before_action :set_docker_client, only: %i[run test]
   before_action :set_files, only: %i[download download_file render_file show run]
   before_action :set_file, only: %i[download_file render_file run]
   before_action :set_mime_type, only: %i[download_file render_file]
@@ -168,54 +168,48 @@ class SubmissionsController < ApplicationController
       # socket is the socket into the container, tubesock is the socket to the client
 
       # give the docker_client the tubesock object, so that it can send messages (timeout)
-      @docker_client.tubesock = tubesock
+      # @docker_client.tubesock = tubesock
 
       container_request_time = Time.zone.now
-      result = @docker_client.execute_run_command(@submission, sanitize_filename)
-      tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => result[:status]})
+      # result = @docker_client.execute_run_command(@submission, sanitize_filename)
+      container = @submission.run(sanitize_filename)
+      tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => :container_running})
       @waiting_for_container_time = Time.zone.now - container_request_time
 
-      if result[:status] == :container_running
-        socket = result[:socket]
-        command = result[:command]
-
+      socket = container.socket
         socket.on :message do |event|
           Rails.logger.info("#{Time.zone.now.getutc}: Docker sending: #{event.data}")
-          handle_message(event.data, tubesock, result[:container])
+          handle_message(event.data, tubesock, container)
         end
 
         socket.on :close do |_event|
           kill_socket(tubesock)
         end
 
-        tubesock.onmessage do |data|
-          Rails.logger.info("#{Time.zone.now.getutc}: Client sending: #{data}")
-          # Check whether the client send a JSON command and kill container
-          # if the command is 'client_kill', send it to docker otherwise.
-          begin
-            parsed = JSON.parse(data) unless data == "\n"
-            if parsed.instance_of?(Hash) && parsed['cmd'] == 'client_kill'
-              Rails.logger.debug('Client exited container.')
-              @docker_client.kill_container(result[:container])
-            else
-              socket.send data
-              Rails.logger.debug { "Sent the received client data to docker:#{data}" }
-            end
-          rescue JSON::ParserError
-            socket.send data
-            Rails.logger.debug { "Rescued parsing error, sent the received client data to docker:#{data}" }
-            Sentry.set_extras(data: data)
-          end
-        end
+      tubesock.onmessage do |data|
+        Rails.logger.info("#{Time.zone.now.getutc}: Client sending: #{data}")
+        # Check whether the client send a JSON command and kill container
+        # if the command is 'client_kill', send it to docker otherwise.
+        begin
 
-        # Send command after all listeners are attached.
-        # Newline required to flush
-        @execution_request_time = Time.zone.now
-        socket.send "#{command}\n"
-        Rails.logger.info("Sent command: #{command}")
-      else
-        kill_socket(tubesock)
+          parsed = JSON.parse(data) unless data == "\n"
+          if parsed.instance_of?(Hash) && parsed['cmd'] == 'client_kill'
+            Rails.logger.debug("Client exited container.")
+            container.destroy
+          else
+            socket.send data
+            Rails.logger.debug { "Sent the received client data to docker:#{data}" }
+          end
+        rescue JSON::ParserError => error
+          socket.send data
+          Rails.logger.debug { "Rescued parsing error, sent the received client data to docker:#{data}" }
+            Sentry.set_extras(data: data)
+        end
       end
+
+      # Send command after all listeners are attached.
+      # Newline required to flush
+      @execution_request_time = Time.zone.now
     end
   end
 
@@ -251,7 +245,7 @@ class SubmissionsController < ApplicationController
         # Do not call kill_socket for the websocket to the client here.
         # @docker_client.exit_container closes the socket to the container,
         # kill_socket is called in the "on close handler" of the websocket to the container
-        @docker_client.exit_container(container)
+        container.destroy
       when /^#timeout/
         @run_output = "timeout: #{@run_output}" # add information that this run timed out to the buffer
       else
@@ -275,7 +269,7 @@ class SubmissionsController < ApplicationController
       if parsed.instance_of?(Hash) && parsed.key?('cmd')
         socket.send_data message
         Rails.logger.info("parse_message sent: #{message}")
-        @docker_client.exit_container(container) if container && parsed['cmd'] == 'exit'
+        container.destroy if container && parsed['cmd'] == 'exit'
       else
         parsed = {'cmd' => 'write', 'stream' => output_stream, 'data' => message}
         socket.send_data JSON.dump(parsed)
@@ -388,10 +382,10 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def set_docker_client
-    @docker_client = DockerClient.new(execution_environment: @submission.execution_environment)
-  end
-  private :set_docker_client
+  # def set_docker_client
+  #  @docker_client = DockerClient.new(execution_environment: @submission.execution_environment)
+  # end
+  # private :set_docker_client
 
   def set_file
     @file = @files.detect {|file| file.name_with_extension == sanitize_filename }

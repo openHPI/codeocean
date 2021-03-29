@@ -135,4 +135,38 @@ class Submission < ApplicationRecord
       ((rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) && !rfc_element.question.empty?)
     end
   end
+
+  def test(file)
+    score_command = command_for execution_environment.test_command, file
+    container = run_command_with_self score_command
+    container
+  end
+
+  def run(file)
+    run_command = command_for execution_environment.run_command, file
+    container = run_command_with_self run_command
+    container
+  end
+
+  def run_command_with_self(command)
+    container = Container.new(execution_environment)
+    container.copy_submission_files self
+    container.execute_command_interactively(command)
+    container
+  end
+
+  private
+
+  def command_for(template, file)
+    filepath = collect_files.find { |f| f.name_with_extension == file }.filepath
+    template % command_substitutions(filepath)
+  end
+
+  def command_substitutions(filename)
+    {
+      class_name: File.basename(filename, File.extname(filename)).camelize,
+      filename: filename,
+      module_name: File.basename(filename, File.extname(filename)).underscore
+    }
+  end
 end
