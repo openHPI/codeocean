@@ -5,17 +5,21 @@ class Container
 
   attr_accessor :socket
 
-  def initialize(execution_environment)
+  def initialize(execution_environment, time_limit = nil)
     url = "#{BASE_URL}/execution-environments/#{execution_environment.id}/containers/create"
-    response = Faraday.post url
+    body = {}
+    if time_limit
+      body[:time_limit] = time_limit
+    end
+    response = Faraday.post(url, body.to_json, "Content-Type" => "application/json")
     response = parse response
     @container_id = response[:id]
   end
 
   def copy_files(files)
     url = container_url + "/files"
-    payload = files.map{ |filename, content| { filename => content } }
-    Faraday.post(url, payload.to_json)
+    body = files.map{ |filename, content| { filename => content } }
+    Faraday.post(url, body.to_json, "Content-Type" => "application/json")
   end
 
   def copy_submission_files(submission)
@@ -35,7 +39,8 @@ class Container
 
   def execute_command_interactively(command)
     websocket_url = execute_command(command)[:websocket_url]
-    @socket = Faye::WebSocket::Client.new websocket_url
+    @socket = Faye::WebSocket::Client.new(websocket_url,  [], ping: 0.1)
+    # Faye::WebSocket::Client.new(socket_url, [], headers: headers, ping: 0.1)
   end
 
   def destroy

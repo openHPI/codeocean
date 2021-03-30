@@ -146,10 +146,12 @@ class Submission < ApplicationRecord
     run_command = command_for execution_environment.run_command, file
     container = run_command_with_self run_command
     container
+    yield(container.socket) if block_given?
+    container.destroy
   end
 
   def run_command_with_self(command)
-    container = Container.new(execution_environment)
+    container = Container.new(execution_environment, execution_environment.permitted_execution_time)
     container.copy_submission_files self
     container.execute_command_interactively(command)
     container
