@@ -137,6 +137,45 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  def handle_websockets(tubesock, container)
+    socket = container.socket
+    tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => :container_running})
+    @waiting_for_container_time = Time.zone.now - @container_request_time
+    @execution_request_time = Time.zone.now
+
+    socket.on :message do |event|
+      Rails.logger.info("#{Time.zone.now.getutc}: Docker sending: #{event.data}")
+      handle_message(event.data, tubesock)
+    end
+
+    socket.on :close do |_event|
+      EventMachine.stop_event_loop
+      tubesock.send_data JSON.dump({'cmd' => 'timeout'}) if container.status == 'timeouted'
+      kill_socket(tubesock)
+    end
+
+    tubesock.onmessage do |data|
+      Rails.logger.info("#{Time.now.getutc.to_s}: Client sending: #{data}")
+      # Check whether the client send a JSON command and kill container
+      # if the command is 'client_kill', send it to docker otherwise.
+      begin
+
+        parsed = JSON.parse(data) unless data == "\n"
+        if parsed.instance_of?(Hash) && parsed['cmd'] == 'client_kill'
+          Rails.logger.debug("Client exited container.")
+          container.destroy
+        else
+          socket.send data
+          Rails.logger.debug { "Sent the received client data to docker:#{data}" }
+        end
+      rescue JSON::ParserError => error
+        socket.send data
+        Rails.logger.debug { "Rescued parsing error, sent the received client data to docker:#{data}" }
+        Sentry.set_extras(data: data)
+      end
+    end
+  end
+
   def run
     Thread.new do
       hijack do |tubesock|
@@ -144,46 +183,13 @@ class SubmissionsController < ApplicationController
           kill_socket(tubesock)
           return
         end
-        EventMachine.run do
-          container_request_time = Time.zone.now
-          @submission.run(sanitize_filename) do |socket|
-            tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => :container_running})
-            @waiting_for_container_time = Time.zone.now - container_request_time
-            @execution_request_time = Time.zone.now
-
-            socket.on :message do |event|
-              Rails.logger.info("#{Time.zone.now.getutc}: Docker sending: #{event.data}")
-              handle_message(event.data, tubesock)
-            end
-
-            socket.on :close do |_event|
-              EventMachine.stop_event_loop
-              kill_socket(tubesock)
-            end
-
-            tubesock.onmessage do |data|
-              Rails.logger.info(Time.now.getutc.to_s + ": Client sending: " + data)
-              # Check whether the client send a JSON command and kill container
-              # if the command is 'client_kill', send it to docker otherwise.
-              begin
-
-                parsed = JSON.parse(data) unless data == "\n"
-                if parsed.instance_of?(Hash) && parsed['cmd'] == 'client_kill'
-                  Rails.logger.debug("Client exited container.")
-                  container.destroy
-                else
-                  socket.send data
-                  Rails.logger.debug { "Sent the received client data to docker:#{data}" }
-                end
-              rescue JSON::ParserError => error
-                socket.send data
-                Rails.logger.debug { "Rescued parsing error, sent the received client data to docker:#{data}" }
-                Sentry.set_extras(data: data)
-              end
-            end
-          end
+        @container_request_time = Time.zone.now
+        @submission.run(sanitize_filename) do |container|
+          handle_websockets(tubesock, container)
         end
       end
+    ensure
+      ActiveRecord::Base.connection_pool.release_connection
     end
     # unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
     #   Thread.new do
@@ -396,20 +402,19 @@ class SubmissionsController < ApplicationController
   def statistics; end
 
   def test
-    hijack do |tubesock|
-      unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
-        Thread.new do
-          EventMachine.run
-        ensure
-          ActiveRecord::Base.connection_pool.release_connection
+    Thread.new do
+      hijack do |tubesock|
+        if @embed_options[:disable_run]
+          kill_socket(tubesock)
+          return
+        end
+        @container_request_time = Time.now
+        @submission.run_tests(sanitize_filename) do |container|
+          handle_websockets(tubesock, container)
         end
       end
-
-      output = @docker_client.execute_test_command(@submission, sanitize_filename)
-
-      # tubesock is the socket to the client
-      tubesock.send_data JSON.dump(output)
-      tubesock.send_data JSON.dump('cmd' => 'exit')
+    ensure
+      ActiveRecord::Base.connection_pool.release_connection
     end
   end
 

@@ -136,24 +136,36 @@ class Submission < ApplicationRecord
     end
   end
 
-  def test(file)
+  def score(file)
     score_command = command_for execution_environment.test_command, file
     container = run_command_with_self score_command
     container
+    # Todo receive websocket data and pass it to some score function
   end
 
-  def run(file)
+  def run(file, &block)
     run_command = command_for execution_environment.run_command, file
-    container = run_command_with_self run_command
-    container
-    yield(container.socket) if block_given?
+    execute_interactively(run_command, &block)
+  end
+
+  def run_tests(file, &block)
+    test_command = command_for execution_environment.test_command, file
+    execute_interactively(test_command, &block)
+  end
+
+  def execute_interactively(command)
+    container = nil
+    EventMachine.run do
+      container = run_command_with_self command
+      yield(container) if block_given?
+    end
     container.destroy
   end
 
   def run_command_with_self(command)
     container = Container.new(execution_environment, execution_environment.permitted_execution_time)
     container.copy_submission_files self
-    container.execute_command_interactively(command)
+    container.execute_interactively(command)
     container
   end
 

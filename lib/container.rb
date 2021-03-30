@@ -37,14 +37,17 @@ class Container
     response
   end
 
-  def execute_command_interactively(command)
+  def execute_interactively(command)
     websocket_url = execute_command(command)[:websocket_url]
     @socket = Faye::WebSocket::Client.new(websocket_url,  [], ping: 0.1)
-    # Faye::WebSocket::Client.new(socket_url, [], headers: headers, ping: 0.1)
   end
 
   def destroy
     Faraday.delete container_url
+  end
+
+  def status
+    parse(Faraday.get(container_url))[:status]
   end
 
   private
