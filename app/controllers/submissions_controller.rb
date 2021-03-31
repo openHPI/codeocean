@@ -137,18 +137,17 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def handle_websockets(tubesock, container)
-    socket = container.socket
+  def handle_websockets(tubesock, container, socket)
     tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => :container_running})
     @waiting_for_container_time = Time.zone.now - @container_request_time
     @execution_request_time = Time.zone.now
 
-    socket.on :message do |event|
-      Rails.logger.info("#{Time.zone.now.getutc}: Docker sending: #{event.data}")
-      handle_message(event.data, tubesock)
+    socket.on :message do |data|
+      Rails.logger.info("#{Time.zone.now.getutc}: Docker sending: #{data}")
+      handle_message(data, tubesock)
     end
 
-    socket.on :close do |_event|
+    socket.on :exit do |_exit_code|
       EventMachine.stop_event_loop
       tubesock.send_data JSON.dump({'cmd' => 'timeout'}) if container.status == 'timeouted'
       kill_socket(tubesock)
@@ -184,8 +183,8 @@ class SubmissionsController < ApplicationController
           return
         end
         @container_request_time = Time.zone.now
-        @submission.run(sanitize_filename) do |container|
-          handle_websockets(tubesock, container)
+        @submission.run(sanitize_filename) do |container, socket|
+          handle_websockets(tubesock, container, socket)
         end
       end
     ensure
@@ -330,33 +329,19 @@ class SubmissionsController < ApplicationController
   end
 
   def score
-    hijack do |tubesock|
-      if @embed_options[:disable_score]
-        kill_socket(tubesock)
-        return
-      end
-
-      unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
-        Thread.new do
-          EventMachine.run
-        ensure
-          ActiveRecord::Base.connection_pool.release_connection
+    Thread.new do
+      hijack do |tubesock|
+        if @embed_options[:disable_run]
+          return kill_socket(tubesock)
         end
-      end
-      # tubesock is the socket to the client
-
-      # the score_submission call will end up calling docker exec, which is blocking.
-      # to ensure responsiveness, we therefore open a thread here.
-      Thread.new do
-        tubesock.send_data JSON.dump(score_submission(@submission))
-
+        tubesock.send_data(@submission.calculate_score)
         # To enable hints when scoring a submission, uncomment the next line:
         # send_hints(tubesock, StructuredError.where(submission: @submission))
 
         tubesock.send_data JSON.dump({'cmd' => 'exit'})
-      ensure
-        ActiveRecord::Base.connection_pool.release_connection
       end
+    ensure
+      ActiveRecord::Base.connection_pool.release_connection
     end
   end
 

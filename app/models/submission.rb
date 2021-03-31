@@ -4,6 +4,9 @@ class Submission < ApplicationRecord
   include Context
   include Creation
   include ActionCableHelper
+  include SubmissionScoring
+
+  require 'concurrent/future'
 
   CAUSES = %w[assess download file render run save submit test autosave requestComments remoteAssess
               remoteSubmit].freeze
@@ -136,40 +139,60 @@ class Submission < ApplicationRecord
     end
   end
 
-  def score(file)
-    score_command = command_for execution_environment.test_command, file
-    container = run_command_with_self score_command
-    container
-    # Todo receive websocket data and pass it to some score function
+  def calculate_score
+    score = nil
+    prepared_container do |container|
+      scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
+        score_command = command_for execution_environment.test_command, file.name_with_extension
+        stdout = ""
+        stderr = ""
+        exit_code = 0
+        container.execute_interactively(score_command) do |container, socket|
+          socket.on :stderr do
+            |data| stderr << data
+          end
+          socket.on :stdout do
+            |data| stdout << data
+          end
+          socket.on :close do |_exit_code|
+            exit_code = _exit_code
+            EventMachine.stop_event_loop
+          end
+        end
+        output = {
+          file_role: file.role,
+          waiting_for_container_time: 1.second, # TODO
+          container_execution_time: 1.second, # TODO
+          status: (exit_code == 0) ? :ok : :failed,
+          stdout: stdout,
+          stderr: stderr,
+        }
+        test_result(output, file)
+      end
+      score = score_submission(scores)
+    end
+    JSON.dump(score)
   end
 
   def run(file, &block)
     run_command = command_for execution_environment.run_command, file
-    execute_interactively(run_command, &block)
-  end
-
-  def run_tests(file, &block)
-    test_command = command_for execution_environment.test_command, file
-    execute_interactively(test_command, &block)
-  end
-
-  def execute_interactively(command)
-    container = nil
-    EventMachine.run do
-      container = run_command_with_self command
-      yield(container) if block_given?
+    prepared_container do |container|
+      container.execute_interactively(run_command, &block)
     end
-    container.destroy
-  end
-
-  def run_command_with_self(command)
-    container = Container.new(execution_environment, execution_environment.permitted_execution_time)
-    container.copy_submission_files self
-    container.execute_interactively(command)
-    container
   end
 
   private
+
+  def prepared_container
+    request_time = Time.now
+    container = Container.new(execution_environment, execution_environment.permitted_execution_time)
+    container.copy_submission_files self
+    container_time = Time.now
+    waiting_for_container_time = Time.now - request_time
+    yield(container) if block_given?
+    execution_time = Time.now - container_time
+    container.destroy
+  end
 
   def command_for(template, file)
     filepath = collect_files.find { |f| f.name_with_extension == file }.filepath
