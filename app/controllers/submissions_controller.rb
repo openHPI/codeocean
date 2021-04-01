@@ -142,7 +142,7 @@ class SubmissionsController < ApplicationController
     @waiting_for_container_time = Time.zone.now - @container_request_time
     @execution_request_time = Time.zone.now
 
-    socket.on :message do |data|
+    socket.on :output do |data|
       Rails.logger.info("#{Time.zone.now.getutc}: Docker sending: #{data}")
       handle_message(data, tubesock)
     end

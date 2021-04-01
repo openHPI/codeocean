@@ -1,16 +1,18 @@
 require 'faye/websocket/client'
 
 class ContainerConnection
-  EVENTS = %i[start message exit stdout stderr].freeze
+  EVENTS = %i[start output exit stdout stderr].freeze
 
   def initialize(url)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 0.1)
 
     %i[open message error close].each do |event_type|
-      @socket.on event_type, &:"on_#{event_type}"
+      @socket.on event_type do |event| __send__(:"on_#{event_type}", event) end
     end
 
-    EVENTS.each { |event_type| instance_variable_set(:"@#{event_type}_callback", lambda {}) }
+    EVENTS.each { |event_type| instance_variable_set(:"@#{event_type}_callback", lambda {|e|}) }
+    @start_callback = lambda {}
+    @exit_code = 0
   end
 
   def on(event, &block)
@@ -20,26 +22,30 @@ class ContainerConnection
   end
 
   def send(data)
-    @socket.send(data)
+    @socket.send(encode(data))
   end
 
   private
 
-  def parse(event)
-    JSON.parse(event.data).deep_symbolize_keys
+  def decode(event)
+    JSON.parse(event).deep_symbolize_keys
+  end
+
+  def encode(data)
+    data
   end
 
   def on_message(event)
-    event = parse(event)
-    case event[:type]
+    event = decode(event.data)
+    case event[:type].to_sym
     when :exit_code
       @exit_code = event[:data]
     when :stderr
       @stderr_callback.call event[:data]
-      @message_callback.call event[:data]
+      @output_callback.call event[:data]
     when :stdout
       @stdout_callback.call event[:data]
-      @message_callback.call event[:data]
+      @output_callback.call event[:data]
     else
       :error
     end

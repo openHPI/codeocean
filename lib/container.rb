@@ -3,7 +3,7 @@
 require 'container_connection'
 
 class Container
-  BASE_URL = "http://192.168.178.53:5000"
+  BASE_URL = CodeOcean::Config.new(:code_ocean).read[:container_management][:url]
 
   def initialize(execution_environment, time_limit = nil)
     url = "#{BASE_URL}/execution-environments/#{execution_environment.id}/containers/create"
@@ -40,7 +40,6 @@ class Container
   def execute_interactively(command)
     websocket_url = execute_command(command)[:websocket_url]
     EventMachine.run do
-      #socket = Faye::WebSocket::Client.new(websocket_url, [], ping: 0.1)
       socket = ContainerConnection.new(websocket_url)
       yield(self, socket) if block_given?
     end

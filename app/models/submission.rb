@@ -146,23 +146,23 @@ class Submission < ApplicationRecord
         score_command = command_for execution_environment.test_command, file.name_with_extension
         stdout = ""
         stderr = ""
-        exit_code = 0
+        exit_code = 1 # default to error
         container.execute_interactively(score_command) do |container, socket|
-          socket.on :stderr do
-            |data| stderr << data
+          socket.on :stderr do |data|
+            stderr << data
           end
-          socket.on :stdout do
-            |data| stdout << data
+          socket.on :stdout do |data|
+            stdout << data
           end
-          socket.on :close do |_exit_code|
+          socket.on :exit do |_exit_code|
             exit_code = _exit_code
             EventMachine.stop_event_loop
           end
         end
         output = {
           file_role: file.role,
-          waiting_for_container_time: 1.second, # TODO
-          container_execution_time: 1.second, # TODO
+          waiting_for_container_time: 1, # TODO
+          container_execution_time: 1, # TODO
           status: (exit_code == 0) ? :ok : :failed,
           stdout: stdout,
           stderr: stderr,
