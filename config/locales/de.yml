@@ -397,6 +397,7 @@ de:
       hint: Hinweis
       no_files: Die Aufgabe umfasst noch keine sichtbaren Dateien.
       no_output: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe.
+      exit: Der Exit-Status war %{exit_code}.
       no_output_yet: Bisher existiert noch keine Ausgabe.
       output: Programm-Ausgabe
       passed_tests: Erfolgreiche Tests

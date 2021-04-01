@@ -147,7 +147,7 @@ class Submission < ApplicationRecord
         stdout = ""
         stderr = ""
         exit_code = 1 # default to error
-        container.execute_interactively(score_command) do |container, socket|
+        execution_time = container.execute_interactively(score_command) do |container, socket|
           socket.on :stderr do |data|
             stderr << data
           end
@@ -161,8 +161,8 @@ class Submission < ApplicationRecord
         end
         output = {
           file_role: file.role,
-          waiting_for_container_time: 1, # TODO
-          container_execution_time: 1, # TODO
+          waiting_for_container_time: container.waiting_time,
+          container_execution_time: execution_time,
           status: (exit_code == 0) ? :ok : :failed,
           stdout: stdout,
           stderr: stderr,
@@ -176,9 +176,11 @@ class Submission < ApplicationRecord
 
   def run(file, &block)
     run_command = command_for execution_environment.run_command, file
+    execution_time = 0
     prepared_container do |container|
-      container.execute_interactively(run_command, &block)
+      execution_time = container.execute_interactively(run_command, &block)
     end
+    execution_time
   end
 
   private
@@ -187,10 +189,8 @@ class Submission < ApplicationRecord
     request_time = Time.now
     container = Container.new(execution_environment, execution_environment.permitted_execution_time)
     container.copy_submission_files self
-    container_time = Time.now
-    waiting_for_container_time = Time.now - request_time
+    container.waiting_time = Time.now - request_time
     yield(container) if block_given?
-    execution_time = Time.now - container_time
     container.destroy
   end
 
