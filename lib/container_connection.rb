@@ -4,7 +4,7 @@ class ContainerConnection
   EVENTS = %i[start output exit stdout stderr].freeze
 
   def initialize(url)
-    @socket = Faye::WebSocket::Client.new(url, [], ping: 0.1)
+    @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
 
     %i[open message error close].each do |event_type|
       @socket.on event_type do |event| __send__(:"on_#{event_type}", event) end

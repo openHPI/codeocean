@@ -21,14 +21,14 @@ class Container
 
   def copy_files(files)
     url = container_url + "/files"
-    body = files.map{ |filename, content| { filename => content } }
+    body = { files: files.map{ |filename, content| { filename: filename, content: content } } }
     Faraday.post(url, body.to_json, HEADERS)
   end
 
   def copy_submission_files(submission)
     files = {}
     submission.collect_files.each do |file|
-      files[file.name] = file.content
+      files[file.name_with_extension] = file.content
     end
     copy_files(files)
   end
