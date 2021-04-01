@@ -187,7 +187,7 @@ class Submission < ApplicationRecord
 
   def prepared_container
     request_time = Time.now
-    container = Container.new(execution_environment, execution_environment.permitted_execution_time)
+    container = Runner.new(execution_environment, execution_environment.permitted_execution_time)
     container.copy_submission_files self
     container.waiting_time = Time.now - request_time
     yield(container) if block_given?

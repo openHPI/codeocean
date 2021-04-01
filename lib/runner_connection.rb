@@ -1,6 +1,6 @@
 require 'faye/websocket/client'
 
-class ContainerConnection
+class RunnerConnection
   EVENTS = %i[start output exit stdout stderr].freeze
 
   def initialize(url)

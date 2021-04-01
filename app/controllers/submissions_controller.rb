@@ -161,9 +161,9 @@ class SubmissionsController < ApplicationController
         tubesock.send_data JSON.dump({cmd: :timeout})
         @output = "timeout: #{@output}"
       elsif @output.empty?
-        tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: t('exercises.implement.no_output', timestamp: l(Time.now, format: :short))})
+        tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: t('exercises.implement.no_output', timestamp: l(Time.now, format: :short)) + "\n"})
       end
-      tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: t('exercises.implement.exit', exit_code: exit_code)}) unless status == :timeouted
+      tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: t('exercises.implement.exit', exit_code: exit_code) + "\n"}) unless status == :timeouted
       kill_socket(tubesock)
     end
 

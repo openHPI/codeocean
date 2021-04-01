@@ -1,26 +1,26 @@
 # frozen_string_literal: true
 
-require 'container_connection'
+require 'runner_connection'
 
-class Container
+class Runner
   BASE_URL = CodeOcean::Config.new(:code_ocean).read[:container_management][:url]
   HEADERS = {"Content-Type" => "application/json"}
 
   attr_accessor :waiting_time
 
   def initialize(execution_environment, time_limit = nil)
-    url = "#{BASE_URL}/execution-environments/#{execution_environment.id}/containers/create"
-    body = {}
+    url = "#{BASE_URL}/runners"
+    body = {execution_environment_id: execution_environment.id}
     if time_limit
       body[:time_limit] = time_limit
     end
     response = Faraday.post(url, body.to_json, HEADERS)
     response = parse response
-    @container_id = response[:id]
+    @id = response[:id]
   end
 
   def copy_files(files)
-    url = container_url + "/files"
+    url = runner_url + "/files"
     body = { files: files.map{ |filename, content| { filename: filename, content: content } } }
     Faraday.post(url, body.to_json, HEADERS)
   end
@@ -34,8 +34,8 @@ class Container
   end
 
   def execute_command(command)
-    url = container_url + "/execute"
-    response = Faraday.patch(url, {command: command}.to_json, HEADERS)
+    url = runner_url + "/execute"
+    response = Faraday.post(url, {command: command}.to_json, HEADERS)
     response = parse response
     response
   end
@@ -44,24 +44,24 @@ class Container
     starting_time = Time.now
     websocket_url = execute_command(command)[:websocket_url]
     EventMachine.run do
-      socket = ContainerConnection.new(websocket_url)
+      socket = RunnerConnection.new(websocket_url)
       yield(self, socket) if block_given?
     end
     Time.now - starting_time # execution time
   end
 
   def destroy
-    Faraday.delete container_url
+    Faraday.delete runner_url
   end
 
   def status
-    parse(Faraday.get(container_url))[:status].to_sym
+    parse(Faraday.get(runner_url))[:status].to_sym
   end
 
   private
 
-  def container_url
-    "#{BASE_URL}/containers/#{@container_id}"
+  def runner_url
+    "#{BASE_URL}/runners/#{@id}"
   end
 
   def parse(response)
