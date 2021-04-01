@@ -192,22 +192,22 @@ class SubmissionsController < ApplicationController
   end
 
   def run
+    # TODO do we need this thread? If so, how to fix double render? (to reproduce: remove .join and run)
     Thread.new do
       hijack do |tubesock|
         if @embed_options[:disable_run]
           kill_socket(tubesock)
-          return
-        end
-        @container_execution_time = @submission.run(sanitize_filename) do |container, socket|
-          @waiting_for_container_time = container.waiting_time
-          handle_websockets(tubesock, container, socket)
+        else
+          @container_execution_time = @submission.run(sanitize_filename) do |container, socket|
+            @waiting_for_container_time = container.waiting_time
+            handle_websockets(tubesock, container, socket)
+          end
+          save_run_output
         end
       end
-      # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
-      save_run_output
     ensure
       ActiveRecord::Base.connection_pool.release_connection
-    end
+    end.join
     # TODO determine if this is necessary
     # unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
     #   Thread.new do
@@ -228,6 +228,7 @@ class SubmissionsController < ApplicationController
     tubesock.close
   end
 
+  # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
   def save_run_output
     return if @output.blank?
 
