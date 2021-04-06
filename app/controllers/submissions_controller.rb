@@ -68,9 +68,7 @@ class SubmissionsController < ApplicationController
   end
 
   def download
-    if @embed_options[:disable_download]
-      raise Pundit::NotAuthorizedError
-    end
+    raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
 
     # files = @submission.files.map{ }
     # zipline( files, 'submission.zip')
@@ -112,9 +110,7 @@ class SubmissionsController < ApplicationController
   end
 
   def download_file
-    if @embed_options[:disable_download]
-      raise Pundit::NotAuthorizedError
-    end
+    raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
 
     if @file.native_file?
       send_file(@file.native_file.path)
@@ -142,7 +138,7 @@ class SubmissionsController < ApplicationController
     @output = ''
 
     socket.on :output do |data|
-      Rails.logger.info("#{Time.zone.now.getutc}: Docker sending: #{data}")
+      Rails.logger.info("#{Time.zone.now.getutc}: Container sending: #{data}")
       @output << data if @output.size + data.size <= max_output_buffer_size
     end
 
@@ -161,38 +157,36 @@ class SubmissionsController < ApplicationController
         tubesock.send_data JSON.dump({cmd: :timeout})
         @output = "timeout: #{@output}"
       elsif @output.empty?
-        tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: t('exercises.implement.no_output', timestamp: l(Time.now, format: :short)) + "\n"})
+        tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.no_output', timestamp: l(Time.zone.now, format: :short))}\n"})
       end
-      tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: t('exercises.implement.exit', exit_code: exit_code) + "\n"}) unless status == :timeouted
+      tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.exit', exit_code: exit_code)}\n"}) unless status == :timeouted
       kill_socket(tubesock)
     end
 
     tubesock.onmessage do |event|
-      begin
-        event = JSON.parse(event).deep_symbolize_keys
-        case event[:cmd].to_sym
-        when :client_kill
-          EventMachine.stop_event_loop
-          kill_socket(tubesock)
-          container.destroy
-          Rails.logger.debug('Client exited container.')
-        when :result
-          socket.send event[:data]
-        else
-          Rails.logger.info("Unknown command from client: #{event[:cmd]}")
-        end
-      rescue JSON::ParserError => error
-        Rails.logger.debug { "Data received from client is not valid json: #{data}" }
-        Sentry.set_extras(data: data)
-      rescue TypeError => error
-        Rails.logger.debug { "JSON data received from client cannot be parsed to hash: #{data}" }
-        Sentry.set_extras(data: data)
+      event = JSON.parse(event).deep_symbolize_keys
+      case event[:cmd].to_sym
+      when :client_kill
+        EventMachine.stop_event_loop
+        kill_socket(tubesock)
+        container.destroy
+        Rails.logger.debug('Client exited container.')
+      when :result
+        socket.send event[:data]
+      else
+        Rails.logger.info("Unknown command from client: #{event[:cmd]}")
       end
+    rescue JSON::ParserError => e
+      ails.logger.debug { "Data received from client is not valid json: #{data}" }
+      Sentry.set_extras(data: data)
+    rescue TypeError => e
+      Rails.logger.debug { "JSON data received from client cannot be parsed to hash: #{data}" }
+      Sentry.set_extras(data: data)
     end
   end
 
   def run
-    # TODO do we need this thread? If so, how to fix double render? (to reproduce: remove .join and run)
+    # TODO: do we need this thread? If so, how to fix double render? (to reproduce: remove .join and run)
     Thread.new do
       hijack do |tubesock|
         if @embed_options[:disable_run]
@@ -208,7 +202,7 @@ class SubmissionsController < ApplicationController
     ensure
       ActiveRecord::Base.connection_pool.release_connection
     end.join
-    # TODO determine if this is necessary
+    # TODO: determine if this is necessary
     # unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
     #   Thread.new do
     #     EventMachine.run
@@ -248,9 +242,7 @@ class SubmissionsController < ApplicationController
     if @output.present?
       @submission.exercise.execution_environment.error_templates.each do |template|
         pattern = Regexp.new(template.signature).freeze
-        if pattern.match(@output)
-          results << StructuredError.create_from_template(template, @output, @submission)
-        end
+        results << StructuredError.create_from_template(template, @output, @submission) if pattern.match(@output)
       end
     end
     results
@@ -288,7 +280,7 @@ class SubmissionsController < ApplicationController
   # private :set_docker_client
 
   def set_file
-    @file = @files.detect {|file| file.name_with_extension == sanitize_filename }
+    @file = @files.detect { |file| file.name_with_extension == sanitize_filename }
     head :not_found unless @file
   end
   private :set_file
@@ -314,7 +306,7 @@ class SubmissionsController < ApplicationController
 
   def statistics; end
 
-  # TODO is this needed?
+  # TODO: is this needed?
   # def test
   #   Thread.new do
   #     hijack do |tubesock|
@@ -331,7 +323,6 @@ class SubmissionsController < ApplicationController
   #     ActiveRecord::Base.connection_pool.release_connection
   #   end
   # end
-
 
   def with_server_sent_events
     response.headers['Content-Type'] = 'text/event-stream'

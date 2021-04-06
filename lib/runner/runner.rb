@@ -2,24 +2,22 @@
 
 class Runner
   BASE_URL = CodeOcean::Config.new(:code_ocean).read[:container_management][:url]
-  HEADERS = {"Content-Type" => "application/json"}
+  HEADERS = {'Content-Type' => 'application/json'}.freeze
 
   attr_accessor :waiting_time
 
   def initialize(execution_environment, time_limit = nil)
     url = "#{BASE_URL}/runners"
     body = {executionEnvironmentId: execution_environment.id}
-    if time_limit
-      body[:timeLimit] = time_limit
-    end
+    body[:timeLimit] = time_limit if time_limit
     response = Faraday.post(url, body.to_json, HEADERS)
     response = parse response
     @id = response[:runnerId]
   end
 
   def copy_files(files)
-    url = runner_url + "/files"
-    body = { files: files.map { |filename, content| { filepath: filename, content: content } } }
+    url = "#{runner_url}/files"
+    body = {files: files.map { |filename, content| {filepath: filename, content: content} }}
     Faraday.patch(url, body.to_json, HEADERS)
   end
 
@@ -32,20 +30,19 @@ class Runner
   end
 
   def execute_command(command)
-    url = runner_url + "/execute"
+    url = "#{runner_url}/execute"
     response = Faraday.post(url, {command: command}.to_json, HEADERS)
-    response = parse response
-    response
+    parse response
   end
 
   def execute_interactively(command)
-    starting_time = Time.now
+    starting_time = Time.zone.now
     websocket_url = execute_command(command)[:websocketUrl]
     EventMachine.run do
       socket = RunnerConnection.new(websocket_url)
       yield(self, socket) if block_given?
     end
-    Time.now - starting_time # execution time
+    Time.zone.now - starting_time # execution time
   end
 
   def destroy

@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 require 'faye/websocket/client'
 require 'json_schemer'
 
 class RunnerConnection
   EVENTS = %i[start output exit stdout stderr].freeze
-  BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read("lib/runner/backend-output.schema.json")))
+  BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
 
   def initialize(url)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
 
     %i[open message error close].each do |event_type|
-      @socket.on event_type do |event| __send__(:"on_#{event_type}", event) end
+      @socket.on(event_type) { |event| __send__(:"on_#{event_type}", event) }
     end
 
-    EVENTS.each { |event_type| instance_variable_set(:"@#{event_type}_callback", lambda {|e|}) }
-    @start_callback = lambda {}
+    EVENTS.each { |event_type| instance_variable_set(:"@#{event_type}_callback", ->(e) {}) }
+    @start_callback = -> {}
     @exit_code = 0
   end
 
@@ -42,7 +44,7 @@ class RunnerConnection
 
     event = decode(event.data)
 
-    # TODO handle other events like timeout
+    # TODO: handle other events like timeout
     case event[:type].to_sym
     when :exit_code
       @exit_code = event[:data]
@@ -57,14 +59,13 @@ class RunnerConnection
     end
   end
 
-  def on_open(event)
+  def on_open(_event)
     @start_callback.call
   end
 
-  def on_error(event)
-  end
+  def on_error(event); end
 
-  def on_close(event)
+  def on_close(_event)
     @exit_callback.call @exit_code
   end
 end
