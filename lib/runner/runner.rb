@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'runner_connection'
-
 class Runner
   BASE_URL = CodeOcean::Config.new(:code_ocean).read[:container_management][:url]
   HEADERS = {"Content-Type" => "application/json"}
@@ -10,19 +8,19 @@ class Runner
 
   def initialize(execution_environment, time_limit = nil)
     url = "#{BASE_URL}/runners"
-    body = {execution_environment_id: execution_environment.id}
+    body = {executionEnvironmentId: execution_environment.id}
     if time_limit
-      body[:time_limit] = time_limit
+      body[:timeLimit] = time_limit
     end
     response = Faraday.post(url, body.to_json, HEADERS)
     response = parse response
-    @id = response[:id]
+    @id = response[:runnerId]
   end
 
   def copy_files(files)
     url = runner_url + "/files"
-    body = { files: files.map{ |filename, content| { filename: filename, content: content } } }
-    Faraday.post(url, body.to_json, HEADERS)
+    body = { files: files.map { |filename, content| { filepath: filename, content: content } } }
+    Faraday.patch(url, body.to_json, HEADERS)
   end
 
   def copy_submission_files(submission)
@@ -42,7 +40,7 @@ class Runner
 
   def execute_interactively(command)
     starting_time = Time.now
-    websocket_url = execute_command(command)[:websocket_url]
+    websocket_url = execute_command(command)[:websocketUrl]
     EventMachine.run do
       socket = RunnerConnection.new(websocket_url)
       yield(self, socket) if block_given?
@@ -55,7 +53,9 @@ class Runner
   end
 
   def status
-    parse(Faraday.get(runner_url))[:status].to_sym
+    # parse(Faraday.get(runner_url))[:status].to_sym
+    # TODO return actual state retrieved via websocket
+    :timeouted
   end
 
   private

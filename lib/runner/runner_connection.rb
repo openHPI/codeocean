@@ -1,7 +1,9 @@
 require 'faye/websocket/client'
+require 'json_schemer'
 
 class RunnerConnection
   EVENTS = %i[start output exit stdout stderr].freeze
+  BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read("lib/runner/backend-output.schema.json")))
 
   def initialize(url)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
@@ -36,7 +38,11 @@ class RunnerConnection
   end
 
   def on_message(event)
+    return unless BACKEND_OUTPUT_SCHEMA.valid?(JSON.parse(event.data))
+
     event = decode(event.data)
+
+    # TODO handle other events like timeout
     case event[:type].to_sym
     when :exit_code
       @exit_code = event[:data]
