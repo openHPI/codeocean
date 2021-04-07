@@ -148,7 +148,6 @@ Rails.application.routes.draw do
       get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, action: :run
       get :score
       get :statistics
-      post :stop
       get 'test/:filename', as: :test, constraints: {filename: FILENAME_REGEXP}, action: :test
     end
   end

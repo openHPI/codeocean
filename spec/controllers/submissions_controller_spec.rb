@@ -191,13 +191,11 @@ describe SubmissionsController do
       end
     end
 
-    [:score, :stop].each do |action|
-      describe "##{action}_url" do
-        let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
+    describe "#score_url" do
+      let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("score_url") }
 
-        it "corresponds to the #{action} path" do
-          expect(url).to eq(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission, format: :json))
-        end
+      it "corresponds to the score path" do
+        expect(url).to eq(Rails.application.routes.url_helpers.score_submission_path(submission, format: :json))
       end
     end
   end
@@ -207,37 +205,6 @@ describe SubmissionsController do
     before(:each) { perform_request.call }
 
     pending("todo: mock puma webserver or encapsulate tubesock call (Tubesock::HijackNotAvailable)")
-  end
-
-  describe 'POST #stop' do
-    let(:perform_request) { proc { post :stop, params: { container_id: CONTAINER.id, id: submission.id } } }
-
-    context 'when the container can be found' do
-      before(:each) do
-        expect(Docker::Container).to receive(:get).and_return(CONTAINER)
-        #expect(Rails.logger).to receive(:debug).at_least(:once).and_call_original
-        perform_request.call
-      end
-
-      it 'renders nothing' do
-        expect(response.body).to be_blank
-      end
-
-      expect_status(200)
-    end
-
-    context 'when the container cannot be found' do
-      before(:each) do
-        expect(Docker::Container).to receive(:get).and_raise(Docker::Error::NotFoundError)
-        perform_request.call
-      end
-
-      it 'renders nothing' do
-        expect(response.body).to be_blank
-      end
-
-      expect_status(200)
-    end
   end
 
   describe 'GET #test' do

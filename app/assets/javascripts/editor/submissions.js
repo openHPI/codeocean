@@ -163,12 +163,11 @@ CodeOceanEditorSubmissions = {
 
   runSubmission: function (submission) {
     //Run part starts here
-    $('#stop').data('url', submission.stop_url);
     this.running = true;
     this.showSpinner($('#run'));
     $('#score_div').addClass('d-none');
     this.toggleButtonStates();
-    var url = submission.run_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
+    const url = submission.run_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
     this.initializeSocketForRunning(url);
   },
 

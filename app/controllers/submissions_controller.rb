@@ -412,16 +412,6 @@ class SubmissionsController < ApplicationController
   def statistics
   end
 
-  def stop
-    Rails.logger.debug('stopping submission ' + @submission.id.to_s)
-    container = Docker::Container.get(params[:container_id])
-    DockerClient.destroy_container(container)
-  rescue Docker::Error::NotFoundError => error
-    Sentry.capture_exception(error)
-  ensure
-    head :ok
-  end
-
   def test
     hijack do |tubesock|
       unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
