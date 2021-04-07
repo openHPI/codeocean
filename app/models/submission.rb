@@ -185,10 +185,18 @@ class Submission < ApplicationRecord
 
   private
 
+  def copy_files_to(container)
+    files = {}
+    collect_files.each do |file|
+      files[file.name_with_extension] = file.content
+    end
+    container.copy_files(files)
+  end
+
   def prepared_container
     request_time = Time.now
     container = Runner.new(execution_environment, execution_environment.permitted_execution_time)
-    container.copy_submission_files self
+    copy_files_to container
     container.waiting_time = Time.now - request_time
     yield(container) if block_given?
     container.destroy

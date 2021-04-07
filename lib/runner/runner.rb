@@ -21,14 +21,6 @@ class Runner
     Faraday.patch(url, body.to_json, HEADERS)
   end
 
-  def copy_submission_files(submission)
-    files = {}
-    submission.collect_files.each do |file|
-      files[file.name_with_extension] = file.content
-    end
-    copy_files(files)
-  end
-
   def execute_command(command)
     url = "#{runner_url}/execute"
     response = Faraday.post(url, {command: command}.to_json, HEADERS)
