@@ -132,7 +132,7 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def handle_websockets(tubesock, container, socket)
+  def handle_websockets(tubesock, runner, socket)
     tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => :container_running})
     @output = String.new
 
@@ -151,7 +151,7 @@ class SubmissionsController < ApplicationController
 
     socket.on :exit do |exit_code|
       EventMachine.stop_event_loop
-      status = container.status
+      status = runner.status
       if status == :timeouted
         tubesock.send_data JSON.dump({cmd: :timeout})
         @output = "timeout: #{@output}"
@@ -168,7 +168,7 @@ class SubmissionsController < ApplicationController
       when :client_kill
         EventMachine.stop_event_loop
         kill_socket(tubesock)
-        container.destroy
+        runner.destroy
         Rails.logger.debug('Client exited container.')
       when :result
         socket.send event[:data]
@@ -189,9 +189,9 @@ class SubmissionsController < ApplicationController
       if @embed_options[:disable_run]
         kill_socket(tubesock)
       else
-        @container_execution_time = @submission.run(sanitize_filename) do |container, socket|
-          @waiting_for_container_time = container.waiting_time
-          handle_websockets(tubesock, container, socket)
+        @container_execution_time = @submission.run(sanitize_filename) do |runner, socket|
+          @waiting_for_container_time = runner.waiting_time
+          handle_websockets(tubesock, runner, socket)
         end
         save_run_output
       end

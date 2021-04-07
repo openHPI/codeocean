@@ -21,6 +21,8 @@ development:
     url: https://codeharbor.openhpi.de
   prometheus_exporter:
     enabled: false
+  runner_management:
+    url: https://runners.example.org
 
 production:
   <<: *default

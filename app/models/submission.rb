@@ -141,13 +141,13 @@ class Submission < ApplicationRecord
 
   def calculate_score
     score = nil
-    prepared_container do |container|
+    prepared_runner do |runner|
       scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
         score_command = command_for execution_environment.test_command, file.name_with_extension
         stdout = ""
         stderr = ""
         exit_code = 1 # default to error
-        execution_time = container.execute_interactively(score_command) do |container, socket|
+        execution_time = runner.execute_interactively(score_command) do |runner, socket|
           socket.on :stderr do |data|
             stderr << data
           end
@@ -161,7 +161,7 @@ class Submission < ApplicationRecord
         end
         output = {
           file_role: file.role,
-          waiting_for_container_time: container.waiting_time,
+          waiting_for_container_time: runner.waiting_time,
           container_execution_time: execution_time,
           status: (exit_code == 0) ? :ok : :failed,
           stdout: stdout,
@@ -177,29 +177,29 @@ class Submission < ApplicationRecord
   def run(file, &block)
     run_command = command_for execution_environment.run_command, file
     execution_time = 0
-    prepared_container do |container|
-      execution_time = container.execute_interactively(run_command, &block)
+    prepared_runner do |runner|
+      execution_time = runner.execute_interactively(run_command, &block)
     end
     execution_time
   end
 
   private
 
-  def copy_files_to(container)
+  def copy_files_to(runner)
     files = {}
     collect_files.each do |file|
       files[file.name_with_extension] = file.content
     end
-    container.copy_files(files)
+    runner.copy_files(files)
   end
 
-  def prepared_container
+  def prepared_runner
     request_time = Time.now
-    container = Runner.new(execution_environment, execution_environment.permitted_execution_time)
-    copy_files_to container
-    container.waiting_time = Time.now - request_time
-    yield(container) if block_given?
-    container.destroy
+    runner = Runner.new(execution_environment, execution_environment.permitted_execution_time)
+    copy_files_to runner
+    runner.waiting_time = Time.now - request_time
+    yield(runner) if block_given?
+    runner.destroy
   end
 
   def command_for(template, file)

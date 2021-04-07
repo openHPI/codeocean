@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Runner
-  BASE_URL = CodeOcean::Config.new(:code_ocean).read[:container_management][:url]
+  BASE_URL = CodeOcean::Config.new(:code_ocean).read[:runner_management][:url]
   HEADERS = {'Content-Type' => 'application/json'}.freeze
 
   attr_accessor :waiting_time
