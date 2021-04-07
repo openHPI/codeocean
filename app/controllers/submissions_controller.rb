@@ -10,7 +10,6 @@ class SubmissionsController < ApplicationController
 
   before_action :set_submission,
     only: %i[download download_file render_file run score extract_errors show statistics test]
-  # before_action :set_docker_client, only: %i[run test]
   before_action :set_files, only: %i[download download_file render_file show run]
   before_action :set_file, only: %i[download_file render_file run]
   before_action :set_mime_type, only: %i[download_file render_file]
@@ -135,7 +134,7 @@ class SubmissionsController < ApplicationController
 
   def handle_websockets(tubesock, container, socket)
     tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => :container_running})
-    @output = ''
+    @output = String.new
 
     socket.on :output do |data|
       Rails.logger.info("#{Time.zone.now.getutc}: Container sending: #{data}")
@@ -176,40 +175,27 @@ class SubmissionsController < ApplicationController
       else
         Rails.logger.info("Unknown command from client: #{event[:cmd]}")
       end
-    rescue JSON::ParserError => e
-      ails.logger.debug { "Data received from client is not valid json: #{data}" }
+    rescue JSON::ParserError
+      Rails.logger.debug { "Data received from client is not valid json: #{data}" }
       Sentry.set_extras(data: data)
-    rescue TypeError => e
+    rescue TypeError
       Rails.logger.debug { "JSON data received from client cannot be parsed to hash: #{data}" }
       Sentry.set_extras(data: data)
     end
   end
 
   def run
-    # TODO: do we need this thread? If so, how to fix double render? (to reproduce: remove .join and run)
-    Thread.new do
-      hijack do |tubesock|
-        if @embed_options[:disable_run]
-          kill_socket(tubesock)
-        else
-          @container_execution_time = @submission.run(sanitize_filename) do |container, socket|
-            @waiting_for_container_time = container.waiting_time
-            handle_websockets(tubesock, container, socket)
-          end
-          save_run_output
+    hijack do |tubesock|
+      if @embed_options[:disable_run]
+        kill_socket(tubesock)
+      else
+        @container_execution_time = @submission.run(sanitize_filename) do |container, socket|
+          @waiting_for_container_time = container.waiting_time
+          handle_websockets(tubesock, container, socket)
         end
+        save_run_output
       end
-    ensure
-      ActiveRecord::Base.connection_pool.release_connection
-    end.join
-    # TODO: determine if this is necessary
-    # unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
-    #   Thread.new do
-    #     EventMachine.run
-    #   ensure
-    #     ActiveRecord::Base.connection_pool.release_connection
-    #   end
-    # end
+    end
   end
 
   def kill_socket(tubesock)
@@ -306,21 +292,20 @@ class SubmissionsController < ApplicationController
 
   def statistics; end
 
-  # TODO: is this needed?
+  # TODO: make this run, but with the test command
   # def test
-  #   Thread.new do
-  #     hijack do |tubesock|
-  #       if @embed_options[:disable_run]
-  #         kill_socket(tubesock)
-  #         return
-  #       end
-  #       @container_request_time = Time.now
-  #       @submission.run_tests(sanitize_filename) do |container|
-  #         handle_websockets(tubesock, container)
+  #   hijack do |tubesock|
+  #     unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+  #       Thread.new do
+  #         EventMachine.run
+  #       ensure
+  #         ActiveRecord::Base.connection_pool.release_connection
   #       end
   #     end
-  #   ensure
-  #     ActiveRecord::Base.connection_pool.release_connection
+  #     output = @docker_client.execute_test_command(@submission, sanitize_filename)
+  #     # tubesock is the socket to the client
+  #     tubesock.send_data JSON.dump(output)
+  #     tubesock.send_data JSON.dump('cmd' => 'exit')
   #   end
   # end
 

@@ -50,8 +50,7 @@ class Runner
   end
 
   def status
-    # parse(Faraday.get(runner_url))[:status].to_sym
-    # TODO return actual state retrieved via websocket
+    # TODO: return actual state retrieved via websocket
     :timeouted
   end
 

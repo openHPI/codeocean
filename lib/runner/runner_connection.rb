@@ -43,20 +43,7 @@ class RunnerConnection
     return unless BACKEND_OUTPUT_SCHEMA.valid?(JSON.parse(event.data))
 
     event = decode(event.data)
-
-    # TODO: handle other events like timeout
-    case event[:type].to_sym
-    when :exit_code
-      @exit_code = event[:data]
-    when :stderr
-      @stderr_callback.call event[:data]
-      @output_callback.call event[:data]
-    when :stdout
-      @stdout_callback.call event[:data]
-      @output_callback.call event[:data]
-    else
-      :error
-    end
+    __send__("handle_#{event[:type]}", event)
   end
 
   def on_open(_event)
@@ -67,5 +54,27 @@ class RunnerConnection
 
   def on_close(_event)
     @exit_callback.call @exit_code
+  end
+
+  def handle_exit(event)
+    @exit_code = event[:data]
+  end
+
+  def handle_stdout(event)
+    @stdout_callback.call event[:data]
+    @output_callback.call event[:data]
+  end
+
+  def handle_stderr(event)
+    @stderr_callback.call event[:data]
+    @output_callback.call event[:data]
+  end
+
+  def handle_error(event) end
+
+  def handle_start(event) end
+
+  def handle_timeout(event)
+    # TODO: set the runner state
   end
 end
