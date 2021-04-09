@@ -16,10 +16,6 @@ class StudyGroup < ApplicationRecord
   end
 
   def to_s
-    if name.blank?
-      "StudyGroup " + id.to_s
-    else
-      name
-    end
+    name.presence || "StudyGroup #{id}"
   end
 end
