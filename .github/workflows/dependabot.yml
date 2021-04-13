@@ -1,9 +1,10 @@
 name: Dependabot Automerge Check
 on:
-  - pull_request
+  - pull_request_target
 
 jobs:
-  worker:
+  auto-merge:
+    if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
