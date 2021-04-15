@@ -9,13 +9,13 @@ GIT
 
 GIT
   remote: https://github.com/openHPI/proforma.git
-  revision: b9e8769e797f501e19bbfc00ed38946efe6ecf82
-  tag: v0.5
+  revision: dc68000325388e1d75f31be9e136a82edad8a56d
+  tag: v0.5.1
   specs:
     proforma (0.5)
-      activemodel (>= 5.2.3, < 6.1.0)
-      activesupport (>= 5.2.3, < 6.1.0)
-      nokogiri (~> 1.10.2)
+      activemodel (>= 5.2.3, < 6.2.0)
+      activesupport (>= 5.2.3, < 6.2.0)
+      nokogiri (>= 1.10.2, < 1.12.0)
       rubyzip (>= 1.2.2, < 2.4.0)
 
 GEM
@@ -131,7 +131,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     erubi (1.10.0)
     eventmachine (1.2.7)
-    excon (0.79.0)
+    excon (0.80.1)
     execjs (2.7.0)
     factory_bot (6.1.0)
       activesupport (>= 5.0.0)
@@ -197,7 +197,7 @@ GEM
     listen (3.5.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.9.0)
+    loofah (2.9.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -212,7 +212,7 @@ GEM
       rake
     mini_magick (4.11.0)
     mini_mime (1.1.0)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.5.0)
     minitest (5.14.4)
     minitest-autotest (1.1.1)
       minitest-server (~> 1.0)
@@ -230,8 +230,9 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (6.15.0)
     nio4r (2.5.7)
-    nokogiri (1.10.10)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.11.3)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     nyan-cat-formatter (0.12.0)
       rspec (>= 2.99, >= 2.14.2, < 4)
     oauth (0.5.6)
@@ -263,6 +264,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.1.0)
       activesupport (>= 3.0.0)
+    racc (1.5.2)
     rack (2.2.3)
     rack-mini-profiler (2.3.1)
       rack (>= 1.2.0)
