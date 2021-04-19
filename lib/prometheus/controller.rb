@@ -41,7 +41,7 @@ module Prometheus
                            state: RequestForComment::SOLVED)
 
         # count of rfcs with comments
-        @rfc_commented_count.observe(RequestForComment.with_comments.count)
+        @rfc_commented_count.observe(RequestForComment.joins(:comments).distinct.count(:id))
       end
 
       def update_notification(object)
