@@ -8,6 +8,10 @@ default: &default
     enabled: false
   codeocean_events:
     enabled: false
+  runner_management:
+    url: https://runners.example.org
+    cleanup_interval: 60
+    unused_runner_expiration_time: 180
 
 development:
   flowr:
@@ -21,8 +25,6 @@ development:
     url: https://codeharbor.openhpi.de
   prometheus_exporter:
     enabled: false
-  runner_management:
-    url: https://runners.example.org
 
 production:
   <<: *default

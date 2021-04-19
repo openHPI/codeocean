@@ -339,6 +339,20 @@ ActiveRecord::Schema.define(version: 2021_05_12_133612) do
     t.index ["user_id", "user_type", "created_at"], name: "index_rfc_on_user_and_created_at", order: { created_at: :desc }
   end
 
+  create_table "runners", force: :cascade do |t|
+    t.string "runner_id"
+    t.bigint "execution_environment_id"
+    t.string "user_type"
+    t.bigint "user_id"
+    t.integer "time_limit"
+    t.float "waiting_time"
+    t.datetime "last_used"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["execution_environment_id"], name: "index_runners_on_execution_environment_id"
+    t.index ["user_type", "user_id"], name: "index_runners_on_user_type_and_user_id"
+  end
+
   create_table "searches", id: :serial, force: :cascade do |t|
     t.integer "exercise_id", null: false
     t.integer "user_id", null: false

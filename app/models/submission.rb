@@ -195,11 +195,10 @@ class Submission < ApplicationRecord
 
   def prepared_runner
     request_time = Time.now
-    runner = Runner.new(execution_environment, execution_environment.permitted_execution_time)
+    runner = Runner.for(user, exercise, execution_environment.permitted_execution_time)
     copy_files_to runner
     runner.waiting_time = Time.now - request_time
     yield(runner) if block_given?
-    runner.destroy
   end
 
   def command_for(template, file)

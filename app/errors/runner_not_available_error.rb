@@ -1,0 +1,2 @@
+class RunnerNotAvailableError < ApplicationError
+end
