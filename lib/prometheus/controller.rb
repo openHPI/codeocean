@@ -26,6 +26,7 @@ module Prometheus
       end
 
       def initialize_instance_count
+        Rails.application.eager_load!
         ApplicationRecord.descendants.reject(&:abstract_class).each do |each|
           @instance_count.observe(each.count, class: each.name)
         end
