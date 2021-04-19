@@ -11,8 +11,15 @@ module Prometheus
     class << self
       def initialize_metrics
         register_metrics
-        initialize_instance_count
-        initialize_rfc_metrics
+
+        Thread.new do
+          initialize_instance_count
+          initialize_rfc_metrics
+        rescue StandardError => e
+          Sentry.capture_exception(e)
+        ensure
+          ActiveRecord::Base.connection_pool.release_connection
+        end
       end
 
       def register_metrics
