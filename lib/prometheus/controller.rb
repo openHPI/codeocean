@@ -12,7 +12,6 @@ module Prometheus
       def initialize_metrics
         register_metrics
 
-        Rails.application.eager_load!
         Rails.application.executor.wrap do
           Thread.new do
             initialize_instance_count

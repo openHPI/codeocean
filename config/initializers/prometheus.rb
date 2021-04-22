@@ -6,5 +6,4 @@ return if %w[db: assets:].any? { |task| Rake.application.top_level_tasks.to_s.in
 # Add metric callbacks to all models
 ApplicationRecord.include Prometheus::Record
 
-# Initialize the counters according to the db
-Prometheus::Controller.initialize_metrics
+# Initialization is performed in config/application.rb

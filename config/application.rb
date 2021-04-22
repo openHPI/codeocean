@@ -34,5 +34,10 @@ module CodeOcean
     config.action_cable.mount_path = '/cable'
 
     config.telegraf.tags = { application: 'codeocean' }
+
+    config.after_initialize do
+      # Initialize the counters according to the db
+      Prometheus::Controller.initialize_metrics
+    end
   end
 end
