@@ -5,7 +5,8 @@ module FileParameters
     if Exercise.exists?(id: exercise_id) && params
       params.reject do |_, file_attributes|
         file = CodeOcean::File.find_by(id: file_attributes[:file_id])
-        file.nil? || file.hidden || file.read_only
+        # avoid that public files from other contexts can be created
+        file.nil? || file.hidden || file.read_only || file.context_id != exercise_id.to_i
       end
     else
       []
