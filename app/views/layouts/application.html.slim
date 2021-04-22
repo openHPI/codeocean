@@ -27,10 +27,6 @@ html lang="#{I18n.locale || I18n.default_locale}"
         |      release: "#{Sentry.configuration.release}",
         |      environment: "#{Sentry.configuration.environment}",
         |  });
-        | Sentry.setContext("initial",{
-        |      cookie: document.cookie,
-        |      csrf: $('meta[name="csrf-token"]').attr("content")
-        |  });
         - if @current_user
           | Sentry.configureScope(function(scope) {
           |   scope.setUser({
