@@ -10,20 +10,22 @@ class Runner < ApplicationRecord
   belongs_to :execution_environment
   belongs_to :user, polymorphic: true
 
-  before_create :get_runner
+  before_create :new_runner
   before_destroy :destroy_runner
 
-  validates :execution_environment_id, presence: true
+  validates :execution_environment, presence: true
   validates :user, presence: true
   validates :time_limit, presence: true
 
-  scope :inactive_runners, -> { where('last_used < ?', Time.now - UNUSED_EXPIRATION_TIME) }
-  
-  def self.for(user, exercise, time_limit = 0)
+  scope :inactive_runners, -> { where('last_used < ?', Time.zone.now - UNUSED_EXPIRATION_TIME) }
+
+  def self.for(user, exercise)
     execution_environment = ExecutionEnvironment.find(exercise.execution_environment_id)
-    runner = Runner.find_or_create_by(user: user, execution_environment: execution_environment, time_limit: time_limit)
+    runner = Runner.find_or_create_by(user: user, execution_environment: execution_environment,
+                                      time_limit: execution_environment.permitted_execution_time)
 
     return runner if runner.save
+
     raise(RunnerNotAvailableError, 'No runner available')
   end
 
@@ -31,22 +33,22 @@ class Runner < ApplicationRecord
     url = "#{runner_url}/files"
     body = {files: files.map { |filename, content| {filepath: filename, content: content} }}
     response = Faraday.patch(url, body.to_json, HEADERS)
-    if response.status == 404
-      # runner has disappeared for some reason
-      self.destroy
-      raise(RunnerNotAvailableError, "Runner unavailable")
-    end
+    return unless response.status == 404
+
+    # runner has disappeared for some reason
+    destroy
+    raise(RunnerNotAvailableError, 'Runner unavailable')
   end
 
   def execute_command(command)
+    used_now
     url = "#{runner_url}/execute"
     response = Faraday.post(url, {command: command}.to_json, HEADERS)
     if response.status == 404
       # runner has disappeared for some reason
-      self.destroy
-      raise(RunnerNotAvailableError, "Runner unavailable")
+      destroy
+      raise(RunnerNotAvailableError, 'Runner unavailable')
     end
-    used_now
     parse response
   end
 
@@ -71,10 +73,9 @@ class Runner < ApplicationRecord
 
   private
 
-  def get_runner
+  def new_runner
     url = "#{BASE_URL}/runners"
-    body = {executionEnvironmentId: execution_environment.id}
-    body[:timeLimit] = time_limit
+    body = {executionEnvironmentId: execution_environment.id, timeLimit: time_limit}
     response = Faraday.post(url, body.to_json, HEADERS)
     response_body = parse response
     self.runner_id = response_body[:runnerId]
@@ -90,7 +91,7 @@ class Runner < ApplicationRecord
   end
 
   def used_now
-    self.last_used = Time.now
+    self.last_used = Time.zone.now
     save
   end
 end

@@ -72,7 +72,7 @@ class Submission < ApplicationRecord
     # expects the full file path incl. file extension
     # Caution: There must be no unnecessary path prefix included.
     # Use `file.ext` rather than `./file.ext`
-    collect_files.detect {|file| file.filepath == file_path }
+    collect_files.detect { |file| file.filepath == file_path }
   end
 
   def normalized_score
@@ -144,18 +144,18 @@ class Submission < ApplicationRecord
     prepared_runner do |runner|
       scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
         score_command = command_for execution_environment.test_command, file.name_with_extension
-        stdout = ""
-        stderr = ""
+        stdout = ''
+        stderr = ''
         exit_code = 1 # default to error
-        execution_time = runner.execute_interactively(score_command) do |runner, socket|
+        execution_time = runner.execute_interactively(score_command) do |_runner, socket|
           socket.on :stderr do |data|
             stderr << data
           end
           socket.on :stdout do |data|
             stdout << data
           end
-          socket.on :exit do |_exit_code|
-            exit_code = _exit_code
+          socket.on :exit do |received_exit_code|
+            exit_code = received_exit_code
             EventMachine.stop_event_loop
           end
         end
@@ -163,9 +163,9 @@ class Submission < ApplicationRecord
           file_role: file.role,
           waiting_for_container_time: runner.waiting_time,
           container_execution_time: execution_time,
-          status: (exit_code == 0) ? :ok : :failed,
+          status: exit_code.zero? ? :ok : :failed,
           stdout: stdout,
-          stderr: stderr,
+          stderr: stderr
         }
         test_result(output, file)
       end
@@ -194,10 +194,10 @@ class Submission < ApplicationRecord
   end
 
   def prepared_runner
-    request_time = Time.now
-    runner = Runner.for(user, exercise, execution_environment.permitted_execution_time)
+    request_time = Time.zone.now
+    runner = Runner.for(user, exercise)
     copy_files_to runner
-    runner.waiting_time = Time.now - request_time
+    runner.waiting_time = Time.zone.now - request_time
     yield(runner) if block_given?
   end
 
