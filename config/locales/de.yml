@@ -750,6 +750,7 @@ de:
     runtime_output: "Programmausgabe"
     test_results: "Testergebnisse"
   sessions:
+    expired: Ihre Session ist abgelaufen. Bitte <a href="javascript:window.location.reload(true)">laden Sie diese Seite neu</a> bevor Sie fortfahren.
     create:
       failure: Fehlerhafte E-Mail oder Passwort.
       success: Sie haben sich erfolgreich angemeldet.

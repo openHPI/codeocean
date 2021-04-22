@@ -45,25 +45,30 @@ class ApplicationController < ActionController::Base
   private :set_sentry_context
 
   def render_csrf_error
-    set_sentry_context
-    render json: {error: 'CSRF validation failed!!', status: :unprocessable_entity, request_cookies: cookies, session_csrf: session['_csrf_token'], request_csrf: request_authenticity_tokens }, status: :unprocessable_entity
+    render_error t('sessions.expired'), :unprocessable_entity
   end
   private :render_csrf_error
 
   def render_not_authorized
+    render_error t('application.not_authorized'), :unauthorized
+  end
+  private :render_not_authorized
+
+  def render_error(message, status)
+    set_sentry_context
     respond_to do |format|
       format.html do
         # Prevent redirect loop
         if request.url == request.referrer
-          redirect_to :root, alert: t('application.not_authorized')
+          redirect_to :root, alert: message
         else
-          redirect_back fallback_location: :root, allow_other_host: false, alert: t('application.not_authorized')
+          redirect_back fallback_location: :root, allow_other_host: false, alert: message
         end
       end
-      format.json { render json: {error: t('application.not_authorized')}, status: :unauthorized }
+      format.json { render json: {error: message}, status: status }
     end
   end
-  private :render_not_authorized
+  private :render_error
 
   def set_locale
     session[:locale] = params[:custom_locale] || params[:locale] || session[:locale]

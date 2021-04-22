@@ -750,6 +750,7 @@ en:
     runtime_output: "Runtime Output"
     test_results: "Test Results"
   sessions:
+    expired: Your session has expired. Please <a href="javascript:window.location.reload(true)">reload this page</a> before continuing.
     create:
       failure: Invalid email or password.
       success: Successfully signed in.

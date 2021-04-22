@@ -10,7 +10,8 @@ CodeOceanEditorAJAX = {
     var message = ((response || {}).responseJSON || {}).message || '';
 
     $.flash.danger({
-      text: message.length > 0 ? message : $('#flash').data('message-failure')
+      text: message.length > 0 ? message : $('#flash').data('message-failure'),
+      showPermanent: response.status === 422,
     });
     Sentry.captureException(JSON.stringify(response));
   }
