@@ -13,6 +13,5 @@ CodeOceanEditorAJAX = {
       text: message.length > 0 ? message : $('#flash').data('message-failure'),
       showPermanent: response.status === 422,
     });
-    Sentry.captureException(JSON.stringify(response));
   }
 };
