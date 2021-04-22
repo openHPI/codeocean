@@ -13,13 +13,13 @@ module Prometheus
         register_metrics
 
         Rails.application.eager_load!
-        Thread.new do
-          initialize_instance_count
-          initialize_rfc_metrics
-        rescue StandardError => e
-          Sentry.capture_exception(e)
-        ensure
-          ActiveRecord::Base.connection_pool.release_connection
+        Rails.application.executor.wrap do
+          Thread.new do
+            initialize_instance_count
+            initialize_rfc_metrics
+          rescue StandardError => e
+            Sentry.capture_exception(e)
+          end
         end
       end
 
