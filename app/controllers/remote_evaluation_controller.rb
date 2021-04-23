@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoteEvaluationController < ApplicationController
   include RemoteEvaluationParameters
   include SubmissionScoring
@@ -8,69 +10,74 @@ class RemoteEvaluationController < ApplicationController
 
   # POST /evaluate
   def evaluate
-    result = create_and_score_submission("remoteAssess")
-    status = if result.is_a?(Hash) && result.has_key?(:status)
+    result = create_and_score_submission('remoteAssess')
+    status = if result.is_a?(Hash) && result.key?(:status)
                result[:status]
-               else
-                 201
+             else
+               201
              end
     render json: result, status: status
   end
 
   # POST /submit
   def submit
-    result = create_and_score_submission("remoteSubmit")
-
+    result = create_and_score_submission('remoteSubmit')
     status = 201
-
     if @submission.present?
-      current_user = @submission.user
       score_achieved_percentage = @submission.normalized_score
-      if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id)
-        lti_response = send_score(@submission)
-
-        if lti_response[:status] == 'success' and lti_response[:score_sent] != @submission.normalized_score
-          # Score has been reduced due to the passed deadline
-          result = {message: I18n.t('exercises.submit.too_late'), status: 207}
-          score_achieved_percentage = lti_response[:score_sent]
-        elsif lti_response[:status] == 'success'
-          result = {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name), status: 202}
-        else
-          result = {message: I18n.t('exercises.submit.failure'), status: 424}
-        end
-        # ToDo: Delete LTI parameters?
-      else
-        result = {message: "Your submission was successfully scored with #{score_achieved_percentage}%. However, your score could not be sent to the e-Learning platform. Please reopen the exercise through the e-Learning platform and try again.", status: 410}
-      end
-
-      result.merge!({score: score_achieved_percentage * 100})
-      status =  result[:status]
+      result = try_lti
+      result.merge!({score: score_achieved_percentage * 100}) unless result[:score]
+      status = result[:status]
     end
 
     render json: result, status: status
   end
 
-  def create_and_score_submission cause
+  def try_lti
+    if !@submission.user.nil? && lti_outcome_service?(@submission.exercise_id, @submission.user.id)
+      lti_response = send_score(@submission)
+      process_lti_response(lti_response)
+    else
+      {message: "Your submission was successfully scored with #{@submission.normalized_score}%. However, your score could not be sent to the e-Learning platform. Please reopen the exercise through the e-Learning platform and try again.", status: 410}
+    end
+  end
+  private :try_lti
+
+  def process_lti_response(lti_response)
+    if (lti_response[:status] == 'success') && (lti_response[:score_sent] != @submission.normalized_score)
+      # Score has been reduced due to the passed deadline
+      {message: I18n.t('exercises.submit.too_late'), status: 207, score: lti_response[:score_sent] * 100}
+    elsif lti_response[:status] == 'success'
+      {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name), status: 202}
+    else
+      {message: I18n.t('exercises.submit.failure'), status: 424}
+    end
+    # TODO: Delete LTI parameters?
+  end
+  private :process_lti_response
+
+  def create_and_score_submission(cause)
     validation_token = remote_evaluation_params[:validation_token]
-    files_attributes = remote_evaluation_params[:files_attributes] || []
-
-    # todo extra: validiere, ob files wirklich zur Übung gehören (wenn allowNewFiles-flag nicht gesetzt ist)
-    if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(:validation_token => validation_token))
-
-      _params = remote_evaluation_params.except(:validation_token)
-      _params[:exercise_id] = remote_evaluation_mapping.exercise_id
-      _params[:user_id] = remote_evaluation_mapping.user_id
-      _params[:cause] = cause
-      _params[:user_type] = remote_evaluation_mapping.user_type
-      _params[:files_attributes] = reject_illegal_file_attributes(remote_evaluation_mapping.exercise_id, files_attributes)
-
-      @submission = Submission.create(_params)
+    if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(validation_token: validation_token))
+      @submission = Submission.create(build_submission_params(cause, remote_evaluation_mapping))
       score_submission(@submission)
     else
-      # todo: better output
+      # TODO: better output
       # todo: check token expired?
-      {message: "No exercise found for this validation_token! Please keep out!", status: 401}
+      {message: 'No exercise found for this validation_token! Please keep out!', status: 401}
     end
   end
   private :create_and_score_submission
+
+  def build_submission_params(cause, remote_evaluation_mapping)
+    files_attributes = remote_evaluation_params[:files_attributes]
+    submission_params = remote_evaluation_params.except(:validation_token)
+    submission_params[:exercise_id] = remote_evaluation_mapping.exercise_id
+    submission_params[:user_id] = remote_evaluation_mapping.user_id
+    submission_params[:cause] = cause
+    submission_params[:user_type] = remote_evaluation_mapping.user_type
+    submission_params[:files_attributes] = reject_illegal_file_attributes(remote_evaluation_mapping.exercise_id, files_attributes)
+    submission_params
+  end
+  private :build_submission_params
 end
