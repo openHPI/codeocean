@@ -63,7 +63,7 @@ class RemoteEvaluationController < ApplicationController
       score_submission(@submission)
     else
       # TODO: better output
-      # todo: check token expired?
+      # TODO: check token expired?
       {message: 'No exercise found for this validation_token! Please keep out!', status: 401}
     end
   end
