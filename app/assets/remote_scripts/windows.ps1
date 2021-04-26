@@ -67,11 +67,11 @@ function get_escaped_file_content ($file){
     return $content
 }
 
-function get_file_attributes ($file_info){
+function get_file_attributes ($file_info, $index){
     $file = get_file ($file_info | select-string -pattern '^.*(?==)').matches.value
     $escaped_file_content = get_escaped_file_content $file
     $file_id = ($file_info | select-string -pattern '[^=]+$').matches.value
-    return "{`"file_id`": $file_id,`"content`": `"$escaped_file_content`"}"
+    return "`"$index`": {`"file_id`": $file_id,`"content`": `"$escaped_file_content`"}"
 }
 
 $co_file = get_file '.co'
@@ -82,13 +82,13 @@ $validation_token = $file_array[0]
 
 $target_url = $file_array[1]
 
-$files_attributes = get_file_attributes $file_array[2]
+$files_attributes = get_file_attributes $file_array[2] 0
 
 for ($i = 3; $i -lt $file_array.length; $i++){
     $files_attributes += ', '
-    $files_attributes += get_file_attributes $file_array[$i]
+    $files_attributes += get_file_attributes $file_array[$i] ($i-2)
 }
 
-$post_data = "{`"remote_evaluation`": {`"validation_token`": `"$validation_token`",`"files_attributes`": [$files_attributes]}}"
+$post_data = "{`"remote_evaluation`": {`"validation_token`": `"$validation_token`",`"files_attributes`": {$files_attributes}}}"
 
 post_web_request 'application/json' $post_data $target_url

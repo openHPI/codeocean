@@ -43,7 +43,7 @@ function get_file_attributes {
     file_path="$(get_valid_file_path "${file_info%=*}")"
     escaped_file_content="$(get_escaped_file_content "$file_path")"
     file_id="${file_info##*=}"
-    echo "{\"file_id\": $file_id,\"content\": \"$escaped_file_content\"}"
+    echo "\"$2\": {\"file_id\": $file_id,\"content\": \"$escaped_file_content\"}"
 }
 
 
@@ -54,13 +54,13 @@ validation_token="${file_array[0]}"
 
 target_url="${file_array[1]}"
 
-files_attributes="$(get_file_attributes "${file_array[2]}")"
+files_attributes="$(get_file_attributes "${file_array[2]}" 0)"
 
 for ((i = 3; i < ${#file_array[@]}; i++)); do
-    files_attributes+=", $(get_file_attributes "${file_array[i]}")"
+    files_attributes+=", $(get_file_attributes "${file_array[i]}" $((i-2)))"
 done
 
-post_data="{\"remote_evaluation\": {\"validation_token\": \"$validation_token\",\"files_attributes\": [$files_attributes]}}"
+post_data="{\"remote_evaluation\": {\"validation_token\": \"$validation_token\",\"files_attributes\": {$files_attributes}}}"
 
 # "$(echo $post_data)" solves some whitespace issues
 curl -H 'Content-Type: application/json' --data "$(echo $post_data)" "$target_url"
