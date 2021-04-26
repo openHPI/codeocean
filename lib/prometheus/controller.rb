@@ -10,8 +10,9 @@ module Prometheus
 
     class << self
       def initialize_metrics
-        register_metrics
+        return unless CodeOcean::Config.new(:code_ocean).read[:prometheus_exporter][:enabled] && !defined?(::Rails::Console)
 
+        register_metrics
         Rails.application.executor.wrap do
           Thread.new do
             initialize_instance_count
