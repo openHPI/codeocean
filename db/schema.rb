@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_12_10_113500) do
+ActiveRecord::Schema.define(version: 2021_04_26_113125) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -317,6 +317,8 @@ ActiveRecord::Schema.define(version: 2020_12_10_113500) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "user_type"
+    t.bigint "study_group_id"
+    t.index ["study_group_id"], name: "index_remote_evaluation_mappings_on_study_group_id"
   end
 
   create_table "request_for_comments", id: :serial, force: :cascade do |t|
@@ -480,6 +482,7 @@ ActiveRecord::Schema.define(version: 2020_12_10_113500) do
   add_foreign_key "exercise_tips", "exercises"
   add_foreign_key "exercise_tips", "tips"
   add_foreign_key "request_for_comments", "submissions", name: "request_for_comments_submissions_id_fk"
+  add_foreign_key "remote_evaluation_mappings", "study_groups"
   add_foreign_key "submissions", "study_groups"
   add_foreign_key "tips", "file_types"
   add_foreign_key "user_exercise_feedbacks", "submissions"

@@ -74,6 +74,7 @@ class RemoteEvaluationController < ApplicationController
     submission_params = remote_evaluation_params.except(:validation_token)
     submission_params[:exercise_id] = remote_evaluation_mapping.exercise_id
     submission_params[:user_id] = remote_evaluation_mapping.user_id
+    submission_params[:study_group_id] = remote_evaluation_mapping.study_group_id
     submission_params[:cause] = cause
     submission_params[:user_type] = remote_evaluation_mapping.user_type
     submission_params[:files_attributes] = reject_illegal_file_attributes(remote_evaluation_mapping.exercise, files_attributes)

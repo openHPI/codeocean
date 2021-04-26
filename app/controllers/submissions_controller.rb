@@ -450,7 +450,11 @@ class SubmissionsController < ApplicationController
     user = @submission.user
     exercise_id = @submission.exercise_id
 
-    remote_evaluation_mapping = RemoteEvaluationMapping.create(user: user, exercise_id: exercise_id)
+    remote_evaluation_mapping = RemoteEvaluationMapping.create(
+      user: user,
+      exercise_id: exercise_id,
+      study_group_id: session[:study_group_id]
+    )
 
     # create .co file
     path = "tmp/" + user.id.to_s + ".co"
