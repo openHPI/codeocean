@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module FileParameters
-  def reject_illegal_file_attributes(exercise_id, params)
-    if Exercise.exists?(id: exercise_id) && params
+  def reject_illegal_file_attributes(exercise, params)
+    if exercise && params
       params.reject do |_, file_attributes|
         file = CodeOcean::File.find_by(id: file_attributes[:file_id])
         # avoid that public files from other contexts can be created
-        file.nil? || file.hidden || file.read_only || file.context_id != exercise_id.to_i
+        file.nil? || file.hidden || file.read_only || file.context_id != exercise.id
       end
     else
       []

@@ -7,7 +7,8 @@ module SubmissionParameters
     submission_params = params[:submission].present? ? params[:submission].permit(:cause, :exercise_id, files_attributes: file_attributes) : {}
     submission_params = merge_user(submission_params)
     files_attributes = submission_params[:files_attributes]
-    submission_params[:files_attributes] = reject_illegal_file_attributes(submission_params[:exercise_id].to_i, files_attributes)
+    exercise = Exercise.find_by(id: submission_params[:exercise_id])
+    submission_params[:files_attributes] = reject_illegal_file_attributes(exercise, files_attributes)
     submission_params
   end
   private :submission_params
