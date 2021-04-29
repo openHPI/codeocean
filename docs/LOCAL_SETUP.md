@@ -39,7 +39,7 @@ rails s -p 3100
 
 # using another ssh session
 cd /home/vagrant/codeocean
-rails s -p 3000 -b 0.0.0.0
+rails s -p 7000 -b 0.0.0.0
 ```
 
 The default credentials for the internal users are the following: 
@@ -216,7 +216,7 @@ source "$HOME/.profile"
 ### Start CodeOcean
 
 - Start CodeOcean by executing `rails s` in the project root
-- Open `localhost:3000` in your browser
+- Open `localhost:7000` in your browser
 - You can login as administrator with the user `admin@example.org` and the password `admin`
 
 ## Native setup (for macOS)

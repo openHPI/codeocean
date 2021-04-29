@@ -17,7 +17,7 @@ Local setup
         host: tcp://localhost:2375
         ws_host: ws://localhost:2375
 
-5. Run the CodeOcean server with `rails s -p 3333`
+5. Run the CodeOcean server with `rails s -p 7000`
 
 6. Login with admin@example.org (pw: admin) and create a new execution environment picking the newly created Docker image from the dropdown. Set the initial command to:
 
