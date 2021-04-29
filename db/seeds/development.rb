@@ -3,6 +3,8 @@
 # consumers
 FactoryBot.create(:consumer)
 FactoryBot.create(:consumer, name: 'openSAP')
+# The following consumer is preconfigured in Xikolo for local development
+FactoryBot.create(:consumer, name: 'Xikolo Development', oauth_key: 'consumer', oauth_secret: 'secret')
 
 # users
 # Set default_url_options explicitly, required for rake task
