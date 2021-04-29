@@ -35,7 +35,7 @@ You can [configure vagrant as remote interpreter in RubyMine](https://www.jetbra
 ```bash
 vagrant ssh
 cd /home/vagrant/dockercontainerpool
-rails s -p 3100
+rails s -p 7100
 
 # using another ssh session
 cd /home/vagrant/codeocean

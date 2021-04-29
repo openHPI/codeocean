@@ -3,7 +3,7 @@ default: &default
   connection_timeout: 3
   pool:
     active: false
-    location: http://localhost:3000
+    location: http://localhost:7100
   ports: !ruby/range 4500..4600
 
 development:
@@ -13,7 +13,7 @@ development:
   ws_client_protocol: 'ws:' #set the websocket protocol to be used by the client to connect to the rails server (ws on development, wss on production)
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   pool:
-    location: http://localhost:3000
+    location: http://localhost:7100
     active: true
     refill:
       async: false
