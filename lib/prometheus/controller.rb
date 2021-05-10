@@ -10,7 +10,7 @@ module Prometheus
 
     class << self
       def initialize_metrics
-        return unless CodeOcean::Config.new(:code_ocean).read[:prometheus_exporter][:enabled] && !defined?(::Rails::Console)
+        return unless CodeOcean::Config.new(:code_ocean).read[:prometheus_exporter][:enabled] && defined?(::Rails::Console).blank?
 
         register_metrics
         Rails.application.executor.wrap do
