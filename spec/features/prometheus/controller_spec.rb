@@ -3,6 +3,10 @@
 require 'rails_helper'
 
 describe Prometheus::Controller do
+
+  let(:codeocean_config) { instance_double(CodeOcean::Config) }
+  let(:prometheus_config) { {prometheus_exporter: {enabled: true}} }
+
   def stub_metrics
     %i[increment decrement observe].each do |method|
       %i[@instance_count @rfc_count @rfc_commented_count].each do |metric|
@@ -12,6 +16,9 @@ describe Prometheus::Controller do
   end
 
   before do
+    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+    allow(codeocean_config).to receive(:read).and_return(prometheus_config)
+
     ApplicationRecord.include Prometheus::Record
     described_class.initialize_metrics
     stub_metrics
@@ -84,7 +91,7 @@ describe Prometheus::Controller do
     context 'when commenting an rfc' do
       it 'updates comment metric when commenting an rfc' do
         FactoryBot.create(:rfc_with_comment)
-        expect(described_class.instance_variable_get(:@rfc_commented_count)).to have_received(:increment)
+        expect(described_class.instance_variable_get(:@rfc_commented_count)).to have_received(:increment).once
       end
 
       it 'does not update comment metric when commenting an rfc that already has a comment' do
