@@ -17,7 +17,7 @@ end
 
 def expect_content_type(content_type)
   it "responds with content type '#{content_type}'" do
-    expect([response.content_type, response.headers['Content-Type']]).to include(content_type)
+    expect([response.media_type, response.headers['Content-Type']]).to include(content_type)
   end
 end
 

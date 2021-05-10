@@ -78,7 +78,8 @@ describe FileTree do
     let(:files) { FactoryBot.build_list(:file, 10, context: nil, path: 'foo/bar/baz') }
 
     it 'creates a root node' do
-      expect_any_instance_of(Tree::TreeNode).to receive(:initialize).with(file_tree.send(:root_label))
+      # Instead of checking #initialize on the parent, we validate #set_as_root!
+      expect(file_tree).to receive(:set_as_root!).and_call_original
       file_tree.send(:initialize)
     end
 

@@ -54,7 +54,7 @@ describe SubmissionsController do
         expect_status(200)
 
         it 'sets the correct filename' do
-          expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file.name_with_extension}\"")
+          expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
         end
       end
     end
@@ -72,7 +72,7 @@ describe SubmissionsController do
         expect_status(200)
 
         it 'sets the correct filename' do
-          expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file.name_with_extension}\"")
+          expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
         end
       end
 
@@ -85,7 +85,7 @@ describe SubmissionsController do
         expect_status(200)
 
         it 'sets the correct filename' do
-          expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file.name_with_extension}\"")
+          expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
         end
       end
     end
