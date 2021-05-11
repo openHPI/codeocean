@@ -1,11 +1,30 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe 'Editor', js: true do
-  before { skip 'feature specs fail randomly as of Nov 2019 on Travis' }
   let(:exercise) { FactoryBot.create(:audio_video, description: Forgery(:lorem_ipsum).sentence) }
+  let(:scoring_response) do
+    [{
+      status: 'ok',
+      stdout: '',
+      stderr: '',
+      waiting_for_container_time: 0,
+      container_execution_time: 0,
+      file_role: 'teacher_defined_test',
+      count: 1,
+      failed: 0,
+      error_messages: [],
+      passed: 1,
+      score: 1.0,
+      filename: 'index.html_spec.rb',
+      message: 'Well done.',
+      weight: 2.0
+    }]
+  end
   let(:user) { FactoryBot.create(:teacher) }
 
-  before(:each) do
+  before do
     visit(sign_in_path)
     fill_in('email', with: user.email)
     fill_in('password', with: FactoryBot.attributes_for(:teacher)[:password])
@@ -35,7 +54,7 @@ describe 'Editor', js: true do
   end
 
   context 'when selecting a file' do
-    before(:each) do
+    before do
       within('#files') { click_link(file.name_with_extension) }
     end
 
@@ -74,9 +93,9 @@ describe 'Editor', js: true do
     end
   end
 
-  it 'does not contains a button for submitting the exercise' do
+  it 'contains a button for submitting the exercise' do
+    allow_any_instance_of(SubmissionsController).to receive(:score_submission).and_return(scoring_response)
     click_button(I18n.t('exercises.editor.score'))
-    click_button('toggle-sidebar-output-collapsed')
     expect(page).not_to have_css('#submit_outdated')
     expect(page).to have_css('#submit')
   end

@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe 'Authorization' do
-  before { skip 'feature specs fail randomly as of Nov 2019 on Travis' }
   context 'as an admin' do
     let(:user) { FactoryBot.create(:admin) }
     before(:each) { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }

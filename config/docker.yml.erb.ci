@@ -56,3 +56,4 @@ test:
   <<: *default
   host: tcp://127.0.0.1:2376
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
+  ws_client_protocol: 'ws:' #set the websocket protocol to be used by the client to connect to the rails server (ws on development, wss on production)

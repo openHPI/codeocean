@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe 'Authentication' do
-  before { skip 'feature specs fail randomly as of Nov 2019 on Travis' }
   let(:user) { FactoryBot.create(:admin) }
   let(:password) { FactoryBot.attributes_for(:admin)[:password] }
 

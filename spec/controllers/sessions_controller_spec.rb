@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe SessionsController do
@@ -132,14 +134,12 @@ describe SessionsController do
       end
 
       it 'redirects to recommended exercise if requested token of proxy exercise' do
-        skip 'test is currently oscillating'
         FactoryBot.create(:proxy_exercise, exercises: [exercise])
         post :create_through_lti, params: { custom_locale: locale, custom_token: ProxyExercise.first.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id }
         expect(controller).to redirect_to(implement_exercise_path(exercise.id))
       end
 
       it 'recommends only exercises who are 1 degree more complicated than what user has seen' do
-        skip 'test is currently oscillating'
         # dummy user has no exercises finished, therefore his highest difficulty is 0
         FactoryBot.create(:proxy_exercise, exercises: [exercise, exercise2])
         exercise.expected_difficulty = 3
