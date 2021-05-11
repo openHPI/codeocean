@@ -500,8 +500,7 @@ class ExercisesController < ApplicationController
   def submit
     @submission = Submission.create(submission_params)
     score_submission(@submission)
-    current_user = ExternalUser.find(@submission.user_id)
-    if !current_user.nil? && lti_outcome_service?(@submission.exercise_id, current_user.id)
+    if @submission.user.external_user? && lti_outcome_service?(@submission.exercise_id, @submission.user.id)
       transmit_lti_score
     else
       redirect_after_submit

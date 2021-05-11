@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CodeOcean::FilesController do
@@ -48,6 +50,8 @@ describe CodeOcean::FilesController do
       expect { perform_request.call }.to change(CodeOcean::File, :count).by(-1)
     end
 
-    expect_redirect(:exercise)
+    it 'redirects to exercise path' do
+      expect(controller).to redirect_to(exercise)
+    end
   end
 end

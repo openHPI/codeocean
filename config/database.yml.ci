@@ -5,3 +5,4 @@ test:
   host: localhost
   username: postgres
   password: postgres
+  reaping_frequency: 0

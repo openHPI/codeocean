@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe ExercisesController do
@@ -230,8 +232,8 @@ describe ExercisesController do
   describe 'POST #submit' do
     let(:output) { {} }
     let(:perform_request) { post :submit, format: :json, params: { id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id} } }
-    let!(:external_user) { FactoryBot.create(:external_user) }
-    let!(:lti_parameter) { FactoryBot.create(:lti_parameter, external_user: external_user, exercise: exercise) }
+    let(:user) { FactoryBot.create(:external_user) }
+    let!(:lti_parameter) { FactoryBot.create(:lti_parameter, external_user: user, exercise: exercise) }
 
     before(:each) do
       allow_any_instance_of(Submission).to receive(:normalized_score).and_return(1)
