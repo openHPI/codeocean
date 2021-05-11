@@ -15,6 +15,10 @@ RSpec.configure do |config|
   end
 
   config.after(:suite) do
+    examples = RSpec.world.filtered_examples.values.flatten
+    has_docker_tests = examples.any? { |example| example.metadata[:docker] }
+    next unless has_docker_tests
+
     FileUtils.rm_rf(Rails.root.join('tmp', 'files', 'test'))
     `which docker && test -n "$(docker ps --all --quiet)" && docker rm --force $(docker ps --all --quiet)`
   end
