@@ -13,6 +13,11 @@ module CodeOcean
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    # In Rails 5.2.5, the CSRF token format is accidentally changed to urlsafe-encoded.
+    # If you upgrade apps from 5.2.5, set the config `urlsafe_csrf_tokens = true`.
+    # ToDo: Remove after upgrade to Rails 6.1
+    Rails.application.config.action_controller.urlsafe_csrf_tokens = true
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
