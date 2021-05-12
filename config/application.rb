@@ -27,11 +27,6 @@ module CodeOcean
     # config.i18n.default_locale = :de
     config.i18n.available_locales = [:de, :en]
 
-    # Add inflection for Zeitwerk
-    ActiveSupport::Inflector.inflections(:en) do |inflect|
-      inflect.acronym 'IO'
-    end
-
     extra_paths = %W[
       #{config.root}/lib
     ]
