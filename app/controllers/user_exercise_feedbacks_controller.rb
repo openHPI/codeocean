@@ -35,7 +35,7 @@ class UserExerciseFeedbacksController < ApplicationController
 
     if @exercise
       @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
-      @uef.update_attributes(uef_params)
+      @uef.update(uef_params)
       authorize!
       if validate_inputs(uef_params)
         path =
