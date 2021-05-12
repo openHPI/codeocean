@@ -39,7 +39,6 @@ gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.
 gem 'telegraf'
 gem 'tubesock', git: 'https://github.com/gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
 gem 'turbolinks'
-gem 'uglifier'
 gem 'webpacker'
 gem 'whenever', require: false
 
