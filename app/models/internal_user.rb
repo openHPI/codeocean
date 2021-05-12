@@ -2,7 +2,7 @@ class InternalUser < User
 
   authenticates_with_sorcery!
 
-  validates :email, presence: true, uniqueness: true, case_sensitive: false
+  validates :email, presence: true, uniqueness: true
   validates :password, confirmation: true, if: :password_void?, on: :update, presence: true
   validates :role, inclusion: {in: ROLES}
 

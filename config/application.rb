@@ -11,17 +11,12 @@ require 'telegraf/rails'
 module CodeOcean
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.0
+    config.load_defaults 6.1
 
-    # In Rails 5.2.5, the CSRF token format is accidentally changed to urlsafe-encoded.
-    # If you upgrade apps from 5.2.5, set the config `urlsafe_csrf_tokens = true`.
-    # ToDo: Remove after upgrade to Rails 6.1
-    Rails.application.config.action_controller.urlsafe_csrf_tokens = true
-
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration can go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded after loading
-    # the framework and any gems in your application.
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
