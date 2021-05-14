@@ -24,7 +24,8 @@ describe FileParameters do
       end
 
       it 'new file' do
-        new_file = FactoryBot.create(:file, context: hello_world)
+        submission = FactoryBot.create(:submission, exercise: hello_world, id: 1337)
+        new_file = FactoryBot.create(:file, context: submission)
         expect(file_accepted?(new_file)).to be true
       end
     end
