@@ -198,7 +198,7 @@ var CodeOceanEditor = {
     },
 
     hideSpinner: function () {
-        $('button i.fa').show();
+        $('button i.fa, button i.far, button i.fas').show();
         $('button i.fa-spin').hide();
     },
 
@@ -212,7 +212,7 @@ var CodeOceanEditor = {
 
     resizeParentOfAceEditor: function (element) {
         // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
-        var windowHeight = window.innerHeight - $(element).offset().top - $('#autosave-label').height() - 5;
+        var windowHeight = window.innerHeight - $(element).offset().top - $('#statusbar').height() - 5;
         $(element).parent().height(windowHeight);
     },
 
@@ -245,7 +245,7 @@ var CodeOceanEditor = {
             document.insertLines(0, content.text().split(/\n/));
             // remove last (empty) that is there by default line
             document.removeLines(document.getLength() - 1, document.getLength() - 1);
-            editor.setReadOnly($(element).data('read-only') !== undefined);
+            editor.setReadOnly($(element).parent().data('read-only') !== undefined);
             if (editor.getReadOnly()) {
                 editor.setHighlightActiveLine(false);
                 editor.setHighlightGutterLine(false);
@@ -341,11 +341,9 @@ var CodeOceanEditor = {
 
     initializeFileTreeButtons: function () {
         $('#create-file').on('click', this.showFileDialog.bind(this));
-        $('#create-file-collapsed').on('click', this.showFileDialog.bind(this));
         $('#destroy-file').on('click', this.confirmDestroy.bind(this));
         $('#destroy-file-collapsed').on('click', this.confirmDestroy.bind(this));
         $('#download').on('click', this.downloadCode.bind(this));
-        $('#download-collapsed').on('click', this.downloadCode.bind(this));
         $('#request-for-comments').on('click', this.requestComments.bind(this));
     },
 
@@ -580,7 +578,7 @@ var CodeOceanEditor = {
 
     toggleButtonStates: function () {
         $('#destroy-file').prop('disabled', this.active_frame.data('role') !== 'user_defined_file');
-        $('#start-over-active-file').prop('disabled', this.active_frame.data('role') === 'user_defined_file');
+        $('#start-over-active-file').prop('disabled', this.active_frame.data('role') === 'user_defined_file' || this.active_frame.data('read-only') !== undefined);
         $('#dummy').toggle(!this.fileActionsAvailable());
         $('#render').toggle(this.isActiveFileRenderable());
         $('#run').toggle(this.isActiveFileRunnable() && !this.running);
@@ -654,7 +652,7 @@ var CodeOceanEditor = {
     },
 
     showSpinner: function (initiator) {
-        $(initiator).find('i.fa').hide();
+        $(initiator).find('i.fa, i.far, i.fas').hide();
         $(initiator).find('i.fa-spin').show();
     },
 

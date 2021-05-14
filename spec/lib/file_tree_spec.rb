@@ -81,16 +81,16 @@ describe FileTree do
 
     it 'creates a root node' do
       # Instead of checking #initialize on the parent, we validate #set_as_root!
-      expect(file_tree).to receive(:set_as_root!).and_call_original
+      expect(Tree::TreeNode).to receive(:new).and_call_original.at_least(:once)
       file_tree.send(:initialize)
     end
 
     it 'creates tree nodes for every file' do
-      expect(file_tree.select(&:content).map(&:content)).to eq(files)
+      expect(file_tree.instance_variable_get(:@root).select(&:content).map(&:content)).to eq(files)
     end
 
     it 'creates tree nodes for intermediary path segments' do
-      expect(file_tree.reject(&:content).reject(&:is_root?).map(&:name)).to eq(files.first.path.split('/'))
+      expect(file_tree.instance_variable_get(:@root).reject(&:content).reject(&:is_root?).map(&:name)).to eq(files.first.path.split('/'))
     end
   end
 
@@ -179,8 +179,22 @@ describe FileTree do
       expect(js_tree).to be_a(String)
     end
 
-    it 'produces the required JSON format' do
-      expect(JSON.parse(js_tree).deep_symbolize_keys).to eq(core: {data: file_tree.send(:map_to_js_tree, file_tree)})
+    context 'without any file' do
+      it 'produces the required JSON format' do
+        expect(JSON.parse(js_tree).deep_symbolize_keys).to eq(core: {data: []})
+      end
+    end
+
+    context 'with files' do
+      let(:files) { FactoryBot.build_list(:file, 10, context: nil, path: 'foo/bar/baz') }
+      let(:file_tree) { described_class.new(files) }
+      let(:js_tree) { file_tree.to_js_tree }
+
+      it 'produces the required JSON format with a file' do
+        # We ignore the root node and only use the children here
+        child_tree = file_tree.send(:map_to_js_tree, file_tree.instance_variable_get(:@root).children.first)
+        expect(JSON.parse(js_tree).deep_symbolize_keys).to eq(core: {data: [child_tree]})
+      end
     end
   end
 end

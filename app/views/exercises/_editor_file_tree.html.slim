@@ -1,43 +1,41 @@
 div id='sidebar-collapsed' class=(@exercise.hide_file_tree && @tips.blank? ? '' : 'd-none')
-  = render('editor_button', classes: 'btn-block btn-primary btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus-square', id: 'sidebar-collapse-collapsed', label:'', title:t('exercises.editor.expand_action_sidebar'))
-
-  - if @exercise.allow_file_creation and not @exercise.hide_file_tree?
-    = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-cause' => 'file', :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus', id: 'create-file-collapsed', label:'', title: t('exercises.editor.create_file'))
+  = render('editor_button', classes: 'btn-block btn-outline-dark btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus-square', id: 'sidebar-collapse-collapsed', label:'', title:t('exercises.editor.expand_action_sidebar'))
 
   - unless @embed_options[:disable_hints] or @tips.blank?
     = render('editor_button', classes: 'btn-block btn-secondary btn mb-4', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-lightbulb', id: 'tips-collapsed', label:'', title: t('exercises.form.tips'))
 
-  - unless @embed_options[:disable_download]
-    = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-download', id: 'download-collapsed', label:'', title: t('exercises.editor.download'))
-  = render('editor_button', classes: "btn-block btn-outline-warning btn enforce-top-margin #{@exercise.hide_file_tree || files.count < 2 && !@exercise.allow_file_creation ? 'd-none' : ''}", data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over_active_file'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-history', id: 'start-over-active-file-collapsed', label: '', title: t('exercises.editor.start_over_active_file'))
   //- if !@course_token.blank?
     = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-search', id: 'sidebar-search-collapsed', label: '', title: t('search.search_in_forum'))
-  = render('editor_button', classes: 'btn-block btn-outline-danger btn enforce-top-margin', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise), :'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-history', id: 'start-over-collapsed', label:'', title: t('exercises.editor.start_over'))
 
 div.h-100.col-sm-12.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_file_tree && @tips.blank? ? 'd-none' : '')
   .position-absolute.d-flex.mb-1.w-100 style="overflow: auto; left: 0; top: 0; height: 100%;"
     .w-100
-      = render('editor_button', classes: 'btn-block btn-primary btn', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
+      = render('editor_button', classes: 'btn-block btn-outline-dark btn', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
 
-      div class=(@exercise.hide_file_tree ? 'd-none' : '')
-        hr
+      - unless @exercise.hide_file_tree
+        div
+          hr
 
-        #files data-entries=FileTree.new(files).to_js_tree
+          .card.border-secondary
+            .card-header.d-flex.justify-content-between.align-items-center.px-0.py-1
+              .px-2 = I18n.t('exercises.editor_file_tree.file_root')
+              div
+                - if @exercise.allow_file_creation
+                  = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-toggle' => 'tooltip', :'data-cause' => 'file'}, icon: 'fa fa-plus', id: 'create-file', label: '', title: t('exercises.editor.create_file'))
+                  = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-toggle' => 'tooltip', :'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy') }, icon: 'far fa-trash-alt', id: 'destroy-file', label: '', title: t('exercises.editor.destroy_file'))
+                - unless @embed_options[:disable_download]
+                  = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-toggle' => 'tooltip'}, icon: 'fas fa-arrow-down', id: 'download', label:'', title: t('exercises.editor.download'))
+                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-toggle' => 'tooltip', :'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-history', id: 'start-over', label: '', title: t('exercises.editor.start_over'))
 
-        hr
+            .card-body.pt-0.pr-0.pl-1.pb-1
 
-      - if @exercise.allow_file_creation and not @exercise.hide_file_tree?
-        = render('editor_button', classes: 'btn-block btn-primary btn', data: {:'data-cause' => 'file'}, icon: 'fa fa-plus', id: 'create-file', label: t('exercises.editor.create_file'))
-        = render('editor_button', classes: 'btn-block btn-warning btn', data: {:'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy')}, icon: 'fa fa-times', id: 'destroy-file', label: t('exercises.editor.destroy_file'))
+              #files data-entries=FileTree.new(files).to_js_tree
+
+          hr
 
       - unless @embed_options[:disable_hints] or @tips.blank?
         = render(partial: 'tips_content')
         .mb-4
-
-      - unless @embed_options[:disable_download]
-        = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', icon: 'fa fa-download', id: 'download', label: t('exercises.editor.download'))
-      = render('editor_button', classes: "btn-block btn-outline-warning btn #{@exercise.hide_file_tree || files.count < 2 && !@exercise.allow_file_creation ? 'd-none' : ''}", data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over_active_file'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-history', id: 'start-over-active-file', label: t('exercises.editor.start_over_active_file'))
-      = render('editor_button', classes: 'btn-block btn-outline-danger btn', data: {:'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-history', id: 'start-over', label: t('exercises.editor.start_over'))
 
       //- if !@course_token.blank?
           .input-group.enforce-top-margin

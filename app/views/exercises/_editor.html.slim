@@ -24,13 +24,29 @@
       = render('editor_button', data: {:'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s')) unless @embed_options[:disable_score]
       - unless hide_rfc_button
         = render('editor_button', icon: 'fa fa-comment', id: 'requestComments', label: t('exercises.editor.requestComments'), title: t('exercises.editor.requestCommentsTooltip'))
+
     - @files.each do |file|
       - file.read_only = true if @embed_options[:read_only]
       = render('editor_frame', exercise: exercise, file: file)
-    #autosave-label
-      = t('exercises.editor.lastsaved')
-      span
-      button style="display:none" id="autosave"
+
+    #statusbar.d-flex.justify-content-between
+      div
+        - if !@embed_options[:disable_download] && @exercise.hide_file_tree?
+          button#download.p-0.border-0.btn-link.visible.bg-white
+            i.fas.fa-arrow-down
+            = t('exercises.editor.download')
+
+      div
+        = t('exercises.editor.lastsaved')
+        span
+        button style="display:none" id="autosave"
+
+        = " | "
+
+        button#start-over-active-file.p-0.border-0.btn-link.bg-white data-message-confirm=t('exercises.editor.confirm_start_over_active_file') data-url=reload_exercise_path(@exercise)
+          i.fa.fa-history
+          = t('exercises.editor.start_over_active_file')
+
   - unless @embed_options[:disable_run] && @embed_options[:disable_score]
     div id='output_sidebar' class='output-col-collapsed' = render('exercises/editor_output', external_user_id: external_user_id, consumer_id: consumer_id )
 
