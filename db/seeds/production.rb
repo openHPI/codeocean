@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'highline/import'
 
 # consumers
@@ -7,7 +9,7 @@ FactoryBot.create(:consumer)
 email = ask('Enter admin email: ')
 
 passwords = ['password', 'password confirmation'].map do |attribute|
-  ask("Enter admin #{attribute}: ") { |question| question.echo = false }
+  ask("Enter admin #{attribute}: ") {|question| question.echo = false }
 end
 
 if passwords.uniq.length == 1
@@ -27,7 +29,7 @@ FileType.create_factories
 
 # change all resources' author
 [ExecutionEnvironment, Exercise, FileType].each do |model|
-  model.update_all(user_id: InternalUser.first.id)
+  model.update(user_id: InternalUser.first.id)
 end
 
 # delete temporary users

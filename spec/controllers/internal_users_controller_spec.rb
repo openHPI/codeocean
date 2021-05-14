@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe InternalUsersController do
@@ -7,28 +9,28 @@ describe InternalUsersController do
   describe 'GET #activate' do
     let(:user) { InternalUser.create(FactoryBot.attributes_for(:teacher)) }
 
-    before(:each) do
+    before do
       user.send(:setup_activation)
       user.save(validate: false)
     end
 
     context 'without a valid activation token' do
-      before(:each) { get :activate, params: { id: user.id } }
+      before { get :activate, params: {id: user.id} }
 
       expect_redirect(:root)
     end
 
     context 'with an already activated user' do
-      before(:each) do
+      before do
         user.activate!
-        get :activate, params: { id: user.id, token: user.activation_token }
+        get :activate, params: {id: user.id, token: user.activation_token}
       end
 
       expect_redirect(:root)
     end
 
     context 'with valid preconditions' do
-      before(:each) { get :activate, params: { id: user.id, token: user.activation_token } }
+      before { get :activate, params: {id: user.id, token: user.activation_token} }
 
       expect_assigns(user: InternalUser)
       expect_status(200)
@@ -40,29 +42,32 @@ describe InternalUsersController do
     let(:user) { InternalUser.create(FactoryBot.build(:teacher).attributes) }
     let(:password) { SecureRandom.hex }
 
-    before(:each) do
+    before do
       user.send(:setup_activation)
       user.save(validate: false)
+    end
+
+    it 'adds an activation token' do
       expect(user.activation_token).to be_present
     end
 
     context 'without a valid activation token' do
-      before(:each) { put :activate, params: { id: user.id } }
+      before { put :activate, params: {id: user.id} }
 
       expect_redirect(:root)
     end
 
     context 'with an already activated user' do
-      before(:each) do
+      before do
         user.activate!
-        put :activate, params: { id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: password} }
+        put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: password}}
       end
 
       expect_redirect(:root)
     end
 
     context 'without a password' do
-      before(:each) { put :activate, params: { id: user.id, internal_user: {activation_token: user.activation_token} } }
+      before { put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token}} }
 
       expect_assigns(user: InternalUser)
 
@@ -74,7 +79,7 @@ describe InternalUsersController do
     end
 
     context 'without a valid password confirmation' do
-      before(:each) { put :activate, params: { id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: ''} } }
+      before { put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: ''}} }
 
       expect_assigns(user: InternalUser)
 
@@ -86,7 +91,7 @@ describe InternalUsersController do
     end
 
     context 'with valid preconditions' do
-      before(:each) { put :activate, params: { id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: password} } }
+      before { put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: password}} }
 
       expect_assigns(user: InternalUser)
 
@@ -100,11 +105,12 @@ describe InternalUsersController do
   end
 
   describe 'POST #create' do
-    before(:each) { allow(controller).to receive(:current_user).and_return(user) }
+    before { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      let(:perform_request) { proc { post :create, params: { internal_user: FactoryBot.build(:teacher).attributes } } }
-      before(:each) { perform_request.call }
+      let(:perform_request) { proc { post :create, params: {internal_user: FactoryBot.build(:teacher).attributes} } }
+
+      before { perform_request.call }
 
       expect_assigns(user: InternalUser)
 
@@ -129,7 +135,7 @@ describe InternalUsersController do
     end
 
     context 'with an invalid internal user' do
-      before(:each) { post :create, params: { internal_user: {} } }
+      before { post :create, params: {internal_user: {}} }
 
       expect_assigns(user: InternalUser)
       expect_status(200)
@@ -138,24 +144,24 @@ describe InternalUsersController do
   end
 
   describe 'DELETE #destroy' do
-    before(:each) do
+    before do
       allow(controller).to receive(:current_user).and_return(user)
-      delete :destroy, params: { id: users.first.id }
+      delete :destroy, params: {id: users.first.id}
     end
 
     expect_assigns(user: InternalUser)
 
     it 'destroys the internal user' do
-      expect { delete :destroy, params: { id: InternalUser.last.id } }.to change(InternalUser, :count).by(-1)
+      expect { delete :destroy, params: {id: InternalUser.last.id} }.to change(InternalUser, :count).by(-1)
     end
 
     expect_redirect(:internal_users)
   end
 
   describe 'GET #edit' do
-    before(:each) do
+    before do
       allow(controller).to receive(:current_user).and_return(user)
-      get :edit, params: { id: users.first.id }
+      get :edit, params: {id: users.first.id}
     end
 
     expect_assigns(user: InternalUser)
@@ -165,10 +171,10 @@ describe InternalUsersController do
 
   describe 'GET #forgot_password' do
     context 'when no user is logged in' do
-      before(:each) do
+      before do
         allow(controller).to receive(:set_sentry_context).and_return(nil)
 
-        expect(controller).to receive(:current_user).and_return(nil)
+        allow(controller).to receive(:current_user).and_return(nil)
         get :forgot_password
       end
 
@@ -177,10 +183,10 @@ describe InternalUsersController do
     end
 
     context 'when a user is already logged in' do
-      before(:each) do
+      before do
         allow(controller).to receive(:set_sentry_context).and_return(nil)
 
-        expect(controller).to receive(:current_user).and_return(user)
+        allow(controller).to receive(:current_user).and_return(user)
         get :forgot_password
       end
 
@@ -191,11 +197,12 @@ describe InternalUsersController do
 
   describe 'POST #forgot_password' do
     context 'with an email address' do
-      let(:perform_request) { proc { post :forgot_password, params: { email: user.email } } }
-      before(:each) { perform_request.call }
+      let(:perform_request) { proc { post :forgot_password, params: {email: user.email} } }
+
+      before { perform_request.call }
 
       it 'delivers instructions to reset the password' do
-        expect(InternalUser).to receive(:where).and_return([user])
+        allow(InternalUser).to receive(:where).and_return([user])
         expect(user).to receive(:deliver_reset_password_instructions!)
         perform_request.call
       end
@@ -204,7 +211,7 @@ describe InternalUsersController do
     end
 
     context 'without an email address' do
-      before(:each) { post :forgot_password }
+      before { post :forgot_password }
 
       expect_status(200)
       expect_template(:forgot_password)
@@ -212,7 +219,7 @@ describe InternalUsersController do
   end
 
   describe 'GET #index' do
-    before(:each) do
+    before do
       allow(controller).to receive(:current_user).and_return(user)
       get :index
     end
@@ -223,7 +230,7 @@ describe InternalUsersController do
   end
 
   describe 'GET #new' do
-    before(:each) do
+    before do
       allow(controller).to receive(:current_user).and_return(user)
       get :new
     end
@@ -237,15 +244,15 @@ describe InternalUsersController do
     let(:user) { users.first }
 
     context 'without a valid password reset token' do
-      before(:each) { get :reset_password, params: { id: user.id } }
+      before { get :reset_password, params: {id: user.id} }
 
       expect_redirect(:root)
     end
 
     context 'with a valid password reset token' do
-      before(:each) do
+      before do
         user.deliver_reset_password_instructions!
-        get :reset_password, params: { id: user.id, token: user.reset_password_token }
+        get :reset_password, params: {id: user.id, token: user.reset_password_token}
       end
 
       expect_assigns(user: :user)
@@ -256,10 +263,11 @@ describe InternalUsersController do
 
   describe 'PUT #reset_password' do
     let(:user) { users.first }
-    before(:each) { user.deliver_reset_password_instructions! }
+
+    before { user.deliver_reset_password_instructions! }
 
     context 'without a valid password reset token' do
-      before(:each) { put :reset_password, params: { id: user.id } }
+      before { put :reset_password, params: {id: user.id} }
 
       expect_redirect(:root)
     end
@@ -268,8 +276,9 @@ describe InternalUsersController do
       let(:password) { 'foo' }
 
       context 'with a matching password confirmation' do
-        let(:perform_request) { proc { put :reset_password, params: { internal_user: {password: password, password_confirmation: password}, id: user.id, token: user.reset_password_token } } }
-        before(:each) { perform_request.call }
+        let(:perform_request) { proc { put :reset_password, params: {internal_user: {password: password, password_confirmation: password}, id: user.id, token: user.reset_password_token} } }
+
+        before { perform_request.call }
 
         expect_assigns(user: :user)
 
@@ -281,8 +290,8 @@ describe InternalUsersController do
       end
 
       context 'without a matching password confirmation' do
-        before(:each) do
-          put :reset_password, params: { internal_user: {password: password, password_confirmation: ''}, id: users.first.id, token: user.reset_password_token }
+        before do
+          put :reset_password, params: {internal_user: {password: password, password_confirmation: ''}, id: users.first.id, token: user.reset_password_token}
         end
 
         expect_assigns(user: :user)
@@ -293,9 +302,9 @@ describe InternalUsersController do
   end
 
   describe 'GET #show' do
-    before(:each) do
+    before do
       allow(controller).to receive(:current_user).and_return(user)
-      get :show, params: { id: users.first.id }
+      get :show, params: {id: users.first.id}
     end
 
     expect_assigns(user: InternalUser)
@@ -304,17 +313,17 @@ describe InternalUsersController do
   end
 
   describe 'PUT #update' do
-    before(:each) { allow(controller).to receive(:current_user).and_return(user) }
+    before { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      before(:each) { put :update, params: { internal_user: FactoryBot.attributes_for(:teacher), id: users.first.id } }
+      before { put :update, params: {internal_user: FactoryBot.attributes_for(:teacher), id: users.first.id} }
 
       expect_assigns(user: InternalUser)
       expect_redirect { user }
     end
 
     context 'with an invalid internal user' do
-      before(:each) { put :update, params: { internal_user: {email: ''}, id: users.first.id } }
+      before { put :update, params: {internal_user: {email: ''}, id: users.first.id} }
 
       expect_assigns(user: InternalUser)
       expect_status(200)

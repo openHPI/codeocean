@@ -26,14 +26,14 @@ describe ProformaService::Import do
     let(:zip_file) { Tempfile.new('proforma_test_zip_file', encoding: 'ascii-8bit') }
     let(:exercise) do
       FactoryBot.create(:dummy,
-                        instructions: 'instruction',
-                        execution_environment: execution_environment,
-                        files: files + tests,
-                        uuid: uuid,
-                        user: user)
+        instructions: 'instruction',
+        execution_environment: execution_environment,
+        files: files + tests,
+        uuid: uuid,
+        user: user)
     end
 
-    let(:uuid) {}
+    let(:uuid) { nil }
     let(:execution_environment) { FactoryBot.build(:java) }
     let(:files) { [] }
     let(:tests) { [] }
@@ -156,7 +156,7 @@ describe ProformaService::Import do
         let(:import_user) { FactoryBot.create(:teacher) }
 
         it 'raises a proforma error' do
-          expect { imported_exercise.save! } .to raise_error Proforma::ExerciseNotOwned
+          expect { imported_exercise.save! }.to raise_error Proforma::ExerciseNotOwned
         end
       end
     end

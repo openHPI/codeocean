@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Assessor
   MAXIMUM_SCORE = 1
 
@@ -9,9 +11,9 @@ class Assessor
   end
 
   def calculate_score(test_outcome)
-    score = 0.0;
-    if(test_outcome[:passed].to_f != 0.0 && test_outcome[:count].to_f != 0.0)
-      score = (test_outcome[:passed].to_f / test_outcome[:count].to_f)
+    score = 0.0
+    if test_outcome[:passed].to_d != 0.0.to_d && test_outcome[:count].to_d != 0.0.to_d
+      score = (test_outcome[:passed].to_f / test_outcome[:count])
       # prevent negative scores
       score = [0.0, score].max
     end
@@ -23,7 +25,7 @@ class Assessor
     if options[:execution_environment].testing_framework?
       @testing_framework_adapter = Kernel.const_get(options[:execution_environment].testing_framework).new
     else
-      fail(Error, 'No testing framework adapter set!')
+      raise Error.new('No testing framework adapter set!')
     end
   end
 

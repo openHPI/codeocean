@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 SOURCE_FILENAME = 'data.txt'
 TARGET_FILENAME = 'copy.txt'
 

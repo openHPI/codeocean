@@ -1,28 +1,24 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+
+inherit_from:
+  - .rubocop/layout.yml
+  - .rubocop/lint.yml
+  - .rubocop/metrics.yml
+  - .rubocop/performance.yml
+  - .rubocop/rails.yml
+  - .rubocop/rspec.yml
+  - .rubocop/style.yml
+  - .rubocop_todo.yml
+
 AllCops:
   TargetRubyVersion: 2.7
+  TargetRailsVersion: 6.1
+  UseCache: True
   NewCops: enable
   Exclude:
-    - bin/*
-    - config/application.rb
-    - config/initializers/sorcery.rb
-    - db/seeds/**/*
-    - db/schema.rb
-    - public/uploads/**/*
-    - tmp/**/*
-    - vendor/**/*
-    - node_modules/**/*
-Layout/LineLength:
-  Enabled: false
-require:
-    - rubocop-rspec
-    - rubocop-rails
-Style/Documentation:
-  Enabled: false
-Layout/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: no_space
-RSpec/MultipleExpectations:
-  Max: 2
-Metrics/BlockLength:
-  Exclude:
-    - 'spec/**/*.rb'
-    - 'config/environments/*.rb'
+    - 'bin/*'
+    - 'db/schema.rb'
+    - 'vendor/**/*'

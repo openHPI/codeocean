@@ -26,7 +26,7 @@ class RemoteEvaluationController < ApplicationController
     if @submission.present?
       score_achieved_percentage = @submission.normalized_score
       result = try_lti
-      result.merge!({score: score_achieved_percentage * 100}) unless result[:score]
+      result[:score] = score_achieved_percentage * 100 unless result[:score]
       status = result[:status]
     end
 
@@ -38,7 +38,9 @@ class RemoteEvaluationController < ApplicationController
       lti_response = send_score(@submission)
       process_lti_response(lti_response)
     else
-      {message: "Your submission was successfully scored with #{@submission.normalized_score}%. However, your score could not be sent to the e-Learning platform. Please reopen the exercise through the e-Learning platform and try again.", status: 410}
+      {
+        message: "Your submission was successfully scored with #{@submission.normalized_score}%. However, your score could not be sent to the e-Learning platform. Please reopen the exercise through the e-Learning platform and try again.", status: 410
+      }
     end
   end
   private :try_lti
@@ -48,7 +50,8 @@ class RemoteEvaluationController < ApplicationController
       # Score has been reduced due to the passed deadline
       {message: I18n.t('exercises.submit.too_late'), status: 207, score: lti_response[:score_sent] * 100}
     elsif lti_response[:status] == 'success'
-      {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name), status: 202}
+      {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name),
+status: 202}
     else
       {message: I18n.t('exercises.submit.failure'), status: 424}
     end
@@ -77,7 +80,8 @@ class RemoteEvaluationController < ApplicationController
     submission_params[:study_group_id] = remote_evaluation_mapping.study_group_id
     submission_params[:cause] = cause
     submission_params[:user_type] = remote_evaluation_mapping.user_type
-    submission_params[:files_attributes] = reject_illegal_file_attributes(remote_evaluation_mapping.exercise, files_attributes)
+    submission_params[:files_attributes] =
+      reject_illegal_file_attributes(remote_evaluation_mapping.exercise, files_attributes)
     submission_params
   end
   private :build_submission_params

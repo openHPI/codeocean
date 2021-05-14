@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 class Controller < AnonymousController
@@ -31,11 +33,11 @@ describe Lti do
     let(:last_name) { 'Doe' }
     let(:full_name) { 'John Doe' }
     let(:provider) { double }
-    let(:provider_full) { double(:lis_person_name_full => full_name) }
+    let(:provider_full) { instance_double('IMS::LTI::ToolProvider', lis_person_name_full: full_name) }
 
     context 'when a full name is provided' do
       it 'returns the full name' do
-        expect(provider_full).to receive(:lis_person_name_full).twice.and_return(full_name)
+        allow(provider_full).to receive(:lis_person_name_full).and_return(full_name)
         expect(controller.send(:external_user_name, provider_full)).to eq(full_name)
       end
     end
@@ -43,7 +45,7 @@ describe Lti do
     context 'when only partial information is provided' do
       it 'returns the first available name' do
         expect(provider).to receive(:lis_person_name_full)
-        expect(provider).to receive(:lis_person_name_given).and_return(first_name)
+        allow(provider).to receive(:lis_person_name_given).and_return(first_name)
         expect(provider).not_to receive(:lis_person_name_family)
         expect(controller.send(:external_user_name, provider)).to eq(first_name)
       end
@@ -61,7 +63,8 @@ describe Lti do
   describe '#return_to_consumer' do
     context 'with a return URL' do
       let(:consumer_return_url) { 'http://example.org' }
-      before(:each) { expect(controller).to receive(:params).and_return(launch_presentation_return_url: consumer_return_url) }
+
+      before { allow(controller).to receive(:params).and_return(launch_presentation_return_url: consumer_return_url) }
 
       it 'redirects to the tool consumer' do
         expect(controller).to receive(:redirect_to).with(consumer_return_url)
@@ -76,9 +79,9 @@ describe Lti do
     end
 
     context 'without a return URL' do
-      before(:each) do
-        expect(controller).to receive(:params).and_return({})
-        expect(controller).to receive(:redirect_to).with(:root)
+      before do
+        allow(controller).to receive(:params).and_return({})
+        allow(controller).to receive(:redirect_to).with(:root)
       end
 
       it 'redirects to the root URL' do
@@ -101,7 +104,10 @@ describe Lti do
     let(:consumer) { FactoryBot.create(:consumer) }
     let(:score) { 0.5 }
     let(:submission) { FactoryBot.create(:submission) }
-    let!(:lti_parameter) { FactoryBot.create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.user_id, exercises_id: submission.exercise_id)}
+
+    before do
+      FactoryBot.create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.user_id, exercises_id: submission.exercise_id)
+    end
 
     context 'with an invalid score' do
       it 'raises an exception' do
@@ -112,10 +118,9 @@ describe Lti do
 
     context 'with an valid score' do
       context 'with a tool consumer' do
-
         context 'when grading is not supported' do
           it 'returns a corresponding status' do
-            expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
+            allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
             allow(submission).to receive(:normalized_score).and_return score
             expect(controller.send(:send_score, submission)[:status]).to eq('unsupported')
           end
@@ -124,13 +129,13 @@ describe Lti do
         context 'when grading is supported' do
           let(:response) { double }
 
-          before(:each) do
-            expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
-            expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score).and_return(response)
-            expect(response).to receive(:response_code).at_least(:once).and_return(200)
-            expect(response).to receive(:post_response).and_return(response)
-            expect(response).to receive(:body).at_least(:once).and_return('')
-            expect(response).to receive(:code_major).at_least(:once).and_return('success')
+          before do
+            allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
+            allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score).and_return(response)
+            allow(response).to receive(:response_code).at_least(:once).and_return(200)
+            allow(response).to receive(:post_response).and_return(response)
+            allow(response).to receive(:body).at_least(:once).and_return('')
+            allow(response).to receive(:code_major).at_least(:once).and_return('success')
           end
 
           it 'sends the score' do
@@ -170,7 +175,7 @@ describe Lti do
       controller.send(:store_lti_session_data, consumer: FactoryBot.build(:consumer), parameters: parameters)
     end
 
-    it 'it creates an LtiParameter Object' do
+    it 'creates an LtiParameter Object' do
       before_count = LtiParameter.count
       controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user))
       controller.instance_variable_set(:@exercise, FactoryBot.create(:fibonacci))

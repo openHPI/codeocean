@@ -16,20 +16,19 @@ class PagedownFormBuilder < ActionView::Helpers::FormBuilder
   private
 
   def wmd_button_bar
-    @template.content_tag :div, nil, id: "wmd-button-bar-#{base_id}"
+    @template.tag.div(nil, id: "wmd-button-bar-#{base_id}")
   end
 
   def wmd_textarea
     @template.text_area @object_name, @attribute_name,
-                       **@input_html_options,
-                       class: 'form-control wmd-input',
-                       id: "wmd-input-#{base_id}"
+      **@input_html_options,
+      class: 'form-control wmd-input',
+      id: "wmd-input-#{base_id}"
   end
 
   def wmd_preview
-    @template.content_tag :div, nil,
-                         class: 'wmd-preview',
-                         id: "wmd-preview-#{base_id}"
+    @template.tag.div(nil, class: 'wmd-preview',
+                         id: "wmd-preview-#{base_id}")
   end
 
   def show_wmd_preview?

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class JunitAdapter < TestingFrameworkAdapter
-  COUNT_REGEXP = /Tests run: (\d+)/
-  FAILURES_REGEXP = /Failures: (\d+)/
-  SUCCESS_REGEXP = /OK \((\d+) test[s]?\)/
-  ASSERTION_ERROR_REGEXP = /java\.lang\.AssertionError:?\s(.*?)\tat org.junit|org\.junit\.ComparisonFailure:\s(.*?)\tat org.junit/m
+  COUNT_REGEXP = /Tests run: (\d+)/.freeze
+  FAILURES_REGEXP = /Failures: (\d+)/.freeze
+  SUCCESS_REGEXP = /OK \((\d+) tests?\)/.freeze
+  ASSERTION_ERROR_REGEXP = /java\.lang\.AssertionError:?\s(.*?)\tat org.junit|org\.junit\.ComparisonFailure:\s(.*?)\tat org.junit/m.freeze
 
   def self.framework_name
     'JUnit'

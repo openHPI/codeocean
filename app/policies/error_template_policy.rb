@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ErrorTemplatePolicy < AdminOnlyPolicy
   def add_attribute?
     admin?

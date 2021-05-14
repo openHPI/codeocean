@@ -12,8 +12,8 @@ module SubmissionScoring
         output = execute_test_file(file, submission)
         assessment = assessor.assess(output)
         passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
-        testrun_output = passed ? nil : 'status: ' + output[:status].to_s + "\n stdout: " + output[:stdout].to_s + "\n stderr: " + output[:stderr].to_s
-        unless testrun_output.blank?
+        testrun_output = passed ? nil : "status: #{output[:status]}\n stdout: #{output[:stdout]}\n stderr: #{output[:stderr]}"
+        if testrun_output.present?
           submission.exercise.execution_environment.error_templates.each do |template|
             pattern = Regexp.new(template.signature).freeze
             StructuredError.create_from_template(template, testrun_output, submission) if pattern.match(testrun_output)
@@ -50,7 +50,8 @@ module SubmissionScoring
   private :collect_test_results
 
   def execute_test_file(file, submission)
-    DockerClient.new(execution_environment: file.context.execution_environment).execute_test_command(submission, file.name_with_extension)
+    DockerClient.new(execution_environment: file.context.execution_environment).execute_test_command(submission,
+      file.name_with_extension)
   end
 
   private :execute_test_file
@@ -69,17 +70,21 @@ module SubmissionScoring
   def score_submission(submission)
     outputs = collect_test_results(submission)
     score = 0.0
-    unless outputs.nil? || outputs.empty?
+    if outputs.present?
       outputs.each do |output|
         score += output[:score] * output[:weight] unless output.nil?
 
-        output[:stderr] += "\n\n#{t('exercises.editor.timeout', permitted_execution_time: submission.exercise.execution_environment.permitted_execution_time.to_s)}" if output.present? && output[:status] == :timeout
+        if output.present? && output[:status] == :timeout
+          output[:stderr] += "\n\n#{t('exercises.editor.timeout',
+            permitted_execution_time: submission.exercise.execution_environment.permitted_execution_time.to_s)}"
+        end
       end
     end
     submission.update(score: score)
-    if submission.normalized_score == 1.0
+    if submission.normalized_score.to_d == 1.0.to_d
       Thread.new do
-        RequestForComment.where(exercise_id: submission.exercise_id, user_id: submission.user_id, user_type: submission.user_type).each do |rfc|
+        RequestForComment.where(exercise_id: submission.exercise_id, user_id: submission.user_id,
+user_type: submission.user_type).each do |rfc|
           rfc.full_score_reached = true
           rfc.save
         end

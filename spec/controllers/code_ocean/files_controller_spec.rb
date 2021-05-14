@@ -4,14 +4,16 @@ require 'rails_helper'
 
 describe CodeOcean::FilesController do
   let(:user) { FactoryBot.create(:admin) }
-  before(:each) { allow(controller).to receive(:current_user).and_return(user) }
+
+  before { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
     let(:submission) { FactoryBot.create(:submission, user: user) }
 
     context 'with a valid file' do
-      let(:perform_request) { proc { post :create, params: { code_ocean_file: FactoryBot.build(:file, context: submission).attributes, format: :json } } }
-      before(:each) do
+      let(:perform_request) { proc { post :create, params: {code_ocean_file: FactoryBot.build(:file, context: submission).attributes, format: :json} } }
+
+      before do
         submission.exercise.update(allow_file_creation: true)
         perform_request.call
       end
@@ -27,9 +29,9 @@ describe CodeOcean::FilesController do
     end
 
     context 'with an invalid file' do
-      before(:each) do
+      before do
         submission.exercise.update(allow_file_creation: true)
-        post :create, params: { code_ocean_file: {context_id: submission.id, context_type: Submission}, format: :json }
+        post :create, params: {code_ocean_file: {context_id: submission.id, context_type: Submission}, format: :json}
       end
 
       expect_assigns(file: CodeOcean::File)
@@ -40,8 +42,9 @@ describe CodeOcean::FilesController do
 
   describe 'DELETE #destroy' do
     let(:exercise) { FactoryBot.create(:fibonacci) }
-    let(:perform_request) { proc { delete :destroy, params: { id: exercise.files.first.id } } }
-    before(:each) { perform_request.call }
+    let(:perform_request) { proc { delete :destroy, params: {id: exercise.files.first.id} } }
+
+    before { perform_request.call }
 
     expect_assigns(file: CodeOcean::File)
 

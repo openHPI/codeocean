@@ -1,0 +1,7 @@
+# performance cop settings
+
+# The policy specs should be easy to read
+#
+Performance/CollectionLiteralInLoop:
+  Exclude:
+    - 'spec/policies/**'

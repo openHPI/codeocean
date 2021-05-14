@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class ErrorTemplatesController < ApplicationController
-  before_action :set_error_template, only: [:show, :edit, :update, :destroy, :add_attribute, :remove_attribute]
+  before_action :set_error_template, only: %i[show edit update destroy add_attribute remove_attribute]
 
   def authorize!
     authorize(@error_templates || @error_template)
@@ -92,13 +94,17 @@ class ErrorTemplatesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_error_template
-      @error_template = ErrorTemplate.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def error_template_params
-      params[:error_template].permit(:name, :execution_environment_id, :signature, :description, :hint) if params[:error_template].present?
+  # Use callbacks to share common setup or constraints between actions.
+  def set_error_template
+    @error_template = ErrorTemplate.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def error_template_params
+    if params[:error_template].present?
+      params[:error_template].permit(:name, :execution_environment_id, :signature, :description,
+        :hint)
     end
+  end
 end

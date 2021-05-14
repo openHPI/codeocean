@@ -1,0 +1,39 @@
+# metric cop settings
+
+#
+# Method calls add to this metric, but they are everywhere in Ruby, so this
+# metric caused lots of what we would consider false positives.
+#
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    # Common files with e.g. block based DSLs
+    - "db/**/*"
+    - "spec/**/*"
+    - "config/**/*"
+    - "**/*.rake"
+    - "api/**/*"
+    - "Rakefile"
+    - "Guardfile"
+    - "**/*/Rakefile"
+  Max: 50
+
+Metrics/ClassLength:
+  Max: 200
+
+#
+# Often used as a proxy for complexity in a method, but causes many false
+# positives, e.g. when generating large, but simple, hashes.
+# We want to rely on CyclomaticComplexity instead.
+#
+Metrics/MethodLength:
+  Enabled: false
+
+#
+# This seems to be the cop that is closest to what we're interested in, which
+# is the kind of complexity that usually surfaces in deep nesting.
+#
+Metrics/CyclomaticComplexity:
+  Enabled: true

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class FileTypesController < ApplicationController
   include CommonBehavior
 
-  before_action :set_editor_modes, only: [:create, :edit, :new, :update]
+  before_action :set_editor_modes, only: %i[create edit new update]
   before_action :set_file_type, only: MEMBER_ACTIONS
 
   def authorize!
@@ -19,11 +21,14 @@ class FileTypesController < ApplicationController
     destroy_and_respond(object: @file_type)
   end
 
-  def edit
-  end
+  def edit; end
 
   def file_type_params
-    params[:file_type].permit(:binary, :editor_mode, :executable, :file_extension, :name, :indent_size, :renderable).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:file_type].present?
+    if params[:file_type].present?
+      params[:file_type].permit(:binary, :editor_mode, :executable, :file_extension, :name, :indent_size, :renderable).merge(
+user_id: current_user.id, user_type: current_user.class.name
+)
+    end
   end
   private :file_type_params
 
@@ -39,7 +44,7 @@ class FileTypesController < ApplicationController
 
   def set_editor_modes
     @editor_modes = Dir.glob('vendor/assets/javascripts/ace/mode-*.js').sort.map do |filename|
-      name = filename.gsub(/\w+\/|mode-|.js$/, '')
+      name = filename.gsub(%r{\w+/|mode-|.js$}, '')
       [name, "ace/mode/#{name}"]
     end
   end
@@ -51,8 +56,7 @@ class FileTypesController < ApplicationController
   end
   private :set_file_type
 
-  def show
-  end
+  def show; end
 
   def update
     update_and_respond(object: @file_type, params: file_type_params)

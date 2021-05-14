@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExerciseHelper
   include LtiHelper
 
@@ -6,7 +8,7 @@ module ExerciseHelper
   end
 
   def qa_js_tag
-    javascript_include_tag qa_url + "/assets/qa_api.js"
+    javascript_include_tag "#{qa_url}/assets/qa_api.js"
   end
 
   def qa_url
@@ -15,8 +17,6 @@ module ExerciseHelper
 
     if enabled
       config.read[:code_pilot][:url]
-    else
-      return nil
     end
   end
 end

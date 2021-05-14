@@ -1,13 +1,13 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Exercise do
-  let(:exercise) { described_class.create.tap { |exercise| exercise.update(public: nil, token: nil) } }
+  let(:exercise) { described_class.create.tap {|exercise| exercise.update(public: nil, token: nil) } }
   let(:users) { FactoryBot.create_list(:external_user, 10) }
 
   def create_submissions
-    10.times do
-      FactoryBot.create(:submission, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
-    end
+    FactoryBot.create_list(:submission, 10, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
   end
 
   it 'validates the number of main files' do
@@ -75,10 +75,10 @@ describe Exercise do
     end
 
     context 'with submissions' do
-      before(:each) { create_submissions }
+      before { create_submissions }
 
       it 'returns the average score expressed as a percentage' do
-        maximum_percentages = exercise.submissions.group_by(&:user_id).values.map { |submission| submission.sort_by(&:score).last.score / exercise.maximum_score * 100 }
+        maximum_percentages = exercise.submissions.group_by(&:user_id).values.map {|submission| submission.max_by(&:score).score / exercise.maximum_score * 100 }
         expect(exercise.average_percentage).to eq(maximum_percentages.average.round(2))
       end
     end
@@ -94,10 +94,10 @@ describe Exercise do
     end
 
     context 'with submissions' do
-      before(:each) { create_submissions }
+      before { create_submissions }
 
       it "returns the average of all users' maximum scores" do
-        maximum_scores = exercise.submissions.group_by(&:user_id).values.map { |submission| submission.sort_by(&:score).last.score }
+        maximum_scores = exercise.submissions.group_by(&:user_id).values.map {|submission| submission.max_by(&:score).score }
         expect(exercise.average_score).to be_within(0.1).of(maximum_scores.average)
       end
     end
@@ -105,7 +105,8 @@ describe Exercise do
 
   describe '#duplicate' do
     let(:exercise) { FactoryBot.create(:fibonacci) }
-    after(:each) { exercise.duplicate }
+
+    after { exercise.duplicate }
 
     it 'duplicates the exercise' do
       expect(exercise).to receive(:dup).and_call_original
@@ -117,9 +118,7 @@ describe Exercise do
     end
 
     it 'duplicates all associated files' do
-      exercise.files.each do |file|
-        expect(file).to receive(:dup).and_call_original
-      end
+      expect(exercise.files).to all(receive(:dup).and_call_original)
     end
 
     it 'returns the duplicated exercise' do

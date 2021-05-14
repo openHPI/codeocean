@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 class Controller < AnonymousController
@@ -6,28 +8,29 @@ end
 
 describe SubmissionScoring do
   let(:controller) { Controller.new }
-  before(:all) { @submission = FactoryBot.create(:submission, cause: 'submit') }
-  before(:each) { controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user)) }
+  let(:submission) { FactoryBot.create(:submission, cause: 'submit') }
+
+  before { controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user)) }
 
   describe '#collect_test_results' do
-    after(:each) { controller.send(:collect_test_results, @submission) }
+    after { controller.send(:collect_test_results, submission) }
 
     it 'executes every teacher-defined test file' do
-      @submission.collect_files.select(&:teacher_defined_assessment?).each do |file|
-        expect(controller).to receive(:execute_test_file).with(file, @submission).and_return({})
+      submission.collect_files.select(&:teacher_defined_assessment?).each do |file|
+        allow(controller).to receive(:execute_test_file).with(file, submission).and_return({})
       end
     end
   end
 
   describe '#score_submission' do
-    after(:each) { controller.score_submission(@submission) }
+    after { controller.score_submission(submission) }
 
     it 'collects the test results' do
-      expect(controller).to receive(:collect_test_results).and_return([])
+      allow(controller).to receive(:collect_test_results).and_return([])
     end
 
     it 'assigns a score to the submissions' do
-      expect(@submission).to receive(:update).with(score: anything)
+      expect(submission).to receive(:update).with(score: anything)
     end
   end
 end

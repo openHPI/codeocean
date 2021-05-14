@@ -93,7 +93,8 @@ class InternalUsersController < ApplicationController
   private :require_reset_password_token
 
   def require_token(type)
-    @user = InternalUser.send(:"load_from_#{type}_token", params[:token] || params[:internal_user].try(:[], :"#{type}_token"))
+    @user = InternalUser.send(:"load_from_#{type}_token",
+      params[:token] || params[:internal_user].try(:[], :"#{type}_token"))
     render_not_authorized unless @user
   end
   private :require_token

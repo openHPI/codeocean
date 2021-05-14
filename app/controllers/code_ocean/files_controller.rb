@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CodeOcean
   class FilesController < ApplicationController
     include CommonBehavior
@@ -25,10 +27,14 @@ module CodeOcean
         if @object.save
           yield if block_given?
           path = options[:path].try(:call) || @object
-          respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human), path: path, status: :created)
+          respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human),
+path: path, status: :created)
         else
-          filename = (@object.path || '') + '/' + (@object.name || '') + (@object.file_type.try(:file_extension) || '')
-          format.html { redirect_to(options[:path]); flash[:danger] = t('files.error.filename', name: filename) }
+          filename = "#{@object.path || ''}/#{@object.name || ''}#{@object.file_type.try(:file_extension) || ''}"
+          format.html do
+            flash[:danger] = t('files.error.filename', name: filename)
+            redirect_to(options[:path])
+          end
           format.json { render(json: @object.errors, status: :unprocessable_entity) }
         end
       end
@@ -41,7 +47,10 @@ module CodeOcean
     end
 
     def file_params
-      params[:code_ocean_file].permit(file_attributes).merge(context_type: 'Submission', role: 'user_defined_file') if params[:code_ocean_file].present?
+      if params[:code_ocean_file].present?
+        params[:code_ocean_file].permit(file_attributes).merge(context_type: 'Submission',
+role: 'user_defined_file')
+      end
     end
     private :file_params
   end

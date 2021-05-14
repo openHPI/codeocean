@@ -1,5 +1,6 @@
-class LaExercisesChannel < ApplicationCable::Channel
+# frozen_string_literal: true
 
+class LaExercisesChannel < ApplicationCable::Channel
   def subscribed
     stream_from specific_channel
   end
@@ -9,6 +10,7 @@ class LaExercisesChannel < ApplicationCable::Channel
   end
 
   private
+
   def specific_channel
     reject unless StudyGroupPolicy.new(current_user, StudyGroup.find_by(id: params[:study_group_id])).stream_la?
     "la_exercises_#{params[:exercise_id]}_channel_study_group_#{params[:study_group_id]}"

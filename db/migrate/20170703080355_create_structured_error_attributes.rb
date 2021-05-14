@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateStructuredErrorAttributes < ActiveRecord::Migration[4.2]
   def change
     create_table :structured_error_attributes do |t|

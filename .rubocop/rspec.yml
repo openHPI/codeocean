@@ -1,0 +1,42 @@
+# rspec cop settings
+
+RSpec:
+  Include:
+    - "spec/**/*_spec.rb"
+    - "spec/spec_helper.rb"
+    - "spec/rails_helper.rb"
+
+#
+# Too stupid. There are also views, templates, request specs etc.
+#
+RSpec/DescribeClass:
+  Enabled: false
+  Exclude:
+    - "spec/views/**/*_spec.rb"
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 7
+
+# Some of the small example helpers are not recognized correctly
+#
+RSpec/EmptyExampleGroup:
+  Enabled: false
+
+# The Policies need to repeat examples and descriptions and might not be performant
+#
+RSpec/RepeatedExample:
+  Exclude:
+    - 'spec/policies/**'
+
+RSpec/RepeatedDescription:
+  Exclude:
+    - 'spec/policies/**'

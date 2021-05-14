@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :coffee_script, class: 'ExecutionEnvironment' do
     created_by_teacher

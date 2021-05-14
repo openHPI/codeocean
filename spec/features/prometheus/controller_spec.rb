@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 describe Prometheus::Controller do
-
   let(:codeocean_config) { instance_double(CodeOcean::Config) }
   let(:prometheus_config) { {prometheus_exporter: {enabled: true}} }
 
   def stub_metrics
+    metrics = %i[@instance_count @rfc_count @rfc_commented_count]
     %i[increment decrement observe].each do |method|
-      %i[@instance_count @rfc_count @rfc_commented_count].each do |metric|
+      metrics.each do |metric|
         allow(described_class.instance_variable_get(metric)).to receive(method)
       end
     end

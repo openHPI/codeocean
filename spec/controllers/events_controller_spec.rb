@@ -1,14 +1,18 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe EventsController do
   let(:user) { FactoryBot.create(:admin) }
-  let(:exercise) {FactoryBot.create(:fibonacci)}
-  before(:each) { allow(controller).to receive(:current_user).and_return(user) }
+  let(:exercise) { FactoryBot.create(:fibonacci) }
+
+  before { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
     context 'with a valid event' do
-      let(:perform_request) { proc { post :create, params: { event: {category: 'foo', data: 'bar', exercise_id: exercise.id, file_id: exercise.files[0].id} } } }
-      before(:each) { perform_request.call }
+      let(:perform_request) { proc { post :create, params: {event: {category: 'foo', data: 'bar', exercise_id: exercise.id, file_id: exercise.files[0].id}} } }
+
+      before { perform_request.call }
 
       expect_assigns(event: Event)
 
@@ -20,13 +24,15 @@ describe EventsController do
     end
 
     context 'with an invalid event' do
-      before(:each) { post :create, params: { event: {exercise_id: 847482} } }
+      before { post :create, params: {event: {exercise_id: 847_482}} }
+
       expect_assigns(event: Event)
       expect_status(422)
     end
 
     context 'with no event' do
-      before(:each) { post :create }
+      before { post :create }
+
       expect_status(422)
     end
   end

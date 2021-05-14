@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationPolicy
   def admin?
     @user.admin?
@@ -43,7 +45,7 @@ class ApplicationPolicy
       return false
     end
 
-    @user.study_groups.any?{|i| study_groups.include?(i) }
+    @user.study_groups.any? {|i| study_groups.include?(i) }
   end
   private :everyone_in_study_group
 
@@ -59,7 +61,7 @@ class ApplicationPolicy
   end
 
   def require_user!
-    fail Pundit::NotAuthorizedError unless @user
+    raise Pundit::NotAuthorizedError unless @user
   end
   private :require_user!
 
@@ -71,7 +73,7 @@ class ApplicationPolicy
     end
 
     def require_user!
-      fail Pundit::NotAuthorizedError unless @user
+      raise Pundit::NotAuthorizedError unless @user
     end
     private :require_user!
   end

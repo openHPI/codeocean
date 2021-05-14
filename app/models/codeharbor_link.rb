@@ -5,9 +5,7 @@ class CodeharborLink < ApplicationRecord
   validates :check_uuid_url, presence: true
   validates :api_key, presence: true
 
-  belongs_to :user, foreign_key: :user_id, class_name: 'InternalUser'
+  belongs_to :user, class_name: 'InternalUser'
 
-  def to_s
-    id.to_s
-  end
+  delegate :to_s, to: :id
 end

@@ -3,6 +3,7 @@
 module ProformaService
   class Import < ServiceBase
     def initialize(zip:, user:)
+      super()
       @zip = zip
       @user = user
     end
@@ -39,7 +40,7 @@ module ProformaService
 
     def import_multi
       Zip::File.open(@zip.path) do |zip_file|
-        zip_files = zip_file.filter { |entry| entry.name.match?(/\.zip$/) }
+        zip_files = zip_file.filter {|entry| entry.name.match?(/\.zip$/) }
         begin
           zip_files.map! do |entry|
             store_zip_entry_in_tempfile entry
@@ -65,7 +66,7 @@ module ProformaService
         zip_file.map(&:name)
       end
 
-      filenames.select { |f| f[/\.xml$/] }.any?
+      filenames.select {|f| f[/\.xml$/] }.any?
     rescue Zip::Error
       raise Proforma::InvalidZip
     end

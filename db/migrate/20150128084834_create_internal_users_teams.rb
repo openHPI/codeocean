@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateInternalUsersTeams < ActiveRecord::Migration[4.2]
   def change
     create_table :internal_users_teams do |t|

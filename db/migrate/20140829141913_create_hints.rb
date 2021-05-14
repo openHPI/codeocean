@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateHints < ActiveRecord::Migration[4.2]
   def change
     create_table :hints do |t|

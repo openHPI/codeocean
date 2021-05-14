@@ -3,6 +3,7 @@
 module ProformaService
   class ConvertTaskToExercise < ServiceBase
     def initialize(task:, user:, exercise: nil)
+      super()
       @task = task
       @user = user
       @exercise = exercise || Exercise.new(unpublished: true)
@@ -39,11 +40,9 @@ module ProformaService
     end
 
     def task_files
-      @task_files ||= Hash[
-        @task.all_files.reject { |file| file.id == 'ms-placeholder-file' }.map do |task_file|
-          [task_file.id, codeocean_file_from_task_file(task_file)]
-        end
-      ]
+      @task_files ||= @task.all_files.reject {|file| file.id == 'ms-placeholder-file' }.map do |task_file|
+        [task_file.id, codeocean_file_from_task_file(task_file)]
+      end.to_h
     end
 
     def codeocean_file_from_task_file(file)

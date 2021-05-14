@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails/generators'
 require 'generators/testing_framework_adapter_generator'
 require 'rails_helper'
@@ -10,11 +12,11 @@ describe TestingFrameworkAdapterGenerator do
     let(:path) { Rails.root.join('lib', "#{name.underscore}_adapter.rb") }
     let(:spec_path) { Rails.root.join('spec', 'lib', "#{name.underscore}_adapter_spec.rb") }
 
-    before(:each) do
+    before do
       silenced { Rails::Generators.invoke('testing_framework_adapter', [name]) }
     end
 
-    after(:each) do
+    after do
       File.delete(path)
       File.delete(spec_path)
     end
@@ -25,7 +27,7 @@ describe TestingFrameworkAdapterGenerator do
 
     it 'builds a correct class skeleton' do
       file_content = File.new(path, 'r').read
-      expect(file_content).to start_with("class #{name}Adapter < TestingFrameworkAdapter")
+      expect(file_content&.strip).to start_with("class #{name}Adapter < TestingFrameworkAdapter")
     end
 
     it 'generates a corresponding test' do

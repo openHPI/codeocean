@@ -5,7 +5,7 @@ require 'yaml'
 
 describe 'yaml config files' do
   Find.find(__dir__, 'config') do |path|
-    next unless path =~ /.*.\.yml/
+    next unless /.*.\.yml/.match?(path)
 
     it "loads #{path} without syntax error" do
       expect { YAML.load_file(path) }.not_to raise_error

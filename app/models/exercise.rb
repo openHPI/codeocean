@@ -41,7 +41,7 @@ class Exercise < ApplicationRecord
   validates :unpublished, boolean_presence: true
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
-  validates_uniqueness_of :uuid, if: -> { uuid.present? }
+  validates :uuid, uniqueness: {if: -> { uuid.present? }}
 
   @working_time_statistics = nil
   attr_reader :working_time_statistics
@@ -49,7 +49,7 @@ class Exercise < ApplicationRecord
   MAX_GROUP_EXERCISE_FEEDBACKS = 20
 
   def average_percentage
-    if average_score && (maximum_score != 0.0) && submissions.exists?(cause: 'submit')
+    if average_score && (maximum_score.to_d != 0.0.to_d) && submissions.exists?(cause: 'submit')
       (average_score / maximum_score * 100).round(2)
     else
       0
@@ -57,10 +57,10 @@ class Exercise < ApplicationRecord
   end
 
   def finishers_percentage
-    if users.distinct.count != 0
-      (100.0 / users.distinct.count * finishers.count).round(2)
-    else
+    if users.distinct.count.zero?
       0
+    else
+      (100.0 / users.distinct.count * finishers.count).round(2)
     end
   end
 
@@ -73,11 +73,11 @@ class Exercise < ApplicationRecord
 
   def average_number_of_submissions
     user_count = internal_users.distinct.count + external_users.distinct.count
-    user_count == 0 ? 0 : submissions.count / user_count.to_f
+    user_count.zero? ? 0 : submissions.count / user_count.to_f
   end
 
   def time_maximum_score(user)
-    submissions.where(user: user).where("cause IN ('submit','assess')").where('score IS NOT NULL').order('score DESC, created_at ASC').first.created_at
+    submissions.where(user: user).where("cause IN ('submit','assess')").where.not(score: nil).order('score DESC, created_at ASC').first.created_at
   rescue StandardError
     Time.zone.at(0)
   end
@@ -107,7 +107,7 @@ class Exercise < ApplicationRecord
   end
 
   def study_group_working_time_query(exercise_id, study_group_id, additional_filter)
-    ''"
+    "
     WITH working_time_between_submissions AS (
       SELECT submissions.user_id,
          submissions.user_type,
@@ -200,7 +200,7 @@ class Exercise < ApplicationRecord
     FROM working_times_with_index
        JOIN internal_users ON user_type = 'InternalUser' AND user_id = internal_users.id
     ORDER BY index, score ASC;
-    "''
+    "
   end
 
   def get_working_times_for_study_group(study_group_id, user = nil)
@@ -217,7 +217,8 @@ class Exercise < ApplicationRecord
 
     results = ActiveRecord::Base.transaction do
       self.class.connection.execute("SET LOCAL intervalstyle = 'postgres'")
-      self.class.connection.execute(study_group_working_time_query(id, study_group_id, additional_filter)).each do |tuple|
+      self.class.connection.execute(study_group_working_time_query(id, study_group_id,
+        additional_filter)).each do |tuple|
         bucket = if maximum_score > 0.0 && tuple['score'] <= maximum_score
                    (tuple['score'] / maximum_score * max_bucket).round
                  else
@@ -230,11 +231,12 @@ class Exercise < ApplicationRecord
 
         user_progress[bucket][tuple['index']] = tuple['working_time_per_score']
         additional_user_data[bucket][tuple['index']] = {start_time: tuple['start_time'], score: tuple['score']}
-        additional_user_data[max_bucket + 1][tuple['index']] = {id: tuple['user_id'], type: tuple['user_type'], name: tuple['name']}
+        additional_user_data[max_bucket + 1][tuple['index']] =
+          {id: tuple['user_id'], type: tuple['user_type'], name: tuple['name']}
       end
     end
 
-    if results.ntuples > 0
+    if results.ntuples.positive?
       first_index = results[0]['index']
       last_index = results[results.ntuples - 1]['index']
       buckets = last_index - first_index
@@ -247,9 +249,9 @@ class Exercise < ApplicationRecord
   end
 
   def get_quantiles(quantiles)
-    quantiles_str = '[' + quantiles.join(',') + ']'
+    quantiles_str = "[#{quantiles.join(',')}]"
     result = ActiveRecord::Base.transaction do
-      self.class.connection.execute(''"
+      self.class.connection.execute("
       SET LOCAL intervalstyle = 'iso_8601';
             WITH working_time AS
       (
@@ -356,14 +358,14 @@ class Exercise < ApplicationRecord
                         exercise_id )
       SELECT   unnest(percentile_cont(array#{quantiles_str}) within GROUP (ORDER BY working_time))
       FROM     result
-      "'')
+      ")
     end
-    if result.count > 0
-      begin
-        quantiles.each_with_index.map { |_q, i| ActiveSupport::Duration.parse(result[i]['unnest']).to_f }
-      end
+    if result.count.positive?
+
+      quantiles.each_with_index.map {|_q, i| ActiveSupport::Duration.parse(result[i]['unnest']).to_f }
+
     else
-      quantiles.map { |_q| 0 }
+      quantiles.map {|_q| 0 }
     end
   end
 
@@ -380,11 +382,11 @@ class Exercise < ApplicationRecord
   def average_working_time
     ActiveRecord::Base.transaction do
       self.class.connection.execute("SET LOCAL intervalstyle = 'postgres'")
-      self.class.connection.execute(''"
+      self.class.connection.execute("
       SELECT avg(working_time) as average_time
       FROM
         (#{user_working_time_query}) AS baz;
-    "'').first['average_time']
+    ").first['average_time']
     end
   end
 
@@ -397,7 +399,7 @@ class Exercise < ApplicationRecord
     user_type = user.external_user? ? 'ExternalUser' : 'InternalUser'
     begin
       result = ActiveRecord::Base.transaction do
-        self.class.connection.execute(''"
+        self.class.connection.execute("
               SET LOCAL intervalstyle = 'iso_8601';
               WITH WORKING_TIME AS
               (SELECT user_id,
@@ -447,7 +449,7 @@ class Exercise < ApplicationRecord
                   SELECT e.external_id AS external_user_id, f.user_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time
                   FROM FILTERED_TIMES_UNTIL_MAX f, EXTERNAL_USERS e
                   WHERE f.user_id = e.id GROUP BY e.external_id, f.user_id, exercise_id
-          "'')
+          ")
       end
       ActiveSupport::Duration.parse(result.first['working_time']).to_f
     rescue StandardError
@@ -458,8 +460,8 @@ class Exercise < ApplicationRecord
   def duplicate(attributes = {})
     exercise = dup
     exercise.attributes = attributes
-    exercise_tags.each  { |et| exercise.exercise_tags << et.dup }
-    files.each { |file| exercise.files << file.dup }
+    exercise_tags.each  {|et| exercise.exercise_tags << et.dup }
+    files.each {|file| exercise.files << file.dup }
     exercise
   end
 
@@ -475,7 +477,6 @@ class Exercise < ApplicationRecord
       return 'reference_implementation'
     elsif (file_class == 'template') && (comment == 'main')
       return 'main_file'
-    elsif (file_class == 'internal') && (comment == 'main')
     end
 
     'regular_file'
@@ -490,7 +491,7 @@ class Exercise < ApplicationRecord
     self.attributes = {
       title: task_node.xpath('p:meta-data/p:title/text()')[0].content,
       description: description,
-      instructions: description
+      instructions: description,
     }
     task_node.xpath('p:files/p:file').all? do |file|
       file_name_split = file.xpath('@filename').first.value.split('.')
@@ -498,16 +499,16 @@ class Exercise < ApplicationRecord
       role = determine_file_role_from_proforma_file(task_node, file)
       feedback_message_nodes = task_node.xpath('p:tests/p:test/p:test-configuration/c:feedback-message/text()')
       files.build({
-                    name: file_name_split.first,
+        name: file_name_split.first,
                     content: file.xpath('text()').first.content,
                     read_only: false,
                     hidden: file_class == 'internal',
                     role: role,
                     feedback_message: role == 'teacher_defined_test' ? feedback_message_nodes.first.content : nil,
-                    file_type: FileType.where(
+                    file_type: FileType.find_by(
                       file_extension: ".#{file_name_split.second}"
-                    ).take
-                  })
+                    ),
+      })
     end
     self.execution_environment_id = 1
   end
@@ -521,7 +522,7 @@ class Exercise < ApplicationRecord
     if user
       # FIXME: where(user: user) will not work here!
       begin
-        submissions.where(user: user).where("cause IN ('submit','assess')").where('score IS NOT NULL').order('score DESC').first.score || 0
+        submissions.where(user: user).where("cause IN ('submit','assess')").where.not(score: nil).order('score DESC').first.score || 0
       rescue StandardError
         0
       end
@@ -534,12 +535,13 @@ class Exercise < ApplicationRecord
     submissions.final.where(user_id: user.id, user_type: user.class.name).order(created_at: :desc).first
   end
 
-  def has_user_solved(user)
+  def solved_by?(user)
     maximum_score(user).to_i == maximum_score.to_i
   end
 
   def finishers
-    ExternalUser.joins(:submissions).where(submissions: {exercise_id: id, score: maximum_score, cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
+    ExternalUser.joins(:submissions).where(submissions: {exercise_id: id, score: maximum_score,
+cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
   end
 
   def set_default_values
@@ -552,24 +554,31 @@ class Exercise < ApplicationRecord
   end
 
   def valid_main_file?
-    errors.add(:files, I18n.t('activerecord.errors.models.exercise.at_most_one_main_file')) if files.main_files.count > 1
+    if files.main_files.count > 1
+      errors.add(:files,
+        I18n.t('activerecord.errors.models.exercise.at_most_one_main_file'))
+    end
   end
   private :valid_main_file?
 
   def valid_submission_deadlines?
     return unless submission_deadline.present? || late_submission_deadline.present?
 
-    errors.add(:late_submission_deadline, I18n.t('activerecord.errors.models.exercise.late_submission_deadline_not_alone')) if late_submission_deadline.present? && submission_deadline.blank?
+    if late_submission_deadline.present? && submission_deadline.blank?
+      errors.add(:late_submission_deadline,
+        I18n.t('activerecord.errors.models.exercise.late_submission_deadline_not_alone'))
+    end
 
     if submission_deadline.present? && late_submission_deadline.present? &&
        late_submission_deadline < submission_deadline
-      errors.add(:late_submission_deadline, I18n.t('activerecord.errors.models.exercise.late_submission_deadline_not_before_submission_deadline'))
+      errors.add(:late_submission_deadline,
+        I18n.t('activerecord.errors.models.exercise.late_submission_deadline_not_before_submission_deadline'))
     end
   end
   private :valid_submission_deadlines?
 
   def needs_more_feedback?(submission)
-    if submission.normalized_score == 1.00
+    if submission.normalized_score.to_d == 1.0.to_d
       user_exercise_feedbacks.final.size <= MAX_GROUP_EXERCISE_FEEDBACKS
     else
       user_exercise_feedbacks.intermediate.size <= MAX_GROUP_EXERCISE_FEEDBACKS

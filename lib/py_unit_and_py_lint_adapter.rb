@@ -1,5 +1,6 @@
-class PyUnitAndPyLintAdapter < TestingFrameworkAdapter
+# frozen_string_literal: true
 
+class PyUnitAndPyLintAdapter < TestingFrameworkAdapter
   def self.framework_name
     'PyUnit and PyLint'
   end

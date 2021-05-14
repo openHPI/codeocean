@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'seeds_helper'
 
 module CodeOcean
@@ -14,7 +16,7 @@ module CodeOcean
       trait(:image) do
         association :file_type, factory: :dot_png
         name { 'poster' }
-        native_file { Rack::Test::UploadedFile.new(Rails.root.join('db', 'seeds', 'audio_video', 'poster.png'), 'image/png') }
+        native_file { Rack::Test::UploadedFile.new(Rails.root.join('db/seeds/audio_video/poster.png'), 'image/png') }
       end
     end
 

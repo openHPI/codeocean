@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class SqlResultSetComparatorAdapter < TestingFrameworkAdapter
-  MISSING_TUPLES_REGEXP = /Missing tuples: \[\]/
-  UNEXPECTED_TUPLES_REGEXP = /Unexpected tuples: \[\]/
+  MISSING_TUPLES_REGEXP = /Missing tuples: \[\]/.freeze
+  UNEXPECTED_TUPLES_REGEXP = /Unexpected tuples: \[\]/.freeze
 
   def self.framework_name
     'SqlResultSetComparator'

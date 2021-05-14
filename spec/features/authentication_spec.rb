@@ -7,7 +7,7 @@ describe 'Authentication' do
   let(:password) { FactoryBot.attributes_for(:admin)[:password] }
 
   context 'when signed out' do
-    before(:each) { visit(root_path) }
+    before { visit(root_path) }
 
     it 'displays a sign in link' do
       expect(page).to have_content(I18n.t('sessions.new.link'))
@@ -35,7 +35,7 @@ describe 'Authentication' do
   end
 
   context 'when signed in' do
-    before(:each) do
+    before do
       sign_in(user, password)
       visit(root_path)
     end

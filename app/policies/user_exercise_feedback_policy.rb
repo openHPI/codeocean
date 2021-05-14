@@ -1,5 +1,6 @@
-class UserExerciseFeedbackPolicy < AdminOrAuthorPolicy
+# frozen_string_literal: true
 
+class UserExerciseFeedbackPolicy < AdminOrAuthorPolicy
   def create?
     everyone
   end
@@ -7,5 +8,4 @@ class UserExerciseFeedbackPolicy < AdminOrAuthorPolicy
   def new?
     everyone
   end
-
 end

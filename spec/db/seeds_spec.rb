@@ -9,7 +9,9 @@ describe 'seeds' do
     CodeOcean::Application.load_tasks
 
     # We want to execute the seeds for the dev environment against the test database
+    # rubocop:disable Rails/Inquiry
     allow(Rails).to receive(:env) { 'development'.inquiry }
+    # rubocop:enable Rails/Inquiry
     allow(ActiveRecord::Base).to receive(:establish_connection).and_call_original
     allow(ActiveRecord::Base).to receive(:establish_connection).with(:development) {
       ActiveRecord::Base.establish_connection(:test)

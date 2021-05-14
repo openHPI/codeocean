@@ -28,10 +28,10 @@ class UserExerciseFeedbacksController < ApplicationController
     @exercise = Exercise.find(uef_params[:exercise_id])
     rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
     submission = begin
-                   current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
-                 rescue StandardError
-                   nil
-                 end
+      current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
+    rescue StandardError
+      nil
+    end
 
     if @exercise
       @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
@@ -39,7 +39,7 @@ class UserExerciseFeedbacksController < ApplicationController
       authorize!
       if validate_inputs(uef_params)
         path =
-          if rfc && submission && submission.normalized_score == 1.0
+          if rfc && submission && submission.normalized_score.to_d == 1.0.to_d
             request_for_comment_path(rfc)
           else
             implement_exercise_path(@exercise)
@@ -74,15 +74,15 @@ class UserExerciseFeedbacksController < ApplicationController
 
   def update
     submission = begin
-                   current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
-                 rescue StandardError
-                   nil
-                 end
+      current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
+    rescue StandardError
+      nil
+    end
     rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
     authorize!
     if @exercise && validate_inputs(uef_params)
       path =
-        if rfc && submission && submission.normalized_score == 1.0
+        if rfc && submission && submission.normalized_score.to_d == 1.0.to_d
           request_for_comment_path(rfc)
         else
           implement_exercise_path(@exercise)
@@ -115,7 +115,7 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def uef_params
-    return unless params[:user_exercise_feedback].present?
+    return if params[:user_exercise_feedback].blank?
 
     exercise_id = if params[:user_exercise_feedback].nil?
                     params[:exercise_id]
@@ -126,8 +126,8 @@ class UserExerciseFeedbacksController < ApplicationController
     user_id = current_user.id
     user_type = current_user.class.name
     latest_submission = Submission
-                        .where(user_id: user_id, user_type: user_type, exercise_id: exercise_id)
-                        .order(created_at: :desc).first
+      .where(user_id: user_id, user_type: user_type, exercise_id: exercise_id)
+      .order(created_at: :desc).first
 
     params[:user_exercise_feedback]
       .permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime)
@@ -140,10 +140,8 @@ class UserExerciseFeedbacksController < ApplicationController
   def validate_inputs(uef_params)
     if uef_params[:difficulty].to_i.negative? || uef_params[:difficulty].to_i >= comment_presets.size
       false
-    elsif uef_params[:user_estimated_worktime].to_i.negative? || uef_params[:user_estimated_worktime].to_i >= time_presets.size
-      false
     else
-      true
+      !(uef_params[:user_estimated_worktime].to_i.negative? || uef_params[:user_estimated_worktime].to_i >= time_presets.size)
     end
   rescue StandardError
     false

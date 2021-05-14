@@ -1,19 +1,23 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe SubmissionsController do
   let(:submission) { FactoryBot.create(:submission) }
   let(:user) { FactoryBot.create(:admin) }
-  before(:each) { allow(controller).to receive(:current_user).and_return(user) }
+
+  before { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
-    before(:each) do
+    before do
       controller.request.accept = 'application/json'
     end
 
     context 'with a valid submission' do
       let(:exercise) { FactoryBot.create(:hello_world) }
-      let(:perform_request) { proc { post :create, format: :json, params: { submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id) } } }
-      before(:each) { perform_request.call }
+      let(:perform_request) { proc { post :create, format: :json, params: {submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id)} } }
+
+      before { perform_request.call }
 
       expect_assigns(submission: Submission)
 
@@ -26,7 +30,7 @@ describe SubmissionsController do
     end
 
     context 'with an invalid submission' do
-      before(:each) { post :create, params: { submission: {  } } }
+      before { post :create, params: {submission: {}} }
 
       expect_assigns(submission: Submission)
       expect_json
@@ -36,17 +40,18 @@ describe SubmissionsController do
 
   describe 'GET #download_file' do
     context 'with an invalid filename' do
-      before(:each) { get :download_file, params: { filename: SecureRandom.hex, id: submission.id } }
+      before { get :download_file, params: {filename: SecureRandom.hex, id: submission.id} }
 
       expect_status(404)
     end
 
     context 'with a valid binary filename' do
       let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:sql_select)) }
-      before(:each) { get :download_file, params: { filename: file.name_with_extension, id: submission.id } }
 
-      context 'for a binary file' do
-        let(:file) { submission.collect_files.detect { |file| file.name == 'exercise' && file.file_type.file_extension == '.sql' } }
+      before { get :download_file, params: {filename: file.name_with_extension, id: submission.id} }
+
+      context 'with a binary file' do
+        let(:file) { submission.collect_files.detect {|file| file.name == 'exercise' && file.file_type.file_extension == '.sql' } }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
@@ -61,10 +66,11 @@ describe SubmissionsController do
 
     context 'with a valid filename' do
       let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
-      before(:each) { get :download_file, params: { filename: file.name_with_extension, id: submission.id } }
 
-      context 'for a binary file' do
-        let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.mp4' } }
+      before { get :download_file, params: {filename: file.name_with_extension, id: submission.id} }
+
+      context 'with a binary file' do
+        let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
@@ -76,8 +82,8 @@ describe SubmissionsController do
         end
       end
 
-      context 'for a non-binary file' do
-        let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.js' } }
+      context 'with a non-binary file' do
+        let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.js' } }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
@@ -92,8 +98,10 @@ describe SubmissionsController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryBot.create_pair(:submission) }
-    before(:each) { get :index }
+    before do
+      FactoryBot.create_pair(:submission)
+      get :index
+    end
 
     expect_assigns(submissions: Submission.all)
     expect_status(200)
@@ -104,17 +112,18 @@ describe SubmissionsController do
     let(:file) { submission.files.first }
 
     context 'with an invalid filename' do
-      before(:each) { get :render_file, params: { filename: SecureRandom.hex, id: submission.id } }
+      before { get :render_file, params: {filename: SecureRandom.hex, id: submission.id} }
 
       expect_status(404)
     end
 
     context 'with a valid filename' do
       let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
-      before(:each) { get :render_file, params: { filename: file.name_with_extension, id: submission.id } }
 
-      context 'for a binary file' do
-        let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.mp4' } }
+      before { get :render_file, params: {filename: file.name_with_extension, id: submission.id} }
+
+      context 'with a binary file' do
+        let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
@@ -126,8 +135,8 @@ describe SubmissionsController do
         end
       end
 
-      context 'for a non-binary file' do
-        let(:file) { submission.collect_files.detect { |file| file.file_type.file_extension == '.js' } }
+      context 'with a non-binary file' do
+        let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.js' } }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
@@ -143,24 +152,24 @@ describe SubmissionsController do
 
   describe 'GET #run' do
     let(:filename) { submission.collect_files.detect(&:main_file?).name_with_extension }
-    let(:perform_request) { get :run, params: { filename: filename , id: submission.id } }
+    let(:perform_request) { get :run, params: {filename: filename, id: submission.id} }
 
-    before(:each) do
-      expect_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
+    before do
+      allow_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
     end
 
     context 'when no errors occur during execution' do
-      before(:each) do
-        expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
+      before do
+        allow_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
         perform_request
       end
 
-      pending("todo")
+      pending('todo')
     end
   end
 
   describe 'GET #show' do
-    before(:each) { get :show, params: { id: submission.id } }
+    before { get :show, params: {id: submission.id} }
 
     expect_assigns(submission: :submission)
     expect_status(200)
@@ -172,11 +181,12 @@ describe SubmissionsController do
     # https://github.com/rails/jbuilder/issues/32
     render_views
 
-    before(:each) { get :show, params: { id: submission.id }, format: :json }
+    before { get :show, params: {id: submission.id}, format: :json }
+
     expect_assigns(submission: :submission)
     expect_status(200)
 
-    [:render, :run, :test].each do |action|
+    %i[render run test].each do |action|
       describe "##{action}_url" do
         let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
 
@@ -186,45 +196,47 @@ describe SubmissionsController do
         end
 
         it 'ends with a placeholder' do
-          expect(url).to end_with(Submission::FILENAME_URL_PLACEHOLDER + '.json')
+          expect(url).to end_with("#{Submission::FILENAME_URL_PLACEHOLDER}.json")
         end
       end
     end
 
-    describe "#score_url" do
-      let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("score_url") }
+    describe '#score_url' do
+      let(:url) { JSON.parse(response.body).with_indifferent_access.fetch('score_url') }
 
-      it "corresponds to the score path" do
+      it 'corresponds to the score path' do
         expect(url).to eq(Rails.application.routes.url_helpers.score_submission_path(submission, format: :json))
       end
     end
   end
 
   describe 'GET #score' do
-    let(:perform_request) { proc { get :score, params: { id: submission.id } } }
-    before(:each) { perform_request.call }
+    let(:perform_request) { proc { get :score, params: {id: submission.id} } }
 
-    pending("todo: mock puma webserver or encapsulate tubesock call (Tubesock::HijackNotAvailable)")
+    before { perform_request.call }
+
+    pending('todo: mock puma webserver or encapsulate tubesock call (Tubesock::HijackNotAvailable)')
   end
 
   describe 'GET #test' do
     let(:filename) { submission.collect_files.detect(&:teacher_defined_assessment?).name_with_extension }
     let(:output) { {} }
 
-    before(:each) do
-      expect_any_instance_of(DockerClient).to receive(:execute_test_command).with(submission, filename)
-      get :test, filename: filename, id: submission.id
+    before do
+      allow_any_instance_of(DockerClient).to receive(:execute_test_command).with(submission, filename)
+      get :test, params: {filename: filename, id: submission.id}
     end
 
-    pending("todo")
+    pending('todo')
   end
 
   describe '#with_server_sent_events' do
     let(:response) { ActionDispatch::TestResponse.new }
-    before(:each) { allow(controller).to receive(:response).and_return(response) }
+
+    before { allow(controller).to receive(:response).and_return(response) }
 
     context 'when no error occurs' do
-      after(:each) { controller.send(:with_server_sent_events) }
+      after { controller.send(:with_server_sent_events) }
 
       it 'uses server-sent events' do
         expect(ActionController::Live::SSE).to receive(:new).and_call_original
@@ -246,7 +258,7 @@ describe SubmissionsController do
     end
 
     context 'when an error occurs' do
-      after(:each) { controller.send(:with_server_sent_events) { fail } }
+      after { controller.send(:with_server_sent_events) { raise } }
 
       it 'uses server-sent events' do
         expect(ActionController::Live::SSE).to receive(:new).and_call_original

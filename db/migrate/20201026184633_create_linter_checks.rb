@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateLinterChecks < ActiveRecord::Migration[5.2]
   def change
     create_table :linter_checks do |t|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CommonBehavior
   def create_and_respond(options = {})
     @object = options[:object]
@@ -5,7 +7,8 @@ module CommonBehavior
       if @object.save
         yield if block_given?
         path = options[:path].try(:call) || @object
-        respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human), path: path, status: :created)
+        respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human),
+path: path, status: :created)
       else
         respond_with_invalid_object(format, template: :new)
       end
@@ -40,7 +43,8 @@ module CommonBehavior
     respond_to do |format|
       if @object.update(options[:params])
         path = options[:path] || @object
-        respond_with_valid_object(format, notice: t('shared.object_updated', model: @object.class.model_name.human), path: path, status: :ok)
+        respond_with_valid_object(format, notice: t('shared.object_updated', model: @object.class.model_name.human),
+path: path, status: :ok)
       else
         respond_with_invalid_object(format, template: :edit)
       end

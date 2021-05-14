@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TestingFrameworkAdapter
   def augment_output(options = {})
     if !options[:count]
@@ -15,7 +17,7 @@ class TestingFrameworkAdapter
   end
 
   def parse_output(*)
-    fail(NotImplementedError, "#{self.class} should implement #parse_output!")
+    raise NotImplementedError.new("#{self.class} should implement #parse_output!")
   end
   private :parse_output
 

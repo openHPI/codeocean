@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './exercise'
 
 describe '#write_to_file' do

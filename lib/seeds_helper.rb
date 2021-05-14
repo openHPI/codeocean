@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SeedsHelper
   def self.read_seed_file(filename)
     file = File.new(seed_file_path(filename), 'r')

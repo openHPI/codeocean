@@ -724,10 +724,10 @@ en:
     howto_title: 'How to comment'
     index:
       all: All Requests for Comments
-      get_my_comment_requests: My Requests for Comments
-      get_rfcs_with_my_comments: Requests for Comments I have commented on
-      get_my_rfc_activity: "My Comment Activity"
-      get_rfcs_for_exercise: "Exercise Comments"
+      my_comment_requests: My Requests for Comments
+      rfcs_with_my_comments: Requests for Comments I have commented on
+      my_rfc_activity: "My Comment Activity"
+      rfcs_for_exercise: "Exercise Comments"
       study_groups:
         placeholder: "Study group"
         current: "Current Study Group"

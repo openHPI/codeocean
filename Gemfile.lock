@@ -1,5 +1,13 @@
 GIT
-  remote: https://github.com/gosukiwi/tubesock
+  remote: https://github.com/evolve75/RubyTree.git
+  revision: eb045068f73529c66d9d84f0553fdf85fc98bc4f
+  specs:
+    rubytree (1.0.2)
+      json (~> 2.3.1)
+      structured_warnings (~> 0.4.0)
+
+GIT
+  remote: https://github.com/gosukiwi/tubesock.git
   revision: 86a5ca4f7d3c3a7b9a727ad91df3b9b4912eda39
   branch: patch-1
   specs:
@@ -198,7 +206,7 @@ GEM
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
-    json (2.5.1)
+    json (2.3.1)
     jwt (2.2.3)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
@@ -396,6 +404,9 @@ GEM
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.5.0)
       parser (>= 3.0.1.1)
+    rubocop-performance (1.11.3)
+      rubocop (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
     rubocop-rails (2.10.1)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
@@ -407,9 +418,6 @@ GEM
     ruby-vips (2.1.2)
       ffi (~> 1.12)
     ruby2_keywords (0.0.4)
-    rubytree (1.0.0)
-      json (~> 2.1)
-      structured_warnings (~> 0.3)
     rubyzip (2.3.0)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -557,9 +565,10 @@ DEPENDENCIES
   rspec-collection_matchers
   rspec-rails
   rubocop
+  rubocop-performance
   rubocop-rails
   rubocop-rspec
-  rubytree
+  rubytree!
   rubyzip
   sass-rails
   selenium-webdriver

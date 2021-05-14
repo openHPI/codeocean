@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'factory_bot'
 
 # Use "old" FactoryBot default to allow auto-creating associations for #build

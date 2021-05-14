@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe ProformaService::ConvertTaskToExercise do
-  # ToDo: Add teacher_defined_linter for tests
+  # TODO: Add teacher_defined_linter for tests
 
   describe '.new' do
     subject(:convert_to_exercise_service) { described_class.new(task: task, user: user, exercise: exercise) }
@@ -48,7 +48,7 @@ describe ProformaService::ConvertTaskToExercise do
     let(:files) { [] }
     let(:tests) { [] }
     let(:model_solutions) { [] }
-    let(:exercise) {}
+    let(:exercise) { nil }
 
     it 'creates an exercise with the correct attributes' do
       expect(convert_to_exercise_service).to have_attributes(
@@ -83,7 +83,7 @@ describe ProformaService::ConvertTaskToExercise do
       let(:mimetype) { 'mimetype' }
       let(:binary) { false }
       let(:content) { 'content' }
-      let(:path) {}
+      let(:path) { nil }
 
       it 'creates an exercise with a file that has the correct attributes' do
         expect(convert_to_exercise_service.files.first).to have_attributes(
@@ -196,11 +196,11 @@ describe ProformaService::ConvertTaskToExercise do
         let(:model_solution2) do
           Proforma::ModelSolution.new(
             id: 'ms-id-2',
-            files: ms_files_2
+            files: ms_files2
           )
         end
-        let(:ms_files_2) { [ms_file_2] }
-        let(:ms_file_2) do
+        let(:ms_files2) { [ms_file2] }
+        let(:ms_file2) do
           Proforma::TaskFile.new(
             id: 'ms-file-2',
             content: 'content',
@@ -232,7 +232,7 @@ describe ProformaService::ConvertTaskToExercise do
           meta_data: {
             'feedback-message' => 'feedback-message',
             'testing-framework' => 'testing-framework',
-            'testing-framework-version' => 'testing-framework-version'
+            'testing-framework-version' => 'testing-framework-version',
           }
         )
       end
@@ -252,11 +252,11 @@ describe ProformaService::ConvertTaskToExercise do
       end
 
       it 'creates an exercise with a test' do
-        expect(convert_to_exercise_service.files.select { |file| file.role == 'teacher_defined_test' }).to have(1).item
+        expect(convert_to_exercise_service.files.select {|file| file.role == 'teacher_defined_test' }).to have(1).item
       end
 
       it 'creates an exercise with a test with correct attributes' do
-        expect(convert_to_exercise_service.files.select { |file| file.role == 'teacher_defined_test' }.first).to have_attributes(
+        expect(convert_to_exercise_service.files.find {|file| file.role == 'teacher_defined_test' }).to have_attributes(
           feedback_message: 'feedback-message',
           content: 'testfile-content',
           name: 'testfile',
@@ -275,7 +275,7 @@ describe ProformaService::ConvertTaskToExercise do
             meta_data: {
               'feedback-message' => 'feedback-message',
               'testing-framework' => 'testing-framework',
-              'testing-framework-version' => 'testing-framework-version'
+              'testing-framework-version' => 'testing-framework-version',
             }
           )
         end
@@ -294,7 +294,7 @@ describe ProformaService::ConvertTaskToExercise do
         end
 
         it 'creates an exercise with two test' do
-          expect(convert_to_exercise_service.files.select { |file| file.role == 'teacher_defined_test' }).to have(2).items
+          expect(convert_to_exercise_service.files.select {|file| file.role == 'teacher_defined_test' }).to have(2).items
         end
       end
     end
@@ -355,7 +355,7 @@ describe ProformaService::ConvertTaskToExercise do
             meta_data: {
               'feedback-message' => 'feedback-message',
               'testing-framework' => 'testing-framework',
-              'testing-framework-version' => 'testing-framework-version'
+              'testing-framework-version' => 'testing-framework-version',
             }
           )
         end

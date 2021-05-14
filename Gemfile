@@ -20,7 +20,7 @@ gem 'mimemagic'
 gem 'nokogiri'
 gem 'pagedown-bootstrap-rails'
 gem 'pg'
-gem 'proforma', git: 'https://github.com/openHPI/proforma.git', tag: 'v0.5.1'
+gem 'proforma', github: 'openHPI/proforma', tag: 'v0.5.1'
 gem 'prometheus_exporter'
 gem 'pry-byebug'
 gem 'puma'
@@ -31,13 +31,13 @@ gem 'rails-i18n'
 gem 'rails-timeago'
 gem 'ransack'
 gem 'rest-client'
-gem 'rubytree'
+gem 'rubytree', github: 'evolve75/RubyTree'
 gem 'rubyzip'
 gem 'sass-rails'
 gem 'slim-rails'
 gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.com/Sorcery/sorcery/pull/255
 gem 'telegraf'
-gem 'tubesock', git: 'https://github.com/gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
+gem 'tubesock', github: 'gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
 gem 'turbolinks'
 gem 'webpacker'
 gem 'whenever', require: false
@@ -57,6 +57,7 @@ group :development, :staging do
   gem 'pry-rails'
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
+  gem 'rubocop-performance'
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec'
   gem 'web-console'

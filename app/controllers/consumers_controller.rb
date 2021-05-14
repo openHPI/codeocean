@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ConsumersController < ApplicationController
   include CommonBehavior
 
@@ -18,8 +20,7 @@ class ConsumersController < ApplicationController
     destroy_and_respond(object: @consumer)
   end
 
-  def edit
-  end
+  def edit; end
 
   def consumer_params
     params[:consumer].permit(:name, :oauth_key, :oauth_secret) if params[:consumer].present?
@@ -42,8 +43,7 @@ class ConsumersController < ApplicationController
   end
   private :set_consumer
 
-  def show
-  end
+  def show; end
 
   def update
     update_and_respond(object: @consumer, params: consumer_params)

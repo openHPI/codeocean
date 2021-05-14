@@ -31,7 +31,7 @@ RSpec::Matchers.define :be_an_equal_exercise_as do |exercise|
     return true if object == other # for []
     return false if object.length != other.length
 
-    object.to_a.product(other.to_a).map { |k, v| equal?(k, v) }.any?
+    object.to_a.product(other.to_a).map {|k, v| equal?(k, v) }.any?
   end
 
   def attributes_and_associations(object)

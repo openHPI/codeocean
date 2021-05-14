@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FileTree < Tree::TreeNode
   def file_icon(file)
     if file.file_type.audio?
@@ -25,10 +27,10 @@ class FileTree < Tree::TreeNode
 
   def initialize(files = [])
     super(root_label)
-    files.uniq{|f| f.name_with_extension}.each do |file|
+    files.uniq(&:name_with_extension).each do |file|
       parent = self
       (file.path || '').split('/').each do |segment|
-        node = parent.children.detect { |child| child.name == segment } || parent.add(Tree::TreeNode.new(segment))
+        node = parent.children.detect {|child| child.name == segment } || parent.add(Tree::TreeNode.new(segment))
         parent = node
       end
       parent.add(Tree::TreeNode.new(file.name_with_extension, file))
@@ -37,22 +39,20 @@ class FileTree < Tree::TreeNode
 
   def map_to_js_tree(node)
     {
-      children: node.children.map { |child| map_to_js_tree(child) },
+      children: node.children.map {|child| map_to_js_tree(child) },
       icon: node_icon(node),
       id: node.content.try(:ancestor_id),
       state: {
         disabled: !node.is_leaf?,
-        opened: !node.is_leaf?
+        opened: !node.is_leaf?,
       },
-      text: node.name
+      text: node.name,
     }
   end
   private :map_to_js_tree
 
   def node_icon(node)
-    if node.is_root?
-      folder_icon
-    elsif node.is_leaf?
+    if node.is_leaf? && !node.is_root?
       file_icon(node.content)
     else
       folder_icon
@@ -68,8 +68,8 @@ class FileTree < Tree::TreeNode
   def to_js_tree
     {
       core: {
-        data: map_to_js_tree(self)
-      }
+        data: map_to_js_tree(self),
+      },
     }.to_json
   end
 end

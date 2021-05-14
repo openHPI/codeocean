@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class PyUnitAdapter < TestingFrameworkAdapter
-  COUNT_REGEXP = /Ran (\d+) test/
-  FAILURES_REGEXP = /FAILED \(.*failures=(\d+).*\)/
-  ERRORS_REGEXP = /FAILED \(.*errors=(\d+).*\)/
-  ASSERTION_ERROR_REGEXP = /^(ERROR|FAIL):\ (.*?)\ .*?^[^\.\n]*?(Error|Exception):\s((\s|\S)*?)(>>>.*?)*\s\s(-|=){70}/m
+  COUNT_REGEXP = /Ran (\d+) test/.freeze
+  FAILURES_REGEXP = /FAILED \(.*failures=(\d+).*\)/.freeze
+  ERRORS_REGEXP = /FAILED \(.*errors=(\d+).*\)/.freeze
+  ASSERTION_ERROR_REGEXP = /^(ERROR|FAIL):\ (.*?)\ .*?^[^.\n]*?(Error|Exception):\s((\s|\S)*?)(>>>.*?)*\s\s(-|=){70}/m.freeze
 
   def self.framework_name
     'PyUnit'
@@ -16,7 +18,7 @@ class PyUnitAdapter < TestingFrameworkAdapter
     errors = error_matches ? error_matches.captures.try(:first).to_i : 0
     begin
       assertion_error_matches = Timeout.timeout(2.seconds) do
-        output[:stderr].scan(ASSERTION_ERROR_REGEXP).map { |match|
+        output[:stderr].scan(ASSERTION_ERROR_REGEXP).map do |match|
           testname = match[1]
           error = match[3].strip
 
@@ -25,7 +27,7 @@ class PyUnitAdapter < TestingFrameworkAdapter
           else
             "#{testname}: #{error}"
           end
-        }.flatten || []
+        end.flatten || []
       end
     rescue Timeout::Error
       Sentry.capture_message({stderr: output[:stderr], regex: ASSERTION_ERROR_REGEXP}.to_json)

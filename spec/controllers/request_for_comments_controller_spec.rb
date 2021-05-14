@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe RequestForCommentsController do
@@ -24,30 +26,30 @@ describe RequestForCommentsController do
       rfc_other_study_group.user.update(study_groups: [another_study_group])
       rfc_other_study_group.submission.update(study_group: another_study_group)
 
-      get :index, params: { "q[submission_study_group_id_in][]": my_study_group.id }
+      get :index, params: {"q[submission_study_group_id_in][]": my_study_group.id}
 
       expect(assigns(:request_for_comments)).to eq([rfc_within_my_study_group])
     end
   end
 
-  describe 'GET #get_my_comment_requests' do
-    before { get :get_my_comment_requests }
+  describe 'GET #my_comment_requests' do
+    before { get :my_comment_requests }
 
     expect_status(200)
     expect_template(:index)
   end
 
-  describe 'GET #get_rfcs_with_my_comments' do
-    before { get :get_rfcs_with_my_comments }
+  describe 'GET #rfcs_with_my_comments' do
+    before { get :rfcs_with_my_comments }
 
     expect_status(200)
     expect_template(:index)
   end
 
-  describe 'GET #get_rfcs_for_exercise' do
+  describe 'GET #rfcs_for_exercise' do
     before do
       exercise = FactoryBot.create(:even_odd)
-      get :get_rfcs_for_exercise, params: { exercise_id: exercise.id }
+      get :rfcs_for_exercise, params: {exercise_id: exercise.id}
     end
 
     expect_status(200)

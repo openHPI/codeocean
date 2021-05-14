@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 class Submission < ApplicationRecord
   include Context
   include Creation
   include ActionCableHelper
 
-  CAUSES = %w(assess download file render run save submit test autosave requestComments remoteAssess remoteSubmit)
+  CAUSES = %w[assess download file render run save submit test autosave requestComments remoteAssess
+              remoteSubmit].freeze
   FILENAME_URL_PLACEHOLDER = '{filename}'
   MAX_COMMENTS_ON_RECOMMENDED_RFC = 5
   OLDEST_RFC_TO_SHOW = 6.months
@@ -15,17 +18,27 @@ class Submission < ApplicationRecord
   has_many :structured_errors
   has_many :comments, through: :files
 
-  belongs_to :external_users, -> { where(submissions: {user_type: 'ExternalUser'}).includes(:submissions) }, foreign_key: :user_id, class_name: 'ExternalUser', optional: true
-  belongs_to :internal_users, -> { where(submissions: {user_type: 'InternalUser'}).includes(:submissions) }, foreign_key: :user_id, class_name: 'InternalUser', optional: true
+  belongs_to :external_users, lambda {
+                                where(submissions: {user_type: 'ExternalUser'}).includes(:submissions)
+                              }, foreign_key: :user_id, class_name: 'ExternalUser', optional: true
+  belongs_to :internal_users, lambda {
+                                where(submissions: {user_type: 'InternalUser'}).includes(:submissions)
+                              }, foreign_key: :user_id, class_name: 'InternalUser', optional: true
 
   delegate :execution_environment, to: :exercise
 
   scope :final, -> { where(cause: %w[submit remoteSubmit]) }
   scope :intermediate, -> { where.not(cause: 'submit') }
 
-  scope :before_deadline, -> { joins(:exercise).where('submissions.updated_at <= exercises.submission_deadline OR exercises.submission_deadline IS NULL') }
-  scope :within_grace_period, -> { joins(:exercise).where('(submissions.updated_at > exercises.submission_deadline) AND (submissions.updated_at <= exercises.late_submission_deadline OR exercises.late_submission_deadline IS NULL)') }
-  scope :after_late_deadline, -> { joins(:exercise).where('submissions.updated_at > exercises.late_submission_deadline') }
+  scope :before_deadline, lambda {
+                            joins(:exercise).where('submissions.updated_at <= exercises.submission_deadline OR exercises.submission_deadline IS NULL')
+                          }
+  scope :within_grace_period, lambda {
+                                joins(:exercise).where('(submissions.updated_at > exercises.submission_deadline) AND (submissions.updated_at <= exercises.late_submission_deadline OR exercises.late_submission_deadline IS NULL)')
+                              }
+  scope :after_late_deadline, lambda {
+                                joins(:exercise).where('submissions.updated_at > exercises.late_submission_deadline')
+                              }
 
   scope :latest, -> { order(updated_at: :desc).first }
 
@@ -35,7 +48,6 @@ class Submission < ApplicationRecord
   validates :exercise_id, presence: true
 
   # after_save :trigger_working_times_action_cable
-
 
   def build_files_hash(files, attribute)
     files.map(&attribute.to_proc).zip(files).to_h
@@ -57,12 +69,12 @@ class Submission < ApplicationRecord
     # expects the full file path incl. file extension
     # Caution: There must be no unnecessary path prefix included.
     # Use `file.ext` rather than `./file.ext`
-    collect_files.detect { |file| file.filepath == file_path }
+    collect_files.detect {|file| file.filepath == file_path }
   end
 
   def normalized_score
     ::NewRelic::Agent.add_custom_attributes({unnormalized_score: score})
-    if !score.nil? && !exercise.maximum_score.nil? && (exercise.maximum_score > 0)
+    if !score.nil? && !exercise.maximum_score.nil? && exercise.maximum_score.positive?
       score / exercise.maximum_score
     else
       0
@@ -115,10 +127,12 @@ class Submission < ApplicationRecord
   end
 
   def own_unsolved_rfc
-    RequestForComment.unsolved.where(exercise_id: exercise, user_id: user_id).first
+    RequestForComment.unsolved.find_by(exercise_id: exercise, user_id: user_id)
   end
 
   def unsolved_rfc
-    RequestForComment.unsolved.where(exercise_id: exercise).where.not(question: nil).where(created_at: OLDEST_RFC_TO_SHOW.ago..Time.current).order("RANDOM()").find { |rfc_element| ((rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) && (!rfc_element.question.empty?)) }
+    RequestForComment.unsolved.where(exercise_id: exercise).where.not(question: nil).where(created_at: OLDEST_RFC_TO_SHOW.ago..Time.current).order('RANDOM()').find do |rfc_element|
+      ((rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) && !rfc_element.question.empty?)
+    end
   end
 end

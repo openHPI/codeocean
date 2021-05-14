@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 CONTAINER = Docker::Container.send(:new, Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex)
 IMAGE = Docker::Image.new(Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex, 'RepoTags' => [FactoryBot.attributes_for(:ruby)[:docker_image]])
 
@@ -16,10 +18,10 @@ RSpec.configure do |config|
 
   config.after(:suite) do
     examples = RSpec.world.filtered_examples.values.flatten
-    has_docker_tests = examples.any? { |example| example.metadata[:docker] }
+    has_docker_tests = examples.any? {|example| example.metadata[:docker] }
     next unless has_docker_tests
 
-    FileUtils.rm_rf(Rails.root.join('tmp', 'files', 'test'))
+    FileUtils.rm_rf(Rails.root.join('tmp/files/test'))
     `which docker && test -n "$(docker ps --all --quiet)" && docker rm --force $(docker ps --all --quiet)`
   end
 end

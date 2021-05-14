@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   self.abstract_class = true
 
-  ROLES = %w(admin teacher learner)
+  ROLES = %w[admin teacher learner].freeze
 
   belongs_to :consumer
   has_many :study_group_memberships, as: :user
@@ -19,10 +19,11 @@ class User < ApplicationRecord
   has_one :codeharbor_link, dependent: :destroy
   accepts_nested_attributes_for :user_proxy_exercise_exercises
 
-
   scope :with_submissions, -> { where('id IN (SELECT user_id FROM submissions)') }
 
-  scope :in_study_group_of, ->(user) { joins(:study_group_memberships).where(study_group_memberships: {study_group_id: user.study_groups}) unless user.admin? }
+  scope :in_study_group_of, lambda {|user|
+                              joins(:study_group_memberships).where(study_group_memberships: {study_group_id: user.study_groups}) unless user.admin?
+                            }
 
   ROLES.each do |role|
     define_method("#{role}?") { try(:role) == role }

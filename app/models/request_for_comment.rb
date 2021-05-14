@@ -18,7 +18,7 @@ class RequestForComment < ApplicationRecord
 
   scope :unsolved, -> { where(solved: [false, nil]) }
   scope :in_range, ->(from, to) { where(created_at: from..to) }
-  scope :with_comments, -> { select { |rfc| rfc.comments.any? } }
+  scope :with_comments, -> { select {|rfc| rfc.comments.any? } }
 
   # after_save :trigger_rfc_action_cable
 
@@ -44,7 +44,7 @@ class RequestForComment < ApplicationRecord
   end
 
   def comments_count
-    submission.files.map { |file| file.comments.size }.sum
+    submission.files.sum {|file| file.comments.size }
   end
 
   def commenters

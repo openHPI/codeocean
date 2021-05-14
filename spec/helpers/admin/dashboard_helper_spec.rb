@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Admin::DashboardHelper do
@@ -8,7 +10,7 @@ describe Admin::DashboardHelper do
   end
 
   describe '#docker_data' do
-    before(:each) { FactoryBot.create(:ruby) }
+    before { FactoryBot.create(:ruby) }
 
     it 'contains an entry for every execution environment' do
       expect(docker_data.length).to eq(ExecutionEnvironment.count)

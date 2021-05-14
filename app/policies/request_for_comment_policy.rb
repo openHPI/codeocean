@@ -37,11 +37,11 @@ class RequestForCommentPolicy < ApplicationPolicy
     everyone
   end
 
-  def get_my_comment_requests?
+  def my_comment_requests?
     everyone
   end
 
-  def get_rfcs_with_my_comments?
+  def rfcs_with_my_comments?
     everyone
   end
 end

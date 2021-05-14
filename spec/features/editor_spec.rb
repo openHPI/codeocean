@@ -19,7 +19,7 @@ describe 'Editor', js: true do
       score: 1.0,
       filename: 'index.html_spec.rb',
       message: 'Well done.',
-      weight: 2.0
+      weight: 2.0,
     }]
   end
   let(:user) { FactoryBot.create(:teacher) }
@@ -29,7 +29,7 @@ describe 'Editor', js: true do
     fill_in('email', with: user.email)
     fill_in('password', with: FactoryBot.attributes_for(:teacher)[:password])
     click_button(I18n.t('sessions.new.link'))
-    expect_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
+    allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
     visit(implement_exercise_path(exercise))
   end
 
@@ -60,7 +60,7 @@ describe 'Editor', js: true do
 
     context 'when selecting a binary file' do
       context 'when selecting an audio file' do
-        let(:file) { exercise.files.detect { |file| file.file_type.audio? } }
+        let(:file) { exercise.files.detect {|file| file.file_type.audio? } }
 
         it 'contains an <audio> tag' do
           expect(page).to have_css("audio[src='#{file.native_file.url}']")
@@ -68,7 +68,7 @@ describe 'Editor', js: true do
       end
 
       context 'when selecting an image file' do
-        let(:file) { exercise.files.detect { |file| file.file_type.image? } }
+        let(:file) { exercise.files.detect {|file| file.file_type.image? } }
 
         it 'contains an <img> tag' do
           expect(page).to have_css("img[src='#{file.native_file.url}']")
@@ -76,7 +76,7 @@ describe 'Editor', js: true do
       end
 
       context 'when selecting a video file' do
-        let(:file) { exercise.files.detect { |file| file.file_type.video? } }
+        let(:file) { exercise.files.detect {|file| file.file_type.video? } }
 
         it 'contains a <video> tag' do
           expect(page).to have_css("video[src='#{file.native_file.url}']")
@@ -85,7 +85,7 @@ describe 'Editor', js: true do
     end
 
     context 'when selecting a non-binary file' do
-      let(:file) { exercise.files.detect { |file| !file.file_type.binary? && !file.hidden? } }
+      let(:file) { exercise.files.detect {|file| !file.file_type.binary? && !file.hidden? } }
 
       it "displays the file's code" do
         expect(page).to have_css(".frame[data-filename='#{file.name_with_extension}']")

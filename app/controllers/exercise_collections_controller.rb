@@ -1,15 +1,16 @@
+# frozen_string_literal: true
+
 class ExerciseCollectionsController < ApplicationController
   include CommonBehavior
 
-  before_action :set_exercise_collection, only: [:show, :edit, :update, :destroy, :statistics]
+  before_action :set_exercise_collection, only: %i[show edit update destroy statistics]
 
   def index
-    @exercise_collections = ExerciseCollection.all.paginate(:page => params[:page])
+    @exercise_collections = ExerciseCollection.all.paginate(page: params[:page])
     authorize!
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @exercise_collection = ExerciseCollection.new
@@ -28,16 +29,14 @@ class ExerciseCollectionsController < ApplicationController
     destroy_and_respond(object: @exercise_collection)
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     authorize!
     update_and_respond(object: @exercise_collection, params: exercise_collection_params)
   end
 
-  def statistics
-  end
+  def statistics; end
 
   private
 
@@ -51,8 +50,18 @@ class ExerciseCollectionsController < ApplicationController
   end
 
   def exercise_collection_params
-    sanitized_params = params[:exercise_collection].present? ? params[:exercise_collection].permit(:name, :use_anomaly_detection, :user_id, :user_type, :exercise_ids => []).merge(user_type: InternalUser.name) : {}
-    sanitized_params[:exercise_ids] = sanitized_params[:exercise_ids].reject {|v| v.nil? or v == ''}
-    sanitized_params.tap {|p| p[:exercise_collection_items] = p[:exercise_ids].map.with_index {|_id, index| ExerciseCollectionItem.find_or_create_by(exercise_id: _id, exercise_collection_id: @exercise_collection.id, position: index)}; p.delete(:exercise_ids)}
+    sanitized_params = if params[:exercise_collection].present?
+                         params[:exercise_collection].permit(:name,
+                           :use_anomaly_detection, :user_id, :user_type, exercise_ids: []).merge(user_type: InternalUser.name)
+                       else
+                         {}
+                       end
+    sanitized_params[:exercise_ids] = sanitized_params[:exercise_ids].reject {|v| v.nil? or v == '' }
+    sanitized_params.tap do |p|
+      p[:exercise_collection_items] = p[:exercise_ids].map.with_index do |id, index|
+        ExerciseCollectionItem.find_or_create_by(exercise_id: id, exercise_collection_id: @exercise_collection.id, position: index)
+      end
+      p.delete(:exercise_ids)
+    end
   end
 end

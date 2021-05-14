@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CommentPolicy < ApplicationPolicy
   def create?
     everyone
@@ -7,7 +9,7 @@ class CommentPolicy < ApplicationPolicy
     everyone
   end
 
-  [:new?, :destroy?, :update?, :edit?].each do |action|
+  %i[new? destroy? update? edit?].each do |action|
     define_method(action) { admin? || author? }
   end
 

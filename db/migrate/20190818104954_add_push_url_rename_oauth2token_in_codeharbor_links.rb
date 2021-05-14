@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddPushUrlRenameOauth2tokenInCodeharborLinks < ActiveRecord::Migration[5.2]
   def change
     add_column :codeharbor_links, :push_url, :string

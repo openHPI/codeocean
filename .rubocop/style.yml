@@ -1,0 +1,133 @@
+# style cop settings
+
+#
+# Nein. Period. Try to keep it English, but there *will* references using
+# unicode characters.
+#
+Style/AsciiComments:
+  Enabled: false
+
+#
+# Both styles or mixtures are reasonable
+#
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
+  Enabled: false
+
+#
+# Maybe a bit uncommon for new devs and often results in heavily indented code
+# blocks.
+#
+Style/ConditionalAssignment:
+  Enabled: false
+
+#
+# Would be better but unlikely...
+#
+Style/Documentation:
+  Enabled: false
+
+#
+# Okay for conditions, but false positive in return statements (e.g. APIs)
+#
+Style/DoubleNegation:
+  Enabled: false
+
+#
+# Our default string token has the '%{value}' format
+#
+Style/FormatStringToken:
+  EnforcedStyle: template
+
+#
+# Far to often easy to read without.
+#
+Style/GuardClause:
+  Enabled: false
+
+#
+# IfUnlessModifier has no own line length but we do not want it to force 120
+# chars long modifiers just because we allow a few long lines.
+#
+Style/IfUnlessModifier:
+  Enabled: false
+
+##
+## Scripts might include on top-level
+##
+#Style/MixinUsage:
+#  Exclude:
+#    - "scripts/**/*"
+#    - "services/*/scripts/**/*"
+
+#
+# Well, we do this. To often to disable them. Studid.
+#
+Style/MultilineBlockChain:
+  Enabled: false
+
+#Style/NumericPredicate:
+#  Enabled: false
+
+Style/RaiseArgs:
+  EnforcedStyle: compact
+
+##
+## Quick single line rescues in specs
+##
+#Style/RescueModifier:
+#  Exclude:
+#    - "spec/**/*_spec.rb"
+#
+##
+## Quick single line rescues in specs
+##
+#Style/RescueStandardError:
+#  Enabled: false
+
+##
+## Often used pattern in chaining subjects in specs
+##
+#Style/Semicolon:
+#  Exclude:
+#    - "services/*/spec/**/*_spec.rb"
+#    - "spec/**/*_spec.rb"
+
+Style/SignalException:
+  EnforcedStyle: only_raise
+
+#
+# Rails callbacks and all methods action on the arity of the given block will
+# behave differently if passed a symbol proc.
+#
+# See here for more details:
+#   https://github.com/rubocop-hq/rubocop/issues/3071#issuecomment-214550737
+#
+# Ignore all known Rails callback methods.
+#
+Style/SymbolProc:
+  IgnoredMethods:
+    - after_commit
+    - after_create
+    - after_destroy
+    - after_rollback
+    - after_save
+    - after_update
+    - after_validation
+    - around_create
+    - around_destroy
+    - around_save
+    - around_update
+    - before_create
+    - before_destroy
+    - before_save
+    - before_update
+    - before_validation
+    # Migrations look better with blocks
+    - create_table
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
