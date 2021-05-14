@@ -1,0 +1,66 @@
+# TODOs
+
+# The API seems to use huge amounts of {...} blocks for it's API design.
+#
+Style/BlockDelimiters:
+  Exclude:
+    - api/**/*.rb
+
+
+# Lots of line are too long too.
+#
+Layout/LineLength:
+  Max: 325
+
+Metrics/BlockLength:
+  Max: 110
+
+Metrics/ClassLength:
+  Max: 550
+
+Metrics/ModuleLength:
+  Max: 220
+
+# It's a very complicated application...
+#
+Metrics/CyclomaticComplexity:
+  Max: 20
+
+Metrics/PerceivedComplexity:
+  Max: 22
+
+# We don't want to change previous migrations...
+#
+Rails/CreateTableWithTimestamps:
+  Enabled: false
+
+Rails/BulkChangeTable:
+  Enabled: false
+
+Rails/ReversibleMigration:
+  Enabled: false
+
+Rails/NotNullColumn:
+  Enabled: false
+
+# The models need to be fixed anyway
+#
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Rails/HasAndBelongsToMany:
+  Enabled: false
+
+Rails/InverseOf:
+  Enabled: false
+
+# We have too many specs with too many lets
+#
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false

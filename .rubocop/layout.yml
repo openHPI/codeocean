@@ -1,0 +1,42 @@
+# layout cop settings
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/CaseIndentation:
+  EnforcedStyle: end
+  SupportedStyles:
+    - case
+    - end
+  IndentOneStep: true
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
+
+#
+# There are good reasons for key as well as table style.
+#
+Layout/HashAlignment:
+  Enabled: false
+
+Layout/LineLength:
+  Exclude:
+    - "api/**/*"
+    - "config/**/*"
+    - "db/**/*"
+    - "spec/**/*"
+  Max: 120
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/SpaceInsideBlockBraces:
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: no_space
+  SpaceBeforeBlockParameters: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
