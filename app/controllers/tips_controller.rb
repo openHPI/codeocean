@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TipsController < ApplicationController
   include CommonBehavior
 
@@ -19,15 +21,14 @@ class TipsController < ApplicationController
     destroy_and_respond(object: @tip)
   end
 
-  def edit
-  end
+  def edit; end
 
   def tip_params
-    return unless params[:tip].present?
+    return if params[:tip].blank?
 
     params[:tip]
       .permit(:title, :description, :example, :file_type_id)
-      .each { |_key, value| value.strip! unless value.is_a?(Array) }
+      .each {|_key, value| value.strip! unless value.is_a?(Array) }
       .merge(user_id: current_user.id, user_type: current_user.class.name)
   end
   private :tip_params
@@ -48,8 +49,7 @@ class TipsController < ApplicationController
   end
   private :set_tip
 
-  def show
-  end
+  def show; end
 
   def update
     update_and_respond(object: @tip, params: tip_params)

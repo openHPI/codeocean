@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe ApplicationController do
   describe '#current_user' do
     context 'with an external user' do
       let(:external_user) { FactoryBot.create(:external_user) }
-      before(:each) { session[:external_user_id] = external_user.id }
+
+      before { session[:external_user_id] = external_user.id }
 
       it 'returns the external user' do
         expect(controller.current_user).to eq(external_user)
@@ -13,7 +16,8 @@ describe ApplicationController do
 
     context 'without an external user' do
       let(:internal_user) { FactoryBot.create(:teacher) }
-      before(:each) { login_user(internal_user) }
+
+      before { login_user(internal_user) }
 
       it 'returns the internal user' do
         expect(controller.current_user).to eq(internal_user)
@@ -22,7 +26,7 @@ describe ApplicationController do
   end
 
   describe '#render_not_authorized' do
-    before(:each) do
+    before do
       expect(controller).to receive(:welcome) { controller.send(:render_not_authorized) }
       get :welcome
     end
@@ -35,19 +39,19 @@ describe ApplicationController do
     let(:locale) { :de }
 
     context 'when specifying a locale' do
-      before(:each) { allow(session).to receive(:[]=).at_least(:once) }
+      before { allow(session).to receive(:[]=).at_least(:once) }
 
       context "using the 'custom_locale' parameter" do
         it 'overwrites the session' do
           expect(session).to receive(:[]=).with(:locale, locale.to_s)
-          get :welcome, params: { custom_locale: locale }
+          get :welcome, params: {custom_locale: locale}
         end
       end
 
       context "using the 'locale' parameter" do
         it 'overwrites the session' do
           expect(session).to receive(:[]=).with(:locale, locale.to_s)
-          get :welcome, params: { locale: locale }
+          get :welcome, params: {locale: locale}
         end
       end
     end
@@ -70,7 +74,7 @@ describe ApplicationController do
   end
 
   describe 'GET #welcome' do
-    before(:each) { get :welcome }
+    before { get :welcome }
 
     expect_status(200)
     expect_template(:welcome)

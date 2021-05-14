@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'oauth/request_proxy/action_controller_request' # Rails 5 changed `Rack::Request` to `ActionDispatch::Request`
 
 module LtiHelper

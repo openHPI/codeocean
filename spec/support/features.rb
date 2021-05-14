@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def expect_forbidden_path(path_name)
   it "forbids to access the #{path_name.to_s.split('_').join(' ')}" do
     visit(send(path_name))

@@ -18,7 +18,7 @@ external_user = FactoryBot.create(:external_user)
 ExecutionEnvironment.create_factories user: admin
 
 # exercises
-@exercises = find_factories_by_class(Exercise).map(&:name).map { |factory_name| [factory_name, FactoryBot.create(factory_name, user: teacher)] }.to_h
+@exercises = find_factories_by_class(Exercise).map(&:name).index_with {|factory_name| FactoryBot.create(factory_name, user: teacher) }
 
 # file types
 FileType.create_factories

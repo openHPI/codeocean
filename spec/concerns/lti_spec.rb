@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 class Controller < AnonymousController
@@ -31,7 +33,7 @@ describe Lti do
     let(:last_name) { 'Doe' }
     let(:full_name) { 'John Doe' }
     let(:provider) { double }
-    let(:provider_full) { double(:lis_person_name_full => full_name) }
+    let(:provider_full) { double(lis_person_name_full: full_name) }
 
     context 'when a full name is provided' do
       it 'returns the full name' do
@@ -61,7 +63,8 @@ describe Lti do
   describe '#return_to_consumer' do
     context 'with a return URL' do
       let(:consumer_return_url) { 'http://example.org' }
-      before(:each) { expect(controller).to receive(:params).and_return(launch_presentation_return_url: consumer_return_url) }
+
+      before { expect(controller).to receive(:params).and_return(launch_presentation_return_url: consumer_return_url) }
 
       it 'redirects to the tool consumer' do
         expect(controller).to receive(:redirect_to).with(consumer_return_url)
@@ -76,7 +79,7 @@ describe Lti do
     end
 
     context 'without a return URL' do
-      before(:each) do
+      before do
         expect(controller).to receive(:params).and_return({})
         expect(controller).to receive(:redirect_to).with(:root)
       end
@@ -101,7 +104,7 @@ describe Lti do
     let(:consumer) { FactoryBot.create(:consumer) }
     let(:score) { 0.5 }
     let(:submission) { FactoryBot.create(:submission) }
-    let!(:lti_parameter) { FactoryBot.create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.user_id, exercises_id: submission.exercise_id)}
+    let!(:lti_parameter) { FactoryBot.create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.user_id, exercises_id: submission.exercise_id) }
 
     context 'with an invalid score' do
       it 'raises an exception' do
@@ -112,7 +115,6 @@ describe Lti do
 
     context 'with an valid score' do
       context 'with a tool consumer' do
-
         context 'when grading is not supported' do
           it 'returns a corresponding status' do
             expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
@@ -124,7 +126,7 @@ describe Lti do
         context 'when grading is supported' do
           let(:response) { double }
 
-          before(:each) do
+          before do
             expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
             expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score).and_return(response)
             expect(response).to receive(:response_code).at_least(:once).and_return(200)
@@ -170,7 +172,7 @@ describe Lti do
       controller.send(:store_lti_session_data, consumer: FactoryBot.build(:consumer), parameters: parameters)
     end
 
-    it 'it creates an LtiParameter Object' do
+    it 'creates an LtiParameter Object' do
       before_count = LtiParameter.count
       controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user))
       controller.instance_variable_set(:@exercise, FactoryBot.create(:fibonacci))

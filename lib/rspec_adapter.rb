@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class RspecAdapter < TestingFrameworkAdapter
-  REGEXP = /(\d+) examples?, (\d+) failures?/
+  REGEXP = /(\d+) examples?, (\d+) failures?/.freeze
 
   def self.framework_name
     'RSpec 3'

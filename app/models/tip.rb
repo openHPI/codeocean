@@ -6,11 +6,16 @@ class Tip < ApplicationRecord
   has_many :exercise_tips
   has_many :exercises, through: :exercise_tips
   belongs_to :file_type, optional: true
-  validates_presence_of :file_type, if: :example?
+  validates :file_type, presence: {if: :example?}
   validate :content?
 
   def content?
-    errors.add :description, I18n.t('activerecord.errors.messages.at_least', attribute: I18n.t('activerecord.attributes.tip.example')) unless [description?, example?].include?(true)
+    unless [
+      description?, example?
+    ].include?(true)
+      errors.add :description,
+        I18n.t('activerecord.errors.messages.at_least', attribute: I18n.t('activerecord.attributes.tip.example'))
+    end
   end
 
   def to_s

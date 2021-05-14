@@ -19,9 +19,9 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
     let(:convert_to_task) { described_class.new(exercise: exercise) }
     let(:exercise) do
       FactoryBot.create(:dummy,
-                        instructions: 'instruction',
-                        uuid: SecureRandom.uuid,
-                        files: files + tests)
+        instructions: 'instruction',
+        uuid: SecureRandom.uuid,
+        files: files + tests)
     end
     let(:files) { [] }
     let(:tests) { [] }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
     identified_by :current_user
@@ -20,11 +22,7 @@ module ApplicationCable
     def find_verified_user
       # Finding the current_user is similar to the code used in application_controller.rb#current_user
       current_user = ExternalUser.find_by(id: session[:external_user_id]) || InternalUser.find_by(id: session[:user_id])
-      if current_user
-        current_user
-      else
-        reject_unauthorized_connection
-      end
+      current_user || reject_unauthorized_connection
     end
   end
 end

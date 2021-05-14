@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 class SessionsController < ApplicationController
   include Lti
 
-  [:require_oauth_parameters, :require_valid_consumer_key, :require_valid_oauth_signature, :require_unique_oauth_nonce, :set_current_user, :require_valid_exercise_token, :set_study_group_membership, :set_embedding_options].each do |method_name|
+  %i[require_oauth_parameters require_valid_consumer_key require_valid_oauth_signature require_unique_oauth_nonce
+     set_current_user require_valid_exercise_token set_study_group_membership set_embedding_options].each do |method_name|
     before_action(method_name, only: :create_through_lti)
   end
 
@@ -24,8 +27,8 @@ class SessionsController < ApplicationController
       redirect_to(params[:custom_redirect_target])
     else
       redirect_to(implement_exercise_path(@exercise),
-                  notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, @current_user.id) ? 'with' : 'without'}_outcome",
-                  consumer: @consumer))
+        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, @current_user.id) ? 'with' : 'without'}_outcome",
+          consumer: @consumer))
     end
   end
 

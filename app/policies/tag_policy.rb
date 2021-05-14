@@ -1,5 +1,6 @@
-class TagPolicy < AdminOnlyPolicy
+# frozen_string_literal: true
 
+class TagPolicy < AdminOnlyPolicy
   class Scope < Scope
     def resolve
       if @user.admin? || @user.teacher?
@@ -9,5 +10,4 @@ class TagPolicy < AdminOnlyPolicy
       end
     end
   end
-
 end

@@ -4,13 +4,13 @@ require 'seeds_helper'
 
 def create_seed_file(exercise, path, file_attributes = {})
   file_extension = File.extname(path)
-  file_type = FactoryBot.create(file_attributes[:file_type] || :"dot_#{file_extension.gsub('.', '')}")
+  file_type = FactoryBot.create(file_attributes[:file_type] || :"dot_#{file_extension.delete('.')}")
   name = File.basename(path).gsub(file_extension, '')
   file_attributes.merge!(file_type: file_type, name: name, path: path.split('/')[1..-2].join('/'), role: file_attributes[:role] || 'regular_file')
   if file_type.binary?
-    file_attributes.merge!(native_file: File.open(SeedsHelper.seed_file_path(path), 'r'))
+    file_attributes[:native_file] = File.open(SeedsHelper.seed_file_path(path), 'r')
   else
-    file_attributes.merge!(content: SeedsHelper.read_seed_file(path))
+    file_attributes[:content] = SeedsHelper.read_seed_file(path)
   end
   exercise.add_file!(file_attributes)
 end

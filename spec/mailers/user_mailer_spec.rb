@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe UserMailer do
@@ -6,7 +8,7 @@ describe UserMailer do
   describe '#activation_needed_email' do
     let(:mail) { described_class.activation_needed_email(user) }
 
-    before(:each) do
+    before do
       user.send(:setup_activation)
       user.save(validate: false)
     end
@@ -37,7 +39,7 @@ describe UserMailer do
   describe '#reset_password_email' do
     let(:mail) { described_class.reset_password_email(user) }
 
-    before(:each) do
+    before do
       user.send(:setup_activation)
       user.save(validate: false)
     end

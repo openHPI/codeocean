@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DefaultValues
   def set_default_values_if_present(options = {})
     options.each do |attribute, value|

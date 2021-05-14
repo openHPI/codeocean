@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class PyLintAdapter < TestingFrameworkAdapter
-  REGEXP = /Your code has been rated at (-?\d+\.?\d*)\/(\d+\.?\d*)/
-  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):(.*?)\(([^,]*?), ([^,]*?),([^,]*?)\) (.*?)$/
+  REGEXP = %r{Your code has been rated at (-?\d+\.?\d*)/(\d+\.?\d*)}.freeze
+  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):(.*?)\(([^,]*?), ([^,]*?),([^,]*?)\) (.*?)$/.freeze
 
   def self.framework_name
     'PyLint'
@@ -22,14 +24,14 @@ class PyLintAdapter < TestingFrameworkAdapter
       assertion_error_matches = Timeout.timeout(2.seconds) do
         output[:stdout].scan(ASSERTION_ERROR_REGEXP).map do |match|
           {
-              file_name: match[0].strip,
+            file_name: match[0].strip,
               line: match[1].to_i,
               severity: match[2].strip,
               code: match[3].strip,
               name: match[4].strip,
               # e.g. function name, nil if outside of a function. Not always available
               scope: match[5].strip.presence,
-              result: match[6].strip
+              result: match[6].strip,
           }
         end || []
       end
@@ -37,8 +39,9 @@ class PyLintAdapter < TestingFrameworkAdapter
       Sentry.capture_message({stdout: output[:stdout], regex: ASSERTION_ERROR_REGEXP}.to_json)
       assertion_error_matches = []
     end
-    concatenated_errors = assertion_error_matches.map { |result| "#{result[:name]}: #{result[:result]}" }.flatten
-    {count: count, failed: failed, error_messages: concatenated_errors, detailed_linter_results: assertion_error_matches}
+    concatenated_errors = assertion_error_matches.map {|result| "#{result[:name]}: #{result[:result]}" }.flatten
+    {count: count, failed: failed, error_messages: concatenated_errors,
+detailed_linter_results: assertion_error_matches}
   end
 
   def self.translate_linter(assessment, locale)
@@ -47,7 +50,7 @@ class PyLintAdapter < TestingFrameworkAdapter
 
     I18n.locale = locale || I18n.default_locale
 
-    return assessment unless assessment[:detailed_linter_results].present?
+    return assessment if assessment[:detailed_linter_results].blank?
 
     assessment[:detailed_linter_results].map! do |message|
       severity = message[:severity]
@@ -73,7 +76,7 @@ class PyLintAdapter < TestingFrameworkAdapter
         replacement = {}
       end
 
-      replacement.merge!(default: message[:result])
+      replacement[:default] = message[:result]
       message[:result] = I18n.t("linter.#{severity}.#{name}.replacement", replacement)
       message
     end

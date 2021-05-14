@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CodeOcean::File do
-  let(:file) { described_class.create.tap { |file| file.update(content: nil, hidden: nil, read_only: nil) } }
+  let(:file) { described_class.create.tap {|file| file.update(content: nil, hidden: nil, read_only: nil) } }
 
   it 'validates the presence of a file type' do
     expect(file.errors[:file_type_id]).to be_present
@@ -24,7 +26,7 @@ describe CodeOcean::File do
   end
 
   context 'as a teacher-defined test' do
-    before(:each) { file.update(role: 'teacher_defined_test') }
+    before { file.update(role: 'teacher_defined_test') }
 
     it 'validates the presence of a feedback message' do
       expect(file.errors[:feedback_message]).to be_present
@@ -41,7 +43,7 @@ describe CodeOcean::File do
   end
 
   context 'with another file type' do
-    before(:each) { file.update(role: 'regular_file') }
+    before { file.update(role: 'regular_file') }
 
     it 'validates the absence of a feedback message' do
       file.update(feedback_message: 'Your solution is not correct yet.')

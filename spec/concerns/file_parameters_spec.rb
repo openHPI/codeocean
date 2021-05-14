@@ -19,7 +19,7 @@ describe FileParameters do
 
     describe 'accepts' do
       it 'main file of the exercise' do
-        main_file = hello_world.files.find { |e| e.role = 'main_file' }
+        main_file = hello_world.files.find {|e| e.role = 'main_file' }
         expect(file_accepted?(main_file)).to be true
       end
 

@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe ExercisePolicy do
   subject { described_class }
 
-let(:exercise) { FactoryBot.build(:dummy, public: true) }
+  let(:exercise) { FactoryBot.build(:dummy, public: true) }
 
   permissions :batch_update? do
     it 'grants access to admins only' do
       expect(subject).to permit(FactoryBot.build(:admin), exercise)
-      [:external_user, :teacher].each do |factory_name|
+      %i[external_user teacher].each do |factory_name|
         expect(subject).not_to permit(FactoryBot.build(factory_name), exercise)
       end
     end
   end
 
-  [:create?, :index?, :new?, :statistics?, :feedback?, :get_rfcs_for_exercise?].each do |action|
+  %i[create? index? new? statistics? feedback? get_rfcs_for_exercise?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), exercise)
@@ -30,7 +32,7 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
     end
   end
 
-  [:clone?, :destroy?, :edit?, :update?].each do |action|
+  %i[clone? destroy? edit? update?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), exercise)
@@ -41,14 +43,14 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
       end
 
       it 'does not grant access to all other users' do
-        [:external_user, :teacher].each do |factory_name|
+        %i[external_user teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), exercise)
         end
       end
     end
   end
 
-  [:export_external_check?, :export_external_confirm?].each do |action|
+  %i[export_external_check? export_external_confirm?].each do |action|
     permissions(action) do
       context 'when user is author' do
         let(:user) { exercise.author }
@@ -82,7 +84,7 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
         end
       end
 
-      [:external_user, :teacher].each do |factory_name|
+      %i[external_user teacher].each do |factory_name|
         context "when user is #{factory_name}" do
           let(:user) { FactoryBot.build(factory_name) }
 
@@ -110,10 +112,10 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
     end
   end
 
-  [:implement?, :submit?].each do |action|
+  %i[implement? submit?].each do |action|
     permissions(action) do
       it 'grants access to anyone' do
-        [:admin, :external_user, :teacher].each do |factory_name|
+        %i[admin external_user teacher].each do |factory_name|
           expect(subject).to permit(FactoryBot.build(factory_name), Exercise.new)
         end
       end
@@ -151,7 +153,6 @@ let(:exercise) { FactoryBot.build(:dummy, public: true) }
       end
 
       context 'for teachers' do
-
         let(:scope) { Pundit.policy_scope!(@teacher, Exercise) }
 
         it 'includes all public exercises' do

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 RailsAdmin.config do |config|
-
   ### Popular gems integration
 
   ## == Devise ==
@@ -63,23 +62,23 @@ RailsAdmin.config do |config|
             per_page(value)
           end
 
-          def total_count()
+          def total_count
             count
           end
 
-          def first_page?()
+          def first_page?
             self == first
           end
 
-          def last_page?()
+          def last_page?
             self == last
           end
         end
       end
+
       module CollectionMethods
-        alias_method :num_pages, :total_pages
+        alias num_pages total_pages
       end
     end
   end
 end
-

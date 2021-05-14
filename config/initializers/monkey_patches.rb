@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 unless Array.respond_to?(:average)
   class Array
     def average
-      inject(:+) / length unless blank?
+      inject(:+) / length if present?
     end
   end
 end
@@ -9,7 +11,7 @@ end
 unless Array.respond_to?(:to_h)
   class Array
     def to_h
-      Hash[self]
+      to_h
     end
   end
 end

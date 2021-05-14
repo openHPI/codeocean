@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'seeds_helper'
 
 module CodeOcean

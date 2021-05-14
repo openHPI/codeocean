@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class ErrorTemplateAttributesController < ApplicationController
-  before_action :set_error_template_attribute, only: [:show, :edit, :update, :destroy]
+  before_action :set_error_template_attribute, only: %i[show edit update destroy]
 
   def authorize!
     authorize(@error_template_attributes || @error_template_attribute)
@@ -9,7 +11,8 @@ class ErrorTemplateAttributesController < ApplicationController
   # GET /error_template_attributes
   # GET /error_template_attributes.json
   def index
-    @error_template_attributes = ErrorTemplateAttribute.all.order('important DESC', :key, :id).paginate(page: params[:page])
+    @error_template_attributes = ErrorTemplateAttribute.all.order('important DESC', :key,
+      :id).paginate(page: params[:page])
     authorize!
   end
 
@@ -38,7 +41,9 @@ class ErrorTemplateAttributesController < ApplicationController
 
     respond_to do |format|
       if @error_template_attribute.save
-        format.html { redirect_to @error_template_attribute, notice: 'Error template attribute was successfully created.' }
+        format.html do
+          redirect_to @error_template_attribute, notice: 'Error template attribute was successfully created.'
+        end
         format.json { render :show, status: :created, location: @error_template_attribute }
       else
         format.html { render :new }
@@ -53,7 +58,9 @@ class ErrorTemplateAttributesController < ApplicationController
     authorize!
     respond_to do |format|
       if @error_template_attribute.update(error_template_attribute_params)
-        format.html { redirect_to @error_template_attribute, notice: 'Error template attribute was successfully updated.' }
+        format.html do
+          redirect_to @error_template_attribute, notice: 'Error template attribute was successfully updated.'
+        end
         format.json { render :show, status: :ok, location: @error_template_attribute }
       else
         format.html { render :edit }
@@ -68,19 +75,25 @@ class ErrorTemplateAttributesController < ApplicationController
     authorize!
     @error_template_attribute.destroy
     respond_to do |format|
-      format.html { redirect_to error_template_attributes_url, notice: 'Error template attribute was successfully destroyed.' }
+      format.html do
+        redirect_to error_template_attributes_url, notice: 'Error template attribute was successfully destroyed.'
+      end
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_error_template_attribute
-      @error_template_attribute = ErrorTemplateAttribute.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def error_template_attribute_params
-      params[:error_template_attribute].permit(:key, :description, :regex, :important) if params[:error_template_attribute].present?
+  # Use callbacks to share common setup or constraints between actions.
+  def set_error_template_attribute
+    @error_template_attribute = ErrorTemplateAttribute.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def error_template_attribute_params
+    if params[:error_template_attribute].present?
+      params[:error_template_attribute].permit(:key, :description, :regex,
+        :important)
     end
+  end
 end

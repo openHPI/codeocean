@@ -26,7 +26,7 @@ module ProformaService
           tests: tests,
           uuid: uuid,
           language: DEFAULT_LANGUAGE,
-          model_solutions: model_solutions
+          model_solutions: model_solutions,
         }.compact
       )
     end
@@ -37,7 +37,7 @@ module ProformaService
     end
 
     def model_solutions
-      @exercise.files.filter { |file| file.role == 'reference_implementation' }.map do |file|
+      @exercise.files.filter {|file| file.role == 'reference_implementation' }.map do |file|
         Proforma::ModelSolution.new(
           id: "ms-#{file.id}",
           files: model_solution_file(file)
@@ -50,18 +50,20 @@ module ProformaService
         task_file(file).tap do |ms_file|
           ms_file.used_by_grader = false
           ms_file.usage_by_lms = 'display'
-        end
+        end,
       ]
     end
 
     def tests
-      @exercise.files.filter { |file| file.role == 'teacher_defined_test' || file.role == 'teacher_defined_linter' }.map do |file|
+      @exercise.files.filter do |file|
+        file.role == 'teacher_defined_test' || file.role == 'teacher_defined_linter'
+      end.map do |file|
         Proforma::Test.new(
           id: file.id,
           title: file.name,
           files: test_file(file),
           meta_data: {
-            'feedback-message' => file.feedback_message
+            'feedback-message' => file.feedback_message,
           }.compact
         )
       end
@@ -72,13 +74,16 @@ module ProformaService
         task_file(file).tap do |t_file|
           t_file.used_by_grader = true
           t_file.internal_description = 'teacher_defined_test'
-        end
+        end,
       ]
     end
 
     def task_files
       @exercise.files
-               .filter { |file| !file.role.in? %w[reference_implementation teacher_defined_test teacher_defined_linter] }.map do |file|
+        .filter do |file|
+        !file.role.in? %w[reference_implementation teacher_defined_test
+                          teacher_defined_linter]
+      end.map do |file|
         task_file(file)
       end
     end
@@ -96,7 +101,12 @@ module ProformaService
     end
 
     def filename(file)
-      file.path.present? && file.path != '.' ? ::File.join(file.path, file.name_with_extension) : file.name_with_extension
+      if file.path.present? && file.path != '.'
+        ::File.join(file.path,
+          file.name_with_extension)
+      else
+        file.name_with_extension
+      end
     end
 
     def add_content_to_task_file(file, task_file)

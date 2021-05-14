@@ -1,4 +1,6 @@
-require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
+# frozen_string_literal: true
+
+require File.expand_path('../../lib/active_model/validations/boolean_presence_validator', __dir__)
 
 class ExecutionEnvironment < ApplicationRecord
   include Creation
@@ -17,7 +19,8 @@ class ExecutionEnvironment < ApplicationRecord
   validate :valid_test_setup?
   validate :working_docker_image?, if: :validate_docker_image?
   validates :docker_image, presence: true
-  validates :memory_limit, numericality: {greater_than_or_equal_to: DockerClient::MINIMUM_MEMORY_LIMIT, only_integer: true}, presence: true
+  validates :memory_limit,
+    numericality: {greater_than_or_equal_to: DockerClient::MINIMUM_MEMORY_LIMIT, only_integer: true}, presence: true
   validates :network_enabled, boolean_presence: true
   validates :name, presence: true
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
@@ -35,7 +38,9 @@ class ExecutionEnvironment < ApplicationRecord
 
   def valid_test_setup?
     if test_command? ^ testing_framework?
-      errors.add(:test_command, I18n.t('activerecord.errors.messages.together', attribute: I18n.t('activerecord.attributes.execution_environment.testing_framework')))
+      errors.add(:test_command,
+        I18n.t('activerecord.errors.messages.together',
+          attribute: I18n.t('activerecord.attributes.execution_environment.testing_framework')))
     end
   end
   private :valid_test_setup?
@@ -46,11 +51,11 @@ class ExecutionEnvironment < ApplicationRecord
   private :validate_docker_image?
 
   def working_docker_image?
-    DockerClient.pull(docker_image) unless DockerClient.find_image_by_tag(docker_image).blank?
+    DockerClient.pull(docker_image) if DockerClient.find_image_by_tag(docker_image).present?
     output = DockerClient.new(execution_environment: self).execute_arbitrary_command(VALIDATION_COMMAND)
     errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
-  rescue DockerClient::Error => error
-    errors.add(:docker_image, "error: #{error}")
+  rescue DockerClient::Error => e
+    errors.add(:docker_image, "error: #{e}")
   end
   private :working_docker_image?
 end

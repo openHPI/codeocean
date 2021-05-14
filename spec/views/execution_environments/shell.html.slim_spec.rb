@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe 'execution_environments/shell.html.slim' do
   let(:execution_environment) { FactoryBot.create(:ruby) }
 
-  before(:each) do
+  before do
     assign(:execution_environment, execution_environment)
     render
   end

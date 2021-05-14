@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TagsController < ApplicationController
   include CommonBehavior
 
@@ -18,8 +20,7 @@ class TagsController < ApplicationController
     destroy_and_respond(object: @tag)
   end
 
-  def edit
-  end
+  def edit; end
 
   def tag_params
     params[:tag].permit(:name) if params[:tag].present?
@@ -42,8 +43,7 @@ class TagsController < ApplicationController
   end
   private :set_tag
 
-  def show
-  end
+  def show; end
 
   def update
     update_and_respond(object: @tag, params: tag_params)

@@ -4,7 +4,12 @@ module SubmissionParameters
   include FileParameters
 
   def submission_params
-    submission_params = params[:submission].present? ? params[:submission].permit(:cause, :exercise_id, files_attributes: file_attributes) : {}
+    submission_params = if params[:submission].present?
+                          params[:submission].permit(:cause, :exercise_id,
+                            files_attributes: file_attributes)
+                        else
+                          {}
+                        end
     submission_params = merge_user(submission_params)
     files_attributes = submission_params[:files_attributes]
     exercise = Exercise.find_by(id: submission_params[:exercise_id])

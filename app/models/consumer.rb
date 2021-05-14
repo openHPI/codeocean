@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Consumer < ApplicationRecord
   has_many :users
 

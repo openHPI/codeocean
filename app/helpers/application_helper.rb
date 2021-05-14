@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationHelper
   APPLICATION_NAME = 'CodeOcean'
 
@@ -7,8 +9,8 @@ module ApplicationHelper
 
   def code_tag(code, language = nil)
     if code.present?
-      content_tag(:pre) do
-        content_tag(:code, code, class: "language-#{language}")
+      tag.pre do
+        tag.code(code, class: "language-#{language}")
       end
     else
       empty
@@ -16,12 +18,12 @@ module ApplicationHelper
   end
 
   def empty
-    content_tag(:i, nil, class: 'empty fa fa-minus')
+    tag.i(nil, class: 'empty fa fa-minus')
   end
 
   def label_column(label)
-    content_tag(:div, class: 'col-sm-3') do
-      content_tag(:strong) do
+    tag.div(class: 'col-sm-3') do
+      tag.strong do
         I18n.translation_present?("activerecord.attributes.#{label}") ? t("activerecord.attributes.#{label}") : t(label)
       end
     end
@@ -29,12 +31,13 @@ module ApplicationHelper
   private :label_column
 
   def no
-    content_tag(:i, nil, class: 'fa fa-times')
+    tag.i(nil, class: 'fa fa-times')
   end
 
   def progress_bar(value)
-    content_tag(:div, class: value ? 'progress' : 'disabled progress') do
-      content_tag(:div, value ? "#{value}%" : '', :'aria-valuemax' => 100, :'aria-valuemin' => 0, :'aria-valuenow' => value, class: 'progress-bar progress-bar-striped', role: 'progressbar', style: "width: #{[value || 0, 100].min}%;")
+    tag.div(class: value ? 'progress' : 'disabled progress') do
+      tag.div(value ? "#{value}%" : '', 'aria-valuemax': 100, 'aria-valuemin': 0,
+'aria-valuenow': value, class: 'progress-bar progress-bar-striped', role: 'progressbar', style: "width: #{[value || 0, 100].min}%;")
     end
   end
 
@@ -43,7 +46,7 @@ module ApplicationHelper
   end
 
   def row(options = {}, &block)
-    content_tag(:div, class: 'attribute-row row') do
+    tag.div(class: 'attribute-row row') do
       label_column(options[:label]) + value_column(options[:value], &block)
     end
   end
@@ -61,13 +64,13 @@ module ApplicationHelper
   end
 
   def value_column(value)
-    content_tag(:div, class: 'col-sm-9') do
+    tag.div(class: 'col-sm-9') do
       block_given? ? yield : symbol_for(value)
     end
   end
   private :value_column
 
   def yes
-    content_tag(:i, nil, class: 'fa fa-check')
+    tag.i(nil, class: 'fa fa-check')
   end
 end

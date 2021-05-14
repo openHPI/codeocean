@@ -7,7 +7,8 @@ class CodeharborLinksController < ApplicationController
 
   def new
     base_url = CodeOcean::Config.new(:code_ocean).read[:codeharbor][:url] || ''
-    @codeharbor_link = CodeharborLink.new(push_url: base_url + '/import_exercise', check_uuid_url: base_url + '/import_uuid_check')
+    @codeharbor_link = CodeharborLink.new(push_url: "#{base_url}/import_exercise",
+check_uuid_url: "#{base_url}/import_uuid_check")
     authorize!
   end
 

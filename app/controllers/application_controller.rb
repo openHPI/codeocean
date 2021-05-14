@@ -14,7 +14,8 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
 
   def current_user
-    ::NewRelic::Agent.add_custom_attributes(external_user_id: session[:external_user_id], session_user_id: session[:user_id])
+    ::NewRelic::Agent.add_custom_attributes(external_user_id: session[:external_user_id],
+session_user_id: session[:user_id])
     @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources || nil
   end
 
@@ -59,7 +60,7 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html do
         # Prevent redirect loop
-        if request.url == request.referrer
+        if request.url == request.referer
           redirect_to :root, alert: message
         else
           redirect_back fallback_location: :root, allow_other_host: false, alert: message

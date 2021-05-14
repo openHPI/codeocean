@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Submission do
@@ -28,7 +30,8 @@ describe Submission do
   describe '#normalized_score' do
     context 'with a score' do
       let(:submission) { FactoryBot.create(:submission) }
-      before(:each) { submission.score = submission.exercise.maximum_score / 2 }
+
+      before { submission.score = submission.exercise.maximum_score / 2 }
 
       it 'returns the score as a value between 0 and 1' do
         expect(0..1).to include(submission.normalized_score)
@@ -36,7 +39,7 @@ describe Submission do
     end
 
     context 'without a score' do
-      before(:each) { submission.score = nil }
+      before { submission.score = nil }
 
       it 'returns 0' do
         expect(submission.normalized_score).to be 0
@@ -47,7 +50,8 @@ describe Submission do
   describe '#percentage' do
     context 'with a score' do
       let(:submission) { FactoryBot.create(:submission) }
-      before(:each) { submission.score = submission.exercise.maximum_score / 2 }
+
+      before { submission.score = submission.exercise.maximum_score / 2 }
 
       it 'returns the score expressed as a percentage' do
         expect(0..100).to include(submission.percentage)
@@ -55,7 +59,7 @@ describe Submission do
     end
 
     context 'without a score' do
-      before(:each) { submission.score = nil }
+      before { submission.score = nil }
 
       it 'returns 0' do
         expect(submission.percentage).to be 0
@@ -67,7 +71,7 @@ describe Submission do
     let(:siblings) { described_class.find_by(user: user).siblings }
     let(:user) { FactoryBot.create(:external_user) }
 
-    before(:each) do
+    before do
       10.times.each_with_index do |_, index|
         FactoryBot.create(:submission, exercise: submission.exercise, user: (index.even? ? user : FactoryBot.create(:external_user)))
       end
@@ -87,11 +91,10 @@ describe Submission do
   end
 
   describe '#redirect_to_feedback?' do
-
     context 'with no exercise feedback' do
-      let(:exercise) {FactoryBot.create(:dummy)}
-      let(:user) {FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10)}
-      let(:submission) {FactoryBot.build(:submission, exercise: exercise, user: user)}
+      let(:exercise) { FactoryBot.create(:dummy) }
+      let(:user) { FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10) }
+      let(:submission) { FactoryBot.build(:submission, exercise: exercise, user: user) }
 
       it 'sends 10% of users to feedback page' do
         expect(submission.send(:redirect_to_feedback?)).to be_truthy
@@ -106,9 +109,9 @@ describe Submission do
     end
 
     context 'with little exercise feedback' do
-      let(:exercise) {FactoryBot.create(:dummy_with_user_feedbacks)}
-      let(:user) {FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10)}
-      let(:submission) {FactoryBot.build(:submission, exercise: exercise, user: user)}
+      let(:exercise) { FactoryBot.create(:dummy_with_user_feedbacks) }
+      let(:user) { FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10) }
+      let(:submission) { FactoryBot.build(:submission, exercise: exercise, user: user) }
 
       it 'sends 10% of users to feedback page' do
         expect(submission.send(:redirect_to_feedback?)).to be_truthy
@@ -123,15 +126,15 @@ describe Submission do
     end
 
     context 'with enough exercise feedback' do
-      let(:exercise) {FactoryBot.create(:dummy_with_user_feedbacks, user_feedbacks_count: 42)}
-      let(:user) {FactoryBot.create(:external_user)}
+      let(:exercise) { FactoryBot.create(:dummy_with_user_feedbacks, user_feedbacks_count: 42) }
+      let(:user) { FactoryBot.create(:external_user) }
 
       before do
         allow_any_instance_of(described_class).to receive(:redirect_to_feedback?).and_return(false)
       end
 
       it 'sends nobody to feedback page' do
-        30.times do |i|
+        30.times do |_i|
           submission = FactoryBot.create(:submission, exercise: exercise, user: FactoryBot.create(:external_user))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end

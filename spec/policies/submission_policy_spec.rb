@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe SubmissionPolicy do
@@ -5,13 +7,13 @@ describe SubmissionPolicy do
 
   permissions :create? do
     it 'grants access to anyone' do
-      [:admin, :external_user, :teacher].each do |factory_name|
+      %i[admin external_user teacher].each do |factory_name|
         expect(subject).to permit(FactoryBot.build(factory_name), Submission.new)
       end
     end
   end
 
-  [:download_file?, :render_file?, :run?, :score?, :show?, :statistics?, :stop?, :test?].each do |action|
+  %i[download_file? render_file? run? score? show? statistics? stop? test?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), Submission.new)
@@ -27,7 +29,7 @@ describe SubmissionPolicy do
   permissions :index? do
     it 'grants access to admins only' do
       expect(subject).to permit(FactoryBot.build(:admin), Submission.new)
-      [:external_user, :teacher].each do |factory_name|
+      %i[external_user teacher].each do |factory_name|
         expect(subject).not_to permit(FactoryBot.build(factory_name), Submission.new)
       end
     end

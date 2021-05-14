@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe ExecutionEnvironmentPolicy do
@@ -21,7 +23,7 @@ describe ExecutionEnvironmentPolicy do
     end
   end
 
-  [:execute_command?, :shell?, :statistics?, :show?].each do |action|
+  %i[execute_command? shell? statistics? show?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), execution_environment)
@@ -32,14 +34,14 @@ describe ExecutionEnvironmentPolicy do
       end
 
       it 'does not grant access to all other users' do
-        [:external_user, :teacher].each do |factory_name|
+        %i[external_user teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), execution_environment)
         end
       end
     end
   end
 
-  [:destroy?, :edit?, :update?, :new?, :create?].each do |action|
+  %i[destroy? edit? update? new? create?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), execution_environment)
@@ -50,7 +52,7 @@ describe ExecutionEnvironmentPolicy do
       end
 
       it 'does not grant access to all other users' do
-        [:external_user, :teacher].each do |factory_name|
+        %i[external_user teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), execution_environment)
         end
       end

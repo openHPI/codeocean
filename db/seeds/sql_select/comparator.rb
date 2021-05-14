@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sqlite3'
 
 REFERENCE_QUERY = File.new('reference.sql', 'r').read

@@ -1,10 +1,7 @@
-module DockerContainerMixin
+# frozen_string_literal: true
 
-  attr_accessor :start_time
-  attr_accessor :status
-  attr_accessor :re_use
-  attr_accessor :execution_environment
-  attr_accessor :docker_client
+module DockerContainerMixin
+  attr_accessor :start_time, :status, :re_use, :execution_environment, :docker_client
 
   def binds
     host_config['Binds']
@@ -12,7 +9,7 @@ module DockerContainerMixin
 
   def port_bindings
     # Don't use cached version as this might be changed during runtime
-    json['HostConfig']['PortBindings'].try(:map) { |key, value| [key.to_i, value.first['HostPort'].to_i] }.to_h
+    json['HostConfig']['PortBindings'].try(:map) {|key, value| [key.to_i, value.first['HostPort'].to_i] }.to_h
   end
 
   def host_config

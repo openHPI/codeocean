@@ -111,7 +111,7 @@ namespace :detect_exercise_anomalies do
   end
 
   def notify_users(collection, anomalies)
-    by_id_and_type = proc { |u| {user_id: u[:user_id], user_type: u[:user_type]} }
+    by_id_and_type = proc {|u| {user_id: u[:user_id], user_type: u[:user_type]} }
 
     log('Sending E-Mails to best and worst performing users of each anomaly...', 2)
     anomalies.each do |exercise_id, average_working_time|
@@ -122,7 +122,7 @@ namespace :detect_exercise_anomalies do
       users = {}
       %i[performers_by_time performers_by_score].each do |method|
         # merge users found by multiple methods returning a hash {best: [], worst: []}
-        users = users.merge(send(method, exercise, NUMBER_OF_USERS_PER_CLASS)) { |_key, this, other| this + other }
+        users = users.merge(send(method, exercise, NUMBER_OF_USERS_PER_CLASS)) {|_key, this, other| this + other }
       end
 
       # write reasons for feedback emails to db
@@ -140,7 +140,8 @@ namespace :detect_exercise_anomalies do
       users_to_notify.each do |u|
         user = u[:user_type] == InternalUser.name ? InternalUser.find(u[:user_id]) : ExternalUser.find(u[:user_id])
         host = CodeOcean::Application.config.action_mailer.default_url_options[:host]
-        feedback_link = Rails.application.routes.url_helpers.url_for(action: :new, controller: :user_exercise_feedbacks, exercise_id: exercise.id, host: host)
+        feedback_link = Rails.application.routes.url_helpers.url_for(action: :new,
+controller: :user_exercise_feedbacks, exercise_id: exercise.id, host: host)
         UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
       end
       log("Asked #{users_to_notify.size} users for feedback.", 2)
@@ -149,7 +150,7 @@ namespace :detect_exercise_anomalies do
 
   def performers_by_score(exercise, users)
     submissions = exercise.last_submission_per_user.where.not(score: nil).order(score: :desc)
-    map_block = proc { |item| {user_id: item.user_id, user_type: item.user_type, value: item.score, reason: 'score'} }
+    map_block = proc {|item| {user_id: item.user_id, user_type: item.user_type, value: item.score, reason: 'score'} }
     best_performers = submissions.first(users).to_a.map(&map_block)
     worst_performers = submissions.last(users).to_a.map(&map_block)
     {best: best_performers, worst: worst_performers}
@@ -161,8 +162,10 @@ namespace :detect_exercise_anomalies do
        value: time_to_f(item['working_time']), reason: 'time'}
     end
     avg_score = exercise.average_score
-    working_times.reject! { |item| item[:value].nil? or item[:value] <= MIN_USER_WORKING_TIME or item[:score] < avg_score }
-    working_times.sort_by! { |item| item[:value] }
+    working_times.reject! do |item|
+      item[:value].nil? or item[:value] <= MIN_USER_WORKING_TIME or item[:score] < avg_score
+    end
+    working_times.sort_by! {|item| item[:value] }
     {best: working_times.first(users), worst: working_times.last(users)}
   end
 

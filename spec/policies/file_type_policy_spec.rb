@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe FileTypePolicy do
@@ -5,7 +7,7 @@ describe FileTypePolicy do
 
   let(:file_type) { FactoryBot.build(:dot_rb) }
 
-  [:destroy?, :edit?, :update?, :new?, :create?, :index?, :show?].each do |action|
+  %i[destroy? edit? update? new? create? index? show?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(subject).to permit(FactoryBot.build(:admin), file_type)
@@ -16,7 +18,7 @@ describe FileTypePolicy do
       end
 
       it 'does not grant access to all other users' do
-        [:external_user, :teacher].each do |factory_name|
+        %i[external_user teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), file_type)
         end
       end

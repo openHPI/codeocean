@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SorceryBruteForceProtection < ActiveRecord::Migration[4.2]
   def change
     add_column :internal_users, :failed_logins_count, :integer, default: 0

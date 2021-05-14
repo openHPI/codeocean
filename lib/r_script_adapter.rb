@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class RScriptAdapter < TestingFrameworkAdapter
-  REGEXP = /(\d+) examples?, (\d+) passed?/
-  ASSERTION_ERROR_REGEXP = /AssertionError:\s(.*)/
+  REGEXP = /(\d+) examples?, (\d+) passed?/.freeze
+  ASSERTION_ERROR_REGEXP = /AssertionError:\s(.*)/.freeze
 
   def self.framework_name
     'R Script'

@@ -39,11 +39,9 @@ module ProformaService
     end
 
     def task_files
-      @task_files ||= Hash[
-        @task.all_files.reject { |file| file.id == 'ms-placeholder-file' }.map do |task_file|
-          [task_file.id, codeocean_file_from_task_file(task_file)]
-        end
-      ]
+      @task_files ||= @task.all_files.reject {|file| file.id == 'ms-placeholder-file' }.map do |task_file|
+        [task_file.id, codeocean_file_from_task_file(task_file)]
+      end.to_h
     end
 
     def codeocean_file_from_task_file(file)

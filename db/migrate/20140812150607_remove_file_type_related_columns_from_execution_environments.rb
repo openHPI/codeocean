@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveFileTypeRelatedColumnsFromExecutionEnvironments < ActiveRecord::Migration[4.2]
   def change
     remove_column :execution_environments, :editor_mode, :string

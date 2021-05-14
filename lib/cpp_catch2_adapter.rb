@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class CppCatch2Adapter < TestingFrameworkAdapter
-  ALL_PASSED_REGEXP   		= /in\s+(\d+)\s+test case/ 
-  COUNT_REGEXP      		  = /test cases:\s+(\d+)/
-  FAILURES_REGEXP     		= / \|\s+(\d+)\s+failed/
-  ASSERTION_ERROR_REGEXP 	= /\n(.+)error:(.+);/  
+  ALL_PASSED_REGEXP   		= /in\s+(\d+)\s+test case/.freeze
+  COUNT_REGEXP      		  = /test cases:\s+(\d+)/.freeze
+  FAILURES_REGEXP     		= / \|\s+(\d+)\s+failed/.freeze
+  ASSERTION_ERROR_REGEXP 	= /\n(.+)error:(.+);/.freeze
 
   def self.framework_name
     'CppCatch2'

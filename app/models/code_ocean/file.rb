@@ -1,16 +1,15 @@
-require File.expand_path('../../../uploaders/file_uploader', __FILE__)
-require File.expand_path('../../../../lib/active_model/validations/boolean_presence_validator', __FILE__)
+# frozen_string_literal: true
+
+require File.expand_path('../../uploaders/file_uploader', __dir__)
+require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __dir__)
 
 module CodeOcean
-
   class FileNameValidator < ActiveModel::Validator
     def validate(record)
       existing_files = File.where(name: record.name, path: record.path, file_type_id: record.file_type_id,
                                   context_id: record.context_id, context_type: record.context_type).to_a
-      unless existing_files.empty?
-        if (not record.context.is_a?(Exercise)) || (record.context.new_record?)
-          record.errors[:base] << 'Duplicate'
-        end
+      if !existing_files.empty? && (!record.context.is_a?(Exercise) || record.context.new_record?)
+        record.errors[:base] << 'Duplicate'
       end
     end
   end
@@ -19,7 +18,8 @@ module CodeOcean
     include DefaultValues
 
     DEFAULT_WEIGHT = 1.0
-    ROLES = %w[regular_file main_file reference_implementation executable_file teacher_defined_test user_defined_file user_defined_test teacher_defined_linter].freeze
+    ROLES = %w[regular_file main_file reference_implementation executable_file teacher_defined_test user_defined_file
+               user_defined_test teacher_defined_linter].freeze
     TEACHER_DEFINED_ROLES = ROLES - %w[user_defined_file]
 
     after_initialize :set_default_values
@@ -29,13 +29,13 @@ module CodeOcean
 
     belongs_to :context, polymorphic: true
     belongs_to :file, class_name: 'CodeOcean::File', optional: true # This is only required for submissions and is validated below
-    alias_method :ancestor, :file
+    alias ancestor file
     belongs_to :file_type
 
     has_many :files, class_name: 'CodeOcean::File'
     has_many :testruns
     has_many :comments
-    alias_method :descendants, :files
+    alias descendants files
 
     mount_uploader :native_file, FileUploader
 
@@ -61,7 +61,7 @@ module CodeOcean
     validates :weight, absence: true, unless: :teacher_defined_assessment?
     validates :file, presence: true if :context.is_a?(Submission)
 
-    validates_with FileNameValidator, fields: [:name, :path, :file_type_id]
+    validates_with FileNameValidator, fields: %i[name path file_type_id]
 
     ROLES.each do |role|
       define_method("#{role}?") { self.role == role }
@@ -94,7 +94,12 @@ module CodeOcean
     end
 
     def hash_content
-      self.hashed_content = Digest::MD5.new.hexdigest(file_type.try(:binary?) ? ::File.new(native_file.file.path, 'r').read : content)
+      self.hashed_content = Digest::MD5.new.hexdigest(if file_type.try(:binary?)
+                                                        ::File.new(native_file.file.path,
+                                                          'r').read
+                                                      else
+                                                        content
+                                                      end)
     end
     private :hash_content
 
@@ -108,7 +113,7 @@ module CodeOcean
     end
 
     def set_ancestor_values
-      [:feedback_message, :file_type_id, :hidden, :name, :path, :read_only, :role, :weight].each do |attribute|
+      %i[feedback_message file_type_id hidden name path read_only role weight].each do |attribute|
         send(:"#{attribute}=", ancestor.send(attribute))
       end
     end

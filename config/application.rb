@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require 'rails/all'
@@ -25,7 +27,7 @@ module CodeOcean
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
-    config.i18n.available_locales = [:de, :en]
+    config.i18n.available_locales = %i[de en]
 
     extra_paths = %W[
       #{config.root}/lib
@@ -40,7 +42,7 @@ module CodeOcean
 
     config.action_cable.mount_path = '/cable'
 
-    config.telegraf.tags = { application: 'codeocean' }
+    config.telegraf.tags = {application: 'codeocean'}
 
     config.after_initialize do
       # Initialize the counters according to the db

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FileUploader < CarrierWave::Uploader::Base
   storage :file
 

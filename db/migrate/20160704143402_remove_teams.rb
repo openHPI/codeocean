@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoveTeams < ActiveRecord::Migration[4.2]
   def change
     remove_reference :exercises, :team

@@ -1,5 +1,6 @@
-module TimeHelper
+# frozen_string_literal: true
 
+module TimeHelper
   # convert timestamps ('12:34:56.789') to seconds
   def time_to_f(timestamp)
     unless timestamp.nil?
@@ -11,7 +12,6 @@ module TimeHelper
 
   # given a delta in seconds, return a "Hours:Minutes:Seconds" representation
   def format_time_difference(delta)
-    Time.at(delta).utc.strftime("%H:%M:%S")
+    Time.at(delta).utc.strftime('%H:%M:%S')
   end
-
 end

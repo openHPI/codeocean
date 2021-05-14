@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
-  [:admin, :external_user, :teacher].each do |factory_name|
+  %i[admin external_user teacher].each do |factory_name|
     trait :"created_by_#{factory_name}" do
       association :user, factory: factory_name
     end
   end
 
   trait :generated_email do
-    email { "#{name.underscore.gsub(' ', '.')}@example.org" }
+    email { "#{name.underscore.tr(' ', '.')}@example.org" }
   end
 
   trait :generated_user_name do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CodeOcean::Config do
@@ -10,8 +12,9 @@ describe CodeOcean::Config do
       let(:read) { described_class.new(filename).read }
 
       context 'when the file is present' do
-        before(:each) { File.write(path, {Rails.env.to_s => content}.to_yaml) }
-        after(:each) { FileUtils.rm(path) }
+        before { File.write(path, {Rails.env.to_s => content}.to_yaml) }
+
+        after { FileUtils.rm(path) }
 
         it 'returns the environment-specific content' do
           expect(read).to eq(content.with_indifferent_access)
@@ -30,8 +33,9 @@ describe CodeOcean::Config do
       let(:read) { described_class.new(filename).read(erb: true) }
 
       context 'when the file is present' do
-        before(:each) { File.write(path, {Rails.env.to_s => content}.to_yaml) }
-        after(:each) { FileUtils.rm(path) }
+        before { File.write(path, {Rails.env.to_s => content}.to_yaml) }
+
+        after { FileUtils.rm(path) }
 
         it 'returns the environment-specific content' do
           expect(read).to eq(content.with_indifferent_access)

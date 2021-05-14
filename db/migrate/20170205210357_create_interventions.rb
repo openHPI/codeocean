@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateInterventions < ActiveRecord::Migration[4.2]
   def change
     create_table :user_exercise_interventions do |t|
@@ -16,8 +18,5 @@ class CreateInterventions < ActiveRecord::Migration[4.2]
     end
 
     Intervention.createDefaultInterventions
-
   end
-
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe InternalUser do
@@ -16,7 +18,7 @@ describe InternalUser do
   context 'when not activated' do
     let(:user) { FactoryBot.create(:teacher) }
 
-    before(:each) do
+    before do
       user.send(:setup_activation)
       user.send(:send_activation_needed_email!)
     end
@@ -34,7 +36,8 @@ describe InternalUser do
 
   context 'with a pending password reset' do
     let(:user) { FactoryBot.create(:teacher) }
-    before(:each) { user.deliver_reset_password_instructions! }
+
+    before { user.deliver_reset_password_instructions! }
 
     it 'validates the confirmation of the password' do
       user.update(password: password, password_confirmation: '')

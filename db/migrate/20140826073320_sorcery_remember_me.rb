@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SorceryRememberMe < ActiveRecord::Migration[4.2]
   def change
     add_column :internal_users, :remember_me_token, :string, default: nil

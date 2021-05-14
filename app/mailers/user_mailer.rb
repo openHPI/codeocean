@@ -1,8 +1,9 @@
-class UserMailer < ActionMailer::Base
+# frozen_string_literal: true
 
+class UserMailer < ApplicationMailer
   def mail(*args)
     # used to prevent the delivery to pseudonymous users without a valid email address
-    super unless args.first[:to].blank?
+    super if args.first[:to].present?
   end
 
   def activation_needed_email(user)
@@ -10,8 +11,7 @@ class UserMailer < ActionMailer::Base
     mail(subject: t('mailers.user_mailer.activation_needed.subject'), to: user.email)
   end
 
-  def activation_success_email(*)
-  end
+  def activation_success_email(*); end
 
   def reset_password_email(user)
     @reset_password_url = reset_password_internal_user_url(user, token: user.reset_password_token)
@@ -19,12 +19,15 @@ class UserMailer < ActionMailer::Base
   end
 
   def got_new_comment(comment, request_for_comment, commenting_user)
-    # todo: check whether we can take the last known locale of the receiver?
+    # TODO: check whether we can take the last known locale of the receiver?
     @receiver_displayname = request_for_comment.user.displayname
     @commenting_user_displayname = commenting_user.displayname
     @comment_text = comment.text
     @rfc_link = request_for_comment_url(request_for_comment)
-    mail(subject: t('mailers.user_mailer.got_new_comment.subject', commenting_user_displayname: @commenting_user_displayname), to: request_for_comment.user.email)
+    mail(
+subject: t('mailers.user_mailer.got_new_comment.subject',
+  commenting_user_displayname: @commenting_user_displayname), to: request_for_comment.user.email
+)
   end
 
   def got_new_comment_for_subscription(comment, subscription, from_user)
@@ -33,7 +36,10 @@ class UserMailer < ActionMailer::Base
     @comment_text = comment.text
     @rfc_link = request_for_comment_url(subscription.request_for_comment)
     @unsubscribe_link = unsubscribe_subscription_url(subscription)
-    mail(subject: t('mailers.user_mailer.got_new_comment_for_subscription.subject', author_displayname: @author_displayname), to: subscription.user.email)
+    mail(
+subject: t('mailers.user_mailer.got_new_comment_for_subscription.subject',
+  author_displayname: @author_displayname), to: subscription.user.email
+)
   end
 
   def send_thank_you_note(request_for_comments, receiver)
@@ -43,7 +49,7 @@ class UserMailer < ActionMailer::Base
     @rfc_link = request_for_comment_url(request_for_comments)
     mail(subject: t('mailers.user_mailer.send_thank_you_note.subject', author: @author), to: receiver.email)
   end
-  
+
   def exercise_anomaly_detected(exercise_collection, anomalies)
     @user = exercise_collection.user
     @receiver_displayname = exercise_collection.user.displayname

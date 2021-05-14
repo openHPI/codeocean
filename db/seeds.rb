@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def find_factories_by_class(klass)
   FactoryBot.factories.select do |factory|
     factory.instance_variable_get(:@class_name).to_s == klass.to_s || factory.instance_variable_get(:@name) == klass.model_name.singular.to_sym
@@ -6,7 +8,7 @@ end
 
 module ActiveRecord
   class Base
-    [:build, :create].each do |strategy|
+    %i[build create].each do |strategy|
       define_singleton_method("#{strategy}_factories") do |attributes = {}|
         find_factories_by_class(self).map(&:name).map do |factory_name|
           FactoryBot.send(strategy, factory_name, attributes)

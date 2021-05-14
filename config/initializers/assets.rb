@@ -13,7 +13,7 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
-Rails.application.config.assets.precompile += %w( markdown-buttons.png )
+Rails.application.config.assets.precompile += %w[markdown-buttons.png]
 
 # Disable concurrent asset compilation to prevent segfault # https://github.com/sass/sassc-ruby/issues/197
 # Reproduce: `rake assets:clobber`, `rake assets:precompile`. If the command succeeds, it worked

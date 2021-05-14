@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InternalUserPolicy < AdminOnlyPolicy
   def destroy?
     super && !@record.admin?

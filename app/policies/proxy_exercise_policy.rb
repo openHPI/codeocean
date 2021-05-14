@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProxyExercisePolicy < AdminOrAuthorPolicy
   def batch_update?
     admin?
@@ -7,8 +9,8 @@ class ProxyExercisePolicy < AdminOrAuthorPolicy
     admin? || teacher_in_study_group? || teacher? && @record.public? || author?
   end
 
-  [:clone?, :destroy?, :edit?, :update?].each do |action|
-    define_method(action) { admin? || author?}
+  %i[clone? destroy? edit? update?].each do |action|
+    define_method(action) { admin? || author? }
   end
 
   [:reload?].each do |action|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateExerciseCollectionItems < ActiveRecord::Migration[4.2]
   def up
     rename_table :exercise_collections_exercises, :exercise_collection_items

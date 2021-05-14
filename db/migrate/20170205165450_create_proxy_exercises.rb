@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateProxyExercises < ActiveRecord::Migration[4.2]
   def change
     create_table :proxy_exercises do |t|

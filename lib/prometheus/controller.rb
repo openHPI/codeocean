@@ -42,11 +42,11 @@ module Prometheus
       def initialize_rfc_metrics
         # Initialize rfc metric
         @rfc_count.observe(RequestForComment.unsolved.where(full_score_reached: false).count,
-                           state: RequestForComment::ONGOING)
+          state: RequestForComment::ONGOING)
         @rfc_count.observe(RequestForComment.unsolved.where(full_score_reached: true).count,
-                           state: RequestForComment::SOFT_SOLVED)
+          state: RequestForComment::SOFT_SOLVED)
         @rfc_count.observe(RequestForComment.where(solved: true).count,
-                           state: RequestForComment::SOLVED)
+          state: RequestForComment::SOLVED)
 
         # count of rfcs with comments
         @rfc_commented_count.observe(RequestForComment.joins(:comments).distinct.count(:id))
@@ -56,8 +56,8 @@ module Prometheus
         Rails.logger.debug("Prometheus metric updated for #{object.class.name}")
 
         case object
-        when RequestForComment
-          update_rfc(object)
+          when RequestForComment
+            update_rfc(object)
         end
       end
 
@@ -66,10 +66,10 @@ module Prometheus
         Rails.logger.debug("Prometheus instance count increased for #{object.class.name}")
 
         case object
-        when RequestForComment
-          create_rfc(object)
-        when Comment
-          create_comment(object)
+          when RequestForComment
+            create_rfc(object)
+          when Comment
+            create_comment(object)
         end
       end
 
@@ -78,8 +78,8 @@ module Prometheus
         Rails.logger.debug("Prometheus instance count decreased for #{object.class.name}")
 
         case object
-        when Comment
-          destroy_comment(object)
+          when Comment
+            destroy_comment(object)
         end
       end
 

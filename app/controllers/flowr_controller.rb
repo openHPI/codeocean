@@ -1,11 +1,12 @@
-class FlowrController < ApplicationController
+# frozen_string_literal: true
 
+class FlowrController < ApplicationController
   def insights
     require_user!
     # get the latest submission for this user that also has a test run (i.e. structured_errors if applicable)
     submission = Submission.joins(:testruns)
-                     .where(submissions: {user_id: current_user.id, user_type: current_user.class.name})
-                     .order('testruns.created_at DESC').first
+      .where(submissions: {user_id: current_user.id, user_type: current_user.class.name})
+      .order('testruns.created_at DESC').first
 
     # Return if no submission was found
     if submission.blank? || @embed_options[:disable_hints] || @embed_options[:hide_test_results]
@@ -26,8 +27,8 @@ class FlowrController < ApplicationController
       end
       # once the programming language model becomes available, the language name can be added to the query to
       # produce more relevant results
-      query = attributes.map{|att| att.value}.join(' ')
-      { submission: submission, error: error, attributes: attributes, query: query }
+      query = attributes.map(&:value).join(' ')
+      {submission: submission, error: error, attributes: attributes, query: query}
     end
 
     # Always return JSON

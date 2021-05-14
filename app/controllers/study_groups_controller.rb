@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StudyGroupsController < ApplicationController
   include CommonBehavior
 
@@ -20,7 +22,8 @@ class StudyGroupsController < ApplicationController
 
   def update
     myparams = study_group_params
-    myparams[:external_users] = StudyGroupMembership.find(myparams[:study_group_membership_ids].reject(&:empty?)).map(&:user)
+    myparams[:external_users] =
+      StudyGroupMembership.find(myparams[:study_group_membership_ids].reject(&:empty?)).map(&:user)
     myparams.delete(:study_group_membership_ids)
     update_and_respond(object: @study_group, params: myparams)
   end
@@ -30,7 +33,7 @@ class StudyGroupsController < ApplicationController
   end
 
   def study_group_params
-    params[:study_group].permit(:id, :name, :study_group_membership_ids => []) if params[:study_group].present?
+    params[:study_group].permit(:id, :name, study_group_membership_ids: []) if params[:study_group].present?
   end
   private :study_group_params
 
@@ -44,5 +47,4 @@ class StudyGroupsController < ApplicationController
     authorize(@study_groups || @study_group)
   end
   private :authorize!
-
 end

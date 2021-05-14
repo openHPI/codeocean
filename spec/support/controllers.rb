@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def expect_assigns(pairs)
   pairs.each do |key, value|
     it "assigns @#{key}" do
@@ -61,12 +63,12 @@ end
 
 def obtain_object(object)
   case object
-  when Proc
-    object.call
-  when Symbol
-    send(object)
-  else
-    object
+    when Proc
+      object.call
+    when Symbol
+      send(object)
+    else
+      object
   end
 end
 private :obtain_object

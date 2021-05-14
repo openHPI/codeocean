@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CodeOcean
   class FilePolicy < AdminOrAuthorPolicy
     def author?
@@ -15,7 +17,7 @@ module CodeOcean
     def create?
       if @record.context.is_a?(Exercise)
         admin? || author?
-      elsif @record.context.is_a?(Submission) and @record.context.exercise.allow_file_creation
+      elsif @record.context.is_a?(Submission) && @record.context.exercise.allow_file_creation
         author?
       else
         no_one

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class FileTemplatesController < ApplicationController
-  before_action :set_file_template, only: [:show, :edit, :update, :destroy]
+  before_action :set_file_template, only: %i[show edit update destroy]
 
   def authorize!
     authorize(@file_template || @file_templates)
@@ -7,7 +9,7 @@ class FileTemplatesController < ApplicationController
   private :authorize!
 
   def by_file_type
-    @file_templates = FileTemplate.where(:file_type_id => params[:file_type_id])
+    @file_templates = FileTemplate.where(file_type_id: params[:file_type_id])
     authorize!
     respond_to do |format|
       format.json { render :show, status: :ok, json: @file_templates.to_json }
@@ -82,13 +84,14 @@ class FileTemplatesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_file_template
-      @file_template = FileTemplate.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def file_template_params
-      params[:file_template].permit(:name, :file_type_id, :content) if params[:file_template].present?
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_file_template
+    @file_template = FileTemplate.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def file_template_params
+    params[:file_template].permit(:name, :file_type_id, :content) if params[:file_template].present?
+  end
 end

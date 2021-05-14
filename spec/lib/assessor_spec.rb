@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Assessor do
@@ -8,7 +10,7 @@ describe Assessor do
     let(:stdout) { "Finished in 0.1 seconds (files took 0.1 seconds to load)\n2 examples, 1 failure" }
 
     context 'when an error occurs' do
-      before(:each) do
+      before do
         expect_any_instance_of(TestingFrameworkAdapter).to receive(:test_outcome).and_raise
       end
 
@@ -22,7 +24,7 @@ describe Assessor do
     end
 
     context 'when no error occurs' do
-      after(:each) { assess }
+      after { assess }
 
       it 'utilizes the testing framework adapter' do
         expect(assessor.instance_variable_get(:@testing_framework_adapter)).to receive(:test_outcome)
@@ -40,7 +42,7 @@ describe Assessor do
     let(:test_outcome) { {count: count, passed: passed} }
 
     it 'returns the correct score' do
-      expect(assessor.send(:calculate_score, test_outcome)).to eq(passed.to_f / count.to_f)
+      expect(assessor.send(:calculate_score, test_outcome)).to eq(passed.to_f / count)
     end
   end
 

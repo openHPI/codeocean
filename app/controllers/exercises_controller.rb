@@ -9,15 +9,19 @@ class ExercisesController < ApplicationController
 
   before_action :handle_file_uploads, only: %i[create update]
   before_action :set_execution_environments, only: %i[create edit new update]
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + %i[clone implement working_times intervention search run statistics submit reload feedback requests_for_comments study_group_dashboard export_external_check export_external_confirm]
+  before_action :set_exercise_and_authorize,
+    only: MEMBER_ACTIONS + %i[clone implement working_times intervention search run statistics submit reload feedback
+                              requests_for_comments study_group_dashboard export_external_check export_external_confirm]
   before_action :set_external_user_and_authorize, only: [:statistics]
   before_action :set_file_types, only: %i[create edit new update]
   before_action :set_course_token, only: [:implement]
   before_action :set_available_tips, only: %i[implement show new edit]
 
-  skip_before_action :verify_authenticity_token, only: %i[import_exercise import_uuid_check export_external_confirm export_external_check]
+  skip_before_action :verify_authenticity_token,
+    only: %i[import_exercise import_uuid_check export_external_confirm export_external_check]
   skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check export_external_confirm]
-  skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check export_external_confirm], raise: false
+  skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check export_external_confirm],
+raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -72,8 +76,8 @@ class ExercisesController < ApplicationController
     return if performed?
 
     myparam = exercise_params.presence || {}
-    checked_exercise_tags = @exercise_tags.select { |et| myparam[:tag_ids].include? et.tag.id.to_s }
-    removed_exercise_tags = @exercise_tags.reject { |et| myparam[:tag_ids].include? et.tag.id.to_s }
+    checked_exercise_tags = @exercise_tags.select {|et| myparam[:tag_ids].include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject {|et| myparam[:tag_ids].include? et.tag.id.to_s }
 
     checked_exercise_tags.each do |et|
       et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
@@ -106,7 +110,8 @@ class ExercisesController < ApplicationController
   end
 
   def export_external_check
-    codeharbor_check = ExerciseService::CheckExternal.call(uuid: @exercise.uuid, codeharbor_link: current_user.codeharbor_link)
+    codeharbor_check = ExerciseService::CheckExternal.call(uuid: @exercise.uuid,
+codeharbor_link: current_user.codeharbor_link)
     render json: {
       message: codeharbor_check[:message],
       actions: render_to_string(
@@ -116,9 +121,9 @@ class ExercisesController < ApplicationController
           exercise_found: codeharbor_check[:exercise_found],
           update_right: codeharbor_check[:update_right],
           error: codeharbor_check[:error],
-          exported: false
+          exported: false,
         }
-      )
+      ),
     }, status: :ok
   end
 
@@ -133,14 +138,16 @@ class ExercisesController < ApplicationController
       render json: {
         status: 'success',
         message: t('exercises.export_codeharbor.successfully_exported', id: @exercise.id, title: @exercise.title),
-        actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
+        actions: render_to_string(partial: 'export_actions',
+locals: {exercise: @exercise, exported: true, error: error}),
       }
       @exercise.save
     else
       render json: {
         status: 'fail',
         message: t('exercises.export_codeharbor.export_failed', id: @exercise.id, title: @exercise.title, error: error),
-        actions: render_to_string(partial: 'export_actions', locals: {exercise: @exercise, exported: true, error: error})
+        actions: render_to_string(partial: 'export_actions',
+locals: {exercise: @exercise, exported: true, error: error}),
       }
     end
   end
@@ -177,7 +184,7 @@ class ExercisesController < ApplicationController
     render json: t('exercises.import_codeharbor.import_errors.invalid'), status: :bad_request
   rescue StandardError => e
     Sentry.capture_exception(e)
-    render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: 500
+    render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: :internal_server_error
   end
 
   def user_from_api_key
@@ -194,7 +201,11 @@ class ExercisesController < ApplicationController
   private :user_by_codeharbor_token
 
   def exercise_params
-    params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :submission_deadline, :late_submission_deadline, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :tips, files_attributes: file_attributes, tag_ids: []).merge(user_id: current_user.id, user_type: current_user.class.name) if params[:exercise].present?
+    if params[:exercise].present?
+      params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :submission_deadline, :late_submission_deadline, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :tips, files_attributes: file_attributes, tag_ids: []).merge(
+user_id: current_user.id, user_type: current_user.class.name
+)
+    end
   end
   private :exercise_params
 
@@ -261,8 +272,10 @@ class ExercisesController < ApplicationController
     redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? && current_user.role != 'admin' && current_user.role != 'teacher' # TODO: TESTESTEST
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.has_user_solved(current_user)
-    count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?', Time.zone.now.beginning_of_day).count
-    user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user, exercise: @exercise).size >= max_intervention_count_per_exercise
+    count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?',
+      Time.zone.now.beginning_of_day).count
+    user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user,
+exercise: @exercise).size >= max_intervention_count_per_exercise
     (user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day) || user_got_intervention_in_exercise
 
     if @embed_options[:disable_interventions]
@@ -331,14 +344,15 @@ class ExercisesController < ApplicationController
     end
 
     # Return an array with top-level tips
-    @tips = nested_tips.values.select { |tip| tip.parent_exercise_tip_id.nil? }
+    @tips = nested_tips.values.select {|tip| tip.parent_exercise_tip_id.nil? }
   end
   private :set_available_tips
 
   def working_times
     working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user)
     working_time_75_percentile = @exercise.get_quantiles([0.75]).first
-    render(json: {working_time_75_percentile: working_time_75_percentile, working_time_accumulated: working_time_accumulated})
+    render(json: {working_time_75_percentile: working_time_75_percentile,
+working_time_accumulated: working_time_accumulated})
   end
 
   def intervention
@@ -436,7 +450,9 @@ class ExercisesController < ApplicationController
     checked_exercise_tags = @exercise.exercise_tags
     checked_tags = checked_exercise_tags.collect(&:tag).to_set
     unchecked_tags = Tag.all.to_set.subtract checked_tags
-    @exercise_tags = checked_exercise_tags + unchecked_tags.collect { |tag| ExerciseTag.new(exercise: @exercise, tag: tag) }
+    @exercise_tags = checked_exercise_tags + unchecked_tags.collect do |tag|
+                                               ExerciseTag.new(exercise: @exercise, tag: tag)
+                                             end
   end
   private :collect_set_and_unset_exercise_tags
 
@@ -453,8 +469,10 @@ class ExercisesController < ApplicationController
       # Render statistics page for one specific external user
       authorize(@external_user, :statistics?)
       if policy(@exercise).detailed_statistics?
-        @submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
-        interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id, @exercise.id)
+        @submissions = Submission.where(user: @external_user,
+exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
+        interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
+          @exercise.id)
         @all_events = (@submissions + interventions).sort_by(&:created_at)
         @deltas = @all_events.map.with_index do |item, index|
           delta = item.created_at - @all_events[index - 1].created_at if index.positive?
@@ -465,7 +483,8 @@ class ExercisesController < ApplicationController
           @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index.positive?))
         end
       else
-        final_submissions = Submission.where(user: @external_user, exercise_id: @exercise.id).in_study_group_of(current_user).final
+        final_submissions = Submission.where(user: @external_user,
+exercise_id: @exercise.id).in_study_group_of(current_user).final
         @submissions = []
         %i[before_deadline within_grace_period after_late_deadline].each do |filter|
           relevant_submission = final_submissions.send(filter).latest
@@ -492,7 +511,7 @@ class ExercisesController < ApplicationController
         user_statistics[tuple['user_id'].to_i] = tuple
       end
       render locals: {
-        user_statistics: user_statistics
+        user_statistics: user_statistics,
       }
     end
   end
@@ -508,7 +527,8 @@ class ExercisesController < ApplicationController
   end
 
   def transmit_lti_score
-    ::NewRelic::Agent.add_custom_attributes({submission: @submission.id, normalized_score: @submission.normalized_score})
+    ::NewRelic::Agent.add_custom_attributes({submission: @submission.id,
+normalized_score: @submission.normalized_score})
     response = send_score(@submission)
 
     if response[:status] == 'success'
@@ -533,8 +553,8 @@ class ExercisesController < ApplicationController
     return if performed?
 
     myparam = exercise_params
-    checked_exercise_tags = @exercise_tags.select { |et| myparam[:tag_ids].include? et.tag.id.to_s }
-    removed_exercise_tags = @exercise_tags.reject { |et| myparam[:tag_ids].include? et.tag.id.to_s }
+    checked_exercise_tags = @exercise_tags.select {|et| myparam[:tag_ids].include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject {|et| myparam[:tag_ids].include? et.tag.id.to_s }
 
     checked_exercise_tags.each do |et|
       et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
@@ -624,9 +644,9 @@ class ExercisesController < ApplicationController
     authorize!
     @study_group_id = params[:study_group_id]
     @request_for_comments = RequestForComment
-                            .where(exercise: @exercise).includes(:submission)
-                            .where(submissions: {study_group_id: @study_group_id})
-                            .order(created_at: :desc)
+      .where(exercise: @exercise).includes(:submission)
+      .where(submissions: {study_group_id: @study_group_id})
+      .order(created_at: :desc)
 
     @graph_data = @exercise.get_working_times_for_study_group(@study_group_id)
   end

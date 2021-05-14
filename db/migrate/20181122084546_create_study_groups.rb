@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateStudyGroups < ActiveRecord::Migration[5.2]
   def change
     create_table :study_groups do |t|
@@ -7,7 +9,6 @@ class CreateStudyGroups < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    add_index :study_groups, [:external_id, :consumer_id], unique: true
+    add_index :study_groups, %i[external_id consumer_id], unique: true
   end
 end
-

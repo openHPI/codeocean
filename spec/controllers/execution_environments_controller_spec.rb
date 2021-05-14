@@ -1,16 +1,20 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe ExecutionEnvironmentsController do
   let(:execution_environment) { FactoryBot.create(:ruby) }
   let(:user) { FactoryBot.create(:admin) }
-  before(:each) { allow(controller).to receive(:current_user).and_return(user) }
+
+  before { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
-    before(:each) { expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
+    before { expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
 
     context 'with a valid execution environment' do
-      let(:perform_request) { proc { post :create, params: { execution_environment: FactoryBot.build(:ruby).attributes } } }
-      before(:each) { perform_request.call }
+      let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby).attributes} } }
+
+      before { perform_request.call }
 
       expect_assigns(docker_images: Array)
       expect_assigns(execution_environment: ExecutionEnvironment)
@@ -23,7 +27,7 @@ describe ExecutionEnvironmentsController do
     end
 
     context 'with an invalid execution environment' do
-      before(:each) { post :create, params: { execution_environment: {} } }
+      before { post :create, params: {execution_environment: {}} }
 
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
@@ -32,22 +36,22 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'DELETE #destroy' do
-    before(:each) { delete :destroy, params: { id: execution_environment.id } }
+    before { delete :destroy, params: {id: execution_environment.id} }
 
     expect_assigns(execution_environment: :execution_environment)
 
     it 'destroys the execution environment' do
       execution_environment = FactoryBot.create(:ruby)
-      expect { delete :destroy, params: { id: execution_environment.id } }.to change(ExecutionEnvironment, :count).by(-1)
+      expect { delete :destroy, params: {id: execution_environment.id} }.to change(ExecutionEnvironment, :count).by(-1)
     end
 
     expect_redirect(:execution_environments)
   end
 
   describe 'GET #edit' do
-    before(:each) do
+    before do
       expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
-      get :edit, params: { id: execution_environment.id }
+      get :edit, params: {id: execution_environment.id}
     end
 
     expect_assigns(docker_images: Array)
@@ -59,10 +63,10 @@ describe ExecutionEnvironmentsController do
   describe 'POST #execute_command' do
     let(:command) { 'which ruby' }
 
-    before(:each) do
+    before do
       expect(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
       expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(command)
-      post :execute_command, params: { command: command, id: execution_environment.id }
+      post :execute_command, params: {command: command, id: execution_environment.id}
     end
 
     expect_assigns(docker_client: DockerClient)
@@ -73,7 +77,8 @@ describe ExecutionEnvironmentsController do
 
   describe 'GET #index' do
     before(:all) { FactoryBot.create_pair(:ruby) }
-    before(:each) { get :index }
+
+    before { get :index }
 
     expect_assigns(execution_environments: ExecutionEnvironment.all)
     expect_status(200)
@@ -81,7 +86,7 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'GET #new' do
-    before(:each) do
+    before do
       expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
       get :new
     end
@@ -96,7 +101,7 @@ describe ExecutionEnvironmentsController do
     context 'when Docker is available' do
       let(:docker_images) { [1, 2, 3] }
 
-      before(:each) do
+      before do
         expect(DockerClient).to receive(:check_availability!).at_least(:once)
         expect(DockerClient).to receive(:image_tags).and_return(docker_images)
         controller.send(:set_docker_images)
@@ -108,7 +113,7 @@ describe ExecutionEnvironmentsController do
     context 'when Docker is unavailable' do
       let(:error_message) { 'Docker is unavailable' }
 
-      before(:each) do
+      before do
         expect(DockerClient).to receive(:check_availability!).at_least(:once).and_raise(DockerClient::Error.new(error_message))
         controller.send(:set_docker_images)
       end
@@ -123,7 +128,7 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'GET #shell' do
-    before(:each) { get :shell, params: { id: execution_environment.id } }
+    before { get :shell, params: {id: execution_environment.id} }
 
     expect_assigns(execution_environment: :execution_environment)
     expect_status(200)
@@ -131,7 +136,7 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'GET #statistics' do
-    before(:each) { get :statistics, params: { id: execution_environment.id } }
+    before { get :statistics, params: {id: execution_environment.id} }
 
     expect_assigns(execution_environment: :execution_environment)
     expect_status(200)
@@ -139,7 +144,7 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'GET #show' do
-    before(:each) { get :show, params: { id: execution_environment.id } }
+    before { get :show, params: {id: execution_environment.id} }
 
     expect_assigns(execution_environment: :execution_environment)
     expect_status(200)
@@ -148,9 +153,9 @@ describe ExecutionEnvironmentsController do
 
   describe 'PUT #update' do
     context 'with a valid execution environment' do
-      before(:each) do
+      before do
         expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
-        put :update, params: { execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id }
+        put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
       end
 
       expect_assigns(docker_images: Array)
@@ -159,7 +164,7 @@ describe ExecutionEnvironmentsController do
     end
 
     context 'with an invalid execution environment' do
-      before(:each) { put :update, params: { execution_environment: {name: ''}, id: execution_environment.id } }
+      before { put :update, params: {execution_environment: {name: ''}, id: execution_environment.id} }
 
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)

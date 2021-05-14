@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class AdminOrAuthorPolicy < ApplicationPolicy
-  [:create?, :index?, :new?].each do |action|
+  %i[create? index? new?].each do |action|
     define_method(action) { admin? || teacher? }
   end
 
-  [:destroy?, :edit?, :show?, :update?].each do |action|
+  %i[destroy? edit? show? update?].each do |action|
     define_method(action) { admin? || author? }
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'oauth/request_proxy/rack_request'
 
 module Lti
@@ -6,7 +8,7 @@ module Lti
 
   MAXIMUM_SCORE = 1
   MAXIMUM_SESSION_AGE = 60.minutes
-  SESSION_PARAMETERS = %w(launch_presentation_return_url lis_outcome_service_url lis_result_sourcedid)
+  SESSION_PARAMETERS = %w[launch_presentation_return_url lis_outcome_service_url lis_result_sourcedid].freeze
 
   def build_tool_provider(options = {})
     if options[:consumer] && options[:parameters]
@@ -20,7 +22,7 @@ module Lti
   # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
   # Only the lti_parameters are deleted.
   def clear_lti_session_data(exercise_id = nil, user_id = nil)
-    if (exercise_id.nil?)
+    if exercise_id.nil?
       session.delete(:external_user_id)
       session.delete(:study_group_id)
       session.delete(:embed_options)
@@ -48,27 +50,23 @@ module Lti
   def external_user_name(provider)
     # save person_name_full if supplied. this is the display_name, if it is set.
     # else only save the firstname, we don't want lastnames (family names)
-    if provider.lis_person_name_full
-      provider.lis_person_name_full
-    else
-      provider.lis_person_name_given
-    end
+    provider.lis_person_name_full || provider.lis_person_name_given
   end
 
   private :external_user_name
 
   def external_user_role(provider)
     result = 'learner'
-    unless provider.roles.blank?
+    if provider.roles.present?
       provider.roles.each do |role|
         case role.downcase
-        when 'administrator'
-          # We don't want anyone to get admin privileges through LTI
-          result = 'teacher' if result == 'learner'
-        when 'instructor'
-          result = 'teacher' if result == 'learner'
-        else # 'learner'
-          next
+          when 'administrator'
+            # We don't want anyone to get admin privileges through LTI
+            result = 'teacher' if result == 'learner'
+          when 'instructor'
+            result = 'teacher' if result == 'learner'
+          else # 'learner'
+            next
         end
       end
     end
@@ -141,7 +139,9 @@ module Lti
 
   def send_score(submission)
     ::NewRelic::Agent.add_custom_attributes({score: submission.normalized_score, session: session})
-    fail(Error, "Score #{submission.normalized_score} must be between 0 and #{MAXIMUM_SCORE}!") unless (0..MAXIMUM_SCORE).include?(submission.normalized_score)
+    unless (0..MAXIMUM_SCORE).cover?(submission.normalized_score)
+      raise Error.new("Score #{submission.normalized_score} must be between 0 and #{MAXIMUM_SCORE}!")
+    end
 
     if submission.user.consumer
       lti_parameter = LtiParameter.where(consumers_id: submission.user.consumer.id,
@@ -155,12 +155,12 @@ module Lti
       {status: 'error'}
     elsif provider.outcome_service?
       Sentry.set_extras({
-                            provider: provider.inspect,
+        provider: provider.inspect,
                             score: submission.normalized_score,
                             lti_parameter: lti_parameter.inspect,
                             session: session.to_hash,
-                            exercise_id: submission.exercise_id
-                          })
+                            exercise_id: submission.exercise_id,
+      })
       normalized_lit_score = submission.normalized_score
       if submission.before_deadline?
         # Keep the full score
@@ -170,11 +170,10 @@ module Lti
       elsif submission.after_late_deadline?
         # Reduce score by 100%
         normalized_lit_score *= 0.0
-      else # no deadline
-        # Keep the full score
       end
       response = provider.post_replace_result!(normalized_lit_score)
-      {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lit_score}
+      {code: response.response_code, message: response.post_response.body, status: response.code_major,
+score_sent: normalized_lit_score}
     else
       {status: 'unsupported'}
     end
@@ -186,22 +185,21 @@ module Lti
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
     external_role = external_user_role(@provider)
     internal_role = @current_user.role
-    desired_role = internal_role != 'admin' ? external_role : internal_role
+    desired_role = internal_role == 'admin' ? internal_role : external_role
     # Update user with new information but change the role only if he is no admin user
     @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider), role: desired_role)
   end
 
   private :set_current_user
 
-
   def set_study_group_membership
-    group = if not context_id?
-              StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
-            else
+    group = if context_id?
               # Ensure to find the group independent of the name and set it only once.
               StudyGroup.find_or_create_by(external_id: @provider.context_id, consumer: @consumer) do |new_group|
                 new_group.name = @provider.context_title
               end
+            else
+              StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
             end
     group.external_users << @current_user unless group.external_users.include? @current_user
     group.save

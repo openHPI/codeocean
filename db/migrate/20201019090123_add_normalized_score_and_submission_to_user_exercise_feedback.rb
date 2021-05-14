@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddNormalizedScoreAndSubmissionToUserExerciseFeedback < ActiveRecord::Migration[5.2]
   def change
     add_column :user_exercise_feedbacks, :normalized_score, :float
@@ -7,9 +9,9 @@ class AddNormalizedScoreAndSubmissionToUserExerciseFeedback < ActiveRecord::Migr
     ActiveRecord::Base.record_timestamps = false
     UserExerciseFeedback.all.find_each do |uef|
       latest_submission = Submission
-                          .where(user_id: uef.user_id, user_type: uef.user_type, exercise_id: uef.exercise_id)
-                          .where('created_at < ?', uef.updated_at)
-                          .order(created_at: :desc).first
+        .where(user_id: uef.user_id, user_type: uef.user_type, exercise_id: uef.exercise_id)
+        .where('created_at < ?', uef.updated_at)
+        .order(created_at: :desc).first
 
       # In the beginning, CodeOcean allowed feedback for exercises while viewing an RfC. As a RfC
       # might be opened by any registered learner, feedback for exercises was created by learners

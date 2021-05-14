@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe FileTree do
@@ -161,7 +163,7 @@ describe FileTree do
 
     context 'for intermediary nodes' do
       let(:node) do
-        root.add(Tree::TreeNode.new('').tap { |node| node.add(Tree::TreeNode.new('')) })
+        root.add(Tree::TreeNode.new('').tap {|node| node.add(Tree::TreeNode.new('')) })
       end
 
       it 'is a folder icon' do

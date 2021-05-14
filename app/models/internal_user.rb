@@ -1,5 +1,6 @@
-class InternalUser < User
+# frozen_string_literal: true
 
+class InternalUser < User
   authenticates_with_sorcery!
 
   validates :email, presence: true, uniqueness: true
@@ -22,5 +23,4 @@ class InternalUser < User
   def displayname
     name
   end
-
 end

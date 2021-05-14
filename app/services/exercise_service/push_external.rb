@@ -13,7 +13,7 @@ module ExerciseService
         response = connection.post do |request|
           request.headers['Content-Type'] = 'application/zip'
           request.headers['Content-Length'] = body.length.to_s
-          request.headers['Authorization'] = 'Bearer ' + @codeharbor_link.api_key
+          request.headers['Authorization'] = "Bearer #{@codeharbor_link.api_key}"
           request.body = body
         end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CodeOcean::FilePolicy do
@@ -19,7 +21,7 @@ describe CodeOcean::FilePolicy do
       end
 
       it 'does not grant access to all other users' do
-        [:external_user, :teacher].each do |factory_name|
+        %i[external_user teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), file)
         end
       end
@@ -49,7 +51,7 @@ describe CodeOcean::FilePolicy do
       end
 
       it 'does not grant access to all other users' do
-        [:admin, :external_user, :teacher].each do |factory_name|
+        %i[admin external_user teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), file)
         end
       end
@@ -69,7 +71,7 @@ describe CodeOcean::FilePolicy do
       end
 
       it 'does not grant access to all other users' do
-        [:external_user, :teacher].each do |factory_name|
+        %i[external_user teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), file)
         end
       end
@@ -79,7 +81,7 @@ describe CodeOcean::FilePolicy do
       let(:file) { submission.files.first }
 
       it 'does not grant access to anyone' do
-        [:admin, :external_user, :teacher].each do |factory_name|
+        %i[admin external_user teacher].each do |factory_name|
           expect(subject).not_to permit(FactoryBot.build(factory_name), file)
         end
       end

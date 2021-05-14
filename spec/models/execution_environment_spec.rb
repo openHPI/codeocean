@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe ExecutionEnvironment do
-  let(:execution_environment) { described_class.create.tap { |execution_environment| execution_environment.update(network_enabled: nil) } }
+  let(:execution_environment) { described_class.create.tap {|execution_environment| execution_environment.update(network_enabled: nil) } }
 
   it 'validates that the Docker image works', docker: true do
     expect(execution_environment).to receive(:validate_docker_image?).and_return(true)
@@ -69,7 +71,7 @@ describe ExecutionEnvironment do
 
   describe '#valid_test_setup?' do
     context 'with a test command and a testing framework' do
-      before(:each) { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
+      before { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
 
       it 'is valid' do
         expect(execution_environment.errors[:test_command]).to be_blank
@@ -77,7 +79,7 @@ describe ExecutionEnvironment do
     end
 
     context 'with a test command but no testing framework' do
-      before(:each) { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: nil) }
+      before { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: nil) }
 
       it 'is invalid' do
         expect(execution_environment.errors[:test_command]).to be_present
@@ -85,7 +87,7 @@ describe ExecutionEnvironment do
     end
 
     context 'with no test command but a testing framework' do
-      before(:each) { execution_environment.update(test_command: nil, testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
+      before { execution_environment.update(test_command: nil, testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
 
       it 'is invalid' do
         expect(execution_environment.errors[:test_command]).to be_present
@@ -93,7 +95,7 @@ describe ExecutionEnvironment do
     end
 
     context 'with no test command and no testing framework' do
-      before(:each) { execution_environment.update(test_command: nil, testing_framework: nil) }
+      before { execution_environment.update(test_command: nil, testing_framework: nil) }
 
       it 'is valid' do
         expect(execution_environment.errors[:test_command]).to be_blank
@@ -121,7 +123,8 @@ describe ExecutionEnvironment do
 
   describe '#working_docker_image?', docker: true do
     let(:working_docker_image?) { execution_environment.send(:working_docker_image?) }
-    before(:each) { expect(DockerClient).to receive(:find_image_by_tag).and_return(Object.new) }
+
+    before { expect(DockerClient).to receive(:find_image_by_tag).and_return(Object.new) }
 
     it 'instantiates a Docker client' do
       expect(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original

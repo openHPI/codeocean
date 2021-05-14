@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PortPool
   PORT_RANGE = DockerClient.config[:ports]
 
@@ -11,6 +13,6 @@ class PortPool
   end
 
   def self.release(port)
-    @available_ports << port if PORT_RANGE.include?(port) && !@available_ports.include?(port)
+    @available_ports << port if PORT_RANGE.include?(port) && @available_ports.exclude?(port)
   end
 end

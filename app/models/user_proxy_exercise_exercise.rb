@@ -1,5 +1,6 @@
-class UserProxyExerciseExercise < ApplicationRecord
+# frozen_string_literal: true
 
+class UserProxyExerciseExercise < ApplicationRecord
   belongs_to :user, polymorphic: true
   belongs_to :exercise
   belongs_to :proxy_exercise
@@ -9,6 +10,5 @@ class UserProxyExerciseExercise < ApplicationRecord
   validates :exercise_id, presence: true
   validates :proxy_exercise_id, presence: true
 
-  validates :user_id, uniqueness: { scope: [:proxy_exercise_id, :user_type] }
-
+  validates :user_id, uniqueness: {scope: %i[proxy_exercise_id user_type]}
 end

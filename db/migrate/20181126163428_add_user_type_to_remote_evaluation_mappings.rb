@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddUserTypeToRemoteEvaluationMappings < ActiveRecord::Migration[5.2]
   def change
     add_column :remote_evaluation_mappings, :user_type, :string

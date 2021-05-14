@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe FileType do
-  let(:file_type) { described_class.create.tap { |file_type| file_type.update(binary: nil, executable: nil, renderable: nil) } }
+  let(:file_type) { described_class.create.tap {|file_type| file_type.update(binary: nil, executable: nil, renderable: nil) } }
 
   it 'validates the presence of the binary flag' do
     expect(file_type.errors[:binary]).to be_present
@@ -10,7 +12,7 @@ describe FileType do
   end
 
   context 'when binary' do
-    before(:each) { file_type.update(binary: true) }
+    before { file_type.update(binary: true) }
 
     it 'does not validate the presence of an editor mode' do
       expect(file_type.errors[:editor_mode]).not_to be_present
@@ -22,7 +24,7 @@ describe FileType do
   end
 
   context 'when not binary' do
-    before(:each) { file_type.update(binary: false) }
+    before { file_type.update(binary: false) }
 
     it 'validates the presence of an editor mode' do
       expect(file_type.errors[:editor_mode]).to be_present

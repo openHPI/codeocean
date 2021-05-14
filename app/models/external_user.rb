@@ -1,13 +1,10 @@
-class ExternalUser < User
+# frozen_string_literal: true
 
+class ExternalUser < User
   validates :consumer_id, presence: true
   validates :external_id, presence: true
 
   def displayname
-    if name.blank?
-      "User " + id.to_s
-    else
-      name
-    end
+    name.presence || "User #{id}"
   end
 end
