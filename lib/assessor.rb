@@ -12,7 +12,7 @@ class Assessor
 
   def calculate_score(test_outcome)
     score = 0.0
-    if test_outcome[:passed].to_f != 0.0 && test_outcome[:count].to_f != 0.0
+    if test_outcome[:passed].to_d != 0.0.to_d && test_outcome[:count].to_d != 0.0.to_d
       score = (test_outcome[:passed].to_f / test_outcome[:count])
       # prevent negative scores
       score = [0.0, score].max

@@ -23,9 +23,9 @@ Rails.application.routes.draw do
     end
   end
   resources :comments, defaults: {format: :json}
-  get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#get_my_comment_requests'
-  get '/my_rfc_activity', as: 'my_rfc_activity', to: 'request_for_comments#get_rfcs_with_my_comments'
-  get '/exercises/:exercise_id/request_for_comments', as: 'rfcs_for_exercise', to: 'request_for_comments#get_rfcs_for_exercise'
+  get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#my_comment_requests'
+  get '/my_rfc_activity', as: 'my_rfc_activity', to: 'request_for_comments#rfcs_with_my_comments'
+  get '/exercises/:exercise_id/request_for_comments', as: 'rfcs_for_exercise', to: 'request_for_comments#rfcs_for_exercise'
 
   delete '/comment_by_id', to: 'comments#destroy_by_id'
   put '/comments', to: 'comments#update', defaults: {format: :json}

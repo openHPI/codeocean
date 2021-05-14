@@ -34,7 +34,7 @@ describe Submission do
       before { submission.score = submission.exercise.maximum_score / 2 }
 
       it 'returns the score as a value between 0 and 1' do
-        expect(0..1).to include(submission.normalized_score)
+        expect(submission.normalized_score).to be_between(0, 1)
       end
     end
 
@@ -54,7 +54,7 @@ describe Submission do
       before { submission.score = submission.exercise.maximum_score / 2 }
 
       it 'returns the score expressed as a percentage' do
-        expect(0..100).to include(submission.percentage)
+        expect(submission.percentage).to be_between(0, 100)
       end
     end
 

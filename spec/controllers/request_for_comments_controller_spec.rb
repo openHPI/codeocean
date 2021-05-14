@@ -32,24 +32,24 @@ describe RequestForCommentsController do
     end
   end
 
-  describe 'GET #get_my_comment_requests' do
-    before { get :get_my_comment_requests }
+  describe 'GET #my_comment_requests' do
+    before { get :my_comment_requests }
 
     expect_status(200)
     expect_template(:index)
   end
 
-  describe 'GET #get_rfcs_with_my_comments' do
-    before { get :get_rfcs_with_my_comments }
+  describe 'GET #rfcs_with_my_comments' do
+    before { get :rfcs_with_my_comments }
 
     expect_status(200)
     expect_template(:index)
   end
 
-  describe 'GET #get_rfcs_for_exercise' do
+  describe 'GET #rfcs_for_exercise' do
     before do
       exercise = FactoryBot.create(:even_odd)
-      get :get_rfcs_for_exercise, params: {exercise_id: exercise.id}
+      get :rfcs_for_exercise, params: {exercise_id: exercise.id}
     end
 
     expect_status(200)

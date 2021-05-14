@@ -21,7 +21,7 @@ class DropErrors < ActiveRecord::Migration[5.2]
   end
 
   def change
-    puts 'Migrating CodeOcean::Errors to StructuredErrors using RegEx. This might take a (long) while but will return.'
+    Rails.logger.info 'Migrating CodeOcean::Errors to StructuredErrors using RegEx. This might take a (long) while but will return.'
     submissions_controller = SubmissionsController.new
 
     # Iterate only over those Errors containing a message and submission_id

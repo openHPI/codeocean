@@ -3,8 +3,6 @@
 require 'rails_helper'
 require 'seeds_helper'
 
-# rubocop:disable RSpec/MultipleMemoizedHelpers
-
 WORKSPACE_PATH = Rails.root.join('tmp', 'files', Rails.env, 'code_ocean_test')
 
 describe DockerClient, docker: true do
@@ -26,14 +24,14 @@ describe DockerClient, docker: true do
   describe '.check_availability!' do
     context 'when a socket error occurs' do
       it 'raises an error' do
-        expect(Docker).to receive(:version).and_raise(Excon::Errors::SocketError.new(StandardError.new))
+        allow(Docker).to receive(:version).and_raise(Excon::Errors::SocketError.new(StandardError.new))
         expect { described_class.check_availability! }.to raise_error(DockerClient::Error)
       end
     end
 
     context 'when a timeout occurs' do
       it 'raises an error' do
-        expect(Docker).to receive(:version).and_raise(Timeout::Error)
+        allow(Docker).to receive(:version).and_raise(Timeout::Error)
         expect { described_class.check_availability! }.to raise_error(DockerClient::Error)
       end
     end
@@ -115,7 +113,7 @@ describe DockerClient, docker: true do
 
       context 'when retries are left' do
         before do
-          expect(described_class).to receive(:mapped_directories).and_raise(error).and_call_original
+          allow(described_class).to receive(:mapped_directories).and_raise(error).and_call_original
         end
 
         it 'retries to create a container' do
@@ -125,7 +123,7 @@ describe DockerClient, docker: true do
 
       context 'when no retries are left' do
         before do
-          expect(described_class).to receive(:mapped_directories).exactly(DockerClient::RETRY_COUNT + 1).times.and_raise(error)
+          allow(described_class).to receive(:mapped_directories).exactly(DockerClient::RETRY_COUNT + 1).times.and_raise(error)
         end
 
         it 'raises the error' do
@@ -140,7 +138,7 @@ describe DockerClient, docker: true do
     let(:container) { double }
 
     before do
-      expect(container).to receive(:binds).at_least(:once).and_return(["#{workspace_path}:#{DockerClient::CONTAINER_WORKSPACE_PATH}"])
+      allow(container).to receive(:binds).at_least(:once).and_return(["#{workspace_path}:#{DockerClient::CONTAINER_WORKSPACE_PATH}"])
     end
 
     after { docker_client.send(:create_workspace_files, container, submission) }
@@ -183,11 +181,11 @@ describe DockerClient, docker: true do
     after { described_class.destroy_container(container) }
 
     it 'kills running processes' do
-      expect(container).to receive(:kill).and_return(container)
+      allow(container).to receive(:kill).and_return(container)
     end
 
     it 'releases allocated ports' do
-      expect(container).to receive(:port_bindings).at_least(:once).and_return(foo: [{'HostPort' => '42'}])
+      allow(container).to receive(:port_bindings).at_least(:once).and_return(foo: [{'HostPort' => '42'}])
       expect(PortPool).to receive(:release)
     end
 
@@ -211,7 +209,7 @@ describe DockerClient, docker: true do
     end
 
     it 'sends the command' do
-      expect(docker_client).to receive(:send_command).with(command, kind_of(Docker::Container)).and_return({})
+      allow(docker_client).to receive(:send_command).with(command, kind_of(Docker::Container)).and_return({})
       execute_arbitrary_command
     end
 
@@ -222,7 +220,7 @@ describe DockerClient, docker: true do
         let(:result) { {status: 'ok', stdout: 42} }
 
         before do
-          expect(docker_client).to receive(:send_command).and_raise(error).and_return(result)
+          allow(docker_client).to receive(:send_command).and_raise(error).and_return(result)
         end
 
         it 'retries to execute the command' do
@@ -232,13 +230,13 @@ describe DockerClient, docker: true do
 
       context 'when no retries are left' do
         before do
-          expect(docker_client).to receive(:send_command).exactly(DockerClient::RETRY_COUNT + 1).times.and_raise(error)
+          allow(docker_client).to receive(:send_command).exactly(DockerClient::RETRY_COUNT + 1).times.and_raise(error)
         end
 
         it 'raises the error' do
           pending('retries are disabled')
-          # !TODO Retries is disabled
-          # expect { execute_arbitrary_command }.to raise_error(error)
+          # TODO: Retries is disabled
+          expect { execute_arbitrary_command }.to raise_error(error)
         end
       end
     end
@@ -250,12 +248,10 @@ describe DockerClient, docker: true do
     after { docker_client.send(:execute_run_command, submission, filename) }
 
     it 'takes a container from the pool' do
-      pending('todo in the future')
       expect(DockerContainerPool).to receive(:get_container).with(submission.execution_environment).and_call_original
     end
 
     it 'creates the workspace files' do
-      pending('todo in the future')
       expect(docker_client).to receive(:create_workspace_files)
     end
 
@@ -281,7 +277,7 @@ describe DockerClient, docker: true do
 
     it 'executes the test command' do
       expect(submission.execution_environment).to receive(:test_command).and_call_original
-      expect(docker_client).to receive(:send_command).with(kind_of(String), kind_of(Docker::Container)).and_return({})
+      allow(docker_client).to receive(:send_command).with(kind_of(String), kind_of(Docker::Container)).and_return({})
     end
   end
 
@@ -305,7 +301,7 @@ describe DockerClient, docker: true do
     end
 
     context 'with incomplete configuration' do
-      before { expect(described_class).to receive(:config).at_least(:once).and_return({}) }
+      before { allow(described_class).to receive(:config).at_least(:once).and_return({}) }
 
       it 'raises an error' do
         expect { described_class.initialize_environment }.to raise_error(DockerClient::Error)
@@ -357,7 +353,7 @@ describe DockerClient, docker: true do
   end
 
   describe '#send_command' do
-    let(:block) { proc {} }
+    let(:block) { proc { nil } }
     let(:container) { described_class.create_container(execution_environment) }
     let(:send_command) { docker_client.send(:send_command, command, container, &block) }
 
@@ -379,8 +375,13 @@ describe DockerClient, docker: true do
 
     context 'when a timeout occurs' do
       before do
-        expect(container).to receive(:exec).once.and_raise(Timeout::Error)
-        expect(container).to receive(:exec).twice.and_return([[], []])
+        exec_called = 0
+        allow(container).to receive(:exec) do
+          exec_called += 1
+          raise Timeout::Error if exec_called == 1
+
+          [[], []]
+        end
       end
 
       it 'destroys the container asynchronously' do
@@ -410,5 +411,3 @@ describe DockerClient, docker: true do
     end
   end
 end
-
-# rubocop:enable RSpec/MultipleMemoizedHelpers

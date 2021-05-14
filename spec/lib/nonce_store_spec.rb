@@ -5,6 +5,10 @@ require 'rails_helper'
 describe NonceStore do
   let(:nonce) { SecureRandom.hex }
 
+  before do
+    stub_const('Lti::MAXIMUM_SESSION_AGE', 1)
+  end
+
   describe '.add' do
     it 'stores a nonce in the cache' do
       expect(Rails.cache).to receive(:write)
@@ -28,8 +32,6 @@ describe NonceStore do
     end
 
     it 'returns false for expired nonces' do
-      Lti.send(:remove_const, 'MAXIMUM_SESSION_AGE')
-      Lti::MAXIMUM_SESSION_AGE = 1
       described_class.add(nonce)
       expect(described_class.has?(nonce)).to be true
       sleep(Lti::MAXIMUM_SESSION_AGE)

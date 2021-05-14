@@ -3,15 +3,7 @@
 unless Array.respond_to?(:average)
   class Array
     def average
-      inject(:+) / length if present?
-    end
-  end
-end
-
-unless Array.respond_to?(:to_h)
-  class Array
-    def to_h
-      to_h
+      sum / length if present?
     end
   end
 end

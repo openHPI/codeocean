@@ -3,6 +3,7 @@
 module ExerciseService
   class CheckExternal < ServiceBase
     def initialize(uuid:, codeharbor_link:)
+      super()
       @uuid = uuid
       @codeharbor_link = codeharbor_link
     end

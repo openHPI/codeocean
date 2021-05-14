@@ -81,7 +81,7 @@ namespace :detect_exercise_anomalies do
   def find_anomalies(collection)
     working_times = collect_working_times(collection).compact
     if working_times.values.size.positive?
-      average = working_times.values.reduce(:+) / working_times.values.size
+      average = working_times.values.sum / working_times.values.size
       return working_times.select do |_, working_time|
         working_time > average * MAX_TIME_FACTOR or working_time < average * MIN_TIME_FACTOR
       end
@@ -120,7 +120,8 @@ namespace :detect_exercise_anomalies do
       users_to_notify = []
 
       users = {}
-      %i[performers_by_time performers_by_score].each do |method|
+      methods = %i[performers_by_time performers_by_score]
+      methods.each do |method|
         # merge users found by multiple methods returning a hash {best: [], worst: []}
         users = users.merge(send(method, exercise, NUMBER_OF_USERS_PER_CLASS)) {|_key, this, other| this + other }
       end

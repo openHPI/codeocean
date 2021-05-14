@@ -39,7 +39,7 @@ class UserExerciseFeedbacksController < ApplicationController
       authorize!
       if validate_inputs(uef_params)
         path =
-          if rfc && submission && submission.normalized_score == 1.0
+          if rfc && submission && submission.normalized_score.to_d == 1.0.to_d
             request_for_comment_path(rfc)
           else
             implement_exercise_path(@exercise)
@@ -82,7 +82,7 @@ class UserExerciseFeedbacksController < ApplicationController
     authorize!
     if @exercise && validate_inputs(uef_params)
       path =
-        if rfc && submission && submission.normalized_score == 1.0
+        if rfc && submission && submission.normalized_score.to_d == 1.0.to_d
           request_for_comment_path(rfc)
         else
           implement_exercise_path(@exercise)

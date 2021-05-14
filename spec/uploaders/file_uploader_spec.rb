@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe FileUploader do
-  let(:file_path) { Rails.root.join('db', 'seeds', 'fibonacci', 'exercise.rb') }
+  let(:file_path) { Rails.root.join('db/seeds/fibonacci/exercise.rb') }
   let(:uploader) { described_class.new(FactoryBot.create(:file)) }
 
   before { uploader.store!(File.open(file_path, 'r')) }

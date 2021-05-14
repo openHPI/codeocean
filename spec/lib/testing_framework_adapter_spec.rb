@@ -42,7 +42,7 @@ describe TestingFrameworkAdapter do
 
   describe '#test_outcome' do
     it 'calls the framework-specific implementation' do
-      expect(adapter).to receive(:parse_output).and_return(count: count, failed: failed, passed: passed)
+      allow(adapter).to receive(:parse_output).and_return(count: count, failed: failed, passed: passed)
       adapter.test_outcome('')
     end
   end

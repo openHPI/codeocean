@@ -49,7 +49,7 @@ class Exercise < ApplicationRecord
   MAX_GROUP_EXERCISE_FEEDBACKS = 20
 
   def average_percentage
-    if average_score && (maximum_score != 0.0) && submissions.exists?(cause: 'submit')
+    if average_score && (maximum_score.to_d != 0.0.to_d) && submissions.exists?(cause: 'submit')
       (average_score / maximum_score * 100).round(2)
     else
       0
@@ -477,7 +477,6 @@ class Exercise < ApplicationRecord
       return 'reference_implementation'
     elsif (file_class == 'template') && (comment == 'main')
       return 'main_file'
-    elsif (file_class == 'internal') && (comment == 'main')
     end
 
     'regular_file'
@@ -536,7 +535,7 @@ class Exercise < ApplicationRecord
     submissions.final.where(user_id: user.id, user_type: user.class.name).order(created_at: :desc).first
   end
 
-  def has_user_solved(user)
+  def solved_by?(user)
     maximum_score(user).to_i == maximum_score.to_i
   end
 
@@ -579,7 +578,7 @@ cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
   private :valid_submission_deadlines?
 
   def needs_more_feedback?(submission)
-    if submission.normalized_score == 1.00
+    if submission.normalized_score.to_d == 1.0.to_d
       user_exercise_feedbacks.final.size <= MAX_GROUP_EXERCISE_FEEDBACKS
     else
       user_exercise_feedbacks.intermediate.size <= MAX_GROUP_EXERCISE_FEEDBACKS

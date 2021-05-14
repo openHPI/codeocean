@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe 'Authorization' do
-  context 'as an admin' do
+  context 'when being an admin' do
     let(:user) { FactoryBot.create(:admin) }
 
     before { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
@@ -13,7 +13,7 @@ describe 'Authorization' do
     end
   end
 
-  context 'as an external user' do
+  context 'with being an external user' do
     let(:user) { FactoryBot.create(:external_user) }
 
     before { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
@@ -23,7 +23,7 @@ describe 'Authorization' do
     end
   end
 
-  context 'as a teacher' do
+  context 'with being a teacher' do
     let(:user) { FactoryBot.create(:teacher) }
 
     before { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }

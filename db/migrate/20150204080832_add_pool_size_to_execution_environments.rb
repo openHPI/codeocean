@@ -6,7 +6,7 @@ class AddPoolSizeToExecutionEnvironments < ActiveRecord::Migration[4.2]
 
     reversible do |direction|
       direction.up do
-        ExecutionEnvironment.update_all(pool_size: 0)
+        ExecutionEnvironment.update(pool_size: 0)
       end
     end
   end

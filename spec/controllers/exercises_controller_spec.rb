@@ -45,7 +45,7 @@ describe ExercisesController do
 
     context 'when saving fails' do
       before do
-        expect_any_instance_of(Exercise).to receive(:save).and_return(false)
+        allow_any_instance_of(Exercise).to receive(:save).and_return(false)
         perform_request.call
       end
 
@@ -87,7 +87,7 @@ describe ExercisesController do
         let(:files_attributes) { {'0' => FactoryBot.build(:file, file_type: file_type).attributes.merge(content: uploaded_file)} }
 
         context 'when uploading a binary file' do
-          let(:file_path) { Rails.root.join('db', 'seeds', 'audio_video', 'devstories.mp4') }
+          let(:file_path) { Rails.root.join('db/seeds/audio_video/devstories.mp4') }
           let(:file_type) { FactoryBot.create(:dot_mp4) }
           let(:uploaded_file) { Rack::Test::UploadedFile.new(file_path, 'video/mp4', true) }
 
@@ -102,7 +102,7 @@ describe ExercisesController do
         end
 
         context 'when uploading a non-binary file' do
-          let(:file_path) { Rails.root.join('db', 'seeds', 'fibonacci', 'exercise.rb') }
+          let(:file_path) { Rails.root.join('db/seeds/fibonacci/exercise.rb') }
           let(:file_type) { FactoryBot.create(:dot_rb) }
           let(:uploaded_file) { Rack::Test::UploadedFile.new(file_path, 'text/x-ruby', false) }
 
@@ -189,9 +189,10 @@ describe ExercisesController do
   describe 'GET #index' do
     let(:scope) { Pundit.policy_scope!(user, Exercise) }
 
-    before(:all) { FactoryBot.create_pair(:dummy) }
-
-    before { get :index }
+    before do
+      FactoryBot.create_pair(:dummy)
+      get :index
+    end
 
     expect_assigns(exercises: :scope)
     expect_status(200)
@@ -208,7 +209,7 @@ describe ExercisesController do
   end
 
   describe 'GET #show' do
-    context 'as admin' do
+    context 'when being admin' do
       before { get :show, params: {id: exercise.id} }
 
       expect_assigns(exercise: :exercise)
@@ -218,7 +219,7 @@ describe ExercisesController do
   end
 
   describe 'GET #reload' do
-    context 'as anyone' do
+    context 'when being anyone' do
       before { get :reload, format: :json, params: {id: exercise.id} }
 
       expect_assigns(exercise: :exercise)
@@ -239,22 +240,22 @@ describe ExercisesController do
     let(:output) { {} }
     let(:perform_request) { post :submit, format: :json, params: {id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id}} }
     let(:user) { FactoryBot.create(:external_user) }
-    let!(:lti_parameter) { FactoryBot.create(:lti_parameter, external_user: user, exercise: exercise) }
 
     before do
+      FactoryBot.create(:lti_parameter, external_user: user, exercise: exercise)
       allow_any_instance_of(Submission).to receive(:normalized_score).and_return(1)
-      expect(controller).to receive(:collect_test_results).and_return([{score: 1, weight: 1}])
-      expect(controller).to receive(:score_submission).and_call_original
+      allow(controller).to receive(:collect_test_results).and_return([{score: 1, weight: 1}])
+      allow(controller).to receive(:score_submission).and_call_original
     end
 
     context 'when LTI outcomes are supported' do
       before do
-        expect(controller).to receive(:lti_outcome_service?).and_return(true)
+        allow(controller).to receive(:lti_outcome_service?).and_return(true)
       end
 
       context 'when the score transmission succeeds' do
         before do
-          expect(controller).to receive(:send_score).and_return(status: 'success')
+          allow(controller).to receive(:send_score).and_return(status: 'success')
           perform_request
         end
 
@@ -270,7 +271,7 @@ describe ExercisesController do
 
       context 'when the score transmission fails' do
         before do
-          expect(controller).to receive(:send_score).and_return(status: 'unsupported')
+          allow(controller).to receive(:send_score).and_return(status: 'unsupported')
           perform_request
         end
 
@@ -287,8 +288,7 @@ describe ExercisesController do
 
     context 'when LTI outcomes are not supported' do
       before do
-        expect(controller).to receive(:lti_outcome_service?).and_return(false)
-        expect(controller).not_to receive(:send_score)
+        allow(controller).to receive(:lti_outcome_service?).and_return(false)
         perform_request
       end
 
@@ -296,6 +296,10 @@ describe ExercisesController do
 
       it 'creates a submission' do
         expect(assigns(:submission)).to be_a(Submission)
+      end
+
+      it 'does not send scores' do
+        expect(controller).not_to receive(:send_score)
       end
 
       expect_json
@@ -333,7 +337,7 @@ describe ExercisesController do
     let(:external_check_hash) { {message: message, exercise_found: true, update_right: update_right, error: error} }
     let(:message) { 'message' }
     let(:update_right) { true }
-    let(:error) {}
+    let(:error) { nil }
 
     before { allow(ExerciseService::CheckExternal).to receive(:call).with(uuid: exercise.uuid, codeharbor_link: codeharbor_link).and_return(external_check_hash) }
 
@@ -384,7 +388,7 @@ describe ExercisesController do
 
     let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
     let(:post_request) { post :export_external_confirm, params: {id: exercise.id, codeharbor_link: codeharbor_link.id} }
-    let(:error) {}
+    let(:error) { nil }
     let(:zip) { 'zip' }
 
     before do

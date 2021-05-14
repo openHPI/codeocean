@@ -6,7 +6,7 @@ class RequestForCommentsController < ApplicationController
   before_action :require_user!
   before_action :set_request_for_comment, only: %i[show mark_as_solved set_thank_you_note]
   before_action :set_study_group_grouping,
-    only: %i[index get_my_comment_requests get_rfcs_with_my_comments get_rfcs_for_exercise]
+    only: %i[index my_comment_requests rfcs_with_my_comments rfcs_for_exercise]
 
   def authorize!
     authorize(@request_for_comments || @request_for_comment)
@@ -31,7 +31,7 @@ class RequestForCommentsController < ApplicationController
   end
 
   # GET /my_request_for_comments
-  def get_my_comment_requests
+  def my_comment_requests
     @search = RequestForComment
       .with_last_activity
       .where(user: current_user)
@@ -44,7 +44,7 @@ class RequestForCommentsController < ApplicationController
   end
 
   # GET /my_rfc_activity
-  def get_rfcs_with_my_comments
+  def rfcs_with_my_comments
     @search = RequestForComment
       .with_last_activity
       .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
@@ -58,7 +58,7 @@ class RequestForCommentsController < ApplicationController
   end
 
   # GET /exercises/:id/request_for_comments
-  def get_rfcs_for_exercise
+  def rfcs_for_exercise
     exercise = Exercise.find(params[:exercise_id])
     @search = RequestForComment
       .with_last_activity

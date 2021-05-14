@@ -81,7 +81,7 @@ module SubmissionScoring
       end
     end
     submission.update(score: score)
-    if submission.normalized_score == 1.0
+    if submission.normalized_score.to_d == 1.0.to_d
       Thread.new do
         RequestForComment.where(exercise_id: submission.exercise_id, user_id: submission.user_id,
 user_type: submission.user_type).each do |rfc|

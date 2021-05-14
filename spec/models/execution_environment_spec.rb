@@ -6,7 +6,7 @@ describe ExecutionEnvironment do
   let(:execution_environment) { described_class.create.tap {|execution_environment| execution_environment.update(network_enabled: nil) } }
 
   it 'validates that the Docker image works', docker: true do
-    expect(execution_environment).to receive(:validate_docker_image?).and_return(true)
+    allow(execution_environment).to receive(:validate_docker_image?).and_return(true)
     expect(execution_environment).to receive(:working_docker_image?)
     execution_environment.update(docker_image: FactoryBot.attributes_for(:ruby)[:docker_image])
   end
@@ -124,22 +124,22 @@ describe ExecutionEnvironment do
   describe '#working_docker_image?', docker: true do
     let(:working_docker_image?) { execution_environment.send(:working_docker_image?) }
 
-    before { expect(DockerClient).to receive(:find_image_by_tag).and_return(Object.new) }
+    before { allow(DockerClient).to receive(:find_image_by_tag).and_return(Object.new) }
 
     it 'instantiates a Docker client' do
       expect(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
-      expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return({})
+      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return({})
       working_docker_image?
     end
 
     it 'executes the validation command' do
-      expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(ExecutionEnvironment::VALIDATION_COMMAND).and_return({})
+      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(ExecutionEnvironment::VALIDATION_COMMAND).and_return({})
       working_docker_image?
     end
 
     context 'when the command produces an error' do
       it 'adds an error' do
-        expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return(stderr: 'command not found')
+        allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return(stderr: 'command not found')
         working_docker_image?
         expect(execution_environment.errors[:docker_image]).to be_present
       end
@@ -147,7 +147,7 @@ describe ExecutionEnvironment do
 
     context 'when the Docker client produces an error' do
       it 'adds an error' do
-        expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_raise(DockerClient::Error)
+        allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_raise(DockerClient::Error)
         working_docker_image?
         expect(execution_environment.errors[:docker_image]).to be_present
       end

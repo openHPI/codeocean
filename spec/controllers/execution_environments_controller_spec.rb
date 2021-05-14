@@ -9,7 +9,7 @@ describe ExecutionEnvironmentsController do
   before { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
-    before { expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
+    before { allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
 
     context 'with a valid execution environment' do
       let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby).attributes} } }
@@ -50,7 +50,7 @@ describe ExecutionEnvironmentsController do
 
   describe 'GET #edit' do
     before do
-      expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
+      allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
       get :edit, params: {id: execution_environment.id}
     end
 
@@ -64,8 +64,8 @@ describe ExecutionEnvironmentsController do
     let(:command) { 'which ruby' }
 
     before do
-      expect(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
-      expect_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(command)
+      allow(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
+      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(command)
       post :execute_command, params: {command: command, id: execution_environment.id}
     end
 
@@ -76,9 +76,10 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryBot.create_pair(:ruby) }
-
-    before { get :index }
+    before do
+      FactoryBot.create_pair(:ruby)
+      get :index
+    end
 
     expect_assigns(execution_environments: ExecutionEnvironment.all)
     expect_status(200)
@@ -87,7 +88,7 @@ describe ExecutionEnvironmentsController do
 
   describe 'GET #new' do
     before do
-      expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
+      allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
       get :new
     end
 
@@ -102,8 +103,8 @@ describe ExecutionEnvironmentsController do
       let(:docker_images) { [1, 2, 3] }
 
       before do
-        expect(DockerClient).to receive(:check_availability!).at_least(:once)
-        expect(DockerClient).to receive(:image_tags).and_return(docker_images)
+        allow(DockerClient).to receive(:check_availability!).at_least(:once)
+        allow(DockerClient).to receive(:image_tags).and_return(docker_images)
         controller.send(:set_docker_images)
       end
 
@@ -114,7 +115,7 @@ describe ExecutionEnvironmentsController do
       let(:error_message) { 'Docker is unavailable' }
 
       before do
-        expect(DockerClient).to receive(:check_availability!).at_least(:once).and_raise(DockerClient::Error.new(error_message))
+        allow(DockerClient).to receive(:check_availability!).at_least(:once).and_raise(DockerClient::Error.new(error_message))
         controller.send(:set_docker_images)
       end
 
@@ -154,7 +155,7 @@ describe ExecutionEnvironmentsController do
   describe 'PUT #update' do
     context 'with a valid execution environment' do
       before do
-        expect(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
+        allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
         put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
       end
 

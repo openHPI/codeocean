@@ -52,9 +52,7 @@ class FileTree < Tree::TreeNode
   private :map_to_js_tree
 
   def node_icon(node)
-    if node.is_root?
-      folder_icon
-    elsif node.is_leaf?
+    if node.is_leaf? && !node.is_root?
       file_icon(node.content)
     else
       folder_icon

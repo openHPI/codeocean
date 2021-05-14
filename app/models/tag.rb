@@ -6,11 +6,7 @@ class Tag < ApplicationRecord
 
   validates :name, uniqueness: true
 
-  def destroy
-    if can_be_destroyed?
-      super
-    end
-  end
+  before_destroy :can_be_destroyed?, prepend: true
 
   def can_be_destroyed?
     exercises.none?

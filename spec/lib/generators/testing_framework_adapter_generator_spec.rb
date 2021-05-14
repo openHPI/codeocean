@@ -27,7 +27,7 @@ describe TestingFrameworkAdapterGenerator do
 
     it 'builds a correct class skeleton' do
       file_content = File.new(path, 'r').read
-      expect(file_content).to start_with("class #{name}Adapter < TestingFrameworkAdapter")
+      expect(file_content&.strip).to start_with("class #{name}Adapter < TestingFrameworkAdapter")
     end
 
     it 'generates a corresponding test' do

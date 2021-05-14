@@ -17,6 +17,6 @@ class CreateInterventions < ActiveRecord::Migration[4.2]
       t.timestamps
     end
 
-    Intervention.createDefaultInterventions
+    Intervention.create_default_interventions
   end
 end

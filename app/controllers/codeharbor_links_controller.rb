@@ -3,7 +3,7 @@
 class CodeharborLinksController < ApplicationController
   include CommonBehavior
   before_action :verify_codeharbor_activation
-  before_action :set_codeharbor_link, only: %i[show edit update destroy]
+  before_action :set_codeharbor_link, only: %i[edit update destroy]
 
   def new
     base_url = CodeOcean::Config.new(:code_ocean).read[:codeharbor][:url] || ''

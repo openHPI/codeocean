@@ -61,7 +61,7 @@ raise: false
   def collect_paths(files)
     unique_paths = files.map(&:path).reject(&:blank?).uniq
     subpaths = unique_paths.map do |path|
-      (path.split('/').length + 1).times.map do |n|
+      Array.new((path.split('/').length + 1)) do |n|
         path.split('/').shift(n).join('/')
       end
     end
@@ -271,7 +271,7 @@ user_id: current_user.id, user_type: current_user.class.name
   def implement
     redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? && current_user.role != 'admin' && current_user.role != 'teacher' # TODO: TESTESTEST
     redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
-    user_solved_exercise = @exercise.has_user_solved(current_user)
+    user_solved_exercise = @exercise.solved_by?(current_user)
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?',
       Time.zone.now.beginning_of_day).count
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user,
@@ -280,11 +280,10 @@ exercise: @exercise).size >= max_intervention_count_per_exercise
 
     if @embed_options[:disable_interventions]
       @show_rfc_interventions = false
-      @show_break_interventions = false
     else
       @show_rfc_interventions = (!user_solved_exercise && !user_got_enough_interventions).to_s
-      @show_break_interventions = false
     end
+    @show_break_interventions = false
 
     @hide_rfc_button = @embed_options[:disable_rfc]
 
@@ -308,9 +307,7 @@ exercise: @exercise).size >= max_intervention_count_per_exercise
       lti_json = lti_parameters.lti_parameters['launch_presentation_return_url']
 
       @course_token =
-        if lti_json.nil?
-          ''
-        elsif match = lti_json.match(%r{^.*courses/([a-z0-9\-]+)/sections})
+        if lti_json.present? && (match = lti_json.match(%r{^.*courses/([a-z0-9\-]+)/sections}))
           match.captures.first
         else
           ''
@@ -470,7 +467,7 @@ working_time_accumulated: working_time_accumulated})
       authorize(@external_user, :statistics?)
       if policy(@exercise).detailed_statistics?
         @submissions = Submission.where(user: @external_user,
-exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
+          exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
         interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
           @exercise.id)
         @all_events = (@submissions + interventions).sort_by(&:created_at)
@@ -480,11 +477,11 @@ exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
         end
         @working_times_until = []
         @all_events.each_with_index do |_, index|
-          @working_times_until.push((format_time_difference(@deltas[0..index].inject(:+)) if index.positive?))
+          @working_times_until.push((format_time_difference(@deltas[0..index].sum) if index.positive?))
         end
       else
         final_submissions = Submission.where(user: @external_user,
-exercise_id: @exercise.id).in_study_group_of(current_user).final
+          exercise_id: @exercise.id).in_study_group_of(current_user).final
         @submissions = []
         %i[before_deadline within_grace_period after_late_deadline].each do |filter|
           relevant_submission = final_submissions.send(filter).latest
@@ -570,7 +567,7 @@ normalized_score: @submission.normalized_score})
 
   def redirect_after_submit
     Rails.logger.debug("Redirecting user with score:s #{@submission.normalized_score}")
-    if @submission.normalized_score == 1.0
+    if @submission.normalized_score.to_d == 1.0.to_d
       # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
       # redirect 10 percent pseudorandomly to the feedback page
@@ -603,7 +600,7 @@ normalized_score: @submission.normalized_score})
           flash.keep(:notice)
 
           # increase counter 'times_featured' in rfc
-          rfc.increment!(:times_featured)
+          rfc.increment(:times_featured)
 
           clear_lti_session_data(@submission.exercise_id, @submission.user_id)
           respond_to do |format|

@@ -6,7 +6,7 @@ class AddNetworkEnabledToExecutionEnvironments < ActiveRecord::Migration[4.2]
 
     reversible do |direction|
       direction.up do
-        ExecutionEnvironment.update_all(network_enabled: true)
+        ExecutionEnvironment.update(network_enabled: true)
       end
     end
   end

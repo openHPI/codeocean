@@ -3,6 +3,7 @@
 module ProformaService
   class ConvertTaskToExercise < ServiceBase
     def initialize(task:, user:, exercise: nil)
+      super()
       @task = task
       @user = user
       @exercise = exercise || Exercise.new(unpublished: true)

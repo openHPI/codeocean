@@ -60,10 +60,8 @@ module Lti
     if provider.roles.present?
       provider.roles.each do |role|
         case role.downcase
-          when 'administrator'
+          when 'administrator', 'instructor'
             # We don't want anyone to get admin privileges through LTI
-            result = 'teacher' if result == 'learner'
-          when 'instructor'
             result = 'teacher' if result == 'learner'
           else # 'learner'
             next
@@ -172,8 +170,7 @@ module Lti
         normalized_lit_score *= 0.0
       end
       response = provider.post_replace_result!(normalized_lit_score)
-      {code: response.response_code, message: response.post_response.body, status: response.code_major,
-score_sent: normalized_lit_score}
+      {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lit_score}
     else
       {status: 'unsupported'}
     end

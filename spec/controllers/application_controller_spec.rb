@@ -27,7 +27,7 @@ describe ApplicationController do
 
   describe '#render_not_authorized' do
     before do
-      expect(controller).to receive(:welcome) { controller.send(:render_not_authorized) }
+      allow(controller).to receive(:welcome) { controller.send(:render_not_authorized) }
       get :welcome
     end
 
@@ -41,14 +41,14 @@ describe ApplicationController do
     context 'when specifying a locale' do
       before { allow(session).to receive(:[]=).at_least(:once) }
 
-      context "using the 'custom_locale' parameter" do
+      context "when using the 'custom_locale' parameter" do
         it 'overwrites the session' do
           expect(session).to receive(:[]=).with(:locale, locale.to_s)
           get :welcome, params: {custom_locale: locale}
         end
       end
 
-      context "using the 'locale' parameter" do
+      context "when using the 'locale' parameter" do
         it 'overwrites the session' do
           expect(session).to receive(:[]=).with(:locale, locale.to_s)
           get :welcome, params: {locale: locale}

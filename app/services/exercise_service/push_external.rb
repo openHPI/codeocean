@@ -3,6 +3,7 @@
 module ExerciseService
   class PushExternal < ServiceBase
     def initialize(zip:, codeharbor_link:)
+      super()
       @zip = zip
       @codeharbor_link = codeharbor_link
     end

@@ -8,7 +8,7 @@ class Intervention < ApplicationRecord
     name
   end
 
-  def self.createDefaultInterventions
+  def self.create_default_interventions
     %w[BreakIntervention QuestionIntervention].each do |name|
       Intervention.find_or_create_by(name: name)
     end

@@ -127,7 +127,7 @@ class Submission < ApplicationRecord
   end
 
   def own_unsolved_rfc
-    RequestForComment.unsolved.where(exercise_id: exercise, user_id: user_id).first
+    RequestForComment.unsolved.find_by(exercise_id: exercise, user_id: user_id)
   end
 
   def unsolved_rfc

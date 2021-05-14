@@ -48,7 +48,7 @@ describe ProformaService::ConvertTaskToExercise do
     let(:files) { [] }
     let(:tests) { [] }
     let(:model_solutions) { [] }
-    let(:exercise) {}
+    let(:exercise) { nil }
 
     it 'creates an exercise with the correct attributes' do
       expect(convert_to_exercise_service).to have_attributes(
@@ -83,7 +83,7 @@ describe ProformaService::ConvertTaskToExercise do
       let(:mimetype) { 'mimetype' }
       let(:binary) { false }
       let(:content) { 'content' }
-      let(:path) {}
+      let(:path) { nil }
 
       it 'creates an exercise with a file that has the correct attributes' do
         expect(convert_to_exercise_service.files.first).to have_attributes(
@@ -196,11 +196,11 @@ describe ProformaService::ConvertTaskToExercise do
         let(:model_solution2) do
           Proforma::ModelSolution.new(
             id: 'ms-id-2',
-            files: ms_files_2
+            files: ms_files2
           )
         end
-        let(:ms_files_2) { [ms_file_2] }
-        let(:ms_file_2) do
+        let(:ms_files2) { [ms_file2] }
+        let(:ms_file2) do
           Proforma::TaskFile.new(
             id: 'ms-file-2',
             content: 'content',

@@ -50,7 +50,7 @@ describe SubmissionsController do
 
       before { get :download_file, params: {filename: file.name_with_extension, id: submission.id} }
 
-      context 'for a binary file' do
+      context 'with a binary file' do
         let(:file) { submission.collect_files.detect {|file| file.name == 'exercise' && file.file_type.file_extension == '.sql' } }
 
         expect_assigns(file: :file)
@@ -69,7 +69,7 @@ describe SubmissionsController do
 
       before { get :download_file, params: {filename: file.name_with_extension, id: submission.id} }
 
-      context 'for a binary file' do
+      context 'with a binary file' do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
 
         expect_assigns(file: :file)
@@ -82,7 +82,7 @@ describe SubmissionsController do
         end
       end
 
-      context 'for a non-binary file' do
+      context 'with a non-binary file' do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.js' } }
 
         expect_assigns(file: :file)
@@ -98,9 +98,10 @@ describe SubmissionsController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryBot.create_pair(:submission) }
-
-    before { get :index }
+    before do
+      FactoryBot.create_pair(:submission)
+      get :index
+    end
 
     expect_assigns(submissions: Submission.all)
     expect_status(200)
@@ -121,7 +122,7 @@ describe SubmissionsController do
 
       before { get :render_file, params: {filename: file.name_with_extension, id: submission.id} }
 
-      context 'for a binary file' do
+      context 'with a binary file' do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
 
         expect_assigns(file: :file)
@@ -134,7 +135,7 @@ describe SubmissionsController do
         end
       end
 
-      context 'for a non-binary file' do
+      context 'with a non-binary file' do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.js' } }
 
         expect_assigns(file: :file)
@@ -154,12 +155,12 @@ describe SubmissionsController do
     let(:perform_request) { get :run, params: {filename: filename, id: submission.id} }
 
     before do
-      expect_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
+      allow_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
     end
 
     context 'when no errors occur during execution' do
       before do
-        expect_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
+        allow_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
         perform_request
       end
 
@@ -222,7 +223,7 @@ describe SubmissionsController do
     let(:output) { {} }
 
     before do
-      expect_any_instance_of(DockerClient).to receive(:execute_test_command).with(submission, filename)
+      allow_any_instance_of(DockerClient).to receive(:execute_test_command).with(submission, filename)
       get :test, params: {filename: filename, id: submission.id}
     end
 

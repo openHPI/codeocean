@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe CodeOcean::Config do
   describe '#read' do
-    let(:content) { {foo: 'bar'} }
+    let(:content) { {'foo' => 'bar'} }
     let(:filename) { :foo }
 
     context 'with a .yml file' do

@@ -23,8 +23,8 @@ working_time: time_to_f(item.exercise.average_working_time)}
       0
     else
       values = collection_statistics.values.reject {|o| o[:working_time].nil? }
-      sum = values.reduce(0) {|sum, item| sum + item[:working_time] }
-      sum / values.size
+      total_sum = values.reduce(0) {|sum, item| sum + item[:working_time] }
+      total_sum / values.size
     end
   end
 

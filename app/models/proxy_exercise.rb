@@ -42,7 +42,7 @@ class ProxyExercise < ApplicationRecord
   end
 
   def get_matching_exercise(user)
-    assigned_user_proxy_exercise = user_proxy_exercise_exercises.where(user: user).first
+    assigned_user_proxy_exercise = user_proxy_exercise_exercises.find_by(user: user)
     if assigned_user_proxy_exercise
       Rails.logger.debug("retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}")
       assigned_user_proxy_exercise.exercise
@@ -105,9 +105,9 @@ exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
       relative_knowledge_improvement[potex] = 0.0
       Rails.logger.debug("review potential exercise #{potex.id}")
       tags.each do |tag|
-        tag_ratio = potex.exercise_tags.where(tag: tag).first.factor.to_f / potex.exercise_tags.inject(0) do |sum, et|
-                                                                              sum += et.factor
-                                                                            end
+        tag_ratio = potex.exercise_tags.find_by(tag: tag).factor.to_f / potex.exercise_tags.inject(0) do |sum, et|
+                                                                          sum + et.factor
+                                                                        end
         max_topic_knowledge_ratio = potex.expected_difficulty * tag_ratio
         old_relative_loss_tag = topic_knowledge_user[tag] / topic_knowledge_max[tag]
         new_relative_loss_tag = topic_knowledge_user[tag] / (topic_knowledge_max[tag] + max_topic_knowledge_ratio)
@@ -123,9 +123,9 @@ exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
     @reason[:current_users_knowledge_lack] = current_users_knowledge_lack
     @reason[:relative_knowledge_improvement] = relative_knowledge_improvement
 
-    Rails.logger.debug('current users knowledge loss: ' + current_users_knowledge_lack.map do |k, v|
-                                                            "#{k} => #{v}"
-                                                          end.to_s)
+    Rails.logger.debug("current users knowledge loss: #{current_users_knowledge_lack.map do |k, v|
+                                                          "#{k} => #{v}"
+                                                        end}")
     Rails.logger.debug("relative improvements #{relative_knowledge_improvement.map {|k, v| "#{k.id}:#{v}" }}")
     best_matching_exercise
   end
@@ -166,22 +166,22 @@ exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
   end
   private :scoring_matrix_quantiles
 
-  def score(user, ex)
-    max_score = ex.maximum_score.to_f
+  def score(user, exercise)
+    max_score = exercise.maximum_score.to_f
     if max_score <= 0
-      Rails.logger.debug("scoring user #{user.id} for exercise #{ex.id}:  score: 0")
+      Rails.logger.debug("scoring user #{user.id} for exercise #{exercise.id}:  score: 0")
       return 0.0
     end
-    points_ratio = ex.maximum_score(user) / max_score
-    if points_ratio == 0.0
-      Rails.logger.debug("scoring user #{user.id} for exercise #{ex.id}: points_ratio=#{points_ratio} score: 0")
+    points_ratio = exercise.maximum_score(user) / max_score
+    if points_ratio.to_d == 0.0.to_d
+      Rails.logger.debug("scoring user #{user.id} for exercise #{exercise.id}: points_ratio=#{points_ratio} score: 0")
       return 0.0
     elsif points_ratio > 1.0
       points_ratio = 1.0 # The score of the exercise was adjusted and is now lower than it was
     end
     points_ratio_index = ((scoring_matrix.size - 1) * points_ratio).to_i
-    working_time_user = ex.accumulated_working_time_for_only(user)
-    quantiles_working_time = ex.get_quantiles(scoring_matrix_quantiles)
+    working_time_user = exercise.accumulated_working_time_for_only(user)
+    quantiles_working_time = exercise.get_quantiles(scoring_matrix_quantiles)
     quantile_index = quantiles_working_time.size
     quantiles_working_time.each_with_index do |quantile_time, i|
       if working_time_user <= quantile_time
@@ -190,7 +190,7 @@ exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
       end
     end
     Rails.logger.debug(
-        "scoring user #{user.id} exercise #{ex.id}: worktime #{working_time_user}, points: #{points_ratio}" \
+        "scoring user #{user.id} exercise #{exercise.id}: worktime #{working_time_user}, points: #{points_ratio}" \
         "(index #{points_ratio_index}) quantiles #{quantiles_working_time} placed into quantile index #{quantile_index} " \
         "score: #{scoring_matrix[points_ratio_index][quantile_index]}"
       )
@@ -217,12 +217,12 @@ exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
       ex.tags.each do |t|
         tags_counter[t] += 1
         tag_diminishing_return_factor = tag_diminishing_return_function(tags_counter[t], all_used_tags_with_count[t])
-        tag_ratio = ex.exercise_tags.where(tag: t).first.factor.to_f / ex.exercise_tags.inject(0) do |sum, et|
-                                                                         sum + et.factor
-                                                                       end
-        Rails.logger.debug("tag: #{t}, factor: #{ex.exercise_tags.where(tag: t).first.factor}, sumall: #{ex.exercise_tags.inject(0) do |sum, et|
-                                                                                                           sum + et.factor
-                                                                                                         end }")
+        tag_ratio = ex.exercise_tags.find_by(tag: t).factor.to_f / ex.exercise_tags.inject(0) do |sum, et|
+                                                                     sum + et.factor
+                                                                   end
+        Rails.logger.debug("tag: #{t}, factor: #{ex.exercise_tags.find_by(tag: t).factor}, sumall: #{ex.exercise_tags.inject(0) do |sum, et|
+                                                                                                       sum + et.factor
+                                                                                                     end }")
         Rails.logger.debug("tag #{t}, count #{tags_counter[t]}, max: #{all_used_tags_with_count[t]}, factor: #{tag_diminishing_return_factor}")
         Rails.logger.debug("tag_ratio #{tag_ratio}")
         topic_knowledge_ratio = ex.expected_difficulty * tag_ratio

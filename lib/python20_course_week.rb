@@ -9,13 +9,9 @@ class Python20CourseWeek
         2
       when /Python20 Aufgabe 3/
         3
-      when /Python20 Aufgabe 4/
+      when /Python20 Aufgabe 4/, /Python20 Snake/
         4
-      when /Python20 Snake/
-        4
-      else
-        # Not part of the Python20 course
-        nil
+      # else: Not part of the Python20 course
     end
   end
 

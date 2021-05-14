@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CommentsController < ApplicationController
-  before_action :set_comment, only: %i[show edit update destroy]
+  before_action :set_comment, only: %i[show update destroy]
 
   # to disable authorization check: comment the line below back in
   # skip_after_action :verify_authorized

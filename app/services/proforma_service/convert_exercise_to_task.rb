@@ -7,6 +7,7 @@ module ProformaService
     DEFAULT_LANGUAGE = 'de'
 
     def initialize(exercise: nil)
+      super()
       @exercise = exercise
     end
 

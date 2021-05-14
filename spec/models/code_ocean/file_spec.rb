@@ -25,7 +25,7 @@ describe CodeOcean::File do
     expect(file.errors[:read_only]).to be_blank
   end
 
-  context 'as a teacher-defined test' do
+  context 'with a teacher-defined test' do
     before { file.update(role: 'teacher_defined_test') }
 
     it 'validates the presence of a feedback message' do

@@ -42,7 +42,9 @@ module ApplicationHelper
   end
 
   def render_markdown(markdown)
+    # rubocop:disable Rails/OutputSafety
     Kramdown::Document.new(markdown).to_html.html_safe
+    # rubocop:enable Rails/OutputSafety
   end
 
   def row(options = {}, &block)

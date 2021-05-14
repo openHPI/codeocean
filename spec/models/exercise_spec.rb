@@ -118,9 +118,7 @@ describe Exercise do
     end
 
     it 'duplicates all associated files' do
-      exercise.files.each do |file|
-        expect(file).to receive(:dup).and_call_original
-      end
+      expect(exercise.files).to all(receive(:dup).and_call_original)
     end
 
     it 'returns the duplicated exercise' do

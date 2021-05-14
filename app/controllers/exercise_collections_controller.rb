@@ -58,8 +58,8 @@ class ExerciseCollectionsController < ApplicationController
                        end
     sanitized_params[:exercise_ids] = sanitized_params[:exercise_ids].reject {|v| v.nil? or v == '' }
     sanitized_params.tap do |p|
-      p[:exercise_collection_items] = p[:exercise_ids].map.with_index do |_id, index|
-        ExerciseCollectionItem.find_or_create_by(exercise_id: _id, exercise_collection_id: @exercise_collection.id, position: index)
+      p[:exercise_collection_items] = p[:exercise_ids].map.with_index do |id, index|
+        ExerciseCollectionItem.find_or_create_by(exercise_id: id, exercise_collection_id: @exercise_collection.id, position: index)
       end
       p.delete(:exercise_ids)
     end

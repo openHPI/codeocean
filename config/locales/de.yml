@@ -723,11 +723,11 @@ de:
       Mit "Kommentar abschicken" wird der Kommentar dann gesichert und taucht als Sprechblase neben der Zeile auf.
     howto_title: 'Anleitung'
     index:
-      get_my_comment_requests: Meine Kommentaranfragen
+      my_comment_requests: Meine Kommentaranfragen
       all: "Alle Kommentaranfragen"
-      get_rfcs_with_my_comments: Kommentaranfragen die ich kommentiert habe
-      get_my_rfc_activity: "Meine Kommentaraktivität"
-      get_rfcs_for_exercise: "Übungsspezifische Kommentare"
+      rfcs_with_my_comments: Kommentaranfragen die ich kommentiert habe
+      my_rfc_activity: "Meine Kommentaraktivität"
+      rfcs_for_exercise: "Übungsspezifische Kommentare"
       study_groups:
         placeholder: "Lerngruppe"
         current: "Aktuelle Lerngruppe"

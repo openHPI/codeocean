@@ -11,7 +11,7 @@ describe Assessor do
 
     context 'when an error occurs' do
       before do
-        expect_any_instance_of(TestingFrameworkAdapter).to receive(:test_outcome).and_raise
+        allow_any_instance_of(TestingFrameworkAdapter).to receive(:test_outcome).and_raise
       end
 
       it 'catches the error' do

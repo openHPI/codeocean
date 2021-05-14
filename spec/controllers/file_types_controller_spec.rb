@@ -57,9 +57,10 @@ describe FileTypesController do
   end
 
   describe 'GET #index' do
-    before(:all) { FactoryBot.create_pair(:dot_rb) }
-
-    before { get :index }
+    before do
+      FactoryBot.create_pair(:dot_rb)
+      get :index
+    end
 
     expect_assigns(file_types: FileType.all)
     expect_status(200)

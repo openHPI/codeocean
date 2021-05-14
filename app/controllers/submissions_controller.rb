@@ -9,7 +9,7 @@ class SubmissionsController < ApplicationController
   include Tubesock::Hijack
 
   before_action :set_submission,
-    only: %i[download download_file render_file run score extract_errors show statistics stop test]
+    only: %i[download download_file render_file run score extract_errors show statistics test]
   before_action :set_docker_client, only: %i[run test]
   before_action :set_files, only: %i[download download_file render_file show run]
   before_action :set_file, only: %i[download_file render_file run]
@@ -199,7 +199,7 @@ user_type: current_user.class.name, row: annotation[1][:row], column: annotation
               socket.send data
               Rails.logger.debug("Sent the received client data to docker:#{data}")
             end
-          rescue JSON::ParserError => e
+          rescue JSON::ParserError
             socket.send data
             Rails.logger.debug("Rescued parsing error, sent the received client data to docker:#{data}")
             Sentry.set_extras(data: data)
@@ -266,7 +266,7 @@ user_type: current_user.class.name, row: annotation[1][:row], column: annotation
     end
   end
 
-  def parse_message(message, output_stream, socket, container = nil, recursive = true)
+  def parse_message(message, output_stream, socket, container = nil, recursive: true)
     parsed = ''
     begin
       parsed = JSON.parse(message)
@@ -279,11 +279,11 @@ user_type: current_user.class.name, row: annotation[1][:row], column: annotation
         socket.send_data JSON.dump(parsed)
         Rails.logger.info("parse_message sent: #{JSON.dump(parsed)}")
       end
-    rescue JSON::ParserError => e
+    rescue JSON::ParserError
       # Check wether the message contains multiple lines, if true try to parse each line
       if recursive && message.include?("\n")
         message.split("\n").each do |part|
-          parse_message(part, output_stream, socket, container, false)
+          parse_message(part, output_stream, socket, container, recursive: false)
         end
       elsif message.include?('<img') || message.start_with?('{"cmd') || message.include?('"turtlebatch"')
         # Rails.logger.info('img foung')

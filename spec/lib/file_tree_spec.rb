@@ -8,8 +8,8 @@ describe FileTree do
   describe '#file_icon' do
     let(:file_icon) { file_tree.send(:file_icon, file) }
 
-    context 'for a media file' do
-      context 'for an audio file' do
+    context 'with a media file' do
+      context 'with an audio file' do
         let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_mp3)) }
 
         it 'is an audio file icon' do
@@ -17,7 +17,7 @@ describe FileTree do
         end
       end
 
-      context 'for an image file' do
+      context 'with an image file' do
         let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_jpg)) }
 
         it 'is an image file icon' do
@@ -25,7 +25,7 @@ describe FileTree do
         end
       end
 
-      context 'for a video file' do
+      context 'with a video file' do
         let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_mp4)) }
 
         it 'is a video file icon' do
@@ -34,8 +34,8 @@ describe FileTree do
       end
     end
 
-    context 'for other files' do
-      context 'for a read-only file' do
+    context 'with other files' do
+      context 'with a read-only file' do
         let(:file) { FactoryBot.build(:file, read_only: true) }
 
         it 'is a lock icon' do
@@ -43,7 +43,7 @@ describe FileTree do
         end
       end
 
-      context 'for an executable file' do
+      context 'with an executable file' do
         let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_py)) }
 
         it 'is a code file icon' do
@@ -51,7 +51,7 @@ describe FileTree do
         end
       end
 
-      context 'for a renderable file' do
+      context 'with a renderable file' do
         let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_svg)) }
 
         it 'is a text file icon' do
@@ -59,7 +59,7 @@ describe FileTree do
         end
       end
 
-      context 'for all other files' do
+      context 'with all other files' do
         let(:file) { FactoryBot.build(:file, file_type: FactoryBot.build(:dot_md)) }
 
         it 'is a generic file icon' do
@@ -100,7 +100,7 @@ describe FileTree do
     let!(:leaf) { root.add(Tree::TreeNode.new('', file)) }
     let(:root) { Tree::TreeNode.new('', file) }
 
-    context 'for a leaf node' do
+    context 'with a leaf node' do
       let(:node) { leaf }
 
       it 'produces the required attributes' do
@@ -116,7 +116,7 @@ describe FileTree do
       end
     end
 
-    context 'for a non-leaf node' do
+    context 'with a non-leaf node' do
       let(:node) { root }
 
       it "traverses the node's children" do
@@ -144,7 +144,7 @@ describe FileTree do
     let(:node_icon) { file_tree.send(:node_icon, node) }
     let(:root) { Tree::TreeNode.new('') }
 
-    context 'for the root node' do
+    context 'with the root node' do
       let(:node) { root }
 
       it 'is a folder icon' do
@@ -152,7 +152,7 @@ describe FileTree do
       end
     end
 
-    context 'for leaf nodes' do
+    context 'with leaf nodes' do
       let(:node) { root.add(Tree::TreeNode.new('')) }
 
       it 'is a file icon' do
@@ -161,7 +161,7 @@ describe FileTree do
       end
     end
 
-    context 'for intermediary nodes' do
+    context 'with intermediary nodes' do
       let(:node) do
         root.add(Tree::TreeNode.new('').tap {|node| node.add(Tree::TreeNode.new('')) })
       end

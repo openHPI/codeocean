@@ -54,9 +54,10 @@ describe ConsumersController do
   end
 
   describe 'GET #index' do
-    let!(:consumers) { FactoryBot.create_pair(:consumer) }
-
-    before { get :index }
+    before do
+      FactoryBot.create_pair(:consumer)
+      get :index
+    end
 
     expect_assigns(consumers: Consumer.all)
     expect_status(200)

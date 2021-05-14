@@ -29,7 +29,7 @@ FileType.create_factories
 
 # change all resources' author
 [ExecutionEnvironment, Exercise, FileType].each do |model|
-  model.update_all(user_id: InternalUser.first.id)
+  model.update(user_id: InternalUser.first.id)
 end
 
 # delete temporary users

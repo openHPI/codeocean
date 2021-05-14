@@ -45,6 +45,9 @@ describe InternalUsersController do
     before do
       user.send(:setup_activation)
       user.save(validate: false)
+    end
+
+    it 'adds an activation token' do
       expect(user.activation_token).to be_present
     end
 
@@ -171,7 +174,7 @@ describe InternalUsersController do
       before do
         allow(controller).to receive(:set_sentry_context).and_return(nil)
 
-        expect(controller).to receive(:current_user).and_return(nil)
+        allow(controller).to receive(:current_user).and_return(nil)
         get :forgot_password
       end
 
@@ -183,7 +186,7 @@ describe InternalUsersController do
       before do
         allow(controller).to receive(:set_sentry_context).and_return(nil)
 
-        expect(controller).to receive(:current_user).and_return(user)
+        allow(controller).to receive(:current_user).and_return(user)
         get :forgot_password
       end
 
@@ -199,7 +202,7 @@ describe InternalUsersController do
       before { perform_request.call }
 
       it 'delivers instructions to reset the password' do
-        expect(InternalUser).to receive(:where).and_return([user])
+        allow(InternalUser).to receive(:where).and_return([user])
         expect(user).to receive(:deliver_reset_password_instructions!)
         perform_request.call
       end

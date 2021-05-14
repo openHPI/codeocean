@@ -23,7 +23,7 @@ class FlowrController < ApplicationController
     # for each error get all attributes, filter out uninteresting ones, and build a query
     insights = errors.map do |error|
       attributes = error.structured_error_attributes.select do |attribute|
-        is_interesting(attribute) and attribute.match
+        interesting?(attribute) and attribute.match
       end
       # once the programming language model becomes available, the language name can be added to the query to
       # produce more relevant results
@@ -35,8 +35,8 @@ class FlowrController < ApplicationController
     render json: insights, status: :ok
   end
 
-  def is_interesting(attribute)
-    attribute.error_template_attribute.key.index(/error message|error type/i) != nil
+  def interesting?(attribute)
+    !attribute.error_template_attribute.key.index(/error message|error type/i).nil?
   end
-  private :is_interesting
+  private :interesting?
 end

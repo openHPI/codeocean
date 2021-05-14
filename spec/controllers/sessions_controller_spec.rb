@@ -58,8 +58,8 @@ describe SessionsController do
 
     context 'without a unique OAuth nonce' do
       it 'refuses the LTI launch' do
-        expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
-        expect(NonceStore).to receive(:has?).with(nonce).and_return(true)
+        allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
+        allow(NonceStore).to receive(:has?).with(nonce).and_return(true)
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.used_nonce')).and_call_original
         post :create_through_lti, params: {oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex}
       end
@@ -67,7 +67,7 @@ describe SessionsController do
 
     context 'without a valid exercise token' do
       it 'refuses the LTI launch' do
-        expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
+        allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_exercise_token')).and_call_original
         post :create_through_lti, params: {custom_token: '', oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: '123'}
       end
@@ -78,7 +78,7 @@ describe SessionsController do
       let(:perform_request) { post :create_through_lti, params: {custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id} }
       let(:user) { FactoryBot.create(:external_user, consumer_id: consumer.id) }
 
-      before { expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
+      before { allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
 
       it 'assigns the current user' do
         perform_request
@@ -112,7 +112,7 @@ describe SessionsController do
         let(:message) { I18n.t('sessions.create_through_lti.session_with_outcome', consumer: consumer) }
 
         before do
-          expect(controller).to receive(:lti_outcome_service?).and_return(true)
+          allow(controller).to receive(:lti_outcome_service?).and_return(true)
           perform_request
         end
 
@@ -123,7 +123,7 @@ describe SessionsController do
         let(:message) { I18n.t('sessions.create_through_lti.session_without_outcome', consumer: consumer) }
 
         before do
-          expect(controller).to receive(:lti_outcome_service?).and_return(false)
+          allow(controller).to receive(:lti_outcome_service?).and_return(false)
           perform_request
         end
 
@@ -159,7 +159,7 @@ describe SessionsController do
 
     before do
       allow(controller).to receive(:set_sentry_context).and_return(nil)
-      expect(controller).to receive(:current_user).at_least(:once).and_return(user)
+      allow(controller).to receive(:current_user).at_least(:once).and_return(user)
     end
 
     context 'with an internal user' do
@@ -199,7 +199,14 @@ describe SessionsController do
 
   describe 'GET #destroy_through_lti' do
     let(:perform_request) { proc { get :destroy_through_lti, params: {consumer_id: consumer.id, submission_id: submission.id} } }
-    let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:dummy)) }    before { perform_request.call }
+    let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:dummy)) }
+
+    before do
+      # Todo replace session with lti_parameter
+      # Todo create LtiParameter Object
+      # session[:lti_parameters] = {}
+      perform_request.call
+    end
 
     it 'clears the session' do
       # Todo replace session with lti_parameter /should be done already
@@ -216,7 +223,7 @@ describe SessionsController do
       before do
         allow(controller).to receive(:set_sentry_context).and_return(nil)
 
-        expect(controller).to receive(:current_user).and_return(nil)
+        allow(controller).to receive(:current_user).and_return(nil)
         get :new
       end
 
@@ -228,7 +235,7 @@ describe SessionsController do
       before do
         allow(controller).to receive(:set_sentry_context).and_return(nil)
 
-        expect(controller).to receive(:current_user).and_return(FactoryBot.build(:teacher))
+        allow(controller).to receive(:current_user).and_return(FactoryBot.build(:teacher))
         get :new
       end
 

@@ -33,7 +33,7 @@ describe ProformaService::Import do
         user: user)
     end
 
-    let(:uuid) {}
+    let(:uuid) { nil }
     let(:execution_environment) { FactoryBot.build(:java) }
     let(:files) { [] }
     let(:tests) { [] }

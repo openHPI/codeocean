@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
 
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
 
-  after_action :verify_authorized, except: %i[help welcome]
+  after_action :verify_authorized, except: %i[welcome]
   around_action :mnemosyne_trace
   before_action :set_sentry_context, :set_locale, :allow_iframe_requests, :load_embed_options
   protect_from_forgery(with: :exception, prepend: true)

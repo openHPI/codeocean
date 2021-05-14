@@ -29,7 +29,7 @@ describe 'Editor', js: true do
     fill_in('email', with: user.email)
     fill_in('password', with: FactoryBot.attributes_for(:teacher)[:password])
     click_button(I18n.t('sessions.new.link'))
-    expect_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
+    allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
     visit(implement_exercise_path(exercise))
   end
 

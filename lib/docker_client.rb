@@ -78,7 +78,7 @@ class DockerClient
     }
   end
 
-  def create_socket(container, stderr = false)
+  def create_socket(container, stderr: false)
     # TODO: factor out query params
     # todo separate stderr
     query_params = "logs=0&stream=1&#{stderr ? 'stderr=1' : 'stdout=1&stdin=1'}"
@@ -111,7 +111,7 @@ class DockerClient
   end
 
   def self.create_container(execution_environment)
-    tries ||= 0
+    # tries ||= 0
     # container.start sometimes creates the passed local_workspace_path on disk (depending on the setup).
     # this is however not guaranteed and caused issues on the server already. Therefore create the necessary folders manually!
     local_workspace_path = generate_local_workspace_path
@@ -133,14 +133,14 @@ class DockerClient
         Thread.new do
           timeout = SELF_DESTROY_GRACE_PERIOD.to_i
           sleep(timeout)
-          container.docker_client.kill_container(container, false)
+          container.docker_client.kill_container(container)
           Rails.logger.info("Force killing container in status #{container.status} after #{Time.zone.now - container.start_time} seconds.")
         ensure
           # guarantee that the thread is releasing the DB connection after it is done
           ActiveRecord::Base.connection_pool.release_connection
         end
       else
-        container.docker_client.kill_container(container, false)
+        container.docker_client.kill_container(container)
         Rails.logger.info("Killing container in status #{container.status} after #{Time.zone.now - container.start_time} seconds.")
       end
     ensure
@@ -280,7 +280,7 @@ class DockerClient
       {status: :container_depleted, waiting_for_container_time: waiting_for_container_time,
 container_execution_time: nil}
     end
-  rescue Excon::Errors::SocketError => e
+  rescue Excon::Errors::SocketError
     # socket errors seems to be normal when using exec
     # so lets ignore them for now
     # (tries += 1) <= RETRY_COUNT ? retry : raise(error)
@@ -310,10 +310,8 @@ container_execution_time: nil}
   end
 
   def kill_after_timeout(container)
-    "
-    We need to start a second thread to kill the websocket connection,
-    as it is impossible to determine whether further input is requested.
-    "
+    # We need to start a second thread to kill the websocket connection,
+    # as it is impossible to determine whether further input is requested.
     container.status = :executing
     @thread = Thread.new do
       timeout = @execution_environment.permitted_execution_time.to_i # seconds
@@ -365,16 +363,14 @@ container_execution_time: nil}
     end
   end
 
-  def kill_container(container, _create_new = true)
+  def kill_container(container)
     exit_thread_if_alive
     Rails.logger.info("killing container #{container}")
     self.class.destroy_container(container)
   end
 
   def execute_run_command(submission, filename, &block)
-    "
-    Run commands by attaching a websocket to Docker.
-    "
+    # Run commands by attaching a websocket to Docker.
     filepath = submission.collect_files.find {|f| f.name_with_extension == filename }.filepath
     command = submission.execution_environment.run_command % command_substitutions(filepath)
     create_workspace_files = proc { create_workspace_files(container, submission) }
@@ -383,9 +379,7 @@ container_execution_time: nil}
   end
 
   def execute_test_command(submission, filename, &block)
-    "
-    Stick to existing Docker API with exec command.
-    "
+    # Stick to existing Docker API with exec command.
     file = submission.collect_files.find {|f| f.name_with_extension == filename }
     filepath = file.filepath
     command = submission.execution_environment.test_command % command_substitutions(filepath)
@@ -495,26 +489,23 @@ container_execution_time: nil}
     if output.nil?
       kill_container(container)
     else
-      result = {status: (output[2]).zero? ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'),
-stderr: output[1].join.force_encoding('utf-8')}
+      result = {status: (output[2])&.zero? ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'), stderr: output[1].join.force_encoding('utf-8')}
     end
 
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
     if DockerContainerPool.config[:active] && RECYCLE_CONTAINERS
-      self.class.return_container(container,
-        @execution_environment)
+      self.class.return_container(container, @execution_environment)
     else
       self.class.destroy_container(container)
     end
     result
   rescue Timeout::Error
     Rails.logger.info("got timeout error for container #{container}")
-    stdout = container.exec(['cat', '/tmp/stdout.log'])[0].join.force_encoding('utf-8')
-    stderr = container.exec(['cat', '/tmp/stderr.log'])[0].join.force_encoding('utf-8')
+    stdout = container.exec(%w[cat /tmp/stdout.log])[0].join.force_encoding('utf-8')
+    stderr = container.exec(%w[cat /tmp/stderr.log])[0].join.force_encoding('utf-8')
     kill_container(container)
     {status: :timeout, stdout: stdout, stderr: stderr}
   end
-
   private :send_command
 
   class Error < RuntimeError; end

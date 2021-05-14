@@ -11,7 +11,7 @@ describe DockerContainerMixin do
     end
 
     it 'returns the correct information' do
-      expect(CONTAINER).to receive(:json).and_return('HostConfig' => {'Binds' => binds})
+      allow(CONTAINER).to receive(:json).and_return('HostConfig' => {'Binds' => binds})
       expect(CONTAINER.binds).to eq(binds)
     end
   end
@@ -25,7 +25,7 @@ describe DockerContainerMixin do
     end
 
     it 'returns the correct information' do
-      expect(CONTAINER).to receive(:json).and_return('HostConfig' => {'PortBindings' => port_bindings})
+      allow(CONTAINER).to receive(:json).and_return('HostConfig' => {'PortBindings' => port_bindings})
       expect(CONTAINER.port_bindings).to eq(port => port)
     end
   end
