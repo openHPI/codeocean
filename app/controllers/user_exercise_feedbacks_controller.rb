@@ -132,9 +132,9 @@ class UserExerciseFeedbacksController < ApplicationController
     params[:user_exercise_feedback]
       .permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime)
       .merge(user_id: user_id,
-             user_type: user_type,
-             submission: latest_submission,
-             normalized_score: latest_submission.normalized_score)
+        user_type: user_type,
+        submission: latest_submission,
+        normalized_score: latest_submission.normalized_score)
   end
 
   def validate_inputs(uef_params)

@@ -353,7 +353,7 @@ describe DockerClient, docker: true do
   end
 
   describe '#send_command' do
-    let(:block) { proc { nil } }
+    let(:block) { proc {} }
     let(:container) { described_class.create_container(execution_environment) }
     let(:send_command) { docker_client.send(:send_command, command, container, &block) }
 

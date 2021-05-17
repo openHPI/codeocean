@@ -12,7 +12,7 @@ class ProxyExercisesController < ApplicationController
 
   def clone
     proxy_exercise = @proxy_exercise.duplicate(public: false, token: nil, exercises: @proxy_exercise.exercises,
-user: current_user)
+      user: current_user)
     proxy_exercise.send(:generate_token)
     if proxy_exercise.save
       redirect_to(proxy_exercise, notice: t('shared.object_cloned', model: ProxyExercise.model_name.human))
@@ -44,7 +44,7 @@ user: current_user)
   def proxy_exercise_params
     if params[:proxy_exercise].present?
       params[:proxy_exercise].permit(:description, :title, :public, exercise_ids: []).merge(user_id: current_user.id,
-user_type: current_user.class.name)
+        user_type: current_user.class.name)
     end
   end
   private :proxy_exercise_params

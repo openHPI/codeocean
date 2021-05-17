@@ -47,7 +47,7 @@ module_name: File.basename(filename, File.extname(filename)).underscore}
     params[:annotations_arr]&.each do |annotation|
       # comment = Comment.new(annotation[1].permit(:user_id, :file_id, :user_type, :row, :column, :text, :created_at, :updated_at))
       comment = Comment.new(user_id: annotation[1][:user_id], file_id: annotation[1][:file_id],
-user_type: current_user.class.name, row: annotation[1][:row], column: annotation[1][:column], text: annotation[1][:text])
+        user_type: current_user.class.name, row: annotation[1][:row], column: annotation[1][:column], text: annotation[1][:text])
       source_file = CodeOcean::File.find(annotation[1][:file_id])
 
       # retrieve target file

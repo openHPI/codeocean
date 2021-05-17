@@ -10,7 +10,7 @@ module ActionCableHelper
           type: :rfc,
           id: id,
           html: ApplicationController.render(partial: 'request_for_comments/list_entry',
-                                             locals: {request_for_comment: self})
+            locals: {request_for_comment: self})
         )
       end
     ensure

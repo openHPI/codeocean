@@ -17,7 +17,7 @@ class DockerContainerPool
     container
   rescue StandardError => e
     Sentry.set_extras({container: container.inspect, execution_environment: execution_environment.inspect,
-config: config.inspect})
+      config: config.inspect})
     Sentry.capture_exception(e)
     nil
   end
@@ -26,7 +26,7 @@ config: config.inspect})
     Faraday.get("#{config[:location]}/docker_container_pool/return_container/#{container.id}")
   rescue StandardError => e
     Sentry.set_extras({container: container.inspect, execution_environment: execution_environment.inspect,
-config: config.inspect})
+      config: config.inspect})
     Sentry.capture_exception(e)
     nil
   end
@@ -39,7 +39,7 @@ config: config.inspect})
         Docker::Container.get(container_id) if container_id.present?
       rescue StandardError => e
         Sentry.set_extras({container_id: container_id.inspect, execution_environment: execution_environment.inspect,
-config: config.inspect})
+          config: config.inspect})
         Sentry.capture_exception(e)
         nil
       end

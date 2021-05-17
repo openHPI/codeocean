@@ -49,7 +49,7 @@ path: path, status: :created)
     def file_params
       if params[:code_ocean_file].present?
         params[:code_ocean_file].permit(file_attributes).merge(context_type: 'Submission',
-role: 'user_defined_file')
+          role: 'user_defined_file')
       end
     end
     private :file_params

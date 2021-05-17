@@ -7,7 +7,7 @@ module LtiHelper
     return false if external_user_id == ''
 
     lti_parameters = LtiParameter.where(external_users_id: external_user_id,
-                                        exercises_id: exercise_id).lis_outcome_service_url?.last
+      exercises_id: exercise_id).lis_outcome_service_url?.last
     !lti_parameters.nil? && lti_parameters.present?
   end
 end

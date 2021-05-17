@@ -500,14 +500,14 @@ class Exercise < ApplicationRecord
       feedback_message_nodes = task_node.xpath('p:tests/p:test/p:test-configuration/c:feedback-message/text()')
       files.build({
         name: file_name_split.first,
-                    content: file.xpath('text()').first.content,
-                    read_only: false,
-                    hidden: file_class == 'internal',
-                    role: role,
-                    feedback_message: role == 'teacher_defined_test' ? feedback_message_nodes.first.content : nil,
-                    file_type: FileType.find_by(
-                      file_extension: ".#{file_name_split.second}"
-                    ),
+        content: file.xpath('text()').first.content,
+        read_only: false,
+        hidden: file_class == 'internal',
+        role: role,
+        feedback_message: role == 'teacher_defined_test' ? feedback_message_nodes.first.content : nil,
+        file_type: FileType.find_by(
+          file_extension: ".#{file_name_split.second}"
+        ),
       })
     end
     self.execution_environment_id = 1

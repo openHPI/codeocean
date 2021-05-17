@@ -30,7 +30,7 @@ module Lti
       session.delete(:lti_parameters_id)
     end
     LtiParameter.where(external_users_id: user_id,
-                       exercises_id: exercise_id).destroy_all
+      exercises_id: exercise_id).destroy_all
   end
 
   private :clear_lti_session_data
@@ -143,8 +143,8 @@ module Lti
 
     if submission.user.consumer
       lti_parameter = LtiParameter.where(consumers_id: submission.user.consumer.id,
-                                         external_users_id: submission.user_id,
-                                         exercises_id: submission.exercise_id).last
+        external_users_id: submission.user_id,
+        exercises_id: submission.exercise_id).last
 
       provider = build_tool_provider(consumer: submission.user.consumer, parameters: lti_parameter.lti_parameters)
     end
@@ -154,10 +154,10 @@ module Lti
     elsif provider.outcome_service?
       Sentry.set_extras({
         provider: provider.inspect,
-                            score: submission.normalized_score,
-                            lti_parameter: lti_parameter.inspect,
-                            session: session.to_hash,
-                            exercise_id: submission.exercise_id,
+        score: submission.normalized_score,
+        lti_parameter: lti_parameter.inspect,
+        session: session.to_hash,
+        exercise_id: submission.exercise_id,
       })
       normalized_lit_score = submission.normalized_score
       if submission.before_deadline?
@@ -230,8 +230,8 @@ module Lti
 
   def store_lti_session_data(options = {})
     lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,
-                                                    external_users_id: @current_user.id,
-                                                    exercises_id: @exercise.id)
+      external_users_id: @current_user.id,
+      exercises_id: @exercise.id)
 
     lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).permit!.to_h
     lti_parameters.save!

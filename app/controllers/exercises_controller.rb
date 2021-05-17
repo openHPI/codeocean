@@ -111,7 +111,7 @@ raise: false
 
   def export_external_check
     codeharbor_check = ExerciseService::CheckExternal.call(uuid: @exercise.uuid,
-codeharbor_link: current_user.codeharbor_link)
+      codeharbor_link: current_user.codeharbor_link)
     render json: {
       message: codeharbor_check[:message],
       actions: render_to_string(
@@ -139,7 +139,7 @@ codeharbor_link: current_user.codeharbor_link)
         status: 'success',
         message: t('exercises.export_codeharbor.successfully_exported', id: @exercise.id, title: @exercise.title),
         actions: render_to_string(partial: 'export_actions',
-locals: {exercise: @exercise, exported: true, error: error}),
+          locals: {exercise: @exercise, exported: true, error: error}),
       }
       @exercise.save
     else
@@ -147,7 +147,7 @@ locals: {exercise: @exercise, exported: true, error: error}),
         status: 'fail',
         message: t('exercises.export_codeharbor.export_failed', id: @exercise.id, title: @exercise.title, error: error),
         actions: render_to_string(partial: 'export_actions',
-locals: {exercise: @exercise, exported: true, error: error}),
+          locals: {exercise: @exercise, exported: true, error: error}),
       }
     end
   end
@@ -203,8 +203,8 @@ locals: {exercise: @exercise, exported: true, error: error}),
   def exercise_params
     if params[:exercise].present?
       params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :submission_deadline, :late_submission_deadline, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :tips, files_attributes: file_attributes, tag_ids: []).merge(
-user_id: current_user.id, user_type: current_user.class.name
-)
+        user_id: current_user.id, user_type: current_user.class.name
+      )
     end
   end
   private :exercise_params
@@ -248,8 +248,8 @@ user_id: current_user.id, user_type: current_user.class.name
     exercise_tips.each do |exercise_tip|
       exercise_tip.symbolize_keys!
       current_exercise_tip = ExerciseTip.find_or_initialize_by(id: exercise_tip[:id],
-                                                               exercise: @exercise,
-                                                               tip_id: exercise_tip[:tip_id])
+        exercise: @exercise,
+        tip_id: exercise_tip[:tip_id])
       current_exercise_tip.parent_exercise_tip_id = parent_exercise_tip_id
       current_exercise_tip.rank = rank
       rank += 1
@@ -275,7 +275,7 @@ user_id: current_user.id, user_type: current_user.class.name
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?',
       Time.zone.now.beginning_of_day).count
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user,
-exercise: @exercise).size >= max_intervention_count_per_exercise
+      exercise: @exercise).size >= max_intervention_count_per_exercise
     (user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day) || user_got_intervention_in_exercise
 
     if @embed_options[:disable_interventions]
@@ -302,7 +302,7 @@ exercise: @exercise).size >= max_intervention_count_per_exercise
 
   def set_course_token
     lti_parameters = LtiParameter.where(external_users_id: current_user.id,
-                                        exercises_id: @exercise.id).last
+      exercises_id: @exercise.id).last
     if lti_parameters
       lti_json = lti_parameters.lti_parameters['launch_presentation_return_url']
 
@@ -397,11 +397,11 @@ working_time_accumulated: working_time_accumulated})
     )
 
     lti_parameter = LtiParameter.where(external_users_id: @submission.user_id,
-                                       exercises_id: @submission.exercise_id).last
+      exercises_id: @submission.exercise_id).last
 
     path = lti_return_path(submission_id: @submission.id,
-                           url: consumer_return_url(build_tool_provider(consumer: @submission.user.consumer,
-                                                                        parameters: lti_parameter.lti_parameters)))
+      url: consumer_return_url(build_tool_provider(consumer: @submission.user.consumer,
+        parameters: lti_parameter.lti_parameters)))
     clear_lti_session_data(@submission.exercise_id, @submission.user_id)
     respond_to do |format|
       format.html { redirect_to(path) }
@@ -525,7 +525,7 @@ working_time_accumulated: working_time_accumulated})
 
   def transmit_lti_score
     ::NewRelic::Agent.add_custom_attributes({submission: @submission.id,
-normalized_score: @submission.normalized_score})
+      normalized_score: @submission.normalized_score})
     response = send_score(@submission)
 
     if response[:status] == 'success'

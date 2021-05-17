@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
 
   def current_user
     ::NewRelic::Agent.add_custom_attributes(external_user_id: session[:external_user_id],
-session_user_id: session[:user_id])
+      session_user_id: session[:user_id])
     @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources || nil
   end
 

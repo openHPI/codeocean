@@ -58,7 +58,7 @@ class ProxyExercise < ApplicationRecord
           exercises.where('expected_difficulty > 1').sample # difficulty should be > 1 to prevent dummy exercise from being chosen.
         end
       user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user,
-exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
+        exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
       matching_exercise
     end
   end

@@ -80,7 +80,7 @@ class ExternalUsersController < ApplicationController
     tags = ProxyExercise.new.get_user_knowledge_and_max_knowledge(@user, @user.participations.uniq.compact)
     tags[:user_topic_knowledge].each_pair do |tag, value|
       statistics.append({key: tag.name.to_s, value: (100.0 / tags[:max_topic_knowledge][tag] * value).round,
-id: tag.id})
+        id: tag.id})
     end
     statistics.sort_by! {|item| -item[:value] }
 

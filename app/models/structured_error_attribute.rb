@@ -11,6 +11,6 @@ class StructuredErrorAttribute < ApplicationRecord
       value = result.captures[0]
     end
     create(structured_error: structured_error, error_template_attribute: attribute, value: value,
-match: !result.nil?)
+      match: !result.nil?)
   end
 end
