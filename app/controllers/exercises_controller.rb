@@ -218,7 +218,7 @@ user_id: current_user.id, user_type: current_user.class.name
             file_params[:content] = nil
             file_params[:native_file] = file_attributes[:content]
           else
-            file_params[:content] = file_attributes[:content].read.encode.delete("\x00")
+            file_params[:content] = file_attributes[:content].read.detect_encoding!.encode.delete("\x00")
           end
         end
       end
