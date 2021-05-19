@@ -15,14 +15,10 @@ class Runner < ApplicationRecord
 
   validates :execution_environment, presence: true
   validates :user, presence: true
-  validates :time_limit, presence: true
-
-  scope :inactive_runners, -> { where('last_used < ?', Time.zone.now - UNUSED_EXPIRATION_TIME) }
 
   def self.for(user, exercise)
     execution_environment = ExecutionEnvironment.find(exercise.execution_environment_id)
-    runner = Runner.find_or_create_by(user: user, execution_environment: execution_environment,
-                                      time_limit: execution_environment.permitted_execution_time)
+    runner = Runner.find_or_create_by(user: user, execution_environment: execution_environment)
 
     return runner if runner.save
 
@@ -41,7 +37,6 @@ class Runner < ApplicationRecord
   end
 
   def execute_command(command)
-    used_now
     url = "#{runner_url}/execute"
     response = Faraday.post(url, {command: command}.to_json, HEADERS)
     if response.status == 404
@@ -75,6 +70,7 @@ class Runner < ApplicationRecord
 
   def new_runner
     url = "#{BASE_URL}/runners"
+    time_limit = CodeOcean::Config.new(:code_ocean)[:runner_management][:unused_runner_expiration_time]
     body = {executionEnvironmentId: execution_environment.id, timeLimit: time_limit}
     response = Faraday.post(url, body.to_json, HEADERS)
     response_body = parse response
@@ -88,10 +84,5 @@ class Runner < ApplicationRecord
 
   def parse(response)
     JSON.parse(response.body).deep_symbolize_keys
-  end
-
-  def used_now
-    self.last_used = Time.zone.now
-    save
   end
 end

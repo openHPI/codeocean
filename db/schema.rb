@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_12_133612) do
+ActiveRecord::Schema.define(version: 2021_05_19_134938) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -344,13 +344,11 @@ ActiveRecord::Schema.define(version: 2021_05_12_133612) do
     t.bigint "execution_environment_id"
     t.string "user_type"
     t.bigint "user_id"
-    t.integer "time_limit"
     t.float "waiting_time"
-    t.datetime "last_used"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["execution_environment_id"], name: "index_runners_on_execution_environment_id"
-    t.index ["user_type", "user_id"], name: "index_runners_on_user_type_and_user_id"
+    t.index ["user_type", "user_id"], name: "index_runners_on_user"
   end
 
   create_table "searches", id: :serial, force: :cascade do |t|
