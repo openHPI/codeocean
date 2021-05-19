@@ -11,7 +11,7 @@ geckodriver_version=0.26.0
 # Prerequisites
 apt -qq update
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata
-apt -qq -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev wget lsb-release sudo zlib1g-dev git build-essential
+apt -qq -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev libicu-dev wget lsb-release sudo zlib1g-dev git build-essential
 
 DISTRO="$(lsb_release -cs)"
 USER="codeocean"
