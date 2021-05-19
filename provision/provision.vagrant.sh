@@ -12,7 +12,7 @@ DISTRO="$(lsb_release -cs)"
 
 # Prerequisites
 sudo apt -qq update
-sudo apt -qq -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev
+sudo apt -qq -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev libicu-dev
 sudo apt -qq -y upgrade
 
 # PostgreSQL

@@ -86,7 +86,7 @@ This will launch a dedicated server on port 3035 (default setting) and allow inc
 Install all necessary dependencies:
 
 ```bash
-sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev
+sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev libicu-dev
 ```
 
 ### PostgreSQL
@@ -251,6 +251,10 @@ source "$HOME/.profile"
   ```shell script
   brew install docker
   open /Applications/Docker.app/
+  ```
+- Install icu4c for detecting character encodings
+  ```shell script
+  brew install icu4c
   ```
 - Install nginx and adopt its config to forward requests to the **RAW** docker UNIX socket (see [this issue](https://github.com/docker/for-mac/issues/1662) for more details). Only required for macOS!
   ```shell script
