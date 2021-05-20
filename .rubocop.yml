@@ -22,3 +22,8 @@ AllCops:
     - 'bin/*'
     - 'db/schema.rb'
     - 'vendor/**/*'
+    # Ignore local files for faster processing
+    - 'tmp/**/*'
+    - 'out/**/*'
+    - 'node_modules/**/*'
+    - 'coverage/**/*'
