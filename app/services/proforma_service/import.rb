@@ -10,8 +10,9 @@ module ProformaService
 
     def execute
       if single_task?
-        importer = Proforma::Importer.new(@zip)
-        @task = importer.perform
+        importer = Proforma::Importer.new(zip: @zip)
+        import_result = importer.perform
+        @task = import_result[:task]
 
         exercise = base_exercise
         exercise_files = exercise&.files&.to_a

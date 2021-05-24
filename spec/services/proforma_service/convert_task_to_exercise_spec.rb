@@ -229,11 +229,11 @@ describe ProformaService::ConvertTaskToExercise do
           internal_description: 'internal_description',
           test_type: 'test_type',
           files: test_files,
-          meta_data: {
-            'feedback-message' => 'feedback-message',
-            'testing-framework' => 'testing-framework',
-            'testing-framework-version' => 'testing-framework-version',
-          }
+          meta_data: [
+            {namespace: 'openHPI', key: 'feedback-message', value: 'feedback-message'},
+            {namespace: 'openHPI', key: 'testing-framework', value: 'testing-framework'},
+            {namespace: 'openHPI', key: 'testing-framework-version', value: 'testing-framework-version'},
+          ]
         )
       end
 
@@ -272,11 +272,11 @@ describe ProformaService::ConvertTaskToExercise do
         let(:test2) do
           Proforma::Test.new(
             files: test_files2,
-            meta_data: {
-              'feedback-message' => 'feedback-message',
-              'testing-framework' => 'testing-framework',
-              'testing-framework-version' => 'testing-framework-version',
-            }
+            meta_data: [
+              {namespace: 'openHPI', key: 'feedback-message', value: 'feedback-message'},
+              {namespace: 'openHPI', key: 'testing-framework', value: 'testing-framework'},
+              {namespace: 'openHPI', key: 'testing-framework-version', value: 'testing-framework-version'},
+            ]
           )
         end
         let(:test_files2) { [test_file2] }
@@ -352,11 +352,11 @@ describe ProformaService::ConvertTaskToExercise do
             internal_description: 'regular_file',
             test_type: 'test_type',
             files: test_files,
-            meta_data: {
-              'feedback-message' => 'feedback-message',
-              'testing-framework' => 'testing-framework',
-              'testing-framework-version' => 'testing-framework-version',
-            }
+            meta_data: [
+              {namespace: 'openHPI', key: 'feedback-message', value: 'feedback-message'},
+              {namespace: 'openHPI', key: 'testing-framework', value: 'testing-framework'},
+              {namespace: 'openHPI', key: 'testing-framework-version', value: 'testing-framework-version'},
+            ]
           )
         end
         let(:test_files) { [test_file] }

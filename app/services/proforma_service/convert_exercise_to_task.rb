@@ -63,11 +63,14 @@ module ProformaService
           id: file.id,
           title: file.name,
           files: test_file(file),
-          meta_data: {
-            'feedback-message' => file.feedback_message,
-          }.compact
+          meta_data: test_meta_data(file)
         )
       end
+    end
+
+    def test_meta_data(file)
+      [{namespace: 'openHPI', key: 'entry-point', value: file.filepath},
+       {namespace: 'openHPI', key: 'feedback-message', value: file.feedback_message}]
     end
 
     def test_file(file)

@@ -161,7 +161,8 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           id: test_file.id,
           title: test_file.name,
           files: have(1).item,
-          meta_data: {'feedback-message' => test_file.feedback_message}
+          meta_data: [{key: 'entry-point', namespace: 'openHPI', value: test_file.filepath},
+                      {key: 'feedback-message', namespace: 'openHPI', value: 'feedback_message'}]
         )
       end
 
