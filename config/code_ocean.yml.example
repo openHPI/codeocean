@@ -4,27 +4,25 @@ default: &default
     answers_per_query: 3
   code_pilot:
     enabled: false
+    url: //localhost:3000
   codeharbor:
     enabled: false
   codeocean_events:
     enabled: false
+  prometheus_exporter:
+    enabled: false
   runner_management:
     url: https://runners.example.org
-    cleanup_interval: 60
     unused_runner_expiration_time: 180
 
 development:
+  <<: *default
   flowr:
     enabled: true
     answers_per_query: 3
-  code_pilot:
-    enabled: false
-    url: //localhost:3000
   codeharbor:
     enabled: true
     url: https://codeharbor.openhpi.de
-  prometheus_exporter:
-    enabled: false
 
 production:
   <<: *default
@@ -33,5 +31,3 @@ production:
 
 test:
   <<: *default
-  prometheus_exporter:
-    enabled: false

@@ -3,7 +3,7 @@
 require 'faye/websocket/client'
 require 'json_schemer'
 
-class RunnerConnection
+class Runner::Connection
   EVENTS = %i[start output exit stdout stderr].freeze
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
 

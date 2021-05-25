@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'runner/runner_connection'
-
 class Runner < ApplicationRecord
   BASE_URL = CodeOcean::Config.new(:code_ocean).read[:runner_management][:url]
   HEADERS = {'Content-Type' => 'application/json'}.freeze
@@ -18,7 +16,7 @@ class Runner < ApplicationRecord
 
   def self.for(user, exercise)
     execution_environment = ExecutionEnvironment.find(exercise.execution_environment_id)
-    runner = Runner.find_or_create_by(user: user, execution_environment: execution_environment)
+    runner = find_or_create_by(user: user, execution_environment: execution_environment)
 
     return runner if runner.save
 
@@ -51,7 +49,7 @@ class Runner < ApplicationRecord
     starting_time = Time.zone.now
     websocket_url = execute_command(command)[:websocketUrl]
     EventMachine.run do
-      socket = RunnerConnection.new(websocket_url)
+      socket = Runner::Connection.new(websocket_url)
       yield(self, socket) if block_given?
     end
     Time.zone.now - starting_time # execution time
@@ -70,7 +68,7 @@ class Runner < ApplicationRecord
 
   def new_runner
     url = "#{BASE_URL}/runners"
-    time_limit = CodeOcean::Config.new(:code_ocean)[:runner_management][:unused_runner_expiration_time]
+    time_limit = CodeOcean::Config.new(:code_ocean).read[:runner_management][:unused_runner_expiration_time]
     body = {executionEnvironmentId: execution_environment.id, timeLimit: time_limit}
     response = Faraday.post(url, body.to_json, HEADERS)
     response_body = parse response
