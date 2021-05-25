@@ -9,3 +9,7 @@ test:
     enabled: false
   prometheus_exporter:
     enabled: false
+  runner_management:
+    url: https://runners.example.org
+    cleanup_interval: 60
+    unused_runner_expiration_time: 180
