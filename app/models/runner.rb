@@ -22,18 +22,18 @@ class Runner < ApplicationRecord
 
     return runner if runner.save
 
-    raise(RunnerNotAvailableError, 'No runner available')
+    raise RunnerNotAvailableError.new('No runner available')
   end
 
   def copy_files(files)
     url = "#{runner_url}/files"
-    body = {files: files.map { |filename, content| {filepath: filename, content: content} }}
+    body = {files: files.map {|filename, content| {filepath: filename, content: content} }}
     response = Faraday.patch(url, body.to_json, HEADERS)
     return unless response.status == 404
 
     # runner has disappeared for some reason
     destroy
-    raise(RunnerNotAvailableError, 'Runner unavailable')
+    raise RunnerNotAvailableError.new('Runner unavailable')
   end
 
   def execute_command(command)
@@ -42,7 +42,7 @@ class Runner < ApplicationRecord
     if response.status == 404
       # runner has disappeared for some reason
       destroy
-      raise(RunnerNotAvailableError, 'Runner unavailable')
+      raise RunnerNotAvailableError.new('Runner unavailable')
     end
     parse response
   end

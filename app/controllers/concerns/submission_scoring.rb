@@ -49,14 +49,15 @@ module SubmissionScoring
 
   private :execute_test_file
 
-  def feedback_message(file, output)
-    # set_locale
+  def feedback_message(_file, output)
+    # TODO: why did we comment out set_locale and render_markdown?
+    set_locale
     if output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_test'
       I18n.t('exercises.implement.default_test_feedback')
     elsif output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_linter'
       I18n.t('exercises.implement.default_linter_feedback')
     else
-      # render_markdown(file.feedback_message)
+      render_markdown(file.feedback_message)
     end
   end
 

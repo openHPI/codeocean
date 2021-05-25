@@ -72,7 +72,7 @@ class Submission < ApplicationRecord
     # expects the full file path incl. file extension
     # Caution: There must be no unnecessary path prefix included.
     # Use `file.ext` rather than `./file.ext`
-    collect_files.detect { |file| file.filepath == file_path }
+    collect_files.detect {|file| file.filepath == file_path }
   end
 
   def normalized_score
@@ -165,7 +165,7 @@ class Submission < ApplicationRecord
           container_execution_time: execution_time,
           status: exit_code.zero? ? :ok : :failed,
           stdout: stdout,
-          stderr: stderr
+          stderr: stderr,
         }
         test_result(output, file)
       end
@@ -202,7 +202,7 @@ class Submission < ApplicationRecord
   end
 
   def command_for(template, file)
-    filepath = collect_files.find { |f| f.name_with_extension == file }.filepath
+    filepath = collect_files.find {|f| f.name_with_extension == file }.filepath
     template % command_substitutions(filepath)
   end
 
@@ -210,7 +210,7 @@ class Submission < ApplicationRecord
     {
       class_name: File.basename(filename, File.extname(filename)).camelize,
       filename: filename,
-      module_name: File.basename(filename, File.extname(filename)).underscore
+      module_name: File.basename(filename, File.extname(filename)).underscore,
     }
   end
 end

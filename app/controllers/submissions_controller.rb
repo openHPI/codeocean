@@ -9,7 +9,7 @@ class SubmissionsController < ApplicationController
   include Tubesock::Hijack
 
   before_action :set_submission,
-    only: %i[download download_file render_file run score extract_errors show statistics test]
+    only: %i[download download_file render_file run score extract_errors show statistics]
   before_action :set_files, only: %i[download download_file render_file show run]
   before_action :set_file, only: %i[download_file render_file run]
   before_action :set_mime_type, only: %i[download_file render_file]
@@ -134,7 +134,7 @@ class SubmissionsController < ApplicationController
 
   def handle_websockets(tubesock, runner, socket)
     tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => :container_running})
-    @output = String.new
+    @output = +''
 
     socket.on :output do |data|
       Rails.logger.info("#{Time.zone.now.getutc}: Container sending: #{data}")
@@ -162,14 +162,14 @@ class SubmissionsController < ApplicationController
     tubesock.onmessage do |event|
       event = JSON.parse(event).deep_symbolize_keys
       case event[:cmd].to_sym
-      when :client_kill
-        EventMachine.stop_event_loop
-        kill_socket(tubesock)
-        Rails.logger.debug('Client exited container.')
-      when :result
-        socket.send event[:data]
-      else
-        Rails.logger.info("Unknown command from client: #{event[:cmd]}")
+        when :client_kill
+          EventMachine.stop_event_loop
+          kill_socket(tubesock)
+          Rails.logger.debug('Client exited container.')
+        when :result
+          socket.send event[:data]
+        else
+          Rails.logger.info("Unknown command from client: #{event[:cmd]}")
       end
     rescue JSON::ParserError
       Rails.logger.debug { "Data received from client is not valid json: #{data}" }
@@ -239,9 +239,8 @@ class SubmissionsController < ApplicationController
   def score
     Thread.new do
       hijack do |tubesock|
-        if @embed_options[:disable_run]
-          return kill_socket(tubesock)
-        end
+        return kill_socket(tubesock) if @embed_options[:disable_run]
+
         tubesock.send_data(@submission.calculate_score)
         # To enable hints when scoring a submission, uncomment the next line:
         # send_hints(tubesock, StructuredError.where(submission: @submission))
@@ -268,7 +267,7 @@ class SubmissionsController < ApplicationController
   # private :set_docker_client
 
   def set_file
-    @file = @files.detect { |file| file.name_with_extension == sanitize_filename }
+    @file = @files.detect {|file| file.name_with_extension == sanitize_filename }
     head :not_found unless @file
   end
   private :set_file

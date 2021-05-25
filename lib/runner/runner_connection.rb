@@ -11,10 +11,10 @@ class RunnerConnection
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
 
     %i[open message error close].each do |event_type|
-      @socket.on(event_type) { |event| __send__(:"on_#{event_type}", event) }
+      @socket.on(event_type) {|event| __send__(:"on_#{event_type}", event) }
     end
 
-    EVENTS.each { |event_type| instance_variable_set(:"@#{event_type}_callback", ->(e) {}) }
+    EVENTS.each {|event_type| instance_variable_set(:"@#{event_type}_callback", ->(e) {}) }
     @start_callback = -> {}
     @exit_code = 0
   end
