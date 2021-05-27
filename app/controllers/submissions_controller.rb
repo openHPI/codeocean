@@ -133,7 +133,7 @@ class SubmissionsController < ApplicationController
   end
 
   def handle_websockets(tubesock, runner, socket)
-    tubesock.send_data JSON.dump({'cmd' => 'status', 'status' => :container_running})
+    tubesock.send_data JSON.dump({cmd: :status, status: :container_running})
     @output = +''
 
     socket.on :output do |data|
@@ -182,21 +182,21 @@ class SubmissionsController < ApplicationController
 
   def run
     hijack do |tubesock|
-      if @embed_options[:disable_run]
-        kill_socket(tubesock)
-      else
-        begin
-          @container_execution_time = @submission.run(sanitize_filename) do |runner, socket|
-            @waiting_for_container_time = runner.waiting_time
-            handle_websockets(tubesock, runner, socket)
-          end
-          save_run_output
-        rescue RunnerNotAvailableError
-          tubesock.send_data JSON.dump({cmd: :timeout})
-          kill_socket(tubesock)
-          Rails.logger.debug('Runner not available')
-        end
+      return kill_socket(tubesock) if @embed_options[:disable_run]
+
+      @container_execution_time = @submission.run(sanitize_filename) do |runner, socket|
+        @waiting_for_container_time = runner.waiting_time
+        handle_websockets(tubesock, runner, socket)
       end
+      save_run_output
+    rescue Runner::Error::ExecutionTimeout => e
+      tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
+      kill_socket(tubesock)
+      Rails.logger.debug { "Running a submission failed: #{e.message}" }
+    rescue Runner::Error => e
+      tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
+      kill_socket(tubesock)
+      Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
     end
   end
 
@@ -244,8 +244,15 @@ class SubmissionsController < ApplicationController
         tubesock.send_data(@submission.calculate_score)
         # To enable hints when scoring a submission, uncomment the next line:
         # send_hints(tubesock, StructuredError.where(submission: @submission))
-
-        tubesock.send_data JSON.dump({'cmd' => 'exit'})
+      rescue Runner::Error::ExecutionTimeout => e
+        tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
+        Rails.logger.debug { "Running a submission failed: #{e.message}" }
+      rescue Runner::Error => e
+        tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
+        Rails.logger.debug { "Runner error while scoring a submission: #{e.message}" }
+      ensure
+        tubesock.send_data JSON.dump({cmd: :exit})
+        tubesock.close
       end
     ensure
       ActiveRecord::Base.connection_pool.release_connection

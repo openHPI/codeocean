@@ -4,16 +4,20 @@ require 'faye/websocket/client'
 require 'json_schemer'
 
 class Runner::Connection
+  # These are events for which callbacks can be registered.
   EVENTS = %i[start output exit stdout stderr].freeze
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
 
   def initialize(url)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
 
+    # For every event type of faye websockets, the corresponding
+    # RunnerConnection method starting with `on_` is called.
     %i[open message error close].each do |event_type|
       @socket.on(event_type) {|event| __send__(:"on_#{event_type}", event) }
     end
 
+    # This registers empty default callbacks.
     EVENTS.each {|event_type| instance_variable_set(:"@#{event_type}_callback", ->(e) {}) }
     @start_callback = -> {}
     @exit_code = 0
@@ -43,6 +47,7 @@ class Runner::Connection
     return unless BACKEND_OUTPUT_SCHEMA.valid?(JSON.parse(event.data))
 
     event = decode(event.data)
+    # There is one `handle_` method for every message type defined in the WebSocket schema.
     __send__("handle_#{event[:type]}", event)
   end
 
@@ -50,7 +55,7 @@ class Runner::Connection
     @start_callback.call
   end
 
-  def on_error(event); end
+  def on_error(_event); end
 
   def on_close(_event)
     @exit_callback.call @exit_code
@@ -70,11 +75,11 @@ class Runner::Connection
     @output_callback.call event[:data]
   end
 
-  def handle_error(event) end
+  def handle_error(_event); end
 
-  def handle_start(event) end
+  def handle_start(_event); end
 
-  def handle_timeout(event)
-    # TODO: set the runner state
+  def handle_timeout(_event)
+    raise Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
   end
 end
