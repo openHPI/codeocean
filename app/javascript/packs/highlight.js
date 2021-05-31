@@ -12,4 +12,4 @@ import hljs from 'highlight.js'
 window.hljs = hljs;
 
 // CSS
-import 'highlight.js/styles/tomorrow.css'
+import 'highlight.js/styles/base16/tomorrow.css'
