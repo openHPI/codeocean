@@ -30,6 +30,21 @@ describe ExecutionEnvironment do
     expect(execution_environment.errors[:memory_limit]).to be_present
   end
 
+  it 'validates the minimum value of the cpu limit' do
+    execution_environment.update(cpu_limit: 0)
+    expect(execution_environment.errors[:cpu_limit]).to be_present
+  end
+
+  it 'validates that cpu limit is an integer' do
+    execution_environment.update(cpu_limit: Math::PI)
+    expect(execution_environment.errors[:cpu_limit]).to be_present
+  end
+
+  it 'validates the presence of a cpu limit' do
+    execution_environment.update(cpu_limit: nil)
+    expect(execution_environment.errors[:cpu_limit]).to be_present
+  end
+
   it 'validates the presence of a name' do
     expect(execution_environment.errors[:name]).to be_present
   end
@@ -67,6 +82,14 @@ describe ExecutionEnvironment do
   it 'validates the presence of a user' do
     expect(execution_environment.errors[:user_id]).to be_present
     expect(execution_environment.errors[:user_type]).to be_present
+  end
+
+  it 'validates the format of the exposed ports' do
+    execution_environment.update(exposed_ports: '1,')
+    expect(execution_environment.errors[:exposed_ports]).to be_present
+
+    execution_environment.update(exposed_ports: '1,a')
+    expect(execution_environment.errors[:exposed_ports]).to be_present
   end
 
   describe '#valid_test_setup?' do
@@ -151,6 +174,58 @@ describe ExecutionEnvironment do
         working_docker_image?
         expect(execution_environment.errors[:docker_image]).to be_present
       end
+    end
+  end
+
+  describe '#exposed_ports_list' do
+    it 'returns an empty array if no ports are exposed' do
+      execution_environment.exposed_ports = nil
+      expect(execution_environment.exposed_ports_list).to eq([])
+    end
+
+    it 'returns an array of integers representing the exposed ports' do
+      execution_environment.exposed_ports = '1,2,3'
+      expect(execution_environment.exposed_ports_list).to eq([1, 2, 3])
+
+      execution_environment.exposed_ports_list.each do |port|
+        expect(execution_environment.exposed_ports).to include(port.to_s)
+      end
+    end
+  end
+
+  describe '#copy_to_poseidon' do
+    let(:execution_environment) { FactoryBot.create(:ruby) }
+
+    it 'makes the correct request to Poseidon' do
+      allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: 201))
+      execution_environment.copy_to_poseidon
+      expect(Faraday).to have_received(:put) do |url, body, headers|
+        expect(url).to match(%r{execution-environments/#{execution_environment.id}\z})
+        expect(body).to eq(execution_environment.to_json)
+        expect(headers).to include({'Content-Type' => 'application/json'})
+      end
+    end
+
+    shared_examples 'returns true when the api request was successful' do |status|
+      it "returns true on status #{status}" do
+        allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: status))
+        expect(execution_environment.copy_to_poseidon).to be_truthy
+      end
+    end
+
+    shared_examples 'returns false when the api request failed' do |status|
+      it "returns false on status #{status}" do
+        allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: status))
+        expect(execution_environment.copy_to_poseidon).to be_falsey
+      end
+    end
+
+    [201, 204].each do |status|
+      include_examples 'returns true when the api request was successful', status
+    end
+
+    [400, 500].each do |status|
+      include_examples 'returns false when the api request failed', status
     end
   end
 end

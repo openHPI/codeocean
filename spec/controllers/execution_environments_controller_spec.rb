@@ -6,7 +6,10 @@ describe ExecutionEnvironmentsController do
   let(:execution_environment) { FactoryBot.create(:ruby) }
   let(:user) { FactoryBot.create(:admin) }
 
-  before { allow(controller).to receive(:current_user).and_return(user) }
+  before do
+    allow(controller).to receive(:current_user).and_return(user)
+    allow(controller).to receive(:copy_execution_environment_to_poseidon).and_return(nil)
+  end
 
   describe 'POST #create' do
     before { allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
@@ -23,6 +26,10 @@ describe ExecutionEnvironmentsController do
         expect { perform_request.call }.to change(ExecutionEnvironment, :count).by(1)
       end
 
+      it 'registers the execution environment with Poseidon' do
+        expect(controller).to have_received(:copy_execution_environment_to_poseidon)
+      end
+
       expect_redirect(ExecutionEnvironment.last)
     end
 
@@ -32,6 +39,10 @@ describe ExecutionEnvironmentsController do
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
       expect_template(:new)
+
+      it 'does not register the execution environment with Poseidon' do
+        expect(controller).not_to have_received(:copy_execution_environment_to_poseidon)
+      end
     end
   end
 
@@ -156,12 +167,17 @@ describe ExecutionEnvironmentsController do
     context 'with a valid execution environment' do
       before do
         allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
+        allow(controller).to receive(:copy_execution_environment_to_poseidon).and_return(nil)
         put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
       end
 
       expect_assigns(docker_images: Array)
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_redirect(:execution_environment)
+
+      it 'updates the execution environment at Poseidon' do
+        expect(controller).to have_received(:copy_execution_environment_to_poseidon)
+      end
     end
 
     context 'with an invalid execution environment' do
@@ -170,6 +186,10 @@ describe ExecutionEnvironmentsController do
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
       expect_template(:edit)
+
+      it 'does not update the execution environment at Poseidon' do
+        expect(controller).not_to have_received(:copy_execution_environment_to_poseidon)
+      end
     end
   end
 end

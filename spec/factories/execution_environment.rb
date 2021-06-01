@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :coffee_script, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'hklement/ubuntu-coffee:latest' }
     file_type { association :dot_coffee, user: user }
     help
@@ -18,6 +19,7 @@ FactoryBot.define do
   factory :html, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'hklement/ubuntu-html:latest' }
     file_type { association :dot_html, user: user }
     help
@@ -34,6 +36,7 @@ FactoryBot.define do
   factory :java, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'openhpi/co_execenv_java:8' }
     file_type { association :dot_java, user: user }
     help
@@ -50,6 +53,7 @@ FactoryBot.define do
   factory :jruby, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'hklement/ubuntu-jruby:latest' }
     file_type { association :dot_rb, user: user }
     help
@@ -66,6 +70,7 @@ FactoryBot.define do
   factory :node_js, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'hklement/ubuntu-node:latest' }
     file_type { association :dot_js, user: user }
     help
@@ -80,6 +85,7 @@ FactoryBot.define do
   factory :python, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'openhpi/co_execenv_python:3.4' }
     file_type { association :dot_py, user: user }
     help
@@ -96,6 +102,7 @@ FactoryBot.define do
   factory :ruby, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'hklement/ubuntu-ruby:latest' }
     file_type { association :dot_rb, user: user }
     help
@@ -112,6 +119,7 @@ FactoryBot.define do
   factory :sinatra, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'hklement/ubuntu-sinatra:latest' }
     file_type { association :dot_rb, user: user }
     exposed_ports { '4567' }
@@ -129,6 +137,7 @@ FactoryBot.define do
   factory :sqlite, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
+    default_cpu_limit
     docker_image { 'hklement/ubuntu-sqlite:latest' }
     file_type { association :dot_sql, user: user }
     help
@@ -144,6 +153,10 @@ FactoryBot.define do
 
   trait :default_memory_limit do
     memory_limit { DockerClient::DEFAULT_MEMORY_LIMIT }
+  end
+
+  trait :default_cpu_limit do
+    cpu_limit { 20 }
   end
 
   trait :help do
