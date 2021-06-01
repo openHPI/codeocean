@@ -15,11 +15,14 @@
     .help-block.form-text == t('.hints.docker_image')
   .form-group
     = f.label(:exposed_ports)
-    = f.text_field(:exposed_ports, class: 'form-control', placeholder: '3000, 4000')
+    = f.text_field(:exposed_ports, class: 'form-control', placeholder: '3000,4000', pattern: '^((\d{1,5},)*(\d{1,5}))?$')
     .help-block.form-text == t('.hints.exposed_ports')
   .form-group
     = f.label(:memory_limit)
     = f.number_field(:memory_limit, class: 'form-control', min: DockerClient::MINIMUM_MEMORY_LIMIT, value: f.object.memory_limit || DockerClient::DEFAULT_MEMORY_LIMIT)
+  .form-group
+    = f.label(:cpu_limit)
+    = f.number_field(:cpu_limit, class: 'form-control', min: 1, step: 1, value: ExecutionEnvironment::DEFAULT_CPU_LIMIT)
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:network_enabled, class: 'form-check-input')

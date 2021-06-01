@@ -7,6 +7,10 @@ class ExecutionEnvironment < ApplicationRecord
   include DefaultValues
 
   VALIDATION_COMMAND = 'whoami'
+  RUNNER_MANAGEMENT_PRESENT = CodeOcean::Config.new(:code_ocean).read[:runner_management].present?
+  BASE_URL = CodeOcean::Config.new(:code_ocean).read[:runner_management][:url] if RUNNER_MANAGEMENT_PRESENT
+  HEADERS = {'Content-Type' => 'application/json'}.freeze
+  DEFAULT_CPU_LIMIT = 20
 
   after_initialize :set_default_values
 
@@ -26,6 +30,8 @@ class ExecutionEnvironment < ApplicationRecord
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
   validates :pool_size, numericality: {only_integer: true}, presence: true
   validates :run_command, presence: true
+  validates :cpu_limit, presence: true, numericality: {greater_than: 0, only_integer: true}
+  validates :exposed_ports, format: {with: /\A(([[:digit:]]{1,5},)*([[:digit:]]{1,5}))?\z/}
 
   def set_default_values
     set_default_values_if_present(permitted_execution_time: 60, pool_size: 0)
@@ -34,6 +40,33 @@ class ExecutionEnvironment < ApplicationRecord
 
   def to_s
     name
+  end
+
+  def copy_to_poseidon
+    return false unless RUNNER_MANAGEMENT_PRESENT
+
+    url = "#{BASE_URL}/execution-environments/#{id}"
+    response = Faraday.put(url, to_json, HEADERS)
+    return true if [201, 204].include? response.status
+
+    Rails.logger.warn("Could not create execution environment in Poseidon, got response: #{response.as_json}")
+    false
+  end
+
+  def to_json(*_args)
+    {
+      id: id,
+      image: docker_image,
+      prewarmingPoolSize: pool_size,
+      cpuLimit: cpu_limit,
+      memoryLimit: memory_limit,
+      networkAccess: network_enabled,
+      exposedPorts: exposed_ports_list,
+    }.to_json
+  end
+
+  def exposed_ports_list
+    (exposed_ports || '').split(',').map(&:to_i)
   end
 
   def valid_test_setup?

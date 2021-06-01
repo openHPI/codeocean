@@ -3,6 +3,8 @@
 class ExecutionEnvironmentsController < ApplicationController
   include CommonBehavior
 
+  RUNNER_MANAGEMENT_PRESENT = CodeOcean::Config.new(:code_ocean).read[:runner_management].present?
+
   before_action :set_docker_images, only: %i[create edit new update]
   before_action :set_execution_environment, only: MEMBER_ACTIONS + %i[execute_command shell statistics]
   before_action :set_testing_framework_adapters, only: %i[create edit new update]
@@ -15,7 +17,9 @@ class ExecutionEnvironmentsController < ApplicationController
   def create
     @execution_environment = ExecutionEnvironment.new(execution_environment_params)
     authorize!
-    create_and_respond(object: @execution_environment)
+    create_and_respond(object: @execution_environment) do
+      copy_execution_environment_to_poseidon
+    end
   end
 
   def destroy
@@ -105,7 +109,7 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def execution_environment_params
     if params[:execution_environment].present?
-      params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(
+      params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :cpu_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(
         user_id: current_user.id, user_type: current_user.class.name
       )
     end
@@ -155,6 +159,15 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def update
-    update_and_respond(object: @execution_environment, params: execution_environment_params)
+    update_and_respond(object: @execution_environment, params: execution_environment_params) do
+      copy_execution_environment_to_poseidon
+    end
   end
+
+  def copy_execution_environment_to_poseidon
+    unless RUNNER_MANAGEMENT_PRESENT && @execution_environment.copy_to_poseidon
+      t('execution_environments.form.errors.not_synced_to_poseidon')
+    end
+  end
+  private :copy_execution_environment_to_poseidon
 end

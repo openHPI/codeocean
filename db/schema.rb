@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_19_134938) do
+ActiveRecord::Schema.define(version: 2021_06_02_071834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(version: 2021_05_19_134938) do
     t.integer "file_type_id"
     t.integer "memory_limit"
     t.boolean "network_enabled"
+    t.integer "cpu_limit"
   end
 
   create_table "exercise_collection_items", id: :serial, force: :cascade do |t|

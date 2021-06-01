@@ -14,6 +14,7 @@ de:
         file_type_id: Standard-Dateityp
         help: Hilfetext
         memory_limit: Speicher-Limit (in MB)
+        cpu_limit: CPU-Limit (in MHz)
         network_enabled: Netzwerkzugriff
         name: Name
         permitted_execution_time: Erlaubte Ausführungszeit (in Sekunden)
@@ -281,7 +282,9 @@ de:
       hints:
         command: <em>filename</em> wird automatisch durch den richtigen Dateinamen ersetzt.
         docker_image: 'Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank">DockerHub</a> verfügbar ist.'
-        exposed_ports: Während der Ausführung sind diese Ports für den Nutzer zugänglich.
+        exposed_ports: Während der Ausführung sind diese Ports für den Nutzer zugänglich. Die Portnummern müssen mit Komma, aber ohne Leerzeichen voneinander getrennt sein.
+      errors:
+        not_synced_to_poseidon: Die Ausführungsumgebung wurde erstellt, aber aufgrund eines Fehlers nicht zu Poseidon synchronisiert.
     index:
       shell: Shell
     shell:

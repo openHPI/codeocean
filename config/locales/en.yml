@@ -14,6 +14,7 @@ en:
         file_type_id: Default File Type
         help: Help Text
         memory_limit: Memory Limit (in MB)
+        cpu_limit: CPU Limit (in MHz)
         name: Name
         network_enabled: Network Enabled
         permitted_execution_time: Permitted Execution Time (in Seconds)
@@ -281,7 +282,9 @@ en:
       hints:
         command: <em>filename</em> is automatically replaced with the correct filename.
         docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank">DockerHub</a>.
-        exposed_ports: During code execution these ports are accessible for the user.
+        exposed_ports: During code execution these ports are accessible for the user. Port numbers must be separated by a comma but no space.
+      errors:
+        not_synced_to_poseidon: The ExecutionEnvironment was created but not synced to Poseidon due to an error.
     index:
       shell: Shell
     shell:
