@@ -85,10 +85,10 @@ button i.fa-spin {
   display: none;
 }
 
-#autosave-label{
+#statusbar{
   visibility: hidden;
+  margin-top: .2em;
   height: 1.6em;
-  text-align:  right;
   color: #777;
   font-size: 0.8em;
 }
@@ -102,8 +102,8 @@ button i.fa-spin {
 }
 
 .sidebar-col-collapsed {
-  -webkit-transition: width 2s;
-  transition: width 2s;
+  -webkit-transition: width .2s;
+  transition: width .2s;
   width:67px;
   float:left;
   min-height: 1px;
@@ -112,8 +112,8 @@ button i.fa-spin {
 }
 
 .sidebar-col {
-  -webkit-transition: width 2s;
-  transition: width 2s;
+  -webkit-transition: width .2s;
+  transition: width .2s;
   width:20%;
   float:left;
   min-height: 1px;
@@ -129,8 +129,8 @@ button i.fa-spin {
 }
 
 .output-col {
-  -webkit-transition: width 2s;
-  transition: width 2s;
+  -webkit-transition: width .2s;
+  transition: width .2s;
   width:40%;
   float:right;
   min-height: 1px;
@@ -141,8 +141,8 @@ button i.fa-spin {
 }
 
 .output-col-collapsed {
-  -webkit-transition: width 2s;
-  transition: width 2s;
+  -webkit-transition: width .2s;
+  transition: width .2s;
   width:67px;
   float:right;
   min-height: 1px;
@@ -173,16 +173,12 @@ button i.fa-spin {
 }
 
 .description-card-collapsed {
-  -webkit-transition: width 2s;
-  transition: width 2s;
   height: 0px;
   visibility: hidden;
 }
 
 .description-card {
   height: auto;
-  -webkit-transition: height 2s;
-  transition: height 2s;
   visibility: visible;
 }
 
