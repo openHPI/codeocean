@@ -25,7 +25,7 @@ class Runner < ApplicationRecord
 
   def copy_files(files)
     url = "#{runner_url}/files"
-    body = {files: files.map {|filename, content| {filepath: filename, content: content} }}
+    body = {copy: files.map {|filename, content| {path: filename, content: Base64.strict_encode64(content)} }}
     response = Faraday.patch(url, body.to_json, HEADERS)
     return unless response.status == 404
 
@@ -36,7 +36,8 @@ class Runner < ApplicationRecord
 
   def execute_command(command)
     url = "#{runner_url}/execute"
-    response = Faraday.post(url, {command: command}.to_json, HEADERS)
+    body = {command: command, timeLimit: execution_environment.permitted_execution_time}
+    response = Faraday.post(url, body.to_json, HEADERS)
     if response.status == 404
       # runner has disappeared for some reason
       destroy
@@ -68,8 +69,7 @@ class Runner < ApplicationRecord
 
   def new_runner
     url = "#{BASE_URL}/runners"
-    time_limit = CodeOcean::Config.new(:code_ocean).read[:runner_management][:unused_runner_expiration_time]
-    body = {executionEnvironmentId: execution_environment.id, timeLimit: time_limit}
+    body = {executionEnvironmentId: execution_environment.id, inactivityTimeout: UNUSED_EXPIRATION_TIME}
     response = Faraday.post(url, body.to_json, HEADERS)
     response_body = parse response
     self.runner_id = response_body[:runnerId]
