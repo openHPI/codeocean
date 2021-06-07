@@ -66,6 +66,8 @@ Rails.application.routes.draw do
       post 'shell', as: :execute_command, action: :execute_command
       get :statistics
     end
+
+    post :synchronize_all_to_poseidon, on: :collection
   end
 
   post '/import_exercise' => 'exercises#import_exercise'

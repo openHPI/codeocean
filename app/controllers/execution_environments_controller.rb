@@ -164,6 +164,19 @@ class ExecutionEnvironmentsController < ApplicationController
     end
   end
 
+  def synchronize_all_to_poseidon
+    authorize ExecutionEnvironment
+
+    return unless RUNNER_MANAGEMENT_PRESENT
+
+    success = ExecutionEnvironment.all.map(&:copy_to_poseidon).all?
+    if success
+      redirect_to ExecutionEnvironment, notice: t('execution_environments.index.synchronize_all.success')
+    else
+      redirect_to ExecutionEnvironment, alert: t('execution_environments.index.synchronize_all.failure')
+    end
+  end
+
   def copy_execution_environment_to_poseidon
     unless RUNNER_MANAGEMENT_PRESENT && @execution_environment.copy_to_poseidon
       t('execution_environments.form.errors.not_synced_to_poseidon')

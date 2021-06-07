@@ -287,6 +287,10 @@ de:
         not_synced_to_poseidon: Die Ausführungsumgebung wurde erstellt, aber aufgrund eines Fehlers nicht zu Poseidon synchronisiert.
     index:
       shell: Shell
+      synchronize_all:
+        button: Alle synchronisieren
+        success: Alle Ausführungsumgebungen wurden erfolgreich synchronisiert.
+        failure: Beim Synchronisieren mindestens einer Ausführungsumgebung ist ein Fehler aufgetreten.
     shell:
       command: Befehl
       headline: Shell

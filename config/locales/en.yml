@@ -287,6 +287,10 @@ en:
         not_synced_to_poseidon: The ExecutionEnvironment was created but not synced to Poseidon due to an error.
     index:
       shell: Shell
+      synchronize_all:
+        button: Synchronize all
+        success: All execution environemnts were synchronized successfully.
+        failure: At least one execution environment could not be synchronised due to an error.
     shell:
       command: Command
       headline: Shell

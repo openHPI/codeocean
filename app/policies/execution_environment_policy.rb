@@ -8,4 +8,8 @@ class ExecutionEnvironmentPolicy < AdminOnlyPolicy
   [:index?].each do |action|
     define_method(action) { admin? || teacher? }
   end
+
+  def synchronize_all_to_poseidon?
+    admin?
+  end
 end
