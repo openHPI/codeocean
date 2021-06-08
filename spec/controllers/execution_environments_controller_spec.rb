@@ -192,4 +192,20 @@ describe ExecutionEnvironmentsController do
       end
     end
   end
+
+  describe '#synchronize_all_to_poseidon' do
+    let(:execution_environments) { FactoryBot.build_list(:ruby, 3) }
+
+    it 'copies all execution environments to Poseidon' do
+      allow(ExecutionEnvironment).to receive(:all).and_return(execution_environments)
+
+      execution_environments.each do |execution_environment|
+        allow(execution_environment).to receive(:copy_to_poseidon).and_return(true)
+      end
+
+      post :synchronize_all_to_poseidon
+
+      expect(execution_environments).to all(have_received(:copy_to_poseidon).once)
+    end
+  end
 end

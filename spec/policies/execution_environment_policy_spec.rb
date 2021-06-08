@@ -58,4 +58,20 @@ describe ExecutionEnvironmentPolicy do
       end
     end
   end
+
+  permissions(:synchronize_all_to_poseidon?) do
+    it 'grants access to the admin' do
+      expect(policy).to permit(FactoryBot.build(:admin))
+    end
+
+    shared_examples 'it does not grant access' do |user|
+      it "does not grant access to a user with role #{user.role}" do
+        expect(policy).not_to permit(user)
+      end
+    end
+
+    %i[teacher external_user].each do |user|
+      include_examples 'it does not grant access', FactoryBot.build(user)
+    end
+  end
 end
