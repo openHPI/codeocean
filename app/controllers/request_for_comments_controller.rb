@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class RequestForCommentsController < ApplicationController
-  include SubmissionScoring
-
   before_action :require_user!
   before_action :set_request_for_comment, only: %i[show mark_as_solved set_thank_you_note]
   before_action :set_study_group_grouping,
@@ -121,7 +119,7 @@ class RequestForCommentsController < ApplicationController
       if @request_for_comment.save
         # create thread here and execute tests. A run is triggered from the frontend and does not need to be handled here.
         Thread.new do
-          score_submission(@request_for_comment.submission)
+          @request_for_comment.submission.calculate_score
         ensure
           ActiveRecord::Base.connection_pool.release_connection
         end

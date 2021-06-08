@@ -94,10 +94,9 @@ describe 'Editor', js: true do
   end
 
   it 'contains a button for submitting the exercise' do
-    # This is broken since the Runner was added.
-    skip
-
-    allow_any_instance_of(SubmissionsController).to receive(:score_submission).and_return(scoring_response)
+    submission = FactoryBot.build(:submission, user: user, exercise: exercise)
+    allow(submission).to receive(:calculate_score).and_return(JSON.dump(scoring_response))
+    allow(Submission).to receive(:find).and_return(submission)
     click_button(I18n.t('exercises.editor.score'))
     expect(page).not_to have_css('#submit_outdated')
     expect(page).to have_css('#submit')

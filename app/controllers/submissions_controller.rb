@@ -5,7 +5,6 @@ class SubmissionsController < ApplicationController
   include CommonBehavior
   include Lti
   include SubmissionParameters
-  include SubmissionScoring
   include Tubesock::Hijack
 
   before_action :set_submission,
@@ -237,25 +236,21 @@ class SubmissionsController < ApplicationController
   end
 
   def score
-    Thread.new do
-      hijack do |tubesock|
-        return kill_socket(tubesock) if @embed_options[:disable_run]
+    hijack do |tubesock|
+      return kill_socket(tubesock) if @embed_options[:disable_run]
 
-        tubesock.send_data(@submission.calculate_score)
-        # To enable hints when scoring a submission, uncomment the next line:
-        # send_hints(tubesock, StructuredError.where(submission: @submission))
-      rescue Runner::Error::ExecutionTimeout => e
-        tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
-        Rails.logger.debug { "Running a submission failed: #{e.message}" }
-      rescue Runner::Error => e
-        tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
-        Rails.logger.debug { "Runner error while scoring a submission: #{e.message}" }
-      ensure
-        tubesock.send_data JSON.dump({cmd: :exit})
-        tubesock.close
-      end
+      tubesock.send_data(@submission.calculate_score)
+      # To enable hints when scoring a submission, uncomment the next line:
+      # send_hints(tubesock, StructuredError.where(submission: @submission))
+    rescue Runner::Error::ExecutionTimeout => e
+      tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
+      Rails.logger.debug { "Running a submission failed: #{e.message}" }
+    rescue Runner::Error => e
+      tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
+      Rails.logger.debug { "Runner error while scoring a submission: #{e.message}" }
     ensure
-      ActiveRecord::Base.connection_pool.release_connection
+      tubesock.send_data JSON.dump({cmd: :exit})
+      tubesock.close
     end
   end
 

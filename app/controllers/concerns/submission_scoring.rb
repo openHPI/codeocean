@@ -31,38 +31,27 @@ module SubmissionScoring
       LinterCheckRun.create_from(testrun, assessment)
       assessment = assessor.translate_linter(assessment, I18n.locale)
 
-          # replace file name with hint if linter is not used for grading. Refactor!
-          filename = t('exercises.implement.not_graded') if file.weight.zero?
-        end
+      # replace file name with hint if linter is not used for grading. Refactor!
+      filename = t('exercises.implement.not_graded', locale: :de) if file.weight.zero?
+    end
 
     output.merge!(assessment)
     output.merge!(filename: filename, message: feedback_message(file, output), weight: file.weight)
   end
 
-  private :collect_test_results
-
-  def execute_test_file(file, submission)
-    # TODO: replace DockerClient here
-    DockerClient.new(execution_environment: file.context.execution_environment).execute_test_command(submission,
-      file.name_with_extension)
-  end
-
-  private :execute_test_file
-
-  def feedback_message(_file, output)
-    # TODO: why did we comment out set_locale and render_markdown?
-    set_locale
+  # TODO: make this a controller concern again to bring the locales nearer to the view
+  def feedback_message(file, output)
     if output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_test'
       I18n.t('exercises.implement.default_test_feedback')
     elsif output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_linter'
       I18n.t('exercises.implement.default_linter_feedback')
     else
-      render_markdown(file.feedback_message)
+      # render_markdown(file.feedback_message)
+      file.feedback_message
     end
   end
 
   def score_submission(outputs)
-    # outputs = collect_test_results(submission)
     submission = self
     score = 0.0
     if outputs.present?
