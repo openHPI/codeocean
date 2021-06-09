@@ -11,7 +11,7 @@ describe SubmissionScoring do
     before do
       allow(Runner).to receive(:for).and_return(runner)
       allow(runner).to receive(:copy_files)
-      allow(runner).to receive(:execute_interactively).and_return(1.0)
+      allow(runner).to receive(:attach_to_execution).and_return(1.0)
     end
 
     after { submission.calculate_score }

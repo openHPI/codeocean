@@ -141,13 +141,13 @@ class Submission < ApplicationRecord
 
   def calculate_score
     score = nil
-    prepared_runner do |runner|
+    prepared_runner do |runner, waiting_duration|
       scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
         score_command = command_for execution_environment.test_command, file.name_with_extension
-        stdout = ''
-        stderr = ''
+        stdout = +''
+        stderr = +''
         exit_code = 1 # default to error
-        execution_time = runner.execute_interactively(score_command) do |_runner, socket|
+        execution_time = runner.attach_to_execution(score_command) do |socket|
           socket.on :stderr do |data|
             stderr << data
           end
@@ -161,7 +161,7 @@ class Submission < ApplicationRecord
         end
         output = {
           file_role: file.role,
-          waiting_for_container_time: runner.waiting_time,
+          waiting_for_container_time: waiting_duration,
           container_execution_time: execution_time,
           status: exit_code.zero? ? :ok : :failed,
           stdout: stdout,
@@ -176,11 +176,12 @@ class Submission < ApplicationRecord
 
   def run(file, &block)
     run_command = command_for execution_environment.run_command, file
-    execution_time = 0
-    prepared_runner do |runner|
-      execution_time = runner.execute_interactively(run_command, &block)
+    durations = {}
+    prepared_runner do |runner, waiting_duration|
+      durations[:execution_duration] = runner.attach_to_execution(run_command, &block)
+      durations[:waiting_duration] = waiting_duration
     end
-    execution_time
+    durations
   end
 
   private
@@ -197,8 +198,8 @@ class Submission < ApplicationRecord
     request_time = Time.zone.now
     runner = Runner.for(user, exercise)
     copy_files_to runner
-    runner.waiting_time = Time.zone.now - request_time
-    yield(runner) if block_given?
+    waiting_duration = Time.zone.now - request_time
+    yield(runner, waiting_duration) if block_given?
   end
 
   def command_for(template, file)

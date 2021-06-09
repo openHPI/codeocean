@@ -131,7 +131,7 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def handle_websockets(tubesock, runner, socket)
+  def handle_websockets(tubesock, socket)
     tubesock.send_data JSON.dump({cmd: :status, status: :container_running})
     @output = +''
 
@@ -150,11 +150,10 @@ class SubmissionsController < ApplicationController
 
     socket.on :exit do |exit_code|
       EventMachine.stop_event_loop
-      status = runner.status
       if @output.empty?
         tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.no_output', timestamp: l(Time.zone.now, format: :short))}\n"})
       end
-      tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.exit', exit_code: exit_code)}\n"}) unless status == :timeouted
+      tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.exit', exit_code: exit_code)}\n"})
       kill_socket(tubesock)
     end
 
@@ -170,6 +169,7 @@ class SubmissionsController < ApplicationController
         else
           Rails.logger.info("Unknown command from client: #{event[:cmd]}")
       end
+
     rescue JSON::ParserError
       Rails.logger.debug { "Data received from client is not valid json: #{data}" }
       Sentry.set_extras(data: data)
@@ -183,15 +183,16 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       return kill_socket(tubesock) if @embed_options[:disable_run]
 
-      @container_execution_time = @submission.run(sanitize_filename) do |runner, socket|
-        @waiting_for_container_time = runner.waiting_time
-        handle_websockets(tubesock, runner, socket)
+      durations = @submission.run(sanitize_filename) do |socket|
+        handle_websockets(tubesock, socket)
       end
+      @container_execution_time = durations[:execution_duration]
+      @waiting_for_container_time = durations[:waiting_duration]
       save_run_output
     rescue Runner::Error::ExecutionTimeout => e
       tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
       kill_socket(tubesock)
-      Rails.logger.debug { "Running a submission failed: #{e.message}" }
+      Rails.logger.debug { "Running a submission timed out: #{e.message}" }
     rescue Runner::Error => e
       tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
       kill_socket(tubesock)
@@ -244,7 +245,7 @@ class SubmissionsController < ApplicationController
       # send_hints(tubesock, StructuredError.where(submission: @submission))
     rescue Runner::Error::ExecutionTimeout => e
       tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
-      Rails.logger.debug { "Running a submission failed: #{e.message}" }
+      Rails.logger.debug { "Scoring a submission timed out: #{e.message}" }
     rescue Runner::Error => e
       tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
       Rails.logger.debug { "Runner error while scoring a submission: #{e.message}" }
