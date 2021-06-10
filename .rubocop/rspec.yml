@@ -5,6 +5,8 @@ RSpec:
     - "spec/**/*_spec.rb"
     - "spec/spec_helper.rb"
     - "spec/rails_helper.rb"
+  Exclude:
+    - 'db/seeds/**/*'
 
 #
 # Too stupid. There are also views, templates, request specs etc.
