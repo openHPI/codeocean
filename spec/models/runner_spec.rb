@@ -35,10 +35,16 @@ describe Runner do
       end
     end
 
-    {poseidon: Runner::Strategy::Poseidon, docker: Runner::Strategy::Docker}.each do |strategy, strategy_class|
+    available_strategies = {
+      poseidon: Runner::Strategy::Poseidon,
+      docker_container_pool: Runner::Strategy::DockerContainerPool,
+    }
+    available_strategies.each do |strategy, strategy_class|
       include_examples 'uses the strategy defined in the constant', strategy, strategy_class
     end
+  end
 
+  describe 'method delegation' do
     shared_examples 'delegates method sends to its strategy' do |method, *args|
       context "when sending #{method}" do
         let(:strategy) { instance_double(strategy_class) }
@@ -49,7 +55,7 @@ describe Runner do
           allow(strategy_class).to receive(:new).and_return(strategy)
         end
 
-        it "delegates the method #{method}" do
+        it 'delegates to its strategy' do
           expect(strategy).to receive(method)
           runner.send(method, *args)
         end
@@ -57,8 +63,46 @@ describe Runner do
     end
 
     include_examples 'delegates method sends to its strategy', :destroy_at_management
-    include_examples 'delegates method sends to its strategy', :copy_files, nil
     include_examples 'delegates method sends to its strategy', :attach_to_execution, nil
+  end
+
+  describe '#copy_files' do
+    let(:strategy) { instance_double(strategy_class) }
+    let(:runner) { described_class.create }
+
+    before do
+      allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
+      allow(strategy_class).to receive(:new).and_return(strategy)
+    end
+
+    context 'when no error is raised' do
+      it 'delegates to its strategy' do
+        expect(strategy).to receive(:copy_files).once
+        runner.copy_files(nil)
+      end
+    end
+
+    context 'when a RunnerNotFound exception is raised' do
+      before do
+        was_called = false
+        allow(strategy).to receive(:copy_files) do
+          unless was_called
+            was_called = true
+            raise Runner::Error::RunnerNotFound.new
+          end
+        end
+      end
+
+      it 'requests a new id' do
+        expect(runner).to receive(:request_new_id)
+        runner.copy_files(nil)
+      end
+
+      it 'retries to copy the files' do
+        expect(strategy).to receive(:copy_files).twice
+        runner.copy_files(nil)
+      end
+    end
   end
 
   describe 'creation' do

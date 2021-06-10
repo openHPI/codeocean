@@ -62,13 +62,24 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     raise Runner::Error::Unknown.new("Error parsing response from Poseidon: #{e.message}")
   end
 
+  def initialize(runner_id, _environment)
+    super
+    @allocation_id = runner_id
+  end
+
   def copy_files(files)
+    copy = files.map do |file|
+      {
+        path: file.filepath,
+        content: Base64.strict_encode64(file.content),
+      }
+    end
     url = "#{runner_url}/files"
-    body = {copy: files.map {|filename, content| {path: filename, content: Base64.strict_encode64(content)} }}
+    body = {copy: copy}
     response = Faraday.patch(url, body.to_json, HEADERS)
     return if response.status == 204
 
-    Runner.destroy(@runner_id) if response.status == 400
+    Runner.destroy(@allocation_id) if response.status == 400
     self.class.handle_error response
   rescue Faraday::Error => e
     raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
@@ -78,7 +89,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     starting_time = Time.zone.now
     websocket_url = execute_command(command)
     EventMachine.run do
-      socket = Runner::Connection.new(websocket_url)
+      socket = Connection.new(websocket_url, self)
       yield(socket)
     end
     Time.zone.now - starting_time # execution duration
@@ -107,7 +118,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
           raise Runner::Error::Unknown.new('Poseidon did not send websocket url')
         end
       when 400
-        Runner.destroy(@runner_id)
+        Runner.destroy(@allocation_id)
     end
 
     self.class.handle_error response
@@ -116,6 +127,18 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def runner_url
-    "#{Runner::BASE_URL}/runners/#{@runner_id}"
+    "#{Runner::BASE_URL}/runners/#{@allocation_id}"
+  end
+
+  class Connection < Runner::Connection
+    def decode(raw_event)
+      JSON.parse(raw_event.data)
+    rescue JSON::ParserError => e
+      raise Runner::Error::Unknown.new("The websocket message from Poseidon could not be decoded to JSON: #{e.inspect}")
+    end
+
+    def encode(data)
+      data
+    end
   end
 end

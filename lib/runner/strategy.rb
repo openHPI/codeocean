@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class Runner::Strategy
-  def initialize(runner_id, environment)
-    @runner_id = runner_id
+  def initialize(_runner_id, environment)
     @execution_environment = environment
   end
 

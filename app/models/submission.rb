@@ -184,18 +184,10 @@ class Submission < ApplicationRecord
 
   private
 
-  def copy_files_to(runner)
-    files = {}
-    collect_files.each do |file|
-      files[file.name_with_extension] = file.content
-    end
-    runner.copy_files(files)
-  end
-
   def prepared_runner
     request_time = Time.zone.now
     runner = Runner.for(user, exercise)
-    copy_files_to runner
+    runner.copy_files(collect_files)
     waiting_duration = Time.zone.now - request_time
     yield(runner, waiting_duration)
   end
@@ -270,7 +262,7 @@ class Submission < ApplicationRecord
     update(score: score)
     if normalized_score.to_d == 1.0.to_d
       Thread.new do
-        RequestForComment.find_each(exercise_id: exercise_id, user_id: user_id, user_type: user_type) do |rfc|
+        RequestForComment.where(exercise_id: exercise_id, user_id: user_id, user_type: user_type).find_each do |rfc|
           rfc.full_score_reached = true
           rfc.save
         end

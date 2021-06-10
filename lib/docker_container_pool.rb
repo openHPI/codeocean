@@ -3,6 +3,11 @@
 require 'concurrent/future'
 require 'concurrent/timer_task'
 
+# get_container, destroy_container was moved to lib/runner/strategy/docker_container_pool.rb.
+# return_container is not used anymore because runners are not shared between users anymore.
+# create_container is done by the DockerContainerPool.
+# dump_info and quantities are still in use.
+
 class DockerContainerPool
   def self.config
     # TODO: Why erb?
@@ -22,6 +27,7 @@ class DockerContainerPool
     nil
   end
 
+  # not in use because DockerClient::RECYCLE_CONTAINERS == false
   def self.return_container(container, execution_environment)
     Faraday.get("#{config[:location]}/docker_container_pool/return_container/#{container.id}")
   rescue StandardError => e

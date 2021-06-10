@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'forwardable'
-
 class Runner < ApplicationRecord
   belongs_to :execution_environment
   belongs_to :user, polymorphic: true
@@ -13,7 +11,6 @@ class Runner < ApplicationRecord
   STRATEGY_NAME = CodeOcean::Config.new(:code_ocean).read[:runner_management][:strategy]
   UNUSED_EXPIRATION_TIME = CodeOcean::Config.new(:code_ocean).read[:runner_management][:unused_runner_expiration_time].seconds
   BASE_URL = CodeOcean::Config.new(:code_ocean).read[:runner_management][:url]
-  DELEGATED_STRATEGY_METHODS = %i[destroy_at_management attach_to_execution copy_files].freeze
 
   attr_accessor :strategy
 
@@ -35,14 +32,20 @@ class Runner < ApplicationRecord
     runner
   end
 
-  DELEGATED_STRATEGY_METHODS.each do |method|
-    define_method(method) do |*args, &block|
-      @strategy.send(method, *args, &block)
-    rescue Runner::Error::RunnerNotFound
-      request_new_id
-      save
-      @strategy.send(method, *args, &block)
-    end
+  def copy_files(files)
+    @strategy.copy_files(files)
+  rescue Runner::Error::RunnerNotFound
+    request_new_id
+    save
+    @strategy.copy_files(files)
+  end
+
+  def attach_to_execution(command, &block)
+    @strategy.attach_to_execution(command, &block)
+  end
+
+  def destroy_at_management
+    @strategy.destroy_at_management
   end
 
   private
@@ -53,17 +56,19 @@ class Runner < ApplicationRecord
 
   def request_new_id
     strategy_class = self.class.strategy_class
-    self.runner_id = strategy_class.request_from_management(execution_environment)
-    @strategy = strategy_class.new(runner_id, execution_environment)
-  rescue Runner::Error::EnvironmentNotFound
-    if strategy_class.sync_environment(execution_environment)
-      raise Runner::Error::EnvironmentNotFound.new(
-        "The execution environment with id #{execution_environment.id} was not found and was successfully synced with the runner management"
-      )
-    else
-      raise Runner::Error::EnvironmentNotFound.new(
-        "The execution environment with id #{execution_environment.id} was not found and could not be synced with the runner management"
-      )
+    begin
+      self.runner_id = strategy_class.request_from_management(execution_environment)
+      @strategy = strategy_class.new(runner_id, execution_environment)
+    rescue Runner::Error::EnvironmentNotFound
+      if strategy_class.sync_environment(execution_environment)
+        raise Runner::Error::EnvironmentNotFound.new(
+          "The execution environment with id #{execution_environment.id} was not found and was successfully synced with the runner management"
+        )
+      else
+        raise Runner::Error::EnvironmentNotFound.new(
+          "The execution environment with id #{execution_environment.id} was not found and could not be synced with the runner management"
+        )
+      end
     end
   end
 end

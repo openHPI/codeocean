@@ -7,10 +7,13 @@ class Runner::Connection
   # These are events for which callbacks can be registered.
   EVENTS = %i[start output exit stdout stderr].freeze
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
-  TIMEOUT_EXIT_STATUS = -100
 
-  def initialize(url)
+  attr_writer :status
+
+  def initialize(url, strategy)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
+    @strategy = strategy
+    @status = :established
 
     # For every event type of faye websockets, the corresponding
     # RunnerConnection method starting with `on_` is called.
@@ -37,18 +40,19 @@ class Runner::Connection
 
   private
 
-  def decode(event)
-    JSON.parse(event).deep_symbolize_keys
+  def decode(_raw_event)
+    raise NotImplementedError
   end
 
-  def encode(data)
-    data
+  def encode(_data)
+    raise NotImplementedError
   end
 
-  def on_message(event)
-    return unless BACKEND_OUTPUT_SCHEMA.valid?(JSON.parse(event.data))
+  def on_message(raw_event)
+    event = decode(raw_event)
+    return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
 
-    event = decode(event.data)
+    event = event.deep_symbolize_keys
     # There is one `handle_` method for every message type defined in the WebSocket schema.
     __send__("handle_#{event[:type]}", event)
   end
@@ -60,10 +64,20 @@ class Runner::Connection
   def on_error(_event); end
 
   def on_close(_event)
-    @exit_callback.call @exit_code
+    case @status
+      when :timeout
+        raise Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
+      when :terminated
+        @exit_callback.call @exit_code
+      else # :established
+        # If the runner is killed by the DockerContainerPool after the maximum allowed time per user and
+        # while the owning user is running an execution, the command execution stops and log output is incomplete.
+        raise Runner::Error::Unknown.new('Execution terminated with an unknown reason')
+    end
   end
 
   def handle_exit(event)
+    @status = :terminated
     @exit_code = event[:data]
   end
 
@@ -82,7 +96,6 @@ class Runner::Connection
   def handle_start(_event); end
 
   def handle_timeout(_event)
-    @exit_code = TIMEOUT_EXIT_STATUS
-    raise Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
+    @status = :timeout
   end
 end

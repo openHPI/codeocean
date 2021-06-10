@@ -256,15 +256,15 @@ describe Runner::Strategy::Poseidon do
   end
 
   describe '#copy_files' do
-    let(:filename) { 'main.py' }
     let(:file_content) { 'print("Hello World!")' }
-    let(:action) { -> { poseidon.copy_files({filename => file_content}) } }
-    let(:encoded_file_content) { Base64.strict_encode64(file_content) }
+    let(:file) { FactoryBot.build(:file, content: file_content) }
+    let(:action) { -> { poseidon.copy_files([file]) } }
+    let(:encoded_file_content) { Base64.strict_encode64(file.content) }
     let!(:copy_files_stub) do
       WebMock
         .stub_request(:patch, "#{Runner::BASE_URL}/runners/#{runner_id}/files")
         .with(
-          body: {copy: [{path: filename, content: encoded_file_content}]},
+          body: {copy: [{path: file.filepath, content: encoded_file_content}]},
           headers: {'Content-Type' => 'application/json'}
         )
         .to_return(body: response_body, status: response_status)
