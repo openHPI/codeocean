@@ -242,7 +242,7 @@ describe ExercisesController do
     let(:user) { FactoryBot.create(:external_user) }
     let(:scoring_response) do
       [{
-        status: 'ok',
+        status: :ok,
         stdout: '',
         stderr: '',
         waiting_for_container_time: 0,
@@ -263,7 +263,7 @@ describe ExercisesController do
       FactoryBot.create(:lti_parameter, external_user: user, exercise: exercise)
       submission = FactoryBot.build(:submission, exercise: exercise, user: user)
       allow(submission).to receive(:normalized_score).and_return(1)
-      allow(submission).to receive(:calculate_score).and_return(JSON.dump(scoring_response))
+      allow(submission).to receive(:calculate_score).and_return(scoring_response)
       allow(Submission).to receive(:create).and_return(submission)
     end
 

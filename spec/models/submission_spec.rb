@@ -141,4 +141,35 @@ describe Submission do
       end
     end
   end
+
+  describe '#calculate_score' do
+    let(:runner) { FactoryBot.create :runner }
+
+    before do
+      allow(Runner).to receive(:for).and_return(runner)
+      allow(runner).to receive(:copy_files)
+      allow(runner).to receive(:attach_to_execution).and_return(1.0)
+    end
+
+    after { submission.calculate_score }
+
+    it 'executes every teacher-defined test file' do
+      allow(submission).to receive(:combine_file_scores)
+      submission.collect_files.select(&:teacher_defined_assessment?).each do |file|
+        expect(submission).to receive(:score_file).with(any_args, file)
+      end
+    end
+
+    it 'scores the submission' do
+      expect(submission).to receive(:combine_file_scores)
+    end
+  end
+
+  describe '#combine_file_scores' do
+    after { submission.send(:combine_file_scores, []) }
+
+    it 'assigns a score to the submissions' do
+      expect(submission).to receive(:update).with(score: anything)
+    end
+  end
 end

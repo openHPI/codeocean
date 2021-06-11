@@ -5,6 +5,7 @@ class SubmissionsController < ApplicationController
   include CommonBehavior
   include Lti
   include SubmissionParameters
+  include ScoringResultFormatting
   include Tubesock::Hijack
 
   before_action :set_submission,
@@ -240,7 +241,7 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       return kill_socket(tubesock) if @embed_options[:disable_run]
 
-      tubesock.send_data(@submission.calculate_score)
+      tubesock.send_data(JSON.dump(format_scoring_results(@submission.calculate_score)))
       # To enable hints when scoring a submission, uncomment the next line:
       # send_hints(tubesock, StructuredError.where(submission: @submission))
     rescue Runner::Error::ExecutionTimeout => e

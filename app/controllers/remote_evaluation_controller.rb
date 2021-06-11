@@ -3,6 +3,7 @@
 class RemoteEvaluationController < ApplicationController
   include RemoteEvaluationParameters
   include Lti
+  include ScoringResultFormatting
 
   skip_after_action :verify_authorized
   skip_before_action :verify_authenticity_token
@@ -62,7 +63,7 @@ status: 202}
     validation_token = remote_evaluation_params[:validation_token]
     if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(validation_token: validation_token))
       @submission = Submission.create(build_submission_params(cause, remote_evaluation_mapping))
-      @submission.calculate_score
+      format_scoring_results(@submission.calculate_score)
     else
       # TODO: better output
       # TODO: check token expired?

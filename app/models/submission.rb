@@ -4,7 +4,6 @@ class Submission < ApplicationRecord
   include Context
   include Creation
   include ActionCableHelper
-  include SubmissionScoring
 
   require 'concurrent/future'
 
@@ -140,9 +139,9 @@ class Submission < ApplicationRecord
   end
 
   def calculate_score
-    score = nil
+    file_scores = nil
     prepared_runner do |runner, waiting_duration|
-      scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
+      file_scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
         score_command = command_for execution_environment.test_command, file.name_with_extension
         stdout = +''
         stderr = +''
@@ -167,11 +166,10 @@ class Submission < ApplicationRecord
           stdout: stdout,
           stderr: stderr,
         }
-        test_result(output, file)
+        score_file(output, file)
       end
-      score = score_submission(scores)
     end
-    JSON.dump(score)
+    combine_file_scores(file_scores)
   end
 
   def run(file, &block)
@@ -213,5 +211,85 @@ class Submission < ApplicationRecord
       filename: filename,
       module_name: File.basename(filename, File.extname(filename)).underscore,
     }
+  end
+
+  def score_file(output, file)
+    # Mnemosyne.trace 'custom.codeocean.collect_test_results', meta: { submission: id } do
+    # Mnemosyne.trace 'custom.codeocean.collect_test_results_block', meta: { file: file.id, submission: id } do
+    assessor = Assessor.new(execution_environment: execution_environment)
+    assessment = assessor.assess(output)
+    passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
+    testrun_output = passed ? nil : "status: #{output[:status]}\n stdout: #{output[:stdout]}\n stderr: #{output[:stderr]}"
+    if testrun_output.present?
+      execution_environment.error_templates.each do |template|
+        pattern = Regexp.new(template.signature).freeze
+        StructuredError.create_from_template(template, testrun_output, self) if pattern.match(testrun_output)
+      end
+    end
+    testrun = Testrun.create(
+      submission: self,
+      cause: 'assess', # Required to differ run and assess for RfC show
+      file: file, # Test file that was executed
+      passed: passed,
+      output: testrun_output,
+      container_execution_time: output[:container_execution_time],
+      waiting_for_container_time: output[:waiting_for_container_time]
+    )
+
+    filename = file.name_with_extension
+
+    if file.teacher_defined_linter?
+      LinterCheckRun.create_from(testrun, assessment)
+      assessment = assessor.translate_linter(assessment, session[:locale])
+
+      # replace file name with hint if linter is not used for grading. Refactor!
+      filename = 'exercises.implement.not_graded' if file.weight.zero?
+    end
+
+    output.merge!(assessment)
+    output.merge!(filename: filename, message: feedback_message(file, output), weight: file.weight)
+  end
+
+  def feedback_message(file, output)
+    if output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_test'
+      'exercises.implement.default_test_feedback'
+    elsif output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_linter'
+      'exercises.implement.default_linter_feedback'
+    else
+      file.feedback_message
+    end
+  end
+
+  def combine_file_scores(outputs)
+    score = 0.0
+    if outputs.present?
+      outputs.each do |output|
+        score += output[:score] * output[:weight] unless output.nil?
+      end
+    end
+    update(score: score)
+    if normalized_score.to_d == 1.0.to_d
+      Thread.new do
+        RequestForComment.find_each(exercise_id: exercise_id, user_id: user_id, user_type: user_type) do |rfc|
+          rfc.full_score_reached = true
+          rfc.save
+        end
+      ensure
+        ActiveRecord::Base.connection_pool.release_connection
+      end
+    end
+    if @embed_options.present? && @embed_options[:hide_test_results] && outputs.present?
+      outputs.each do |output|
+        output.except!(:error_messages, :count, :failed, :filename, :message, :passed, :stderr, :stdout)
+      end
+    end
+
+    # Return all test results except for those of a linter if not allowed
+    show_linter = Python20CourseWeek.show_linter? exercise
+    outputs&.reject do |output|
+      next if show_linter || output.blank?
+
+      output[:file_role] == 'teacher_defined_linter'
+    end
   end
 end

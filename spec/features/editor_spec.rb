@@ -6,7 +6,7 @@ describe 'Editor', js: true do
   let(:exercise) { FactoryBot.create(:audio_video, description: Forgery(:lorem_ipsum).sentence) }
   let(:scoring_response) do
     [{
-      status: 'ok',
+      status: :ok,
       stdout: '',
       stderr: '',
       waiting_for_container_time: 0,
@@ -95,7 +95,7 @@ describe 'Editor', js: true do
 
   it 'contains a button for submitting the exercise' do
     submission = FactoryBot.build(:submission, user: user, exercise: exercise)
-    allow(submission).to receive(:calculate_score).and_return(JSON.dump(scoring_response))
+    allow(submission).to receive(:calculate_score).and_return(scoring_response)
     allow(Submission).to receive(:find).and_return(submission)
     click_button(I18n.t('exercises.editor.score'))
     expect(page).not_to have_css('#submit_outdated')
