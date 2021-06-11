@@ -36,7 +36,7 @@ module SubmissionScoring
           assessment = assessor.translate_linter(assessment, session[:locale])
 
           # replace file name with hint if linter is not used for grading. Refactor!
-          filename = t('exercises.implement.not_graded', locale: :de) if file.weight.zero?
+          filename = t('exercises.implement.not_graded') if file.weight.zero?
         end
 
         output.merge!(assessment)
