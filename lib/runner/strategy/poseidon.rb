@@ -10,6 +10,10 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     end
   end
 
+  def self.sync_environment(environment)
+    environment.copy_to_poseidon
+  end
+
   def self.request_from_management(environment)
     url = "#{Runner::BASE_URL}/runners"
     body = {executionEnvironmentId: environment.id, inactivityTimeout: Runner::UNUSED_EXPIRATION_TIME}
@@ -21,10 +25,12 @@ class Runner::Strategy::Poseidon < Runner::Strategy
         runner_id = response_body[:runnerId]
         runner_id.presence || raise(Runner::Error::Unknown.new('Poseidon did not send a runner id'))
       when 404
-        raise Runner::Error::NotFound.new('Execution environment not found')
+        raise Runner::Error::EnvironmentNotFound.new
       else
         handle_error response
     end
+  rescue Faraday::Error => e
+    raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
   end
 
   def self.handle_error(response)
@@ -35,7 +41,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
       when 401
         raise Runner::Error::Unauthorized.new('Authentication with Poseidon failed')
       when 404
-        raise Runner::Error::NotFound.new('Runner not found')
+        raise Runner::Error::RunnerNotFound.new
       when 500
         response_body = parse response
         error_code = response_body[:errorCode]
@@ -60,7 +66,12 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     url = "#{runner_url}/files"
     body = {copy: files.map {|filename, content| {path: filename, content: Base64.strict_encode64(content)} }}
     response = Faraday.patch(url, body.to_json, HEADERS)
-    self.class.handle_error response unless response.status == 204
+    return if response.status == 204
+
+    Runner.destroy(@runner_id) if response.status == 400
+    self.class.handle_error response
+  rescue Faraday::Error => e
+    raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
   end
 
   def attach_to_execution(command)
@@ -68,7 +79,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     websocket_url = execute_command(command)
     EventMachine.run do
       socket = Runner::Connection.new(websocket_url)
-      yield(socket) if block_given?
+      yield(socket)
     end
     Time.zone.now - starting_time # execution duration
   end
@@ -76,6 +87,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   def destroy_at_management
     response = Faraday.delete runner_url
     self.class.handle_error response unless response.status == 204
+  rescue Faraday::Error => e
+    raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
   end
 
   private
@@ -84,17 +97,22 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     url = "#{runner_url}/execute"
     body = {command: command, timeLimit: @execution_environment.permitted_execution_time}
     response = Faraday.post(url, body.to_json, HEADERS)
-    if response.status == 200
-      response_body = self.class.parse response
-      websocket_url = response_body[:websocketUrl]
-      if websocket_url.present?
-        return websocket_url
-      else
-        raise Runner::Error::Unknown.new('Poseidon did not send websocket url')
-      end
+    case response.status
+      when 200
+        response_body = self.class.parse response
+        websocket_url = response_body[:websocketUrl]
+        if websocket_url.present?
+          return websocket_url
+        else
+          raise Runner::Error::Unknown.new('Poseidon did not send websocket url')
+        end
+      when 400
+        Runner.destroy(@runner_id)
     end
 
     self.class.handle_error response
+  rescue Faraday::Error => e
+    raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
   end
 
   def runner_url

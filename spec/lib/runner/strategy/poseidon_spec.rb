@@ -16,7 +16,22 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 400 }
 
       it 'raises an error' do
+        allow(Runner).to receive(:destroy).with(runner_id)
         expect { action.call }.to raise_error(Runner::Error::BadRequest, /#{error_message}/)
+      end
+    end
+  end
+
+  # Only #copy_files and #execute_command destroy the runner locally in case
+  # of a BadRequest (400) response.
+  shared_examples 'BadRequest (400) destroys local runner' do
+    context 'when Poseidon returns BadRequest (400)' do
+      let(:response_body) { {message: error_message}.to_json }
+      let(:response_status) { 400 }
+
+      it 'destroys the runner locally' do
+        expect(Runner).to receive(:destroy).with(runner_id)
+        expect { action.call }.to raise_error(Runner::Error::BadRequest)
       end
     end
   end
@@ -193,6 +208,7 @@ describe Runner::Strategy::Poseidon do
     end
 
     include_examples 'BadRequest (400) error handling'
+    include_examples 'BadRequest (400) destroys local runner'
     include_examples 'Unauthorized (401) error handling'
     include_examples 'NotFound (404) error handling'
     include_examples 'InternalServerError (500) error handling'
@@ -247,6 +263,7 @@ describe Runner::Strategy::Poseidon do
     end
 
     include_examples 'BadRequest (400) error handling'
+    include_examples 'BadRequest (400) destroys local runner'
     include_examples 'Unauthorized (401) error handling'
     include_examples 'NotFound (404) error handling'
     include_examples 'InternalServerError (500) error handling'

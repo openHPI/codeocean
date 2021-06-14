@@ -7,6 +7,7 @@ class Runner::Connection
   # These are events for which callbacks can be registered.
   EVENTS = %i[start output exit stdout stderr].freeze
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
+  TIMEOUT_EXIT_STATUS = -100
 
   def initialize(url)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
@@ -20,7 +21,8 @@ class Runner::Connection
     # This registers empty default callbacks.
     EVENTS.each {|event_type| instance_variable_set(:"@#{event_type}_callback", ->(e) {}) }
     @start_callback = -> {}
-    @exit_code = 0
+    # Fail if no exit status was returned.
+    @exit_code = 1
   end
 
   def on(event, &block)
@@ -80,6 +82,7 @@ class Runner::Connection
   def handle_start(_event); end
 
   def handle_timeout(_event)
+    @exit_code = TIMEOUT_EXIT_STATUS
     raise Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
   end
 end

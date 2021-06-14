@@ -150,6 +150,10 @@ class SubmissionsController < ApplicationController
     end
 
     socket.on :exit do |exit_code|
+      # As this is sometimes called before the timeout is handled, we must not close the
+      # socket to the user here. The socket will be closed after handling the timeout.
+      next if exit_code == Runner::Connection::TIMEOUT_EXIT_STATUS
+
       EventMachine.stop_event_loop
       if @output.empty?
         tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.no_output', timestamp: l(Time.zone.now, format: :short))}\n"})

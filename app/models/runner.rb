@@ -39,8 +39,8 @@ class Runner < ApplicationRecord
     define_method(method) do |*args, &block|
       @strategy.send(method, *args, &block)
     rescue Runner::Error::NotFound
-      update(runner_id: self.class.strategy_class.request_from_management(execution_environment))
-      @strategy = self.class.strategy_class.new(runner_id, execution_environment)
+      request_new_id
+      save
       @strategy.send(method, *args, &block)
     end
   end
@@ -48,10 +48,22 @@ class Runner < ApplicationRecord
   private
 
   def request_id
-    return if runner_id.present?
+    request_new_id if runner_id.blank?
+  end
 
+  def request_new_id
     strategy_class = self.class.strategy_class
     self.runner_id = strategy_class.request_from_management(execution_environment)
     @strategy = strategy_class.new(runner_id, execution_environment)
+  rescue Runner::Error::NotFound
+    if strategy_class.sync_environment(execution_environment)
+      raise Runner::Error::NotFound.new(
+        "The execution environment with id #{execution_environment.id} was not found and was successfully synced with the runner management"
+      )
+    else
+      raise Runner::Error::NotFound.new(
+        "The execution environment with id #{execution_environment.id} was not found and could not be synced with the runner management"
+      )
+    end
   end
 end

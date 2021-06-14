@@ -61,28 +61,81 @@ describe Runner do
     include_examples 'delegates method sends to its strategy', :attach_to_execution, nil
   end
 
-  describe '#request_id' do
-    it 'requests a runner from the runner management when created' do
+  describe 'creation' do
+    let(:user) { FactoryBot.create :external_user }
+    let(:execution_environment) { FactoryBot.create :ruby }
+    let(:create_action) { -> { described_class.create(user: user, execution_environment: execution_environment) } }
+
+    it 'requests a runner id from the runner management' do
       expect(strategy_class).to receive(:request_from_management)
-      described_class.create
+      create_action.call
     end
 
-    it 'sets the runner id when created' do
+    it 'returns a valid runner' do
       allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
-      runner = described_class.create
-      expect(runner.runner_id).to eq(runner_id)
+      expect(create_action.call).to be_valid
     end
 
-    it 'sets the strategy when created' do
+    it 'sets the strategy' do
       allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
-      runner = described_class.create
-      expect(runner.strategy).to be_present
+      strategy = strategy_class.new(runner_id, execution_environment)
+      allow(strategy_class).to receive(:new).with(runner_id, execution_environment).and_return(strategy)
+      runner = create_action.call
+      expect(runner.strategy).to eq(strategy)
     end
 
-    it 'does not call the runner management again when validating the model' do
+    it 'does not call the runner management again while a runner id is set' do
       expect(strategy_class).to receive(:request_from_management).and_return(runner_id).once
-      runner = described_class.create
-      runner.valid?
+      runner = create_action.call
+      runner.update(user: FactoryBot.create(:external_user))
+    end
+  end
+
+  describe '#request_new_id' do
+    let(:runner) { FactoryBot.create :runner }
+
+    context 'when the environment is available in the runner management' do
+      it 'requests the runner management' do
+        expect(strategy_class).to receive(:request_from_management)
+        runner.send(:request_new_id)
+      end
+
+      it 'updates the runner id' do
+        allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
+        runner.send(:request_new_id)
+        expect(runner.runner_id).to eq(runner_id)
+      end
+
+      it 'updates the strategy' do
+        allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
+        strategy = strategy_class.new(runner_id, runner.execution_environment)
+        allow(strategy_class).to receive(:new).with(runner_id, runner.execution_environment).and_return(strategy)
+        runner.send(:request_new_id)
+        expect(runner.strategy).to eq(strategy)
+      end
+    end
+
+    context 'when the environment could not be found in the runner management' do
+      let(:environment_id) { runner.execution_environment.id }
+
+      before { allow(strategy_class).to receive(:request_from_management).and_raise(Runner::Error::NotFound) }
+
+      it 'syncs the execution environment' do
+        expect(strategy_class).to receive(:sync_environment).with(runner.execution_environment)
+        runner.send(:request_new_id)
+      rescue Runner::Error::NotFound
+        # Ignored because this error is expected (see tests below).
+      end
+
+      it 'raises an error when the environment could be synced' do
+        allow(strategy_class).to receive(:sync_environment).with(runner.execution_environment).and_return(true)
+        expect { runner.send(:request_new_id) }.to raise_error(Runner::Error::NotFound, /#{environment_id}.*successfully synced/)
+      end
+
+      it 'raises an error when the environment could not be synced' do
+        allow(strategy_class).to receive(:sync_environment).with(runner.execution_environment).and_return(false)
+        expect { runner.send(:request_new_id) }.to raise_error(Runner::Error::NotFound, /#{environment_id}.*could not be synced/)
+      end
     end
   end
 
