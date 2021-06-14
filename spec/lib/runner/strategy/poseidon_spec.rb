@@ -53,7 +53,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 404 }
 
       it 'raises an error' do
-        expect { action.call }.to raise_error(Runner::Error::NotFound, /Runner/)
+        expect { action.call }.to raise_error(Runner::Error::RunnerNotFound)
       end
     end
   end
@@ -152,7 +152,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 404 }
 
       it 'raises an error' do
-        expect { action.call }.to raise_error(Runner::Error::NotFound, /Execution environment/)
+        expect { action.call }.to raise_error(Runner::Error::EnvironmentNotFound)
       end
     end
 

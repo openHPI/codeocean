@@ -118,23 +118,23 @@ describe Runner do
     context 'when the environment could not be found in the runner management' do
       let(:environment_id) { runner.execution_environment.id }
 
-      before { allow(strategy_class).to receive(:request_from_management).and_raise(Runner::Error::NotFound) }
+      before { allow(strategy_class).to receive(:request_from_management).and_raise(Runner::Error::EnvironmentNotFound) }
 
       it 'syncs the execution environment' do
         expect(strategy_class).to receive(:sync_environment).with(runner.execution_environment)
         runner.send(:request_new_id)
-      rescue Runner::Error::NotFound
+      rescue Runner::Error::EnvironmentNotFound
         # Ignored because this error is expected (see tests below).
       end
 
       it 'raises an error when the environment could be synced' do
         allow(strategy_class).to receive(:sync_environment).with(runner.execution_environment).and_return(true)
-        expect { runner.send(:request_new_id) }.to raise_error(Runner::Error::NotFound, /#{environment_id}.*successfully synced/)
+        expect { runner.send(:request_new_id) }.to raise_error(Runner::Error::EnvironmentNotFound, /#{environment_id}.*successfully synced/)
       end
 
       it 'raises an error when the environment could not be synced' do
         allow(strategy_class).to receive(:sync_environment).with(runner.execution_environment).and_return(false)
-        expect { runner.send(:request_new_id) }.to raise_error(Runner::Error::NotFound, /#{environment_id}.*could not be synced/)
+        expect { runner.send(:request_new_id) }.to raise_error(Runner::Error::EnvironmentNotFound, /#{environment_id}.*could not be synced/)
       end
     end
   end
