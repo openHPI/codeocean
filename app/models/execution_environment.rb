@@ -51,6 +51,9 @@ class ExecutionEnvironment < ApplicationRecord
 
     Rails.logger.warn("Could not create execution environment in Poseidon, got response: #{response.as_json}")
     false
+  rescue Faraday::Error => e
+    Rails.logger.warn("Could not create execution environment because of Faraday error: #{e.inspect}")
+    false
   end
 
   def to_json(*_args)

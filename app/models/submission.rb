@@ -197,7 +197,7 @@ class Submission < ApplicationRecord
     runner = Runner.for(user, exercise)
     copy_files_to runner
     waiting_duration = Time.zone.now - request_time
-    yield(runner, waiting_duration) if block_given?
+    yield(runner, waiting_duration)
   end
 
   def command_for(template, file)

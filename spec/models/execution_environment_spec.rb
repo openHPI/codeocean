@@ -227,5 +227,10 @@ describe ExecutionEnvironment do
     [400, 500].each do |status|
       include_examples 'returns false when the api request failed', status
     end
+
+    it 'returns false if Faraday raises an error' do
+      allow(Faraday).to receive(:put).and_raise(Faraday::TimeoutError)
+      expect(execution_environment.copy_to_poseidon).to be_falsey
+    end
   end
 end

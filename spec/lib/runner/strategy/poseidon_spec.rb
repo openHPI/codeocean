@@ -100,6 +100,20 @@ describe Runner::Strategy::Poseidon do
     end
   end
 
+  # All requests handle a Faraday error the same way.
+  shared_examples 'Faraday error handling' do
+    context 'when Faraday throws an error' do
+      # The response status is not needed in this context but the describes block this context is embedded
+      # into expect this variable to be set in order to properly stub requests to the runner management.
+      let(:response_status) { -1 }
+
+      it 'raises an error' do
+        %i[post patch delete].each {|message| allow(Faraday).to receive(message).and_raise(Faraday::TimeoutError) }
+        expect { action.call }.to raise_error(Runner::Error::Unknown, /Faraday/)
+      end
+    end
+  end
+
   describe '::request_from_management' do
     let(:action) { -> { described_class.request_from_management(execution_environment) } }
     let!(:request_runner_stub) do
@@ -158,6 +172,7 @@ describe Runner::Strategy::Poseidon do
 
     include_examples 'InternalServerError (500) error handling'
     include_examples 'unknown response status error handling'
+    include_examples 'Faraday error handling'
   end
 
   describe '#execute_command' do
@@ -213,6 +228,7 @@ describe Runner::Strategy::Poseidon do
     include_examples 'NotFound (404) error handling'
     include_examples 'InternalServerError (500) error handling'
     include_examples 'unknown response status error handling'
+    include_examples 'Faraday error handling'
   end
 
   describe '#destroy_at_management' do
@@ -236,6 +252,7 @@ describe Runner::Strategy::Poseidon do
     include_examples 'NotFound (404) error handling'
     include_examples 'InternalServerError (500) error handling'
     include_examples 'unknown response status error handling'
+    include_examples 'Faraday error handling'
   end
 
   describe '#copy_files' do
@@ -268,6 +285,7 @@ describe Runner::Strategy::Poseidon do
     include_examples 'NotFound (404) error handling'
     include_examples 'InternalServerError (500) error handling'
     include_examples 'unknown response status error handling'
+    include_examples 'Faraday error handling'
   end
 
   describe '#attach_to_execution' do
