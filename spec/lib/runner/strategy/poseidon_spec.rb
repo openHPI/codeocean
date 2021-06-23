@@ -292,7 +292,7 @@ describe Runner::Strategy::Poseidon do
     # TODO: add more tests here
 
     let(:command) { 'ls' }
-    let(:action) { -> { poseidon.attach_to_execution command } }
+    let(:action) { -> { poseidon.attach_to_execution(command) } }
     let(:websocket_url) { 'ws://ws.example.com/path/to/websocket' }
 
     it 'returns the execution time' do
@@ -302,7 +302,7 @@ describe Runner::Strategy::Poseidon do
       starting_time = Time.zone.now
       execution_time = action.call
       test_time = Time.zone.now - starting_time
-      expect(execution_time).to be_between(0.0, test_time)
+      expect(execution_time).to be_between(0.0, test_time).exclusive
     end
   end
 end

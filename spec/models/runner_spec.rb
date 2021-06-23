@@ -98,7 +98,8 @@ describe Runner do
         runner.copy_files(nil)
       end
 
-      it 'retries to copy the files' do
+      it 'calls copy_file twice' do
+        # copy_files is called again after a new runner was requested.
         expect(strategy).to receive(:copy_files).twice
         runner.copy_files(nil)
       end
