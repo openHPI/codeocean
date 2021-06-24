@@ -12,9 +12,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     container_id = JSON.parse(Faraday.get("#{config[:pool][:location]}/docker_container_pool/get_container/#{environment.id}").body)['id']
     container_id.presence || raise(Runner::Error::NotAvailable.new("DockerContainerPool didn't return a container id"))
   rescue Faraday::Error => e
-    raise Runner::Error::Unknown.new("Faraday request to DockerContainerPool failed: #{e.inspect}")
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   rescue JSON::ParserError => e
-    raise Runner::Error::Unknown.new("DockerContainerPool returned invalid JSON: #{e.inspect}")
+    raise Runner::Error::UnexpectedResponse.new("DockerContainerPool returned invalid JSON: #{e.inspect}")
   end
 
   def initialize(runner_id, _environment)
@@ -40,7 +40,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
         rescue IOError => e
           # TODO: try catch i/o exception and log failed attempts
           # Does this fix the issue @Sebastian? What exceptions did you have in mind?
-          raise Runner::Error::Unknown.new("Could not create workspace file #{file.filepath}: #{e.inspect}")
+          raise Runner::Error::WorkspaceError.new("Could not create file #{file.filepath}: #{e.inspect}")
         end
       end
     end
@@ -50,7 +50,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   def destroy_at_management
     Faraday.get("#{self.class.config[:pool][:location]}/docker_container_pool/destroy_container/#{container.id}")
   rescue Faraday::Error => e
-    raise Runner::Error::Unknown.new("Faraday request to DockerContainerPool failed: #{e.inspect}")
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   end
 
   def attach_to_execution(command)
@@ -88,7 +88,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     unclean_path = local_workspace_path.join(path)
     clean_path = File.expand_path(unclean_path)
     unless clean_path.to_s.start_with? local_workspace_path.to_s
-      raise Runner::Error::Unknown.new("Local filepath #{clean_path.inspect} not allowed")
+      raise Runner::Error::WorkspaceError.new("Local filepath #{clean_path.inspect} not allowed")
     end
 
     Pathname.new(clean_path)
@@ -97,10 +97,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   def clean_workspace
     FileUtils.rm_r(local_workspace_path.children, secure: true)
   rescue Errno::ENOENT => e
-    raise Runner::Error::Unknown.new("The workspace directory does not exist and cannot be deleted: #{e.inspect}")
+    raise Runner::Error::WorkspaceError.new("The workspace directory does not exist and cannot be deleted: #{e.inspect}")
   rescue Errno::EACCES => e
     # TODO: Why was this rescued before @Sebastian?
-    raise Runner::Error::Unknown.new("Not allowed to clean workspace #{local_workspace_path}: #{e.inspect}")
+    raise Runner::Error::WorkspaceError.new("Not allowed to clean workspace #{local_workspace_path}: #{e.inspect}")
   end
 
   def local_workspace_path

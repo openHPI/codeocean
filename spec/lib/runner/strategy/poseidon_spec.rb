@@ -95,7 +95,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 1337 }
 
       it 'raises an error' do
-        expect { action.call }.to raise_error(Runner::Error::Unknown, /#{response_status}/)
+        expect { action.call }.to raise_error(Runner::Error::UnexpectedResponse, /#{response_status}/)
       end
     end
   end
@@ -109,7 +109,7 @@ describe Runner::Strategy::Poseidon do
 
       it 'raises an error' do
         %i[post patch delete].each {|message| allow(Faraday).to receive(message).and_raise(Faraday::TimeoutError) }
-        expect { action.call }.to raise_error(Runner::Error::Unknown, /Faraday/)
+        expect { action.call }.to raise_error(Runner::Error::FaradayError)
       end
     end
   end
@@ -146,7 +146,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 200 }
 
       it 'raises an error' do
-        expect { action.call }.to raise_error(Runner::Error::Unknown)
+        expect { action.call }.to raise_error(Runner::Error::UnexpectedResponse)
       end
     end
 
@@ -155,7 +155,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 200 }
 
       it 'raises an error' do
-        expect { action.call }.to raise_error(Runner::Error::Unknown)
+        expect { action.call }.to raise_error(Runner::Error::UnexpectedResponse)
       end
     end
 
@@ -209,7 +209,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 200 }
 
       it 'raises an error' do
-        expect { action.call }.to raise_error(Runner::Error::Unknown)
+        expect { action.call }.to raise_error(Runner::Error::UnexpectedResponse)
       end
     end
 
@@ -218,7 +218,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 200 }
 
       it 'raises an error' do
-        expect { action.call }.to raise_error(Runner::Error::Unknown)
+        expect { action.call }.to raise_error(Runner::Error::UnexpectedResponse)
       end
     end
 

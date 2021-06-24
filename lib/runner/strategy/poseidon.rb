@@ -23,14 +23,14 @@ class Runner::Strategy::Poseidon < Runner::Strategy
       when 200
         response_body = parse response
         runner_id = response_body[:runnerId]
-        runner_id.presence || raise(Runner::Error::Unknown.new('Poseidon did not send a runner id'))
+        runner_id.presence || raise(Runner::Error::UnexpectedResponse.new('Poseidon did not send a runner id'))
       when 404
         raise Runner::Error::EnvironmentNotFound.new
       else
         handle_error response
     end
   rescue Faraday::Error => e
-    raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
+    raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   end
 
   def self.handle_error(response)
@@ -51,7 +51,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
           raise Runner::Error::InternalServerError.new("Poseidon sent #{response_body[:errorCode]}: #{response_body[:message]}")
         end
       else
-        raise Runner::Error::Unknown.new("Poseidon sent unexpected response status code #{response.status}")
+        raise Runner::Error::UnexpectedResponse.new("Poseidon sent unexpected response status code #{response.status}")
     end
   end
 
@@ -59,7 +59,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     JSON.parse(response.body).deep_symbolize_keys
   rescue JSON::ParserError => e
     # Poseidon should not send invalid json
-    raise Runner::Error::Unknown.new("Error parsing response from Poseidon: #{e.message}")
+    raise Runner::Error::UnexpectedResponse.new("Error parsing response from Poseidon: #{e.message}")
   end
 
   def initialize(runner_id, _environment)
@@ -82,7 +82,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     Runner.destroy(@allocation_id) if response.status == 400
     self.class.handle_error response
   rescue Faraday::Error => e
-    raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
+    raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   end
 
   def attach_to_execution(command)
@@ -99,7 +99,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     response = Faraday.delete runner_url
     self.class.handle_error response unless response.status == 204
   rescue Faraday::Error => e
-    raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
+    raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   end
 
   private
@@ -115,7 +115,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
         if websocket_url.present?
           return websocket_url
         else
-          raise Runner::Error::Unknown.new('Poseidon did not send websocket url')
+          raise Runner::Error::UnexpectedResponse.new('Poseidon did not send websocket url')
         end
       when 400
         Runner.destroy(@allocation_id)
@@ -123,7 +123,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
     self.class.handle_error response
   rescue Faraday::Error => e
-    raise Runner::Error::Unknown.new("Faraday request to runner management failed: #{e.inspect}")
+    raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   end
 
   def runner_url
@@ -134,7 +134,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     def decode(raw_event)
       JSON.parse(raw_event.data)
     rescue JSON::ParserError => e
-      raise Runner::Error::Unknown.new("The websocket message from Poseidon could not be decoded to JSON: #{e.inspect}")
+      raise Runner::Error::UnexpectedResponse.new("The websocket message from Poseidon could not be decoded to JSON: #{e.inspect}")
     end
 
     def encode(data)

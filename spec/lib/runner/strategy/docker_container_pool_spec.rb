@@ -20,7 +20,7 @@ describe Runner::Strategy::DockerContainerPool do
   shared_examples 'Faraday error handling' do
     it 'raises a runner error' do
       allow(Faraday).to receive(:get).and_raise(Faraday::TimeoutError)
-      expect { action.call }.to raise_error(Runner::Error::Unknown, /Faraday/)
+      expect { action.call }.to raise_error(Runner::Error::FaradayError)
     end
   end
 
@@ -59,7 +59,7 @@ describe Runner::Strategy::DockerContainerPool do
       let(:response_body) { '{hello}' }
 
       it 'raises an error' do
-        expect { action.call }.to raise_error(Runner::Error::Unknown)
+        expect { action.call }.to raise_error(Runner::Error::UnexpectedResponse)
       end
     end
 
@@ -128,7 +128,7 @@ describe Runner::Strategy::DockerContainerPool do
 
       it 'raises an error in case of an IOError' do
         allow(File).to receive(:open).and_raise(IOError)
-        expect { container_pool.copy_files(files) }.to raise_error(Runner::Error::Unknown, /#{files.first.filepath}/)
+        expect { container_pool.copy_files(files) }.to raise_error(Runner::Error::WorkspaceError, /#{files.first.filepath}/)
       end
 
       it 'does not create a directory for it' do
@@ -195,11 +195,11 @@ describe Runner::Strategy::DockerContainerPool do
     before { allow(container_pool).to receive(:local_workspace_path).and_return(local_workspace) }
 
     it 'raises an error for relative paths outside of the workspace' do
-      expect { container_pool.send(:local_path, '../exercise.py') }.to raise_error(Runner::Error::Unknown, %r{tmp/exercise.py})
+      expect { container_pool.send(:local_path, '../exercise.py') }.to raise_error(Runner::Error::WorkspaceError, %r{tmp/exercise.py})
     end
 
     it 'raises an error for absolute paths outside of the workspace' do
-      expect { container_pool.send(:local_path, '/test') }.to raise_error(Runner::Error::Unknown, %r{/test})
+      expect { container_pool.send(:local_path, '/test') }.to raise_error(Runner::Error::WorkspaceError, %r{/test})
     end
 
     it 'removes .. from the path' do
@@ -225,13 +225,13 @@ describe Runner::Strategy::DockerContainerPool do
 
     it 'raises an error if the workspace does not exist' do
       allow(local_workspace).to receive(:children).and_raise(Errno::ENOENT)
-      expect { container_pool.send(:clean_workspace) }.to raise_error(Runner::Error::Unknown, /not exist/)
+      expect { container_pool.send(:clean_workspace) }.to raise_error(Runner::Error::WorkspaceError, /not exist/)
     end
 
     it 'raises an error if it lacks permission for deleting an entry' do
       allow(local_workspace).to receive(:children).and_return(['test.py'])
       allow(FileUtils).to receive(:remove_entry_secure).and_raise(Errno::EACCES)
-      expect { container_pool.send(:clean_workspace) }.to raise_error(Runner::Error::Unknown, /Not allowed/)
+      expect { container_pool.send(:clean_workspace) }.to raise_error(Runner::Error::WorkspaceError, /Not allowed/)
     end
   end
 
