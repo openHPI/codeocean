@@ -6,6 +6,7 @@ require 'json_schemer'
 class Runner::Connection
   # These are events for which callbacks can be registered.
   EVENTS = %i[start output exit stdout stderr].freeze
+  WEBSOCKET_MESSAGE_TYPES = %i[start stdout stderr error timeout exit].freeze
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
 
   attr_writer :status
@@ -56,8 +57,12 @@ class Runner::Connection
     return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
 
     event = event.deep_symbolize_keys
-    # There is one `handle_` method for every message type defined in the WebSocket schema.
-    __send__("handle_#{event[:type]}", event)
+    message_type = event[:type]
+    if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
+      __send__("handle_#{message_type}", event)
+    else
+      raise Runner::Error::UnexpectedResponse.new("Unknown websocket message type: #{message_type}")
+    end
   end
 
   def on_open(_event)
