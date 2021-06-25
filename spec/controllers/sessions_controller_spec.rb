@@ -33,8 +33,6 @@ describe SessionsController do
     let(:exercise2) { FactoryBot.create(:dummy) }
     let(:nonce) { SecureRandom.hex }
 
-    before { I18n.locale = I18n.default_locale }
-
     context 'without OAuth parameters' do
       it 'refuses the LTI launch' do
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.missing_parameters')).and_call_original

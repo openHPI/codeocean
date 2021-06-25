@@ -197,11 +197,11 @@ module_name: File.basename(filename, File.extname(filename)).underscore}
               @docker_client.kill_container(result[:container])
             else
               socket.send data
-              Rails.logger.debug("Sent the received client data to docker:#{data}")
+              Rails.logger.debug { "Sent the received client data to docker:#{data}" }
             end
           rescue JSON::ParserError
             socket.send data
-            Rails.logger.debug("Rescued parsing error, sent the received client data to docker:#{data}")
+            Rails.logger.debug { "Rescued parsing error, sent the received client data to docker:#{data}" }
             Sentry.set_extras(data: data)
           end
         end
