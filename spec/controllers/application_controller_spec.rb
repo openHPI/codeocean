@@ -59,6 +59,8 @@ describe ApplicationController do
     context "with a 'locale' value in the session" do
       it 'sets this locale' do
         session[:locale] = locale
+        # The around block first sets the default language and then the language requested
+        expect(I18n).to receive(:locale=).with(I18n.default_locale)
         expect(I18n).to receive(:locale=).with(locale)
         get :welcome
       end
@@ -67,7 +69,7 @@ describe ApplicationController do
     context "without a 'locale' value in the session" do
       it 'sets the default locale' do
         expect(session[:locale]).to be_blank
-        expect(I18n).to receive(:locale=).with(I18n.default_locale)
+        expect(I18n).to receive(:locale=).with(I18n.default_locale).at_least(:once)
         get :welcome
       end
     end

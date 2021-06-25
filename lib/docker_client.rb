@@ -91,7 +91,7 @@ class DockerClient
     # Internally, Faye::WebSocket uses EventMachine and the ping value is used to wake the EventMachine thread
     socket = Faye::WebSocket::Client.new(socket_url, [], headers: headers, ping: 0.1)
 
-    Rails.logger.debug "Opening Websocket on URL #{socket_url}"
+    Rails.logger.debug { "Opening Websocket on URL #{socket_url}" }
 
     socket.on :error do |event|
       Rails.logger.info "Websocket error: #{event.message}"
@@ -350,7 +350,7 @@ container_execution_time: nil}
   end
 
   def exit_container(container)
-    Rails.logger.debug("exiting container #{container}")
+    Rails.logger.debug { "exiting container #{container}" }
     # exit the timeout thread if it is still alive
     exit_thread_if_alive
     @socket.close
@@ -459,7 +459,7 @@ container_execution_time: nil}
   end
 
   def self.return_container(container, execution_environment)
-    Rails.logger.debug("returning container #{container}")
+    Rails.logger.debug { "returning container #{container}" }
     begin
       clean_container_workspace(container)
     rescue Docker::Error::NotFoundError => e

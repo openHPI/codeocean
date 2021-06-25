@@ -53,7 +53,7 @@ module Prometheus
       end
 
       def update_notification(object)
-        Rails.logger.debug("Prometheus metric updated for #{object.class.name}")
+        Rails.logger.debug { "Prometheus metric updated for #{object.class.name}" }
 
         case object
           when RequestForComment
@@ -63,7 +63,7 @@ module Prometheus
 
       def create_notification(object)
         @instance_count.increment(class: object.class.name)
-        Rails.logger.debug("Prometheus instance count increased for #{object.class.name}")
+        Rails.logger.debug { "Prometheus instance count increased for #{object.class.name}" }
 
         case object
           when RequestForComment
@@ -75,7 +75,7 @@ module Prometheus
 
       def destroy_notification(object)
         @instance_count.decrement(class: object.class.name)
-        Rails.logger.debug("Prometheus instance count decreased for #{object.class.name}")
+        Rails.logger.debug { "Prometheus instance count decreased for #{object.class.name}" }
 
         case object
           when Comment

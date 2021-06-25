@@ -566,7 +566,7 @@ working_time_accumulated: working_time_accumulated})
   end
 
   def redirect_after_submit
-    Rails.logger.debug("Redirecting user with score:s #{@submission.normalized_score}")
+    Rails.logger.debug { "Redirecting user with score:s #{@submission.normalized_score}" }
     if @submission.normalized_score.to_d == 1.0.to_d
       # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)

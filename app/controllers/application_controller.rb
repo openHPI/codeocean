@@ -8,7 +8,8 @@ class ApplicationController < ActionController::Base
 
   after_action :verify_authorized, except: %i[welcome]
   around_action :mnemosyne_trace
-  before_action :set_sentry_context, :set_locale, :allow_iframe_requests, :load_embed_options
+  around_action :switch_locale
+  before_action :set_sentry_context, :allow_iframe_requests, :load_embed_options
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
@@ -71,12 +72,13 @@ class ApplicationController < ActionController::Base
   end
   private :render_error
 
-  def set_locale
+  def switch_locale(&action)
     session[:locale] = params[:custom_locale] || params[:locale] || session[:locale]
-    I18n.locale = session[:locale] || I18n.default_locale
-    Sentry.set_extras(locale: I18n.locale)
+    locale = session[:locale] || I18n.default_locale
+    I18n.with_locale(locale, &action)
+    Sentry.set_extras(locale: locale)
   end
-  private :set_locale
+  private :switch_locale
 
   def welcome
     # Show root page

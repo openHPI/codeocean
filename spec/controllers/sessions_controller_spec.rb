@@ -33,8 +33,6 @@ describe SessionsController do
     let(:exercise2) { FactoryBot.create(:dummy) }
     let(:nonce) { SecureRandom.hex }
 
-    before { I18n.locale = I18n.default_locale }
-
     context 'without OAuth parameters' do
       it 'refuses the LTI launch' do
         expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.missing_parameters')).and_call_original
@@ -87,9 +85,12 @@ describe SessionsController do
       end
 
       it 'sets the specified locale' do
-        expect(controller).to receive(:set_locale).and_call_original
+        expect(controller).to receive(:switch_locale).and_call_original
+        i18n = instance_double 'i18n', locale: locale.to_s
+        allow(I18n).to receive(:locale=).with(I18n.default_locale).and_call_original
+        allow(I18n).to receive(:locale=).with(locale.to_s).and_return(i18n)
         perform_request
-        expect(I18n.locale).to eq(locale)
+        expect(i18n.locale.to_sym).to eq(locale)
       end
 
       it 'assigns the exercise' do
@@ -109,7 +110,8 @@ describe SessionsController do
       end
 
       context 'when LTI outcomes are supported' do
-        let(:message) { I18n.t('sessions.create_through_lti.session_with_outcome', consumer: consumer) }
+        # The expected message should be localized in the requested localization
+        let(:message) { I18n.t('sessions.create_through_lti.session_with_outcome', consumer: consumer, locale: locale) }
 
         before do
           allow(controller).to receive(:lti_outcome_service?).and_return(true)
@@ -120,7 +122,8 @@ describe SessionsController do
       end
 
       context 'when LTI outcomes are not supported' do
-        let(:message) { I18n.t('sessions.create_through_lti.session_without_outcome', consumer: consumer) }
+        # The expected message should be localized in the requested localization
+        let(:message) { I18n.t('sessions.create_through_lti.session_without_outcome', consumer: consumer, locale: locale) }
 
         before do
           allow(controller).to receive(:lti_outcome_service?).and_return(false)
