@@ -10,8 +10,13 @@ h1 = t('breadcrumbs.dashboard.show')
 h2 Version
 
 div.mb-4
-  = "Release:"
+  = "CodeOcean Release:"
   pre = Sentry.configuration.release
+
+- if DockerContainerPool.config[:active]
+  div.mb-4
+    = "DockerContainerPool Release:"
+    pre = DockerContainerPool.dump_info['release']
 
 h2 Docker
 
