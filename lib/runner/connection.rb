@@ -57,7 +57,7 @@ class Runner::Connection
     return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
 
     event = event.deep_symbolize_keys
-    message_type = event[:type]
+    message_type = event[:type].to_sym
     if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
       __send__("handle_#{message_type}", event)
     else

@@ -134,18 +134,17 @@ class SubmissionsController < ApplicationController
 
   def handle_websockets(tubesock, socket)
     tubesock.send_data JSON.dump({cmd: :status, status: :container_running})
-    @output = +''
-
-    socket.on :output do |data|
-      @output << data if @output.size + data.size <= max_output_buffer_size
-    end
 
     socket.on :stdout do |data|
-      tubesock.send_data(JSON.dump({cmd: :write, stream: :stdout, data: data}))
+      json_data = JSON.dump({cmd: :write, stream: :stdout, data: data})
+      @output << json_data[0, max_output_buffer_size - @output.size]
+      tubesock.send_data(json_data)
     end
 
     socket.on :stderr do |data|
-      tubesock.send_data(JSON.dump({cmd: :write, stream: :stderr, data: data}))
+      json_data = JSON.dump({cmd: :write, stream: :stderr, data: data})
+      @output << json_data[0, max_output_buffer_size - @output.size]
+      tubesock.send_data(json_data)
     end
 
     socket.on :exit do |exit_code|
@@ -180,6 +179,7 @@ class SubmissionsController < ApplicationController
   end
 
   def run
+    @output = +''
     hijack do |tubesock|
       return kill_socket(tubesock) if @embed_options[:disable_run]
 
@@ -188,20 +188,22 @@ class SubmissionsController < ApplicationController
       end
       @container_execution_time = durations[:execution_duration]
       @waiting_for_container_time = durations[:waiting_duration]
-      save_run_output
     rescue Runner::Error::ExecutionTimeout => e
       tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
       kill_socket(tubesock)
       Rails.logger.debug { "Running a submission timed out: #{e.message}" }
+      @output = "timeout: #{@output}"
     rescue Runner::Error => e
       tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
       kill_socket(tubesock)
       Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
+    ensure
+      save_run_output
     end
   end
 
   def kill_socket(tubesock)
-    # search for errors and save them as StructuredError (for scoring runs see submission_scoring.rb)
+    # search for errors and save them as StructuredError (for scoring runs see submission.rb)
     errors = extract_errors
     send_hints(tubesock, errors)
 
@@ -210,11 +212,8 @@ class SubmissionsController < ApplicationController
     tubesock.close
   end
 
-  # save the output of this "run" as a "testrun" (scoring runs are saved in submission_scoring.rb)
+  # save the output of this "run" as a "testrun" (scoring runs are saved in submission.rb)
   def save_run_output
-    return if @output.blank?
-
-    @output = @output[0, max_output_buffer_size] # trim the string to max_output_buffer_size chars
     Testrun.create(
       file: @file,
       cause: 'run',
@@ -243,12 +242,9 @@ class SubmissionsController < ApplicationController
       tubesock.send_data(JSON.dump(format_scoring_results(@submission.calculate_score)))
       # To enable hints when scoring a submission, uncomment the next line:
       # send_hints(tubesock, StructuredError.where(submission: @submission))
-    rescue Runner::Error::ExecutionTimeout => e
-      tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
-      Rails.logger.debug { "Scoring a submission timed out: #{e.message}" }
     rescue Runner::Error => e
       tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
-      Rails.logger.debug { "Runner error while scoring a submission: #{e.message}" }
+      Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
     ensure
       tubesock.send_data JSON.dump({cmd: :exit})
       tubesock.close

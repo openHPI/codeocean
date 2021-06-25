@@ -143,29 +143,33 @@ class Submission < ApplicationRecord
     prepared_runner do |runner, waiting_duration|
       file_scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
         score_command = command_for execution_environment.test_command, file.name_with_extension
+        output = {file_role: file.role, waiting_for_container_time: waiting_duration}
         stdout = +''
         stderr = +''
-        exit_code = 1 # default to error
-        execution_time = runner.attach_to_execution(score_command) do |socket|
-          socket.on :stderr do |data|
-            stderr << data
+        begin
+          exit_code = 1 # default to error
+          execution_time = runner.attach_to_execution(score_command) do |socket|
+            socket.on :stderr do |data|
+              stderr << data
+            end
+            socket.on :stdout do |data|
+              stdout << data
+            end
+            socket.on :exit do |received_exit_code|
+              exit_code = received_exit_code
+              EventMachine.stop_event_loop
+            end
           end
-          socket.on :stdout do |data|
-            stdout << data
-          end
-          socket.on :exit do |received_exit_code|
-            exit_code = received_exit_code
-            EventMachine.stop_event_loop
-          end
+          output.merge!(container_execution_time: execution_time, status: exit_code.zero? ? :ok : :failed)
+        rescue Runner::Error::ExecutionTimeout => e
+          Rails.logger.debug("Running tests in #{file.name_with_extension} for submission #{id} timed out: #{e.message}")
+          output.merge!(status: :timeout)
+        rescue Runner::Error => e
+          Rails.logger.debug("Running tests in #{file.name_with_extension} for submission #{id} failed: #{e.message}")
+          output.merge!(status: :failed)
+        ensure
+          output.merge!(stdout: stdout, stderr: stderr)
         end
-        output = {
-          file_role: file.role,
-          waiting_for_container_time: waiting_duration,
-          container_execution_time: execution_time,
-          status: exit_code.zero? ? :ok : :failed,
-          stdout: stdout,
-          stderr: stderr,
-        }
         score_file(output, file)
       end
     end
