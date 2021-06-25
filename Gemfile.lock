@@ -114,7 +114,7 @@ GEM
     bootstrap-will_paginate (1.0.0)
       will_paginate
     builder (3.2.4)
-    bunny (2.18.0)
+    bunny (2.19.0)
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
     byebug (11.1.3)
@@ -180,7 +180,7 @@ GEM
     faye-websocket (0.11.1)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
-    ffi (1.15.1)
+    ffi (1.15.3)
     forgery (0.8.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
