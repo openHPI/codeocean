@@ -34,8 +34,10 @@ class Runner::Connection
     instance_variable_set(:"@#{event}_callback", block)
   end
 
-  def send(data)
-    @socket.send(encode(data))
+  def send(raw_data)
+    encoded_message = encode(raw_data)
+    Rails.logger.debug("#{Time.zone.now.getutc}: Sending to #{@socket.url}: #{encoded_message.inspect}")
+    @socket.send(encoded_message)
   end
 
   private
@@ -49,6 +51,7 @@ class Runner::Connection
   end
 
   def on_message(raw_event)
+    Rails.logger.debug("#{Time.zone.now.getutc}: Receiving from #{@socket.url}: #{raw_event.data.inspect}")
     event = decode(raw_event)
     return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
 
@@ -64,10 +67,11 @@ class Runner::Connection
   def on_error(_event); end
 
   def on_close(_event)
+    Rails.logger.debug("#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}")
     case @status
       when :timeout
         raise Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
-      when :terminated
+      when :terminated_by_codeocean, :terminated_by_management
         @exit_callback.call @exit_code
       else # :established
         # If the runner is killed by the DockerContainerPool after the maximum allowed time per user and
@@ -77,7 +81,7 @@ class Runner::Connection
   end
 
   def handle_exit(event)
-    @status = :terminated
+    @status = :terminated_by_management
     @exit_code = event[:data]
   end
 

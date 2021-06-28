@@ -123,7 +123,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
           # Assume correct termination for now and return exit code 0
           # TODO: Can we use the actual exit code here?
           @exit_code = 0
-          @status = :terminated
+          @status = :terminated_by_codeocean
           @socket.close
         when /#{format(@strategy.execution_environment.test_command, class_name: '.*', filename: '.*', module_name: '.*')}/
           # TODO: Super dirty hack to redirect test output to stderr (remove attr_reader afterwards)

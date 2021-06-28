@@ -137,7 +137,6 @@ class SubmissionsController < ApplicationController
     @output = +''
 
     socket.on :output do |data|
-      Rails.logger.info("#{Time.zone.now.getutc}: Container sending: #{data.inspect}")
       @output << data if @output.size + data.size <= max_output_buffer_size
     end
 
