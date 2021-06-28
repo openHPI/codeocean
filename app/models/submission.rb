@@ -140,6 +140,7 @@ class Submission < ApplicationRecord
 
   def calculate_score
     file_scores = nil
+    # If prepared_runner raises an error, no Testrun will be created.
     prepared_runner do |runner, waiting_duration|
       file_scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
         score_command = command_for execution_environment.test_command, file.name_with_extension
@@ -163,10 +164,10 @@ class Submission < ApplicationRecord
           output.merge!(container_execution_time: execution_time, status: exit_code.zero? ? :ok : :failed)
         rescue Runner::Error::ExecutionTimeout => e
           Rails.logger.debug("Running tests in #{file.name_with_extension} for submission #{id} timed out: #{e.message}")
-          output.merge!(status: :timeout)
+          output.merge!(status: :timeout, container_execution_time: e.execution_duration)
         rescue Runner::Error => e
           Rails.logger.debug("Running tests in #{file.name_with_extension} for submission #{id} failed: #{e.message}")
-          output.merge!(status: :failed)
+          output.merge!(status: :failed, container_execution_time: e.execution_duration)
         ensure
           output.merge!(stdout: stdout, stderr: stderr)
         end
@@ -182,6 +183,9 @@ class Submission < ApplicationRecord
     prepared_runner do |runner, waiting_duration|
       durations[:execution_duration] = runner.attach_to_execution(run_command, &block)
       durations[:waiting_duration] = waiting_duration
+    rescue Runner::Error => e
+      e.waiting_duration = waiting_duration
+      raise
     end
     durations
   end
@@ -190,8 +194,13 @@ class Submission < ApplicationRecord
 
   def prepared_runner
     request_time = Time.zone.now
-    runner = Runner.for(user, exercise)
-    runner.copy_files(collect_files)
+    begin
+      runner = Runner.for(user, exercise)
+      runner.copy_files(collect_files)
+    rescue Runner::Error => e
+      e.waiting_duration = Time.zone.now - request_time
+      raise
+    end
     waiting_duration = Time.zone.now - request_time
     yield(runner, waiting_duration)
   end

@@ -193,14 +193,22 @@ class SubmissionsController < ApplicationController
       kill_socket(tubesock)
       Rails.logger.debug { "Running a submission timed out: #{e.message}" }
       @output = "timeout: #{@output}"
+      extract_durations(e)
     rescue Runner::Error => e
       tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
       kill_socket(tubesock)
       Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
+      extract_durations(e)
     ensure
       save_run_output
     end
   end
+
+  def extract_durations(error)
+    @container_execution_time = error.execution_duration
+    @waiting_for_container_time = error.waiting_duration
+  end
+  private :extract_durations
 
   def kill_socket(tubesock)
     # search for errors and save them as StructuredError (for scoring runs see submission.rb)
@@ -293,6 +301,7 @@ class SubmissionsController < ApplicationController
   def statistics; end
 
   # TODO: make this run, but with the test command
+  # TODO: add this method to the before action for set_submission again
   # def test
   #   hijack do |tubesock|
   #     unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?

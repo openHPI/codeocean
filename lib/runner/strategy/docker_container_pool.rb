@@ -53,7 +53,6 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
   def attach_to_execution(command)
     @command = command
-    starting_time = Time.zone.now
     query_params = 'logs=0&stream=1&stderr=1&stdout=1&stdin=1'
     websocket_url = "#{self.class.config[:ws_host]}/v1.27/containers/#{@container_id}/attach/ws?#{query_params}"
 
@@ -66,7 +65,6 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
       socket.send(command)
       yield(socket)
     end
-    Time.zone.now - starting_time # execution duration in seconds
   end
 
   private

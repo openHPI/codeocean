@@ -2,6 +2,8 @@
 
 class Runner
   class Error < ApplicationError
+    attr_accessor :waiting_duration, :execution_duration
+
     class BadRequest < Error; end
 
     class EnvironmentNotFound < Error; end

@@ -5,6 +5,7 @@ require 'rails_helper'
 describe Runner do
   let(:runner_id) { FactoryBot.attributes_for(:runner)[:runner_id] }
   let(:strategy_class) { described_class.strategy_class }
+  let(:strategy) { instance_double(strategy_class) }
 
   describe 'attribute validation' do
     let(:runner) { FactoryBot.create :runner }
@@ -44,30 +45,7 @@ describe Runner do
     end
   end
 
-  describe 'method delegation' do
-    shared_examples 'delegates method sends to its strategy' do |method, *args|
-      context "when sending #{method}" do
-        let(:strategy) { instance_double(strategy_class) }
-        let(:runner) { described_class.create }
-
-        before do
-          allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
-          allow(strategy_class).to receive(:new).and_return(strategy)
-        end
-
-        it 'delegates to its strategy' do
-          expect(strategy).to receive(method)
-          runner.send(method, *args)
-        end
-      end
-    end
-
-    include_examples 'delegates method sends to its strategy', :destroy_at_management
-    include_examples 'delegates method sends to its strategy', :attach_to_execution, nil
-  end
-
-  describe '#copy_files' do
-    let(:strategy) { instance_double(strategy_class) }
+  describe '#destroy_at_management' do
     let(:runner) { described_class.create }
 
     before do
@@ -75,11 +53,58 @@ describe Runner do
       allow(strategy_class).to receive(:new).and_return(strategy)
     end
 
-    context 'when no error is raised' do
-      it 'delegates to its strategy' do
-        expect(strategy).to receive(:copy_files).once
-        runner.copy_files(nil)
+    it 'delegates to its strategy' do
+      expect(strategy).to receive(:destroy_at_management)
+      runner.destroy_at_management
+    end
+  end
+
+  describe '#attach to execution' do
+    let(:runner) { described_class.create }
+    let(:command) { 'ls' }
+
+    before do
+      allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
+      allow(strategy_class).to receive(:new).and_return(strategy)
+    end
+
+    it 'delegates to its strategy' do
+      expect(strategy).to receive(:attach_to_execution)
+      runner.attach_to_execution(command)
+    end
+
+    it 'returns the execution time' do
+      allow(strategy).to receive(:attach_to_execution)
+      starting_time = Time.zone.now
+      execution_time = runner.attach_to_execution(command)
+      test_time = Time.zone.now - starting_time
+      expect(execution_time).to be_between(0.0, test_time).exclusive
+    end
+
+    context 'when a runner error is raised' do
+      before { allow(strategy).to receive(:attach_to_execution).and_raise(Runner::Error) }
+
+      it 'attaches the execution time to the error' do
+        starting_time = Time.zone.now
+        expect { runner.attach_to_execution(command) }.to raise_error do |error|
+          test_time = Time.zone.now - starting_time
+          expect(error.execution_duration).to be_between(0.0, test_time).exclusive
+        end
       end
+    end
+  end
+
+  describe '#copy_files' do
+    let(:runner) { described_class.create }
+
+    before do
+      allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
+      allow(strategy_class).to receive(:new).and_return(strategy)
+    end
+
+    it 'delegates to its strategy' do
+      expect(strategy).to receive(:copy_files).once
+      runner.copy_files(nil)
     end
 
     context 'when a RunnerNotFound exception is raised' do

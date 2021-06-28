@@ -86,13 +86,11 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def attach_to_execution(command)
-    starting_time = Time.zone.now
     websocket_url = execute_command(command)
     EventMachine.run do
       socket = Connection.new(websocket_url, self)
       yield(socket)
     end
-    Time.zone.now - starting_time # execution duration
   end
 
   def destroy_at_management

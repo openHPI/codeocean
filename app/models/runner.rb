@@ -41,7 +41,14 @@ class Runner < ApplicationRecord
   end
 
   def attach_to_execution(command, &block)
-    @strategy.attach_to_execution(command, &block)
+    starting_time = Time.zone.now
+    begin
+      @strategy.attach_to_execution(command, &block)
+    rescue Runner::Error => e
+      e.execution_duration = Time.zone.now - starting_time
+      raise
+    end
+    Time.zone.now - starting_time # execution duration
   end
 
   def destroy_at_management
