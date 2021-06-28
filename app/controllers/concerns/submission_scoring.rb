@@ -33,7 +33,9 @@ module SubmissionScoring
 
         if file.teacher_defined_linter?
           LinterCheckRun.create_from(testrun, assessment)
-          assessment = assessor.translate_linter(assessment, session[:locale])
+          switch_locale do
+            assessment = assessor.translate_linter(assessment, I18n.locale)
+          end
 
           # replace file name with hint if linter is not used for grading. Refactor!
           filename = t('exercises.implement.not_graded') if file.weight.zero?

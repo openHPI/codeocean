@@ -97,8 +97,8 @@ detailed_linter_results: assertion_error_matches}
     # key might be "linter.#{severity}.#{name}.#{key}.#{value}"
     # or something like "linter.#{severity}.#{name}.replacement"
     translation = I18n.t(key, default: default)
-    key.delete_suffix!(".#{default}") # Remove any custom prefix, might have no effect
-    keys = key.split('.')
+    cleaned_key = key.delete_suffix(".#{default}") # Remove any custom prefix, might have no effect
+    keys = cleaned_key.split('.')
     final_key = keys.pop
     log_missing = if %w[actual suggestion context line].include?(final_key)
                     # SyntaxErrors: These are dynamic and won't get translated
@@ -107,7 +107,7 @@ detailed_linter_results: assertion_error_matches}
                     # Read config key
                     I18n.t(keys.append('log_missing').join('.'), default: false)
                   end
-    Sentry.capture_message({key: key, default: default}.to_json) if translation == default && log_missing
+    Sentry.capture_message({key: cleaned_key, default: default}.to_json) if translation == default && log_missing
     translation
   end
 end
