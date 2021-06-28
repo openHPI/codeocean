@@ -35,7 +35,7 @@ describe ApplicationController do
     expect_redirect(:root)
   end
 
-  describe '#set_locale' do
+  describe '#switch_locale' do
     let(:locale) { :de }
 
     context 'when specifying a locale' do

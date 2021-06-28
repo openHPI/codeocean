@@ -75,8 +75,8 @@ class ApplicationController < ActionController::Base
   def switch_locale(&action)
     session[:locale] = params[:custom_locale] || params[:locale] || session[:locale]
     locale = session[:locale] || I18n.default_locale
-    I18n.with_locale(locale, &action)
     Sentry.set_extras(locale: locale)
+    I18n.with_locale(locale, &action)
   end
   private :switch_locale
 

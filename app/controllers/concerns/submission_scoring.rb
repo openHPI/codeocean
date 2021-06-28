@@ -57,13 +57,14 @@ module SubmissionScoring
   private :execute_test_file
 
   def feedback_message(file, output)
-    set_locale
-    if output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_test'
-      I18n.t('exercises.implement.default_test_feedback')
-    elsif output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_linter'
-      I18n.t('exercises.implement.default_linter_feedback')
-    else
-      render_markdown(file.feedback_message)
+    switch_locale do
+      if output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_test'
+        I18n.t('exercises.implement.default_test_feedback')
+      elsif output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_linter'
+        I18n.t('exercises.implement.default_linter_feedback')
+      else
+        render_markdown(file.feedback_message)
+      end
     end
   end
 
