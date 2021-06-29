@@ -11,12 +11,13 @@ class Runner::Connection
 
   attr_writer :status
 
-  def initialize(url, strategy)
+  def initialize(url, strategy, event_loop)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
     @strategy = strategy
     @status = :established
+    @event_loop = event_loop
 
-    # For every event type of faye websockets, the corresponding
+    # For every event type of Faye WebSockets, the corresponding
     # RunnerConnection method starting with `on_` is called.
     %i[open message error close].each do |event_type|
       @socket.on(event_type) {|event| __send__(:"on_#{event_type}", event) }
@@ -41,6 +42,17 @@ class Runner::Connection
     @socket.send(encoded_message)
   end
 
+  def close(status)
+    return unless active?
+
+    @status = status
+    @socket.close
+  end
+
+  def active?
+    @status == :established
+  end
+
   private
 
   def decode(_raw_event)
@@ -61,7 +73,7 @@ class Runner::Connection
     if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
       __send__("handle_#{message_type}", event)
     else
-      raise Runner::Error::UnexpectedResponse.new("Unknown websocket message type: #{message_type}")
+      raise Runner::Error::UnexpectedResponse.new("Unknown WebSocket message type: #{message_type}")
     end
   end
 
@@ -78,6 +90,9 @@ class Runner::Connection
         raise Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
       when :terminated_by_codeocean, :terminated_by_management
         @exit_callback.call @exit_code
+        @event_loop.stop
+      when :terminated_by_client
+        @event_loop.stop
       else # :established
         # If the runner is killed by the DockerContainerPool after the maximum allowed time per user and
         # while the owning user is running an execution, the command execution stops and log output is incomplete.

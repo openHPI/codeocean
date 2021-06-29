@@ -51,19 +51,22 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   end
 
-  def attach_to_execution(command)
+  def attach_to_execution(command, event_loop)
     @command = command
     query_params = 'logs=0&stream=1&stderr=1&stdout=1&stdin=1'
     websocket_url = "#{self.class.config[:ws_host]}/v1.27/containers/#{@container_id}/attach/ws?#{query_params}"
 
-    EventMachine.run do
-      socket = Connection.new(websocket_url, self)
-      EventMachine.add_timer(@execution_environment.permitted_execution_time) do
-        socket.status = :timeout
-        destroy_at_management
+    socket = Connection.new(websocket_url, self, event_loop)
+    begin
+      Timeout.timeout(@execution_environment.permitted_execution_time) do
+        socket.send(command)
+        yield(socket)
+        event_loop.wait
+        event_loop.stop
       end
-      socket.send(command)
-      yield(socket)
+    rescue Timeout::Error
+      socket.close(:timeout)
+      destroy_at_management
     end
   end
 
@@ -118,8 +121,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
           # Assume correct termination for now and return exit code 0
           # TODO: Can we use the actual exit code here?
           @exit_code = 0
-          @status = :terminated_by_codeocean
-          @socket.close
+          close(:terminated_by_codeocean)
         when /#{format(@strategy.execution_environment.test_command, class_name: '.*', filename: '.*', module_name: '.*')}/
           # TODO: Super dirty hack to redirect test output to stderr (remove attr_reader afterwards)
           @stream = 'stderr'

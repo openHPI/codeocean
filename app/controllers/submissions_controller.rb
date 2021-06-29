@@ -122,76 +122,85 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def handle_websockets(tubesock, socket)
-    tubesock.send_data JSON.dump({cmd: :status, status: :container_running})
-
-    socket.on :stdout do |data|
-      json_data = JSON.dump({cmd: :write, stream: :stdout, data: data})
-      @output << json_data[0, max_output_buffer_size - @output.size]
-      tubesock.send_data(json_data)
-    end
-
-    socket.on :stderr do |data|
-      json_data = JSON.dump({cmd: :write, stream: :stderr, data: data})
-      @output << json_data[0, max_output_buffer_size - @output.size]
-      tubesock.send_data(json_data)
-    end
-
-    socket.on :exit do |exit_code|
-      EventMachine.stop_event_loop
-      if @output.empty?
-        tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.no_output', timestamp: l(Time.zone.now, format: :short))}\n"})
-      end
-      tubesock.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.exit', exit_code: exit_code)}\n"})
-      kill_socket(tubesock)
-    end
-
-    tubesock.onmessage do |event|
-      event = JSON.parse(event).deep_symbolize_keys
-      case event[:cmd].to_sym
-        when :client_kill
-          EventMachine.stop_event_loop
-          kill_socket(tubesock)
-          Rails.logger.debug('Client exited container.')
-        when :result
-          socket.send event[:data]
-        else
-          Rails.logger.info("Unknown command from client: #{event[:cmd]}")
-      end
-
-    rescue JSON::ParserError
-      Rails.logger.debug { "Data received from client is not valid json: #{data}" }
-      Sentry.set_extras(data: data)
-    rescue TypeError
-      Rails.logger.debug { "JSON data received from client cannot be parsed to hash: #{data}" }
-      Sentry.set_extras(data: data)
-    end
-  end
-
   def run
-    @output = +''
-    hijack do |tubesock|
-      return kill_socket(tubesock) if @embed_options[:disable_run]
+    # These method-local socket variables are required in order to use one socket
+    # in the callbacks of the other socket. As the callbacks for the client socket
+    # are registered first, the runner socket may still be nil.
+    client_socket, runner_socket = nil
 
-      durations = @submission.run(sanitize_filename) do |socket|
-        handle_websockets(tubesock, socket)
+    hijack do |tubesock|
+      client_socket = tubesock
+      return kill_client_socket(client_socket) if @embed_options[:disable_run]
+
+      client_socket.onclose do |_event|
+        runner_socket&.close(:terminated_by_client)
       end
-      @container_execution_time = durations[:execution_duration]
-      @waiting_for_container_time = durations[:waiting_duration]
-    rescue Runner::Error::ExecutionTimeout => e
-      tubesock.send_data JSON.dump({cmd: :status, status: :timeout})
-      kill_socket(tubesock)
-      Rails.logger.debug { "Running a submission timed out: #{e.message}" }
-      @output = "timeout: #{@output}"
-      extract_durations(e)
-    rescue Runner::Error => e
-      tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
-      kill_socket(tubesock)
-      Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
-      extract_durations(e)
-    ensure
-      save_run_output
+
+      client_socket.onmessage do |event|
+        event = JSON.parse(event).deep_symbolize_keys
+        case event[:cmd].to_sym
+          when :client_kill
+            close_client_connection(client_socket)
+            Rails.logger.debug('Client exited container.')
+          when :result
+            # The client cannot send something before the runner connection is established.
+            if runner_socket.present?
+              runner_socket.send event[:data]
+            else
+              Rails.logger.info("Could not forward data from client because runner connection was not established yet: #{event[:data].inspect}")
+            end
+          else
+            Rails.logger.info("Unknown command from client: #{event[:cmd]}")
+        end
+      rescue JSON::ParserError
+        Rails.logger.info("Data received from client is not valid json: #{data.inspect}")
+        Sentry.set_extras(data: data)
+      rescue TypeError
+        Rails.logger.info("JSON data received from client cannot be parsed as hash: #{data.inspect}")
+        Sentry.set_extras(data: data)
+      end
     end
+
+    @output = +''
+    durations = @submission.run(sanitize_filename) do |socket|
+      runner_socket = socket
+      client_socket.send_data JSON.dump({cmd: :status, status: :container_running})
+
+      runner_socket.on :stdout do |data|
+        json_data = JSON.dump({cmd: :write, stream: :stdout, data: data})
+        @output << json_data[0, max_output_buffer_size - @output.size]
+        client_socket.send_data(json_data)
+      end
+
+      runner_socket.on :stderr do |data|
+        json_data = JSON.dump({cmd: :write, stream: :stderr, data: data})
+        @output << json_data[0, max_output_buffer_size - @output.size]
+        client_socket.send_data(json_data)
+      end
+
+      runner_socket.on :exit do |exit_code|
+        if @output.empty?
+          client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.no_output', timestamp: l(Time.zone.now, format: :short))}\n"})
+        end
+        client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.exit', exit_code: exit_code)}\n"})
+        close_client_connection(client_socket)
+      end
+    end
+    @container_execution_time = durations[:execution_duration]
+    @waiting_for_container_time = durations[:waiting_duration]
+  rescue Runner::Error::ExecutionTimeout => e
+    client_socket.send_data JSON.dump({cmd: :status, status: :timeout})
+    close_client_connection(client_socket)
+    Rails.logger.debug { "Running a submission timed out: #{e.message}" }
+    @output = "timeout: #{@output}"
+    extract_durations(e)
+  rescue Runner::Error => e
+    client_socket.send_data JSON.dump({cmd: :status, status: :container_depleted})
+    close_client_connection(client_socket)
+    Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
+    extract_durations(e)
+  ensure
+    save_run_output
   end
 
   def extract_durations(error)
@@ -200,14 +209,16 @@ class SubmissionsController < ApplicationController
   end
   private :extract_durations
 
-  def kill_socket(tubesock)
+  def close_client_connection(client_socket)
     # search for errors and save them as StructuredError (for scoring runs see submission.rb)
     errors = extract_errors
-    send_hints(tubesock, errors)
+    send_hints(client_socket, errors)
+    kill_client_socket(client_socket)
+  end
 
-    # Hijacked connection needs to be notified correctly
-    tubesock.send_data JSON.dump({cmd: :exit})
-    tubesock.close
+  def kill_client_socket(client_socket)
+    client_socket.send_data JSON.dump({cmd: :exit})
+    client_socket.close
   end
 
   # save the output of this "run" as a "testrun" (scoring runs are saved in submission.rb)
@@ -235,7 +246,7 @@ class SubmissionsController < ApplicationController
 
   def score
     hijack do |tubesock|
-      return kill_socket(tubesock) if @embed_options[:disable_run]
+      return if @embed_options[:disable_run]
 
       tubesock.send_data(JSON.dump(@submission.calculate_score))
       # To enable hints when scoring a submission, uncomment the next line:
@@ -244,8 +255,7 @@ class SubmissionsController < ApplicationController
       tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
       Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
     ensure
-      tubesock.send_data JSON.dump({cmd: :exit})
-      tubesock.close
+      kill_client_socket(tubesock)
     end
   end
 

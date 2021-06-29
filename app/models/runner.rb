@@ -41,9 +41,17 @@ class Runner < ApplicationRecord
   end
 
   def attach_to_execution(command, &block)
+    ensure_event_machine
     starting_time = Time.zone.now
     begin
-      @strategy.attach_to_execution(command, &block)
+      # As the EventMachine reactor is probably shared with other threads, we cannot use EventMachine.run with
+      # stop_event_loop to wait for the WebSocket connection to terminate. Instead we use a self built event
+      # loop for that: Runner::EventLoop. The attach_to_execution method of the strategy is responsible for
+      # initializing its Runner::Connection with the given event loop. The Runner::Connection class ensures that
+      # this event loop is stopped after the socket was closed.
+      event_loop = Runner::EventLoop.new
+      @strategy.attach_to_execution(command, event_loop, &block)
+      event_loop.wait
     rescue Runner::Error => e
       e.execution_duration = Time.zone.now - starting_time
       raise
@@ -56,6 +64,22 @@ class Runner < ApplicationRecord
   end
 
   private
+
+  # If there are multiple threads trying to connect to the WebSocket of their execution at the same time,
+  # the Faye WebSocket connections will use the same reactor. We therefore only need to start an EventMachine
+  # if there isn't a running reactor yet.
+  # See this StackOverflow answer: https://stackoverflow.com/a/8247947
+  def ensure_event_machine
+    unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+      event_loop = Runner::EventLoop.new
+      Thread.new do
+        EventMachine.run { event_loop.stop }
+      ensure
+        ActiveRecord::Base.connection_pool.release_connection
+      end
+      event_loop.wait
+    end
+  end
 
   def request_id
     request_new_id if runner_id.blank?

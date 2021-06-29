@@ -158,7 +158,6 @@ class Submission < ApplicationRecord
             end
             socket.on :exit do |received_exit_code|
               exit_code = received_exit_code
-              EventMachine.stop_event_loop
             end
           end
           output.merge!(container_execution_time: execution_time, status: exit_code.zero? ? :ok : :failed)

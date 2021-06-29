@@ -85,12 +85,10 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   end
 
-  def attach_to_execution(command)
+  def attach_to_execution(command, event_loop)
     websocket_url = execute_command(command)
-    EventMachine.run do
-      socket = Connection.new(websocket_url, self)
-      yield(socket)
-    end
+    socket = Connection.new(websocket_url, self, event_loop)
+    yield(socket)
   end
 
   def destroy_at_management
@@ -113,7 +111,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
         if websocket_url.present?
           return websocket_url
         else
-          raise Runner::Error::UnexpectedResponse.new('Poseidon did not send websocket url')
+          raise Runner::Error::UnexpectedResponse.new('Poseidon did not send a WebSocket URL')
         end
       when 400
         Runner.destroy(@allocation_id)
@@ -132,7 +130,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     def decode(raw_event)
       JSON.parse(raw_event.data)
     rescue JSON::ParserError => e
-      raise Runner::Error::UnexpectedResponse.new("The websocket message from Poseidon could not be decoded to JSON: #{e.inspect}")
+      raise Runner::Error::UnexpectedResponse.new("The WebSocket message from Poseidon could not be decoded to JSON: #{e.inspect}")
     end
 
     def encode(data)
