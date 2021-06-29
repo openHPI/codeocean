@@ -39,9 +39,7 @@ In order to execute code submissions using Docker, source code files are written
 
 ### Optional Steps
 
-- create *config/sendmail.yml*
-- create *config/smtp.yml*
-- use boot2docker or vagrant if there is no native support for docker on your OS
+- use Docker Machine or vagrant if there is no native support for docker on your OS
 - if you want to use the app without docker (and hence without code execution) comment the validation `validate :working_docker_image?` in `models/execution_environments.rb` otherwise the seed will fail (because of missing docker connection)
 - create seed data by executing `rake db:seed`
 - if you already created a configuration for your local installation and want to use vagrant, too, be sure to log into the vagrant instance via ssh and add your database user manually to the database. Afterwards, create, migrate and seed.
