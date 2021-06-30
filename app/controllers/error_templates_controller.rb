@@ -100,7 +100,6 @@ class ErrorTemplatesController < ApplicationController
     @error_template = ErrorTemplate.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
   def error_template_params
     if params[:error_template].present?
       params[:error_template].permit(:name, :execution_environment_id, :signature, :description,

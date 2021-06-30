@@ -5,7 +5,7 @@ require 'active_support/core_ext/integer/time'
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  config.web_console.whitelisted_ips = '192.168.0.0/16'
+  config.web_console.allowed_ips = '192.168.0.0/16'
 
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development

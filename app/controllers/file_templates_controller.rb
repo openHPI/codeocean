@@ -90,7 +90,6 @@ class FileTemplatesController < ApplicationController
     @file_template = FileTemplate.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
   def file_template_params
     params[:file_template].permit(:name, :file_type_id, :content) if params[:file_template].present?
   end

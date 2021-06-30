@@ -89,7 +89,6 @@ class ErrorTemplateAttributesController < ApplicationController
     @error_template_attribute = ErrorTemplateAttribute.find(params[:id])
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
   def error_template_attribute_params
     if params[:error_template_attribute].present?
       params[:error_template_attribute].permit(:key, :description, :regex,
