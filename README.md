@@ -46,8 +46,7 @@ In order to execute code submissions using Docker, source code files are written
 
 ## Production Setup
 
-- create production configuration files (*database.production.yml*, …)
-- customize *config/deploy/production.rb* if you want to deploy using [Capistrano](http://capistranorb.com/)
+- We recommend using [Capistrano](http://capistranorb.com/) for deployment
 
 ## Monitoring
 - We use a [Prometheus Exporter](https://github.com/discourse/prometheus_exporter) and a [Telegraf Client](https://github.com/jgraichen/telegraf-ruby)
