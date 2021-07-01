@@ -38,8 +38,6 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
         begin
           File.open(local_file_path, 'w') {|f| f.write(file.content) }
         rescue IOError => e
-          # TODO: try catch i/o exception and log failed attempts
-          # Does this fix the issue @Sebastian? What exceptions did you have in mind?
           raise Runner::Error::WorkspaceError.new("Could not create file #{file.filepath}: #{e.inspect}")
         end
       end
@@ -99,7 +97,6 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   rescue Errno::ENOENT => e
     raise Runner::Error::WorkspaceError.new("The workspace directory does not exist and cannot be deleted: #{e.inspect}")
   rescue Errno::EACCES => e
-    # TODO: Why was this rescued before @Sebastian?
     raise Runner::Error::WorkspaceError.new("Not allowed to clean workspace #{local_workspace_path}: #{e.inspect}")
   end
 
