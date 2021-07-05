@@ -15,7 +15,7 @@
     "jstree": "^3.3.11",
     "opensans-webkit": "^1.1.0",
     "popper.js": "^1.16.1",
-    "sortablejs": "^1.13.0",
+    "sortablejs": "^1.14.0",
     "underscore": "^1.13.1",
     "vis": "^4.21.0",
     "webpack-merge": "^5.8.0"
