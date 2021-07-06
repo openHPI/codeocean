@@ -142,7 +142,7 @@ CodeOceanEditorRequestForComments = {
     var createRequestForComments = function (submission) {
       $.ajax({
         method: 'POST',
-        url: '/request_for_comments',
+        url: Routes.request_for_comments_path(),
         data: {
           request_for_comment: {
             exercise_id: exercise_id,

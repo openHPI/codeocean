@@ -100,7 +100,4 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-
-  # Run on subfolder in production environment.
-  # config.relative_url_root = '/co-staging'
 end

@@ -46,7 +46,8 @@ In order to execute code submissions using Docker, source code files are written
 
 ## Production Setup
 
-- We recommend using [Capistrano](http://capistranorb.com/) for deployment
+- We recommend using [Capistrano](http://capistranorb.com/) for deployment.
+- Once deployed, CodeOcean assumes to run exclusively under a (sub)domain. If you want to use it under a custom subpath, you can specify the desired path using an environment variable: `RAILS_RELATIVE_URL_ROOT=/codeocean`. Please ensure to rebuild all assets and restart the server to apply the new path.
 
 ## Monitoring
 - We use a [Prometheus Exporter](https://github.com/discourse/prometheus_exporter) and a [Telegraf Client](https://github.com/jgraichen/telegraf-ruby)

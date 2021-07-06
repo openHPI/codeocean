@@ -1,6 +1,6 @@
 $(document).on('turbolinks:load', function() {
 
-  var ACE_FILES_PATH = '/assets/ace/';
+  var ACE_FILES_PATH = '<%= "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/" %>';
   var THEME = 'ace/theme/textmate';
 
   var currentSubmission = 0;

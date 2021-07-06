@@ -1,6 +1,6 @@
 $(document).on('turbolinks:load', function () {
     // ruby part adds the relative_url_root, if it is set.
-    var ACE_FILES_PATH = '<%= (defined?  Rails.application.config.relative_url_root) &&  Rails.application.config.relative_url_root != nil &&  Rails.application.config.relative_url_root != "" ?  Rails.application.config.relative_url_root : "" %>' + '/assets/ace/';
+    var ACE_FILES_PATH = '<%= "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/" %>';
     var THEME = 'ace/theme/textmate';
 
     var TAB_KEY_CODE = 9;
@@ -351,7 +351,7 @@ $(document).on('turbolinks:load', function () {
 
         return $.ajax({
             type: 'POST',
-            url: '/exercises/' + exerciseID + '/export_external_check',
+            url: Routes.export_external_check_exercise_path(exerciseID),
             dataType: 'json',
             success: function (response) {
                 $messageDiv.html(response.message);
@@ -370,7 +370,7 @@ $(document).on('turbolinks:load', function () {
 
         return $.ajax({
             type: 'POST',
-            url: '/exercises/' + exerciseID + '/export_external_confirm',
+            url: Routes.export_external_confirm_exercise_path(exerciseID),
             dataType: 'json',
             success: function (response) {
                 $messageDiv.html(response.message)
@@ -427,9 +427,8 @@ $(document).on('turbolinks:load', function () {
     };
 
     var updateFileTemplates = function (fileType) {
-        var rel_url_root = '<%= (defined?  Rails.application.config.relative_url_root) &&  Rails.application.config.relative_url_root != nil &&  Rails.application.config.relative_url_root != "" ?  Rails.application.config.relative_url_root : "" %>';
         var jqxhr = $.ajax({
-            url: rel_url_root + '/file_templates/by_file_type/' + fileType + '.json',
+            url: Routes.by_file_type_file_templates_path(fileType),
             dataType: 'json'
         });
         jqxhr.done(function (response) {

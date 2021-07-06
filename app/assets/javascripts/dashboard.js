@@ -51,7 +51,7 @@ $(document).on('turbolinks:load', function() {
     } else {
       var jqxhr = $.ajax({
         dataType: 'json',
-        url: '/admin/dashboard',
+        url: Routes.admin_dashboard_path(),
         method: 'GET'
       });
       jqxhr.done(function(response) {
