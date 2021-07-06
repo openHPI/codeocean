@@ -7,6 +7,7 @@ github.com/rails/webpacker/blob/master/docs/webpack.md
 const { environment } = require('@rails/webpacker')
 const { merge } = require('webpack-merge')
 const webpack = require('webpack')
+const erb = require('./loaders/erb')
 
 // Add an additional plugin of your choosing : ProvidePlugin
 environment.plugins.prepend('Provide', new webpack.ProvidePlugin({
@@ -23,6 +24,8 @@ environment.plugins.prepend('Provide', new webpack.ProvidePlugin({
         Sortable: 'sortablejs',
     })
 )
+
+environment.loaders.append('erb', erb)
 
 const envConfig = module.exports = environment
 const aliasConfig = module.exports = {
