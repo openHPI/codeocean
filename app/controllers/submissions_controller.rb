@@ -75,7 +75,6 @@ module_name: File.basename(filename, File.extname(filename)).underscore}
 
     id_file = create_remote_evaluation_mapping
 
-    require 'zip'
     stringio = Zip::OutputStream.write_buffer do |zio|
       @files.each do |file|
         zio.put_next_entry(if file.path.to_s == ''
