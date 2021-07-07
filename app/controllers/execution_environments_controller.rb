@@ -22,7 +22,10 @@ class ExecutionEnvironmentsController < ApplicationController
     destroy_and_respond(object: @execution_environment)
   end
 
-  def edit; end
+  def edit
+    # Add the current execution_environment if not already present in the list
+    @docker_images |= [@execution_environment.docker_image]
+  end
 
   def execute_command
     @docker_client = DockerClient.new(execution_environment: @execution_environment)

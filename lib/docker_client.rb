@@ -46,7 +46,7 @@ class DockerClient
 
   def command_substitutions(filename)
     {
-      class_name: File.basename(filename, File.extname(filename)).camelize,
+      class_name: File.basename(filename, File.extname(filename)).upcase_first,
       filename: filename,
       module_name: File.basename(filename, File.extname(filename)).underscore,
     }

@@ -14,11 +14,11 @@ $(document).on('turbolinks:load', function() {
       var alternative_input = parent.find('.alternative-input');
 
       if (alternative_input.attr('disabled')) {
-        $(this).text($(event.target).data('text-toggled'));
+        $(this).text($(event.target).first().data('text_toggled'));
         original_input.attr('disabled', true).hide();
         alternative_input.attr('disabled', false).show();
       } else {
-        $(this).text($(event.target).data('text-initial'));
+        $(this).text($(event.target).first().data('text_initial'));
         alternative_input.attr('disabled', true).hide();
         original_input.attr('disabled', false).show();
       }
