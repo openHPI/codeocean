@@ -39,3 +39,7 @@ import 'jquery-ui/themes/base/core.css'
 import 'jquery-ui/themes/base/resizable.css'
 import 'jquery-ui/themes/base/selectable.css'
 import 'jquery-ui/themes/base/sortable.css'
+
+// Routes
+import * as Routes from 'routes.js.erb';
+window.Routes = Routes;

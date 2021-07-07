@@ -1,5 +1,5 @@
 (function() {
-    var ACE_FILES_PATH = '/assets/ace/';
+    var ACE_FILES_PATH = '<%= "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/" %>';
     
     window.MarkdownEditor = function(selector) {
         ace.config.set('modePath', ACE_FILES_PATH);

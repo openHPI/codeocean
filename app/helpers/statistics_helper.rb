@@ -44,7 +44,7 @@ module StatisticsHelper
           data: ExternalUser.joins(:submissions)
             .where(['submissions.created_at >= ?', DateTime.now - 5.minutes])
             .distinct('external_users.id').count,
-          url: 'statistics/graphs',
+          url: statistics_graphs_path,
       },
     ]
   end

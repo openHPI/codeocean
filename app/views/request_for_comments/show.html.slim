@@ -148,7 +148,7 @@ javascript:
   });
 
   // set file paths for ace
-  var ACE_FILES_PATH = '/assets/ace/';
+  var ACE_FILES_PATH = "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/";
   _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
     ace.config.set(attribute, ACE_FILES_PATH);
   });
@@ -231,7 +231,7 @@ javascript:
     var jqrequest = $.ajax({
       dataType: 'json',
       method: 'GET',
-      url: '/comments',
+      url: Routes.comments_path(),
       data: {
         file_id: fileid
       }
@@ -254,7 +254,7 @@ javascript:
   function deleteComment(commentId, editor, file_id, callback) {
     var jqxhr = $.ajax({
       type: 'DELETE',
-      url: "/comments/" + commentId
+      url: Routes.comments_path(commentId)
     });
     jqxhr.done(function () {
       setAnnotations(editor, file_id);
@@ -266,7 +266,7 @@ javascript:
   function updateComment(commentId, text, editor, file_id, callback) {
     var jqxhr = $.ajax({
       type: 'PATCH',
-      url: "/comments/" + commentId,
+      url: Routes.comments_path(commentId),
       data: {
         comment: {
           text: text
@@ -293,7 +293,7 @@ javascript:
       },
       dataType: 'json',
       method: 'POST',
-      url:  "/comments"
+      url: Routes.comments_path()
     });
     jqxhr.done(function(){
       setAnnotations(editor, file_id);
@@ -312,7 +312,7 @@ javascript:
       },
       dataType: 'json',
       method: 'POST',
-      url:  "/subscriptions.json"
+      url: Routes.subscriptions_path({format: 'json'})
     });
     jqxhr.done(function(subscription) {
       checkbox.data('subscription', subscription.id);
@@ -329,7 +329,7 @@ javascript:
     checkbox.attr("disabled", true);
     var subscriptionId = checkbox.data('subscription');
     var jqxhr = $.ajax({
-      url:  '/subscriptions/' + subscriptionId + '/unsubscribe.json'
+      url: Routes.unsubscribe_subscription_path(subscriptionId, {format: 'json'})
     });
     jqxhr.done(function(response) {
       checkbox.prop('checked', false);

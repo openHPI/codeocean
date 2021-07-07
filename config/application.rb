@@ -40,7 +40,9 @@ module CodeOcean
     config.autoload_paths += extra_paths
     config.eager_load_paths += extra_paths
 
-    config.action_cable.mount_path = '/cable'
+    config.relative_url_root = ENV.fetch('RAILS_RELATIVE_URL_ROOT', '/').to_s
+
+    config.action_cable.mount_path = "#{ENV.fetch('RAILS_RELATIVE_URL_ROOT', '')}/cable"
 
     config.telegraf.tags = {application: 'codeocean'}
 
