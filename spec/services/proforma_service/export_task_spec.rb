@@ -30,7 +30,7 @@ describe ProformaService::ExportTask do
 
     before do
       allow(ProformaService::ConvertExerciseToTask).to receive(:call).with(exercise: exercise).and_return(task)
-      allow(Proforma::Exporter).to receive(:new).with(task).and_return(exporter)
+      allow(Proforma::Exporter).to receive(:new).with(task: task, custom_namespaces: [{prefix: 'openHPI', uri: 'open.hpi.de'}]).and_return(exporter)
     end
 
     it do

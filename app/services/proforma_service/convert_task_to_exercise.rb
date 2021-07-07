@@ -34,7 +34,7 @@ module ProformaService
       @task.tests.map do |test_object|
         task_files.delete(test_object.files.first.id).tap do |file|
           file.weight = 1.0
-          file.feedback_message = test_object.meta_data['feedback-message']
+          file.feedback_message = test_object.meta_data.detect {|meta_data| meta_data[:namespace] == 'openHPI' && meta_data[:key] == 'feedback-message' }[:value]
         end
       end
     end
