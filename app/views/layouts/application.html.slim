@@ -20,12 +20,12 @@ html lang="#{I18n.locale || I18n.default_locale}"
     script type="text/javascript"
       | I18n.defaultLocale = "#{I18n.default_locale}";
       | I18n.locale = "#{I18n.locale}";
-      - unless Sentry.configuration.environment == "development"
+      - if SentryJavascript.active?
         | Sentry.init({
         |      dsn: 'https://2616b10855e04ce1b748775203ff0f7c@o257002.ingest.sentry.io/5667283',
         |      attachStacktrace: true,
-        |      release: "#{Sentry.configuration.release}",
-        |      environment: "#{Sentry.configuration.environment}",
+        |      release: "#{SentryJavascript.release}",
+        |      environment: "#{SentryJavascript.environment}",
         |  });
         - if @current_user
           | Sentry.configureScope(function(scope) {
