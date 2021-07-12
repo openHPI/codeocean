@@ -10,6 +10,12 @@ ruby_version=2.7.2
 
 DISTRO="$(lsb_release -cs)"
 
+# Disable any optimizations for comparing checksums.
+# Otherwise, a hash collision might prevent apt to work correctly
+# https://askubuntu.com/a/1242739
+sudo mkdir -p /etc/gcrypt
+echo all | sudo tee /etc/gcrypt/hwf.deny
+
 # Prerequisites
 sudo apt -qq update
 sudo apt -qq -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev libicu-dev
