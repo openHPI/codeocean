@@ -125,6 +125,11 @@ class InternalUsersController < ApplicationController
   def show; end
 
   def update
+    # Let's skip the password validation if the user is edited through
+    # the form by another user. Otherwise, the update might fail if an
+    # activation_token or password_reset_token is present
+    @user.validate_password = current_user == @user
+
     update_and_respond(object: @user, params: internal_user_params)
   end
 end

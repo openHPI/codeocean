@@ -522,6 +522,7 @@ de:
     index:
       activate: Aktivieren
       forgot_password: Passwort zurücksetzen
+      reset_password: Passwort zurücksetzen
     activate:
       headline: Registrierung abschließen
       submit: Passwort speichern
