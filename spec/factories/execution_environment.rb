@@ -5,7 +5,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-coffee:latest' }
-    association :file_type, factory: :dot_coffee
+    file_type { association :dot_coffee, user: user }
     help
     name { 'CoffeeScript' }
     network_enabled { false }
@@ -19,7 +19,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-html:latest' }
-    association :file_type, factory: :dot_html
+    file_type { association :dot_html, user: user }
     help
     name { 'HTML5' }
     network_enabled { false }
@@ -35,7 +35,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'openhpi/co_execenv_java:latest' }
-    association :file_type, factory: :dot_java
+    file_type { association :dot_java, user: user }
     help
     name { 'Java 8' }
     network_enabled { false }
@@ -51,7 +51,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-jruby:latest' }
-    association :file_type, factory: :dot_rb
+    file_type { association :dot_rb, user: user }
     help
     name { 'JRuby 1.7' }
     network_enabled { false }
@@ -67,7 +67,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-node:latest' }
-    association :file_type, factory: :dot_js
+    file_type { association :dot_js, user: user }
     help
     name { 'Node.js' }
     network_enabled { false }
@@ -81,7 +81,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'openhpi/co_execenv_python:latest' }
-    association :file_type, factory: :dot_py
+    file_type { association :dot_py, user: user }
     help
     name { 'Python 3.4' }
     network_enabled { false }
@@ -97,7 +97,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-ruby:latest' }
-    association :file_type, factory: :dot_rb
+    file_type { association :dot_rb, user: user }
     help
     name { 'Ruby 2.2' }
     network_enabled { false }
@@ -113,7 +113,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-sinatra:latest' }
-    association :file_type, factory: :dot_rb
+    file_type { association :dot_rb, user: user }
     exposed_ports { '4567' }
     help
     name { 'Sinatra' }
@@ -130,7 +130,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     docker_image { 'hklement/ubuntu-sqlite:latest' }
-    association :file_type, factory: :dot_sql
+    file_type { association :dot_sql, user: user }
     help
     name { 'SQLite' }
     network_enabled { false }

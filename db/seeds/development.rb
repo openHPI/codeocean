@@ -14,14 +14,14 @@ teacher = FactoryBot.create(:teacher, email: 'teacher@example.org')
 FactoryBot.create(:learner, email: 'learner@example.org')
 external_user = FactoryBot.create(:external_user)
 
+# file types
+FileType.create_factories user: admin
+
 # execution environments
 ExecutionEnvironment.create_factories user: admin
 
 # exercises
 @exercises = find_factories_by_class(Exercise).map(&:name).index_with {|factory_name| FactoryBot.create(factory_name, user: teacher) }
-
-# file types
-FileType.create_factories
 
 # submissions
 FactoryBot.create(:submission, exercise: @exercises[:fibonacci], user: external_user)

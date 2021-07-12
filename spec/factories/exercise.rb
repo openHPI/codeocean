@@ -4,7 +4,10 @@ require 'seeds_helper'
 
 def create_seed_file(exercise, path, file_attributes = {})
   file_extension = File.extname(path)
-  file_type = FactoryBot.create(file_attributes[:file_type] || :"dot_#{file_extension.delete('.')}")
+  file_type = FactoryBot.create(
+    file_attributes[:file_type] || :"dot_#{file_extension.delete('.')}",
+    user: exercise.user
+  )
   name = File.basename(path).gsub(file_extension, '')
   file_attributes.merge!(file_type: file_type, name: name, path: path.split('/')[1..-2].join('/'), role: file_attributes[:role] || 'regular_file')
   if file_type.binary?

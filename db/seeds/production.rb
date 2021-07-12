@@ -13,24 +13,24 @@ passwords = ['password', 'password confirmation'].map do |attribute|
 end
 
 if passwords.uniq.length == 1
-  FactoryBot.create(:admin, email: email, name: 'Administrator', password: passwords.first)
+  admin = FactoryBot.create(:admin, email: email, name: 'Administrator', password: passwords.first)
 else
   abort('Passwords do not match!')
 end
 
+# file types
+FileType.create_factories user: admin
+
 # execution environments
-ExecutionEnvironment.create_factories
+ExecutionEnvironment.create_factories user: admin
 
 # exercises
-Exercise.create_factories
+Exercise.create_factories user: admin
 
-# file types
-FileType.create_factories
-
-# change all resources' author
-[ExecutionEnvironment, Exercise, FileType].each do |model|
-  model.update(user_id: InternalUser.first.id)
-end
-
-# delete temporary users
-InternalUser.where.not(id: InternalUser.first.id).delete_all
+say(<<~CONFIRMATION_MESSAGE)
+  Production data has been seeded successfully. As part \
+  of this setup, a test email was sent to '#{email}'. You \
+  can safely ignore this mail as your account is already \
+  confirmed. However, if you haven't received any email, \
+  you should check the server's mail settings.
+CONFIRMATION_MESSAGE

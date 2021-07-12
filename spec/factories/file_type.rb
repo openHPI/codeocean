@@ -205,6 +205,10 @@ FactoryBot.define do
   end
 
   trait :singleton_file_type do
-    initialize_with { FileType.where(attributes).first_or_create }
+    initialize_with do
+      FileType.where(attributes.except(:user)).first_or_create do |file_type|
+        file_type.user = user
+      end
+    end
   end
 end
