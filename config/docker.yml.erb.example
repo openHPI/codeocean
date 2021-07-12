@@ -27,7 +27,7 @@ production:
   host: unix:///var/run/docker.sock
   pool:
     active: true
-    location: http://localhost:3000
+    location: http://localhost:7100
     refill:
       async: false
       batch_size: 8
@@ -42,7 +42,7 @@ staging:
   host: unix:///var/run/docker.sock
   pool:
     active: true
-    location: http://localhost:3000
+    location: http://localhost:7100
     refill:
       async: false
       batch_size: 8
