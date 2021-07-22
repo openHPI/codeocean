@@ -366,13 +366,16 @@ class SubmissionsController < ApplicationController
 
       # the score_submission call will end up calling docker exec, which is blocking.
       # to ensure responsiveness, we therefore open a thread here.
+      current_locale = I18n.locale
       Thread.new do
-        tubesock.send_data JSON.dump(score_submission(@submission))
+        I18n.with_locale(current_locale) do
+          tubesock.send_data JSON.dump(score_submission(@submission))
 
-        # To enable hints when scoring a submission, uncomment the next line:
-        # send_hints(tubesock, StructuredError.where(submission: @submission))
+          # To enable hints when scoring a submission, uncomment the next line:
+          # send_hints(tubesock, StructuredError.where(submission: @submission))
 
-        tubesock.send_data JSON.dump({'cmd' => 'exit'})
+          tubesock.send_data JSON.dump({'cmd' => 'exit'})
+        end
       ensure
         ActiveRecord::Base.connection_pool.release_connection
       end

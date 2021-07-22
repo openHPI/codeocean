@@ -4,46 +4,49 @@ require 'concurrent/future'
 
 module SubmissionScoring
   def collect_test_results(submission)
+    current_locale = I18n.locale
     # Mnemosyne.trace 'custom.codeocean.collect_test_results', meta: { submission: submission.id } do
     futures = submission.collect_files.select(&:teacher_defined_assessment?).map do |file|
       Concurrent::Future.execute do
-        # Mnemosyne.trace 'custom.codeocean.collect_test_results_block', meta: { file: file.id, submission: submission.id } do
-        assessor = Assessor.new(execution_environment: submission.execution_environment)
-        output = execute_test_file(file, submission)
-        assessment = assessor.assess(output)
-        passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
-        testrun_output = passed ? nil : "status: #{output[:status]}\n stdout: #{output[:stdout]}\n stderr: #{output[:stderr]}"
-        if testrun_output.present?
-          submission.exercise.execution_environment.error_templates.each do |template|
-            pattern = Regexp.new(template.signature).freeze
-            StructuredError.create_from_template(template, testrun_output, submission) if pattern.match(testrun_output)
+        I18n.with_locale(current_locale) do
+          # Mnemosyne.trace 'custom.codeocean.collect_test_results_block', meta: { file: file.id, submission: submission.id } do
+          assessor = Assessor.new(execution_environment: submission.execution_environment)
+          output = execute_test_file(file, submission)
+          assessment = assessor.assess(output)
+          passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
+          testrun_output = passed ? nil : "status: #{output[:status]}\n stdout: #{output[:stdout]}\n stderr: #{output[:stderr]}"
+          if testrun_output.present?
+            submission.exercise.execution_environment.error_templates.each do |template|
+              pattern = Regexp.new(template.signature).freeze
+              StructuredError.create_from_template(template, testrun_output, submission) if pattern.match(testrun_output)
+            end
           end
-        end
-        testrun = Testrun.create(
-          submission: submission,
-          cause: 'assess', # Required to differ run and assess for RfC show
-          file: file, # Test file that was executed
-          passed: passed,
-          output: testrun_output,
-          container_execution_time: output[:container_execution_time],
-          waiting_for_container_time: output[:waiting_for_container_time]
-        )
+          testrun = Testrun.create(
+            submission: submission,
+            cause: 'assess', # Required to differ run and assess for RfC show
+            file: file, # Test file that was executed
+            passed: passed,
+            output: testrun_output,
+            container_execution_time: output[:container_execution_time],
+            waiting_for_container_time: output[:waiting_for_container_time]
+          )
 
-        filename = file.name_with_extension
+          filename = file.name_with_extension
 
-        if file.teacher_defined_linter?
-          LinterCheckRun.create_from(testrun, assessment)
-          switch_locale do
-            assessment = assessor.translate_linter(assessment, I18n.locale)
+          if file.teacher_defined_linter?
+            LinterCheckRun.create_from(testrun, assessment)
+            switch_locale do
+              assessment = assessor.translate_linter(assessment, I18n.locale)
+            end
+
+            # replace file name with hint if linter is not used for grading. Refactor!
+            filename = t('exercises.implement.not_graded') if file.weight.zero?
           end
 
-          # replace file name with hint if linter is not used for grading. Refactor!
-          filename = t('exercises.implement.not_graded') if file.weight.zero?
+          output.merge!(assessment)
+          output.merge!(filename: filename, message: feedback_message(file, output), weight: file.weight)
+          # end
         end
-
-        output.merge!(assessment)
-        output.merge!(filename: filename, message: feedback_message(file, output), weight: file.weight)
-        # end
       end
     end
     futures.map(&:value)
