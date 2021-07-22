@@ -292,7 +292,8 @@ describe Runner::Strategy::Poseidon do
     # TODO: add tests here
 
     let(:command) { 'ls' }
-    let(:action) { -> { poseidon.attach_to_execution(command) } }
+    let(:event_loop) { Runner::EventLoop.new }
+    let(:action) { -> { poseidon.attach_to_execution(command, event_loop) } }
     let(:websocket_url) { 'ws://ws.example.com/path/to/websocket' }
   end
 end

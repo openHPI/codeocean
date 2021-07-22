@@ -62,10 +62,13 @@ describe Runner do
   describe '#attach to execution' do
     let(:runner) { described_class.create }
     let(:command) { 'ls' }
+    let(:event_loop) { instance_double(Runner::EventLoop) }
 
     before do
       allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
       allow(strategy_class).to receive(:new).and_return(strategy)
+      allow(event_loop).to receive(:wait)
+      allow(Runner::EventLoop).to receive(:new).and_return(event_loop)
     end
 
     it 'delegates to its strategy' do
