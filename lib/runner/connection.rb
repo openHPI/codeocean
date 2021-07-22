@@ -10,6 +10,7 @@ class Runner::Connection
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
 
   attr_writer :status
+  attr_reader :error
 
   def initialize(url, strategy, event_loop)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
@@ -73,7 +74,8 @@ class Runner::Connection
     if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
       __send__("handle_#{message_type}", event)
     else
-      raise Runner::Error::UnexpectedResponse.new("Unknown WebSocket message type: #{message_type}")
+      @error = Runner::Error::UnexpectedResponse.new("Unknown WebSocket message type: #{message_type}")
+      close(:error)
     end
   end
 
@@ -87,17 +89,16 @@ class Runner::Connection
     Rails.logger.debug { "#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}" }
     case @status
       when :timeout
-        raise Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
+        @error = Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
       when :terminated_by_codeocean, :terminated_by_management
         @exit_callback.call @exit_code
-        @event_loop.stop
-      when :terminated_by_client
-        @event_loop.stop
+      when :terminated_by_client, :error
       else # :established
         # If the runner is killed by the DockerContainerPool after the maximum allowed time per user and
         # while the owning user is running an execution, the command execution stops and log output is incomplete.
-        raise Runner::Error::Unknown.new('Execution terminated with an unknown reason')
+        @error = Runner::Error::Unknown.new('Execution terminated with an unknown reason')
     end
+    @event_loop.stop
   end
 
   def handle_exit(event)

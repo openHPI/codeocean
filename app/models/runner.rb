@@ -50,8 +50,9 @@ class Runner < ApplicationRecord
       # initializing its Runner::Connection with the given event loop. The Runner::Connection class ensures that
       # this event loop is stopped after the socket was closed.
       event_loop = Runner::EventLoop.new
-      @strategy.attach_to_execution(command, event_loop, &block)
+      socket = @strategy.attach_to_execution(command, event_loop, &block)
       event_loop.wait
+      raise socket.error if socket.error.present?
     rescue Runner::Error => e
       e.execution_duration = Time.zone.now - starting_time
       raise

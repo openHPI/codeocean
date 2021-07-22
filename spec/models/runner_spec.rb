@@ -63,12 +63,15 @@ describe Runner do
     let(:runner) { described_class.create }
     let(:command) { 'ls' }
     let(:event_loop) { instance_double(Runner::EventLoop) }
+    let(:connection) { instance_double(Runner::Connection) }
 
     before do
       allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
       allow(strategy_class).to receive(:new).and_return(strategy)
       allow(event_loop).to receive(:wait)
+      allow(connection).to receive(:error).and_return(nil)
       allow(Runner::EventLoop).to receive(:new).and_return(event_loop)
+      allow(strategy).to receive(:attach_to_execution).and_return(connection)
     end
 
     it 'delegates to its strategy' do
@@ -77,21 +80,36 @@ describe Runner do
     end
 
     it 'returns the execution time' do
-      allow(strategy).to receive(:attach_to_execution)
       starting_time = Time.zone.now
       execution_time = runner.attach_to_execution(command)
       test_time = Time.zone.now - starting_time
       expect(execution_time).to be_between(0.0, test_time).exclusive
     end
 
-    context 'when a runner error is raised' do
-      before { allow(strategy).to receive(:attach_to_execution).and_raise(Runner::Error) }
+    it 'blocks until the event loop is stopped' do
+      allow(event_loop).to receive(:wait) { sleep(1) }
+      execution_time = runner.attach_to_execution(command)
+      expect(execution_time).to be > 1
+    end
+
+    context 'when an error is returned' do
+      let(:error_message) { 'timeout' }
+      let(:error) { Runner::Error::ExecutionTimeout.new(error_message) }
+
+      before { allow(connection).to receive(:error).and_return(error) }
+
+      it 'raises the error' do
+        expect { runner.attach_to_execution(command) }.to raise_error do |raised_error|
+          expect(raised_error).to be_a(Runner::Error::ExecutionTimeout)
+          expect(raised_error.message).to eq(error_message)
+        end
+      end
 
       it 'attaches the execution time to the error' do
         starting_time = Time.zone.now
-        expect { runner.attach_to_execution(command) }.to raise_error do |error|
+        expect { runner.attach_to_execution(command) }.to raise_error do |raised_error|
           test_time = Time.zone.now - starting_time
-          expect(error.execution_duration).to be_between(0.0, test_time).exclusive
+          expect(raised_error.execution_duration).to be_between(0.0, test_time).exclusive
         end
       end
     end

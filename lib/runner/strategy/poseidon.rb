@@ -89,6 +89,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     websocket_url = execute_command(command)
     socket = Connection.new(websocket_url, self, event_loop)
     yield(socket)
+    socket
   end
 
   def destroy_at_management
@@ -130,7 +131,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     def decode(raw_event)
       JSON.parse(raw_event.data)
     rescue JSON::ParserError => e
-      raise Runner::Error::UnexpectedResponse.new("The WebSocket message from Poseidon could not be decoded to JSON: #{e.inspect}")
+      @error = Runner::Error::UnexpectedResponse.new("The WebSocket message from Poseidon could not be decoded to JSON: #{e.inspect}")
+      close(:error)
     end
 
     def encode(data)

@@ -68,6 +68,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
       socket.close(:timeout)
       destroy_at_management
     end
+    socket
   end
 
   private
