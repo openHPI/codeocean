@@ -163,10 +163,10 @@ class Submission < ApplicationRecord
           end
           output.merge!(container_execution_time: execution_time, status: exit_code.zero? ? :ok : :failed)
         rescue Runner::Error::ExecutionTimeout => e
-          Rails.logger.debug("Running tests in #{file.name_with_extension} for submission #{id} timed out: #{e.message}")
+          Rails.logger.debug { "Running tests in #{file.name_with_extension} for submission #{id} timed out: #{e.message}" }
           output.merge!(status: :timeout, container_execution_time: e.execution_duration)
         rescue Runner::Error => e
-          Rails.logger.debug("Running tests in #{file.name_with_extension} for submission #{id} failed: #{e.message}")
+          Rails.logger.debug { "Running tests in #{file.name_with_extension} for submission #{id} failed: #{e.message}" }
           output.merge!(status: :failed, container_execution_time: e.execution_duration)
         ensure
           output.merge!(stdout: stdout, stderr: stderr)
@@ -212,7 +212,7 @@ class Submission < ApplicationRecord
 
   def command_substitutions(filename)
     {
-      class_name: File.basename(filename, File.extname(filename)).camelize,
+      class_name: File.basename(filename, File.extname(filename)).upcase_first,
       filename: filename,
       module_name: File.basename(filename, File.extname(filename)).underscore,
     }
@@ -245,10 +245,10 @@ class Submission < ApplicationRecord
 
     if file.teacher_defined_linter?
       LinterCheckRun.create_from(testrun, assessment)
-      assessment = assessor.translate_linter(assessment, session[:locale])
+      assessment = assessor.translate_linter(assessment, I18n.locale)
 
       # replace file name with hint if linter is not used for grading. Refactor!
-      filename = 'exercises.implement.not_graded' if file.weight.zero?
+      filename = I18n.t('exercises.implement.not_graded') if file.weight.zero?
     end
 
     output.merge!(assessment)
@@ -257,11 +257,16 @@ class Submission < ApplicationRecord
 
   def feedback_message(file, output)
     if output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_test'
-      'exercises.implement.default_test_feedback'
+      I18n.t('exercises.implement.default_test_feedback')
     elsif output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_linter'
-      'exercises.implement.default_linter_feedback'
+      I18n.t('exercises.implement.default_linter_feedback')
     else
-      file.feedback_message
+      # The render_markdown method from application_helper.rb is not available in model classes.
+      ActionController::Base.helpers.sanitize(
+        Kramdown::Document.new(file.feedback_message).to_html,
+        tags: %w[strong],
+        attributes: []
+      )
     end
   end
 

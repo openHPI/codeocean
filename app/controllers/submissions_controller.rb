@@ -5,7 +5,6 @@ class SubmissionsController < ApplicationController
   include CommonBehavior
   include Lti
   include SubmissionParameters
-  include ScoringResultFormatting
   include Tubesock::Hijack
 
   before_action :set_submission,
@@ -34,15 +33,6 @@ class SubmissionsController < ApplicationController
     copy_comments
     create_and_respond(object: @submission)
   end
-
-  def command_substitutions(filename)
-    {
-      class_name: File.basename(filename, File.extname(filename)).upcase_first,
-      filename: filename,
-      module_name: File.basename(filename, File.extname(filename)).underscore,
-    }
-  end
-  private :command_substitutions
 
   def copy_comments
     # copy each annotation and set the target_file.id
@@ -247,7 +237,7 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       return kill_socket(tubesock) if @embed_options[:disable_run]
 
-      tubesock.send_data(JSON.dump(format_scoring_results(@submission.calculate_score)))
+      tubesock.send_data(JSON.dump(@submission.calculate_score))
       # To enable hints when scoring a submission, uncomment the next line:
       # send_hints(tubesock, StructuredError.where(submission: @submission))
     rescue Runner::Error => e

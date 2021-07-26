@@ -119,7 +119,7 @@ class RequestForCommentsController < ApplicationController
       if @request_for_comment.save
         # create thread here and execute tests. A run is triggered from the frontend and does not need to be handled here.
         Thread.new do
-          @request_for_comment.submission.calculate_score
+          switch_locale { @request_for_comment.submission.calculate_score }
         ensure
           ActiveRecord::Base.connection_pool.release_connection
         end

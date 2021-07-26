@@ -37,7 +37,7 @@ class Runner::Connection
 
   def send(raw_data)
     encoded_message = encode(raw_data)
-    Rails.logger.debug("#{Time.zone.now.getutc}: Sending to #{@socket.url}: #{encoded_message.inspect}")
+    Rails.logger.debug { "#{Time.zone.now.getutc}: Sending to #{@socket.url}: #{encoded_message.inspect}" }
     @socket.send(encoded_message)
   end
 
@@ -52,7 +52,7 @@ class Runner::Connection
   end
 
   def on_message(raw_event)
-    Rails.logger.debug("#{Time.zone.now.getutc}: Receiving from #{@socket.url}: #{raw_event.data.inspect}")
+    Rails.logger.debug { "#{Time.zone.now.getutc}: Receiving from #{@socket.url}: #{raw_event.data.inspect}" }
     event = decode(raw_event)
     return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
 
@@ -72,7 +72,7 @@ class Runner::Connection
   def on_error(_event); end
 
   def on_close(_event)
-    Rails.logger.debug("#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}")
+    Rails.logger.debug { "#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}" }
     case @status
       when :timeout
         raise Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
