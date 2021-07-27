@@ -5,6 +5,7 @@
 class Runner::EventLoop
   def initialize
     @queue = Queue.new
+    ensure_event_machine
   end
 
   # wait waits until another thread calls stop on this EventLoop.
@@ -18,5 +19,23 @@ class Runner::EventLoop
   # next call to wait will not be blocking.
   def stop
     @queue.push nil if @queue.empty?
+  end
+
+  private
+
+  # If there are multiple threads trying to connect to the WebSocket of their execution at the same time,
+  # the Faye WebSocket connections will use the same reactor. We therefore only need to start an EventMachine
+  # if there isn't a running reactor yet.
+  # See this StackOverflow answer: https://stackoverflow.com/a/8247947
+  def ensure_event_machine
+    unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
+      queue = Queue.new
+      Thread.new do
+        EventMachine.run { queue.push nil }
+      ensure
+        ActiveRecord::Base.connection_pool.release_connection
+      end
+      queue.pop
+    end
   end
 end
