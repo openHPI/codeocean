@@ -46,7 +46,7 @@ module SubmissionScoring
         # end
       end
     end
-    futures.map(&:value)
+    futures.map(&:value!)
   end
 
   private :collect_test_results
