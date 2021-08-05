@@ -42,7 +42,7 @@ module ApplicationHelper
   end
 
   def render_markdown(markdown)
-    sanitize Kramdown::Document.new(markdown).to_html
+    ActionController::Base.helpers.sanitize Kramdown::Document.new(markdown).to_html
   end
 
   def row(options = {}, &block)
