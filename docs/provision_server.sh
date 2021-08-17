@@ -40,7 +40,7 @@ curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo apt-key add -
 
 # Install packages
 apt-get -qq update
-apt-get -qq -y install postgresql-client postgresql-$postgres_version postgresql-server-dev-$postgres_version
+apt-get -qq -y install postgresql-client postgresql-$postgres_version postgresql-server-dev-$postgres_version postgresql-$postgres_version-cron
 apt-get -qq -y install yarn nodejs nginx libpq-dev certbot
 
 # RVM
@@ -249,3 +249,10 @@ systemctl daemon-reload
 # ln -s /var/www/app/current/tmp/files/production /var/www/dockercontainerpool/current/tmp/files/production
 
 # Find more files in codeocean-deploy/config/backup
+
+# execute in PSQL as user postgres in database postgres
+# This will schedule an automatic VACUUM ANALYZE on a nightly basis
+
+# CREATE EXTENSION pg_cron;
+# SELECT cron.schedule('nightly-vacuum', '0 3 * * *', 'VACUUM ANALYZE');
+# UPDATE cron.job SET database = 'codeocean-production' WHERE jobid = 1;
