@@ -10,7 +10,10 @@ describe SubmissionScoring do
   let(:controller) { Controller.new }
   let(:submission) { FactoryBot.create(:submission, cause: 'submit') }
 
-  before { controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user)) }
+  before do
+    controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user))
+    controller.instance_variable_set(:@_params, {})
+  end
 
   describe '#collect_test_results' do
     after { controller.send(:collect_test_results, submission) }
@@ -22,7 +25,7 @@ describe SubmissionScoring do
     end
   end
 
-  describe '#score_submission' do
+  describe '#score_submission', cleaning_strategy: :truncation do
     after { controller.score_submission(submission) }
 
     it 'collects the test results' do

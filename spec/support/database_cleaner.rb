@@ -22,8 +22,8 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.before do
-    DatabaseCleaner.strategy = :transaction
+  config.before do |example|
+    DatabaseCleaner.strategy = example.metadata[:cleaning_strategy] || :transaction
   end
 
   config.before(:each, type: :feature) do
