@@ -142,8 +142,14 @@ sudo add-apt-repository \
 sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io
 ```
 
-- Get the path to the systemd service file `docker.service` using `systemctl status docker` (normally it is located at `/lib/systemd/system/docker.service`)
-- Add `-H tcp://127.0.0.1:2376` after `-H fd://` in this file
+- Add the following lines to the docker configuration to make the Docker daemon listen on incoming connections on port 2376. Use `sudo systemctl edit docker.service` to add or edit an overwrite file to make the changes [upgrade-safe](https://serverfault.com/questions/840996/modify-systemd-unit-file-without-altering-upstream-unit-file):
+
+  ```text
+    [Service]
+    ExecStart=
+    ExecStart=/usr/bin/dockerd -H fd:// -H tcp://127.0.0.1:2376
+  ```
+
 - Add the following option to `/etc/docker/daemon.json` (or create the file if it does not exist yet):
 
   ```text
@@ -159,6 +165,7 @@ sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io
   - Execute: `sudo usermod -aG docker ${USER}`
   - Logout and login again
 - Check the docker installation with `docker run hello-world` (without root privileges)
+- Get the latest version of the execution environment you want to use with `docker pull`
 
 ### RVM and Ruby
 

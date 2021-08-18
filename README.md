@@ -39,10 +39,10 @@ In order to execute code submissions using Docker, source code files are written
 
 ### Optional Steps
 
-- use Docker Machine or vagrant if there is no native support for docker on your OS
-- if you want to use the app without docker (and hence without code execution) comment the validation `validate :working_docker_image?` in `models/execution_environments.rb` otherwise the seed will fail (because of missing docker connection)
-- create seed data by executing `rake db:seed`
-- if you already created a configuration for your local installation and want to use vagrant, too, be sure to log into the vagrant instance via ssh and add your database user manually to the database. Afterwards, create, migrate and seed.
+- Use Docker Machine or vagrant if there is no native support for docker on your OS
+- If you want to use the app without docker (and hence without code execution) comment the validation `validate :working_docker_image?` in `models/execution_environments.rb` otherwise the seed will fail (because of missing docker connection)
+- Create seed data by executing `rake db:seed`
+- If you already created a configuration for your local installation and want to use vagrant, too, be sure to log into the vagrant instance via ssh and add your database user manually to the database. Afterwards, create, migrate and seed.
 
 ## Production Setup
 
@@ -54,3 +54,7 @@ In order to execute code submissions using Docker, source code files are written
 - The Telegraf client collects the data from the Prometheus endpoint, adds its own datasets and forwards them to an InfluxDB
 - The Prometheus Exporter must be started separately **before** running the Rails server via `bundle exec prometheus_exporter`
 - The InfluxDB data can be visualized using Grafana, for example. There is also an adapted [dashboard](docs/grafana/prometheus_exporter_grafana_dashboard.json) for this purpose
+
+
+## Additional Note
+- If you want to change the default port of the underlying rails server, you can use [authbind] (https://www.mwells.org/coding/2016/authbind-port-80-443/) to bind it to the regular 80/443 port.
