@@ -57,4 +57,4 @@ In order to execute code submissions using Docker, source code files are written
 
 
 ## Additional Note
-- As the underlying rails server uses port 3000 as the default seeting, you can use [authbind] (https://www.mwells.org/coding/2016/authbind-port-80-443/) to bind it to the regular 80/443 port.
+- If you want to change the default port of the underlying rails server, you can use [authbind] (https://www.mwells.org/coding/2016/authbind-port-80-443/) to bind it to the regular 80/443 port.

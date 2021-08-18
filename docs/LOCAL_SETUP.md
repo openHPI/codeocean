@@ -165,7 +165,7 @@ sudo apt update && sudo apt install docker-ce docker-ce-cli containerd.io
   - Execute: `sudo usermod -aG docker ${USER}`
   - Logout and login again
 - Check the docker installation with `docker run hello-world` (without root privileges)
-- Get the lateste version of the execution environment you want to use with `docker pull`
+- Get the latest version of the execution environment you want to use with `docker pull`
 
 ### RVM and Ruby
 
