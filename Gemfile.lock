@@ -261,7 +261,7 @@ GEM
       path_expander (~> 1.0)
     minitest-server (1.0.6)
       minitest (~> 5.0)
-    mnemosyne-ruby (1.11.0)
+    mnemosyne-ruby (1.12.0)
       activesupport (>= 4)
       bunny
     msgpack (1.4.2)
