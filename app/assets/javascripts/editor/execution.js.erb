@@ -41,6 +41,7 @@ CodeOceanEditorWebsocket = {
     this.initializeSocket(url);
     this.websocket.on('input',this.showPrompt.bind(this));
     this.websocket.on('write', this.printWebsocketOutput.bind(this));
+    this.websocket.on('clear', this.clearOutput.bind(this));
     this.websocket.on('turtle', this.handleTurtleCommand.bind(this));
     this.websocket.on('turtlebatch', this.handleTurtlebatchCommand.bind(this));
     this.websocket.on('render', this.renderWebsocketOutput.bind(this));
