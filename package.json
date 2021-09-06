@@ -12,7 +12,7 @@
     "jquery": "^3.6.0",
     "jquery-ui": "^1.12.1",
     "jquery-ujs": "^1.2.3",
-    "jstree": "^3.3.11",
+    "jstree": "^3.3.12",
     "opensans-webkit": "^1.1.0",
     "popper.js": "^1.16.1",
     "rails-erb-loader": "^5.5.2",
