@@ -17,9 +17,9 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       co_execenv_python:
-        image: openhpi/co_execenv_python
+        image: openhpi/co_execenv_python:3.4
       co_execenv_java:
-        image: openhpi/co_execenv_java
+        image: openhpi/co_execenv_java:8
 
     steps:
       - name: Configure Docker host
