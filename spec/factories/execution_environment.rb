@@ -34,7 +34,7 @@ FactoryBot.define do
   factory :java, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
-    docker_image { 'openhpi/co_execenv_java:latest' }
+    docker_image { 'openhpi/co_execenv_java:8' }
     file_type { association :dot_java, user: user }
     help
     name { 'Java 8' }
@@ -80,7 +80,7 @@ FactoryBot.define do
   factory :python, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
-    docker_image { 'openhpi/co_execenv_python:latest' }
+    docker_image { 'openhpi/co_execenv_python:3.4' }
     file_type { association :dot_py, user: user }
     help
     name { 'Python 3.4' }
