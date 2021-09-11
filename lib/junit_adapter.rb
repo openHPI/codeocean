@@ -7,7 +7,7 @@ class JunitAdapter < TestingFrameworkAdapter
   ASSERTION_ERROR_REGEXP = /java\.lang\.AssertionError:?\s(.*?)\tat org.junit|org\.junit\.ComparisonFailure:\s(.*?)\tat org.junit/m.freeze
 
   def self.framework_name
-    'JUnit'
+    'JUnit 4'
   end
 
   def parse_output(output)
