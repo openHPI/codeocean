@@ -7,9 +7,6 @@ class ExecutionEnvironment < ApplicationRecord
   include DefaultValues
 
   VALIDATION_COMMAND = 'whoami'
-  RUNNER_MANAGEMENT_PRESENT = CodeOcean::Config.new(:code_ocean).read[:runner_management].present?
-  BASE_URL = CodeOcean::Config.new(:code_ocean).read[:runner_management][:url] if RUNNER_MANAGEMENT_PRESENT
-  HEADERS = {'Content-Type' => 'application/json'}.freeze
   DEFAULT_CPU_LIMIT = 20
 
   after_initialize :set_default_values
@@ -40,20 +37,6 @@ class ExecutionEnvironment < ApplicationRecord
 
   def to_s
     name
-  end
-
-  def copy_to_poseidon
-    return false unless RUNNER_MANAGEMENT_PRESENT
-
-    url = "#{BASE_URL}/execution-environments/#{id}"
-    response = Faraday.put(url, to_json, HEADERS)
-    return true if [201, 204].include? response.status
-
-    Rails.logger.warn("Could not create execution environment in Poseidon, got response: #{response.as_json}")
-    false
-  rescue Faraday::Error => e
-    Rails.logger.warn("Could not create execution environment because of Faraday error: #{e.inspect}")
-    false
   end
 
   def to_json(*_args)

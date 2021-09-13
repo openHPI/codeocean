@@ -192,45 +192,4 @@ describe ExecutionEnvironment do
       end
     end
   end
-
-  describe '#copy_to_poseidon' do
-    let(:execution_environment) { FactoryBot.create(:ruby) }
-
-    it 'makes the correct request to Poseidon' do
-      allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: 201))
-      execution_environment.copy_to_poseidon
-      expect(Faraday).to have_received(:put) do |url, body, headers|
-        expect(url).to match(%r{execution-environments/#{execution_environment.id}\z})
-        expect(body).to eq(execution_environment.to_json)
-        expect(headers).to include({'Content-Type' => 'application/json'})
-      end
-    end
-
-    shared_examples 'returns true when the api request was successful' do |status|
-      it "returns true on status #{status}" do
-        allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: status))
-        expect(execution_environment.copy_to_poseidon).to be_truthy
-      end
-    end
-
-    shared_examples 'returns false when the api request failed' do |status|
-      it "returns false on status #{status}" do
-        allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: status))
-        expect(execution_environment.copy_to_poseidon).to be_falsey
-      end
-    end
-
-    [201, 204].each do |status|
-      include_examples 'returns true when the api request was successful', status
-    end
-
-    [400, 500].each do |status|
-      include_examples 'returns false when the api request failed', status
-    end
-
-    it 'returns false if Faraday raises an error' do
-      allow(Faraday).to receive(:put).and_raise(Faraday::TimeoutError)
-      expect(execution_environment.copy_to_poseidon).to be_falsey
-    end
-  end
 end

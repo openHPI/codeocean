@@ -10,13 +10,28 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     end
   end
 
+  def self.config
+    @config ||= CodeOcean::Config.new(:code_ocean).read[:runner_management] || {}
+  end
+
   def self.sync_environment(environment)
-    environment.copy_to_poseidon
+    url = "#{config[:url]}/execution-environments/#{environment.id}"
+    response = Faraday.put(url, environment.to_json, HEADERS)
+    return true if [201, 204].include? response.status
+
+    Rails.logger.warn("Could not create execution environment in Poseidon, got response: #{response.as_json}")
+    false
+  rescue Faraday::Error => e
+    Rails.logger.warn("Could not create execution environment because of Faraday error: #{e.inspect}")
+    false
   end
 
   def self.request_from_management(environment)
-    url = "#{Runner::BASE_URL}/runners"
-    body = {executionEnvironmentId: environment.id, inactivityTimeout: Runner::UNUSED_EXPIRATION_TIME}
+    url = "#{config[:url]}/runners"
+    body = {
+      executionEnvironmentId: environment.id,
+      inactivityTimeout: config[:unused_runner_expiration_time].seconds,
+    }
     response = Faraday.post(url, body.to_json, HEADERS)
 
     case response.status
@@ -124,7 +139,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def runner_url
-    "#{Runner::BASE_URL}/runners/#{@allocation_id}"
+    "#{self.class.config[:url]}/runners/#{@allocation_id}"
   end
 
   class Connection < Runner::Connection

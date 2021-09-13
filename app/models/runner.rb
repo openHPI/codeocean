@@ -8,14 +8,15 @@ class Runner < ApplicationRecord
 
   validates :execution_environment, :user, :runner_id, presence: true
 
-  STRATEGY_NAME = CodeOcean::Config.new(:code_ocean).read[:runner_management][:strategy]
-  UNUSED_EXPIRATION_TIME = CodeOcean::Config.new(:code_ocean).read[:runner_management][:unused_runner_expiration_time].seconds
-  BASE_URL = CodeOcean::Config.new(:code_ocean).read[:runner_management][:url]
-
   attr_accessor :strategy
 
   def self.strategy_class
-    "runner/strategy/#{STRATEGY_NAME}".camelize.constantize
+    strategy_name = CodeOcean::Config.new(:code_ocean).read[:runner_management][:strategy]
+    @strategy_class ||= "runner/strategy/#{strategy_name}".camelize.constantize
+  end
+
+  def self.management_active?
+    @management_active ||= CodeOcean::Config.new(:code_ocean).read[:runner_management][:enabled]
   end
 
   def self.for(user, exercise)

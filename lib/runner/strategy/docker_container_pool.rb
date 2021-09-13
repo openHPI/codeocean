@@ -8,6 +8,11 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     @config ||= CodeOcean::Config.new(:docker).read(erb: true)
   end
 
+  def self.sync_environment(_environment)
+    # There is no dedicated sync mechanism yet
+    true
+  end
+
   def self.request_from_management(environment)
     container_id = JSON.parse(Faraday.get("#{config[:pool][:location]}/docker_container_pool/get_container/#{environment.id}").body)['id']
     container_id.presence || raise(Runner::Error::NotAvailable.new("DockerContainerPool didn't return a container id"))

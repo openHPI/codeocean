@@ -284,7 +284,7 @@ de:
         docker_image: 'Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank">DockerHub</a> verfügbar ist.'
         exposed_ports: Während der Ausführung sind diese Ports für den Nutzer zugänglich. Die Portnummern müssen mit Komma, aber ohne Leerzeichen voneinander getrennt sein.
       errors:
-        not_synced_to_poseidon: Die Ausführungsumgebung wurde erstellt, aber aufgrund eines Fehlers nicht zu Poseidon synchronisiert.
+        not_synced_to_runner_management: Die Ausführungsumgebung wurde erstellt, aber aufgrund eines Fehlers nicht zum Runnermanagement synchronisiert.
     index:
       shell: Shell
       synchronize_all:

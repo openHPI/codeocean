@@ -8,7 +8,7 @@ describe ExecutionEnvironmentsController do
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
-    allow(controller).to receive(:copy_execution_environment_to_poseidon).and_return(nil)
+    allow(controller).to receive(:sync_to_runner_management).and_return(nil)
   end
 
   describe 'POST #create' do
@@ -26,8 +26,8 @@ describe ExecutionEnvironmentsController do
         expect { perform_request.call }.to change(ExecutionEnvironment, :count).by(1)
       end
 
-      it 'registers the execution environment with Poseidon' do
-        expect(controller).to have_received(:copy_execution_environment_to_poseidon)
+      it 'registers the execution environment with the runner management' do
+        expect(controller).to have_received(:sync_to_runner_management)
       end
 
       expect_redirect(ExecutionEnvironment.last)
@@ -40,8 +40,8 @@ describe ExecutionEnvironmentsController do
       expect_status(200)
       expect_template(:new)
 
-      it 'does not register the execution environment with Poseidon' do
-        expect(controller).not_to have_received(:copy_execution_environment_to_poseidon)
+      it 'does not register the execution environment with the runner management' do
+        expect(controller).not_to have_received(:sync_to_runner_management)
       end
     end
   end
@@ -167,7 +167,7 @@ describe ExecutionEnvironmentsController do
     context 'with a valid execution environment' do
       before do
         allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
-        allow(controller).to receive(:copy_execution_environment_to_poseidon).and_return(nil)
+        allow(controller).to receive(:sync_to_runner_management).and_return(nil)
         put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
       end
 
@@ -175,8 +175,8 @@ describe ExecutionEnvironmentsController do
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_redirect(:execution_environment)
 
-      it 'updates the execution environment at Poseidon' do
-        expect(controller).to have_received(:copy_execution_environment_to_poseidon)
+      it 'updates the execution environment at the runner management' do
+        expect(controller).to have_received(:sync_to_runner_management)
       end
     end
 
@@ -187,25 +187,24 @@ describe ExecutionEnvironmentsController do
       expect_status(200)
       expect_template(:edit)
 
-      it 'does not update the execution environment at Poseidon' do
-        expect(controller).not_to have_received(:copy_execution_environment_to_poseidon)
+      it 'does not update the execution environment at the runner management' do
+        expect(controller).not_to have_received(:sync_to_runner_management)
       end
     end
   end
 
-  describe '#synchronize_all_to_poseidon' do
+  describe '#sync_all_to_runner_management' do
     let(:execution_environments) { FactoryBot.build_list(:ruby, 3) }
 
-    it 'copies all execution environments to Poseidon' do
+    it 'copies all execution environments to the runner management' do
       allow(ExecutionEnvironment).to receive(:all).and_return(execution_environments)
 
       execution_environments.each do |execution_environment|
-        allow(execution_environment).to receive(:copy_to_poseidon).and_return(true)
+        allow(Runner::Strategy::Poseidon).to receive(:sync_environment).with(execution_environment).and_return(true)
+        expect(Runner::Strategy::Poseidon).to receive(:sync_environment).with(execution_environment).once
       end
 
-      post :synchronize_all_to_poseidon
-
-      expect(execution_environments).to all(have_received(:copy_to_poseidon).once)
+      post :sync_all_to_runner_management
     end
   end
 end

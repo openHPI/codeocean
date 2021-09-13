@@ -1,7 +1,7 @@
 h1.d-inline-block = ExecutionEnvironment.model_name.human(count: 2)
 
-- if ExecutionEnvironment::RUNNER_MANAGEMENT_PRESENT
-  = button_to( { action: :synchronize_all_to_poseidon, method: :post }, { form_class: 'float-right mb-2', class: 'btn btn-success' })
+- if Runner.management_active?
+  = button_to( { action: :sync_all_to_runner_management, method: :post }, { form_class: 'float-right mb-2', class: 'btn btn-success' })
     i.fa.fa-upload
     = t('execution_environments.index.synchronize_all.button')
 

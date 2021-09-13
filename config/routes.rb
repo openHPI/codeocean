@@ -67,7 +67,7 @@ Rails.application.routes.draw do
       get :statistics
     end
 
-    post :synchronize_all_to_poseidon, on: :collection
+    post :sync_all_to_runner_management, on: :collection
   end
 
   post '/import_exercise' => 'exercises#import_exercise'

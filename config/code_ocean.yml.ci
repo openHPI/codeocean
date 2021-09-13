@@ -10,6 +10,7 @@ test:
   prometheus_exporter:
     enabled: false
   runner_management:
+    enabled: true
     strategy: poseidon
     url: https://runners.example.org
     unused_runner_expiration_time: 180

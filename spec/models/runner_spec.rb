@@ -30,8 +30,20 @@ describe Runner do
 
   describe '::strategy_class' do
     shared_examples 'uses the strategy defined in the constant' do |strategy, strategy_class|
+      let(:codeocean_config) { instance_double(CodeOcean::Config) }
+      let(:runner_management_config) { {runner_management: {enabled: true, strategy: strategy}} }
+
+      before do
+        allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+        allow(codeocean_config).to receive(:read).and_return(runner_management_config)
+      end
+
+      after do
+        # Reset the memorized helper
+        described_class.remove_instance_variable :@strategy_class
+      end
+
       it "uses #{strategy_class} as strategy class for constant #{strategy}" do
-        stub_const('Runner::STRATEGY_NAME', strategy)
         expect(described_class.strategy_class).to eq(strategy_class)
       end
     end
@@ -41,7 +53,7 @@ describe Runner do
       docker_container_pool: Runner::Strategy::DockerContainerPool,
     }
     available_strategies.each do |strategy, strategy_class|
-      include_examples 'uses the strategy defined in the constant', strategy, strategy_class
+      it_behaves_like 'uses the strategy defined in the constant', strategy, strategy_class
     end
   end
 

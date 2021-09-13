@@ -5,7 +5,15 @@ class Runner::Strategy
     @execution_environment = environment
   end
 
-  def self.request_from_management
+  def self.config
+    raise NotImplementedError
+  end
+
+  def self.sync_environment(_environment)
+    raise NotImplementedError
+  end
+
+  def self.request_from_management(_environment)
     raise NotImplementedError
   end
 

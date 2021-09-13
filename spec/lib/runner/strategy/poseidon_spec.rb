@@ -114,13 +114,58 @@ describe Runner::Strategy::Poseidon do
     end
   end
 
+  describe '::sync_environment' do
+    let(:action) { -> { described_class.sync_environment(execution_environment) } }
+    let(:execution_environment) { FactoryBot.create(:ruby) }
+
+    it 'makes the correct request to Poseidon' do
+      allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: 201))
+      action.call
+      expect(Faraday).to have_received(:put) do |url, body, headers|
+        expect(url).to match(%r{execution-environments/#{execution_environment.id}\z})
+        expect(body).to eq(execution_environment.to_json)
+        expect(headers).to include({'Content-Type' => 'application/json'})
+      end
+    end
+
+    shared_examples 'returns true when the api request was successful' do |status|
+      it "returns true on status #{status}" do
+        allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: status))
+        expect(action.call).to be_truthy
+      end
+    end
+
+    shared_examples 'returns false when the api request failed' do |status|
+      it "returns false on status #{status}" do
+        allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: status))
+        expect(action.call).to be_falsey
+      end
+    end
+
+    [201, 204].each do |status|
+      include_examples 'returns true when the api request was successful', status
+    end
+
+    [400, 500].each do |status|
+      include_examples 'returns false when the api request failed', status
+    end
+
+    it 'returns false if Faraday raises an error' do
+      allow(Faraday).to receive(:put).and_raise(Faraday::TimeoutError)
+      expect(action.call).to be_falsey
+    end
+  end
+
   describe '::request_from_management' do
     let(:action) { -> { described_class.request_from_management(execution_environment) } }
     let!(:request_runner_stub) do
       WebMock
-        .stub_request(:post, "#{Runner::BASE_URL}/runners")
+        .stub_request(:post, "#{described_class.config[:url]}/runners")
         .with(
-          body: {executionEnvironmentId: execution_environment.id, inactivityTimeout: Runner::UNUSED_EXPIRATION_TIME},
+          body: {
+            executionEnvironmentId: execution_environment.id, 
+            inactivityTimeout: described_class.config[:unused_runner_expiration_time].seconds,
+          },
           headers: {'Content-Type' => 'application/json'}
         )
         .to_return(body: response_body, status: response_status)
@@ -181,7 +226,7 @@ describe Runner::Strategy::Poseidon do
     let(:websocket_url) { 'ws://ws.example.com/path/to/websocket' }
     let!(:execute_command_stub) do
       WebMock
-        .stub_request(:post, "#{Runner::BASE_URL}/runners/#{runner_id}/execute")
+        .stub_request(:post, "#{described_class.config[:url]}/runners/#{runner_id}/execute")
         .with(
           body: {command: command, timeLimit: execution_environment.permitted_execution_time},
           headers: {'Content-Type' => 'application/json'}
@@ -235,7 +280,7 @@ describe Runner::Strategy::Poseidon do
     let(:action) { -> { poseidon.destroy_at_management } }
     let!(:destroy_stub) do
       WebMock
-        .stub_request(:delete, "#{Runner::BASE_URL}/runners/#{runner_id}")
+        .stub_request(:delete, "#{described_class.config[:url]}/runners/#{runner_id}")
         .to_return(body: response_body, status: response_status)
     end
 
@@ -262,7 +307,7 @@ describe Runner::Strategy::Poseidon do
     let(:encoded_file_content) { Base64.strict_encode64(file.content) }
     let!(:copy_files_stub) do
       WebMock
-        .stub_request(:patch, "#{Runner::BASE_URL}/runners/#{runner_id}/files")
+        .stub_request(:patch, "#{described_class.config[:url]}/runners/#{runner_id}/files")
         .with(
           body: {copy: [{path: file.filepath, content: encoded_file_content}]},
           headers: {'Content-Type' => 'application/json'}

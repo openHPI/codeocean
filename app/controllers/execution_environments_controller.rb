@@ -3,8 +3,6 @@
 class ExecutionEnvironmentsController < ApplicationController
   include CommonBehavior
 
-  RUNNER_MANAGEMENT_PRESENT = CodeOcean::Config.new(:code_ocean).read[:runner_management].present?
-
   before_action :set_docker_images, only: %i[create edit new update]
   before_action :set_execution_environment, only: MEMBER_ACTIONS + %i[execute_command shell statistics]
   before_action :set_testing_framework_adapters, only: %i[create edit new update]
@@ -18,7 +16,7 @@ class ExecutionEnvironmentsController < ApplicationController
     @execution_environment = ExecutionEnvironment.new(execution_environment_params)
     authorize!
     create_and_respond(object: @execution_environment) do
-      copy_execution_environment_to_poseidon
+      sync_to_runner_management
     end
   end
 
@@ -160,27 +158,29 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def update
     update_and_respond(object: @execution_environment, params: execution_environment_params) do
-      copy_execution_environment_to_poseidon
+      sync_to_runner_management
     end
   end
 
-  def synchronize_all_to_poseidon
+  def sync_all_to_runner_management
     authorize ExecutionEnvironment
 
-    return unless RUNNER_MANAGEMENT_PRESENT
+    return unless Runner.management_active?
 
-    success = ExecutionEnvironment.all.map(&:copy_to_poseidon).all?
-    if success
+    success = ExecutionEnvironment.all.map do |execution_environment|
+      Runner.strategy_class.sync_environment(execution_environment)
+    end
+    if success.all?
       redirect_to ExecutionEnvironment, notice: t('execution_environments.index.synchronize_all.success')
     else
       redirect_to ExecutionEnvironment, alert: t('execution_environments.index.synchronize_all.failure')
     end
   end
 
-  def copy_execution_environment_to_poseidon
-    unless RUNNER_MANAGEMENT_PRESENT && @execution_environment.copy_to_poseidon
-      t('execution_environments.form.errors.not_synced_to_poseidon')
+  def sync_to_runner_management
+    unless Runner.management_active? && Runner.strategy_class.sync_environment(@execution_environment)
+      t('execution_environments.form.errors.not_synced_to_runner_management')
     end
   end
-  private :copy_execution_environment_to_poseidon
+  private :sync_to_runner_management
 end

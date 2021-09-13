@@ -59,7 +59,7 @@ describe ExecutionEnvironmentPolicy do
     end
   end
 
-  permissions(:synchronize_all_to_poseidon?) do
+  permissions(:sync_all_to_runner_management?) do
     it 'grants access to the admin' do
       expect(policy).to permit(FactoryBot.build(:admin))
     end

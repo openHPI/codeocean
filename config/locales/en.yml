@@ -284,7 +284,7 @@ en:
         docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank">DockerHub</a>.
         exposed_ports: During code execution these ports are accessible for the user. Port numbers must be separated by a comma but no space.
       errors:
-        not_synced_to_poseidon: The ExecutionEnvironment was created but not synced to Poseidon due to an error.
+        not_synced_to_runner_management: The execution environment was created but not synced to the runner management due to an error.
     index:
       shell: Shell
       synchronize_all:

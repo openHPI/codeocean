@@ -9,7 +9,7 @@ class ExecutionEnvironmentPolicy < AdminOnlyPolicy
     define_method(action) { admin? || teacher? }
   end
 
-  def synchronize_all_to_poseidon?
+  def sync_all_to_runner_management?
     admin?
   end
 end
