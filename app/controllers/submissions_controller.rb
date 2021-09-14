@@ -152,12 +152,14 @@ class SubmissionsController < ApplicationController
           else
             Rails.logger.info("Unknown command from client: #{event[:cmd]}")
         end
-      rescue JSON::ParserError
+      rescue JSON::ParserError => e
         Rails.logger.info("Data received from client is not valid json: #{data.inspect}")
         Sentry.set_extras(data: data)
-      rescue TypeError
+        Sentry.capture_exception(e)
+      rescue TypeError => e
         Rails.logger.info("JSON data received from client cannot be parsed as hash: #{data.inspect}")
         Sentry.set_extras(data: data)
+        Sentry.capture_exception(e)
       end
     end
 
