@@ -20,7 +20,7 @@ class Runner < ApplicationRecord
   end
 
   def self.for(user, exercise)
-    execution_environment = ExecutionEnvironment.find(exercise.execution_environment_id)
+    execution_environment = exercise.execution_environment
 
     runner = find_by(user: user, execution_environment: execution_environment)
     if runner.nil?
