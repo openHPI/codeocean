@@ -216,8 +216,6 @@ class Submission < ApplicationRecord
   end
 
   def score_file(output, file)
-    # Mnemosyne.trace 'custom.codeocean.collect_test_results', meta: { submission: id } do
-    # Mnemosyne.trace 'custom.codeocean.collect_test_results_block', meta: { file: file.id, submission: id } do
     assessor = Assessor.new(execution_environment: execution_environment)
     assessment = assessor.assess(output)
     passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
