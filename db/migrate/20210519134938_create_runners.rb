@@ -6,7 +6,6 @@ class CreateRunners < ActiveRecord::Migration[6.1]
       t.string :runner_id
       t.references :execution_environment
       t.references :user, polymorphic: true
-      t.float :waiting_time
 
       t.timestamps
     end
