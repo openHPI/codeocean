@@ -12,16 +12,20 @@ class Runner::Connection
   attr_writer :status
   attr_reader :error
 
-  def initialize(url, strategy, event_loop)
+  def initialize(url, strategy, event_loop, locale = I18n.locale)
     @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
     @strategy = strategy
     @status = :established
     @event_loop = event_loop
+    @locale = locale
 
     # For every event type of Faye WebSockets, the corresponding
     # RunnerConnection method starting with `on_` is called.
     %i[open message error close].each do |event_type|
-      @socket.on(event_type) {|event| __send__(:"on_#{event_type}", event) }
+      @socket.on(event_type) do |event|
+        # The initial locale when establishing the connection is used for all callbacks
+        I18n.with_locale(@locale) { __send__(:"on_#{event_type}", event) }
+      end
     end
 
     # This registers empty default callbacks.
