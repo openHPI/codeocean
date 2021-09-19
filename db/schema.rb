@@ -112,7 +112,7 @@ ActiveRecord::Schema.define(version: 2021_06_02_071834) do
     t.integer "file_type_id"
     t.integer "memory_limit"
     t.boolean "network_enabled"
-    t.integer "cpu_limit", default: 20
+    t.integer "cpu_limit", default: 20, null: false
   end
 
   create_table "exercise_collection_items", id: :serial, force: :cascade do |t|
