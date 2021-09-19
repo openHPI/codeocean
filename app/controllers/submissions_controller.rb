@@ -270,11 +270,6 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  # def set_docker_client
-  #  @docker_client = DockerClient.new(execution_environment: @submission.execution_environment)
-  # end
-  # private :set_docker_client
-
   def set_file
     @file = @files.detect {|file| file.name_with_extension == sanitize_filename }
     head :not_found unless @file
