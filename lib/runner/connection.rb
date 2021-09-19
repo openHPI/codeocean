@@ -31,18 +31,21 @@ class Runner::Connection
     @exit_code = 1
   end
 
+  # Register a callback based on the WebSocket connection state
   def on(event, &block)
     return unless EVENTS.include? event
 
     instance_variable_set(:"@#{event}_callback", block)
   end
 
+  # Send arbitrary data in the WebSocket connection
   def send(raw_data)
     encoded_message = encode(raw_data)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Sending to #{@socket.url}: #{encoded_message.inspect}" }
     @socket.send(encoded_message)
   end
 
+  # Close the WebSocket connection
   def close(status)
     return unless active?
 
@@ -50,6 +53,7 @@ class Runner::Connection
     @socket.close
   end
 
+  # Check if the WebSocket connection is currently established
   def active?
     @status == :established
   end
@@ -63,6 +67,10 @@ class Runner::Connection
   def encode(_data)
     raise NotImplementedError
   end
+
+  # === WebSocket Callbacks
+  # These callbacks are executed based on events indicated by Faye WebSockets and are
+  # independent of the JSON specification that is used within the WebSocket once established.
 
   def on_message(raw_event)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Receiving from #{@socket.url}: #{raw_event.data.inspect}" }
@@ -100,6 +108,14 @@ class Runner::Connection
     end
     @event_loop.stop
   end
+
+  # === Message Handlers
+  # Each message type indicated by the +type+ attribute in the JSON
+  # sent be the runner management has a dedicated method.
+  # Context:: All registered handlers are executed in the scope of
+  #           the bindings they had where they were registered.
+  #           Information not stored in the binding, such as the
+  #           locale or call stack are not available during execution!
 
   def handle_exit(event)
     @status = :terminated_by_management
