@@ -5,8 +5,6 @@ class Submission < ApplicationRecord
   include Creation
   include ActionCableHelper
 
-  require 'concurrent/future'
-
   CAUSES = %w[assess download file render run save submit test autosave requestComments remoteAssess
               remoteSubmit].freeze
   FILENAME_URL_PLACEHOLDER = '{filename}'

@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'concurrent/future'
-require 'concurrent/timer_task'
-
 # get_container, destroy_container was moved to lib/runner/strategy/docker_container_pool.rb.
 # return_container is not used anymore because runners are not shared between users anymore.
 # create_container is done by the DockerContainerPool.

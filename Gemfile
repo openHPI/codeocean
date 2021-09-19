@@ -46,7 +46,6 @@ gem 'webpacker'
 gem 'whenever', require: false
 
 # Error Tracing
-gem 'concurrent-ruby'
 gem 'mnemosyne-ruby'
 gem 'newrelic_rpm'
 gem 'sentry-rails'
