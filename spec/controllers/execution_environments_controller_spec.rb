@@ -196,6 +196,19 @@ describe ExecutionEnvironmentsController do
   describe '#sync_all_to_runner_management' do
     let(:execution_environments) { FactoryBot.build_list(:ruby, 3) }
 
+    let(:codeocean_config) { instance_double(CodeOcean::Config) }
+    let(:runner_management_config) { {runner_management: {enabled: true, strategy: :poseidon}} }
+
+    before do
+      allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+      allow(codeocean_config).to receive(:read).and_return(runner_management_config)
+    end
+
+    after do
+      # Reset the memorized helper
+      Runner.remove_instance_variable :@strategy_class
+    end
+
     it 'copies all execution environments to the runner management' do
       allow(ExecutionEnvironment).to receive(:all).and_return(execution_environments)
 
