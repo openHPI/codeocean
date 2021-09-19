@@ -163,7 +163,7 @@ describe Runner::Strategy::Poseidon do
         .stub_request(:post, "#{described_class.config[:url]}/runners")
         .with(
           body: {
-            executionEnvironmentId: execution_environment.id, 
+            executionEnvironmentId: execution_environment.id,
             inactivityTimeout: described_class.config[:unused_runner_expiration_time].seconds,
           },
           headers: {'Content-Type' => 'application/json'}
