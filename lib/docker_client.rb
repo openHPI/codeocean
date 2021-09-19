@@ -230,7 +230,7 @@ class DockerClient
     Rails.logger.info("destroying container #{container}")
 
     # Checks only if container assignment is not nil and not whether the container itself is still present.
-    if container && !DockerContainerPool.config[:active]
+    if container && !DockerContainerPool.active?
       container.kill
       container.port_bindings.each_value {|port| PortPool.release(port) }
       begin
@@ -355,7 +355,7 @@ container_execution_time: nil}
     exit_thread_if_alive
     @socket.close
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
-    if DockerContainerPool.config[:active] && RECYCLE_CONTAINERS
+    if DockerContainerPool.active? && RECYCLE_CONTAINERS
       self.class.return_container(container,
         @execution_environment)
     else
@@ -493,7 +493,7 @@ container_execution_time: nil}
     end
 
     # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
-    if DockerContainerPool.config[:active] && RECYCLE_CONTAINERS
+    if DockerContainerPool.active? && RECYCLE_CONTAINERS
       self.class.return_container(container, @execution_environment)
     else
       self.class.destroy_container(container)

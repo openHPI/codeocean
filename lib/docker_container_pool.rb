@@ -9,6 +9,11 @@ require 'concurrent/timer_task'
 # dump_info and quantities are still in use.
 
 class DockerContainerPool
+  def self.active?
+    # TODO: Refactor config and merge with code_ocean.yml
+    config[:active] && Runner.management_active? && Runner.strategy_class == Runner::Strategy::DockerContainerPool
+  end
+
   def self.config
     # TODO: Why erb?
     @config ||= CodeOcean::Config.new(:docker).read(erb: true)[:pool]
@@ -39,7 +44,7 @@ class DockerContainerPool
 
   def self.get_container(execution_environment)
     # if pooling is active, do pooling, otherwise just create an container and return it
-    if config[:active]
+    if active?
       begin
         container_id = JSON.parse(Faraday.get("#{config[:location]}/docker_container_pool/get_container/#{execution_environment.id}").body)['id']
         Docker::Container.get(container_id) if container_id.present?
