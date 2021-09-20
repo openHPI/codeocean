@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Runner::Strategy::DockerContainerPool < Runner::Strategy
-  attr_reader :container_id, :command, :execution_environment
+  attr_reader :container_id, :command
 
   def self.config
     # Since the docker configuration file contains code that must be executed, we use ERB templating.
@@ -128,9 +128,14 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
           # TODO: Can we use the actual exit code here?
           @exit_code = 0
           close(:terminated_by_codeocean)
-        when /#{format(@strategy.execution_environment.test_command, class_name: '.*', filename: '.*', module_name: '.*')}/
-          # TODO: Super dirty hack to redirect test output to stderr (remove attr_reader afterwards)
+        when /python3.*-m\s*unittest/
+          # TODO: Super dirty hack to redirect test output to stderr
+          # This is only required for Python and the unittest module but must not be used with PyLint
           @stream = 'stderr'
+        when /\*\*\*\*\*\*\*\*\*\*\*\*\* Module/
+          # Identification of PyLint output, change stream back to stdout and return event
+          @stream = 'stdout'
+          {'type' => @stream, 'data' => raw_event.data}
         when /#{@strategy.command}/
         when /bash: cmd:canvasevent: command not found/
         else
