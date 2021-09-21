@@ -2613,10 +2613,10 @@ d3-zoom@3:
     d3-selection "2 - 3"
     d3-transition "2 - 3"
 
-d3@^7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/d3/-/d3-7.0.2.tgz#c1294a8d467024d78c2b230f795397836339faf8"
-  integrity sha512-p3Leyce0kNyHOhkJ0kHLM5SdWTMQRDd3TKDkh6uv0VX+MhRMZH3E/bduq5uxW+HnECccmRJjOahte0OieeK/VQ==
+d3@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/d3/-/d3-7.0.3.tgz#5c100c0522fedadc2aec43243b16e881e8c07143"
+  integrity sha512-BEQCpEXI+Z9OnnlXLaS6txoYZZvvXuRyjZoudPuAnWGVOzHxGWC0TL8XRUs7V7IeZQPLfvGztcl54+jgOe122g==
   dependencies:
     d3-array "3"
     d3-axis "3"
