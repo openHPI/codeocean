@@ -556,7 +556,6 @@ DEPENDENCIES
   capybara
   carrierwave
   charlock_holmes
-  concurrent-ruby
   database_cleaner
   docker-api
   eventmachine

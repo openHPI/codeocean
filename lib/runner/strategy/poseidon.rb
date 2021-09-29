@@ -16,7 +16,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
   def self.sync_environment(environment)
     url = "#{config[:url]}/execution-environments/#{environment.id}"
-    response = Faraday.put(url, environment.to_json, HEADERS)
+    connection = Faraday.new nil, ssl: {ca_file: config[:ca_file]}
+    response = connection.put url, environment.to_json, HEADERS
     return true if [201, 204].include? response.status
 
     Rails.logger.warn("Could not create execution environment in Poseidon, got response: #{response.as_json}")
@@ -32,7 +33,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
       executionEnvironmentId: environment.id,
       inactivityTimeout: config[:unused_runner_expiration_time].seconds,
     }
-    response = Faraday.post(url, body.to_json, HEADERS)
+    connection = Faraday.new nil, ssl: {ca_file: config[:ca_file]}
+    response = connection.post url, body.to_json, HEADERS
 
     case response.status
       when 200
@@ -91,7 +93,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     end
     url = "#{runner_url}/files"
     body = {copy: copy}
-    response = Faraday.patch(url, body.to_json, HEADERS)
+    connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
+    response = connection.patch url, body.to_json, HEADERS
     return if response.status == 204
 
     Runner.destroy(@allocation_id) if response.status == 400
@@ -108,7 +111,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def destroy_at_management
-    response = Faraday.delete runner_url
+    connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
+    response = connection.delete runner_url, nil, HEADERS
     self.class.handle_error response unless response.status == 204
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
@@ -119,7 +123,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   def execute_command(command)
     url = "#{runner_url}/execute"
     body = {command: command, timeLimit: @execution_environment.permitted_execution_time}
-    response = Faraday.post(url, body.to_json, HEADERS)
+    connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
+    response = connection.post url, body.to_json, HEADERS
     case response.status
       when 200
         response_body = self.class.parse response
