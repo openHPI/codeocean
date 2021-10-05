@@ -118,7 +118,7 @@ describe ProformaService::ConvertTaskToExercise do
       end
 
       context 'when file is very large' do
-        let(:content) { 'test' * 10**5 }
+        let(:content) { 'test' * (10**5) }
 
         it 'creates an exercise with a file that has the correct attributes' do
           expect(convert_to_exercise_service.files.first).to have_attributes(content: content)

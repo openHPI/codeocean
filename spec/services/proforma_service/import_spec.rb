@@ -83,7 +83,7 @@ describe ProformaService::Import do
       it { is_expected.to be_an_equal_exercise_as exercise }
 
       context 'when the mainfile is very large' do
-        let(:file) { FactoryBot.build(:file, content: 'test' * 10**5) }
+        let(:file) { FactoryBot.build(:file, content: 'test' * (10**5)) }
 
         it { is_expected.to be_an_equal_exercise_as exercise }
       end

@@ -51,7 +51,7 @@ namespace :detect_exercise_anomalies do
   end
 
   def log(message = '', indent_level = 0, prefix = '')
-    puts("\t" * indent_level + "#{prefix}#{message}")
+    puts(("\t" * indent_level) + "#{prefix}#{message}")
   end
 
   def get_collections(number_of_exercises, number_of_solutions)

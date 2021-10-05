@@ -6,7 +6,7 @@ module FileParameters
       params.reject do |_, file_attributes|
         file = CodeOcean::File.find_by(id: file_attributes[:file_id])
         # avoid that public files from other contexts can be created
-        file.nil? || file.hidden || file.read_only || file.context_type == 'Exercise' && file.context_id != exercise.id
+        file.nil? || file.hidden || file.read_only || (file.context_type == 'Exercise' && file.context_id != exercise.id)
       end
     else
       []

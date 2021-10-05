@@ -6,7 +6,7 @@ class StudyGroupPolicy < AdminOnlyPolicy
   end
 
   %i[show? destroy? edit? update? stream_la?].each do |action|
-    define_method(action) { admin? || @user.teacher? && @record.present? && @user.study_groups.exists?(@record.id) }
+    define_method(action) { admin? || (@user.teacher? && @record.present? && @user.study_groups.exists?(@record.id)) }
   end
 
   class Scope < Scope

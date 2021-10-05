@@ -6,7 +6,7 @@ class ProxyExercisePolicy < AdminOrAuthorPolicy
   end
 
   def show?
-    admin? || teacher_in_study_group? || teacher? && @record.public? || author?
+    admin? || teacher_in_study_group? || (teacher? && @record.public?) || author?
   end
 
   %i[clone? destroy? edit? update?].each do |action|

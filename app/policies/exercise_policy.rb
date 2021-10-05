@@ -6,7 +6,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
   end
 
   %i[show? feedback? statistics? rfcs_for_exercise?].each do |action|
-    define_method(action) { admin? || teacher_in_study_group? || teacher? && @record.public? || author? }
+    define_method(action) { admin? || teacher_in_study_group? || (teacher? && @record.public?) || author? }
   end
 
   def study_group_dashboard?

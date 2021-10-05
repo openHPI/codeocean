@@ -68,7 +68,9 @@ class Exercise < ApplicationRecord
     if submissions.exists?(cause: 'submit')
       maximum_scores_query = submissions.select('MAX(score) AS maximum_score').group(:user_id).to_sql.sub('$1', id.to_s)
       self.class.connection.execute("SELECT AVG(maximum_score) AS average_score FROM (#{maximum_scores_query}) AS maximum_scores").first['average_score'].to_f
-    else 0 end
+    else
+      0
+    end
   end
 
   def average_number_of_submissions

@@ -93,7 +93,7 @@ describe Submission do
   describe '#redirect_to_feedback?' do
     context 'with no exercise feedback' do
       let(:exercise) { FactoryBot.create(:dummy) }
-      let(:user) { FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10) }
+      let(:user) { FactoryBot.build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) % 10) }
       let(:submission) { FactoryBot.build(:submission, exercise: exercise, user: user) }
 
       it 'sends 10% of users to feedback page' do
@@ -102,7 +102,7 @@ describe Submission do
 
       it 'does not redirect other users' do
         9.times do |i|
-          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
+          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryBot.build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end
@@ -110,7 +110,7 @@ describe Submission do
 
     context 'with little exercise feedback' do
       let(:exercise) { FactoryBot.create(:dummy_with_user_feedbacks) }
-      let(:user) { FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) % 10) }
+      let(:user) { FactoryBot.build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) % 10) }
       let(:submission) { FactoryBot.build(:submission, exercise: exercise, user: user) }
 
       it 'sends 10% of users to feedback page' do
@@ -119,7 +119,7 @@ describe Submission do
 
       it 'does not redirect other users' do
         9.times do |i|
-          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryBot.build(:external_user, id: (11 - exercise.created_at.to_i % 10) - i - 1))
+          submission = FactoryBot.build(:submission, exercise: exercise, user: FactoryBot.build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end
