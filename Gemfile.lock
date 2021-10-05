@@ -164,7 +164,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    faraday (1.7.2)
+    faraday (1.8.0)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -451,11 +451,11 @@ GEM
     sentry-rails (4.7.2)
       railties (>= 5.0)
       sentry-ruby-core (~> 4.7.0)
-    sentry-ruby (4.7.2)
+    sentry-ruby (4.7.3)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       faraday (>= 1.0)
-      sentry-ruby-core (= 4.7.2)
-    sentry-ruby-core (4.7.2)
+      sentry-ruby-core (= 4.7.3)
+    sentry-ruby-core (4.7.3)
       concurrent-ruby
       faraday
     set (1.0.1)
