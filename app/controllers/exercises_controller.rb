@@ -231,7 +231,7 @@ raise: false
     if exercise_params
       exercise_params[:files_attributes].try(:each) do |index, file_attributes|
         if file_attributes[:content].respond_to?(:read)
-          file_params = params[:exercise][:files_attributes][index]
+          file_params = exercise_params[:files_attributes][index]
           if FileType.find_by(id: file_attributes[:file_type_id]).try(:binary?)
             file_params[:content] = nil
             file_params[:native_file] = file_attributes[:content]
