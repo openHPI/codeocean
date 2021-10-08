@@ -7,7 +7,8 @@ class ApplicationRecord < ActiveRecord::Base
 
   def strip_strings
     # trim whitespace from beginning and end of string attributes
-    attribute_names.each do |name|
+    # except for the `content` of CodeOcean::Files
+    attribute_names.without('content').each do |name|
       if send(name.to_sym).respond_to?(:strip)
         send("#{name}=".to_sym, send(name).strip)
       end
