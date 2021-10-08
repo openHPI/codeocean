@@ -201,11 +201,29 @@ raise: false
   private :user_by_codeharbor_token
 
   def exercise_params
-    if params[:exercise].present?
-      params[:exercise].permit(:description, :execution_environment_id, :file_id, :instructions, :submission_deadline, :late_submission_deadline, :public, :unpublished, :hide_file_tree, :allow_file_creation, :allow_auto_completion, :title, :expected_difficulty, :tips, files_attributes: file_attributes, tag_ids: []).merge(
-        user_id: current_user.id, user_type: current_user.class.name
-      )
-    end
+    @exercise_params ||= if params[:exercise].present?
+                           params[:exercise].permit(
+                             :description,
+                             :execution_environment_id,
+                             :file_id,
+                             :instructions,
+                             :submission_deadline,
+                             :late_submission_deadline,
+                             :public,
+                             :unpublished,
+                             :hide_file_tree,
+                             :allow_file_creation,
+                             :allow_auto_completion,
+                             :title,
+                             :expected_difficulty,
+                             :tips,
+                             files_attributes: file_attributes,
+                             tag_ids: []
+                           ).merge(
+                             user_id: current_user.id,
+                             user_type: current_user.class.name
+                           )
+                         end
   end
   private :exercise_params
 
