@@ -159,6 +159,8 @@ Rails.application.routes.draw do
   post '/evaluate', to: 'remote_evaluation#evaluate', via: [:post]
   post '/submit', to: 'remote_evaluation#submit', via: [:post]
 
+  resources :ping, only: :index, defaults: {format: :json}
+
   mount ActionCable.server => '/cable'
   mount RailsAdmin::Engine => '/rails_admin', as: 'rails_admin'
 end
