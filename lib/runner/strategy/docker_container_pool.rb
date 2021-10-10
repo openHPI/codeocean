@@ -121,9 +121,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
       "#{data}\n"
     end
 
-    def decode(raw_event)
-      case raw_event.data
-        when /@#{@strategy.container_id[0..11]}/
+    def decode(event_data)
+      case event_data
+        when /(@#{@strategy.container_id[0..11]}|#exit)/
           # Assume correct termination for now and return exit code 0
           # TODO: Can we use the actual exit code here?
           @exit_code = 0
@@ -135,11 +135,11 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
         when /\*\*\*\*\*\*\*\*\*\*\*\*\* Module/
           # Identification of PyLint output, change stream back to stdout and return event
           @stream = 'stdout'
-          {'type' => @stream, 'data' => raw_event.data}
+          {'type' => @stream, 'data' => event_data}
         when /#{@strategy.command}/
         when /bash: cmd:canvasevent: command not found/
         else
-          {'type' => @stream, 'data' => raw_event.data}
+          {'type' => @stream, 'data' => event_data}
       end
     end
   end

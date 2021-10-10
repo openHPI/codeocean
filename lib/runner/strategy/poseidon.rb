@@ -151,8 +151,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   class Connection < Runner::Connection
-    def decode(raw_event)
-      JSON.parse(raw_event.data)
+    def decode(event_data)
+      JSON.parse(event_data)
     rescue JSON::ParserError => e
       @error = Runner::Error::UnexpectedResponse.new("The WebSocket message from Poseidon could not be decoded to JSON: #{e.inspect}")
       close(:error)

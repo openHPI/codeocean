@@ -78,16 +78,22 @@ class Runner::Connection
 
   def on_message(raw_event)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Receiving from #{@socket.url}: #{raw_event.data.inspect}" }
-    event = decode(raw_event)
-    return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
+    # The WebSocket connection might group multiple lines. For further processing, we require all lines
+    # to be processed separately. Therefore, we split the lines by each newline character not part of an enclosed
+    # substring either in single or double quotes (e.g., within a JSON)
+    # Inspired by https://stackoverflow.com/questions/13040585/split-string-by-spaces-properly-accounting-for-quotes-and-backslashes-ruby
+    raw_event.data.scan(/(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^"\n])+/).each do |event_data|
+      event = decode(event_data)
+      next unless BACKEND_OUTPUT_SCHEMA.valid?(event)
 
-    event = event.deep_symbolize_keys
-    message_type = event[:type].to_sym
-    if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
-      __send__("handle_#{message_type}", event)
-    else
-      @error = Runner::Error::UnexpectedResponse.new("Unknown WebSocket message type: #{message_type}")
-      close(:error)
+      event = event.deep_symbolize_keys
+      message_type = event[:type].to_sym
+      if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
+        __send__("handle_#{message_type}", event)
+      else
+        @error = Runner::Error::UnexpectedResponse.new("Unknown WebSocket message type: #{message_type}")
+        close(:error)
+      end
     end
   end
 
