@@ -364,7 +364,7 @@ describe DockerClient, docker: true do
     end
 
     it 'provides the command to be executed as input' do
-      pending('we are currently not using any input and for output server send events instead of attach.')
+      pending('we are currently not using attach but rather exec.')
       expect(container).to receive(:attach).with(stdin: kind_of(StringIO))
     end
 

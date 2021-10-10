@@ -315,22 +315,6 @@ class SubmissionsController < ApplicationController
   #   end
   # end
 
-  def with_server_sent_events
-    response.headers['Content-Type'] = 'text/event-stream'
-    server_sent_event = SSE.new(response.stream)
-    server_sent_event.write(nil, event: 'start')
-    yield(server_sent_event) if block_given?
-    server_sent_event.write({code: 200}, event: 'close')
-  rescue StandardError => e
-    Sentry.capture_exception(e)
-    logger.error(e.message)
-    logger.error(e.backtrace.join("\n"))
-    server_sent_event.write({code: 500}, event: 'close')
-  ensure
-    server_sent_event.close
-  end
-  private :with_server_sent_events
-
   def create_remote_evaluation_mapping
     user = @submission.user
     exercise_id = @submission.exercise_id
