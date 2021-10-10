@@ -59,10 +59,6 @@ class SubmissionsController < ApplicationController
   def download
     raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
 
-    # files = @submission.files.map{ }
-    # zipline( files, 'submission.zip')
-    # send_data(@file.content, filename: @file.name_with_extension)
-
     id_file = create_remote_evaluation_mapping
 
     stringio = Zip::OutputStream.write_buffer do |zio|
