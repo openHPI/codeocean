@@ -5,7 +5,7 @@ require 'json_schemer'
 
 class Runner::Connection
   # These are events for which callbacks can be registered.
-  EVENTS = %i[start output exit stdout stderr].freeze
+  EVENTS = %i[start exit stdout stderr].freeze
   WEBSOCKET_MESSAGE_TYPES = %i[start stdout stderr error timeout exit].freeze
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
 
@@ -134,12 +134,10 @@ class Runner::Connection
 
   def handle_stdout(event)
     @stdout_callback.call event[:data]
-    @output_callback.call event[:data]
   end
 
   def handle_stderr(event)
     @stderr_callback.call event[:data]
-    @output_callback.call event[:data]
   end
 
   def handle_error(_event); end
