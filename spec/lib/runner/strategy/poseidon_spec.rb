@@ -108,7 +108,9 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { -1 }
 
       it 'raises an error' do
-        %i[post patch delete].each {|message| allow(Faraday).to receive(message).and_raise(Faraday::TimeoutError) }
+        faraday_connection = instance_double 'Faraday::Connection'
+        allow(Faraday).to receive(:new).and_return(faraday_connection)
+        %i[post patch delete].each {|message| allow(faraday_connection).to receive(message).and_raise(Faraday::TimeoutError) }
         expect { action.call }.to raise_error(Runner::Error::FaradayError)
       end
     end
@@ -119,9 +121,11 @@ describe Runner::Strategy::Poseidon do
     let(:execution_environment) { FactoryBot.create(:ruby) }
 
     it 'makes the correct request to Poseidon' do
-      allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: 201))
+      faraday_connection = instance_double 'Faraday::Connection'
+      allow(Faraday).to receive(:new).and_return(faraday_connection)
+      allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: 201))
       action.call
-      expect(Faraday).to have_received(:put) do |url, body, headers|
+      expect(faraday_connection).to have_received(:put) do |url, body, headers|
         expect(url).to match(%r{execution-environments/#{execution_environment.id}\z})
         expect(body).to eq(execution_environment.to_json)
         expect(headers).to include({'Content-Type' => 'application/json'})
@@ -130,14 +134,18 @@ describe Runner::Strategy::Poseidon do
 
     shared_examples 'returns true when the api request was successful' do |status|
       it "returns true on status #{status}" do
-        allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: status))
+        faraday_connection = instance_double 'Faraday::Connection'
+        allow(Faraday).to receive(:new).and_return(faraday_connection)
+        allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
         expect(action.call).to be_truthy
       end
     end
 
     shared_examples 'returns false when the api request failed' do |status|
       it "returns false on status #{status}" do
-        allow(Faraday).to receive(:put).and_return(Faraday::Response.new(status: status))
+        faraday_connection = instance_double 'Faraday::Connection'
+        allow(Faraday).to receive(:new).and_return(faraday_connection)
+        allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
         expect(action.call).to be_falsey
       end
     end
@@ -151,7 +159,9 @@ describe Runner::Strategy::Poseidon do
     end
 
     it 'returns false if Faraday raises an error' do
-      allow(Faraday).to receive(:put).and_raise(Faraday::TimeoutError)
+      faraday_connection = instance_double 'Faraday::Connection'
+      allow(Faraday).to receive(:new).and_return(faraday_connection)
+      allow(faraday_connection).to receive(:put).and_raise(Faraday::TimeoutError)
       expect(action.call).to be_falsey
     end
   end
