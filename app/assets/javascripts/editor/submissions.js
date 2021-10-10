@@ -26,8 +26,7 @@ CodeOceanEditorSubmissions = {
           cause: $(initiator).data('cause') || $(initiator).prop('id'),
           exercise_id: $('#editor').data('exercise-id'),
           files_attributes: (filter || _.identity)(this.collectFiles())
-        },
-        annotations_arr: []
+        }
       },
       dataType: 'json',
       method: 'POST',

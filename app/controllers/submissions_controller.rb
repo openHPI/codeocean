@@ -7,53 +7,16 @@ class SubmissionsController < ApplicationController
   include SubmissionParameters
   include Tubesock::Hijack
 
-  before_action :set_submission,
-    only: %i[download download_file render_file run score extract_errors show statistics]
+  before_action :set_submission, only: %i[download download_file render_file run score show statistics]
   before_action :set_files, only: %i[download download_file render_file show run]
   before_action :set_file, only: %i[download_file render_file run]
   before_action :set_mime_type, only: %i[download_file render_file]
   skip_before_action :verify_authenticity_token, only: %i[download_file render_file]
 
-  def max_output_buffer_size
-    if @submission.cause == 'requestComments'
-      5000
-    else
-      500
-    end
-  end
-
-  def authorize!
-    authorize(@submission || @submissions)
-  end
-  private :authorize!
-
   def create
     @submission = Submission.new(submission_params)
     authorize!
-    copy_comments
     create_and_respond(object: @submission)
-  end
-
-  def copy_comments
-    # copy each annotation and set the target_file.id
-    params[:annotations_arr]&.each do |annotation|
-      # comment = Comment.new(annotation[1].permit(:user_id, :file_id, :user_type, :row, :column, :text, :created_at, :updated_at))
-      comment = Comment.new(user_id: annotation[1][:user_id], file_id: annotation[1][:file_id],
-        user_type: current_user.class.name, row: annotation[1][:row], column: annotation[1][:column], text: annotation[1][:text])
-      source_file = CodeOcean::File.find(annotation[1][:file_id])
-
-      # retrieve target file
-      target_file = @submission.files.detect do |file|
-        # file_id has to be that of a the former iteration OR of the initial file (if this is the first run)
-        file.file_id == source_file.file_id || file.file_id == source_file.id # seems to be needed here: (check this): || file.file_id == source_file.id ; yes this is needed, for comments on templates as well as comments on files added by users.
-      end
-
-      # save to assign an id
-      target_file.save!
-
-      comment.file_id = target_file.id
-      comment.save!
-    end
   end
 
   def download
@@ -201,47 +164,6 @@ class SubmissionsController < ApplicationController
     save_run_output
   end
 
-  def extract_durations(error)
-    @container_execution_time = error.execution_duration
-    @waiting_for_container_time = error.waiting_duration
-  end
-  private :extract_durations
-
-  def close_client_connection(client_socket)
-    # search for errors and save them as StructuredError (for scoring runs see submission.rb)
-    errors = extract_errors
-    send_hints(client_socket, errors)
-    kill_client_socket(client_socket)
-  end
-
-  def kill_client_socket(client_socket)
-    client_socket.send_data JSON.dump({cmd: :exit})
-    client_socket.close
-  end
-
-  # save the output of this "run" as a "testrun" (scoring runs are saved in submission.rb)
-  def save_run_output
-    Testrun.create(
-      file: @file,
-      cause: 'run',
-      submission: @submission,
-      output: @output,
-      container_execution_time: @container_execution_time,
-      waiting_for_container_time: @waiting_for_container_time
-    )
-  end
-
-  def extract_errors
-    results = []
-    if @output.present?
-      @submission.exercise.execution_environment.error_templates.each do |template|
-        pattern = Regexp.new(template.signature).freeze
-        results << StructuredError.create_from_template(template, @output, @submission) if pattern.match(@output)
-      end
-    end
-    results
-  end
-
   def score
     hijack do |tubesock|
       return if @embed_options[:disable_run]
@@ -256,38 +178,6 @@ class SubmissionsController < ApplicationController
       kill_client_socket(tubesock)
     end
   end
-
-  def send_hints(tubesock, errors)
-    return if @embed_options[:disable_hints]
-
-    errors = errors.to_a.uniq(&:hint)
-    errors.each do |error|
-      tubesock.send_data JSON.dump({cmd: 'hint', hint: error.hint, description: error.error_template.description})
-    end
-  end
-
-  def set_file
-    @file = @files.detect {|file| file.name_with_extension == sanitize_filename }
-    head :not_found unless @file
-  end
-  private :set_file
-
-  def set_files
-    @files = @submission.collect_files.select(&:visible)
-  end
-  private :set_files
-
-  def set_mime_type
-    @mime_type = Mime::Type.lookup_by_extension(@file.file_type.file_extension.gsub(/^\./, ''))
-    response.headers['Content-Type'] = @mime_type.to_s
-  end
-  private :set_mime_type
-
-  def set_submission
-    @submission = Submission.find(params[:id])
-    authorize!
-  end
-  private :set_submission
 
   def show; end
 
@@ -310,6 +200,24 @@ class SubmissionsController < ApplicationController
   #     tubesock.send_data JSON.dump('cmd' => 'exit')
   #   end
   # end
+
+  private
+
+  def authorize!
+    authorize(@submission || @submissions)
+  end
+
+  def close_client_connection(client_socket)
+    # search for errors and save them as StructuredError (for scoring runs see submission.rb)
+    errors = extract_errors
+    send_hints(client_socket, errors)
+    kill_client_socket(client_socket)
+  end
+
+  def kill_client_socket(client_socket)
+    client_socket.send_data JSON.dump({cmd: :exit})
+    client_socket.close
+  end
 
   def create_remote_evaluation_mapping
     user = @submission.user
@@ -337,7 +245,71 @@ class SubmissionsController < ApplicationController
     path
   end
 
+  def extract_durations(error)
+    @container_execution_time = error.execution_duration
+    @waiting_for_container_time = error.waiting_duration
+  end
+
+  def extract_errors
+    results = []
+    if @output.present?
+      @submission.exercise.execution_environment.error_templates.each do |template|
+        pattern = Regexp.new(template.signature).freeze
+        results << StructuredError.create_from_template(template, @output, @submission) if pattern.match(@output)
+      end
+    end
+    results
+  end
+
+  def max_output_buffer_size
+    if @submission.cause == 'requestComments'
+      5000
+    else
+      500
+    end
+  end
+
   def sanitize_filename
     params[:filename].gsub(/\.json$/, '')
+  end
+
+  # save the output of this "run" as a "testrun" (scoring runs are saved in submission.rb)
+  def save_run_output
+    Testrun.create(
+      file: @file,
+      cause: 'run',
+      submission: @submission,
+      output: @output,
+      container_execution_time: @container_execution_time,
+      waiting_for_container_time: @waiting_for_container_time
+    )
+  end
+
+  def send_hints(tubesock, errors)
+    return if @embed_options[:disable_hints]
+
+    errors = errors.to_a.uniq(&:hint)
+    errors.each do |error|
+      tubesock.send_data JSON.dump({cmd: 'hint', hint: error.hint, description: error.error_template.description})
+    end
+  end
+
+  def set_file
+    @file = @files.detect {|file| file.name_with_extension == sanitize_filename }
+    head :not_found unless @file
+  end
+
+  def set_files
+    @files = @submission.collect_files.select(&:visible)
+  end
+
+  def set_mime_type
+    @mime_type = Mime::Type.lookup_by_extension(@file.file_type.file_extension.gsub(/^\./, ''))
+    response.headers['Content-Type'] = @mime_type.to_s
+  end
+
+  def set_submission
+    @submission = Submission.find(params[:id])
+    authorize!
   end
 end
