@@ -64,7 +64,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     socket = Connection.new(websocket_url, self, event_loop)
     begin
       Timeout.timeout(@execution_environment.permitted_execution_time) do
-        socket.send(command)
+        socket.send_data(command)
         yield(socket)
         event_loop.wait
         event_loop.stop

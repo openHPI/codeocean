@@ -43,7 +43,7 @@ class Runner::Connection
   end
 
   # Send arbitrary data in the WebSocket connection
-  def send(raw_data)
+  def send_data(raw_data)
     encoded_message = encode(raw_data)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Sending to #{@socket.url}: #{encoded_message.inspect}" }
     @socket.send(encoded_message)

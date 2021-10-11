@@ -95,21 +95,23 @@ class SubmissionsController < ApplicationController
         runner_socket&.close(:terminated_by_client)
       end
 
-      client_socket.onmessage do |event|
-        event = JSON.parse(event).deep_symbolize_keys
+      client_socket.onmessage do |raw_event|
+        event = JSON.parse(raw_event).deep_symbolize_keys
         case event[:cmd].to_sym
           when :client_kill
             close_client_connection(client_socket)
             Rails.logger.debug('Client exited container.')
-          when :result
+          when :result, :canvasevent, :exception
             # The client cannot send something before the runner connection is established.
             if runner_socket.present?
-              runner_socket.send event[:data]
+              runner_socket.send_data raw_event
             else
               Rails.logger.info("Could not forward data from client because runner connection was not established yet: #{event[:data].inspect}")
             end
           else
             Rails.logger.info("Unknown command from client: #{event[:cmd]}")
+            Sentry.set_extras(event: event)
+            Sentry.capture_message("Unknown command from client: #{event[:cmd]}")
         end
       rescue JSON::ParserError => e
         Rails.logger.info("Data received from client is not valid json: #{data.inspect}")
