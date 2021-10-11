@@ -130,13 +130,13 @@ class SubmissionsController < ApplicationController
       client_socket.send_data JSON.dump({cmd: :status, status: :container_running})
 
       runner_socket.on :stdout do |data|
-        json_data = JSON.dump({cmd: :write, stream: :stdout, data: data})
+        json_data = prepare data, :stdout
         @output << json_data[0, max_output_buffer_size - @output.size]
         client_socket.send_data(json_data)
       end
 
       runner_socket.on :stderr do |data|
-        json_data = JSON.dump({cmd: :write, stream: :stderr, data: data})
+        json_data = prepare data, :stderr
         @output << json_data[0, max_output_buffer_size - @output.size]
         client_socket.send_data(json_data)
       end
@@ -271,6 +271,14 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  def prepare(data, stream)
+    if valid_command? data
+      data
+    else
+      JSON.dump({cmd: :write, stream: stream, data: data})
+    end
+  end
+
   def sanitize_filename
     params[:filename].gsub(/\.json$/, '')
   end
@@ -313,5 +321,12 @@ class SubmissionsController < ApplicationController
   def set_submission
     @submission = Submission.find(params[:id])
     authorize!
+  end
+
+  def valid_command?(data)
+    parsed = JSON.parse(data)
+    parsed.instance_of?(Hash) && parsed.key?('cmd')
+  rescue JSON::ParserError
+    false
   end
 end
