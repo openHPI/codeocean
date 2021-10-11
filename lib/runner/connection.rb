@@ -113,15 +113,23 @@ class Runner::Connection
   def on_close(_event)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}" }
     forward_message @buffer.flush
+
+    # Depending on the status, we might want to destroy the runner at management.
+    # This ensures we get a new runner on the next request.
+    # All failing runs, those cancelled by the user or those hitting a timeout or error are subject to this mechanism.
+
     case @status
       when :timeout
+        @strategy.destroy_at_management
         @error = Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
       when :terminated_by_codeocean, :terminated_by_management
         @exit_callback.call @exit_code
       when :terminated_by_client, :error
+        @strategy.destroy_at_management
       else # :established
         # If the runner is killed by the DockerContainerPool after the maximum allowed time per user and
         # while the owning user is running an execution, the command execution stops and log output is incomplete.
+        @strategy.destroy_at_management
         @error = Runner::Error::Unknown.new('Execution terminated with an unknown reason')
     end
     @event_loop.stop
