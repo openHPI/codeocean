@@ -13,7 +13,11 @@ class Runner::Connection
   attr_reader :error
 
   def initialize(url, strategy, event_loop, locale = I18n.locale)
-    @socket = Faye::WebSocket::Client.new(url, [], ping: 5)
+    # The `ping` value is measured in seconds and specifies how often a Ping frame should be sent.
+    # Internally, Faye::WebSocket uses EventMachine and the `ping` value is used to wake the EventMachine thread
+    # The `tls` option is used to customize the validation of TLS connections.
+    # Passing `nil` as a `root_cert_file` is okay and done so for the DockerContainerPool.
+    @socket = Faye::WebSocket::Client.new(url, [], ping: 0.1, tls: {root_cert_file: Runner.strategy_class.config[:ca_file]})
     @strategy = strategy
     @status = :established
     @event_loop = event_loop
