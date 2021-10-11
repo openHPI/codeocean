@@ -38,6 +38,10 @@ class Runner::Connection::Buffer
     remaining_buffer
   end
 
+  def empty?
+    @line_buffer.empty? && @global_buffer.empty?
+  end
+
   private
 
   def process_and_split(message_parts, stop: false)

@@ -112,7 +112,7 @@ class Runner::Connection
 
   def on_close(_event)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}" }
-    forward_message @buffer.flush
+    forward_message @buffer.flush unless @buffer.empty?
 
     # Depending on the status, we might want to destroy the runner at management.
     # This ensures we get a new runner on the next request.
