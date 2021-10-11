@@ -18,6 +18,7 @@ class Runner::Connection
     @status = :established
     @event_loop = event_loop
     @locale = locale
+    @buffer = Buffer.new
 
     # For every event type of Faye WebSockets, the corresponding
     # RunnerConnection method starting with `on_` is called.
@@ -78,24 +79,26 @@ class Runner::Connection
 
   def on_message(raw_event)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Receiving from #{@socket.url}: #{raw_event.data.inspect}" }
-    # The WebSocket connection might group multiple lines. For further processing, we require all lines
-    # to be processed separately. Therefore, we split the lines by each newline character not part of an enclosed
-    # substring either in single or double quotes (e.g., within a JSON)
-    # Inspired by https://stackoverflow.com/questions/13040585/split-string-by-spaces-properly-accounting-for-quotes-and-backslashes-ruby
-    raw_event.data.scan(/(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^"\n])+/).each do |event_data|
-      event = decode(event_data)
-      next unless BACKEND_OUTPUT_SCHEMA.valid?(event)
-
-      event = event.deep_symbolize_keys
-      message_type = event[:type].to_sym
-      if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
-        __send__("handle_#{message_type}", event)
-      else
-        @error = Runner::Error::UnexpectedResponse.new("Unknown WebSocket message type: #{message_type}")
-        close(:error)
-      end
+    @buffer.store raw_event.data
+    @buffer.events.each do |event_data|
+      forward_message event_data
     end
   end
+
+  def forward_message(event_data)
+    event = decode(event_data)
+    return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
+
+    event = event.deep_symbolize_keys
+    message_type = event[:type].to_sym
+    if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
+      __send__("handle_#{message_type}", event)
+    else
+      @error = Runner::Error::UnexpectedResponse.new("Unknown WebSocket message type: #{message_type}")
+      close(:error)
+    end
+  end
+  private :forward_message
 
   def on_open(_event)
     @start_callback.call
@@ -105,6 +108,7 @@ class Runner::Connection
 
   def on_close(_event)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}" }
+    forward_message @buffer.flush
     case @status
       when :timeout
         @error = Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')

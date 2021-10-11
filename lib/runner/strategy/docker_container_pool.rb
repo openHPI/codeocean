@@ -124,6 +124,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     def decode(event_data)
       case event_data
         when /(@#{@strategy.container_id[0..11]}|#exit)/
+          # TODO: The whole message line is kept back. If this contains the remaining buffer, this buffer is also lost.
+          # Example: A Java program prints `{` and then exists (with `#exit`). The `event_data` processed here is `{#exit`
+
           # Assume correct termination for now and return exit code 0
           # TODO: Can we use the actual exit code here?
           @exit_code = 0
