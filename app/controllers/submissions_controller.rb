@@ -96,7 +96,15 @@ class SubmissionsController < ApplicationController
       end
 
       client_socket.onmessage do |raw_event|
-        event = JSON.parse(raw_event).deep_symbolize_keys
+        event = if raw_event == "\n"
+                  # Obviously, this is just flushing the current connection.
+                  # We temporarily wrap it and then forward the original event intentionally.
+                  {cmd: 'result'}
+                else
+                  # We expect to receive a JSON
+                  JSON.parse(raw_event).deep_symbolize_keys
+                end
+
         case event[:cmd].to_sym
           when :client_kill
             close_client_connection(client_socket)
@@ -114,12 +122,12 @@ class SubmissionsController < ApplicationController
             Sentry.capture_message("Unknown command from client: #{event[:cmd]}")
         end
       rescue JSON::ParserError => e
-        Rails.logger.info("Data received from client is not valid json: #{data.inspect}")
-        Sentry.set_extras(data: data)
+        Rails.logger.info("Data received from client is not valid json: #{raw_event.inspect}")
+        Sentry.set_extras(data: raw_event)
         Sentry.capture_exception(e)
       rescue TypeError => e
-        Rails.logger.info("JSON data received from client cannot be parsed as hash: #{data.inspect}")
-        Sentry.set_extras(data: data)
+        Rails.logger.info("JSON data received from client cannot be parsed as hash: #{raw_event.inspect}")
+        Sentry.set_extras(data: raw_event)
         Sentry.capture_exception(e)
       end
     end
