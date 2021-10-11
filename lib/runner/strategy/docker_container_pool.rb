@@ -76,6 +76,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     socket
   end
 
+  def websocket_header
+    {}
+  end
+
   private
 
   def container

@@ -28,4 +28,8 @@ class Runner::Strategy
   def attach_to_execution(_command)
     raise NotImplementedError
   end
+
+  def websocket_header
+    raise NotImplementedError
+  end
 end

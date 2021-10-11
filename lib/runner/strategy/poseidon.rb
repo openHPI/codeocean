@@ -121,6 +121,13 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   end
 
+  def websocket_header
+    {
+      tls: {root_cert_file: self.class.config[:ca_file]},
+      headers: {'Poseidon-Token' => self.class.config[:token]},
+    }
+  end
+
   private
 
   def execute_command(command)
