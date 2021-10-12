@@ -12,13 +12,30 @@ h1 = @exercise
     = "#{@exercise.submissions.send(scope).count} (#{t('.users', count: @exercise.submissions.send(scope).distinct.count(:user_id))})"
 
 = row(label: '.finishing_rate') do
-  p == @exercise.finishers.count ? "#{t('shared.out_of', maximum_value: @exercise.users.distinct.count, value: @exercise.finishers.count)} #{t('exercises.statistics.external_users')}" : empty
+  p
+    - if @exercise.finishers.count
+      span.number
+        = @exercise.finishers.count
+      =<> t('shared.out_of')
+      span.number
+        = @exercise.users.distinct.count
+      =< t('exercises.statistics.external_users')
+    - else
+      = empty
   - finishers_count = @exercise.users.distinct.count
   - finishers_percentage = finishers_count == 0 ? 0 : (100.0 / finishers_count * @exercise.finishers.count).round(2)
   p = progress_bar(finishers_percentage)
 
 = row(label: '.average_score') do
-  p == @exercise.average_score ? t('shared.out_of', maximum_value: @exercise.maximum_score, value: @exercise.average_score.round(2)) : empty
+  p
+    - if @exercise.average_score
+      span.number
+        = @exercise.average_score.round(2)
+      =<> t('shared.out_of')
+      span.number
+        = @exercise.maximum_score
+    - else
+      = empty
   p = progress_bar(@exercise.average_percentage)
 
 - if policy(@exercise).detailed_statistics?

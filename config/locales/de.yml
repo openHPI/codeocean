@@ -813,7 +813,7 @@ de:
     object_created: '%{model} wurde erfolgreich erstellt.'
     object_destroyed: '%{model} wurde erfolgreich gelöscht.'
     object_updated: '%{model} wurde erfolgreich bearbeitet.'
-    out_of: '<span class="number">%{value}</span> von <span class="number">%{maximum_value}</span>'
+    out_of: 'von'
     reset_filters: Filter zurücksetzen
     resources: Ressourcen
     show: Anzeigen

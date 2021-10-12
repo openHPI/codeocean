@@ -813,7 +813,7 @@ en:
     object_created: '%{model} has successfully been created.'
     object_destroyed: '%{model} has successfully been deleted.'
     object_updated: '%{model} has successfully been updated.'
-    out_of: '<span class="number">%{value}</span> out of <span class="number">%{maximum_value}</span>'
+    out_of: 'out of'
     reset_filters: Reset filters
     resources: Resources
     show: Show
