@@ -143,7 +143,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
           # Identification of PyLint output, change stream back to stdout and return event
           @stream = 'stdout'
           {'type' => @stream, 'data' => event_data}
-        when /#{@strategy.command}/
+        when /#{Regexp.quote(@strategy.command)}/
         when /bash: cmd:canvasevent: command not found/
         else
           {'type' => @stream, 'data' => event_data}
