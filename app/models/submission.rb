@@ -175,7 +175,7 @@ class Submission < ApplicationRecord
   end
 
   def run(file, &block)
-    run_command = command_for execution_environment.run_command, file
+    run_command = command_for execution_environment.run_command, file.name_with_extension
     durations = {}
     prepared_runner do |runner, waiting_duration|
       durations[:execution_duration] = runner.attach_to_execution(run_command, &block)

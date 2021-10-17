@@ -7,9 +7,9 @@ class SubmissionsController < ApplicationController
   include SubmissionParameters
   include Tubesock::Hijack
 
-  before_action :set_submission, only: %i[download download_file render_file run score show statistics]
-  before_action :set_files, only: %i[download download_file render_file show run]
-  before_action :set_file, only: %i[download_file render_file run]
+  before_action :set_submission, only: %i[download download_file render_file run score show statistics test]
+  before_action :set_files, only: %i[download show]
+  before_action :set_files_and_specific_file, only: %i[download_file render_file run test]
   before_action :set_mime_type, only: %i[download_file render_file]
   skip_before_action :verify_authenticity_token, only: %i[download_file render_file]
 
@@ -130,7 +130,7 @@ class SubmissionsController < ApplicationController
     end
 
     @output = +''
-    durations = @submission.run(sanitize_filename) do |socket|
+    durations = @submission.run(@file) do |socket|
       runner_socket = socket
       client_socket.send_data JSON.dump({cmd: :status, status: :container_running})
 
@@ -309,7 +309,10 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def set_file
+  def set_files_and_specific_file
+    # @files contains all visible files for the user
+    # @file contains the specific file requested for run / test / render / ...
+    set_files
     @file = @files.detect {|file| file.name_with_extension == sanitize_filename }
     head :not_found unless @file
   end
