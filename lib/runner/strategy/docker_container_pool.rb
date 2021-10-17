@@ -127,7 +127,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
     def decode(event_data)
       case event_data
-        when /(@#{@strategy.container_id[0..11]}|#exit)/
+        when /(@#{@strategy.container_id[0..11]}|#exit|{"cmd": "exit"})/
           # TODO: The whole message line is kept back. If this contains the remaining buffer, this buffer is also lost.
           # Example: A Java program prints `{` and then exists (with `#exit`). The `event_data` processed here is `{#exit`
 
