@@ -78,6 +78,11 @@ class Runner::Connection
     raise NotImplementedError
   end
 
+  def flush_buffers
+    @stdout_callback.call @stdout_buffer.flush unless @stdout_buffer.empty?
+    @stderr_callback.call @stderr_buffer.flush unless @stderr_buffer.empty?
+  end
+
   # === WebSocket Callbacks
   # These callbacks are executed based on events indicated by Faye WebSockets and are
   # independent of the JSON specification that is used within the WebSocket once established.
@@ -162,10 +167,4 @@ class Runner::Connection
   def handle_timeout(_event)
     @status = :timeout
   end
-
-  def flush_buffers
-    @stdout_callback.call @stdout_buffer.flush unless @stdout_buffer.empty?
-    @stderr_callback.call @stderr_buffer.flush unless @stderr_buffer.empty?
-  end
-  private :flush_buffers
 end
