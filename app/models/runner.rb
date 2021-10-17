@@ -25,8 +25,10 @@ class Runner < ApplicationRecord
     runner = find_by(user: user, execution_environment: execution_environment)
     if runner.nil?
       runner = Runner.create(user: user, execution_environment: execution_environment)
+      # The `strategy` is added through the before_validation hook `:request_id`.
       raise Runner::Error::Unknown.new("Runner could not be saved: #{runner.errors.inspect}") unless runner.persisted?
     else
+      # This information is required but not persisted in the runner model.
       runner.strategy = strategy_class.new(runner.runner_id, runner.execution_environment)
     end
 
