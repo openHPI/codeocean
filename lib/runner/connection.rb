@@ -83,6 +83,16 @@ class Runner::Connection
     @stderr_callback.call @stderr_buffer.flush unless @stderr_buffer.empty?
   end
 
+  def ignored_sequence?(event_data)
+    case event_data
+      when "#exit\r", "{\"cmd\": \"exit\"}\r"
+        # Do not forward. We will wait for the confirmed exit sent by the runner management.
+        true
+      else
+        false
+    end
+  end
+
   # === WebSocket Callbacks
   # These callbacks are executed based on events indicated by Faye WebSockets and are
   # independent of the JSON specification that is used within the WebSocket once established.
@@ -149,14 +159,14 @@ class Runner::Connection
   def handle_stdout(event)
     @stdout_buffer.store event[:data]
     @stdout_buffer.events.each do |event_data|
-      @stdout_callback.call event_data
+      @stdout_callback.call event_data unless ignored_sequence? event_data
     end
   end
 
   def handle_stderr(event)
     @stderr_buffer.store event[:data]
     @stderr_buffer.events.each do |event_data|
-      @stderr_callback.call event_data
+      @stderr_callback.call event_data unless ignored_sequence? event_data
     end
   end
 
