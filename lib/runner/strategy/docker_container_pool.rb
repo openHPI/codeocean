@@ -47,7 +47,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
         end
       end
     end
-    FileUtils.chmod_R('+rwX', local_workspace_path)
+    FileUtils.chmod_R('+rwtX', local_workspace_path)
   end
 
   def destroy_at_management

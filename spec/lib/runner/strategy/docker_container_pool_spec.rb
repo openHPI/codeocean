@@ -106,7 +106,7 @@ describe Runner::Strategy::DockerContainerPool do
     end
 
     it 'sets permission bits on the workspace' do
-      expect(FileUtils).to receive(:chmod_R).with('+rwX', local_path)
+      expect(FileUtils).to receive(:chmod_R).with('+rwtX', local_path)
       container_pool.copy_files(files)
     end
 
