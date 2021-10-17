@@ -139,16 +139,13 @@ class Runner::Strategy::Poseidon < Runner::Strategy
       when 200
         response_body = self.class.parse response
         websocket_url = response_body[:websocketUrl]
-        if websocket_url.present?
-          return websocket_url
-        else
-          raise Runner::Error::UnexpectedResponse.new('Poseidon did not send a WebSocket URL')
-        end
+        websocket_url.presence || raise(Runner::Error::UnexpectedResponse.new('Poseidon did not send a WebSocket URL'))
       when 400
         Runner.destroy(@allocation_id)
+        self.class.handle_error response
+      else
+        self.class.handle_error response
     end
-
-    self.class.handle_error response
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   end
