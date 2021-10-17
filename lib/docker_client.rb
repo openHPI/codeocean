@@ -448,7 +448,7 @@ container_execution_time: nil}
   end
 
   def self.mapped_ports(execution_environment)
-    (execution_environment.exposed_ports || '').gsub(/\s/, '').split(',').map do |port|
+    execution_environment.exposed_ports.map do |port|
       ["#{port}/tcp", [{'HostPort' => PortPool.available_port.to_s}]]
     end.to_h
   end

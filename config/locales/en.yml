@@ -10,6 +10,7 @@ en:
       execution_environment:
         docker_image: Docker Image
         exposed_ports: Exposed Ports
+        exposed_ports_list: Exposed Ports
         file_type: Default File Type
         file_type_id: Default File Type
         help: Help Text
@@ -282,7 +283,7 @@ en:
       hints:
         command: <em>filename</em> is automatically replaced with the correct filename.
         docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank">DockerHub</a>.
-        exposed_ports: During code execution these ports are accessible for the user. Port numbers must be separated by a comma but no space.
+        exposed_ports_list: During code execution these ports are accessible for the user. Port numbers must be numeric and separated by a comma.
       errors:
         not_synced_to_runner_management: The execution environment was created but not synced to the runner management due to an error.
     index:

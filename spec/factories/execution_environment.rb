@@ -122,7 +122,7 @@ FactoryBot.define do
     default_cpu_limit
     docker_image { 'hklement/ubuntu-sinatra:latest' }
     file_type { association :dot_rb, user: user }
-    exposed_ports { '4567' }
+    exposed_ports { [4567] }
     help
     name { 'Sinatra' }
     network_enabled { true }

@@ -107,8 +107,15 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def execution_environment_params
     if params[:execution_environment].present?
-      params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :cpu_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(
-        user_id: current_user.id, user_type: current_user.class.name
+      exposed_ports = if params[:execution_environment][:exposed_ports_list].present?
+                        # Transform the `exposed_ports_list` to `exposed_ports` array
+                        params[:execution_environment].delete(:exposed_ports_list).scan(/\d+/)
+                      else
+                        []
+                      end
+
+      params[:execution_environment].permit(:docker_image, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :cpu_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(
+        user_id: current_user.id, user_type: current_user.class.name, exposed_ports: exposed_ports
       )
     end
   end

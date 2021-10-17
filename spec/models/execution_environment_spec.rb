@@ -178,17 +178,17 @@ describe ExecutionEnvironment do
   end
 
   describe '#exposed_ports_list' do
-    it 'returns an empty array if no ports are exposed' do
-      execution_environment.exposed_ports = nil
-      expect(execution_environment.exposed_ports_list).to eq([])
+    it 'returns an empty string if no ports are exposed' do
+      execution_environment.exposed_ports = []
+      expect(execution_environment.exposed_ports_list).to eq('')
     end
 
-    it 'returns an array of integers representing the exposed ports' do
-      execution_environment.exposed_ports = '1,2,3'
-      expect(execution_environment.exposed_ports_list).to eq([1, 2, 3])
+    it 'returns an string with comma-separated integers representing the exposed ports' do
+      execution_environment.exposed_ports = [1, 2, 3]
+      expect(execution_environment.exposed_ports_list).to eq('1, 2, 3')
 
-      execution_environment.exposed_ports_list.each do |port|
-        expect(execution_environment.exposed_ports).to include(port.to_s)
+      execution_environment.exposed_ports.each do |port|
+        expect(execution_environment.exposed_ports_list).to include(port.to_s)
       end
     end
   end

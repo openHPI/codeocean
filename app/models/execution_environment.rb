@@ -28,7 +28,8 @@ class ExecutionEnvironment < ApplicationRecord
   validates :pool_size, numericality: {only_integer: true}, presence: true
   validates :run_command, presence: true
   validates :cpu_limit, presence: true, numericality: {greater_than: 0, only_integer: true}
-  validates :exposed_ports, format: {with: /\A(([[:digit:]]{1,5},)*([[:digit:]]{1,5}))?\z/}
+  before_validation :clean_exposed_ports
+  validates :exposed_ports, array: {numericality: {greater_than_or_equal_to: 0, less_than: 65_536, only_integer: true}}
 
   def set_default_values
     set_default_values_if_present(permitted_execution_time: 60, pool_size: 0)
@@ -47,13 +48,18 @@ class ExecutionEnvironment < ApplicationRecord
       cpuLimit: cpu_limit,
       memoryLimit: memory_limit,
       networkAccess: network_enabled,
-      exposedPorts: exposed_ports_list,
+      exposedPorts: exposed_ports,
     }.to_json
   end
 
   def exposed_ports_list
-    (exposed_ports || '').split(',').map(&:to_i)
+    exposed_ports.join(', ')
   end
+
+  def clean_exposed_ports
+    self.exposed_ports = exposed_ports.uniq.sort
+  end
+  private :clean_exposed_ports
 
   def valid_test_setup?
     if test_command? ^ testing_framework?

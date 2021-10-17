@@ -14,9 +14,9 @@
     = f.text_field(:docker_image, class: 'alternative-input form-control', disabled: true)
     .help-block.form-text == t('.hints.docker_image')
   .form-group
-    = f.label(:exposed_ports)
-    = f.text_field(:exposed_ports, class: 'form-control', placeholder: '3000,4000', pattern: '^((\d{1,5},)*(\d{1,5}))?$')
-    .help-block.form-text == t('.hints.exposed_ports')
+    = f.label(:exposed_ports_list)
+    = f.text_field(:exposed_ports_list, class: 'form-control', placeholder: '3000, 4000', pattern: '^(\s*(\d{1,5},\s*)*(\d{1,5}\s*))?$')
+    .help-block.form-text = t('.hints.exposed_ports_list')
   .form-group
     = f.label(:memory_limit)
     = f.number_field(:memory_limit, class: 'form-control', min: DockerClient::MINIMUM_MEMORY_LIMIT, value: f.object.memory_limit || DockerClient::DEFAULT_MEMORY_LIMIT)

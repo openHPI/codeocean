@@ -104,7 +104,6 @@ ActiveRecord::Schema.define(version: 2021_06_02_071834) do
     t.string "test_command", limit: 255
     t.string "testing_framework", limit: 255
     t.text "help"
-    t.string "exposed_ports", limit: 255
     t.integer "permitted_execution_time"
     t.integer "user_id"
     t.string "user_type", limit: 255
@@ -113,6 +112,7 @@ ActiveRecord::Schema.define(version: 2021_06_02_071834) do
     t.integer "memory_limit"
     t.boolean "network_enabled"
     t.integer "cpu_limit", default: 20, null: false
+    t.integer "exposed_ports", default: [], array: true
   end
 
   create_table "exercise_collection_items", id: :serial, force: :cascade do |t|

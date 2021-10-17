@@ -332,7 +332,7 @@ describe DockerClient, docker: true do
 
   describe '.mapped_ports' do
     context 'with exposed ports' do
-      before { execution_environment.exposed_ports = '3000' }
+      before { execution_environment.exposed_ports = [3000] }
 
       it 'returns a mapping' do
         expect(described_class.mapped_ports(execution_environment)).to be_a(Hash)
