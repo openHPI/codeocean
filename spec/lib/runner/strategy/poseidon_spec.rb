@@ -319,7 +319,7 @@ describe Runner::Strategy::Poseidon do
       WebMock
         .stub_request(:patch, "#{described_class.config[:url]}/runners/#{runner_id}/files")
         .with(
-          body: {copy: [{path: file.filepath, content: encoded_file_content}]},
+          body: {copy: [{path: file.filepath, content: encoded_file_content}], delete: ['./']},
           headers: {'Content-Type' => 'application/json'}
         )
         .to_return(body: response_body, status: response_status)

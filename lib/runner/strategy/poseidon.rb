@@ -95,7 +95,10 @@ class Runner::Strategy::Poseidon < Runner::Strategy
       }
     end
     url = "#{runner_url}/files"
-    body = {copy: copy}
+
+    # First, clean the workspace and second, copy all files to their location.
+    # This ensures that no artefacts from a previous submission remain in the workspace.
+    body = {copy: copy, delete: ['./']}
     connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
     response = connection.patch url, body.to_json, self.class.headers
     return if response.status == 204
