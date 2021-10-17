@@ -190,23 +190,18 @@ class SubmissionsController < ApplicationController
 
   def statistics; end
 
-  # TODO: make this run, but with the test command
-  # TODO: add this method to the before action for set_submission again
-  # def test
-  #   hijack do |tubesock|
-  #     unless EventMachine.reactor_running? && EventMachine.reactor_thread.alive?
-  #       Thread.new do
-  #         EventMachine.run
-  #       ensure
-  #         ActiveRecord::Base.connection_pool.release_connection
-  #       end
-  #     end
-  #     output = @docker_client.execute_test_command(@submission, sanitize_filename)
-  #     # tubesock is the socket to the client
-  #     tubesock.send_data JSON.dump(output)
-  #     tubesock.send_data JSON.dump('cmd' => 'exit')
-  #   end
-  # end
+  def test
+    hijack do |tubesock|
+      return kill_client_socket(tubesock) if @embed_options[:disable_run]
+
+      tubesock.send_data(JSON.dump(@submission.test(@file)))
+    rescue Runner::Error => e
+      tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
+      Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
+    ensure
+      kill_client_socket(tubesock)
+    end
+  end
 
   private
 

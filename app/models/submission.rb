@@ -161,6 +161,16 @@ class Submission < ApplicationRecord
     durations
   end
 
+  def test(file)
+    prepared_runner do |runner, waiting_duration|
+      output = run_test_file file, runner, waiting_duration
+      score_file output, file
+    rescue Runner::Error => e
+      e.waiting_duration = waiting_duration
+      raise
+    end
+  end
+
   def run_test_file(file, runner, waiting_duration)
     score_command = command_for execution_environment.test_command, file.name_with_extension
     output = {file_role: file.role, waiting_for_container_time: waiting_duration}
