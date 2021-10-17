@@ -13,4 +13,6 @@ test:
     enabled: true
     strategy: poseidon
     url: https://runners.example.org
+    ca_file: /example/certificates/ca.crt
+    token: SECRET
     unused_runner_expiration_time: 180
