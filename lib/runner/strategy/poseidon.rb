@@ -166,7 +166,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     end
 
     def encode(data)
-      data
+      "#{data}\n"
     end
   end
 end

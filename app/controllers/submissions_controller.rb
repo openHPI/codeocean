@@ -96,14 +96,11 @@ class SubmissionsController < ApplicationController
       end
 
       client_socket.onmessage do |raw_event|
-        event = if raw_event == "\n"
-                  # Obviously, this is just flushing the current connection.
-                  # We temporarily wrap it and then forward the original event intentionally.
-                  {cmd: 'result'}
-                else
-                  # We expect to receive a JSON
-                  JSON.parse(raw_event).deep_symbolize_keys
-                end
+        # Obviously, this is just flushing the current connection: Filtering.
+        next if raw_event == "\n"
+
+        # Otherwise, we expect to receive a JSON: Parsing.
+        event = JSON.parse(raw_event).deep_symbolize_keys
 
         case event[:cmd].to_sym
           when :client_kill
