@@ -173,7 +173,7 @@ class SubmissionsController < ApplicationController
 
   def score
     hijack do |tubesock|
-      return if @embed_options[:disable_run]
+      return if @embed_options[:disable_score]
 
       tubesock.send_data(JSON.dump(@submission.calculate_score))
       # To enable hints when scoring a submission, uncomment the next line:
