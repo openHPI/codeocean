@@ -284,6 +284,7 @@ de:
         command: <em>filename</em> wird automatisch durch den richtigen Dateinamen ersetzt.
         docker_image: 'Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank">DockerHub</a> verfügbar ist.'
         exposed_ports_list: Während der Ausführung sind diese Ports für den Nutzer zugänglich. Die Portnummern müssen nummerisch und mit Komma voneinander getrennt sein.
+        cpu_limit: Geben Sie die Mindestmenge an CPU-Anteilen an, die für jeden Runner reserviert werden soll, gemessen in MHz.
       errors:
         not_synced_to_runner_management: Die Ausführungsumgebung wurde erstellt, aber aufgrund eines Fehlers nicht zum Runnermanagement synchronisiert.
     index:

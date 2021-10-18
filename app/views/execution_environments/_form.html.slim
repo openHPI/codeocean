@@ -23,6 +23,7 @@
   .form-group
     = f.label(:cpu_limit)
     = f.number_field(:cpu_limit, class: 'form-control', min: 1, step: 1, value: f.object.cpu_limit || ExecutionEnvironment::DEFAULT_CPU_LIMIT)
+    .help-block.form-text = t('.hints.cpu_limit')
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:network_enabled, class: 'form-check-input')
