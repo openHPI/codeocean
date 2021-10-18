@@ -45,7 +45,7 @@ class Runner::Connection
     @exit_code = 1
   end
 
-  # Register a callback based on the WebSocket connection state
+  # Register a callback based on the event type received from runner management
   def on(event, &block)
     return unless EVENTS.include? event
 
@@ -120,7 +120,12 @@ class Runner::Connection
     @start_callback.call
   end
 
-  def on_error(_event); end
+  def on_error(event)
+    # In case of an WebSocket error, the connection will be closed by Faye::WebSocket::Client automatically.
+    # Thus, no further handling is required here (the user will get notified).
+    Sentry.set_extras(event: event.inspect)
+    Sentry.capture_message("The WebSocket connection to #{@socket.url} was closed with an error.")
+  end
 
   def on_close(_event)
     Rails.logger.debug { "#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}" }
@@ -174,11 +179,21 @@ class Runner::Connection
     end
   end
 
-  def handle_error(_event); end
+  def handle_error(event)
+    # In case of a (Nomad) error during execution, the runner management will notify us with an error message here.
+    # This shouldn't happen to often and can be considered an internal server error by the runner management.
+    # More information is available in the logs of the runner management or the orchestrator (e.g., Nomad).
+    Sentry.set_extras(event: event.inspect)
+    Sentry.capture_message("An error occurred during code execution while being connected to #{@socket.url}.")
+  end
 
-  def handle_start(_event); end
+  def handle_start(_event)
+    # The execution just started as requested. This is an informal message and no further processing is required.
+  end
 
   def handle_timeout(_event)
     @status = :timeout
+    # The runner management stopped the execution as the permitted execution time was exceeded.
+    # We set the status here and wait for the connection to be closed (by the runner management).
   end
 end
