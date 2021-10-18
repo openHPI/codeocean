@@ -9,6 +9,10 @@ class Runner::Connection
   WEBSOCKET_MESSAGE_TYPES = %i[start stdout stderr error timeout exit].freeze
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
 
+  # @!attribute start_callback
+  # @!attribute exit_callback
+  # @!attribute stdout_callback
+  # @!attribute stderr_callback
   attr_writer :status
   attr_reader :error
 
