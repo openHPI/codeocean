@@ -22,7 +22,7 @@
     = f.number_field(:memory_limit, class: 'form-control', min: DockerClient::MINIMUM_MEMORY_LIMIT, value: f.object.memory_limit || DockerClient::DEFAULT_MEMORY_LIMIT)
   .form-group
     = f.label(:cpu_limit)
-    = f.number_field(:cpu_limit, class: 'form-control', min: 1, step: 1, value: ExecutionEnvironment::DEFAULT_CPU_LIMIT)
+    = f.number_field(:cpu_limit, class: 'form-control', min: 1, step: 1, value: f.object.cpu_limit || ExecutionEnvironment::DEFAULT_CPU_LIMIT)
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:network_enabled, class: 'form-check-input')
