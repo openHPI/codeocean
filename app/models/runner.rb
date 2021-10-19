@@ -19,9 +19,7 @@ class Runner < ApplicationRecord
     @management_active ||= CodeOcean::Config.new(:code_ocean).read[:runner_management][:enabled]
   end
 
-  def self.for(user, exercise)
-    execution_environment = exercise.execution_environment
-
+  def self.for(user, execution_environment)
     runner = find_by(user: user, execution_environment: execution_environment)
     if runner.nil?
       runner = Runner.create(user: user, execution_environment: execution_environment)
@@ -60,6 +58,45 @@ class Runner < ApplicationRecord
       raise
     end
     Time.zone.now - starting_time # execution duration
+  end
+
+  def execute_command(command)
+    output = {}
+    stdout = +''
+    stderr = +''
+    try = 0
+    begin
+      exit_code = 1 # default to error
+      execution_time = attach_to_execution(command) do |socket|
+        socket.on :stderr do |data|
+          stderr << data
+        end
+        socket.on :stdout do |data|
+          stdout << data
+        end
+        socket.on :exit do |received_exit_code|
+          exit_code = received_exit_code
+        end
+      end
+      output.merge!(container_execution_time: execution_time, status: exit_code.zero? ? :ok : :failed)
+    rescue Runner::Error::ExecutionTimeout => e
+      Rails.logger.debug { "Running command `#{command}` timed out: #{e.message}" }
+      output.merge!(status: :timeout, container_execution_time: e.execution_duration)
+    rescue Runner::Error::RunnerNotFound => e
+      Rails.logger.debug { "Running command `#{command}` failed for the first time: #{e.message}" }
+      try += 1
+      request_new_id
+      save
+      retry if try == 1
+
+      Rails.logger.debug { "Running command `#{command}` failed for the second time: #{e.message}" }
+      output.merge!(status: :failed, container_execution_time: e.execution_duration)
+    rescue Runner::Error => e
+      Rails.logger.debug { "Running command `#{command}` failed: #{e.message}" }
+      output.merge!(status: :failed, container_execution_time: e.execution_duration)
+    ensure
+      output.merge!(stdout: stdout, stderr: stderr)
+    end
   end
 
   def destroy_at_management

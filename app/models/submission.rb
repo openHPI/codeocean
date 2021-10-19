@@ -172,33 +172,10 @@ class Submission < ApplicationRecord
   end
 
   def run_test_file(file, runner, waiting_duration)
-    score_command = command_for execution_environment.test_command, file.name_with_extension
-    output = {file_role: file.role, waiting_for_container_time: waiting_duration}
-    stdout = +''
-    stderr = +''
-    begin
-      exit_code = 1 # default to error
-      execution_time = runner.attach_to_execution(score_command) do |socket|
-        socket.on :stderr do |data|
-          stderr << data
-        end
-        socket.on :stdout do |data|
-          stdout << data
-        end
-        socket.on :exit do |received_exit_code|
-          exit_code = received_exit_code
-        end
-      end
-      output.merge!(container_execution_time: execution_time, status: exit_code.zero? ? :ok : :failed)
-    rescue Runner::Error::ExecutionTimeout => e
-      Rails.logger.debug { "Running tests in #{file.name_with_extension} for submission #{id} timed out: #{e.message}" }
-      output.merge!(status: :timeout, container_execution_time: e.execution_duration)
-    rescue Runner::Error => e
-      Rails.logger.debug { "Running tests in #{file.name_with_extension} for submission #{id} failed: #{e.message}" }
-      output.merge!(status: :failed, container_execution_time: e.execution_duration)
-    ensure
-      output.merge!(stdout: stdout, stderr: stderr)
-    end
+    test_command = command_for execution_environment.test_command, file.name_with_extension
+    result = {file_role: file.role, waiting_for_container_time: waiting_duration}
+    output = runner.execute_command(test_command)
+    result.merge(output)
   end
 
   private
@@ -206,7 +183,7 @@ class Submission < ApplicationRecord
   def prepared_runner
     request_time = Time.zone.now
     begin
-      runner = Runner.for(user, exercise)
+      runner = Runner.for(user, exercise.execution_environment)
       runner.copy_files(collect_files)
     rescue Runner::Error => e
       e.waiting_duration = Time.zone.now - request_time

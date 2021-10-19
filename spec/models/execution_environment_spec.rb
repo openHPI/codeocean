@@ -149,10 +149,12 @@ describe ExecutionEnvironment do
 
     before { allow(DockerClient).to receive(:find_image_by_tag).and_return(Object.new) }
 
-    it 'instantiates a Docker client' do
-      expect(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
-      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return({})
+    it 'instantiates a Runner' do
+      runner = instance_double 'runner'
+      allow(Runner).to receive(:for).with(execution_environment.author, execution_environment).and_return runner
+      allow(runner).to receive(:execute_command).and_return({})
       working_docker_image?
+      expect(runner).to have_received(:execute_command).once
     end
 
     it 'executes the validation command' do

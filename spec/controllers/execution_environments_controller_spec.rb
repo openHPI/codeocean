@@ -75,12 +75,12 @@ describe ExecutionEnvironmentsController do
     let(:command) { 'which ruby' }
 
     before do
-      allow(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
-      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(command)
+      runner = instance_double 'runner'
+      allow(Runner).to receive(:for).with(user, execution_environment).and_return runner
+      allow(runner).to receive(:execute_command).and_return({})
       post :execute_command, params: {command: command, id: execution_environment.id}
     end
 
-    expect_assigns(docker_client: DockerClient)
     expect_assigns(execution_environment: :execution_environment)
     expect_json
     expect_status(200)

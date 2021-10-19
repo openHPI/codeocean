@@ -247,7 +247,7 @@ describe Runner do
       before { allow(strategy_class).to receive(:request_from_management).and_return(nil) }
 
       it 'raises an error' do
-        expect { described_class.for(user, exercise) }.to raise_error(Runner::Error::Unknown, /could not be saved/)
+        expect { described_class.for(user, exercise.execution_environment) }.to raise_error(Runner::Error::Unknown, /could not be saved/)
       end
     end
 
@@ -255,12 +255,12 @@ describe Runner do
       let!(:existing_runner) { FactoryBot.create(:runner, user: user, execution_environment: exercise.execution_environment) }
 
       it 'returns the existing runner' do
-        new_runner = described_class.for(user, exercise)
+        new_runner = described_class.for(user, exercise.execution_environment)
         expect(new_runner).to eq(existing_runner)
       end
 
       it 'sets the strategy' do
-        runner = described_class.for(user, exercise)
+        runner = described_class.for(user, exercise.execution_environment)
         expect(runner.strategy).to be_present
       end
     end
@@ -269,7 +269,7 @@ describe Runner do
       before { allow(strategy_class).to receive(:request_from_management).and_return(runner_id) }
 
       it 'returns a new runner' do
-        runner = described_class.for(user, exercise)
+        runner = described_class.for(user, exercise.execution_environment)
         expect(runner).to be_valid
       end
     end

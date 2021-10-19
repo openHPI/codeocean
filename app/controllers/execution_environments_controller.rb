@@ -30,8 +30,9 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def execute_command
-    @docker_client = DockerClient.new(execution_environment: @execution_environment)
-    render(json: @docker_client.execute_arbitrary_command(params[:command]))
+    runner = Runner.for(current_user, @execution_environment)
+    output = runner.execute_command(params[:command])
+    render(json: output)
   end
 
   def working_time_query
