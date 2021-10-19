@@ -76,10 +76,10 @@ class ExecutionEnvironment < ApplicationRecord
   private :validate_docker_image?
 
   def working_docker_image?
-    DockerClient.pull(docker_image) if DockerClient.find_image_by_tag(docker_image).present?
-    output = DockerClient.new(execution_environment: self).execute_arbitrary_command(VALIDATION_COMMAND)
+    runner = Runner.for(author, self)
+    output = runner.execute_command(VALIDATION_COMMAND, raise_exception: true)
     errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
-  rescue DockerClient::Error => e
+  rescue Runner::Error => e
     errors.add(:docker_image, "error: #{e}")
   end
   private :working_docker_image?

@@ -60,7 +60,7 @@ class Runner < ApplicationRecord
     Time.zone.now - starting_time # execution duration
   end
 
-  def execute_command(command)
+  def execute_command(command, raise_exception: false)
     output = {}
     stdout = +''
     stderr = +''
@@ -95,6 +95,9 @@ class Runner < ApplicationRecord
       Rails.logger.debug { "Running command `#{command}` failed: #{e.message}" }
       output.merge!(status: :failed, container_execution_time: e.execution_duration)
     ensure
+      # We forward the exception if requested
+      raise e if raise_exception && defined?(e) && e.present?
+
       output.merge!(stdout: stdout, stderr: stderr)
     end
   end
