@@ -200,13 +200,10 @@ describe ExecutionEnvironmentsController do
     let(:runner_management_config) { {runner_management: {enabled: true, strategy: :poseidon}} }
 
     before do
+      # Ensure to reset the memorized helper
+      Runner.instance_variable_set :@strategy_class, nil
       allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
       allow(codeocean_config).to receive(:read).and_return(runner_management_config)
-    end
-
-    after do
-      # Reset the memorized helper
-      Runner.remove_instance_variable :@strategy_class
     end
 
     it 'copies all execution environments to the runner management' do
