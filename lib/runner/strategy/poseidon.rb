@@ -36,6 +36,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
       executionEnvironmentId: environment.id,
       inactivityTimeout: config[:unused_runner_expiration_time].seconds,
     }
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Requesting new runner at #{url}" }
     connection = Faraday.new nil, ssl: {ca_file: config[:ca_file]}
     response = connection.post url, body.to_json, headers
 
@@ -51,6 +52,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     end
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished new runner request" }
   end
 
   def self.handle_error(response)
@@ -88,13 +91,15 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def copy_files(files)
+    url = "#{runner_url}/files"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Sending files to #{url}" }
+
     copy = files.map do |file|
       {
         path: file.filepath,
         content: Base64.strict_encode64(file.content),
       }
     end
-    url = "#{runner_url}/files"
 
     # First, clean the workspace and second, copy all files to their location.
     # This ensures that no artefacts from a previous submission remain in the workspace.
@@ -107,6 +112,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     self.class.handle_error response
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
   def attach_to_execution(command, event_loop)
@@ -117,11 +124,14 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def destroy_at_management
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{runner_url}" }
     connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
     response = connection.delete runner_url, nil, self.class.headers
     self.class.handle_error response unless response.status == 204
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished destroying runner" }
   end
 
   def websocket_header
@@ -136,8 +146,10 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   def execute_command(command)
     url = "#{runner_url}/execute"
     body = {command: command, timeLimit: @execution_environment.permitted_execution_time}
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Preparing command execution at #{url}: #{command}" }
     connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
     response = connection.post url, body.to_json, self.class.headers
+
     case response.status
       when 200
         response_body = self.class.parse response
@@ -151,6 +163,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     end
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished command execution preparation" }
   end
 
   def runner_url

@@ -14,12 +14,17 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.request_from_management(environment)
-    container_id = JSON.parse(Faraday.get("#{config[:pool][:location]}/docker_container_pool/get_container/#{environment.id}").body)['id']
+    url = "#{config[:pool][:location]}/docker_container_pool/get_container/#{environment.id}"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Requesting new runner at #{url}" }
+    response = Faraday.get url
+    container_id = JSON.parse(response.body)['id']
     container_id.presence || raise(Runner::Error::NotAvailable.new("DockerContainerPool didn't return a container id"))
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   rescue JSON::ParserError => e
     raise Runner::Error::UnexpectedResponse.new("DockerContainerPool returned invalid JSON: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished new runner request" }
   end
 
   def initialize(runner_id, _environment)
@@ -28,6 +33,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def copy_files(files)
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Sending files to #{local_workspace_path}" }
     FileUtils.mkdir_p(local_workspace_path)
     clean_workspace
     files.each do |file|
@@ -48,12 +54,18 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
       end
     end
     FileUtils.chmod_R('+rwtX', local_workspace_path)
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
   def destroy_at_management
-    Faraday.get("#{self.class.config[:pool][:location]}/docker_container_pool/destroy_container/#{container.id}")
+    url = "#{self.class.config[:pool][:location]}/docker_container_pool/destroy_container/#{container.id}"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{url}" }
+    Faraday.get(url)
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished destroying runner" }
   end
 
   def attach_to_execution(command, event_loop)

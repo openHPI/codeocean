@@ -17,6 +17,7 @@ class Runner::Connection
   attr_reader :error
 
   def initialize(url, strategy, event_loop, locale = I18n.locale)
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Opening connection to #{url}" }
     # The `ping` value is measured in seconds and specifies how often a Ping frame should be sent.
     # Internally, Faye::WebSocket uses EventMachine and the `ping` value is used to wake the EventMachine thread
     # The `tls` option is used to customize the validation of TLS connections.
@@ -55,7 +56,7 @@ class Runner::Connection
   # Send arbitrary data in the WebSocket connection
   def send_data(raw_data)
     encoded_message = encode(raw_data)
-    Rails.logger.debug { "#{Time.zone.now.getutc}: Sending to #{@socket.url}: #{encoded_message.inspect}" }
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Sending to #{@socket.url}: #{encoded_message.inspect}" }
     @socket.send(encoded_message)
   end
 
@@ -102,7 +103,7 @@ class Runner::Connection
   # independent of the JSON specification that is used within the WebSocket once established.
 
   def on_message(raw_event)
-    Rails.logger.debug { "#{Time.zone.now.getutc}: Receiving from #{@socket.url}: #{raw_event.data.inspect}" }
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Receiving from #{@socket.url}: #{raw_event.data.inspect}" }
     event = decode(raw_event.data)
     return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
 
@@ -117,6 +118,7 @@ class Runner::Connection
   end
 
   def on_open(_event)
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Established connection to #{@socket.url}" }
     @start_callback.call
   end
 
@@ -128,7 +130,7 @@ class Runner::Connection
   end
 
   def on_close(_event)
-    Rails.logger.debug { "#{Time.zone.now.getutc}: Closing connection to #{@socket.url} with status: #{@status}" }
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Closing connection to #{@socket.url} with status: #{@status}" }
     flush_buffers
 
     # Depending on the status, we might want to destroy the runner at management.
@@ -149,6 +151,7 @@ class Runner::Connection
         @strategy.destroy_at_management
         @error = Runner::Error::Unknown.new('Execution terminated with an unknown reason')
     end
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Closed connection to #{@socket.url} with status: #{@status}" }
     @event_loop.stop
   end
 
