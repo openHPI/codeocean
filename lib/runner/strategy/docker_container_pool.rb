@@ -8,6 +8,13 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     @config ||= CodeOcean::Config.new(:docker).read(erb: true)
   end
 
+  def self.available_images
+    DockerClient.check_availability!
+    DockerClient.image_tags
+  rescue DockerClient::Error => e
+    raise Runner::Error::InternalServerError.new(e.message)
+  end
+
   def self.sync_environment(_environment)
     # There is no dedicated sync mechanism yet
     true

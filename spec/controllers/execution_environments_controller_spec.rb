@@ -114,6 +114,7 @@ describe ExecutionEnvironmentsController do
       let(:docker_images) { [1, 2, 3] }
 
       before do
+        allow(Runner).to receive(:strategy_class).and_return Runner::Strategy::DockerContainerPool
         allow(DockerClient).to receive(:check_availability!).at_least(:once)
         allow(DockerClient).to receive(:image_tags).and_return(docker_images)
         controller.send(:set_docker_images)
@@ -126,6 +127,7 @@ describe ExecutionEnvironmentsController do
       let(:error_message) { 'Docker is unavailable' }
 
       before do
+        allow(Runner).to receive(:strategy_class).and_return Runner::Strategy::DockerContainerPool
         allow(DockerClient).to receive(:check_availability!).at_least(:once).and_raise(DockerClient::Error.new(error_message))
         controller.send(:set_docker_images)
       end

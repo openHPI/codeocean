@@ -9,6 +9,10 @@ class Runner::Strategy
     raise NotImplementedError
   end
 
+  def self.available_images
+    raise NotImplementedError
+  end
+
   def self.sync_environment(_environment)
     raise NotImplementedError
   end

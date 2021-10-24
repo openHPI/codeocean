@@ -13,6 +13,13 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     @config ||= CodeOcean::Config.new(:code_ocean).read[:runner_management] || {}
   end
 
+  def self.available_images
+    # Images are pulled when needed for a new execution environment
+    # and cleaned up automatically if no longer in use.
+    # Hence, there is no additional image that we need to return
+    []
+  end
+
   def self.headers
     @headers ||= {'Content-Type' => 'application/json', 'Poseidon-Token' => config[:token]}
   end

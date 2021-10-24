@@ -133,12 +133,12 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def set_docker_images
-    DockerClient.check_availability!
-    @docker_images = DockerClient.image_tags.sort
-  rescue DockerClient::Error => e
-    @docker_images = []
+    @docker_images ||= ExecutionEnvironment.pluck(:docker_image)
+    @docker_images += Runner.strategy_class.available_images
+  rescue Runner::Error::InternalServerError => e
     flash[:warning] = e.message
-    Sentry.capture_exception(e)
+  ensure
+    @docker_images = @docker_images.sort.uniq
   end
   private :set_docker_images
 
