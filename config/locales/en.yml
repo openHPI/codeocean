@@ -19,7 +19,7 @@ en:
         name: Name
         network_enabled: Network Enabled
         permitted_execution_time: Permitted Execution Time (in Seconds)
-        pool_size: Docker Container Pool Size
+        pool_size: Prewarming Pool Size
         run_command: Run Command
         test_command: Test Command
         testing_framework: Testing Framework
@@ -240,7 +240,7 @@ en:
       show:
         current: Current Availability
         history: Availability History
-        inactive: Container pooling is not enabled.
+        inactive: No runner management is currently enabled.
         quantity: Available Containers
   application:
     not_authorized: You are not authorized to perform this action.

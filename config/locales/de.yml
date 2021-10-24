@@ -19,7 +19,7 @@ de:
         network_enabled: Netzwerkzugriff
         name: Name
         permitted_execution_time: Erlaubte Ausführungszeit (in Sekunden)
-        pool_size: Docker-Container-Pool-Größe
+        pool_size: Prewarming-Pool-Größe
         run_command: Ausführungsbefehl
         test_command: Testbefehl
         testing_framework: Testing-Framework
@@ -240,7 +240,7 @@ de:
       show:
         current: Aktuelle Verfügbarkeit
         history: Verfügbarkeitsverlauf
-        inactive: Der Container-Pool ist nicht aktiv.
+        inactive: Es ist kein Runner Management aktiv.
         quantity: Verfügbare Container
   application:
     not_authorized: Sie Sind nicht berechtigt, diese Aktion auszuführen.
