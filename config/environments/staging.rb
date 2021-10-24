@@ -32,7 +32,7 @@ Rails.application.configure do
   config.assets.raise_runtime_errors = true
 
   # Raise errors for missing translations.
-  config.action_view.raise_on_missing_translations = true
+  config.i18n.raise_on_missing_translations = true
 
   # Enable Rack::Cache to put a simple HTTP cache in front of your application
   # Add `rack-cache` to your Gemfile before enabling this.
