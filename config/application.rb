@@ -49,6 +49,9 @@ module CodeOcean
     config.after_initialize do
       # Initialize the counters according to the db
       Prometheus::Controller.initialize_metrics
+
+      # Initialize the runner environment
+      Runner.strategy_class.initialize_environment
     end
   end
 end

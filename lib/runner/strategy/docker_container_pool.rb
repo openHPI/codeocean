@@ -8,6 +8,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     @config ||= CodeOcean::Config.new(:docker).read(erb: true)
   end
 
+  def self.initialize_environment
+    DockerClient.initialize_environment unless Rails.env.test? && `which docker`.blank?
+  end
+
   def self.available_images
     DockerClient.check_availability!
     DockerClient.image_tags

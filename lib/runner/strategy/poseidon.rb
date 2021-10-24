@@ -13,6 +13,11 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     @config ||= CodeOcean::Config.new(:code_ocean).read[:runner_management] || {}
   end
 
+  def self.initialize_environment
+    # There is no additional initialization required for Poseidon
+    nil
+  end
+
   def self.available_images
     # Images are pulled when needed for a new execution environment
     # and cleaned up automatically if no longer in use.
