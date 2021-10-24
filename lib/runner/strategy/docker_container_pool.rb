@@ -100,11 +100,24 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.release
-    nil
+    url = "#{config[:pool][:location]}/docker_container_pool/dump_info"
+    response = Faraday.get(url)
+    JSON.parse(response.body)['release']
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  rescue JSON::ParserError => e
+    raise Runner::Error::UnexpectedResponse.new("DockerContainerPool returned invalid JSON: #{e.inspect}")
   end
 
   def self.pool_size
-    {}
+    url = "#{config[:pool][:location]}/docker_container_pool/quantities"
+    response = Faraday.get(url)
+    pool_size = JSON.parse(response.body)
+    pool_size.transform_keys(&:to_i)
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  rescue JSON::ParserError => e
+    raise Runner::Error::UnexpectedResponse.new("DockerContainerPool returned invalid JSON: #{e.inspect}")
   end
 
   def self.websocket_header

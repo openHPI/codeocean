@@ -10,7 +10,12 @@ describe Admin::DashboardHelper do
   end
 
   describe '#docker_data' do
-    before { FactoryBot.create(:ruby) }
+    before do
+      FactoryBot.create(:ruby)
+      dcp = instance_double 'docker_container_pool'
+      allow(Runner).to receive(:strategy_class).and_return dcp
+      allow(dcp).to receive(:pool_size).and_return([])
+    end
 
     it 'contains an entry for every execution environment' do
       expect(docker_data.length).to eq(ExecutionEnvironment.count)
@@ -21,7 +26,6 @@ describe Admin::DashboardHelper do
     end
 
     it 'contains the number of available containers for every execution environment' do
-      expect(DockerContainerPool).to receive(:quantities).exactly(ExecutionEnvironment.count).times.and_call_original
       expect(docker_data.first).to include(:quantity)
     end
   end
