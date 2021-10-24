@@ -152,7 +152,7 @@ FactoryBot.define do
   end
 
   trait :default_memory_limit do
-    memory_limit { DockerClient::DEFAULT_MEMORY_LIMIT }
+    memory_limit { ExecutionEnvironment::DEFAULT_MEMORY_LIMIT }
   end
 
   trait :default_cpu_limit do

@@ -16,7 +16,7 @@ describe ExecutionEnvironment do
   end
 
   it 'validates the minimum value of the memory limit' do
-    execution_environment.update(memory_limit: DockerClient::MINIMUM_MEMORY_LIMIT / 2)
+    execution_environment.update(memory_limit: ExecutionEnvironment::MINIMUM_MEMORY_LIMIT / 2)
     expect(execution_environment.errors[:memory_limit]).to be_present
   end
 

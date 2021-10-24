@@ -19,7 +19,7 @@
     .help-block.form-text = t('.hints.exposed_ports_list')
   .form-group
     = f.label(:memory_limit)
-    = f.number_field(:memory_limit, class: 'form-control', min: DockerClient::MINIMUM_MEMORY_LIMIT, value: f.object.memory_limit || DockerClient::DEFAULT_MEMORY_LIMIT)
+    = f.number_field(:memory_limit, class: 'form-control', min: ExecutionEnvironment::MINIMUM_MEMORY_LIMIT, value: f.object.memory_limit || ExecutionEnvironment::DEFAULT_MEMORY_LIMIT)
   .form-group
     = f.label(:cpu_limit)
     = f.number_field(:cpu_limit, class: 'form-control', min: 1, step: 1, value: f.object.cpu_limit || ExecutionEnvironment::DEFAULT_CPU_LIMIT)

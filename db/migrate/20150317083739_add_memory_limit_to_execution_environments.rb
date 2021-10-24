@@ -6,7 +6,7 @@ class AddMemoryLimitToExecutionEnvironments < ActiveRecord::Migration[4.2]
 
     reversible do |direction|
       direction.up do
-        ExecutionEnvironment.update(memory_limit: DockerClient::DEFAULT_MEMORY_LIMIT)
+        ExecutionEnvironment.update(memory_limit: ExecutionEnvironment::DEFAULT_MEMORY_LIMIT)
       end
     end
   end

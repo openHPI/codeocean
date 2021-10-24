@@ -8,10 +8,8 @@ class DockerClient
   end
 
   CONTAINER_WORKSPACE_PATH = '/workspace' # '/home/python/workspace' #'/tmp/workspace'
-  DEFAULT_MEMORY_LIMIT = 256
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
   LOCAL_WORKSPACE_ROOT = File.expand_path(config[:workspace_root])
-  MINIMUM_MEMORY_LIMIT = 4
   RECYCLE_CONTAINERS = false
   RETRY_COUNT = 2
   MINIMUM_CONTAINER_LIFETIME = 10.minutes

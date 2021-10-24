@@ -8,6 +8,8 @@ class ExecutionEnvironment < ApplicationRecord
 
   VALIDATION_COMMAND = 'whoami'
   DEFAULT_CPU_LIMIT = 20
+  DEFAULT_MEMORY_LIMIT = 256
+  MINIMUM_MEMORY_LIMIT = 4
 
   after_initialize :set_default_values
 
@@ -21,7 +23,7 @@ class ExecutionEnvironment < ApplicationRecord
   validate :working_docker_image?, if: :validate_docker_image?
   validates :docker_image, presence: true
   validates :memory_limit,
-    numericality: {greater_than_or_equal_to: DockerClient::MINIMUM_MEMORY_LIMIT, only_integer: true}, presence: true
+    numericality: {greater_than_or_equal_to: MINIMUM_MEMORY_LIMIT, only_integer: true}, presence: true
   validates :network_enabled, boolean_presence: true
   validates :name, presence: true
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
