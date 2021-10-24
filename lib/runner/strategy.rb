@@ -5,15 +5,7 @@ class Runner::Strategy
     @execution_environment = environment
   end
 
-  def self.config
-    raise NotImplementedError
-  end
-
   def self.initialize_environment
-    raise NotImplementedError
-  end
-
-  def self.available_images
     raise NotImplementedError
   end
 
@@ -33,11 +25,27 @@ class Runner::Strategy
     raise NotImplementedError
   end
 
-  def attach_to_execution(_command)
+  def attach_to_execution(_command, _event_loop)
     raise NotImplementedError
   end
 
-  def websocket_header
+  def self.available_images
+    raise NotImplementedError
+  end
+
+  def self.config
+    raise NotImplementedError
+  end
+
+  def self.release
+    raise NotImplementedError
+  end
+
+  def self.pool_size
+    raise NotImplementedError
+  end
+
+  def self.websocket_header
     raise NotImplementedError
   end
 end

@@ -9,24 +9,14 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     end
   end
 
-  def self.config
-    @config ||= CodeOcean::Config.new(:code_ocean).read[:runner_management] || {}
+  def initialize(runner_id, _environment)
+    super
+    @allocation_id = runner_id
   end
 
   def self.initialize_environment
     # There is no additional initialization required for Poseidon
     nil
-  end
-
-  def self.available_images
-    # Images are pulled when needed for a new execution environment
-    # and cleaned up automatically if no longer in use.
-    # Hence, there is no additional image that we need to return
-    []
-  end
-
-  def self.headers
-    @headers ||= {'Content-Type' => 'application/json', 'Poseidon-Token' => config[:token]}
   end
 
   def self.sync_environment(environment)
@@ -68,38 +58,15 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished new runner request" }
   end
 
-  def self.handle_error(response)
-    case response.status
-      when 400
-        response_body = parse response
-        raise Runner::Error::BadRequest.new(response_body[:message])
-      when 401
-        raise Runner::Error::Unauthorized.new('Authentication with Poseidon failed')
-      when 404
-        raise Runner::Error::RunnerNotFound.new
-      when 500
-        response_body = parse response
-        error_code = response_body[:errorCode]
-        if error_code == error_nomad_overload
-          raise Runner::Error::NotAvailable.new("Poseidon has no runner available (#{error_code}): #{response_body[:message]}")
-        else
-          raise Runner::Error::InternalServerError.new("Poseidon sent #{response_body[:errorCode]}: #{response_body[:message]}")
-        end
-      else
-        raise Runner::Error::UnexpectedResponse.new("Poseidon sent unexpected response status code #{response.status}")
-    end
-  end
-
-  def self.parse(response)
-    JSON.parse(response.body).deep_symbolize_keys
-  rescue JSON::ParserError => e
-    # Poseidon should not send invalid json
-    raise Runner::Error::UnexpectedResponse.new("Error parsing response from Poseidon: #{e.message}")
-  end
-
-  def initialize(runner_id, _environment)
-    super
-    @allocation_id = runner_id
+  def destroy_at_management
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{runner_url}" }
+    connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
+    response = connection.delete runner_url, nil, self.class.headers
+    self.class.handle_error response unless response.status == 204
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished destroying runner" }
   end
 
   def copy_files(files)
@@ -135,22 +102,63 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     socket
   end
 
-  def destroy_at_management
-    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{runner_url}" }
-    connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
-    response = connection.delete runner_url, nil, self.class.headers
-    self.class.handle_error response unless response.status == 204
-  rescue Faraday::Error => e
-    raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
-  ensure
-    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished destroying runner" }
+  def self.available_images
+    # Images are pulled when needed for a new execution environment
+    # and cleaned up automatically if no longer in use.
+    # Hence, there is no additional image that we need to return
+    []
   end
 
-  def websocket_header
+  def self.config
+    @config ||= CodeOcean::Config.new(:code_ocean).read[:runner_management] || {}
+  end
+
+  def self.release
+    nil
+  end
+
+  def self.pool_size
+    {}
+  end
+
+  def self.websocket_header
     {
-      tls: {root_cert_file: self.class.config[:ca_file]},
-      headers: {'Poseidon-Token' => self.class.config[:token]},
+      tls: {root_cert_file: config[:ca_file]},
+      headers: {'Poseidon-Token' => config[:token]},
     }
+  end
+
+  def self.handle_error(response)
+    case response.status
+      when 400
+        response_body = parse response
+        raise Runner::Error::BadRequest.new(response_body[:message])
+      when 401
+        raise Runner::Error::Unauthorized.new('Authentication with Poseidon failed')
+      when 404
+        raise Runner::Error::RunnerNotFound.new
+      when 500
+        response_body = parse response
+        error_code = response_body[:errorCode]
+        if error_code == error_nomad_overload
+          raise Runner::Error::NotAvailable.new("Poseidon has no runner available (#{error_code}): #{response_body[:message]}")
+        else
+          raise Runner::Error::InternalServerError.new("Poseidon sent #{response_body[:errorCode]}: #{response_body[:message]}")
+        end
+      else
+        raise Runner::Error::UnexpectedResponse.new("Poseidon sent unexpected response status code #{response.status}")
+    end
+  end
+
+  def self.headers
+    @headers ||= {'Content-Type' => 'application/json', 'Poseidon-Token' => config[:token]}
+  end
+
+  def self.parse(response)
+    JSON.parse(response.body).deep_symbolize_keys
+  rescue JSON::ParserError => e
+    # Poseidon should not send invalid json
+    raise Runner::Error::UnexpectedResponse.new("Error parsing response from Poseidon: #{e.message}")
   end
 
   private

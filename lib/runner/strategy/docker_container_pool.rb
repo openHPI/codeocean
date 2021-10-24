@@ -3,20 +3,13 @@
 class Runner::Strategy::DockerContainerPool < Runner::Strategy
   attr_reader :container_id, :command
 
-  def self.config
-    # Since the docker configuration file contains code that must be executed, we use ERB templating.
-    @config ||= CodeOcean::Config.new(:docker).read(erb: true)
+  def initialize(runner_id, _environment)
+    super
+    @container_id = runner_id
   end
 
   def self.initialize_environment
     DockerClient.initialize_environment unless Rails.env.test? && `which docker`.blank?
-  end
-
-  def self.available_images
-    DockerClient.check_availability!
-    DockerClient.image_tags
-  rescue DockerClient::Error => e
-    raise Runner::Error::InternalServerError.new(e.message)
   end
 
   def self.sync_environment(_environment)
@@ -38,9 +31,14 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished new runner request" }
   end
 
-  def initialize(runner_id, _environment)
-    super
-    @container_id = runner_id
+  def destroy_at_management
+    url = "#{self.class.config[:pool][:location]}/docker_container_pool/destroy_container/#{container.id}"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{url}" }
+    Faraday.get(url)
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished destroying runner" }
   end
 
   def copy_files(files)
@@ -69,16 +67,6 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
-  def destroy_at_management
-    url = "#{self.class.config[:pool][:location]}/docker_container_pool/destroy_container/#{container.id}"
-    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{url}" }
-    Faraday.get(url)
-  rescue Faraday::Error => e
-    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
-  ensure
-    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished destroying runner" }
-  end
-
   def attach_to_execution(command, event_loop)
     @command = command
     query_params = 'logs=0&stream=1&stderr=1&stdout=1&stdin=1'
@@ -99,7 +87,27 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     socket
   end
 
-  def websocket_header
+  def self.available_images
+    DockerClient.check_availability!
+    DockerClient.image_tags
+  rescue DockerClient::Error => e
+    raise Runner::Error::InternalServerError.new(e.message)
+  end
+
+  def self.config
+    # Since the docker configuration file contains code that must be executed, we use ERB templating.
+    @config ||= CodeOcean::Config.new(:docker).read(erb: true)
+  end
+
+  def self.release
+    nil
+  end
+
+  def self.pool_size
+    {}
+  end
+
+  def self.websocket_header
     {}
   end
 

@@ -22,7 +22,7 @@ class Runner::Connection
     # Internally, Faye::WebSocket uses EventMachine and the `ping` value is used to wake the EventMachine thread
     # The `tls` option is used to customize the validation of TLS connections.
     # Passing `nil` as a `root_cert_file` is okay and done so for the DockerContainerPool.
-    @socket = Faye::WebSocket::Client.new(url, [], strategy.websocket_header.merge(ping: 0.1))
+    @socket = Faye::WebSocket::Client.new(url, [], strategy.class.websocket_header.merge(ping: 0.1))
     @strategy = strategy
     @status = :established
     @event_loop = event_loop
