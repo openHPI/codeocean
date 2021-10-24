@@ -11,8 +11,10 @@ class Runner < ApplicationRecord
   attr_accessor :strategy
 
   def self.strategy_class
-    strategy_name = CodeOcean::Config.new(:code_ocean).read[:runner_management][:strategy]
-    @strategy_class ||= "runner/strategy/#{strategy_name}".camelize.constantize
+    @strategy_class ||= begin
+      strategy_name = CodeOcean::Config.new(:code_ocean).read[:runner_management][:strategy]
+      "runner/strategy/#{strategy_name}".camelize.constantize
+    end
   end
 
   def self.management_active?
