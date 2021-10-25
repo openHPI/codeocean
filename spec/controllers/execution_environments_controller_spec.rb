@@ -111,7 +111,7 @@ describe ExecutionEnvironmentsController do
 
   describe '#set_docker_images' do
     context 'when Docker is available' do
-      let(:docker_images) { [1, 2, 3] }
+      let(:docker_images) { %w[image:one image:two image:three] }
 
       before do
         allow(Runner).to receive(:strategy_class).and_return Runner::Strategy::DockerContainerPool
