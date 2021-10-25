@@ -18,7 +18,7 @@ describe 'seeds' do
     }
   end
 
-  describe 'execute db:seed' do
+  describe 'execute db:seed', cleaning_strategy: :truncation do
     it 'collects the test results' do
       expect { seed }.not_to raise_error
     end
