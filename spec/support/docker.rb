@@ -9,7 +9,7 @@ RSpec.configure do |config|
       allow(DockerClient).to receive(:check_availability!).and_return(true)
       allow(DockerClient).to receive(:create_container).and_return(CONTAINER)
       allow(DockerClient).to receive(:find_image_by_tag).and_return(IMAGE)
-      allow(DockerClient).to receive(:image_tags).and_return([IMAGE])
+      allow(DockerClient).to receive(:image_tags).and_return([IMAGE.info['RepoTags']].flatten)
       allow(DockerClient).to receive(:local_workspace_path).and_return(Dir.mktmpdir)
       allow_any_instance_of(DockerClient).to receive(:send_command).and_return({})
       allow_any_instance_of(ExecutionEnvironment).to receive(:working_docker_image?)
