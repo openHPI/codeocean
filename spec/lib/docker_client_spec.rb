@@ -14,6 +14,7 @@ describe DockerClient, docker: true do
   let(:workspace_path) { WORKSPACE_PATH }
 
   before do
+    described_class.initialize_environment
     allow(described_class).to receive(:container_creation_options).and_wrap_original do |original_method, *args, &block|
       result = original_method.call(*args, &block)
       result['NanoCPUs'] = 2 * 1_000_000_000 # CPU quota in units of 10^-9 CPUs.
