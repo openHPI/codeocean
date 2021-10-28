@@ -21,8 +21,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
   def self.sync_environment(environment)
     url = "#{config[:url]}/execution-environments/#{environment.id}"
-    connection = Faraday.new nil, ssl: {ca_file: config[:ca_file]}
-    response = connection.put url, environment.to_json, headers
+    response = http_connection.put url, environment.to_json
     return true if [201, 204].include? response.status
 
     Rails.logger.warn("Could not create execution environment in Poseidon, got response: #{response.as_json}")
@@ -39,8 +38,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
       inactivityTimeout: config[:unused_runner_expiration_time].seconds,
     }
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Requesting new runner at #{url}" }
-    connection = Faraday.new nil, ssl: {ca_file: config[:ca_file]}
-    response = connection.post url, body.to_json, headers
+    response = http_connection.post url, body.to_json
 
     case response.status
       when 200
@@ -60,8 +58,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
   def destroy_at_management
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{runner_url}" }
-    connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
-    response = connection.delete runner_url, nil, self.class.headers
+    response = self.class.http_connection.delete runner_url
     self.class.handle_error response unless response.status == 204
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
@@ -83,8 +80,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     # First, clean the workspace and second, copy all files to their location.
     # This ensures that no artefacts from a previous submission remain in the workspace.
     body = {copy: copy, delete: ['./']}
-    connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
-    response = connection.patch url, body.to_json, self.class.headers
+    response = self.class.http_connection.patch url, body.to_json
     return if response.status == 204
 
     Runner.destroy(@allocation_id) if response.status == 400
@@ -154,6 +150,12 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     @headers ||= {'Content-Type' => 'application/json', 'Poseidon-Token' => config[:token]}
   end
 
+  def self.http_connection
+    @http_connection ||= Faraday.new(ssl: {ca_file: config[:ca_file]}, headers: headers) do |faraday|
+      faraday.adapter :net_http_persistent
+    end
+  end
+
   def self.parse(response)
     JSON.parse(response.body).deep_symbolize_keys
   rescue JSON::ParserError => e
@@ -167,8 +169,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     url = "#{runner_url}/execute"
     body = {command: command, timeLimit: @execution_environment.permitted_execution_time}
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Preparing command execution at #{url}: #{command}" }
-    connection = Faraday.new nil, ssl: {ca_file: self.class.config[:ca_file]}
-    response = connection.post url, body.to_json, self.class.headers
+    response = self.class.http_connection.post url, body.to_json
 
     case response.status
       when 200

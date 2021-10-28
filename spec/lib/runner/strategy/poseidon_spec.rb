@@ -109,7 +109,7 @@ describe Runner::Strategy::Poseidon do
 
       it 'raises an error' do
         faraday_connection = instance_double 'Faraday::Connection'
-        allow(Faraday).to receive(:new).and_return(faraday_connection)
+        allow(described_class).to receive(:http_connection).and_return(faraday_connection)
         %i[post patch delete].each {|message| allow(faraday_connection).to receive(message).and_raise(Faraday::TimeoutError) }
         expect { action.call }.to raise_error(Runner::Error::FaradayError)
       end
@@ -122,20 +122,19 @@ describe Runner::Strategy::Poseidon do
 
     it 'makes the correct request to Poseidon' do
       faraday_connection = instance_double 'Faraday::Connection'
-      allow(Faraday).to receive(:new).and_return(faraday_connection)
+      allow(described_class).to receive(:http_connection).and_return(faraday_connection)
       allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: 201))
       action.call
-      expect(faraday_connection).to have_received(:put) do |url, body, headers|
+      expect(faraday_connection).to have_received(:put) do |url, body|
         expect(url).to match(%r{execution-environments/#{execution_environment.id}\z})
         expect(body).to eq(execution_environment.to_json)
-        expect(headers).to include({'Content-Type' => 'application/json'})
       end
     end
 
     shared_examples 'returns true when the api request was successful' do |status|
       it "returns true on status #{status}" do
         faraday_connection = instance_double 'Faraday::Connection'
-        allow(Faraday).to receive(:new).and_return(faraday_connection)
+        allow(described_class).to receive(:http_connection).and_return(faraday_connection)
         allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
         expect(action.call).to be_truthy
       end
@@ -144,7 +143,7 @@ describe Runner::Strategy::Poseidon do
     shared_examples 'returns false when the api request failed' do |status|
       it "returns false on status #{status}" do
         faraday_connection = instance_double 'Faraday::Connection'
-        allow(Faraday).to receive(:new).and_return(faraday_connection)
+        allow(described_class).to receive(:http_connection).and_return(faraday_connection)
         allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
         expect(action.call).to be_falsey
       end
@@ -160,7 +159,7 @@ describe Runner::Strategy::Poseidon do
 
     it 'returns false if Faraday raises an error' do
       faraday_connection = instance_double 'Faraday::Connection'
-      allow(Faraday).to receive(:new).and_return(faraday_connection)
+      allow(described_class).to receive(:http_connection).and_return(faraday_connection)
       allow(faraday_connection).to receive(:put).and_raise(Faraday::TimeoutError)
       expect(action.call).to be_falsey
     end
