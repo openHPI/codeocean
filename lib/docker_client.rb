@@ -55,7 +55,6 @@ class DockerClient
     {
       'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
       'NetworkDisabled' => !execution_environment.network_enabled?,
-      # DockerClient.config['allowed_cpus']
       'OpenStdin' => true,
       'StdinOnce' => true,
       # required to expose standard streams over websocket
@@ -83,7 +82,7 @@ class DockerClient
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
-    socket_url = "#{DockerClient.config['ws_host']}/v1.27/containers/#{@container.id}/attach/ws?#{query_params}"
+    socket_url = "#{self.class.config['ws_host']}/v1.27/containers/#{@container.id}/attach/ws?#{query_params}"
     # The ping value is measured in seconds and specifies how often a Ping frame should be sent.
     # Internally, Faye::WebSocket uses EventMachine and the ping value is used to wake the EventMachine thread
     socket = Faye::WebSocket::Client.new(socket_url, [], headers: headers, ping: 0.1)
