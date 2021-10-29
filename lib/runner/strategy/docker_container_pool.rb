@@ -88,10 +88,16 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.available_images
-    DockerClient.check_availability!
-    DockerClient.image_tags
-  rescue DockerClient::Error => e
-    raise Runner::Error::InternalServerError.new(e.message)
+    url = "#{config[:pool][:location]}/docker_container_pool/available_images"
+    response = Faraday.get(url)
+    json = JSON.parse(response.body)
+    return json if response.success?
+
+    raise Runner::Error::InternalServerError.new("DockerContainerPool returned: #{json['error']}")
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  rescue JSON::ParserError => e
+    raise Runner::Error::UnexpectedResponse.new("DockerContainerPool returned invalid JSON: #{e.inspect}")
   end
 
   def self.config
