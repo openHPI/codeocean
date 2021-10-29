@@ -5,10 +5,11 @@ require 'rails_helper'
 describe ExecutionEnvironment do
   let(:execution_environment) { described_class.create.tap {|execution_environment| execution_environment.update(network_enabled: nil) } }
 
-  it 'validates that the Docker image works', docker: true do
+  it 'validates that the Docker image works' do
     allow(execution_environment).to receive(:validate_docker_image?).and_return(true)
-    expect(execution_environment).to receive(:working_docker_image?)
+    allow(execution_environment).to receive(:working_docker_image?).and_return(true)
     execution_environment.update(docker_image: FactoryBot.attributes_for(:ruby)[:docker_image])
+    expect(execution_environment).to have_received(:working_docker_image?)
   end
 
   it 'validates the presence of a Docker image name' do
@@ -144,27 +145,29 @@ describe ExecutionEnvironment do
     end
   end
 
-  describe '#working_docker_image?', docker: true do
+  describe '#working_docker_image?' do
     let(:working_docker_image?) { execution_environment.send(:working_docker_image?) }
+    let(:runner) { instance_double 'runner' }
 
-    before { allow(DockerClient).to receive(:find_image_by_tag).and_return(Object.new) }
+    before do
+      allow(Runner).to receive(:for).with(execution_environment.author, execution_environment).and_return runner
+    end
 
     it 'instantiates a Runner' do
-      runner = instance_double 'runner'
-      allow(Runner).to receive(:for).with(execution_environment.author, execution_environment).and_return runner
       allow(runner).to receive(:execute_command).and_return({})
       working_docker_image?
       expect(runner).to have_received(:execute_command).once
     end
 
     it 'executes the validation command' do
-      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(ExecutionEnvironment::VALIDATION_COMMAND).and_return({})
+      allow(runner).to receive(:execute_command).and_return({})
       working_docker_image?
+      expect(runner).to have_received(:execute_command).with(ExecutionEnvironment::VALIDATION_COMMAND, raise_exception: true)
     end
 
     context 'when the command produces an error' do
       it 'adds an error' do
-        allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return(stderr: 'command not found')
+        allow(runner).to receive(:execute_command).and_return(stderr: 'command not found')
         working_docker_image?
         expect(execution_environment.errors[:docker_image]).to be_present
       end
@@ -172,7 +175,7 @@ describe ExecutionEnvironment do
 
     context 'when the Docker client produces an error' do
       it 'adds an error' do
-        allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_raise(DockerClient::Error)
+        allow(runner).to receive(:execute_command).and_raise(Runner::Error)
         working_docker_image?
         expect(execution_environment.errors[:docker_image]).to be_present
       end

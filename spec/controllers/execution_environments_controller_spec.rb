@@ -12,8 +12,6 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'POST #create' do
-    before { allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
-
     context 'with a valid execution environment' do
       let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby).attributes} } }
 
@@ -61,7 +59,6 @@ describe ExecutionEnvironmentsController do
 
   describe 'GET #edit' do
     before do
-      allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
       get :edit, params: {id: execution_environment.id}
     end
 
@@ -99,7 +96,6 @@ describe ExecutionEnvironmentsController do
 
   describe 'GET #new' do
     before do
-      allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
       get :new
     end
 
@@ -115,8 +111,7 @@ describe ExecutionEnvironmentsController do
 
       before do
         allow(Runner).to receive(:strategy_class).and_return Runner::Strategy::DockerContainerPool
-        allow(DockerClient).to receive(:check_availability!).at_least(:once)
-        allow(DockerClient).to receive(:image_tags).and_return(docker_images)
+        allow(Runner::Strategy::DockerContainerPool).to receive(:available_images).and_return(docker_images)
         controller.send(:set_docker_images)
       end
 
@@ -128,7 +123,7 @@ describe ExecutionEnvironmentsController do
 
       before do
         allow(Runner).to receive(:strategy_class).and_return Runner::Strategy::DockerContainerPool
-        allow(DockerClient).to receive(:check_availability!).at_least(:once).and_raise(DockerClient::Error.new(error_message))
+        allow(Runner::Strategy::DockerContainerPool).to receive(:available_images).and_raise(Runner::Error::InternalServerError.new(error_message))
         controller.send(:set_docker_images)
       end
 
@@ -168,7 +163,6 @@ describe ExecutionEnvironmentsController do
   describe 'PUT #update' do
     context 'with a valid execution environment' do
       before do
-        allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
         allow(controller).to receive(:sync_to_runner_management).and_return(nil)
         put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
       end

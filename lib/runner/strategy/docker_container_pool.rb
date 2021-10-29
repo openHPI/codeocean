@@ -9,7 +9,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.initialize_environment
-    DockerClient.initialize_environment unless Rails.env.test? && `which docker`.blank?
+    raise Error.new('Docker configuration missing!') unless config[:host] && config[:workspace_root]
+
+    FileUtils.mkdir_p(File.expand_path(config[:workspace_root]))
   end
 
   def self.sync_environment(_environment)

@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe DockerContainerMixin do
+  let(:container) { Docker::Container.send(:new, Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex) }
+
   describe '#binds' do
     let(:binds) { [] }
 
@@ -11,8 +13,8 @@ describe DockerContainerMixin do
     end
 
     it 'returns the correct information' do
-      allow(CONTAINER).to receive(:json).and_return('HostConfig' => {'Binds' => binds})
-      expect(CONTAINER.binds).to eq(binds)
+      allow(container).to receive(:json).and_return('HostConfig' => {'Binds' => binds})
+      expect(container.binds).to eq(binds)
     end
   end
 
@@ -25,8 +27,8 @@ describe DockerContainerMixin do
     end
 
     it 'returns the correct information' do
-      allow(CONTAINER).to receive(:json).and_return('HostConfig' => {'PortBindings' => port_bindings})
-      expect(CONTAINER.port_bindings).to eq(port => port)
+      allow(container).to receive(:json).and_return('HostConfig' => {'PortBindings' => port_bindings})
+      expect(container.port_bindings).to eq(port => port)
     end
   end
 end

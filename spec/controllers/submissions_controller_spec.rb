@@ -156,7 +156,6 @@ describe SubmissionsController do
 
     context 'when no errors occur during execution' do
       before do
-        allow_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
         perform_request
       end
 
@@ -219,7 +218,6 @@ describe SubmissionsController do
     let(:output) { {} }
 
     before do
-      allow_any_instance_of(DockerClient).to receive(:execute_test_command).with(submission, filename)
       get :test, params: {filename: filename, id: submission.id}
     end
 

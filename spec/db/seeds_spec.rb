@@ -16,6 +16,7 @@ describe 'seeds' do
     allow(ActiveRecord::Base).to receive(:establish_connection).with(:development) {
       ActiveRecord::Base.establish_connection(:test)
     }
+    allow_any_instance_of(ExecutionEnvironment).to receive(:working_docker_image?).and_return true
   end
 
   describe 'execute db:seed', cleaning_strategy: :truncation do
