@@ -31,8 +31,8 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def execute_command
     runner = Runner.for(current_user, @execution_environment)
-    output = runner.execute_command(params[:command])
-    render(json: output)
+    output = runner.execute_command(params[:command], raise_exception: false)
+    render json: output
   end
 
   def working_time_query

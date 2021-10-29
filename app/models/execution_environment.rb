@@ -79,7 +79,7 @@ class ExecutionEnvironment < ApplicationRecord
 
   def working_docker_image?
     runner = Runner.for(author, self)
-    output = runner.execute_command(VALIDATION_COMMAND, raise_exception: true)
+    output = runner.execute_command(VALIDATION_COMMAND)
     errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
   rescue Runner::Error => e
     errors.add(:docker_image, "error: #{e}")

@@ -64,7 +64,7 @@ class Runner < ApplicationRecord
     Time.zone.now - starting_time # execution duration
   end
 
-  def execute_command(command, raise_exception: false)
+  def execute_command(command, raise_exception: true)
     output = {}
     stdout = +''
     stderr = +''
