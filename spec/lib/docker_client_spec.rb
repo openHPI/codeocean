@@ -204,8 +204,8 @@ describe DockerClient, docker: true do
   describe '#execute_arbitrary_command' do
     let(:execute_arbitrary_command) { docker_client.execute_arbitrary_command(command) }
 
-    it 'takes a container from the pool' do
-      expect(DockerContainerPool).to receive(:get_container).and_call_original
+    it 'creates a new container' do
+      expect(described_class).to receive(:create_container).and_call_original
       execute_arbitrary_command
     end
 
@@ -248,8 +248,8 @@ describe DockerClient, docker: true do
 
     after { docker_client.send(:execute_run_command, submission, filename) }
 
-    it 'takes a container from the pool' do
-      expect(DockerContainerPool).to receive(:get_container).with(submission.execution_environment).and_call_original
+    it 'creates a new container' do
+      expect(described_class).to receive(:create_container).with(submission.execution_environment).and_call_original
     end
 
     it 'creates the workspace files' do
@@ -268,8 +268,8 @@ describe DockerClient, docker: true do
 
     after { docker_client.send(:execute_test_command, submission, filename) }
 
-    it 'takes a container from the pool' do
-      expect(DockerContainerPool).to receive(:get_container).with(submission.execution_environment).and_call_original
+    it 'creates a new container' do
+      expect(described_class).to receive(:create_container).with(submission.execution_environment).and_call_original
     end
 
     it 'creates the workspace files' do
