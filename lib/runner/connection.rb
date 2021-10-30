@@ -90,7 +90,7 @@ class Runner::Connection
 
   def ignored_sequence?(event_data)
     case event_data
-      when "#exit\r", "{\"cmd\": \"exit\"}\r"
+      when /#exit\r/, /\s*{"cmd": "exit"}\r/
         # Do not forward. We will wait for the confirmed exit sent by the runner management.
         true
       else
