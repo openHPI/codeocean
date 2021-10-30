@@ -21,6 +21,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
   def self.request_from_management(environment)
     url = "#{config[:url]}/docker_container_pool/get_container/#{environment.id}"
+    body = {
+      inactivity_timeout: config[:unused_runner_expiration_time].seconds,
+    }
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Requesting new runner at #{url}" }
     response = Faraday.post url, body
 
@@ -71,6 +74,8 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def attach_to_execution(command, event_loop)
+    reset_inactivity_timer
+
     @command = command
     query_params = 'logs=0&stream=1&stderr=1&stdout=1&stdin=1'
     websocket_url = "#{self.class.config[:ws_host]}/v1.27/containers/#{@container_id}/attach/ws?#{query_params}"
@@ -175,6 +180,19 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
   def local_workspace_path
     @local_workspace_path ||= Pathname.new(container.binds.first.split(':').first)
+  end
+
+  def reset_inactivity_timer
+    url = "#{self.class.config[:url]}/docker_container_pool/reuse_container/#{container.id}"
+    body = {
+      inactivity_timeout: self.class.config[:unused_runner_expiration_time].seconds,
+    }
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Resetting inactivity timer at #{url}" }
+    Faraday.post url, body
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished resetting inactivity timer" }
   end
 
   class Connection < Runner::Connection
