@@ -183,14 +183,19 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
     def decode(event_data)
       case event_data
-        when /(@#{@strategy.container_id[0..11]}|#exit|{"cmd": "exit"})/
-          # TODO: The whole message line is kept back. If this contains the remaining buffer, this buffer is also lost.
-          # Example: A Java program prints `{` and then exists (with `#exit`). The `event_data` processed here is `{#exit`
+        when /(?<previous_data>.*)((root|python|user)@#{@strategy.container_id[0..11]}|#exit|{"cmd": "exit"})/m
+          # The RegEx above is used to determine unwanted output which also indicates a program termination.
+          # If the RegEx matches, at least two capture groups will be created.
+          # The first (called `previous_data`) contains any data before the match (including multiple lines)
+          # while the second contains the unwanted output data.
 
           # Assume correct termination for now and return exit code 0
           # TODO: Can we use the actual exit code here?
           @exit_code = 0
           close(:terminated_by_codeocean)
+
+          # The first capture group is forwarded
+          {'type' => @stream, 'data' => Regexp.last_match(:previous_data)}
         when /python3.*-m\s*unittest/
           # TODO: Super dirty hack to redirect test output to stderr
           # This is only required for Python and the unittest module but must not be used with PyLint
