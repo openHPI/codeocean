@@ -18,11 +18,7 @@ class Runner::Connection
 
   def initialize(url, strategy, event_loop, locale = I18n.locale)
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Opening connection to #{url}" }
-    # The `ping` value is measured in seconds and specifies how often a Ping frame should be sent.
-    # Internally, Faye::WebSocket uses EventMachine and the `ping` value is used to wake the EventMachine thread
-    # The `tls` option is used to customize the validation of TLS connections.
-    # Passing `nil` as a `root_cert_file` is okay and done so for the DockerContainerPool.
-    @socket = Faye::WebSocket::Client.new(url, [], strategy.class.websocket_header.merge(ping: 0.1))
+    @socket = Faye::WebSocket::Client.new(url, [], strategy.class.websocket_header)
     @strategy = strategy
     @status = :established
     @event_loop = event_loop

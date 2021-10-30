@@ -118,6 +118,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def self.websocket_header
+    # The `tls` option is used to customize the validation of TLS connections.
+    # The `headers` option is used to pass the `Poseidon-Token` as part of the initial connection request.
     {
       tls: {root_cert_file: config[:ca_file]},
       headers: {'Poseidon-Token' => config[:token]},

@@ -129,7 +129,11 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.websocket_header
-    {}
+    # The `ping` value is measured in seconds and specifies how often a Ping frame should be sent.
+    # Internally, Faye::WebSocket uses EventMachine and the `ping` value is used to wake the EventMachine thread
+    {
+      ping: 0.1,
+    }
   end
 
   private
