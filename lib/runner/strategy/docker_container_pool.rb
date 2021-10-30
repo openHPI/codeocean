@@ -22,7 +22,8 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   def self.request_from_management(environment)
     url = "#{config[:url]}/docker_container_pool/get_container/#{environment.id}"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Requesting new runner at #{url}" }
-    response = Faraday.get url
+    response = Faraday.post url, body
+
     container_id = JSON.parse(response.body)['id']
     container_id.presence || raise(Runner::Error::NotAvailable.new("DockerContainerPool didn't return a container id"))
   rescue Faraday::Error => e
@@ -36,7 +37,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   def destroy_at_management
     url = "#{self.class.config[:url]}/docker_container_pool/destroy_container/#{container.id}"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{url}" }
-    Faraday.get(url)
+    Faraday.delete(url)
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   ensure

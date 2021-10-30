@@ -8,7 +8,7 @@ describe Runner::Strategy::DockerContainerPool do
   let(:execution_environment) { FactoryBot.create :ruby }
   let(:container_pool) { described_class.new(runner_id, execution_environment) }
   let(:docker_container_pool_url) { 'http://localhost:1234' }
-  let(:config) { {pool: {location: docker_container_pool_url}} }
+  let(:config) { {url: docker_container_pool_url, unused_runner_expiration_time: 180} }
   let(:container) { instance_double(Docker::Container) }
 
   before do
@@ -17,9 +17,9 @@ describe Runner::Strategy::DockerContainerPool do
   end
 
   # All requests handle a Faraday error the same way.
-  shared_examples 'Faraday error handling' do
+  shared_examples 'Faraday error handling' do |http_verb|
     it 'raises a runner error' do
-      allow(Faraday).to receive(:get).and_raise(Faraday::TimeoutError)
+      allow(Faraday).to receive(http_verb).and_raise(Faraday::TimeoutError)
       expect { action.call }.to raise_error(Runner::Error::FaradayError)
     end
   end
@@ -29,7 +29,7 @@ describe Runner::Strategy::DockerContainerPool do
     let(:response_body) { nil }
     let!(:request_runner_stub) do
       WebMock
-        .stub_request(:get, "#{docker_container_pool_url}/docker_container_pool/get_container/#{execution_environment.id}")
+        .stub_request(:post, "#{docker_container_pool_url}/docker_container_pool/get_container/#{execution_environment.id}")
         .to_return(body: response_body, status: 200)
     end
 
@@ -63,14 +63,14 @@ describe Runner::Strategy::DockerContainerPool do
       end
     end
 
-    include_examples 'Faraday error handling'
+    include_examples 'Faraday error handling', :post
   end
 
   describe '#destroy_at_management' do
     let(:action) { -> { container_pool.destroy_at_management } }
     let!(:destroy_runner_stub) do
       WebMock
-        .stub_request(:get, "#{docker_container_pool_url}/docker_container_pool/destroy_container/#{runner_id}")
+        .stub_request(:delete, "#{docker_container_pool_url}/docker_container_pool/destroy_container/#{runner_id}")
         .to_return(body: nil, status: 200)
     end
 
@@ -81,7 +81,7 @@ describe Runner::Strategy::DockerContainerPool do
       expect(destroy_runner_stub).to have_been_requested.once
     end
 
-    include_examples 'Faraday error handling'
+    include_examples 'Faraday error handling', :delete
   end
 
   describe '#copy_files' do
