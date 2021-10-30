@@ -20,7 +20,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.request_from_management(environment)
-    url = "#{config[:pool][:location]}/docker_container_pool/get_container/#{environment.id}"
+    url = "#{config[:url]}/docker_container_pool/get_container/#{environment.id}"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Requesting new runner at #{url}" }
     response = Faraday.get url
     container_id = JSON.parse(response.body)['id']
@@ -34,7 +34,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def destroy_at_management
-    url = "#{self.class.config[:pool][:location]}/docker_container_pool/destroy_container/#{container.id}"
+    url = "#{self.class.config[:url]}/docker_container_pool/destroy_container/#{container.id}"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{url}" }
     Faraday.get(url)
   rescue Faraday::Error => e
@@ -90,7 +90,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.available_images
-    url = "#{config[:pool][:location]}/docker_container_pool/available_images"
+    url = "#{config[:url]}/docker_container_pool/available_images"
     response = Faraday.get(url)
     json = JSON.parse(response.body)
     return json if response.success?
@@ -103,12 +103,17 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.config
-    # Since the docker configuration file contains code that must be executed, we use ERB templating.
-    @config ||= CodeOcean::Config.new(:docker).read(erb: true)
+    @config ||= begin
+      # Since the docker configuration file contains code that must be executed, we use ERB templating.
+      docker_config = CodeOcean::Config.new(:docker).read(erb: true)
+      codeocean_config = CodeOcean::Config.new(:code_ocean).read[:runner_management] || {}
+      # All keys in `docker_config` take precedence over those in `codeocean_config`
+      docker_config.merge codeocean_config
+    end
   end
 
   def self.release
-    url = "#{config[:pool][:location]}/docker_container_pool/dump_info"
+    url = "#{config[:url]}/docker_container_pool/dump_info"
     response = Faraday.get(url)
     JSON.parse(response.body)['release']
   rescue Faraday::Error => e
@@ -118,7 +123,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def self.pool_size
-    url = "#{config[:pool][:location]}/docker_container_pool/quantities"
+    url = "#{config[:url]}/docker_container_pool/quantities"
     response = Faraday.get(url)
     pool_size = JSON.parse(response.body)
     pool_size.transform_keys(&:to_i)

@@ -49,8 +49,8 @@ default: &default
     # The authorization token for connections to the runner management (Poseidon only)
     # If TLS support is not enabled, this token is transmitted in clear text!
     token: SECRET
-    # The maximum time in seconds a runner may idle  at the runner management before
-    # it is removed. Each interaction with the runner resets this time (Poseidon only)
+    # The maximum time in seconds a runner may idle at the runner management before
+    # it is removed. Each begin of an interaction with the runner resets this time
     unused_runner_expiration_time: 180
 
 

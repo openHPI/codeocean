@@ -3,7 +3,6 @@ default: &default
   connection_timeout: 3
   pool:
     active: false
-    location: http://localhost:7100
   ports: !ruby/range 4500..4600
 
 development:
@@ -12,7 +11,6 @@ development:
   ws_host: ws://127.0.0.1:2376 #url to connect rails server to docker host
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   pool:
-    location: http://localhost:7100
     active: true
     refill:
       async: false
@@ -26,7 +24,6 @@ production:
   host: unix:///var/run/docker.sock
   pool:
     active: true
-    location: http://localhost:3000
     refill:
       async: false
       batch_size: 8
@@ -40,7 +37,6 @@ staging:
   host: unix:///var/run/docker.sock
   pool:
     active: true
-    location: http://localhost:3000
     refill:
       async: false
       batch_size: 8
