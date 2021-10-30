@@ -78,7 +78,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
     @command = command
     query_params = 'logs=0&stream=1&stderr=1&stdout=1&stdin=1'
-    websocket_url = "#{self.class.config[:ws_host]}/v1.27/containers/#{@container_id}/attach/ws?#{query_params}"
+    websocket_url = "#{self.class.config[:ws_host]}/v1.27/containers/#{container.id}/attach/ws?#{query_params}"
 
     socket = Connection.new(websocket_url, self, event_loop)
     begin
@@ -150,12 +150,12 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   private
 
   def container
-    return @container if @container.present?
+    @container ||= begin
+      container = Docker::Container.get(@container_id)
+      raise Runner::Error::RunnerNotFound unless container.info['State']['Running']
 
-    @container = Docker::Container.get(@container_id)
-    raise Runner::Error::RunnerNotFound unless @container.info['State']['Running']
-
-    @container
+      container
+    end
   rescue Docker::Error::NotFoundError
     raise Runner::Error::RunnerNotFound
   end
