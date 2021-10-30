@@ -135,6 +135,8 @@ class Runner::Connection
 
     case @status
       when :timeout
+        # The runner will destroyed. For the DockerContainerPool, this mechanism is necessary.
+        # However, it might not be required for Poseidon.
         @strategy.destroy_at_management
         @error = Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
       when :terminated_by_codeocean, :terminated_by_management

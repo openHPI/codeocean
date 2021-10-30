@@ -90,7 +90,6 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
       end
     rescue Timeout::Error
       socket.close(:timeout)
-      destroy_at_management
     end
     socket
   end
