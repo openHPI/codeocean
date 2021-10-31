@@ -98,7 +98,12 @@ class Runner < ApplicationRecord
       try += 1
       request_new_id
       save
-      retry if try == 1
+
+      if try == 1
+        # Reset the variable. This is required to prevent raising an outdated exception after a successful second try
+        e = nil
+        retry
+      end
 
       Rails.logger.debug { "Running command `#{command}` failed for the second time: #{e.message}" }
       output.merge!(status: :failed, container_execution_time: e.execution_duration)
