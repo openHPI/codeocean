@@ -108,7 +108,7 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def execution_environment_params
     if params[:execution_environment].present?
-      exposed_ports = if params[:execution_environment][:exposed_ports_list].present?
+      exposed_ports = if params[:execution_environment][:exposed_ports_list]
                         # Transform the `exposed_ports_list` to `exposed_ports` array
                         params[:execution_environment].delete(:exposed_ports_list).scan(/\d+/)
                       else
