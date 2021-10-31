@@ -175,7 +175,6 @@ CodeOceanEditorEvaluation = {
         if (!msg.data || msg.data === "\r") {
             return;
         }
-        msg.data = msg.data.replace(/(\r)/gm, "\n");
         var stream = {};
         stream[msg.stream] = msg.data;
         this.printOutput(stream, true, 0);

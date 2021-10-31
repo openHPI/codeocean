@@ -3,7 +3,8 @@
 class Runner::Connection::Buffer
   # The WebSocket connection might group multiple lines. For further processing, we require all lines
   # to be processed separately. Therefore, we split the lines by each newline character not part of an enclosed
-  # substring either in single or double quotes (e.g., within a JSON)
+  # substring either in single or double quotes (e.g., within a JSON). Originally, each line break consists of `\r\n`.
+  # We keep the `\r` at the end of the line (keeping "empty" lines) and replace it after buffering.
   # Inspired by https://stackoverflow.com/questions/13040585/split-string-by-spaces-properly-accounting-for-quotes-and-backslashes-ruby
   SPLIT_INDIVIDUAL_LINES = Regexp.compile(/(?:"(?:\\.|[^"])*"|'(?:\\.|[^'])*'|[^\n])+/)
 
@@ -69,6 +70,9 @@ class Runner::Connection::Buffer
   def add_to_line_buffer(message)
     @buffering = false
     @global_buffer = +''
+    # For our buffering, we identified line breaks with the `\n` and removed those temporarily.
+    # Thus, we now re-add the `\n` at the end of the string and remove the `\r` in the same time.
+    message = message.gsub(/\r$/, "\n")
     @line_buffer.push message
   end
 
