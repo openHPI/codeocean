@@ -14,9 +14,17 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     FileUtils.mkdir_p(File.expand_path(config[:workspace_root]))
   end
 
-  def self.sync_environment(_environment)
-    # There is no dedicated sync mechanism yet
-    true
+  def self.sync_environment(environment)
+    # There is no dedicated sync mechanism yet. However, we need to emit a warning when the pool was previously
+    # empty for this execution environment. In this case the validation command probably was not executed.
+    return true unless environment.pool_size_previously_changed?
+
+    case environment.pool_size_previously_was
+      when nil, 0
+        false
+      else
+        true
+    end
   end
 
   def self.request_from_management(environment)

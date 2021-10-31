@@ -81,6 +81,8 @@ class ExecutionEnvironment < ApplicationRecord
     runner = Runner.for(author, self)
     output = runner.execute_command(VALIDATION_COMMAND)
     errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
+  rescue Runner::Error::NotAvailable => e
+    Rails.logger.info("The Docker image could not be verified: #{e}")
   rescue Runner::Error => e
     errors.add(:docker_image, "error: #{e}")
   end
