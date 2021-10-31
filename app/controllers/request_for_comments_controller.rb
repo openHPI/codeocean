@@ -117,12 +117,10 @@ class RequestForCommentsController < ApplicationController
 
     respond_to do |format|
       if @request_for_comment.save
-        # create thread here and execute tests. A run is triggered from the frontend and does not need to be handled here.
-        Thread.new do
-          switch_locale { @request_for_comment.submission.calculate_score }
-        ensure
-          ActiveRecord::Base.connection_pool.release_connection
-        end
+        # execute the tests here and wait until they finished.
+        # As the same runner is used for the score and test run, no parallelization is possible
+        # A run is triggered from the frontend and does not need to be handled here.
+        @request_for_comment.submission.calculate_score
         format.json { render :show, status: :created, location: @request_for_comment }
       else
         format.html { render :new }
