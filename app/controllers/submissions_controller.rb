@@ -147,10 +147,18 @@ class SubmissionsController < ApplicationController
       end
 
       runner_socket.on :exit do |exit_code|
-        if @output.empty?
-          client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.no_output', timestamp: l(Time.zone.now, format: :short))}\n"})
-        end
-        client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{t('exercises.implement.exit', exit_code: exit_code)}\n"})
+        exit_statement =
+          if @output.empty? && exit_code.zero?
+            t('exercises.implement.no_output_exit_successful', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
+          elsif @output.empty?
+            t('exercises.implement.no_output_exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
+          elsif exit_code.zero?
+            t('exercises.implement.exit_successful', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
+          else
+            t('exercises.implement.exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
+          end
+        client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{exit_statement}\n"})
+
         close_client_connection(client_socket)
       end
     end
