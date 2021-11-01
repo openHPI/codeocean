@@ -77,6 +77,11 @@ class Runner < ApplicationRecord
     stderr = +''
     try = 0
     begin
+      if try.nonzero?
+        request_new_id
+        save
+      end
+
       exit_code = 1 # default to error
       execution_time = attach_to_execution(command) do |socket|
         socket.on :stderr do |data|
@@ -96,8 +101,6 @@ class Runner < ApplicationRecord
     rescue Runner::Error::RunnerNotFound => e
       Rails.logger.debug { "Running command `#{command}` failed for the first time: #{e.message}" }
       try += 1
-      request_new_id
-      save
 
       if try == 1
         # Reset the variable. This is required to prevent raising an outdated exception after a successful second try
