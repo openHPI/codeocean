@@ -33,9 +33,10 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
   def self.request_from_management(environment)
     url = "#{config[:url]}/runners"
+    inactivity_timeout = [config[:unused_runner_expiration_time], environment.permitted_execution_time].max
     body = {
       executionEnvironmentId: environment.id,
-      inactivityTimeout: config[:unused_runner_expiration_time].seconds,
+      inactivityTimeout: inactivity_timeout.to_i.seconds,
     }
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Requesting new runner at #{url}" }
     response = http_connection.post url, body.to_json

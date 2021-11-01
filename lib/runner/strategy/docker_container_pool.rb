@@ -29,8 +29,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
   def self.request_from_management(environment)
     url = "#{config[:url]}/docker_container_pool/get_container/#{environment.id}"
+    inactivity_timeout = [config[:unused_runner_expiration_time], environment.permitted_execution_time].max
     body = {
-      inactivity_timeout: config[:unused_runner_expiration_time].seconds,
+      inactivity_timeout: inactivity_timeout.to_i.seconds,
     }
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Requesting new runner at #{url}" }
     response = Faraday.post url, body
@@ -191,8 +192,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
   def reset_inactivity_timer
     url = "#{self.class.config[:url]}/docker_container_pool/reuse_container/#{container.id}"
+    inactivity_timeout = [self.class.config[:unused_runner_expiration_time], @execution_environment.permitted_execution_time].max
     body = {
-      inactivity_timeout: self.class.config[:unused_runner_expiration_time].seconds,
+      inactivity_timeout: inactivity_timeout.to_i.seconds,
     }
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Resetting inactivity timer at #{url}" }
     Faraday.post url, body
