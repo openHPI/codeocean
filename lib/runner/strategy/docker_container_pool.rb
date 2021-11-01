@@ -216,7 +216,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
     def decode(event_data)
       case event_data
-        when /(?<previous_data>.*)((root|python|user)@#{@strategy.container_id[0..11]}|#exit|{"cmd": "exit"})/m
+        when /(?<previous_data>.*)((root|python|java|user)@#{@strategy.container_id[0..11]}|#exit|{"cmd": "exit"})/m
           # The RegEx above is used to determine unwanted output which also indicates a program termination.
           # If the RegEx matches, at least two capture groups will be created.
           # The first (called `previous_data`) contains any data before the match (including multiple lines)
