@@ -10,14 +10,16 @@ de:
       execution_environment:
         docker_image: Docker-Image
         exposed_ports: Zugängliche Ports
+        exposed_ports_list: Zugängliche Ports
         file_type: Standard-Dateityp
         file_type_id: Standard-Dateityp
         help: Hilfetext
         memory_limit: Speicher-Limit (in MB)
+        cpu_limit: CPU-Limit (in MHz)
         network_enabled: Netzwerkzugriff
         name: Name
         permitted_execution_time: Erlaubte Ausführungszeit (in Sekunden)
-        pool_size: Docker-Container-Pool-Größe
+        pool_size: Prewarming-Pool-Größe
         run_command: Ausführungsbefehl
         test_command: Testbefehl
         testing_framework: Testing-Framework
@@ -238,7 +240,7 @@ de:
       show:
         current: Aktuelle Verfügbarkeit
         history: Verfügbarkeitsverlauf
-        inactive: Der Container-Pool ist nicht aktiv.
+        inactive: Es ist kein Runner Management aktiv.
         quantity: Verfügbare Container
   application:
     not_authorized: Sie Sind nicht berechtigt, diese Aktion auszuführen.
@@ -281,9 +283,16 @@ de:
       hints:
         command: <em>filename</em> wird automatisch durch den richtigen Dateinamen ersetzt.
         docker_image: 'Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank">DockerHub</a> verfügbar ist.'
-        exposed_ports: Während der Ausführung sind diese Ports für den Nutzer zugänglich.
+        exposed_ports_list: Während der Ausführung sind diese Ports für den Nutzer zugänglich. Die Portnummern müssen nummerisch und mit Komma voneinander getrennt sein.
+        cpu_limit: Geben Sie die Mindestmenge an CPU-Anteilen an, die für jeden Runner reserviert werden soll, gemessen in MHz.
+      errors:
+        not_synced_to_runner_management: Die Ausführungsumgebung wurde erstellt, aber aufgrund eines Fehlers nicht zum Runnermanagement synchronisiert.
     index:
       shell: Shell
+      synchronize_all:
+        button: Alle synchronisieren
+        success: Alle Ausführungsumgebungen wurden erfolgreich synchronisiert.
+        failure: Beim Synchronisieren mindestens einer Ausführungsumgebung ist ein Fehler aufgetreten.
     shell:
       command: Befehl
       headline: Shell
@@ -397,6 +406,10 @@ de:
       hint: Hinweis
       no_files: Die Aufgabe umfasst noch keine sichtbaren Dateien.
       no_output: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe.
+      no_output_exit_successful: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe and wurde erfolgreich beendet (Statuscode %{exit_code}).
+      no_output_exit_failure: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe und wurde mit einem Fehler beendet (Statuscode %{exit_code}).
+      exit_successful: Die letzte Code-Ausführung wurde erfolgreich beendet (Statuscode %{exit_code}).
+      exit_failure: Die letzte Code-Ausführung wurde mit einem Fehler beendet (Statuscode %{exit_code}).
       no_output_yet: Bisher existiert noch keine Ausgabe.
       output: Programm-Ausgabe
       passed_tests: Erfolgreiche Tests

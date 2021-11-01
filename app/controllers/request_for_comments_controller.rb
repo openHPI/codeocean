@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class RequestForCommentsController < ApplicationController
-  include SubmissionScoring
-
   before_action :require_user!
   before_action :set_request_for_comment, only: %i[show mark_as_solved set_thank_you_note]
   before_action :set_study_group_grouping,
@@ -119,12 +117,10 @@ class RequestForCommentsController < ApplicationController
 
     respond_to do |format|
       if @request_for_comment.save
-        # create thread here and execute tests. A run is triggered from the frontend and does not need to be handled here.
-        Thread.new do
-          score_submission(@request_for_comment.submission)
-        ensure
-          ActiveRecord::Base.connection_pool.release_connection
-        end
+        # execute the tests here and wait until they finished.
+        # As the same runner is used for the score and test run, no parallelization is possible
+        # A run is triggered from the frontend and does not need to be handled here.
+        @request_for_comment.submission.calculate_score
         format.json { render :show, status: :created, location: @request_for_comment }
       else
         format.html { render :new }

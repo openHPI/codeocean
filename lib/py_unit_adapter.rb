@@ -11,6 +11,7 @@ class PyUnitAdapter < TestingFrameworkAdapter
   end
 
   def parse_output(output)
+    # PyUnit is expected to print test results on Stderr!
     count = COUNT_REGEXP.match(output[:stderr]).captures.first.to_i
     failures_matches = FAILURES_REGEXP.match(output[:stderr])
     failed = failures_matches ? failures_matches.captures.try(:first).to_i : 0

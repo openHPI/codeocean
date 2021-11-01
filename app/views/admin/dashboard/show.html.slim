@@ -13,14 +13,15 @@ div.mb-4
   = "CodeOcean Release:"
   pre = Sentry.configuration.release
 
-- if DockerContainerPool.config[:active]
+- if Runner.management_active?
   div.mb-4
-    = "DockerContainerPool Release:"
-    pre = DockerContainerPool.dump_info['release']
+    = Runner.strategy_class.name.demodulize
+    =< "Release:"
+    pre = Runner.strategy_class.release
 
 h2 Docker
 
-- if DockerContainerPool.config[:active]
+- if Runner.management_active?
   h3 = t('.current')
   .table-responsive
     table.table

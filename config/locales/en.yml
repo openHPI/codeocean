@@ -10,14 +10,16 @@ en:
       execution_environment:
         docker_image: Docker Image
         exposed_ports: Exposed Ports
+        exposed_ports_list: Exposed Ports
         file_type: Default File Type
         file_type_id: Default File Type
         help: Help Text
         memory_limit: Memory Limit (in MB)
+        cpu_limit: CPU Limit (in MHz)
         name: Name
         network_enabled: Network Enabled
         permitted_execution_time: Permitted Execution Time (in Seconds)
-        pool_size: Docker Container Pool Size
+        pool_size: Prewarming Pool Size
         run_command: Run Command
         test_command: Test Command
         testing_framework: Testing Framework
@@ -238,7 +240,7 @@ en:
       show:
         current: Current Availability
         history: Availability History
-        inactive: Container pooling is not enabled.
+        inactive: No runner management is currently enabled.
         quantity: Available Containers
   application:
     not_authorized: You are not authorized to perform this action.
@@ -281,9 +283,16 @@ en:
       hints:
         command: <em>filename</em> is automatically replaced with the correct filename.
         docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank">DockerHub</a>.
-        exposed_ports: During code execution these ports are accessible for the user.
+        exposed_ports_list: During code execution these ports are accessible for the user. Port numbers must be numeric and separated by a comma.
+        cpu_limit: Specify the minimum amount of CPU shares to reserve for each runner, measured in MHz.
+      errors:
+        not_synced_to_runner_management: The execution environment was created but not synced to the runner management due to an error.
     index:
       shell: Shell
+      synchronize_all:
+        button: Synchronize all
+        success: All execution environemnts were synchronized successfully.
+        failure: At least one execution environment could not be synchronised due to an error.
     shell:
       command: Command
       headline: Shell
@@ -397,6 +406,10 @@ en:
       hint: Hint
       no_files: The exercise does not comprise visible files yet.
       no_output: The last code run finished on %{timestamp} without any output.
+      no_output_exit_successful: The last code run finished on %{timestamp} without any output and exited successfully (status code %{exit_code}).
+      no_output_exit_failure: The last code run finished on %{timestamp} without any output and exited with a failure (status code %{exit_code}).
+      exit_successful: The last code run exited successfully (status code %{exit_code}).
+      exit_failure: The last code run exited with a failure (status code %{exit_code}).
       no_output_yet: There is no output yet.
       output: Program Output
       passed_tests: Passed Tests

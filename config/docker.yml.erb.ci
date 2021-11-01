@@ -3,17 +3,14 @@ default: &default
   connection_timeout: 3
   pool:
     active: false
-    location: http://localhost:7100
   ports: !ruby/range 4500..4600
 
 development:
   <<: *default
   host: tcp://127.0.0.1:2376
   ws_host: ws://127.0.0.1:2376 #url to connect rails server to docker host
-  ws_client_protocol: 'ws:' #set the websocket protocol to be used by the client to connect to the rails server (ws on development, wss on production)
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   pool:
-    location: http://localhost:7100
     active: true
     refill:
       async: false
@@ -27,7 +24,6 @@ production:
   host: unix:///var/run/docker.sock
   pool:
     active: true
-    location: http://localhost:3000
     refill:
       async: false
       batch_size: 8
@@ -35,14 +31,12 @@ production:
       timeout: 60
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   ws_host: ws://localhost:4243 #url to connect rails server to docker host
-  ws_client_protocol: 'wss:' #set the websocket protocol to be used by the client to connect to the rails server (ws on development, wss on production)
 
 staging:
   <<: *default
   host: unix:///var/run/docker.sock
   pool:
     active: true
-    location: http://localhost:3000
     refill:
       async: false
       batch_size: 8
@@ -50,10 +44,8 @@ staging:
       timeout: 60
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   ws_host: ws://localhost:4243 #url to connect rails server to docker host
-  ws_client_protocol: 'wss:' #set the websocket protocol to be used by the client to connect to the rails server (ws on development, wss on production)
 
 test:
   <<: *default
   host: tcp://127.0.0.1:2376
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
-  ws_client_protocol: 'ws:' #set the websocket protocol to be used by the client to connect to the rails server (ws on development, wss on production)

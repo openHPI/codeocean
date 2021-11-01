@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module DockerContainerMixin
-  attr_accessor :start_time, :status, :re_use, :execution_environment, :docker_client
+  attr_accessor :start_time, :status, :execution_environment, :docker_client
 
   def binds
     host_config['Binds']

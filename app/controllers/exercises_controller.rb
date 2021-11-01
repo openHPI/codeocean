@@ -4,7 +4,6 @@ class ExercisesController < ApplicationController
   include CommonBehavior
   include Lti
   include SubmissionParameters
-  include SubmissionScoring
   include TimeHelper
 
   before_action :handle_file_uploads, only: %i[create update]
@@ -533,7 +532,7 @@ working_time_accumulated: working_time_accumulated})
 
   def submit
     @submission = Submission.create(submission_params)
-    score_submission(@submission)
+    @submission.calculate_score
     if @submission.user.external_user? && lti_outcome_service?(@submission.exercise_id, @submission.user.id)
       transmit_lti_score
     else

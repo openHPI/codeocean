@@ -5,7 +5,7 @@ require 'seeds_helper'
 
 WORKSPACE_PATH = Rails.root.join('tmp', 'files', Rails.env, 'code_ocean_test')
 
-describe DockerClient, docker: true do
+describe DockerClient do
   let(:command) { 'whoami' }
   let(:docker_client) { described_class.new(execution_environment: FactoryBot.build(:java), user: FactoryBot.build(:admin)) }
   let(:execution_environment) { FactoryBot.build(:java) }
@@ -14,6 +14,7 @@ describe DockerClient, docker: true do
   let(:workspace_path) { WORKSPACE_PATH }
 
   before do
+    described_class.initialize_environment
     allow(described_class).to receive(:container_creation_options).and_wrap_original do |original_method, *args, &block|
       result = original_method.call(*args, &block)
       result['NanoCPUs'] = 2 * 1_000_000_000 # CPU quota in units of 10^-9 CPUs.
@@ -70,13 +71,15 @@ describe DockerClient, docker: true do
 
     it 'uses the correct Docker image' do
       expect(described_class).to receive(:find_image_by_tag).with(execution_environment.docker_image).and_call_original
-      create_container
+      container = create_container
+      described_class.destroy_container(container)
     end
 
     it 'creates a unique directory' do
       expect(described_class).to receive(:generate_local_workspace_path).and_call_original
       expect(FileUtils).to receive(:mkdir).with(kind_of(String)).and_call_original
-      create_container
+      container = create_container
+      described_class.destroy_container(container)
     end
 
     it 'creates a container' do
@@ -90,22 +93,26 @@ describe DockerClient, docker: true do
         result
       end
       expect(Docker::Container).to receive(:create).with(kind_of(Hash)).and_call_original
-      create_container
+      container = create_container
+      described_class.destroy_container(container)
     end
 
     it 'starts the container' do
       expect_any_instance_of(Docker::Container).to receive(:start).and_call_original
-      create_container
+      container = create_container
+      described_class.destroy_container(container)
     end
 
     it 'configures mapped directories' do
       expect(described_class).to receive(:mapped_directories).and_call_original
-      create_container
+      container = create_container
+      described_class.destroy_container(container)
     end
 
     it 'configures mapped ports' do
       expect(described_class).to receive(:mapped_ports).with(execution_environment).and_call_original
-      create_container
+      container = create_container
+      described_class.destroy_container(container)
     end
 
     context 'when an error occurs' do
@@ -117,7 +124,9 @@ describe DockerClient, docker: true do
         end
 
         it 'retries to create a container' do
-          expect(create_container).to be_a(Docker::Container)
+          container = create_container
+          expect(container).to be_a(Docker::Container)
+          described_class.destroy_container(container)
         end
       end
 
@@ -161,6 +170,7 @@ describe DockerClient, docker: true do
   end
 
   describe '#create_workspace_file' do
+    let(:container) { Docker::Container.send(:new, Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex) }
     let(:file) { FactoryBot.build(:file, content: 'puts 42') }
     let(:file_path) { File.join(workspace_path, file.name_with_extension) }
 
@@ -169,7 +179,7 @@ describe DockerClient, docker: true do
     it 'creates a file' do
       expect(described_class).to receive(:local_workspace_path).at_least(:once).and_return(workspace_path)
       FileUtils.mkdir_p(workspace_path)
-      docker_client.send(:create_workspace_file, container: CONTAINER, file: file)
+      docker_client.send(:create_workspace_file, container: container, file: file)
       expect(File.exist?(file_path)).to be true
       expect(File.new(file_path, 'r').read).to eq(file.content)
     end
@@ -196,15 +206,17 @@ describe DockerClient, docker: true do
     end
 
     it 'deletes the container' do
-      expect(container).to receive(:delete).with(force: true, v: true)
+      expect(container).to receive(:delete).with(force: true, v: true).and_call_original
     end
   end
 
   describe '#execute_arbitrary_command' do
     let(:execute_arbitrary_command) { docker_client.execute_arbitrary_command(command) }
 
-    it 'takes a container from the pool' do
-      expect(DockerContainerPool).to receive(:get_container).and_call_original
+    after { described_class.destroy_container(docker_client.container) }
+
+    it 'creates a new container' do
+      expect(described_class).to receive(:create_container).and_call_original
       execute_arbitrary_command
     end
 
@@ -245,10 +257,13 @@ describe DockerClient, docker: true do
   describe '#execute_run_command' do
     let(:filename) { submission.exercise.files.detect {|file| file.role == 'main_file' }.name_with_extension }
 
-    after { docker_client.send(:execute_run_command, submission, filename) }
+    after do
+      docker_client.send(:execute_run_command, submission, filename)
+      described_class.destroy_container(docker_client.container)
+    end
 
-    it 'takes a container from the pool' do
-      expect(DockerContainerPool).to receive(:get_container).with(submission.execution_environment).and_call_original
+    it 'creates a new container' do
+      expect(described_class).to receive(:create_container).with(submission.execution_environment).and_call_original
     end
 
     it 'creates the workspace files' do
@@ -265,10 +280,13 @@ describe DockerClient, docker: true do
   describe '#execute_test_command' do
     let(:filename) { submission.exercise.files.detect {|file| file.role == 'teacher_defined_test' || file.role == 'teacher_defined_linter' }.name_with_extension }
 
-    after { docker_client.send(:execute_test_command, submission, filename) }
+    after do
+      docker_client.send(:execute_test_command, submission, filename)
+      described_class.destroy_container(docker_client.container)
+    end
 
-    it 'takes a container from the pool' do
-      expect(DockerContainerPool).to receive(:get_container).with(submission.execution_environment).and_call_original
+    it 'creates a new container' do
+      expect(described_class).to receive(:create_container).with(submission.execution_environment).and_call_original
     end
 
     it 'creates the workspace files' do
@@ -313,6 +331,8 @@ describe DockerClient, docker: true do
     let(:container) { described_class.create_container(execution_environment) }
     let(:local_workspace_path) { described_class.local_workspace_path(container) }
 
+    after { described_class.destroy_container(container) }
+
     it 'returns a path' do
       expect(local_workspace_path).to be_a(Pathname)
     end
@@ -332,7 +352,7 @@ describe DockerClient, docker: true do
 
   describe '.mapped_ports' do
     context 'with exposed ports' do
-      before { execution_environment.exposed_ports = '3000' }
+      before { execution_environment.exposed_ports = [3000] }
 
       it 'returns a mapping' do
         expect(described_class.mapped_ports(execution_environment)).to be_a(Hash)
@@ -357,14 +377,17 @@ describe DockerClient, docker: true do
     let(:container) { described_class.create_container(execution_environment) }
     let(:send_command) { docker_client.send(:send_command, command, container, &block) }
 
-    after { send_command }
+    after do
+      send_command
+      described_class.destroy_container(container)
+    end
 
     it 'limits the execution time' do
       expect(Timeout).to receive(:timeout).at_least(:once).with(kind_of(Numeric)).and_call_original
     end
 
     it 'provides the command to be executed as input' do
-      pending('we are currently not using any input and for output server send events instead of attach.')
+      pending('we are currently not using attach but rather exec.')
       expect(container).to receive(:attach).with(stdin: kind_of(StringIO))
     end
 

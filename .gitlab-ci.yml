@@ -43,7 +43,6 @@ rspec:
     - rake db:schema:load
     - rake db:migrate
     - docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
-    - docker pull openhpi/co_execenv_python:3.4
     - docker pull openhpi/co_execenv_java:8
   script:
     - rspec --format progress

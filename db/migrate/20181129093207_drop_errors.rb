@@ -34,7 +34,7 @@ class DropErrors < ActiveRecord::Migration[5.2]
 
       submissions_controller.instance_variable_set(:@raw_output, raw_output)
       submissions_controller.instance_variable_set(:@submission, submission)
-      submissions_controller.extract_errors
+      submissions_controller.send(:extract_errors)
     end
 
     drop_table :errors

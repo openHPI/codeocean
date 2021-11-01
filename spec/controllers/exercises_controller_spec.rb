@@ -240,12 +240,31 @@ describe ExercisesController do
     let(:output) { {} }
     let(:perform_request) { post :submit, format: :json, params: {id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id}} }
     let(:user) { FactoryBot.create(:external_user) }
+    let(:scoring_response) do
+      [{
+        status: :ok,
+        stdout: '',
+        stderr: '',
+        waiting_for_container_time: 0,
+        container_execution_time: 0,
+        file_role: 'teacher_defined_test',
+        count: 1,
+        failed: 0,
+        error_messages: [],
+        passed: 1,
+        score: 1.0,
+        filename: 'index.html_spec.rb',
+        message: 'Well done.',
+        weight: 2.0,
+      }]
+    end
 
     before do
       FactoryBot.create(:lti_parameter, external_user: user, exercise: exercise)
-      allow_any_instance_of(Submission).to receive(:normalized_score).and_return(1)
-      allow(controller).to receive(:collect_test_results).and_return([{score: 1, weight: 1}])
-      allow(controller).to receive(:score_submission).and_call_original
+      submission = FactoryBot.build(:submission, exercise: exercise, user: user)
+      allow(submission).to receive(:normalized_score).and_return(1)
+      allow(submission).to receive(:calculate_score).and_return(scoring_response)
+      allow(Submission).to receive(:create).and_return(submission)
     end
 
     context 'when LTI outcomes are supported' do

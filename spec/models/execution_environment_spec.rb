@@ -5,10 +5,11 @@ require 'rails_helper'
 describe ExecutionEnvironment do
   let(:execution_environment) { described_class.create.tap {|execution_environment| execution_environment.update(network_enabled: nil) } }
 
-  it 'validates that the Docker image works', docker: true do
+  it 'validates that the Docker image works' do
     allow(execution_environment).to receive(:validate_docker_image?).and_return(true)
-    expect(execution_environment).to receive(:working_docker_image?)
+    allow(execution_environment).to receive(:working_docker_image?).and_return(true)
     execution_environment.update(docker_image: FactoryBot.attributes_for(:ruby)[:docker_image])
+    expect(execution_environment).to have_received(:working_docker_image?)
   end
 
   it 'validates the presence of a Docker image name' do
@@ -16,7 +17,7 @@ describe ExecutionEnvironment do
   end
 
   it 'validates the minimum value of the memory limit' do
-    execution_environment.update(memory_limit: DockerClient::MINIMUM_MEMORY_LIMIT / 2)
+    execution_environment.update(memory_limit: ExecutionEnvironment::MINIMUM_MEMORY_LIMIT / 2)
     expect(execution_environment.errors[:memory_limit]).to be_present
   end
 
@@ -28,6 +29,21 @@ describe ExecutionEnvironment do
   it 'validates the presence of a memory limit' do
     execution_environment.update(memory_limit: nil)
     expect(execution_environment.errors[:memory_limit]).to be_present
+  end
+
+  it 'validates the minimum value of the cpu limit' do
+    execution_environment.update(cpu_limit: 0)
+    expect(execution_environment.errors[:cpu_limit]).to be_present
+  end
+
+  it 'validates that cpu limit is an integer' do
+    execution_environment.update(cpu_limit: Math::PI)
+    expect(execution_environment.errors[:cpu_limit]).to be_present
+  end
+
+  it 'validates the presence of a cpu limit' do
+    execution_environment.update(cpu_limit: nil)
+    expect(execution_environment.errors[:cpu_limit]).to be_present
   end
 
   it 'validates the presence of a name' do
@@ -67,6 +83,14 @@ describe ExecutionEnvironment do
   it 'validates the presence of a user' do
     expect(execution_environment.errors[:user_id]).to be_present
     expect(execution_environment.errors[:user_type]).to be_present
+  end
+
+  it 'validates the format of the exposed ports' do
+    execution_environment.update(exposed_ports: '1,')
+    expect(execution_environment.errors[:exposed_ports]).to be_present
+
+    execution_environment.update(exposed_ports: '1,a')
+    expect(execution_environment.errors[:exposed_ports]).to be_present
   end
 
   describe '#valid_test_setup?' do
@@ -121,25 +145,29 @@ describe ExecutionEnvironment do
     end
   end
 
-  describe '#working_docker_image?', docker: true do
+  describe '#working_docker_image?' do
     let(:working_docker_image?) { execution_environment.send(:working_docker_image?) }
+    let(:runner) { instance_double 'runner' }
 
-    before { allow(DockerClient).to receive(:find_image_by_tag).and_return(Object.new) }
+    before do
+      allow(Runner).to receive(:for).with(execution_environment.author, execution_environment).and_return runner
+    end
 
-    it 'instantiates a Docker client' do
-      expect(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
-      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return({})
+    it 'instantiates a Runner' do
+      allow(runner).to receive(:execute_command).and_return({})
       working_docker_image?
+      expect(runner).to have_received(:execute_command).once
     end
 
     it 'executes the validation command' do
-      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(ExecutionEnvironment::VALIDATION_COMMAND).and_return({})
+      allow(runner).to receive(:execute_command).and_return({})
       working_docker_image?
+      expect(runner).to have_received(:execute_command).with(ExecutionEnvironment::VALIDATION_COMMAND)
     end
 
     context 'when the command produces an error' do
       it 'adds an error' do
-        allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_return(stderr: 'command not found')
+        allow(runner).to receive(:execute_command).and_return(stderr: 'command not found')
         working_docker_image?
         expect(execution_environment.errors[:docker_image]).to be_present
       end
@@ -147,9 +175,25 @@ describe ExecutionEnvironment do
 
     context 'when the Docker client produces an error' do
       it 'adds an error' do
-        allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).and_raise(DockerClient::Error)
+        allow(runner).to receive(:execute_command).and_raise(Runner::Error)
         working_docker_image?
         expect(execution_environment.errors[:docker_image]).to be_present
+      end
+    end
+  end
+
+  describe '#exposed_ports_list' do
+    it 'returns an empty string if no ports are exposed' do
+      execution_environment.exposed_ports = []
+      expect(execution_environment.exposed_ports_list).to eq('')
+    end
+
+    it 'returns an string with comma-separated integers representing the exposed ports' do
+      execution_environment.exposed_ports = [1, 2, 3]
+      expect(execution_environment.exposed_ports_list).to eq('1, 2, 3')
+
+      execution_environment.exposed_ports.each do |port|
+        expect(execution_environment.exposed_ports_list).to include(port.to_s)
       end
     end
   end

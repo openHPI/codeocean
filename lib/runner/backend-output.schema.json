@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "event",
+  "type": "object",
+  "oneOf": [
+    {
+      "properties": {
+        "type": {
+          "const": "exit",
+          "required": true
+        },
+        "data": {
+          "type": "integer",
+          "required": true,
+          "minimum": 0,
+          "maximum": 255
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "properties": {
+        "type": {
+          "enum": [ "stdout", "stderr", "error" ],
+          "required": true
+        },
+        "data": {
+          "type": "string",
+          "required": true
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "properties": {
+        "type": {
+          "enum": [ "start", "timeout" ],
+          "required": true
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'concurrent'
 require 'pathname'
 
 class DockerClient
@@ -9,10 +8,8 @@ class DockerClient
   end
 
   CONTAINER_WORKSPACE_PATH = '/workspace' # '/home/python/workspace' #'/tmp/workspace'
-  DEFAULT_MEMORY_LIMIT = 256
   # Ralf: I suggest to replace this with the environment variable. Ask Hauke why this is not the case!
   LOCAL_WORKSPACE_ROOT = File.expand_path(config[:workspace_root])
-  MINIMUM_MEMORY_LIMIT = 4
   RECYCLE_CONTAINERS = false
   RETRY_COUNT = 2
   MINIMUM_CONTAINER_LIFETIME = 10.minutes
@@ -58,7 +55,6 @@ class DockerClient
     {
       'Image' => find_image_by_tag(execution_environment.docker_image).info['RepoTags'].first,
       'NetworkDisabled' => !execution_environment.network_enabled?,
-      # DockerClient.config['allowed_cpus']
       'OpenStdin' => true,
       'StdinOnce' => true,
       # required to expose standard streams over websocket
@@ -86,7 +82,7 @@ class DockerClient
     # Headers are required by Docker
     headers = {'Origin' => 'http://localhost'}
 
-    socket_url = "#{DockerClient.config['ws_host']}/v1.27/containers/#{@container.id}/attach/ws?#{query_params}"
+    socket_url = "#{self.class.config['ws_host']}/v1.27/containers/#{@container.id}/attach/ws?#{query_params}"
     # The ping value is measured in seconds and specifies how often a Ping frame should be sent.
     # Internally, Faye::WebSocket uses EventMachine and the ping value is used to wake the EventMachine thread
     socket = Faye::WebSocket::Client.new(socket_url, [], headers: headers, ping: 0.1)
@@ -122,13 +118,11 @@ class DockerClient
     container.start_time = Time.zone.now
     container.status = :created
     container.execution_environment = execution_environment
-    container.re_use = true
     container.docker_client = new(execution_environment: execution_environment)
 
     Thread.new do
       timeout = Random.rand(MINIMUM_CONTAINER_LIFETIME..MAXIMUM_CONTAINER_LIFETIME) # seconds
       sleep(timeout)
-      container.re_use = false
       if container.status == :executing
         Thread.new do
           timeout = SELF_DESTROY_GRACE_PERIOD.to_i
@@ -230,7 +224,7 @@ class DockerClient
     Rails.logger.info("destroying container #{container}")
 
     # Checks only if container assignment is not nil and not whether the container itself is still present.
-    if container && !DockerContainerPool.config[:active]
+    if container
       container.kill
       container.port_bindings.each_value {|port| PortPool.release(port) }
       begin
@@ -243,8 +237,6 @@ class DockerClient
 
       # Checks only if container assignment is not nil and not whether the container itself is still present.
       container&.delete(force: true, v: true)
-    elsif container
-      DockerContainerPool.destroy_container(container)
     end
   rescue Docker::Error::NotFoundError => e
     Rails.logger.error("destroy_container: Rescued from Docker::Error::NotFoundError: #{e}")
@@ -264,7 +256,7 @@ class DockerClient
   def execute_command(command, before_execution_block, output_consuming_block)
     # tries ||= 0
     container_request_time = Time.zone.now
-    @container = DockerContainerPool.get_container(@execution_environment)
+    @container = self.class.create_container(@execution_environment)
     waiting_for_container_time = Time.zone.now - container_request_time
     if @container
       @container.status = :executing
@@ -288,7 +280,7 @@ container_execution_time: nil}
 
   # called when the user clicks the "Run" button
   def open_websocket_connection(command, before_execution_block, _output_consuming_block)
-    @container = DockerContainerPool.get_container(@execution_environment)
+    @container = self.class.create_container(@execution_environment)
     if @container
       @container.status = :executing
       # do not use try here, directly call the passed proc and rescue from the error in order to log the problem.
@@ -354,13 +346,7 @@ container_execution_time: nil}
     # exit the timeout thread if it is still alive
     exit_thread_if_alive
     @socket.close
-    # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
-    if DockerContainerPool.config[:active] && RECYCLE_CONTAINERS
-      self.class.return_container(container,
-        @execution_environment)
-    else
-      self.class.destroy_container(container)
-    end
+    self.class.destroy_container(container)
   end
 
   def kill_container(container)
@@ -416,7 +402,6 @@ container_execution_time: nil}
   end
 
   def self.initialize_environment
-    # TODO: Move to DockerContainerPool
     raise Error.new('Docker configuration missing!') unless config[:connection_timeout] && config[:workspace_root]
 
     Docker.url = config[:host] if config[:host]
@@ -449,7 +434,7 @@ container_execution_time: nil}
   end
 
   def self.mapped_ports(execution_environment)
-    (execution_environment.exposed_ports || '').gsub(/\s/, '').split(',').map do |port|
+    execution_environment.exposed_ports.map do |port|
       ["#{port}/tcp", [{'HostPort' => PortPool.available_port.to_s}]]
     end.to_h
   end
@@ -457,21 +442,6 @@ container_execution_time: nil}
   def self.pull(docker_image)
     `docker pull #{docker_image}` if docker_image
   end
-
-  def self.return_container(container, execution_environment)
-    Rails.logger.debug { "returning container #{container}" }
-    begin
-      clean_container_workspace(container)
-    rescue Docker::Error::NotFoundError => e
-      # FIXME: Create new container?
-      Rails.logger.info("return_container: Rescued from Docker::Error::NotFoundError: #{e}")
-      Rails.logger.info('Nothing is done here additionally. The container will be exchanged upon its next retrieval.')
-    end
-    DockerContainerPool.return_container(container, execution_environment)
-    container.status = :available
-  end
-
-  # private :return_container
 
   def send_command(command, container)
     result = {status: :failed, stdout: '', stderr: ''}
@@ -492,12 +462,7 @@ container_execution_time: nil}
       result = {status: (output[2])&.zero? ? :ok : :failed, stdout: output[0].join.force_encoding('utf-8'), stderr: output[1].join.force_encoding('utf-8')}
     end
 
-    # if we use pooling and recylce the containers, put it back. otherwise, destroy it.
-    if DockerContainerPool.config[:active] && RECYCLE_CONTAINERS
-      self.class.return_container(container, @execution_environment)
-    else
-      self.class.destroy_container(container)
-    end
+    self.class.destroy_container(container)
     result
   rescue Timeout::Error
     Rails.logger.info("got timeout error for container #{container}")

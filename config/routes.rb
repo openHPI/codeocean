@@ -66,6 +66,8 @@ Rails.application.routes.draw do
       post 'shell', as: :execute_command, action: :execute_command
       get :statistics
     end
+
+    post :sync_all_to_runner_management, on: :collection
   end
 
   post '/import_exercise' => 'exercises#import_exercise'

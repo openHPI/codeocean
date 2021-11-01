@@ -6,11 +6,12 @@ describe ExecutionEnvironmentsController do
   let(:execution_environment) { FactoryBot.create(:ruby) }
   let(:user) { FactoryBot.create(:admin) }
 
-  before { allow(controller).to receive(:current_user).and_return(user) }
+  before do
+    allow(controller).to receive(:current_user).and_return(user)
+    allow(controller).to receive(:sync_to_runner_management).and_return(nil)
+  end
 
   describe 'POST #create' do
-    before { allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([]) }
-
     context 'with a valid execution environment' do
       let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby).attributes} } }
 
@@ -23,6 +24,10 @@ describe ExecutionEnvironmentsController do
         expect { perform_request.call }.to change(ExecutionEnvironment, :count).by(1)
       end
 
+      it 'registers the execution environment with the runner management' do
+        expect(controller).to have_received(:sync_to_runner_management)
+      end
+
       expect_redirect(ExecutionEnvironment.last)
     end
 
@@ -32,6 +37,10 @@ describe ExecutionEnvironmentsController do
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
       expect_template(:new)
+
+      it 'does not register the execution environment with the runner management' do
+        expect(controller).not_to have_received(:sync_to_runner_management)
+      end
     end
   end
 
@@ -50,7 +59,6 @@ describe ExecutionEnvironmentsController do
 
   describe 'GET #edit' do
     before do
-      allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
       get :edit, params: {id: execution_environment.id}
     end
 
@@ -64,12 +72,12 @@ describe ExecutionEnvironmentsController do
     let(:command) { 'which ruby' }
 
     before do
-      allow(DockerClient).to receive(:new).with(execution_environment: execution_environment).and_call_original
-      allow_any_instance_of(DockerClient).to receive(:execute_arbitrary_command).with(command)
+      runner = instance_double 'runner'
+      allow(Runner).to receive(:for).with(user, execution_environment).and_return runner
+      allow(runner).to receive(:execute_command).and_return({})
       post :execute_command, params: {command: command, id: execution_environment.id}
     end
 
-    expect_assigns(docker_client: DockerClient)
     expect_assigns(execution_environment: :execution_environment)
     expect_json
     expect_status(200)
@@ -88,7 +96,6 @@ describe ExecutionEnvironmentsController do
 
   describe 'GET #new' do
     before do
-      allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
       get :new
     end
 
@@ -100,11 +107,11 @@ describe ExecutionEnvironmentsController do
 
   describe '#set_docker_images' do
     context 'when Docker is available' do
-      let(:docker_images) { [1, 2, 3] }
+      let(:docker_images) { %w[image:one image:two image:three] }
 
       before do
-        allow(DockerClient).to receive(:check_availability!).at_least(:once)
-        allow(DockerClient).to receive(:image_tags).and_return(docker_images)
+        allow(Runner).to receive(:strategy_class).and_return Runner::Strategy::DockerContainerPool
+        allow(Runner::Strategy::DockerContainerPool).to receive(:available_images).and_return(docker_images)
         controller.send(:set_docker_images)
       end
 
@@ -115,7 +122,8 @@ describe ExecutionEnvironmentsController do
       let(:error_message) { 'Docker is unavailable' }
 
       before do
-        allow(DockerClient).to receive(:check_availability!).at_least(:once).and_raise(DockerClient::Error.new(error_message))
+        allow(Runner).to receive(:strategy_class).and_return Runner::Strategy::DockerContainerPool
+        allow(Runner::Strategy::DockerContainerPool).to receive(:available_images).and_raise(Runner::Error::InternalServerError.new(error_message))
         controller.send(:set_docker_images)
       end
 
@@ -155,13 +163,17 @@ describe ExecutionEnvironmentsController do
   describe 'PUT #update' do
     context 'with a valid execution environment' do
       before do
-        allow(DockerClient).to receive(:image_tags).at_least(:once).and_return([])
+        allow(controller).to receive(:sync_to_runner_management).and_return(nil)
         put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
       end
 
       expect_assigns(docker_images: Array)
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_redirect(:execution_environment)
+
+      it 'updates the execution environment at the runner management' do
+        expect(controller).to have_received(:sync_to_runner_management)
+      end
     end
 
     context 'with an invalid execution environment' do
@@ -170,6 +182,35 @@ describe ExecutionEnvironmentsController do
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
       expect_template(:edit)
+
+      it 'does not update the execution environment at the runner management' do
+        expect(controller).not_to have_received(:sync_to_runner_management)
+      end
+    end
+  end
+
+  describe '#sync_all_to_runner_management' do
+    let(:execution_environments) { FactoryBot.build_list(:ruby, 3) }
+
+    let(:codeocean_config) { instance_double(CodeOcean::Config) }
+    let(:runner_management_config) { {runner_management: {enabled: true, strategy: :poseidon}} }
+
+    before do
+      # Ensure to reset the memorized helper
+      Runner.instance_variable_set :@strategy_class, nil
+      allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+      allow(codeocean_config).to receive(:read).and_return(runner_management_config)
+    end
+
+    it 'copies all execution environments to the runner management' do
+      allow(ExecutionEnvironment).to receive(:all).and_return(execution_environments)
+
+      execution_environments.each do |execution_environment|
+        allow(Runner::Strategy::Poseidon).to receive(:sync_environment).with(execution_environment).and_return(true)
+        expect(Runner::Strategy::Poseidon).to receive(:sync_environment).with(execution_environment).once
+      end
+
+      post :sync_all_to_runner_management
     end
   end
 end

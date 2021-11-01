@@ -154,13 +154,8 @@ describe SubmissionsController do
     let(:filename) { submission.collect_files.detect(&:main_file?).name_with_extension }
     let(:perform_request) { get :run, params: {filename: filename, id: submission.id} }
 
-    before do
-      allow_any_instance_of(ActionController::Live::SSE).to receive(:write).at_least(3).times
-    end
-
     context 'when no errors occur during execution' do
       before do
-        allow_any_instance_of(DockerClient).to receive(:execute_run_command).with(submission, filename).and_return({})
         perform_request
       end
 
@@ -223,60 +218,9 @@ describe SubmissionsController do
     let(:output) { {} }
 
     before do
-      allow_any_instance_of(DockerClient).to receive(:execute_test_command).with(submission, filename)
       get :test, params: {filename: filename, id: submission.id}
     end
 
     pending('todo')
-  end
-
-  describe '#with_server_sent_events' do
-    let(:response) { ActionDispatch::TestResponse.new }
-
-    before { allow(controller).to receive(:response).and_return(response) }
-
-    context 'when no error occurs' do
-      after { controller.send(:with_server_sent_events) }
-
-      it 'uses server-sent events' do
-        expect(ActionController::Live::SSE).to receive(:new).and_call_original
-      end
-
-      it "writes a 'start' event" do
-        allow_any_instance_of(ActionController::Live::SSE).to receive(:write)
-        expect_any_instance_of(ActionController::Live::SSE).to receive(:write).with(nil, event: 'start')
-      end
-
-      it "writes a 'close' event" do
-        allow_any_instance_of(ActionController::Live::SSE).to receive(:write)
-        expect_any_instance_of(ActionController::Live::SSE).to receive(:write).with({code: 200}, event: 'close')
-      end
-
-      it 'closes the stream' do
-        expect_any_instance_of(ActionController::Live::SSE).to receive(:close).and_call_original
-      end
-    end
-
-    context 'when an error occurs' do
-      after { controller.send(:with_server_sent_events) { raise } }
-
-      it 'uses server-sent events' do
-        expect(ActionController::Live::SSE).to receive(:new).and_call_original
-      end
-
-      it "writes a 'start' event" do
-        allow_any_instance_of(ActionController::Live::SSE).to receive(:write)
-        expect_any_instance_of(ActionController::Live::SSE).to receive(:write).with(nil, event: 'start')
-      end
-
-      it "writes a 'close' event" do
-        allow_any_instance_of(ActionController::Live::SSE).to receive(:write)
-        expect_any_instance_of(ActionController::Live::SSE).to receive(:write).with({code: 500}, event: 'close')
-      end
-
-      it 'closes the stream' do
-        expect_any_instance_of(ActionController::Live::SSE).to receive(:close).and_call_original
-      end
-    end
   end
 end

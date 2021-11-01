@@ -15,7 +15,9 @@ class ExecutionEnvironmentsController < ApplicationController
   def create
     @execution_environment = ExecutionEnvironment.new(execution_environment_params)
     authorize!
-    create_and_respond(object: @execution_environment)
+    create_and_respond(object: @execution_environment) do
+      sync_to_runner_management
+    end
   end
 
   def destroy
@@ -28,8 +30,9 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def execute_command
-    @docker_client = DockerClient.new(execution_environment: @execution_environment)
-    render(json: @docker_client.execute_arbitrary_command(params[:command]))
+    runner = Runner.for(current_user, @execution_environment)
+    output = runner.execute_command(params[:command], raise_exception: false)
+    render json: output
   end
 
   def working_time_query
@@ -105,8 +108,15 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def execution_environment_params
     if params[:execution_environment].present?
-      params[:execution_environment].permit(:docker_image, :exposed_ports, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(
-        user_id: current_user.id, user_type: current_user.class.name
+      exposed_ports = if params[:execution_environment][:exposed_ports_list]
+                        # Transform the `exposed_ports_list` to `exposed_ports` array
+                        params[:execution_environment].delete(:exposed_ports_list).scan(/\d+/)
+                      else
+                        []
+                      end
+
+      params[:execution_environment].permit(:docker_image, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :cpu_limit, :name, :network_enabled, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework).merge(
+        user_id: current_user.id, user_type: current_user.class.name, exposed_ports: exposed_ports
       )
     end
   end
@@ -123,12 +133,12 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def set_docker_images
-    DockerClient.check_availability!
-    @docker_images = DockerClient.image_tags.sort
-  rescue DockerClient::Error => e
-    @docker_images = []
+    @docker_images ||= ExecutionEnvironment.pluck(:docker_image)
+    @docker_images += Runner.strategy_class.available_images
+  rescue Runner::Error::InternalServerError => e
     flash[:warning] = e.message
-    Sentry.capture_exception(e)
+  ensure
+    @docker_images = @docker_images.sort.uniq
   end
   private :set_docker_images
 
@@ -155,6 +165,30 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def update
-    update_and_respond(object: @execution_environment, params: execution_environment_params)
+    update_and_respond(object: @execution_environment, params: execution_environment_params) do
+      sync_to_runner_management
+    end
   end
+
+  def sync_all_to_runner_management
+    authorize ExecutionEnvironment
+
+    return unless Runner.management_active?
+
+    success = ExecutionEnvironment.all.map do |execution_environment|
+      Runner.strategy_class.sync_environment(execution_environment)
+    end
+    if success.all?
+      redirect_to ExecutionEnvironment, notice: t('execution_environments.index.synchronize_all.success')
+    else
+      redirect_to ExecutionEnvironment, alert: t('execution_environments.index.synchronize_all.failure')
+    end
+  end
+
+  def sync_to_runner_management
+    unless Runner.management_active? && Runner.strategy_class.sync_environment(@execution_environment)
+      t('execution_environments.form.errors.not_synced_to_runner_management')
+    end
+  end
+  private :sync_to_runner_management
 end

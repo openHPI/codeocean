@@ -67,13 +67,31 @@ CodeOceanEditorEvaluation = {
     },
 
     printScoringResults: function (response) {
+        response = (Array.isArray(response)) ? response : [response]
+        const test_results = response.filter(function(x) {
+            if (x === undefined || x === null) {
+                return false;
+            }
+            switch (x.file_role) {
+                case 'teacher_defined_test':
+                    return true;
+                case 'teacher_defined_linter':
+                    return true;
+                default:
+                    return false;
+            }
+        });
+
         $('#results ul').first().html('');
-        $('.test-count .number').html(response.filter(function(x) { return x && x.file_role === 'teacher_defined_test'; }).length);
+        $('.test-count .number').html(test_results.length);
         this.clearOutput();
 
-        _.each(response, function (result, index) {
-            this.printOutput(result, false, index);
-            this.printScoringResult(result, index);
+        _.each(test_results, function (result, index) {
+            // based on https://stackoverflow.com/questions/8511281/check-if-a-value-is-an-object-in-javascript
+            if (result === Object(result)) {
+                this.printOutput(result, false, index);
+                this.printScoringResult(result, index);
+            }
         }.bind(this));
 
         if (_.some(response, function (result) {
@@ -157,7 +175,6 @@ CodeOceanEditorEvaluation = {
         if (!msg.data || msg.data === "\r") {
             return;
         }
-        msg.data = msg.data.replace(/(\r)/gm, "\n");
         var stream = {};
         stream[msg.stream] = msg.data;
         this.printOutput(stream, true, 0);

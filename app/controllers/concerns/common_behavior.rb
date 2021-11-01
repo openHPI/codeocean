@@ -5,10 +5,13 @@ module CommonBehavior
     @object = options[:object]
     respond_to do |format|
       if @object.save
-        yield if block_given?
+        notice = t('shared.object_created', model: @object.class.model_name.human)
+        if block_given?
+          result = yield
+          notice = result if result.present?
+        end
         path = options[:path].try(:call) || @object
-        respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human),
-path: path, status: :created)
+        respond_with_valid_object(format, notice: notice, path: path, status: :created)
       else
         respond_with_invalid_object(format, template: :new)
       end
@@ -42,9 +45,13 @@ path: path, status: :created)
     @object = options[:object]
     respond_to do |format|
       if @object.update(options[:params])
+        notice = t('shared.object_updated', model: @object.class.model_name.human)
+        if block_given?
+          result = yield
+          notice = result if result.present?
+        end
         path = options[:path] || @object
-        respond_with_valid_object(format, notice: t('shared.object_updated', model: @object.class.model_name.human),
-path: path, status: :ok)
+        respond_with_valid_object(format, notice: notice, path: path, status: :ok)
       else
         respond_with_invalid_object(format, template: :edit)
       end

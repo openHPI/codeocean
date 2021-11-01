@@ -2,11 +2,11 @@ CodeOceanEditorWebsocket = {
   websocket: null,
 
   createSocketUrl: function(url) {
-      var sockURL = new URL(url, window.location);
+      const sockURL = new URL(url, window.location);
       // not needed any longer, we put it directly into the url: sockURL.pathname = url;
 
-      // sanitize socket protocol string, strip trailing slash and other malicious chars if they are there
-      sockURL.protocol = '<%= DockerClient.config['ws_client_protocol']&.match(/(\w+):*\/*/)&.to_a&.at(1) %>:';
+      // replace `http` with `ws` for the WebSocket connection. This also works with `https` and `wss`.
+      sockURL.protocol = sockURL.protocol.replace("http", "ws");
 
       // strip anchor if it is in the url
       sockURL.hash = '';

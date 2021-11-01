@@ -135,4 +135,157 @@ class Submission < ApplicationRecord
       ((rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) && !rfc_element.question.empty?)
     end
   end
+
+  def calculate_score
+    file_scores = nil
+    # If prepared_runner raises an error, no Testrun will be created.
+    prepared_runner do |runner, waiting_duration|
+      file_scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
+        output = run_test_file file, runner, waiting_duration
+        score_file(output, file)
+      end
+    end
+    combine_file_scores(file_scores)
+  end
+
+  def run(file, &block)
+    run_command = command_for execution_environment.run_command, file.name_with_extension
+    durations = {}
+    prepared_runner do |runner, waiting_duration|
+      durations[:execution_duration] = runner.attach_to_execution(run_command, &block)
+      durations[:waiting_duration] = waiting_duration
+    rescue Runner::Error => e
+      e.waiting_duration = waiting_duration
+      raise
+    end
+    durations
+  end
+
+  def test(file)
+    prepared_runner do |runner, waiting_duration|
+      output = run_test_file file, runner, waiting_duration
+      score_file output, file
+    rescue Runner::Error => e
+      e.waiting_duration = waiting_duration
+      raise
+    end
+  end
+
+  def run_test_file(file, runner, waiting_duration)
+    test_command = command_for execution_environment.test_command, file.name_with_extension
+    result = {file_role: file.role, waiting_for_container_time: waiting_duration}
+    output = runner.execute_command(test_command)
+    result.merge(output)
+  end
+
+  private
+
+  def prepared_runner
+    request_time = Time.zone.now
+    begin
+      runner = Runner.for(user, exercise.execution_environment)
+      runner.copy_files(collect_files)
+    rescue Runner::Error => e
+      e.waiting_duration = Time.zone.now - request_time
+      raise
+    end
+    waiting_duration = Time.zone.now - request_time
+    yield(runner, waiting_duration)
+  end
+
+  def command_for(template, file)
+    filepath = collect_files.find {|f| f.name_with_extension == file }.filepath
+    template % command_substitutions(filepath)
+  end
+
+  def command_substitutions(filename)
+    {
+      class_name: File.basename(filename, File.extname(filename)).upcase_first,
+      filename: filename,
+      module_name: File.basename(filename, File.extname(filename)).underscore,
+    }
+  end
+
+  def score_file(output, file)
+    assessor = Assessor.new(execution_environment: execution_environment)
+    assessment = assessor.assess(output)
+    passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
+    testrun_output = passed ? nil : "status: #{output[:status]}\n stdout: #{output[:stdout]}\n stderr: #{output[:stderr]}"
+    if testrun_output.present?
+      execution_environment.error_templates.each do |template|
+        pattern = Regexp.new(template.signature).freeze
+        StructuredError.create_from_template(template, testrun_output, self) if pattern.match(testrun_output)
+      end
+    end
+    testrun = Testrun.create(
+      submission: self,
+      cause: 'assess', # Required to differ run and assess for RfC show
+      file: file, # Test file that was executed
+      passed: passed,
+      output: testrun_output,
+      container_execution_time: output[:container_execution_time],
+      waiting_for_container_time: output[:waiting_for_container_time]
+    )
+
+    filename = file.name_with_extension
+
+    if file.teacher_defined_linter?
+      LinterCheckRun.create_from(testrun, assessment)
+      assessment = assessor.translate_linter(assessment, I18n.locale)
+
+      # replace file name with hint if linter is not used for grading. Refactor!
+      filename = I18n.t('exercises.implement.not_graded') if file.weight.zero?
+    end
+
+    output.merge!(assessment)
+    output.merge!(filename: filename, message: feedback_message(file, output), weight: file.weight)
+  end
+
+  def feedback_message(file, output)
+    if output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_test'
+      I18n.t('exercises.implement.default_test_feedback')
+    elsif output[:score] == Assessor::MAXIMUM_SCORE && output[:file_role] == 'teacher_defined_linter'
+      I18n.t('exercises.implement.default_linter_feedback')
+    else
+      # The render_markdown method from application_helper.rb is not available in model classes.
+      ActionController::Base.helpers.sanitize(
+        Kramdown::Document.new(file.feedback_message).to_html,
+        tags: %w[strong],
+        attributes: []
+      )
+    end
+  end
+
+  def combine_file_scores(outputs)
+    score = 0.0
+    if outputs.present?
+      outputs.each do |output|
+        score += output[:score] * output[:weight] unless output.nil?
+      end
+    end
+    update(score: score)
+    if normalized_score.to_d == 1.0.to_d
+      Thread.new do
+        RequestForComment.where(exercise_id: exercise_id, user_id: user_id, user_type: user_type).find_each do |rfc|
+          rfc.full_score_reached = true
+          rfc.save
+        end
+      ensure
+        ActiveRecord::Base.connection_pool.release_connection
+      end
+    end
+    if @embed_options.present? && @embed_options[:hide_test_results] && outputs.present?
+      outputs.each do |output|
+        output.except!(:error_messages, :count, :failed, :filename, :message, :passed, :stderr, :stdout)
+      end
+    end
+
+    # Return all test results except for those of a linter if not allowed
+    show_linter = Python20CourseWeek.show_linter? exercise
+    outputs&.reject do |output|
+      next if show_linter || output.blank?
+
+      output[:file_role] == 'teacher_defined_linter'
+    end
+  end
 end
