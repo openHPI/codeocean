@@ -153,9 +153,9 @@ class SubmissionsController < ApplicationController
           elsif @output.empty?
             t('exercises.implement.no_output_exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
           elsif exit_code.zero?
-            t('exercises.implement.exit_successful', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
+            "\n#{t('exercises.implement.exit_successful', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           else
-            t('exercises.implement.exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
+            "\n#{t('exercises.implement.exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           end
         client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{exit_statement}\n"})
 
