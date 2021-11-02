@@ -228,7 +228,7 @@ raise: false
 
   def handle_file_uploads
     if exercise_params
-      exercise_params[:files_attributes].try(:each) do |index, file_attributes|
+      exercise_params[:files_attributes].try(:each) do |_index, file_attributes|
         if file_attributes[:content].respond_to?(:read)
           if FileType.find_by(id: file_attributes[:file_type_id]).try(:binary?)
             file_attributes[:native_file] = file_attributes[:content]
