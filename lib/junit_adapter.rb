@@ -3,7 +3,7 @@
 class JunitAdapter < TestingFrameworkAdapter
   COUNT_REGEXP = /Tests run: (\d+)/.freeze
   FAILURES_REGEXP = /Failures: (\d+)/.freeze
-  SUCCESS_REGEXP = /OK \((\d+) tests?\)\s*(?:\x1B\]0;)?\z/.freeze
+  SUCCESS_REGEXP = /OK \((\d+) tests?\)\s*(?:\x1B\]0;|exit)?\s*\z/.freeze
   ASSERTION_ERROR_REGEXP = /java\.lang\.AssertionError:?\s(.*?)\tat org.junit|org\.junit\.ComparisonFailure:\s(.*?)\tat org.junit/m.freeze
 
   def self.framework_name
