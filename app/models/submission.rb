@@ -56,9 +56,11 @@ class Submission < ApplicationRecord
   private :build_files_hash
 
   def collect_files
-    ancestors = build_files_hash(exercise.files.includes(:file_type), :id)
-    descendants = build_files_hash(files.includes(:file_type), :file_id)
-    ancestors.merge(descendants).values
+    @collect_files ||= begin
+      ancestors = build_files_hash(exercise.files.includes(:file_type), :id)
+      descendants = build_files_hash(files.includes(:file_type), :file_id)
+      ancestors.merge(descendants).values
+    end
   end
 
   def main_file
