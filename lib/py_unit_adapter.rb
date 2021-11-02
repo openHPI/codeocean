@@ -12,11 +12,9 @@ class PyUnitAdapter < TestingFrameworkAdapter
 
   def parse_output(output)
     # PyUnit is expected to print test results on Stderr!
-    count = COUNT_REGEXP.match(output[:stderr]).captures.first.to_i
-    failures_matches = FAILURES_REGEXP.match(output[:stderr])
-    failed = failures_matches ? failures_matches.captures.try(:first).to_i : 0
-    error_matches = ERRORS_REGEXP.match(output[:stderr])
-    errors = error_matches ? error_matches.captures.try(:first).to_i : 0
+    count = output[:stderr].scan(COUNT_REGEXP).try(:last).try(:first).try(:to_i) || 0
+    failed = output[:stderr].scan(FAILURES_REGEXP).try(:last).try(:first).try(:to_i) || 0
+    errors = output[:stderr].scan(ERRORS_REGEXP).try(:last).try(:first).try(:to_i) || 0
     begin
       assertion_error_matches = Timeout.timeout(2.seconds) do
         output[:stderr].scan(ASSERTION_ERROR_REGEXP).map do |match|
@@ -28,12 +26,12 @@ class PyUnitAdapter < TestingFrameworkAdapter
           else
             "#{testname}: #{error}"
           end
-        end.flatten || []
+        end || []
       end
     rescue Timeout::Error
       Sentry.capture_message({stderr: output[:stderr], regex: ASSERTION_ERROR_REGEXP}.to_json)
       assertion_error_matches = []
     end
-    {count: count, failed: failed + errors, error_messages: assertion_error_matches}
+    {count: count, failed: failed + errors, error_messages: assertion_error_matches.flatten.reject(&:blank?)}
   end
 end

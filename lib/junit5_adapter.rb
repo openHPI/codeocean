@@ -10,13 +10,13 @@ class Junit5Adapter < TestingFrameworkAdapter
   end
 
   def parse_output(output)
-    count = COUNT_REGEXP.match(output[:stdout]).try(:captures).try(:first).try(:to_i) || 0
-    failed = FAILURES_REGEXP.match(output[:stdout]).try(:captures).try(:first).try(:to_i) || 0
+    count = output[:stdout].scan(COUNT_REGEXP).try(:last).try(:first).try(:to_i) || 0
+    failed = output[:stdout].scan(FAILURES_REGEXP).try(:last).try(:first).try(:to_i) || 0
     if failed.zero?
       {count: count, passed: count}
     else
-      error_matches = ASSERTION_ERROR_REGEXP.match(output[:stdout]).try(:captures) || []
-      {count: count, failed: failed, error_messages: error_matches}
+      error_matches = output[:stdout].scan(ASSERTION_ERROR_REGEXP) || []
+      {count: count, failed: failed, error_messages: error_matches.flatten.reject(&:blank?)}
     end
   end
 end

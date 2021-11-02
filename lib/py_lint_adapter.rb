@@ -9,12 +9,12 @@ class PyLintAdapter < TestingFrameworkAdapter
   end
 
   def parse_output(output)
-    regex_match = REGEXP.match(output[:stdout])
+    regex_match = output[:stdout].scan(REGEXP).try(:last)
     if regex_match.blank?
       count = 0
       failed = 0
     else
-      captures = regex_match.captures.map(&:to_f)
+      captures = regex_match.map(&:to_f)
       count = captures.second
       passed = captures.first >= 0 ? captures.first : 0
       failed = count - passed
@@ -39,9 +39,13 @@ class PyLintAdapter < TestingFrameworkAdapter
       Sentry.capture_message({stdout: output[:stdout], regex: ASSERTION_ERROR_REGEXP}.to_json)
       assertion_error_matches = []
     end
-    concatenated_errors = assertion_error_matches.map {|result| "#{result[:name]}: #{result[:result]}" }.flatten
-    {count: count, failed: failed, error_messages: concatenated_errors,
-detailed_linter_results: assertion_error_matches}
+    concatenated_errors = assertion_error_matches.map {|result| "#{result[:name]}: #{result[:result]}" }
+    {
+      count: count,
+      failed: failed,
+      error_messages: concatenated_errors.flatten.reject(&:blank?),
+      detailed_linter_results: assertion_error_matches.flatten.reject(&:blank?)
+    }
   end
 
   def self.translate_linter(assessment, locale)

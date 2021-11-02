@@ -8,7 +8,7 @@ class RspecAdapter < TestingFrameworkAdapter
   end
 
   def parse_output(output)
-    captures = REGEXP.match(output[:stdout]).captures.map(&:to_i)
+    captures = output[:stdout].scan(REGEXP).try(:last).map(&:to_i)
     count = captures.first
     failed = captures.second
     {count: count, failed: failed}

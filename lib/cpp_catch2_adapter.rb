@@ -14,10 +14,10 @@ class CppCatch2Adapter < TestingFrameworkAdapter
     if ALL_PASSED_REGEXP.match(output[:stdout])
       {count: Regexp.last_match(1).to_i, passed: Regexp.last_match(1).to_i}
     else
-      count = COUNT_REGEXP.match(output[:stdout]).try(:captures).try(:first).try(:to_i) || 0
-      failed = FAILURES_REGEXP.match(output[:stdout]).try(:captures).try(:first).try(:to_i) || 0
-      error_matches = ASSERTION_ERROR_REGEXP.match(output[:stdout]).try(:captures) || []
-      {count: count, failed: failed, error_messages: error_matches}
+      count = output[:stdout].scan(COUNT_REGEXP).try(:last).try(:first).try(:to_i) || 0
+      failed = output[:stdout].scan(FAILURES_REGEXP).try(:last).try(:first).try(:to_i) || 0
+      error_matches = output[:stdout].scan(ASSERTION_ERROR_REGEXP) || []
+      {count: count, failed: failed, error_messages: error_matches.flatten.reject(&:blank?)}
     end
   end
 end
