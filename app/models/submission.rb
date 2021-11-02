@@ -186,7 +186,9 @@ class Submission < ApplicationRecord
     request_time = Time.zone.now
     begin
       runner = Runner.for(user, exercise.execution_environment)
-      runner.copy_files(collect_files)
+      files = collect_files
+      files.reject!(&:teacher_defined_assessment?) if cause == 'run'
+      runner.copy_files(files)
     rescue Runner::Error => e
       e.waiting_duration = Time.zone.now - request_time
       raise
