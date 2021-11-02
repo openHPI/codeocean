@@ -230,12 +230,11 @@ raise: false
     if exercise_params
       exercise_params[:files_attributes].try(:each) do |index, file_attributes|
         if file_attributes[:content].respond_to?(:read)
-          file_params = exercise_params[:files_attributes][index]
           if FileType.find_by(id: file_attributes[:file_type_id]).try(:binary?)
-            file_params[:content] = nil
-            file_params[:native_file] = file_attributes[:content]
+            file_attributes[:native_file] = file_attributes[:content]
+            file_attributes[:content] = nil
           else
-            file_params[:content] = file_attributes[:content].read.detect_encoding!.encode.delete("\x00")
+            file_attributes[:content] = file_attributes[:content].read.detect_encoding!.encode.delete("\x00")
           end
         end
       end
