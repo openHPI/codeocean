@@ -1,7 +1,8 @@
 $(document).on('turbolinks:load', function() {
     if ($.isController('error_templates')) {
-        $('#add-attribute').find('button').on('click', function () {
-            $.ajax('//' + location.host + location.pathname + '/attribute.json', {
+        const button = $('#add-attribute').find('button')
+        button.on('click', function () {
+            $.ajax(Routes.attribute_error_template_path(button.data('template-id')), {
                 method: 'POST',
                 data: {
                     _method: 'PUT',

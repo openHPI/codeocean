@@ -1,13 +1,14 @@
 $(document).on('turbolinks:load', function() {
-  var grid = $('#tag-grid');
+  const grid = $('#tag-grid');
 
   if ($.isController('external_users') && grid.isPresent()) {
-    var spinner = $('#loading');
-    var noElements = $('#no-elements');
+    const spinner = $('#loading');
+    const user_id = spinner.data('user-id');
+    const noElements = $('#no-elements');
 
-    var buildTagContainer = function(tag) {
+    const buildTagContainer = function(tag) {
       return '\
-        <a href="' + location.href +'/statistics?tag=' + tag.id + '">\
+        <a href="' + Routes.statistics_external_user_path(user_id, {tag: tag.id}) + '">\
           <div class="tag">\
             <div class="name">' + tag.key + '</div>\
             <div class="progress">\
@@ -17,7 +18,7 @@ $(document).on('turbolinks:load', function() {
         </a>';
     };
 
-    var jqxhr = $.ajax('//' + location.host + location.pathname + '/tag_statistics', {
+    const jqxhr = $.ajax(Routes.tag_statistics_external_user_path(user_id), {
       dataType: 'json',
       method: 'GET'
     });
@@ -26,7 +27,7 @@ $(document).on('turbolinks:load', function() {
       if (response.length === 0) {
         noElements.show();
       } else {
-        var elements = response.map(buildTagContainer);
+        const elements = response.map(buildTagContainer);
         grid.append(elements);
       }
     });

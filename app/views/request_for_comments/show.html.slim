@@ -109,7 +109,7 @@ javascript:
     $.ajax({
       dataType: 'json',
       method: 'GET',
-      url: '//' + location.host + location.pathname + '/mark_as_solved'
+      url: '#{ mark_as_solved_request_for_comment_path(@request_for_comment) }'
     }).done(function(response){
       if(response.solved){
         solvedButton.removeClass('btn-primary');
@@ -127,7 +127,7 @@ javascript:
       $.ajax({
         dataType: 'json',
         method: 'POST',
-        url: '//' + location.host + location.pathname + '/set_thank_you_note',
+        url: '#{ set_thank_you_note_request_for_comment_path(@request_for_comment) }',
         data: {
             note: value
         }

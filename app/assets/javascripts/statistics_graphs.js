@@ -101,7 +101,7 @@ $(document).on('turbolinks:load', function() {
       });
     }
 
-    manageGraph('user-activity', '/statistics/graphs/user-activity', 10);
-    manageGraph('rfc-activity', '/statistics/graphs/rfc-activity', 30);
+    manageGraph('user-activity', Routes.statistics_graphs_user_activity_path(), 10);
+    manageGraph('rfc-activity', Routes.statistics_graphs_rfc_activity_path(), 30);
   }
 });

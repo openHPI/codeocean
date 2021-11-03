@@ -41,4 +41,4 @@ h2.mt-4
   = collection_select({}, :error_template_attribute_id,
           ErrorTemplateAttribute.where.not(id: @error_template.error_template_attributes.select(:id).to_a).order('important DESC', :key),
           :id, :key, {include_blank: false}, class: '')
-  button.btn.btn-outline-primary = t('error_templates.add_attribute')
+  button.btn.btn-outline-primary data-template-id=@error_template.id = t('error_templates.add_attribute')

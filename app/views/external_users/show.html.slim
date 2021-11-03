@@ -12,7 +12,7 @@ h4.mt-4 = link_to(t('.exercise_statistics'), statistics_external_user_path(@user
 
 - if current_user.admin?
   h4.mt-4 = t('.tag_statistics')
-  #loading
+  #loading data-user-id=@user.id
     .spinner
     = t('.loading_tag_statistics')
   #no-elements

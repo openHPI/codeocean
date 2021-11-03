@@ -49,7 +49,7 @@ $(document).on('turbolinks:load', function() {
 
       var refreshData = function (callback) {
         var params = new URLSearchParams(window.location.search.slice(1));
-        var jqxhr = $.ajax('/statistics/graphs/' + prefix + '-activity-history.json', {
+        var jqxhr = $.ajax(Routes[`statistics_graphs_${prefix}_activity_history_path`](), {
           dataType: 'json',
           data: {from: params.get('from'), to: params.get('to'), interval: params.get('interval')},
           method: 'GET'
