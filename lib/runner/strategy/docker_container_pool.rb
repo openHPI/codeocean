@@ -68,7 +68,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   def destroy_at_management
     url = "#{self.class.config[:url]}/docker_container_pool/destroy_container/#{container.id}"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{url}" }
-    Faraday.delete(url)
+    response = Faraday.delete(url)
+    return true if response.success?
+
+    raise Runner::Error::UnexpectedResponse.new("Could not delete execution environment in DockerContainerPool, got response: #{response.as_json}")
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   ensure
