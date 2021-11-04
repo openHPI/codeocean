@@ -142,8 +142,13 @@ class Submission < ApplicationRecord
     file_scores = nil
     # If prepared_runner raises an error, no Testrun will be created.
     prepared_runner do |runner, waiting_duration|
-      file_scores = collect_files.select(&:teacher_defined_assessment?).map do |file|
+      assessments = collect_files.select(&:teacher_defined_assessment?)
+      assessment_number = assessments.size
+
+      file_scores = assessments.map.with_index(1) do |file, index|
         output = run_test_file file, runner, waiting_duration
+        # If the previous execution failed and there is at least one more test, we request a new runner.
+        runner, waiting_duration = swap_runner(runner) if output[:status] == :timeout && index < assessment_number
         score_file(output, file)
       end
     end
@@ -176,7 +181,7 @@ class Submission < ApplicationRecord
   def run_test_file(file, runner, waiting_duration)
     test_command = command_for execution_environment.test_command, file.name_with_extension
     result = {file_role: file.role, waiting_for_container_time: waiting_duration}
-    output = runner.execute_command(test_command)
+    output = runner.execute_command(test_command, raise_exception: false)
     result.merge(output)
   end
 
@@ -195,6 +200,18 @@ class Submission < ApplicationRecord
     end
     waiting_duration = Time.zone.now - request_time
     yield(runner, waiting_duration)
+  end
+
+  def swap_runner(old_runner)
+    old_runner.update(runner_id: nil)
+    new_runner = nil
+    new_waiting_duration = nil
+    # We request a new runner that will also include all files of the current submission
+    prepared_runner do |runner, waiting_duration|
+      new_runner = runner
+      new_waiting_duration = waiting_duration
+    end
+    [new_runner, new_waiting_duration]
   end
 
   def command_for(template, file)
