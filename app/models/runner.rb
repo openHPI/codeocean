@@ -103,6 +103,7 @@ class Runner < ApplicationRecord
       try += 1
 
       if try == 1
+        # This is only used if no files were copied to the runner. Thus requesting a second runner is performed here
         # Reset the variable. This is required to prevent raising an outdated exception after a successful second try
         e = nil
         retry
