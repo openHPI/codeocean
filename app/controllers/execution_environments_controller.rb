@@ -135,8 +135,8 @@ class ExecutionEnvironmentsController < ApplicationController
   def set_docker_images
     @docker_images ||= ExecutionEnvironment.pluck(:docker_image)
     @docker_images += Runner.strategy_class.available_images
-  rescue Runner::Error::InternalServerError => e
-    flash[:warning] = e.message
+  rescue Runner::Error => e
+    flash[:warning] = html_escape e.message
   ensure
     @docker_images = @docker_images.sort.uniq
   end
