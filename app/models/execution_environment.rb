@@ -79,13 +79,24 @@ class ExecutionEnvironment < ApplicationRecord
   private :validate_docker_image?
 
   def working_docker_image?
-    runner = Runner.for(author, self)
-    output = runner.execute_command(VALIDATION_COMMAND)
-    errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
-  rescue Runner::Error::NotAvailable => e
-    Rails.logger.info("The Docker image could not be verified: #{e}")
-  rescue Runner::Error => e
-    errors.add(:docker_image, "error: #{e}")
+    sync_runner_environment
+    retries = 0
+    begin
+      runner = Runner.for(author, self)
+      output = runner.execute_command(VALIDATION_COMMAND)
+      errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
+    rescue Runner::Error => e
+      # In case of an Runner::Error, we retry multiple times before giving up.
+      # The time between each retry increases to allow the runner management to catch up.
+      if retries < 5 && !Rails.env.test?
+        retries += 1
+        sleep retries
+        retry
+      elsif errors.exclude?(:docker_image)
+        errors.add(:docker_image, "error: #{e}")
+        raise ActiveRecord::RecordInvalid.new(self)
+      end
+    end
   end
 
   def delete_runner_environment

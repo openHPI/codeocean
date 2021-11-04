@@ -15,9 +15,7 @@ class ExecutionEnvironmentsController < ApplicationController
   def create
     @execution_environment = ExecutionEnvironment.new(execution_environment_params)
     authorize!
-    create_and_respond(object: @execution_environment) do
-      sync_to_runner_management
-    end
+    create_and_respond(object: @execution_environment)
   end
 
   def destroy
@@ -165,9 +163,7 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def update
-    update_and_respond(object: @execution_environment, params: execution_environment_params) do
-      sync_to_runner_management
-    end
+    update_and_respond(object: @execution_environment, params: execution_environment_params)
   end
 
   def sync_all_to_runner_management
@@ -186,11 +182,4 @@ class ExecutionEnvironmentsController < ApplicationController
       redirect_to ExecutionEnvironment, alert: t('execution_environments.index.synchronize_all.failure')
     end
   end
-
-  def sync_to_runner_management
-    unless Runner.management_active? && Runner.strategy_class.sync_environment(@execution_environment)
-      t('execution_environments.form.errors.not_synced_to_runner_management')
-    end
-  end
-  private :sync_to_runner_management
 end

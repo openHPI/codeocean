@@ -8,7 +8,6 @@ describe ExecutionEnvironmentsController do
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
-    allow(controller).to receive(:sync_to_runner_management).and_return(nil)
     allow(Runner.strategy_class).to receive(:available_images).and_return([])
   end
 
@@ -16,7 +15,14 @@ describe ExecutionEnvironmentsController do
     context 'with a valid execution environment' do
       let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby).attributes} } }
 
-      before { perform_request.call }
+      before do
+        allow(Rails.env).to receive(:test?).and_return(false, true)
+        allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
+        runner = instance_double 'runner'
+        allow(Runner).to receive(:for).and_return(runner)
+        allow(runner).to receive(:execute_command).and_return({})
+        perform_request.call
+      end
 
       expect_assigns(docker_images: Array)
       expect_assigns(execution_environment: ExecutionEnvironment)
@@ -26,21 +32,25 @@ describe ExecutionEnvironmentsController do
       end
 
       it 'registers the execution environment with the runner management' do
-        expect(controller).to have_received(:sync_to_runner_management)
+        expect(Runner.strategy_class).to have_received(:sync_environment)
       end
 
       expect_redirect(ExecutionEnvironment.last)
     end
 
     context 'with an invalid execution environment' do
-      before { post :create, params: {execution_environment: {}} }
+      before do
+        allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
+        allow(Rails.env).to receive(:test?).and_return(false, true)
+        post :create, params: {execution_environment: {}}
+      end
 
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
       expect_template(:new)
 
       it 'does not register the execution environment with the runner management' do
-        expect(controller).not_to have_received(:sync_to_runner_management)
+        expect(Runner.strategy_class).not_to have_received(:sync_environment)
       end
     end
   end
@@ -171,7 +181,11 @@ describe ExecutionEnvironmentsController do
   describe 'PUT #update' do
     context 'with a valid execution environment' do
       before do
-        allow(controller).to receive(:sync_to_runner_management).and_return(nil)
+        allow(Rails.env).to receive(:test?).and_return(false, true)
+        allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
+        runner = instance_double 'runner'
+        allow(Runner).to receive(:for).and_return(runner)
+        allow(runner).to receive(:execute_command).and_return({})
         put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
       end
 
@@ -180,19 +194,23 @@ describe ExecutionEnvironmentsController do
       expect_redirect(:execution_environment)
 
       it 'updates the execution environment at the runner management' do
-        expect(controller).to have_received(:sync_to_runner_management)
+        expect(Runner.strategy_class).to have_received(:sync_environment)
       end
     end
 
     context 'with an invalid execution environment' do
-      before { put :update, params: {execution_environment: {name: ''}, id: execution_environment.id} }
+      before do
+        allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
+        allow(Rails.env).to receive(:test?).and_return(true, false, true)
+        put :update, params: {execution_environment: {name: ''}, id: execution_environment.id}
+      end
 
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
       expect_template(:edit)
 
       it 'does not update the execution environment at the runner management' do
-        expect(controller).not_to have_received(:sync_to_runner_management)
+        expect(Runner.strategy_class).not_to have_received(:sync_environment)
       end
     end
   end
