@@ -38,7 +38,10 @@ class RemoteEvaluationController < ApplicationController
       process_lti_response(lti_response)
     else
       {
-        message: "Your submission was successfully scored with #{@submission.normalized_score}%. However, your score could not be sent to the e-Learning platform. Please reopen the exercise through the e-Learning platform and try again.", status: 410
+        message: "Your submission was successfully scored with #{@submission.normalized_score}%. " \
+                 'However, your score could not be sent to the e-Learning platform. Please reopen ' \
+                 'the exercise through the e-Learning platform and try again.',
+        status: 410,
       }
     end
   end
@@ -49,8 +52,7 @@ class RemoteEvaluationController < ApplicationController
       # Score has been reduced due to the passed deadline
       {message: I18n.t('exercises.submit.too_late'), status: 207, score: lti_response[:score_sent] * 100}
     elsif lti_response[:status] == 'success'
-      {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name),
-status: 202}
+      {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name), status: 202}
     else
       {message: I18n.t('exercises.submit.failure'), status: 424}
     end
@@ -68,6 +70,9 @@ status: 202}
       # TODO: check token expired?
       {message: 'No exercise found for this validation_token! Please keep out!', status: 401}
     end
+  rescue Runner::Error => e
+    Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
+    {message: I18n.t('exercises.editor.depleted'), status: 503}
   end
   private :create_and_score_submission
 
