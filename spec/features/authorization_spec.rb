@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe 'Authorization' do
+  before { allow(Runner.strategy_class).to receive(:available_images).and_return([]) }
+
   context 'when being an admin' do
     let(:user) { FactoryBot.create(:admin) }
 

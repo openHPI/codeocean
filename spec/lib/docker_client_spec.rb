@@ -14,6 +14,8 @@ describe DockerClient do
   let(:workspace_path) { WORKSPACE_PATH }
 
   before do
+    docker_image = Docker::Image.new(Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex, 'RepoTags' => [FactoryBot.attributes_for(:java)[:docker_image]])
+    allow(described_class).to receive(:find_image_by_tag).and_return(docker_image)
     described_class.initialize_environment
     allow(described_class).to receive(:container_creation_options).and_wrap_original do |original_method, *args, &block|
       result = original_method.call(*args, &block)
@@ -68,6 +70,10 @@ describe DockerClient do
 
   describe '.create_container' do
     let(:create_container) { described_class.create_container(execution_environment) }
+
+    after do
+      FileUtils.rm_rf(workspace_path)
+    end
 
     it 'uses the correct Docker image' do
       expect(described_class).to receive(:find_image_by_tag).with(execution_environment.docker_image).and_call_original
@@ -425,7 +431,7 @@ describe DockerClient do
 
       it "returns the container's output" do
         expect(send_command[:stderr]).to be_blank
-        expect(send_command[:stdout]).to start_with('root')
+        expect(send_command[:stdout]).to start_with('user')
       end
 
       it 'returns a corresponding status' do

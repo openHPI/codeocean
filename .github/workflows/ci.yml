@@ -17,7 +17,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       co_execenv_java:
-        image: openhpi/co_execenv_java:8
+        image: openhpi/co_execenv_java:8-antlr
 
     steps:
       - name: Configure Docker host

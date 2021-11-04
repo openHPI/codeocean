@@ -9,6 +9,7 @@ describe ExecutionEnvironmentsController do
   before do
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:sync_to_runner_management).and_return(nil)
+    allow(Runner.strategy_class).to receive(:available_images).and_return([])
   end
 
   describe 'POST #create' do

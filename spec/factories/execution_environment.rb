@@ -37,7 +37,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     default_cpu_limit
-    docker_image { 'openhpi/co_execenv_java:8' }
+    docker_image { 'openhpi/co_execenv_java:8-antlr' }
     file_type { association :dot_java, user: user }
     help
     name { 'Java 8' }
