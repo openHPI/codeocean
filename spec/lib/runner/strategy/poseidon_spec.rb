@@ -9,6 +9,16 @@ describe Runner::Strategy::Poseidon do
   let(:error_message) { 'test error message' }
   let(:response_body) { nil }
 
+  let(:codeocean_config) { instance_double(CodeOcean::Config) }
+  let(:runner_management_config) { {runner_management: {enabled: true, strategy: :poseidon, url: 'https://runners.example.org', unused_runner_expiration_time: 180}} }
+
+  before do
+    # Ensure to reset the memorized helper
+    Runner.instance_variable_set :@strategy_class, nil
+    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+    allow(codeocean_config).to receive(:read).and_return(runner_management_config)
+  end
+
   # All requests handle a BadRequest (400) response the same way.
   shared_examples 'BadRequest (400) error handling' do
     context 'when Poseidon returns BadRequest (400)' do
