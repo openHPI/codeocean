@@ -216,7 +216,8 @@ describe ExecutionEnvironmentsController do
   end
 
   describe '#sync_all_to_runner_management' do
-    let(:execution_environments) { FactoryBot.build_list(:ruby, 3) }
+    let(:execution_environments) { %i[ruby java python].map {|environment| FactoryBot.create(environment) } }
+    let(:outdated_execution_environments) { %i[node_js html].map {|environment| FactoryBot.build_stubbed(environment) } }
 
     let(:codeocean_config) { instance_double(CodeOcean::Config) }
     let(:runner_management_config) { {runner_management: {enabled: true, strategy: :poseidon}} }
@@ -229,11 +230,19 @@ describe ExecutionEnvironmentsController do
     end
 
     it 'copies all execution environments to the runner management' do
-      allow(ExecutionEnvironment).to receive(:all).and_return(execution_environments)
+      allow(Runner::Strategy::Poseidon).to receive(:environments).and_return(outdated_execution_environments)
+      expect(Runner::Strategy::Poseidon).to receive(:environments).once
 
       execution_environments.each do |execution_environment|
         allow(Runner::Strategy::Poseidon).to receive(:sync_environment).with(execution_environment).and_return(true)
         expect(Runner::Strategy::Poseidon).to receive(:sync_environment).with(execution_environment).once
+        expect(Runner::Strategy::Poseidon).not_to receive(:remove_environment).with(execution_environment)
+      end
+
+      outdated_execution_environments.each do |execution_environment|
+        allow(Runner::Strategy::Poseidon).to receive(:remove_environment).with(execution_environment).and_return(true)
+        expect(Runner::Strategy::Poseidon).to receive(:remove_environment).with(execution_environment).once
+        expect(Runner::Strategy::Poseidon).not_to receive(:sync_environment).with(execution_environment)
       end
 
       post :sync_all_to_runner_management
