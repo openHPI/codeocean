@@ -33,10 +33,11 @@ class ExecutionEnvironment < ApplicationRecord
   before_validation :clean_exposed_ports
   validates :exposed_ports, array: {numericality: {greater_than_or_equal_to: 0, less_than: 65_536, only_integer: true}}
 
-  def set_default_values
-    set_default_values_if_present(permitted_execution_time: 60, pool_size: 0)
-  end
-  private :set_default_values
+  after_destroy :delete_runner_environment
+  after_save :working_docker_image?, if: :validate_docker_image?
+
+  after_rollback :delete_runner_environment, on: :create
+  after_rollback :sync_runner_environment, on: %i[update destroy]
 
   def to_s
     name
@@ -86,5 +87,23 @@ class ExecutionEnvironment < ApplicationRecord
   rescue Runner::Error => e
     errors.add(:docker_image, "error: #{e}")
   end
-  private :working_docker_image?
+
+  def delete_runner_environment
+    Runner.strategy_class.remove_environment(self)
+  rescue Runner::Error => e
+    unless errors.include?(:docker_image)
+      errors.add(:docker_image, "error: #{e}")
+      raise ActiveRecord::RecordInvalid.new(self)
+    end
+  end
+
+  def sync_runner_environment
+    previous_saved_environment = self.class.find(id)
+    Runner.strategy_class.sync_environment(previous_saved_environment)
+  rescue Runner::Error => e
+    unless errors.include?(:docker_image)
+      errors.add(:docker_image, "error: #{e}")
+      raise ActiveRecord::RecordInvalid.new(self)
+    end
+  end
 end

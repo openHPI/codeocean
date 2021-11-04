@@ -46,13 +46,20 @@ describe ExecutionEnvironmentsController do
   end
 
   describe 'DELETE #destroy' do
-    before { delete :destroy, params: {id: execution_environment.id} }
+    before do
+      allow(Runner.strategy_class).to receive(:remove_environment).and_return(true)
+      delete :destroy, params: {id: execution_environment.id}
+    end
 
     expect_assigns(execution_environment: :execution_environment)
 
     it 'destroys the execution environment' do
       execution_environment = FactoryBot.create(:ruby)
       expect { delete :destroy, params: {id: execution_environment.id} }.to change(ExecutionEnvironment, :count).by(-1)
+    end
+
+    it 'removes the execution environment from the runner management' do
+      expect(Runner.strategy_class).to have_received(:remove_environment)
     end
 
     expect_redirect(:execution_environments)

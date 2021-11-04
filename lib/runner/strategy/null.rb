@@ -5,7 +5,13 @@
 class Runner::Strategy::Null < Runner::Strategy
   def self.initialize_environment; end
 
-  def self.sync_environment(_environment); end
+  def self.sync_environment(_environment)
+    raise Runner::Error.new
+  end
+
+  def self.remove_environment(_environment)
+    raise Runner::Error.new
+  end
 
   def self.request_from_management(_environment)
     SecureRandom.uuid

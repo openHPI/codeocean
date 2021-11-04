@@ -233,7 +233,7 @@ describe Runner do
       end
 
       it 'raises an error when the environment could not be synced' do
-        allow(strategy_class).to receive(:sync_environment).with(runner.execution_environment).and_return(false)
+        allow(strategy_class).to receive(:sync_environment).with(runner.execution_environment).and_raise(Runner::Error::EnvironmentNotFound)
         expect { runner.send(:request_new_id) }.to raise_error(Runner::Error::EnvironmentNotFound, /#{environment_id}.*could not be synced/)
       end
     end

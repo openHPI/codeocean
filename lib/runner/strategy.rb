@@ -13,6 +13,10 @@ class Runner::Strategy
     raise NotImplementedError
   end
 
+  def self.remove_environment(_environment)
+    raise NotImplementedError
+  end
+
   def self.request_from_management(_environment)
     raise NotImplementedError
   end

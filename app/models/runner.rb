@@ -140,15 +140,19 @@ class Runner < ApplicationRecord
     rescue Runner::Error::EnvironmentNotFound
       # Whenever the environment could not be found by the runner management, we
       # try to synchronize it and then forward a more specific error to our callee.
-      if strategy_class.sync_environment(execution_environment)
+      begin
+        strategy_class.sync_environment(execution_environment)
+      rescue Runner::Error
+        # An additional error was raised during synchronization
+        raise Runner::Error::EnvironmentNotFound.new(
+          "The execution environment with id #{execution_environment.id} was not found by the runner management. "\
+          'In addition, it could not be synced so that this probably indicates a permanent error.'
+        )
+      else
+        # No error was raised during synchronization
         raise Runner::Error::EnvironmentNotFound.new(
           "The execution environment with id #{execution_environment.id} was not found yet by the runner management. "\
           'It has been successfully synced now so that the next request should be successful.'
-        )
-      else
-        raise Runner::Error::EnvironmentNotFound.new(
-          "The execution environment with id #{execution_environment.id} was not found by the runner management."\
-          'In addition, it could not be synced so that this probably indicates a permanent error.'
         )
       end
     end

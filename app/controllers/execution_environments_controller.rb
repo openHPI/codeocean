@@ -177,6 +177,8 @@ class ExecutionEnvironmentsController < ApplicationController
 
     success = ExecutionEnvironment.all.map do |execution_environment|
       Runner.strategy_class.sync_environment(execution_environment)
+    rescue Runner::Error
+      false
     end
     if success.all?
       redirect_to ExecutionEnvironment, notice: t('execution_environments.index.synchronize_all.success')
