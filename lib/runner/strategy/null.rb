@@ -5,6 +5,10 @@
 class Runner::Strategy::Null < Runner::Strategy
   def self.initialize_environment; end
 
+  def self.environments
+    raise Runner::Error.new
+  end
+
   def self.sync_environment(_environment)
     raise Runner::Error.new
   end

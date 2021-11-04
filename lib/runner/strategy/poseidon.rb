@@ -19,6 +19,27 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     nil
   end
 
+  def self.environments
+    url = "#{config[:url]}/execution-environments"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Getting list of execution environments at #{url}" }
+    response = http_connection.get url
+
+    case response.status
+      when 200
+        response_body = parse response
+        execution_environments = response_body[:executionEnvironments]
+        execution_environments.presence || raise(Runner::Error::UnexpectedResponse.new("Could not get the list of execution environments in Poseidon, got response: #{response.as_json}"))
+      when 404
+        raise Runner::Error::EnvironmentNotFound.new
+      else
+        handle_error response
+    end
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Could not get the list of execution environments because of Faraday error: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished getting the list of execution environments" }
+  end
+
   def self.sync_environment(environment)
     url = "#{config[:url]}/execution-environments/#{environment.id}"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Synchronizing execution environment at #{url}" }

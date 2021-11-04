@@ -14,6 +14,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     FileUtils.mkdir_p(File.expand_path(config[:workspace_root]))
   end
 
+  def self.environments
+    pool_size.keys.map {|key| {id: key} }
+  end
+
   def self.sync_environment(environment)
     # Force a database commit and start a new transaction.
     if environment.class.connection.transaction_open?
