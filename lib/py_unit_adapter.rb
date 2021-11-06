@@ -4,7 +4,7 @@ class PyUnitAdapter < TestingFrameworkAdapter
   COUNT_REGEXP = /Ran (\d+) test/.freeze
   FAILURES_REGEXP = /FAILED \(.*failures=(\d+).*\)/.freeze
   ERRORS_REGEXP = /FAILED \(.*errors=(\d+).*\)/.freeze
-  ASSERTION_ERROR_REGEXP = /^(ERROR|FAIL):\ (.*?)\ .*?^[^.\n]*?(Error|Exception):\s((\s|\S)*?)(>>>.*?)*\s\s(-|=){70}/m.freeze
+  ASSERTION_ERROR_REGEXP = /^(ERROR|FAIL):\ (.*?)\ .*?^[^.\n]*?(Error|Exception):\s((\s|\S)*?)(>>>[^>]*?)*\s\s(-|=){70}/m.freeze
 
   def self.framework_name
     'PyUnit'
