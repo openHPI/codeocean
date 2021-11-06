@@ -1,11 +1,11 @@
 $(document).on('turbolinks:load', function () {
-    var ENTER_KEY_CODE = 13;
+    const ENTER_KEY_CODE = 13;
 
-    var clearOutput = function () {
+    const clearOutput = function () {
         $('#output').html('');
     };
 
-    var executeCommand = function (command) {
+    const executeCommand = function (command) {
         $.ajax({
             data: {
                 command: command
@@ -15,9 +15,9 @@ $(document).on('turbolinks:load', function () {
         }).done(handleResponse);
     };
 
-    var handleKeyPress = function (event) {
+    const handleKeyPress = function (event) {
         if (event.which === ENTER_KEY_CODE) {
-            var command = $(this).val();
+            const command = $(this).val();
             if (command === 'clear') {
                 clearOutput();
             } else {
@@ -28,7 +28,7 @@ $(document).on('turbolinks:load', function () {
         }
     };
 
-    var handleResponse = function (response) {
+    const handleResponse = function (response) {
         if (response.status === 'timeout') {
             printTimeout(response);
         } else {
@@ -36,45 +36,51 @@ $(document).on('turbolinks:load', function () {
         }
     };
 
-    var printCommand = function (command) {
-        $('#output').append('<p><em>' + command + '</em></p>');
+    const printCommand = function (command) {
+        const em = $('<em>');
+        em.text(command);
+        const p = $('<p>');
+        p.append(em)
+        $('#output').append(p);
     };
 
-    var printOutput = function (output) {
+    const printOutput = function (output) {
         if (output) {
             if (output.stdout) {
-                var element = $('<p>');
+                const element = $('<p>');
                 element.addClass('text-success');
-                element.html(output.stdout);
+                element.text(output.stdout);
                 $('#output').append(element);
             }
 
             if (output.stderr) {
-                var element = $('<p>');
+                const element = $('<p>');
                 element.addClass('text-warning');
-                element.html(output.stderr);
+                element.text(output.stderr);
                 $('#output').append(element);
             }
 
             if (!output.stdout && !output.stderr) {
-                var element = $('<p>');
+                const element = $('<p>');
                 element.addClass('text-muted');
-                element.html($('#output').data('message-no-output'));
-                $('#output').append(element);
+                const output = $('#output');
+                element.text(output.data('message-no-output'));
+                output.append(element);
             }
         }
     };
 
-    var printTimeout = function (output) {
-        var element = $.append('<p>');
+    const printTimeout = function (output) {
+        const element = $.append('<p>');
         element.addClass('text-danger');
-        element.html($('#shell').data('message-timeout'));
+        element.text($('#shell').data('message-timeout'));
         $('#output').append(element);
     };
 
     if ($('#shell').isPresent()) {
-        $('#command').focus();
-        $('#command').on('keypress', handleKeyPress);
+        const command = $('#command')
+        command.focus();
+        command.on('keypress', handleKeyPress);
     }
 })
 ;
