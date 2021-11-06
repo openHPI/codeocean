@@ -42,7 +42,9 @@ $(document).on('turbolinks:load', function() {
             if ($row.length === 0) {
                 $row = $($('#posted_rfcs')[0].insertRow(0));
             }
-            $row = $row.replaceWithAndReturnNewElement(data.html);
+            const $html = $(data.html);
+            $row.replaceWith($html);
+            $row = $html;
             $row.find('time').timeago();
             addClickEventToRfCEntry($row);
         }

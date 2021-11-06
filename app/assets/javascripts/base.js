@@ -20,15 +20,8 @@ $.fn.isPresent = function() {
 
 $.fn.scrollTo = function(selector) {
   $(this).animate({
-    scrollTop: $(selector).offset().top - $(this).offset().top + $(this).scrollTop()
+    scrollTop: $(document.querySelector(selector)).offset().top - $(this).offset().top + $(this).scrollTop()
   }, ANIMATION_DURATION);
-};
-
-// Same as $.replaceWith, just returns the new element instead of the deleted one
-$.fn.replaceWithAndReturnNewElement = function(a) {
-    const $a = $(a);
-    this.replaceWith($a);
-    return $a;
 };
 
 // Disable the use of web workers for JStree due to JS error
