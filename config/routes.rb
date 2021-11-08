@@ -158,8 +158,8 @@ Rails.application.routes.draw do
 
   resources :events, only: [:create]
 
-  post '/evaluate', to: 'remote_evaluation#evaluate', via: [:post]
-  post '/submit', to: 'remote_evaluation#submit', via: [:post]
+  post '/evaluate', to: 'remote_evaluation#evaluate', defaults: {format: :json}
+  post '/submit', to: 'remote_evaluation#submit', defaults: {format: :json}
 
   resources :ping, only: :index, defaults: {format: :json}
 
