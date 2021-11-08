@@ -18,7 +18,7 @@ echo all | sudo tee /etc/gcrypt/hwf.deny
 
 # Prerequisites
 sudo apt -qq update
-sudo apt -qq -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev libicu-dev
+sudo apt -qq -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev libicu-dev acl
 sudo apt -qq -y upgrade
 
 # PostgreSQL
@@ -113,6 +113,10 @@ rake db:seed
 
 # Always set language to English
 sudo locale-gen en_US en_US.UTF-8
+
+# Set ACL to ensure access to files created by Docker
+mkdir -p tmp/files
+setfacl -Rdm user:codeocean:rwx tmp/files
 
 #### DOCKERCONTAINERPOOL INSTALL ####
 ../dockercontainerpool/provision.sh

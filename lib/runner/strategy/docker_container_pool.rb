@@ -179,10 +179,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def clean_workspace
-    FileUtils.rm_r(local_workspace_path.children, secure: true)
+    FileUtils.rm_r(local_workspace_path.children, force: true)
   rescue Errno::ENOENT => e
     raise Runner::Error::WorkspaceError.new("The workspace directory does not exist and cannot be deleted: #{e.inspect}")
-  rescue Errno::EACCES => e
+  rescue Errno::EACCES, Errno::EPERM => e
     raise Runner::Error::WorkspaceError.new("Not allowed to clean workspace #{local_workspace_path}: #{e.inspect}")
   end
 

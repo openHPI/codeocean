@@ -41,7 +41,7 @@ curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo apt-key add -
 # Install packages
 apt-get -qq update
 apt-get -qq -y install postgresql-client postgresql-$postgres_version postgresql-server-dev-$postgres_version postgresql-$postgres_version-cron
-apt-get -qq -y install yarn nodejs nginx libpq-dev certbot
+apt-get -qq -y install yarn nodejs nginx libpq-dev certbot acl
 
 # RVM
 gpg --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
@@ -244,9 +244,9 @@ chmod -R 775 /var/www
 certbot certonly --webroot -w /var/www/acme-challenges/ --email email@example.org --rsa-key-size 4096 --agree-tos -d codeocean.openhpi.de
 systemctl daemon-reload
 
-# Deploy via Capistrano (both, CodeOcean and DockerContainerPool) and symlink Docker files, depending on the environment:
-# ln -s /var/www/app/current/tmp/files/staging /var/www/dockercontainerpool/current/tmp/files/staging
-# ln -s /var/www/app/current/tmp/files/production /var/www/dockercontainerpool/current/tmp/files/production
+# Deploy via Capistrano (both, CodeOcean and DockerContainerPool)
+# Ensure that the `codeocean` user always has access to the files (especially when Docker remap is active):
+# cd /var/www/app/current/tmp/files && setfacl -Rdm user:codeocean:rwx . && setfacl -Rm user:codeocean:rwx . && cd -
 
 # Find more files in codeocean-deploy/config/backup
 

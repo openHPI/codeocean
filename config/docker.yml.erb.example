@@ -9,6 +9,7 @@ development:
   <<: *default
   host: tcp://127.0.0.1:2376
   ws_host: ws://127.0.0.1:2376 #url to connect rails server to docker host
+  # Be sure to change the default ACL when modifying the workspace_root: `setfacl -Rdm user:<username>:rwx <workspace_root>`
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   pool:
     active: true
@@ -17,7 +18,6 @@ development:
       batch_size: 8
       interval: 15
       timeout: 60
-  #workspace_root: <%= File.join('/', 'shared', Rails.env) %>
 
 production:
   <<: *default
@@ -29,6 +29,7 @@ production:
       batch_size: 8
       interval: 15
       timeout: 60
+  # Be sure to change the default ACL when modifying the workspace_root: `setfacl -Rdm user:<username>:rwx <workspace_root>`
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   ws_host: ws://localhost:4243 #url to connect rails server to docker host
 
@@ -42,10 +43,12 @@ staging:
       batch_size: 8
       interval: 15
       timeout: 60
+  # Be sure to change the default ACL when modifying the workspace_root: `setfacl -Rdm user:<username>:rwx <workspace_root>`
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
   ws_host: ws://localhost:4243 #url to connect rails server to docker host
 
 test:
   <<: *default
   host: tcp://127.0.0.1:2376
+  # Be sure to change the default ACL when modifying the workspace_root: `setfacl -Rdm user:<username>:rwx <workspace_root>`
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>

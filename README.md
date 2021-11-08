@@ -35,7 +35,9 @@ Please refer to the [Local Setup Guide](docs/LOCAL_SETUP.md) for more details.
 
 Exemplary configuration files are available in the *config* directory.
 
-In order to execute code submissions using Docker, source code files are written to the file system and are provided to a dedicated Docker container. These files are temporarily written to *Rails.root/tmp/files/*. Please make sure that *workspace_root* in *config/docker.yml.erb* corresponds to that directory or to a linked directory if using a remote Docker server.
+In order to execute code submissions using the [DockerContainerPool](https://github.com/openHPI/dockercontainerpool), source code files are written to the file system and are provided to a dedicated Docker container. These files are temporarily written to *Rails.root/tmp/files/*. Please make sure that *workspace_root* in *config/docker.yml.erb*
+- corresponds to that directory or to a linked directory if using a remote Docker server.
+- is always writeable by the user executing the web server (in this case the `codeocean` user): `setfacl -Rdm user:codeocean:rwx /var/www/app/current/tmp/files`.
 
 ### Optional Steps
 

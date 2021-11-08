@@ -219,7 +219,7 @@ describe Runner::Strategy::DockerContainerPool do
     it 'removes all children of the workspace recursively' do
       children = %w[test.py exercise.rb subfolder].map {|child| Pathname.new(child) }
       allow(local_workspace).to receive(:children).and_return(children)
-      expect(FileUtils).to receive(:rm_r).with(children, secure: true)
+      expect(FileUtils).to receive(:rm_r).with(children, force: true)
       container_pool.send(:clean_workspace)
     end
 
@@ -230,7 +230,7 @@ describe Runner::Strategy::DockerContainerPool do
 
     it 'raises an error if it lacks permission for deleting an entry' do
       allow(local_workspace).to receive(:children).and_return(['test.py'])
-      allow(FileUtils).to receive(:remove_entry_secure).and_raise(Errno::EACCES)
+      allow(FileUtils).to receive(:remove_entry).and_raise(Errno::EPERM)
       expect { container_pool.send(:clean_workspace) }.to raise_error(Runner::Error::WorkspaceError, /Not allowed/)
     end
   end
