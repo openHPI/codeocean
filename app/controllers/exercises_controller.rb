@@ -7,7 +7,7 @@ class ExercisesController < ApplicationController
   include TimeHelper
 
   before_action :handle_file_uploads, only: %i[create update]
-  before_action :set_execution_environments, only: %i[create edit new update]
+  before_action :set_execution_environments, only: %i[index create edit new update]
   before_action :set_exercise_and_authorize,
     only: MEMBER_ACTIONS + %i[clone implement working_times intervention search run statistics submit reload feedback
                               requests_for_comments study_group_dashboard export_external_check export_external_confirm]
