@@ -13,7 +13,7 @@ describe ExecutionEnvironmentsController do
 
   describe 'POST #create' do
     context 'with a valid execution environment' do
-      let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby).attributes} } }
+      let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby, pool_size: 1).attributes} } }
 
       before do
         allow(Rails.env).to receive(:test?).and_return(false, true)
@@ -186,7 +186,7 @@ describe ExecutionEnvironmentsController do
         runner = instance_double 'runner'
         allow(Runner).to receive(:for).and_return(runner)
         allow(runner).to receive(:execute_command).and_return({})
-        put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
+        put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby, pool_size: 1), id: execution_environment.id}
       end
 
       expect_assigns(docker_images: Array)

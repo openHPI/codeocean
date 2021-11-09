@@ -78,7 +78,8 @@ class ExecutionEnvironment < ApplicationRecord
   end
 
   def validate_docker_image?
-    docker_image.present? && !Rails.env.test?
+    # We only validate the code execution with the provided image if there is at least one container to test with.
+    pool_size.positive? && docker_image.present? && !Rails.env.test?
   end
 
   def working_docker_image?

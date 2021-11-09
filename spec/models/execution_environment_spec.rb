@@ -138,8 +138,14 @@ describe ExecutionEnvironment do
       expect(execution_environment.send(:validate_docker_image?)).to be false
     end
 
+    it 'is false when the pool size is empty' do
+      expect(execution_environment.pool_size).to be 0
+      expect(execution_environment.send(:validate_docker_image?)).to be false
+    end
+
     it 'is true otherwise' do
       execution_environment.docker_image = FactoryBot.attributes_for(:ruby)[:docker_image]
+      execution_environment.pool_size = 1
       allow(Rails.env).to receive(:test?).and_return(false)
       expect(execution_environment.send(:validate_docker_image?)).to be true
     end
