@@ -14,17 +14,40 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     FileUtils.mkdir_p(File.expand_path(config[:workspace_root]))
   end
 
-  def self.sync_environment(environment)
-    # There is no dedicated sync mechanism yet. However, we need to emit a warning when the pool was previously
-    # empty for this execution environment. In this case the validation command probably was not executed.
-    return true unless environment.pool_size_previously_changed?
+  def self.environments
+    pool_size.keys.map {|key| {id: key} }
+  end
 
-    case environment.pool_size_previously_was
-      when nil, 0
-        false
-      else
-        true
+  def self.sync_environment(environment)
+    # Force a database commit and start a new transaction.
+    if environment.class.connection.transaction_open?
+      environment.class.connection.commit_db_transaction
+      environment.class.connection.begin_db_transaction
     end
+
+    url = "#{config[:url]}/docker_container_pool/refill_environment/#{environment.id}"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Refilling execution environment at #{url}" }
+    response = Faraday.post(url)
+    return true if response.success?
+
+    raise Runner::Error::UnexpectedResponse.new("Could not refill execution environment in DockerContainerPool, got response: #{response.as_json}")
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished refilling environment" }
+  end
+
+  def self.remove_environment(environment)
+    url = "#{config[:url]}/docker_container_pool/purge_environment/#{environment.id}"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Purging execution environment at #{url}" }
+    response = Faraday.delete(url)
+    return true if response.success?
+
+    raise Runner::Error::UnexpectedResponse.new("Could not delete execution environment in DockerContainerPool, got response: #{response.as_json}")
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished purging environment" }
   end
 
   def self.request_from_management(environment)
@@ -49,7 +72,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   def destroy_at_management
     url = "#{self.class.config[:url]}/docker_container_pool/destroy_container/#{container.id}"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{url}" }
-    Faraday.delete(url)
+    response = Faraday.delete(url)
+    return true if response.success?
+
+    raise Runner::Error::UnexpectedResponse.new("Could not delete execution environment in DockerContainerPool, got response: #{response.as_json}")
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   ensure

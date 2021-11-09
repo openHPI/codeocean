@@ -15,9 +15,7 @@ class ExecutionEnvironmentsController < ApplicationController
   def create
     @execution_environment = ExecutionEnvironment.new(execution_environment_params)
     authorize!
-    create_and_respond(object: @execution_environment) do
-      sync_to_runner_management
-    end
+    create_and_respond(object: @execution_environment)
   end
 
   def destroy
@@ -135,8 +133,8 @@ class ExecutionEnvironmentsController < ApplicationController
   def set_docker_images
     @docker_images ||= ExecutionEnvironment.pluck(:docker_image)
     @docker_images += Runner.strategy_class.available_images
-  rescue Runner::Error::InternalServerError => e
-    flash[:warning] = e.message
+  rescue Runner::Error => e
+    flash[:warning] = html_escape e.message
   ensure
     @docker_images = @docker_images.sort.uniq
   end
@@ -165,9 +163,7 @@ class ExecutionEnvironmentsController < ApplicationController
   end
 
   def update
-    update_and_respond(object: @execution_environment, params: execution_environment_params) do
-      sync_to_runner_management
-    end
+    update_and_respond(object: @execution_environment, params: execution_environment_params)
   end
 
   def sync_all_to_runner_management
@@ -175,20 +171,40 @@ class ExecutionEnvironmentsController < ApplicationController
 
     return unless Runner.management_active?
 
-    success = ExecutionEnvironment.all.map do |execution_environment|
-      Runner.strategy_class.sync_environment(execution_environment)
+    success = []
+
+    begin
+      # Get a list of all existing execution environments and mark them as a potential candidate for removal
+      environments_to_remove = Runner.strategy_class.environments.pluck(:id)
+      success << true
+    rescue Runner::Error => e
+      Rails.logger.debug { "Runner error while getting all execution environments: #{e.message}" }
+      environments_to_remove = []
+      success << false
     end
+
+    success += ExecutionEnvironment.all.map do |execution_environment|
+      # Sync all current execution environments and prevent deletion of those just synced
+      environments_to_remove -= [execution_environment.id]
+      Runner.strategy_class.sync_environment(execution_environment)
+    rescue Runner::Error => e
+      Rails.logger.debug { "Runner error while synchronizing execution environment with id #{execution_environment.id}: #{e.message}" }
+      false
+    end
+
+    success += environments_to_remove.map do |execution_environment_id|
+      # Remove execution environments not synced. We temporarily use a record which is not persisted
+      execution_environment = ExecutionEnvironment.new(id: execution_environment_id)
+      Runner.strategy_class.remove_environment(execution_environment)
+    rescue Runner::Error => e
+      Rails.logger.debug { "Runner error while deleting execution environment with id #{execution_environment.id}: #{e.message}" }
+      false
+    end
+
     if success.all?
       redirect_to ExecutionEnvironment, notice: t('execution_environments.index.synchronize_all.success')
     else
       redirect_to ExecutionEnvironment, alert: t('execution_environments.index.synchronize_all.failure')
     end
   end
-
-  def sync_to_runner_management
-    unless Runner.management_active? && Runner.strategy_class.sync_environment(@execution_environment)
-      t('execution_environments.form.errors.not_synced_to_runner_management')
-    end
-  end
-  private :sync_to_runner_management
 end

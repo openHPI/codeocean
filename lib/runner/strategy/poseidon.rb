@@ -19,16 +19,51 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     nil
   end
 
+  def self.environments
+    url = "#{config[:url]}/execution-environments"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Getting list of execution environments at #{url}" }
+    response = http_connection.get url
+
+    case response.status
+      when 200
+        response_body = parse response
+        execution_environments = response_body[:executionEnvironments]
+        execution_environments.presence || raise(Runner::Error::UnexpectedResponse.new("Could not get the list of execution environments in Poseidon, got response: #{response.as_json}"))
+      when 404
+        raise Runner::Error::EnvironmentNotFound.new
+      else
+        handle_error response
+    end
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Could not get the list of execution environments because of Faraday error: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished getting the list of execution environments" }
+  end
+
   def self.sync_environment(environment)
     url = "#{config[:url]}/execution-environments/#{environment.id}"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Synchronizing execution environment at #{url}" }
     response = http_connection.put url, environment.to_json
     return true if [201, 204].include? response.status
 
-    Rails.logger.warn("Could not create execution environment in Poseidon, got response: #{response.as_json}")
-    false
+    raise Runner::Error::UnexpectedResponse.new("Could not synchronize execution environment in Poseidon, got response: #{response.as_json}")
   rescue Faraday::Error => e
-    Rails.logger.warn("Could not create execution environment because of Faraday error: #{e.inspect}")
-    false
+    raise Runner::Error::FaradayError.new("Could not synchronize execution environment because of Faraday error: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished synchronizing execution environment" }
+  end
+
+  def self.remove_environment(environment)
+    url = "#{config[:url]}/execution-environments/#{environment.id}"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Deleting execution environment at #{url}" }
+    response = http_connection.delete url
+    return true if response.status == 204
+
+    raise Runner::Error::UnexpectedResponse.new("Could not delete execution environment in Poseidon, got response: #{response.as_json}")
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Could not delete execution environment because of Faraday error: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished deleting execution environment" }
   end
 
   def self.request_from_management(environment)

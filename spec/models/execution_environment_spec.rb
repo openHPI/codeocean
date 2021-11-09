@@ -8,7 +8,7 @@ describe ExecutionEnvironment do
   it 'validates that the Docker image works' do
     allow(execution_environment).to receive(:validate_docker_image?).and_return(true)
     allow(execution_environment).to receive(:working_docker_image?).and_return(true)
-    execution_environment.update(docker_image: FactoryBot.attributes_for(:ruby)[:docker_image])
+    execution_environment.update(FactoryBot.build(:ruby).attributes)
     expect(execution_environment).to have_received(:working_docker_image?)
   end
 
@@ -138,18 +138,26 @@ describe ExecutionEnvironment do
       expect(execution_environment.send(:validate_docker_image?)).to be false
     end
 
+    it 'is false when the pool size is empty' do
+      expect(execution_environment.pool_size).to be 0
+      expect(execution_environment.send(:validate_docker_image?)).to be false
+    end
+
     it 'is true otherwise' do
       execution_environment.docker_image = FactoryBot.attributes_for(:ruby)[:docker_image]
+      execution_environment.pool_size = 1
       allow(Rails.env).to receive(:test?).and_return(false)
       expect(execution_environment.send(:validate_docker_image?)).to be true
     end
   end
 
   describe '#working_docker_image?' do
+    let(:execution_environment) { FactoryBot.create(:ruby) }
     let(:working_docker_image?) { execution_environment.send(:working_docker_image?) }
     let(:runner) { instance_double 'runner' }
 
     before do
+      allow(execution_environment).to receive(:sync_runner_environment).and_return(true)
       allow(Runner).to receive(:for).with(execution_environment.author, execution_environment).and_return runner
     end
 
@@ -176,7 +184,7 @@ describe ExecutionEnvironment do
     context 'when the Docker client produces an error' do
       it 'adds an error' do
         allow(runner).to receive(:execute_command).and_raise(Runner::Error)
-        working_docker_image?
+        expect { working_docker_image? }.to raise_error(ActiveRecord::RecordInvalid)
         expect(execution_environment.errors[:docker_image]).to be_present
       end
     end

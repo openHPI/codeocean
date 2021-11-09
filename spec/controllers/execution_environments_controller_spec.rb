@@ -8,15 +8,21 @@ describe ExecutionEnvironmentsController do
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
-    allow(controller).to receive(:sync_to_runner_management).and_return(nil)
     allow(Runner.strategy_class).to receive(:available_images).and_return([])
   end
 
   describe 'POST #create' do
     context 'with a valid execution environment' do
-      let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby).attributes} } }
+      let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby, pool_size: 1).attributes} } }
 
-      before { perform_request.call }
+      before do
+        allow(Rails.env).to receive(:test?).and_return(false, true)
+        allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
+        runner = instance_double 'runner'
+        allow(Runner).to receive(:for).and_return(runner)
+        allow(runner).to receive(:execute_command).and_return({})
+        perform_request.call
+      end
 
       expect_assigns(docker_images: Array)
       expect_assigns(execution_environment: ExecutionEnvironment)
@@ -26,33 +32,44 @@ describe ExecutionEnvironmentsController do
       end
 
       it 'registers the execution environment with the runner management' do
-        expect(controller).to have_received(:sync_to_runner_management)
+        expect(Runner.strategy_class).to have_received(:sync_environment)
       end
 
       expect_redirect(ExecutionEnvironment.last)
     end
 
     context 'with an invalid execution environment' do
-      before { post :create, params: {execution_environment: {}} }
+      before do
+        allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
+        allow(Rails.env).to receive(:test?).and_return(false, true)
+        post :create, params: {execution_environment: {}}
+      end
 
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
       expect_template(:new)
 
       it 'does not register the execution environment with the runner management' do
-        expect(controller).not_to have_received(:sync_to_runner_management)
+        expect(Runner.strategy_class).not_to have_received(:sync_environment)
       end
     end
   end
 
   describe 'DELETE #destroy' do
-    before { delete :destroy, params: {id: execution_environment.id} }
+    before do
+      allow(Runner.strategy_class).to receive(:remove_environment).and_return(true)
+      delete :destroy, params: {id: execution_environment.id}
+    end
 
     expect_assigns(execution_environment: :execution_environment)
 
     it 'destroys the execution environment' do
       execution_environment = FactoryBot.create(:ruby)
       expect { delete :destroy, params: {id: execution_environment.id} }.to change(ExecutionEnvironment, :count).by(-1)
+    end
+
+    it 'removes the execution environment from the runner management' do
+      expect(Runner.strategy_class).to have_received(:remove_environment)
     end
 
     expect_redirect(:execution_environments)
@@ -164,8 +181,12 @@ describe ExecutionEnvironmentsController do
   describe 'PUT #update' do
     context 'with a valid execution environment' do
       before do
-        allow(controller).to receive(:sync_to_runner_management).and_return(nil)
-        put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby), id: execution_environment.id}
+        allow(Rails.env).to receive(:test?).and_return(false, true)
+        allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
+        runner = instance_double 'runner'
+        allow(Runner).to receive(:for).and_return(runner)
+        allow(runner).to receive(:execute_command).and_return({})
+        put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby, pool_size: 1), id: execution_environment.id}
       end
 
       expect_assigns(docker_images: Array)
@@ -173,25 +194,30 @@ describe ExecutionEnvironmentsController do
       expect_redirect(:execution_environment)
 
       it 'updates the execution environment at the runner management' do
-        expect(controller).to have_received(:sync_to_runner_management)
+        expect(Runner.strategy_class).to have_received(:sync_environment)
       end
     end
 
     context 'with an invalid execution environment' do
-      before { put :update, params: {execution_environment: {name: ''}, id: execution_environment.id} }
+      before do
+        allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
+        allow(Rails.env).to receive(:test?).and_return(true, false, true)
+        put :update, params: {execution_environment: {name: ''}, id: execution_environment.id}
+      end
 
       expect_assigns(execution_environment: ExecutionEnvironment)
       expect_status(200)
       expect_template(:edit)
 
       it 'does not update the execution environment at the runner management' do
-        expect(controller).not_to have_received(:sync_to_runner_management)
+        expect(Runner.strategy_class).not_to have_received(:sync_environment)
       end
     end
   end
 
   describe '#sync_all_to_runner_management' do
-    let(:execution_environments) { FactoryBot.build_list(:ruby, 3) }
+    let(:execution_environments) { %i[ruby java python].map {|environment| FactoryBot.create(environment) } }
+    let(:outdated_execution_environments) { %i[node_js html].map {|environment| FactoryBot.build_stubbed(environment) } }
 
     let(:codeocean_config) { instance_double(CodeOcean::Config) }
     let(:runner_management_config) { {runner_management: {enabled: true, strategy: :poseidon}} }
@@ -204,11 +230,19 @@ describe ExecutionEnvironmentsController do
     end
 
     it 'copies all execution environments to the runner management' do
-      allow(ExecutionEnvironment).to receive(:all).and_return(execution_environments)
+      allow(Runner::Strategy::Poseidon).to receive(:environments).and_return(outdated_execution_environments)
+      expect(Runner::Strategy::Poseidon).to receive(:environments).once
 
       execution_environments.each do |execution_environment|
         allow(Runner::Strategy::Poseidon).to receive(:sync_environment).with(execution_environment).and_return(true)
         expect(Runner::Strategy::Poseidon).to receive(:sync_environment).with(execution_environment).once
+        expect(Runner::Strategy::Poseidon).not_to receive(:remove_environment).with(execution_environment)
+      end
+
+      outdated_execution_environments.each do |execution_environment|
+        allow(Runner::Strategy::Poseidon).to receive(:remove_environment).with(execution_environment).and_return(true)
+        expect(Runner::Strategy::Poseidon).to receive(:remove_environment).with(execution_environment).once
+        expect(Runner::Strategy::Poseidon).not_to receive(:sync_environment).with(execution_environment)
       end
 
       post :sync_all_to_runner_management

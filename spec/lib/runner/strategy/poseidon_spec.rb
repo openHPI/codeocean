@@ -9,6 +9,16 @@ describe Runner::Strategy::Poseidon do
   let(:error_message) { 'test error message' }
   let(:response_body) { nil }
 
+  let(:codeocean_config) { instance_double(CodeOcean::Config) }
+  let(:runner_management_config) { {runner_management: {enabled: true, strategy: :poseidon, url: 'https://runners.example.org', unused_runner_expiration_time: 180}} }
+
+  before do
+    # Ensure to reset the memorized helper
+    Runner.instance_variable_set :@strategy_class, nil
+    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+    allow(codeocean_config).to receive(:read).and_return(runner_management_config)
+  end
+
   # All requests handle a BadRequest (400) response the same way.
   shared_examples 'BadRequest (400) error handling' do
     context 'when Poseidon returns BadRequest (400)' do
@@ -141,11 +151,11 @@ describe Runner::Strategy::Poseidon do
     end
 
     shared_examples 'returns false when the api request failed' do |status|
-      it "returns false on status #{status}" do
+      it "raises an exception on status #{status}" do
         faraday_connection = instance_double 'Faraday::Connection'
         allow(described_class).to receive(:http_connection).and_return(faraday_connection)
         allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
-        expect(action.call).to be_falsey
+        expect { action.call }.to raise_exception Runner::Error::UnexpectedResponse
       end
     end
 
@@ -157,11 +167,11 @@ describe Runner::Strategy::Poseidon do
       include_examples 'returns false when the api request failed', status
     end
 
-    it 'returns false if Faraday raises an error' do
+    it 'raises an exception if Faraday raises an error' do
       faraday_connection = instance_double 'Faraday::Connection'
       allow(described_class).to receive(:http_connection).and_return(faraday_connection)
       allow(faraday_connection).to receive(:put).and_raise(Faraday::TimeoutError)
-      expect(action.call).to be_falsey
+      expect { action.call }.to raise_exception Runner::Error::FaradayError
     end
   end
 
