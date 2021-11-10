@@ -28,7 +28,12 @@ class Runner::Strategy::Poseidon < Runner::Strategy
       when 200
         response_body = parse response
         execution_environments = response_body[:executionEnvironments]
-        execution_environments.presence || raise(Runner::Error::UnexpectedResponse.new("Could not get the list of execution environments in Poseidon, got response: #{response.as_json}"))
+
+        if execution_environments.nil?
+          raise(Runner::Error::UnexpectedResponse.new("Could not get the list of execution environments in Poseidon, got response: #{response.as_json}"))
+        else
+          execution_environments
+        end
       when 404
         raise Runner::Error::EnvironmentNotFound.new
       else
