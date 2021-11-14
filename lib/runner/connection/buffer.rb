@@ -71,8 +71,8 @@ class Runner::Connection::Buffer
     @buffering = false
     @global_buffer = +''
     # For our buffering, we identified line breaks with the `\n` and removed those temporarily.
-    # Thus, we now re-add the `\n` at the end of the string and remove the `\r` in the same time.
-    message = message.gsub(/\r$/, "\n") unless message.length == 1
+    # Thus, we now re-add the `\n` at the end of the string and remove the `\r` at the same time.
+    message = message.gsub(/\r$/, "\n")
     @line_buffer.push message
   end
 
@@ -83,10 +83,10 @@ class Runner::Connection::Buffer
     invalid_json = !valid_json?(message)
     # Second, if we have the beginning of a valid command but an invalid JSON
     return true if invalid_json && message.start_with?(/\s*{"cmd/)
-    # Third, global_buffer the message if it contains long messages (e.g., an image or turtle batch commands)
+    # Third, buffer the message if it contains long messages (e.g., an image or turtle batch commands)
     return true if invalid_json && (message.include?('<img') || message.include?('"turtlebatch"'))
 
-    # If nothing applies, we don't want to global_buffer the current message
+    # If nothing applies, we don't want to buffer the current message
     false
   end
 
@@ -97,7 +97,9 @@ class Runner::Connection::Buffer
   def valid_json?(data)
     # Try parsing the JSON. If that is successful, we have a valid JSON (otherwise not)
     JSON.parse(data)
-    true
+    # Additionally, check if the string ends with \r and return that result.
+    # All JSON messages received through the Runner::Connection will end in a line break!
+    data.end_with?("\r")
   rescue JSON::ParserError
     false
   end
