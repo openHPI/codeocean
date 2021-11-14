@@ -768,8 +768,9 @@ var CodeOceanEditor = {
      * interventions
      * */
     initializeInterventionTimer: function () {
+        const editor = $('#editor');
 
-        if ($('#editor').data('rfc-interventions') || $('#editor').data('break-interventions')) { // split in break or rfc intervention
+        if (editor.data('rfc-interventions') || editor.data('break-interventions') || editor.data('tips-interventions')) { // split in break or rfc intervention
             window.onblur = function () {
                 window.blurred = true;
             };
@@ -777,30 +778,31 @@ var CodeOceanEditor = {
                 window.blurred = false;
             };
 
-            var delta = 100; // time in ms to wait for window event before time gets stopped
-            var tid;
+            const delta = 100; // time in ms to wait for window event before time gets stopped
+            let tid;
             $.ajax({
                 data: {
-                    exercise_id: $('#editor').data('exercise-id'),
-                    user_id: $('#editor').data('user-id')
+                    exercise_id: editor.data('exercise-id'),
+                    user_id: editor.data('user-id')
                 },
                 dataType: 'json',
                 method: 'GET',
                 // get working times for this exercise
-                url: $('#editor').data('working-times-url'),
+                url: editor.data('working-times-url'),
                 success: function (data) {
-                    var percentile75 = data['working_time_75_percentile'];
-                    var accumulatedWorkTimeUser = data['working_time_accumulated'];
+                    const percentile75 = data['working_time_75_percentile'];
+                    const accumulatedWorkTimeUser = data['working_time_accumulated'];
 
-                    var minTimeIntervention = 10 * 60 * 1000;
+                    const minTimeIntervention = 10 * 1000;
 
+                    let timeUntilIntervention;
                     if ((accumulatedWorkTimeUser - percentile75) > 0) {
                         // working time is already over 75 percentile
-                        var timeUntilIntervention = minTimeIntervention;
+                        timeUntilIntervention = minTimeIntervention;
                     } else {
                         // working time is less than 75 percentile
                         // ensure we give user at least minTimeIntervention before we bother the user
-                        var timeUntilIntervention = Math.max(percentile75 - accumulatedWorkTimeUser, minTimeIntervention);
+                        timeUntilIntervention = Math.max(percentile75 - accumulatedWorkTimeUser, minTimeIntervention);
                     }
 
                     tid = setInterval(function () {
@@ -809,9 +811,20 @@ var CodeOceanEditor = {
                         }
                         timeUntilIntervention -= delta;
                         if (timeUntilIntervention <= 0) {
+                            const interventionSaveUrl = editor.data('intervention-save-url');
                             clearInterval(tid);
                             // timeUntilIntervention passed
-                            if ($('#editor').data('break-interventions')) {
+                            if (editor.data('tips-interventions')) {
+                                $('#tips-intervention-modal').modal('show');
+                                $.ajax({
+                                    data: {
+                                        intervention_type: 'TipIntervention'
+                                    },
+                                    dataType: 'json',
+                                    type: 'POST',
+                                    url: interventionSaveUrl
+                                });
+                            } else if (editor.data('break-interventions')) {
                                 $('#break-intervention-modal').modal('show');
                                 $.ajax({
                                     data: {
@@ -819,10 +832,10 @@ var CodeOceanEditor = {
                                     },
                                     dataType: 'json',
                                     type: 'POST',
-                                    url: $('#editor').data('intervention-save-url')
+                                    url: interventionSaveUrl
                                 });
-                            } else if ($('#editor').data('rfc-interventions')) {
-                                var button = $('#requestComments');
+                            } else if (editor.data('rfc-interventions')) {
+                                const button = $('#requestComments');
                                 // only show intervention if user did not requested for a comment already
                                 if (!button.prop('disabled')) {
                                     $('#rfc_intervention_text').show();
@@ -833,7 +846,7 @@ var CodeOceanEditor = {
                                         },
                                         dataType: 'json',
                                         type: 'POST',
-                                        url: $('#editor').data('intervention-save-url')
+                                        url: interventionSaveUrl
                                     });
                                 }
                             }
