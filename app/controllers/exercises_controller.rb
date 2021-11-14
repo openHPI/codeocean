@@ -537,6 +537,12 @@ working_time_accumulated: working_time_accumulated})
     else
       redirect_after_submit
     end
+  rescue Runner::Error => e
+    Rails.logger.debug { "Runner error while submitting submission #{@submission.id}: #{e.message}" }
+    respond_to do |format|
+      format.html { redirect_to(implement_exercise_path(@submission.exercise)) }
+      format.json { render(json: {message: I18n.t('exercises.editor.depleted'), status: :container_depleted}) }
+    end
   end
 
   def transmit_lti_score

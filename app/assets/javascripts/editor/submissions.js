@@ -197,6 +197,14 @@ CodeOceanEditorSubmissions = {
         Turbolinks.clearCache();
         clearTimeout(this.autosaveTimer);
         Turbolinks.visit(response.redirect);
+      } else if (response.status === 'container_depleted') {
+          this.showContainerDepletedMessage();
+          $('#submit').one('click', this.submitCode.bind(this));
+      } else if (response.message) {
+          $.flash.danger({
+              text: response.message
+          });
+          $('#submit').one('click', this.submitCode.bind(this));
       }
     })
   },
