@@ -296,10 +296,24 @@ raise: false
 
     if @embed_options[:disable_interventions]
       @show_rfc_interventions = false
+      @show_break_interventions = false
+      @show_tips_interventions = false
     else
-      @show_rfc_interventions = (!user_solved_exercise && !user_got_enough_interventions).to_s
+      show_intervention = (!user_solved_exercise && !user_got_enough_interventions).to_s
+      if @tips.present? && Java21Study.show_tips_intervention?(current_user, @exercise)
+        @show_tips_interventions = show_intervention
+        @show_break_interventions = false
+        @show_rfc_interventions = false
+      elsif Java21Study.show_break_intervention?(current_user, @exercise)
+        @show_tips_interventions = false
+        @show_break_interventions = show_intervention
+        @show_rfc_interventions = false
+      else
+        @show_tips_interventions = false
+        @show_break_interventions = false
+        @show_rfc_interventions = show_intervention
+      end
     end
-    @show_break_interventions = false
 
     @hide_rfc_button = @embed_options[:disable_rfc]
 
