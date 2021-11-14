@@ -7,6 +7,7 @@ class SubmissionsController < ApplicationController
   include SubmissionParameters
   include Tubesock::Hijack
 
+  before_action :require_user!
   before_action :set_submission, only: %i[download download_file render_file run score show statistics test]
   before_action :set_files, only: %i[download show]
   before_action :set_files_and_specific_file, only: %i[download_file render_file run test]
