@@ -138,6 +138,8 @@ class Submission < ApplicationRecord
     end
   end
 
+  # @raise [Runner::Error] if the score could not be calculated due to a failure with the runner.
+  #                        See the specific type and message for more details.
   def calculate_score
     file_scores = nil
     # If prepared_runner raises an error, no Testrun will be created.
@@ -155,6 +157,8 @@ class Submission < ApplicationRecord
     combine_file_scores(file_scores)
   end
 
+  # @raise [Runner::Error] if the code could not be run due to a failure with the runner.
+  #                        See the specific type and message for more details.
   def run(file, &block)
     run_command = command_for execution_environment.run_command, file.name_with_extension
     durations = {}
@@ -168,6 +172,8 @@ class Submission < ApplicationRecord
     durations
   end
 
+  # @raise [Runner::Error] if the file could not be tested due to a failure with the runner.
+  #                        See the specific type and message for more details.
   def test(file)
     prepared_runner do |runner, waiting_duration|
       output = run_test_file file, runner, waiting_duration
