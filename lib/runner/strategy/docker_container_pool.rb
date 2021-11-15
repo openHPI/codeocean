@@ -190,7 +190,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
       container
     end
-  rescue Docker::Error::NotFoundError
+  rescue Docker::Error::NotFoundError, Excon::Error::Socket
     raise Runner::Error::RunnerNotFound
   end
 
