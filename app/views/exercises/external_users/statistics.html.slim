@@ -58,7 +58,8 @@ h1
             - row_classes += ' after_late_deadline' if this.is_a?(Submission) && this.after_late_deadline?
             tr data-id=this.id class=row_classes
               - if this.is_a?(Submission)
-                td.clickable = this.created_at.strftime("%F %T")
+                td class=(this.files.present? ? 'clickable' : '')
+                  = this.created_at.strftime("%F %T")
                 td = this.cause
                 td = this.score
                 td.align-middle
