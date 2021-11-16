@@ -13,6 +13,8 @@ h1
     - submission.files.each do |file|
       - file_types.add(ActiveSupport::JSON.encode(file.file_type))
     - all_files.push(submission.files)
+  - all_files.reject!(&:blank?)
+  - file_types.reject!(&:blank?)
 
   .d-none#data data-submissions=ActiveSupport::JSON.encode(@submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
 
