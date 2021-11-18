@@ -20,7 +20,7 @@ class Runner::Connection
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Opening connection to #{url}" }
     @socket = Faye::WebSocket::Client.new(url, [], strategy.class.websocket_header)
     @strategy = strategy
-    @status = :established
+    @status = :new
     @event_loop = event_loop
     @locale = locale
     @stdout_buffer = Buffer.new
@@ -115,14 +115,15 @@ class Runner::Connection
 
   def on_open(_event)
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Established connection to #{@socket.url}" }
+    @status = :established
     @start_callback.call
   end
 
   def on_error(event)
     # In case of an WebSocket error, the connection will be closed by Faye::WebSocket::Client automatically.
     # Thus, no further handling is required here (the user will get notified).
-    Sentry.set_extras(event: event.inspect)
-    Sentry.capture_message("The WebSocket connection to #{@socket.url} was closed with an error.")
+    @status = :error
+    @error = Runner::Error::Unknown.new("The WebSocket connection to #{@socket.url} was closed with an error: #{event.message}")
   end
 
   def on_close(_event)
