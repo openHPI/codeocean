@@ -53,6 +53,7 @@ class Runner < ApplicationRecord
   end
 
   def attach_to_execution(command, &block)
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Starting execution with Runner #{id} for #{user_type} #{user_id}." }
     starting_time = Time.zone.now
     begin
       # As the EventMachine reactor is probably shared with other threads, we cannot use EventMachine.run with
@@ -68,6 +69,7 @@ class Runner < ApplicationRecord
       e.execution_duration = Time.zone.now - starting_time
       raise
     end
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Stopped execution with Runner #{id} for #{user_type} #{user_id}." }
     Time.zone.now - starting_time # execution duration
   end
 
