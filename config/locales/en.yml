@@ -349,7 +349,7 @@ en:
       request_for_comments_sent: "Request for comments sent."
       hints:
         submission_deadline: This exercise is due <b>%{deadline}</b>.<br/><small>Click 'submit' to transfer your score to the e-learning platform before this deadline passes. %{otherwise}</small>
-        late_submission_deadline: Until <b>%{deadline}</b>, 80% of your score will be awareded.<br/><small>If you miss this extended deadline and submit your score afterwards, 0 points will be transmitted.</small>
+        late_submission_deadline: Until <b>%{deadline}</b>, 80% of your score will be awarded.<br/><small>If you miss this extended deadline and submit your score afterwards, 0 points will be transmitted.</small>
         otherwise: Otherwise, a score of 0 points will be transmitted.
         disclaimer: If unsure about a deadline, please contact a course instructor. The deadline shown here is only informational and information from the e-learning platform should always take precedence.
     editor_file_tree:
