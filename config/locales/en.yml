@@ -163,6 +163,9 @@ en:
       exercise_collection_item:
         exercise: "Exercise"
     models:
+      community_solution:
+        one: Community Solution
+        other: Community Solutions
       codeharbor_link:
         one: CodeHarbor Link
         other: CodeHarbor Links
@@ -265,6 +268,15 @@ en:
       rfc_activity_history: RfC Activity History
     rails_admin:
       show: "Rails Admin"
+  community_solutions:
+    help_us_out: Help us out!
+    explanation: In this course, we would like to work together with you and all other learners to create a community solution for this exercise, which will be made available to all participants at the end of the course. For this we need your active support. Below you will find both the current status of the community solution and your submission. Please review the community solution and revise it as needed. Your own solution will not be changed.
+    research_status: 'New beta feature based on our research:'
+    research_explanation: The opportunity to participate in a community solution is part of our research; therefore, we would greatly appreciate your active participation.
+    current_community_solution: Current community solution
+    your_submission: Your submission (read-only, for reference)
+    change_community_solution: Save Changes to Community Solution
+    accept_community_solution: Quit Community Solution without Changes
   consumers:
     show:
       link: Consumer

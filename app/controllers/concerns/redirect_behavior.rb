@@ -6,6 +6,11 @@ module RedirectBehavior
   def redirect_after_submit
     Rails.logger.debug { "Redirecting user with score:s #{@submission.normalized_score}" }
     if @submission.normalized_score.to_d == 1.0.to_d
+      if redirect_to_community_solution?
+        redirect_to_community_solution
+        return
+      end
+
       # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
       # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
       # redirect 10 percent pseudorandomly to the feedback page
@@ -62,6 +67,40 @@ module RedirectBehavior
   end
 
   private
+
+  def redirect_to_community_solution
+    url = edit_community_solution_path(@community_solution, lock_id: @community_solution_lock.id)
+    respond_to do |format|
+      format.html { redirect_to(url) }
+      format.json { render(json: {redirect: url}) }
+    end
+  end
+
+  def redirect_to_community_solution?
+    return false unless Java21Study.allow_redirect_to_community_solution?(current_user, @exercise)
+
+    @community_solution = CommunitySolution.find_by(exercise: @exercise)
+    return false if @community_solution.blank?
+
+    last_contribution = CommunitySolutionContribution.where(community_solution: @community_solution).order(created_at: :asc).last
+
+    # Only redirect if last contribution is from another user.
+    eligible = last_contribution.blank? || last_contribution.user != current_user
+    return false unless eligible
+
+    # Acquire lock here! This is expensive but required for synchronization
+    @community_solution_lock = ActiveRecord::Base.transaction do
+      ActiveRecord::Base.connection.execute("LOCK #{CommunitySolutionLock.table_name} IN ACCESS EXCLUSIVE MODE")
+
+      # This is returned
+      CommunitySolutionLock.find_or_create_by(community_solution: @community_solution, locked_until: Time.zone.now...) do |lock|
+        lock.user = current_user
+        lock.locked_until = 5.minutes.from_now
+      end
+    end
+
+    @community_solution_lock.user == current_user
+  end
 
   def redirect_to_user_feedback
     uef = UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)

@@ -9,8 +9,9 @@ CodeOceanEditorSubmissions = {
    * Submission-Creation
    */
   createSubmission: function (initiator, filter, callback) {
+    const editor = $('#editor');
     this.showSpinner(initiator);
-    var url = $(initiator).data('url') || $('#editor').data('submissions-url');
+    var url = $(initiator).data('url') || editor.data('submissions-url');
 
     if (url === undefined) {
         const data = {
@@ -24,12 +25,12 @@ CodeOceanEditorSubmissions = {
       data: {
         submission: {
           cause: $(initiator).data('cause') || $(initiator).prop('id'),
-          exercise_id: $('#editor').data('exercise-id'),
+          exercise_id: editor.data('exercise-id') || $(initiator).data('exercise-id'),
           files_attributes: (filter || _.identity)(this.collectFiles())
         }
       },
       dataType: 'json',
-      method: 'POST',
+      method: $(initiator).data('http-method') || 'POST',
       url: url + '.json'
     });
     jqxhr.always(this.hideSpinner.bind(this));
@@ -191,20 +192,22 @@ CodeOceanEditorSubmissions = {
     }
   },
 
-  submitCode: function() {
-    this.createSubmission($('#submit'), null, function (response) {
+  submitCode: function(event) {
+    const button = $(event.target) || $('#submit');
+    this.createSubmission(button, null, function (response) {
       if (response.redirect) {
+        this.editors = [];
         Turbolinks.clearCache();
         clearTimeout(this.autosaveTimer);
         Turbolinks.visit(response.redirect);
       } else if (response.status === 'container_depleted') {
           this.showContainerDepletedMessage();
-          $('#submit').one('click', this.submitCode.bind(this));
+          button.one('click', this.submitCode.bind(this));
       } else if (response.message) {
           $.flash.danger({
               text: response.message
           });
-          $('#submit').one('click', this.submitCode.bind(this));
+          button.one('click', this.submitCode.bind(this));
       }
     })
   },

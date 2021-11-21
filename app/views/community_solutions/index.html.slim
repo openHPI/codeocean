@@ -1,0 +1,19 @@
+h1 Listing community_solutions
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @community_solutions.each do |community_solution|
+      tr
+        td = link_to 'Show', community_solution
+        td = link_to 'Edit', edit_community_solution_path(community_solution)
+        td = link_to 'Destroy', community_solution, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Community solution', new_community_solution_path

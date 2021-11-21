@@ -55,7 +55,7 @@ html lang="#{I18n.locale || I18n.default_locale}"
       = render('flash')
       - if current_user.try(:admin?) or current_user.try(:teacher?) && !@embed_options[:hide_navbar]
         = yield(:breadcrumbs)
-    - if (controller_name == "exercises" && action_name == "implement")
+    - if (controller_name == "exercises" && action_name == "implement") || (controller_name == 'community_solutions' && action_name == 'edit')
       .container-fluid
         = yield
     - else
