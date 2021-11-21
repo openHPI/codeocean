@@ -2,6 +2,7 @@
 
 class ExercisesController < ApplicationController
   include CommonBehavior
+  include RedirectBehavior
   include Lti
   include SubmissionParameters
   include TimeHelper
@@ -413,33 +414,6 @@ working_time_accumulated: working_time_accumulated})
     authorize!
   end
 
-  def redirect_to_lti_return_path
-    Sentry.set_extras(
-      consumers_id: @submission.user&.consumer,
-      external_users_id: @submission.user_id,
-      exercises_id: @submission.exercise_id,
-      session: session.to_hash,
-      submission: @submission.inspect,
-      params: params.as_json,
-      current_user: current_user,
-      lti_exercise_id: session[:lti_exercise_id],
-      lti_parameters_id: session[:lti_parameters_id]
-    )
-
-    lti_parameter = LtiParameter.where(external_users_id: @submission.user_id,
-      exercises_id: @submission.exercise_id).last
-
-    path = lti_return_path(submission_id: @submission.id,
-      url: consumer_return_url(build_tool_provider(consumer: @submission.user.consumer,
-        parameters: lti_parameter.lti_parameters)))
-    clear_lti_session_data(@submission.exercise_id, @submission.user_id)
-    respond_to do |format|
-      format.html { redirect_to(path) }
-      format.json { render(json: {redirect: path}) }
-    end
-  end
-  private :redirect_to_lti_return_path
-
   def new
     @exercise = Exercise.new
     collect_set_and_unset_exercise_tags
@@ -599,78 +573,6 @@ working_time_accumulated: working_time_accumulated})
     myparam.delete :tips
     removed_exercise_tags.map(&:destroy)
     update_and_respond(object: @exercise, params: myparam)
-  end
-
-  def redirect_after_submit
-    Rails.logger.debug { "Redirecting user with score:s #{@submission.normalized_score}" }
-    if @submission.normalized_score.to_d == 1.0.to_d
-      # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
-      # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
-      # redirect 10 percent pseudorandomly to the feedback page
-      if current_user.respond_to? :external_id
-        if @submission.redirect_to_feedback? && !@embed_options[:disable_redirect_to_feedback]
-          clear_lti_session_data(@submission.exercise_id, @submission.user_id)
-          redirect_to_user_feedback
-          return
-        end
-
-        rfc = @submission.own_unsolved_rfc
-        if rfc
-          # set a message that informs the user that his own RFC should be closed.
-          flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
-          flash.keep(:notice)
-
-          clear_lti_session_data(@submission.exercise_id, @submission.user_id)
-          respond_to do |format|
-            format.html { redirect_to(rfc) }
-            format.json { render(json: {redirect: url_for(rfc)}) }
-          end
-          return
-        end
-
-        # else: show open rfc for same exercise if available
-        rfc = @submission.unsolved_rfc
-        unless rfc.nil? || @embed_options[:disable_redirect_to_rfcs] || @embed_options[:disable_rfc]
-          # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
-          flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
-          flash.keep(:notice)
-
-          # increase counter 'times_featured' in rfc
-          rfc.increment(:times_featured)
-
-          clear_lti_session_data(@submission.exercise_id, @submission.user_id)
-          respond_to do |format|
-            format.html { redirect_to(rfc) }
-            format.json { render(json: {redirect: url_for(rfc)}) }
-          end
-          return
-        end
-      end
-    else
-      # redirect to feedback page if score is less than 100 percent
-      if @exercise.needs_more_feedback?(@submission) && !@embed_options[:disable_redirect_to_feedback]
-        clear_lti_session_data(@submission.exercise_id, @submission.user_id)
-        redirect_to_user_feedback
-      else
-        redirect_to_lti_return_path
-      end
-      return
-    end
-    redirect_to_lti_return_path
-  end
-
-  def redirect_to_user_feedback
-    uef = UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)
-    url = if uef
-            edit_user_exercise_feedback_path(uef)
-          else
-            new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id})
-          end
-
-    respond_to do |format|
-      format.html { redirect_to(url) }
-      format.json { render(json: {redirect: url}) }
-    end
   end
 
   def study_group_dashboard
