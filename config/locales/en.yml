@@ -438,6 +438,8 @@ en:
       break_intervention:
         title: "Break"
         text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
+      tips_intervention:
+        text: "It looks like you may struggle with this exercise. </br> </br> Did you notice the tips in the left sidebar? They might answer some of your questions and are also displayed below for your convenience."
       error_hints:
         heading: "Hints"
       tips:

@@ -3,8 +3,9 @@
 - consumer_id = @current_user.respond_to?(:external_id) ? @current_user.consumer_id : '' #'tests' #(@current_user.uuid.present? ? @current_user.uuid : '')
 - show_break_interventions = @show_break_interventions || "false"
 - show_rfc_interventions = @show_rfc_interventions || "false"
+- show_tips_interventions = @show_tips_interventions || "false"
 - hide_rfc_button = @hide_rfc_button || false
-#editor.row data-exercise-id=@exercise.id data-message-depleted=t('exercises.editor.depleted') data-message-timeout=t('exercises.editor.timeout',  permitted_execution_time: @exercise.execution_environment.permitted_execution_time) data-submissions-url=submissions_path data-user-id=@current_user.id data-user-external-id=external_user_external_id data-working-times-url=working_times_exercise_path(@exercise) data-intervention-save-url=intervention_exercise_path(@exercise) data-rfc-interventions=show_rfc_interventions data-break-interventions=show_break_interventions data-course_token=@course_token data-search-save-url=search_exercise_path(@exercise)
+#editor.row data-exercise-id=@exercise.id data-message-depleted=t('exercises.editor.depleted') data-message-timeout=t('exercises.editor.timeout',  permitted_execution_time: @exercise.execution_environment.permitted_execution_time) data-submissions-url=submissions_path data-user-id=@current_user.id data-user-external-id=external_user_external_id data-working-times-url=working_times_exercise_path(@exercise) data-intervention-save-url=intervention_exercise_path(@exercise) data-rfc-interventions=show_rfc_interventions data-break-interventions=show_break_interventions data-tips-interventions=show_tips_interventions data-course_token=@course_token data-search-save-url=search_exercise_path(@exercise)
   - unless @embed_options[:hide_sidebar]
 
     - additional_classes = 'sidebar-col'
@@ -53,3 +54,4 @@
 
 = render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.request'), template: 'exercises/_request_comment_dialogcontent') unless @embed_options[:disable_rfc]
 = render('shared/modal', id: 'break-intervention-modal', title: t('exercises.implement.break_intervention.title'), template: 'interventions/_break_intervention_modal') unless @embed_options[:disable_interventions]
+= render('shared/modal', id: 'tips-intervention-modal', title: t('exercises.implement.tips.heading'), template: 'interventions/_tips_intervention_modal') unless @embed_options[:disable_hints] or @tips.blank?

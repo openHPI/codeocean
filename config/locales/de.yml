@@ -438,6 +438,8 @@ de:
       break_intervention:
         title: "Pause"
         text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
+      tips_intervention:
+        text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. </br> </br> Sind Ihnen die Tipps in der linken Seitenleiste aufgefallen? Sie könnten einige Ihrer Fragen beantworten und werden auch direkt hier angezeigt."
       error_hints:
         heading: "Hinweise"
       tips:
