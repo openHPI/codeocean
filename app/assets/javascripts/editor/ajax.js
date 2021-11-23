@@ -7,7 +7,8 @@ CodeOceanEditorAJAX = {
   },
 
   ajaxError: function(response) {
-    var message = ((response || {}).responseJSON || {}).message || '';
+    const responseJSON = ((response || {}).responseJSON || {});
+    const message = responseJSON.message || responseJSON.error || '';
 
     $.flash.danger({
       text: message.length > 0 ? message : $('#flash').data('message-failure'),

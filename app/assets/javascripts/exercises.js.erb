@@ -110,11 +110,14 @@ $(document).on('turbolinks:load', function () {
         }
     }
 
-    var ajaxError = function (error) {
+    var ajaxError = function (response) {
+        const responseJSON = ((response || {}).responseJSON || {});
+        const message = responseJSON.message || responseJSON.error || '';
+
         $.flash.danger({
-            text: $('#flash').data('message-failure')
+            text: message.length > 0 ? message : $('#flash').data('message-failure'),
+            showPermanent: response.status === 422,
         });
-        Sentry.captureException(JSON.stringify(error));
     };
 
     var buildCheckboxes = function () {
