@@ -3,6 +3,7 @@
 FILENAME_REGEXP = /[\w.]+/.freeze unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
+  resources :community_solutions, only: %i[index edit update]
   resources :error_template_attributes
   resources :error_templates do
     member do

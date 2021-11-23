@@ -15,7 +15,7 @@ var CodeOceanEditor = {
     ENTER_KEY_CODE: 13,
 
     //Request-For-Comments-Configuration
-    REQUEST_FOR_COMMENTS_DELAY: 3 * 60 * 1000,
+    REQUEST_FOR_COMMENTS_DELAY: 0,
     REQUEST_TOOLTIP_TIME: 5000,
 
     editors: [],
@@ -140,20 +140,37 @@ var CodeOceanEditor = {
         }
     },
 
-    showFirstFile: function () {
-        var frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
-        var file_id = frame.find('.editor').data('file-id');
+    showFirstFile: function (own_solution = false) {
+        let frame;
+        let filetree;
+        let editorSelector;
+        if (own_solution) {
+            frame = $('.own-frame[data-role="main_file"]').isPresent() ? $('.own-frame[data-role="main_file"]') : $('.own-frame').first();
+            filetree = $('#own-files');
+            editorSelector = '.own-editor';
+        } else {
+            frame = $('.frame[data-role="main_file"]').isPresent() ? $('.frame[data-role="main_file"]') : $('.frame').first();
+            filetree = $('#files');
+            editorSelector = '.editor';
+        }
+
+        var file_id = frame.find(editorSelector).data('file-id');
         this.setActiveFile(frame.data('filename'), file_id);
-        var filetree = $('#files');
         this.selectFileInJsTree(filetree, file_id);
         this.showFrame(frame);
         this.toggleButtonStates();
     },
 
     showFrame: function (frame) {
+        if (frame.hasClass('own-frame')) {
+            $('.own-frame').hide();
+        } else {
+            $('.frame').hide();
+        }
+
         this.active_frame = frame;
-        $('.frame').hide();
         frame.show();
+        this.resizeParentOfAceEditor(frame.find('.ace_editor.ace-tm'));
     },
 
     getProgressBarClass: function (percentage) {
@@ -203,8 +220,15 @@ var CodeOceanEditor = {
     },
 
 
-    resizeAceEditors: function () {
-        $('.editor').each(function (index, element) {
+    resizeAceEditors: function (own_solution = false) {
+        let editorSelector;
+        if (own_solution) {
+            editorSelector = $('.own-editor')
+        } else {
+            editorSelector = $('.editor')
+        }
+
+        editorSelector.each(function (index, element) {
             this.resizeParentOfAceEditor(element);
         }.bind(this));
         window.dispatchEvent(new Event('resize'));
@@ -212,13 +236,21 @@ var CodeOceanEditor = {
 
     resizeParentOfAceEditor: function (element) {
         // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
-        var windowHeight = window.innerHeight - $(element).offset().top - $('#statusbar').height() - 5;
+        var windowHeight = window.innerHeight - $(element).offset().top - ($('#statusbar').height() || 0) - 5;
         $(element).parent().height(windowHeight);
     },
 
-    initializeEditors: function () {
-        this.editors = [];
-        $('.editor').each(function (index, element) {
+    initializeEditors: function (own_solution = false) {
+        // Initialize the editors array if not present already. This is mainly required for community solutions
+        this.editors = this.editors || [];
+        let editorSelector;
+        if (own_solution) {
+            editorSelector = $('.own-editor')
+        } else {
+            editorSelector = $('.editor')
+        }
+
+        editorSelector.each(function (index, element) {
 
             // Resize frame on load
             this.resizeParentOfAceEditor(element);
@@ -279,11 +311,9 @@ var CodeOceanEditor = {
             session.setUseWrapMode(true);
 
             // set regex for parsing error traces based on the mode of the main file.
-            if ($(element).parent().data('role') == "main_file") {
+            if ($(element).parent().data('role') === "main_file") {
                 this.tracepositions_regex = this.regex_for_language.get($(element).data('mode'));
             }
-
-            var file_id = $(element).data('id');
 
             /*
              * Register event handlers
@@ -326,9 +356,15 @@ var CodeOceanEditor = {
             });
     },
 
-    initializeFileTree: function () {
-        $('#files').jstree($('#files').data('entries'));
-        $('#files').on('click', 'li.jstree-leaf > a', function (event) {
+    initializeFileTree: function (own_solution = false) {
+        let filesInstance;
+        if (own_solution) {
+            filesInstance = $('#own-files');
+        } else {
+            filesInstance = $('#files');
+        }
+        filesInstance.jstree(filesInstance.data('entries'));
+        filesInstance.on('click', 'li.jstree-leaf > a', function (event) {
             this.setActiveFile(
                 $(event.target).parent().text(),
                 parseInt($(event.target).parent().attr('id'))
@@ -793,7 +829,7 @@ var CodeOceanEditor = {
                     const percentile75 = data['working_time_75_percentile'];
                     const accumulatedWorkTimeUser = data['working_time_accumulated'];
 
-                    const minTimeIntervention = 10 * 1000;
+                    const minTimeIntervention = 10 * 60 * 1000;
 
                     let timeUntilIntervention;
                     if ((accumulatedWorkTimeUser - percentile75) > 0) {
@@ -879,6 +915,7 @@ var CodeOceanEditor = {
 
 
     initializeEverything: function () {
+        CodeOceanEditor.editors = [];
         this.initializeRegexes();
         this.initializeCodePilot();
         $('.score, #development-environment').show();

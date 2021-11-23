@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_14_145024) do
+ActiveRecord::Schema.define(version: 2021_11_18_185051) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -51,6 +51,41 @@ ActiveRecord::Schema.define(version: 2021_11_14_145024) do
     t.datetime "updated_at"
     t.index ["file_id"], name: "index_comments_on_file_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "community_solution_contributions", force: :cascade do |t|
+    t.bigint "community_solution_id", null: false
+    t.bigint "study_group_id"
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.bigint "community_solution_lock_id", null: false
+    t.boolean "proposed_changes", null: false
+    t.boolean "timely_contribution", null: false
+    t.boolean "autosave", null: false
+    t.interval "working_time", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["community_solution_id", "timely_contribution", "autosave", "proposed_changes"], name: "index_community_solution_valid_contributions"
+    t.index ["community_solution_lock_id"], name: "index_community_solution_contributions_lock"
+    t.index ["user_type", "user_id"], name: "index_community_solution_contributions_on_user"
+  end
+
+  create_table "community_solution_locks", force: :cascade do |t|
+    t.bigint "community_solution_id", null: false
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.datetime "locked_until"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["community_solution_id", "locked_until"], name: "index_community_solution_locks_until", unique: true
+    t.index ["user_type", "user_id"], name: "index_community_solution_locks_on_user"
+  end
+
+  create_table "community_solutions", force: :cascade do |t|
+    t.bigint "exercise_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["exercise_id"], name: "index_community_solutions_on_exercise_id"
   end
 
   create_table "consumers", id: :serial, force: :cascade do |t|
@@ -491,6 +526,11 @@ ActiveRecord::Schema.define(version: 2021_11_14_145024) do
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user"
   end
 
+  add_foreign_key "community_solution_contributions", "community_solution_locks"
+  add_foreign_key "community_solution_contributions", "community_solutions"
+  add_foreign_key "community_solution_contributions", "study_groups"
+  add_foreign_key "community_solution_locks", "community_solutions"
+  add_foreign_key "community_solutions", "exercises"
   add_foreign_key "exercise_tips", "exercise_tips", column: "parent_exercise_tip_id"
   add_foreign_key "exercise_tips", "exercises"
   add_foreign_key "exercise_tips", "tips"

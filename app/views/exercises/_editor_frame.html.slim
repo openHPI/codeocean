@@ -1,4 +1,4 @@
-.frame data-executable=file.file_type.executable? data-filename=file.name_with_extension data-renderable=file.file_type.renderable? data-role=file.role data-binary=file.file_type.binary? data-context-type=file.context_type data-read-only=file.read_only
+div class=(defined?(own_solution) ? "own-frame" : "frame") data-executable=file.file_type.executable? data-filename=file.name_with_extension data-renderable=file.file_type.renderable? data-role=file.role data-binary=file.file_type.binary? data-context-type=file.context_type data-read-only=file.read_only
   - if file.file_type.binary?
     .binary-file data-file-id=file.ancestor_id
       - if file.file_type.renderable?
@@ -12,4 +12,4 @@
         = link_to(file.native_file.file.filename, file.native_file.url)
   - else
     .editor-content.d-none data-file-id=file.ancestor_id = file.content
-    .editor data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-allow-auto-completion=exercise.allow_auto_completion.to_s data-id=file.id
+    div class=(defined?(own_solution) ? "own-editor" : "editor") data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-allow-auto-completion=exercise.allow_auto_completion.to_s data-id=file.id
