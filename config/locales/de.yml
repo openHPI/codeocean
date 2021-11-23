@@ -271,7 +271,7 @@ de:
   community_solutions:
     help_us_out: Helfen Sie mit!
     explanation: In diesem Kurs möchten wir gerne mit Ihnen und allen anderen Lernenden eine Gemeinschaftslösung für diese Aufgabe erarbeiten, die zum Ende des Kurses allen Teilnehmenden zugänglich gemacht werden soll. Unten finden Sie sowohl den aktuellen Stand der Gemeinschaftslösung als auch Ihre Abgabe. Bitte sehen Sie sich die Gemeinschaftslösung an und überarbeiten Sie diese bei Bedarf. Ihre eigene Lösung wird nicht verändert.
-    research_status: 'Neue Beta-Funktion aus der Forschung:'
+    research_status: 'Neue Beta-Funktion:'
     research_explanation: Die hier angebotene Mitwirkungsmöglichkeit an einer Gemeinschaftslösung ist Bestandteil unserer Forschung; daher würden wir uns sehr über Ihre aktive Beteiligung freuen.
     current_community_solution: Aktuelle Gemeinschaftslösung
     your_submission: Ihre Abgabe (schreibgeschützt, als Referenz)
