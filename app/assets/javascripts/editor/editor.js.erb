@@ -17,6 +17,7 @@ var CodeOceanEditor = {
     //Request-For-Comments-Configuration
     REQUEST_FOR_COMMENTS_DELAY: 0,
     REQUEST_TOOLTIP_TIME: 5000,
+    REQUEST_TOOLTIP_DELAY: 10 * 60 * 1000,
 
     editors: [],
     editor_for_file: new Map(),
@@ -444,10 +445,12 @@ var CodeOceanEditor = {
 
         setTimeout(function () {
             button.prop('disabled', false);
-            button.tooltip('show');
             setTimeout(function () {
-                button.tooltip('hide');
-            }, this.REQUEST_TOOLTIP_TIME);
+                button.tooltip('show');
+                setTimeout(function () {
+                    button.tooltip('hide');
+                }, this.REQUEST_TOOLTIP_TIME);
+            }, this.REQUEST_TOOLTIP_DELAY)
         }.bind(this), this.REQUEST_FOR_COMMENTS_DELAY);
     },
 
