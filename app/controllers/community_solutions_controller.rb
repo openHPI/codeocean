@@ -29,7 +29,8 @@ class CommunitySolutionsController < ApplicationController
     if last_contribution.blank?
       last_contribution = @community_solution.exercise
       new_readme_file = {content: '', file_type: FileType.find_by(file_extension: '.txt'), hidden: false, read_only: false, name: 'ReadMe', role: 'regular_file', context: @community_solution}
-      @files << CodeOcean::File.create!(new_readme_file)
+      # If the first user did not save, the ReadMe file already exists
+      @files << CodeOcean::File.find_or_create_by!(new_readme_file)
     end
     all_visible_files = last_contribution.files.select(&:visible)
     # Add the ReadMe file first
