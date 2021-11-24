@@ -34,7 +34,7 @@ class CommunitySolutionsController < ApplicationController
     end
     all_visible_files = last_contribution.files.select(&:visible)
     # Add the ReadMe file first
-    @files += all_visible_files.select {|f| CodeOcean::File.find_by(id: f.file_id).context_type == 'CommunitySolution' }
+    @files += all_visible_files.select {|f| CodeOcean::File.find_by(id: f.file_id)&.context_type == 'CommunitySolution' }
     # Then, add all remaining files and sort them by name with extension
     @files += (all_visible_files - @files).sort_by(&:name_with_extension)
 
