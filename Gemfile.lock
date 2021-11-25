@@ -304,7 +304,7 @@ GEM
       ast (~> 2.4.1)
     path_expander (1.1.0)
     pg (1.2.3)
-    prometheus_exporter (0.8.1)
+    prometheus_exporter (1.0.0)
       webrick
     pry (0.13.1)
       coderay (~> 1.1)
