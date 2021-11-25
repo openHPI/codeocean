@@ -36,6 +36,7 @@ class ExecutionEnvironment < ApplicationRecord
   after_destroy :delete_runner_environment
   after_save :working_docker_image?, if: :validate_docker_image?
 
+  after_update_commit :sync_runner_environment, unless: proc {|_| Rails.env.test? }
   after_rollback :delete_runner_environment, on: :create
   after_rollback :sync_runner_environment, on: %i[update destroy]
 
