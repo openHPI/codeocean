@@ -254,7 +254,7 @@ javascript:
   function deleteComment(commentId, editor, file_id, callback) {
     var jqxhr = $.ajax({
       type: 'DELETE',
-      url: Routes.comments_path(commentId)
+      url: Routes.comment_path(commentId)
     });
     jqxhr.done(function () {
       setAnnotations(editor, file_id);
@@ -266,7 +266,7 @@ javascript:
   function updateComment(commentId, text, editor, file_id, callback) {
     var jqxhr = $.ajax({
       type: 'PATCH',
-      url: Routes.comments_path(commentId),
+      url: Routes.comment_path(commentId),
       data: {
         comment: {
           text: text
