@@ -179,6 +179,7 @@ class ExecutionEnvironmentsController < ApplicationController
       success << true
     rescue Runner::Error => e
       Rails.logger.debug { "Runner error while getting all execution environments: #{e.message}" }
+      Sentry.capture_exception(e)
       environments_to_remove = []
       success << false
     end
@@ -189,6 +190,7 @@ class ExecutionEnvironmentsController < ApplicationController
       Runner.strategy_class.sync_environment(execution_environment)
     rescue Runner::Error => e
       Rails.logger.debug { "Runner error while synchronizing execution environment with id #{execution_environment.id}: #{e.message}" }
+      Sentry.capture_exception(e)
       false
     end
 
@@ -198,6 +200,7 @@ class ExecutionEnvironmentsController < ApplicationController
       Runner.strategy_class.remove_environment(execution_environment)
     rescue Runner::Error => e
       Rails.logger.debug { "Runner error while deleting execution environment with id #{execution_environment.id}: #{e.message}" }
+      Sentry.capture_exception(e)
       false
     end
 
