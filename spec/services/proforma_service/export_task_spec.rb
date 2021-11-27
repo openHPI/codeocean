@@ -37,5 +37,6 @@ describe ProformaService::ExportTask do
       export_task
       expect(exporter).to have_received(:perform)
     end
+    # TODO more tests?!
   end
 end

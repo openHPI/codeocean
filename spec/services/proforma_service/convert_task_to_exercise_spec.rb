@@ -34,11 +34,15 @@ describe ProformaService::ConvertTaskToExercise do
       Proforma::Task.new(
         title: 'title',
         description: 'description',
-        internal_description: 'internal_description',
-        proglang: {name: 'proglang-name', version: 'proglang-version'},
+        # proglang: {name: 'proglang-name', version: 'proglang-version'},
         uuid: 'uuid',
         parent_uuid: 'parent_uuid',
         language: 'language',
+        meta_data: {
+          openHPI: {
+            instructions: 'instructions',
+          },
+        },
         model_solutions: model_solutions,
         files: files,
         tests: tests
@@ -54,7 +58,7 @@ describe ProformaService::ConvertTaskToExercise do
       expect(convert_to_exercise_service).to have_attributes(
         title: 'title',
         description: 'description',
-        instructions: 'internal_description',
+        instructions: 'instructions',
         execution_environment: be_blank,
         uuid: be_blank,
         unpublished: true,
@@ -226,14 +230,15 @@ describe ProformaService::ConvertTaskToExercise do
           id: 'test-id',
           title: 'title',
           description: 'description',
-          internal_description: 'internal_description',
           test_type: 'test_type',
           files: test_files,
-          meta_data: [
-            {namespace: 'openHPI', key: 'feedback-message', value: 'feedback-message'},
-            {namespace: 'openHPI', key: 'testing-framework', value: 'testing-framework'},
-            {namespace: 'openHPI', key: 'testing-framework-version', value: 'testing-framework-version'},
-          ]
+          meta_data: {
+            openHPI: {
+              'feedback-message': 'feedback-message',
+              'testing-framework': 'testing-framework',
+              'testing-framework-version': 'testing-framework-version',
+            },
+          }
         )
       end
 
@@ -272,11 +277,13 @@ describe ProformaService::ConvertTaskToExercise do
         let(:test2) do
           Proforma::Test.new(
             files: test_files2,
-            meta_data: [
-              {namespace: 'openHPI', key: 'feedback-message', value: 'feedback-message'},
-              {namespace: 'openHPI', key: 'testing-framework', value: 'testing-framework'},
-              {namespace: 'openHPI', key: 'testing-framework-version', value: 'testing-framework-version'},
-            ]
+            meta_data: {
+              openHPI: {
+                'feedback-message': 'feedback-message',
+                'testing-framework': 'testing-framework',
+                'testing-framework-version': 'testing-framework-version',
+              },
+            }
           )
         end
         let(:test_files2) { [test_file2] }
@@ -317,7 +324,7 @@ describe ProformaService::ConvertTaskToExercise do
           id: exercise.id,
           title: task.title,
           description: task.description,
-          instructions: task.internal_description,
+          instructions: task.meta_data[:openHPI][:instructions],
           execution_environment: exercise.execution_environment,
           uuid: exercise.uuid,
           user: exercise.user,
@@ -352,11 +359,13 @@ describe ProformaService::ConvertTaskToExercise do
             internal_description: 'regular_file',
             test_type: 'test_type',
             files: test_files,
-            meta_data: [
-              {namespace: 'openHPI', key: 'feedback-message', value: 'feedback-message'},
-              {namespace: 'openHPI', key: 'testing-framework', value: 'testing-framework'},
-              {namespace: 'openHPI', key: 'testing-framework-version', value: 'testing-framework-version'},
-            ]
+            meta_data: {
+              openHPI: {
+                'feedback-message': 'feedback-message',
+                'testing-framework': 'testing-framework',
+                'testing-framework-version': 'testing-framework-version',
+              },
+            }
           )
         end
         let(:test_files) { [test_file] }

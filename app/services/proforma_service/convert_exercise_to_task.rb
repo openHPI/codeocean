@@ -22,12 +22,19 @@ module ProformaService
         {
           title: @exercise.title,
           description: @exercise.description,
-          internal_description: @exercise.instructions,
+          internal_description: nil,
+          # ?: @exercise.instructions, store in meta-data
+          # proglang: proglang, where can we get this information?
           files: task_files,
           tests: tests,
           uuid: uuid,
           language: DEFAULT_LANGUAGE,
           model_solutions: model_solutions,
+          meta_data: {
+            openHPI: {
+              instructions: @exercise.instructions,
+            },
+          },
         }.compact
       )
     end
@@ -69,8 +76,10 @@ module ProformaService
     end
 
     def test_meta_data(file)
-      [{namespace: 'openHPI', key: 'entry-point', value: file.filepath},
-       {namespace: 'openHPI', key: 'feedback-message', value: file.feedback_message}]
+      {openHPI: {
+        'entry-point': file.filepath,
+        'feedback-message': file.feedback_message,
+      }}
     end
 
     def test_file(file)

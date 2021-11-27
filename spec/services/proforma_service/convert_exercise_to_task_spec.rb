@@ -30,13 +30,18 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       expect(task).to have_attributes(
         title: exercise.title,
         description: exercise.description,
-        internal_description: exercise.instructions,
+        # internal_description: exercise.instructions,
         # proglang: {
         #   name: exercise.execution_environment.language,
         #   version: exercise.execution_environment.version
         # },
         uuid: exercise.uuid,
         language: described_class::DEFAULT_LANGUAGE,
+        meta_data: {
+          openHPI: {
+            instructions: exercise.instructions,
+          },
+        },
         # parent_uuid: exercise.clone_relations.first&.origin&.uuid,
         files: [],
         tests: [],
@@ -161,8 +166,12 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           id: test_file.id,
           title: test_file.name,
           files: have(1).item,
-          meta_data: [{key: 'entry-point', namespace: 'openHPI', value: test_file.filepath},
-                      {key: 'feedback-message', namespace: 'openHPI', value: 'feedback_message'}]
+          meta_data: {
+            openHPI: {
+              'entry-point': test_file.filepath,
+              'feedback-message': 'feedback_message',
+            },
+          }
         )
       end
 
