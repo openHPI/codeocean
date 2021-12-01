@@ -127,6 +127,9 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
     Runner.destroy(@allocation_id) if response.status == 400
     self.class.handle_error response
+  rescue Faraday::ConnectionFailed
+    # TODO: Remove fix after the following issue is resolved: https://github.com/openHPI/poseidon/issues/54
+    raise Runner::Error::RunnerNotFound.new
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   ensure
