@@ -38,7 +38,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
         uuid: exercise.uuid,
         language: described_class::DEFAULT_LANGUAGE,
         meta_data: {
-          openHPI: {
+          CodeOcean: {
             instructions: exercise.instructions,
           },
         },
@@ -167,7 +167,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           title: test_file.name,
           files: have(1).item,
           meta_data: {
-            openHPI: {
+            CodeOcean: {
               'entry-point': test_file.filepath,
               'feedback-message': 'feedback_message',
             },

@@ -31,7 +31,7 @@ module ProformaService
           language: DEFAULT_LANGUAGE,
           model_solutions: model_solutions,
           meta_data: {
-            openHPI: {
+            CodeOcean: {
               instructions: @exercise.instructions,
             },
           },
@@ -76,10 +76,12 @@ module ProformaService
     end
 
     def test_meta_data(file)
-      {openHPI: {
-        'entry-point': file.filepath,
-        'feedback-message': file.feedback_message,
-      }}
+      {
+        CodeOcean: {
+          'entry-point': file.filepath,
+          'feedback-message': file.feedback_message,
+        },
+      }
     end
 
     def test_file(file)

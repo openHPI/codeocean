@@ -21,7 +21,7 @@ module ProformaService
         user: @user,
         title: @task.title,
         description: @task.description,
-        instructions: @task.meta_data&.dig(:openHPI)&.dig(:instructions),
+        instructions: @task.meta_data&.dig(:CodeOcean)&.dig(:instructions),
         files: files
       )
     end
@@ -34,7 +34,7 @@ module ProformaService
       @task.tests.map do |test_object|
         task_files.delete(test_object.files.first.id).tap do |file|
           file.weight = 1.0
-          file.feedback_message = test_object.meta_data[:openHPI]&.dig(:'feedback-message')
+          file.feedback_message = test_object.meta_data[:CodeOcean]&.dig(:'feedback-message')
         end
       end
     end

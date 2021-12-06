@@ -39,7 +39,7 @@ describe ProformaService::ConvertTaskToExercise do
         parent_uuid: 'parent_uuid',
         language: 'language',
         meta_data: {
-          openHPI: {
+          CodeOcean: {
             instructions: 'instructions',
           },
         },
@@ -233,7 +233,7 @@ describe ProformaService::ConvertTaskToExercise do
           test_type: 'test_type',
           files: test_files,
           meta_data: {
-            openHPI: {
+            CodeOcean: {
               'feedback-message': 'feedback-message',
               'testing-framework': 'testing-framework',
               'testing-framework-version': 'testing-framework-version',
@@ -278,7 +278,7 @@ describe ProformaService::ConvertTaskToExercise do
           Proforma::Test.new(
             files: test_files2,
             meta_data: {
-              openHPI: {
+              CodeOcean: {
                 'feedback-message': 'feedback-message',
                 'testing-framework': 'testing-framework',
                 'testing-framework-version': 'testing-framework-version',
@@ -324,7 +324,7 @@ describe ProformaService::ConvertTaskToExercise do
           id: exercise.id,
           title: task.title,
           description: task.description,
-          instructions: task.meta_data[:openHPI][:instructions],
+          instructions: task.meta_data[:CodeOcean][:instructions],
           execution_environment: exercise.execution_environment,
           uuid: exercise.uuid,
           user: exercise.user,
@@ -360,7 +360,7 @@ describe ProformaService::ConvertTaskToExercise do
             test_type: 'test_type',
             files: test_files,
             meta_data: {
-              openHPI: {
+              CodeOcean: {
                 'feedback-message': 'feedback-message',
                 'testing-framework': 'testing-framework',
                 'testing-framework-version': 'testing-framework-version',

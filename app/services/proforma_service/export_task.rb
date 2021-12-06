@@ -9,7 +9,7 @@ module ProformaService
 
     def execute
       @task = ConvertExerciseToTask.call(exercise: @exercise)
-      namespaces = [{prefix: 'openHPI', uri: 'open.hpi.de'}]
+      namespaces = [{prefix: 'CodeOcean', uri: 'codeocean.openhpi.de'}]
       exporter = Proforma::Exporter.new(task: @task, custom_namespaces: namespaces)
       exporter.perform
     end
