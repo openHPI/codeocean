@@ -259,7 +259,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
           # TODO: Super dirty hack to redirect test output to stderr
           # This is only required for Python and the unittest module but must not be used with PyLint
           @stream = 'stderr'
-        when /\*\*\*\*\*\*\*\*\*\*\*\*\* Module/
+        when /\*\*\*\*\*\*\*\*\*\*\*\*\* Module/, / Your code has been rated at/
           # Identification of PyLint output, change stream back to stdout and return event
           @stream = 'stdout'
           {'type' => @stream, 'data' => event_data}
