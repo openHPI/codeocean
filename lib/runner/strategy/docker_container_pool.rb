@@ -166,7 +166,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     url = "#{config[:url]}/docker_container_pool/quantities"
     response = Faraday.get(url)
     pool_size = JSON.parse(response.body)
-    pool_size.transform_keys(&:to_i)
+    pool_size.deep_symbolize_keys
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   rescue JSON::ParserError => e

@@ -176,7 +176,23 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def self.pool_size
-    {}
+    url = "#{config[:url]}/statistics/execution-environments"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Getting statistics from #{url}" }
+    response = http_connection.get url
+    case response.status
+      when 200
+        response_body = parse response
+        response_body
+      else
+        handle_error response
+    end
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
+  rescue JSON::ParserError => e
+    # Poseidon should not send invalid json
+    raise Runner::Error::UnexpectedResponse.new("Error parsing response from Poseidon: #{e.message}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished getting statistics" }
   end
 
   def self.websocket_header

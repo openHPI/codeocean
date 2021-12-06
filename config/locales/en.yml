@@ -241,10 +241,12 @@ en:
   admin:
     dashboard:
       show:
+        release: Release
         current: Current Availability
-        history: Availability History
+        history: Usage History
         inactive: No runner management is currently enabled.
-        quantity: Available Containers
+        idleRunners: Idle Runners
+        usedRunners: Reserved Runners
   application:
     not_authorized: You are not authorized to perform this action.
     welcome:
