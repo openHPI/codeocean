@@ -80,7 +80,7 @@ class ExecutionEnvironment < ApplicationRecord
 
   def validate_docker_image?
     # We only validate the code execution with the provided image if there is at least one container to test with.
-    pool_size.positive? && docker_image.present? && !Rails.env.test?
+    pool_size.positive? && docker_image.present? && !Rails.env.test? && Runner.management_active?
   end
 
   def working_docker_image?
@@ -105,7 +105,7 @@ class ExecutionEnvironment < ApplicationRecord
   end
 
   def delete_runner_environment
-    Runner.strategy_class.remove_environment(self)
+    Runner.strategy_class.remove_environment(self) if Runner.management_active?
   rescue Runner::Error => e
     unless errors.include?(:docker_image)
       errors.add(:docker_image, "error: #{e}")
@@ -115,7 +115,7 @@ class ExecutionEnvironment < ApplicationRecord
 
   def sync_runner_environment
     previous_saved_environment = self.class.find(id)
-    Runner.strategy_class.sync_environment(previous_saved_environment)
+    Runner.strategy_class.sync_environment(previous_saved_environment) if Runner.management_active?
   rescue Runner::Error => e
     unless errors.include?(:docker_image)
       errors.add(:docker_image, "error: #{e}")
