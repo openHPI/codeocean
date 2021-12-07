@@ -241,10 +241,12 @@ de:
   admin:
     dashboard:
       show:
+        release: Release
         current: Aktuelle Verfügbarkeit
-        history: Verfügbarkeitsverlauf
+        history: Nutzungsverlauf
         inactive: Es ist kein Runner Management aktiv.
-        quantity: Verfügbare Container
+        idleRunners: Freie Runner
+        usedRunners: Reservierte Runner
   application:
     not_authorized: Sie Sind nicht berechtigt, diese Aktion auszuführen.
     welcome:
