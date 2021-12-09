@@ -11,7 +11,7 @@ module Admin
         Runner.strategy_class.pool_size
       rescue Runner::Error => e
         Rails.logger.debug { "Runner error while fetching current pool size: #{e.message}" }
-        []
+        {}
       end
 
       ExecutionEnvironment.order(:id).select(:id, :pool_size).map do |execution_environment|
