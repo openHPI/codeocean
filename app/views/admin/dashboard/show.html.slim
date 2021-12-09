@@ -20,7 +20,7 @@ div.mb-4
     = Runner.strategy_class.name.demodulize
     =< t("admin.dashboard.show.release")
     | :
-    pre = Runner.strategy_class.release
+    pre = Admin::DashboardHelper.runner_management_release
 
 h2 Docker
 

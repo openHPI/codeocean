@@ -29,5 +29,11 @@ module Admin
         template.merge(actual)
       end
     end
+
+    def self.runner_management_release
+      Runner.strategy_class.release
+    rescue Runner::Error => e
+      e.inspect
+    end
   end
 end
