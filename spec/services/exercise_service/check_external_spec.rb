@@ -42,25 +42,25 @@ describe ExerciseService::CheckExternal do
     end
 
     context 'when response contains a JSON with expected keys' do
-      let(:response) { {exercise_found: true, update_right: true}.to_json }
+      let(:response) { {task_found: true, update_right: true}.to_json }
 
       it 'returns the correct hash' do
-        expect(check_external_service).to eql(error: false, message: I18n.t('exercises.export_codeharbor.check.exercise_found'), exercise_found: true, update_right: true)
+        expect(check_external_service).to eql(error: false, message: I18n.t('exercises.export_codeharbor.check.task_found'), task_found: true, update_right: true)
       end
 
-      context 'with exercise_found: false and no update_right' do
-        let(:response) { {exercise_found: false}.to_json }
+      context 'with task_found: false and no update_right' do
+        let(:response) { {task_found: false}.to_json }
 
         it 'returns the correct hash' do
-          expect(check_external_service).to eql(error: false, message: I18n.t('exercises.export_codeharbor.check.no_exercise'), exercise_found: false)
+          expect(check_external_service).to eql(error: false, message: I18n.t('exercises.export_codeharbor.check.no_task'), task_found: false)
         end
       end
 
-      context 'with exercise_found: true and update_right: false' do
-        let(:response) { {exercise_found: true, update_right: false}.to_json }
+      context 'with task_found: true and update_right: false' do
+        let(:response) { {task_found: true, update_right: false}.to_json }
 
         it 'returns the correct hash' do
-          expect(check_external_service).to eql(error: false, message: I18n.t('exercises.export_codeharbor.check.exercise_found_no_right'), exercise_found: true, update_right: false)
+          expect(check_external_service).to eql(error: false, message: I18n.t('exercises.export_codeharbor.check.task_found_no_right'), task_found: true, update_right: false)
         end
       end
     end
