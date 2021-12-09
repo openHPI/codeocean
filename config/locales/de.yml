@@ -303,6 +303,10 @@ de:
         not_synced_to_runner_management: Die Ausführungsumgebung wurde erstellt, aber aufgrund eines Fehlers nicht zum Runnermanagement synchronisiert.
     index:
       shell: Shell
+      synchronize:
+        button: Synchronisieren
+        success: Die Ausführungsumgebung wurde erfolgreich synchronisiert.
+        failure: "Beim Synchronisieren der Ausführungsumgebung ist folgender Fehler aufgetreten: %{error}"
       synchronize_all:
         button: Alle synchronisieren
         success: Alle Ausführungsumgebungen wurden erfolgreich synchronisiert.

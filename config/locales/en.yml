@@ -303,6 +303,10 @@ en:
         not_synced_to_runner_management: The execution environment was created but not synced to the runner management due to an error.
     index:
       shell: Shell
+      synchronize:
+        button: Synchronize
+        success: The execution environemnt was synchronized successfully.
+        failure: "The execution environment could not be synchronised due to the following error: %{error}"
       synchronize_all:
         button: Synchronize all
         success: All execution environemnts were synchronized successfully.

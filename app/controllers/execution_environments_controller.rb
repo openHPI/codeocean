@@ -4,7 +4,7 @@ class ExecutionEnvironmentsController < ApplicationController
   include CommonBehavior
 
   before_action :set_docker_images, only: %i[create edit new update]
-  before_action :set_execution_environment, only: MEMBER_ACTIONS + %i[execute_command shell statistics]
+  before_action :set_execution_environment, only: MEMBER_ACTIONS + %i[execute_command shell statistics sync_to_runner_management]
   before_action :set_testing_framework_adapters, only: %i[create edit new update]
 
   def authorize!
@@ -164,6 +164,20 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def update
     update_and_respond(object: @execution_environment, params: execution_environment_params)
+  end
+
+  def sync_to_runner_management
+    return unless Runner.management_active?
+
+    begin
+      Runner.strategy_class.sync_environment(@execution_environment)
+    rescue Runner::Error => e
+      Rails.logger.debug { "Runner error while synchronizing execution environment with id #{@execution_environment.id}: #{e.message}" }
+      Sentry.capture_exception(e)
+      redirect_to @execution_environment, alert: t('execution_environments.index.synchronize.failure', error: e.message)
+    else
+      redirect_to @execution_environment, notice: t('execution_environments.index.synchronize.success')
+    end
   end
 
   def sync_all_to_runner_management
