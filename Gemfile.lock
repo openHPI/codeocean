@@ -15,14 +15,16 @@ GIT
       rack (>= 1.5.0)
       websocket (>= 1.1.0)
 
-PATH
-  remote: ../proforma
+GIT
+  remote: https://github.com/openHPI/proforma.git
+  revision: ff25d4994774af3ad6f55d94cd5192ea3d4ecba2
+  tag: v0.7
   specs:
     proforma (0.7)
-      activemodel (>= 5.2.3, < 6.2.0)
-      activesupport (>= 5.2.3, < 6.2.0)
-      nokogiri (>= 1.10.2, < 1.13.0)
-      rubyzip (>= 1.2.2, < 2.4.0)
+      activemodel (>= 5.2.3, < 7.0.0)
+      activesupport (>= 5.2.3, < 7.0.0)
+      nokogiri (>= 1.10.2, < 2.0.0)
+      rubyzip (>= 1.2.2, < 3.0.0)
 
 GEM
   remote: https://rubygems.org/
