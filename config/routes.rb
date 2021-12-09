@@ -66,6 +66,7 @@ Rails.application.routes.draw do
       get :shell
       post 'shell', as: :execute_command, action: :execute_command
       get :statistics
+      post :sync_to_runner_management
     end
 
     post :sync_all_to_runner_management, on: :collection
