@@ -305,11 +305,11 @@ en:
       shell: Shell
       synchronize:
         button: Synchronize
-        success: The execution environemnt was synchronized successfully.
+        success: The execution environment was synchronized successfully.
         failure: "The execution environment could not be synchronised due to the following error: %{error}"
       synchronize_all:
         button: Synchronize all
-        success: All execution environemnts were synchronized successfully.
+        success: All execution environments were synchronized successfully.
         failure: At least one execution environment could not be synchronised due to an error.
     shell:
       command: Command
