@@ -29,7 +29,7 @@ class FileTree
     # Our tree needs a root node, but we won't display it.
     @root = Tree::TreeNode.new('ROOT')
 
-    files.uniq(&:name_with_extension).each do |file|
+    files.uniq(&:filepath).each do |file|
       parent = @root
       (file.path || '').split('/').each do |segment|
         node = parent.children.detect {|child| child.name == segment } || parent.add(Tree::TreeNode.new(segment))
