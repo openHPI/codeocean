@@ -99,7 +99,7 @@ module CodeOcean
     private :incomplete_descendent?
 
     def name_with_extension
-      name + (file_type.file_extension || '')
+      name.to_s + (file_type&.file_extension || '')
     end
 
     def set_ancestor_values

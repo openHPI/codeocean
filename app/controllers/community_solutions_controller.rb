@@ -36,10 +36,10 @@ class CommunitySolutionsController < ApplicationController
     # Add the ReadMe file first
     @files += all_visible_files.select {|f| CodeOcean::File.find_by(id: f.file_id)&.context_type == 'CommunitySolution' }
     # Then, add all remaining files and sort them by name with extension
-    @files += (all_visible_files - @files).sort_by(&:name_with_extension)
+    @files += (all_visible_files - @files).sort_by(&:filepath)
 
     # Own Submission as a reference
-    @own_files = @submission.collect_files.select(&:visible).sort_by(&:name_with_extension)
+    @own_files = @submission.collect_files.select(&:visible).sort_by(&:filepath)
     # Remove the file_id from the second graph. Otherwise, the comparison and file-tree selection does not work as expected
     @own_files.map do |file|
       file.file_id = nil

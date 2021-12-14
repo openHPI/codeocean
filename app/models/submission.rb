@@ -160,7 +160,7 @@ class Submission < ApplicationRecord
   # @raise [Runner::Error] if the code could not be run due to a failure with the runner.
   #                        See the specific type and message for more details.
   def run(file, &block)
-    run_command = command_for execution_environment.run_command, file.name_with_extension
+    run_command = command_for execution_environment.run_command, file.filepath
     durations = {}
     prepared_runner do |runner, waiting_duration|
       durations[:execution_duration] = runner.attach_to_execution(run_command, &block)
@@ -185,7 +185,7 @@ class Submission < ApplicationRecord
   end
 
   def run_test_file(file, runner, waiting_duration)
-    test_command = command_for execution_environment.test_command, file.name_with_extension
+    test_command = command_for execution_environment.test_command, file.filepath
     result = {file_role: file.role, waiting_for_container_time: waiting_duration}
     output = runner.execute_command(test_command, raise_exception: false)
     result.merge(output)
@@ -222,7 +222,7 @@ class Submission < ApplicationRecord
   end
 
   def command_for(template, file)
-    filepath = collect_files.find {|f| f.name_with_extension == file }.filepath
+    filepath = collect_files.find {|f| f.filepath == file }.filepath
     template % command_substitutions(filepath)
   end
 
@@ -255,7 +255,7 @@ class Submission < ApplicationRecord
       waiting_for_container_time: output[:waiting_for_container_time]
     )
 
-    filename = file.name_with_extension
+    filename = file.filepath
 
     if file.teacher_defined_linter?
       LinterCheckRun.create_from(testrun, assessment)

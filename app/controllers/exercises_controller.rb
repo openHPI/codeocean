@@ -321,7 +321,7 @@ raise: false
     @search = Search.new
     @search.exercise = @exercise
     @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
-    @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:name_with_extension)
+    @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:filepath)
     @paths = collect_paths(@files)
 
     @user_id = if current_user.respond_to? :external_id
