@@ -193,7 +193,7 @@ en:
       external_user:
         one: External User
         other: External Users
-      file:
+      code_ocean/file:
         one: File
         other: Files
       file_template:
