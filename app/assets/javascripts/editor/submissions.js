@@ -196,9 +196,9 @@ CodeOceanEditorSubmissions = {
     const button = $(event.target) || $('#submit');
     this.createSubmission(button, null, function (response) {
       if (response.redirect) {
+        this.unloadAutoSave();
         this.editors = [];
         Turbolinks.clearCache();
-        clearTimeout(this.autosaveTimer);
         Turbolinks.visit(response.redirect);
       } else if (response.status === 'container_depleted') {
           this.showContainerDepletedMessage();
