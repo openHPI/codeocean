@@ -291,7 +291,8 @@ class Submission < ApplicationRecord
         score += output[:score] * output[:weight] unless output.nil?
       end
     end
-    update(score: score)
+    # Prevent floating point precision issues by converting to BigDecimal, e.g., for `0.28 * 25`
+    update(score: score.to_d)
     if normalized_score.to_d == 1.0.to_d
       Thread.new do
         RequestForComment.where(exercise_id: exercise_id, user_id: user_id, user_type: user_type).find_each do |rfc|
