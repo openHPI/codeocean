@@ -77,7 +77,7 @@ jobs:
         run: bundle exec rspec --color --format progress --require spec_helper --require rails_helper
 
       - name: Send coverage to CodeClimate
-        uses: paambaati/codeclimate-action@v2.7.4
+        uses: paambaati/codeclimate-action@v3
         continue-on-error: true
         if: ${{ success() || failure() }}
         env:
