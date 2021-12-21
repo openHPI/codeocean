@@ -631,6 +631,7 @@ var CodeOceanEditor = {
 
         const frame = $('div.frame[data-filename="' + file + '"]');
         this.showFrame(frame);
+        this.toggleButtonStates();
 
         const file_id = frame.find('.editor').data('file-id');
         this.setActiveFile(frame.data('filename'), file_id);
