@@ -40,9 +40,9 @@ module ProformaService
     end
 
     def task_files
-      @task_files ||= @task.all_files.reject {|file| file.id == 'ms-placeholder-file' }.map do |task_file|
+      @task_files ||= @task.all_files.reject {|file| file.id == 'ms-placeholder-file' }.to_h do |task_file|
         [task_file.id, codeocean_file_from_task_file(task_file)]
-      end.to_h
+      end
     end
 
     def codeocean_file_from_task_file(file)

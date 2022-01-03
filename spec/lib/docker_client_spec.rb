@@ -7,14 +7,14 @@ WORKSPACE_PATH = Rails.root.join('tmp', 'files', Rails.env, 'code_ocean_test')
 
 describe DockerClient do
   let(:command) { 'whoami' }
-  let(:docker_client) { described_class.new(execution_environment: FactoryBot.build(:java), user: FactoryBot.build(:admin)) }
-  let(:execution_environment) { FactoryBot.build(:java) }
+  let(:docker_client) { described_class.new(execution_environment: build(:java), user: build(:admin)) }
+  let(:execution_environment) { build(:java) }
   let(:image) { double }
-  let(:submission) { FactoryBot.create(:submission) }
+  let(:submission) { create(:submission) }
   let(:workspace_path) { WORKSPACE_PATH }
 
   before do
-    docker_image = Docker::Image.new(Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex, 'RepoTags' => [FactoryBot.attributes_for(:java)[:docker_image]])
+    docker_image = Docker::Image.new(Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex, 'RepoTags' => [attributes_for(:java)[:docker_image]])
     allow(described_class).to receive(:find_image_by_tag).and_return(docker_image)
     described_class.initialize_environment
     allow(described_class).to receive(:container_creation_options).and_wrap_original do |original_method, *args, &block|
@@ -177,7 +177,7 @@ describe DockerClient do
 
   describe '#create_workspace_file' do
     let(:container) { Docker::Container.send(:new, Docker::Connection.new('http://example.org', {}), 'id' => SecureRandom.hex) }
-    let(:file) { FactoryBot.build(:file, content: 'puts 42') }
+    let(:file) { build(:file, content: 'puts 42') }
     let(:file_path) { File.join(workspace_path, file.name_with_extension) }
 
     after { File.delete(file_path) }

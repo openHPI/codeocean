@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe ErrorTemplateAttributesController do
-  let!(:error_template_attribute) { FactoryBot.create(:error_template_attribute) }
-  let(:user) { FactoryBot.create(:admin) }
+  let!(:error_template_attribute) { create(:error_template_attribute) }
+  let(:user) { create(:admin) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
@@ -35,7 +35,7 @@ describe ErrorTemplateAttributesController do
   end
 
   it 'updates error_template_attribute' do
-    patch :update, params: {id: error_template_attribute, error_template_attribute: FactoryBot.attributes_for(:error_template_attribute)}
+    patch :update, params: {id: error_template_attribute, error_template_attribute: attributes_for(:error_template_attribute)}
     expect(response).to redirect_to(error_template_attribute_path(assigns(:error_template_attribute)))
   end
 

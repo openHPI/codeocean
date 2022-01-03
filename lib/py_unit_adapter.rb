@@ -32,6 +32,6 @@ class PyUnitAdapter < TestingFrameworkAdapter
       Sentry.capture_message({stderr: output[:stderr], regex: ASSERTION_ERROR_REGEXP}.to_json)
       assertion_error_matches = []
     end
-    {count: count, failed: failed + errors, error_messages: assertion_error_matches.flatten.reject(&:blank?)}
+    {count: count, failed: failed + errors, error_messages: assertion_error_matches.flatten.compact_blank}
   end
 end

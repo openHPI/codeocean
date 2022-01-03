@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe StatisticsController do
-  let(:user) { FactoryBot.create(:admin) }
+  let(:user) { create(:admin) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 

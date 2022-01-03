@@ -41,7 +41,6 @@ module CodeOcean
 
     validates :feedback_message, if: :teacher_defined_assessment?, presence: true
     validates :feedback_message, absence: true, unless: :teacher_defined_assessment?
-    validates :file_type_id, presence: true
     validates :hashed_content, if: :content_present?, presence: true
     validates :hidden, boolean_presence: true
     validates :name, presence: true

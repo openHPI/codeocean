@@ -11,7 +11,7 @@ describe CodeharborLink do
   describe '#to_s' do
     subject { codeharbor_link.to_s }
 
-    let(:codeharbor_link) { FactoryBot.create(:codeharbor_link) }
+    let(:codeharbor_link) { create(:codeharbor_link) }
 
     it { is_expected.to eql codeharbor_link.id.to_s }
   end

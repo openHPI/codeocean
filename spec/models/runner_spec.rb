@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 describe Runner do
-  let(:runner_id) { FactoryBot.attributes_for(:runner)[:runner_id] }
+  let(:runner_id) { attributes_for(:runner)[:runner_id] }
   let(:strategy_class) { described_class.strategy_class }
   let(:strategy) { instance_double(strategy_class) }
 
   describe 'attribute validation' do
-    let(:runner) { FactoryBot.create :runner }
+    let(:runner) { create :runner }
 
     it 'validates the presence of the runner id' do
       described_class.skip_callback(:validation, :before, :request_id)
@@ -162,8 +162,8 @@ describe Runner do
   end
 
   describe 'creation' do
-    let(:user) { FactoryBot.create :external_user }
-    let(:execution_environment) { FactoryBot.create :ruby }
+    let(:user) { create :external_user }
+    let(:execution_environment) { create :ruby }
     let(:create_action) { -> { described_class.create(user: user, execution_environment: execution_environment) } }
 
     it 'requests a runner id from the runner management' do
@@ -187,12 +187,12 @@ describe Runner do
     it 'does not call the runner management again while a runner id is set' do
       expect(strategy_class).to receive(:request_from_management).and_return(runner_id).once
       runner = create_action.call
-      runner.update(user: FactoryBot.create(:external_user))
+      runner.update(user: create(:external_user))
     end
   end
 
   describe '#request_new_id' do
-    let(:runner) { FactoryBot.create :runner }
+    let(:runner) { create :runner }
 
     context 'when the environment is available in the runner management' do
       it 'requests the runner management' do
@@ -240,8 +240,8 @@ describe Runner do
   end
 
   describe '::for' do
-    let(:user) { FactoryBot.create :external_user }
-    let(:exercise) { FactoryBot.create :fibonacci }
+    let(:user) { create :external_user }
+    let(:exercise) { create :fibonacci }
 
     context 'when the runner could not be saved' do
       before { allow(strategy_class).to receive(:request_from_management).and_return(nil) }
@@ -252,7 +252,7 @@ describe Runner do
     end
 
     context 'when a runner already exists' do
-      let!(:existing_runner) { FactoryBot.create(:runner, user: user, execution_environment: exercise.execution_environment) }
+      let!(:existing_runner) { create(:runner, user: user, execution_environment: exercise.execution_environment) }
 
       it 'returns the existing runner' do
         new_runner = described_class.for(user, exercise.execution_environment)

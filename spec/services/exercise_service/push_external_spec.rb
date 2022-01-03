@@ -6,8 +6,8 @@ RSpec.describe ExerciseService::PushExternal do
   describe '.new' do
     subject(:push_external) { described_class.new(zip: zip, codeharbor_link: codeharbor_link) }
 
-    let(:zip) { ProformaService::ExportTask.call(exercise: FactoryBot.build(:dummy)) }
-    let(:codeharbor_link) { FactoryBot.build(:codeharbor_link) }
+    let(:zip) { ProformaService::ExportTask.call(exercise: build(:dummy)) }
+    let(:codeharbor_link) { build(:codeharbor_link) }
 
     it 'assigns zip' do
       expect(push_external.instance_variable_get(:@zip)).to be zip
@@ -21,8 +21,8 @@ RSpec.describe ExerciseService::PushExternal do
   describe '#execute' do
     subject(:push_external) { described_class.call(zip: zip, codeharbor_link: codeharbor_link) }
 
-    let(:zip) { ProformaService::ExportTask.call(exercise: FactoryBot.build(:dummy)) }
-    let(:codeharbor_link) { FactoryBot.build(:codeharbor_link) }
+    let(:zip) { ProformaService::ExportTask.call(exercise: build(:dummy)) }
+    let(:codeharbor_link) { build(:codeharbor_link) }
     let(:status) { 200 }
     let(:response) { '' }
 

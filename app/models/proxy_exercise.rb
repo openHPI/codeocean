@@ -175,7 +175,7 @@ class ProxyExercise < ApplicationRecord
       return 0.0
     end
     points_ratio = exercise.maximum_score(user) / max_score
-    if points_ratio.to_d == 0.0.to_d
+    if points_ratio.to_d == BigDecimal('0.0')
       Rails.logger.debug { "scoring user #{user.id} for exercise #{exercise.id}: points_ratio=#{points_ratio} score: 0" }
       return 0.0
     elsif points_ratio > 1.0

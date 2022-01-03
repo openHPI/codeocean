@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe EventsController do
-  let(:user) { FactoryBot.create(:admin) }
-  let(:exercise) { FactoryBot.create(:fibonacci) }
+  let(:user) { create(:admin) }
+  let(:exercise) { create(:fibonacci) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 

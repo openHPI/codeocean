@@ -6,7 +6,7 @@ describe 'Authorization' do
   before { allow(Runner.strategy_class).to receive(:available_images).and_return([]) }
 
   context 'when being an admin' do
-    let(:user) { FactoryBot.create(:admin) }
+    let(:user) { create(:admin) }
 
     before { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 
@@ -16,7 +16,7 @@ describe 'Authorization' do
   end
 
   context 'with being an external user' do
-    let(:user) { FactoryBot.create(:external_user) }
+    let(:user) { create(:external_user) }
 
     before { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 
@@ -26,7 +26,7 @@ describe 'Authorization' do
   end
 
   context 'with being a teacher' do
-    let(:user) { FactoryBot.create(:teacher) }
+    let(:user) { create(:teacher) }
 
     before { allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user) }
 

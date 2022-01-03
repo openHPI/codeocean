@@ -13,7 +13,7 @@ describe Lti do
   describe '#build_tool_provider' do
     it 'instantiates a tool provider' do
       expect(IMS::LTI::ToolProvider).to receive(:new)
-      controller.send(:build_tool_provider, consumer: FactoryBot.build(:consumer), parameters: {})
+      controller.send(:build_tool_provider, consumer: build(:consumer), parameters: {})
     end
   end
 
@@ -101,12 +101,12 @@ describe Lti do
   end
 
   describe '#send_score' do
-    let(:consumer) { FactoryBot.create(:consumer) }
+    let(:consumer) { create(:consumer) }
     let(:score) { 0.5 }
-    let(:submission) { FactoryBot.create(:submission) }
+    let(:submission) { create(:submission) }
 
     before do
-      FactoryBot.create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.user_id, exercises_id: submission.exercise_id)
+      create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.user_id, exercises_id: submission.exercise_id)
     end
 
     context 'with an invalid score' do
@@ -168,18 +168,18 @@ describe Lti do
     let(:parameters) { ActionController::Parameters.new({}) }
 
     it 'stores data in the session' do
-      controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user))
-      controller.instance_variable_set(:@exercise, FactoryBot.create(:fibonacci))
+      controller.instance_variable_set(:@current_user, create(:external_user))
+      controller.instance_variable_set(:@exercise, create(:fibonacci))
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
       expect(controller.session).to receive(:[]=).with(:lti_parameters_id, anything)
-      controller.send(:store_lti_session_data, consumer: FactoryBot.build(:consumer), parameters: parameters)
+      controller.send(:store_lti_session_data, consumer: build(:consumer), parameters: parameters)
     end
 
     it 'creates an LtiParameter Object' do
       before_count = LtiParameter.count
-      controller.instance_variable_set(:@current_user, FactoryBot.create(:external_user))
-      controller.instance_variable_set(:@exercise, FactoryBot.create(:fibonacci))
-      controller.send(:store_lti_session_data, consumer: FactoryBot.build(:consumer), parameters: parameters)
+      controller.instance_variable_set(:@current_user, create(:external_user))
+      controller.instance_variable_set(:@exercise, create(:fibonacci))
+      controller.send(:store_lti_session_data, consumer: build(:consumer), parameters: parameters)
       expect(LtiParameter.count).to eq(before_count + 1)
     end
   end

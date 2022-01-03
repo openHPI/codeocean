@@ -59,7 +59,7 @@ raise: false
   end
 
   def collect_paths(files)
-    unique_paths = files.map(&:path).reject(&:blank?).uniq
+    unique_paths = files.map(&:path).compact_blank.uniq
     subpaths = unique_paths.map do |path|
       Array.new((path.split('/').length + 1)) do |n|
         path.split('/').shift(n).join('/')

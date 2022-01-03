@@ -8,9 +8,9 @@ describe ConsumerPolicy do
   %i[create? destroy? edit? index? new? show? update?].each do |action|
     permissions(action) do
       it 'grants access to admins only' do
-        expect(policy).to permit(FactoryBot.build(:admin), Consumer.new)
+        expect(policy).to permit(build(:admin), Consumer.new)
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(FactoryBot.build(factory_name), Consumer.new)
+          expect(policy).not_to permit(build(factory_name), Consumer.new)
         end
       end
     end

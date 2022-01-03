@@ -45,7 +45,6 @@ class Submission < ApplicationRecord
   scope :in_study_group_of, ->(user) { where(study_group_id: user.study_groups) unless user.admin? }
 
   validates :cause, inclusion: {in: CAUSES}
-  validates :exercise_id, presence: true
 
   # after_save :trigger_working_times_action_cable
 
@@ -293,7 +292,7 @@ class Submission < ApplicationRecord
     end
     # Prevent floating point precision issues by converting to BigDecimal, e.g., for `0.28 * 25`
     update(score: score.to_d)
-    if normalized_score.to_d == 1.0.to_d
+    if normalized_score.to_d == BigDecimal('1.0')
       Thread.new do
         RequestForComment.where(exercise_id: exercise_id, user_id: user_id, user_type: user_type).find_each do |rfc|
           rfc.full_score_reached = true

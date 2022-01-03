@@ -11,7 +11,7 @@ describe Admin::DashboardHelper do
 
   describe '#docker_data' do
     before do
-      FactoryBot.create(:ruby)
+      create(:ruby)
       dcp = instance_double 'docker_container_pool'
       allow(Runner).to receive(:strategy_class).and_return dcp
       allow(dcp).to receive(:pool_size).and_return({})

@@ -4,15 +4,15 @@ require 'rails_helper'
 
 describe Exercise do
   let(:exercise) { described_class.create.tap {|exercise| exercise.update(public: nil, token: nil) } }
-  let(:users) { FactoryBot.create_list(:external_user, 10) }
+  let(:users) { create_list(:external_user, 10) }
 
   def create_submissions
-    FactoryBot.create_list(:submission, 10, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
+    create_list(:submission, 10, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
   end
 
   it 'validates the number of main files' do
-    exercise = FactoryBot.create(:dummy)
-    exercise.files += FactoryBot.create_pair(:file)
+    exercise = create(:dummy)
+    exercise.files += create_pair(:file)
     expect(exercise).to receive(:valid_main_file?).and_call_original
     exercise.save
     expect(exercise.errors[:files]).to be_present
@@ -37,36 +37,35 @@ describe Exercise do
   end
 
   it 'validates the presence of a user' do
-    expect(exercise.errors[:user_id]).to be_present
-    expect(exercise.errors[:user_type]).to be_present
+    expect(exercise.errors[:user]).to be_present
   end
 
   context 'when exercise is unpublished' do
-    subject { FactoryBot.build(:dummy, unpublished: true) }
+    subject { build(:dummy, unpublished: true) }
 
     it { is_expected.not_to validate_presence_of(:execution_environment) }
   end
 
   context 'when exercise is not unpublished' do
-    subject { FactoryBot.build(:dummy, unpublished: false) }
+    subject { build(:dummy, unpublished: false) }
 
     it { is_expected.to validate_presence_of(:execution_environment) }
   end
 
   context 'with uuid' do
-    subject { FactoryBot.build(:dummy, uuid: SecureRandom.uuid) }
+    subject { build(:dummy, uuid: SecureRandom.uuid) }
 
     it { is_expected.to validate_uniqueness_of(:uuid).case_insensitive }
   end
 
   context 'without uuid' do
-    subject { FactoryBot.build(:dummy, uuid: nil) }
+    subject { build(:dummy, uuid: nil) }
 
     it { is_expected.not_to validate_uniqueness_of(:uuid) }
   end
 
   describe '#average_percentage' do
-    let(:exercise) { FactoryBot.create(:fibonacci) }
+    let(:exercise) { create(:fibonacci) }
 
     context 'without submissions' do
       it 'returns nil' do
@@ -85,7 +84,7 @@ describe Exercise do
   end
 
   describe '#average_score' do
-    let(:exercise) { FactoryBot.create(:fibonacci) }
+    let(:exercise) { create(:fibonacci) }
 
     context 'without submissions' do
       it 'returns nil' do
@@ -104,7 +103,7 @@ describe Exercise do
   end
 
   describe '#duplicate' do
-    let(:exercise) { FactoryBot.create(:fibonacci) }
+    let(:exercise) { create(:fibonacci) }
 
     after { exercise.duplicate }
 

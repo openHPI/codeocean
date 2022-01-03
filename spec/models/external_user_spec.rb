@@ -6,7 +6,7 @@ describe ExternalUser do
   let(:user) { described_class.create }
 
   it 'validates the presence of a consumer' do
-    expect(user.errors[:consumer_id]).to be_present
+    expect(user.errors[:consumer]).to be_present
   end
 
   it 'validates the presence of an external ID' do
@@ -15,7 +15,7 @@ describe ExternalUser do
 
   describe '#admin?' do
     it 'is false' do
-      expect(FactoryBot.build(:external_user).admin?).to be false
+      expect(build(:external_user).admin?).to be false
     end
   end
 
@@ -33,7 +33,7 @@ describe ExternalUser do
 
   describe '#teacher?' do
     it 'is false' do
-      expect(FactoryBot.build(:external_user).teacher?).to be false
+      expect(build(:external_user).teacher?).to be false
     end
   end
 end

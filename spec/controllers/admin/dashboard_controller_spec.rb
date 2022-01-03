@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe Admin::DashboardController do
-  before { allow(controller).to receive(:current_user).and_return(FactoryBot.build(:admin)) }
+  before { allow(controller).to receive(:current_user).and_return(build(:admin)) }
 
   describe 'GET #show' do
     describe 'with format HTML' do
