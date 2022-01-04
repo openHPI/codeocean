@@ -244,9 +244,7 @@ class SubmissionsController < ApplicationController
     @submission.files.each do |file|
       content += "#{file.filepath}=#{file.file_id}\n"
     end
-    File.open(path, 'w+') do |f|
-      f.write(content)
-    end
+    File.write(path, content)
     path
   end
 

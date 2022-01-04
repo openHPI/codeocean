@@ -315,7 +315,7 @@ container_execution_time: nil}
         @tubesock&.send_data JSON.dump({'cmd' => 'timeout'})
         if @socket
           begin
-            @socket.send('#timeout')
+            @socket.send('#timeout') # rubocop:disable Performance/StringIdentifierArgument
             # sleep one more second to ensure that the message reaches the submissions_controller.
             sleep(1)
             @socket.close
@@ -434,9 +434,9 @@ container_execution_time: nil}
   end
 
   def self.mapped_ports(execution_environment)
-    execution_environment.exposed_ports.map do |port|
+    execution_environment.exposed_ports.to_h do |port|
       ["#{port}/tcp", [{'HostPort' => PortPool.available_port.to_s}]]
-    end.to_h
+    end
   end
 
   def self.pull(docker_image)

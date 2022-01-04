@@ -8,7 +8,7 @@ describe ExecutionEnvironment do
   it 'validates that the Docker image works' do
     allow(execution_environment).to receive(:validate_docker_image?).and_return(true)
     allow(execution_environment).to receive(:working_docker_image?).and_return(true)
-    execution_environment.update(FactoryBot.build(:ruby).attributes)
+    execution_environment.update(build(:ruby).attributes)
     expect(execution_environment).to have_received(:working_docker_image?)
   end
 
@@ -81,8 +81,7 @@ describe ExecutionEnvironment do
   end
 
   it 'validates the presence of a user' do
-    expect(execution_environment.errors[:user_id]).to be_present
-    expect(execution_environment.errors[:user_type]).to be_present
+    expect(execution_environment.errors[:user]).to be_present
   end
 
   it 'validates the format of the exposed ports' do
@@ -95,7 +94,7 @@ describe ExecutionEnvironment do
 
   describe '#valid_test_setup?' do
     context 'with a test command and a testing framework' do
-      before { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
+      before { execution_environment.update(test_command: attributes_for(:ruby)[:test_command], testing_framework: attributes_for(:ruby)[:testing_framework]) }
 
       it 'is valid' do
         expect(execution_environment.errors[:test_command]).to be_blank
@@ -103,7 +102,7 @@ describe ExecutionEnvironment do
     end
 
     context 'with a test command but no testing framework' do
-      before { execution_environment.update(test_command: FactoryBot.attributes_for(:ruby)[:test_command], testing_framework: nil) }
+      before { execution_environment.update(test_command: attributes_for(:ruby)[:test_command], testing_framework: nil) }
 
       it 'is invalid' do
         expect(execution_environment.errors[:test_command]).to be_present
@@ -111,7 +110,7 @@ describe ExecutionEnvironment do
     end
 
     context 'with no test command but a testing framework' do
-      before { execution_environment.update(test_command: nil, testing_framework: FactoryBot.attributes_for(:ruby)[:testing_framework]) }
+      before { execution_environment.update(test_command: nil, testing_framework: attributes_for(:ruby)[:testing_framework]) }
 
       it 'is invalid' do
         expect(execution_environment.errors[:test_command]).to be_present
@@ -144,7 +143,7 @@ describe ExecutionEnvironment do
     end
 
     it 'is true otherwise' do
-      execution_environment.docker_image = FactoryBot.attributes_for(:ruby)[:docker_image]
+      execution_environment.docker_image = attributes_for(:ruby)[:docker_image]
       execution_environment.pool_size = 1
       allow(Rails.env).to receive(:test?).and_return(false)
       expect(execution_environment.send(:validate_docker_image?)).to be true
@@ -152,7 +151,7 @@ describe ExecutionEnvironment do
   end
 
   describe '#working_docker_image?' do
-    let(:execution_environment) { FactoryBot.create(:ruby) }
+    let(:execution_environment) { create(:ruby) }
     let(:working_docker_image?) { execution_environment.send(:working_docker_image?) }
     let(:runner) { instance_double 'runner' }
 

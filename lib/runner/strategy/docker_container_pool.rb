@@ -97,7 +97,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
         FileUtils.cp(file.native_file.path, local_file_path)
       else
         begin
-          File.open(local_file_path, 'w') {|f| f.write(file.content) }
+          File.write(local_file_path, file.content)
         rescue IOError => e
           raise Runner::Error::WorkspaceError.new("Could not create file #{file.filepath}: #{e.inspect}")
         end

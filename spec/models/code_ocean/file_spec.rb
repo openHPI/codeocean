@@ -6,7 +6,7 @@ describe CodeOcean::File do
   let(:file) { described_class.create.tap {|file| file.update(content: nil, hidden: nil, read_only: nil) } }
 
   it 'validates the presence of a file type' do
-    expect(file.errors[:file_type_id]).to be_present
+    expect(file.errors[:file_type]).to be_present
   end
 
   it 'validates the presence of the hidden flag' do

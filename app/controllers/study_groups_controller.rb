@@ -23,7 +23,7 @@ class StudyGroupsController < ApplicationController
   def update
     myparams = study_group_params
     myparams[:external_users] =
-      StudyGroupMembership.find(myparams[:study_group_membership_ids].reject(&:empty?)).map(&:user)
+      StudyGroupMembership.find(myparams[:study_group_membership_ids].compact_blank).map(&:user)
     myparams.delete(:study_group_membership_ids)
     update_and_respond(object: @study_group, params: myparams)
   end

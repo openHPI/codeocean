@@ -43,8 +43,8 @@ class PyLintAdapter < TestingFrameworkAdapter
     {
       count: count,
       failed: failed,
-      error_messages: concatenated_errors.flatten.reject(&:blank?),
-      detailed_linter_results: assertion_error_matches.flatten.reject(&:blank?),
+      error_messages: concatenated_errors.flatten.compact_blank,
+      detailed_linter_results: assertion_error_matches.flatten.compact_blank,
     }
   end
 

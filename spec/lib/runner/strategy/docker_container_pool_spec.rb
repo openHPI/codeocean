@@ -4,8 +4,8 @@ require 'rails_helper'
 require 'pathname'
 
 describe Runner::Strategy::DockerContainerPool do
-  let(:runner_id) { FactoryBot.attributes_for(:runner)[:runner_id] }
-  let(:execution_environment) { FactoryBot.create :ruby }
+  let(:runner_id) { attributes_for(:runner)[:runner_id] }
+  let(:execution_environment) { create :ruby }
   let(:container_pool) { described_class.new(runner_id, execution_environment) }
   let(:docker_container_pool_url) { 'http://localhost:1234' }
   let(:config) { {url: docker_container_pool_url, unused_runner_expiration_time: 180} }
@@ -112,22 +112,20 @@ describe Runner::Strategy::DockerContainerPool do
 
     context 'when receiving a normal file' do
       let(:file_content) { 'print("Hello World!")' }
-      let(:files) { [FactoryBot.build(:file, content: file_content)] }
+      let(:files) { [build(:file, content: file_content)] }
 
       it 'writes the file to disk' do
-        file = instance_double(File)
-        allow(File).to receive(:open).and_yield(file)
-        expect(file).to receive(:write).with(file_content)
+        expect(File).to receive(:write).with(local_path.join(files.first.filepath), file_content)
         container_pool.copy_files(files)
       end
 
       it 'creates the file inside the workspace' do
-        expect(File).to receive(:open).with(local_path.join(files.first.filepath), 'w')
+        expect(File).to receive(:write).with(local_path.join(files.first.filepath), files.first.content)
         container_pool.copy_files(files)
       end
 
       it 'raises an error in case of an IOError' do
-        allow(File).to receive(:open).and_raise(IOError)
+        allow(File).to receive(:write).and_raise(IOError)
         expect { container_pool.copy_files(files) }.to raise_error(Runner::Error::WorkspaceError, /#{files.first.filepath}/)
       end
 
@@ -137,10 +135,10 @@ describe Runner::Strategy::DockerContainerPool do
 
       context 'when the file is inside a directory' do
         let(:directory) { 'temp/dir' }
-        let(:files) { [FactoryBot.build(:file, path: directory)] }
+        let(:files) { [build(:file, path: directory)] }
 
         before do
-          allow(File).to receive(:open)
+          allow(File).to receive(:write)
           allow(FileUtils).to receive(:mkdir_p).with(local_path)
           allow(FileUtils).to receive(:mkdir_p).with(local_path.join(directory))
         end
@@ -159,7 +157,7 @@ describe Runner::Strategy::DockerContainerPool do
     end
 
     context 'when receiving a binary file' do
-      let(:files) { [FactoryBot.build(:file, :image)] }
+      let(:files) { [build(:file, :image)] }
 
       it 'copies the file inside the workspace' do
         expect(FileUtils).to receive(:cp).with(files.first.native_file.path, local_path.join(files.first.filepath))
@@ -168,11 +166,11 @@ describe Runner::Strategy::DockerContainerPool do
     end
 
     context 'when receiving multiple files' do
-      let(:files) { FactoryBot.build_list(:file, 3) }
+      let(:files) { build_list(:file, 3) }
 
       it 'creates all files' do
         files.each do |file|
-          expect(File).to receive(:open).with(local_path.join(file.filepath), 'w')
+          expect(File).to receive(:write).with(local_path.join(file.filepath), file.content)
         end
         container_pool.copy_files(files)
       end

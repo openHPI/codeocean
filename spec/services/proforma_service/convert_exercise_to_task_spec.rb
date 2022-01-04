@@ -6,7 +6,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
   describe '.new' do
     subject(:convert_to_task) { described_class.new(exercise: exercise) }
 
-    let(:exercise) { FactoryBot.build(:dummy) }
+    let(:exercise) { build(:dummy) }
 
     it 'assigns exercise' do
       expect(convert_to_task.instance_variable_get(:@exercise)).to be exercise
@@ -18,7 +18,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
     let(:convert_to_task) { described_class.new(exercise: exercise) }
     let(:exercise) do
-      FactoryBot.create(:dummy,
+      create(:dummy,
         instructions: 'instruction',
         uuid: SecureRandom.uuid,
         files: files + tests)
@@ -46,7 +46,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
     context 'when exercise has a mainfile' do
       let(:files) { [file] }
-      let(:file) { FactoryBot.build(:file) }
+      let(:file) { build(:file) }
 
       it 'creates a task-file with the correct attributes' do
         expect(task.files.first).to have_attributes(
@@ -64,7 +64,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
     context 'when exercise has a regular file' do
       let(:files) { [file] }
-      let(:file) { FactoryBot.build(:file, role: 'regular_file', hidden: hidden, read_only: read_only) }
+      let(:file) { build(:file, role: 'regular_file', hidden: hidden, read_only: read_only) }
       let(:hidden) { true }
       let(:read_only) { true }
 
@@ -98,7 +98,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       end
 
       context 'when file has an attachment' do
-        let(:file) { FactoryBot.build(:file, :image, role: 'regular_file') }
+        let(:file) { build(:file, :image, role: 'regular_file') }
 
         it 'creates a task-file with the correct attributes' do
           expect(task.files.first).to have_attributes(
@@ -112,7 +112,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
     context 'when exercise has a file with role reference implementation' do
       let(:files) { [file] }
-      let(:file) { FactoryBot.build(:file, role: 'reference_implementation') }
+      let(:file) { build(:file, role: 'reference_implementation') }
 
       it 'creates a task with one model-solution' do
         expect(task.model_solutions).to have(1).item
@@ -140,7 +140,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
     end
 
     context 'when exercise has multiple files with role reference implementation' do
-      let(:files) { FactoryBot.build_list(:file, 2, role: 'reference_implementation') }
+      let(:files) { build_list(:file, 2, role: 'reference_implementation') }
 
       it 'creates a task with two model-solutions' do
         expect(task.model_solutions).to have(2).items
@@ -149,7 +149,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
     context 'when exercise has a test' do
       let(:tests) { [test_file] }
-      let(:test_file) { FactoryBot.build(:test_file) }
+      let(:test_file) { build(:test_file) }
       # let(:file) { FactoryBot.build(:codeharbor_test_file) }
 
       it 'creates a task with one test' do
@@ -178,7 +178,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       end
 
       context 'when exercise_file is not hidden' do
-        let(:test_file) { FactoryBot.create(:test_file, hidden: false) }
+        let(:test_file) { create(:test_file, hidden: false) }
 
         it 'creates the test file with the correct attribute' do
           expect(task.tests.first.files.first).to have_attributes(visible: 'yes')
@@ -187,7 +187,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
     end
 
     context 'when exercise has multiple tests' do
-      let(:tests) { FactoryBot.build_list(:test_file, 2) }
+      let(:tests) { build_list(:test_file, 2) }
 
       it 'creates a task with two tests' do
         expect(task.tests).to have(2).items

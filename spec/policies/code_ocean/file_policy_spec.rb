@@ -5,15 +5,15 @@ require 'rails_helper'
 describe CodeOcean::FilePolicy do
   subject(:policy) { described_class }
 
-  let(:exercise) { FactoryBot.create(:fibonacci) }
-  let(:submission) { FactoryBot.create(:submission) }
+  let(:exercise) { create(:fibonacci) }
+  let(:submission) { create(:submission) }
 
   permissions :create? do
     context 'when being part of an exercise' do
       let(:file) { exercise.files.first }
 
       it 'grants access to admins' do
-        expect(policy).to permit(FactoryBot.build(:admin), file)
+        expect(policy).to permit(build(:admin), file)
       end
 
       it 'grants access to authors' do
@@ -22,7 +22,7 @@ describe CodeOcean::FilePolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(FactoryBot.build(factory_name), file)
+          expect(policy).not_to permit(build(factory_name), file)
         end
       end
     end
@@ -52,7 +52,7 @@ describe CodeOcean::FilePolicy do
 
       it 'does not grant access to all other users' do
         %i[admin external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(FactoryBot.build(factory_name), file)
+          expect(policy).not_to permit(build(factory_name), file)
         end
       end
     end
@@ -63,7 +63,7 @@ describe CodeOcean::FilePolicy do
       let(:file) { exercise.files.first }
 
       it 'grants access to admins' do
-        expect(policy).to permit(FactoryBot.build(:admin), file)
+        expect(policy).to permit(build(:admin), file)
       end
 
       it 'grants access to authors' do
@@ -72,7 +72,7 @@ describe CodeOcean::FilePolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(FactoryBot.build(factory_name), file)
+          expect(policy).not_to permit(build(factory_name), file)
         end
       end
     end
@@ -82,7 +82,7 @@ describe CodeOcean::FilePolicy do
 
       it 'does not grant access to anyone' do
         %i[admin external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(FactoryBot.build(factory_name), file)
+          expect(policy).not_to permit(build(factory_name), file)
         end
       end
     end

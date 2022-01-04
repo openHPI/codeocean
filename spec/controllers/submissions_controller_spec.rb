@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe SubmissionsController do
-  let(:submission) { FactoryBot.create(:submission) }
-  let(:user) { FactoryBot.create(:admin) }
+  let(:submission) { create(:submission) }
+  let(:user) { create(:admin) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
@@ -14,8 +14,8 @@ describe SubmissionsController do
     end
 
     context 'with a valid submission' do
-      let(:exercise) { FactoryBot.create(:hello_world) }
-      let(:perform_request) { proc { post :create, format: :json, params: {submission: FactoryBot.attributes_for(:submission, exercise_id: exercise.id)} } }
+      let(:exercise) { create(:hello_world) }
+      let(:perform_request) { proc { post :create, format: :json, params: {submission: attributes_for(:submission, exercise_id: exercise.id)} } }
 
       before { perform_request.call }
 
@@ -46,7 +46,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid binary filename' do
-      let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:sql_select)) }
+      let(:submission) { create(:submission, exercise: create(:sql_select)) }
 
       before { get :download_file, params: {filename: file.name_with_extension, id: submission.id} }
 
@@ -65,7 +65,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
+      let(:submission) { create(:submission, exercise: create(:audio_video)) }
 
       before { get :download_file, params: {filename: file.name_with_extension, id: submission.id} }
 
@@ -99,7 +99,7 @@ describe SubmissionsController do
 
   describe 'GET #index' do
     before do
-      FactoryBot.create_pair(:submission)
+      create_pair(:submission)
       get :index
     end
 
@@ -118,7 +118,7 @@ describe SubmissionsController do
     end
 
     context 'with a valid filename' do
-      let(:submission) { FactoryBot.create(:submission, exercise: FactoryBot.create(:audio_video)) }
+      let(:submission) { create(:submission, exercise: create(:audio_video)) }
 
       before { get :render_file, params: {filename: file.name_with_extension, id: submission.id} }
 

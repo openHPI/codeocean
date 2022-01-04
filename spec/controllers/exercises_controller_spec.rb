@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe ExercisesController do
-  let(:exercise) { FactoryBot.create(:dummy) }
-  let(:user) { FactoryBot.create(:admin) }
+  let(:exercise) { create(:dummy) }
+  let(:user) { create(:admin) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
@@ -56,7 +56,7 @@ describe ExercisesController do
   end
 
   describe 'POST #create' do
-    let(:exercise_attributes) { FactoryBot.build(:dummy).attributes }
+    let(:exercise_attributes) { build(:dummy).attributes }
 
     context 'with a valid exercise' do
       let(:perform_request) { proc { post :create, params: {exercise: exercise_attributes} } }
@@ -76,7 +76,7 @@ describe ExercisesController do
       let(:perform_request) { proc { post :create, params: {exercise: exercise_attributes.merge(files_attributes: files_attributes)} } }
 
       context 'when specifying the file content within the form' do
-        let(:files_attributes) { {'0' => FactoryBot.build(:file).attributes} }
+        let(:files_attributes) { {'0' => build(:file).attributes} }
 
         it 'creates the file' do
           expect { perform_request.call }.to change(CodeOcean::File, :count)
@@ -84,11 +84,11 @@ describe ExercisesController do
       end
 
       context 'when uploading a file' do
-        let(:files_attributes) { {'0' => FactoryBot.build(:file, file_type: file_type).attributes.merge(content: uploaded_file)} }
+        let(:files_attributes) { {'0' => build(:file, file_type: file_type).attributes.merge(content: uploaded_file)} }
 
         context 'when uploading a binary file' do
           let(:file_path) { Rails.root.join('db/seeds/audio_video/devstories.mp4') }
-          let(:file_type) { FactoryBot.create(:dot_mp4) }
+          let(:file_type) { create(:dot_mp4) }
           let(:uploaded_file) { Rack::Test::UploadedFile.new(file_path, 'video/mp4', true) }
 
           it 'creates the file' do
@@ -103,7 +103,7 @@ describe ExercisesController do
 
         context 'when uploading a non-binary file' do
           let(:file_path) { Rails.root.join('db/seeds/fibonacci/exercise.rb') }
-          let(:file_type) { FactoryBot.create(:dot_rb) }
+          let(:file_type) { create(:dot_rb) }
           let(:uploaded_file) { Rack::Test::UploadedFile.new(file_path, 'text/x-ruby', false) }
 
           it 'creates the file' do
@@ -133,7 +133,7 @@ describe ExercisesController do
     expect_assigns(exercise: :exercise)
 
     it 'destroys the exercise' do
-      exercise = FactoryBot.create(:dummy)
+      exercise = create(:dummy)
       expect { delete :destroy, params: {id: exercise.id} }.to change(Exercise, :count).by(-1)
     end
 
@@ -152,14 +152,14 @@ describe ExercisesController do
     let(:perform_request) { proc { get :implement, params: {id: exercise.id} } }
 
     context 'with an exercise with visible files' do
-      let(:exercise) { FactoryBot.create(:fibonacci) }
+      let(:exercise) { create(:fibonacci) }
 
       before { perform_request.call }
 
       expect_assigns(exercise: :exercise)
 
       context 'with an existing submission' do
-        let!(:submission) { FactoryBot.create(:submission, exercise_id: exercise.id, user_id: user.id, user_type: user.class.name) }
+        let!(:submission) { create(:submission, exercise_id: exercise.id, user_id: user.id, user_type: user.class.name) }
 
         it "populates the editors with the submission's files' content" do
           perform_request.call
@@ -190,7 +190,7 @@ describe ExercisesController do
     let(:scope) { Pundit.policy_scope!(user, Exercise) }
 
     before do
-      FactoryBot.create_pair(:dummy)
+      create_pair(:dummy)
       get :index
     end
 
@@ -239,7 +239,7 @@ describe ExercisesController do
   describe 'POST #submit' do
     let(:output) { {} }
     let(:perform_request) { post :submit, format: :json, params: {id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id}} }
-    let(:user) { FactoryBot.create(:external_user) }
+    let(:user) { create(:external_user) }
     let(:scoring_response) do
       [{
         status: :ok,
@@ -260,8 +260,8 @@ describe ExercisesController do
     end
 
     before do
-      FactoryBot.create(:lti_parameter, external_user: user, exercise: exercise)
-      submission = FactoryBot.build(:submission, exercise: exercise, user: user)
+      create(:lti_parameter, external_user: user, exercise: exercise)
+      submission = build(:submission, exercise: exercise, user: user)
       allow(submission).to receive(:normalized_score).and_return(1)
       allow(submission).to receive(:calculate_score).and_return(scoring_response)
       allow(Submission).to receive(:create).and_return(submission)
@@ -328,7 +328,7 @@ describe ExercisesController do
 
   describe 'PUT #update' do
     context 'with a valid exercise' do
-      let(:exercise_attributes) { FactoryBot.build(:dummy).attributes }
+      let(:exercise_attributes) { build(:dummy).attributes }
 
       before { put :update, params: {exercise: exercise_attributes, id: exercise.id} }
 
@@ -352,7 +352,7 @@ describe ExercisesController do
     render_views
 
     let(:post_request) { post :export_external_check, params: {id: exercise.id} }
-    let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
+    let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
     let(:external_check_hash) { {message: message, exercise_found: true, update_right: update_right, error: error} }
     let(:message) { 'message' }
     let(:update_right) { true }
@@ -405,7 +405,7 @@ describe ExercisesController do
   describe '#export_external_confirm' do
     render_views
 
-    let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
+    let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
     let(:post_request) { post :export_external_confirm, params: {id: exercise.id, codeharbor_link: codeharbor_link.id} }
     let(:error) { nil }
     let(:zip) { 'zip' }
@@ -440,8 +440,8 @@ describe ExercisesController do
   end
 
   describe '#import_uuid_check' do
-    let(:exercise) { FactoryBot.create(:dummy, uuid: SecureRandom.uuid) }
-    let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
+    let(:exercise) { create(:dummy, uuid: SecureRandom.uuid) }
+    let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
     let(:uuid) { exercise.reload.uuid }
     let(:post_request) { post :import_uuid_check, params: {uuid: uuid} }
     let(:headers) { {'Authorization' => "Bearer #{codeharbor_link.api_key}"} }
@@ -466,7 +466,7 @@ describe ExercisesController do
     end
 
     context 'when the user cannot update the exercise' do
-      let(:codeharbor_link) { FactoryBot.create(:codeharbor_link, api_key: 'anotherkey') }
+      let(:codeharbor_link) { create(:codeharbor_link, api_key: 'anotherkey') }
 
       it 'renders correct response' do
         post_request
@@ -490,8 +490,8 @@ describe ExercisesController do
   end
 
   describe 'POST #import_exercise' do
-    let(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
-    let!(:imported_exercise) { FactoryBot.create(:fibonacci) }
+    let(:codeharbor_link) { create(:codeharbor_link, user: user) }
+    let!(:imported_exercise) { create(:fibonacci) }
     let(:post_request) { post :import_exercise, body: zip_file_content }
     let(:zip_file_content) { 'zipped task xml' }
     let(:headers) { {'Authorization' => "Bearer #{codeharbor_link.api_key}"} }

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe UserMailer do
-  let(:user) { InternalUser.create(FactoryBot.attributes_for(:teacher)) }
+  let(:user) { InternalUser.create(attributes_for(:teacher)) }
 
   describe '#activation_needed_email' do
     let(:mail) { described_class.activation_needed_email(user) }

@@ -6,7 +6,7 @@ class Runner < ApplicationRecord
 
   before_validation :request_id
 
-  validates :execution_environment, :user, :runner_id, presence: true
+  validates :runner_id, presence: true
 
   attr_accessor :strategy
 

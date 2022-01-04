@@ -9,7 +9,9 @@ module CodeOcean
     def read(options = {})
       path = Rails.root.join('config', "#{@filename}.yml#{options[:erb] ? '.erb' : ''}")
       if ::File.exist?(path)
-        content = options[:erb] ? YAML.safe_load(ERB.new(::File.new(path, 'r').read).result, aliases: true, permitted_classes: [Range]) : YAML.load_file(path)
+        yaml_content = ::File.new(path, 'r').read || ''
+        yaml_content = ERB.new(yaml_content).result if options[:erb]
+        content = YAML.safe_load(yaml_content, aliases: true, permitted_classes: [Range, Symbol])
         content[Rails.env].with_indifferent_access
       else
         raise Error.new("Configuration file not found: #{path}")

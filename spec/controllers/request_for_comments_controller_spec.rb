@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe RequestForCommentsController do
-  let(:user) { FactoryBot.create(:admin) }
+  let(:user) { create(:admin) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
@@ -16,13 +16,13 @@ describe RequestForCommentsController do
     end
 
     it 'shows only rfc`s belonging to selected study group' do
-      my_study_group = FactoryBot.create(:study_group)
-      rfc_within_my_study_group = FactoryBot.create(:rfc, user: user)
+      my_study_group = create(:study_group)
+      rfc_within_my_study_group = create(:rfc, user: user)
       user.update(study_groups: [my_study_group])
       rfc_within_my_study_group.submission.update(study_group: my_study_group)
 
-      another_study_group = FactoryBot.create(:study_group)
-      rfc_other_study_group = FactoryBot.create(:rfc)
+      another_study_group = create(:study_group)
+      rfc_other_study_group = create(:rfc)
       rfc_other_study_group.user.update(study_groups: [another_study_group])
       rfc_other_study_group.submission.update(study_group: another_study_group)
 
@@ -48,7 +48,7 @@ describe RequestForCommentsController do
 
   describe 'GET #rfcs_for_exercise' do
     before do
-      exercise = FactoryBot.create(:even_odd)
+      exercise = create(:even_odd)
       get :rfcs_for_exercise, params: {exercise_id: exercise.id}
     end
 

@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 describe 'exercises/implement.html.slim' do
-  let(:exercise) { FactoryBot.create(:fibonacci) }
+  let(:exercise) { create(:fibonacci) }
   let(:files) { exercise.files.visible }
   let(:non_binary_files) { files.reject {|file| file.file_type.binary? } }
 
   before do
-    assign(:current_user, FactoryBot.create(:admin))
+    assign(:current_user, create(:admin))
     assign(:exercise, exercise)
     assign(:files, files)
     assign(:paths, [])

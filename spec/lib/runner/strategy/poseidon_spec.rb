@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe Runner::Strategy::Poseidon do
-  let(:runner_id) { FactoryBot.attributes_for(:runner)[:runner_id] }
-  let(:execution_environment) { FactoryBot.create :ruby }
+  let(:runner_id) { attributes_for(:runner)[:runner_id] }
+  let(:execution_environment) { create :ruby }
   let(:poseidon) { described_class.new(runner_id, execution_environment) }
   let(:error_message) { 'test error message' }
   let(:response_body) { nil }
@@ -128,7 +128,7 @@ describe Runner::Strategy::Poseidon do
 
   describe '::sync_environment' do
     let(:action) { -> { described_class.sync_environment(execution_environment) } }
-    let(:execution_environment) { FactoryBot.create(:ruby) }
+    let(:execution_environment) { create(:ruby) }
 
     it 'makes the correct request to Poseidon' do
       faraday_connection = instance_double 'Faraday::Connection'
@@ -321,7 +321,7 @@ describe Runner::Strategy::Poseidon do
 
   describe '#copy_files' do
     let(:file_content) { 'print("Hello World!")' }
-    let(:file) { FactoryBot.build(:file, content: file_content) }
+    let(:file) { build(:file, content: file_content) }
     let(:action) { -> { poseidon.copy_files([file]) } }
     let(:encoded_file_content) { Base64.strict_encode64(file.content) }
     let!(:copy_files_stub) do

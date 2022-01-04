@@ -52,7 +52,6 @@ describe FileType do
   end
 
   it 'validates the presence of a user' do
-    expect(file_type.errors[:user_id]).to be_present
-    expect(file_type.errors[:user_type]).to be_present
+    expect(file_type.errors[:user]).to be_present
   end
 end

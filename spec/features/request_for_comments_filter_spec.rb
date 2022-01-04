@@ -3,21 +3,21 @@
 require 'rails_helper'
 
 describe 'Request_for_Comments' do
-  let(:exercise) { FactoryBot.create(:audio_video, description: Forgery(:lorem_ipsum).sentence) }
-  let(:user) { FactoryBot.create(:teacher) }
+  let(:exercise) { create(:audio_video, description: Forgery(:lorem_ipsum).sentence) }
+  let(:user) { create(:teacher) }
 
   before do
     visit(sign_in_path)
     fill_in('email', with: user.email)
-    fill_in('password', with: FactoryBot.attributes_for(:teacher)[:password])
+    fill_in('password', with: attributes_for(:teacher)[:password])
     click_button(I18n.t('sessions.new.link'))
   end
 
   it 'does not contain rfcs for unpublished exercises' do
-    unpublished_rfc = FactoryBot.create(:rfc)
+    unpublished_rfc = create(:rfc)
     unpublished_rfc.exercise.update(title: 'Unpublished Exercise')
     unpublished_rfc.exercise.update(unpublished: true)
-    rfc = FactoryBot.create(:rfc)
+    rfc = create(:rfc)
     rfc.exercise.update(title: 'Normal Exercise')
     rfc.exercise.update(unpublished: false)
 

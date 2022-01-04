@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe ExternalUsersController do
-  let(:user) { FactoryBot.build(:admin) }
-  let!(:users) { FactoryBot.create_pair(:external_user) }
+  let(:user) { build(:admin) }
+  let!(:users) { create_pair(:external_user) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 

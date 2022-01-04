@@ -17,7 +17,7 @@ class CppCatch2Adapter < TestingFrameworkAdapter
       count = output[:stdout].scan(COUNT_REGEXP).try(:last).try(:first).try(:to_i) || 0
       failed = output[:stdout].scan(FAILURES_REGEXP).try(:last).try(:first).try(:to_i) || 0
       error_matches = output[:stdout].scan(ASSERTION_ERROR_REGEXP) || []
-      {count: count, failed: failed, error_messages: error_matches.flatten.reject(&:blank?)}
+      {count: count, failed: failed, error_messages: error_matches.flatten.compact_blank}
     end
   end
 end

@@ -5,13 +5,13 @@ require 'rails_helper'
 describe ExercisePolicy do
   subject(:policy) { described_class }
 
-  let(:exercise) { FactoryBot.build(:dummy, public: true) }
+  let(:exercise) { build(:dummy, public: true) }
 
   permissions :batch_update? do
     it 'grants access to admins only' do
-      expect(policy).to permit(FactoryBot.build(:admin), exercise)
+      expect(policy).to permit(build(:admin), exercise)
       %i[external_user teacher].each do |factory_name|
-        expect(policy).not_to permit(FactoryBot.build(factory_name), exercise)
+        expect(policy).not_to permit(build(factory_name), exercise)
       end
     end
   end
@@ -19,15 +19,15 @@ describe ExercisePolicy do
   %i[create? index? new? statistics? feedback? rfcs_for_exercise?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
-        expect(policy).to permit(FactoryBot.build(:admin), exercise)
+        expect(policy).to permit(build(:admin), exercise)
       end
 
       it 'grants access to teachers' do
-        expect(policy).to permit(FactoryBot.build(:teacher), exercise)
+        expect(policy).to permit(build(:teacher), exercise)
       end
 
       it 'does not grant access to external users' do
-        expect(policy).not_to permit(FactoryBot.build(:external_user), exercise)
+        expect(policy).not_to permit(build(:external_user), exercise)
       end
     end
   end
@@ -35,7 +35,7 @@ describe ExercisePolicy do
   %i[clone? destroy? edit? update?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
-        expect(policy).to permit(FactoryBot.build(:admin), exercise)
+        expect(policy).to permit(build(:admin), exercise)
       end
 
       it 'grants access to authors' do
@@ -44,7 +44,7 @@ describe ExercisePolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(FactoryBot.build(factory_name), exercise)
+          expect(policy).not_to permit(build(factory_name), exercise)
         end
       end
     end
@@ -60,7 +60,7 @@ describe ExercisePolicy do
         end
 
         context 'when user has codeharbor_link' do
-          before { user.codeharbor_link = FactoryBot.build(:codeharbor_link) }
+          before { user.codeharbor_link = build(:codeharbor_link) }
 
           it 'grants access' do
             expect(policy).to permit(user, exercise)
@@ -69,14 +69,14 @@ describe ExercisePolicy do
       end
 
       context 'when user is admin' do
-        let(:user) { FactoryBot.build(:admin) }
+        let(:user) { build(:admin) }
 
         it 'does not grant access' do
           expect(policy).not_to permit(user, exercise)
         end
 
         context 'when user has codeharbor_link' do
-          before { user.codeharbor_link = FactoryBot.build(:codeharbor_link) }
+          before { user.codeharbor_link = build(:codeharbor_link) }
 
           it 'grants access' do
             expect(policy).to permit(user, exercise)
@@ -86,14 +86,14 @@ describe ExercisePolicy do
 
       %i[external_user teacher].each do |factory_name|
         context "when user is #{factory_name}" do
-          let(:user) { FactoryBot.build(factory_name) }
+          let(:user) { build(factory_name) }
 
           it 'does not grant access' do
             expect(policy).not_to permit(user, exercise)
           end
 
           context 'when user has codeharbor_link' do
-            before { user.codeharbor_link = FactoryBot.build(:codeharbor_link) }
+            before { user.codeharbor_link = build(:codeharbor_link) }
 
             it 'does not grant access' do
               expect(policy).not_to permit(user, exercise)
@@ -107,7 +107,7 @@ describe ExercisePolicy do
   [:show?].each do |action|
     permissions(action) do
       it 'not grants access to external users' do
-        expect(policy).not_to permit(FactoryBot.build(:external_user), exercise)
+        expect(policy).not_to permit(build(:external_user), exercise)
       end
     end
   end
@@ -116,7 +116,7 @@ describe ExercisePolicy do
     permissions(action) do
       it 'grants access to anyone' do
         %i[admin external_user teacher].each do |factory_name|
-          expect(policy).to permit(FactoryBot.build(factory_name), Exercise.new)
+          expect(policy).to permit(build(factory_name), Exercise.new)
         end
       end
     end
@@ -124,14 +124,14 @@ describe ExercisePolicy do
 
   describe ExercisePolicy::Scope do
     describe '#resolve' do
-      let(:admin) { FactoryBot.create(:admin) }
-      let(:external_user) { FactoryBot.create(:external_user) }
-      let(:teacher) { FactoryBot.create(:teacher) }
+      let(:admin) { create(:admin) }
+      let(:external_user) { create(:external_user) }
+      let(:teacher) { create(:teacher) }
 
       before do
         [admin, teacher].each do |user|
           [true, false].each do |public|
-            FactoryBot.create(:dummy, public: public, user_id: user.id, user_type: InternalUser.name)
+            create(:dummy, public: public, user_id: user.id, user_type: InternalUser.name)
           end
         end
       end
