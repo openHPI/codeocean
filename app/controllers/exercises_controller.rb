@@ -118,7 +118,7 @@ raise: false
         partial: 'export_actions',
         locals: {
           exercise: @exercise,
-          exercise_found: codeharbor_check[:task_found],
+          task_found: codeharbor_check[:task_found],
           update_right: codeharbor_check[:update_right],
           error: codeharbor_check[:error],
           exported: false,

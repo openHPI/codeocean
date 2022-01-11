@@ -353,7 +353,7 @@ describe ExercisesController do
 
     let(:post_request) { post :export_external_check, params: {id: exercise.id} }
     let!(:codeharbor_link) { FactoryBot.create(:codeharbor_link, user: user) }
-    let(:external_check_hash) { {message: message, exercise_found: true, update_right: update_right, error: error} }
+    let(:external_check_hash) { {message: message, task_found: true, update_right: update_right, error: error} }
     let(:message) { 'message' }
     let(:update_right) { true }
     let(:error) { nil }
