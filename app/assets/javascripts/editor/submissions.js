@@ -115,7 +115,7 @@ CodeOceanEditorSubmissions = {
     this.showSpinner(this);
     this.ajax({
       method: 'GET',
-      url: $('#start-over').data('url')
+      url: $('#start-over').data('url') || $('#start-over-active-file').data('url')
     }).done(function(response) {
       this.hideSpinner();
       _.each(this.editors, function(editor) {
@@ -196,9 +196,9 @@ CodeOceanEditorSubmissions = {
     const button = $(event.target) || $('#submit');
     this.createSubmission(button, null, function (response) {
       if (response.redirect) {
+        this.unloadAutoSave();
         this.editors = [];
         Turbolinks.clearCache();
-        clearTimeout(this.autosaveTimer);
         Turbolinks.visit(response.redirect);
       } else if (response.status === 'container_depleted') {
           this.showContainerDepletedMessage();

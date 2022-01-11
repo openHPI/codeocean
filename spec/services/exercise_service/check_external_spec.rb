@@ -7,7 +7,7 @@ describe ExerciseService::CheckExternal do
     subject(:export_service) { described_class.new(uuid: uuid, codeharbor_link: codeharbor_link) }
 
     let(:uuid) { SecureRandom.uuid }
-    let(:codeharbor_link) { FactoryBot.build(:codeharbor_link) }
+    let(:codeharbor_link) { build(:codeharbor_link) }
 
     it 'assigns uuid' do
       expect(export_service.instance_variable_get(:@uuid)).to be uuid
@@ -22,7 +22,7 @@ describe ExerciseService::CheckExternal do
     subject(:check_external_service) { described_class.call(uuid: uuid, codeharbor_link: codeharbor_link) }
 
     let(:uuid) { SecureRandom.uuid }
-    let(:codeharbor_link) { FactoryBot.build(:codeharbor_link) }
+    let(:codeharbor_link) { build(:codeharbor_link) }
     let(:response) { {}.to_json }
 
     before { stub_request(:post, codeharbor_link.check_uuid_url).to_return(body: response) }

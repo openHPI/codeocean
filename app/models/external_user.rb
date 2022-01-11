@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ExternalUser < User
-  validates :consumer_id, presence: true
   validates :external_id, presence: true
 
   def displayname

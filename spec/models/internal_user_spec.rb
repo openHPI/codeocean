@@ -11,12 +11,12 @@ describe InternalUser do
   end
 
   it 'validates the uniqueness of the email address' do
-    user.update(email: FactoryBot.create(:admin).email)
+    user.update(email: create(:admin).email)
     expect(user.errors[:email]).to be_present
   end
 
   context 'when not activated' do
-    let(:user) { FactoryBot.create(:teacher) }
+    let(:user) { create(:teacher) }
 
     before do
       user.send(:setup_activation)
@@ -35,7 +35,7 @@ describe InternalUser do
   end
 
   context 'with a pending password reset' do
-    let(:user) { FactoryBot.create(:teacher) }
+    let(:user) { create(:teacher) }
 
     before { user.deliver_reset_password_instructions! }
 
@@ -51,7 +51,7 @@ describe InternalUser do
   end
 
   context 'when complete' do
-    let(:user) { FactoryBot.create(:teacher, activation_state: 'active') }
+    let(:user) { create(:teacher, activation_state: 'active') }
 
     it 'does not validate the confirmation of the password' do
       user.update(password: password, password_confirmation: '')
@@ -74,8 +74,8 @@ describe InternalUser do
 
   describe '#admin?' do
     it 'is only true for admins' do
-      expect(FactoryBot.build(:admin).admin?).to be true
-      expect(FactoryBot.build(:teacher).admin?).to be false
+      expect(build(:admin).admin?).to be true
+      expect(build(:teacher).admin?).to be false
     end
   end
 
@@ -93,8 +93,8 @@ describe InternalUser do
 
   describe '#teacher?' do
     it 'is only true for teachers' do
-      expect(FactoryBot.build(:admin).teacher?).to be false
-      expect(FactoryBot.build(:teacher).teacher?).to be true
+      expect(build(:admin).teacher?).to be false
+      expect(build(:teacher).teacher?).to be true
     end
   end
 end

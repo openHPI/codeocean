@@ -68,7 +68,7 @@ $(document).on('turbolinks:load', function() {
     _.each(response.docker, function(data) {
       groups.update({
         id: data.id,
-        visible: data.pool_size > 0
+        visible: data.prewarmingPoolSize > 0
       });
     });
   };
@@ -78,26 +78,27 @@ $(document).on('turbolinks:load', function() {
       dataset.add({
         group: data.id,
         x: vis.moment(),
-        y: data.quantity
+        y: data.usedRunners
       });
     });
   };
 
   var updateProgressBar = function(progress_bar, data) {
-    var percentage = Math.min(Math.round(data.quantity / data.pool_size * 100), 100);
+    var percentage = Math.min(Math.round(data.idleRunners / data.prewarmingPoolSize * 100), 100);
     progress_bar.attr({
-      'aria-valuemax': data.pool_size,
-      'aria-valuenow': data.quantity,
+      'aria-valuemax': data.prewarmingPoolSize,
+      'aria-valuenow': data.idleRunners,
       style: 'width: ' + percentage + '%'
     });
-    progress_bar.html(data.quantity);
+    progress_bar.html(data.idleRunners);
   };
 
   var updateTable = function(response) {
     _.each(response.docker, function(data) {
       var row = $('tbody tr[data-id=' + data.id + ']');
-      $('.pool-size', row).html(data.pool_size);
-      var progress_bar = $('.quantity .progress .progress-bar', row);
+      $('.prewarming-pool-size', row).html(data.prewarmingPoolSize);
+      $('.used-runners', row).html(`+ ${data.usedRunners}`);
+      var progress_bar = $('.idle-runners .progress .progress-bar', row);
       updateProgressBar(progress_bar, data);
     });
   };

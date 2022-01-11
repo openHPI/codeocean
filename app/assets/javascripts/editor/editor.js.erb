@@ -17,6 +17,7 @@ var CodeOceanEditor = {
     //Request-For-Comments-Configuration
     REQUEST_FOR_COMMENTS_DELAY: 0,
     REQUEST_TOOLTIP_TIME: 5000,
+    REQUEST_TOOLTIP_DELAY: 10 * 60 * 1000,
 
     editors: [],
     editor_for_file: new Map(),
@@ -170,7 +171,7 @@ var CodeOceanEditor = {
 
         this.active_frame = frame;
         frame.show();
-        this.resizeParentOfAceEditor(frame.find('.ace_editor.ace-tm'));
+        this.resizeParentOfAceEditor(frame.find('.ace_editor'));
     },
 
     getProgressBarClass: function (percentage) {
@@ -406,7 +407,7 @@ var CodeOceanEditor = {
     initializeRegexes: function () {
         // These RegEx are run on the HTML escaped output!
         this.regex_for_language.set("ace/mode/python", /File &quot;(.+?)&quot;, line (\d+)/g);
-        this.regex_for_language.set("ace/mode/java", /(.*\.java):(\d+):/g);
+        this.regex_for_language.set("ace/mode/java", /(?:\.\/)?(.*\.java):(\d+):/g);
     },
 
     initializeTooltips: function () {
@@ -444,10 +445,12 @@ var CodeOceanEditor = {
 
         setTimeout(function () {
             button.prop('disabled', false);
-            button.tooltip('show');
             setTimeout(function () {
-                button.tooltip('hide');
-            }, this.REQUEST_TOOLTIP_TIME);
+                button.tooltip('show');
+                setTimeout(function () {
+                    button.tooltip('hide');
+                }, this.REQUEST_TOOLTIP_TIME);
+            }, this.REQUEST_TOOLTIP_DELAY)
         }.bind(this), this.REQUEST_FOR_COMMENTS_DELAY);
     },
 
@@ -623,15 +626,18 @@ var CodeOceanEditor = {
     },
 
     jumpToSourceLine: function (event) {
-        var file = $(event.target).data('file');
-        var line = $(event.target).data('line');
+        const file = $(event.target).data('file');
+        const line = $(event.target).data('line');
 
-        // set active file, only needed for codepilot, so skipped for now
-
-        var frame = $('div.frame[data-filename="' + file + '"]');
+        const frame = $('div.frame[data-filename="' + file + '"]');
         this.showFrame(frame);
+        this.toggleButtonStates();
 
-        var editor = this.editor_for_file.get(file);
+        const file_id = frame.find('.editor').data('file-id');
+        this.setActiveFile(frame.data('filename'), file_id);
+        this.selectFileInJsTree($('#files'), file_id);
+
+        const editor = this.editor_for_file.get(file);
         editor.gotoLine(line, 0);
         event.preventDefault();
     },
@@ -829,7 +835,11 @@ var CodeOceanEditor = {
                     const percentile75 = data['working_time_75_percentile'];
                     const accumulatedWorkTimeUser = data['working_time_accumulated'];
 
-                    const minTimeIntervention = 10 * 60 * 1000;
+                    let minTimeIntervention = 10 * 60 * 1000;
+                    if ($('#editor').data('exercise-id') === 909) {
+                        // 30 minutes for our large Map exercise
+                        minTimeIntervention = 30 * 60 * 1000;
+                    }
 
                     let timeUntilIntervention;
                     if ((accumulatedWorkTimeUser - percentile75) > 0) {

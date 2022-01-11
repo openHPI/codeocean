@@ -3,15 +3,15 @@
 require 'rails_helper'
 
 describe CodeOcean::FilesController do
-  let(:user) { FactoryBot.create(:admin) }
+  let(:user) { create(:admin) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
-    let(:submission) { FactoryBot.create(:submission, user: user) }
+    let(:submission) { create(:submission, user: user) }
 
     context 'with a valid file' do
-      let(:perform_request) { proc { post :create, params: {code_ocean_file: FactoryBot.build(:file, context: submission).attributes, format: :json} } }
+      let(:perform_request) { proc { post :create, params: {code_ocean_file: build(:file, context: submission).attributes, format: :json} } }
 
       before do
         submission.exercise.update(allow_file_creation: true)
@@ -41,7 +41,7 @@ describe CodeOcean::FilesController do
   end
 
   describe 'DELETE #destroy' do
-    let(:exercise) { FactoryBot.create(:fibonacci) }
+    let(:exercise) { create(:fibonacci) }
     let(:perform_request) { proc { delete :destroy, params: {id: exercise.files.first.id} } }
 
     before { perform_request.call }
@@ -49,7 +49,7 @@ describe CodeOcean::FilesController do
     expect_assigns(file: CodeOcean::File)
 
     it 'destroys the file' do
-      FactoryBot.create(:fibonacci)
+      create(:fibonacci)
       expect { perform_request.call }.to change(CodeOcean::File, :count).by(-1)
     end
 

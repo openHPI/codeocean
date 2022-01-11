@@ -36,6 +36,7 @@ class ExecutionEnvironment < ApplicationRecord
   after_destroy :delete_runner_environment
   after_save :working_docker_image?, if: :validate_docker_image?
 
+  after_update_commit :sync_runner_environment, unless: proc {|_| Rails.env.test? }
   after_rollback :delete_runner_environment, on: :create
   after_rollback :sync_runner_environment, on: %i[update destroy]
 
@@ -79,7 +80,7 @@ class ExecutionEnvironment < ApplicationRecord
 
   def validate_docker_image?
     # We only validate the code execution with the provided image if there is at least one container to test with.
-    pool_size.positive? && docker_image.present? && !Rails.env.test?
+    pool_size.positive? && docker_image.present? && !Rails.env.test? && Runner.management_active?
   end
 
   def working_docker_image?
@@ -92,9 +93,9 @@ class ExecutionEnvironment < ApplicationRecord
     rescue Runner::Error => e
       # In case of an Runner::Error, we retry multiple times before giving up.
       # The time between each retry increases to allow the runner management to catch up.
-      if retries < 5 && !Rails.env.test?
+      if retries < 30 && !Rails.env.test?
         retries += 1
-        sleep retries
+        sleep 1.second.to_i
         retry
       elsif errors.exclude?(:docker_image)
         errors.add(:docker_image, "error: #{e}")
@@ -104,7 +105,7 @@ class ExecutionEnvironment < ApplicationRecord
   end
 
   def delete_runner_environment
-    Runner.strategy_class.remove_environment(self)
+    Runner.strategy_class.remove_environment(self) if Runner.management_active?
   rescue Runner::Error => e
     unless errors.include?(:docker_image)
       errors.add(:docker_image, "error: #{e}")
@@ -114,7 +115,7 @@ class ExecutionEnvironment < ApplicationRecord
 
   def sync_runner_environment
     previous_saved_environment = self.class.find(id)
-    Runner.strategy_class.sync_environment(previous_saved_environment)
+    Runner.strategy_class.sync_environment(previous_saved_environment) if Runner.management_active?
   rescue Runner::Error => e
     unless errors.include?(:docker_image)
       errors.add(:docker_image, "error: #{e}")

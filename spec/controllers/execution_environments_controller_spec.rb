@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe ExecutionEnvironmentsController do
-  let(:execution_environment) { FactoryBot.create(:ruby) }
-  let(:user) { FactoryBot.create(:admin) }
+  let(:execution_environment) { create(:ruby) }
+  let(:user) { create(:admin) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -13,7 +13,7 @@ describe ExecutionEnvironmentsController do
 
   describe 'POST #create' do
     context 'with a valid execution environment' do
-      let(:perform_request) { proc { post :create, params: {execution_environment: FactoryBot.build(:ruby, pool_size: 1).attributes} } }
+      let(:perform_request) { proc { post :create, params: {execution_environment: build(:ruby, pool_size: 1).attributes} } }
 
       before do
         allow(Rails.env).to receive(:test?).and_return(false, true)
@@ -64,7 +64,7 @@ describe ExecutionEnvironmentsController do
     expect_assigns(execution_environment: :execution_environment)
 
     it 'destroys the execution environment' do
-      execution_environment = FactoryBot.create(:ruby)
+      execution_environment = create(:ruby)
       expect { delete :destroy, params: {id: execution_environment.id} }.to change(ExecutionEnvironment, :count).by(-1)
     end
 
@@ -103,7 +103,7 @@ describe ExecutionEnvironmentsController do
 
   describe 'GET #index' do
     before do
-      FactoryBot.create_pair(:ruby)
+      create_pair(:ruby)
       get :index
     end
 
@@ -186,7 +186,7 @@ describe ExecutionEnvironmentsController do
         runner = instance_double 'runner'
         allow(Runner).to receive(:for).and_return(runner)
         allow(runner).to receive(:execute_command).and_return({})
-        put :update, params: {execution_environment: FactoryBot.attributes_for(:ruby, pool_size: 1), id: execution_environment.id}
+        put :update, params: {execution_environment: attributes_for(:ruby, pool_size: 1), id: execution_environment.id}
       end
 
       expect_assigns(docker_images: Array)
@@ -216,8 +216,8 @@ describe ExecutionEnvironmentsController do
   end
 
   describe '#sync_all_to_runner_management' do
-    let(:execution_environments) { %i[ruby java python].map {|environment| FactoryBot.create(environment) } }
-    let(:outdated_execution_environments) { %i[node_js html].map {|environment| FactoryBot.build_stubbed(environment) } }
+    let(:execution_environments) { %i[ruby java python].map {|environment| create(environment) } }
+    let(:outdated_execution_environments) { %i[node_js html].map {|environment| build_stubbed(environment) } }
 
     let(:codeocean_config) { instance_double(CodeOcean::Config) }
     let(:runner_management_config) { {runner_management: {enabled: true, strategy: :poseidon}} }

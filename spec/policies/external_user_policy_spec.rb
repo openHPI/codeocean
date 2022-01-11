@@ -8,9 +8,9 @@ describe ExternalUserPolicy do
   %i[create? destroy? edit? new? show? update?].each do |action|
     permissions(action) do
       it 'grants access to admins only' do
-        expect(policy).to permit(FactoryBot.build(:admin), ExternalUser.new)
+        expect(policy).to permit(build(:admin), ExternalUser.new)
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(FactoryBot.build(factory_name), ExternalUser.new)
+          expect(policy).not_to permit(build(factory_name), ExternalUser.new)
         end
       end
     end
@@ -19,10 +19,10 @@ describe ExternalUserPolicy do
   [:index?].each do |action|
     permissions(action) do
       it 'grants access to admins and teachers only' do
-        expect(policy).to permit(FactoryBot.build(:admin), ExternalUser.new)
-        expect(policy).to permit(FactoryBot.build(:teacher), ExternalUser.new)
+        expect(policy).to permit(build(:admin), ExternalUser.new)
+        expect(policy).to permit(build(:teacher), ExternalUser.new)
         [:external_user].each do |factory_name|
-          expect(policy).not_to permit(FactoryBot.build(factory_name), ExternalUser.new)
+          expect(policy).not_to permit(build(factory_name), ExternalUser.new)
         end
       end
     end

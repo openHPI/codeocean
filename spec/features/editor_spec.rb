@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe 'Editor', js: true do
-  let(:exercise) { FactoryBot.create(:audio_video, description: Forgery(:lorem_ipsum).sentence) }
+  let(:exercise) { create(:audio_video, description: Forgery(:lorem_ipsum).sentence) }
   let(:scoring_response) do
     [{
       status: :ok,
@@ -22,12 +22,12 @@ describe 'Editor', js: true do
       weight: 2.0,
     }]
   end
-  let(:user) { FactoryBot.create(:teacher) }
+  let(:user) { create(:teacher) }
 
   before do
     visit(sign_in_path)
     fill_in('email', with: user.email)
-    fill_in('password', with: FactoryBot.attributes_for(:teacher)[:password])
+    fill_in('password', with: attributes_for(:teacher)[:password])
     click_button(I18n.t('sessions.new.link'))
     allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
     visit(implement_exercise_path(exercise))
@@ -94,7 +94,7 @@ describe 'Editor', js: true do
   end
 
   it 'contains a button for submitting the exercise' do
-    submission = FactoryBot.build(:submission, user: user, exercise: exercise)
+    submission = build(:submission, user: user, exercise: exercise)
     allow(submission).to receive(:calculate_score).and_return(scoring_response)
     allow(Submission).to receive(:find).and_return(submission)
     click_button(I18n.t('exercises.editor.score'))

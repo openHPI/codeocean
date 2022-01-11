@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExecutionEnvironmentPolicy < AdminOnlyPolicy
-  %i[execute_command? shell? statistics? show?].each do |action|
+  %i[execute_command? shell? statistics? show? sync_to_runner_management?].each do |action|
     define_method(action) { admin? || author? }
   end
 

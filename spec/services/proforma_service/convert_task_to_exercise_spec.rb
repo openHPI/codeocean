@@ -9,8 +9,8 @@ describe ProformaService::ConvertTaskToExercise do
     subject(:convert_to_exercise_service) { described_class.new(task: task, user: user, exercise: exercise) }
 
     let(:task) { Proforma::Task.new }
-    let(:user) { FactoryBot.build(:teacher) }
-    let(:exercise) { FactoryBot.build(:dummy) }
+    let(:user) { build(:teacher) }
+    let(:exercise) { build(:dummy) }
 
     it 'assigns task' do
       expect(convert_to_exercise_service.instance_variable_get(:@task)).to be task
@@ -28,7 +28,7 @@ describe ProformaService::ConvertTaskToExercise do
   describe '#execute' do
     subject(:convert_to_exercise_service) { described_class.call(task: task, user: user, exercise: exercise) }
 
-    before { FactoryBot.create(:dot_txt) }
+    before { create(:dot_txt) }
 
     let(:task) do
       Proforma::Task.new(
@@ -48,7 +48,7 @@ describe ProformaService::ConvertTaskToExercise do
         tests: tests
       )
     end
-    let(:user) { FactoryBot.create(:teacher) }
+    let(:user) { create(:teacher) }
     let(:files) { [] }
     let(:tests) { [] }
     let(:model_solutions) { [] }
@@ -308,7 +308,7 @@ describe ProformaService::ConvertTaskToExercise do
 
     context 'when exercise is set' do
       let(:exercise) do
-        FactoryBot.create(
+        create(
           :files,
           title: 'exercise-title',
           description: 'exercise-description',

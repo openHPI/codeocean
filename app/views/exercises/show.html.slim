@@ -49,7 +49,7 @@ ul.list-unstyled#files
         a.file-heading.collapsed data-toggle="collapse" data-parent="#files" href=".collapse#{file.id}"
           div.clearfix role="button"
             i class="fa" aria-hidden="true"
-            span = file.name_with_extension
+            span = file.filepath
       .card-collapse.collapse class="collapse#{file.id}" role="tabpanel"
         .card-body
           - if policy(file).destroy?

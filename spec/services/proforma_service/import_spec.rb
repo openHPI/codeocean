@@ -7,7 +7,7 @@ describe ProformaService::Import do
     subject(:import_service) { described_class.new(zip: zip, user: user) }
 
     let(:zip) { Tempfile.new('proforma_test_zip_file') }
-    let(:user) { FactoryBot.build(:teacher) }
+    let(:user) { build(:teacher) }
 
     it 'assigns zip' do
       expect(import_service.instance_variable_get(:@zip)).to be zip
@@ -21,11 +21,11 @@ describe ProformaService::Import do
   describe '#execute' do
     subject(:import_service) { described_class.call(zip: zip_file, user: import_user) }
 
-    let(:user) { FactoryBot.create(:teacher) }
+    let(:user) { create(:teacher) }
     let(:import_user) { user }
     let(:zip_file) { Tempfile.new('proforma_test_zip_file', encoding: 'ascii-8bit') }
     let(:exercise) do
-      FactoryBot.create(:dummy,
+      create(:dummy,
         instructions: 'instruction',
         execution_environment: execution_environment,
         files: files + tests,
@@ -34,7 +34,7 @@ describe ProformaService::Import do
     end
 
     let(:uuid) { nil }
-    let(:execution_environment) { FactoryBot.build(:java) }
+    let(:execution_environment) { build(:java) }
     let(:files) { [] }
     let(:tests) { [] }
     let(:exporter) { ProformaService::ExportTask.call(exercise: exercise.reload).string }
@@ -78,12 +78,12 @@ describe ProformaService::Import do
 
     context 'when exercise has a mainfile' do
       let(:files) { [file] }
-      let(:file) { FactoryBot.build(:file) }
+      let(:file) { build(:file) }
 
       it { is_expected.to be_an_equal_exercise_as exercise }
 
       context 'when the mainfile is very large' do
-        let(:file) { FactoryBot.build(:file, content: 'test' * (10**5)) }
+        let(:file) { build(:file, content: 'test' * (10**5)) }
 
         it { is_expected.to be_an_equal_exercise_as exercise }
       end
@@ -91,12 +91,12 @@ describe ProformaService::Import do
 
     context 'when exercise has a regular file' do
       let(:files) { [file] }
-      let(:file) { FactoryBot.build(:file, role: 'regular_file') }
+      let(:file) { build(:file, role: 'regular_file') }
 
       it { is_expected.to be_an_equal_exercise_as exercise }
 
       context 'when file has an attachment' do
-        let(:file) { FactoryBot.build(:file, :image, role: 'regular_file') }
+        let(:file) { build(:file, :image, role: 'regular_file') }
 
         it { is_expected.to be_an_equal_exercise_as exercise }
       end
@@ -104,26 +104,26 @@ describe ProformaService::Import do
 
     context 'when exercise has a file with role reference implementation' do
       let(:files) { [file] }
-      let(:file) { FactoryBot.build(:file, role: 'reference_implementation', read_only: true) }
+      let(:file) { build(:file, role: 'reference_implementation', read_only: true) }
 
       it { is_expected.to be_an_equal_exercise_as exercise }
     end
 
     context 'when exercise has multiple files with role reference implementation' do
-      let(:files) { FactoryBot.build_list(:file, 2, role: 'reference_implementation', read_only: true) }
+      let(:files) { build_list(:file, 2, role: 'reference_implementation', read_only: true) }
 
       it { is_expected.to be_an_equal_exercise_as exercise }
     end
 
     context 'when exercise has a test' do
       let(:tests) { [test] }
-      let(:test) { FactoryBot.build(:test_file) }
+      let(:test) { build(:test_file) }
 
       it { is_expected.to be_an_equal_exercise_as exercise }
     end
 
     context 'when exercise has multiple tests' do
-      let(:tests) { FactoryBot.build_list(:test_file, 2) }
+      let(:tests) { build_list(:test_file, 2) }
 
       it { is_expected.to be_an_equal_exercise_as exercise }
     end
@@ -153,7 +153,7 @@ describe ProformaService::Import do
       end
 
       context 'when another user imports the exercise' do
-        let(:import_user) { FactoryBot.create(:teacher) }
+        let(:import_user) { create(:teacher) }
 
         it 'raises a proforma error' do
           expect { imported_exercise.save! }.to raise_error Proforma::ExerciseNotOwned

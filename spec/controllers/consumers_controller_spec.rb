@@ -3,14 +3,14 @@
 require 'rails_helper'
 
 describe ConsumersController do
-  let(:consumer) { FactoryBot.create(:consumer) }
-  let(:user) { FactoryBot.create(:admin) }
+  let(:consumer) { create(:consumer) }
+  let(:user) { create(:admin) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
   describe 'POST #create' do
     context 'with a valid consumer' do
-      let(:perform_request) { proc { post :create, params: {consumer: FactoryBot.attributes_for(:consumer)} } }
+      let(:perform_request) { proc { post :create, params: {consumer: attributes_for(:consumer)} } }
 
       before { perform_request.call }
 
@@ -38,7 +38,7 @@ describe ConsumersController do
     expect_assigns(consumer: Consumer)
 
     it 'destroys the consumer' do
-      consumer = FactoryBot.create(:consumer)
+      consumer = create(:consumer)
       expect { delete :destroy, params: {id: consumer.id} }.to change(Consumer, :count).by(-1)
     end
 
@@ -55,7 +55,7 @@ describe ConsumersController do
 
   describe 'GET #index' do
     before do
-      FactoryBot.create_pair(:consumer)
+      create_pair(:consumer)
       get :index
     end
 
@@ -82,7 +82,7 @@ describe ConsumersController do
 
   describe 'PUT #update' do
     context 'with a valid consumer' do
-      before { put :update, params: {consumer: FactoryBot.attributes_for(:consumer), id: consumer.id} }
+      before { put :update, params: {consumer: attributes_for(:consumer), id: consumer.id} }
 
       expect_assigns(consumer: Consumer)
       expect_redirect(:consumer)

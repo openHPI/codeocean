@@ -5,7 +5,7 @@ module RedirectBehavior
 
   def redirect_after_submit
     Rails.logger.debug { "Redirecting user with score:s #{@submission.normalized_score}" }
-    if @submission.normalized_score.to_d == 1.0.to_d
+    if @submission.normalized_score.to_d == BigDecimal('1.0')
       if redirect_to_community_solution?
         redirect_to_community_solution
         return

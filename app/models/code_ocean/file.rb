@@ -41,7 +41,6 @@ module CodeOcean
 
     validates :feedback_message, if: :teacher_defined_assessment?, presence: true
     validates :feedback_message, absence: true, unless: :teacher_defined_assessment?
-    validates :file_type_id, presence: true
     validates :hashed_content, if: :content_present?, presence: true
     validates :hidden, boolean_presence: true
     validates :name, presence: true
@@ -99,7 +98,7 @@ module CodeOcean
     private :incomplete_descendent?
 
     def name_with_extension
-      name + (file_type.file_extension || '')
+      name.to_s + (file_type&.file_extension || '')
     end
 
     def set_ancestor_values

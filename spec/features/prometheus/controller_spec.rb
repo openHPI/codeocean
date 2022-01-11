@@ -26,7 +26,7 @@ describe Prometheus::Controller do
 
   describe 'instance count' do
     it 'initializes the metrics with the current database entries' do
-      FactoryBot.create_list(:proxy_exercise, 3)
+      create_list(:proxy_exercise, 3)
       described_class.register_metrics
       stub_metrics
       described_class.initialize_instance_count
@@ -35,25 +35,25 @@ describe Prometheus::Controller do
 
     it 'gets notified when an object is created' do
       allow(described_class).to receive(:create_notification)
-      proxy_exercise = FactoryBot.create(:proxy_exercise)
+      proxy_exercise = create(:proxy_exercise)
       expect(described_class).to have_received(:create_notification).with(proxy_exercise).once
     end
 
     it 'gets notified when an object is destroyed' do
       allow(described_class).to receive(:destroy_notification)
-      proxy_exercise = FactoryBot.create(:proxy_exercise).destroy
+      proxy_exercise = create(:proxy_exercise).destroy
       expect(described_class).to have_received(:destroy_notification).with(proxy_exercise).once
     end
 
     it 'increments gauge when creating a new instance' do
-      FactoryBot.create(:proxy_exercise)
+      create(:proxy_exercise)
       expect(described_class.instance_variable_get(:@instance_count)).to(
         have_received(:increment).with(class: ProxyExercise.name).once
       )
     end
 
     it 'decrements gauge when deleting an object' do
-      FactoryBot.create(:proxy_exercise).destroy
+      create(:proxy_exercise).destroy
       expect(described_class.instance_variable_get(:@instance_count)).to(
         have_received(:decrement).with(class: ProxyExercise.name).once
       )
@@ -63,7 +63,7 @@ describe Prometheus::Controller do
   describe 'rfc count' do
     context 'when initializing an rfc' do
       it 'updates rfc count when creating an ongoing rfc' do
-        FactoryBot.create(:rfc)
+        create(:rfc)
         expect(described_class.instance_variable_get(:@rfc_count)).to(
           have_received(:increment).with(state: RequestForComment::ONGOING).once
         )
@@ -71,7 +71,7 @@ describe Prometheus::Controller do
     end
 
     context 'when changing the state of an rfc' do
-      let(:rfc) { FactoryBot.create(:rfc) }
+      let(:rfc) { create(:rfc) }
 
       it 'updates rfc count when soft-solving an rfc' do
         rfc.full_score_reached = true
@@ -90,12 +90,12 @@ describe Prometheus::Controller do
 
     context 'when commenting an rfc' do
       it 'updates comment metric when commenting an rfc' do
-        FactoryBot.create(:rfc_with_comment)
+        create(:rfc_with_comment)
         expect(described_class.instance_variable_get(:@rfc_commented_count)).to have_received(:increment).once
       end
 
       it 'does not update comment metric when commenting an rfc that already has a comment' do
-        rfc = FactoryBot.create(:rfc_with_comment)
+        rfc = create(:rfc_with_comment)
         expect(described_class.instance_variable_get(:@rfc_commented_count)).to have_received(:increment).once
 
         Comment.create(file: rfc.file, user: rfc.user, text: "comment a for rfc #{rfc.question}")

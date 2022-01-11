@@ -10,33 +10,38 @@ h1 = t('breadcrumbs.dashboard.show')
 h2 Version
 
 div.mb-4
-  = "CodeOcean Release:"
+  = application_name
+  =< t("admin.dashboard.show.release")
+  | :
   pre = Sentry.configuration.release
 
 - if Runner.management_active?
   div.mb-4
     = Runner.strategy_class.name.demodulize
-    =< "Release:"
-    pre = Runner.strategy_class.release
+    =< t("admin.dashboard.show.release")
+    | :
+    pre = Admin::DashboardHelper.runner_management_release
 
 h2 Docker
 
 - if Runner.management_active?
-  h3 = t('.current')
+  h3 = t('admin.dashboard.show.current')
   .table-responsive
     table.table
       thead
         tr
           th = t('activerecord.models.execution_environment.one')
           th = t('activerecord.attributes.execution_environment.pool_size')
-          th = t('.quantity')
+          th = t('admin.dashboard.show.idleRunners')
+          th = t('admin.dashboard.show.usedRunners')
       tbody
         - ExecutionEnvironment.order(:name).each do |execution_environment|
           tr data-id=execution_environment.id
             td.name = link_to_if(policy(execution_environment).show?, execution_environment, execution_environment)
-            td.pool-size
-            td.quantity = progress_bar(0)
-  h3 = t('.history')
+            td.prewarming-pool-size
+            td.idle-runners = progress_bar(0)
+            td.used-runners
+  h3 = t('admin.dashboard.show.history')
   #graph
 - else
-  p = t('.inactive')
+  p = t('admin.dashboard.show.inactive')

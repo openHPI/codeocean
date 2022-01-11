@@ -27,12 +27,7 @@ class SubmissionsController < ApplicationController
 
     stringio = Zip::OutputStream.write_buffer do |zio|
       @files.each do |file|
-        zio.put_next_entry(if file.path.to_s == ''
-                             file.name_with_extension
-                           else
-                             File.join(file.path,
-                               file.name_with_extension)
-                           end)
+        zio.put_next_entry(file.filepath)
         zio.write(file.content.presence || file.native_file.read)
       end
 
@@ -247,12 +242,9 @@ class SubmissionsController < ApplicationController
     # parse remote request url
     content += "#{request.base_url}/evaluate\n"
     @submission.files.each do |file|
-      file_path = file.path.to_s == '' ? file.name_with_extension : File.join(file.path, file.name_with_extension)
-      content += "#{file_path}=#{file.file_id}\n"
+      content += "#{file.filepath}=#{file.file_id}\n"
     end
-    File.open(path, 'w+') do |f|
-      f.write(content)
-    end
+    File.write(path, content)
     path
   end
 
@@ -317,7 +309,7 @@ class SubmissionsController < ApplicationController
     # @files contains all visible files for the user
     # @file contains the specific file requested for run / test / render / ...
     set_files
-    @file = @files.detect {|file| file.name_with_extension == sanitize_filename }
+    @file = @files.detect {|file| file.filepath == sanitize_filename }
     head :not_found unless @file
   end
 

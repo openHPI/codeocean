@@ -97,7 +97,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
         FileUtils.cp(file.native_file.path, local_file_path)
       else
         begin
-          File.open(local_file_path, 'w') {|f| f.write(file.content) }
+          File.write(local_file_path, file.content)
         rescue IOError => e
           raise Runner::Error::WorkspaceError.new("Could not create file #{file.filepath}: #{e.inspect}")
         end
@@ -166,7 +166,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     url = "#{config[:url]}/docker_container_pool/quantities"
     response = Faraday.get(url)
     pool_size = JSON.parse(response.body)
-    pool_size.transform_keys(&:to_i)
+    pool_size.deep_symbolize_keys
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
   rescue JSON::ParserError => e
@@ -259,7 +259,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
           # TODO: Super dirty hack to redirect test output to stderr
           # This is only required for Python and the unittest module but must not be used with PyLint
           @stream = 'stderr'
-        when /\*\*\*\*\*\*\*\*\*\*\*\*\* Module/
+        when /\*\*\*\*\*\*\*\*\*\*\*\*\* Module/, / Your code has been rated at/
           # Identification of PyLint output, change stream back to stdout and return event
           @stream = 'stdout'
           {'type' => @stream, 'data' => event_data}

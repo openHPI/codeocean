@@ -49,7 +49,7 @@ class Exercise < ApplicationRecord
   MAX_GROUP_EXERCISE_FEEDBACKS = 20
 
   def average_percentage
-    if average_score && (maximum_score.to_d != 0.0.to_d) && submissions.exists?(cause: 'submit')
+    if average_score && (maximum_score.to_d != BigDecimal('0.0')) && submissions.exists?(cause: 'submit')
       (average_score / maximum_score * 100).round(2)
     else
       0
@@ -580,7 +580,7 @@ cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
   private :valid_submission_deadlines?
 
   def needs_more_feedback?(submission)
-    if submission.normalized_score.to_d == 1.0.to_d
+    if submission.normalized_score.to_d == BigDecimal('1.0')
       user_exercise_feedbacks.final.size <= MAX_GROUP_EXERCISE_FEEDBACKS
     else
       user_exercise_feedbacks.intermediate.size <= MAX_GROUP_EXERCISE_FEEDBACKS

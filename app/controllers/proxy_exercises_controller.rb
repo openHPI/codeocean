@@ -24,7 +24,7 @@ class ProxyExercisesController < ApplicationController
 
   def create
     myparams = proxy_exercise_params
-    myparams[:exercises] = Exercise.find(myparams[:exercise_ids].reject(&:empty?))
+    myparams[:exercises] = Exercise.find(myparams[:exercise_ids].compact_blank)
     @proxy_exercise = ProxyExercise.new(myparams)
     authorize!
 
@@ -78,7 +78,7 @@ class ProxyExercisesController < ApplicationController
 
   def update
     myparams = proxy_exercise_params
-    myparams[:exercises] = Exercise.find(myparams[:exercise_ids].reject(&:blank?))
+    myparams[:exercises] = Exercise.find(myparams[:exercise_ids].compact_blank)
     update_and_respond(object: @proxy_exercise, params: myparams)
   end
 end

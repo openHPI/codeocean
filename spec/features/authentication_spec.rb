@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Authentication' do
-  let(:user) { FactoryBot.create(:admin) }
-  let(:password) { FactoryBot.attributes_for(:admin)[:password] }
+  let(:user) { create(:admin) }
+  let(:password) { attributes_for(:admin)[:password] }
 
   context 'when signed out' do
     before { visit(root_path) }
