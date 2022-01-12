@@ -103,7 +103,7 @@ raise: false
 
   def feedback
     authorize!
-    @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page])
+    @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page], per_page: per_page_param)
     @submissions = @feedbacks.map do |feedback|
       feedback.exercise.final_submission(feedback.user)
     end
@@ -410,7 +410,7 @@ working_time_accumulated: working_time_accumulated})
 
   def index
     @search = policy_scope(Exercise).ransack(params[:q])
-    @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page])
+    @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

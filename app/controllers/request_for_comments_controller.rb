@@ -23,7 +23,7 @@ class RequestForCommentsController < ApplicationController
       .where(exercises: {unpublished: false})
       .includes(submission: [:study_group])
       .order('created_at DESC')
-      .paginate(page: params[:page], total_entries: @search.result.length)
+      .paginate(page: params[:page], per_page: per_page_param, total_entries: @search.result.length)
 
     authorize!
   end
@@ -36,7 +36,7 @@ class RequestForCommentsController < ApplicationController
       .ransack(params[:q])
     @request_for_comments = @search.result
       .order('created_at DESC')
-      .paginate(page: params[:page])
+      .paginate(page: params[:page], per_page: per_page_param)
     authorize!
     render 'index'
   end
@@ -50,7 +50,7 @@ class RequestForCommentsController < ApplicationController
       .ransack(params[:q])
     @request_for_comments = @search.result
       .order('last_comment DESC')
-      .paginate(page: params[:page])
+      .paginate(page: params[:page], per_page: per_page_param)
     authorize!
     render 'index'
   end
@@ -65,7 +65,7 @@ class RequestForCommentsController < ApplicationController
     @request_for_comments = @search.result
       .joins(:exercise)
       .order('last_comment DESC')
-      .paginate(page: params[:page])
+      .paginate(page: params[:page], per_page: per_page_param)
     # let the exercise decide, whether its rfcs should be visible
     authorize(exercise)
     render 'index'

@@ -121,7 +121,7 @@ class ExecutionEnvironmentsController < ApplicationController
   private :execution_environment_params
 
   def index
-    @execution_environments = ExecutionEnvironment.all.includes(:user).order(:name).paginate(page: params[:page])
+    @execution_environments = ExecutionEnvironment.all.includes(:user).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

@@ -63,7 +63,7 @@ class InternalUsersController < ApplicationController
 
   def index
     @search = InternalUser.ransack(params[:q])
-    @users = @search.result.includes(:consumer).order(:name).paginate(page: params[:page])
+    @users = @search.result.includes(:consumer).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

@@ -51,7 +51,7 @@ class ProxyExercisesController < ApplicationController
 
   def index
     @search = policy_scope(ProxyExercise).ransack(params[:q])
-    @proxy_exercises = @search.result.order(:title).paginate(page: params[:page])
+    @proxy_exercises = @search.result.order(:title).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

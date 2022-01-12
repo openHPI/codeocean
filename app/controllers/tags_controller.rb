@@ -28,7 +28,7 @@ class TagsController < ApplicationController
   private :tag_params
 
   def index
-    @tags = Tag.all.paginate(page: params[:page])
+    @tags = Tag.all.paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

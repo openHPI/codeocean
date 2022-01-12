@@ -65,7 +65,7 @@ class SubmissionsController < ApplicationController
 
   def index
     @search = Submission.ransack(params[:q])
-    @submissions = @search.result.includes(:exercise, :user).paginate(page: params[:page])
+    @submissions = @search.result.includes(:exercise, :user).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

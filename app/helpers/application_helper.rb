@@ -34,6 +34,14 @@ module ApplicationHelper
     tag.i(nil, class: 'fa fa-times')
   end
 
+  def per_page_param
+    if params[:per_page]
+      [params[:per_page].to_i, 100].min
+    else
+      WillPaginate.per_page
+    end
+  end
+
   def progress_bar(value)
     tag.div(class: value ? 'progress' : 'disabled progress') do
       tag.div(value ? "#{value}%" : '', 'aria-valuemax': 100, 'aria-valuemin': 0,
