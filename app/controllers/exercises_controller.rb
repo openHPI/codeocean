@@ -506,8 +506,8 @@ working_time_accumulated: working_time_accumulated})
                             'AND FALSE'
                           end
       query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
-              FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter} GROUP BY
-              user_id;"
+              FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter} AND user_type = 'ExternalUser'
+              GROUP BY user_id;"
       ApplicationRecord.connection.execute(query).each do |tuple|
         user_statistics[tuple['user_id'].to_i] = tuple
       end
