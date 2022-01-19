@@ -45,7 +45,7 @@ module ApplicationHelper
   def progress_bar(value)
     tag.div(class: value ? 'progress' : 'disabled progress') do
       tag.div(value ? "#{value}%" : '', 'aria-valuemax': 100, 'aria-valuemin': 0,
-'aria-valuenow': value, class: 'progress-bar progress-bar-striped', role: 'progressbar', style: "width: #{[value || 0, 100].min}%;")
+        'aria-valuenow': value, class: 'progress-bar progress-bar-striped', role: 'progressbar', style: "width: #{[value || 0, 100].min}%;")
     end
   end
 

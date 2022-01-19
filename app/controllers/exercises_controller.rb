@@ -21,7 +21,7 @@ class ExercisesController < ApplicationController
     only: %i[import_exercise import_uuid_check export_external_confirm export_external_check]
   skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check export_external_confirm]
   skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check export_external_confirm],
-raise: false
+    raise: false
 
   def authorize!
     authorize(@exercise || @exercises)

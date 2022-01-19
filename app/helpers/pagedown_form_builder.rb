@@ -28,7 +28,7 @@ class PagedownFormBuilder < ActionView::Helpers::FormBuilder
 
   def wmd_preview
     @template.tag.div(nil, class: 'wmd-preview',
-                         id: "wmd-preview-#{base_id}")
+      id: "wmd-preview-#{base_id}")
   end
 
   def show_wmd_preview?
