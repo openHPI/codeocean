@@ -32,7 +32,7 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
           .card-footer
             div.clearfix.feedback-header
               span.points.flex-grow-1 = "#{t('exercises.statistics.score')}: #{@submissions[index].score}"
-              span.working_time.pull-right = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user.id) or 0}"
+              span.working_time.pull-right = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user) or 0}"
 
   = render('shared/pagination', collection: @feedbacks)
 

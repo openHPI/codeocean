@@ -372,11 +372,11 @@ class Exercise < ApplicationRecord
   end
 
   def retrieve_working_time_statistics
-    @working_time_statistics = {}
+    @working_time_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
     ActiveRecord::Base.transaction do
       self.class.connection.execute("SET LOCAL intervalstyle = 'postgres'")
       self.class.connection.execute(user_working_time_query).each do |tuple|
-        @working_time_statistics[tuple['user_id'].to_i] = tuple
+        @working_time_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
       end
     end
   end
@@ -392,9 +392,9 @@ class Exercise < ApplicationRecord
     end
   end
 
-  def average_working_time_for(user_id)
+  def average_working_time_for(user)
     retrieve_working_time_statistics if @working_time_statistics.nil?
-    @working_time_statistics[user_id]['working_time']
+    @working_time_statistics[user.class.name][user.id]['working_time']
   end
 
   def accumulated_working_time_for_only(user)

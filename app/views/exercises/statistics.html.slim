@@ -48,7 +48,7 @@ h1 = @exercise
   - if symbol==:external_users
     - working_time_array = []
     - @exercise.send(symbol).distinct().each do |user|
-      - working_time = @exercise.average_working_time_for(user.id) or 0
+      - working_time = @exercise.average_working_time_for(user) or 0
       - working_time_array.push working_time
     hr
     .d-none#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
@@ -88,4 +88,4 @@ h1 = @exercise
                   - elsif latest_user_submission.after_late_deadline?
                     .unit-test-result.negative-result.after_late_deadline
               td = us['runs'] if policy(@exercise).detailed_statistics?
-              td = @exercise.average_working_time_for(user.id) or 0 if policy(@exercise).detailed_statistics?
+              td = @exercise.average_working_time_for(user) or 0 if policy(@exercise).detailed_statistics?
