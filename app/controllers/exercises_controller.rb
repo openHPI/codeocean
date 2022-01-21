@@ -496,7 +496,7 @@ working_time_accumulated: working_time_accumulated})
       render 'exercises/external_users/statistics'
     else
       # Show general statistic page for specific exercise
-      user_statistics = {}
+      user_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
       additional_filter = if policy(@exercise).detailed_statistics?
                             ''
                           elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
@@ -505,11 +505,11 @@ working_time_accumulated: working_time_accumulated})
                             # e.g. internal user without any study groups, show no submissions
                             'AND FALSE'
                           end
-      query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
-              FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter} AND user_type = 'ExternalUser'
-              GROUP BY user_id;"
+      query = "SELECT user_id, user_type, MAX(score) AS maximum_score, COUNT(id) AS runs
+              FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter}
+              GROUP BY user_id, user_type;"
       ApplicationRecord.connection.execute(query).each do |tuple|
-        user_statistics[tuple['user_id'].to_i] = tuple
+        user_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
       end
       render locals: {
         user_statistics: user_statistics,

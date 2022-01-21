@@ -73,7 +73,7 @@ h1 = @exercise
         tbody
           - users = symbol.to_s.classify.constantize.where(id: submissions.joins(symbol).group(:user_id).select(:user_id).distinct)
           - users.each do |user|
-            - if user_statistics[user.id] then us = user_statistics[user.id] else us = {"maximum_score" => nil, "runs" => nil}
+            - if user_statistics[user.class.name][user.id] then us = user_statistics[user.class.name][user.id] else us = {"maximum_score" => nil, "runs" => nil}
             - label = "#{user.displayname}"
             tr
               td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
