@@ -567,6 +567,7 @@ DEPENDENCIES
   eventmachine
   factory_bot_rails
   faraday
+  faraday-net_http_persistent
   faye-websocket
   forgery
   headless
