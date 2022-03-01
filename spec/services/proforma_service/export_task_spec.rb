@@ -16,7 +16,7 @@ describe ProformaService::ExportTask do
       subject(:export_task) { described_class.new }
 
       it 'assigns exercise' do
-        expect(export_task.instance_variable_get(:@exercise)).to be nil
+        expect(export_task.instance_variable_get(:@exercise)).to be_nil
       end
     end
   end

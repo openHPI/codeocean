@@ -24,7 +24,7 @@ describe PortPool do
       it 'returns the port' do
         available_ports = described_class.instance_variable_get(:@available_ports)
         described_class.instance_variable_set(:@available_ports, [])
-        expect(described_class.available_port).to be nil
+        expect(described_class.available_port).to be_nil
         described_class.instance_variable_set(:@available_ports, available_ports)
       end
     end
