@@ -199,26 +199,31 @@ CodeOceanEditorEvaluation = {
             return;
         }
 
+        if (output.stdout !== undefined && !output.stdout.startsWith("<img")) {
+            output.stdout = _.escape(output.stdout);
+        }
+
         var element = this.findOrCreateOutputElement(index);
         // Switch all four lines below to enable the output of images and render <IMG/> tags
         if (!colorize) {
             if (output.stdout !== undefined && output.stdout !== '') {
-                //element.append(output.stdout)
-                element.text(element.text() + output.stdout)
+
+                element.append(output.stdout)
+                //element.text(element.text() + output.stdout)
             }
 
             if (output.stderr !== undefined && output.stderr !== '') {
-                //element.append('StdErr: ' + output.stderr);
-                element.text('StdErr: ' + element.text() + output.stderr);
+                element.append('StdErr: ' + output.stderr);
+                //element.text('StdErr: ' + element.text() + output.stderr);
             }
 
         } else if (output.stderr) {
-            //element.addClass('text-warning').append(output.stderr);
-            element.addClass('text-warning').text(element.text() + output.stderr);
+            element.addClass('text-warning').append(output.stderr);
+            //element.addClass('text-warning').text(element.text() + output.stderr);
             this.QaApiOutputBuffer.stderr += output.stderr;
         } else if (output.stdout) {
-            //element.addClass('text-success').append(output.stdout);
-            element.addClass('text-success').text(element.text() + output.stdout);
+            element.addClass('text-success').append(output.stdout);
+            //element.addClass('text-success').text(element.text() + output.stdout);
             this.QaApiOutputBuffer.stdout += output.stdout;
         } else {
             element.addClass('text-muted').text($('#output').data('message-no-output'));

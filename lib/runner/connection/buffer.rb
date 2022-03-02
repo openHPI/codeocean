@@ -84,7 +84,7 @@ class Runner::Connection::Buffer
     # Second, if we have the beginning of a valid command but an invalid JSON
     return true if invalid_json && message.start_with?(/\s*{"cmd/)
     # Third, buffer the message if it contains long messages (e.g., an image or turtle batch commands)
-    return true if invalid_json && (message.include?('<img') || message.include?('"turtlebatch"'))
+    return true if invalid_json && (message.start_with?('<img') || message.include?('"turtlebatch"'))
 
     # If nothing applies, we don't want to buffer the current message
     false
