@@ -162,7 +162,7 @@ GEM
       regexp_parser (~> 2.2)
     erubi (1.10.0)
     eventmachine (1.2.7)
-    excon (0.91.0)
+    excon (0.92.0)
     factory_bot (6.2.0)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
@@ -502,7 +502,7 @@ GEM
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.8)
+    unf_ext (0.0.8.1)
     unicode-display_width (2.1.0)
     uri_template (0.7.0)
     web-console (4.2.0)
