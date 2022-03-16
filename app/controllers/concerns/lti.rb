@@ -21,7 +21,7 @@ module Lti
   # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
   # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
   # Only the lti_parameters are deleted.
-  def clear_lti_session_data(exercise_id = nil, user_id = nil)
+  def clear_lti_session_data(exercise_id = nil, _user_id = nil)
     if exercise_id.nil?
       session.delete(:external_user_id)
       session.delete(:study_group_id)
@@ -29,8 +29,10 @@ module Lti
       session.delete(:lti_exercise_id)
       session.delete(:lti_parameters_id)
     end
-    LtiParameter.where(external_users_id: user_id,
-      exercises_id: exercise_id).destroy_all
+
+    # March 2022: We temporarily allow reusing the LTI credentials and don't remove them on purpose.
+    # This allows users to jump between remote and web evaluation with the same behavior.
+    # LtiParameter.where(external_users_id: user_id, exercises_id: exercise_id).destroy_all
   end
 
   private :clear_lti_session_data
