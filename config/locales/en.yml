@@ -328,8 +328,8 @@ en:
     editor:
       collapse_action_sidebar: Collapse Action Sidebar
       collapse_output_sidebar: Collapse Output Sidebar
-      confirm_start_over: Do you really want to start over? Your complete progress in this exercise will be reset; other exercises remain untouched. You cannot undo this action.
-      confirm_start_over_active_file: Do you really want to reset the active file '%{filename}'? You cannot undo this action.
+      confirm_start_over: Do you really want to start over? Your previous changes in this exercise will be reset; other exercises remain untouched. You cannot undo this action.
+      confirm_start_over_active_file: Do you really want to remove any changes in the active file '%{filename}'? You cannot undo this action.
       confirm_submit: Do you really want to submit your code for grading?
       create_file: New File
       depleted: All execution environments are busy. Please try again later.
