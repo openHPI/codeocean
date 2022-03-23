@@ -162,8 +162,8 @@ GEM
       regexp_parser (~> 2.2)
     erubi (1.10.0)
     eventmachine (1.2.7)
-    excon (0.92.0)
-    factory_bot (6.2.0)
+    excon (0.92.1)
+    factory_bot (6.2.1)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
@@ -581,7 +581,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-i18n
   rails-timeago
-  rails_admin
+  rails_admin (< 3.0.0)
   ransack
   rest-client
   rspec-autotest
