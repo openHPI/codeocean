@@ -17,7 +17,7 @@ var CodeOceanEditor = {
     //Request-For-Comments-Configuration
     REQUEST_FOR_COMMENTS_DELAY: 0,
     REQUEST_TOOLTIP_TIME: 5000,
-    REQUEST_TOOLTIP_DELAY: 10 * 60 * 1000,
+    REQUEST_TOOLTIP_DELAY: 15 * 60 * 1000,
 
     editors: [],
     editor_for_file: new Map(),
@@ -835,11 +835,7 @@ var CodeOceanEditor = {
                     const percentile75 = data['working_time_75_percentile'];
                     const accumulatedWorkTimeUser = data['working_time_accumulated'];
 
-                    let minTimeIntervention = 10 * 60 * 1000;
-                    if ($('#editor').data('exercise-id') === 909) {
-                        // 30 minutes for our large Map exercise
-                        minTimeIntervention = 30 * 60 * 1000;
-                    }
+                    let minTimeIntervention = 20 * 60 * 1000;
 
                     let timeUntilIntervention;
                     if ((accumulatedWorkTimeUser - percentile75) > 0) {
