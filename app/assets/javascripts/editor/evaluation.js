@@ -1,5 +1,8 @@
 CodeOceanEditorEvaluation = {
     chunkBuffer: [{streamedResponse: true}],
+    // A list of non-printable characters that are not allowed in the code output.
+    // Taken from https://stackoverflow.com/a/69024306
+    nonPrintableRegEx: /[\u0000-\u0008\u000B-\u001F\u007F-\u009F\u2000-\u200F\u2028-\u202F\u205F-\u206F\u3000\uFEFF]/g,
 
     /**
      * Scoring-Functions
@@ -207,21 +210,28 @@ CodeOceanEditorEvaluation = {
         // Switch all four lines below to enable the output of images and render <IMG/> tags
         if (!colorize) {
             if (output.stdout !== undefined && output.stdout !== '') {
+                output.stdout = output.stdout.replace(this.nonPrintableRegEx, "")
 
                 element.append(output.stdout)
                 //element.text(element.text() + output.stdout)
             }
 
             if (output.stderr !== undefined && output.stderr !== '') {
+                output.stderr = output.stderr.replace(this.nonPrintableRegEx, "")
+
                 element.append('StdErr: ' + output.stderr);
                 //element.text('StdErr: ' + element.text() + output.stderr);
             }
 
         } else if (output.stderr) {
+            output.stderr = output.stderr.replace(this.nonPrintableRegEx, "")
+
             element.addClass('text-warning').append(output.stderr);
             //element.addClass('text-warning').text(element.text() + output.stderr);
             this.QaApiOutputBuffer.stderr += output.stderr;
         } else if (output.stdout) {
+            output.stdout = output.stdout.replace(this.nonPrintableRegEx, "")
+
             element.addClass('text-success').append(output.stdout);
             //element.addClass('text-success').text(element.text() + output.stdout);
             this.QaApiOutputBuffer.stdout += output.stdout;
