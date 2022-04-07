@@ -7,15 +7,6 @@ GIT
       structured_warnings (~> 0.4.0)
 
 GIT
-  remote: https://github.com/gosukiwi/tubesock.git
-  revision: 86a5ca4f7d3c3a7b9a727ad91df3b9b4912eda39
-  branch: patch-1
-  specs:
-    tubesock (0.2.7)
-      rack (>= 1.5.0)
-      websocket (>= 1.1.0)
-
-GIT
   remote: https://github.com/openHPI/proforma.git
   revision: dc68000325388e1d75f31be9e136a82edad8a56d
   tag: v0.5.1
@@ -162,7 +153,7 @@ GEM
       regexp_parser (~> 2.2)
     erubi (1.10.0)
     eventmachine (1.2.7)
-    excon (0.92.1)
+    excon (0.92.2)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
@@ -238,7 +229,7 @@ GEM
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.15.0)
+    loofah (2.16.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
@@ -264,7 +255,7 @@ GEM
     mnemosyne-ruby (1.12.1)
       activesupport (>= 4)
       bunny
-    msgpack (1.4.5)
+    msgpack (1.5.1)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     nested_form (0.3.2)
@@ -287,7 +278,7 @@ GEM
       rack (>= 1.2, < 3)
     pagedown-bootstrap-rails (2.1.4)
       railties (> 3.1)
-    parallel (1.22.0)
+    parallel (1.22.1)
     parser (3.1.1.0)
       ast (~> 2.4.1)
     path_expander (1.1.0)
@@ -397,7 +388,7 @@ GEM
     rspec-expectations (3.11.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
-    rspec-mocks (3.11.0)
+    rspec-mocks (3.11.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-rails (5.1.1)
@@ -495,6 +486,9 @@ GEM
     temple (0.8.2)
     thor (1.2.1)
     tilt (2.0.10)
+    tubesock (0.2.9)
+      rack (>= 1.5.0)
+      websocket (>= 1.1.0)
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
@@ -603,7 +597,7 @@ DEPENDENCIES
   sorcery
   spring
   telegraf
-  tubesock!
+  tubesock
   turbolinks
   web-console
   webmock

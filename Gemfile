@@ -42,7 +42,7 @@ gem 'sass-rails'
 gem 'slim-rails'
 gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.com/Sorcery/sorcery/pull/255
 gem 'telegraf'
-gem 'tubesock', github: 'gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
+gem 'tubesock'
 gem 'turbolinks'
 gem 'webpacker'
 gem 'whenever', require: false

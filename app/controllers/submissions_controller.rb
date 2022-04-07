@@ -85,7 +85,10 @@ class SubmissionsController < ApplicationController
 
     hijack do |tubesock|
       client_socket = tubesock
-      return kill_client_socket(client_socket) if @embed_options[:disable_run]
+
+      client_socket.onopen do |_event|
+        kill_client_socket(client_socket) if @embed_options[:disable_run]
+      end
 
       client_socket.onclose do |_event|
         runner_socket&.close(:terminated_by_client)
@@ -177,16 +180,18 @@ class SubmissionsController < ApplicationController
 
   def score
     hijack do |tubesock|
-      return if @embed_options[:disable_score]
+      tubesock.onopen do |_event|
+        kill_client_socket(tubesock) if @embed_options[:disable_score]
 
-      tubesock.send_data(JSON.dump(@submission.calculate_score))
-      # To enable hints when scoring a submission, uncomment the next line:
-      # send_hints(tubesock, StructuredError.where(submission: @submission))
+        tubesock.send_data(JSON.dump(@submission.calculate_score))
+        # To enable hints when scoring a submission, uncomment the next line:
+        # send_hints(tubesock, StructuredError.where(submission: @submission))
+        kill_client_socket(tubesock)
+      end
     rescue Runner::Error => e
       tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
-      Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
-    ensure
       kill_client_socket(tubesock)
+      Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
     end
   end
 
@@ -196,14 +201,16 @@ class SubmissionsController < ApplicationController
 
   def test
     hijack do |tubesock|
-      return kill_client_socket(tubesock) if @embed_options[:disable_run]
+      tubesock.onopen do |_event|
+        kill_client_socket(tubesock) if @embed_options[:disable_run]
 
-      tubesock.send_data(JSON.dump(@submission.test(@file)))
+        tubesock.send_data(JSON.dump(@submission.test(@file)))
+        kill_client_socket(tubesock)
+      end
     rescue Runner::Error => e
       tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
-      Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
-    ensure
       kill_client_socket(tubesock)
+      Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
     end
   end
 
