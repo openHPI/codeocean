@@ -452,12 +452,12 @@ de:
         request: "Kommentaranfrage stellen"
         question: "Bitte beschreiben Sie kurz Ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. </br> </br> Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
       rfc_intervention:
-        text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. </br> Wenn Sie möchten, können wir Ihnen helfen! </br> </br>"
+        text: "Es scheint so, als würden Sie bei dieser Aufgabe momentan nicht weiterkommen. </br> Wenn Sie nicht selbst weiter knobeln möchten, können Ihre Mitlernenden bestimmt helfen! </br> </br>"
       break_intervention:
         title: "Pause"
-        text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
+        text: "Es scheint so, als würden Sie bei dieser Aufgabe momentan nicht weiterkommen. </br> Da Ihr Fortschritt in CodeOcean automatisch gespeichert wird, können Sie jederzeit eine Pause einlegen und später weiter knobeln."
       tips_intervention:
-        text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. </br> </br> Sind Ihnen die Tipps in der linken Seitenleiste aufgefallen? Sie könnten einige Ihrer Fragen beantworten und werden auch direkt hier angezeigt."
+        text: "Es scheint so, als würden Sie bei dieser Aufgabe momentan nicht weiterkommen. </br> </br> Sind Ihnen die Tipps in der linken Seitenleiste aufgefallen? Sie könnten einige Ihrer Fragen beantworten und werden auch direkt hier angezeigt."
       error_hints:
         heading: "Hinweise"
       tips:
