@@ -1,21 +1,13 @@
 GIT
-  remote: https://github.com/evolve75/RubyTree.git
-  revision: 6081d0959b706dcefb85e85faa329ebb2dabcf9e
-  specs:
-    rubytree (1.0.2)
-      json (~> 2.6.1)
-      structured_warnings (~> 0.4.0)
-
-GIT
   remote: https://github.com/openHPI/proforma.git
-  revision: dc68000325388e1d75f31be9e136a82edad8a56d
-  tag: v0.5.1
+  revision: 243853e66034bc2afbb9c9661475d9718d007304
+  branch: v0.5.2
   specs:
-    proforma (0.5)
-      activemodel (>= 5.2.3, < 6.2.0)
-      activesupport (>= 5.2.3, < 6.2.0)
-      nokogiri (>= 1.10.2, < 1.12.0)
-      rubyzip (>= 1.2.2, < 2.4.0)
+    proforma (0.5.2)
+      activemodel (>= 5.2.3, < 7.2.0)
+      activesupport (>= 5.2.3, < 7.2.0)
+      nokogiri (~> 1.13)
+      rubyzip (~> 2.3)
 
 GEM
   remote: https://rubygems.org/
@@ -162,7 +154,7 @@ GEM
     faraday (2.2.0)
       faraday-net_http (~> 2.0)
       ruby2_keywords (>= 0.0.4)
-    faraday-net_http (2.0.1)
+    faraday-net_http (2.0.2)
     faraday-net_http_persistent (2.0.1)
       faraday-net_http
       net-http-persistent (~> 4.0)
@@ -245,7 +237,7 @@ GEM
       rake
     mini_magick (4.11.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.5.3)
+    mini_portile2 (2.8.0)
     minitest (5.15.0)
     minitest-autotest (1.1.1)
       minitest-server (~> 1.0)
@@ -264,8 +256,8 @@ GEM
     netrc (0.11.0)
     newrelic_rpm (8.6.0)
     nio4r (2.5.8)
-    nokogiri (1.11.7)
-      mini_portile2 (~> 2.5.0)
+    nokogiri (1.13.4)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     nyan-cat-formatter (0.12.0)
       rspec (>= 2.99, >= 2.14.2, < 4)
@@ -293,7 +285,7 @@ GEM
       pry (~> 0.13.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    public_suffix (4.0.6)
+    public_suffix (4.0.7)
     puma (5.6.4)
       nio4r (~> 2.0)
     pundit (2.2.0)
@@ -367,7 +359,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rbtree (0.4.5)
-    regexp_parser (2.2.1)
+    regexp_parser (2.3.0)
     remotipart (1.4.4)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -400,7 +392,7 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.11.0)
-    rubocop (1.26.1)
+    rubocop (1.27.0)
       parallel (~> 1.10)
       parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
@@ -409,7 +401,7 @@ GEM
       rubocop-ast (>= 1.16.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.16.0)
+    rubocop-ast (1.17.0)
       parser (>= 3.1.1.0)
     rubocop-performance (1.13.3)
       rubocop (>= 1.7.0, < 2.0)
@@ -424,6 +416,9 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
+    rubytree (1.0.2)
+      json (~> 2.6.1)
+      structured_warnings (~> 0.4.0)
     rubyzip (2.3.2)
     sass-rails (6.0.0)
       sassc-rails (~> 2.1, >= 2.1.1)
@@ -585,7 +580,7 @@ DEPENDENCIES
   rubocop-performance
   rubocop-rails
   rubocop-rspec
-  rubytree!
+  rubytree
   rubyzip
   sass-rails
   selenium-webdriver
