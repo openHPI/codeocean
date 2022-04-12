@@ -264,7 +264,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
           @stream = 'stdout'
           {'type' => @stream, 'data' => event_data}
         when /#{Regexp.quote(@strategy.command)}/
+          # Hide command from output
         when /bash: cmd:canvasevent: command not found/
+          # Hide errors from output when Python program exited before it consumed all canvas events
         else
           {'type' => @stream, 'data' => event_data}
       end
