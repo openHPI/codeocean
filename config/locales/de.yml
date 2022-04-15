@@ -360,6 +360,7 @@ de:
       submit_after_late_deadline: Code verspätet zur Bewertung abgeben
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
+      out_of_memory: 'Ausführung gestoppt. Ihr Code hat den erlaubten Arbeitsspeicher von %{memory_limit} MB überschritten.'
       exercise_deadline_passed: 'Das Ergebnis kann nicht übertragen werden.'
       tooltips:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.

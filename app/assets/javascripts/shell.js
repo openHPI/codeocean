@@ -29,10 +29,14 @@ $(document).on('turbolinks:load', function () {
     };
 
     const handleResponse = function (response) {
+        // Always print stdout and stderr
+        printOutput(response);
+
+        // If an error occurred, print it too
         if (response.status === 'timeout') {
             printTimeout(response);
-        } else {
-            printOutput(response);
+        } else if (response.status === 'out_of_memory') {
+            printOutOfMemory(response);
         }
     };
 
@@ -71,9 +75,16 @@ $(document).on('turbolinks:load', function () {
     };
 
     const printTimeout = function (output) {
-        const element = $.append('<p>');
+        const element = $('<p>');
         element.addClass('text-danger');
         element.text($('#shell').data('message-timeout'));
+        $('#output').append(element);
+    };
+
+    const printOutOfMemory = function (output) {
+        const element = $('<p>');
+        element.addClass('text-danger');
+        element.text($('#shell').data('message-out-of-memory'));
         $('#output').append(element);
     };
 

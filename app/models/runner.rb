@@ -78,13 +78,14 @@ class Runner < ApplicationRecord
     stdout = +''
     stderr = +''
     try = 0
+
+    exit_code = 1 # default to error
     begin
       if try.nonzero?
         request_new_id
         save
       end
 
-      exit_code = 1 # default to error
       execution_time = attach_to_execution(command) do |socket|
         socket.on :stderr do |data|
           stderr << data
@@ -120,7 +121,9 @@ class Runner < ApplicationRecord
       # We forward the exception if requested
       raise e if raise_exception && defined?(e) && e.present?
 
-      output.merge!(stdout: stdout, stderr: stderr)
+      # If the process was killed with SIGKILL, it is most likely that the OOM killer was triggered.
+      output[:status] = :out_of_memory if exit_code == 137
+      output.merge!(stdout: stdout, stderr: stderr, exit_code: exit_code)
     end
   end
 

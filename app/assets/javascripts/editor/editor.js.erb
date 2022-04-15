@@ -743,6 +743,13 @@ var CodeOceanEditor = {
         });
     },
 
+    showOutOfMemoryMessage: function () {
+        $.flash.info({
+            icon: ['fa', 'fa-clock-o'],
+            text: $('#editor').data('message-out-of-memory')
+        });
+    },
+
     showTimeoutMessage: function () {
         $.flash.info({
             icon: ['fa', 'fa-clock-o'],

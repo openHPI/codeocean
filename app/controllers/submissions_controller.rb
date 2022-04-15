@@ -157,6 +157,7 @@ class SubmissionsController < ApplicationController
             "\n#{t('exercises.implement.exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           end
         client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{exit_statement}\n"})
+        client_socket.send_data JSON.dump({cmd: :out_of_memory}) if exit_code == 137
 
         close_client_connection(client_socket)
       end

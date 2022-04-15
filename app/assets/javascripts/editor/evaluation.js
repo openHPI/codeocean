@@ -103,6 +103,11 @@ CodeOceanEditorEvaluation = {
             this.showTimeoutMessage();
         }
         if (_.some(response, function (result) {
+            return result.status === 'out_of_memory';
+        })) {
+            this.showOutOfMemoryMessage();
+        }
+        if (_.some(response, function (result) {
             return result.status === 'container_depleted';
         })) {
             this.showContainerDepletedMessage();
