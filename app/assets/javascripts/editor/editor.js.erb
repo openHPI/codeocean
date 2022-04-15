@@ -857,7 +857,9 @@ var CodeOceanEditor = {
                             clearInterval(tid);
                             // timeUntilIntervention passed
                             if (editor.data('tips-interventions')) {
-                                $('#tips-intervention-modal').modal('show');
+                                const modal = $('#tips-intervention-modal');
+                                modal.find('.modal-footer').text(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                modal.modal('show');
                                 $.ajax({
                                     data: {
                                         intervention_type: 'TipsIntervention'
@@ -867,7 +869,9 @@ var CodeOceanEditor = {
                                     url: interventionSaveUrl
                                 });
                             } else if (editor.data('break-interventions')) {
-                                $('#break-intervention-modal').modal('show');
+                                const modal = $('#break-intervention-modal');
+                                modal.find('.modal-footer').text(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                modal.modal('show');
                                 $.ajax({
                                     data: {
                                         intervention_type: 'BreakIntervention'
@@ -881,7 +885,12 @@ var CodeOceanEditor = {
                                 // only show intervention if user did not requested for a comment already
                                 if (!button.prop('disabled')) {
                                     $('#rfc_intervention_text').show();
-                                    $('#comment-modal').modal('show');
+                                    modal = $('#comment-modal');
+                                    modal.find('.modal-footer').text(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                    modal.on('hidden.bs.modal', function () {
+                                        modal.find('.modal-footer').text('');
+                                    });
+                                    modal.modal('show');
                                     $.ajax({
                                         data: {
                                             intervention_type: 'QuestionIntervention'

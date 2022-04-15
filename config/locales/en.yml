@@ -450,14 +450,16 @@ en:
         removeAllOnLine: Remove my comments on this line
         listing: Listing the newest comment requests
         request: "Request Comments"
-        question: 'Please shortly describe your problem or the program part you would like to get feedback for. </br> </br> Your program code and potential error messages are automatically appended to your request.'
+        question: 'Please shortly describe your problem or the program part you would like to get feedback for. Your program code and potential error messages are automatically appended to your request.'
+      intervention:
+        text: "This message appears because you have been working on this exercise for %{duration} minutes. 25% of your fellow learners took more time to solve the exercise, so in that sense it's not a problem, but this has proven to be an effective time for this message."
       rfc_intervention:
-        text: "It looks like you may struggle with this exercise. </br> If you like we can help you out! </br> </br>"
+        text: "If you are struggling with this exercise and don't want to continue on your own, your fellow learners can help out! </br> </br>"
       break_intervention:
         title: "Break"
-        text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
+        text: "If you are struggling with this exercise, you may take a break at any time and continue later. Your progress in CodeOcean is automatically saved."
       tips_intervention:
-        text: "It looks like you may struggle with this exercise. </br> </br> Did you notice the tips in the left sidebar? They might answer some of your questions and are also displayed below for your convenience."
+        text: "If you are struggling with this exercise, the available tips may help. You can find them at any time in the left sidebar and are also displayed below for your convenience."
       error_hints:
         heading: "Hints"
       tips:
