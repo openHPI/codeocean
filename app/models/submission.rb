@@ -46,6 +46,8 @@ class Submission < ApplicationRecord
 
   validates :cause, inclusion: {in: CAUSES}
 
+  attr_reader :used_execution_environment
+
   # after_save :trigger_working_times_action_cable
 
   def build_files_hash(files, attribute)
@@ -195,8 +197,8 @@ class Submission < ApplicationRecord
   def prepared_runner
     request_time = Time.zone.now
     begin
-      execution_environment = AwsStudy.get_execution_environment(user, exercise)
-      runner = Runner.for(user, execution_environment)
+      @used_execution_environment = AwsStudy.get_execution_environment(user, exercise)
+      runner = Runner.for(user, @used_execution_environment)
       files = collect_files
       files.reject!(&:teacher_defined_assessment?) if cause == 'run'
       Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Copying files to Runner #{runner.id} for #{user_type} #{user_id} and Submission #{id}." }
@@ -254,6 +256,7 @@ class Submission < ApplicationRecord
       container_execution_time: output[:container_execution_time],
       waiting_for_container_time: output[:waiting_for_container_time]
     )
+    TestrunExecutionEnvironment.create(testrun: testrun, execution_environment: @used_execution_environment)
 
     filename = file.filepath
 
