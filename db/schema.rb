@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_18_185051) do
+ActiveRecord::Schema.define(version: 2022_04_15_125948) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -461,6 +461,15 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
     t.datetime "updated_at"
   end
 
+  create_table "testrun_execution_environments", force: :cascade do |t|
+    t.bigint "testrun_id", null: false
+    t.bigint "execution_environment_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["execution_environment_id"], name: "index_testrun_execution_environments"
+    t.index ["testrun_id"], name: "index_testrun_execution_environments_on_testrun_id"
+  end
+
   create_table "testruns", id: :serial, force: :cascade do |t|
     t.boolean "passed"
     t.text "output"
@@ -536,6 +545,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
   add_foreign_key "exercise_tips", "tips"
   add_foreign_key "remote_evaluation_mappings", "study_groups"
   add_foreign_key "submissions", "study_groups"
+  add_foreign_key "testrun_execution_environments", "execution_environments"
+  add_foreign_key "testrun_execution_environments", "testruns"
   add_foreign_key "tips", "file_types"
   add_foreign_key "user_exercise_feedbacks", "submissions"
 end

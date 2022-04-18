@@ -294,7 +294,7 @@ class SubmissionsController < ApplicationController
 
   # save the output of this "run" as a "testrun" (scoring runs are saved in submission.rb)
   def save_run_output
-    Testrun.create(
+    testrun = Testrun.create(
       file: @file,
       cause: 'run',
       submission: @submission,
@@ -302,6 +302,7 @@ class SubmissionsController < ApplicationController
       container_execution_time: @container_execution_time,
       waiting_for_container_time: @waiting_for_container_time
     )
+    TestrunExecutionEnvironment.create(testrun: testrun, execution_environment: @submission.used_execution_environment)
   end
 
   def send_hints(tubesock, errors)
