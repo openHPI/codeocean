@@ -2,7 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include ApplicationHelper
-  include Pundit
+  include Pundit::Authorization
 
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
 
