@@ -18,7 +18,7 @@ describe ExecutionEnvironmentsController do
       before do
         allow(Rails.env).to receive(:test?).and_return(false, true)
         allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
-        runner = instance_double 'runner'
+        runner = instance_double Runner
         allow(Runner).to receive(:for).and_return(runner)
         allow(runner).to receive(:execute_command).and_return({})
         perform_request.call
@@ -90,7 +90,7 @@ describe ExecutionEnvironmentsController do
     let(:command) { 'which ruby' }
 
     before do
-      runner = instance_double 'runner'
+      runner = instance_double Runner
       allow(Runner).to receive(:for).with(user, execution_environment).and_return runner
       allow(runner).to receive(:execute_command).and_return({})
       post :execute_command, params: {command: command, id: execution_environment.id}
@@ -183,7 +183,7 @@ describe ExecutionEnvironmentsController do
       before do
         allow(Rails.env).to receive(:test?).and_return(false, true)
         allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
-        runner = instance_double 'runner'
+        runner = instance_double Runner
         allow(Runner).to receive(:for).and_return(runner)
         allow(runner).to receive(:execute_command).and_return({})
         put :update, params: {execution_environment: attributes_for(:ruby, pool_size: 1), id: execution_environment.id}

@@ -33,7 +33,7 @@ describe Lti do
     let(:last_name) { 'Doe' }
     let(:full_name) { 'John Doe' }
     let(:provider) { double }
-    let(:provider_full) { instance_double('IMS::LTI::ToolProvider', lis_person_name_full: full_name) }
+    let(:provider_full) { instance_double(IMS::LTI::ToolProvider, lis_person_name_full: full_name) }
 
     context 'when a full name is provided' do
       it 'returns the full name' do

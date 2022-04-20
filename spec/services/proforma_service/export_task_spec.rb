@@ -26,7 +26,7 @@ describe ProformaService::ExportTask do
 
     let(:task) { Proforma::Task.new }
     let(:exercise) { build(:dummy) }
-    let(:exporter) { instance_double('Proforma::Exporter', perform: 'zip') }
+    let(:exporter) { instance_double(Proforma::Exporter, perform: 'zip') }
 
     before do
       allow(ProformaService::ConvertExerciseToTask).to receive(:call).with(exercise: exercise).and_return(task)
