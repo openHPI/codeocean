@@ -12,7 +12,7 @@ describe Admin::DashboardHelper do
   describe '#docker_data' do
     before do
       create(:ruby)
-      dcp = instance_double 'docker_container_pool'
+      dcp = class_double Runner::Strategy::DockerContainerPool
       allow(Runner).to receive(:strategy_class).and_return dcp
       allow(dcp).to receive(:pool_size).and_return({})
     end
