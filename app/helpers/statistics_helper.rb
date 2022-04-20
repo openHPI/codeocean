@@ -79,7 +79,7 @@ module StatisticsHelper
       {
         key: 'container_requests_per_minute',
           name: t('statistics.entries.exercises.container_requests_per_minute'),
-          data: (Testrun.where('created_at >= ?', DateTime.now - 1.hour).count.to_f / 60).round(2),
+          data: (Testrun.where(created_at: DateTime.now - 1.hour..).count.to_f / 60).round(2),
           unit: '/min',
       },
       {
