@@ -35,7 +35,12 @@ class InternalUsersController < ApplicationController
     @user = InternalUser.new(internal_user_params)
     authorize!
     @user.send(:setup_activation)
-    create_and_respond(object: @user) { @user.send(:send_activation_needed_email!) }
+    create_and_respond(object: @user) do
+      @user.send(:send_activation_needed_email!)
+      # The return value is used as a flash message. If this block does not
+      # have any specific return value, a default success message is shown.
+      nil
+    end
   end
 
   def deliver_reset_password_instructions
