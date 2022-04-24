@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_15_125948) do
+ActiveRecord::Schema.define(version: 2022_04_15_215111) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "anomaly_notifications", id: :serial, force: :cascade do |t|
@@ -470,6 +471,19 @@ ActiveRecord::Schema.define(version: 2022_04_15_125948) do
     t.index ["testrun_id"], name: "index_testrun_execution_environments_on_testrun_id"
   end
 
+  create_table "testrun_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "testrun_id", null: false
+    t.interval "timestamp", default: "PT0S", null: false
+    t.integer "cmd", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
+    t.integer "stream", limit: 2, comment: "Used as enum in Rails"
+    t.text "log"
+    t.jsonb "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["testrun_id"], name: "index_testrun_messages_on_testrun_id"
+    t.check_constraint "(log IS NULL) OR (data IS NULL)", name: "either_data_or_log"
+  end
+
   create_table "testruns", id: :serial, force: :cascade do |t|
     t.boolean "passed"
     t.text "output"
@@ -480,7 +494,10 @@ ActiveRecord::Schema.define(version: 2022_04_15_125948) do
     t.string "cause"
     t.interval "container_execution_time"
     t.interval "waiting_for_container_time"
+    t.integer "exit_code", limit: 2, comment: "No exit code is available in case of a timeout"
+    t.integer "status", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
     t.index ["submission_id"], name: "index_testruns_on_submission_id"
+    t.check_constraint "(exit_code >= 0) AND (exit_code <= 255)", name: "exit_code_constraint"
   end
 
   create_table "tips", force: :cascade do |t|
@@ -547,6 +564,7 @@ ActiveRecord::Schema.define(version: 2022_04_15_125948) do
   add_foreign_key "submissions", "study_groups"
   add_foreign_key "testrun_execution_environments", "execution_environments"
   add_foreign_key "testrun_execution_environments", "testruns"
+  add_foreign_key "testrun_messages", "testruns"
   add_foreign_key "tips", "file_types"
   add_foreign_key "user_exercise_feedbacks", "submissions"
 end

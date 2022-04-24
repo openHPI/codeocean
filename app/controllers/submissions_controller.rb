@@ -146,18 +146,26 @@ class SubmissionsController < ApplicationController
       end
 
       runner_socket.on :exit do |exit_code|
+        @exit_code = exit_code
         exit_statement =
           if @output.empty? && exit_code.zero?
+            @status = :ok
             t('exercises.implement.no_output_exit_successful', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
           elsif @output.empty?
+            @status = :failed
             t('exercises.implement.no_output_exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
           elsif exit_code.zero?
+            @status = :ok
             "\n#{t('exercises.implement.exit_successful', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           else
+            @status = :failed
             "\n#{t('exercises.implement.exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           end
         client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{exit_statement}\n"})
-        client_socket.send_data JSON.dump({cmd: :out_of_memory}) if exit_code == 137
+        if exit_code == 137
+          client_socket.send_data JSON.dump({cmd: :out_of_memory})
+          @status = :out_of_memory
+        end
 
         close_client_connection(client_socket)
       end
@@ -169,30 +177,38 @@ class SubmissionsController < ApplicationController
     close_client_connection(client_socket)
     Rails.logger.debug { "Running a submission timed out: #{e.message}" }
     @output = "timeout: #{@output}"
+    @status = :timeout
     extract_durations(e)
   rescue Runner::Error => e
     client_socket.send_data JSON.dump({cmd: :status, status: :container_depleted})
     close_client_connection(client_socket)
     Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
+    @status = :container_depleted
     extract_durations(e)
   ensure
-    save_run_output
+    save_testrun_output 'run'
   end
 
   def score
     hijack do |tubesock|
       tubesock.onopen do |_event|
-        kill_client_socket(tubesock) if @embed_options[:disable_score]
+        switch_locale do
+          kill_client_socket(tubesock) if @embed_options[:disable_score]
 
-        tubesock.send_data(JSON.dump(@submission.calculate_score))
-        # To enable hints when scoring a submission, uncomment the next line:
-        # send_hints(tubesock, StructuredError.where(submission: @submission))
-        kill_client_socket(tubesock)
+          tubesock.send_data(JSON.dump(@submission.calculate_score))
+          # To enable hints when scoring a submission, uncomment the next line:
+          # send_hints(tubesock, StructuredError.where(submission: @submission))
+          kill_client_socket(tubesock)
+        rescue Runner::Error => e
+          tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
+          kill_client_socket(tubesock)
+          Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
+          @passed = false
+          @status = :container_depleted
+          extract_durations(e)
+          save_testrun_output 'assess'
+        end
       end
-    rescue Runner::Error => e
-      tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
-      kill_client_socket(tubesock)
-      Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
     end
   end
 
@@ -203,15 +219,21 @@ class SubmissionsController < ApplicationController
   def test
     hijack do |tubesock|
       tubesock.onopen do |_event|
-        kill_client_socket(tubesock) if @embed_options[:disable_run]
+        switch_locale do
+          kill_client_socket(tubesock) if @embed_options[:disable_run]
 
-        tubesock.send_data(JSON.dump(@submission.test(@file)))
-        kill_client_socket(tubesock)
+          tubesock.send_data(JSON.dump(@submission.test(@file)))
+          kill_client_socket(tubesock)
+        rescue Runner::Error => e
+          tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
+          kill_client_socket(tubesock)
+          Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
+          @passed = false
+          @status = :container_depleted
+          extract_durations(e)
+          save_testrun_output 'assess'
+        end
       end
-    rescue Runner::Error => e
-      tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
-      kill_client_socket(tubesock)
-      Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
     end
   end
 
@@ -293,12 +315,15 @@ class SubmissionsController < ApplicationController
   end
 
   # save the output of this "run" as a "testrun" (scoring runs are saved in submission.rb)
-  def save_run_output
-    testrun = Testrun.create(
+  def save_testrun_output(cause)
+    testrun = Testrun.create!(
       file: @file,
-      cause: 'run',
+      passed: @passed,
+      cause: cause,
       submission: @submission,
-      output: @output,
+      exit_code: @exit_code, # might be nil, e.g., when the run did not finish
+      status: @status,
+      output: @output.presence, # TODO: Remove duplicated saving of the output after creating TestrunMessages
       container_execution_time: @container_execution_time,
       waiting_for_container_time: @waiting_for_container_time
     )

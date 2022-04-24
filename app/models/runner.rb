@@ -116,7 +116,7 @@ class Runner < ApplicationRecord
       output.merge!(status: :failed, container_execution_time: e.execution_duration)
     rescue Runner::Error => e
       Rails.logger.debug { "Running command `#{command}` failed: #{e.message}" }
-      output.merge!(status: :failed, container_execution_time: e.execution_duration)
+      output.merge!(status: :container_depleted, container_execution_time: e.execution_duration)
     ensure
       # We forward the exception if requested
       raise e if raise_exception && defined?(e) && e.present?

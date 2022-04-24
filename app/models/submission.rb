@@ -252,7 +252,9 @@ class Submission < ApplicationRecord
       cause: 'assess', # Required to differ run and assess for RfC show
       file: file, # Test file that was executed
       passed: passed,
-      output: testrun_output,
+      exit_code: output[:exit_code],
+      status: output[:status],
+      output: testrun_output.presence,
       container_execution_time: output[:container_execution_time],
       waiting_for_container_time: output[:waiting_for_container_time]
     )
