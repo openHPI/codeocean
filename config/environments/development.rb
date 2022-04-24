@@ -76,7 +76,7 @@ Rails.application.configure do
   # Raises helpful error messages.
   config.assets.raise_runtime_errors = true
 
-  BetterErrors::Middleware.allow_ip! ENV['TRUSTED_IP'] if ENV['TRUSTED_IP']
+  BetterErrors::Middleware.allow_ip! ENV.fetch('TRUSTED_IP', nil) if ENV['TRUSTED_IP']
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.

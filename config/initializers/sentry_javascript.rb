@@ -6,7 +6,7 @@ class SentryJavascript
   end
 
   def self.dsn
-    ENV['SENTRY_JAVASCRIPT_DSN']
+    ENV.fetch('SENTRY_JAVASCRIPT_DSN', nil)
   end
 
   def self.release

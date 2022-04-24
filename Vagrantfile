@@ -10,7 +10,7 @@ Vagrant.configure(2) do |config|
     v.cpus = 4
   end
   config.vm.network 'forwarded_port',
-    host_ip: ENV['LISTEN_ADDRESS'] || '127.0.0.1',
+    host_ip: ENV.fetch('LISTEN_ADDRESS', '127.0.0.1'),
     host: 7000,
     guest: 7000
   config.vm.synced_folder '.', '/home/vagrant/codeocean'
