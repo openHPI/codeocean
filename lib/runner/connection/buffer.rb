@@ -5,8 +5,9 @@ class Runner::Connection::Buffer
   # to be processed separately. Therefore, we split the lines by each newline character not part of an enclosed
   # substring either in single or double quotes (e.g., within a JSON). Originally, each line break consists of `\r\n`.
   # We keep the `\r` at the end of the line (keeping "empty" lines) and replace it after buffering.
+  # For AWS lambda functions, we also allow "empty" lines without any `\r` terminator (using the `^$` alternative).
   # Inspired by https://stackoverflow.com/questions/13040585/split-string-by-spaces-properly-accounting-for-quotes-and-backslashes-ruby
-  SPLIT_INDIVIDUAL_LINES = Regexp.compile(/(?:"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|[^\n])+/)
+  SPLIT_INDIVIDUAL_LINES = Regexp.compile(/(?:"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|[^\n])+|^$/)
 
   def initialize
     @global_buffer = +''
