@@ -72,7 +72,7 @@ class Runner::Connection::Buffer
     @global_buffer = +''
     # For our buffering, we identified line breaks with the `\n` and removed those temporarily.
     # Thus, we now re-add the `\n` at the end of the string and (optionally) remove a trailing `\r` at the same time.
-    message = message.gsub(/\r?$/, "\n")
+    message = "#{message.delete_suffix("\r")}\n"
     @line_buffer.push message
   end
 
