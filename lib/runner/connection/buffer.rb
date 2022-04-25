@@ -5,9 +5,8 @@ class Runner::Connection::Buffer
   # to be processed separately. Therefore, we split the lines by each newline character not part of an enclosed
   # substring either in single or double quotes (e.g., within a JSON). Originally, each line break consists of `\r\n`.
   # We keep the `\r` at the end of the line (keeping "empty" lines) and replace it after buffering.
-  # For AWS lambda functions, we also allow "empty" lines without any `\r` terminator (using the `^$` alternative).
   # Inspired by https://stackoverflow.com/questions/13040585/split-string-by-spaces-properly-accounting-for-quotes-and-backslashes-ruby
-  SPLIT_INDIVIDUAL_LINES = Regexp.compile(/(?:"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|[^\n])+|^$/)
+  SPLIT_INDIVIDUAL_LINES = Regexp.compile(/(?:"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|[^\n])+/)
 
   def initialize
     @global_buffer = +''
@@ -49,7 +48,10 @@ class Runner::Connection::Buffer
   def process_and_split(message_parts, stop: false)
     # We need a temporary buffer to operate on
     buffer = +''
-    message_parts.scan(SPLIT_INDIVIDUAL_LINES).each do |line|
+    # We split lines by `\n` and want to normalize them to be separated by `\r\n`.
+    # This allows us to identify a former line end with `\r` (as the `\n` is not matched)
+    # All results returned from this buffer are normalized to feature `\n` line endings.
+    message_parts.encode(crlf_newline: true).scan(SPLIT_INDIVIDUAL_LINES).each do |line|
       # Same argumentation as above: We can always append (previous empty or invalid)
       buffer += line
 
@@ -72,9 +74,8 @@ class Runner::Connection::Buffer
     @buffering = false
     @global_buffer = +''
     # For our buffering, we identified line breaks with the `\n` and removed those temporarily.
-    # Thus, we now re-add the `\n` at the end of the string and (optionally) remove a trailing `\r` at the same time.
-    message.delete_suffix!("\r")
-    message += "\n"
+    # Thus, we now re-add the `\n` at the end of the string and remove the `\r` at the same time.
+    message = message.gsub(/\r$/, "\n")
     @line_buffer.push message
   end
 
