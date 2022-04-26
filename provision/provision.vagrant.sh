@@ -4,7 +4,7 @@
 
 postgres_version=14
 node_version=14
-ruby_version=2.7.5
+ruby_version=2.7.6
 
 ########## INSTALL SCRIPT ###########
 
@@ -92,13 +92,19 @@ gem install bundler
 cd /home/vagrant/codeocean
 
 # config
-for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml
+for f in action_mailer.yml database.yml secrets.yml docker.yml.erb mnemosyne.yml
 do
   if [ ! -f config/$f ]
   then
     cp config/$f.example config/$f
   fi
 done
+
+# We want to use a preconfigured code_ocean.yml file which is using the DockerContainerPool
+if [ ! -f config/code_ocean.yml ]
+then
+  cp provision/code_ocean.vagrant.yml config/code_ocean.yml
+fi
 
 # install dependencies
 bundle install
