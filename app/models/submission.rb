@@ -9,7 +9,7 @@ class Submission < ApplicationRecord
               remoteSubmit].freeze
   FILENAME_URL_PLACEHOLDER = '{filename}'
   MAX_COMMENTS_ON_RECOMMENDED_RFC = 5
-  OLDEST_RFC_TO_SHOW = 6.months
+  OLDEST_RFC_TO_SHOW = 3.months
 
   belongs_to :exercise
   belongs_to :study_group, optional: true
