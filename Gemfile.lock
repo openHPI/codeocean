@@ -216,7 +216,7 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
-    kramdown (2.3.2)
+    kramdown (2.4.0)
       rexml
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
