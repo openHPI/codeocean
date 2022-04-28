@@ -18,6 +18,7 @@ class TestrunMessage < ApplicationRecord
     client_kill: 11,
     exception: 12,
     result: 13,
+    canvasevent: 14,
   }, _default: :write, _prefix: true
 
   enum stream: {
@@ -28,8 +29,27 @@ class TestrunMessage < ApplicationRecord
 
   validates :cmd, presence: true
   validates :timestamp, presence: true
-
+  validates :stream, length: {minimum: 0, allow_nil: false}, if: -> { cmd_write? }
+  validates :log, length: {minimum: 0, allow_nil: false}, if: -> { cmd_write? }
   validate :either_data_or_log
+
+  def self.create_for(testrun, messages)
+    messages.map! do |message|
+      # We create a new hash and move all known keys
+      result = {}
+      result[:testrun] = testrun
+      result[:log] = message.delete(:log) || (message.delete(:data) if message[:cmd] == :write)
+      result[:timestamp] = message.delete :timestamp
+      result[:stream] = message.delete :stream
+      result[:cmd] = message.delete :cmd
+      # The remaining keys will be stored in the `data` column
+      result[:data] = message.presence
+      result
+    end
+
+    # An array with hashes is passed, all are stored
+    TestrunMessage.create!(messages)
+  end
 
   def either_data_or_log
     if [data, log].count(&:present?) > 1

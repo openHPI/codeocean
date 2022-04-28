@@ -62,7 +62,7 @@ class Runner < ApplicationRecord
       # initializing its Runner::Connection with the given event loop. The Runner::Connection class ensures that
       # this event loop is stopped after the socket was closed.
       event_loop = Runner::EventLoop.new
-      socket = @strategy.attach_to_execution(command, event_loop, &block)
+      socket = @strategy.attach_to_execution(command, event_loop, starting_time, &block)
       event_loop.wait
       raise socket.error if socket.error.present?
     rescue Runner::Error => e
@@ -74,30 +74,34 @@ class Runner < ApplicationRecord
   end
 
   def execute_command(command, raise_exception: true)
-    output = {}
-    stdout = +''
-    stderr = +''
+    output = {
+      stdout: +'',
+      stderr: +'',
+      messages: [],
+      exit_code: 1, # default to error
+    }
     try = 0
 
-    exit_code = 1 # default to error
     begin
       if try.nonzero?
         request_new_id
         save
       end
 
-      execution_time = attach_to_execution(command) do |socket|
+      execution_time = attach_to_execution(command) do |socket, starting_time|
         socket.on :stderr do |data|
-          stderr << data
+          output[:stderr] << data
+          output[:messages].push({cmd: :write, stream: :stderr, log: data, timestamp: Time.zone.now - starting_time})
         end
         socket.on :stdout do |data|
-          stdout << data
+          output[:stdout] << data
+          output[:messages].push({cmd: :write, stream: :stdout, log: data, timestamp: Time.zone.now - starting_time})
         end
         socket.on :exit do |received_exit_code|
-          exit_code = received_exit_code
+          output[:exit_code] = received_exit_code
         end
       end
-      output.merge!(container_execution_time: execution_time, status: exit_code.zero? ? :ok : :failed)
+      output.merge!(container_execution_time: execution_time, status: output[:exit_code].zero? ? :ok : :failed)
     rescue Runner::Error::ExecutionTimeout => e
       Rails.logger.debug { "Running command `#{command}` timed out: #{e.message}" }
       output.merge!(status: :timeout, container_execution_time: e.execution_duration)
@@ -122,8 +126,7 @@ class Runner < ApplicationRecord
       raise e if raise_exception && defined?(e) && e.present?
 
       # If the process was killed with SIGKILL, it is most likely that the OOM killer was triggered.
-      output[:status] = :out_of_memory if exit_code == 137
-      output.merge!(stdout: stdout, stderr: stderr, exit_code: exit_code)
+      output[:status] = :out_of_memory if output[:exit_code] == 137
     end
   end
 

@@ -258,6 +258,7 @@ class Submission < ApplicationRecord
       container_execution_time: output[:container_execution_time],
       waiting_for_container_time: output[:waiting_for_container_time]
     )
+    TestrunMessage.create_for(testrun, output[:messages])
     TestrunExecutionEnvironment.create(testrun: testrun, execution_environment: @used_execution_environment)
 
     filename = file.filepath
