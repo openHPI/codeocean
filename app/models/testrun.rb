@@ -17,4 +17,8 @@ class Testrun < ApplicationRecord
 
   validates :exit_code, numericality: {only_integer: true, min: 0, max: 255}, allow_nil: true
   validates :status, presence: true
+
+  def log
+    testrun_messages.output.select(:log).map(&:log).join.presence
+  end
 end

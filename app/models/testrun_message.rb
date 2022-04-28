@@ -33,6 +33,9 @@ class TestrunMessage < ApplicationRecord
   validates :log, length: {minimum: 0, allow_nil: false}, if: -> { cmd_write? }
   validate :either_data_or_log
 
+  default_scope { order(timestamp: :asc) }
+  scope :output, -> { where(cmd: 1, stream: %i[stdout stderr]) }
+
   def self.create_for(testrun, messages)
     # We don't want to store anything if the testrun passed
     return if testrun.passed?
