@@ -273,6 +273,7 @@ class Submission < ApplicationRecord
 
     output.merge!(assessment)
     output.merge!(filename: filename, message: feedback_message(file, output), weight: file.weight)
+    output.except!(:messages)
   end
 
   def feedback_message(file, output)

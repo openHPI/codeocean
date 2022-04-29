@@ -66,6 +66,7 @@ class Runner < ApplicationRecord
       event_loop.wait
       raise socket.error if socket.error.present?
     rescue Runner::Error => e
+      e.starting_time = starting_time
       e.execution_duration = Time.zone.now - starting_time
       raise
     end
