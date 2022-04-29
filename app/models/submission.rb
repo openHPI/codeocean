@@ -76,7 +76,6 @@ class Submission < ApplicationRecord
   end
 
   def normalized_score
-    ::NewRelic::Agent.add_custom_attributes({unnormalized_score: score})
     if !score.nil? && !exercise.maximum_score.nil? && exercise.maximum_score.positive?
       score / exercise.maximum_score
     else

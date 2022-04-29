@@ -534,8 +534,6 @@ working_time_accumulated: working_time_accumulated})
   end
 
   def transmit_lti_score
-    ::NewRelic::Agent.add_custom_attributes({submission: @submission.id,
-      normalized_score: @submission.normalized_score})
     response = send_score(@submission)
 
     if response[:status] == 'success'

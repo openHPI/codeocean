@@ -49,7 +49,6 @@ gem 'whenever', require: false
 
 # Error Tracing
 gem 'mnemosyne-ruby'
-gem 'newrelic_rpm'
 gem 'sentry-rails'
 gem 'sentry-ruby'
 

@@ -138,7 +138,6 @@ module Lti
   private :return_to_consumer
 
   def send_score(submission)
-    ::NewRelic::Agent.add_custom_attributes({score: submission.normalized_score, session: session})
     unless (0..MAXIMUM_SCORE).cover?(submission.normalized_score)
       raise Error.new("Score #{submission.normalized_score} must be between 0 and #{MAXIMUM_SCORE}!")
     end
