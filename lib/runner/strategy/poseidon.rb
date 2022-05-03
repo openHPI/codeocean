@@ -133,10 +133,10 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
-  def attach_to_execution(command, event_loop)
+  def attach_to_execution(command, event_loop, starting_time)
     websocket_url = execute_command(command)
     socket = Connection.new(websocket_url, self, event_loop)
-    yield(socket)
+    yield(socket, starting_time)
     socket
   end
 

@@ -108,7 +108,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
-  def attach_to_execution(command, event_loop)
+  def attach_to_execution(command, event_loop, starting_time)
     reset_inactivity_timer
 
     @command = command
@@ -119,7 +119,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     begin
       Timeout.timeout(@execution_environment.permitted_execution_time) do
         socket.send_data(command)
-        yield(socket)
+        yield(socket, starting_time)
         event_loop.wait
         event_loop.stop
       end

@@ -703,6 +703,8 @@ var CodeOceanEditor = {
             this.showTimeoutMessage();
         } else if (output.status === 'container_depleted') {
             this.showContainerDepletedMessage();
+        } else if (output.status === 'out_of_memory') {
+            this.showOutOfMemoryMessage();
         } else if (output.stderr) {
             $.flash.danger({
                 icon: ['fa', 'fa-bug'],

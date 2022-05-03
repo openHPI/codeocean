@@ -9,6 +9,7 @@ class SubmissionsController < ApplicationController
 
   before_action :require_user!
   before_action :set_submission, only: %i[download download_file render_file run score show statistics test]
+  before_action :set_testrun, only: %i[run score test]
   before_action :set_files, only: %i[download show]
   before_action :set_files_and_specific_file, only: %i[download_file render_file run test]
   before_action :set_mime_type, only: %i[download_file render_file]
@@ -92,6 +93,7 @@ class SubmissionsController < ApplicationController
 
       client_socket.onclose do |_event|
         runner_socket&.close(:terminated_by_client)
+        # We do not update the @testrun[:status] by design, it would be missleading
       end
 
       client_socket.onmessage do |raw_event|
@@ -100,9 +102,17 @@ class SubmissionsController < ApplicationController
 
         # Otherwise, we expect to receive a JSON: Parsing.
         event = JSON.parse(raw_event).deep_symbolize_keys
+        event[:cmd] = event[:cmd].to_sym
+        event[:stream] = event[:stream].to_sym if event.key? :stream
 
-        case event[:cmd].to_sym
+        # We could store the received event. However, it is also echoed by the container
+        # and correctly identified as the original input. Therefore, we don't store
+        # it here to prevent duplicated events.
+        # @testrun[:messages].push(event)
+
+        case event[:cmd]
           when :client_kill
+            @testrun[:status] = :terminated_by_client
             close_client_connection(client_socket)
             Rails.logger.debug('Client exited container.')
           when :result, :canvasevent, :exception
@@ -128,62 +138,61 @@ class SubmissionsController < ApplicationController
       end
     end
 
-    @output = +''
-    durations = @submission.run(@file) do |socket|
+    @testrun[:output] = +''
+    durations = @submission.run(@file) do |socket, starting_time|
       runner_socket = socket
+      @testrun[:starting_time] = starting_time
       client_socket.send_data JSON.dump({cmd: :status, status: :container_running})
 
       runner_socket.on :stdout do |data|
-        json_data = prepare data, :stdout
-        @output << json_data[0, max_output_buffer_size - @output.size]
-        client_socket.send_data(json_data)
+        message = retrieve_message_from_output data, :stdout
+        @testrun[:output] << message[:data][0, max_output_buffer_size - @testrun[:output].size] if message[:data]
+        send_and_store client_socket, message
       end
 
       runner_socket.on :stderr do |data|
-        json_data = prepare data, :stderr
-        @output << json_data[0, max_output_buffer_size - @output.size]
-        client_socket.send_data(json_data)
+        message = retrieve_message_from_output data, :stderr
+        @testrun[:output] << message[:data][0, max_output_buffer_size - @testrun[:output].size] if message[:data]
+        send_and_store client_socket, message
       end
 
       runner_socket.on :exit do |exit_code|
-        @exit_code = exit_code
+        @testrun[:exit_code] = exit_code
         exit_statement =
-          if @output.empty? && exit_code.zero?
-            @status = :ok
+          if @testrun[:output].empty? && exit_code.zero?
+            @testrun[:status] = :ok
             t('exercises.implement.no_output_exit_successful', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
-          elsif @output.empty?
-            @status = :failed
+          elsif @testrun[:output].empty?
+            @testrun[:status] = :failed
             t('exercises.implement.no_output_exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)
           elsif exit_code.zero?
-            @status = :ok
+            @testrun[:status] = :ok
             "\n#{t('exercises.implement.exit_successful', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           else
-            @status = :failed
+            @testrun[:status] = :failed
             "\n#{t('exercises.implement.exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           end
-        client_socket.send_data JSON.dump({cmd: :write, stream: :stdout, data: "#{exit_statement}\n"})
+        send_and_store client_socket, {cmd: :write, stream: :stdout, data: "#{exit_statement}\n"}
         if exit_code == 137
-          client_socket.send_data JSON.dump({cmd: :out_of_memory})
-          @status = :out_of_memory
+          send_and_store client_socket, {cmd: :status, status: :out_of_memory}
+          @testrun[:status] = :out_of_memory
         end
 
         close_client_connection(client_socket)
       end
     end
-    @container_execution_time = durations[:execution_duration]
-    @waiting_for_container_time = durations[:waiting_duration]
+    @testrun[:container_execution_time] = durations[:execution_duration]
+    @testrun[:waiting_for_container_time] = durations[:waiting_duration]
   rescue Runner::Error::ExecutionTimeout => e
-    client_socket.send_data JSON.dump({cmd: :status, status: :timeout})
+    send_and_store client_socket, {cmd: :status, status: :timeout}
     close_client_connection(client_socket)
     Rails.logger.debug { "Running a submission timed out: #{e.message}" }
-    @output = "timeout: #{@output}"
-    @status = :timeout
+    @testrun[:output] = "timeout: #{@testrun[:output]}"
     extract_durations(e)
   rescue Runner::Error => e
-    client_socket.send_data JSON.dump({cmd: :status, status: :container_depleted})
+    send_and_store client_socket, {cmd: :status, status: :container_depleted}
     close_client_connection(client_socket)
     Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
-    @status = :container_depleted
     extract_durations(e)
   ensure
     save_testrun_output 'run'
@@ -195,17 +204,17 @@ class SubmissionsController < ApplicationController
         switch_locale do
           kill_client_socket(tubesock) if @embed_options[:disable_score]
 
+          # The score is stored separately, we can forward it to the client immediately
           tubesock.send_data(JSON.dump(@submission.calculate_score))
           # To enable hints when scoring a submission, uncomment the next line:
           # send_hints(tubesock, StructuredError.where(submission: @submission))
           kill_client_socket(tubesock)
         rescue Runner::Error => e
-          tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
+          extract_durations(e)
+          send_and_store tubesock, {cmd: :status, status: :container_depleted}
           kill_client_socket(tubesock)
           Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
-          @passed = false
-          @status = :container_depleted
-          extract_durations(e)
+          @testrun[:passed] = false
           save_testrun_output 'assess'
         end
       end
@@ -222,15 +231,15 @@ class SubmissionsController < ApplicationController
         switch_locale do
           kill_client_socket(tubesock) if @embed_options[:disable_run]
 
+          # The score is stored separately, we can forward it to the client immediately
           tubesock.send_data(JSON.dump(@submission.test(@file)))
           kill_client_socket(tubesock)
         rescue Runner::Error => e
-          tubesock.send_data JSON.dump({cmd: :status, status: :container_depleted})
+          extract_durations(e)
+          send_and_store tubesock, {cmd: :status, status: :container_depleted}
           kill_client_socket(tubesock)
           Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
-          @passed = false
-          @status = :container_depleted
-          extract_durations(e)
+          @testrun[:passed] = false
           save_testrun_output 'assess'
         end
       end
@@ -251,6 +260,7 @@ class SubmissionsController < ApplicationController
   end
 
   def kill_client_socket(client_socket)
+    # We don't want to store this (arbitrary) exit command and redirect it ourselves
     client_socket.send_data JSON.dump({cmd: :exit})
     client_socket.close
   end
@@ -279,19 +289,27 @@ class SubmissionsController < ApplicationController
   end
 
   def extract_durations(error)
-    @container_execution_time = error.execution_duration
-    @waiting_for_container_time = error.waiting_duration
+    @testrun[:starting_time] = error.starting_time
+    @testrun[:container_execution_time] = error.execution_duration
+    @testrun[:waiting_for_container_time] = error.waiting_duration
   end
 
   def extract_errors
     results = []
-    if @output.present?
+    if @testrun[:output].present?
       @submission.exercise.execution_environment.error_templates.each do |template|
         pattern = Regexp.new(template.signature).freeze
-        results << StructuredError.create_from_template(template, @output, @submission) if pattern.match(@output)
+        results << StructuredError.create_from_template(template, @testrun[:output], @submission) if pattern.match(@testrun[:output])
       end
     end
     results
+  end
+
+  def send_and_store(client_socket, message)
+    message[:timestamp] = ActiveSupport::Duration.build(Time.zone.now - @testrun[:starting_time])
+    @testrun[:messages].push message
+    @testrun[:status] = message[:status] if message[:status]
+    client_socket.send_data JSON.dump(message)
   end
 
   def max_output_buffer_size
@@ -299,14 +317,6 @@ class SubmissionsController < ApplicationController
       5000
     else
       500
-    end
-  end
-
-  def prepare(data, stream)
-    if valid_command? data
-      data
-    else
-      JSON.dump({cmd: :write, stream: stream, data: data})
     end
   end
 
@@ -318,15 +328,16 @@ class SubmissionsController < ApplicationController
   def save_testrun_output(cause)
     testrun = Testrun.create!(
       file: @file,
-      passed: @passed,
+      passed: @testrun[:passed],
       cause: cause,
       submission: @submission,
-      exit_code: @exit_code, # might be nil, e.g., when the run did not finish
-      status: @status,
-      output: @output.presence, # TODO: Remove duplicated saving of the output after creating TestrunMessages
-      container_execution_time: @container_execution_time,
-      waiting_for_container_time: @waiting_for_container_time
+      exit_code: @testrun[:exit_code], # might be nil, e.g., when the run did not finish
+      status: @testrun[:status],
+      output: @testrun[:output].presence, # TODO: Remove duplicated saving of the output after creating TestrunMessages
+      container_execution_time: @testrun[:container_execution_time],
+      waiting_for_container_time: @testrun[:waiting_for_container_time]
     )
+    TestrunMessage.create_for(testrun, @testrun[:messages])
     TestrunExecutionEnvironment.create(testrun: testrun, execution_environment: @submission.used_execution_environment)
   end
 
@@ -335,7 +346,7 @@ class SubmissionsController < ApplicationController
 
     errors = errors.to_a.uniq(&:hint)
     errors.each do |error|
-      tubesock.send_data JSON.dump({cmd: 'hint', hint: error.hint, description: error.error_template.description})
+      send_and_store tubesock, {cmd: :hint, hint: error.hint, description: error.error_template.description}
     end
   end
 
@@ -361,10 +372,26 @@ class SubmissionsController < ApplicationController
     authorize!
   end
 
-  def valid_command?(data)
+  def set_testrun
+    @testrun = {
+      messages: [],
+      exit_code: nil,
+      status: nil,
+    }
+  end
+
+  def retrieve_message_from_output(data, stream)
     parsed = JSON.parse(data)
-    parsed.instance_of?(Hash) && parsed.key?('cmd')
+    if parsed.instance_of?(Hash) && parsed.key?('cmd')
+      parsed.symbolize_keys!
+      # Symbolize two values if present
+      parsed[:cmd] = parsed[:cmd].to_sym
+      parsed[:stream] = parsed[:stream].to_sym if parsed.key? :stream
+      parsed
+    else
+      {cmd: :write, stream: stream, data: data}
+    end
   rescue JSON::ParserError
-    false
+    {cmd: :write, stream: stream, data: data}
   end
 end
