@@ -280,7 +280,7 @@ class SubmissionsController < ApplicationController
     # parse validation token
     content = "#{remote_evaluation_mapping.validation_token}\n"
     # parse remote request url
-    content += "#{request.base_url}/evaluate\n"
+    content += "#{evaluate_url}\n"
     @submission.files.each do |file|
       content += "#{file.filepath}=#{file.file_id}\n"
     end
