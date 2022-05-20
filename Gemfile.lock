@@ -154,7 +154,7 @@ GEM
     faraday (2.3.0)
       faraday-net_http (~> 2.0)
       ruby2_keywords (>= 0.0.4)
-    faraday-net_http (2.0.2)
+    faraday-net_http (2.0.3)
     faraday-net_http_persistent (2.0.1)
       faraday-net_http
       net-http-persistent (~> 4.0)
@@ -197,7 +197,7 @@ GEM
       railties (>= 3.2.16)
     js-routes (2.2.4)
       railties (>= 4)
-    json (2.6.1)
+    json (2.6.2)
     json_schemer (0.2.21)
       ecma-re-validator (~> 0.3)
       hana (~> 1.3)
