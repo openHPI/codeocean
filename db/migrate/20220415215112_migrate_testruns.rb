@@ -11,7 +11,10 @@ class MigrateTestruns < ActiveRecord::Migration[6.1]
   REAL_EXIT = Regexp.compile(/\A(?>(?<json>(?<json_output>{".*?)?(?>{"cmd":(?> |"write","stream":"stdout","data":)?"#?exit(?>\\[nr])?"})+(?<more_shell_output_after_json>.*))|(?<program_output>.*?)(?>#?exit\s*)+(?<more_shell_output_after_program>.*))\z/m)
   STDERR_WRITTEN = Regexp.compile(/^(?:(?<rb_error>\r*[^\n\r]*\.rb:\d+:.*)|(?<other_error>\r*[^\n\r]*\.java:\d+: error.*|\r*Exception in thread.*|\r*There was .*|\r*[^\n\r]*java\.lang\..*|\r*make: \*\*\* \[.*))\z/m)
   FIND_JSON = Regexp.compile(/{(?:(?:"(?:\\.|[^\\"])+?"\s*:\s*(?:"(?:\\.|[^\\"])*?"|-?\d++(?:\.\d++)?|\[.*?\]|{.*?}|null))+?\s*,?\s*)+}/)
-  REPLACE_INCOMPLETE_UNICODE = Regexp.compile(/(?:\\?\\u[\da-f]{0,3}|\\?\\u\{[\da-f]{0,4})"}\z/)
+  # We identify incomplete Unicode characters. Valid unicode characters are:
+  # \uXXXX, \u{XXXXX}, \udYXX\udZXX with X = 0-9a-f, Y = 89ab, Z = cdef
+  # Every incomplete prefix of a valid unicode character is identified
+  REPLACE_INCOMPLETE_UNICODE = Regexp.compile(/(?:\\?\\u[\da-f]{0,3}|\\?\\ud[89ab][\da-f]{2}\\?(?:\\(?:u(?:d(?:[cdef][\da-f]?)?)?)?)?|\\?\\u\{[\da-f]{0,4})"}\z/)
 
   # NOTE: `update_columns` won't run validations nor update the `updated_at` timestamp.
   # This is what we want here, thus we disable Rubocop for this migration.
