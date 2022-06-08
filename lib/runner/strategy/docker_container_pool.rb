@@ -213,7 +213,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def local_workspace_path
-    @local_workspace_path ||= Pathname.new(container.binds.first.split(':').first)
+    @local_workspace_path ||= Pathname.new(container.json['HostConfig']['Binds'].first.split(':').first)
   end
 
   def reset_inactivity_timer

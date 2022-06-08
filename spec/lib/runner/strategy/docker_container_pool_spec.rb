@@ -182,7 +182,7 @@ describe Runner::Strategy::DockerContainerPool do
 
     it 'returns the local part of the mount binding' do
       local_path = 'tmp/container20'
-      allow(container).to receive(:binds).and_return(["#{local_path}:/workspace"])
+      allow(container).to receive(:json).and_return({HostConfig: {Binds: ["#{local_path}:/workspace"]}}.as_json)
       expect(container_pool.send(:local_workspace_path)).to eq(Pathname.new(local_path))
     end
   end
