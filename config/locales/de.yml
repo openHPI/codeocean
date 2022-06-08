@@ -453,7 +453,7 @@ de:
         request: "Kommentaranfrage stellen"
         question: "Bitte beschreiben Sie kurz Ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
       intervention:
-        explanation: "Diese Meldung erscheint, weil Sie %{duration} Minuten an dieser Aufgabe gearbeitet haben. 25% Ihrer Mitlernenden arbeiten länger daran, insofern ist das kein Problem, aber dies hat sich als effektiven Zeitpunkt für diese Meldung erwiesen."
+        explanation: "Diese Meldung erscheint, weil Sie %{duration} Minuten an dieser Aufgabe gearbeitet haben. 25% Ihrer Mitlernenden arbeiten länger daran, insofern ist das kein Problem, aber dies hat sich als <a href='https://hpi.de/forschung/publikationen/dissertationen/dissertation-ralf-teusner.html' style='display: contents;'>effektiven Zeitpunkt für diese Meldung</a> erwiesen."
       rfc_intervention:
         text: "Falls Sie bei dieser Aufgabe nicht weiterkommen und nicht selbst weiter knobeln möchten, können Ihre Mitlernenden bestimmt helfen! </br> </br>"
       break_intervention:

@@ -867,7 +867,7 @@ var CodeOceanEditor = {
                             // timeUntilIntervention passed
                             if (editor.data('tips-interventions')) {
                                 const modal = $('#tips-intervention-modal');
-                                modal.find('.modal-footer').text(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
                                 modal.modal('show');
                                 $.ajax({
                                     data: {
@@ -879,7 +879,7 @@ var CodeOceanEditor = {
                                 });
                             } else if (editor.data('break-interventions')) {
                                 const modal = $('#break-intervention-modal');
-                                modal.find('.modal-footer').text(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
                                 modal.modal('show');
                                 $.ajax({
                                     data: {
@@ -895,7 +895,7 @@ var CodeOceanEditor = {
                                 if (!button.prop('disabled')) {
                                     $('#rfc_intervention_text').show();
                                     modal = $('#comment-modal');
-                                    modal.find('.modal-footer').text(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                    modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
                                     modal.on('hidden.bs.modal', function () {
                                         modal.find('.modal-footer').text('');
                                     });
