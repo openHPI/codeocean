@@ -120,8 +120,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
     # First, clean the workspace and second, copy all files to their location.
     # This ensures that no artifacts from a previous submission remain in the workspace.
-    # TODO: Switch back to clean diretory content only. See https://github.com/openHPI/poseidon/issues/42
-    body = {copy: copy, delete: ['/workspace']}
+    body = {copy: copy, delete: ['./*']}
     response = self.class.http_connection.patch url, body.to_json
     return if response.status == 204
 
