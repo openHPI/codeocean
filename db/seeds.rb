@@ -23,7 +23,7 @@ Rails.application.eager_load!
 (ApplicationRecord.descendants - [ActiveRecord::SchemaMigration, User]).each(&:delete_all)
 
 # delete file uploads
-FileUtils.rm_rf(Rails.root.join('public/uploads'))
+FileUtils.rm_rf(Rails.public_path.join('uploads'))
 
 # load environment-dependent seeds
 load(Rails.root.join("db/seeds/#{Rails.env}.rb"))

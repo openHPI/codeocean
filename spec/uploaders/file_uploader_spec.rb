@@ -11,7 +11,7 @@ describe FileUploader do
   after { uploader.remove! }
 
   it 'uses the specified storage directory' do
-    expect(uploader.file.path).to start_with(Rails.root.join('public', uploader.store_dir).to_s)
+    expect(uploader.file.path).to start_with(Rails.public_path.join(uploader.store_dir).to_s)
     expect(uploader.file.path).to end_with(file_path.basename.to_s)
   end
 

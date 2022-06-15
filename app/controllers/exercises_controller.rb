@@ -176,7 +176,7 @@ class ExercisesController < ApplicationController
     ActiveRecord::Base.transaction do
       exercise = ::ProformaService::Import.call(zip: tempfile, user: user)
       exercise.save!
-      return render json: {}, status: :created
+      render json: {}, status: :created
     end
   rescue Proforma::ExerciseNotOwned
     render json: {}, status: :unauthorized
