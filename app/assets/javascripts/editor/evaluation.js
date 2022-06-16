@@ -212,7 +212,8 @@ CodeOceanEditorEvaluation = {
         }
 
         var element = this.findOrCreateOutputElement(index);
-        // Switch all four lines below to enable the output of images and render <IMG/> tags
+        // Switch all four lines below to enable the output of images and render <IMG/> tags.
+        // Also consider `augmentStacktraceInOutput` in editor.js.erb
         if (!colorize) {
             if (output.stdout !== undefined && output.stdout !== '') {
                 output.stdout = output.stdout.replace(this.nonPrintableRegEx, "")

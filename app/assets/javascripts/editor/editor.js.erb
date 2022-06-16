@@ -652,12 +652,17 @@ var CodeOceanEditor = {
 
                 let matches;
 
-                let augmented_text = text;
+                // Switch both lines below to enable the output of images and render <IMG/> tags.
+                // Also consider `printOutput` in evaluation.js
+
+                // let augmented_text = element.text();
+                let augmented_text = element.html();
                 while (matches = this.tracepositions_regex.exec(text)) {
                     const frame = $('div.frame[data-filename="' + matches[1] + '"]')
 
                     if (frame.length > 0) {
-                        augmented_text = augmented_text.replace(new RegExp(matches[0], 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>");
+                        // augmented_text = augmented_text.replace(new RegExp(matches[0], 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>");
+                        augmented_text = augmented_text.replace(new RegExp(_.unescape(matches[0]), 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>");
                     }
                 }
                 element.html(augmented_text);
