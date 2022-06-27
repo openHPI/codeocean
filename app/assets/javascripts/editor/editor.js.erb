@@ -366,11 +366,9 @@ var CodeOceanEditor = {
         }
         filesInstance.jstree(filesInstance.data('entries'));
         filesInstance.on('click', 'li.jstree-leaf > a', function (event) {
-            this.setActiveFile(
-                $(event.target).parent().text(),
-                parseInt($(event.target).parent().attr('id'))
-            );
-            var frame = $('[data-file-id="' + this.active_file.id + '"]').parent();
+            const file_id = parseInt($(event.target).parent().attr('id'));
+            const frame = $('[data-file-id="' + file_id + '"]').parent();
+            this.setActiveFile(frame.data('filename'), file_id);
             this.showFrame(frame);
             this.toggleButtonStates();
         }.bind(this));
