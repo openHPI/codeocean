@@ -45,8 +45,8 @@ class FileTree
       icon: node_icon(node),
       id: node.content.try(:ancestor_id),
       state: {
-        disabled: !node.is_leaf?,
-        opened: !node.is_leaf?,
+        disabled: !node.leaf?,
+        opened: !node.leaf?,
       },
       text: node.name,
     }
@@ -54,7 +54,7 @@ class FileTree
   private :map_to_js_tree
 
   def node_icon(node)
-    if node.is_leaf? && !node.is_root?
+    if node.leaf? && !node.root?
       file_icon(node.content)
     else
       folder_icon

@@ -90,7 +90,7 @@ describe FileTree do
     end
 
     it 'creates tree nodes for intermediary path segments' do
-      expect(file_tree.instance_variable_get(:@root).reject(&:content).reject(&:is_root?).map(&:name)).to eq(files.first.path.split('/'))
+      expect(file_tree.instance_variable_get(:@root).reject(&:content).reject(&:root?).map(&:name)).to eq(files.first.path.split('/'))
     end
   end
 
