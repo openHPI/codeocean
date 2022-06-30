@@ -22,6 +22,9 @@ gem 'js-routes'
 gem 'kramdown'
 gem 'mimemagic'
 gem 'net-http-persistent'
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
 gem 'nokogiri'
 gem 'pagedown-bootstrap-rails'
 gem 'pg'
