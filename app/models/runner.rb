@@ -154,13 +154,13 @@ class Runner < ApplicationRecord
       rescue Runner::Error
         # An additional error was raised during synchronization
         raise Runner::Error::EnvironmentNotFound.new(
-          "The execution environment with id #{execution_environment.id} was not found by the runner management. "\
+          "The execution environment with id #{execution_environment.id} was not found by the runner management. " \
           'In addition, it could not be synced so that this probably indicates a permanent error.'
         )
       else
         # No error was raised during synchronization
         raise Runner::Error::EnvironmentNotFound.new(
-          "The execution environment with id #{execution_environment.id} was not found yet by the runner management. "\
+          "The execution environment with id #{execution_environment.id} was not found yet by the runner management. " \
           'It has been successfully synced now so that the next request should be successful.'
         )
       end

@@ -40,7 +40,7 @@ class SubmissionsController < ApplicationController
       # zip .co file
       zio.put_next_entry('.co')
       zio.write(File.read(id_file))
-      File.delete(id_file) if File.exist?(id_file)
+      FileUtils.rm_rf(id_file)
 
       # zip client scripts
       scripts_path = 'app/assets/remote_scripts'
