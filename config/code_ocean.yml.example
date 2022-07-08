@@ -40,10 +40,10 @@ default: &default
     enabled: false
     # The strategy to use. Possible values are: poseidon, docker_container_pool
     strategy: poseidon
-    # The root URL of the runner management to use
+    # The root URL of the runner management to use (include any API prefix if required)
     # If a hostname is specified and the target host is reachable via IPv6, the WebSocket
     # connection might not use the IPv6-to-IPv4 fallback but rather fail unexpectedly.
-    url: https://runners.example.org
+    url: https://runners.example.org/api/v1
     # The root certificate authority to trust for TLS connections to the runner management (Poseidon only)
     ca_file: /example/certificates/ca.crt
     # The authorization token for connections to the runner management (Poseidon only)

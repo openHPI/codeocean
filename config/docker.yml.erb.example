@@ -1,16 +1,12 @@
 #Why erb?
 default: &default
-  connection_timeout: 3
-  pool:
-    active: false
-  ports: !ruby/range 4500..4600
-
-development:
-  <<: *default
+  # Specify the Docker host below, once for container management and once for output streaming.
+  # Always use the TCP socket (instead of a unix socket) and an IPv4 address for best compatibility.
   host: tcp://127.0.0.1:2376
   ws_host: ws://127.0.0.1:2376 #url to connect rails server to docker host
   # Be sure to change the default ACL when modifying the workspace_root: `setfacl -Rdm user:<username>:rwx <workspace_root>`
   workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
+  connection_timeout: 3
   pool:
     active: true
     refill:
@@ -18,37 +14,18 @@ development:
       batch_size: 8
       interval: 15
       timeout: 60
+  ports: !ruby/range 4500..4600
+
+development:
+  <<: *default
 
 production:
   <<: *default
-  host: unix:///var/run/docker.sock
-  pool:
-    active: true
-    refill:
-      async: false
-      batch_size: 8
-      interval: 15
-      timeout: 60
-  # Be sure to change the default ACL when modifying the workspace_root: `setfacl -Rdm user:<username>:rwx <workspace_root>`
-  workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
-  ws_host: ws://localhost:4243 #url to connect rails server to docker host
 
 staging:
   <<: *default
-  host: unix:///var/run/docker.sock
-  pool:
-    active: true
-    refill:
-      async: false
-      batch_size: 8
-      interval: 15
-      timeout: 60
-  # Be sure to change the default ACL when modifying the workspace_root: `setfacl -Rdm user:<username>:rwx <workspace_root>`
-  workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
-  ws_host: ws://localhost:4243 #url to connect rails server to docker host
 
 test:
   <<: *default
-  host: tcp://127.0.0.1:2376
-  # Be sure to change the default ACL when modifying the workspace_root: `setfacl -Rdm user:<username>:rwx <workspace_root>`
-  workspace_root: <%= Rails.root.join('tmp', 'files', Rails.env) %>
+  pool:
+    active: false
