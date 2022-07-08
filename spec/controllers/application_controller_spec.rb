@@ -78,7 +78,7 @@ describe ApplicationController do
   describe 'GET #welcome' do
     before { get :welcome }
 
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:welcome)
   end
 end

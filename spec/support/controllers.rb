@@ -49,9 +49,9 @@ def expect_redirect(path = nil)
   end
 end
 
-def expect_status(status)
+def expect_http_status(status)
   it "responds with status #{status}" do
-    expect(response.status).to eq(status)
+    expect(response).to have_http_status(status)
   end
 end
 

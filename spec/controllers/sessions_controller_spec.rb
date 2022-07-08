@@ -217,7 +217,7 @@ describe SessionsController do
       perform_request.call
     end
 
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:destroy_through_lti)
   end
 
@@ -230,7 +230,7 @@ describe SessionsController do
         get :new
       end
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:new)
     end
 

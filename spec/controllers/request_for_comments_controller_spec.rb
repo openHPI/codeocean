@@ -35,14 +35,14 @@ describe RequestForCommentsController do
   describe 'GET #my_comment_requests' do
     before { get :my_comment_requests }
 
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
   describe 'GET #rfcs_with_my_comments' do
     before { get :rfcs_with_my_comments }
 
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -52,7 +52,7 @@ describe RequestForCommentsController do
       get :rfcs_for_exercise, params: {exercise_id: exercise.id}
     end
 
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 end

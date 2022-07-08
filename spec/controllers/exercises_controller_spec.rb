@@ -20,7 +20,7 @@ describe ExercisesController do
     end
 
     expect_json
-    expect_status(200)
+    expect_http_status(:ok)
   end
 
   describe 'POST #clone' do
@@ -122,7 +122,7 @@ describe ExercisesController do
       before { post :create, params: {exercise: {}} }
 
       expect_assigns(exercise: Exercise)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:new)
     end
   end
@@ -144,7 +144,7 @@ describe ExercisesController do
     before { get :edit, params: {id: exercise.id} }
 
     expect_assigns(exercise: :exercise)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:edit)
   end
 
@@ -173,7 +173,7 @@ describe ExercisesController do
         end
       end
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:implement)
     end
 
@@ -195,7 +195,7 @@ describe ExercisesController do
     end
 
     expect_assigns(exercises: :scope)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -204,7 +204,7 @@ describe ExercisesController do
 
     expect_assigns(execution_environments: ExecutionEnvironment.all, exercise: Exercise)
     expect_assigns(exercise: Exercise)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:new)
   end
 
@@ -213,7 +213,7 @@ describe ExercisesController do
       before { get :show, params: {id: exercise.id} }
 
       expect_assigns(exercise: :exercise)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:show)
     end
   end
@@ -223,7 +223,7 @@ describe ExercisesController do
       before { get :reload, format: :json, params: {id: exercise.id} }
 
       expect_assigns(exercise: :exercise)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:reload)
     end
   end
@@ -232,7 +232,7 @@ describe ExercisesController do
     before { get :statistics, params: {id: exercise.id} }
 
     expect_assigns(exercise: :exercise)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:statistics)
   end
 
@@ -285,7 +285,7 @@ describe ExercisesController do
         end
 
         expect_json
-        expect_status(200)
+        expect_http_status(:ok)
       end
 
       context 'when the score transmission fails' do
@@ -301,7 +301,7 @@ describe ExercisesController do
         end
 
         expect_json
-        expect_status(503)
+        expect_http_status(:service_unavailable)
       end
     end
 
@@ -322,7 +322,7 @@ describe ExercisesController do
       end
 
       expect_json
-      expect_status(200)
+      expect_http_status(:ok)
     end
   end
 
@@ -340,7 +340,7 @@ describe ExercisesController do
       before { put :update, params: {exercise: {title: ''}, id: exercise.id} }
 
       expect_assigns(exercise: Exercise)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:edit)
     end
   end

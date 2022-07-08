@@ -27,7 +27,7 @@ describe ConsumersController do
       before { post :create, params: {consumer: {}} }
 
       expect_assigns(consumer: Consumer)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:new)
     end
   end
@@ -49,7 +49,7 @@ describe ConsumersController do
     before { get :edit, params: {id: consumer.id} }
 
     expect_assigns(consumer: Consumer)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:edit)
   end
 
@@ -60,7 +60,7 @@ describe ConsumersController do
     end
 
     expect_assigns(consumers: Consumer.all)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -68,7 +68,7 @@ describe ConsumersController do
     before { get :new }
 
     expect_assigns(consumer: Consumer)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:new)
   end
 
@@ -76,7 +76,7 @@ describe ConsumersController do
     before { get :show, params: {id: consumer.id} }
 
     expect_assigns(consumer: :consumer)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:show)
   end
 
@@ -92,7 +92,7 @@ describe ConsumersController do
       before { put :update, params: {consumer: {name: ''}, id: consumer.id} }
 
       expect_assigns(consumer: Consumer)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:edit)
     end
   end

@@ -19,7 +19,7 @@ describe CodeharborLinksController do
       get :new
     end
 
-    expect_status(200)
+    expect_http_status(:ok)
   end
 
   describe 'GET #edit' do
@@ -27,7 +27,7 @@ describe CodeharborLinksController do
 
     before { get :edit, params: {id: codeharbor_link.id} }
 
-    expect_status(200)
+    expect_http_status(:ok)
   end
 
   describe 'POST #create' do

@@ -26,7 +26,7 @@ describe SubmissionsController do
       end
 
       expect_json
-      expect_status(201)
+      expect_http_status(:created)
     end
 
     context 'with an invalid submission' do
@@ -34,7 +34,7 @@ describe SubmissionsController do
 
       expect_assigns(submission: Submission)
       expect_json
-      expect_status(422)
+      expect_http_status(:unprocessable_entity)
     end
   end
 
@@ -42,7 +42,7 @@ describe SubmissionsController do
     context 'with an invalid filename' do
       before { get :download_file, params: {filename: SecureRandom.hex, id: submission.id} }
 
-      expect_status(404)
+      expect_http_status(:not_found)
     end
 
     context 'with a valid binary filename' do
@@ -56,7 +56,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('application/octet-stream')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'sets the correct filename' do
           expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
@@ -75,7 +75,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('video/mp4')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'sets the correct filename' do
           expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
@@ -88,7 +88,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('text/javascript')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'sets the correct filename' do
           expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
@@ -104,7 +104,7 @@ describe SubmissionsController do
     end
 
     expect_assigns(submissions: Submission.all)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -114,7 +114,7 @@ describe SubmissionsController do
     context 'with an invalid filename' do
       before { get :render_file, params: {filename: SecureRandom.hex, id: submission.id} }
 
-      expect_status(404)
+      expect_http_status(:not_found)
     end
 
     context 'with a valid filename' do
@@ -128,7 +128,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('video/mp4')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'renders the file content' do
           expect(response.body).to eq(file.native_file.read)
@@ -141,7 +141,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('text/javascript')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'renders the file content' do
           expect(response.body).to eq(file.content)
@@ -167,7 +167,7 @@ describe SubmissionsController do
     before { get :show, params: {id: submission.id} }
 
     expect_assigns(submission: :submission)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:show)
   end
 
@@ -179,7 +179,7 @@ describe SubmissionsController do
     before { get :show, params: {id: submission.id}, format: :json }
 
     expect_assigns(submission: :submission)
-    expect_status(200)
+    expect_http_status(:ok)
 
     %i[render run test].each do |action|
       describe "##{action}_url" do

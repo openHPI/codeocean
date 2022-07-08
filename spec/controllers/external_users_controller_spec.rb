@@ -12,7 +12,7 @@ describe ExternalUsersController do
     before { get :index }
 
     expect_assigns(users: ExternalUser.all)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -20,7 +20,7 @@ describe ExternalUsersController do
     before { get :show, params: {id: users.first.id} }
 
     expect_assigns(user: ExternalUser)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:show)
   end
 end
