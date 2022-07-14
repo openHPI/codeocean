@@ -101,6 +101,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{runner_url}" }
     response = self.class.http_connection.delete runner_url
     self.class.handle_error response unless response.status == 204
+  rescue Runner::Error::RunnerNotFound
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Runner not found, nothing to destroy" }
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   ensure

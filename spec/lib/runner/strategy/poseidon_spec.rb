@@ -312,8 +312,15 @@ describe Runner::Strategy::Poseidon do
       end
     end
 
+    context 'when Poseidon returns NotFound (404)' do
+      let(:response_status) { 404 }
+
+      it 'raises an error' do
+        expect { action.call }.not_to raise_error(Runner::Error::RunnerNotFound)
+      end
+    end
+
     include_examples 'Unauthorized (401) error handling'
-    include_examples 'NotFound (404) error handling'
     include_examples 'InternalServerError (500) error handling'
     include_examples 'unknown response status error handling'
     include_examples 'Faraday error handling'
