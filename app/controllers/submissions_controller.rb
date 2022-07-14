@@ -308,7 +308,11 @@ class SubmissionsController < ApplicationController
   end
 
   def send_and_store(client_socket, message)
-    message[:timestamp] = ActiveSupport::Duration.build(Time.zone.now - @testrun[:starting_time])
+    message[:timestamp] = if @testrun[:starting_time]
+                            ActiveSupport::Duration.build(Time.zone.now - @testrun[:starting_time])
+                          else
+                            0.seconds
+                          end
     @testrun[:messages].push message
     @testrun[:status] = message[:status] if message[:status]
     client_socket.send_data JSON.dump(message)
