@@ -93,7 +93,7 @@ class SubmissionsController < ApplicationController
 
       client_socket.onclose do |_event|
         runner_socket&.close(:terminated_by_client)
-        # We do not update the @testrun[:status] by design, it would be missleading
+        @testrun[:status] ||= :terminated_by_client
       end
 
       client_socket.onmessage do |raw_event|
@@ -187,11 +187,13 @@ class SubmissionsController < ApplicationController
     send_and_store client_socket, {cmd: :status, status: :timeout}
     close_client_connection(client_socket)
     Rails.logger.debug { "Running a submission timed out: #{e.message}" }
+    @testrun[:status] ||= :timeout
     @testrun[:output] = "timeout: #{@testrun[:output]}"
     extract_durations(e)
   rescue Runner::Error => e
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
     close_client_connection(client_socket)
+    @testrun[:status] ||= :container_depleted
     Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
     extract_durations(e)
   ensure
