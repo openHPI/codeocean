@@ -86,9 +86,9 @@ describe SessionsController do
 
       it 'sets the specified locale' do
         expect(controller).to receive(:switch_locale).and_call_original
-        i18n = class_double I18n, locale: locale.to_s
+        i18n = class_double I18n, locale: locale
         allow(I18n).to receive(:locale=).with(I18n.default_locale).and_call_original
-        allow(I18n).to receive(:locale=).with(locale.to_s).and_return(i18n)
+        allow(I18n).to receive(:locale=).with(locale).and_return(i18n)
         perform_request
         expect(i18n.locale.to_sym).to eq(locale)
       end
