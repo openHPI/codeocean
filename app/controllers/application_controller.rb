@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
   private :render_error
 
   def switch_locale(&action)
-    session[:locale] = params[:custom_locale] || params[:locale] || session[:locale]
+    session[:locale] = sanitize_locale(params[:custom_locale] || params[:locale] || session[:locale])
     locale = session[:locale] || I18n.default_locale
     Sentry.set_extras(locale: locale)
     I18n.with_locale(locale, &action)
@@ -96,4 +96,18 @@ class ApplicationController < ActionController::Base
     @embed_options
   end
   private :load_embed_options
+
+  # Sanitize given locale.
+  #
+  # Return `nil` if the locale is blank or not available.
+  #
+  def sanitize_locale(locale)
+    return if locale.blank?
+
+    locale = locale.downcase.to_sym
+    return unless I18n.available_locales.include?(locale)
+
+    locale
+  end
+  private :sanitize_locale
 end
