@@ -18,8 +18,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
   enable_extension "plpgsql"
 
   create_table "anomaly_notifications", id: :serial, force: :cascade do |t|
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "exercise_id"
     t.integer "exercise_collection_id"
     t.string "reason"
@@ -34,10 +34,10 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
     t.string "api_key"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "user_type"
     t.integer "user_id"
     t.string "push_url"
     t.string "check_uuid_url"
+    t.string "user_type"
     t.index ["user_type", "user_id"], name: "index_codeharbor_links_on_user_type_and_user_id"
   end
 
@@ -124,8 +124,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
   create_table "events", id: :serial, force: :cascade do |t|
     t.string "category"
     t.string "data"
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "exercise_id"
     t.integer "file_id"
     t.datetime "created_at", null: false
@@ -165,8 +165,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "use_anomaly_detection", default: false
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.index ["user_type", "user_id"], name: "index_exercise_collections_on_user_type_and_user_id"
   end
 
@@ -254,8 +254,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
 
   create_table "files", id: :serial, force: :cascade do |t|
     t.text "content"
-    t.string "context_type"
     t.integer "context_id"
+    t.string "context_type"
     t.integer "file_id"
     t.integer "file_type_id"
     t.boolean "hidden"
@@ -390,8 +390,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
 
   create_table "searches", id: :serial, force: :cascade do |t|
     t.integer "exercise_id", null: false
-    t.string "user_type", null: false
     t.integer "user_id", null: false
+    t.string "user_type", null: false
     t.string "search"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -447,8 +447,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
   end
 
   create_table "subscriptions", id: :serial, force: :cascade do |t|
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "request_for_comment_id"
     t.string "subscription_type"
     t.datetime "created_at", null: false
@@ -474,7 +474,7 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
   create_table "testrun_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "testrun_id", null: false
     t.interval "timestamp", default: "PT0S", null: false
-    t.integer "cmd", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
+    t.integer "cmd", limit: 2, default: 1, null: false, comment: "Used as enum in Rails"
     t.integer "stream", limit: 2, comment: "Used as enum in Rails"
     t.text "log"
     t.jsonb "data"
@@ -515,8 +515,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
 
   create_table "user_exercise_feedbacks", id: :serial, force: :cascade do |t|
     t.integer "exercise_id", null: false
-    t.string "user_type", null: false
     t.integer "user_id", null: false
+    t.string "user_type", null: false
     t.integer "difficulty"
     t.integer "working_time_seconds"
     t.string "feedback_text"
@@ -529,8 +529,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
   end
 
   create_table "user_exercise_interventions", id: :serial, force: :cascade do |t|
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "exercise_id"
     t.integer "intervention_id"
     t.integer "accumulated_worktime_s"
@@ -540,8 +540,8 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
   end
 
   create_table "user_proxy_exercise_exercises", id: :serial, force: :cascade do |t|
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "proxy_exercise_id"
     t.integer "exercise_id"
     t.datetime "created_at"
