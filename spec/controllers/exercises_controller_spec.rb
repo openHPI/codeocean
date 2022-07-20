@@ -236,6 +236,40 @@ describe ExercisesController do
     expect_template(:statistics)
   end
 
+  describe 'GET #statistics for external users' do
+    let(:perform_request) { get :statistics, params: params }
+    let(:params) { {id: exercise.id, external_user_id: external_user.id} }
+    let(:external_user) { create(:external_user) }
+
+    before do
+      2.times { create(:submission, cause: 'autosave', user: external_user, exercise: exercise) }
+      2.times { create(:submission, cause: 'run', user: external_user, exercise: exercise) }
+      create(:submission, cause: 'assess', user: external_user, exercise: exercise)
+    end
+
+    context 'when viewing the default submission statistics page without a parameter' do
+      it 'does not list autosaved submissions' do
+        perform_request
+        expect(assigns(:submissions)).to match_array [
+          an_object_having_attributes(cause: 'run', user_id: external_user.id),
+          an_object_having_attributes(cause: 'assess', user_id: external_user.id),
+          an_object_having_attributes(cause: 'run', user_id: external_user.id),
+        ]
+      end
+    end
+
+    context 'when including autosaved submissions via the query parameter' do
+      let(:params) { super().merge(show_autosaves: 'true') }
+
+      it 'lists all submissions, including autosaved submissions' do
+        perform_request
+        submissions = assigns(:submissions)
+        expect(submissions).to match_array Submission.all
+        expect(submissions).to include an_object_having_attributes(cause: 'autosave', user_id: external_user.id)
+      end
+    end
+  end
+
   describe 'POST #submit' do
     let(:output) { {} }
     let(:perform_request) { post :submit, format: :json, params: {id: exercise.id, submission: {cause: 'submit', exercise_id: exercise.id}} }
