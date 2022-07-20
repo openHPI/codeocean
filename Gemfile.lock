@@ -219,6 +219,10 @@ GEM
     kaminari-core (1.2.2)
     kramdown (2.4.0)
       rexml
+    launchy (2.5.0)
+      addressable (~> 2.7)
+    letter_opener (1.8.1)
+      launchy (>= 2.2, < 3)
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -566,6 +570,7 @@ DEPENDENCIES
   js-routes
   json_schemer
   kramdown
+  letter_opener
   listen
   mimemagic
   mnemosyne-ruby

@@ -59,6 +59,7 @@ group :development, :staging do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'bootsnap', require: false
+  gem 'letter_opener'
   gem 'listen'
   gem 'pry-rails'
   gem 'rack-mini-profiler'
