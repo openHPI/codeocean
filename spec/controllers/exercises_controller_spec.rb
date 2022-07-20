@@ -236,8 +236,8 @@ describe ExercisesController do
     expect_template(:statistics)
   end
 
-  describe 'GET #statistics for external users' do
-    let(:perform_request) { get :statistics, params: params }
+  describe 'GET #external_user_statistics' do
+    let(:perform_request) { get :external_user_statistics, params: params }
     let(:params) { {id: exercise.id, external_user_id: external_user.id} }
     let(:external_user) { create(:external_user) }
 
@@ -250,7 +250,7 @@ describe ExercisesController do
     context 'when viewing the default submission statistics page without a parameter' do
       it 'does not list autosaved submissions' do
         perform_request
-        expect(assigns(:submissions)).to match_array [
+        expect(assigns(:all_events).filter {|event| event.is_a? Submission }).to match_array [
           an_object_having_attributes(cause: 'run', user_id: external_user.id),
           an_object_having_attributes(cause: 'assess', user_id: external_user.id),
           an_object_having_attributes(cause: 'run', user_id: external_user.id),
@@ -263,7 +263,7 @@ describe ExercisesController do
 
       it 'lists all submissions, including autosaved submissions' do
         perform_request
-        submissions = assigns(:submissions)
+        submissions = assigns(:all_events).filter {|event| event.is_a? Submission }
         expect(submissions).to match_array Submission.all
         expect(submissions).to include an_object_having_attributes(cause: 'autosave', user_id: external_user.id)
       end

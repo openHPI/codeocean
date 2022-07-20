@@ -477,6 +477,7 @@ en:
       feedback: Feedback
       requests_for_comments: Requests for Comments
       study_group_dashboard: Live Dashboard
+      external_user_statistics: External User Statistics
     show:
       is_unpublished: Exercise is unpublished
     statistics:
