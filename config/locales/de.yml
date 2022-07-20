@@ -477,6 +477,7 @@ de:
       feedback: Feedback
       requests_for_comments: Kommentaranfragen
       study_group_dashboard: Live Dashboard
+      external_user_statistics: Statistik für externe Nutzer
     show:
       is_unpublished: Aufgabe ist deaktiviert
     statistics:

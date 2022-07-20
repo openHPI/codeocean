@@ -117,7 +117,9 @@ Rails.application.routes.draw do
   resources :user_exercise_feedbacks, except: %i[show index]
 
   resources :external_users, only: %i[index show], concerns: :statistics do
-    resources :exercises, concerns: :statistics
+    resources :exercises do
+      get :statistics, to: 'exercises#external_user_statistics', on: :member
+    end
     member do
       get :tag_statistics
     end

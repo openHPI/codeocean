@@ -11,8 +11,9 @@ class ExercisesController < ApplicationController
   before_action :set_execution_environments, only: %i[index create edit new update]
   before_action :set_exercise_and_authorize,
     only: MEMBER_ACTIONS + %i[clone implement working_times intervention search run statistics submit reload feedback
-                              requests_for_comments study_group_dashboard export_external_check export_external_confirm]
-  before_action :set_external_user_and_authorize, only: [:statistics]
+                              requests_for_comments study_group_dashboard export_external_check export_external_confirm
+                              external_user_statistics]
+  before_action :set_external_user_and_authorize, only: [:external_user_statistics]
   before_action :set_file_types, only: %i[create edit new update]
   before_action :set_course_token, only: [:implement]
   before_action :set_available_tips, only: %i[implement show new edit]
@@ -466,57 +467,58 @@ working_time_accumulated: working_time_accumulated})
   end
 
   def statistics
-    if @external_user
-      # Render statistics page for one specific external user
-      authorize(@external_user, :statistics?)
-      if policy(@exercise).detailed_statistics?
-        @submissions = Submission.where(user: @external_user,
-          exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
-        @show_autosaves = params[:show_autosaves] == 'true'
-        @submissions = @submissions.where.not(cause: 'autosave') unless @show_autosaves
-        interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
-          @exercise.id)
-        @all_events = (@submissions + interventions).sort_by(&:created_at)
-        @deltas = @all_events.map.with_index do |item, index|
-          delta = item.created_at - @all_events[index - 1].created_at if index.positive?
-          delta.nil? || (delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS) ? 0 : delta
-        end
-        @working_times_until = []
-        @all_events.each_with_index do |_, index|
-          @working_times_until.push((format_time_difference(@deltas[0..index].sum) if index.positive?))
-        end
-      else
-        final_submissions = Submission.where(user: @external_user,
-          exercise_id: @exercise.id).in_study_group_of(current_user).final
-        @submissions = []
-        %i[before_deadline within_grace_period after_late_deadline].each do |filter|
-          relevant_submission = final_submissions.send(filter).latest
-          @submissions.push relevant_submission if relevant_submission.present?
-        end
-        @all_events = @submissions
-      end
-      render 'exercises/external_users/statistics'
-    else
-      # Show general statistic page for specific exercise
-      user_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
-      additional_filter = if policy(@exercise).detailed_statistics?
-                            ''
-                          elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
-                            "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"
-                          else
-                            # e.g. internal user without any study groups, show no submissions
-                            'AND FALSE'
-                          end
-      query = "SELECT user_id, user_type, MAX(score) AS maximum_score, COUNT(id) AS runs
-              FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter}
-              GROUP BY user_id, user_type;"
-      ApplicationRecord.connection.execute(query).each do |tuple|
-        user_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
-      end
-      render locals: {
-        user_statistics: user_statistics,
-      }
+    # Show general statistic page for specific exercise
+    user_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
+    additional_filter = if policy(@exercise).detailed_statistics?
+                          ''
+                        elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
+                          "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"
+                        else
+                          # e.g. internal user without any study groups, show no submissions
+                          'AND FALSE'
+                        end
+    query = "SELECT user_id, user_type, MAX(score) AS maximum_score, COUNT(id) AS runs
+            FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter}
+            GROUP BY user_id, user_type;"
+    ApplicationRecord.connection.execute(query).each do |tuple|
+      user_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
     end
+    render locals: {
+      user_statistics: user_statistics,
+    }
+  end
+
+  def external_user_statistics
+    # Render statistics page for one specific external user
+
+    if policy(@exercise).detailed_statistics?
+      @submissions = Submission.where(user: @external_user,
+        exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
+      @show_autosaves = params[:show_autosaves] == 'true'
+      @submissions = @submissions.where.not(cause: 'autosave') unless @show_autosaves
+      interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
+        @exercise.id)
+      @all_events = (@submissions + interventions).sort_by(&:created_at)
+      @deltas = @all_events.map.with_index do |item, index|
+        delta = item.created_at - @all_events[index - 1].created_at if index.positive?
+        delta.nil? || (delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS) ? 0 : delta
+      end
+      @working_times_until = []
+      @all_events.each_with_index do |_, index|
+        @working_times_until.push((format_time_difference(@deltas[0..index].sum) if index.positive?))
+      end
+    else
+      final_submissions = Submission.where(user: @external_user,
+        exercise_id: @exercise.id).in_study_group_of(current_user).final
+      @submissions = []
+      %i[before_deadline within_grace_period after_late_deadline].each do |filter|
+        relevant_submission = final_submissions.send(filter).latest
+        @submissions.push relevant_submission if relevant_submission.present?
+      end
+      @all_events = @submissions
+    end
+
+    render 'exercises/external_users/statistics'
   end
 
   def submit
