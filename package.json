@@ -3,7 +3,7 @@
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@rails/webpacker": "^5.4.3",
     "@sentry/browser": "^6.11.0",
-    "bootstrap": "^4.6.1",
+    "bootstrap": "^4.6.2",
     "bootswatch": "^4.6.0",
     "chosen-js": "^1.8.7",
     "d3": "^7.6.1",
