@@ -472,6 +472,8 @@ working_time_accumulated: working_time_accumulated})
       if policy(@exercise).detailed_statistics?
         @submissions = Submission.where(user: @external_user,
           exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
+        @show_autosaves = params[:show_autosaves] == 'true'
+        @submissions = @submissions.where.not(cause: 'autosave') unless @show_autosaves
         interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
           @exercise.id)
         @all_events = (@submissions + interventions).sort_by(&:created_at)
