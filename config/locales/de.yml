@@ -521,6 +521,10 @@ de:
         after_late_deadline: Verspätete Abgabe
         addendum: '* Differenzen von mehr als %{delta} Minuten werden ignoriert.'
         filter: "Hinweis: Nur die letzte Abgabe vor einer Abgabefrist ist sichtbar."
+        toggle_autosave_on: Zwischenspeicherungen anzeigen
+        toggle_autosave_off: Zwischenspeicherungen ausblenden
+        toggle_status_on: Zwischenspeicherungen sind eingeblendet
+        toggle_status_off: Zwischenspeicherungen sind ausgeblendet
   proxy_exercises:
       index:
         clone: Duplizieren

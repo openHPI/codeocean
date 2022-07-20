@@ -521,6 +521,10 @@ en:
         after_late_deadline: Too Late
         addendum: "* Deltas longer than %{delta} minutes are ignored."
         filter: "Remember: Only the last submission per deadline is shown."
+        toggle_autosave_on: Show Autosaves
+        toggle_autosave_off: Hide Autosaves
+        toggle_status_on: Autosaves are currently visible
+        toggle_status_off: Autosaves are currently hidden
   proxy_exercises:
       index:
         clone: Duplicate
