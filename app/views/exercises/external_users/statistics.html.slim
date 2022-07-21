@@ -3,20 +3,21 @@ h1
   ' (external user
   = link_to_if(policy(@external_user).show?, @external_user.displayname, @external_user)
   ' )
-- current_submission = @submissions.first
+- submissions = @all_events.filter{|event| event.is_a? Submission}
+- current_submission = submissions.first
 - if current_submission
   - initial_files = current_submission.files.to_a
 
   - all_files = []
   - file_types = Set.new()
-  - @submissions.each do |submission|
+  - submissions.each do |submission|
     - submission.files.each do |file|
       - file_types.add(ActiveSupport::JSON.encode(file.file_type))
     - all_files.push(submission.files)
   - all_files.reject!(&:blank?)
   - file_types.reject!(&:blank?)
 
-  .d-none#data data-submissions=ActiveSupport::JSON.encode(@submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
+  .d-none#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
 
   #stats-editor.row
     - index = 0
@@ -33,7 +34,7 @@ h1
       input type='range' orient='horizontal' list='datapoints' min=0 max=all_files.length-1 value=0 style="width: 100%"
       datalist#datapoints
         - index=0
-        - @submissions.each do |submission|
+        - submissions.each do |submission|
           - next if submission.files.blank?
           option data-submission=submission
             =index

@@ -492,13 +492,13 @@ working_time_accumulated: working_time_accumulated})
     # Render statistics page for one specific external user
 
     if policy(@exercise).detailed_statistics?
-      @submissions = Submission.where(user: @external_user,
+      submissions = Submission.where(user: @external_user,
         exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
       @show_autosaves = params[:show_autosaves] == 'true'
-      @submissions = @submissions.where.not(cause: 'autosave') unless @show_autosaves
+      submissions = submissions.where.not(cause: 'autosave') unless @show_autosaves
       interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
         @exercise.id)
-      @all_events = (@submissions + interventions).sort_by(&:created_at)
+      @all_events = (submissions + interventions).sort_by(&:created_at)
       @deltas = @all_events.map.with_index do |item, index|
         delta = item.created_at - @all_events[index - 1].created_at if index.positive?
         delta.nil? || (delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS) ? 0 : delta
@@ -510,12 +510,12 @@ working_time_accumulated: working_time_accumulated})
     else
       final_submissions = Submission.where(user: @external_user,
         exercise_id: @exercise.id).in_study_group_of(current_user).final
-      @submissions = []
+      submissions = []
       %i[before_deadline within_grace_period after_late_deadline].each do |filter|
         relevant_submission = final_submissions.send(filter).latest
-        @submissions.push relevant_submission if relevant_submission.present?
+        submissions.push relevant_submission if relevant_submission.present?
       end
-      @all_events = @submissions
+      @all_events = submissions
     end
 
     render 'exercises/external_users/statistics'
