@@ -92,7 +92,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
-    bootsnap (1.12.0)
+    bootsnap (1.13.0)
       msgpack (~> 1.2)
     bootstrap-will_paginate (1.0.0)
       will_paginate
@@ -252,7 +252,7 @@ GEM
     mnemosyne-ruby (1.13.0)
       activesupport (>= 4)
       bunny
-    msgpack (1.5.3)
+    msgpack (1.5.4)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     nested_form (0.3.2)
