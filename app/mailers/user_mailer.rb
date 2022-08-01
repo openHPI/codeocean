@@ -20,10 +20,11 @@ class UserMailer < ApplicationMailer
 
   def got_new_comment(comment, request_for_comment, commenting_user)
     # TODO: check whether we can take the last known locale of the receiver?
+    token = AuthenticationToken.generate!(request_for_comment.user)
     @receiver_displayname = request_for_comment.user.displayname
     @commenting_user_displayname = commenting_user.displayname
     @comment_text = comment.text
-    @rfc_link = request_for_comment_url(request_for_comment)
+    @rfc_link = request_for_comment_url(request_for_comment, token: token.shared_secret)
     mail(
       subject: t('mailers.user_mailer.got_new_comment.subject',
         commenting_user_displayname: @commenting_user_displayname), to: request_for_comment.user.email
@@ -31,10 +32,11 @@ class UserMailer < ApplicationMailer
   end
 
   def got_new_comment_for_subscription(comment, subscription, from_user)
+    token = AuthenticationToken.generate!(subscription.user)
     @receiver_displayname = subscription.user.displayname
     @author_displayname = from_user.displayname
     @comment_text = comment.text
-    @rfc_link = request_for_comment_url(subscription.request_for_comment)
+    @rfc_link = request_for_comment_url(subscription.request_for_comment, token: token.shared_secret)
     @unsubscribe_link = unsubscribe_subscription_url(subscription)
     mail(
       subject: t('mailers.user_mailer.got_new_comment_for_subscription.subject',
@@ -43,10 +45,11 @@ class UserMailer < ApplicationMailer
   end
 
   def send_thank_you_note(request_for_comments, receiver)
+    token = AuthenticationToken.generate!(request_for_comments.user)
     @receiver_displayname = receiver.displayname
     @author = request_for_comments.user.displayname
     @thank_you_note = request_for_comments.thank_you_note
-    @rfc_link = request_for_comment_url(request_for_comments)
+    @rfc_link = request_for_comment_url(request_for_comments, token: token.shared_secret)
     mail(subject: t('mailers.user_mailer.send_thank_you_note.subject', author: @author), to: receiver.email)
   end
 
