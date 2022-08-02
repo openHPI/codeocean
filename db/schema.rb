@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
     t.string "shared_secret", null: false
     t.string "user_type", null: false
     t.bigint "user_id", null: false
-    t.date "expire_at", null: false
+    t.datetime "expire_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["shared_secret"], name: "index_authentication_tokens_on_shared_secret", unique: true

@@ -35,12 +35,13 @@ describe 'Authentication' do
 
     context 'with no authentication token' do
       let(:request_for_comment) { create(:rfc_with_comment, user: user) }
+      let(:rfc_path) { request_for_comment_url(request_for_comment) }
 
       it 'denies access to the request for comment' do
-        mail.deliver_now
-        visit(rfc_link)
+        visit(rfc_path)
+        expect(page).not_to have_current_path(rfc_path)
         expect(page).not_to have_content(request_for_comment.exercise.title)
-        expect(response).to redirect_to(root_path)
+        expect(page).to have_current_path(root_path)
         expect(page).to have_content(I18n.t('application.not_authorized'))
       end
     end
@@ -60,8 +61,7 @@ describe 'Authentication' do
         it 'allows access to the request for comment' do
           mail.deliver_now
           visit(rfc_link)
-          expect(current_url).to be(rfc_link)
-          expect(response).to have_http_status :ok
+          expect(page).to have_current_path(rfc_link)
           expect(page).to have_content(request_for_comment.exercise.title)
         end
       end
@@ -72,8 +72,9 @@ describe 'Authentication' do
         it 'denies access to the request for comment' do
           mail.deliver_now
           visit(rfc_link)
+          expect(page).not_to have_current_path(rfc_link)
           expect(page).not_to have_content(request_for_comment.exercise.title)
-          expect(response).to redirect_to(root_path)
+          expect(page).to have_current_path(root_path)
           expect(page).to have_content(I18n.t('application.not_authorized'))
         end
       end
