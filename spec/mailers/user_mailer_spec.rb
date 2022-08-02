@@ -14,7 +14,7 @@ describe UserMailer do
     end
 
     it 'sets the correct sender' do
-      expect(mail.from).to include(CodeOcean::Application.config.action_mailer[:default_options][:from])
+      expect(mail.from).to include('codeocean@hpi.de')
     end
 
     it 'sets the correct subject' do
@@ -45,7 +45,7 @@ describe UserMailer do
     end
 
     it 'sets the correct sender' do
-      expect(mail.from).to include(CodeOcean::Application.config.action_mailer[:default_options][:from])
+      expect(mail.from).to include('codeocean@hpi.de')
     end
 
     it 'sets the correct subject' do
@@ -69,7 +69,7 @@ describe UserMailer do
     let(:mail) { described_class.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user).deliver_now }
 
     it 'sets the correct sender' do
-      expect(mail.from).to include(CodeOcean::Application.config.action_mailer[:default_options][:from])
+      expect(mail.from).to include('codeocean@hpi.de')
     end
 
     it 'sets the correct subject' do
@@ -81,22 +81,17 @@ describe UserMailer do
     end
 
     it 'includes the correct URL' do
-      expect(mail.body).to include(request_for_comment_url(request_for_comment))
+      expect(mail.body).to include(request_for_comment_url(request_for_comment, token: token.shared_secret))
     end
 
-    it 'includes the correct authentication token' do
-      expect(mail.body).to include(token.shared_secret)
-    end
-
-    it 'sets a new authentication token' do
+    it 'creates a new authentication token' do
       expect { mail }.to change(AuthenticationToken, :count).by(1)
     end
 
-    it 'sets a non expired authentication token' do
+    it 'sets a non-expired authentication token' do
       mail
-      expect(token.expire_at.future?).to be(true)
-      token.expire_at -= 8.days
-      expect(token.expire_at.future?).to be(false)
+      # A five minute tolerance is allowed to account for the time difference between `now` and the creation timestamp of the token.
+      expect(token.expire_at - Time.zone.now).to be_within(5.minutes).of(7.days)
     end
   end
 
@@ -109,7 +104,7 @@ describe UserMailer do
     let(:mail) { described_class.got_new_comment_for_subscription(request_for_comment.comments.first, subscription, from_user).deliver_now }
 
     it 'sets the correct sender' do
-      expect(mail.from).to include(CodeOcean::Application.config.action_mailer[:default_options][:from])
+      expect(mail.from).to include('codeocean@hpi.de')
     end
 
     it 'sets the correct subject' do
@@ -121,22 +116,17 @@ describe UserMailer do
     end
 
     it 'includes the correct URL' do
-      expect(mail.body).to include(request_for_comment_url(subscription.request_for_comment))
+      expect(mail.body).to include(request_for_comment_url(subscription.request_for_comment, token: token.shared_secret))
     end
 
-    it 'includes the correct authentication token' do
-      expect(mail.body).to include(token.shared_secret)
-    end
-
-    it 'sets a new authentication token' do
+    it 'creates a new authentication token' do
       expect { mail }.to change(AuthenticationToken, :count).by(1)
     end
 
-    it 'sets a non expired authentication token' do
+    it 'sets a non-expired authentication token' do
       mail
-      expect(token.expire_at.future?).to be(true)
-      token.expire_at -= 8.days
-      expect(token.expire_at.future?).to be(false)
+      # A five minute tolerance is allowed to account for the time difference between `now` and the creation timestamp of the token.
+      expect(token.expire_at - Time.zone.now).to be_within(5.minutes).of(7.days)
     end
   end
 
@@ -148,7 +138,7 @@ describe UserMailer do
     let(:mail) { described_class.send_thank_you_note(request_for_comments, receiver).deliver_now }
 
     it 'sets the correct sender' do
-      expect(mail.from).to include(CodeOcean::Application.config.action_mailer[:default_options][:from])
+      expect(mail.from).to include('codeocean@hpi.de')
     end
 
     it 'sets the correct subject' do
@@ -160,22 +150,17 @@ describe UserMailer do
     end
 
     it 'includes the correct URL' do
-      expect(mail.body).to include(request_for_comment_url(request_for_comments))
+      expect(mail.body).to include(request_for_comment_url(request_for_comments, token: token.shared_secret))
     end
 
-    it 'includes the correct authentication token' do
-      expect(mail.body).to include(token.shared_secret)
-    end
-
-    it 'sets a new authentication token' do
+    it 'creates a new authentication token' do
       expect { mail }.to change(AuthenticationToken, :count).by(1)
     end
 
-    it 'sets a non expired authentication token' do
+    it 'sets a non-expired authentication token' do
       mail
-      expect(token.expire_at.future?).to be(true)
-      token.expire_at -= 8.days
-      expect(token.expire_at.future?).to be(false)
+      # A five minute tolerance is allowed to account for the time difference between `now` and the creation timestamp of the token.
+      expect(token.expire_at - Time.zone.now).to be_within(5.minutes).of(7.days)
     end
   end
 end
