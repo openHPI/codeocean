@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_15_215112) do
+ActiveRecord::Schema.define(version: 2022_07_21_131946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -28,6 +28,17 @@ ActiveRecord::Schema.define(version: 2022_04_15_215112) do
     t.index ["exercise_collection_id"], name: "index_anomaly_notifications_on_exercise_collection_id"
     t.index ["exercise_id"], name: "index_anomaly_notifications_on_exercise_id"
     t.index ["user_type", "user_id"], name: "index_anomaly_notifications_on_user"
+  end
+
+  create_table "authentication_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "shared_secret", null: false
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.date "expire_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["shared_secret"], name: "index_authentication_tokens_on_shared_secret", unique: true
+    t.index ["user_type", "user_id"], name: "index_authentication_tokens_on_user"
   end
 
   create_table "codeharbor_links", id: :serial, force: :cascade do |t|
