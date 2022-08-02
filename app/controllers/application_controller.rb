@@ -15,7 +15,11 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
 
   def current_user
-    @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources || nil
+    @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) ||
+                      login_from_session ||
+                      login_from_other_sources ||
+                      login_from_authentication_token ||
+                      nil
   end
 
   def require_user!
@@ -30,6 +34,13 @@ class ApplicationController < ActionController::Base
       ::Mnemosyne::Instrumenter.current_trace.meta['csrf_token'] = session[:_csrf_token]
       ::Mnemosyne::Instrumenter.current_trace.meta['external_user_id'] = session[:external_user_id]
     end
+  end
+
+  def login_from_authentication_token
+    token = AuthenticationToken.find_by(shared_secret: params[:token])
+    return unless token
+
+    auto_login(token.user) if token.expire_at.future?
   end
 
   def set_sentry_context
