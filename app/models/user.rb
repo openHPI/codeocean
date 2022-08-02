@@ -6,6 +6,7 @@ class User < ApplicationRecord
   ROLES = %w[admin teacher learner].freeze
 
   belongs_to :consumer
+  has_many :authentication_token, dependent: :destroy
   has_many :study_group_memberships, as: :user
   has_many :study_groups, through: :study_group_memberships, as: :user
   has_many :exercises, as: :user
