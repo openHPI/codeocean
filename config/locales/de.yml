@@ -601,8 +601,6 @@ de:
           <br>
           Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Eine Übersicht Ihrer Kommentaranfragen gibt es hier: %{link_my_comments} <br>
           Alle Kommentaranfragen aller Benutzer finden Sie hier: %{link_all_comments} <br>
           <br>
@@ -617,8 +615,6 @@ de:
           %{commenting_user_displayname} wrote: %{comment_text} <br>
           <br>
           You can find your request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           An overview of all your comments can be accessed here: %{link_my_comments} <br>
           All comments of all participants are available here: %{link_all_comments} <br>
@@ -641,8 +637,6 @@ de:
           <br>
           Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Danke, dass Sie anderen Nutzern von CodeOcean helfen!
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
@@ -656,8 +650,6 @@ de:
           %{author} wrote: %{thank_you_note} <br>
           <br>
           You can find the request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           Thank you for helping other users on CodeOcean!
           <br>
@@ -676,8 +668,6 @@ de:
           <br>
           Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Wenn Sie keine weiteren Benachrichtigungen zu dieser Anfrage erhalten möchten, klicken Sie bitte hier: %{unsubscribe_link}
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
@@ -691,8 +681,6 @@ de:
           %{author_displayname} wrote: %{comment_text} <br>
           <br>
           You can find the request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           If you don't want to be notified about further comments, please click here: %{unsubscribe_link}
           <br>
