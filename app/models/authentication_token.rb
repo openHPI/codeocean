@@ -4,6 +4,7 @@ require 'securerandom'
 
 class AuthenticationToken < ApplicationRecord
   include Creation
+
   def self.generate!(user)
     create!(
       shared_secret: SecureRandom.hex(32),
