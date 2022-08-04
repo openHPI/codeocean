@@ -44,12 +44,12 @@ class UserMailer < ApplicationMailer
     )
   end
 
-  def send_thank_you_note(request_for_comments, receiver)
-    token = AuthenticationToken.generate!(request_for_comments.user)
+  def send_thank_you_note(request_for_comment, receiver)
+    token = AuthenticationToken.generate!(request_for_comment.user)
     @receiver_displayname = receiver.displayname
-    @author = request_for_comments.user.displayname
-    @thank_you_note = request_for_comments.thank_you_note
-    @rfc_link = request_for_comment_url(request_for_comments, token: token.shared_secret)
+    @author = request_for_comment.user.displayname
+    @thank_you_note = request_for_comment.thank_you_note
+    @rfc_link = request_for_comment_url(request_for_comment, token: token.shared_secret)
     mail(subject: t('mailers.user_mailer.send_thank_you_note.subject', author: @author), to: receiver.email)
   end
 
