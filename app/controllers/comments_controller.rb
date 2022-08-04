@@ -55,7 +55,7 @@ class CommentsController < ApplicationController
 
   # PATCH/PUT /comments/1.json
   def update
-    if @comment.update(comment_params_without_request_id)
+    if @comment.update(comment_params_for_update)
       render :show, status: :ok, location: @comment
     else
       render json: @comment.errors, status: :unprocessable_entity
@@ -75,6 +75,10 @@ class CommentsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
     @comment = Comment.find(params[:id])
+  end
+
+  def comment_params_for_update
+    params.require(:comment).permit(:text)
   end
 
   def comment_params_without_request_id

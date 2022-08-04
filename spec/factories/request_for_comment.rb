@@ -13,7 +13,7 @@ FactoryBot.define do
     factory :rfc_with_comment, class: 'RequestForComment' do
       after(:create) do |rfc|
         rfc.file = rfc.submission.files.first
-        Comment.create(file: rfc.file, user: rfc.user, text: "comment for rfc #{rfc.question}")
+        Comment.create(file: rfc.file, user: rfc.user, row: 1, text: "comment for rfc #{rfc.question}")
       end
     end
   end
