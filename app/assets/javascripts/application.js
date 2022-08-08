@@ -14,8 +14,6 @@
 //= require pagedown_bootstrap
 //= require rails-timeago
 //= require locales/jquery.timeago.de.js
-//= require i18n
-//= require i18n/translations
 //
 // lib/assets
 //= require flash
