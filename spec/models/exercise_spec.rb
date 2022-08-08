@@ -124,4 +124,41 @@ describe Exercise do
       expect(exercise.duplicate).to be_a(described_class)
     end
   end
+
+  describe '#teacher_defined_assessment?' do
+    let(:exercise) { create(:dummy) }
+
+    context 'when no assessment is defined' do
+      it 'returns false' do
+        expect(exercise).not_to be_teacher_defined_assessment
+      end
+    end
+
+    context 'when unit tests are defined' do
+      before { create(:test_file, context: exercise) }
+
+      it 'returns true' do
+        expect(exercise).to be_teacher_defined_assessment
+      end
+    end
+
+    context 'when linter tests are defined' do
+      before { create(:test_file, context: exercise, role: 'teacher_defined_linter') }
+
+      it 'returns true' do
+        expect(exercise).to be_teacher_defined_assessment
+      end
+    end
+
+    context 'when unit and linter tests are defined' do
+      before do
+        create(:test_file, context: exercise)
+        create(:test_file, context: exercise, role: 'teacher_defined_linter')
+      end
+
+      it 'returns true' do
+        expect(exercise).to be_teacher_defined_assessment
+      end
+    end
+  end
 end

@@ -205,6 +205,10 @@ class Exercise < ApplicationRecord
     "
   end
 
+  def teacher_defined_assessment?
+    files.any?(&:teacher_defined_assessment?)
+  end
+
   def get_working_times_for_study_group(study_group_id, user = nil)
     user_progress = []
     additional_user_data = []

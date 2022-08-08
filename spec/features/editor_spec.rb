@@ -23,6 +23,7 @@ describe 'Editor', js: true do
     }]
   end
   let(:user) { create(:teacher) }
+  let(:exercise_without_test) { create(:tdd) }
 
   before do
     visit(sign_in_path)
@@ -93,12 +94,28 @@ describe 'Editor', js: true do
     end
   end
 
+  context 'when an exercise has one or more teacher-defined assessments' do
+    it 'displays the score button' do
+      visit(implement_exercise_path(exercise))
+      expect(page).to have_content(exercise.title)
+      expect(page).to have_content(I18n.t('exercises.editor.score'))
+    end
+  end
+
+  context 'when an exercise has no teacher-defined assessment' do
+    it 'disables the score button' do
+      visit(implement_exercise_path(exercise_without_test))
+      expect(page).to have_content(exercise_without_test.title)
+      expect(page).not_to have_content(I18n.t('exercises.editor.score'))
+    end
+  end
+
   it 'contains a button for submitting the exercise' do
     submission = build(:submission, user: user, exercise: exercise)
     allow(submission).to receive(:calculate_score).and_return(scoring_response)
     allow(Submission).to receive(:find).and_return(submission)
     click_button(I18n.t('exercises.editor.score'))
-    expect(page).not_to have_css('#submit_outdated')
-    expect(page).to have_css('#submit')
+    expect(page).not_to have_content(I18n.t('exercises.editor.tooltips.exercise_deadline_passed'))
+    expect(page).to have_content(I18n.t('exercises.editor.submit'))
   end
 end

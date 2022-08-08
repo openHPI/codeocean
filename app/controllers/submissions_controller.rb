@@ -83,7 +83,7 @@ class SubmissionsController < ApplicationController
       client_socket = tubesock
 
       client_socket.onopen do |_event|
-        kill_client_socket(client_socket) if @embed_options[:disable_run]
+        return kill_client_socket(client_socket) if @embed_options[:disable_run]
       end
 
       client_socket.onclose do |_event|
@@ -199,7 +199,7 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       tubesock.onopen do |_event|
         switch_locale do
-          kill_client_socket(tubesock) if @embed_options[:disable_score]
+          return kill_client_socket(tubesock) if @embed_options[:disable_score] || !@submission.exercise.teacher_defined_assessment?
 
           # The score is stored separately, we can forward it to the client immediately
           tubesock.send_data(JSON.dump(@submission.calculate_score))
@@ -226,7 +226,7 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       tubesock.onopen do |_event|
         switch_locale do
-          kill_client_socket(tubesock) if @embed_options[:disable_run]
+          return kill_client_socket(tubesock) if @embed_options[:disable_run]
 
           # The score is stored separately, we can forward it to the client immediately
           tubesock.send_data(JSON.dump(@submission.test(@file)))

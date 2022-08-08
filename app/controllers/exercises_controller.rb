@@ -324,6 +324,8 @@ class ExercisesController < ApplicationController
       end
     end
 
+    @embed_options[:disable_score] = true unless @exercise.teacher_defined_assessment?
+
     @hide_rfc_button = @embed_options[:disable_rfc]
 
     @search = Search.new
