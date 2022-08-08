@@ -75,7 +75,7 @@ jobs:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: true
           NODE_OPTIONS: --openssl-legacy-provider
-        run: bundle exec rspec --color --format progress --require spec_helper --require rails_helper
+        run: bundle exec rspec --color --format RSpec::Github::Formatter --format progress --require spec_helper --require rails_helper
 
       - name: Send coverage to CodeClimate
         uses: paambaati/codeclimate-action@v3.0.0

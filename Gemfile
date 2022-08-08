@@ -84,6 +84,7 @@ group :test do
   gem 'rails-controller-testing'
   gem 'rspec-autotest'
   gem 'rspec-collection_matchers'
+  gem 'rspec-github', require: false
   gem 'rspec-rails'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'

@@ -398,6 +398,8 @@ GEM
     rspec-expectations (3.11.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
+    rspec-github (2.3.1)
+      rspec-core (~> 3.0)
     rspec-mocks (3.11.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
@@ -595,6 +597,7 @@ DEPENDENCIES
   rest-client
   rspec-autotest
   rspec-collection_matchers
+  rspec-github
   rspec-rails
   rubocop
   rubocop-performance
