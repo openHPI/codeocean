@@ -98,4 +98,12 @@ jobs:
           bundler-cache: true
 
       - name: Run rubocop
-        run: bundle exec rubocop --parallel
+        uses: reviewdog/action-rubocop@v2
+        with:
+          filter_mode: nofilter
+          rubocop_version: gemfile
+          rubocop_extensions: rubocop-rails:gemfile rubocop-rspec:gemfile rubocop-performance:gemfile
+          rubocop_flags: --parallel
+          reporter: github-check
+          skip_install: true
+          use_bundler: true
