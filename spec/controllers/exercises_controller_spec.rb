@@ -6,7 +6,10 @@ describe ExercisesController do
   let(:exercise) { create(:dummy) }
   let(:user) { create(:admin) }
 
-  before { allow(controller).to receive(:current_user).and_return(user) }
+  before do
+    create(:test_file, context: exercise)
+    allow(controller).to receive(:current_user).and_return(user)
+  end
 
   describe 'PUT #batch_update' do
     let(:attributes) { {public: 'true'} }

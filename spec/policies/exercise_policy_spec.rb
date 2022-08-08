@@ -112,11 +112,33 @@ describe ExercisePolicy do
     end
   end
 
-  %i[implement? submit?].each do |action|
+  %i[implement?].each do |action|
     permissions(action) do
       it 'grants access to anyone' do
         %i[admin external_user teacher].each do |factory_name|
           expect(policy).to permit(build(factory_name), Exercise.new)
+        end
+      end
+    end
+  end
+
+  %i[submit?].each do |action|
+    permissions(action) do
+      context 'when teacher-defined assessments are available' do
+        before { create(:test_file, context: exercise) }
+
+        it 'grants access to anyone' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).to permit(build(factory_name), exercise)
+          end
+        end
+      end
+
+      context 'when teacher-defined assessments are not available' do
+        it 'does not grant access to anyone' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).not_to permit(build(factory_name), exercise)
+          end
         end
       end
     end

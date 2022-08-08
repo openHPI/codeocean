@@ -29,8 +29,12 @@ class ExercisePolicy < AdminOrAuthorPolicy
     define_method(action) { (admin? || teacher_in_study_group? || author?) && @user.codeharbor_link }
   end
 
-  %i[implement? working_times? intervention? search? submit? reload?].each do |action|
+  %i[implement? working_times? intervention? search? reload?].each do |action|
     define_method(action) { everyone }
+  end
+
+  def submit?
+    everyone && @record.teacher_defined_assessment?
   end
 
   class Scope < Scope
