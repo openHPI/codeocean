@@ -45,7 +45,7 @@
         = " | "
 
         button#start-over-active-file.p-0.border-0.btn-link.bg-white data-message-confirm=t('exercises.editor.confirm_start_over_active_file') data-url=reload_exercise_path(@exercise)
-          i.fa.fa-history
+          i.fa.fa-clock-rotate-left
           = t('exercises.editor.start_over_active_file')
 
   - unless @embed_options[:disable_run] && @embed_options[:disable_score]

@@ -39,7 +39,7 @@ describe ApplicationHelper do
 
   describe '#no' do
     it "builds an 'i' tag" do
-      expect(no).to have_css('i.fa.fa-times')
+      expect(no).to have_css('i.fa.fa-xmark')
     end
   end
 

@@ -1,8 +1,8 @@
 div id='output_sidebar_collapsed'
-  = render('editor_button', classes: 'btn-block btn-outline-dark btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
+  = render('editor_button', classes: 'btn-block btn-outline-dark btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
 div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output_yet')
   .row
-    = render('editor_button', classes: 'btn-block btn-outline-dark btn', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
+    = render('editor_button', classes: 'btn-block btn-outline-dark btn', icon: 'fa fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
 
   div.position-absolute.d-flex.mb-1.w-100 style="overflow: auto; left: 0; bottom: 0; height: calc(100% - 3rem);"
     div.w-100

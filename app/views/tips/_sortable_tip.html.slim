@@ -3,6 +3,6 @@
   span.fa.fa-bars.mr-3
   = tip.to_s
   a.fa.fa-eye.ml-2 href=tip_path(tip) target='_blank'
-  a.fa.fa-times.ml-2.remove-tip href='#'
+  a.fa.fa-xmark.ml-2.remove-tip href='#'
   .list-group.nested-sortable-list class="#{exercise_tip.children.present? ? 'mt-3' : ''}"
     = render(partial: 'tips/sortable_tip', collection: exercise_tip.children, as: :exercise_tip)
