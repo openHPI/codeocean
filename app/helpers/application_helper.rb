@@ -31,7 +31,7 @@ module ApplicationHelper
   private :label_column
 
   def no
-    tag.i(nil, class: 'fa fa-times')
+    tag.i(nil, class: 'fa fa-xmark')
   end
 
   def per_page_param

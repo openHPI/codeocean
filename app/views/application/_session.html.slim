@@ -14,5 +14,5 @@
         li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
 - else
   li.nav-item = link_to(sign_in_path, class: 'nav-link') do
-    i.fa.fa-sign-in
+    i.fa.fa-arrow-right-to-bracket
     = t('sessions.new.link')

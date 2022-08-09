@@ -1404,7 +1404,7 @@
             buttons.heading = makeButton("wmd-heading-button", "<%= I18n.t('components.markdown_editor.heading.button_title', default: 'Heading (Ctrl+H)') %>", "m-1 fa fa-font", bindCommand("doHeading"), group3);
 
             var group4 = makeGroup(4);
-            buttons.undo = makeButton("wmd-undo-button", "<%= I18n.t('components.markdown_editor.undo.button_title', default: 'Undo (Ctrl+Z)') %>", "m-1 fa fa-undo", null, group4);
+            buttons.undo = makeButton("wmd-undo-button", "<%= I18n.t('components.markdown_editor.undo.button_title', default: 'Undo (Ctrl+Z)') %>", "m-1 fa fa-arrow-rotate-left", null, group4);
             buttons.undo.execute = function (manager) { if (manager) manager.undo(); };
 
             var redoTitle = /win/.test(nav.platform.toLowerCase()) ?
