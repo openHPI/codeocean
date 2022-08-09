@@ -316,7 +316,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { 404 }
 
       it 'raises an error' do
-        expect { action.call }.not_to raise_error(Runner::Error::RunnerNotFound)
+        expect { action.call }.not_to raise_error
       end
     end
 
