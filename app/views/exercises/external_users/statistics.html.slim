@@ -29,7 +29,7 @@ h1
 
   .flex-container
     button.btn.btn-secondary id='play-button'
-      span.fa.fa-play
+      span.fa-solid.fa-play
     #submissions-slider.flex-item
       input type='range' orient='horizontal' list='datapoints' min=0 max=all_files.length-1 value=0 style="width: 100%"
       datalist#datapoints
@@ -43,12 +43,12 @@ h1
     .bg-light.w-100.p-2.mb-4.align-items-center.d-flex.justify-content-between
       - if @show_autosaves
         span.pl-1.pb-1
-          i.fa.fa-circle-info.align-middle
+          i.fa-solid.fa-circle-info.align-middle
           small.mr-5.ml-1 = t('.toggle_status_on')
         = link_to t('.toggle_autosave_off'), statistics_external_user_exercise_path(show_autosaves: false), class: "btn btn-outline-dark float-right btn-sm"
       - else
         span.pl-1.pb-1
-          i.fa.fa-circle-info.align-middle
+          i.fa-solid.fa-circle-info.align-middle
           small.mr-5.ml-1 = t('.toggle_status_off')
         = link_to t('.toggle_autosave_on'), statistics_external_user_exercise_path(show_autosaves: true), class: "btn btn-outline-dark float-right btn-sm"
   #timeline

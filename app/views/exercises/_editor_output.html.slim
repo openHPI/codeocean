@@ -1,8 +1,8 @@
 div id='output_sidebar_collapsed'
-  = render('editor_button', classes: 'btn-block btn-outline-dark btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
+  = render('editor_button', classes: 'btn-block btn-outline-dark btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa-solid fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
 div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output_yet')
   .row
-    = render('editor_button', classes: 'btn-block btn-outline-dark btn', icon: 'fa fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
+    = render('editor_button', classes: 'btn-block btn-outline-dark btn', icon: 'fa-solid fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
 
   div.position-absolute.d-flex.mb-1.w-100 style="overflow: auto; left: 0; bottom: 0; height: calc(100% - 3rem);"
     div.w-100
@@ -60,13 +60,13 @@ div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom
 
         br
         - if lti_outcome_service?(@exercise.id, external_user_id)
-          p.text-center = render('editor_button', classes: 'btn-lg btn-success d-none', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
+          p.text-center = render('editor_button', classes: 'btn-lg btn-success d-none', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa-solid fa-paper-plane', id: 'submit', label: t('exercises.editor.submit'))
           - if @exercise.submission_deadline.present? || @exercise.late_submission_deadline.present?
             #deadline data-submission-deadline=@exercise.submission_deadline&.rfc2822 data-late-submission-deadline=@exercise.late_submission_deadline&.rfc2822
               h4 = t('exercises.editor.deadline')
               = t('exercises.editor.hints.disclaimer')
         - else
-          p.text-center = render('editor_button', classes: 'btn-lg btn-secondary disabled', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
+          p.text-center = render('editor_button', classes: 'btn-lg btn-secondary disabled', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa-regular fa-clock', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
         hr
       div.enforce-big-top-margin
         #turtlediv

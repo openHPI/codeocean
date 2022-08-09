@@ -216,7 +216,7 @@ var CodeOceanEditor = {
     },
 
     hideSpinner: function () {
-        $('button i.fa, button i.far, button i.fas').show();
+        $('button i.fa-solid, button i.fa-regular').show();
         $('button i.fa-spin').hide();
     },
 
@@ -697,7 +697,7 @@ var CodeOceanEditor = {
     },
 
     showSpinner: function (initiator) {
-        $(initiator).find('i.fa, i.far, i.fas').hide();
+        $(initiator).find('i.fa-solid, i.fa-regular').hide();
         $(initiator).find('i.fa-spin').show();
     },
 
@@ -743,21 +743,21 @@ var CodeOceanEditor = {
 
     showContainerDepletedMessage: function () {
         $.flash.danger({
-            icon: ['fa', 'fa-clock-o'],
+            icon: ['fa-regular', 'fa-clock'],
             text: $('#editor').data('message-depleted')
         });
     },
 
     showOutOfMemoryMessage: function () {
         $.flash.info({
-            icon: ['fa', 'fa-clock-o'],
+            icon: ['fa-regular', 'fa-clock'],
             text: $('#editor').data('message-out-of-memory')
         });
     },
 
     showTimeoutMessage: function () {
         $.flash.info({
-            icon: ['fa', 'fa-clock-o'],
+            icon: ['fa-regular', 'fa-clock'],
             text: $('#editor').data('message-timeout')
         });
     },

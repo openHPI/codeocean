@@ -40,11 +40,11 @@ input[type='file'] {
   }
 }
 
-[data-toggle="collapse"] .fa:before {
+[data-toggle="collapse"] .fa-solid:before {
   content: "\f139";
 }
 
-[data-toggle="collapse"].collapsed .fa:before {
+[data-toggle="collapse"].collapsed .fa-solid:before {
   content: "\f13a";
 }
 

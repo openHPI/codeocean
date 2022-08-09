@@ -1,7 +1,7 @@
 .list-group
   h4#exercise_caption.list-group-item-heading data-exercise-id="#{@request_for_comment.exercise.id}" data-rfc-id="#{@request_for_comment.id}"
     - if @request_for_comment.solved?
-      span.fa.fa-check aria-hidden="true"
+      span.fa-solid.fa-check aria-hidden="true"
     = link_to_if(policy(@request_for_comment.exercise).show?, @request_for_comment.exercise.title, [:implement, @request_for_comment.exercise])
   p.list-group-item-text
     - user = @request_for_comment.user
@@ -17,7 +17,7 @@
       h5
         = t('activerecord.attributes.exercise.description')
       .text
-        span.fa.fa-chevron-up.collapse-button
+        span.fa-solid.fa-chevron-up.collapse-button
         = render_markdown(@request_for_comment.exercise.description)
 
     .question
@@ -36,7 +36,7 @@
         - if output_runs.size > 0
           h5.mt-4= t('request_for_comments.runtime_output')
           .collapsed.testrun-output.text
-            span.fa.fa-chevron-down.collapse-button
+            span.fa-solid.fa-chevron-down.collapse-button
             - output_runs.each do |testrun|
               pre= testrun.log or t('request_for_comments.no_output')
 
@@ -50,7 +50,7 @@
               .testrun-container
                 div class=("result #{testrun.passed ? 'passed' : 'failed'}")
                 .collapsed.testrun-output.text
-                  span.fa.fa-chevron-down.collapse-button
+                  span.fa-solid.fa-chevron-down.collapse-button
                   pre= testrun.log or t('request_for_comments.no_output')
 
     - if @current_user.admin? && user.is_a?(ExternalUser)
@@ -72,7 +72,7 @@
   = (file.path or "") + "/" + file.name +  file.file_type.file_extension
   br/
   |   
-  i.fa.fa-arrow-down aria-hidden="true"
+  i.fa-solid.fa-arrow-down aria-hidden="true"
   = t('request_for_comments.click_here')
   #commentitor.editor data-file-id="#{file.id}" data-mode="#{file.file_type.editor_mode}" data-read-only="true"
     = file.content
@@ -180,7 +180,7 @@ javascript:
             <div class="comment-username">' + preprocess(comment.username) + '</div> \
             <div class="comment-date">' + comment.date + '</div> \
             <div class="comment-updated' + (comment.updated ? '' : ' d-none') + '"> \
-              <i class="fa fa-pencil" aria-hidden="true"></i> \
+              <i class="fa-solid fa-pencil" aria-hidden="true"></i> \
               #{{ t('request_for_comments.comment_edited') }} \
             </div> \
           </div> \

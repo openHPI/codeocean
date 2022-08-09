@@ -13,7 +13,8 @@ describe FileTree do
         let(:file) { build(:file, file_type: build(:dot_mp3)) }
 
         it 'is an audio file icon' do
-          expect(file_icon).to include('fa-file-audio-o')
+          expect(file_icon).to include('fa-file-audio')
+          expect(file_icon).to include('fa-regular')
         end
       end
 
@@ -21,7 +22,8 @@ describe FileTree do
         let(:file) { build(:file, file_type: build(:dot_jpg)) }
 
         it 'is an image file icon' do
-          expect(file_icon).to include('fa-file-image-o')
+          expect(file_icon).to include('fa-file-image')
+          expect(file_icon).to include('fa-regular')
         end
       end
 
@@ -29,7 +31,8 @@ describe FileTree do
         let(:file) { build(:file, file_type: build(:dot_mp4)) }
 
         it 'is a video file icon' do
-          expect(file_icon).to include('fa-file-video-o')
+          expect(file_icon).to include('fa-file-video')
+          expect(file_icon).to include('fa-regular')
         end
       end
     end
@@ -40,6 +43,7 @@ describe FileTree do
 
         it 'is a lock icon' do
           expect(file_icon).to include('fa-lock')
+          expect(file_icon).to include('fa-solid')
         end
       end
 
@@ -47,7 +51,8 @@ describe FileTree do
         let(:file) { build(:file, file_type: build(:dot_py)) }
 
         it 'is a code file icon' do
-          expect(file_icon).to include('fa-file-code-o')
+          expect(file_icon).to include('fa-file-code')
+          expect(file_icon).to include('fa-regular')
         end
       end
 
@@ -55,7 +60,8 @@ describe FileTree do
         let(:file) { build(:file, file_type: build(:dot_svg)) }
 
         it 'is a text file icon' do
-          expect(file_icon).to include('fa-file-text-o')
+          expect(file_icon).to include('fa-file-text')
+          expect(file_icon).to include('fa-regular')
         end
       end
 
@@ -63,7 +69,8 @@ describe FileTree do
         let(:file) { build(:file, file_type: build(:dot_md)) }
 
         it 'is a generic file icon' do
-          expect(file_icon).to include('fa-file-o')
+          expect(file_icon).to include('fa-file')
+          expect(file_icon).to include('fa-regular')
         end
       end
     end
@@ -71,7 +78,8 @@ describe FileTree do
 
   describe '#folder_icon' do
     it 'is a folder icon' do
-      expect(file_tree.send(:folder_icon)).to include('fa-folder-o')
+      expect(file_tree.send(:folder_icon)).to include('fa-folder')
+      expect(file_tree.send(:folder_icon)).to include('fa-regular')
     end
   end
 

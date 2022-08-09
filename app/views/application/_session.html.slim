@@ -1,7 +1,7 @@
 - if current_user
   li.nav-item.dropdown
     a.nav-link.dropdown-toggle data-toggle='dropdown' href='#'
-      i.fa.fa-user
+      i.fa-solid.fa-user
       = current_user
       span.caret
     ul.dropdown-menu.p-0.mt-1 role='menu'
@@ -14,5 +14,5 @@
         li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
 - else
   li.nav-item = link_to(sign_in_path, class: 'nav-link') do
-    i.fa.fa-arrow-right-to-bracket
+    i.fa-solid.fa-arrow-right-to-bracket
     = t('sessions.new.link')

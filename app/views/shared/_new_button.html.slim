@@ -2,5 +2,5 @@
   // default value for fetch will always be evaluated even if it is not returned
   - href_target = local_assigns.fetch(:path, false) || send(:"new_#{model.model_name.singular}_path")
   a.btn.btn-success href=href_target
-    i.fa.fa-plus
+    i.fa-solid.fa-plus
     = t('shared.new_model', model: model.model_name.human)

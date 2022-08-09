@@ -18,11 +18,11 @@ h1 = RequestForComment.model_name.human(count: 2)
     thead
       tr
         th
-          i class="fa fa-lightbulb-o" aria-hidden="true" title = t('request_for_comments.solved') align="right"
+          i class="fa-regular fa-lightbulb" aria-hidden="true" title = t('request_for_comments.solved') align="right"
         th =  sort_link(@search, :title,  t('activerecord.attributes.request_for_comments.exercise'))
         th = t('activerecord.attributes.request_for_comments.question')
         th
-          i class="fa fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
+          i class="fa-solid fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
         th = t('activerecord.attributes.request_for_comments.username')
         th = t('activerecord.attributes.request_for_comments.requested_at')
         th = t('activerecord.attributes.request_for_comments.last_update')
@@ -31,10 +31,10 @@ h1 = RequestForComment.model_name.human(count: 2)
         tr data-id=request_for_comment.id
           - if request_for_comment.solved?
             td
-              span class="fa fa-check" aria-hidden="true"
+              span class="fa-solid fa-check" aria-hidden="true"
           - elsif request_for_comment.full_score_reached
             td
-              span class="fa fa-check" style="color:darkgrey" aria-hidden="true"
+              span class="fa-solid fa-check" style="color:darkgrey" aria-hidden="true"
           - else
             td = ''
           td = link_to_if(policy(request_for_comment).show?, request_for_comment.exercise.title, request_for_comment)

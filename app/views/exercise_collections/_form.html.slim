@@ -22,7 +22,7 @@
         - @exercise_collection.items.order(:position).each do |item|
           tr data-id=item.exercise.id
             td
-              span.fa.fa-bars
+              span.fa-solid.fa-bars
             td = item.exercise.title
             td = link_to(t('shared.show'), item.exercise, 'data-turbolinks' => "false")
             td
