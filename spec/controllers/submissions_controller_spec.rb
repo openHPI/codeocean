@@ -151,15 +151,20 @@ describe SubmissionsController do
   end
 
   describe 'GET #run' do
-    let(:filename) { submission.collect_files.detect(&:main_file?).name_with_extension }
-    let(:perform_request) { get :run, params: {filename: filename, id: submission.id} }
+    let(:file) { submission.collect_files.detect(&:main_file?) }
+    let(:perform_request) { get :run, format: :json, params: {filename: file.filepath, id: submission.id} }
 
     context 'when no errors occur during execution' do
       before do
+        allow_any_instance_of(described_class).to receive(:hijack)
+        allow_any_instance_of(Submission).to receive(:run).and_return({})
+        allow_any_instance_of(described_class).to receive(:save_testrun_output)
         perform_request
       end
 
-      pending('todo')
+      expect_assigns(submission: :submission)
+      expect_assigns(file: :file)
+      expect_http_status(204)
     end
   end
 
@@ -206,21 +211,29 @@ describe SubmissionsController do
   end
 
   describe 'GET #score' do
-    let(:perform_request) { proc { get :score, params: {id: submission.id} } }
+    let(:perform_request) { proc { get :score, format: :json, params: {id: submission.id} } }
 
-    before { perform_request.call }
+    before do
+      allow_any_instance_of(described_class).to receive(:hijack)
+      perform_request.call
+    end
 
-    pending('todo: mock puma webserver or encapsulate tubesock call (Tubesock::HijackNotAvailable)')
+    expect_assigns(submission: :submission)
+    expect_http_status(204)
   end
 
   describe 'GET #test' do
-    let(:filename) { submission.collect_files.detect(&:teacher_defined_assessment?).name_with_extension }
+    let(:file) { submission.collect_files.detect(&:teacher_defined_assessment?) }
     let(:output) { {} }
 
     before do
-      get :test, params: {filename: filename, id: submission.id}
+      file.update(hidden: false)
+      allow_any_instance_of(described_class).to receive(:hijack)
+      get :test, params: {filename: "#{file.filepath}.json", id: submission.id}
     end
 
-    pending('todo')
+    expect_assigns(submission: :submission)
+    expect_assigns(file: :file)
+    expect_http_status(204)
   end
 end
