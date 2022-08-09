@@ -225,9 +225,9 @@ $(document).on('turbolinks:load', function () {
             const tip = {id: id, title: title}
             const template =
                 '<div class="list-group-item d-block" data-tip-id=' + tip.id + ' data-id="">' +
-                '<span class="fa fa-bars mr-3"></span>' + tip.title +
-                '<a class="fa fa-eye ml-2" href="/tips/' + tip.id + '" target="_blank"></a>' +
-                '<a class="fa fa-xmark ml-2 remove-tip" href="#""></a>' +
+                '<span class="fa-solid fa-bars mr-3"></span>' + tip.title +
+                '<a class="fa-regular fa-eye ml-2" href="/tips/' + tip.id + '" target="_blank"></a>' +
+                '<a class="fa-solid fa-xmark ml-2 remove-tip" href="#""></a>' +
                 '<div class="list-group nested-sortable-list"></div>' +
                 '</div>';
             const tipList = $('#tip-list').append(template);

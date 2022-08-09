@@ -3,25 +3,25 @@
 class FileTree
   def file_icon(file)
     if file.file_type.audio?
-      'fa fa-file-audio-o'
+      'fa-regular fa-file-audio'
     elsif file.file_type.image?
-      'fa fa-file-image-o'
+      'fa-regular fa-file-image'
     elsif file.file_type.video?
-      'fa fa-file-video-o'
+      'fa-regular fa-file-video'
     elsif file.read_only?
-      'fa fa-lock'
+      'fa-solid fa-lock'
     elsif file.file_type.executable?
-      'fa fa-file-code-o'
+      'fa-regular fa-file-code'
     elsif file.file_type.renderable?
-      'fa fa-file-text-o'
+      'fa-regular fa-file-text'
     else
-      'fa fa-file-o'
+      'fa-regular fa-file'
     end
   end
   private :file_icon
 
   def folder_icon
-    'fa fa-folder-o'
+    'fa-regular fa-folder'
   end
   private :folder_icon
 

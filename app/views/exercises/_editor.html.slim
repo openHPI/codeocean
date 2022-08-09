@@ -17,14 +17,14 @@
     div id="sidebar" class=additional_classes = render('editor_file_tree', exercise: @exercise, files: @files)
   div.editor-col.col.p-0 id='frames'
     #editor-buttons.btn-group.enforce-bottom-margin
-      = render('editor_button', disabled: true, icon: 'fa fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))
-      = render('editor_button', icon: 'fa fa-desktop', id: 'render', label: t('exercises.editor.render')) unless @embed_options[:hide_run_button]
-      = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-network' => t('exercises.editor.network'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r')) unless @embed_options[:disable_run]
-      = render('editor_button', data: {:'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa fa-stop', id: 'stop', label: t('exercises.editor.stop'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r')) unless @embed_options[:disable_run]
-      = render('editor_button', data: {:'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa fa-rocket', id: 'test', label: t('exercises.editor.test'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + t')) unless @embed_options[:disable_run]
-      = render('editor_button', data: {:'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s')) unless @embed_options[:disable_score]
+      = render('editor_button', disabled: true, icon: 'fa-solid fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))
+      = render('editor_button', icon: 'fa-solid fa-desktop', id: 'render', label: t('exercises.editor.render')) unless @embed_options[:hide_run_button]
+      = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-network' => t('exercises.editor.network'), :'data-message-success' => t('exercises.editor.run_success'), :'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa-solid fa-play', id: 'run', label: t('exercises.editor.run'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r')) unless @embed_options[:disable_run]
+      = render('editor_button', data: {:'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa-solid fa-stop', id: 'stop', label: t('exercises.editor.stop'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + r')) unless @embed_options[:disable_run]
+      = render('editor_button', data: {:'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa-solid fa-rocket', id: 'test', label: t('exercises.editor.test'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + t')) unless @embed_options[:disable_run]
+      = render('editor_button', data: {:'data-placement' => 'top', :'data-toggle' => 'tooltip', :'data-container' => 'body'}, icon: 'fa-solid fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s')) unless @embed_options[:disable_score]
       - unless hide_rfc_button
-        = render('editor_button', icon: 'fa fa-comment', id: 'requestComments', label: t('exercises.editor.requestComments'), title: t('exercises.editor.requestCommentsTooltip'))
+        = render('editor_button', icon: 'fa-solid fa-comment', id: 'requestComments', label: t('exercises.editor.requestComments'), title: t('exercises.editor.requestCommentsTooltip'))
 
     - @files.each do |file|
       - file.read_only = true if @embed_options[:read_only]
@@ -34,7 +34,7 @@
       div
         - if !@embed_options[:disable_download] && @exercise.hide_file_tree?
           button#download.p-0.border-0.btn-link.visible.bg-white
-            i.fas.fa-arrow-down
+            i.fa-solid.fa-arrow-down
             = t('exercises.editor.download')
 
       div
@@ -45,7 +45,7 @@
         = " | "
 
         button#start-over-active-file.p-0.border-0.btn-link.bg-white data-message-confirm=t('exercises.editor.confirm_start_over_active_file') data-url=reload_exercise_path(@exercise)
-          i.fa.fa-clock-rotate-left
+          i.fa-solid.fa-clock-rotate-left
           = t('exercises.editor.start_over_active_file')
 
   - unless @embed_options[:disable_run] && @embed_options[:disable_score]

@@ -18,7 +18,7 @@ module ApplicationHelper
   end
 
   def empty
-    tag.i(nil, class: 'empty fa fa-minus')
+    tag.i(nil, class: 'empty fa-solid fa-minus')
   end
 
   def label_column(label)
@@ -31,7 +31,7 @@ module ApplicationHelper
   private :label_column
 
   def no
-    tag.i(nil, class: 'fa fa-xmark')
+    tag.i(nil, class: 'fa-solid fa-xmark')
   end
 
   def per_page_param
@@ -79,6 +79,6 @@ module ApplicationHelper
   private :value_column
 
   def yes
-    tag.i(nil, class: 'fa fa-check')
+    tag.i(nil, class: 'fa-solid fa-check')
   end
 end

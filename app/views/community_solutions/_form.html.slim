@@ -3,19 +3,19 @@
     span.badge.badge-pill.badge-primary.float-right.score
 
     h1 id="exercise-headline"
-      i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa fa-chevron-right' : 'fa fa-chevron-down')
+      i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
       => @community_solution.model_name.human(count: 1)
       = @community_solution.exercise.title
 
   #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
     .card.border-success.mb-3
       .card-header
-        i.fa.fa-circle-info.text-success
+        i.fa-solid.fa-circle-info.text-success
         strong.text-success
           => t('community_solutions.help_us_out')
         = t('community_solutions.explanation')
         br
-        i.fa.fa-flask.text-success
+        i.fa-solid.fa-flask.text-success
         strong.text-success
           => t('community_solutions.research_status')
         == t('community_solutions.research_explanation')
@@ -61,6 +61,6 @@
               = render('exercises/editor_frame', exercise: @community_solution.exercise, file: file, own_solution: true)
 #statusbar.visible.mt-2 style="height: 5em"
   p.text-center
-    = render('exercises/editor_button', classes: 'btn-lg btn-success ml-5 mr-3', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'change-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa fa-send', id: 'submit', label: t('community_solutions.change_community_solution'))
-    = render('exercises/editor_button', classes: 'btn-lg btn-secondary ml-5', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'accept-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa fa-check', id: 'accept', label: t('community_solutions.accept_community_solution'))
+    = render('exercises/editor_button', classes: 'btn-lg btn-success ml-5 mr-3', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'change-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa-solid fa-paper-plane', id: 'submit', label: t('community_solutions.change_community_solution'))
+    = render('exercises/editor_button', classes: 'btn-lg btn-secondary ml-5', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'accept-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa-solid fa-check', id: 'accept', label: t('community_solutions.accept_community_solution'))
   button style="display:none" id="autosave" data-url=community_solution_path(@community_solution) data-http-method='PUT' data-cause='autosave-community-solution' data-exercise-id=@community_solution.exercise.id

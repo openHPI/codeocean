@@ -6,7 +6,7 @@ li.card.mt-2
     - aria_expanded = f.index != 'index' ? 'false' : 'true'
     a class=['file-heading', collapsed_class] data-toggle="collapse" href="#collapse#{f.index}" aria-expanded="#{aria_expanded}"
       div.clearfix role="button"
-        i class="fa" aria-hidden="true"
+        i.fa-solid aria-hidden="true"
         span = f.object.filepath
   .card-collapse.collapse class=('in' if f.object.name.nil?) id="collapse#{f.index}" role="tabpanel"
     .card-body

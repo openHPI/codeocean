@@ -14,9 +14,9 @@ h1 = ErrorTemplateAttribute.model_name.human(count: 2)
         tr
           td
             - if error_template_attribute.important
-              span class="fa fa-star" aria-hidden="true"
+              span class="fa-solid fa-star" aria-hidden="true"
             - else
-              span class="fa fa-star-o" aria-hidden="true"
+              span class="fa-regular fa-star" aria-hidden="true"
           td = link_to_if(policy(error_template_attribute).show?, error_template_attribute.key, error_template_attribute)
           td = error_template_attribute.description
           td
