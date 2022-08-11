@@ -152,7 +152,7 @@ GEM
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
-    faraday (2.5.1)
+    faraday (2.5.2)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (2.1.0)
@@ -559,7 +559,7 @@ DEPENDENCIES
   docker-api
   eventmachine
   factory_bot_rails
-  faraday (~> 2.5.1)
+  faraday (~> 2.5.2)
   faraday-net_http_persistent
   faye-websocket
   forgery
