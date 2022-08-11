@@ -22,7 +22,7 @@ module ApplicationHelper
   end
 
   def label_column(label)
-    tag.div(class: 'col-sm-3') do
+    tag.div(class: 'col-md-3') do
       tag.strong do
         I18n.translation_present?("activerecord.attributes.#{label}") ? t("activerecord.attributes.#{label}") : t(label)
       end
@@ -72,7 +72,7 @@ module ApplicationHelper
   end
 
   def value_column(value)
-    tag.div(class: 'col-sm-9') do
+    tag.div(class: 'col-md-9') do
       block_given? ? yield : symbol_for(value)
     end
   end

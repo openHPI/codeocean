@@ -1,16 +1,16 @@
 = form_for(@file_type) do |f|
   = render('shared/form_errors', object: @file_type)
-  .form-group
-    = f.label(:name)
+  .mb-3
+    = f.label(:name, class: 'form-label')
     = f.text_field(:name, class: 'form-control', required: true)
-  .form-group
-    = f.label(:editor_mode)
+  .mb-3
+    = f.label(:editor_mode, class: 'form-label')
     = f.select(:editor_mode, @editor_modes, {}, class: 'form-control')
-  .form-group
-    = f.label(:file_extension)
+  .mb-3
+    = f.label(:file_extension, class: 'form-label')
     = f.text_field(:file_extension, class: 'form-control', placeholder: '.rb')
-  .form-group
-    = f.label(:indent_size)
+  .mb-3
+    = f.label(:indent_size, class: 'form-label')
     = f.number_field(:indent_size, class: 'form-control', placeholder: 2, required: true)
   .form-check
     label.form-check-label

@@ -56,7 +56,7 @@
     - if @current_user.admin? && user.is_a?(ExternalUser)
       = render('admin_menu')
 
-    hr/
+    hr
 
     .howto
       h5.mt-4
@@ -70,8 +70,8 @@
   | also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
 - submission.files.each do |file|
   = (file.path or "") + "/" + file.name +  file.file_type.file_extension
-  br/
-  |   
+  br
+  | &nbsp;&nbsp;
   i.fa-solid.fa-arrow-down aria-hidden="true"
   = t('request_for_comments.click_here')
   #commentitor.editor data-file-id="#{file.id}" data-mode="#{file.file_type.editor_mode}" data-read-only="true"
@@ -448,11 +448,11 @@ javascript:
       if (commenttext !== "") {
         createComment(fileid, row, editor, commenttext);
         commentTextarea.val('') ;
-        commentModal.modal('hide');
+        bootstrap.Modal.getInstance(commentModal).hide();
       }
     });
 
-    commentModal.modal('show');
+    new bootstrap.Modal(commentModal).show();
   }
 
   function ajaxError(response) {

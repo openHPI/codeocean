@@ -23,12 +23,6 @@
     margin-bottom: 1em;
   }
 
-  .form-group {
-    &:not(:last-child) {
-      margin-right: 1em;
-    }
-  }
-
   input, select {
     min-width: 200px !important;
   }

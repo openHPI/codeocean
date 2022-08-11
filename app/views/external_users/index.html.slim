@@ -2,21 +2,21 @@ h1 = ExternalUser.model_name.human(count: 2)
 
 = render(layout: 'shared/form_filters') do |f|
   .row.px-3
-    .form-group
-      = f.label(:name_cont, t('activerecord.attributes.external_user.name'), class: 'sr-only')
+    .mb-3
+      = f.label(:name_cont, t('activerecord.attributes.external_user.name'), class: 'visually-hidden form-label')
       = f.search_field(:name_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.name'))
-    .form-group
-      = f.label(:email_cont, t('activerecord.attributes.external_user.email'), class: 'sr-only')
+    .mb-3
+      = f.label(:email_cont, t('activerecord.attributes.external_user.email'), class: 'visually-hidden form-label')
       = f.search_field(:email_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.email'))
-    .form-group
-      = f.label(:external_id_cont, t('activerecord.attributes.external_user.external_id'), class: 'sr-only')
+    .mb-3
+      = f.label(:external_id_cont, t('activerecord.attributes.external_user.external_id'), class: 'visually-hidden form-label')
       = f.search_field(:external_id_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.external_id'))
   .row.px-3
-    .form-group
-      = f.label(:role_eq, t('activerecord.attributes.external_user.role'), class: 'sr-only')
+    .mb-3
+      = f.label(:role_eq, t('activerecord.attributes.external_user.role'), class: 'visually-hidden form-label')
       = f.select(:role_eq, User::ROLES.map { |role| [t("users.roles.#{role}"), role] }, { include_blank: true }, class: 'form-control', prompt: t('activerecord.attributes.external_user.role'))
-    .form-group
-      = f.label(:consumer_id_eq, t('activerecord.attributes.external_user.consumer'), class: 'sr-only')
+    .mb-3
+      = f.label(:consumer_id_eq, t('activerecord.attributes.external_user.consumer'), class: 'visually-hidden form-label')
       = f.collection_select(:consumer_id_eq, Consumer.with_external_users, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.external_user.consumer'))
 .table-responsive
   table.table

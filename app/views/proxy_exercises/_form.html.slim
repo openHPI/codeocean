@@ -1,10 +1,10 @@
 = form_for(@proxy_exercise, multipart: true, builder: PagedownFormBuilder) do |f|
   = render('shared/form_errors', object: @proxy_exercise)
-  .form-group
-    = f.label(:title)
+  .mb-3
+    = f.label(:title, class: 'form-label')
     = f.text_field(:title, class: 'form-control', required: true)
-  .form-group
-    = f.label(:description)
+  .mb-3
+    = f.label(:description, class: 'form-label')
     = f.pagedown :description, input_html: { preview: true, rows: 10 }
   .form-check.mb-3
     label.form-check-label
@@ -21,7 +21,7 @@
           th = sort_link(@search, :created_at, t('shared.created_at'))
       = collection_check_boxes :proxy_exercise, :exercise_ids, @exercises, :id, :title do |b|
         tr
-          td = b.check_box
+          td = b.check_box class: 'form-check-input'
           td = link_to_if(policy(b.object).show?, b.object, b.object)
           td = l(b.object.created_at, format: :short)
 

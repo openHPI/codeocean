@@ -123,7 +123,7 @@ $(document).on('turbolinks:load', function () {
     var buildCheckboxes = function () {
         $('tbody tr').each(function (index, element) {
             var td = $('td.public', element);
-            var checkbox = $('<input>', {
+            var checkbox = $('<input class="form-check-input">', {
                 checked: td.data('value'),
                 type: 'checkbox'
             });
@@ -225,9 +225,9 @@ $(document).on('turbolinks:load', function () {
             const tip = {id: id, title: title}
             const template =
                 '<div class="list-group-item d-block" data-tip-id=' + tip.id + ' data-id="">' +
-                '<span class="fa-solid fa-bars mr-3"></span>' + tip.title +
-                '<a class="fa-regular fa-eye ml-2" href="/tips/' + tip.id + '" target="_blank"></a>' +
-                '<a class="fa-solid fa-xmark ml-2 remove-tip" href="#""></a>' +
+                '<span class="fa-solid fa-bars me-3"></span>' + tip.title +
+                '<a class="fa-regular fa-eye ms-2" href="/tips/' + tip.id + '" target="_blank"></a>' +
+                '<a class="fa-solid fa-xmark ms-2 remove-tip" href="#""></a>' +
                 '<div class="list-group nested-sortable-list"></div>' +
                 '</div>';
             const tipList = $('#tip-list').append(template);
@@ -243,7 +243,7 @@ $(document).on('turbolinks:load', function () {
             for (let i = 0; i < selectedTips.length; i++) {
                 addTip(selectedTips[i].value, selectedTips[i].label);
             }
-            $('#add-tips-modal').modal('hide')
+            bootstrap.Modal.getInstance($('#add-tips-modal')).hide();
             updateTipsJSON();
             chosenInputTips.val('').trigger("chosen:updated");
         });
@@ -328,10 +328,7 @@ $(document).on('turbolinks:load', function () {
     var observeExportButtons = function () {
         $('.export-start').on('click', function (e) {
             e.preventDefault();
-            $('#export-modal').modal({
-                height: 250
-            });
-            $('#export-modal').modal('show');
+            new bootstrap.Modal($('#export-modal')).show();
             exportExerciseStart($(this).data().exerciseId);
         });
         $('body').on('click', '.export-retry-button', function () {
@@ -382,7 +379,7 @@ $(document).on('turbolinks:load', function () {
                 if (response.status == 'success') {
                     $messageDiv.addClass('export-success');
                     setTimeout((function () {
-                        $('#export-modal').modal('hide');
+                        bootstrap.Modal.getInstance($('#export-modal')).hide();
                         $messageDiv.html('').removeClass('export-success');
                     }), 3000);
                 } else {
@@ -396,7 +393,7 @@ $(document).on('turbolinks:load', function () {
     };
 
     var overrideTextareaTabBehavior = function () {
-        $('.form-group textarea[name$="[content]"]').on('keydown', function (event) {
+        $('.mb-3 textarea[name$="[content]"]').on('keydown', function (event) {
             if (event.which === TAB_KEY_CODE) {
                 event.preventDefault();
                 insertTabAtCursor($(this));

@@ -1,52 +1,52 @@
 = form_for(@execution_environment) do |f|
   = render('shared/form_errors', object: @execution_environment)
-  .form-group
-    = f.label(:name)
+  .mb-3
+    = f.label(:name, class: 'form-label')
     = f.text_field(:name, class: 'form-control', required: true)
-  .form-group
-    = f.label(:file_type_id)
+  .mb-3
+    = f.label(:file_type_id, class: 'form-label')
     = f.collection_select(:file_type_id, FileType.all.order(:name), :id, :name, {include_blank: true}, class: 'form-control')
-  .form-group
-    = f.label(:docker_image)
+  .mb-3
+    = f.label(:docker_image, class: 'form-label')
     | &nbsp;
     a.toggle-input data={text_initial: t('shared.new'), text_toggled: t('shared.back')} href='#' = t('shared.new')
     .original-input = f.select(:docker_image, @docker_images, {}, class: 'form-control')
     = f.text_field(:docker_image, class: 'alternative-input form-control', disabled: true)
     .help-block.form-text == t('.hints.docker_image')
-  .form-group
-    = f.label(:exposed_ports_list)
+  .mb-3
+    = f.label(:exposed_ports_list, class: 'form-label')
     = f.text_field(:exposed_ports_list, class: 'form-control', placeholder: '3000, 4000', pattern: '^(\s*(\d{1,5},\s*)*(\d{1,5}\s*))?$')
     .help-block.form-text = t('.hints.exposed_ports_list')
-  .form-group
-    = f.label(:memory_limit)
+  .mb-3
+    = f.label(:memory_limit, class: 'form-label')
     = f.number_field(:memory_limit, class: 'form-control', min: ExecutionEnvironment::MINIMUM_MEMORY_LIMIT, value: f.object.memory_limit || ExecutionEnvironment::DEFAULT_MEMORY_LIMIT)
-  .form-group
-    = f.label(:cpu_limit)
+  .mb-3
+    = f.label(:cpu_limit, class: 'form-label')
     = f.number_field(:cpu_limit, class: 'form-control', min: 1, step: 1, value: f.object.cpu_limit || ExecutionEnvironment::DEFAULT_CPU_LIMIT)
     .help-block.form-text = t('.hints.cpu_limit')
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:network_enabled, class: 'form-check-input')
       = t('activerecord.attributes.execution_environment.network_enabled')
-  .form-group
-    = f.label(:permitted_execution_time)
+  .mb-3
+    = f.label(:permitted_execution_time, class: 'form-label')
     = f.number_field(:permitted_execution_time, class: 'form-control', min: 1)
-  .form-group
-    = f.label(:pool_size)
+  .mb-3
+    = f.label(:pool_size, class: 'form-label')
     = f.number_field(:pool_size, class: 'form-control', min: 0)
-  .form-group
-    = f.label(:run_command)
+  .mb-3
+    = f.label(:run_command, class: 'form-label')
     = f.text_field(:run_command, class: 'form-control', placeholder: 'command %{filename}', required: true)
     .help-block.form-text == t('.hints.command')
-  .form-group
-    = f.label(:test_command)
+  .mb-3
+    = f.label(:test_command, class: 'form-label')
     = f.text_field(:test_command, class: 'form-control', placeholder: 'command %{filename}')
     .help-block.form-text == t('.hints.command')
-  .form-group
-    = f.label(:testing_framework)
+  .mb-3
+    = f.label(:testing_framework, class: 'form-label')
     = f.select(:testing_framework, @testing_framework_adapters, {include_blank: true}, class: 'form-control')
-  .form-group
-    = f.label(:help)
+  .mb-3
+    = f.label(:help, class: 'form-label')
     = f.hidden_field(:help)
     .form-control.markdown
   .actions = render('shared/submit_button', f: f, object: @execution_environment)

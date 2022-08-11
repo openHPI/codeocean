@@ -78,7 +78,7 @@ var CodeOceanEditor = {
         if ($('#output-' + index).isPresent()) {
             return $('#output-' + index);
         } else {
-            var element = $('<pre class="mt-2">').attr('id', 'output-' + index);
+            var element = $('<pre class="mb-2">').attr('id', 'output-' + index);
             $('#output').append(element);
             return element;
         }
@@ -235,10 +235,20 @@ var CodeOceanEditor = {
         window.dispatchEvent(new Event('resize'));
     },
 
-    resizeParentOfAceEditor: function (element) {
+    resizeSidebars: function () {
+        $('#content-left-sidebar').height(this.calculateEditorHeight('#content-left-sidebar', false));
+        $('#content-right-sidebar').height(this.calculateEditorHeight('#content-right-sidebar', false));
+    },
+
+    calculateEditorHeight: function (element, considerStatusbar) {
+        let bottom = considerStatusbar ? ($('#statusbar').height() || 0) : 0;
         // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
-        var windowHeight = window.innerHeight - $(element).offset().top - ($('#statusbar').height() || 0) - 5;
-        $(element).parent().height(windowHeight);
+        return window.innerHeight - $(element).offset().top - bottom - 5;
+    },
+
+    resizeParentOfAceEditor: function (element) {
+        const editorHeight = this.calculateEditorHeight(element, true);
+        $(element).parent().height(editorHeight);
     },
 
     initializeEditors: function (own_solution = false) {
@@ -259,6 +269,7 @@ var CodeOceanEditor = {
             // Resize frame on window size change
             $(window).resize(function () {
                 this.resizeParentOfAceEditor(element);
+                this.resizeSidebars();
             }.bind(this));
 
             var editor = ace.edit(element);
@@ -390,6 +401,7 @@ var CodeOceanEditor = {
             tipButton.on('click', this.handleSideBarToggle.bind(this));
         }
         $('#sidebar').on('transitionend', this.resizeAceEditors.bind(this));
+        $('#sidebar').on('transitionend', this.resizeSidebars.bind(this));
     },
 
     handleSideBarToggle: function () {
@@ -433,12 +445,12 @@ var CodeOceanEditor = {
         button.prop('disabled', true);
         button.on('click', function () {
             $('#rfc_intervention_text').hide()
-            $('#comment-modal').modal('show');
+            new bootstrap.Modal($('#comment-modal')).show();
         });
 
         $('#askForCommentsButton').on('click', this.requestComments.bind(this));
         $('#closeAskForCommentsButton').on('click', function () {
-            $('#comment-modal').modal('hide');
+            bootstrap.Modal.getInstance($('#comment-modal')).hide();
         });
 
         setTimeout(function () {
@@ -473,12 +485,6 @@ var CodeOceanEditor = {
 
     isActiveFileTestable: function () {
         return this.isActiveFileExecutable() && ['teacher_defined_test', 'user_defined_test', 'teacher_defined_linter'].includes(this.active_frame.data('role'));
-    },
-
-    isBrowserSupported: function () {
-        //  websockets are used for run, score and test
-        // Also exclude IE and IE 11
-        return Modernizr.websockets && window.navigator.userAgent.indexOf("MSIE") <= 0 && !navigator.userAgent.match(/Trident\/7\./);
     },
 
     populateCard: function (card, result, index) {
@@ -778,7 +784,7 @@ var CodeOceanEditor = {
         event.preventDefault();
         this.createSubmission('#create-file', null, function (response) {
             $('#code_ocean_file_context_id').val(response.id);
-            $('#modal-file').modal('show');
+            new bootstrap.Modal($('#modal-file')).show();
         }.bind(this));
     },
 
@@ -786,6 +792,7 @@ var CodeOceanEditor = {
         $('#toggle-sidebar-output').on('click', this.hideOutputBar.bind(this));
         $('#toggle-sidebar-output-collapsed').on('click', this.showOutputBar.bind(this));
         $('#output_sidebar').on('transitionend', this.resizeAceEditors.bind(this));
+        $('#output_sidebar').on('transitionend', this.resizeSidebars.bind(this));
     },
 
     showOutputBar: function () {
@@ -801,7 +808,7 @@ var CodeOceanEditor = {
     },
 
     initializeSideBarTooltips: function () {
-        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-bs-toggle="tooltip"]').tooltip()
     },
 
     initializeDescriptionToggle: function () {
@@ -809,12 +816,13 @@ var CodeOceanEditor = {
         $('a#toggle').on('click', this.toggleDescriptionCard.bind(this));
     },
 
-    toggleDescriptionCard: function () {
+    toggleDescriptionCard: function (event) {
         $('#description-card').toggleClass('description-card-collapsed').toggleClass('description-card');
         $('#description-symbol').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
         var toggle = $('a#toggle');
         toggle.text(toggle.text() == toggle.data('hide') ? toggle.data('show') : toggle.data('hide'));
         this.resizeAceEditors();
+        this.resizeSidebars();
         event.preventDefault();
     },
 
@@ -871,7 +879,7 @@ var CodeOceanEditor = {
                             if (editor.data('tips-interventions')) {
                                 const modal = $('#tips-intervention-modal');
                                 modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
-                                modal.modal('show');
+                                new bootstrap.Modal(modal).show();
                                 $.ajax({
                                     data: {
                                         intervention_type: 'TipsIntervention'
@@ -883,7 +891,7 @@ var CodeOceanEditor = {
                             } else if (editor.data('break-interventions')) {
                                 const modal = $('#break-intervention-modal');
                                 modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
-                                modal.modal('show');
+                                new bootstrap.Modal(modal).show();
                                 $.ajax({
                                     data: {
                                         intervention_type: 'BreakIntervention'
@@ -902,7 +910,7 @@ var CodeOceanEditor = {
                                     modal.on('hidden.bs.modal', function () {
                                         modal.find('.modal-footer').text('');
                                     });
-                                    modal.modal('show');
+                                    new bootstrap.Modal(modal).show();
                                     $.ajax({
                                         data: {
                                             intervention_type: 'QuestionIntervention'
@@ -945,7 +953,6 @@ var CodeOceanEditor = {
         CodeOceanEditor.editors = [];
         this.initializeRegexes();
         this.initializeCodePilot();
-        $('.score, #development-environment').show();
         this.configureEditors();
         this.initializeEditors();
         this.initializeEventHandlers();
@@ -961,6 +968,7 @@ var CodeOceanEditor = {
         this.renderScore();
         this.showFirstFile();
         this.resizeAceEditors();
+        this.resizeSidebars();
         this.initializeDeadlines();
         CodeOceanEditorTips.initializeEventHandlers();
 

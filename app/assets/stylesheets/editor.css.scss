@@ -48,10 +48,6 @@ button i.fa-spin {
   vertical-align: bottom;
 }
 
-#development-environment {
-  display: none;
-}
-
 #dummy {
   display: none;
 }
@@ -203,8 +199,8 @@ button i.fa-spin {
   visibility: visible;
 }
 
-.enforce-big-top-margin {
-  margin-top: 15px !important;
+.enforce-big-bottom-margin {
+  margin-bottom: 15px !important;
 }
 
 .enforce-bottom-margin {

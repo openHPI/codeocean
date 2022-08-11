@@ -4,7 +4,7 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
   .header = t('activerecord.attributes.exercise.description')
   .value = render_markdown(@exercise.description)
 
-  span.header.col-sm-3.pl-0 = "#{t('activerecord.attributes.exercise.maximum_score')}"
+  span.header.col-sm-3.ps-0 = "#{t('activerecord.attributes.exercise.maximum_score')}"
   span.col-sm-9 = @exercise.maximum_score
 
   .header.mt-3 = t('activerecord.models.user_exercise_feedback.other')
@@ -21,7 +21,7 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
             - if policy(@exercise).detailed_statistics?
               span.username = link_to_if(policy(feedback.user).show?, feedback.user.displayname, statistics_external_user_exercise_path(id: @exercise.id, external_user_id: feedback.user.id))
             - if feedback.anomaly_notification
-              i class="fa-regular fa-envelope" data-placement="top" data-toggle="tooltip" data-container="body" title=feedback.anomaly_notification.reason
+              i class="fa-regular fa-envelope" data-bs-placement="top" data-bs-toggle="tooltip" data-bs-container="body" title=feedback.anomaly_notification.reason
             span.date = feedback.created_at
         .card-collapse role="tabpanel"
           .card-body.feedback
@@ -32,8 +32,8 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
           .card-footer
             div.clearfix.feedback-header
               span.points.flex-grow-1 = "#{t('exercises.statistics.score')}: #{@submissions[index].score}"
-              span.working_time.pull-right = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user) or 0}"
+              span.working_time.float-end = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user) or 0}"
 
   = render('shared/pagination', collection: @feedbacks)
 
-  script type="text/javascript" $(function () { $('[data-toggle="tooltip"]').tooltip() });
+  script type="text/javascript" $(function () { $('[data-bs-toggle="tooltip"]').tooltip() });

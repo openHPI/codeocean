@@ -1,13 +1,12 @@
 h1 = Submission.model_name.human(count: 2)
 
 = render(layout: 'shared/form_filters') do |f|
-  .row.px-3
-    .form-group
-      = f.label(:exercise_id_eq, t('activerecord.attributes.submission.exercise'), class: 'sr-only')
-      = f.collection_select(:exercise_id_eq, Exercise.with_submissions, :id, :title, class: 'form-control', prompt: t('activerecord.attributes.submission.exercise'))
-    .form-group
-      = f.label(:cause_eq, t('activerecord.attributes.submission.cause'), class: 'sr-only')
-      = f.select(:cause_eq, Submission.select(:cause).distinct.map(&:cause).sort, class: 'form-control', prompt: t('activerecord.attributes.submission.cause'))
+  .col-auto
+    = f.label(:exercise_id_eq, t('activerecord.attributes.submission.exercise'), class: 'visually-hidden form-label')
+    = f.collection_select(:exercise_id_eq, Exercise.with_submissions, :id, :title, class: 'form-control', prompt: t('activerecord.attributes.submission.exercise'))
+  .col-auto
+    = f.label(:cause_eq, t('activerecord.attributes.submission.cause'), class: 'visually-hidden form-label')
+    = f.select(:cause_eq, Submission.select(:cause).distinct.map(&:cause).sort, class: 'form-control', prompt: t('activerecord.attributes.submission.cause'))
 
 .table-responsive
   table.table.mt-4

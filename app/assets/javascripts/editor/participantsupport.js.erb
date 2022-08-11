@@ -4,7 +4,7 @@ CodeOceanEditorFlowr = {
     '<div class="card mb-2">' +
       '<div id="{{headingId}}" role="tab" class="card-header">' +
         '<div class="card-title mb-0">' +
-          '<a class="collapsed" data-toggle="collapse" data-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="false" aria-controls="{{collapseId}}">' +
+          '<a class="collapsed" data-bs-toggle="collapse" data-bs-parent="#flowrHint" href="#{{collapseId}}" aria-expanded="false" aria-controls="{{collapseId}}">' +
             '<div class="clearfix" role="button">' +
               '<i class="fa-solid" aria-hidden="true"></i>' +
               '<span>' +
@@ -14,7 +14,7 @@ CodeOceanEditorFlowr = {
         '</div>' +
       '</div>' +
       '<div id="{{collapseId}}" role="tabpanel" aria-labelledby="{{headingId}}" class="card card-collapse collapse">' +
-        '<div class="card-body"></div>' +
+        '<div class="card-body d-grid gap-2"></div>' +
       '</div>' +
     '</div>',
 
@@ -93,7 +93,7 @@ CodeOceanEditorFlowr = {
 
         var body = resultTile.find('.card-body');
         body.html(result.body);
-        body.append('<a target="_blank" href="' + questionUrl + '" class="btn btn-primary btn-block">' +
+        body.append('<a target="_blank" href="' + questionUrl + '" class="btn btn-primary">' +
           '<%= I18n.t('exercises.implement.flowr.go_to_question') %></a>');
         body.find('.btn').on('click', CodeOceanEditor.createEventHandler('editor_flowr_click_question', questionUrl));
 
@@ -112,7 +112,7 @@ CodeOceanEditorCodePilot = {
   QaApiOutputBuffer: {'stdout': '', 'stderr': ''},
 
   initializeCodePilot: function () {
-    if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined') && QaApi.isBrowserSupported()) {
+    if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined')) {
       $('#editor-column').addClass('col-md-10').removeClass('col-md-12');
       $('#questions-column').addClass('col-md-2');
 
@@ -161,7 +161,7 @@ CodeOceanEditorRequestForComments = {
 
     this.createSubmission($('#requestComments'), null, createRequestForComments.bind(this));
 
-    $('#comment-modal').modal('hide');
+    bootstrap.Modal.getInstance($('#comment-modal')).hide();
     $('#question').val('');
     // we disabled the button to prevent that the user spams RFCs, but decided against this now.
     //var button = $('#requestComments');

@@ -1,7 +1,7 @@
 = form_for(@study_group) do |f|
   = render('shared/form_errors', object: @study_group)
-  .form-group
-    = f.label(:name)
+  .mb-3
+    = f.label(:name, class: 'form-label')
     = f.text_field(:name, class: 'form-control', required: true)
 
   h3 = t('activerecord.attributes.study_group.members')
@@ -13,7 +13,7 @@
           th = sort_link(@search, :name, t('navigation.sections.users'))
       = collection_check_boxes :study_group, :study_group_membership_ids, @members, :id, :id do |b|
         tr
-          td = b.check_box
+          td = b.check_box class: 'form-check-input'
           td = link_to_if(policy(b.object.user).show?, b.object.user.displayname, b.object.user)
 
   .actions = render('shared/submit_button', f: f, object: @study_group)

@@ -4,7 +4,7 @@ li.card.mt-2
   .card-header role="tab" id="heading"
     - collapsed_class = f.index != 'index' ? 'collapsed' : nil
     - aria_expanded = f.index != 'index' ? 'false' : 'true'
-    a class=['file-heading', collapsed_class] data-toggle="collapse" href="#collapse#{f.index}" aria-expanded="#{aria_expanded}"
+    a class=['file-heading', collapsed_class] data-bs-toggle="collapse" href="#collapse#{f.index}" aria-expanded="#{aria_expanded}"
       div.clearfix role="button"
         i.fa-solid aria-hidden="true"
         span = f.object.filepath
@@ -12,19 +12,19 @@ li.card.mt-2
     .card-body
       - if policy(f.object).destroy? && id.present?
         .clearfix
-          .btn.btn-warning.btn-sm.float-right.delete-file data-file-url=code_ocean_file_path(id) = t('shared.destroy')
-      .form-group
-        = f.label(:name, t('activerecord.attributes.file.name'))
+          .btn.btn-warning.btn-sm.float-end.delete-file data-file-url=code_ocean_file_path(id) = t('shared.destroy')
+      .mb-3
+        = f.label(:name, t('activerecord.attributes.file.name'), class: 'form-label')
         = f.text_field(:name, class: 'form-control')
-      .form-group
-        = f.label(:path, t('activerecord.attributes.file.path'))
+      .mb-3
+        = f.label(:path, t('activerecord.attributes.file.path'), class: 'form-label')
         = f.text_field(:path, class: 'form-control')
         .help-block.form-text = t('.hints.path')
-      .form-group
-        = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
+      .mb-3
+        = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'), class: 'form-label')
         = f.collection_select(:file_type_id, @file_types, :id, :name, {}, class: 'form-control')
-      .form-group
-        = f.label(:role, t('activerecord.attributes.file.role'))
+      .mb-3
+        = f.label(:role, t('activerecord.attributes.file.role'), class: 'form-label')
         = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map { |role| [t("files.roles.#{role}"), role] }, {}, class: 'form-control')
       .form-check
         label.form-check-label
@@ -35,11 +35,11 @@ li.card.mt-2
           = f.check_box(:read_only, class: 'form-check-input')
           = t('activerecord.attributes.file.read_only')
       .test-related-fields style="display: #{f.object.teacher_defined_assessment? ? 'initial' : 'none'};"
-        .form-group
-          = f.label(:name, t('activerecord.attributes.file.feedback_message'))
+        .mb-3
+          = f.label(:name, t('activerecord.attributes.file.feedback_message'), class: 'form-label')
           = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
           .help-block.form-text = t('.hints.feedback_message')
-        .form-group
-          = f.label(:role, t('activerecord.attributes.file.weight'))
+        .mb-3
+          = f.label(:role, t('activerecord.attributes.file.weight'), class: 'form-label')
           = f.number_field(:weight, class: 'form-control', min: 0, step: 'any')
       = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))

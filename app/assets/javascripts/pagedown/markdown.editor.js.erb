@@ -1018,7 +1018,7 @@
                     text = 'http://' + text;
             }
 
-            $(dialog).modal('hide');
+            bootstrap.Modal.getInstance($(dialog)).hide();
 
             callback(text);
             return false;
@@ -1032,7 +1032,7 @@
             //   <div class="modal-dialog">
             //      <div class="modal-content">
             //          <div class="modal-header">
-            //              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            //              <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
             //              <h3 class="modal-title">Modal title</h3>
             //          </div>
             //          <div class="modal-body">
@@ -1062,7 +1062,7 @@
             // The header.
             var header = doc.createElement("div");
             header.className = "modal-header";
-            header.innerHTML = '<h3 class="modal-title">'+title+'</h3> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+            header.innerHTML = '<h3 class="modal-title">'+title+'</h3> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>';
             dialogContent.appendChild(header);
 
             // The body.
@@ -1082,7 +1082,7 @@
 
             // The input text box
             var formGroup = doc.createElement("div");
-            formGroup.className = "form-group";
+            formGroup.className = "mb-3";
             form.appendChild(formGroup);
 
             var label = doc.createElement("label");
@@ -1144,15 +1144,15 @@
                 range.select();
             }
 
-            $(dialog).on('shown', function () {
+            $(dialog).on('shown.bs.modal', function () {
                 input.focus();
             });
 
-            $(dialog).on('hidden', function () {
+            $(dialog).on('hidden.bs.modal', function () {
                 dialog.parentNode.removeChild(dialog);
             });
 
-            $(dialog).modal()
+            new bootstrap.Modal($(dialog)).show();
 
         }, 0);
     };
@@ -1360,8 +1360,8 @@
                 button.appendChild(buttonImage);
                 button.id = id + postfix;
                 button.title = title;
-                button.setAttribute("data-toggle", "tooltip");
-                button.setAttribute("data-placement", "top");
+                button.setAttribute("data-bs-toggle", "tooltip");
+                button.setAttribute("data-bs-placement", "top");
                 if (textOp)
                     button.textOp = textOp;
                 setupButton(button, true);
@@ -1416,7 +1416,7 @@
 
             if (helpOptions) {
                 var group5 = makeGroup(5);
-                group5.className = group5.className + " ml-auto";
+                group5.className = group5.className + " ms-auto";
                 var helpButton = document.createElement("button");
                 var helpButtonImage = document.createElement("i");
                 helpButtonImage.className = "m-1 fa-solid fa-info";
@@ -1424,8 +1424,8 @@
                 helpButton.className = "btn btn-info btn-sm";
                 helpButton.id = "wmd-help-button" + postfix;
                 helpButton.isHelp = true;
-                helpButton.setAttribute("data-toggle", "tooltip");
-                helpButton.setAttribute("data-placement", "top");
+                helpButton.setAttribute("data-bs-toggle", "tooltip");
+                helpButton.setAttribute("data-bs-placement", "top");
                 helpButton.title = helpOptions.title || defaultHelpHoverTitle;
                 helpButton.onclick = helpOptions.handler;
 

@@ -9,26 +9,26 @@
 
 = form_for(@exercise, data: {execution_environments: execution_environments, file_types: file_types}, multipart: true, builder: PagedownFormBuilder) do |f|
   = render('shared/form_errors', object: @exercise)
-  .form-group
-    = f.label(:title)
+  .mb-3
+    = f.label(:title, class: 'form-label')
     = f.text_field(:title, class: 'form-control', required: true)
-  .form-group
-    = f.label(:description)
+  .mb-3
+    = f.label(:description, class: 'form-label')
     = f.pagedown :description, input_html: { preview: true, rows: 10 }
-  .form-group
-    = f.label(:execution_environment_id)
+  .mb-3
+    = f.label(:execution_environment_id, class: 'form-label')
     = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {include_blank: t('exercises.form.none')}, class: 'form-control')
-  /.form-group
-    = f.label(:instructions)
+  /.mb-3
+    = f.label(:instructions, class: 'form-label')
     = f.hidden_field(:instructions)
     .form-control.markdown
-  .form-group
-    = f.label(:submission_deadline)
+  .mb-3
+    = f.label(:submission_deadline, class: 'form-label')
     .chosen-inline
       = f.datetime_select(:submission_deadline, include_blank: true)
     .help-block.form-text == t('.hints.submission_deadline')
-  .form-group
-    = f.label(:late_submission_deadline)
+  .mb-3
+    = f.label(:late_submission_deadline, class: 'form-label')
     .chosen-inline
       = f.datetime_select(:late_submission_deadline, include_blank: true)
     .help-block.form-text == t('.hints.late_submission_deadline')
@@ -52,15 +52,15 @@
     label.form-check-label
       = f.check_box(:allow_auto_completion, class: 'form-check-input')
       = t('activerecord.attributes.exercise.allow_auto_completion')
-  .form-group
-    = f.label(t('activerecord.attributes.exercise.difficulty'))
+  .mb-3
+    = f.label(t('activerecord.attributes.exercise.difficulty'), class: 'form-label')
     = f.number_field :expected_difficulty, in: 1..10, step: 1, class: 'form-control'
 
   h2 = t('exercises.form.tags')
   ul.list-unstyled.card-group
     li.card
       .card-header role="tab" id="heading"
-        a.file-heading data-toggle="collapse" href="#tag-collapse"
+        a.file-heading data-bs-toggle="collapse" href="#tag-collapse"
           div.clearfix role="button"
             span = t('exercises.form.click_to_collapse')
       .card-collapse.collapse id="tag-collapse" role="tabpanel"
@@ -73,29 +73,29 @@
                 th = t('activerecord.attributes.tag.difficulty')
               = collection_check_boxes :exercise, :tag_ids, @exercise_tags, :tag_id, :id do |b|
                 tr
-                  td = b.check_box
+                  td = b.check_box class: 'form-check-input'
                   td = b.object.tag.name
-                  td = number_field "tag_factors[#{b.object.tag.id}]", :factor, :value => b.object.factor, in: 1..10, step: 1, class: 'form-control-sm'
+                  td = number_field "tag_factors[#{b.object.tag.id}]", :factor, :value => b.object.factor, in: 1..10, step: 1, class: 'form-control form-control-sm'
 
   h2 = t('.tips')
   ul.list-unstyled.card-group
     li.card
       .card-header role="tab" id="tip-heading"
-        a.file-heading data-toggle="collapse" href="#tip-collapse"
+        a.file-heading data-bs-toggle="collapse" href="#tip-collapse"
           div.clearfix role="button"
             span = t('exercises.form.click_to_collapse')
       .card-collapse.collapse.mx-2 id="tip-collapse" role="tabpanel"
         = f.hidden_field(:tips, id: "tips-json", value: "")
         .list-group.nested-sortable-list.mt-2#tip-list
           = render(partial: 'tips/sortable_tip', collection: @tips, as: :exercise_tip)
-        button.btn.btn-outline-primary.my-2.w-100 type='button' data-toggle='modal' data-target='#add-tips-modal' = t('.add_tips')
+        button.btn.btn-outline-primary.my-2.w-100 type='button' data-bs-toggle='modal' data-bs-target='#add-tips-modal' = t('.add_tips')
 
   h2 = t('activerecord.attributes.exercise.files')
   ul#files.list-unstyled
     = f.fields_for :files do |files_form|
       = render('file_form', f: files_form)
 
-  a#add-file.btn.btn-secondary.btn-sm.float-right href='#' = t('.add_file')
+  a#add-file.btn.btn-secondary.btn-sm.float-end href='#' = t('.add_file')
   ul#dummies.d-none = f.fields_for(:files, CodeOcean::File.new, child_index: 'index') do |files_form|
     = render('file_form', f: files_form)
 

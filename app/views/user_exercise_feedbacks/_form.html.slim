@@ -1,6 +1,6 @@
 = form_for(@uef) do |f|
   div
-    span.badge.badge-pill.badge-primary.float-right.score
+    span.badge.rounded-pill.bg-primary.float-end.score
 
     h1 id="exercise-headline"
       = t('activerecord.models.user_exercise_feedback.one') + " " + @exercise.title
@@ -10,7 +10,7 @@
   #description-card.lead.description-card
     u = t('activerecord.attributes.exercise.description')
     = render_markdown(@exercise.description)
-  .form-group
+  .mb-3
     = f.text_area(:feedback_text, class: 'form-control', required: true, :rows => "10")
     h4.mt-4 = t('user_exercise_feedback.difficulty')
     = f.collection_radio_buttons :difficulty, @texts, :first, :last  do |b|

@@ -1,7 +1,7 @@
 - tips = Tip.order(:title)
 
 form#tip-selection
-  .form-group
+  .mb-3
     span.badge = t('activerecord.attributes.exercise_tip.tip')
     .mb-2
     = collection_select({}, :tip_ids, tips, :id, :to_s, {}, {id: 'add-tip-list', class: 'form-control', multiple: true})

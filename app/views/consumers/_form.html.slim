@@ -1,12 +1,12 @@
 = form_for(@consumer) do |f|
   = render('shared/form_errors', object: @consumer)
-  .form-group
-    = f.label(:name)
+  .mb-3
+    = f.label(:name, class: 'form-label')
     = f.text_field(:name, class: 'form-control', required: true)
-  .form-group
-    = f.label(:oauth_key)
+  .mb-3
+    = f.label(:oauth_key, class: 'form-label')
     = f.text_field(:oauth_key, class: 'form-control', required: true)
-  .form-group
-    = f.label(:oauth_secret)
+  .mb-3
+    = f.label(:oauth_secret, class: 'form-label')
     = f.text_field(:oauth_secret, class: 'form-control', required: true)
   .actions = render('shared/submit_button', f: f, object: @consumer)

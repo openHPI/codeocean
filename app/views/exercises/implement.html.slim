@@ -3,36 +3,31 @@
      Otherwise, lti_parameters might be nil
   meta name="turbolinks-cache-control" content="no-cache"
 
-.row
-  #editor-column.col-md-12
-    - unless @embed_options[:hide_exercise_description]
-      .exercise.clearfix
-        div
-          span.badge.badge-pill.badge-primary.float-right.score
+// col-md-12 required for CodePilot
+#editor-column.col-md-12
+  - unless @embed_options[:hide_exercise_description]
+    .exercise.clearfix
+      div
+        span.badge.rounded-pill.bg-primary.float-end.score
 
-          h1 id="exercise-headline"
-            i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
-            = @exercise.title
+        h1 id="exercise-headline"
+          i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
+          = @exercise.title
 
-        #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
-          = render_markdown(@exercise.description)
+      #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
+        = render_markdown(@exercise.description)
 
-        a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide')
-          - if @embed_options[:collapse_exercise_description]
-            = t('shared.show')
-          - else
-            = t('shared.hide')
+      a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide')
+        - if @embed_options[:collapse_exercise_description]
+          = t('shared.show')
+        - else
+          = t('shared.hide')
 
-    #alert.alert.alert-danger role='alert'
-      h4 = t('.alert.title')
-      p = t('.alert.text', application_name: application_name)
 
-    #development-environment
-      .tab-content
-        #workspace.tab-pane.active = render('editor', exercise: @exercise, files: @files, submission: @submission)
+  = render('editor', exercise: @exercise, files: @files, submission: @submission)
 
-  - if qa_url
-    #questions-column
-      #questions-holder data-url="#{qa_url}/qa/index/#{@exercise.id}/#{@user_id}"
-    = qa_js_tag
+- if qa_url
+  #questions-column
+    #questions-holder data-url="#{qa_url}/qa/index/#{@exercise.id}/#{@user_id}"
+  = qa_js_tag
 

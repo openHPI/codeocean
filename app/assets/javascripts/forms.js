@@ -9,7 +9,7 @@ $(document).on('turbolinks:load', function() {
     event.preventDefault();
 
     if (!$(this).hasClass('disabled')) {
-      var parent = $(this).parents('.form-group');
+      var parent = $(this).parents('.mb-3');
       var original_input = parent.find('.original-input');
       var alternative_input = parent.find('.alternative-input');
 

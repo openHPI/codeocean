@@ -42,13 +42,13 @@ html lang="#{I18n.locale || I18n.default_locale}"
           .navbar-brand
             i.fa-solid.fa-code
             = application_name
-          button.navbar-toggler data-target='#navbar-collapse' data-toggle='collapse' type='button' aria-expanded='false' aria-label='Toggle navigation'
+          button.navbar-toggler data-bs-target='#navbar-collapse' data-bs-toggle='collapse' type='button' aria-expanded='false' aria-label='Toggle navigation'
             span.navbar-toggler-icon
           #navbar-collapse.collapse.navbar-collapse
             = render('navigation', cached: true)
-            ul.nav.navbar-nav.ml-auto
+            ul.nav.navbar-nav.ms-auto
               = render('locale_selector', cached: true)
-              li.nav-item.mr-3 = link_to(t('shared.help.link'), '#modal-help', data: {toggle: 'modal'}, class: 'nav-link')
+              li.nav-item.me-3 = link_to(t('shared.help.link'), '#modal-help', data: {toggle: 'modal'}, class: 'nav-link')
               = render('session')
     div data-controller=controller_name
       = render('flash')

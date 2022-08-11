@@ -3,7 +3,7 @@
 .card class="#{exercise_tip.parent_exercise_tip_id? || exercise_tip.rank != 1 ? 'mt-2' : ''}"
   .card-header.p-2 id="tip-heading-#{exercise_tip.id}" role="tab"
     .card-title.mb-0
-      a.collapsed aria-controls="tip-collapse-#{exercise_tip.id}" aria-expanded="false" data-parent="#tips" data-toggle="collapse" href="#tip-collapse-#{exercise_tip.id}"
+      a.collapsed aria-controls="tip-collapse-#{exercise_tip.id}" aria-expanded="false" data-bs-parent="#tips" data-bs-toggle="collapse" href="#tip-collapse-#{exercise_tip.id}"
         .clearfix role="button"
           i.fa-solid aria-hidden="true"
           span

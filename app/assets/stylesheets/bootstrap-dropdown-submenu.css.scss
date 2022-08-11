@@ -29,11 +29,11 @@
   border-left-color: #ffffff;
 }
 
-.dropdown-submenu.float-left {
+.dropdown-submenu.float-start {
   float: none;
 }
 
-.dropdown-submenu.float-left > .dropdown-menu {
+.dropdown-submenu.float-start > .dropdown-menu {
   left: -100%;
   margin-left: 10px;
   -webkit-border-radius: 6px 0 6px 6px;

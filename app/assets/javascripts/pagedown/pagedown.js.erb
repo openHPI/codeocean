@@ -32,7 +32,7 @@ createPagedownEditor = function( selector, context ) {
 
         const editor = new Markdown.Editor(converter, attr, help);
         editor.run();
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-bs-toggle="tooltip"]').tooltip();
         return $(input).data('is_rendered', true);
     });
 };
