@@ -1,11 +1,21 @@
 {
+  "name": "codeocean",
+  "private": true,
   "dependencies": {
+    "@babel/core": "7",
+    "@babel/plugin-transform-runtime": "7",
+    "@babel/preset-env": "7",
+    "@babel/runtime": "7",
     "@fortawesome/fontawesome-free": "^6.1.2",
-    "@rails/webpacker": "^5.4.3",
     "@sentry/browser": "^6.11.0",
+    "@webpack-cli/serve": "^1.7.0",
+    "babel-loader": "8",
     "bootstrap": "^4.6.2",
     "bootswatch": "^4.6.0",
     "chosen-js": "^1.8.7",
+    "compression-webpack-plugin": "9",
+    "css-loader": "^6.7.1",
+    "css-minimizer-webpack-plugin": "^4.0.0",
     "d3": "^7.6.1",
     "d3-tip": "^0.9.1",
     "highlight.js": "^11.5.1",
@@ -14,19 +24,37 @@
     "jquery-ui": "^1.13.1",
     "jquery-ujs": "^1.2.3",
     "jstree": "^3.3.12",
+    "mini-css-extract-plugin": "^2.6.1",
     "opensans-webkit": "^1.1.0",
+    "pnp-webpack-plugin": "1",
     "popper.js": "^1.16.1",
     "rails-erb-loader": "^5.5.2",
+    "sass": "^1.54.4",
+    "sass-loader": "^13.0.2",
+    "shakapacker": "^6.0.0-rc.14",
     "sortablejs": "^1.15.0",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "5",
     "underscore": "^1.13.4",
     "vis": "^4.21.0",
-    "webpack-merge": "^5.8.0"
+    "webpack": "5",
+    "webpack-assets-manifest": "5",
+    "webpack-cli": "4",
+    "webpack-merge": "5"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^4.10.0"
   },
+  "babel": {
+    "presets": [
+      "./node_modules/shakapacker/package/babel/preset.js"
+    ]
+  },
+  "browserslist": [
+    "defaults"
+  ],
   "scripts": {
-    "webpack": "./bin/webpack",
-    "webpack-dev-server": "./bin/webpack-dev-server"
+    "webpack": "./bin/webpacker",
+    "webpack-dev-server": "./bin/webpacker-dev-server"
   }
 }

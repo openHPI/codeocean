@@ -464,6 +464,11 @@ GEM
     sentry-ruby (5.4.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
     set (1.0.2)
+    shakapacker (6.0.0.rc.13)
+      activesupport (>= 5.2)
+      rack-proxy (>= 0.6.1)
+      railties (>= 5.2)
+      semantic_range (>= 2.3.0)
     shoulda-matchers (5.1.0)
       activesupport (>= 5.2.0)
     simplecov (0.21.2)
@@ -524,11 +529,6 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webpacker (5.4.3)
-      activesupport (>= 5.2)
-      rack-proxy (>= 0.6.1)
-      railties (>= 5.2)
-      semantic_range (>= 2.3.0)
     webrick (1.7.0)
     websocket (1.2.9)
     websocket-driver (0.7.5)
@@ -611,6 +611,7 @@ DEPENDENCIES
   selenium-webdriver
   sentry-rails
   sentry-ruby
+  shakapacker (= 6.0.0.rc13)
   shoulda-matchers
   simplecov
   slim-rails
@@ -621,7 +622,6 @@ DEPENDENCIES
   turbolinks
   web-console
   webmock
-  webpacker
   whenever
 
 BUNDLED WITH

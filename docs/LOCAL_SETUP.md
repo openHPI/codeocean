@@ -76,7 +76,7 @@ After that make sure to configure the corresponding execution environment for th
 This project uses `webpacker` to integrate Webpack with Rails to deliver Frontend assets. During development, the `webpack-dev-server` automatically launches together with the Rails server if not specified otherwise. In case of missing JavaScript or stylesheets or for hot reloading in the browser, you might want to start the `webpack-dev-server` manually *before starting Rails*:
 
 ```shell script
-./bin/webpack-dev-server
+./bin/webpacker-dev-server
 ```
 
 This will launch a dedicated server on port 3035 (default setting) and allow incoming WebSocket connections from your browser.

@@ -43,7 +43,7 @@ import 'jquery-ui/themes/base/sortable.css'
 
 // I18n locales
 import { I18n } from "i18n-js";
-import locales from "../../../tmp/locales.json";
+import locales from "../../tmp/locales.json";
 
 // Fetch user locale from html#lang.
 // This value is being set on `app/views/layouts/application.html.erb` and

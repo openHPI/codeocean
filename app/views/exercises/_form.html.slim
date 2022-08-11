@@ -2,7 +2,7 @@
   // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
      Otherwise, code might not be highlighted correctly (race condition)
   meta name='turbolinks-visit-control' content='reload'
-  = javascript_pack_tag('sortable', 'data-turbolinks-track': true)
+  - append_javascript_pack_tag('sortable')
 
 - execution_environments = ExecutionEnvironment.where('file_type_id IS NOT NULL').select(:file_type_id, :id)
 - file_types = FileType.where('file_extension IS NOT NULL').select(:file_extension, :id)

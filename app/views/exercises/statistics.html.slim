@@ -2,7 +2,7 @@
   // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
      Otherwise, code might not be highlighted correctly (race condition)
   meta name='turbolinks-visit-control' content='reload'
-  = javascript_pack_tag('d3-tip', 'data-turbolinks-track': true)
+  - append_javascript_pack_tag('d3-tip')
 h1 = @exercise
 
 = row(label: '.participants', value: @exercise.users.distinct.count)
