@@ -42,7 +42,7 @@ gem 'rest-client'
 gem 'rubytree'
 gem 'rubyzip'
 gem 'sass-rails'
-gem 'shakapacker', '6.0.0.rc13'
+gem 'shakapacker', '= 6.5'
 gem 'slim-rails'
 gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.com/Sorcery/sorcery/pull/255
 gem 'telegraf'
