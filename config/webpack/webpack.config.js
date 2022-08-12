@@ -25,7 +25,7 @@ const envConfig = module.exports = {
         alias: {
             $: 'jquery/src/jquery',
             jquery: 'jquery/src/jquery',
-            vis$: 'vis/dist/vis',
+            vis$: 'vis-timeline/standalone',
         }
     },
     plugins: [
