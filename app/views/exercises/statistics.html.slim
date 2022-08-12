@@ -76,7 +76,7 @@ h1 = @exercise
             - if user_statistics[user.class.name][user.id] then us = user_statistics[user.class.name][user.id] else us = {"maximum_score" => nil, "runs" => nil}
             - label = "#{user.displayname}"
             tr
-              td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
+              td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "external_user_statistics", external_user_id: user.id, id: @exercise.id}
               td = us['maximum_score'] or 0
               td.align-middle
                 - latest_user_submission = submissions.where(user: user).final.latest
