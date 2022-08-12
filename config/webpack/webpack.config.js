@@ -35,7 +35,7 @@ const envConfig = module.exports = {
             jQuery: 'jquery',
             jquery: 'jquery',
             'window.Tether': "tether",
-            Popper: ['popper.js', 'default'], // for Bootstrap 4
+            Popper: ['popper.js', 'default'],
             _: 'underscore',
             vis: 'vis',
             d3: 'd3',
