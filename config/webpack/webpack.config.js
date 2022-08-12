@@ -21,9 +21,11 @@ const envConfig = module.exports = {
         ]
     },
     resolve: {
+        extensions: ['.css', '.ts', '.tsx'],
         alias: {
             $: 'jquery/src/jquery',
             jquery: 'jquery/src/jquery',
+            vis$: 'vis/dist/vis',
         }
     },
     plugins: [
@@ -36,7 +38,6 @@ const envConfig = module.exports = {
             Popper: ['popper.js', 'default'], // for Bootstrap 4
             _: 'underscore',
             vis: 'vis',
-            hljs: 'highlight.js',
             d3: 'd3',
             Sentry: '@sentry/browser',
             Sortable: 'sortablejs',

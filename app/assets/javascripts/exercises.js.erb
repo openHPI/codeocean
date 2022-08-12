@@ -257,7 +257,7 @@ $(document).on('turbolinks:load', function () {
 
     var highlightCode = function () {
         $('pre code').each(function (index, element) {
-            hljs.highlightBlock(element);
+            hljs.highlightElement(element);
         });
     };
 

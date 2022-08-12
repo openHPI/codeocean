@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 
 // JS
-import * as hljs from 'highlight.js'
+import hljs from 'highlight.js/lib/common'
 window.hljs = hljs;
 
 // CSS
