@@ -12,21 +12,7 @@ $web-font-path: '//';
 @import '../../node_modules/bootstrap/scss/bootstrap';
 @import '../../node_modules/bootswatch/dist/yeti/bootswatch';
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts/';
-// Remove lines below and re-include overall fontawesome in v6.2+
-// See https://github.com/FortAwesome/Font-Awesome/issues/19237
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/functions';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/variables';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/mixins';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/core';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/sizing';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/fixed-width';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/bordered-pulled';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/animated';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/rotated-flipped';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/stacked';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/icons';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/screen-reader';
-// @import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
 @import '../../node_modules/@fortawesome/fontawesome-free/scss/solid';
 @import '../../node_modules/@fortawesome/fontawesome-free/scss/regular';
 @import '../../node_modules/@fortawesome/fontawesome-free/scss/v4-shims';
