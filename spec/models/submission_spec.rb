@@ -123,22 +123,6 @@ describe Submission do
         end
       end
     end
-
-    context 'with enough exercise feedback' do
-      let(:exercise) { create(:dummy_with_user_feedbacks, user_feedbacks_count: 42) }
-      let(:user) { create(:external_user) }
-
-      before do
-        allow_any_instance_of(described_class).to receive(:redirect_to_feedback?).and_return(false)
-      end
-
-      it 'sends nobody to feedback page' do
-        30.times do |_i|
-          submission = create(:submission, exercise: exercise, user: create(:external_user))
-          expect(submission.send(:redirect_to_feedback?)).to be_falsey
-        end
-      end
-    end
   end
 
   describe '#calculate_score' do

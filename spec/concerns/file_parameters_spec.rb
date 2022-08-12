@@ -48,7 +48,8 @@ describe FileParameters do
       end
 
       it 'non existent file' do
-        non_existent_file = build(:file, context: hello_world, id: 42)
+        # Ensure to use an invalid id for the file.
+        non_existent_file = build(:file, context: hello_world, id: -1)
         expect(file_accepted?(non_existent_file)).to be false
       end
     end
