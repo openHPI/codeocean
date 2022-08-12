@@ -44,13 +44,18 @@ jobs:
           node-version: 18
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - name: Manage yarn cache
-        uses: actions/cache@v2
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Manage yarn, webpack and assets cache
+        uses: actions/cache@v3
         # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         id: yarn-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            public/assets
+            public/packs-test
+            tmp/cache
+            tmp/webpacker
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -70,6 +75,10 @@ jobs:
         env:
           RAILS_ENV: test
         run: bundler exec rake db:schema:load
+      - name: Precompile assets
+        env:
+          RAILS_ENV: test
+        run: bundler exec rake assets:precompile
       - name: Run tests
         env:
           RAILS_ENV: test
