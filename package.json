@@ -11,7 +11,7 @@
     "@webpack-cli/serve": "^1.7.0",
     "babel-loader": "8",
     "bootstrap": "^4.6.2",
-    "bootswatch": "^4.6.0",
+    "bootswatch": "^5.2.0",
     "chosen-js": "^1.8.7",
     "compression-webpack-plugin": "9",
     "css-loader": "^6.7.1",
