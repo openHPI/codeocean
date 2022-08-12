@@ -42,7 +42,12 @@ const envConfig = module.exports = {
             Sentry: '@sentry/browser',
             Sortable: 'sortablejs',
         })
-    ]
+    ],
+    performance: {
+        // Turn off size warnings for large assets
+        hints: false
+    },
+    stats: 'minimal'
 }
 
 module.exports = merge(webpackConfig, envConfig)
