@@ -3,7 +3,7 @@ $(document).on('turbolinks:load', function() {
 
   if ($.isController('exercises') && $('.working-time-graphs').isPresent()) {
       var working_times = $('#data').data('working-time');
-      
+
       function get_minutes (timestamp){
           try{
               hours = timestamp.split(":")[0];
@@ -160,7 +160,6 @@ $(document).on('turbolinks:load', function() {
               groupRanges += groupWidth;
           }
           while (groupRanges < maximum_minutes);
-          console.log(maximum_minutes);
 
           var clusterCount = 0,
               sum = 0,
