@@ -3,6 +3,11 @@
 const { webpackConfig, merge } = require('shakapacker')
 const webpack = require('webpack');
 
+const CompressionPlugin = require("compression-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+
 // Custom ERB loader to disable Spring and prevent crashes
 const erb = require("./loaders/erb");
 
@@ -12,21 +17,24 @@ const relative_url_root = process.env.RAILS_RELATIVE_URL_ROOT || '';
 const public_output_path = webpackConfig.output.publicPath;
 
 const envConfig = module.exports = {
-    output: {
-        publicPath: relative_url_root + public_output_path
-    },
     module: {
         rules: [
             erb
         ]
     },
-    resolve: {
-        extensions: ['.css', '.ts', '.tsx'],
-        alias: {
-            $: 'jquery/src/jquery',
-            jquery: 'jquery/src/jquery',
-            vis$: 'vis-timeline/standalone',
-        }
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin(),
+            new CssMinimizerPlugin()
+        ],
+    },
+    output: {
+        publicPath: relative_url_root + public_output_path
+    },
+    performance: {
+        // Turn off size warnings for large assets
+        hints: false
     },
     plugins: [
         new webpack.ProvidePlugin({
@@ -41,13 +49,19 @@ const envConfig = module.exports = {
             d3: 'd3',
             Sentry: '@sentry/browser',
             Sortable: 'sortablejs',
-        })
+        }),
+        new CompressionPlugin(),
+        new MiniCssExtractPlugin(),
     ],
-    performance: {
-        // Turn off size warnings for large assets
-        hints: false
+    resolve: {
+        extensions: ['.css', '.ts', '.tsx'],
+        alias: {
+            $: 'jquery/src/jquery',
+            jquery: 'jquery/src/jquery',
+            vis$: 'vis-timeline/standalone',
+        }
     },
-    stats: 'minimal'
+    stats: 'minimal',
 }
 
 module.exports = merge(webpackConfig, envConfig)
