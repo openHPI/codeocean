@@ -17,7 +17,6 @@
 //
 // lib/assets
 //= require flash
-//= require url
 //
 // vendor/assets
 //= require ace/ace
