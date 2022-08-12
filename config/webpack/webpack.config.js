@@ -49,6 +49,7 @@ const envConfig = module.exports = {
             d3: 'd3',
             Sentry: '@sentry/browser',
             Sortable: 'sortablejs',
+            sorttable: 'sorttable',
         }),
         new CompressionPlugin(),
         new MiniCssExtractPlugin(),
