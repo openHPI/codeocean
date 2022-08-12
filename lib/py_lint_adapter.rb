@@ -81,7 +81,7 @@ class PyLintAdapter < TestingFrameworkAdapter
       end
 
       replacement[:default] = message[:result]
-      message[:result] = I18n.t("linter.#{severity}.#{name}.replacement", replacement)
+      message[:result] = I18n.t("linter.#{severity}.#{name}.replacement", **replacement)
       message
     end
 
