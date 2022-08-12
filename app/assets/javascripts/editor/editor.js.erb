@@ -491,20 +491,20 @@ var CodeOceanEditor = {
         card.addClass(this.getCardClass(result));
         card.find('.card-title .filename').text(result.filename);
         card.find('.card-title .number').text(index + 1);
-        card.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
-        card.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
+        card.find('.row .col-md-9').eq(0).find('.number').eq(0).text(result.passed);
+        card.find('.row .col-md-9').eq(0).find('.number').eq(1).text(result.count);
         if (result.weight !== 0) {
-            card.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
-            card.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
+            card.find('.row .col-md-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
+            card.find('.row .col-md-9').eq(1).find('.number').eq(1).text(result.weight);
         } else {
             // Hide score row if no score could be achieved
             card.find('.attribute-row.row').eq(1).addClass('d-none');
         }
-        card.find('.row .col-sm-9').eq(2).html(result.message);
+        card.find('.row .col-md-9').eq(2).html(result.message);
 
         // Add error message from code to card
         if (result.error_messages) {
-            const targetNode = card.find('.row .col-sm-9').eq(3);
+            const targetNode = card.find('.row .col-md-9').eq(3);
 
             let errorMessagesToShow = [];
             result.error_messages.forEach(function (item) {
@@ -575,7 +575,7 @@ var CodeOceanEditor = {
             }
             targetNode.append(ul);
         }
-        //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
+        //card.find('.row .col-md-9').eq(4).find('a').attr('href', '#output-' + index);
     },
 
     createEventHandler: function (eventType, data) {
