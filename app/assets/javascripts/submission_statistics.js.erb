@@ -108,7 +108,7 @@ $(document).on('turbolinks:load', function() {
     stopReplay = function() {
       clearInterval(playInterval);
       playInterval = undefined;
-      playButton.find('span.fa').removeClass('fa-pause').addClass('fa-play')
+      playButton.find('span.fa-solid').removeClass('fa-pause').addClass('fa-play')
     };
 
     playButton.on('click', function(event) {
@@ -127,7 +127,7 @@ $(document).on('turbolinks:load', function() {
             stopReplay();
           }
         }, 1000);
-        playButton.find('span.fa').removeClass('fa-play').addClass('fa-pause')
+        playButton.find('span.fa-solid').removeClass('fa-play').addClass('fa-pause')
       } else {
         stopReplay();
       }

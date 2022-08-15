@@ -716,7 +716,7 @@ var CodeOceanEditor = {
             this.showOutOfMemoryMessage();
         } else if (output.stderr) {
             $.flash.danger({
-                icon: ['fa', 'fa-bug'],
+                icon: ['fa-solid', 'fa-bug'],
                 text: $('#run').data('message-failure')
             });
             Sentry.captureException(JSON.stringify(output));
