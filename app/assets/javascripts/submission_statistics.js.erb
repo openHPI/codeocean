@@ -10,6 +10,8 @@ $(document).on('turbolinks:load', function() {
   var fileTypeById = {};
 
   var showActiveFile = function() {
+    $('tr.active').removeClass('active');
+    $('tr#submission-' + currentSubmission).addClass('active');
     var session = editor.getSession();
     var fileType = fileTypeById[active_file.file_type_id];
     session.setMode(fileType.editor_mode);
@@ -81,6 +83,7 @@ $(document).on('turbolinks:load', function() {
 
     $('tr[data-id]>.clickable').each(function(index, element) {
       element = $(element);
+      element.parent().attr('id', 'submission-' + index);
       element.click(function() {
         slider.val(index);
         slider.change()
