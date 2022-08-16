@@ -44,6 +44,10 @@ span.caret {
   }
 }
 
+.btn-default {
+  --bs-btn-disabled-border-color: transparent;
+}
+
 .progress {
   margin: 0;
   border: 1px solid #CCCCCC;
