@@ -81,21 +81,23 @@ describe Lti do
     context 'without a return URL' do
       before do
         allow(controller).to receive(:params).and_return({})
-        allow(controller).to receive(:redirect_to).with(:root)
       end
 
       it 'redirects to the root URL' do
+        expect(controller).to receive(:redirect_to).with(:root)
         controller.send(:return_to_consumer)
       end
 
       it 'displays alerts' do
         message = I18n.t('sessions.oauth.failure')
         controller.send(:return_to_consumer, lti_errormsg: message)
+        expect(controller.instance_variable_get(:@flash)[:danger]).to eq(obtain_message(message))
       end
 
       it 'displays notices' do
-        message = I18n.t('sessions.oauth.success')
+        message = I18n.t('sessions.destroy_through_lti.success_without_outcome')
         controller.send(:return_to_consumer, lti_msg: message)
+        expect(controller.instance_variable_get(:@flash)[:info]).to eq(obtain_message(message))
       end
     end
   end
