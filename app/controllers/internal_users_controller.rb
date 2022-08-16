@@ -6,7 +6,6 @@ class InternalUsersController < ApplicationController
   before_action :require_activation_token, only: :activate
   before_action :require_reset_password_token, only: :reset_password
   before_action :set_user, only: MEMBER_ACTIONS
-  skip_before_action :verify_authenticity_token, only: :activate
   after_action :verify_authorized, except: %i[activate forgot_password reset_password]
 
   def activate

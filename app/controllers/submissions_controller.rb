@@ -13,7 +13,6 @@ class SubmissionsController < ApplicationController
   before_action :set_files, only: %i[download show]
   before_action :set_files_and_specific_file, only: %i[download_file render_file run test]
   before_action :set_mime_type, only: %i[download_file render_file]
-  skip_before_action :verify_authenticity_token, only: %i[download_file render_file]
 
   def create
     @submission = Submission.new(submission_params)

@@ -18,11 +18,9 @@ class ExercisesController < ApplicationController
   before_action :set_course_token, only: [:implement]
   before_action :set_available_tips, only: %i[implement show new edit]
 
-  skip_before_action :verify_authenticity_token,
-    only: %i[import_exercise import_uuid_check export_external_confirm export_external_check]
-  skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check export_external_confirm]
-  skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check export_external_confirm],
-    raise: false
+  skip_before_action :verify_authenticity_token, only: %i[import_exercise import_uuid_check]
+  skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check]
+  skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check], raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
@@ -129,6 +127,7 @@ class ExercisesController < ApplicationController
   end
 
   def export_external_confirm
+    authorize!
     @exercise.uuid = SecureRandom.uuid if @exercise.uuid.nil?
 
     error = ExerciseService::PushExternal.call(
