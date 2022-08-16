@@ -172,7 +172,7 @@ class ExecutionEnvironmentsController < ApplicationController
     begin
       Runner.strategy_class.sync_environment(@execution_environment)
     rescue Runner::Error => e
-      Rails.logger.warning { "Runner error while synchronizing execution environment with id #{@execution_environment.id}: #{e.message}" }
+      Rails.logger.warn { "Runner error while synchronizing execution environment with id #{@execution_environment.id}: #{e.message}" }
       redirect_to @execution_environment, alert: t('execution_environments.index.synchronize.failure', error: e.message)
     else
       redirect_to @execution_environment, notice: t('execution_environments.index.synchronize.success')
