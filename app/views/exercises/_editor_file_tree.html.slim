@@ -10,7 +10,7 @@ div.d-grid.gap-2 id='sidebar-collapsed' class=(@exercise.hide_file_tree && @tips
 div.d-grid.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_file_tree && @tips.blank? ? 'd-none' : '')
   = render('editor_button', classes: 'btn-outline-dark overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
   #content-left-sidebar.overflow-scroll
-    - unless false &&@exercise.hide_file_tree
+    - unless @exercise.hide_file_tree
       div.overflow-scroll
         .card.border-secondary
           .card-header.d-flex.justify-content-between.align-items-center.px-0.py-1
