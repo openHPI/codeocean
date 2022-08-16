@@ -62,7 +62,7 @@ describe Lti do
 
   describe '#return_to_consumer' do
     context 'with a return URL' do
-      let(:consumer_return_url) { 'http://example.org' }
+      let(:consumer_return_url) { 'https://example.org' }
 
       before { allow(controller).to receive(:params).and_return(launch_presentation_return_url: consumer_return_url) }
 

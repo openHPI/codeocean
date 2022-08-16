@@ -23,7 +23,7 @@ sudo apt -qq -y upgrade
 
 # PostgreSQL
 curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+echo "deb https://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
 sudo apt -qq update && sudo apt -qq install -y postgresql-client-$postgres_version postgresql-$postgres_version
 
 sudo sed -i "/# TYPE/q" /etc/postgresql/$postgres_version/main/pg_hba.conf

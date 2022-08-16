@@ -93,7 +93,7 @@ sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-p
 
 ```bash
 curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+echo "deb https://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
 sudo apt update && sudo apt install postgresql-client postgresql
 ```
 

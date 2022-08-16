@@ -24,7 +24,7 @@ createPagedownEditor = function( selector, context ) {
         Markdown.Extra.init(converter);
         const help = {
             handler() {
-                window.open('http://daringfireball.net/projects/markdown/syntax');
+                window.open('https://daringfireball.net/projects/markdown/syntax');
                 return false;
             },
             title: "<%= I18n.t('components.markdown_editor.help', default: 'Markdown Editing Help') %>"
