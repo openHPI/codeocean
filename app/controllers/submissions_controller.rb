@@ -27,7 +27,7 @@ class SubmissionsController < ApplicationController
 
     stringio = Zip::OutputStream.write_buffer do |zio|
       @files.each do |file|
-        zio.put_next_entry(file.filepath)
+        zio.put_next_entry(file.filepath.delete_prefix('/'))
         zio.write(file.content.presence || file.native_file.read)
       end
 
