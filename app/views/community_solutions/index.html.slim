@@ -1,19 +1,16 @@
-h1 Listing community_solutions
+h1 = t('activerecord.models.community_solution.other')
 
-table
-  thead
-    tr
-      th
-      th
-      th
-
-  tbody
-    - @community_solutions.each do |community_solution|
+.table-responsive
+  table.table.mt-4
+    thead
       tr
-        td = link_to 'Show', community_solution
-        td = link_to 'Edit', edit_community_solution_path(community_solution)
-        td = link_to 'Destroy', community_solution, data: { confirm: 'Are you sure?' }, method: :delete
+        th = t('activerecord.attributes.exercise.title')
+        th colspan=1 = t('shared.actions')
 
-br
+    tbody
+      - @community_solutions.each do |community_solution|
+        tr
+          td = community_solution.exercise.title
+          td = link_to 'Edit', edit_community_solution_path(community_solution)
 
-= link_to 'New Community solution', new_community_solution_path
+= render('shared/pagination', collection: @community_solutions)
