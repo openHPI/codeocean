@@ -10,7 +10,7 @@ class CommentsController < ApplicationController
 
   # GET /comments.json
   def index
-    file = CodeOcean::File.find(params[:file_id])
+    file = CodeOcean::File.find_by(id: params[:file_id])
     # there might be no submission yet, so dont use find
     submission = Submission.find_by(id: file.context_id)
     if submission
@@ -38,7 +38,7 @@ class CommentsController < ApplicationController
 
     if @comment.save
       if comment_params[:request_id]
-        request_for_comment = RequestForComment.find(comment_params[:request_id])
+        request_for_comment = RequestForComment.find_by(id: comment_params[:request_id])
         send_mail_to_author @comment, request_for_comment
         send_mail_to_subscribers @comment, request_for_comment
       end
@@ -71,7 +71,7 @@ class CommentsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_comment
-    @comment = Comment.find(params[:id])
+    @comment = Comment.find_by(id: params[:id])
   end
 
   def comment_params_for_update

@@ -22,27 +22,6 @@ class RequestForComment < ApplicationRecord
 
   # after_save :trigger_rfc_action_cable
 
-  # not used right now, finds the last submission for the respective user and exercise.
-  # might be helpful to check whether the exercise has been solved in the meantime.
-  def last_submission
-    Submission.find_by_sql(" select * from submissions
-            where exercise_id = #{exercise_id} AND
-            user_id =  #{user_id}
-            order by created_at desc
-            limit 1").first
-  end
-
-  # not used any longer, since we directly saved the submission_id now.
-  # Was used before that to determine the submission belonging to the request_for_comment.
-  def last_submission_before_creation
-    Submission.find_by_sql(" select * from submissions
-            where exercise_id = #{exercise_id} AND
-            user_id =  #{user_id} AND
-            '#{created_at.localtime}' > created_at
-            order by created_at desc
-            limit 1").first
-  end
-
   def comments_count
     submission.files.sum {|file| file.comments.size }
   end
@@ -89,7 +68,7 @@ class RequestForComment < ApplicationRecord
     end
 
     def last_per_user(count = 5)
-      from("(#{row_number_user_sql}) as request_for_comments")
+      from(row_number_user_sql, :request_for_comments)
         .where('row_number <= ?', count)
         .group('request_for_comments.id, request_for_comments.user_id, request_for_comments.user_type, ' \
                'request_for_comments.exercise_id, request_for_comments.file_id, request_for_comments.question, ' \
@@ -101,7 +80,7 @@ class RequestForComment < ApplicationRecord
     private
 
     def row_number_user_sql
-      select('id, user_id, user_type, exercise_id, file_id, question, created_at, updated_at, solved, full_score_reached, submission_id, row_number() OVER (PARTITION BY user_id, user_type ORDER BY created_at DESC) as row_number').to_sql
+      select('id, user_id, user_type, exercise_id, file_id, question, created_at, updated_at, solved, full_score_reached, submission_id, row_number() OVER (PARTITION BY user_id, user_type ORDER BY created_at DESC) as row_number')
     end
   end
 end

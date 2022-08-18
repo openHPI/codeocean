@@ -22,7 +22,7 @@ class SubscriptionsController < ApplicationController
   # DELETE /subscriptions/1
   # DELETE /subscriptions/1.json
   def destroy
-    @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find_by(id: params[:id])
   rescue StandardError
     skip_authorization
     respond_to do |format|
@@ -47,7 +47,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def set_subscription
-    @subscription = Subscription.find(params[:id])
+    @subscription = Subscription.find_by(id: params[:id])
     authorize!
   end
   private :set_subscription

@@ -141,7 +141,7 @@ class ExecutionEnvironmentsController < ApplicationController
   private :set_docker_images
 
   def set_execution_environment
-    @execution_environment = ExecutionEnvironment.find(params[:id])
+    @execution_environment = ExecutionEnvironment.find_by(id: params[:id])
     authorize!
   end
   private :set_execution_environment
@@ -158,7 +158,7 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def show
     if @execution_environment.testing_framework?
-      @testing_framework_adapter = Kernel.const_get(@execution_environment.testing_framework)
+      @testing_framework_adapter = TestingFrameworkAdapter.descendants.find {|klass| klass.name == @execution_environment.testing_framework }
     end
   end
 

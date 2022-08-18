@@ -23,7 +23,7 @@ class StudyGroupsController < ApplicationController
   def update
     myparams = study_group_params
     myparams[:external_users] =
-      StudyGroupMembership.find(myparams[:study_group_membership_ids].compact_blank).map(&:user)
+      StudyGroupMembership.find_by(id: myparams[:study_group_membership_ids].compact_blank).map(&:user)
     myparams.delete(:study_group_membership_ids)
     update_and_respond(object: @study_group, params: myparams)
   end
@@ -38,7 +38,7 @@ class StudyGroupsController < ApplicationController
   private :study_group_params
 
   def set_group
-    @study_group = StudyGroup.find(params[:id])
+    @study_group = StudyGroup.find_by(id: params[:id])
     authorize!
   end
   private :set_group

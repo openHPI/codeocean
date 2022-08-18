@@ -77,7 +77,7 @@ class ErrorTemplatesController < ApplicationController
 
   def add_attribute
     authorize!
-    @error_template.error_template_attributes << ErrorTemplateAttribute.find(params['error_template_attribute_id'])
+    @error_template.error_template_attributes << ErrorTemplateAttribute.find_by(id: params[:error_template_attribute_id])
     respond_to do |format|
       format.html { redirect_to @error_template }
       format.json { head :no_content }
@@ -86,7 +86,7 @@ class ErrorTemplatesController < ApplicationController
 
   def remove_attribute
     authorize!
-    @error_template.error_template_attributes.delete(ErrorTemplateAttribute.find(params['error_template_attribute_id']))
+    @error_template.error_template_attributes.delete(ErrorTemplateAttribute.find_by(id: params[:error_template_attribute_id]))
     respond_to do |format|
       format.html { redirect_to @error_template }
       format.json { head :no_content }
@@ -97,7 +97,7 @@ class ErrorTemplatesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_error_template
-    @error_template = ErrorTemplate.find(params[:id])
+    @error_template = ErrorTemplate.find_by(id: params[:id])
   end
 
   def error_template_params

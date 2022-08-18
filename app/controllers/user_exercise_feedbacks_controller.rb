@@ -25,7 +25,7 @@ class UserExerciseFeedbacksController < ApplicationController
   def create
     Sentry.set_extras(params: uef_params)
 
-    @exercise = Exercise.find(uef_params[:exercise_id])
+    @exercise = Exercise.find_by(id: uef_params[:exercise_id])
     rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
     submission = begin
       current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
@@ -67,7 +67,7 @@ class UserExerciseFeedbacksController < ApplicationController
                   else
                     params[:user_exercise_feedback][:exercise_id]
                   end
-    @exercise = Exercise.find(exercise_id)
+    @exercise = Exercise.find_by(id: exercise_id)
     @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
     authorize!
   end
@@ -105,7 +105,7 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def set_user_exercise_feedback
-    @uef = UserExerciseFeedback.find(params[:id])
+    @uef = UserExerciseFeedback.find_by(id: params[:id])
     @exercise = @uef.exercise
   end
 

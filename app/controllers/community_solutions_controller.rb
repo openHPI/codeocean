@@ -90,11 +90,11 @@ class CommunitySolutionsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_community_solution
-    @community_solution = CommunitySolution.find(params[:id])
+    @community_solution = CommunitySolution.find_by(id: params[:id])
   end
 
   def set_community_solution_lock
-    @community_solution_lock = CommunitySolutionLock.find(params[:lock_id])
+    @community_solution_lock = CommunitySolutionLock.find_by(id: params[:lock_id])
   end
 
   def set_exercise_and_submission

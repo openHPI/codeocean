@@ -41,7 +41,7 @@ module CodeOcean
     end
 
     def destroy
-      @file = CodeOcean::File.find(params[:id])
+      @file = CodeOcean::File.find_by(id: params[:id])
       authorize!
       destroy_and_respond(object: @file, path: @file.context)
     end

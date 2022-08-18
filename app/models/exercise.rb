@@ -103,7 +103,7 @@ class Exercise < ApplicationRecord
                     (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
-            WHERE exercise_id=#{id}) AS foo) AS bar
+            WHERE exercise_id=#{self.class.sanitize_sql(id)}) AS foo) AS bar
       GROUP BY user_id, user_type
     "
   end
@@ -118,7 +118,7 @@ class Exercise < ApplicationRecord
          (created_at - lag(created_at) over (PARTITION BY submissions.user_type, submissions.user_id, exercise_id
            ORDER BY created_at)) AS working_time
       FROM submissions
-      WHERE exercise_id = #{exercise_id} AND study_group_id = #{study_group_id} #{additional_filter}),
+      WHERE exercise_id = #{self.class.sanitize_sql(exercise_id)} AND study_group_id = #{self.class.sanitize_sql(study_group_id)} #{self.class.sanitize_sql(additional_filter)}),
     working_time_with_deltas_ignored AS (
       SELECT user_id,
              user_type,
@@ -251,7 +251,7 @@ class Exercise < ApplicationRecord
   end
 
   def get_quantiles(quantiles)
-    quantiles_str = "[#{quantiles.join(',')}]"
+    quantiles_str = self.class.sanitize_sql("[#{quantiles.join(',')}]")
     result = ActiveRecord::Base.transaction do
       self.class.connection.execute("
       SET LOCAL intervalstyle = 'iso_8601';
@@ -263,7 +263,7 @@ class Exercise < ApplicationRecord
                         Max(score)                                                                                  AS max_score,
                         (created_at - Lag(created_at) OVER (partition BY user_id, exercise_id ORDER BY created_at)) AS working_time
                FROM     submissions
-               WHERE    exercise_id = #{id}
+               WHERE    exercise_id = #{self.class.sanitize_sql(id)}
                AND      user_type = 'ExternalUser'
                GROUP BY user_id,
                         id,
@@ -273,7 +273,7 @@ class Exercise < ApplicationRecord
                         Sum(weight) AS max_points
                FROM     files
                WHERE    context_type = 'Exercise'
-               AND      context_id = #{id}
+               AND      context_id = #{self.class.sanitize_sql(id)}
                AND      role IN ('teacher_defined_test', 'teacher_defined_linter')
                GROUP BY context_id),
       -- filter for rows containing max points
@@ -387,7 +387,7 @@ class Exercise < ApplicationRecord
       self.class.connection.execute("
       SELECT avg(working_time) as average_time
       FROM
-        (#{user_working_time_query}) AS baz;
+        (#{self.class.sanitize_sql(user_working_time_query)}) AS baz;
     ").first['average_time']
     end
   end

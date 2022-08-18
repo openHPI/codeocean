@@ -121,7 +121,7 @@ class InternalUsersController < ApplicationController
   private :set_up_password
 
   def set_user
-    @user = InternalUser.find(params[:id])
+    @user = InternalUser.find_by(id: params[:id])
     authorize!
   end
   private :set_user

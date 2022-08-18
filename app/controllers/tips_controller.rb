@@ -44,7 +44,7 @@ class TipsController < ApplicationController
   end
 
   def set_tip
-    @tip = Tip.find(params[:id])
+    @tip = Tip.find_by(id: params[:id])
     authorize!
   end
   private :set_tip

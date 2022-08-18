@@ -373,7 +373,7 @@ class SubmissionsController < ApplicationController
   end
 
   def set_submission
-    @submission = Submission.find(params[:id])
+    @submission = Submission.find_by(id: params[:id])
     authorize!
   end
 

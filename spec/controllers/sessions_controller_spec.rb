@@ -201,13 +201,14 @@ describe SessionsController do
   end
 
   describe 'GET #destroy_through_lti' do
-    let(:perform_request) { proc { get :destroy_through_lti, params: {consumer_id: consumer.id, submission_id: submission.id} } }
+    let(:perform_request) { proc { get :destroy_through_lti, params: {submission_id: submission.id} } }
     let(:submission) { create(:submission, exercise: create(:dummy)) }
 
     before do
       # Todo replace session with lti_parameter
       # Todo create LtiParameter Object
       # session[:lti_parameters] = {}
+      allow(controller).to receive(:current_user).and_return(submission.user)
       perform_request.call
     end
 

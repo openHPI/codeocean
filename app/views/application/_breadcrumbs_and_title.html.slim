@@ -1,4 +1,5 @@
-- if model = Kernel.const_get(controller_path.classify) rescue nil
+- model = controller_path.classify.constantize rescue nil
+- if model
   - object = model.find_by(id: params[:id])
   - if model.try(:nested_resource?)
     - root_element = model.model_name.human(count: 2)

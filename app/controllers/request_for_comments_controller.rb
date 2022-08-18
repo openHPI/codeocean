@@ -58,7 +58,7 @@ class RequestForCommentsController < ApplicationController
 
   # GET /exercises/:id/request_for_comments
   def rfcs_for_exercise
-    exercise = Exercise.find(params[:exercise_id])
+    exercise = Exercise.find_by(id: params[:exercise_id])
     @search = RequestForComment
       .with_last_activity
       .where(exercise_id: exercise.id)
@@ -141,7 +141,7 @@ class RequestForCommentsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_request_for_comment
-    @request_for_comment = RequestForComment.find(params[:id])
+    @request_for_comment = RequestForComment.find_by(id: params[:id])
   end
 
   def request_for_comment_params

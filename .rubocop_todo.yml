@@ -19,7 +19,7 @@ Metrics/ClassLength:
   Max: 600
 
 Metrics/ModuleLength:
-  Max: 220
+  Max: 225
 
 # It's a very complicated application...
 #

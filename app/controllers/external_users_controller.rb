@@ -15,7 +15,7 @@ class ExternalUsersController < ApplicationController
   end
 
   def show
-    @user = ExternalUser.find(params[:id])
+    @user = ExternalUser.find_by(id: params[:id])
     authorize!
   end
 
@@ -58,7 +58,7 @@ class ExternalUsersController < ApplicationController
   end
 
   def statistics
-    @user = ExternalUser.find(params[:id])
+    @user = ExternalUser.find_by(id: params[:id])
     authorize!
 
     statistics = {}
@@ -73,7 +73,7 @@ class ExternalUsersController < ApplicationController
   end
 
   def tag_statistics
-    @user = ExternalUser.find(params[:id])
+    @user = ExternalUser.find_by(id: params[:id])
     authorize!
 
     statistics = []

@@ -2,7 +2,7 @@
 
 module StatisticsHelper
   WORKING_TIME_DELTA_IN_SECONDS = 5.minutes
-  WORKING_TIME_DELTA_IN_SQL_INTERVAL = "'0:05:00'" # yes, a string with quotes
+  WORKING_TIME_DELTA_IN_SQL_INTERVAL = ActiveRecord::Base.sanitize_sql("'0:05:00'") # yes, a string with quotes
 
   def statistics_data
     [
@@ -174,6 +174,8 @@ module StatisticsHelper
   end
 
   def ranged_rfc_data(interval = 'year', from = DateTime.new(0), to = DateTime.now)
+    interval = ActiveRecord::Base.sanitize_sql(interval)
+
     [
       {
         key: 'rfcs',
@@ -209,6 +211,8 @@ module StatisticsHelper
   end
 
   def ranged_user_data(interval = 'year', from = DateTime.new(0), to = DateTime.now)
+    interval = ActiveRecord::Base.sanitize_sql(interval)
+
     [
       {
         key: 'active',

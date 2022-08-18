@@ -25,6 +25,7 @@ class ExercisesController < ApplicationController
   def authorize!
     authorize(@exercise || @exercises)
   end
+
   private :authorize!
 
   def max_intervention_count_per_day
@@ -39,7 +40,7 @@ class ExercisesController < ApplicationController
     @exercises = Exercise.all
     authorize!
     @exercises = params[:exercises].values.map do |exercise_params|
-      exercise = Exercise.find(exercise_params.delete(:id))
+      exercise = Exercise.find_by(id: exercise_params.delete(:id))
       exercise.update(exercise_params)
       exercise
     end
@@ -50,7 +51,7 @@ class ExercisesController < ApplicationController
     exercise = @exercise.duplicate(public: false, token: nil, user: current_user)
     exercise.send(:generate_token)
     if exercise.save
-      redirect_to(exercise, notice: t('shared.object_cloned', model: Exercise.model_name.human))
+      redirect_to(exercise_path(exercise), notice: t('shared.object_cloned', model: Exercise.model_name.human))
     else
       flash[:danger] = t('shared.message_failure')
       redirect_to(@exercise)
@@ -66,6 +67,7 @@ class ExercisesController < ApplicationController
     end
     subpaths.flatten.uniq
   end
+
   private :collect_paths
 
   def create
@@ -192,12 +194,14 @@ class ExercisesController < ApplicationController
     api_key = authorization_header&.split(' ')&.second
     user_by_codeharbor_token(api_key)
   end
+
   private :user_from_api_key
 
   def user_by_codeharbor_token(api_key)
     link = CodeharborLink.find_by(api_key: api_key)
     link&.user
   end
+
   private :user_by_codeharbor_token
 
   def exercise_params
@@ -225,6 +229,7 @@ class ExercisesController < ApplicationController
                            )
                          end
   end
+
   private :exercise_params
 
   def handle_file_uploads
@@ -241,6 +246,7 @@ class ExercisesController < ApplicationController
       end
     end
   end
+
   private :handle_file_uploads
 
   def handle_exercise_tips
@@ -258,6 +264,7 @@ class ExercisesController < ApplicationController
       redirect_to(edit_exercise_path(@exercise))
     end
   end
+
   private :handle_exercise_tips
 
   def update_exercise_tips(exercise_tips, parent_exercise_tip_id, rank)
@@ -283,6 +290,7 @@ class ExercisesController < ApplicationController
     end
     result
   end
+
   private :update_exercise_tips
 
   def implement
@@ -348,6 +356,7 @@ class ExercisesController < ApplicationController
       @course_token = '702cbd2a-c84c-4b37-923a-692d7d1532d0'
     end
   end
+
   private :set_course_token
 
   def set_available_tips
@@ -374,13 +383,14 @@ class ExercisesController < ApplicationController
     # Return an array with top-level tips
     @tips = nested_tips.values.select {|tip| tip.parent_exercise_tip_id.nil? }
   end
+
   private :set_available_tips
 
   def working_times
     working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user)
     working_time_75_percentile = @exercise.get_quantiles([0.75]).first
     render(json: {working_time_75_percentile: working_time_75_percentile,
-working_time_accumulated: working_time_accumulated})
+                   working_time_accumulated: working_time_accumulated})
   end
 
   def intervention
@@ -401,8 +411,9 @@ working_time_accumulated: working_time_accumulated})
     search_text = params[:search_text]
     search = Search.new(user: current_user, exercise: @exercise, search: search_text)
 
-    begin search.save
-          render(json: {success: 'true'})
+    begin
+      search.save
+      render(json: {success: 'true'})
     rescue StandardError
       render(json: {success: 'false', error: "could not save search: #{$ERROR_INFO}"})
     end
@@ -424,25 +435,29 @@ working_time_accumulated: working_time_accumulated})
   def set_execution_environments
     @execution_environments = ExecutionEnvironment.all.order(:name)
   end
+
   private :set_execution_environments
 
   def set_exercise_and_authorize
-    @exercise = Exercise.find(params[:id])
+    @exercise = Exercise.find_by(id: params[:id])
     authorize!
   end
+
   private :set_exercise_and_authorize
 
   def set_external_user_and_authorize
     if params[:external_user_id]
-      @external_user = ExternalUser.find(params[:external_user_id])
+      @external_user = ExternalUser.find_by(id: params[:external_user_id])
       authorize!
     end
   end
+
   private :set_external_user_and_authorize
 
   def set_file_types
     @file_types = FileType.all.order(:name)
   end
+
   private :set_file_types
 
   def collect_set_and_unset_exercise_tags
@@ -452,9 +467,10 @@ working_time_accumulated: working_time_accumulated})
     checked_tags = checked_exercise_tags.collect(&:tag).to_set
     unchecked_tags = Tag.all.to_set.subtract checked_tags
     @exercise_tags = checked_exercise_tags + unchecked_tags.collect do |tag|
-                                               ExerciseTag.new(exercise: @exercise, tag: tag)
-                                             end
+      ExerciseTag.new(exercise: @exercise, tag: tag)
+    end
   end
+
   private :collect_set_and_unset_exercise_tags
 
   def show
@@ -468,20 +484,24 @@ working_time_accumulated: working_time_accumulated})
   def statistics
     # Show general statistic page for specific exercise
     user_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
-    additional_filter = if policy(@exercise).detailed_statistics?
-                          ''
-                        elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
-                          "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"
-                        else
-                          # e.g. internal user without any study groups, show no submissions
-                          'AND FALSE'
-                        end
-    query = "SELECT user_id, user_type, MAX(score) AS maximum_score, COUNT(id) AS runs
-            FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter}
-            GROUP BY user_id, user_type;"
-    ApplicationRecord.connection.execute(query).each do |tuple|
+
+    query = Submission.select('user_id, user_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
+      .where(exercise_id: @exercise.id)
+      .group('user_id, user_type')
+
+    query = if policy(@exercise).detailed_statistics?
+              query
+            elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
+              query.where(study_groups: current_user.study_groups.pluck(:id), cause: 'submit')
+            else
+              # e.g. internal user without any study groups, show no submissions
+              query.where('false')
+            end
+
+    query.each do |tuple|
       user_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
     end
+
     render locals: {
       user_statistics: user_statistics,
     }
@@ -554,6 +574,7 @@ working_time_accumulated: working_time_accumulated})
       end
     end
   end
+
   private :transmit_lti_score
 
   def update
