@@ -135,7 +135,7 @@ describe InternalUsersController do
     end
 
     context 'with an invalid internal user' do
-      before { post :create, params: {internal_user: {}} }
+      before { post :create, params: {internal_user: {invalid_attribute: 'a string'}} }
 
       expect_assigns(user: InternalUser)
       expect_http_status(:ok)
