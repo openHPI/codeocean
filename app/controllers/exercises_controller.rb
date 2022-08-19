@@ -40,7 +40,7 @@ class ExercisesController < ApplicationController
     @exercises = Exercise.all
     authorize!
     @exercises = params[:exercises].values.map do |exercise_params|
-      exercise = Exercise.find_by(id: exercise_params.delete(:id))
+      exercise = Exercise.find(exercise_params.delete(:id))
       exercise.update(exercise_params)
       exercise
     end
@@ -439,7 +439,7 @@ class ExercisesController < ApplicationController
   private :set_execution_environments
 
   def set_exercise_and_authorize
-    @exercise = Exercise.find_by(id: params[:id])
+    @exercise = Exercise.find(params[:id])
     authorize!
   end
 
@@ -447,7 +447,7 @@ class ExercisesController < ApplicationController
 
   def set_external_user_and_authorize
     if params[:external_user_id]
-      @external_user = ExternalUser.find_by(id: params[:external_user_id])
+      @external_user = ExternalUser.find(params[:external_user_id])
       authorize!
     end
   end

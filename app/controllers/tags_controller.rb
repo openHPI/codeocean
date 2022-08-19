@@ -38,7 +38,7 @@ class TagsController < ApplicationController
   end
 
   def set_tag
-    @tag = Tag.find_by(id: params[:id])
+    @tag = Tag.find(params[:id])
     authorize!
   end
   private :set_tag

@@ -86,7 +86,7 @@ class ErrorTemplateAttributesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_error_template_attribute
-    @error_template_attribute = ErrorTemplateAttribute.find_by(id: params[:id])
+    @error_template_attribute = ErrorTemplateAttribute.find(params[:id])
   end
 
   def error_template_attribute_params

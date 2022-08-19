@@ -51,7 +51,7 @@ class FileTypesController < ApplicationController
   private :set_editor_modes
 
   def set_file_type
-    @file_type = FileType.find_by(id: params[:id])
+    @file_type = FileType.find(params[:id])
     authorize!
   end
   private :set_file_type

@@ -41,7 +41,7 @@ class ExerciseCollectionsController < ApplicationController
   private
 
   def set_exercise_collection
-    @exercise_collection = ExerciseCollection.find_by(id: params[:id])
+    @exercise_collection = ExerciseCollection.find(params[:id])
     authorize!
   end
 

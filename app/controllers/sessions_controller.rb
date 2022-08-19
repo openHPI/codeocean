@@ -42,7 +42,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy_through_lti
-    @submission = Submission.find_by(id: params[:submission_id])
+    @submission = Submission.find(params[:submission_id])
     authorize(@submission, :show?)
     lti_parameter = LtiParameter.where(external_users_id: @submission.user_id, exercises_id: @submission.exercise_id).last
     @url = consumer_return_url(build_tool_provider(consumer: @submission.user.consumer, parameters: lti_parameter&.lti_parameters))

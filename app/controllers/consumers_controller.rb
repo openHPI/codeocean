@@ -38,7 +38,7 @@ class ConsumersController < ApplicationController
   end
 
   def set_consumer
-    @consumer = Consumer.find_by(id: params[:id])
+    @consumer = Consumer.find(params[:id])
     authorize!
   end
   private :set_consumer

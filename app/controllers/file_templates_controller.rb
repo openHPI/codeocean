@@ -87,7 +87,7 @@ class FileTemplatesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_file_template
-    @file_template = FileTemplate.find_by(id: params[:id])
+    @file_template = FileTemplate.find(params[:id])
   end
 
   def file_template_params

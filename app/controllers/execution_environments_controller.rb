@@ -141,7 +141,7 @@ class ExecutionEnvironmentsController < ApplicationController
   private :set_docker_images
 
   def set_execution_environment
-    @execution_environment = ExecutionEnvironment.find_by(id: params[:id])
+    @execution_environment = ExecutionEnvironment.find(params[:id])
     authorize!
   end
   private :set_execution_environment
