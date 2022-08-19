@@ -44,7 +44,7 @@ class ExecutionEnvironmentsController < ApplicationController
       FROM
         (SELECT user_id,
                 exercise_id,
-                CASE WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0' ELSE working_time END AS working_time_new
+                CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT user_id,
                     exercise_id,

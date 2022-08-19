@@ -63,7 +63,7 @@ namespace :detect_exercise_anomalies do
                                from exercises e
                                  join submissions s on s.exercise_id = e.id
                                group by e.id
-                               having count(s.user_id) > #{ExerciseCollection.sanitize_sql(number_of_solutions)}
+                               having #{ExerciseCollection.sanitize_sql(['count(s.user_id) > ?', number_of_solutions])}
                               ) as exercises_with_submissions on exercises_with_submissions.id = eci.exercise_id")
       .group('exercise_collections.id')
       .having('count(exercises_with_submissions.id) > ?', number_of_exercises)

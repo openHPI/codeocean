@@ -2,7 +2,9 @@
 
 module StatisticsHelper
   WORKING_TIME_DELTA_IN_SECONDS = 5.minutes
-  WORKING_TIME_DELTA_IN_SQL_INTERVAL = ActiveRecord::Base.sanitize_sql("'0:05:00'") # yes, a string with quotes
+  def self.working_time_larger_delta
+    @working_time_larger_delta ||= ActiveRecord::Base.sanitize_sql(['working_time >= ?', '0:05:00'])
+  end
 
   def statistics_data
     [
@@ -174,14 +176,12 @@ module StatisticsHelper
   end
 
   def ranged_rfc_data(interval = 'year', from = DateTime.new(0), to = DateTime.now)
-    interval = ActiveRecord::Base.sanitize_sql(interval)
-
     [
       {
         key: 'rfcs',
           name: t('activerecord.models.request_for_comment.other'),
           data: RequestForComment.in_range(from, to)
-            .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+            .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
             .group('key').order('key'),
       },
       {
@@ -189,7 +189,7 @@ module StatisticsHelper
           name: t('statistics.entries.request_for_comments.percent_solved'),
           data: RequestForComment.in_range(from, to)
             .where(solved: true)
-            .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+            .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
             .group('key').order('key'),
       },
       {
@@ -197,36 +197,34 @@ module StatisticsHelper
           name: t('statistics.entries.request_for_comments.percent_soft_solved'),
           data: RequestForComment.in_range(from, to).unsolved
             .where(full_score_reached: true)
-            .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+            .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
             .group('key').order('key'),
       },
       {
         key: 'rfcs_unsolved',
           name: t('statistics.entries.request_for_comments.percent_unsolved'),
           data: RequestForComment.in_range(from, to).unsolved
-            .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+            .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
             .group('key').order('key'),
       },
     ]
   end
 
   def ranged_user_data(interval = 'year', from = DateTime.new(0), to = DateTime.now)
-    interval = ActiveRecord::Base.sanitize_sql(interval)
-
     [
       {
         key: 'active',
           name: t('statistics.entries.users.active'),
           data: ExternalUser.joins(:submissions)
             .where(submissions: {created_at: from..to})
-            .select("date_trunc('#{interval}', submissions.created_at) AS \"key\", count(distinct external_users.id) AS \"value\"")
+            .select(ExternalUser.sanitize_sql(['date_trunc(?, submissions.created_at) AS "key", count(distinct external_users.id) AS "value"', interval]))
             .group('key').order('key'),
       },
       {
         key: 'submissions',
           name: t('statistics.entries.exercises.submissions'),
           data: Submission.where(created_at: from..to)
-            .select("date_trunc('#{interval}', created_at) AS \"key\", count(id) AS \"value\"")
+            .select(Submission.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
             .group('key').order('key'),
           axis: 'right',
       },
