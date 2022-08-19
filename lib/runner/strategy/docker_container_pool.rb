@@ -93,14 +93,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
       end
 
       local_file_path = local_path(file.filepath)
-      if file.file_type.binary?
-        FileUtils.cp(file.native_file.path, local_file_path)
-      else
-        begin
-          File.write(local_file_path, file.content)
-        rescue IOError => e
-          raise Runner::Error::WorkspaceError.new("Could not create file #{file.filepath}: #{e.inspect}")
-        end
+      begin
+        File.write(local_file_path, file.read)
+      rescue IOError => e
+        raise Runner::Error::WorkspaceError.new("Could not create file #{file.filepath}: #{e.inspect}")
       end
     end
     FileUtils.chmod_R('+rwtX', local_workspace_path)

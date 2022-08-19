@@ -112,11 +112,11 @@ module ProformaService
 
     def add_content_to_task_file(file, task_file)
       if file.native_file.present?
-        file = ::File.new(file.native_file.file.path, 'r')
-        task_file.content = file.read
+        file_content = file.read
+        task_file.content = file_content
         task_file.used_by_grader = false
         task_file.binary = true
-        task_file.mimetype = MimeMagic.by_magic(file).type
+        task_file.mimetype = MimeMagic.by_magic(file_content).type
       else
         task_file.content = file.content
         task_file.used_by_grader = true

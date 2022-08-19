@@ -160,7 +160,7 @@ describe Runner::Strategy::DockerContainerPool do
       let(:files) { [build(:file, :image)] }
 
       it 'copies the file inside the workspace' do
-        expect(FileUtils).to receive(:cp).with(files.first.native_file.path, local_path.join(files.first.filepath))
+        expect(File).to receive(:write).with(local_path.join(files.first.filepath), files.first.read)
         container_pool.copy_files(files)
       end
     end

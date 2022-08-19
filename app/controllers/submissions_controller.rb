@@ -28,7 +28,7 @@ class SubmissionsController < ApplicationController
     stringio = Zip::OutputStream.write_buffer do |zio|
       @files.each do |file|
         zio.put_next_entry(file.filepath.delete_prefix('/'))
-        zio.write(file.content.presence || file.native_file.read)
+        zio.write(file.read)
       end
 
       # zip exercise description
@@ -56,11 +56,7 @@ class SubmissionsController < ApplicationController
   def download_file
     raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
 
-    if @file.native_file?
-      send_file(@file.native_file.path)
-    else
-      send_data(@file.content, filename: @file.name_with_extension)
-    end
+    send_data(@file.read, filename: @file.name_with_extension)
   end
 
   def index
@@ -71,7 +67,7 @@ class SubmissionsController < ApplicationController
 
   def render_file
     if @file.native_file?
-      send_file(@file.native_file.path, disposition: 'inline')
+      send_data(@file.read, filename: @file.name_with_extension, disposition: 'inline')
     else
       render(plain: @file.content)
     end

@@ -116,7 +116,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     copy = files.map do |file|
       {
         path: file.filepath,
-        content: Base64.strict_encode64(file.content.presence || file.native_file.read || ''),
+        content: Base64.strict_encode64(file.read || ''),
       }
     end
 

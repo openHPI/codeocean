@@ -56,6 +56,17 @@ module CodeOcean
       define_method("#{role}?") { self.role == role }
     end
 
+    def read
+      if native_file?
+        valid = Pathname(native_file.current_path).fnmatch? ::File.join(native_file.root, '**')
+        return nil unless valid
+
+        native_file.read
+      else
+        content
+      end
+    end
+
     def ancestor_id
       file_id || id
     end
@@ -83,12 +94,7 @@ module CodeOcean
     end
 
     def hash_content
-      self.hashed_content = Digest::MD5.new.hexdigest(if file_type.try(:binary?)
-                                                        ::File.new(native_file.file.path,
-                                                          'r').read
-                                                      else
-                                                        content
-                                                      end)
+      self.hashed_content = Digest::MD5.new.hexdigest(read || '')
     end
     private :hash_content
 

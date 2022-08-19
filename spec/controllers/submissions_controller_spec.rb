@@ -131,7 +131,7 @@ describe SubmissionsController do
         expect_http_status(:ok)
 
         it 'renders the file content' do
-          expect(response.body).to eq(file.native_file.read)
+          expect(response.body).to eq(file.read)
         end
       end
 
