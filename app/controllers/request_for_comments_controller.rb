@@ -154,7 +154,7 @@ class RequestForCommentsController < ApplicationController
   # The index page requires the grouping of the study groups
   # The study groups are grouped by the current study group and other study groups of the user
   def set_study_group_grouping
-    current_study_group = StudyGroup.find_by(session[:study_group_id])
+    current_study_group = StudyGroup.find_by(id: session[:study_group_id])
     my_study_groups = current_user.study_groups.reject {|group| group == current_study_group }
     @study_groups_grouping = [[t('request_for_comments.index.study_groups.current'), Array(current_study_group)],
                               [t('request_for_comments.index.study_groups.my'), my_study_groups]]
