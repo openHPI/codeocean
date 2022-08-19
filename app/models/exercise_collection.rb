@@ -31,4 +31,8 @@ working_time: time_to_f(item.exercise.average_working_time)}
   def to_s
     "#{I18n.t('activerecord.models.exercise_collection.one')}: #{name} (#{id})"
   end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[id]
+  end
 end

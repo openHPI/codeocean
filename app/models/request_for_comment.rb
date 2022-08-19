@@ -77,6 +77,14 @@ class RequestForComment < ApplicationRecord
       # ugly, but necessary
     end
 
+    def ransackable_associations(_auth_object = nil)
+      %w[exercise submission]
+    end
+
+    def ransackable_attributes(_auth_object = nil)
+      %w[solved]
+    end
+
     private
 
     def row_number_user_sql

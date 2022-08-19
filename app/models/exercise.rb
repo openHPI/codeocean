@@ -597,4 +597,12 @@ cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
           WHERE exercise_id = #{id}
         ) AS t ON t.fv = submissions.id").distinct
   end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[title]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[execution_environment]
+  end
 end

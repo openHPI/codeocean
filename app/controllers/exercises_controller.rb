@@ -461,8 +461,7 @@ class ExercisesController < ApplicationController
   private :set_file_types
 
   def collect_set_and_unset_exercise_tags
-    @search = policy_scope(Tag).ransack(params[:q])
-    @tags = @search.result.order(:name)
+    @tags = policy_scope(Tag)
     checked_exercise_tags = @exercise.exercise_tags
     checked_tags = checked_exercise_tags.collect(&:tag).to_set
     unchecked_tags = Tag.all.to_set.subtract checked_tags

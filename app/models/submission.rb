@@ -191,6 +191,10 @@ class Submission < ApplicationRecord
     result.merge(output)
   end
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[study_group_id]
+  end
+
   private
 
   def prepared_runner

@@ -61,6 +61,10 @@ class ExecutionEnvironment < ApplicationRecord
     exposed_ports.join(', ')
   end
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[id]
+  end
+
   private
 
   def set_default_values

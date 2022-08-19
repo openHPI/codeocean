@@ -69,7 +69,7 @@
             thead
               tr
                 th = t('activerecord.attributes.exercise.selection')
-                th = sort_link(@search, :title, t('activerecord.attributes.tag.name'))
+                th = t('activerecord.attributes.tag.name')
                 th = t('activerecord.attributes.tag.difficulty')
               = collection_check_boxes :exercise, :tag_ids, @exercise_tags, :tag_id, :id do |b|
                 tr

@@ -246,4 +246,8 @@ class ProxyExercise < ApplicationRecord
   def select_easiest_exercise(exercises)
     exercises.order(:expected_difficulty).first
   end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[title]
+  end
 end
