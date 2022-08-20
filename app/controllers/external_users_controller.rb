@@ -10,7 +10,7 @@ class ExternalUsersController < ApplicationController
 
   def index
     @search = ExternalUser.ransack(params[:q])
-    @users = @search.result.in_study_group_of(current_user).includes(:consumer).paginate(page: params[:page])
+    @users = @search.result.in_study_group_of(current_user).includes(:consumer).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
@@ -32,7 +32,7 @@ class ExternalUsersController < ApplicationController
               score,
               id,
               CASE
-                  WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0'
+                  WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0'
                   ELSE working_time
               END AS working_time_new
        FROM

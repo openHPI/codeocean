@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-20.04
     services:
       db:
-        image: postgres:13
+        image: postgres:14
         env:
           POSTGRES_PASSWORD: postgres
         ports:
@@ -35,22 +35,27 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.1
           bundler-cache: true
 
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 18
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - name: Manage yarn cache
-        uses: actions/cache@v2
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Manage yarn, webpack and assets cache
+        uses: actions/cache@v3
         # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
         id: yarn-cache
         with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            public/assets
+            public/packs-test
+            tmp/cache
+            tmp/webpacker
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -70,11 +75,16 @@ jobs:
         env:
           RAILS_ENV: test
         run: bundler exec rake db:schema:load
+      - name: Precompile assets
+        env:
+          RAILS_ENV: test
+        run: bundler exec rake assets:precompile
       - name: Run tests
         env:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: true
-        run: bundle exec rspec --color --format progress --require spec_helper --require rails_helper
+          NODE_OPTIONS: --openssl-legacy-provider
+        run: bundle exec rspec --color --format RSpec::Github::Formatter --format progress --require spec_helper --require rails_helper
 
       - name: Send coverage to CodeClimate
         uses: paambaati/codeclimate-action@v3.0.0
@@ -93,8 +103,16 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.1
           bundler-cache: true
 
       - name: Run rubocop
-        run: bundle exec rubocop --parallel
+        uses: reviewdog/action-rubocop@v2
+        with:
+          filter_mode: nofilter
+          rubocop_version: gemfile
+          rubocop_extensions: rubocop-rails:gemfile rubocop-rspec:gemfile rubocop-performance:gemfile
+          rubocop_flags: --parallel
+          reporter: github-check
+          skip_install: true
+          use_bundler: true

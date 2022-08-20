@@ -25,11 +25,11 @@ class Runner::Strategy::Null < Runner::Strategy
 
   def copy_files(_files); end
 
-  def attach_to_execution(command, event_loop)
+  def attach_to_execution(command, event_loop, starting_time)
     socket = Connection.new(nil, self, event_loop)
     # We don't want to return an error if the execution environment is changed
     socket.status = :terminated_by_codeocean if command == ExecutionEnvironment::VALIDATION_COMMAND
-    yield(socket)
+    yield(socket, starting_time)
     socket
   end
 

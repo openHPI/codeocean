@@ -18,7 +18,7 @@ describe ExecutionEnvironmentsController do
       before do
         allow(Rails.env).to receive(:test?).and_return(false, true)
         allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
-        runner = instance_double 'runner'
+        runner = instance_double Runner
         allow(Runner).to receive(:for).and_return(runner)
         allow(runner).to receive(:execute_command).and_return({})
         perform_request.call
@@ -46,7 +46,7 @@ describe ExecutionEnvironmentsController do
       end
 
       expect_assigns(execution_environment: ExecutionEnvironment)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:new)
 
       it 'does not register the execution environment with the runner management' do
@@ -82,7 +82,7 @@ describe ExecutionEnvironmentsController do
 
     expect_assigns(docker_images: Array)
     expect_assigns(execution_environment: :execution_environment)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:edit)
   end
 
@@ -90,7 +90,7 @@ describe ExecutionEnvironmentsController do
     let(:command) { 'which ruby' }
 
     before do
-      runner = instance_double 'runner'
+      runner = instance_double Runner
       allow(Runner).to receive(:for).with(user, execution_environment).and_return runner
       allow(runner).to receive(:execute_command).and_return({})
       post :execute_command, params: {command: command, id: execution_environment.id}
@@ -98,7 +98,7 @@ describe ExecutionEnvironmentsController do
 
     expect_assigns(execution_environment: :execution_environment)
     expect_json
-    expect_status(200)
+    expect_http_status(:ok)
   end
 
   describe 'GET #index' do
@@ -108,7 +108,7 @@ describe ExecutionEnvironmentsController do
     end
 
     expect_assigns(execution_environments: ExecutionEnvironment.all)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -119,7 +119,7 @@ describe ExecutionEnvironmentsController do
 
     expect_assigns(docker_images: Array)
     expect_assigns(execution_environment: ExecutionEnvironment)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:new)
   end
 
@@ -158,7 +158,7 @@ describe ExecutionEnvironmentsController do
     before { get :shell, params: {id: execution_environment.id} }
 
     expect_assigns(execution_environment: :execution_environment)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:shell)
   end
 
@@ -166,7 +166,7 @@ describe ExecutionEnvironmentsController do
     before { get :statistics, params: {id: execution_environment.id} }
 
     expect_assigns(execution_environment: :execution_environment)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:statistics)
   end
 
@@ -174,7 +174,7 @@ describe ExecutionEnvironmentsController do
     before { get :show, params: {id: execution_environment.id} }
 
     expect_assigns(execution_environment: :execution_environment)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:show)
   end
 
@@ -183,7 +183,7 @@ describe ExecutionEnvironmentsController do
       before do
         allow(Rails.env).to receive(:test?).and_return(false, true)
         allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
-        runner = instance_double 'runner'
+        runner = instance_double Runner
         allow(Runner).to receive(:for).and_return(runner)
         allow(runner).to receive(:execute_command).and_return({})
         put :update, params: {execution_environment: attributes_for(:ruby, pool_size: 1), id: execution_environment.id}
@@ -206,7 +206,7 @@ describe ExecutionEnvironmentsController do
       end
 
       expect_assigns(execution_environment: ExecutionEnvironment)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:edit)
 
       it 'does not update the execution environment at the runner management' do

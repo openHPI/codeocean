@@ -1,7 +1,7 @@
 h1 = @execution_environment
 
-#shell data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @execution_environment.permitted_execution_time) data-url=execute_command_execution_environment_path(@execution_environment)
-  .form-group
+#shell data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @execution_environment.permitted_execution_time) data-message-out-of-memory=t('exercises.editor.out_of_memory',  memory_limit: @execution_environment.memory_limit) data-url=execute_command_execution_environment_path(@execution_environment)
+  .mb-3
     label for='command' = t('.command')
     input#command.form-control type='text'
   pre#output data-message-no-output=t('exercises.implement.no_output', timestamp: l(Time.now, format: :short))

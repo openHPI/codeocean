@@ -10,13 +10,13 @@ describe ErrorTemplatesController do
 
   it 'gets index' do
     get :index
-    expect(response.status).to eq(200)
+    expect(response).to have_http_status(:ok)
     expect(assigns(:error_templates)).not_to be_nil
   end
 
   it 'gets new' do
     get :new
-    expect(response.status).to eq(200)
+    expect(response).to have_http_status(:ok)
   end
 
   it 'creates error_template' do
@@ -26,12 +26,12 @@ describe ErrorTemplatesController do
 
   it 'shows error_template' do
     get :show, params: {id: error_template}
-    expect(response.status).to eq(200)
+    expect(response).to have_http_status(:ok)
   end
 
   it 'gets edit' do
     get :edit, params: {id: error_template}
-    expect(response.status).to eq(200)
+    expect(response).to have_http_status(:ok)
   end
 
   it 'updates error_template' do

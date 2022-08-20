@@ -12,7 +12,7 @@ $(document).on('turbolinks:load', function() {
     return _.map($('tbody tr[data-id]'), function(element) {
       return {
         content: $('td.name', element).text(),
-        id: $(element).data('id'),
+        id: `execution_environment_${$(element).data('id')}`,
         visible: false
       };
     });
@@ -67,7 +67,7 @@ $(document).on('turbolinks:load', function() {
   var setGroupVisibility = function(response) {
     _.each(response.docker, function(data) {
       groups.update({
-        id: data.id,
+        id: `execution_environment_${data.id}`,
         visible: data.prewarmingPoolSize > 0
       });
     });
@@ -76,7 +76,7 @@ $(document).on('turbolinks:load', function() {
   var updateChartData = function(response) {
     _.each(response.docker, function(data) {
       dataset.add({
-        group: data.id,
+        group: `execution_environment_${data.id}`,
         x: vis.moment(),
         y: data.usedRunners
       });

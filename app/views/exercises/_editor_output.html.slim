@@ -1,90 +1,86 @@
-div id='output_sidebar_collapsed'
-  = render('editor_button', classes: 'btn-block btn-outline-dark btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa fa-plus-square', id: 'toggle-sidebar-output-collapsed', label: '')
-div.h-100 id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output_yet')
-  .row
-    = render('editor_button', classes: 'btn-block btn-outline-dark btn', icon: 'fa fa-minus-square', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
+div.d-grid id='output_sidebar_collapsed'
+  = render('editor_button', classes: 'btn-outline-dark btn', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa-solid fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
+div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output_yet')
+  = render('editor_button', classes: 'btn-outline-dark btn overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
 
-  div.position-absolute.d-flex.mb-1.w-100 style="overflow: auto; left: 0; bottom: 0; height: calc(100% - 3rem);"
-    div.w-100
-      div.enforce-big-top-margin.d-none id='score_div'
-        #results
-          h2 = t('exercises.implement.results')
-          p.test-count == t('exercises.implement.test_count', count: 0)
-          - unless @embed_options[:hide_test_results]
-            ul.list-unstyled
-            ul#test-dummies.d-none.list-unstyled
-              li.card.mt-2
-                .card-header.py-2
-                  h5.card-title.m-0 == t('exercises.implement.test_file', filename: '', number: 0)
-                .card-body.bg-white.text-dark
-                  = row(label: 'exercises.implement.passed_tests') do
-                    span.number
-                      | 0
-                    =<> t('shared.out_of')
-                    span.number
-                      | 0
-                  = row(label: 'activerecord.attributes.submission.score') do
-                    span.number
-                      | 0
-                    =<> t('shared.out_of')
-                    span.number
-                      | 0
-                  = row(label: 'exercises.implement.feedback')
-                  = row(label: 'exercises.implement.error_messages')
-                  /= row(label: 'exercises.implement.output', value: link_to(t('shared.show'), '#'))
-            ul#linter-dummies.d-none.list-unstyled
-              li.card.mt-2
-                .card-header.py-2
-                  h5.card-title.m-0 == t('exercises.implement.linter_file', filename: '', number: 0)
-                .card-body.bg-white.text-dark
-                  = row(label: 'exercises.implement.code_rating') do
-                    span.number
-                      | 0
-                    =<> t('shared.out_of')
-                    span.number
-                      | 0
-                  = row(label: 'activerecord.attributes.submission.score') do
-                    span.number
-                      | 0
-                    =<> t('shared.out_of')
-                    span.number
-                      | 0
-                  = row(label: 'exercises.implement.feedback')
-                  = row(label: 'exercises.implement.messages')
-        #score data-maximum-score=@exercise.maximum_score data-score=@exercise.final_submission(@current_user).try(:score)
-          h4
-            span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
-            span.score
-          .progress
-            .progress-bar role='progressbar'
+  #content-right-sidebar.overflow-scroll
+    div.enforce-bottom-margin.overflow-auto.d-none id='score_div'
+      #results
+        h2 = t('exercises.implement.results')
+        p.test-count == t('exercises.implement.test_count', count: 0)
+        - unless @embed_options[:hide_test_results]
+          ul.list-unstyled
+          ul#test-dummies.d-none.list-unstyled
+            li.card.mt-2
+              .card-header.py-2
+                h5.card-title.m-0 == t('exercises.implement.test_file', filename: '', number: 0)
+              .card-body.bg-white.text-dark
+                = row(label: 'exercises.implement.passed_tests') do
+                  span.number
+                    | 0
+                  =<> t('shared.out_of')
+                  span.number
+                    | 0
+                = row(label: 'activerecord.attributes.submission.score') do
+                  span.number
+                    | 0
+                  =<> t('shared.out_of')
+                  span.number
+                    | 0
+                = row(label: 'exercises.implement.feedback')
+                = row(label: 'exercises.implement.error_messages')
+                /= row(label: 'exercises.implement.output', value: link_to(t('shared.show'), '#'))
+          ul#linter-dummies.d-none.list-unstyled
+            li.card.mt-2
+              .card-header.py-2
+                h5.card-title.m-0 == t('exercises.implement.linter_file', filename: '', number: 0)
+              .card-body.bg-white.text-dark
+                = row(label: 'exercises.implement.code_rating') do
+                  span.number
+                    | 0
+                  =<> t('shared.out_of')
+                  span.number
+                    | 0
+                = row(label: 'activerecord.attributes.submission.score') do
+                  span.number
+                    | 0
+                  =<> t('shared.out_of')
+                  span.number
+                    | 0
+                = row(label: 'exercises.implement.feedback')
+                = row(label: 'exercises.implement.messages')
+      #score data-maximum-score=@exercise.maximum_score data-score=@exercise.final_submission(@current_user).try(:score)
+        h4
+          span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
+          span.score
+        .progress
+          .progress-bar role='progressbar'
 
-        br
-        - if lti_outcome_service?(@exercise.id, external_user_id)
-          p.text-center = render('editor_button', classes: 'btn-lg btn-success d-none', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa fa-send', id: 'submit', label: t('exercises.editor.submit'))
-          - if @exercise.submission_deadline.present? || @exercise.late_submission_deadline.present?
-            #deadline data-submission-deadline=@exercise.submission_deadline&.rfc2822 data-late-submission-deadline=@exercise.late_submission_deadline&.rfc2822
-              h4 = t('exercises.editor.deadline')
-              = t('exercises.editor.hints.disclaimer')
-        - else
-          p.text-center = render('editor_button', classes: 'btn-lg btn-secondary disabled', data: {:'data-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa fa-clock-o', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
-        hr
-      div.enforce-big-top-margin
-        #turtlediv
-          canvas#turtlecanvas.d-none width=400 height=400
-      div.enforce-big-top-margin
-        #prompt.input-group.d-none
-          div.input-group-prepend
-            span.input-group-text data-prompt=t('exercises.editor.input') = t('exercises.editor.input')
-          input#prompt-input.form-control type='text'
-          span.input-group-btn
-            button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
-        - unless @embed_options[:disable_hints]
-          #error-hints
-            .heading = t('exercises.implement.error_hints.heading')
-            ul.body
-        #output.mt-2
-          pre = t('exercises.implement.no_output_yet')
-        - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] && !@embed_options[:disable_hints] && !@embed_options[:hide_test_results]
-          #flowrHint.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
-            .card-header = t('exercises.implement.flowr.heading')
-            .card-body.text-dark.bg-white
+      br
+      - if lti_outcome_service?(@exercise.id, external_user_id)
+        p.text-center = render('editor_button', classes: 'btn-lg btn-success d-none', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa-solid fa-paper-plane', id: 'submit', label: t('exercises.editor.submit'))
+        - if @exercise.submission_deadline.present? || @exercise.late_submission_deadline.present?
+          #deadline data-submission-deadline=@exercise.submission_deadline&.rfc2822 data-late-submission-deadline=@exercise.late_submission_deadline&.rfc2822
+            h4 = t('exercises.editor.deadline')
+            = t('exercises.editor.hints.disclaimer')
+      - else
+        p.text-center = render('editor_button', classes: 'btn-lg btn-secondary disabled', data: {:'data-bs-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa-regular fa-clock', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
+      hr
+    #turtlediv.enforce-big-bottom-margin.overflow-auto.d-none
+      canvas#turtlecanvas width=400 height=400
+    div.enforce-big-bottom-margin.overflow-auto
+      #prompt.input-group.mb-2.d-none
+        span.input-group-text data-prompt=t('exercises.editor.input') = t('exercises.editor.input')
+        input#prompt-input.form-control type='text'
+        span.input-group-btn
+          button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
+      - unless @embed_options[:disable_hints]
+        #error-hints.mb-2.p-2
+          .heading = t('exercises.implement.error_hints.heading')
+          ul.body.mb-0
+      #output
+        pre.overflow-scroll = t('exercises.implement.no_output_yet')
+      - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] && !@embed_options[:disable_hints] && !@embed_options[:hide_test_results]
+        #flowrHint.mb-2.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+          .card-header = t('exercises.implement.flowr.heading')
+          .card-body.text-dark.bg-white

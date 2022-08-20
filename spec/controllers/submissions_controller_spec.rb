@@ -26,7 +26,7 @@ describe SubmissionsController do
       end
 
       expect_json
-      expect_status(201)
+      expect_http_status(:created)
     end
 
     context 'with an invalid submission' do
@@ -34,7 +34,7 @@ describe SubmissionsController do
 
       expect_assigns(submission: Submission)
       expect_json
-      expect_status(422)
+      expect_http_status(:unprocessable_entity)
     end
   end
 
@@ -42,7 +42,7 @@ describe SubmissionsController do
     context 'with an invalid filename' do
       before { get :download_file, params: {filename: SecureRandom.hex, id: submission.id} }
 
-      expect_status(404)
+      expect_http_status(:not_found)
     end
 
     context 'with a valid binary filename' do
@@ -56,7 +56,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('application/octet-stream')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'sets the correct filename' do
           expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
@@ -75,7 +75,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('video/mp4')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'sets the correct filename' do
           expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
@@ -88,7 +88,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('text/javascript')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'sets the correct filename' do
           expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
@@ -104,7 +104,7 @@ describe SubmissionsController do
     end
 
     expect_assigns(submissions: Submission.all)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -114,7 +114,7 @@ describe SubmissionsController do
     context 'with an invalid filename' do
       before { get :render_file, params: {filename: SecureRandom.hex, id: submission.id} }
 
-      expect_status(404)
+      expect_http_status(:not_found)
     end
 
     context 'with a valid filename' do
@@ -128,10 +128,10 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('video/mp4')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'renders the file content' do
-          expect(response.body).to eq(file.native_file.read)
+          expect(response.body).to eq(file.read)
         end
       end
 
@@ -141,7 +141,7 @@ describe SubmissionsController do
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
         expect_content_type('text/javascript')
-        expect_status(200)
+        expect_http_status(:ok)
 
         it 'renders the file content' do
           expect(response.body).to eq(file.content)
@@ -151,15 +151,20 @@ describe SubmissionsController do
   end
 
   describe 'GET #run' do
-    let(:filename) { submission.collect_files.detect(&:main_file?).name_with_extension }
-    let(:perform_request) { get :run, params: {filename: filename, id: submission.id} }
+    let(:file) { submission.collect_files.detect(&:main_file?) }
+    let(:perform_request) { get :run, format: :json, params: {filename: file.filepath, id: submission.id} }
 
     context 'when no errors occur during execution' do
       before do
+        allow_any_instance_of(described_class).to receive(:hijack)
+        allow_any_instance_of(Submission).to receive(:run).and_return({})
+        allow_any_instance_of(described_class).to receive(:save_testrun_output)
         perform_request
       end
 
-      pending('todo')
+      expect_assigns(submission: :submission)
+      expect_assigns(file: :file)
+      expect_http_status(204)
     end
   end
 
@@ -167,7 +172,7 @@ describe SubmissionsController do
     before { get :show, params: {id: submission.id} }
 
     expect_assigns(submission: :submission)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:show)
   end
 
@@ -179,7 +184,7 @@ describe SubmissionsController do
     before { get :show, params: {id: submission.id}, format: :json }
 
     expect_assigns(submission: :submission)
-    expect_status(200)
+    expect_http_status(:ok)
 
     %i[render run test].each do |action|
       describe "##{action}_url" do
@@ -206,21 +211,29 @@ describe SubmissionsController do
   end
 
   describe 'GET #score' do
-    let(:perform_request) { proc { get :score, params: {id: submission.id} } }
+    let(:perform_request) { proc { get :score, format: :json, params: {id: submission.id} } }
 
-    before { perform_request.call }
+    before do
+      allow_any_instance_of(described_class).to receive(:hijack)
+      perform_request.call
+    end
 
-    pending('todo: mock puma webserver or encapsulate tubesock call (Tubesock::HijackNotAvailable)')
+    expect_assigns(submission: :submission)
+    expect_http_status(204)
   end
 
   describe 'GET #test' do
-    let(:filename) { submission.collect_files.detect(&:teacher_defined_assessment?).name_with_extension }
+    let(:file) { submission.collect_files.detect(&:teacher_defined_assessment?) }
     let(:output) { {} }
 
     before do
-      get :test, params: {filename: filename, id: submission.id}
+      file.update(hidden: false)
+      allow_any_instance_of(described_class).to receive(:hijack)
+      get :test, params: {filename: "#{file.filepath}.json", id: submission.id}
     end
 
-    pending('todo')
+    expect_assigns(submission: :submission)
+    expect_assigns(file: :file)
+    expect_http_status(204)
   end
 end

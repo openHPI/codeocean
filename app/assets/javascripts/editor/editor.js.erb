@@ -17,7 +17,7 @@ var CodeOceanEditor = {
     //Request-For-Comments-Configuration
     REQUEST_FOR_COMMENTS_DELAY: 0,
     REQUEST_TOOLTIP_TIME: 5000,
-    REQUEST_TOOLTIP_DELAY: 10 * 60 * 1000,
+    REQUEST_TOOLTIP_DELAY: 15 * 60 * 1000,
 
     editors: [],
     editor_for_file: new Map(),
@@ -78,7 +78,7 @@ var CodeOceanEditor = {
         if ($('#output-' + index).isPresent()) {
             return $('#output-' + index);
         } else {
-            var element = $('<pre class="mt-2">').attr('id', 'output-' + index);
+            var element = $('<pre class="mb-2">').attr('id', 'output-' + index);
             $('#output').append(element);
             return element;
         }
@@ -216,8 +216,8 @@ var CodeOceanEditor = {
     },
 
     hideSpinner: function () {
-        $('button i.fa, button i.far, button i.fas').show();
-        $('button i.fa-spin').hide();
+        $('button i.fa-solid, button i.fa-regular').show();
+        $('button i.fa-spin').removeClass('d-inline-block').addClass('d-none');
     },
 
 
@@ -235,10 +235,20 @@ var CodeOceanEditor = {
         window.dispatchEvent(new Event('resize'));
     },
 
-    resizeParentOfAceEditor: function (element) {
+    resizeSidebars: function () {
+        $('#content-left-sidebar').height(this.calculateEditorHeight('#content-left-sidebar', false));
+        $('#content-right-sidebar').height(this.calculateEditorHeight('#content-right-sidebar', false));
+    },
+
+    calculateEditorHeight: function (element, considerStatusbar) {
+        let bottom = considerStatusbar ? ($('#statusbar').height() || 0) : 0;
         // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
-        var windowHeight = window.innerHeight - $(element).offset().top - ($('#statusbar').height() || 0) - 5;
-        $(element).parent().height(windowHeight);
+        return window.innerHeight - $(element).offset().top - bottom - 5;
+    },
+
+    resizeParentOfAceEditor: function (element) {
+        const editorHeight = this.calculateEditorHeight(element, true);
+        $(element).parent().height(editorHeight);
     },
 
     initializeEditors: function (own_solution = false) {
@@ -259,6 +269,7 @@ var CodeOceanEditor = {
             // Resize frame on window size change
             $(window).resize(function () {
                 this.resizeParentOfAceEditor(element);
+                this.resizeSidebars();
             }.bind(this));
 
             var editor = ace.edit(element);
@@ -366,11 +377,9 @@ var CodeOceanEditor = {
         }
         filesInstance.jstree(filesInstance.data('entries'));
         filesInstance.on('click', 'li.jstree-leaf > a', function (event) {
-            this.setActiveFile(
-                $(event.target).parent().text(),
-                parseInt($(event.target).parent().attr('id'))
-            );
-            var frame = $('[data-file-id="' + this.active_file.id + '"]').parent();
+            const file_id = parseInt($(event.target).parent().attr('id'));
+            const frame = $('[data-file-id="' + file_id + '"]').parent();
+            this.setActiveFile(frame.data('filename'), file_id);
             this.showFrame(frame);
             this.toggleButtonStates();
         }.bind(this));
@@ -392,6 +401,7 @@ var CodeOceanEditor = {
             tipButton.on('click', this.handleSideBarToggle.bind(this));
         }
         $('#sidebar').on('transitionend', this.resizeAceEditors.bind(this));
+        $('#sidebar').on('transitionend', this.resizeSidebars.bind(this));
     },
 
     handleSideBarToggle: function () {
@@ -435,12 +445,12 @@ var CodeOceanEditor = {
         button.prop('disabled', true);
         button.on('click', function () {
             $('#rfc_intervention_text').hide()
-            $('#comment-modal').modal('show');
+            new bootstrap.Modal($('#comment-modal')).show();
         });
 
         $('#askForCommentsButton').on('click', this.requestComments.bind(this));
         $('#closeAskForCommentsButton').on('click', function () {
-            $('#comment-modal').modal('hide');
+            bootstrap.Modal.getInstance($('#comment-modal')).hide();
         });
 
         setTimeout(function () {
@@ -477,30 +487,24 @@ var CodeOceanEditor = {
         return this.isActiveFileExecutable() && ['teacher_defined_test', 'user_defined_test', 'teacher_defined_linter'].includes(this.active_frame.data('role'));
     },
 
-    isBrowserSupported: function () {
-        //  websockets are used for run, score and test
-        // Also exclude IE and IE 11
-        return Modernizr.websockets && window.navigator.userAgent.indexOf("MSIE") <= 0 && !navigator.userAgent.match(/Trident\/7\./);
-    },
-
     populateCard: function (card, result, index) {
         card.addClass(this.getCardClass(result));
         card.find('.card-title .filename').text(result.filename);
         card.find('.card-title .number').text(index + 1);
-        card.find('.row .col-sm-9').eq(0).find('.number').eq(0).text(result.passed);
-        card.find('.row .col-sm-9').eq(0).find('.number').eq(1).text(result.count);
+        card.find('.row .col-md-9').eq(0).find('.number').eq(0).text(result.passed);
+        card.find('.row .col-md-9').eq(0).find('.number').eq(1).text(result.count);
         if (result.weight !== 0) {
-            card.find('.row .col-sm-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
-            card.find('.row .col-sm-9').eq(1).find('.number').eq(1).text(result.weight);
+            card.find('.row .col-md-9').eq(1).find('.number').eq(0).text(parseFloat((result.score * result.weight).toFixed(2)));
+            card.find('.row .col-md-9').eq(1).find('.number').eq(1).text(result.weight);
         } else {
             // Hide score row if no score could be achieved
             card.find('.attribute-row.row').eq(1).addClass('d-none');
         }
-        card.find('.row .col-sm-9').eq(2).html(result.message);
+        card.find('.row .col-md-9').eq(2).html(result.message);
 
         // Add error message from code to card
         if (result.error_messages) {
-            const targetNode = card.find('.row .col-sm-9').eq(3);
+            const targetNode = card.find('.row .col-md-9').eq(3);
 
             let errorMessagesToShow = [];
             result.error_messages.forEach(function (item) {
@@ -571,7 +575,7 @@ var CodeOceanEditor = {
             }
             targetNode.append(ul);
         }
-        //card.find('.row .col-sm-9').eq(4).find('a').attr('href', '#output-' + index);
+        //card.find('.row .col-md-9').eq(4).find('a').attr('href', '#output-' + index);
     },
 
     createEventHandler: function (eventType, data) {
@@ -652,12 +656,17 @@ var CodeOceanEditor = {
 
                 let matches;
 
-                let augmented_text = text;
+                // Switch both lines below to enable the output of images and render <IMG/> tags.
+                // Also consider `printOutput` in evaluation.js
+
+                // let augmented_text = element.text();
+                let augmented_text = element.html();
                 while (matches = this.tracepositions_regex.exec(text)) {
                     const frame = $('div.frame[data-filename="' + matches[1] + '"]')
 
                     if (frame.length > 0) {
-                        augmented_text = augmented_text.replace(new RegExp(matches[0], 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>");
+                        // augmented_text = augmented_text.replace(new RegExp(matches[0], 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>");
+                        augmented_text = augmented_text.replace(new RegExp(_.unescape(matches[0]), 'g'), "<a href='#' data-file='" + matches[1] + "' data-line='" + matches[2] + "'>" + matches[0] + "</a>");
                     }
                 }
                 element.html(augmented_text);
@@ -694,8 +703,8 @@ var CodeOceanEditor = {
     },
 
     showSpinner: function (initiator) {
-        $(initiator).find('i.fa, i.far, i.fas').hide();
-        $(initiator).find('i.fa-spin').show();
+        $(initiator).find('i.fa-solid, i.fa-regular').hide();
+        $(initiator).find('i.fa-spin').addClass('d-inline-block').removeClass('d-none');
     },
 
     showStatus: function (output) {
@@ -703,9 +712,11 @@ var CodeOceanEditor = {
             this.showTimeoutMessage();
         } else if (output.status === 'container_depleted') {
             this.showContainerDepletedMessage();
+        } else if (output.status === 'out_of_memory') {
+            this.showOutOfMemoryMessage();
         } else if (output.stderr) {
             $.flash.danger({
-                icon: ['fa', 'fa-bug'],
+                icon: ['fa-solid', 'fa-bug'],
                 text: $('#run').data('message-failure')
             });
             Sentry.captureException(JSON.stringify(output));
@@ -738,14 +749,21 @@ var CodeOceanEditor = {
 
     showContainerDepletedMessage: function () {
         $.flash.danger({
-            icon: ['fa', 'fa-clock-o'],
+            icon: ['fa-regular', 'fa-clock'],
             text: $('#editor').data('message-depleted')
+        });
+    },
+
+    showOutOfMemoryMessage: function () {
+        $.flash.info({
+            icon: ['fa-regular', 'fa-clock'],
+            text: $('#editor').data('message-out-of-memory')
         });
     },
 
     showTimeoutMessage: function () {
         $.flash.info({
-            icon: ['fa', 'fa-clock-o'],
+            icon: ['fa-regular', 'fa-clock'],
             text: $('#editor').data('message-timeout')
         });
     },
@@ -766,7 +784,7 @@ var CodeOceanEditor = {
         event.preventDefault();
         this.createSubmission('#create-file', null, function (response) {
             $('#code_ocean_file_context_id').val(response.id);
-            $('#modal-file').modal('show');
+            new bootstrap.Modal($('#modal-file')).show();
         }.bind(this));
     },
 
@@ -774,6 +792,7 @@ var CodeOceanEditor = {
         $('#toggle-sidebar-output').on('click', this.hideOutputBar.bind(this));
         $('#toggle-sidebar-output-collapsed').on('click', this.showOutputBar.bind(this));
         $('#output_sidebar').on('transitionend', this.resizeAceEditors.bind(this));
+        $('#output_sidebar').on('transitionend', this.resizeSidebars.bind(this));
     },
 
     showOutputBar: function () {
@@ -789,7 +808,7 @@ var CodeOceanEditor = {
     },
 
     initializeSideBarTooltips: function () {
-        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-bs-toggle="tooltip"]').tooltip()
     },
 
     initializeDescriptionToggle: function () {
@@ -797,12 +816,13 @@ var CodeOceanEditor = {
         $('a#toggle').on('click', this.toggleDescriptionCard.bind(this));
     },
 
-    toggleDescriptionCard: function () {
+    toggleDescriptionCard: function (event) {
         $('#description-card').toggleClass('description-card-collapsed').toggleClass('description-card');
         $('#description-symbol').toggleClass('fa-chevron-down').toggleClass('fa-chevron-right');
         var toggle = $('a#toggle');
         toggle.text(toggle.text() == toggle.data('hide') ? toggle.data('show') : toggle.data('hide'));
         this.resizeAceEditors();
+        this.resizeSidebars();
         event.preventDefault();
     },
 
@@ -835,11 +855,7 @@ var CodeOceanEditor = {
                     const percentile75 = data['working_time_75_percentile'];
                     const accumulatedWorkTimeUser = data['working_time_accumulated'];
 
-                    let minTimeIntervention = 10 * 60 * 1000;
-                    if ($('#editor').data('exercise-id') === 909) {
-                        // 30 minutes for our large Map exercise
-                        minTimeIntervention = 30 * 60 * 1000;
-                    }
+                    let minTimeIntervention = 20 * 60 * 1000;
 
                     let timeUntilIntervention;
                     if ((accumulatedWorkTimeUser - percentile75) > 0) {
@@ -861,17 +877,21 @@ var CodeOceanEditor = {
                             clearInterval(tid);
                             // timeUntilIntervention passed
                             if (editor.data('tips-interventions')) {
-                                $('#tips-intervention-modal').modal('show');
+                                const modal = $('#tips-intervention-modal');
+                                modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                new bootstrap.Modal(modal).show();
                                 $.ajax({
                                     data: {
-                                        intervention_type: 'TipIntervention'
+                                        intervention_type: 'TipsIntervention'
                                     },
                                     dataType: 'json',
                                     type: 'POST',
                                     url: interventionSaveUrl
                                 });
                             } else if (editor.data('break-interventions')) {
-                                $('#break-intervention-modal').modal('show');
+                                const modal = $('#break-intervention-modal');
+                                modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                new bootstrap.Modal(modal).show();
                                 $.ajax({
                                     data: {
                                         intervention_type: 'BreakIntervention'
@@ -885,7 +905,12 @@ var CodeOceanEditor = {
                                 // only show intervention if user did not requested for a comment already
                                 if (!button.prop('disabled')) {
                                     $('#rfc_intervention_text').show();
-                                    $('#comment-modal').modal('show');
+                                    modal = $('#comment-modal');
+                                    modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
+                                    modal.on('hidden.bs.modal', function () {
+                                        modal.find('.modal-footer').text('');
+                                    });
+                                    new bootstrap.Modal(modal).show();
                                     $.ajax({
                                         data: {
                                             intervention_type: 'QuestionIntervention'
@@ -928,7 +953,6 @@ var CodeOceanEditor = {
         CodeOceanEditor.editors = [];
         this.initializeRegexes();
         this.initializeCodePilot();
-        $('.score, #development-environment').show();
         this.configureEditors();
         this.initializeEditors();
         this.initializeEventHandlers();
@@ -944,6 +968,7 @@ var CodeOceanEditor = {
         this.renderScore();
         this.showFirstFile();
         this.resizeAceEditors();
+        this.resizeSidebars();
         this.initializeDeadlines();
         CodeOceanEditorTips.initializeEventHandlers();
 

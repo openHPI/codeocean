@@ -328,8 +328,8 @@ de:
     editor:
       collapse_action_sidebar: Aktions-Leiste Einklappen
       collapse_output_sidebar: Ausgabe-Leiste Einklappen
-      confirm_start_over: Wollen Sie wirklich von vorne anfangen? Ihr kompletter Fortschritt in dieser Aufgabe wird entfernt; andere Aufgaben bleiben unverändert. Diese Aktion kann nicht rückgängig gemacht werden.
-      confirm_start_over_active_file: Wollen Sie wirklich den Inhalt der ausgewählten Datei '%{filename}' zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.
+      confirm_start_over: Wollen Sie in dieser Aufgabe wirklich von vorne anfangen? Ihre bisherigen Änderungen in dieser Aufgabe werden entfernt; andere Aufgaben bleiben unverändert. Diese Aktion kann nicht rückgängig gemacht werden.
+      confirm_start_over_active_file: Wollen Sie wirklich Ihre Änderungen in der ausgewählten Datei '%{filename}' zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.
       confirm_submit: Wollen Sie Ihren Code wirklich zur Bewertung abgeben?
       create_file: Neue Datei
       depleted: Alle Ausführungsumgebungen sind momentan in Benutzung. Probiere es später nochmal.
@@ -360,6 +360,7 @@ de:
       submit_after_late_deadline: Code verspätet zur Bewertung abgeben
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
+      out_of_memory: 'Ausführung gestoppt. Ihr Code hat den erlaubten Arbeitsspeicher von %{memory_limit} MB überschritten.'
       exercise_deadline_passed: 'Das Ergebnis kann nicht übertragen werden.'
       tooltips:
         save: Ihr Code wird automatisch gespeichert, wann immer Sie eine Datei herunterladen, ausführen oder testen. Explizites Speichern ist also selten notwendig.
@@ -450,14 +451,16 @@ de:
         removeAllOnLine: Meine Kommentare auf dieser Zeile löschen
         listing: Die neuesten Kommentaranfragen
         request: "Kommentaranfrage stellen"
-        question: "Bitte beschreiben Sie kurz Ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. </br> </br> Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
+        question: "Bitte beschreiben Sie kurz Ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
+      intervention:
+        explanation: "Diese Meldung erscheint, weil Sie %{duration} Minuten an dieser Aufgabe gearbeitet haben. 25% Ihrer Mitlernenden arbeiten länger daran, insofern ist das kein Problem, aber dies hat sich als <a href='https://hpi.de/forschung/publikationen/dissertationen/dissertation-ralf-teusner.html' style='display: contents;'>effektiven Zeitpunkt für diese Meldung</a> erwiesen."
       rfc_intervention:
-        text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. </br> Wenn Sie möchten, können wir Ihnen helfen! </br> </br>"
+        text: "Falls Sie bei dieser Aufgabe nicht weiterkommen und nicht selbst weiter knobeln möchten, können Ihre Mitlernenden bestimmt helfen! </br> </br>"
       break_intervention:
         title: "Pause"
-        text: "Uns ist aufgefallen, dass du schon lange an dieser Aufgabe arbeitest. Möchtest du vielleicht später weiter machen um erstmal auf neue Gedanken zu kommen?"
+        text: "Falls Sie bei dieser Aufgabe momentan nicht weiterkommen, können Sie jederzeit eine Pause einlegen und später weiter knobeln. Ihr Fortschritt wird in CodeOcean automatisch gespeichert."
       tips_intervention:
-        text: "Es scheint so als würden Sie Probleme mit der Aufgabe haben. </br> </br> Sind Ihnen die Tipps in der linken Seitenleiste aufgefallen? Sie könnten einige Ihrer Fragen beantworten und werden auch direkt hier angezeigt."
+        text: "Falls Sie bei dieser Aufgabe momentan nicht weiterkommen, können Sie die verfügbaren Tipps vielleicht unterstützen. Diese finden Sie jederzeit in der linken Seitenleiste und werden auch direkt hier angezeigt."
       error_hints:
         heading: "Hinweise"
       tips:
@@ -474,6 +477,7 @@ de:
       feedback: Feedback
       requests_for_comments: Kommentaranfragen
       study_group_dashboard: Live Dashboard
+      external_user_statistics: Statistik für externe Nutzer
     show:
       is_unpublished: Aufgabe ist deaktiviert
     statistics:
@@ -518,6 +522,10 @@ de:
         after_late_deadline: Verspätete Abgabe
         addendum: '* Differenzen von mehr als %{delta} Minuten werden ignoriert.'
         filter: "Hinweis: Nur die letzte Abgabe vor einer Abgabefrist ist sichtbar."
+        toggle_autosave_on: Zwischenspeicherungen anzeigen
+        toggle_autosave_off: Zwischenspeicherungen ausblenden
+        toggle_status_on: Zwischenspeicherungen sind eingeblendet
+        toggle_status_off: Zwischenspeicherungen sind ausgeblendet
   proxy_exercises:
       index:
         clone: Duplizieren
@@ -593,8 +601,6 @@ de:
           <br>
           Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Eine Übersicht Ihrer Kommentaranfragen gibt es hier: %{link_my_comments} <br>
           Alle Kommentaranfragen aller Benutzer finden Sie hier: %{link_all_comments} <br>
           <br>
@@ -609,8 +615,6 @@ de:
           %{commenting_user_displayname} wrote: %{comment_text} <br>
           <br>
           You can find your request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           An overview of all your comments can be accessed here: %{link_my_comments} <br>
           All comments of all participants are available here: %{link_all_comments} <br>
@@ -633,8 +637,6 @@ de:
           <br>
           Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Danke, dass Sie anderen Nutzern von CodeOcean helfen!
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
@@ -648,8 +650,6 @@ de:
           %{author} wrote: %{thank_you_note} <br>
           <br>
           You can find the request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           Thank you for helping other users on CodeOcean!
           <br>
@@ -668,8 +668,6 @@ de:
           <br>
           Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Wenn Sie keine weiteren Benachrichtigungen zu dieser Anfrage erhalten möchten, klicken Sie bitte hier: %{unsubscribe_link}
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
@@ -683,8 +681,6 @@ de:
           %{author_displayname} wrote: %{comment_text} <br>
           <br>
           You can find the request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           If you don't want to be notified about further comments, please click here: %{unsubscribe_link}
           <br>

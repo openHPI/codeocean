@@ -118,7 +118,7 @@ describe Runner::Strategy::Poseidon do
       let(:response_status) { -1 }
 
       it 'raises an error' do
-        faraday_connection = instance_double 'Faraday::Connection'
+        faraday_connection = instance_double Faraday::Connection
         allow(described_class).to receive(:http_connection).and_return(faraday_connection)
         %i[post patch delete].each {|message| allow(faraday_connection).to receive(message).and_raise(Faraday::TimeoutError) }
         expect { action.call }.to raise_error(Runner::Error::FaradayError)
@@ -131,7 +131,7 @@ describe Runner::Strategy::Poseidon do
     let(:execution_environment) { create(:ruby) }
 
     it 'makes the correct request to Poseidon' do
-      faraday_connection = instance_double 'Faraday::Connection'
+      faraday_connection = instance_double Faraday::Connection
       allow(described_class).to receive(:http_connection).and_return(faraday_connection)
       allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: 201))
       action.call
@@ -143,7 +143,7 @@ describe Runner::Strategy::Poseidon do
 
     shared_examples 'returns true when the api request was successful' do |status|
       it "returns true on status #{status}" do
-        faraday_connection = instance_double 'Faraday::Connection'
+        faraday_connection = instance_double Faraday::Connection
         allow(described_class).to receive(:http_connection).and_return(faraday_connection)
         allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
         expect(action.call).to be_truthy
@@ -152,7 +152,7 @@ describe Runner::Strategy::Poseidon do
 
     shared_examples 'returns false when the api request failed' do |status|
       it "raises an exception on status #{status}" do
-        faraday_connection = instance_double 'Faraday::Connection'
+        faraday_connection = instance_double Faraday::Connection
         allow(described_class).to receive(:http_connection).and_return(faraday_connection)
         allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
         expect { action.call }.to raise_exception Runner::Error::UnexpectedResponse
@@ -168,7 +168,7 @@ describe Runner::Strategy::Poseidon do
     end
 
     it 'raises an exception if Faraday raises an error' do
-      faraday_connection = instance_double 'Faraday::Connection'
+      faraday_connection = instance_double Faraday::Connection
       allow(described_class).to receive(:http_connection).and_return(faraday_connection)
       allow(faraday_connection).to receive(:put).and_raise(Faraday::TimeoutError)
       expect { action.call }.to raise_exception Runner::Error::FaradayError
@@ -312,8 +312,15 @@ describe Runner::Strategy::Poseidon do
       end
     end
 
+    context 'when Poseidon returns NotFound (404)' do
+      let(:response_status) { 404 }
+
+      it 'raises an error' do
+        expect { action.call }.not_to raise_error
+      end
+    end
+
     include_examples 'Unauthorized (401) error handling'
-    include_examples 'NotFound (404) error handling'
     include_examples 'InternalServerError (500) error handling'
     include_examples 'unknown response status error handling'
     include_examples 'Faraday error handling'
@@ -328,7 +335,7 @@ describe Runner::Strategy::Poseidon do
       WebMock
         .stub_request(:patch, "#{described_class.config[:url]}/runners/#{runner_id}/files")
         .with(
-          body: {copy: [{path: file.filepath, content: encoded_file_content}], delete: ['/workspace']},
+          body: {copy: [{path: file.filepath, content: encoded_file_content}], delete: ['./*']},
           headers: {'Content-Type' => 'application/json'}
         )
         .to_return(body: response_body, status: response_status)

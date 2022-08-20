@@ -12,7 +12,7 @@ class ErrorTemplateAttributesController < ApplicationController
   # GET /error_template_attributes.json
   def index
     @error_template_attributes = ErrorTemplateAttribute.all.order('important DESC', :key,
-      :id).paginate(page: params[:page])
+      :id).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
@@ -42,7 +42,7 @@ class ErrorTemplateAttributesController < ApplicationController
     respond_to do |format|
       if @error_template_attribute.save
         format.html do
-          redirect_to @error_template_attribute, notice: 'Error template attribute was successfully created.'
+          redirect_to @error_template_attribute, notice: t('shared.object_created', model: @error_template_attribute.class.model_name.human)
         end
         format.json { render :show, status: :created, location: @error_template_attribute }
       else
@@ -59,7 +59,7 @@ class ErrorTemplateAttributesController < ApplicationController
     respond_to do |format|
       if @error_template_attribute.update(error_template_attribute_params)
         format.html do
-          redirect_to @error_template_attribute, notice: 'Error template attribute was successfully updated.'
+          redirect_to @error_template_attribute, notice: t('shared.object_updated', model: @error_template_attribute.class.model_name.human)
         end
         format.json { render :show, status: :ok, location: @error_template_attribute }
       else
@@ -76,7 +76,7 @@ class ErrorTemplateAttributesController < ApplicationController
     @error_template_attribute.destroy
     respond_to do |format|
       format.html do
-        redirect_to error_template_attributes_url, notice: 'Error template attribute was successfully destroyed.'
+        redirect_to error_template_attributes_url, notice: t('shared.object_destroyed', model: @error_template_attribute.class.model_name.human)
       end
       format.json { head :no_content }
     end

@@ -26,7 +26,7 @@ describe ApplicationHelper do
 
   describe '#empty' do
     it "builds an 'i' tag" do
-      expect(empty).to have_css('i.empty.fa.fa-minus')
+      expect(empty).to have_css('i.empty.fa-solid.fa-minus')
     end
   end
 
@@ -39,7 +39,7 @@ describe ApplicationHelper do
 
   describe '#no' do
     it "builds an 'i' tag" do
-      expect(no).to have_css('i.fa.fa-times')
+      expect(no).to have_css('i.fa-solid.fa-xmark')
     end
   end
 
@@ -83,7 +83,7 @@ describe ApplicationHelper do
     let(:html) { row(label: 'foo', value: 42) }
 
     it "builds nested 'div' tags" do
-      expect(html).to have_css('div.attribute-row.row div.col-sm-3 + div.col-sm-9')
+      expect(html).to have_css('div.attribute-row.row div.col-md-3 + div.col-md-9')
     end
   end
 
@@ -141,7 +141,7 @@ describe ApplicationHelper do
 
   describe '#yes' do
     it "builds an 'i' tag" do
-      expect(yes).to have_css('i.fa.fa-check')
+      expect(yes).to have_css('i.fa-solid.fa-check')
     end
   end
 end

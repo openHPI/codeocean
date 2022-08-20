@@ -2,7 +2,7 @@
   // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
      Otherwise, code might not be highlighted correctly (race condition)
   meta name='turbolinks-visit-control' content='reload'
-  = javascript_pack_tag('d3-tip', 'data-turbolinks-track': true)
+  - append_javascript_pack_tag('d3-tip')
 
 h1
   = t('.live_dashboard')
@@ -15,8 +15,8 @@ h4.mt-4
 .d-none#initial_graph_data data-graph_data=ActiveSupport::JSON.encode(@graph_data);
 div.w-100#chart_stacked
 
-.d-none.badge-info.container.py-2#no_chart_data
-  i class="fa fa-info" aria-hidden="true"
+.d-none.bg-info.container.py-2#no_chart_data
+  i class="fa-solid fa-info" aria-hidden="true"
   = t('.no_data_yet')
 
 h4.mt-4
@@ -27,9 +27,9 @@ h4.mt-4
     thead
       tr
         th.text-center
-          i.mr-0 class="fa fa-lightbulb-o" aria-hidden="true" title = t('request_for_comments.solved')
+          i.me-0 class="fa-regular fa-lightbulb" aria-hidden="true" title = t('request_for_comments.solved')
         th.text-center
-          i.mr-0 class="fa fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
+          i.me-0 class="fa-solid fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
         th.col-12 = t('activerecord.attributes.request_for_comments.question')
         th = t('activerecord.attributes.request_for_comments.username')
         th.text-nowrap = t('activerecord.attributes.request_for_comments.requested_at')

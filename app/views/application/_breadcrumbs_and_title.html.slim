@@ -1,4 +1,5 @@
-- if model = Kernel.const_get(controller_path.classify) rescue nil
+- model = controller_path.classify.constantize rescue nil
+- if model
   - object = model.find_by(id: params[:id])
   - if model.try(:nested_resource?)
     - root_element = model.model_name.human(count: 2)
@@ -18,14 +19,17 @@
 
 - title = "#{active_action} - #{application_name}"
 - content_for :breadcrumbs do
-  .container
-    ul.breadcrumb
+  .container.mb-4
+    ul.breadcrumb.bg-light.px-3.py-2
       - if root_element.present?
-        li.breadcrumb-item = root_element
+        li.breadcrumb-item.small
+          = root_element
         - if current_element.present?
-          li.breadcrumb-item = current_element
+          li.breadcrumb-item.small
+            = current_element
           - title = "#{object} - #{title}"
         - else
           - title = "#{model.model_name.human(count: 2)} - #{title}"
-      li.breadcrumb-item.active = active_action
+      li.breadcrumb-item.active.small
+        = active_action
 - content_for :title, title

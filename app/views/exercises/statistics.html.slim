@@ -2,7 +2,7 @@
   // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
      Otherwise, code might not be highlighted correctly (race condition)
   meta name='turbolinks-visit-control' content='reload'
-  = javascript_pack_tag('d3-tip', 'data-turbolinks-track': true)
+  - append_javascript_pack_tag('d3-tip')
 h1 = @exercise
 
 = row(label: '.participants', value: @exercise.users.distinct.count)
@@ -48,7 +48,7 @@ h1 = @exercise
   - if symbol==:external_users
     - working_time_array = []
     - @exercise.send(symbol).distinct().each do |user|
-      - working_time = @exercise.average_working_time_for(user.id) or 0
+      - working_time = @exercise.average_working_time_for(user) or 0
       - working_time_array.push working_time
     hr
     .d-none#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
@@ -73,10 +73,10 @@ h1 = @exercise
         tbody
           - users = symbol.to_s.classify.constantize.where(id: submissions.joins(symbol).group(:user_id).select(:user_id).distinct)
           - users.each do |user|
-            - if user_statistics[user.id] then us = user_statistics[user.id] else us = {"maximum_score" => nil, "runs" => nil}
+            - if user_statistics[user.class.name][user.id] then us = user_statistics[user.class.name][user.id] else us = {"maximum_score" => nil, "runs" => nil}
             - label = "#{user.displayname}"
             tr
-              td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "statistics", external_user_id: user.id, id: @exercise.id}
+              td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "external_user_statistics", external_user_id: user.id, id: @exercise.id}
               td = us['maximum_score'] or 0
               td.align-middle
                 - latest_user_submission = submissions.where(user: user).final.latest
@@ -88,4 +88,4 @@ h1 = @exercise
                   - elsif latest_user_submission.after_late_deadline?
                     .unit-test-result.negative-result.after_late_deadline
               td = us['runs'] if policy(@exercise).detailed_statistics?
-              td = @exercise.average_working_time_for(user.id) or 0 if policy(@exercise).detailed_statistics?
+              td = @exercise.average_working_time_for(user) or 0 if policy(@exercise).detailed_statistics?

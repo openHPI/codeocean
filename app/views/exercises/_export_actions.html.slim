@@ -1,14 +1,14 @@
 - if error
-    = button_tag type: 'button', class:'btn btn-primary pull-right export-button export-retry-button', data: {exercise_id: exercise.id} do
-      i.fa.fa-refresh.confirm-icon
+    = button_tag type: 'button', class:'btn btn-primary float-end export-button export-retry-button', data: {exercise_id: exercise.id} do
+      i.fa-solid.fa-arrows-rotate.confirm-icon
       = t('exercises.export_codeharbor.buttons.retry')
 - else
   - unless exported
     - if !task_found || update_right
-      = button_tag type: 'button', class:'btn btn-primary pull-right export-action export-button', data: {exercise_id: exercise.id} do
-        i.fa.fa-check.confirm-icon
+      = button_tag type: 'button', class:'btn btn-primary float-end export-action export-button', data: {exercise_id: exercise.id} do
+        i.fa-solid.fa-check.confirm-icon
         = t('exercises.export_codeharbor.buttons.export')
 
-= button_tag type: 'submit', class:'btn btn-secondary pull-right export-button', data: {dismiss: 'modal'} do
-  i.fa.fa-remove.abort-icon
+= button_tag type: 'submit', class:'btn btn-secondary float-end export-button', data: {dismiss: 'modal'} do
+  i.fa-solid.fa-xmark.abort-icon
   = exported ? t('exercises.export_codeharbor.buttons.close') : t('exercises.export_codeharbor.buttons.abort')

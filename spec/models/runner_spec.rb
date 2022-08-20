@@ -115,10 +115,12 @@ describe Runner do
       end
 
       it 'attaches the execution time to the error' do
-        starting_time = Time.zone.now
+        test_starting_time = Time.zone.now
         expect { runner.attach_to_execution(command) }.to raise_error do |raised_error|
-          test_time = Time.zone.now - starting_time
+          test_time = Time.zone.now - test_starting_time
           expect(raised_error.execution_duration).to be_between(0.0, test_time).exclusive
+          # The `starting_time` is shortly after the `test_starting_time``
+          expect(raised_error.starting_time).to be > test_starting_time
         end
       end
     end

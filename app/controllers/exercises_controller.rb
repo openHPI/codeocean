@@ -11,21 +11,21 @@ class ExercisesController < ApplicationController
   before_action :set_execution_environments, only: %i[index create edit new update]
   before_action :set_exercise_and_authorize,
     only: MEMBER_ACTIONS + %i[clone implement working_times intervention search run statistics submit reload feedback
-                              requests_for_comments study_group_dashboard export_external_check export_external_confirm]
-  before_action :set_external_user_and_authorize, only: [:statistics]
+                              requests_for_comments study_group_dashboard export_external_check export_external_confirm
+                              external_user_statistics]
+  before_action :set_external_user_and_authorize, only: [:external_user_statistics]
   before_action :set_file_types, only: %i[create edit new update]
   before_action :set_course_token, only: [:implement]
   before_action :set_available_tips, only: %i[implement show new edit]
 
-  skip_before_action :verify_authenticity_token,
-    only: %i[import_exercise import_uuid_check export_external_confirm export_external_check]
-  skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check export_external_confirm]
-  skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check export_external_confirm],
-raise: false
+  skip_before_action :verify_authenticity_token, only: %i[import_exercise import_uuid_check]
+  skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check]
+  skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check], raise: false
 
   def authorize!
     authorize(@exercise || @exercises)
   end
+
   private :authorize!
 
   def max_intervention_count_per_day
@@ -51,7 +51,7 @@ raise: false
     exercise = @exercise.duplicate(public: false, token: nil, user: current_user)
     exercise.send(:generate_token)
     if exercise.save
-      redirect_to(exercise, notice: t('shared.object_cloned', model: Exercise.model_name.human))
+      redirect_to(exercise_path(exercise), notice: t('shared.object_cloned', model: Exercise.model_name.human))
     else
       flash[:danger] = t('shared.message_failure')
       redirect_to(@exercise)
@@ -67,6 +67,7 @@ raise: false
     end
     subpaths.flatten.uniq
   end
+
   private :collect_paths
 
   def create
@@ -103,7 +104,7 @@ raise: false
 
   def feedback
     authorize!
-    @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page])
+    @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page], per_page: per_page_param)
     @submissions = @feedbacks.map do |feedback|
       feedback.exercise.final_submission(feedback.user)
     end
@@ -128,6 +129,7 @@ raise: false
   end
 
   def export_external_confirm
+    authorize!
     @exercise.uuid = SecureRandom.uuid if @exercise.uuid.nil?
 
     error = ExerciseService::PushExternal.call(
@@ -176,7 +178,7 @@ raise: false
     ActiveRecord::Base.transaction do
       exercise = ::ProformaService::Import.call(zip: tempfile, user: user)
       exercise.save!
-      return render json: {}, status: :created
+      render json: {}, status: :created
     end
   rescue Proforma::ExerciseNotOwned
     render json: {}, status: :unauthorized
@@ -192,12 +194,14 @@ raise: false
     api_key = authorization_header&.split(' ')&.second
     user_by_codeharbor_token(api_key)
   end
+
   private :user_from_api_key
 
   def user_by_codeharbor_token(api_key)
     link = CodeharborLink.find_by(api_key: api_key)
     link&.user
   end
+
   private :user_by_codeharbor_token
 
   def exercise_params
@@ -225,6 +229,7 @@ raise: false
                            )
                          end
   end
+
   private :exercise_params
 
   def handle_file_uploads
@@ -241,6 +246,7 @@ raise: false
       end
     end
   end
+
   private :handle_file_uploads
 
   def handle_exercise_tips
@@ -258,6 +264,7 @@ raise: false
       redirect_to(edit_exercise_path(@exercise))
     end
   end
+
   private :handle_exercise_tips
 
   def update_exercise_tips(exercise_tips, parent_exercise_tip_id, rank)
@@ -283,6 +290,7 @@ raise: false
     end
     result
   end
+
   private :update_exercise_tips
 
   def implement
@@ -348,6 +356,7 @@ raise: false
       @course_token = '702cbd2a-c84c-4b37-923a-692d7d1532d0'
     end
   end
+
   private :set_course_token
 
   def set_available_tips
@@ -374,13 +383,14 @@ raise: false
     # Return an array with top-level tips
     @tips = nested_tips.values.select {|tip| tip.parent_exercise_tip_id.nil? }
   end
+
   private :set_available_tips
 
   def working_times
     working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user)
     working_time_75_percentile = @exercise.get_quantiles([0.75]).first
     render(json: {working_time_75_percentile: working_time_75_percentile,
-working_time_accumulated: working_time_accumulated})
+                   working_time_accumulated: working_time_accumulated})
   end
 
   def intervention
@@ -401,8 +411,9 @@ working_time_accumulated: working_time_accumulated})
     search_text = params[:search_text]
     search = Search.new(user: current_user, exercise: @exercise, search: search_text)
 
-    begin search.save
-          render(json: {success: 'true'})
+    begin
+      search.save
+      render(json: {success: 'true'})
     rescue StandardError
       render(json: {success: 'false', error: "could not save search: #{$ERROR_INFO}"})
     end
@@ -410,7 +421,7 @@ working_time_accumulated: working_time_accumulated})
 
   def index
     @search = policy_scope(Exercise).ransack(params[:q])
-    @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page])
+    @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
@@ -424,12 +435,14 @@ working_time_accumulated: working_time_accumulated})
   def set_execution_environments
     @execution_environments = ExecutionEnvironment.all.order(:name)
   end
+
   private :set_execution_environments
 
   def set_exercise_and_authorize
     @exercise = Exercise.find(params[:id])
     authorize!
   end
+
   private :set_exercise_and_authorize
 
   def set_external_user_and_authorize
@@ -438,23 +451,25 @@ working_time_accumulated: working_time_accumulated})
       authorize!
     end
   end
+
   private :set_external_user_and_authorize
 
   def set_file_types
     @file_types = FileType.all.order(:name)
   end
+
   private :set_file_types
 
   def collect_set_and_unset_exercise_tags
-    @search = policy_scope(Tag).ransack(params[:q])
-    @tags = @search.result.order(:name)
+    @tags = policy_scope(Tag)
     checked_exercise_tags = @exercise.exercise_tags
     checked_tags = checked_exercise_tags.collect(&:tag).to_set
     unchecked_tags = Tag.all.to_set.subtract checked_tags
     @exercise_tags = checked_exercise_tags + unchecked_tags.collect do |tag|
-                                               ExerciseTag.new(exercise: @exercise, tag: tag)
-                                             end
+      ExerciseTag.new(exercise: @exercise, tag: tag)
+    end
   end
+
   private :collect_set_and_unset_exercise_tags
 
   def show
@@ -466,55 +481,63 @@ working_time_accumulated: working_time_accumulated})
   end
 
   def statistics
-    if @external_user
-      # Render statistics page for one specific external user
-      authorize(@external_user, :statistics?)
-      if policy(@exercise).detailed_statistics?
-        @submissions = Submission.where(user: @external_user,
-          exercise_id: @exercise.id).in_study_group_of(current_user).order('created_at')
-        interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
-          @exercise.id)
-        @all_events = (@submissions + interventions).sort_by(&:created_at)
-        @deltas = @all_events.map.with_index do |item, index|
-          delta = item.created_at - @all_events[index - 1].created_at if index.positive?
-          delta.nil? || (delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS) ? 0 : delta
-        end
-        @working_times_until = []
-        @all_events.each_with_index do |_, index|
-          @working_times_until.push((format_time_difference(@deltas[0..index].sum) if index.positive?))
-        end
-      else
-        final_submissions = Submission.where(user: @external_user,
-          exercise_id: @exercise.id).in_study_group_of(current_user).final
-        @submissions = []
-        %i[before_deadline within_grace_period after_late_deadline].each do |filter|
-          relevant_submission = final_submissions.send(filter).latest
-          @submissions.push relevant_submission if relevant_submission.present?
-        end
-        @all_events = @submissions
-      end
-      render 'exercises/external_users/statistics'
-    else
-      # Show general statistic page for specific exercise
-      user_statistics = {}
-      additional_filter = if policy(@exercise).detailed_statistics?
-                            ''
-                          elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
-                            "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"
-                          else
-                            # e.g. internal user without any study groups, show no submissions
-                            'AND FALSE'
-                          end
-      query = "SELECT user_id, MAX(score) AS maximum_score, COUNT(id) AS runs
-              FROM submissions WHERE exercise_id = #{@exercise.id} #{additional_filter} GROUP BY
-              user_id;"
-      ApplicationRecord.connection.execute(query).each do |tuple|
-        user_statistics[tuple['user_id'].to_i] = tuple
-      end
-      render locals: {
-        user_statistics: user_statistics,
-      }
+    # Show general statistic page for specific exercise
+    user_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
+
+    query = Submission.select('user_id, user_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
+      .where(exercise_id: @exercise.id)
+      .group('user_id, user_type')
+
+    query = if policy(@exercise).detailed_statistics?
+              query
+            elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
+              query.where(study_groups: current_user.study_groups.pluck(:id), cause: 'submit')
+            else
+              # e.g. internal user without any study groups, show no submissions
+              query.where('false')
+            end
+
+    query.each do |tuple|
+      user_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
     end
+
+    render locals: {
+      user_statistics: user_statistics,
+    }
+  end
+
+  def external_user_statistics
+    # Render statistics page for one specific external user
+
+    if policy(@exercise).detailed_statistics?
+      submissions = Submission.where(user: @external_user, exercise: @exercise)
+        .in_study_group_of(current_user)
+        .order('created_at')
+      @show_autosaves = params[:show_autosaves] == 'true' || submissions.none? {|s| s.cause != 'autosave' }
+      submissions = submissions.where.not(cause: 'autosave') unless @show_autosaves
+      interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
+        @exercise.id)
+      @all_events = (submissions + interventions).sort_by(&:created_at)
+      @deltas = @all_events.map.with_index do |item, index|
+        delta = item.created_at - @all_events[index - 1].created_at if index.positive?
+        delta.nil? || (delta > StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS) ? 0 : delta
+      end
+      @working_times_until = []
+      @all_events.each_with_index do |_, index|
+        @working_times_until.push((format_time_difference(@deltas[0..index].sum) if index.positive?))
+      end
+    else
+      final_submissions = Submission.where(user: @external_user,
+        exercise_id: @exercise.id).in_study_group_of(current_user).final
+      submissions = []
+      %i[before_deadline within_grace_period after_late_deadline].each do |filter|
+        relevant_submission = final_submissions.send(filter).latest
+        submissions.push relevant_submission if relevant_submission.present?
+      end
+      @all_events = submissions
+    end
+
+    render 'exercises/external_users/statistics'
   end
 
   def submit
@@ -534,8 +557,6 @@ working_time_accumulated: working_time_accumulated})
   end
 
   def transmit_lti_score
-    ::NewRelic::Agent.add_custom_attributes({submission: @submission.id,
-      normalized_score: @submission.normalized_score})
     response = send_score(@submission)
 
     if response[:status] == 'success'
@@ -552,6 +573,7 @@ working_time_accumulated: working_time_accumulated})
       end
     end
   end
+
   private :transmit_lti_score
 
   def update

@@ -30,7 +30,7 @@ class ExecutionEnvironmentsController < ApplicationController
   def execute_command
     runner = Runner.for(current_user, @execution_environment)
     output = runner.execute_command(params[:command], raise_exception: false)
-    render json: output
+    render json: output.except(:messages)
   end
 
   def working_time_query
@@ -44,7 +44,7 @@ class ExecutionEnvironmentsController < ApplicationController
       FROM
         (SELECT user_id,
                 exercise_id,
-                CASE WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0' ELSE working_time END AS working_time_new
+                CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT user_id,
                     exercise_id,
@@ -121,7 +121,7 @@ class ExecutionEnvironmentsController < ApplicationController
   private :execution_environment_params
 
   def index
-    @execution_environments = ExecutionEnvironment.all.includes(:user).order(:name).paginate(page: params[:page])
+    @execution_environments = ExecutionEnvironment.all.includes(:user).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
@@ -158,7 +158,7 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def show
     if @execution_environment.testing_framework?
-      @testing_framework_adapter = Kernel.const_get(@execution_environment.testing_framework)
+      @testing_framework_adapter = TestingFrameworkAdapter.descendants.find {|klass| klass.name == @execution_environment.testing_framework }
     end
   end
 
@@ -172,8 +172,7 @@ class ExecutionEnvironmentsController < ApplicationController
     begin
       Runner.strategy_class.sync_environment(@execution_environment)
     rescue Runner::Error => e
-      Rails.logger.debug { "Runner error while synchronizing execution environment with id #{@execution_environment.id}: #{e.message}" }
-      Sentry.capture_exception(e)
+      Rails.logger.warn { "Runner error while synchronizing execution environment with id #{@execution_environment.id}: #{e.message}" }
       redirect_to @execution_environment, alert: t('execution_environments.index.synchronize.failure', error: e.message)
     else
       redirect_to @execution_environment, notice: t('execution_environments.index.synchronize.success')

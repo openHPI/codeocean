@@ -25,7 +25,7 @@ describe CodeOcean::FilesController do
       end
 
       expect_json
-      expect_status(201)
+      expect_http_status(:created)
     end
 
     context 'with an invalid file' do
@@ -36,7 +36,7 @@ describe CodeOcean::FilesController do
 
       expect_assigns(file: CodeOcean::File)
       expect_json
-      expect_status(422)
+      expect_http_status(:unprocessable_entity)
     end
   end
 

@@ -29,12 +29,12 @@
     // entering links.
     var linkDialogTitle = "<%= I18n.t('components.markdown_editor.insert_link.dialog_title', default: 'Insert link') %>";
     var linkInputLabel = "<%= I18n.t('components.markdown_editor.insert_link.input_label', default: 'Link URL') %>";
-    var linkInputPlaceholder = "http://example.com/ \"optional title\"";
+    var linkInputPlaceholder = "https://example.com/ \"optional title\"";
     var linkInputHelp = "<%= I18n.t('components.markdown_editor.insert_link.input_help', default: 'Enter URL to point link to and optional title to display when mouse is placed over the link') %>";
 
     var imageDialogTitle = "<%= I18n.t('components.markdown_editor.insert_image.dialog_title', default: 'Insert image') %>";
     var imageInputLabel = "<%= I18n.t('components.markdown_editor.insert_image.input_label', default: 'Image URL') %>";
-    var imageInputPlaceholder = "http://example.com/images/diagram.jpg \"optional title\"";
+    var imageInputPlaceholder = "https://example.com/images/diagram.jpg \"optional title\"";
     var imageInputHelp = "<%= I18n.t('components.markdown_editor.insert_link.input_help', default: 'Enter URL where image is located and optional title to display when mouse is placed over the image') %>";
 
     var defaultHelpHoverTitle = "Markdown Editing Help";
@@ -193,7 +193,7 @@
         var regexText;
         var replacementText;
 
-        // chrome bug ... documented at: http://meta.stackoverflow.com/questions/63307/blockquote-glitch-in-editor-in-chrome-6-and-7/65985#65985
+        // chrome bug ... documented at: https://meta.stackoverflow.com/questions/63307/blockquote-glitch-in-editor-in-chrome-6-and-7/65985#65985
         if (navigator.userAgent.match(/Chrome/)) {
             "X".match(/()./);
         }
@@ -1018,7 +1018,7 @@
                     text = 'http://' + text;
             }
 
-            $(dialog).modal('hide');
+            bootstrap.Modal.getInstance($(dialog)).hide();
 
             callback(text);
             return false;
@@ -1032,7 +1032,7 @@
             //   <div class="modal-dialog">
             //      <div class="modal-content">
             //          <div class="modal-header">
-            //              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            //              <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
             //              <h3 class="modal-title">Modal title</h3>
             //          </div>
             //          <div class="modal-body">
@@ -1062,7 +1062,7 @@
             // The header.
             var header = doc.createElement("div");
             header.className = "modal-header";
-            header.innerHTML = '<h3 class="modal-title">'+title+'</h3> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+            header.innerHTML = '<h3 class="modal-title">'+title+'</h3> <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>';
             dialogContent.appendChild(header);
 
             // The body.
@@ -1082,7 +1082,7 @@
 
             // The input text box
             var formGroup = doc.createElement("div");
-            formGroup.className = "form-group";
+            formGroup.className = "mb-3";
             form.appendChild(formGroup);
 
             var label = doc.createElement("label");
@@ -1144,15 +1144,15 @@
                 range.select();
             }
 
-            $(dialog).on('shown', function () {
+            $(dialog).on('shown.bs.modal', function () {
                 input.focus();
             });
 
-            $(dialog).on('hidden', function () {
+            $(dialog).on('hidden.bs.modal', function () {
                 dialog.parentNode.removeChild(dialog);
             });
 
-            $(dialog).modal()
+            new bootstrap.Modal($(dialog)).show();
 
         }, 0);
     };
@@ -1360,8 +1360,8 @@
                 button.appendChild(buttonImage);
                 button.id = id + postfix;
                 button.title = title;
-                button.setAttribute("data-toggle", "tooltip");
-                button.setAttribute("data-placement", "top");
+                button.setAttribute("data-bs-toggle", "tooltip");
+                button.setAttribute("data-bs-placement", "top");
                 if (textOp)
                     button.textOp = textOp;
                 setupButton(button, true);
@@ -1381,51 +1381,51 @@
             };
 
             var group1 = makeGroup(1);
-            buttons.bold = makeButton("wmd-bold-button", "<%= I18n.t('components.markdown_editor.bold.button_title', default: 'Bold (Ctrl+B)') %>", "m-1 fa fa-bold", bindCommand("doBold"), group1);
-            buttons.italic = makeButton("wmd-italic-button", "<%= I18n.t('components.markdown_editor.italic.button_title', default: 'Italic (Ctrl+I)') %>", "m-1 fa fa-italic", bindCommand("doItalic"), group1);
+            buttons.bold = makeButton("wmd-bold-button", "<%= I18n.t('components.markdown_editor.bold.button_title', default: 'Bold (Ctrl+B)') %>", "m-1 fa-solid fa-bold", bindCommand("doBold"), group1);
+            buttons.italic = makeButton("wmd-italic-button", "<%= I18n.t('components.markdown_editor.italic.button_title', default: 'Italic (Ctrl+I)') %>", "m-1 fa-solid fa-italic", bindCommand("doItalic"), group1);
 
             var group2 = makeGroup(2);
-            buttons.link = makeButton("wmd-link-button", "<%= I18n.t('components.markdown_editor.insert_link.button_title', default: 'Link (Ctrl+L)') %>", "m-1 fa fa-link", bindCommand(function (chunk, postProcessing) {
+            buttons.link = makeButton("wmd-link-button", "<%= I18n.t('components.markdown_editor.insert_link.button_title', default: 'Link (Ctrl+L)') %>", "m-1 fa-solid fa-link", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, false);
             }), group2);
-            buttons.image = makeButton("wmd-image-button", "<%= I18n.t('components.markdown_editor.insert_image.button_title', default: 'Image (Ctrl+G)') %>", "m-1 fa fa-picture-o", bindCommand(function (chunk, postProcessing) {
+            buttons.image = makeButton("wmd-image-button", "<%= I18n.t('components.markdown_editor.insert_image.button_title', default: 'Image (Ctrl+G)') %>", "m-1 fa-regular fa-image", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, true);
             }), group2);
-            buttons.quote = makeButton("wmd-quote-button", "<%= I18n.t('components.markdown_editor.blockquoute.button_title', default: 'Blockquote (Ctrl+Q)') %>", "m-1 fa fa-quote-left", bindCommand("doBlockquote"), group2);
-            buttons.code = makeButton("wmd-code-button", "<%= I18n.t('components.markdown_editor.code_sample.button_title', default: 'Code Sample (Ctrl+K)') %>", "m-1 fa fa-code", bindCommand("doCode"), group2);
+            buttons.quote = makeButton("wmd-quote-button", "<%= I18n.t('components.markdown_editor.blockquoute.button_title', default: 'Blockquote (Ctrl+Q)') %>", "m-1 fa-solid fa-quote-left", bindCommand("doBlockquote"), group2);
+            buttons.code = makeButton("wmd-code-button", "<%= I18n.t('components.markdown_editor.code_sample.button_title', default: 'Code Sample (Ctrl+K)') %>", "m-1 fa-solid fa-code", bindCommand("doCode"), group2);
 
             var group3 = makeGroup(3);
-            buttons.ulist = makeButton("wmd-ulist-button", "<%= I18n.t('components.markdown_editor.bulleted_list.button_title', default: 'Bulleted List (Ctrl+U)') %>", "m-1 fa fa-list-ul", bindCommand(function (chunk, postProcessing) {
+            buttons.ulist = makeButton("wmd-ulist-button", "<%= I18n.t('components.markdown_editor.bulleted_list.button_title', default: 'Bulleted List (Ctrl+U)') %>", "m-1 fa-solid fa-list-ul", bindCommand(function (chunk, postProcessing) {
                 this.doList(chunk, postProcessing, false);
             }), group3);
-            buttons.olist = makeButton("wmd-olist-button", "<%= I18n.t('components.markdown_editor.numbered_list.button_title', default: 'Numbered List (Ctrl+O)') %>", "m-1 fa fa-list-ol", bindCommand(function (chunk, postProcessing) {
+            buttons.olist = makeButton("wmd-olist-button", "<%= I18n.t('components.markdown_editor.numbered_list.button_title', default: 'Numbered List (Ctrl+O)') %>", "m-1 fa-solid fa-list-ol", bindCommand(function (chunk, postProcessing) {
                 this.doList(chunk, postProcessing, true);
             }), group3);
-            buttons.heading = makeButton("wmd-heading-button", "<%= I18n.t('components.markdown_editor.heading.button_title', default: 'Heading (Ctrl+H)') %>", "m-1 fa fa-font", bindCommand("doHeading"), group3);
+            buttons.heading = makeButton("wmd-heading-button", "<%= I18n.t('components.markdown_editor.heading.button_title', default: 'Heading (Ctrl+H)') %>", "m-1 fa-solid fa-font", bindCommand("doHeading"), group3);
 
             var group4 = makeGroup(4);
-            buttons.undo = makeButton("wmd-undo-button", "<%= I18n.t('components.markdown_editor.undo.button_title', default: 'Undo (Ctrl+Z)') %>", "m-1 fa fa-undo", null, group4);
+            buttons.undo = makeButton("wmd-undo-button", "<%= I18n.t('components.markdown_editor.undo.button_title', default: 'Undo (Ctrl+Z)') %>", "m-1 fa-solid fa-arrow-rotate-left", null, group4);
             buttons.undo.execute = function (manager) { if (manager) manager.undo(); };
 
             var redoTitle = /win/.test(nav.platform.toLowerCase()) ?
                 "<%= I18n.t('components.markdown_editor.redo.button_title.win', default: 'Redo (Ctrl+Y)') %>" :
                 "<%= I18n.t('components.markdown_editor.redo.button_title.other', default: 'Redo (Ctrl+Shift+Z)') %>"; // mac and other non-Windows platforms
 
-            buttons.redo = makeButton("wmd-redo-button", redoTitle, "m-1 fa fa-repeat", null, group4);
+            buttons.redo = makeButton("wmd-redo-button", redoTitle, "m-1 fa-solid fa-arrow-rotate-right", null, group4);
             buttons.redo.execute = function (manager) { if (manager) manager.redo(); };
 
             if (helpOptions) {
                 var group5 = makeGroup(5);
-                group5.className = group5.className + " ml-auto";
+                group5.className = group5.className + " ms-auto";
                 var helpButton = document.createElement("button");
                 var helpButtonImage = document.createElement("i");
-                helpButtonImage.className = "m-1 fa fa-info";
+                helpButtonImage.className = "m-1 fa-solid fa-info";
                 helpButton.appendChild(helpButtonImage);
                 helpButton.className = "btn btn-info btn-sm";
                 helpButton.id = "wmd-help-button" + postfix;
                 helpButton.isHelp = true;
-                helpButton.setAttribute("data-toggle", "tooltip");
-                helpButton.setAttribute("data-placement", "top");
+                helpButton.setAttribute("data-bs-toggle", "tooltip");
+                helpButton.setAttribute("data-bs-placement", "top");
                 helpButton.title = helpOptions.title || defaultHelpHoverTitle;
                 helpButton.onclick = helpOptions.handler;
 
@@ -1793,7 +1793,7 @@
         //
         // Since this is essentially a backwards-moving regex, it's susceptible to
         // catastrophic backtracking and can cause the browser to hang;
-        // see e.g. http://meta.stackoverflow.com/questions/9807.
+        // see e.g. https://meta.stackoverflow.com/questions/9807.
         //
         // Hence we replaced this by a simple state machine that just goes through the
         // lines and checks for a), b), and c).

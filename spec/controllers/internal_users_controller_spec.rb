@@ -33,7 +33,7 @@ describe InternalUsersController do
       before { get :activate, params: {id: user.id, token: user.activation_token} }
 
       expect_assigns(user: InternalUser)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:activate)
     end
   end
@@ -135,10 +135,10 @@ describe InternalUsersController do
     end
 
     context 'with an invalid internal user' do
-      before { post :create, params: {internal_user: {}} }
+      before { post :create, params: {internal_user: {invalid_attribute: 'a string'}} }
 
       expect_assigns(user: InternalUser)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:new)
     end
   end
@@ -165,7 +165,7 @@ describe InternalUsersController do
     end
 
     expect_assigns(user: InternalUser)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:edit)
   end
 
@@ -178,7 +178,7 @@ describe InternalUsersController do
         get :forgot_password
       end
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:forgot_password)
     end
 
@@ -213,7 +213,7 @@ describe InternalUsersController do
     context 'without an email address' do
       before { post :forgot_password }
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:forgot_password)
     end
   end
@@ -225,7 +225,7 @@ describe InternalUsersController do
     end
 
     expect_assigns(users: InternalUser.all)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -236,7 +236,7 @@ describe InternalUsersController do
     end
 
     expect_assigns(user: InternalUser)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:new)
   end
 
@@ -256,7 +256,7 @@ describe InternalUsersController do
       end
 
       expect_assigns(user: :user)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:reset_password)
     end
   end
@@ -295,7 +295,7 @@ describe InternalUsersController do
         end
 
         expect_assigns(user: :user)
-        expect_status(200)
+        expect_http_status(:ok)
         expect_template(:reset_password)
       end
     end
@@ -308,7 +308,7 @@ describe InternalUsersController do
     end
 
     expect_assigns(user: InternalUser)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:show)
   end
 
@@ -326,7 +326,7 @@ describe InternalUsersController do
       before { put :update, params: {internal_user: {email: ''}, id: users.first.id} }
 
       expect_assigns(user: InternalUser)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:edit)
     end
   end

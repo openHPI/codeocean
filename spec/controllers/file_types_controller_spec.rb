@@ -29,7 +29,7 @@ describe FileTypesController do
 
       expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:new)
     end
   end
@@ -52,7 +52,7 @@ describe FileTypesController do
 
     expect_assigns(editor_modes: Array)
     expect_assigns(file_type: FileType)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:edit)
   end
 
@@ -63,7 +63,7 @@ describe FileTypesController do
     end
 
     expect_assigns(file_types: FileType.all)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:index)
   end
 
@@ -72,7 +72,7 @@ describe FileTypesController do
 
     expect_assigns(editor_modes: Array)
     expect_assigns(file_type: FileType)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:new)
   end
 
@@ -80,7 +80,7 @@ describe FileTypesController do
     before { get :show, params: {id: file_type.id} }
 
     expect_assigns(file_type: :file_type)
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:show)
   end
 
@@ -98,7 +98,7 @@ describe FileTypesController do
 
       expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:edit)
     end
   end

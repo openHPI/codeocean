@@ -30,7 +30,7 @@ Sentry.init do |config|
           when '/', '/ping'
             0.00 # ignore health check
           else
-            0.05
+            0.01
         end
       else
         0.0 # ignore all other transactions

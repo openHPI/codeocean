@@ -7,14 +7,14 @@
 // To reference this file, add <%= stylesheet_pack_tag 'stylesheets' %> to the appropriate
 // layout file, like app/views/layouts/application.html.slim
 
-$web-font-path: '';
-@import '~bootswatch/dist/yeti/variables';
-@import '~bootstrap/scss/bootstrap';
-@import '~bootswatch/dist/yeti/bootswatch';
+$web-font-path: '//';
+@import '../../node_modules/bootswatch/dist/yeti/variables';
+@import '../../node_modules/bootstrap/scss/bootstrap';
+@import '../../node_modules/bootswatch/dist/yeti/bootswatch';
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts/';
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
-@import '~@fortawesome/fontawesome-free/scss/solid';
-@import '~@fortawesome/fontawesome-free/scss/regular';
-@import '~@fortawesome/fontawesome-free/scss/v4-shims';
+@import '../../node_modules/@fortawesome/fontawesome-free/scss/solid';
+@import '../../node_modules/@fortawesome/fontawesome-free/scss/regular';
+@import '../../node_modules/@fortawesome/fontawesome-free/scss/v4-shims';
 $opensans-path: '~opensans-webkit/fonts/';
-@import '~opensans-webkit/src/sass/open-sans';
+@import '../../node_modules/opensans-webkit/src/sass/open-sans';

@@ -7,7 +7,7 @@ class StudyGroupsController < ApplicationController
 
   def index
     @search = policy_scope(StudyGroup).ransack(params[:q])
-    @study_groups = @search.result.includes(:consumer).order(:name).paginate(page: params[:page])
+    @study_groups = @search.result.includes(:consumer).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

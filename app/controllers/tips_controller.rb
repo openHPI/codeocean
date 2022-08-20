@@ -34,7 +34,7 @@ class TipsController < ApplicationController
   private :tip_params
 
   def index
-    @tips = Tip.all.paginate(page: params[:page])
+    @tips = Tip.all.paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

@@ -129,12 +129,7 @@ module RedirectBehavior
       lti_parameters_id: session[:lti_parameters_id]
     )
 
-    lti_parameter = LtiParameter.where(external_users_id: @submission.user_id,
-      exercises_id: @submission.exercise_id).last
-
-    path = lti_return_path(submission_id: @submission.id,
-      url: consumer_return_url(build_tool_provider(consumer: @submission.user.consumer,
-        parameters: lti_parameter&.lti_parameters)))
+    path = lti_return_path(submission_id: @submission.id)
     clear_lti_session_data(@submission.exercise_id, @submission.user_id)
     respond_to do |format|
       format.html { redirect_to(path) }

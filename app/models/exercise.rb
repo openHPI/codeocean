@@ -94,7 +94,7 @@ class Exercise < ApplicationRecord
         (SELECT user_id,
                 user_type,
                 score,
-                CASE WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0' ELSE working_time END AS working_time_new
+                CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_new
          FROM
             (SELECT user_id,
                     user_type,
@@ -103,7 +103,7 @@ class Exercise < ApplicationRecord
                     (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
-            WHERE exercise_id=#{id}) AS foo) AS bar
+            WHERE #{self.class.sanitize_sql(['exercise_id = ?', id])}) AS foo) AS bar
       GROUP BY user_id, user_type
     "
   end
@@ -118,7 +118,7 @@ class Exercise < ApplicationRecord
          (created_at - lag(created_at) over (PARTITION BY submissions.user_type, submissions.user_id, exercise_id
            ORDER BY created_at)) AS working_time
       FROM submissions
-      WHERE exercise_id = #{exercise_id} AND study_group_id = #{study_group_id} #{additional_filter}),
+      WHERE #{self.class.sanitize_sql(['exercise_id = ? and study_group_id = ?', exercise_id, study_group_id])} #{self.class.sanitize_sql(additional_filter)}),
     working_time_with_deltas_ignored AS (
       SELECT user_id,
              user_type,
@@ -126,7 +126,7 @@ class Exercise < ApplicationRecord
              sum(CASE WHEN score IS NOT NULL THEN 1 ELSE 0 END)
                  over (ORDER BY user_type, user_id, created_at ASC)                 AS change_in_score,
              created_at,
-             CASE WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0' ELSE working_time END AS working_time_filtered
+             CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_filtered
       FROM working_time_between_submissions
     ),
     working_times_with_score_expanded AS (
@@ -251,7 +251,7 @@ class Exercise < ApplicationRecord
   end
 
   def get_quantiles(quantiles)
-    quantiles_str = "[#{quantiles.join(',')}]"
+    quantiles_str = self.class.sanitize_sql("[#{quantiles.join(',')}]")
     result = ActiveRecord::Base.transaction do
       self.class.connection.execute("
       SET LOCAL intervalstyle = 'iso_8601';
@@ -263,7 +263,7 @@ class Exercise < ApplicationRecord
                         Max(score)                                                                                  AS max_score,
                         (created_at - Lag(created_at) OVER (partition BY user_id, exercise_id ORDER BY created_at)) AS working_time
                FROM     submissions
-               WHERE    exercise_id = #{id}
+               WHERE    #{self.class.sanitize_sql(['exercise_id = ?', id])}
                AND      user_type = 'ExternalUser'
                GROUP BY user_id,
                         id,
@@ -273,7 +273,7 @@ class Exercise < ApplicationRecord
                         Sum(weight) AS max_points
                FROM     files
                WHERE    context_type = 'Exercise'
-               AND      context_id = #{id}
+               AND      #{self.class.sanitize_sql(['context_id = ?', id])}
                AND      role IN ('teacher_defined_test', 'teacher_defined_linter')
                GROUP BY context_id),
       -- filter for rows containing max points
@@ -342,7 +342,7 @@ class Exercise < ApplicationRecord
                     exercise_id,
                     max_score,
                     CASE
-                           WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0'
+                           WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0'
                            ELSE working_time
                     END AS working_time_new
              FROM   all_working_times_until_max ), result AS
@@ -372,11 +372,11 @@ class Exercise < ApplicationRecord
   end
 
   def retrieve_working_time_statistics
-    @working_time_statistics = {}
+    @working_time_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
     ActiveRecord::Base.transaction do
       self.class.connection.execute("SET LOCAL intervalstyle = 'postgres'")
       self.class.connection.execute(user_working_time_query).each do |tuple|
-        @working_time_statistics[tuple['user_id'].to_i] = tuple
+        @working_time_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
       end
     end
   end
@@ -387,14 +387,14 @@ class Exercise < ApplicationRecord
       self.class.connection.execute("
       SELECT avg(working_time) as average_time
       FROM
-        (#{user_working_time_query}) AS baz;
+        (#{self.class.sanitize_sql(user_working_time_query)}) AS baz;
     ").first['average_time']
     end
   end
 
-  def average_working_time_for(user_id)
+  def average_working_time_for(user)
     retrieve_working_time_statistics if @working_time_statistics.nil?
-    @working_time_statistics[user_id]['working_time']
+    @working_time_statistics[user.class.name][user.id]['working_time']
   end
 
   def accumulated_working_time_for_only(user)
@@ -445,7 +445,7 @@ class Exercise < ApplicationRecord
 
               FILTERED_TIMES_UNTIL_MAX AS
               (
-              SELECT user_id,exercise_id, max_score, CASE WHEN working_time >= #{StatisticsHelper::WORKING_TIME_DELTA_IN_SQL_INTERVAL} THEN '0' ELSE working_time END AS working_time_new
+              SELECT user_id,exercise_id, max_score, CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_new
               FROM ALL_WORKING_TIMES_UNTIL_MAX
               )
                   SELECT e.external_id AS external_user_id, f.user_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time
@@ -596,5 +596,13 @@ cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
           FROM submissions
           WHERE exercise_id = #{id}
         ) AS t ON t.fv = submissions.id").distinct
+  end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[title]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[execution_environment]
   end
 end

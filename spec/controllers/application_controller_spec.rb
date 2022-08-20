@@ -43,14 +43,14 @@ describe ApplicationController do
 
       context "when using the 'custom_locale' parameter" do
         it 'overwrites the session' do
-          expect(session).to receive(:[]=).with(:locale, locale.to_s)
+          expect(session).to receive(:[]=).with(:locale, locale)
           get :welcome, params: {custom_locale: locale}
         end
       end
 
       context "when using the 'locale' parameter" do
         it 'overwrites the session' do
-          expect(session).to receive(:[]=).with(:locale, locale.to_s)
+          expect(session).to receive(:[]=).with(:locale, locale)
           get :welcome, params: {locale: locale}
         end
       end
@@ -78,7 +78,7 @@ describe ApplicationController do
   describe 'GET #welcome' do
     before { get :welcome }
 
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:welcome)
   end
 end

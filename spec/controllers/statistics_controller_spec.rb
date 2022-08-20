@@ -11,7 +11,7 @@ describe StatisticsController do
     describe "GET ##{route}" do
       before { get route }
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(route)
     end
   end
@@ -20,7 +20,7 @@ describe StatisticsController do
     describe "GET ##{route}" do
       before { get route }
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:activity_history)
     end
   end
@@ -29,7 +29,7 @@ describe StatisticsController do
     describe "GET ##{route}.json" do
       before { get route, format: :json }
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_json
     end
   end

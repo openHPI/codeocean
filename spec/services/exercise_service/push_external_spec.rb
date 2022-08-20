@@ -45,7 +45,7 @@ RSpec.describe ExerciseService::PushExternal do
     end
 
     context 'when response status is success' do
-      it { is_expected.to be nil }
+      it { is_expected.to be_nil }
 
       context 'when response status is 500' do
         let(:status) { 500 }
@@ -58,7 +58,7 @@ RSpec.describe ExerciseService::PushExternal do
     context 'when an error occurs' do
       before { allow(Faraday).to receive(:new).and_raise(StandardError) }
 
-      it { is_expected.not_to be nil }
+      it { is_expected.not_to be_nil }
     end
   end
 end

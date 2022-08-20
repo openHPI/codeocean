@@ -86,9 +86,9 @@ describe SessionsController do
 
       it 'sets the specified locale' do
         expect(controller).to receive(:switch_locale).and_call_original
-        i18n = instance_double 'i18n', locale: locale.to_s
+        i18n = class_double I18n, locale: locale
         allow(I18n).to receive(:locale=).with(I18n.default_locale).and_call_original
-        allow(I18n).to receive(:locale=).with(locale.to_s).and_return(i18n)
+        allow(I18n).to receive(:locale=).with(locale).and_return(i18n)
         perform_request
         expect(i18n.locale.to_sym).to eq(locale)
       end
@@ -201,13 +201,14 @@ describe SessionsController do
   end
 
   describe 'GET #destroy_through_lti' do
-    let(:perform_request) { proc { get :destroy_through_lti, params: {consumer_id: consumer.id, submission_id: submission.id} } }
+    let(:perform_request) { proc { get :destroy_through_lti, params: {submission_id: submission.id} } }
     let(:submission) { create(:submission, exercise: create(:dummy)) }
 
     before do
       # Todo replace session with lti_parameter
       # Todo create LtiParameter Object
       # session[:lti_parameters] = {}
+      allow(controller).to receive(:current_user).and_return(submission.user)
       perform_request.call
     end
 
@@ -217,7 +218,7 @@ describe SessionsController do
       perform_request.call
     end
 
-    expect_status(200)
+    expect_http_status(:ok)
     expect_template(:destroy_through_lti)
   end
 
@@ -230,7 +231,7 @@ describe SessionsController do
         get :new
       end
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:new)
     end
 

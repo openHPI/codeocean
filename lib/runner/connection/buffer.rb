@@ -48,7 +48,10 @@ class Runner::Connection::Buffer
   def process_and_split(message_parts, stop: false)
     # We need a temporary buffer to operate on
     buffer = +''
-    message_parts.scan(SPLIT_INDIVIDUAL_LINES).each do |line|
+    # We split lines by `\n` and want to normalize them to be separated by `\r\n`.
+    # This allows us to identify a former line end with `\r` (as the `\n` is not matched)
+    # All results returned from this buffer are normalized to feature `\n` line endings.
+    message_parts.encode(crlf_newline: true).scan(SPLIT_INDIVIDUAL_LINES).each do |line|
       # Same argumentation as above: We can always append (previous empty or invalid)
       buffer += line
 
@@ -84,7 +87,7 @@ class Runner::Connection::Buffer
     # Second, if we have the beginning of a valid command but an invalid JSON
     return true if invalid_json && message.start_with?(/\s*{"cmd/)
     # Third, buffer the message if it contains long messages (e.g., an image or turtle batch commands)
-    return true if invalid_json && (message.include?('<img') || message.include?('"turtlebatch"'))
+    return true if invalid_json && (message.start_with?('<img') || message.include?('"turtlebatch"'))
 
     # If nothing applies, we don't want to buffer the current message
     false

@@ -33,7 +33,7 @@ class Runner::Strategy
     raise NotImplementedError
   end
 
-  def attach_to_execution(_command, _event_loop)
+  def attach_to_execution(_command, _event_loop, _starting_time)
     raise NotImplementedError
   end
 

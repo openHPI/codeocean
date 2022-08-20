@@ -18,7 +18,7 @@ sudo adduser codeocean
 
 # PostgreSQL
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
+sudo add-apt-repository "deb https://apt.postgresql.org/pub/repos/apt/ $(lsb_release -sc)-pgdg main"
 
 # drop postgres access control
 # tee /etc/postgresql/$postgres_version/main/pg_hba.conf <<EOF
@@ -35,7 +35,7 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 curl -sL https://deb.nodesource.com/setup_$node_version.x | sudo -E bash -
 
 # nginx
-echo "deb http://nginx.org/packages/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
+echo "deb https://nginx.org/packages/ubuntu `lsb_release -cs` nginx" | sudo tee /etc/apt/sources.list.d/nginx.list
 curl -fsSL https://nginx.org/keys/nginx_signing.key | sudo apt-key add -
 
 # Install packages

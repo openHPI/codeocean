@@ -9,7 +9,7 @@ describe Admin::DashboardController do
     describe 'with format HTML' do
       before { get :show }
 
-      expect_status(200)
+      expect_http_status(:ok)
       expect_template(:show)
     end
 
@@ -17,7 +17,7 @@ describe Admin::DashboardController do
       before { get :show, format: :json }
 
       expect_json
-      expect_status(200)
+      expect_http_status(:ok)
     end
   end
 end

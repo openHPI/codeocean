@@ -22,7 +22,7 @@ h1 = t('.title')
           - if any_submission && policy(any_submission).show_study_group? && statistics[exercise.id]
             - stats = statistics[exercise.id]
             tr
-              td = link_to exercise, controller: "exercises", action: "statistics", external_user_id: @user.id, id: exercise.id
+              td = link_to exercise, controller: "exercises", action: "external_user_statistics", external_user_id: @user.id, id: exercise.id
               td = stats["maximum_score"] or 0
               td.align-middle
                 - latest_viewable_submission = submissions.where(exercise: exercise).final.latest

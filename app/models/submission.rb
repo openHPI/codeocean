@@ -9,7 +9,7 @@ class Submission < ApplicationRecord
               remoteSubmit].freeze
   FILENAME_URL_PLACEHOLDER = '{filename}'
   MAX_COMMENTS_ON_RECOMMENDED_RFC = 5
-  OLDEST_RFC_TO_SHOW = 6.months
+  OLDEST_RFC_TO_SHOW = 1.month
 
   belongs_to :exercise
   belongs_to :study_group, optional: true
@@ -46,6 +46,8 @@ class Submission < ApplicationRecord
 
   validates :cause, inclusion: {in: CAUSES}
 
+  attr_reader :used_execution_environment
+
   # after_save :trigger_working_times_action_cable
 
   def build_files_hash(files, attribute)
@@ -74,7 +76,6 @@ class Submission < ApplicationRecord
   end
 
   def normalized_score
-    ::NewRelic::Agent.add_custom_attributes({unnormalized_score: score})
     if !score.nil? && !exercise.maximum_score.nil? && exercise.maximum_score.positive?
       score / exercise.maximum_score
     else
@@ -190,12 +191,17 @@ class Submission < ApplicationRecord
     result.merge(output)
   end
 
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[study_group_id]
+  end
+
   private
 
   def prepared_runner
     request_time = Time.zone.now
     begin
-      runner = Runner.for(user, exercise.execution_environment)
+      @used_execution_environment = AwsStudy.get_execution_environment(user, exercise)
+      runner = Runner.for(user, @used_execution_environment)
       files = collect_files
       files.reject!(&:teacher_defined_assessment?) if cause == 'run'
       Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Copying files to Runner #{runner.id} for #{user_type} #{user_id} and Submission #{id}." }
@@ -249,10 +255,14 @@ class Submission < ApplicationRecord
       cause: 'assess', # Required to differ run and assess for RfC show
       file: file, # Test file that was executed
       passed: passed,
-      output: testrun_output,
+      exit_code: output[:exit_code],
+      status: output[:status],
+      output: testrun_output.presence,
       container_execution_time: output[:container_execution_time],
       waiting_for_container_time: output[:waiting_for_container_time]
     )
+    TestrunMessage.create_for(testrun, output[:messages])
+    TestrunExecutionEnvironment.create(testrun: testrun, execution_environment: @used_execution_environment)
 
     filename = file.filepath
 
@@ -266,6 +276,7 @@ class Submission < ApplicationRecord
 
     output.merge!(assessment)
     output.merge!(filename: filename, message: feedback_message(file, output), weight: file.weight)
+    output.except!(:messages)
   end
 
   def feedback_message(file, output)

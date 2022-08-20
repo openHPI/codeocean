@@ -6,7 +6,6 @@ class InternalUsersController < ApplicationController
   before_action :require_activation_token, only: :activate
   before_action :require_reset_password_token, only: :reset_password
   before_action :set_user, only: MEMBER_ACTIONS
-  skip_before_action :verify_authenticity_token, only: :activate
   after_action :verify_authorized, except: %i[activate forgot_password reset_password]
 
   def activate
@@ -33,9 +32,15 @@ class InternalUsersController < ApplicationController
 
   def create
     @user = InternalUser.new(internal_user_params)
+    @user.role = role_param if current_user.admin?
     authorize!
     @user.send(:setup_activation)
-    create_and_respond(object: @user) { @user.send(:send_activation_needed_email!) }
+    create_and_respond(object: @user) do
+      @user.send(:send_activation_needed_email!)
+      # The return value is used as a flash message. If this block does not
+      # have any specific return value, a default success message is shown.
+      nil
+    end
   end
 
   def deliver_reset_password_instructions
@@ -63,14 +68,19 @@ class InternalUsersController < ApplicationController
 
   def index
     @search = InternalUser.ransack(params[:q])
-    @users = @search.result.includes(:consumer).order(:name).paginate(page: params[:page])
+    @users = @search.result.includes(:consumer).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
   def internal_user_params
-    params[:internal_user].permit(:consumer_id, :email, :name, :role) if params[:internal_user].present?
+    params.require(:internal_user).permit(:consumer_id, :email, :name)
   end
   private :internal_user_params
+
+  def role_param
+    params.require(:internal_user).permit(:role)[:role]
+  end
+  private :role_param
 
   def new
     @user = InternalUser.new
@@ -129,6 +139,7 @@ class InternalUsersController < ApplicationController
     # the form by another user. Otherwise, the update might fail if an
     # activation_token or password_reset_token is present
     @user.validate_password = current_user == @user
+    @user.role = role_param if current_user.admin?
 
     update_and_respond(object: @user, params: internal_user_params)
   end

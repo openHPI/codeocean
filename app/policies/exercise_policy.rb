@@ -5,7 +5,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
     admin?
   end
 
-  %i[show? feedback? statistics? rfcs_for_exercise?].each do |action|
+  %i[show? feedback? statistics? external_user_statistics? rfcs_for_exercise?].each do |action|
     define_method(action) { admin? || teacher_in_study_group? || (teacher? && @record.public?) || author? }
   end
 
@@ -38,7 +38,13 @@ class ExercisePolicy < AdminOrAuthorPolicy
       if @user.admin?
         @scope.all
       elsif @user.teacher?
-        @scope.where('user_id = ? OR public = TRUE', @user.id)
+        @scope.where(
+          'user_id IN (SELECT user_id FROM study_group_memberships WHERE study_group_id IN (?))
+          OR (user_id = ? AND user_type = ?)
+          OR public = TRUE',
+          @user.study_groups.pluck(:id),
+          @user.id, @user.class.name
+        )
       else
         @scope.none
       end

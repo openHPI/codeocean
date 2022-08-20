@@ -1,16 +1,16 @@
 = form_for(@error_template_attribute) do |f|
   = render('shared/form_errors', object: @error_template_attribute)
-  .form-group
-    = f.label(:key)
+  .mb-3
+    = f.label(:key, class: 'form-label')
     = f.text_field(:key, class: 'form-control', required: true)
-  .form-group
-    = f.label(:description)
+  .mb-3
+    = f.label(:description, class: 'form-label')
     = f.text_field(:description, class: 'form-control')
-  .form-group
-    = f.label(:regex)
+  .mb-3
+    = f.label(:regex, class: 'form-label')
     = f.text_field(:regex, class: 'form-control', required: true)
     .help-block.form-text == t('error_templates.hints.signature')
-  .form-check.form-group
+  .form-check.mb-3
     label.form-check-label
     = f.check_box(:important, class: 'form-check-input')
     = t('activerecord.attributes.error_template_attribute.important')

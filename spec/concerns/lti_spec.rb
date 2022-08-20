@@ -33,7 +33,7 @@ describe Lti do
     let(:last_name) { 'Doe' }
     let(:full_name) { 'John Doe' }
     let(:provider) { double }
-    let(:provider_full) { instance_double('IMS::LTI::ToolProvider', lis_person_name_full: full_name) }
+    let(:provider_full) { instance_double(IMS::LTI::ToolProvider, lis_person_name_full: full_name) }
 
     context 'when a full name is provided' do
       it 'returns the full name' do
@@ -62,7 +62,7 @@ describe Lti do
 
   describe '#return_to_consumer' do
     context 'with a return URL' do
-      let(:consumer_return_url) { 'http://example.org' }
+      let(:consumer_return_url) { 'https://example.org' }
 
       before { allow(controller).to receive(:params).and_return(launch_presentation_return_url: consumer_return_url) }
 
@@ -81,21 +81,23 @@ describe Lti do
     context 'without a return URL' do
       before do
         allow(controller).to receive(:params).and_return({})
-        allow(controller).to receive(:redirect_to).with(:root)
       end
 
       it 'redirects to the root URL' do
+        expect(controller).to receive(:redirect_to).with(:root)
         controller.send(:return_to_consumer)
       end
 
       it 'displays alerts' do
         message = I18n.t('sessions.oauth.failure')
         controller.send(:return_to_consumer, lti_errormsg: message)
+        expect(controller.instance_variable_get(:@flash)[:danger]).to eq(obtain_message(message))
       end
 
       it 'displays notices' do
-        message = I18n.t('sessions.oauth.success')
+        message = I18n.t('sessions.destroy_through_lti.success_without_outcome')
         controller.send(:return_to_consumer, lti_msg: message)
+        expect(controller.instance_variable_get(:@flash)[:info]).to eq(obtain_message(message))
       end
     end
   end

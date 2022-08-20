@@ -6,7 +6,7 @@ describe CodeharborLinksController do
   let(:user) { create(:teacher) }
 
   let(:codeocean_config) { instance_double(CodeOcean::Config) }
-  let(:codeharbor_config) { {codeharbor: {enabled: true, url: 'http://test.url'}} }
+  let(:codeharbor_config) { {codeharbor: {enabled: true, url: 'https://test.url'}} }
 
   before do
     allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
@@ -19,7 +19,7 @@ describe CodeharborLinksController do
       get :new
     end
 
-    expect_status(200)
+    expect_http_status(:ok)
   end
 
   describe 'GET #edit' do
@@ -27,12 +27,12 @@ describe CodeharborLinksController do
 
     before { get :edit, params: {id: codeharbor_link.id} }
 
-    expect_status(200)
+    expect_http_status(:ok)
   end
 
   describe 'POST #create' do
     let(:post_request) { post :create, params: {codeharbor_link: params} }
-    let(:params) { {push_url: 'http://foo.bar/push', check_uuid_url: 'http://foo.bar/check', api_key: 'api_key'} }
+    let(:params) { {push_url: 'https://foo.bar/push', check_uuid_url: 'https://foo.bar/check', api_key: 'api_key'} }
 
     it 'creates a codeharbor_link' do
       expect { post_request }.to change(CodeharborLink, :count).by(1)
@@ -59,14 +59,14 @@ describe CodeharborLinksController do
   describe 'PUT #update' do
     let(:codeharbor_link) { create(:codeharbor_link, user: user) }
     let(:put_request) { patch :update, params: {id: codeharbor_link.id, codeharbor_link: params} }
-    let(:params) { {push_url: 'http://foo.bar/push', check_uuid_url: 'http://foo.bar/check', api_key: 'api_key'} }
+    let(:params) { {push_url: 'https://foo.bar/push', check_uuid_url: 'https://foo.bar/check', api_key: 'api_key'} }
 
     it 'updates push_url' do
-      expect { put_request }.to change { codeharbor_link.reload.push_url }.to('http://foo.bar/push')
+      expect { put_request }.to change { codeharbor_link.reload.push_url }.to('https://foo.bar/push')
     end
 
     it 'updates check_uuid_url' do
-      expect { put_request }.to change { codeharbor_link.reload.check_uuid_url }.to('http://foo.bar/check')
+      expect { put_request }.to change { codeharbor_link.reload.check_uuid_url }.to('https://foo.bar/check')
     end
 
     it 'updates api_key' do

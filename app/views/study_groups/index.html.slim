@@ -1,13 +1,12 @@
 h1 = StudyGroup.model_name.human(count: 2)
 
 = render(layout: 'shared/form_filters') do |f|
-  .row.px-3
-    .form-group
-      = f.label(:consumer_id_eq, t('activerecord.attributes.internal_user.consumer'), class: 'sr-only')
-      = f.collection_select(:consumer_id_eq, Consumer.with_study_groups, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.internal_user.consumer'))
-    .form-group
-      = f.label(:name_cont, t('activerecord.attributes.study_group.name'), class: 'sr-only')
-      = f.search_field(:name_cont, class: 'form-control', placeholder: t('activerecord.attributes.study_group.name'))
+  .col-auto
+    = f.label(:consumer_id_eq, t('activerecord.attributes.internal_user.consumer'), class: 'visually-hidden form-label')
+    = f.collection_select(:consumer_id_eq, Consumer.with_study_groups, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.internal_user.consumer'))
+  .col-auto
+    = f.label(:name_cont, t('activerecord.attributes.study_group.name'), class: 'visually-hidden form-label')
+    = f.search_field(:name_cont, class: 'form-control', placeholder: t('activerecord.attributes.study_group.name'))
 
 .table-responsive
   table.table.mt-4

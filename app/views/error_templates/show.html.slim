@@ -26,9 +26,9 @@ h2.mt-4
         tr
           td
             - if attribute.important
-              span class="fa fa-star" aria-hidden="true"
+              span class="fa-solid fa-star" aria-hidden="true"
             - else
-              span class="fa fa-star-o" aria-hidden="true"
+              span class="fa-regular fa-star" aria-hidden="true"
           td = link_to_if(policy(attribute).show?, attribute.key, attribute)
           td = attribute.description
           td

@@ -16,7 +16,7 @@ describe ProformaService::ExportTask do
       subject(:export_task) { described_class.new }
 
       it 'assigns exercise' do
-        expect(export_task.instance_variable_get(:@exercise)).to be nil
+        expect(export_task.instance_variable_get(:@exercise)).to be_nil
       end
     end
   end
@@ -26,7 +26,7 @@ describe ProformaService::ExportTask do
 
     let(:task) { Proforma::Task.new }
     let(:exercise) { build(:dummy) }
-    let(:exporter) { instance_double('Proforma::Exporter', perform: 'zip') }
+    let(:exporter) { instance_double(Proforma::Exporter, perform: 'zip') }
 
     before do
       allow(ProformaService::ConvertExerciseToTask).to receive(:call).with(exercise: exercise).and_return(task)

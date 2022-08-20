@@ -53,7 +53,12 @@ class Runner::Connection
   def send_data(raw_data)
     encoded_message = encode(raw_data)
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Sending to #{@socket.url}: #{encoded_message.inspect}" }
-    @socket.send(encoded_message)
+    # Send the message to the WebSocket connection _immediately_
+    # by scheduling it for the next execution of the EventMachine reactor run.
+    # Otherwise, the message might be queued causing delays for users.
+    EventMachine.next_tick do
+      @socket.send(encoded_message)
+    end
   end
 
   # Close the WebSocket connection

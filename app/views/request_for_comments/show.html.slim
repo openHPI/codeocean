@@ -1,7 +1,7 @@
 .list-group
   h4#exercise_caption.list-group-item-heading data-exercise-id="#{@request_for_comment.exercise.id}" data-rfc-id="#{@request_for_comment.id}"
     - if @request_for_comment.solved?
-      span.fa.fa-check aria-hidden="true"
+      span.fa-solid.fa-check aria-hidden="true"
     = link_to_if(policy(@request_for_comment.exercise).show?, @request_for_comment.exercise.title, [:implement, @request_for_comment.exercise])
   p.list-group-item-text
     - user = @request_for_comment.user
@@ -17,7 +17,7 @@
       h5
         = t('activerecord.attributes.exercise.description')
       .text
-        span.fa.fa-chevron-up.collapse-button
+        span.fa-solid.fa-chevron-up.collapse-button
         = render_markdown(@request_for_comment.exercise.description)
 
     .question
@@ -36,22 +36,9 @@
         - if output_runs.size > 0
           h5.mt-4= t('request_for_comments.runtime_output')
           .collapsed.testrun-output.text
-            span.fa.fa-chevron-down.collapse-button
+            span.fa-solid.fa-chevron-down.collapse-button
             - output_runs.each do |testrun|
-              - output = testrun.try(:output)
-              - if output
-                - Sentry.set_extras(output: output)
-                - begin
-                  - Timeout::timeout(2) do
-                    // (?:\\"|.) is required to correctly identify " within the output.
-                    // The outer (?:   |\d+?) is used to correctly identify integers within the JSON
-                    - messages = output.scan(/{(?:(?:"(?:\\"|.)+?":(?:"(?:\\"|.)*?"|-?\d+?|\[.*?\]|null))+?,?)+}/)
-                    - messages.map! {|el| JSON.parse(el)}
-                    - messages.keep_if {|message| message['cmd'] == 'write'}
-                    - messages.map! {|message| message['data']}
-                    - output = messages.join ''
-                - rescue Timeout::Error
-              pre= output or t('request_for_comments.no_output')
+              pre= testrun.log or t('request_for_comments.no_output')
 
         - assess_runs = testruns.select {|run| run.cause == 'assess' }
         - unless @current_user.admin?
@@ -63,13 +50,13 @@
               .testrun-container
                 div class=("result #{testrun.passed ? 'passed' : 'failed'}")
                 .collapsed.testrun-output.text
-                  span.fa.fa-chevron-down.collapse-button
-                  pre= testrun.output or t('request_for_comments.no_output')
+                  span.fa-solid.fa-chevron-down.collapse-button
+                  pre= testrun.log or t('request_for_comments.no_output')
 
     - if @current_user.admin? && user.is_a?(ExternalUser)
       = render('admin_menu')
 
-    hr/
+    hr
 
     .howto
       h5.mt-4
@@ -83,9 +70,9 @@
   | also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
 - submission.files.each do |file|
   = (file.path or "") + "/" + file.name +  file.file_type.file_extension
-  br/
-  |   
-  i.fa.fa-arrow-down aria-hidden="true"
+  br
+  | &nbsp;&nbsp;
+  i.fa-solid.fa-arrow-down aria-hidden="true"
   = t('request_for_comments.click_here')
   #commentitor.editor data-file-id="#{file.id}" data-mode="#{file.file_type.editor_mode}" data-read-only="true"
     = file.content
@@ -193,7 +180,7 @@ javascript:
             <div class="comment-username">' + preprocess(comment.username) + '</div> \
             <div class="comment-date">' + comment.date + '</div> \
             <div class="comment-updated' + (comment.updated ? '' : ' d-none') + '"> \
-              <i class="fa fa-pencil" aria-hidden="true"></i> \
+              <i class="fa-solid fa-pencil" aria-hidden="true"></i> \
               #{{ t('request_for_comments.comment_edited') }} \
             </div> \
           </div> \
@@ -461,11 +448,11 @@ javascript:
       if (commenttext !== "") {
         createComment(fileid, row, editor, commenttext);
         commentTextarea.val('') ;
-        commentModal.modal('hide');
+        bootstrap.Modal.getInstance(commentModal).hide();
       }
     });
 
-    commentModal.modal('show');
+    new bootstrap.Modal(commentModal).show();
   }
 
   function ajaxError(response) {

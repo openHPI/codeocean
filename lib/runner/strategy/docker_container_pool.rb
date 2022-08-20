@@ -93,14 +93,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
       end
 
       local_file_path = local_path(file.filepath)
-      if file.file_type.binary?
-        FileUtils.cp(file.native_file.path, local_file_path)
-      else
-        begin
-          File.write(local_file_path, file.content)
-        rescue IOError => e
-          raise Runner::Error::WorkspaceError.new("Could not create file #{file.filepath}: #{e.inspect}")
-        end
+      begin
+        File.write(local_file_path, file.read)
+      rescue IOError => e
+        raise Runner::Error::WorkspaceError.new("Could not create file #{file.filepath}: #{e.inspect}")
       end
     end
     FileUtils.chmod_R('+rwtX', local_workspace_path)
@@ -108,7 +104,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
-  def attach_to_execution(command, event_loop)
+  def attach_to_execution(command, event_loop, starting_time)
     reset_inactivity_timer
 
     @command = command
@@ -119,7 +115,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     begin
       Timeout.timeout(@execution_environment.permitted_execution_time) do
         socket.send_data(command)
-        yield(socket)
+        yield(socket, starting_time)
         event_loop.wait
         event_loop.stop
       end
@@ -213,7 +209,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   end
 
   def local_workspace_path
-    @local_workspace_path ||= Pathname.new(container.binds.first.split(':').first)
+    @local_workspace_path ||= Pathname.new(container.json['HostConfig']['Binds'].first.split(':').first)
   end
 
   def reset_inactivity_timer
@@ -264,7 +260,9 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
           @stream = 'stdout'
           {'type' => @stream, 'data' => event_data}
         when /#{Regexp.quote(@strategy.command)}/
+          # Hide command from output
         when /bash: cmd:canvasevent: command not found/
+          # Hide errors from output when Python program exited before it consumed all canvas events
         else
           {'type' => @stream, 'data' => event_data}
       end

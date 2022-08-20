@@ -19,7 +19,7 @@ class FileTemplatesController < ApplicationController
   # GET /file_templates
   # GET /file_templates.json
   def index
-    @file_templates = FileTemplate.all.order(:file_type_id).paginate(page: params[:page])
+    @file_templates = FileTemplate.all.order(:file_type_id).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
@@ -48,7 +48,7 @@ class FileTemplatesController < ApplicationController
 
     respond_to do |format|
       if @file_template.save
-        format.html { redirect_to @file_template, notice: 'File template was successfully created.' }
+        format.html { redirect_to @file_template, notice: t('shared.object_created', model: @file_template.class.model_name.human) }
         format.json { render :show, status: :created, location: @file_template }
       else
         format.html { render :new }
@@ -63,7 +63,7 @@ class FileTemplatesController < ApplicationController
     authorize!
     respond_to do |format|
       if @file_template.update(file_template_params)
-        format.html { redirect_to @file_template, notice: 'File template was successfully updated.' }
+        format.html { redirect_to @file_template, notice: t('shared.object_updated', model: @file_template.class.model_name.human) }
         format.json { render :show, status: :ok, location: @file_template }
       else
         format.html { render :edit }
@@ -78,7 +78,7 @@ class FileTemplatesController < ApplicationController
     authorize!
     @file_template.destroy
     respond_to do |format|
-      format.html { redirect_to file_templates_url, notice: 'File template was successfully destroyed.' }
+      format.html { redirect_to file_templates_url, notice: t('shared.object_destroyed', model: @file_template.class.model_name.human) }
       format.json { head :no_content }
     end
   end

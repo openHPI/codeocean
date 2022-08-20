@@ -15,7 +15,7 @@ class ProxyExercisesController < ApplicationController
       user: current_user)
     proxy_exercise.send(:generate_token)
     if proxy_exercise.save
-      redirect_to(proxy_exercise, notice: t('shared.object_cloned', model: ProxyExercise.model_name.human))
+      redirect_to(proxy_exercise_path(proxy_exercise), notice: t('shared.object_cloned', model: ProxyExercise.model_name.human))
     else
       flash[:danger] = t('shared.message_failure')
       redirect_to(@proxy_exercise)
@@ -51,7 +51,7 @@ class ProxyExercisesController < ApplicationController
 
   def index
     @search = policy_scope(ProxyExercise).ransack(params[:q])
-    @proxy_exercises = @search.result.order(:title).paginate(page: params[:page])
+    @proxy_exercises = @search.result.order(:title).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

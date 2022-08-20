@@ -2,7 +2,7 @@
 
 class Runner
   class Error < ApplicationError
-    attr_accessor :waiting_duration, :execution_duration
+    attr_accessor :waiting_duration, :execution_duration, :starting_time
 
     class BadRequest < Error; end
 

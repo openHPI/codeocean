@@ -101,6 +101,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Destroying runner at #{runner_url}" }
     response = self.class.http_connection.delete runner_url
     self.class.handle_error response unless response.status == 204
+  rescue Runner::Error::RunnerNotFound
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Runner not found, nothing to destroy" }
   rescue Faraday::Error => e
     raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
   ensure
@@ -114,14 +116,13 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     copy = files.map do |file|
       {
         path: file.filepath,
-        content: Base64.strict_encode64(file.content.presence || file.native_file.read || ''),
+        content: Base64.strict_encode64(file.read || ''),
       }
     end
 
     # First, clean the workspace and second, copy all files to their location.
     # This ensures that no artifacts from a previous submission remain in the workspace.
-    # TODO: Switch back to clean diretory content only. See https://github.com/openHPI/poseidon/issues/42
-    body = {copy: copy, delete: ['/workspace']}
+    body = {copy: copy, delete: ['./*']}
     response = self.class.http_connection.patch url, body.to_json
     return if response.status == 204
 
@@ -133,10 +134,10 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
-  def attach_to_execution(command, event_loop)
+  def attach_to_execution(command, event_loop, starting_time)
     websocket_url = execute_command(command)
     socket = Connection.new(websocket_url, self, event_loop)
-    yield(socket)
+    yield(socket, starting_time)
     socket
   end
 

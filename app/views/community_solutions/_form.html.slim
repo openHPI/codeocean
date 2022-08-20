@@ -1,21 +1,21 @@
 .exercise.clearfix
   div
-    span.badge.badge-pill.badge-primary.float-right.score
+    span.badge.rounded-pill.bg-primary.float-end.score
 
     h1 id="exercise-headline"
-      i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa fa-chevron-right' : 'fa fa-chevron-down')
+      i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
       => @community_solution.model_name.human(count: 1)
       = @community_solution.exercise.title
 
   #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
     .card.border-success.mb-3
       .card-header
-        i.fa.fa-info-circle.text-success
+        i.fa-solid.fa-circle-info.text-success
         strong.text-success
           => t('community_solutions.help_us_out')
         = t('community_solutions.explanation')
         br
-        i.fa.fa-flask.text-success
+        i.fa-solid.fa-flask.text-success
         strong.text-success
           => t('community_solutions.research_status')
         == t('community_solutions.research_explanation')
@@ -32,11 +32,11 @@
     h4
       = t('community_solutions.current_community_solution')
     #community-solution-editor.row
-      .pr-0 class=(@community_solution.exercise.hide_file_tree ? 'd-none col-sm-3' : 'col-sm-3')
+      .pe-0 class=(@community_solution.exercise.hide_file_tree ? 'd-none col-sm-3' : 'col-sm-3')
         .card.border-secondary
           .card-header.d-flex.justify-content-between.align-items-center.px-0.py-2
             .px-2 = I18n.t('exercises.editor_file_tree.file_root')
-          .card-body.pt-0.pr-0.pl-1.pb-1
+          .card-body.pt-0.pe-0.ps-1.pb-1
             #files data-entries=FileTree.new(@files).to_js_tree
       div class=(@community_solution.exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
         div.editor-col.col.p-0 id='frames'
@@ -44,16 +44,16 @@
             = render('exercises/editor_frame', exercise: @community_solution.exercise, file: file)
 
   .col-xl-6.container-fluid
-    div.bg-dark.h-100.float-left.row style="width: 1px"
+    div.bg-dark.h-100.float-start.row style="width: 1px"
     div
       h4
         = t('community_solutions.your_submission')
       #own-solution-editor.row
-        .pr-0 class=(@community_solution.exercise.hide_file_tree ? 'd-none col-sm-3' : 'col-sm-3')
+        .pe-0 class=(@community_solution.exercise.hide_file_tree ? 'd-none col-sm-3' : 'col-sm-3')
           .card.border-secondary
             .card-header.d-flex.justify-content-between.align-items-center.px-0.py-2
               .px-2 = I18n.t('exercises.editor_file_tree.file_root')
-            .card-body.pt-0.pr-0.pl-1.pb-1
+            .card-body.pt-0.pe-0.ps-1.pb-1
               #own-files data-entries=FileTree.new(@own_files).to_js_tree
         div class=(@community_solution.exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
           div.editor-col.col.p-0 id='own-frames'
@@ -61,6 +61,6 @@
               = render('exercises/editor_frame', exercise: @community_solution.exercise, file: file, own_solution: true)
 #statusbar.visible.mt-2 style="height: 5em"
   p.text-center
-    = render('exercises/editor_button', classes: 'btn-lg btn-success ml-5 mr-3', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'change-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa fa-send', id: 'submit', label: t('community_solutions.change_community_solution'))
-    = render('exercises/editor_button', classes: 'btn-lg btn-secondary ml-5', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'accept-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa fa-check', id: 'accept', label: t('community_solutions.accept_community_solution'))
+    = render('exercises/editor_button', classes: 'btn-lg btn-success ms-5 me-3', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'change-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa-solid fa-paper-plane', id: 'submit', label: t('community_solutions.change_community_solution'))
+    = render('exercises/editor_button', classes: 'btn-lg btn-secondary ms-5', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'accept-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa-solid fa-check', id: 'accept', label: t('community_solutions.accept_community_solution'))
   button style="display:none" id="autosave" data-url=community_solution_path(@community_solution) data-http-method='PUT' data-cause='autosave-community-solution' data-exercise-id=@community_solution.exercise.id

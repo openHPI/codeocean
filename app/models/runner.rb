@@ -62,10 +62,11 @@ class Runner < ApplicationRecord
       # initializing its Runner::Connection with the given event loop. The Runner::Connection class ensures that
       # this event loop is stopped after the socket was closed.
       event_loop = Runner::EventLoop.new
-      socket = @strategy.attach_to_execution(command, event_loop, &block)
+      socket = @strategy.attach_to_execution(command, event_loop, starting_time, &block)
       event_loop.wait
       raise socket.error if socket.error.present?
     rescue Runner::Error => e
+      e.starting_time = starting_time
       e.execution_duration = Time.zone.now - starting_time
       raise
     end
@@ -74,29 +75,34 @@ class Runner < ApplicationRecord
   end
 
   def execute_command(command, raise_exception: true)
-    output = {}
-    stdout = +''
-    stderr = +''
+    output = {
+      stdout: +'',
+      stderr: +'',
+      messages: [],
+      exit_code: 1, # default to error
+    }
     try = 0
+
     begin
       if try.nonzero?
         request_new_id
         save
       end
 
-      exit_code = 1 # default to error
-      execution_time = attach_to_execution(command) do |socket|
+      execution_time = attach_to_execution(command) do |socket, starting_time|
         socket.on :stderr do |data|
-          stderr << data
+          output[:stderr] << data
+          output[:messages].push({cmd: :write, stream: :stderr, log: data, timestamp: Time.zone.now - starting_time})
         end
         socket.on :stdout do |data|
-          stdout << data
+          output[:stdout] << data
+          output[:messages].push({cmd: :write, stream: :stdout, log: data, timestamp: Time.zone.now - starting_time})
         end
         socket.on :exit do |received_exit_code|
-          exit_code = received_exit_code
+          output[:exit_code] = received_exit_code
         end
       end
-      output.merge!(container_execution_time: execution_time, status: exit_code.zero? ? :ok : :failed)
+      output.merge!(container_execution_time: execution_time, status: output[:exit_code].zero? ? :ok : :failed)
     rescue Runner::Error::ExecutionTimeout => e
       Rails.logger.debug { "Running command `#{command}` timed out: #{e.message}" }
       output.merge!(status: :timeout, container_execution_time: e.execution_duration)
@@ -115,12 +121,13 @@ class Runner < ApplicationRecord
       output.merge!(status: :failed, container_execution_time: e.execution_duration)
     rescue Runner::Error => e
       Rails.logger.debug { "Running command `#{command}` failed: #{e.message}" }
-      output.merge!(status: :failed, container_execution_time: e.execution_duration)
+      output.merge!(status: :container_depleted, container_execution_time: e.execution_duration)
     ensure
       # We forward the exception if requested
       raise e if raise_exception && defined?(e) && e.present?
 
-      output.merge!(stdout: stdout, stderr: stderr)
+      # If the process was killed with SIGKILL, it is most likely that the OOM killer was triggered.
+      output[:status] = :out_of_memory if output[:exit_code] == 137
     end
   end
 
@@ -147,13 +154,13 @@ class Runner < ApplicationRecord
       rescue Runner::Error
         # An additional error was raised during synchronization
         raise Runner::Error::EnvironmentNotFound.new(
-          "The execution environment with id #{execution_environment.id} was not found by the runner management. "\
+          "The execution environment with id #{execution_environment.id} was not found by the runner management. " \
           'In addition, it could not be synced so that this probably indicates a permanent error.'
         )
       else
         # No error was raised during synchronization
         raise Runner::Error::EnvironmentNotFound.new(
-          "The execution environment with id #{execution_environment.id} was not found yet by the runner management. "\
+          "The execution environment with id #{execution_environment.id} was not found yet by the runner management. " \
           'It has been successfully synced now so that the next request should be successful.'
         )
       end

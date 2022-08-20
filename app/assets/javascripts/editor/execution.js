@@ -46,7 +46,6 @@ CodeOceanEditorWebsocket = {
     this.websocket.on('turtlebatch', this.handleTurtlebatchCommand.bind(this));
     this.websocket.on('render', this.renderWebsocketOutput.bind(this));
     this.websocket.on('exit', this.handleExitCommand.bind(this));
-    this.websocket.on('timeout', this.showTimeoutMessage.bind(this));
     this.websocket.on('status', this.showStatus.bind(this));
     this.websocket.on('hint', this.showHint.bind(this));
   },

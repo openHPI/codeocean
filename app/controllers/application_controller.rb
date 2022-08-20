@@ -2,7 +2,7 @@
 
 class ApplicationController < ActionController::Base
   include ApplicationHelper
-  include Pundit
+  include Pundit::Authorization
 
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
 
@@ -15,9 +15,11 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
 
   def current_user
-    ::NewRelic::Agent.add_custom_attributes(external_user_id: session[:external_user_id],
-      session_user_id: session[:user_id])
-    @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) || login_from_session || login_from_other_sources || nil
+    @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) ||
+                      login_from_session ||
+                      login_from_other_sources ||
+                      login_from_authentication_token ||
+                      nil
   end
 
   def require_user!
@@ -32,6 +34,13 @@ class ApplicationController < ActionController::Base
       ::Mnemosyne::Instrumenter.current_trace.meta['csrf_token'] = session[:_csrf_token]
       ::Mnemosyne::Instrumenter.current_trace.meta['external_user_id'] = session[:external_user_id]
     end
+  end
+
+  def login_from_authentication_token
+    token = AuthenticationToken.find_by(shared_secret: params[:token])
+    return unless token
+
+    auto_login(token.user) if token.expire_at.future?
   end
 
   def set_sentry_context
@@ -73,7 +82,7 @@ class ApplicationController < ActionController::Base
   private :render_error
 
   def switch_locale(&action)
-    session[:locale] = params[:custom_locale] || params[:locale] || session[:locale]
+    session[:locale] = sanitize_locale(params[:custom_locale] || params[:locale] || session[:locale])
     locale = session[:locale] || I18n.default_locale
     Sentry.set_extras(locale: locale)
     I18n.with_locale(locale, &action)
@@ -98,4 +107,18 @@ class ApplicationController < ActionController::Base
     @embed_options
   end
   private :load_embed_options
+
+  # Sanitize given locale.
+  #
+  # Return `nil` if the locale is blank or not available.
+  #
+  def sanitize_locale(locale)
+    return if locale.blank?
+
+    locale = locale.downcase.to_sym
+    return unless I18n.available_locales.include?(locale)
+
+    locale
+  end
+  private :sanitize_locale
 end

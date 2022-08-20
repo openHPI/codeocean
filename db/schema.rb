@@ -10,15 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_18_185051) do
+ActiveRecord::Schema.define(version: 2022_07_21_131946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "anomaly_notifications", id: :serial, force: :cascade do |t|
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "exercise_id"
     t.integer "exercise_collection_id"
     t.string "reason"
@@ -29,14 +30,25 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
     t.index ["user_type", "user_id"], name: "index_anomaly_notifications_on_user"
   end
 
+  create_table "authentication_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "shared_secret", null: false
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.datetime "expire_at", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["shared_secret"], name: "index_authentication_tokens_on_shared_secret", unique: true
+    t.index ["user_type", "user_id"], name: "index_authentication_tokens_on_user"
+  end
+
   create_table "codeharbor_links", id: :serial, force: :cascade do |t|
     t.string "api_key"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "user_type"
     t.integer "user_id"
     t.string "push_url"
     t.string "check_uuid_url"
+    t.string "user_type"
     t.index ["user_type", "user_id"], name: "index_codeharbor_links_on_user_type_and_user_id"
   end
 
@@ -123,8 +135,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
   create_table "events", id: :serial, force: :cascade do |t|
     t.string "category"
     t.string "data"
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "exercise_id"
     t.integer "file_id"
     t.datetime "created_at", null: false
@@ -164,8 +176,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "use_anomaly_detection", default: false
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.index ["user_type", "user_id"], name: "index_exercise_collections_on_user_type_and_user_id"
   end
 
@@ -253,8 +265,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
 
   create_table "files", id: :serial, force: :cascade do |t|
     t.text "content"
-    t.string "context_type"
     t.integer "context_id"
+    t.string "context_type"
     t.integer "file_id"
     t.integer "file_type_id"
     t.boolean "hidden"
@@ -389,8 +401,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
 
   create_table "searches", id: :serial, force: :cascade do |t|
     t.integer "exercise_id", null: false
-    t.string "user_type", null: false
     t.integer "user_id", null: false
+    t.string "user_type", null: false
     t.string "search"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -446,8 +458,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
   end
 
   create_table "subscriptions", id: :serial, force: :cascade do |t|
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "request_for_comment_id"
     t.string "subscription_type"
     t.datetime "created_at", null: false
@@ -461,6 +473,28 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
     t.datetime "updated_at"
   end
 
+  create_table "testrun_execution_environments", force: :cascade do |t|
+    t.bigint "testrun_id", null: false
+    t.bigint "execution_environment_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["execution_environment_id"], name: "index_testrun_execution_environments"
+    t.index ["testrun_id"], name: "index_testrun_execution_environments_on_testrun_id"
+  end
+
+  create_table "testrun_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "testrun_id", null: false
+    t.interval "timestamp", default: "PT0S", null: false
+    t.integer "cmd", limit: 2, default: 1, null: false, comment: "Used as enum in Rails"
+    t.integer "stream", limit: 2, comment: "Used as enum in Rails"
+    t.text "log"
+    t.jsonb "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["testrun_id"], name: "index_testrun_messages_on_testrun_id"
+    t.check_constraint "(log IS NULL) OR (data IS NULL)", name: "either_data_or_log"
+  end
+
   create_table "testruns", id: :serial, force: :cascade do |t|
     t.boolean "passed"
     t.text "output"
@@ -471,7 +505,10 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
     t.string "cause"
     t.interval "container_execution_time"
     t.interval "waiting_for_container_time"
+    t.integer "exit_code", limit: 2, comment: "No exit code is available in case of a timeout"
+    t.integer "status", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
     t.index ["submission_id"], name: "index_testruns_on_submission_id"
+    t.check_constraint "(exit_code >= 0) AND (exit_code <= 255)", name: "exit_code_constraint"
   end
 
   create_table "tips", force: :cascade do |t|
@@ -489,8 +526,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
 
   create_table "user_exercise_feedbacks", id: :serial, force: :cascade do |t|
     t.integer "exercise_id", null: false
-    t.string "user_type", null: false
     t.integer "user_id", null: false
+    t.string "user_type", null: false
     t.integer "difficulty"
     t.integer "working_time_seconds"
     t.string "feedback_text"
@@ -503,8 +540,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
   end
 
   create_table "user_exercise_interventions", id: :serial, force: :cascade do |t|
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "exercise_id"
     t.integer "intervention_id"
     t.integer "accumulated_worktime_s"
@@ -514,8 +551,8 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
   end
 
   create_table "user_proxy_exercise_exercises", id: :serial, force: :cascade do |t|
-    t.string "user_type"
     t.integer "user_id"
+    t.string "user_type"
     t.integer "proxy_exercise_id"
     t.integer "exercise_id"
     t.datetime "created_at"
@@ -536,6 +573,9 @@ ActiveRecord::Schema.define(version: 2021_11_18_185051) do
   add_foreign_key "exercise_tips", "tips"
   add_foreign_key "remote_evaluation_mappings", "study_groups"
   add_foreign_key "submissions", "study_groups"
+  add_foreign_key "testrun_execution_environments", "execution_environments"
+  add_foreign_key "testrun_execution_environments", "testruns"
+  add_foreign_key "testrun_messages", "testruns"
   add_foreign_key "tips", "file_types"
   add_foreign_key "user_exercise_feedbacks", "submissions"
 end

@@ -23,7 +23,7 @@ class Assessor
 
   def initialize(options = {})
     if options[:execution_environment].testing_framework?
-      @testing_framework_adapter = Kernel.const_get(options[:execution_environment].testing_framework).new
+      @testing_framework_adapter = options[:execution_environment].testing_framework.constantize.new
     else
       raise Error.new('No testing framework adapter set!')
     end

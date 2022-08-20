@@ -3,20 +3,21 @@ h1
   ' (external user
   = link_to_if(policy(@external_user).show?, @external_user.displayname, @external_user)
   ' )
-- current_submission = @submissions.first
+- submissions = @all_events.filter{|event| event.is_a? Submission}
+- current_submission = submissions.first
 - if current_submission
   - initial_files = current_submission.files.to_a
 
   - all_files = []
   - file_types = Set.new()
-  - @submissions.each do |submission|
+  - submissions.each do |submission|
     - submission.files.each do |file|
       - file_types.add(ActiveSupport::JSON.encode(file.file_type))
     - all_files.push(submission.files)
   - all_files.reject!(&:blank?)
   - file_types.reject!(&:blank?)
 
-  .d-none#data data-submissions=ActiveSupport::JSON.encode(@submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
+  .d-none#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
 
   #stats-editor.row
     - index = 0
@@ -28,16 +29,28 @@ h1
 
   .flex-container
     button.btn.btn-secondary id='play-button'
-      span.fa.fa-play
+      span.fa-solid.fa-play
     #submissions-slider.flex-item
       input type='range' orient='horizontal' list='datapoints' min=0 max=all_files.length-1 value=0 style="width: 100%"
       datalist#datapoints
         - index=0
-        - @submissions.each do |submission|
+        - submissions.each do |submission|
           - next if submission.files.blank?
           option data-submission=submission
             =index
           - index += 1
+  - if policy(@exercise).detailed_statistics?
+    .bg-light.w-100.p-2.mb-4.align-items-center.d-flex.justify-content-between
+      - if @show_autosaves
+        span.ps-1.pb-1
+          i.fa-solid.fa-circle-info.align-middle
+          small.me-5.ms-1 = t('.toggle_status_on')
+        = link_to t('.toggle_autosave_off'), statistics_external_user_exercise_path(show_autosaves: false), class: "btn btn-outline-dark float-end btn-sm"
+      - else
+        span.ps-1.pb-1
+          i.fa-solid.fa-circle-info.align-middle
+          small.me-5.ms-1 = t('.toggle_status_off')
+        = link_to t('.toggle_autosave_on'), statistics_external_user_exercise_path(show_autosaves: true), class: "btn btn-outline-dark float-end btn-sm"
   #timeline
     .table-responsive
       table.table
@@ -65,9 +78,9 @@ h1
                 td.align-middle
                   -this.testruns.includes(:file).order("files.name").each do |run|
                     - if run.passed
-                      .unit-test-result.positive-result title=[run.file&.filepath, run.output].join("\n").strip
+                      .unit-test-result.positive-result title=[run.file&.filepath, run.log].join.strip
                     - else
-                      .unit-test-result.unknown-result title=[run.file&.filepath, run.output].join("\n").strip
+                      .unit-test-result.unknown-result title=[run.file&.filepath, run.log].join.strip
                 td = @working_times_until[index] if index > 0 if policy(@exercise).detailed_statistics?
               - elsif this.is_a? UserExerciseIntervention
                 td = this.created_at.strftime("%F %T")

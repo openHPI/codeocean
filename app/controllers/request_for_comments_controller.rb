@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class RequestForCommentsController < ApplicationController
+  include CommonBehavior
   before_action :require_user!
-  before_action :set_request_for_comment, only: %i[show mark_as_solved set_thank_you_note]
+  before_action :set_request_for_comment, only: %i[show mark_as_solved set_thank_you_note clear_question]
   before_action :set_study_group_grouping,
     only: %i[index my_comment_requests rfcs_with_my_comments rfcs_for_exercise]
 
@@ -23,7 +24,7 @@ class RequestForCommentsController < ApplicationController
       .where(exercises: {unpublished: false})
       .includes(submission: [:study_group])
       .order('created_at DESC')
-      .paginate(page: params[:page], total_entries: @search.result.length)
+      .paginate(page: params[:page], per_page: per_page_param, total_entries: @search.result.length)
 
     authorize!
   end
@@ -36,7 +37,7 @@ class RequestForCommentsController < ApplicationController
       .ransack(params[:q])
     @request_for_comments = @search.result
       .order('created_at DESC')
-      .paginate(page: params[:page])
+      .paginate(page: params[:page], per_page: per_page_param)
     authorize!
     render 'index'
   end
@@ -50,7 +51,7 @@ class RequestForCommentsController < ApplicationController
       .ransack(params[:q])
     @request_for_comments = @search.result
       .order('last_comment DESC')
-      .paginate(page: params[:page])
+      .paginate(page: params[:page], per_page: per_page_param)
     authorize!
     render 'index'
   end
@@ -65,7 +66,7 @@ class RequestForCommentsController < ApplicationController
     @request_for_comments = @search.result
       .joins(:exercise)
       .order('last_comment DESC')
-      .paginate(page: params[:page])
+      .paginate(page: params[:page], per_page: per_page_param)
     # let the exercise decide, whether its rfcs should be visible
     authorize(exercise)
     render 'index'
@@ -99,6 +100,12 @@ class RequestForCommentsController < ApplicationController
         format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  # POST /request_for_comments/1/clear_question
+  def clear_question
+    authorize!
+    update_and_respond(object: @request_for_comment, params: {question: nil})
   end
 
   # GET /request_for_comments/1

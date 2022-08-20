@@ -10,6 +10,8 @@ $(document).on('turbolinks:load', function() {
   var fileTypeById = {};
 
   var showActiveFile = function() {
+    $('tr.active').removeClass('active');
+    $('tr#submission-' + currentSubmission).addClass('active');
     var session = editor.getSession();
     var fileType = fileTypeById[active_file.file_type_id];
     session.setMode(fileType.editor_mode);
@@ -81,6 +83,7 @@ $(document).on('turbolinks:load', function() {
 
     $('tr[data-id]>.clickable').each(function(index, element) {
       element = $(element);
+      element.parent().attr('id', 'submission-' + index);
       element.click(function() {
         slider.val(index);
         slider.change()
@@ -105,7 +108,7 @@ $(document).on('turbolinks:load', function() {
     stopReplay = function() {
       clearInterval(playInterval);
       playInterval = undefined;
-      playButton.find('span.fa').removeClass('fa-pause').addClass('fa-play')
+      playButton.find('span.fa-solid').removeClass('fa-pause').addClass('fa-play')
     };
 
     playButton.on('click', function(event) {
@@ -124,7 +127,7 @@ $(document).on('turbolinks:load', function() {
             stopReplay();
           }
         }, 1000);
-        playButton.find('span.fa').removeClass('fa-play').addClass('fa-pause')
+        playButton.find('span.fa-solid').removeClass('fa-play').addClass('fa-pause')
       } else {
         stopReplay();
       }

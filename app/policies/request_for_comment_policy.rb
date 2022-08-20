@@ -25,6 +25,10 @@ class RequestForCommentPolicy < ApplicationPolicy
     admin? || author?
   end
 
+  def clear_question?
+    admin? || teacher_in_study_group?
+  end
+
   def edit?
     admin?
   end

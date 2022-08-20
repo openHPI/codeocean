@@ -11,7 +11,7 @@ class CommunitySolutionsController < ApplicationController
 
   # GET /community_solutions
   def index
-    @community_solutions = CommunitySolution.all
+    @community_solutions = CommunitySolution.all.paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
@@ -85,7 +85,7 @@ class CommunitySolutionsController < ApplicationController
   private
 
   def authorize!
-    authorize(@community_solution)
+    authorize(@community_solution || @community_solutions)
   end
 
   # Use callbacks to share common setup or constraints between actions.

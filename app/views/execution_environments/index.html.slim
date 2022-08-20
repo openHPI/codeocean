@@ -1,11 +1,11 @@
 h1.d-inline-block = ExecutionEnvironment.model_name.human(count: 2)
 
 - if Runner.management_active?
-  = button_to( { action: :sync_all_to_runner_management }, { form_class: 'float-right mb-2', class: 'btn btn-success' })
-    i.fa.fa-upload
+  = button_to( { action: :sync_all_to_runner_management }, { form_class: 'float-end mb-2', class: 'btn btn-success' })
+    i.fa-solid.fa-upload
     = t('execution_environments.index.synchronize_all.button')
 
-.table-responsive
+.table-responsive.w-100
   table.table
     thead
       tr

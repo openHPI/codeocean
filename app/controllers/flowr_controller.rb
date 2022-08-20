@@ -6,7 +6,7 @@ class FlowrController < ApplicationController
     # get the latest submission for this user that also has a test run (i.e. structured_errors if applicable)
     submission = Submission.joins(:testruns)
       .where(submissions: {user_id: current_user.id, user_type: current_user.class.name})
-      .order('testruns.created_at DESC').first
+      .merge(Testrun.order(created_at: :desc)).first
 
     # Return if no submission was found
     if submission.blank? || @embed_options[:disable_hints] || @embed_options[:hide_test_results]

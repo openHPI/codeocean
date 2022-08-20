@@ -1,5 +1,8 @@
 CodeOceanEditorEvaluation = {
     chunkBuffer: [{streamedResponse: true}],
+    // A list of non-printable characters that are not allowed in the code output.
+    // Taken from https://stackoverflow.com/a/69024306
+    nonPrintableRegEx: /[\u0000-\u0008\u000B\u000C\u000F-\u001F\u007F-\u009F\u2000-\u200F\u2028-\u202F\u205F-\u206F\u3000\uFEFF]/g,
 
     /**
      * Scoring-Functions
@@ -98,6 +101,11 @@ CodeOceanEditorEvaluation = {
             return result.status === 'timeout';
         })) {
             this.showTimeoutMessage();
+        }
+        if (_.some(response, function (result) {
+            return result.status === 'out_of_memory';
+        })) {
+            this.showOutOfMemoryMessage();
         }
         if (_.some(response, function (result) {
             return result.status === 'container_depleted';
@@ -199,26 +207,39 @@ CodeOceanEditorEvaluation = {
             return;
         }
 
+        if (output.stdout !== undefined && !output.stdout.startsWith("<img")) {
+            output.stdout = _.escape(output.stdout);
+        }
+
         var element = this.findOrCreateOutputElement(index);
-        // Switch all four lines below to enable the output of images and render <IMG/> tags
+        // Switch all four lines below to enable the output of images and render <IMG/> tags.
+        // Also consider `augmentStacktraceInOutput` in editor.js.erb
         if (!colorize) {
             if (output.stdout !== undefined && output.stdout !== '') {
-                //element.append(output.stdout)
-                element.text(element.text() + output.stdout)
+                output.stdout = output.stdout.replace(this.nonPrintableRegEx, "")
+
+                element.append(output.stdout)
+                //element.text(element.text() + output.stdout)
             }
 
             if (output.stderr !== undefined && output.stderr !== '') {
-                //element.append('StdErr: ' + output.stderr);
-                element.text('StdErr: ' + element.text() + output.stderr);
+                output.stderr = output.stderr.replace(this.nonPrintableRegEx, "")
+
+                element.append('StdErr: ' + output.stderr);
+                //element.text('StdErr: ' + element.text() + output.stderr);
             }
 
         } else if (output.stderr) {
-            //element.addClass('text-warning').append(output.stderr);
-            element.addClass('text-warning').text(element.text() + output.stderr);
+            output.stderr = output.stderr.replace(this.nonPrintableRegEx, "")
+
+            element.addClass('text-warning').append(output.stderr);
+            //element.addClass('text-warning').text(element.text() + output.stderr);
             this.QaApiOutputBuffer.stderr += output.stderr;
         } else if (output.stdout) {
-            //element.addClass('text-success').append(output.stdout);
-            element.addClass('text-success').text(element.text() + output.stdout);
+            output.stdout = output.stdout.replace(this.nonPrintableRegEx, "")
+
+            element.addClass('text-success').append(output.stdout);
+            //element.addClass('text-success').text(element.text() + output.stdout);
             this.QaApiOutputBuffer.stdout += output.stdout;
         } else {
             element.addClass('text-muted').text($('#output').data('message-no-output'));

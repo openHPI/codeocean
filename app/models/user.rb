@@ -6,6 +6,7 @@ class User < ApplicationRecord
   ROLES = %w[admin teacher learner].freeze
 
   belongs_to :consumer
+  has_many :authentication_token, dependent: :destroy
   has_many :study_group_memberships, as: :user
   has_many :study_groups, through: :study_group_memberships, as: :user
   has_many :exercises, as: :user
@@ -39,5 +40,9 @@ class User < ApplicationRecord
 
   def to_s
     displayname
+  end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[name email external_id consumer_id role]
   end
 end

@@ -1,41 +1,36 @@
-div id='sidebar-collapsed' class=(@exercise.hide_file_tree && @tips.blank? ? '' : 'd-none')
-  = render('editor_button', classes: 'btn-block btn-outline-dark btn', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-plus-square', id: 'sidebar-collapse-collapsed', label:'', title:t('exercises.editor.expand_action_sidebar'))
+div.d-grid.gap-2 id='sidebar-collapsed' class=(@exercise.hide_file_tree && @tips.blank? ? '' : 'd-none')
+  = render('editor_button', classes: 'btn-outline-dark', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-square-plus', id: 'sidebar-collapse-collapsed', label:'', title:t('exercises.editor.expand_action_sidebar'))
 
   - unless @embed_options[:disable_hints] or @tips.blank?
-    = render('editor_button', classes: 'btn-block btn-secondary btn mb-4', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-lightbulb', id: 'tips-collapsed', label:'', title: t('exercises.form.tips'))
+    = render('editor_button', classes: 'btn-secondary btn mb-4', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-lightbulb', id: 'tips-collapsed', label:'', title: t('exercises.form.tips'))
 
   //- if !@course_token.blank?
-    = render('editor_button', classes: 'btn-block btn-primary btn enforce-top-margin', data: {:'data-toggle' => 'tooltip', :'data-placement' => 'right'}, icon: 'fa fa-search', id: 'sidebar-search-collapsed', label: '', title: t('search.search_in_forum'))
+    = render('editor_button', classes: 'btn-primary btn enforce-top-margin', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-magnifying-glass', id: 'sidebar-search-collapsed', label: '', title: t('search.search_in_forum'))
 
-div.h-100.col-sm-12.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_file_tree && @tips.blank? ? 'd-none' : '')
-  .position-absolute.d-flex.mb-1.w-100 style="overflow: auto; left: 0; top: 0; height: 100%;"
-    .w-100
-      = render('editor_button', classes: 'btn-block btn-outline-dark btn', icon: 'fa fa-minus-square', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
+div.d-grid.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_file_tree && @tips.blank? ? 'd-none' : '')
+  = render('editor_button', classes: 'btn-outline-dark overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
+  #content-left-sidebar.overflow-scroll
+    - unless @exercise.hide_file_tree
+      div.overflow-scroll
+        .card.border-secondary
+          .card-header.d-flex.justify-content-between.align-items-center.px-0.py-1
+            .px-2 = I18n.t('exercises.editor_file_tree.file_root')
+            div
+              - if @exercise.allow_file_creation
+                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-cause' => 'file'}, icon: 'fa-solid fa-plus', id: 'create-file', label: '', title: t('exercises.editor.create_file'))
+                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy') }, icon: 'fa-regular fa-trash-can', id: 'destroy-file', label: '', title: t('exercises.editor.destroy_file'))
+              - unless @embed_options[:disable_download]
+                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip'}, icon: 'fa-solid fa-arrow-down', id: 'download', label:'', title: t('exercises.editor.download'))
+              = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa-solid fa-clock-rotate-left', id: 'start-over', label: '', title: t('exercises.editor.start_over'))
 
-      - unless @exercise.hide_file_tree
-        div
-          hr
+          .card-body.pt-0.pe-0.ps-1.pb-1
 
-          .card.border-secondary
-            .card-header.d-flex.justify-content-between.align-items-center.px-0.py-1
-              .px-2 = I18n.t('exercises.editor_file_tree.file_root')
-              div
-                - if @exercise.allow_file_creation
-                  = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-toggle' => 'tooltip', :'data-cause' => 'file'}, icon: 'fa fa-plus', id: 'create-file', label: '', title: t('exercises.editor.create_file'))
-                  = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-toggle' => 'tooltip', :'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy') }, icon: 'far fa-trash-alt', id: 'destroy-file', label: '', title: t('exercises.editor.destroy_file'))
-                - unless @embed_options[:disable_download]
-                  = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-toggle' => 'tooltip'}, icon: 'fas fa-arrow-down', id: 'download', label:'', title: t('exercises.editor.download'))
-                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-toggle' => 'tooltip', :'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa fa-history', id: 'start-over', label: '', title: t('exercises.editor.start_over'))
+            #files data-entries=FileTree.new(files).to_js_tree
 
-            .card-body.pt-0.pr-0.pl-1.pb-1
+        hr
 
-              #files data-entries=FileTree.new(files).to_js_tree
-
-          hr
-
-      - unless @embed_options[:disable_hints] or @tips.blank?
-        = render(partial: 'tips_content')
-        .mb-4
+    - unless @embed_options[:disable_hints] or @tips.blank?
+      = render(partial: 'tips_content')
 
       //- if !@course_token.blank?
           .input-group.enforce-top-margin
@@ -43,7 +38,7 @@ div.h-100.col-sm-12.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exerc
               = text_field_tag 'search-input-text', nil, placeholder: t('search.search_in_forum'), class: 'form-control'
             .input-group-btn
               = button_tag(class: 'btn btn-primary', id: 'btn-search-col') do
-                i.fa.fa-search
+                i.fa-solid.fa-magnifying-glass
 
 - if @exercise.allow_file_creation?
   = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))

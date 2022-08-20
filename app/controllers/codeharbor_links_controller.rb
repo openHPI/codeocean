@@ -44,7 +44,6 @@ class CodeharborLinksController < ApplicationController
 
   def set_codeharbor_link
     @codeharbor_link = CodeharborLink.find(params[:id])
-    @codeharbor_link.user = current_user
     authorize!
   end
 

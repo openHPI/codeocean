@@ -153,7 +153,7 @@ describe ExecutionEnvironment do
   describe '#working_docker_image?' do
     let(:execution_environment) { create(:ruby) }
     let(:working_docker_image?) { execution_environment.send(:working_docker_image?) }
-    let(:runner) { instance_double 'runner' }
+    let(:runner) { instance_double Runner }
 
     before do
       allow(execution_environment).to receive(:sync_runner_environment).and_return(true)

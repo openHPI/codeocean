@@ -328,8 +328,8 @@ en:
     editor:
       collapse_action_sidebar: Collapse Action Sidebar
       collapse_output_sidebar: Collapse Output Sidebar
-      confirm_start_over: Do you really want to start over? Your complete progress in this exercise will be reset; other exercises remain untouched. You cannot undo this action.
-      confirm_start_over_active_file: Do you really want to reset the active file '%{filename}'? You cannot undo this action.
+      confirm_start_over: Do you really want to start over? Your previous changes in this exercise will be reset; other exercises remain untouched. You cannot undo this action.
+      confirm_start_over_active_file: Do you really want to remove any changes in the active file '%{filename}'? You cannot undo this action.
       confirm_submit: Do you really want to submit your code for grading?
       create_file: New File
       depleted: All execution environments are busy. Please try again later.
@@ -360,6 +360,7 @@ en:
       submit_after_late_deadline: Submit Code for Assessment After Deadline Passed
       test: Test
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
+      out_of_memory: 'Execution stopped. Your code exceeded the permitted RAM usage of %{memory_limit} MB.'
       exercise_deadline_passed: 'The score cannot be submitted.'
       tooltips:
         save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
@@ -450,14 +451,16 @@ en:
         removeAllOnLine: Remove my comments on this line
         listing: Listing the newest comment requests
         request: "Request Comments"
-        question: 'Please shortly describe your problem or the program part you would like to get feedback for. </br> </br> Your program code and potential error messages are automatically appended to your request.'
+        question: 'Please shortly describe your problem or the program part you would like to get feedback for. Your program code and potential error messages are automatically appended to your request.'
+      intervention:
+        explanation: "This message appears because you have been working on this exercise for %{duration} minutes. 25% of your fellow learners took more time to solve the exercise, so in that sense it's not a problem, but this has proven to be an <a href='https://hpi.de/en/research/publications/dissertations/dissertation-ralf-teusner.html' style='display: contents;'>effective time for this message</a>."
       rfc_intervention:
-        text: "It looks like you may struggle with this exercise. </br> If you like we can help you out! </br> </br>"
+        text: "If you are struggling with this exercise and don't want to continue on your own, your fellow learners can help out! </br> </br>"
       break_intervention:
         title: "Break"
-        text: "We recognized that you are already working quite a while on this exercise. We would like to encourage you to take a break and come back later."
+        text: "If you are struggling with this exercise, you may take a break at any time and continue later. Your progress in CodeOcean is automatically saved."
       tips_intervention:
-        text: "It looks like you may struggle with this exercise. </br> </br> Did you notice the tips in the left sidebar? They might answer some of your questions and are also displayed below for your convenience."
+        text: "If you are struggling with this exercise, the available tips may help. You can find them at any time in the left sidebar and are also displayed below for your convenience."
       error_hints:
         heading: "Hints"
       tips:
@@ -474,6 +477,7 @@ en:
       feedback: Feedback
       requests_for_comments: Requests for Comments
       study_group_dashboard: Live Dashboard
+      external_user_statistics: External User Statistics
     show:
       is_unpublished: Exercise is unpublished
     statistics:
@@ -518,6 +522,10 @@ en:
         after_late_deadline: Too Late
         addendum: "* Deltas longer than %{delta} minutes are ignored."
         filter: "Remember: Only the last submission per deadline is shown."
+        toggle_autosave_on: Show Autosaves
+        toggle_autosave_off: Hide Autosaves
+        toggle_status_on: Autosaves are currently visible
+        toggle_status_off: Autosaves are currently hidden
   proxy_exercises:
       index:
         clone: Duplicate
@@ -593,8 +601,6 @@ en:
           <br>
           Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Eine Übersicht Ihrer Kommentaranfragen gibt es hier: %{link_my_comments} <br>
           Alle Kommentaranfragen aller Benutzer finden Sie hier: %{link_all_comments} <br>
           <br>
@@ -609,8 +615,6 @@ en:
           %{commenting_user_displayname} wrote: %{comment_text} <br>
           <br>
           You can find your request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           An overview of all your comments can be accessed here: %{link_my_comments} <br>
           All comments of all participants are available here: %{link_all_comments} <br>
@@ -633,8 +637,6 @@ en:
           <br>
           Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Danke, dass Sie anderen Nutzern von CodeOcean helfen!
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
@@ -648,8 +650,6 @@ en:
           %{author} wrote: %{thank_you_note} <br>
           <br>
           You can find the request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           Thank you for helping other users on CodeOcean!
           <br>
@@ -668,8 +668,6 @@ en:
           <br>
           Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Wenn Sie keine weiteren Benachrichtigungen zu dieser Anfrage erhalten möchten, klicken Sie bitte hier: %{unsubscribe_link}
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
@@ -683,8 +681,6 @@ en:
           %{author_displayname} wrote: %{comment_text} <br>
           <br>
           You can find the request for comments here: %{link_to_comment} <br>
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           If you don't want to be notified about further comments, please click here: %{unsubscribe_link}
           <br>

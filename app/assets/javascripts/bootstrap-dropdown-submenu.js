@@ -1,6 +1,6 @@
 $(document).on('turbolinks:load', function() {
 
-  var subMenusSelector = 'ul.dropdown-menu [data-toggle=dropdown]';
+  var subMenusSelector = 'ul.dropdown-menu [data-bs-toggle=dropdown]';
 
   function openSubMenu(event) {
     if (this.pathname === '/') {

@@ -58,6 +58,15 @@ div.negative-result {
   box-shadow: 0px 0px 11px 1px rgba(222,0,0,1);
 }
 
+tr.active {
+  filter: brightness(85%);
+  color: #000000;
+}
+
+tr:not(.before_deadline,.within_grace_period,.after_late_deadline) {
+  background-color: #ffffff;
+}
+
 tr.highlight {
   border-top: 2px solid rgba(222,0,0,1);
 }

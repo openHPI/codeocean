@@ -10,6 +10,7 @@ gem 'docker-api', require: 'docker'
 gem 'eventmachine'
 gem 'factory_bot_rails'
 gem 'faraday'
+gem 'faraday-net_http_persistent'
 gem 'faye-websocket'
 gem 'forgery'
 gem 'highline'
@@ -21,34 +22,36 @@ gem 'js-routes'
 gem 'kramdown'
 gem 'mimemagic'
 gem 'net-http-persistent'
+gem 'net-imap', require: false
+gem 'net-pop', require: false
+gem 'net-smtp', require: false
 gem 'nokogiri'
 gem 'pagedown-bootstrap-rails'
 gem 'pg'
-gem 'proforma', github: 'openHPI/proforma', tag: 'v0.7.1'
+gem 'proforma', github: 'openHPI/proforma', branch: 'v0.5.2'
 gem 'prometheus_exporter'
 gem 'pry-byebug'
 gem 'puma'
 gem 'pundit'
-gem 'rails', '~> 6.1.4'
-gem 'rails_admin'
+gem 'rails', '~> 6.1.6'
+gem 'rails_admin', '< 3.0.0' # Blocked by https://github.com/railsadminteam/rails_admin/issues/3490
 gem 'rails-i18n'
 gem 'rails-timeago'
 gem 'ransack'
 gem 'rest-client'
-gem 'rubytree', github: 'evolve75/RubyTree'
+gem 'rubytree'
 gem 'rubyzip'
 gem 'sass-rails'
+gem 'shakapacker', '6.5.1'
 gem 'slim-rails'
 gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.com/Sorcery/sorcery/pull/255
 gem 'telegraf'
-gem 'tubesock', github: 'gosukiwi/tubesock', branch: 'patch-1' # Switch to a fork which is compatible with Rails 5
+gem 'tubesock'
 gem 'turbolinks'
-gem 'webpacker'
 gem 'whenever', require: false
 
 # Error Tracing
 gem 'mnemosyne-ruby'
-gem 'newrelic_rpm'
 gem 'sentry-rails'
 gem 'sentry-ruby'
 
@@ -56,6 +59,7 @@ group :development, :staging do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'bootsnap', require: false
+  gem 'letter_opener'
   gem 'listen'
   gem 'pry-rails'
   gem 'rack-mini-profiler'
@@ -80,6 +84,7 @@ group :test do
   gem 'rails-controller-testing'
   gem 'rspec-autotest'
   gem 'rspec-collection_matchers'
+  gem 'rspec-github', require: false
   gem 'rspec-rails'
   gem 'selenium-webdriver'
   gem 'shoulda-matchers'

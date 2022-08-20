@@ -20,20 +20,20 @@ describe EventsController do
         expect { perform_request.call }.to change(Event, :count).by(1)
       end
 
-      expect_status(201)
+      expect_http_status(:created)
     end
 
     context 'with an invalid event' do
       before { post :create, params: {event: {exercise_id: 847_482}} }
 
       expect_assigns(event: Event)
-      expect_status(422)
+      expect_http_status(:unprocessable_entity)
     end
 
     context 'with no event' do
       before { post :create }
 
-      expect_status(422)
+      expect_http_status(:unprocessable_entity)
     end
   end
 end

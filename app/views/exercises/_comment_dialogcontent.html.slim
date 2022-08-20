@@ -3,10 +3,10 @@
   .container
 
 label
-  input#subscribe type='checkbox' title=t('request_for_comments.subscribe_to_author') data-subscription=Subscription.where(user: current_user, request_for_comment_id: @request_for_comment.id, subscription_type: 'author', deleted: false).try(:first).try(:id)
+  input#subscribe.form-check-input type='checkbox' title=t('request_for_comments.subscribe_to_author') data-subscription=Subscription.where(user: current_user, request_for_comment_id: @request_for_comment.id, subscription_type: 'author', deleted: false).try(:first).try(:id)
   = t('request_for_comments.subscribe_to_author')
 
-#myComment
+#myComment.d-grid
   h5 =t('exercises.implement.comment.addyours')
   textarea.form-control
-  button#addCommentButton.btn.btn-block.btn-primary(type='button') =t('exercises.implement.comment.addCommentButton')
+  button#addCommentButton.btn.btn-primary(type='button') =t('exercises.implement.comment.addCommentButton')

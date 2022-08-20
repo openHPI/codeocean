@@ -56,4 +56,24 @@ describe CodeOcean::File do
       expect(file.errors[:weight]).to be_present
     end
   end
+
+  context 'with a native file' do
+    let(:file) { create(:file, :image) }
+
+    after { file.native_file.remove! }
+
+    context 'when the path has not been modified' do
+      it 'reads the native file' do
+        expect(file.read).to be_present
+      end
+    end
+
+    context 'when the path has been modified' do
+      before { file.update(native_file: '../../../../secrets.yml') }
+
+      it 'does not read the native file' do
+        expect(file.read).not_to be_present
+      end
+    end
+  end
 end

@@ -12,7 +12,16 @@ h1, h2, h3, h4, h5, h6 {
   color: rgba(70, 70, 70, 1);
 }
 
-i.fa, i.far, i.fas {
+a:not(.dropdown-item, .dropdown-toggle, .dropdown-link, .btn, .page-link), .btn-link {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+
+  }
+}
+
+i.fa-solid, i.fa-regular, i.fa-solid {
   margin-right: 0.5em;
 }
 
@@ -35,6 +44,10 @@ span.caret {
   }
 }
 
+.btn-default {
+  --bs-btn-disabled-border-color: transparent;
+}
+
 .progress {
   margin: 0;
   border: 1px solid #CCCCCC;
@@ -51,13 +64,17 @@ span.caret {
 .navbar {
   -webkit-font-smoothing: antialiased;
   font-weight: 500;
+  font-size: 0.85rem;
+  .dropdown-item {
+    padding: 1rem 1.5rem;
+  }
 }
 
 .attribute-row + .attribute-row {
   margin-top: 0.5em;
 }
 
-.badge-pill {
+.rounded-pill {
   font-size: 100%;
   font-weight: 500;
 }

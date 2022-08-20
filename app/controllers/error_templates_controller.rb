@@ -11,7 +11,7 @@ class ErrorTemplatesController < ApplicationController
   # GET /error_templates
   # GET /error_templates.json
   def index
-    @error_templates = ErrorTemplate.all.order(:execution_environment_id, :name).paginate(page: params[:page])
+    @error_templates = ErrorTemplate.all.order(:execution_environment_id, :name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
@@ -40,7 +40,7 @@ class ErrorTemplatesController < ApplicationController
 
     respond_to do |format|
       if @error_template.save
-        format.html { redirect_to @error_template, notice: 'Error template was successfully created.' }
+        format.html { redirect_to @error_template, notice: t('shared.object_created', model: @error_template.class.model_name.human) }
         format.json { render :show, status: :created, location: @error_template }
       else
         format.html { render :new }
@@ -55,7 +55,7 @@ class ErrorTemplatesController < ApplicationController
     authorize!
     respond_to do |format|
       if @error_template.update(error_template_params)
-        format.html { redirect_to @error_template, notice: 'Error template was successfully updated.' }
+        format.html { redirect_to @error_template, notice: t('shared.object_updated', model: @error_template.class.model_name.human) }
         format.json { render :show, status: :ok, location: @error_template }
       else
         format.html { render :edit }
@@ -70,14 +70,14 @@ class ErrorTemplatesController < ApplicationController
     authorize!
     @error_template.destroy
     respond_to do |format|
-      format.html { redirect_to error_templates_url, notice: 'Error template was successfully destroyed.' }
+      format.html { redirect_to error_templates_url, notice: t('shared.object_destroyed', model: @error_template.class.model_name.human) }
       format.json { head :no_content }
     end
   end
 
   def add_attribute
     authorize!
-    @error_template.error_template_attributes << ErrorTemplateAttribute.find(params['error_template_attribute_id'])
+    @error_template.error_template_attributes << ErrorTemplateAttribute.find(params[:error_template_attribute_id])
     respond_to do |format|
       format.html { redirect_to @error_template }
       format.json { head :no_content }
@@ -86,7 +86,7 @@ class ErrorTemplatesController < ApplicationController
 
   def remove_attribute
     authorize!
-    @error_template.error_template_attributes.delete(ErrorTemplateAttribute.find(params['error_template_attribute_id']))
+    @error_template.error_template_attributes.delete(ErrorTemplateAttribute.find(params[:error_template_attribute_id]))
     respond_to do |format|
       format.html { redirect_to @error_template }
       format.json { head :no_content }

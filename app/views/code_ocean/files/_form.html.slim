@@ -1,19 +1,19 @@
 = form_for(CodeOcean::File.new) do |f|
-  .form-group
-    = f.label(:name, t('activerecord.attributes.file.name'))
+  .mb-3
+    = f.label(:name, t('activerecord.attributes.file.name'), class: 'form-label')
     = f.text_field(:name, class: 'form-control', required: true)
-  .form-group
-    = f.label(:path, t('activerecord.attributes.file.path'))
+  .mb-3
+    = f.label(:path, t('activerecord.attributes.file.path'), class: 'form-label')
     | &nbsp;
     a.toggle-input data={text_initial: t('shared.new'), text_toggled: t('shared.back')} href='#' = t('shared.new')
     .original-input = f.select(:path, @paths, {}, class: 'form-control')
     = f.text_field(:path, class: 'alternative-input form-control', disabled: true)
-  .form-group
-    = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'))
+  .mb-3
+    = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'), class: 'form-label')
     = f.collection_select(:file_type_id, FileType.where(binary: false).order(:name), :id, :name, {selected: @exercise.execution_environment.file_type.try(:id)}, class: 'form-control')
   - if FileTemplate.any?
-    .form-group
-      = f.label(:file_template_id, t('activerecord.attributes.file.file_template_id'))
+    .mb-3
+      = f.label(:file_template_id, t('activerecord.attributes.file.file_template_id'), class: 'form-label')
       = f.collection_select(:file_template_id, FileTemplate.all.order(:name), :id, :name, {:include_blank => true}, class: 'form-control')
   = f.hidden_field(:context_id)
   .d-none#noTemplateLabel data-text=t('file_template.no_template_label')

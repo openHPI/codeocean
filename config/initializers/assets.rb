@@ -20,3 +20,6 @@ Rails.application.config.assets.precompile += %w[markdown-buttons.png]
 Rails.application.config.assets.configure do |env|
   env.export_concurrent = false
 end
+
+# Add node_modules folder to the asset load path.
+Rails.application.config.assets.paths << Rails.root.join('node_modules')

@@ -1,28 +1,30 @@
 h1 = RequestForComment.model_name.human(count: 2)
 
 = render(layout: 'shared/form_filters') do |f|
-  .row.px-3
-    .form-group
-      = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'sr-only')
-      = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
-    .form-group
-      = f.label(:title_cont,  t('request_for_comments.solved'), class: 'sr-only')
-      = f.select(:solved_not_eq,  [[t('request_for_comments.show_all'), 2], [t('request_for_comments.show_unsolved'), 1], [t('request_for_comments.show_solved'), 0]])
-  .form-group
-    = f.label(:submission_study_group_id_eq,  t('request_for_comments.index.study_groups.placeholder'), class: 'sr-only')
-    = f.grouped_collection_select(:submission_study_group_id_in, @study_groups_grouping, :second, :first, :id, :to_s, {},
-            { class: 'form-control', multiple: true, "data-placeholder": t('request_for_comments.index.study_groups.placeholder') })
+  .col-md-9.col
+    .row.align-items-center
+      .col-auto
+        = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'visually-hidden form-label')
+        = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
+      .col-auto.mt-3.mt-md-0
+        = f.label(:title_cont,  t('request_for_comments.solved'), class: 'visually-hidden form-label')
+        = f.select(:solved_not_eq,  [[t('request_for_comments.show_all'), 2], [t('request_for_comments.show_unsolved'), 1], [t('request_for_comments.show_solved'), 0]])
+    .row
+      .col
+        = f.label(:submission_study_group_id_eq,  t('request_for_comments.index.study_groups.placeholder'), class: 'visually-hidden form-label')
+        = f.grouped_collection_select(:submission_study_group_id_in, @study_groups_grouping, :second, :first, :id, :to_s, {},
+                { class: 'form-control', multiple: true, "data-placeholder": t('request_for_comments.index.study_groups.placeholder') })
 
 .table-responsive
   table.table.sortable.mt-4
     thead
       tr
         th
-          i class="fa fa-lightbulb-o" aria-hidden="true" title = t('request_for_comments.solved') align="right"
+          i class="fa-regular fa-lightbulb" aria-hidden="true" title = t('request_for_comments.solved') align="right"
         th =  sort_link(@search, :title,  t('activerecord.attributes.request_for_comments.exercise'))
         th = t('activerecord.attributes.request_for_comments.question')
         th
-          i class="fa fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
+          i class="fa-solid fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
         th = t('activerecord.attributes.request_for_comments.username')
         th = t('activerecord.attributes.request_for_comments.requested_at')
         th = t('activerecord.attributes.request_for_comments.last_update')
@@ -31,10 +33,10 @@ h1 = RequestForComment.model_name.human(count: 2)
         tr data-id=request_for_comment.id
           - if request_for_comment.solved?
             td
-              span class="fa fa-check" aria-hidden="true"
+              span class="fa-solid fa-check" aria-hidden="true"
           - elsif request_for_comment.full_score_reached
             td
-              span class="fa fa-check" style="color:darkgrey" aria-hidden="true"
+              span class="fa-solid fa-check" style="color:darkgrey" aria-hidden="true"
           - else
             td = ''
           td = link_to_if(policy(request_for_comment).show?, request_for_comment.exercise.title, request_for_comment)

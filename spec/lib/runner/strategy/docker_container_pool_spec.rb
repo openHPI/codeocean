@@ -7,7 +7,7 @@ describe Runner::Strategy::DockerContainerPool do
   let(:runner_id) { attributes_for(:runner)[:runner_id] }
   let(:execution_environment) { create :ruby }
   let(:container_pool) { described_class.new(runner_id, execution_environment) }
-  let(:docker_container_pool_url) { 'http://localhost:1234' }
+  let(:docker_container_pool_url) { 'https://localhost:1234' }
   let(:config) { {url: docker_container_pool_url, unused_runner_expiration_time: 180} }
   let(:container) { instance_double(Docker::Container) }
 
@@ -160,7 +160,7 @@ describe Runner::Strategy::DockerContainerPool do
       let(:files) { [build(:file, :image)] }
 
       it 'copies the file inside the workspace' do
-        expect(FileUtils).to receive(:cp).with(files.first.native_file.path, local_path.join(files.first.filepath))
+        expect(File).to receive(:write).with(local_path.join(files.first.filepath), files.first.read)
         container_pool.copy_files(files)
       end
     end
@@ -182,7 +182,7 @@ describe Runner::Strategy::DockerContainerPool do
 
     it 'returns the local part of the mount binding' do
       local_path = 'tmp/container20'
-      allow(container).to receive(:binds).and_return(["#{local_path}:/workspace"])
+      allow(container).to receive(:json).and_return({HostConfig: {Binds: ["#{local_path}:/workspace"]}}.as_json)
       expect(container_pool.send(:local_workspace_path)).to eq(Pathname.new(local_path))
     end
   end

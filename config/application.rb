@@ -53,5 +53,8 @@ module CodeOcean
       # Initialize the runner environment
       Runner.strategy_class.initialize_environment
     end
+
+    # Allow tables in addition to existing default tags
+    config.action_view.sanitized_allowed_tags = ActionView::Base.sanitized_allowed_tags + %w[table thead tbody tfoot td tr]
   end
 end

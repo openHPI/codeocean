@@ -39,8 +39,8 @@ class RemoteEvaluationController < ApplicationController
     else
       {
         message: "Your submission was successfully scored with #{@submission.normalized_score}%. " \
-                 'However, your score could not be sent to the e-Learning platform. Please reopen ' \
-                 'the exercise through the e-Learning platform and try again.',
+                 'However, your score could not be sent to the e-Learning platform. Please check ' \
+                 'the submission deadline, reopen the exercise through the e-Learning platform and try again.',
         status: 410,
       }
     end

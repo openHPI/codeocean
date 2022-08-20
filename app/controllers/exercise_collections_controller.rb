@@ -6,7 +6,7 @@ class ExerciseCollectionsController < ApplicationController
   before_action :set_exercise_collection, only: %i[show edit update destroy statistics]
 
   def index
-    @exercise_collections = ExerciseCollection.all.paginate(page: params[:page])
+    @exercise_collections = ExerciseCollection.all.paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
