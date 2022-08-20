@@ -118,7 +118,7 @@ raise: false
         partial: 'export_actions',
         locals: {
           exercise: @exercise,
-          task_found: codeharbor_check[:task_found],
+          task_found: codeharbor_check[:uuid_found],
           update_right: codeharbor_check[:update_right],
           error: codeharbor_check[:error],
           exported: false,
@@ -159,10 +159,10 @@ raise: false
     uuid = params[:uuid]
     exercise = Exercise.find_by(uuid: uuid)
 
-    return render json: {exercise_found: false} if exercise.nil?
-    return render json: {exercise_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
+    return render json: {uuid_found: false} if exercise.nil?
+    return render json: {uuid_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
 
-    render json: {exercise_found: true, update_right: true}
+    render json: {uuid_found: true, update_right: true}
   end
 
   def import_exercise

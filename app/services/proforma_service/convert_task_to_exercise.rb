@@ -27,14 +27,23 @@ module ProformaService
     end
 
     def files
-      test_files + task_files.values
+      model_solution_files + test_files + task_files.values
     end
 
     def test_files
       @task.tests.map do |test_object|
         task_files.delete(test_object.files.first.id).tap do |file|
           file.weight = 1.0
-          file.feedback_message = test_object.meta_data[:CodeOcean]&.dig(:'feedback-message')
+          file.feedback_message = test_object.meta_data[:CodeOcean]&.dig(:'feedback-message').presence || 'Feedback'
+          file.role = 'teacher_defined_test'
+        end
+      end
+    end
+
+    def model_solution_files
+      @task.model_solutions.map do |model_solution_object|
+        task_files.delete(model_solution_object.files.first.id).tap do |file|
+          file.role = 'reference_implementation'
         end
       end
     end
@@ -53,7 +62,7 @@ module ProformaService
         hidden: file.visible == 'no',
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
-        role: file.internal_description,
+        role: 'regular_file',
         path: File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename)
       )
       if file.binary
