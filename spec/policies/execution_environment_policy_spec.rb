@@ -7,19 +7,17 @@ describe ExecutionEnvironmentPolicy do
 
   let(:execution_environment) { build(:ruby) }
 
-  [:index?].each do |action|
-    permissions(action) do
-      it 'grants access to admins' do
-        expect(policy).to permit(build(:admin), execution_environment)
-      end
+  permissions :index? do
+    it 'grants access to admins' do
+      expect(policy).to permit(build(:admin), execution_environment)
+    end
 
-      it 'grants access to teachers' do
-        expect(policy).to permit(build(:teacher), execution_environment)
-      end
+    it 'grants access to teachers' do
+      expect(policy).to permit(build(:teacher), execution_environment)
+    end
 
-      it 'does not grant access to external users' do
-        expect(policy).not_to permit(build(:external_user), execution_environment)
-      end
+    it 'does not grant access to external users' do
+      expect(policy).not_to permit(build(:external_user), execution_environment)
     end
   end
 
@@ -59,7 +57,7 @@ describe ExecutionEnvironmentPolicy do
     end
   end
 
-  permissions(:sync_all_to_runner_management?) do
+  permissions :sync_all_to_runner_management? do
     it 'grants access to the admin' do
       expect(policy).to permit(build(:admin))
     end
