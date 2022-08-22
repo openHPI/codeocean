@@ -54,7 +54,7 @@ describe CodeharborLinkPolicy do
       end
     end
 
-    permissions(:enabled?) do
+    permissions :enabled? do
       it 'reflects the config option' do
         %i[external_user admin teacher].each do |factory_name|
           expect(policy).to permit(create(factory_name), codeharbor_link)
@@ -72,7 +72,7 @@ describe CodeharborLinkPolicy do
       allow(codeocean_config).to receive(:read).and_return(codeharbor_config)
     end
 
-    permissions(:enabled?) do
+    permissions :enabled? do
       it 'reflects the config option' do
         %i[external_user admin teacher].each do |factory_name|
           expect(policy).not_to permit(create(factory_name), codeharbor_link)
