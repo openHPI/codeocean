@@ -14,9 +14,9 @@ module ExerciseService
         req.headers['Authorization'] = "Bearer #{@codeharbor_link.api_key}"
         req.body = {uuid: @uuid}.to_json
       end
-      response_hash = JSON.parse(response.body, symbolize_names: true).slice(:task_found, :update_right)
+      response_hash = JSON.parse(response.body, symbolize_names: true).slice(:uuid_found, :update_right)
 
-      {error: false, message: message(response_hash[:task_found], response_hash[:update_right])}.merge(response_hash)
+      {error: false, message: message(response_hash[:uuid_found], response_hash[:update_right])}.merge(response_hash)
     rescue Faraday::Error, JSON::ParserError
       {error: true, message: I18n.t('exercises.export_codeharbor.error')}
     end

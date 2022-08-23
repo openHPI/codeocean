@@ -28,7 +28,7 @@ gem 'net-smtp', require: false
 gem 'nokogiri'
 gem 'pagedown-bootstrap-rails'
 gem 'pg'
-gem 'proforma', github: 'openHPI/proforma', branch: 'v0.5.2'
+gem 'proforma', github: 'openHPI/proforma', tag: 'v0.7.1'
 gem 'prometheus_exporter'
 gem 'pry-byebug'
 gem 'puma'

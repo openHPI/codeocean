@@ -109,7 +109,7 @@ module ProformaService
         filename: filename(file),
         usage_by_lms: file.read_only ? 'display' : 'edit',
         visible: file.hidden ? 'no' : 'yes',
-        internal_description: file.role || 'regular_file'
+        # internal_description: file.role || 'regular_file'
       )
       add_content_to_task_file(file, task_file)
       task_file
