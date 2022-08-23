@@ -23,7 +23,6 @@ module ProformaService
           title: @exercise.title,
           description: @exercise.description,
           internal_description: nil,
-          # ?: @exercise.instructions, store in meta-data
           # proglang: proglang, where can we get this information?
           files: task_files,
           tests: tests,
@@ -32,7 +31,12 @@ module ProformaService
           model_solutions: model_solutions,
           meta_data: {
             CodeOcean: {
-              instructions: @exercise.instructions,
+              public: @exercise.public,
+              hide_file_tree: @exercise.hide_file_tree,
+              allow_file_creation: @exercise.allow_file_creation,
+              allow_auto_completion: @exercise.allow_auto_completion,
+              expected_difficulty: @exercise.expected_difficulty,
+              execution_environment_id: @exercise.execution_environment_id,
             },
           },
         }.compact
@@ -78,8 +82,8 @@ module ProformaService
     def test_meta_data(file)
       {
         CodeOcean: {
-          'entry-point': file.filepath,
           'feedback-message': file.feedback_message,
+          weight: file.weight,
         },
       }
     end

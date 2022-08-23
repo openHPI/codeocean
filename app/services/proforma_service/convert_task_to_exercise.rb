@@ -21,7 +21,13 @@ module ProformaService
         user: @user,
         title: @task.title,
         description: @task.description,
-        instructions: @task.meta_data&.dig(:CodeOcean)&.dig(:instructions),
+        public: @task.meta_data[:CodeOcean]&.dig(:public) == 'true',
+        hide_file_tree: @task.meta_data[:CodeOcean]&.dig(:hide_file_tree) == 'true',
+        allow_file_creation: @task.meta_data[:CodeOcean]&.dig(:allow_file_creation) == 'true',
+        allow_auto_completion: @task.meta_data[:CodeOcean]&.dig(:allow_auto_completion) == 'true',
+        expected_difficulty: @task.meta_data[:CodeOcean]&.dig(:expected_difficulty),
+        execution_environment_id: @task.meta_data[:CodeOcean]&.dig(:execution_environment_id),
+
         files: files
       )
     end
@@ -33,7 +39,7 @@ module ProformaService
     def test_files
       @task.tests.map do |test_object|
         task_files.delete(test_object.files.first.id).tap do |file|
-          file.weight = 1.0
+          file.weight = test_object.meta_data[:CodeOcean]&.dig(:weight) || 1.0
           file.feedback_message = test_object.meta_data[:CodeOcean]&.dig(:'feedback-message').presence || 'Feedback'
           file.role = 'teacher_defined_test'
         end
