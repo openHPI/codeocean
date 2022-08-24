@@ -501,7 +501,7 @@ GEM
       sprockets (>= 3.0.0)
     ssrf_filter (1.0.8)
     strscan (3.0.4)
-    telegraf (2.1.0)
+    telegraf (2.1.1)
       influxdb
     temple (0.8.2)
     thor (1.2.1)
