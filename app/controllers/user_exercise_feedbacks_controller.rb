@@ -74,7 +74,7 @@ class UserExerciseFeedbacksController < ApplicationController
 
   def update
     submission = begin
-      current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
+      current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').final.first
     rescue StandardError
       nil
     end
@@ -127,14 +127,16 @@ class UserExerciseFeedbacksController < ApplicationController
     user_type = current_user.class.name
     latest_submission = Submission
       .where(user_id: user_id, user_type: user_type, exercise_id: exercise_id)
-      .order(created_at: :desc).first
+      .order(created_at: :desc).final.first
+
+    authorize(latest_submission, :show?)
 
     params[:user_exercise_feedback]
       .permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime)
       .merge(user_id: user_id,
         user_type: user_type,
         submission: latest_submission,
-        normalized_score: latest_submission.normalized_score)
+        normalized_score: latest_submission&.normalized_score)
   end
 
   def validate_inputs(uef_params)
