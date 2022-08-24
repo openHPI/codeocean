@@ -43,8 +43,8 @@ class ExercisePolicy < AdminOrAuthorPolicy
         @scope.all
       elsif @user.teacher?
         @scope.where(
-          'user_id IN (SELECT user_id FROM study_group_memberships WHERE study_group_id IN (?))
-          OR (user_id = ? AND user_type = ?)
+          'exercises.user_id IN (SELECT user_id FROM study_group_memberships WHERE study_group_id IN (?))
+          OR (exercises.user_id = ? AND exercises.user_type = ?)
           OR public = TRUE',
           @user.study_groups.pluck(:id),
           @user.id, @user.class.name
