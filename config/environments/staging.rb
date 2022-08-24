@@ -18,9 +18,6 @@ Rails.application.configure do
   # Eager load is also required for the prometheus exporter
   config.eager_load = true
 
-  # Disable web console in staging
-  config.web_console.development_only = true
-
   # Full error reports as well as caching are disabled.
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = false
