@@ -55,6 +55,10 @@ gem 'mnemosyne-ruby'
 gem 'sentry-rails'
 gem 'sentry-ruby'
 
+group :development do
+  gem 'web-console'
+end
+
 group :development, :staging do
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -67,7 +71,6 @@ group :development, :staging do
   gem 'rubocop-performance'
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec'
-  gem 'web-console'
 end
 
 group :development, :test, :staging do
