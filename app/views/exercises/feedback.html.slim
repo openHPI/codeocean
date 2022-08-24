@@ -25,7 +25,7 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
             span.date = feedback.created_at
         .card-collapse role="tabpanel"
           .card-body.feedback
-            .text = render_markdown(feedback.feedback_text)
+            .text = feedback.feedback_text
             .difficulty = "#{t('user_exercise_feedback.difficulty')} #{comment_presets[feedback.difficulty].join(' - ')}" if feedback.difficulty
             .worktime = "#{t('user_exercise_feedback.working_time')} #{time_presets[feedback.user_estimated_worktime].join(' - ')}" if feedback.user_estimated_worktime
         - if policy(@exercise).detailed_statistics?
