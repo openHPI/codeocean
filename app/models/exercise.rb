@@ -255,7 +255,6 @@ class Exercise < ApplicationRecord
   end
 
   def get_quantiles(quantiles)
-    quantiles_str = self.class.sanitize_sql("[#{quantiles.join(',')}]")
     result = ActiveRecord::Base.transaction do
       self.class.connection.execute("
       SET LOCAL intervalstyle = 'iso_8601';
@@ -362,7 +361,7 @@ class Exercise < ApplicationRecord
                GROUP BY e.external_id,
                         f.user_id,
                         exercise_id )
-      SELECT   unnest(percentile_cont(array#{quantiles_str}) within GROUP (ORDER BY working_time))
+      SELECT   unnest(percentile_cont(#{self.class.sanitize_sql(['array[?]', quantiles])}) within GROUP (ORDER BY working_time))
       FROM     result
       ")
     end
