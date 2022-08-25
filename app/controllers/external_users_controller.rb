@@ -45,7 +45,7 @@ class ExternalUsersController < ApplicationController
           FROM submissions
           WHERE #{ExternalUser.sanitize_sql(['user_id = ?', @user.id])}
             AND user_type = 'ExternalUser'
-          #{current_user.admin? ? '' : "AND #{ExternalUser.sanitize_sql(['study_group_id IN (?)', current_user.study_groups.pluck(:id).join(', ')])} AND cause = 'submit'"}
+          #{current_user.admin? ? '' : "AND #{ExternalUser.sanitize_sql(['study_group_id IN (?)', current_user.study_groups.pluck(:id)])} AND cause = 'submit'"}
           GROUP BY exercise_id,
                    user_id,
                    id
