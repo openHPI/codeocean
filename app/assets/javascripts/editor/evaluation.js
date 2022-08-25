@@ -209,6 +209,13 @@ CodeOceanEditorEvaluation = {
 
         if (output.stdout !== undefined && !output.stdout.startsWith("<img")) {
             output.stdout = _.escape(output.stdout);
+        } else {
+            const doc = new DOMParser().parseFromString(output.stdout, "text/html");
+            // Get the parsed element, it is automatically wrapped in a <html><body> document
+            const parsedElement = doc.firstChild.lastChild.firstChild;
+            const sanitized_img = document.createElement('img');
+            sanitized_img.src = parsedElement.src;
+            output.stdout = sanitized_img.outerHTML;
         }
 
         var element = this.findOrCreateOutputElement(index);
