@@ -291,7 +291,6 @@ describe Runner::Strategy::Poseidon do
     end
 
     include_examples 'BadRequest (400) error handling'
-    include_examples 'BadRequest (400) destroys local runner'
     include_examples 'Unauthorized (401) error handling'
     include_examples 'Gone (410) error handling'
     include_examples 'InternalServerError (500) error handling'
