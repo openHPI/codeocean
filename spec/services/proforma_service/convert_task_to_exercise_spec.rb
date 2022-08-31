@@ -38,32 +38,54 @@ describe ProformaService::ConvertTaskToExercise do
         uuid: 'uuid',
         parent_uuid: 'parent_uuid',
         language: 'language',
-        meta_data: {
-          CodeOcean: {
-            instructions: 'instructions',
-          },
-        },
+        meta_data: meta_data,
         model_solutions: model_solutions,
         files: files,
         tests: tests
       )
     end
     let(:user) { create(:teacher) }
+
     let(:files) { [] }
     let(:tests) { [] }
     let(:model_solutions) { [] }
     let(:exercise) { nil }
 
+    let(:meta_data) do
+      {
+        CodeOcean: {
+          public: public,
+          hide_file_tree: hide_file_tree,
+          allow_file_creation: allow_file_creation,
+          allow_auto_completion: allow_auto_completion,
+          expected_difficulty: expected_difficulty,
+          execution_environment_id: execution_environment.id,
+          files: files_meta_data,
+        },
+      }
+    end
+    let(:public) { 'true' }
+    let(:hide_file_tree) { 'true' }
+    let(:allow_file_creation) { 'true' }
+    let(:allow_auto_completion) { 'true' }
+    let(:expected_difficulty) { 7 }
+    let!(:execution_environment) { create(:java) }
+    let(:files_meta_data) { {} }
+
     it 'creates an exercise with the correct attributes' do
       expect(convert_to_exercise_service).to have_attributes(
         title: 'title',
         description: 'description',
-        instructions: 'instructions',
-        execution_environment: be_blank,
         uuid: be_blank,
         unpublished: true,
         user: user,
-        files: be_empty
+        files: be_empty,
+        public: true,
+        hide_file_tree: true,
+        allow_file_creation: true,
+        allow_auto_completion: true,
+        expected_difficulty: 7,
+        execution_environment_id: execution_environment.id
       )
     end
 
@@ -311,8 +333,7 @@ describe ProformaService::ConvertTaskToExercise do
         create(
           :files,
           title: 'exercise-title',
-          description: 'exercise-description',
-          instructions: 'exercise-instruction'
+          description: 'exercise-description'
         )
       end
 
@@ -324,7 +345,6 @@ describe ProformaService::ConvertTaskToExercise do
           id: exercise.id,
           title: task.title,
           description: task.description,
-          instructions: task.meta_data[:CodeOcean][:instructions],
           execution_environment: exercise.execution_environment,
           uuid: exercise.uuid,
           user: exercise.user,

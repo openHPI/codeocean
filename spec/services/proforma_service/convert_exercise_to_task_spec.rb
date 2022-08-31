@@ -39,7 +39,13 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
         language: described_class::DEFAULT_LANGUAGE,
         meta_data: {
           CodeOcean: {
-            instructions: exercise.instructions,
+            allow_auto_completion: exercise.allow_auto_completion,
+            allow_file_creation: exercise.allow_file_creation,
+            execution_environment_id: exercise.execution_environment_id,
+            expected_difficulty: exercise.expected_difficulty,
+            hide_file_tree: exercise.hide_file_tree,
+            public: exercise.public,
+            files: {},
           },
         },
         # parent_uuid: exercise.clone_relations.first&.origin&.uuid,
@@ -62,7 +68,15 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           usage_by_lms: 'edit',
           visible: 'yes',
           binary: false,
-          internal_description: 'main_file'
+          internal_description: nil
+        )
+      end
+
+      it 'adds the file\'s role to the file hash in task-meta_data' do
+        expect(task).to have_attributes(
+          meta_data: {
+            CodeOcean: a_hash_including(files: {"CO-#{file.id}" => {role: 'main_file'}}),
+          }
         )
       end
     end
@@ -82,7 +96,15 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           usage_by_lms: 'display',
           visible: 'no',
           binary: false,
-          internal_description: 'regular_file'
+          internal_description: nil
+        )
+      end
+
+      it 'adds the file\'s role to the file hash in task-meta_data' do
+        expect(task).to have_attributes(
+          meta_data: {
+            CodeOcean: a_hash_including(files: {"CO-#{file.id}" => {role: 'regular_file'}}),
+          }
         )
       end
 
@@ -139,7 +161,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           usage_by_lms: 'display',
           visible: 'yes',
           binary: false,
-          internal_description: 'reference_implementation'
+          internal_description: nil
         )
       end
     end
@@ -168,8 +190,8 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           files: have(1).item,
           meta_data: {
             CodeOcean: {
-              'entry-point': test_file.filepath,
               'feedback-message': 'feedback_message',
+              weight: test_file.weight,
             },
           }
         )
@@ -183,7 +205,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           used_by_grader: true,
           visible: 'no',
           binary: false,
-          internal_description: 'teacher_defined_test'
+          internal_description: nil
         )
       end
 

@@ -119,7 +119,7 @@ class ExercisesController < ApplicationController
         partial: 'export_actions',
         locals: {
           exercise: @exercise,
-          task_found: codeharbor_check[:uuid_found],
+          uuid_found: codeharbor_check[:uuid_found],
           update_right: codeharbor_check[:update_right],
           error: codeharbor_check[:error],
           exported: false,

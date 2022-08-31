@@ -387,7 +387,7 @@ describe ExercisesController do
 
     let(:post_request) { post :export_external_check, params: {id: exercise.id} }
     let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
-    let(:external_check_hash) { {message: message, task_found: true, update_right: update_right, error: error} }
+    let(:external_check_hash) { {message: message, uuid_found: true, update_right: update_right, error: error} }
     let(:message) { 'message' }
     let(:update_right) { true }
     let(:error) { nil }
@@ -436,7 +436,7 @@ describe ExercisesController do
     end
   end
 
-  describe '#export_external_confirm' do
+  describe 'POST #export_external_confirm' do
     render_views
 
     let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
@@ -473,7 +473,7 @@ describe ExercisesController do
     end
   end
 
-  describe '#import_uuid_check' do
+  describe 'POST #import_uuid_check' do
     let(:exercise) { create(:dummy, uuid: SecureRandom.uuid) }
     let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
     let(:uuid) { exercise.reload.uuid }
@@ -486,7 +486,7 @@ describe ExercisesController do
       post_request
       expect(response).to have_http_status(:success)
 
-      expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be true
+      expect(JSON.parse(response.body).symbolize_keys[:uuid_found]).to be true
       expect(JSON.parse(response.body).symbolize_keys[:update_right]).to be true
     end
 
@@ -506,7 +506,7 @@ describe ExercisesController do
         post_request
         expect(response).to have_http_status(:success)
 
-        expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be true
+        expect(JSON.parse(response.body).symbolize_keys[:uuid_found]).to be true
         expect(JSON.parse(response.body).symbolize_keys[:update_right]).to be false
       end
     end
@@ -518,7 +518,7 @@ describe ExercisesController do
         post_request
         expect(response).to have_http_status(:success)
 
-        expect(JSON.parse(response.body).symbolize_keys[:exercise_found]).to be false
+        expect(JSON.parse(response.body).symbolize_keys[:uuid_found]).to be false
       end
     end
   end

@@ -37,6 +37,7 @@ module ProformaService
               allow_auto_completion: @exercise.allow_auto_completion,
               expected_difficulty: @exercise.expected_difficulty,
               execution_environment_id: @exercise.execution_environment_id,
+              files: task_files_meta_data,
             },
           },
         }.compact
@@ -92,17 +93,26 @@ module ProformaService
       [
         task_file(file).tap do |t_file|
           t_file.used_by_grader = true
-          t_file.internal_description = 'teacher_defined_test'
         end,
       ]
     end
 
-    def task_files
-      @exercise.files
-        .filter do |file|
+    def exercise_files
+      @exercise.files.filter do |file|
         !file.role.in? %w[reference_implementation teacher_defined_test
                           teacher_defined_linter]
-      end.map do |file|
+      end
+    end
+
+    def task_files_meta_data
+      exercise_files.to_h do |file|
+        # added CO- to id, otherwise the key would have CodeOcean as a prefix after export and import (cause unknown)
+        ["CO-#{file.id}", {role: file.role}]
+      end
+    end
+
+    def task_files
+      exercise_files.map do |file|
         task_file(file)
       end
     end
@@ -112,8 +122,7 @@ module ProformaService
         id: file.id,
         filename: filename(file),
         usage_by_lms: file.read_only ? 'display' : 'edit',
-        visible: file.hidden ? 'no' : 'yes',
-        # internal_description: file.role || 'regular_file'
+        visible: file.hidden ? 'no' : 'yes'
       )
       add_content_to_task_file(file, task_file)
       task_file
@@ -121,8 +130,7 @@ module ProformaService
 
     def filename(file)
       if file.path.present? && file.path != '.'
-        ::File.join(file.path,
-          file.name_with_extension)
+        ::File.join(file.path, file.name_with_extension)
       else
         file.name_with_extension
       end

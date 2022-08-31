@@ -21,15 +21,22 @@ module ProformaService
         user: @user,
         title: @task.title,
         description: @task.description,
-        public: @task.meta_data[:CodeOcean]&.dig(:public) == 'true',
-        hide_file_tree: @task.meta_data[:CodeOcean]&.dig(:hide_file_tree) == 'true',
-        allow_file_creation: @task.meta_data[:CodeOcean]&.dig(:allow_file_creation) == 'true',
-        allow_auto_completion: @task.meta_data[:CodeOcean]&.dig(:allow_auto_completion) == 'true',
+        public: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:public)),
+        hide_file_tree: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:hide_file_tree)),
+        allow_file_creation: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_file_creation)),
+        allow_auto_completion: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_auto_completion)),
         expected_difficulty: @task.meta_data[:CodeOcean]&.dig(:expected_difficulty),
         execution_environment_id: @task.meta_data[:CodeOcean]&.dig(:execution_environment_id),
 
         files: files
       )
+    end
+
+    def string_to_bool(str)
+      return true if str == 'true'
+      return false if str == 'false'
+
+      nil
     end
 
     def files
@@ -68,7 +75,7 @@ module ProformaService
         hidden: file.visible == 'no',
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
-        role: 'regular_file',
+        role: @task.meta_data[:CodeOcean]&.dig(:files)&.dig("CO-#{file.id}".to_sym)&.dig(:role) || 'regular_file',
         path: File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename)
       )
       if file.binary

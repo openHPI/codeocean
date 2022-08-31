@@ -4,7 +4,7 @@
     = t('exercises.export_codeharbor.buttons.retry')
 - else
   - unless exported
-    - if !task_found || update_right
+    - if !uuid_found || update_right
       = button_tag type: 'button', class:'btn btn-primary float-end export-action export-button', data: {exercise_id: exercise.id} do
         i.fa-solid.fa-check.confirm-icon
         = t('exercises.export_codeharbor.buttons.export')
