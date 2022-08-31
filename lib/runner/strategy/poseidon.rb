@@ -209,7 +209,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
         raise Runner::Error::BadRequest.new(response_body[:message])
       when 401
         raise Runner::Error::Unauthorized.new('Authentication with Poseidon failed')
-      when 404
+      when 410
         raise Runner::Error::RunnerNotFound.new
       when 500
         response_body = parse response

@@ -57,10 +57,10 @@ describe Runner::Strategy::Poseidon do
     end
   end
 
-  # All requests except creation handle a NotFound (404) response the same way.
-  shared_examples 'NotFound (404) error handling' do
-    context 'when Poseidon returns NotFound (404)' do
-      let(:response_status) { 404 }
+  # All runner requests except creation handle a Gone (410) response the same way.
+  shared_examples 'Gone (410) error handling' do
+    context 'when Poseidon returns NotFound (410)' do
+      let(:response_status) { 410 }
 
       it 'raises an error' do
         expect { action.call }.to raise_error(Runner::Error::RunnerNotFound)
@@ -293,7 +293,7 @@ describe Runner::Strategy::Poseidon do
     include_examples 'BadRequest (400) error handling'
     include_examples 'BadRequest (400) destroys local runner'
     include_examples 'Unauthorized (401) error handling'
-    include_examples 'NotFound (404) error handling'
+    include_examples 'Gone (410) error handling'
     include_examples 'InternalServerError (500) error handling'
     include_examples 'unknown response status error handling'
     include_examples 'Faraday error handling'
@@ -316,8 +316,8 @@ describe Runner::Strategy::Poseidon do
       end
     end
 
-    context 'when Poseidon returns NotFound (404)' do
-      let(:response_status) { 404 }
+    context 'when Poseidon returns Gone (410)' do
+      let(:response_status) { 410 }
 
       it 'raises an error' do
         expect { action.call }.not_to raise_error
@@ -357,7 +357,7 @@ describe Runner::Strategy::Poseidon do
     include_examples 'BadRequest (400) error handling'
     include_examples 'BadRequest (400) destroys local runner'
     include_examples 'Unauthorized (401) error handling'
-    include_examples 'NotFound (404) error handling'
+    include_examples 'Gone (410) error handling'
     include_examples 'InternalServerError (500) error handling'
     include_examples 'unknown response status error handling'
     include_examples 'Faraday error handling'
