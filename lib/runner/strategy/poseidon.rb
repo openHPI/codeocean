@@ -34,8 +34,6 @@ class Runner::Strategy::Poseidon < Runner::Strategy
         else
           execution_environments
         end
-      when 404
-        raise Runner::Error::EnvironmentNotFound.new
       else
         handle_error response
     end
@@ -258,9 +256,6 @@ class Runner::Strategy::Poseidon < Runner::Strategy
         response_body = self.class.parse response
         websocket_url = response_body[:websocketUrl]
         websocket_url.presence || raise(Runner::Error::UnexpectedResponse.new('Poseidon did not send a WebSocket URL'))
-      when 400
-        Runner.destroy(@allocation_id)
-        self.class.handle_error response
       else
         self.class.handle_error response
     end
