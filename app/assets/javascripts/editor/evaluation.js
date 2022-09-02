@@ -189,7 +189,7 @@ CodeOceanEditorEvaluation = {
     },
 
     clearOutput: function () {
-        $('#output pre').remove();
+        $('#output > .output-element').remove();
         CodeOceanEditorTurtle.hideCanvas();
     },
 
@@ -207,50 +207,54 @@ CodeOceanEditorEvaluation = {
             return;
         }
 
-        if (output.stdout !== undefined && !output.stdout.startsWith("<img")) {
-            output.stdout = _.escape(output.stdout);
-        } else {
-            const doc = new DOMParser().parseFromString(output.stdout, "text/html");
+        const sanitizedStdout = this.sanitizeOutput(output.stdout);
+        const sanitizedStderr = this.sanitizeOutput(output.stderr);
+
+        const element = this.findOrCreateOutputElement(index);
+        const pre = $('<span>');
+
+        if (sanitizedStdout !== '') {
+            if (colorize) {
+                pre.addClass('text-success');
+            }
+            pre.append(sanitizedStdout)
+        }
+
+        if (sanitizedStderr !== '') {
+            if (colorize) {
+                pre.addClass('text-warning');
+            } else {
+                pre.append('StdErr: ');
+            }
+            pre.append(sanitizedStderr);
+        }
+
+        if (sanitizedStdout === '' && sanitizedStderr === '') {
+            if (colorize) {
+                pre.addClass('text-muted');
+            }
+            pre.text($('#output').data('message-no-output'))
+        }
+
+        element.append(pre);
+    },
+
+    sanitizeOutput: function (rawContent) {
+        let sanitizedContent = _.escape(rawContent).replace(this.nonPrintableRegEx, "");
+
+        if (rawContent !== undefined && rawContent.trim().startsWith("<img")) {
+            const doc = new DOMParser().parseFromString(rawContent, "text/html");
             // Get the parsed element, it is automatically wrapped in a <html><body> document
             const parsedElement = doc.firstChild.lastChild.firstChild;
-            const sanitized_img = document.createElement('img');
-            sanitized_img.src = parsedElement.src;
-            output.stdout = sanitized_img.outerHTML;
+
+            if (parsedElement.src.startsWith("data:image")) {
+                const sanitizedImg = document.createElement('img');
+                sanitizedImg.src = parsedElement.src;
+                sanitizedContent = sanitizedImg.outerHTML;
+            }
         }
 
-        var element = this.findOrCreateOutputElement(index);
-        // Switch all four lines below to enable the output of images and render <IMG/> tags.
-        // Also consider `augmentStacktraceInOutput` in editor.js.erb
-        if (!colorize) {
-            if (output.stdout !== undefined && output.stdout !== '') {
-                output.stdout = output.stdout.replace(this.nonPrintableRegEx, "")
-
-                element.append(output.stdout)
-                //element.text(element.text() + output.stdout)
-            }
-
-            if (output.stderr !== undefined && output.stderr !== '') {
-                output.stderr = output.stderr.replace(this.nonPrintableRegEx, "")
-
-                element.append('StdErr: ' + output.stderr);
-                //element.text('StdErr: ' + element.text() + output.stderr);
-            }
-
-        } else if (output.stderr) {
-            output.stderr = output.stderr.replace(this.nonPrintableRegEx, "")
-
-            element.addClass('text-warning').append(output.stderr);
-            //element.addClass('text-warning').text(element.text() + output.stderr);
-            this.QaApiOutputBuffer.stderr += output.stderr;
-        } else if (output.stdout) {
-            output.stdout = output.stdout.replace(this.nonPrintableRegEx, "")
-
-            element.addClass('text-success').append(output.stdout);
-            //element.addClass('text-success').text(element.text() + output.stdout);
-            this.QaApiOutputBuffer.stdout += output.stdout;
-        } else {
-            element.addClass('text-muted').text($('#output').data('message-no-output'));
-        }
+        return sanitizedContent;
     },
 
     getDeadlineInformation: function(deadline, translation_key, otherwise) {

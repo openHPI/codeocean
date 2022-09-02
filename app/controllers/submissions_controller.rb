@@ -73,6 +73,7 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def run
     # These method-local socket variables are required in order to use one socket
     # in the callbacks of the other socket. As the callbacks for the client socket
@@ -167,7 +168,8 @@ class SubmissionsController < ApplicationController
             @testrun[:status] = :failed
             "\n#{t('exercises.implement.exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           end
-        send_and_store client_socket, {cmd: :write, stream: :stdout, data: "#{exit_statement}\n"}
+        stream = @testrun[:status] == :ok ? :stdout : :stderr
+        send_and_store client_socket, {cmd: :write, stream: stream, data: "#{exit_statement}\n"}
         if exit_code == 137
           send_and_store client_socket, {cmd: :status, status: :out_of_memory}
           @testrun[:status] = :out_of_memory
@@ -194,6 +196,7 @@ class SubmissionsController < ApplicationController
   ensure
     save_testrun_output 'run'
   end
+  # rubocop:enable Metrics/CyclomaticComplexity:
 
   def score
     hijack do |tubesock|

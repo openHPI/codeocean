@@ -79,7 +79,7 @@ div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-botto
           .heading = t('exercises.implement.error_hints.heading')
           ul.body.mb-0
       #output
-        pre.overflow-scroll = t('exercises.implement.no_output_yet')
+        .output-element.overflow-scroll = t('exercises.implement.no_output_yet')
       - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] && !@embed_options[:disable_hints] && !@embed_options[:hide_test_results]
         #flowrHint.mb-2.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
           .card-header = t('exercises.implement.flowr.heading')

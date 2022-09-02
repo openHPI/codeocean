@@ -77,20 +77,13 @@
   overflow: auto;
 }
 
-#outputInformation {
-  #output {
-    max-height: 500px;
-    width: 100%;
+#output {
+  white-space: pre;
+  font-family: var(--bs-font-monospace);
+  font-size: 14px;
+
+  .output-element {
     overflow: auto;
-    margin: 2em 0;
-
-    p {
-      margin: 0.5em;
-    }
-
-    pre + pre {
-      margin-top: 1em;
-    }
   }
 }
 
