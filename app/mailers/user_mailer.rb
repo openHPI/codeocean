@@ -23,7 +23,7 @@ class UserMailer < ApplicationMailer
     token = AuthenticationToken.generate!(request_for_comment.user)
     @receiver_displayname = request_for_comment.user.displayname
     @commenting_user_displayname = commenting_user.displayname
-    @comment_text = comment.text
+    @comment_text = ERB::Util.html_escape comment.text
     @rfc_link = request_for_comment_url(request_for_comment, token: token.shared_secret)
     mail(
       subject: t('mailers.user_mailer.got_new_comment.subject',
@@ -35,7 +35,7 @@ class UserMailer < ApplicationMailer
     token = AuthenticationToken.generate!(subscription.user)
     @receiver_displayname = subscription.user.displayname
     @author_displayname = from_user.displayname
-    @comment_text = comment.text
+    @comment_text = ERB::Util.html_escape comment.text
     @rfc_link = request_for_comment_url(subscription.request_for_comment, token: token.shared_secret)
     @unsubscribe_link = unsubscribe_subscription_url(subscription)
     mail(
@@ -48,7 +48,7 @@ class UserMailer < ApplicationMailer
     token = AuthenticationToken.generate!(receiver)
     @receiver_displayname = receiver.displayname
     @author = request_for_comment.user.displayname
-    @thank_you_note = request_for_comment.thank_you_note
+    @thank_you_note = ERB::Util.html_escape request_for_comment.thank_you_note
     @rfc_link = request_for_comment_url(request_for_comment, token: token.shared_secret)
     mail(subject: t('mailers.user_mailer.send_thank_you_note.subject', author: @author), to: receiver.email)
   end
