@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized, except: %i[welcome]
   around_action :mnemosyne_trace
   around_action :switch_locale
-  before_action :set_sentry_context, :allow_iframe_requests, :load_embed_options
+  before_action :set_sentry_context, :load_embed_options
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
@@ -94,10 +94,6 @@ class ApplicationController < ActionController::Base
 
   def welcome
     # Show root page
-  end
-
-  def allow_iframe_requests
-    response.headers.delete('X-Frame-Options')
   end
 
   def load_embed_options
