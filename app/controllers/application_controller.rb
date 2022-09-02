@@ -40,7 +40,10 @@ class ApplicationController < ActionController::Base
     token = AuthenticationToken.find_by(shared_secret: params[:token])
     return unless token
 
-    auto_login(token.user) if token.expire_at.future?
+    if token.expire_at.future?
+      token.update(expire_at: Time.zone.now)
+      auto_login(token.user)
+    end
   end
 
   def set_sentry_context
