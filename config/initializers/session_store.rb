@@ -6,4 +6,5 @@ Rails.application.config.session_store :cookie_store,
   key: '_code_ocean_session',
   expire_after: 1.month,
   secure: Rails.env.production? || Rails.env.staging?,
-  path: Rails.application.config.relative_url_root
+  path: Rails.application.config.relative_url_root,
+  same_site: :strict
