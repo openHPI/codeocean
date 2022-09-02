@@ -45,7 +45,7 @@ class UserMailer < ApplicationMailer
   end
 
   def send_thank_you_note(request_for_comment, receiver)
-    token = AuthenticationToken.generate!(request_for_comment.user)
+    token = AuthenticationToken.generate!(receiver)
     @receiver_displayname = receiver.displayname
     @author = request_for_comment.user.displayname
     @thank_you_note = request_for_comment.thank_you_note

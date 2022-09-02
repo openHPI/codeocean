@@ -132,9 +132,9 @@ describe UserMailer do
 
   describe '#send_thank_you_note' do
     let(:user) { create(:learner) }
-    let(:token) { AuthenticationToken.find_by(user: user) }
+    let(:receiver) { create(:teacher) }
+    let(:token) { AuthenticationToken.find_by(user: receiver) }
     let(:request_for_comments) { create(:rfc_with_comment, user: user) }
-    let(:receiver) { InternalUser.create(attributes_for(:teacher)) }
     let(:mail) { described_class.send_thank_you_note(request_for_comments, receiver).deliver_now }
 
     it 'sets the correct sender' do
