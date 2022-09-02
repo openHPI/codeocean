@@ -58,7 +58,7 @@ module CodeOcean
 
     def read
       if native_file?
-        valid = Pathname(native_file.current_path).fnmatch? ::File.join(native_file.root, '**')
+        valid = Pathname(native_file.current_path).realpath.fnmatch? ::File.join(native_file.root, '**')
         return nil unless valid
 
         native_file.read
