@@ -148,7 +148,6 @@ describe UserMailer do
       expect(token.expire_at - Time.zone.now).to be_within(5.minutes).of(7.days)
     end
 
-
     it 'sets the correct comment' do
       expect(mail.body).to include(request_for_comment.comments.first.text)
     end
@@ -201,7 +200,6 @@ describe UserMailer do
       # A five minute tolerance is allowed to account for the time difference between `now` and the creation timestamp of the token.
       expect(token.expire_at - Time.zone.now).to be_within(5.minutes).of(7.days)
     end
-
 
     it 'sets the correct thank_you_note' do
       expect(mail.body).to include(request_for_comment.thank_you_note)
