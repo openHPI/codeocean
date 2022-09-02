@@ -92,7 +92,7 @@ gem install bundler
 cd /home/vagrant/codeocean
 
 # config
-for f in action_mailer.yml database.yml secrets.yml docker.yml.erb mnemosyne.yml
+for f in action_mailer.yml database.yml secrets.yml docker.yml.erb mnemosyne.yml content_security_policy.yml
 do
   if [ ! -f config/$f ]
   then

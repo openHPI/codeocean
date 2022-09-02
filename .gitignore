@@ -4,6 +4,7 @@
 /config/mnemosyne.yml
 /config/secrets.yml
 /config/docker.yml.erb
+/config/content_security_policy.yml
 /coverage
 /log/*.*
 /public/assets

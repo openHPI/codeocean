@@ -1,0 +1,29 @@
+# This file allows to further customize the Content Security Policy (CSP)
+# All settings will be applied **in addition** to the application CSP
+# Default directives are defined here: `initializers/content_security_policy.rb`
+
+default: &default
+  # Allow the S3 service hosted by the openHPI Cloud to be used for images
+  img_src:
+    - https://s3.xopic.de
+    - https://*.s3.xopic.de
+    - https://s3.openhpicloud.de
+    - https://*.s3.openhpicloud.de
+  # Optionally: Specify a custom, non-Sentry URL for reporting CSP violations
+  # report_uri: https://example.com/csp-report
+
+
+development:
+  <<: *default
+  # Allow the webpack-dev-server in development
+  connect_src:
+    - http://localhost:3035
+    - ws://localhost:3035
+
+
+production:
+  <<: *default
+
+
+test:
+  <<: *default

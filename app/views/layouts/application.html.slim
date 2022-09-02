@@ -15,8 +15,8 @@ html lang="#{I18n.locale || I18n.default_locale}"
     = javascript_include_tag('application', 'data-turbolinks-track': true)
     = yield(:head)
     = csrf_meta_tags
-    = timeago_script_tag
-    script type="text/javascript"
+    = timeago_script_tag nonce: true
+    = javascript_tag nonce: true do
       | I18n.defaultLocale = "#{I18n.default_locale}";
       | I18n.locale = "#{I18n.locale}";
       - if SentryJavascript.active?

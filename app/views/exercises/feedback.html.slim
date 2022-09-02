@@ -36,4 +36,5 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
 
   = render('shared/pagination', collection: @feedbacks)
 
-  script type="text/javascript" $(function () { $('[data-bs-toggle="tooltip"]').tooltip() });
+  = javascript_tag nonce: true do
+    | $(function () { $('[data-bs-toggle="tooltip"]').tooltip() });
