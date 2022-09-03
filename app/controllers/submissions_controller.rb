@@ -12,7 +12,7 @@ class SubmissionsController < ApplicationController
   before_action :set_testrun, only: %i[run score test]
   before_action :set_files, only: %i[download show]
   before_action :set_files_and_specific_file, only: %i[download_file render_file run test]
-  before_action :set_mime_type, only: %i[download_file render_file]
+  before_action :set_content_type_nosniff, only: %i[download download_file render_file]
 
   # Overwrite the CSP header for the :render_file action
   content_security_policy only: :render_file do |policy|
@@ -69,7 +69,7 @@ class SubmissionsController < ApplicationController
     if @file.native_file?
       redirect_to protected_upload_path(id: @file.id, filename: @file.name_with_extension)
     else
-      send_data(@file.content, filename: @file.name_with_extension)
+      send_data(@file.content, filename: @file.name_with_extension, disposition: 'attachment')
     end
   end
 
@@ -80,11 +80,10 @@ class SubmissionsController < ApplicationController
   end
 
   def render_file
-    if @file.native_file?
-      send_data(@file.read, filename: @file.name_with_extension, disposition: 'inline')
-    else
-      render(plain: @file.content)
-    end
+    # If a file should not be downloaded, it should not be rendered either
+    raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
+
+    send_data(@file.read, filename: @file.name_with_extension, disposition: 'inline')
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity
@@ -380,9 +379,9 @@ class SubmissionsController < ApplicationController
     @files = @submission.collect_files.select(&:visible)
   end
 
-  def set_mime_type
-    @mime_type = Mime::Type.lookup_by_extension(@file.file_type.file_extension.gsub(/^\./, ''))
-    response.headers['Content-Type'] = @mime_type.to_s
+  def set_content_type_nosniff
+    # When sending a file, we want to ensure that browsers follow our Content-Type header
+    response.headers['X-Content-Type-Options'] = 'nosniff'
   end
 
   def set_submission
