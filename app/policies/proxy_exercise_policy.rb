@@ -13,10 +13,6 @@ class ProxyExercisePolicy < AdminOrAuthorPolicy
     define_method(action) { admin? || author? }
   end
 
-  [:reload?].each do |action|
-    define_method(action) { everyone }
-  end
-
   class Scope < Scope
     def resolve
       if @user.admin?
