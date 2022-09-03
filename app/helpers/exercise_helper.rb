@@ -8,7 +8,7 @@ module ExerciseHelper
   end
 
   def qa_js_tag
-    javascript_include_tag "#{qa_url}/assets/qa_api.js"
+    javascript_include_tag "#{qa_url}/assets/qa_api.js", integrity: true, crossorigin: 'anonymous'
   end
 
   def qa_url

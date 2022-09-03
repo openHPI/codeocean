@@ -51,6 +51,7 @@
     "webpack-cli": "^4.10.0",
     "webpack-merge": "^5.8.0",
     "webpack-sources": "^3.2.3",
+    "webpack-subresource-integrity": "^5.1.0",
     "xss": "^1.0.14"
   },
   "devDependencies": {
