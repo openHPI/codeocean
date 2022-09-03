@@ -14,6 +14,16 @@ class SubmissionsController < ApplicationController
   before_action :set_files_and_specific_file, only: %i[download_file render_file run test]
   before_action :set_mime_type, only: %i[download_file render_file]
 
+  # Overwrite the CSP header for the :render_file action
+  content_security_policy only: :render_file do |policy|
+    policy.img_src        :none
+    policy.script_src     :none
+    policy.font_src       :none
+    policy.style_src      :none
+    policy.connect_src    :none
+    policy.form_action    :none
+  end
+
   def create
     @submission = Submission.new(submission_params)
     authorize!
