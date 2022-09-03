@@ -110,10 +110,54 @@ describe ExercisePolicy do
     end
   end
 
-  permissions :implement? do
-    it 'grants access to anyone' do
-      %i[admin external_user teacher].each do |factory_name|
-        expect(policy).to permit(build(factory_name), Exercise.new)
+  %i[implement? working_times? intervention? search? reload?].each do |action|
+    permissions(action) do
+      context 'when the exercise has no visible files' do
+        let(:exercise) { create(:dummy) }
+
+        it 'does not grant access to anyone' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).not_to permit(build(factory_name), exercise)
+          end
+        end
+      end
+
+      context 'when the exercise has visible files' do
+        let(:exercise) { create(:fibonacci) }
+
+        it 'grants access to anyone' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).to permit(build(factory_name), exercise)
+          end
+        end
+      end
+
+      context 'when the exercise is published' do
+        let(:exercise) { create(:fibonacci, unpublished: false) }
+
+        it 'grants access to anyone' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).to permit(build(factory_name), exercise)
+          end
+        end
+      end
+
+      context 'when the exercise is unpublished' do
+        let(:exercise) { create(:fibonacci, unpublished: true) }
+
+        it 'grants access to admins' do
+          expect(policy).to permit(build(:admin), exercise)
+        end
+
+        it 'grants access to the author' do
+          expect(policy).to permit(exercise.author, exercise)
+        end
+
+        it 'does not grant access to everyone' do
+          %i[external_user teacher].each do |factory_name|
+            expect(policy).not_to permit(build(factory_name), exercise)
+          end
+        end
       end
     end
   end

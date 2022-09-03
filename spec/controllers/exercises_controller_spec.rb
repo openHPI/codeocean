@@ -187,6 +187,17 @@ describe ExercisesController do
       expect_flash_message(:alert, :'exercises.implement.no_files')
       expect_redirect(:exercise)
     end
+
+    context 'with other users accessing an unpublished exercise' do
+      let(:exercise) { create(:fibonacci, unpublished: true) }
+      let(:user) { create(:teacher) }
+
+      before { perform_request.call }
+
+      expect_assigns(exercise: :exercise)
+      expect_flash_message(:alert, :'exercises.implement.unpublished')
+      expect_redirect(:exercise)
+    end
   end
 
   describe 'GET #index' do
@@ -223,6 +234,8 @@ describe ExercisesController do
 
   describe 'GET #reload' do
     context 'when being anyone' do
+      let(:exercise) { create(:fibonacci) }
+
       before { get :reload, format: :json, params: {id: exercise.id} }
 
       expect_assigns(exercise: :exercise)
