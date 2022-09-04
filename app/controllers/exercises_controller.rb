@@ -435,7 +435,10 @@ class ExercisesController < ApplicationController
   end
 
   def not_authorized_for_exercise(_exception)
-    if %w[implement working_times intervention search reload].include?(action_name) && (current_user.admin? || current_user.teacher?)
+    return render_not_authorized unless current_user
+    return render_not_authorized unless %w[implement working_times intervention search reload].include?(action_name)
+
+    if current_user.admin? || current_user.teacher?
       redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished?
       redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     else
