@@ -9,7 +9,7 @@ class ExternalUsersController < ApplicationController
   private :authorize!
 
   def index
-    @search = ExternalUser.ransack(params[:q])
+    @search = ExternalUser.ransack(params[:q], {auth_object: current_user})
     @users = @search.result.in_study_group_of(current_user).includes(:consumer).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
