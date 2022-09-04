@@ -174,11 +174,6 @@ CodeOceanEditorEvaluation = {
     /**
      * Output-Logic
      */
-    renderWebsocketOutput: function (msg) {
-        var element = this.findOrCreateRenderElement(0);
-        element.append(msg.data);
-    },
-
     printWebsocketOutput: function (msg) {
         if (!msg.data || msg.data === "\r") {
             return;

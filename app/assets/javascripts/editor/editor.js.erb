@@ -84,16 +84,6 @@ var CodeOceanEditor = {
         }
     },
 
-    findOrCreateRenderElement: function (index) {
-        if ($('#render-' + index).isPresent()) {
-            return $('#render-' + index);
-        } else {
-            var element = $('<div>').attr('id', 'render-' + index);
-            $('#render').append(element);
-            return element;
-        }
-    },
-
     getCardClass: function (result) {
         if (result.file_role === 'teacher_defined_linter') {
             return 'card bg-info text-white'
