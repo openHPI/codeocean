@@ -128,6 +128,7 @@ Rails.application.routes.draw do
   namespace :code_ocean do
     resources :files, only: %i[create destroy]
   end
+  get '/uploads/files/:id/:filename', to: 'code_ocean/files#show_protected_upload', as: :protected_upload, constraints: {filename: FILENAME_REGEXP}
 
   resources :file_types
 

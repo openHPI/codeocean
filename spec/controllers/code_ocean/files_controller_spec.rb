@@ -7,6 +7,26 @@ describe CodeOcean::FilesController do
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
+  describe 'GET #show_protected_upload' do
+    context 'with a valid filename' do
+      let(:submission) { create(:submission, exercise: create(:audio_video)) }
+
+      before { get :show_protected_upload, params: {filename: file.name_with_extension, id: file.id} }
+
+      context 'with a binary file' do
+        let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
+
+        expect_assigns(file: :file)
+        expect_content_type('video/mp4')
+        expect_http_status(:ok)
+
+        it 'sets the correct filename' do
+          expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
+        end
+      end
+    end
+  end
+
   describe 'POST #create' do
     let(:submission) { create(:submission, user: user) }
 

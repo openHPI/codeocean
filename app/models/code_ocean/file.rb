@@ -58,13 +58,18 @@ module CodeOcean
 
     def read
       if native_file?
-        valid = Pathname(native_file.current_path).realpath.fnmatch? ::File.join(native_file.root, '**')
-        return nil unless valid
+        return nil unless native_file_location_valid?
 
         native_file.read
       else
         content
       end
+    end
+
+    def native_file_location_valid?
+      real_location = Pathname(native_file.current_path).realpath
+      upload_location = Pathname(::File.join(native_file.root, 'uploads')).realpath
+      real_location.fnmatch? ::File.join(upload_location.to_s, '**')
     end
 
     def ancestor_id

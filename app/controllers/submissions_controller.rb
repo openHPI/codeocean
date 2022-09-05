@@ -56,7 +56,11 @@ class SubmissionsController < ApplicationController
   def download_file
     raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
 
-    send_data(@file.read, filename: @file.name_with_extension)
+    if @file.native_file?
+      redirect_to protected_upload_path(id: @file.id, filename: @file.name_with_extension)
+    else
+      send_data(@file.content, filename: @file.name_with_extension)
+    end
   end
 
   def index
