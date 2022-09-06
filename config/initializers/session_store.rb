@@ -18,4 +18,7 @@ Rails.application.config.session_store :cookie_store,
   expire_after: 1.month,
   secure: Rails.env.production? || Rails.env.staging?,
   path: Rails.application.config.relative_url_root,
-  same_site: :strict
+  # Signing in through LTI won't work with `SameSite=Strict`
+  # as the cookie is not sent when accessing the `implement` route
+  # following the LTI launch initiated by the LMS as a third party.
+  same_site: :lax
