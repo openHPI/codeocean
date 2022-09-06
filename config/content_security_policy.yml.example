@@ -9,6 +9,10 @@ default: &default
     - https://*.s3.xopic.de
     - https://s3.openhpicloud.de
     - https://*.s3.openhpicloud.de
+  # Webkit didn't consider the WSS scheme as part of 'self', adding it explicitly
+  # See https://bugs.webkit.org/show_bug.cgi?id=235873
+  connect_src:
+    - wss://codeocean.openhpi.de
   # Optionally: Specify a custom, non-Sentry URL for reporting CSP violations
   # report_uri: https://example.com/csp-report
 
