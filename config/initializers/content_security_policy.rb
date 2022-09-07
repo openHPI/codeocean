@@ -33,7 +33,7 @@ end
 
 Rails.application.config.content_security_policy do |policy|
   policy.default_src          :none
-  policy.base_uri             :none
+  policy.base_uri             :self
   policy.font_src             :self
   # Code executions might return a base64 encoded image as a :data URI
   policy.img_src              :self, :data
