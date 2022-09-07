@@ -296,7 +296,7 @@ en:
     form:
       hints:
         command: <em>filename</em> is automatically replaced with the correct filename.
-        docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank">DockerHub</a>.
+        docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank" rel="noopener">DockerHub</a>.
         exposed_ports_list: During code execution these ports are accessible for the user. Port numbers must be numeric and separated by a comma.
         cpu_limit: Specify the minimum amount of CPU shares to reserve for each runner, measured in MHz.
       errors:
@@ -340,7 +340,7 @@ en:
       expand_output_sidebar: Expand Output Sidebar
       input: Your input
       lastsaved: 'Last saved: '
-      network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank">%{address}</a>.'
+      network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
       render: Render
       run: Run
       run_failure: Your code could not be run.
@@ -453,7 +453,7 @@ en:
         request: "Request Comments"
         question: 'Please shortly describe your problem or the program part you would like to get feedback for. Your program code and potential error messages are automatically appended to your request.'
       intervention:
-        explanation: "This message appears because you have been working on this exercise for %{duration} minutes. 25% of your fellow learners took more time to solve the exercise, so in that sense it's not a problem, but this has proven to be an <a href='https://hpi.de/en/research/publications/dissertations/dissertation-ralf-teusner.html' style='display: contents;'>effective time for this message</a>."
+        explanation: "This message appears because you have been working on this exercise for %{duration} minutes. 25% of your fellow learners took more time to solve the exercise, so in that sense it's not a problem, but this has proven to be an <a href='https://hpi.de/en/research/publications/dissertations/dissertation-ralf-teusner.html' style='display: contents;' target='_blank' rel='noopener'>effective time for this message</a>."
       rfc_intervention:
         text: "If you are struggling with this exercise and don't want to continue on your own, your fellow learners can help out! </br> </br>"
       break_intervention:
@@ -780,7 +780,7 @@ en:
     runtime_output: "Runtime Output"
     test_results: "Test Results"
   sessions:
-    expired: Your session has expired. Please <a href="javascript:window.location.reload(true)">reload this page</a> before continuing.
+    expired: Your session has expired. Please <a href="" class="reloadCurrentPage">reload this page</a> before continuing.
     create:
       failure: Invalid email or password.
       success: Successfully signed in.
@@ -793,7 +793,7 @@ en:
     destroy_through_lti:
       average_score: Average Score
       final_submissions: Other Users' Submissions
-      finished_with_consumer: 'You may close this window now or <a href="%{url}">return to %{consumer}</a>.'
+      finished_with_consumer: 'You may close this window now or <a href="%{url}" rel="nofollow">return to %{consumer}</a>.'
       finished_without_consumer: You may close this window now.
       headline: Well done!
       score: Your Score
@@ -834,7 +834,7 @@ en:
       link: Help
     index: Index
     message_failure: 'Sorry, something went wrong.'
-    websocket_failure: Sorry, a connection issue occoured. <a href="https://websocketstest.com">Please check WebSocket connections with this tool</a> and try again.
+    websocket_failure: Sorry, a connection issue occoured. <a href="https://websocketstest.com" target="_blank" rel="noopener">Please check WebSocket connections with this tool</a> and try again.
     new: Add
     new_model: 'Add %{model}'
     number: Number
