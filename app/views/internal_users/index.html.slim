@@ -8,23 +8,21 @@ h1 = InternalUser.model_name.human(count: 2)
     = f.label(:email_cont, t('activerecord.attributes.internal_user.email'), class: 'visually-hidden form-label')
     = f.search_field(:email_cont, class: 'form-control', placeholder: t('activerecord.attributes.internal_user.email'))
   .col-auto
-    = f.label(:role_eq, t('activerecord.attributes.internal_user.role'), class: 'visually-hidden form-label')
-    = f.select(:role_eq, User::ROLES.map { |role| [t("users.roles.#{role}"), role] }, {}, class: 'form-control', prompt: t('activerecord.attributes.internal_user.role'))
-
+    = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], { include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : '' }
 .table-responsive
   table.table.mt-4
     thead
       tr
         th = t('activerecord.attributes.internal_user.name')
         th = t('activerecord.attributes.internal_user.consumer')
-        th = t('activerecord.attributes.internal_user.role')
+        th = t('activerecord.attributes.internal_user.platform_admin')
         th colspan=3 = t('shared.actions')
     tbody
       - @users.each do |user|
         tr
           td = link_to_if(policy(user).show?, user.name, user)
           td = user.consumer ? link_to_if(policy(user.consumer).show?, user.consumer, user.consumer) : empty
-          td = t("users.roles.#{user.role}")
+          td = symbol_for(user.platform_admin?)
           td = link_to(t('shared.show'), user) if policy(user).show?
           td = link_to(t('shared.edit'), edit_internal_user_path(user)) if policy(user).edit?
           td = link_to(t('shared.destroy'), user, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(user).destroy?

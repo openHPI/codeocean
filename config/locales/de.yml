@@ -58,7 +58,7 @@ de:
         email: E-Mail
         external_id: Externe ID
         name: Name
-        role: Rolle
+        platform_admin: Platform Admin
       file:
         content: Inhalt
         feedback_message: Feedback-Nachricht
@@ -95,7 +95,7 @@ de:
         name: Name
         password: Passwort
         password_confirmation: Passwort-Bestätigung
-        role: Rolle
+        platform_admin: Platform Admin
       request_for_comments:
         comments: Kommentare
         exercise: Aufgabe
@@ -843,6 +843,10 @@ de:
     new: Hinzufügen
     new_model: '%{model} hinzufügen'
     number: Nummer
+    admin_filter:
+      only: Plattform-Administratoren
+      none: Reguläre Nutzer:innen
+      all: Alle Nutzer:innen
     object_cloned: '%{model} wurde erfolgreich dupliziert.'
     object_created: '%{model} wurde erfolgreich erstellt.'
     object_destroyed: '%{model} wurde erfolgreich gelöscht.'
@@ -877,10 +881,7 @@ de:
       percentage: Prozentzahl
       siblings: Dazugehörige Abgaben
   users:
-    roles:
-      admin: Administrator
-      learner: Lernender
-      teacher: Lehrer
+    platform_admin: Plattform Administrator
   will_paginate:
     next_label: 'Nächste Seite &#8594;'
     page_gap: '&hellip;'

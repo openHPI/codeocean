@@ -66,7 +66,7 @@ class User < ApplicationRecord
 
   def self.ransackable_attributes(auth_object)
     if auth_object.admin?
-      %w[name email external_id consumer_id role]
+      %w[name email external_id consumer_id platform_admin]
     else
       %w[name external_id]
     end

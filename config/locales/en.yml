@@ -58,7 +58,7 @@ en:
         email: Email
         external_id: External ID
         name: Name
-        role: Role
+        platform_admin: Platform Admin
       file:
         content: Content
         feedback_message: Feedback Message
@@ -95,7 +95,7 @@ en:
         name: Name
         password: Password
         password_confirmation: Passwort Confirmation
-        role: Role
+        platform_admin: Platform Admin
       request_for_comments:
         comments: Comments
         exercise: Exercise
@@ -843,6 +843,10 @@ en:
     new: Add
     new_model: 'Add %{model}'
     number: Number
+    admin_filter:
+      only: Platform admins
+      none: Regular users
+      all: All users
     object_cloned: '%{model} has successfully been duplicated.'
     object_created: '%{model} has successfully been created.'
     object_destroyed: '%{model} has successfully been deleted.'
@@ -877,10 +881,7 @@ en:
       percentage: Percentage
       siblings: Associated Submissions
   users:
-    roles:
-      admin: Administrator
-      learner: Learner
-      teacher: Teacher
+    platform_admin: Platform Admin
   will_paginate:
     next_label: 'Next Page &#8594;'
     page_gap: '&hellip;'
