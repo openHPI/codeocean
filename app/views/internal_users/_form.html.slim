@@ -9,7 +9,8 @@
   .mb-3
     = f.label(:name, class: 'form-label')
     = f.text_field(:name, class: 'form-control', required: true)
-  .mb-3
-    = f.label(:role, class: 'form-label')
-    = f.select(:role, User::ROLES.map { |role| [t("users.roles.#{role}"), role] }, {selected: @user.role || 'teacher'}, class: 'form-control')
+  .form-check
+    label.form-check-label
+      = f.check_box(:platform_admin, class: 'form-check-input')
+      = f.label(:platform_admin, t('activerecord.attributes.external_user.platform_admin'), class: 'form-label')
   .actions = render('shared/submit_button', f: f, object: @user)
