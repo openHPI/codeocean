@@ -130,6 +130,7 @@ describe Lti do
 
         context 'when grading is supported' do
           let(:response) { double }
+          let(:send_score) { controller.send(:send_score, submission) }
 
           before do
             allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
@@ -138,19 +139,18 @@ describe Lti do
             allow(response).to receive(:post_response).and_return(response)
             allow(response).to receive(:body).at_least(:once).and_return('')
             allow(response).to receive(:code_major).at_least(:once).and_return('success')
+            allow(submission).to receive(:normalized_score).and_return score
           end
 
           it 'sends the score' do
-            allow(submission).to receive(:normalized_score).and_return score
-            controller.send(:send_score, submission)
+            expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score)
+            send_score
           end
 
           it 'returns code, message, and status' do
-            allow(submission).to receive(:normalized_score).and_return score
-            result = controller.send(:send_score, submission)
-            expect(result[:code]).to eq(response.response_code)
-            expect(result[:message]).to eq(response.body)
-            expect(result[:status]).to eq(response.code_major)
+            expect(send_score[:code]).to eq(response.response_code)
+            expect(send_score[:message]).to eq(response.body)
+            expect(send_score[:status]).to eq(response.code_major)
           end
         end
       end
