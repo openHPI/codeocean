@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'zxcvbn'
+
 class InternalUser < User
   authenticates_with_sorcery!
 
@@ -7,6 +9,7 @@ class InternalUser < User
 
   validates :email, presence: true, uniqueness: true
   validates :password, confirmation: true, if: -> { password_void? && validate_password? }, on: :update, presence: true
+  validate :password_strength, if: -> { password_void? && validate_password? }, on: :update
   validates :role, inclusion: {in: ROLES}
 
   def activated?
@@ -24,6 +27,11 @@ class InternalUser < User
     @validate_password
   end
   private :validate_password?
+
+  def password_strength
+    result = Zxcvbn.test(password, [email, name, 'CodeOcean'])
+    errors.add(:password, :weak) if result.score < 4
+  end
 
   def teacher?
     role == 'teacher'

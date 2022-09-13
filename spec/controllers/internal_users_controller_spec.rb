@@ -282,11 +282,28 @@ describe InternalUsersController do
 
         expect_assigns(user: :user)
 
-        it 'changes the password' do
-          expect(InternalUser.authenticate(user.email, password)).to eq(user)
+        context 'with a weak password' do
+          let(:password) { 'foo' }
+
+          it 'does not change the password' do
+            expect { perform_request.call }.not_to change { user.reload.crypted_password }
+            expect(InternalUser.authenticate(user.email, password)).not_to eq(user)
+          end
+
+          expect_http_status(:ok)
+          expect_template(:reset_password)
         end
 
-        expect_redirect(:sign_in)
+        context 'with a strong password' do
+          let(:password) { SecureRandom.hex(128) }
+
+          it 'changes the password' do
+            expect { perform_request.call }.not_to change { user.reload.crypted_password }
+            expect(InternalUser.authenticate(user.email, password)).to eq(user)
+          end
+
+          expect_redirect(:sign_in)
+        end
       end
 
       context 'without a matching password confirmation' do

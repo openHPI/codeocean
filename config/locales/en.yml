@@ -238,6 +238,10 @@ en:
           at_most_one_main_file: must include at most one main file
           late_submission_deadline_not_alone: must not be used without a regular submission deadline
           late_submission_deadline_not_before_submission_deadline: must not be before the submission deadline passed
+        internal_user:
+          attributes:
+            password:
+              weak: is too weak. Try to use a long password with upper and lower case letters, numbers and special characters.
   admin:
     dashboard:
       show:

@@ -49,6 +49,7 @@ gem 'telegraf'
 gem 'tubesock'
 gem 'turbolinks'
 gem 'whenever', require: false
+gem 'zxcvbn-ruby', require: 'zxcvbn'
 
 # Error Tracing
 gem 'mnemosyne-ruby'
