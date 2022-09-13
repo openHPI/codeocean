@@ -33,7 +33,7 @@ gem 'prometheus_exporter'
 gem 'pry-byebug'
 gem 'puma'
 gem 'pundit'
-gem 'rails', '~> 6.1.6'
+gem 'rails', '~> 6.1.7'
 gem 'rails_admin', '< 3.0.0' # Blocked by https://github.com/railsadminteam/rails_admin/issues/3490
 gem 'rails-i18n'
 gem 'rails-timeago'
@@ -42,7 +42,7 @@ gem 'rest-client'
 gem 'rubytree'
 gem 'rubyzip'
 gem 'sass-rails'
-gem 'shakapacker', '6.5.1'
+gem 'shakapacker', '6.5.2'
 gem 'slim-rails'
 gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.com/Sorcery/sorcery/pull/255
 gem 'telegraf'
@@ -54,6 +54,10 @@ gem 'whenever', require: false
 gem 'mnemosyne-ruby'
 gem 'sentry-rails'
 gem 'sentry-ruby'
+
+group :development do
+  gem 'web-console'
+end
 
 group :development, :staging do
   gem 'better_errors'
@@ -67,7 +71,6 @@ group :development, :staging do
   gem 'rubocop-performance'
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec'
-  gem 'web-console'
 end
 
 group :development, :test, :staging do

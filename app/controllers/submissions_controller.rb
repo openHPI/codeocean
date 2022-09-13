@@ -12,7 +12,17 @@ class SubmissionsController < ApplicationController
   before_action :set_testrun, only: %i[run score test]
   before_action :set_files, only: %i[download show]
   before_action :set_files_and_specific_file, only: %i[download_file render_file run test]
-  before_action :set_mime_type, only: %i[download_file render_file]
+  before_action :set_content_type_nosniff, only: %i[download download_file render_file]
+
+  # Overwrite the CSP header for the :render_file action
+  content_security_policy only: :render_file do |policy|
+    policy.img_src        :none
+    policy.script_src     :none
+    policy.font_src       :none
+    policy.style_src      :none
+    policy.connect_src    :none
+    policy.form_action    :none
+  end
 
   def create
     @submission = Submission.new(submission_params)
@@ -56,7 +66,11 @@ class SubmissionsController < ApplicationController
   def download_file
     raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
 
-    send_data(@file.read, filename: @file.name_with_extension)
+    if @file.native_file?
+      redirect_to protected_upload_path(id: @file.id, filename: @file.name_with_extension)
+    else
+      send_data(@file.content, filename: @file.name_with_extension, disposition: 'attachment')
+    end
   end
 
   def index
@@ -66,13 +80,13 @@ class SubmissionsController < ApplicationController
   end
 
   def render_file
-    if @file.native_file?
-      send_data(@file.read, filename: @file.name_with_extension, disposition: 'inline')
-    else
-      render(plain: @file.content)
-    end
+    # If a file should not be downloaded, it should not be rendered either
+    raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
+
+    send_data(@file.read, filename: @file.name_with_extension, disposition: 'inline')
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def run
     # These method-local socket variables are required in order to use one socket
     # in the callbacks of the other socket. As the callbacks for the client socket
@@ -83,7 +97,7 @@ class SubmissionsController < ApplicationController
       client_socket = tubesock
 
       client_socket.onopen do |_event|
-        kill_client_socket(client_socket) if @embed_options[:disable_run]
+        return kill_client_socket(client_socket) if @embed_options[:disable_run]
       end
 
       client_socket.onclose do |_event|
@@ -167,7 +181,8 @@ class SubmissionsController < ApplicationController
             @testrun[:status] = :failed
             "\n#{t('exercises.implement.exit_failure', timestamp: l(Time.zone.now, format: :short), exit_code: exit_code)}"
           end
-        send_and_store client_socket, {cmd: :write, stream: :stdout, data: "#{exit_statement}\n"}
+        stream = @testrun[:status] == :ok ? :stdout : :stderr
+        send_and_store client_socket, {cmd: :write, stream: stream, data: "#{exit_statement}\n"}
         if exit_code == 137
           send_and_store client_socket, {cmd: :status, status: :out_of_memory}
           @testrun[:status] = :out_of_memory
@@ -194,12 +209,13 @@ class SubmissionsController < ApplicationController
   ensure
     save_testrun_output 'run'
   end
+  # rubocop:enable Metrics/CyclomaticComplexity:
 
   def score
     hijack do |tubesock|
       tubesock.onopen do |_event|
         switch_locale do
-          kill_client_socket(tubesock) if @embed_options[:disable_score]
+          return kill_client_socket(tubesock) if @embed_options[:disable_score] || !@submission.exercise.teacher_defined_assessment?
 
           # The score is stored separately, we can forward it to the client immediately
           tubesock.send_data(JSON.dump(@submission.calculate_score))
@@ -226,7 +242,7 @@ class SubmissionsController < ApplicationController
     hijack do |tubesock|
       tubesock.onopen do |_event|
         switch_locale do
-          kill_client_socket(tubesock) if @embed_options[:disable_run]
+          return kill_client_socket(tubesock) if @embed_options[:disable_run]
 
           # The score is stored separately, we can forward it to the client immediately
           tubesock.send_data(JSON.dump(@submission.test(@file)))
@@ -363,9 +379,9 @@ class SubmissionsController < ApplicationController
     @files = @submission.collect_files.select(&:visible)
   end
 
-  def set_mime_type
-    @mime_type = Mime::Type.lookup_by_extension(@file.file_type.file_extension.gsub(/^\./, ''))
-    response.headers['Content-Type'] = @mime_type.to_s
+  def set_content_type_nosniff
+    # When sending a file, we want to ensure that browsers follow our Content-Type header
+    response.headers['X-Content-Type-Options'] = 'nosniff'
   end
 
   def set_submission

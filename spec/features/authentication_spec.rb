@@ -78,6 +78,25 @@ describe 'Authentication' do
           expect(page).to have_content(I18n.t('application.not_authorized'))
         end
       end
+
+      context 'when the authentication token is used to login' do
+        let(:token) { create(:authentication_token, user: user) }
+
+        it 'invalidates the token on login' do
+          mail.deliver_now
+          visit(rfc_link)
+          expect(token.reload.expire_at).to be_within(10.seconds).of(Time.zone.now)
+        end
+
+        it 'does not allow a second login' do
+          mail.deliver_now
+          visit(rfc_link)
+          expect(page).to have_current_path(rfc_link)
+          visit(sign_out_path)
+          visit(rfc_link)
+          expect(page).to have_current_path(root_path)
+        end
+      end
     end
   end
 

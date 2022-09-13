@@ -79,7 +79,7 @@
 
 = render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent')
 
-javascript:
+javascript [nonce=content_security_policy_nonce]:
 
   $('.modal-content').draggable({
     handle: '.modal-header'

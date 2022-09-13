@@ -22,6 +22,8 @@ class ExercisesController < ApplicationController
   skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check]
   skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check], raise: false
 
+  rescue_from Pundit::NotAuthorizedError, with: :not_authorized_for_exercise
+
   def authorize!
     authorize(@exercise || @exercises)
   end
@@ -294,8 +296,6 @@ class ExercisesController < ApplicationController
   private :update_exercise_tips
 
   def implement
-    redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished? && current_user.role != 'admin' && current_user.role != 'teacher' # TODO: TESTESTEST
-    redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
     user_solved_exercise = @exercise.solved_by?(current_user)
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?',
       Time.zone.now.beginning_of_day).count
@@ -323,6 +323,8 @@ class ExercisesController < ApplicationController
         @show_rfc_interventions = show_intervention
       end
     end
+
+    @embed_options[:disable_score] = true unless @exercise.teacher_defined_assessment?
 
     @hide_rfc_button = @embed_options[:disable_rfc]
 
@@ -431,6 +433,19 @@ class ExercisesController < ApplicationController
 
     authorize!
   end
+
+  def not_authorized_for_exercise(_exception)
+    return render_not_authorized unless current_user
+    return render_not_authorized unless %w[implement working_times intervention search reload].include?(action_name)
+
+    if current_user.admin? || current_user.teacher?
+      redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished?
+      redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
+    else
+      render_not_authorized
+    end
+  end
+  private :not_authorized_for_exercise
 
   def set_execution_environments
     @execution_environments = ExecutionEnvironment.all.order(:name)

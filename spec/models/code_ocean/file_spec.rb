@@ -69,7 +69,27 @@ describe CodeOcean::File do
     end
 
     context 'when the path has been modified' do
-      before { file.update(native_file: '../../../../secrets.yml') }
+      before do
+        file.update_column(:native_file, '../../../../secrets.yml') # rubocop:disable Rails/SkipsModelValidations
+        file.reload
+      end
+
+      it 'does not read the native file' do
+        expect(file.read).not_to be_present
+      end
+    end
+
+    context 'when a symlink is used' do
+      let(:fake_upload_location) { File.join(CarrierWave::Uploader::Base.new.root, 'uploads', 'files', 'secrets.yml') }
+
+      before do
+        FileUtils.touch Rails.root.join('config/secrets.yml')
+        File.symlink Rails.root.join('config/secrets.yml'), fake_upload_location
+        file.update_column(:native_file, '../secrets.yml') # rubocop:disable Rails/SkipsModelValidations
+        file.reload
+      end
+
+      after { File.delete(fake_upload_location) }
 
       it 'does not read the native file' do
         expect(file.read).not_to be_present

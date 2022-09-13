@@ -32,4 +32,7 @@ $.jstree.defaults.core.worker = false;
 // See https://github.com/rails/jquery-ujs/issues/456 for details
 $(document).on('turbolinks:load', function(){
     $.rails.refreshCSRFTokens();
+    $('.reloadCurrentPage').on('click', function() {
+        window.location.reload();
+    });
 });

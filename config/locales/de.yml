@@ -296,7 +296,7 @@ de:
     form:
       hints:
         command: <em>filename</em> wird automatisch durch den richtigen Dateinamen ersetzt.
-        docker_image: 'Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank">DockerHub</a> verfügbar ist.'
+        docker_image: 'Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank" rel="noopener">DockerHub</a> verfügbar ist.'
         exposed_ports_list: Während der Ausführung sind diese Ports für den Nutzer zugänglich. Die Portnummern müssen nummerisch und mit Komma voneinander getrennt sein.
         cpu_limit: Geben Sie die Mindestmenge an CPU-Anteilen an, die für jeden Runner reserviert werden soll, gemessen in MHz.
       errors:
@@ -340,7 +340,7 @@ de:
       expand_output_sidebar: Ausgabe-Leiste Ausklappen
       input: Ihre Eingabe
       lastsaved: 'Zuletzt gespeichert: '
-      network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank">%{address}</a>.'
+      network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
       render: Anzeigen
       run: Ausführen
       run_failure: Ihr Code konnte nicht auf der Plattform ausgeführt werden.
@@ -453,7 +453,7 @@ de:
         request: "Kommentaranfrage stellen"
         question: "Bitte beschreiben Sie kurz Ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt."
       intervention:
-        explanation: "Diese Meldung erscheint, weil Sie %{duration} Minuten an dieser Aufgabe gearbeitet haben. 25% Ihrer Mitlernenden arbeiten länger daran, insofern ist das kein Problem, aber dies hat sich als <a href='https://hpi.de/forschung/publikationen/dissertationen/dissertation-ralf-teusner.html' style='display: contents;'>effektiven Zeitpunkt für diese Meldung</a> erwiesen."
+        explanation: "Diese Meldung erscheint, weil Sie %{duration} Minuten an dieser Aufgabe gearbeitet haben. 25% Ihrer Mitlernenden arbeiten länger daran, insofern ist das kein Problem, aber dies hat sich als <a href='https://hpi.de/forschung/publikationen/dissertationen/dissertation-ralf-teusner.html' style='display: contents;' target='_blank' rel='noopener'>effektiven Zeitpunkt für diese Meldung</a> erwiesen."
       rfc_intervention:
         text: "Falls Sie bei dieser Aufgabe nicht weiterkommen und nicht selbst weiter knobeln möchten, können Ihre Mitlernenden bestimmt helfen! </br> </br>"
       break_intervention:
@@ -780,7 +780,7 @@ de:
     runtime_output: "Programmausgabe"
     test_results: "Testergebnisse"
   sessions:
-    expired: Ihre Session ist abgelaufen. Bitte <a href="javascript:window.location.reload(true)">laden Sie diese Seite neu</a> bevor Sie fortfahren.
+    expired: Ihre Session ist abgelaufen. Bitte <a href="" class="reloadCurrentPage">laden Sie diese Seite neu</a> bevor Sie fortfahren.
     create:
       failure: Fehlerhafte E-Mail oder Passwort.
       success: Sie haben sich erfolgreich angemeldet.
@@ -793,7 +793,7 @@ de:
     destroy_through_lti:
       average_score: Durchschnittliche Punktzahl
       final_submissions: Abgaben anderer Nutzer
-      finished_with_consumer: 'Sie können dieses Fenster nun schließen oder <a href="%{url}">zu %{consumer} zurückkehren</a>.'
+      finished_with_consumer: 'Sie können dieses Fenster nun schließen oder <a href="%{url}" rel="nofollow">zu %{consumer} zurückkehren</a>.'
       finished_without_consumer: Sie können dieses Fenster nun schließen.
       headline: Gut gemacht!
       score: Ihre Punktzahl
@@ -834,7 +834,7 @@ de:
       link: Hilfe
     index: Index
     message_failure: Leider ist ein Fehler auf unserer Plattform aufgetreten. Bitte probieren Sie es später noch einmal.
-    websocket_failure: Leider ist ein Verbindungsproblem aufgetreten. <a href="https://websocketstest.com">Bitte überprüfen Sie Websocket-Verbindungen mit diesem Tool</a> und versuchen Sie es erneut.
+    websocket_failure: Leider ist ein Verbindungsproblem aufgetreten. <a href="https://websocketstest.com" target="_blank" rel="noopener">Bitte überprüfen Sie Websocket-Verbindungen mit diesem Tool</a> und versuchen Sie es erneut.
     new: Hinzufügen
     new_model: '%{model} hinzufügen'
     number: Nummer

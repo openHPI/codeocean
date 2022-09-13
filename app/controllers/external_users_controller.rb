@@ -9,7 +9,7 @@ class ExternalUsersController < ApplicationController
   private :authorize!
 
   def index
-    @search = ExternalUser.ransack(params[:q])
+    @search = ExternalUser.ransack(params[:q], {auth_object: current_user})
     @users = @search.result.in_study_group_of(current_user).includes(:consumer).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
@@ -43,15 +43,15 @@ class ExternalUsersController < ApplicationController
                  (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                      ORDER BY created_at)) AS working_time
           FROM submissions
-          WHERE user_id = #{@user.id}
+          WHERE #{ExternalUser.sanitize_sql(['user_id = ?', @user.id])}
             AND user_type = 'ExternalUser'
-          #{current_user.admin? ? '' : "AND study_group_id IN (#{current_user.study_groups.pluck(:id).join(', ')}) AND cause = 'submit'"}
+          #{current_user.admin? ? '' : "AND #{ExternalUser.sanitize_sql(['study_group_id IN (?)', current_user.study_groups.pluck(:id)])} AND cause = 'submit'"}
           GROUP BY exercise_id,
                    user_id,
                    id
           ) AS foo
       ) AS bar
-    #{tag.nil? ? '' : " JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND et.tag_id = #{tag} "}
+    #{tag.nil? ? '' : " JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND #{ExternalUser.sanitize_sql(['et.tag_id = ?', tag])}"}
     GROUP BY user_id,
              bar.exercise_id;
     "
@@ -60,10 +60,14 @@ class ExternalUsersController < ApplicationController
   def statistics
     @user = ExternalUser.find(params[:id])
     authorize!
+    if params[:tag].present?
+      tag = Tag.find(params[:tag])
+      authorize(tag, :show?)
+    end
 
     statistics = {}
 
-    ApplicationRecord.connection.execute(working_time_query(params[:tag])).each do |tuple|
+    ApplicationRecord.connection.execute(working_time_query(tag&.id)).each do |tuple|
       statistics[tuple['exercise_id'].to_i] = tuple
     end
 

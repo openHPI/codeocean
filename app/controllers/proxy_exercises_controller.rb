@@ -70,11 +70,8 @@ class ProxyExercisesController < ApplicationController
 
   def show
     @search = @proxy_exercise.exercises.ransack
-    @exercises = @proxy_exercise.exercises.ransack.result.order(:title) # @search.result.order(:title)
+    @exercises = @proxy_exercise.exercises.ransack.result.order(:title)
   end
-
-  # we might want to think about auth here
-  def reload; end
 
   def update
     myparams = proxy_exercise_params

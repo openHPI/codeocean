@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'sentry'
+
 class SentryJavascript
   def self.active?
     dsn.present? && %w[development test].exclude?(environment)

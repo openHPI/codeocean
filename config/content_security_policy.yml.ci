@@ -1,0 +1,18 @@
+default: &default
+  default_src: []
+
+
+development:
+  <<: *default
+  # Allow the webpack-dev-server in development
+  connect_src:
+    - http://localhost:3035
+    - ws://localhost:3035
+
+
+production:
+  <<: *default
+
+
+test:
+  <<: *default

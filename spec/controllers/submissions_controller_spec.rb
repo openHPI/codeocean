@@ -74,11 +74,9 @@ describe SubmissionsController do
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
-        expect_content_type('video/mp4')
-        expect_http_status(:ok)
 
-        it 'sets the correct filename' do
-          expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
+        it 'sets the correct redirect' do
+          expect(response.location).to eq protected_upload_url(id: file, filename: file.name_with_extension)
         end
       end
 

@@ -70,6 +70,7 @@ jobs:
           cp config/secrets.yml.ci config/secrets.yml
           cp config/docker.yml.erb.ci config/docker.yml.erb
           cp config/mnemosyne.yml.ci config/mnemosyne.yml
+          cp config/content_security_policy.yml.ci config/content_security_policy.yml
 
       - name: Create database
         env:

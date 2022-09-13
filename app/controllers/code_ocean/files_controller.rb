@@ -10,6 +10,15 @@ module CodeOcean
     end
     private :authorize!
 
+    def show_protected_upload
+      @file = CodeOcean::File.find(params[:id])
+      authorize!
+      raise Pundit::NotAuthorizedError if @embed_options[:disable_download] || @file.name_with_extension != params[:filename]
+
+      real_location = Pathname(@file.native_file.current_path).realpath
+      send_file(real_location, type: @file.native_file.content_type, filename: @file.name_with_extension, disposition: 'attachment')
+    end
+
     def create
       @file = CodeOcean::File.new(file_params)
       if @file.file_template_id

@@ -6,7 +6,10 @@ describe ExercisesController do
   let(:exercise) { create(:dummy) }
   let(:user) { create(:admin) }
 
-  before { allow(controller).to receive(:current_user).and_return(user) }
+  before do
+    create(:test_file, context: exercise)
+    allow(controller).to receive(:current_user).and_return(user)
+  end
 
   describe 'PUT #batch_update' do
     let(:attributes) { {public: 'true'} }
@@ -184,6 +187,17 @@ describe ExercisesController do
       expect_flash_message(:alert, :'exercises.implement.no_files')
       expect_redirect(:exercise)
     end
+
+    context 'with other users accessing an unpublished exercise' do
+      let(:exercise) { create(:fibonacci, unpublished: true) }
+      let(:user) { create(:teacher) }
+
+      before { perform_request.call }
+
+      expect_assigns(exercise: :exercise)
+      expect_flash_message(:alert, :'exercises.implement.unpublished')
+      expect_redirect(:exercise)
+    end
   end
 
   describe 'GET #index' do
@@ -220,6 +234,8 @@ describe ExercisesController do
 
   describe 'GET #reload' do
     context 'when being anyone' do
+      let(:exercise) { create(:fibonacci) }
+
       before { get :reload, format: :json, params: {id: exercise.id} }
 
       expect_assigns(exercise: :exercise)

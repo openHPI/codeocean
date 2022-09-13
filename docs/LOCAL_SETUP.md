@@ -194,7 +194,7 @@ source "$HOME/.profile"
 - Create all necessary config files:
 
   ```bash
-  for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml
+  for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml content_security_policy.yml
   do
     if [ ! -f config/$f ]
     then
@@ -303,7 +303,7 @@ source "$HOME/.profile"
   ```
 - Get a local copy of the config files and verify the settings:
   ```shell script
-  for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml
+  for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml content_security_policy.yml
   do
     if [ ! -f config/$f ]
     then

@@ -29,8 +29,16 @@ class ExercisePolicy < AdminOrAuthorPolicy
     define_method(action) { (admin? || teacher_in_study_group? || author?) && @user.codeharbor_link }
   end
 
-  %i[implement? working_times? intervention? search? submit? reload?].each do |action|
-    define_method(action) { everyone }
+  %i[implement? working_times? intervention? search? reload?].each do |action|
+    define_method(action) do
+      return no_one unless @record.files.visible.exists?
+
+      admin? || teacher_in_study_group? || author? || (everyone && !@record.unpublished?)
+    end
+  end
+
+  def submit?
+    everyone && @record.teacher_defined_assessment?
   end
 
   class Scope < Scope
@@ -39,8 +47,8 @@ class ExercisePolicy < AdminOrAuthorPolicy
         @scope.all
       elsif @user.teacher?
         @scope.where(
-          'user_id IN (SELECT user_id FROM study_group_memberships WHERE study_group_id IN (?))
-          OR (user_id = ? AND user_type = ?)
+          'exercises.user_id IN (SELECT user_id FROM study_group_memberships WHERE study_group_id IN (?))
+          OR (exercises.user_id = ? AND exercises.user_type = ?)
           OR public = TRUE',
           @user.study_groups.pluck(:id),
           @user.id, @user.class.name

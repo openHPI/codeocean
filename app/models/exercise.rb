@@ -205,6 +205,10 @@ class Exercise < ApplicationRecord
     "
   end
 
+  def teacher_defined_assessment?
+    files.any?(&:teacher_defined_assessment?)
+  end
+
   def get_working_times_for_study_group(study_group_id, user = nil)
     user_progress = []
     additional_user_data = []
@@ -251,7 +255,6 @@ class Exercise < ApplicationRecord
   end
 
   def get_quantiles(quantiles)
-    quantiles_str = self.class.sanitize_sql("[#{quantiles.join(',')}]")
     result = ActiveRecord::Base.transaction do
       self.class.connection.execute("
       SET LOCAL intervalstyle = 'iso_8601';
@@ -358,7 +361,7 @@ class Exercise < ApplicationRecord
                GROUP BY e.external_id,
                         f.user_id,
                         exercise_id )
-      SELECT   unnest(percentile_cont(array#{quantiles_str}) within GROUP (ORDER BY working_time))
+      SELECT   unnest(percentile_cont(#{self.class.sanitize_sql(['array[?]', quantiles])}) within GROUP (ORDER BY working_time))
       FROM     result
       ")
     end

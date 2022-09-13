@@ -5,8 +5,14 @@ module FileParameters
     if exercise && params
       params.reject do |_, file_attributes|
         file = CodeOcean::File.find_by(id: file_attributes[:file_id])
+        next true if file.nil? || file.hidden || file.read_only
         # avoid that public files from other contexts can be created
-        file.nil? || file.hidden || file.read_only || (file.context_type == 'Exercise' && file.context_id != exercise.id) || (file.context_type == 'CommunitySolution' && controller_name != 'community_solutions')
+        # `next` is similar to an early return and will proceed with the next iteration of the loop
+        next true if file.context_type == 'Exercise' && file.context_id != exercise.id
+        next true if file.context_type == 'Submission' && file.context.user != current_user
+        next true if file.context_type == 'CommunitySolution' && controller_name != 'community_solutions'
+
+        false
       end
     else
       []
