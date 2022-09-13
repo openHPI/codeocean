@@ -35,6 +35,27 @@ describe ApplicationController do
     expect_redirect(:root)
   end
 
+  describe '#render_not_found' do
+    before do
+      allow(controller).to receive(:welcome) { controller.send(:render_not_found) }
+      login_user(user) if defined?(user)
+      get :welcome
+    end
+
+    expect_flash_message(:alert, I18n.t('application.not_authorized'))
+    expect_redirect(:root)
+
+    context 'with an admin' do
+      let(:user) { create(:admin) }
+      expect_flash_message(:alert, I18n.t('application.not_found'))
+    end
+
+    context 'with a teacher' do
+      let(:user) { create(:teacher) }
+      expect_flash_message(:alert, I18n.t('application.not_authorized'))
+    end
+  end
+
   describe '#switch_locale' do
     let(:locale) { :de }
 

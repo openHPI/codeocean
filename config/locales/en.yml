@@ -249,6 +249,7 @@ en:
         usedRunners: Reserved Runners
   application:
     not_authorized: You are not authorized to perform this action.
+    not_found: The requested resource could not be found.
     welcome:
       text_signed_in_as_external_user: 'Please access %{application_name} from an e-learning platform.'
       text_signed_in_as_internal_user: 'Good to see you, %{user_name}!'

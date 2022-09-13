@@ -248,7 +248,8 @@ de:
         idleRunners: Freie Runner
         usedRunners: Reservierte Runner
   application:
-    not_authorized: Sie Sind nicht berechtigt, diese Aktion auszuführen.
+    not_authorized: Sie sind nicht berechtigt, diese Aktion auszuführen.
+    not_found: Die angeforderte Ressource konnte nicht gefunden werden.
     welcome:
       text_signed_in_as_external_user: 'Bitte rufen Sie %{application_name} von einer E-Learning-Plattform auf.'
       text_signed_in_as_internal_user: 'Schön, Sie zu sehen, %{user_name}!'

@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   before_action :set_sentry_context, :load_embed_options
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
+  rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
 
   def current_user
@@ -65,6 +66,15 @@ class ApplicationController < ActionController::Base
 
   def render_not_authorized
     render_error t('application.not_authorized'), :unauthorized
+  end
+  private :render_not_authorized
+
+  def render_not_found
+    if current_user&.admin?
+      render_error t('application.not_found'), :not_found
+    else
+      render_not_authorized
+    end
   end
   private :render_not_authorized
 
