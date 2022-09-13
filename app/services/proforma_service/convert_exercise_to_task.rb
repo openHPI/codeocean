@@ -68,9 +68,7 @@ module ProformaService
     end
 
     def tests
-      @exercise.files.filter do |file|
-        file.role == 'teacher_defined_test' || file.role == 'teacher_defined_linter'
-      end.map do |file|
+      @exercise.files.filter(&:teacher_defined_assessment?).map do |file|
         Proforma::Test.new(
           id: file.id,
           title: file.name,

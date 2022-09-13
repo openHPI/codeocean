@@ -40,7 +40,7 @@ module ProformaService
     end
 
     def files
-      model_solution_files + test_files + task_files.values
+      model_solution_files + test_files + task_files.values.tap {|array| array.each {|file| file.role ||= 'regular_file' } }
     end
 
     def test_files
@@ -48,7 +48,7 @@ module ProformaService
         task_files.delete(test_object.files.first.id).tap do |file|
           file.weight = test_object.meta_data[:CodeOcean]&.dig(:weight) || 1.0
           file.feedback_message = test_object.meta_data[:CodeOcean]&.dig(:'feedback-message').presence || 'Feedback'
-          file.role = 'teacher_defined_test'
+          file.role ||= 'teacher_defined_test'
         end
       end
     end
@@ -56,7 +56,7 @@ module ProformaService
     def model_solution_files
       @task.model_solutions.map do |model_solution_object|
         task_files.delete(model_solution_object.files.first.id).tap do |file|
-          file.role = 'reference_implementation'
+          file.role ||= 'reference_implementation'
         end
       end
     end
@@ -75,7 +75,7 @@ module ProformaService
         hidden: file.visible == 'no',
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
-        role: @task.meta_data[:CodeOcean]&.dig(:files)&.dig("CO-#{file.id}".to_sym)&.dig(:role) || 'regular_file',
+        role: @task.meta_data[:CodeOcean]&.dig(:files)&.dig("CO-#{file.id}".to_sym)&.dig(:role),
         path: File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename)
       )
       if file.binary

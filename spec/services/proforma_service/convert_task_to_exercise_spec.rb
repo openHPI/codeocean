@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 describe ProformaService::ConvertTaskToExercise do
-  # TODO: Add teacher_defined_linter for tests
-
   describe '.new' do
     subject(:convert_to_exercise_service) { described_class.new(task: task, user: user, exercise: exercise) }
 
@@ -100,7 +98,6 @@ describe ProformaService::ConvertTaskToExercise do
           visible: 'yes',
           usage_by_lms: usage_by_lms,
           binary: binary,
-          internal_description: 'regular_file',
           mimetype: mimetype
         )
       end
@@ -125,6 +122,14 @@ describe ProformaService::ConvertTaskToExercise do
 
       it 'creates a new Exercise on save' do
         expect { convert_to_exercise_service.save! }.to change(Exercise, :count).by(1)
+      end
+
+      context 'when file is a main_file' do
+        let(:files_meta_data) { {"CO-#{file.id}".to_sym => {role: 'main_file'}} }
+
+        it 'creates an exercise with a file that has the correct attributes' do
+          expect(convert_to_exercise_service.files.first).to have_attributes(role: 'main_file')
+        end
       end
 
       context 'when path is folder/' do
@@ -176,7 +181,7 @@ describe ProformaService::ConvertTaskToExercise do
         end
       end
 
-      context 'when file has an unkown file_type' do
+      context 'when file has an unknown file_type' do
         let(:filename) { 'unknown_file_type.asdf' }
 
         it 'creates a new Exercise on save' do
@@ -206,8 +211,7 @@ describe ProformaService::ConvertTaskToExercise do
           used_by_grader: 'used_by_grader',
           visible: 'yes',
           usage_by_lms: 'display',
-          binary: false,
-          internal_description: 'reference_implementation'
+          binary: false
         )
       end
 
@@ -294,6 +298,14 @@ describe ProformaService::ConvertTaskToExercise do
         )
       end
 
+      context 'when test file is a teacher_defined_linter' do
+        let(:files_meta_data) { {"CO-#{test_file.id}".to_sym => {role: 'teacher_defined_linter'}} }
+
+        it 'creates an exercise with a test' do
+          expect(convert_to_exercise_service.files.select {|file| file.role == 'teacher_defined_linter' }).to have(1).item
+        end
+      end
+
       context 'when task has multiple tests' do
         let(:tests) { [test, test2] }
         let(:test2) do
@@ -366,8 +378,7 @@ describe ProformaService::ConvertTaskToExercise do
             used_by_grader: 'used_by_grader',
             visible: 'yes',
             usage_by_lms: 'display',
-            binary: false,
-            internal_description: 'regular_file'
+            binary: false
           )
         end
         let(:tests) { [test] }
@@ -376,7 +387,6 @@ describe ProformaService::ConvertTaskToExercise do
             id: 'test-id',
             title: 'title',
             description: 'description',
-            internal_description: 'regular_file',
             test_type: 'test_type',
             files: test_files,
             meta_data: {
