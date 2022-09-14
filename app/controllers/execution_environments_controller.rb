@@ -52,7 +52,7 @@ class ExecutionEnvironmentsController < ApplicationController
                     (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
-            WHERE exercise_id IN (SELECT ID FROM exercises WHERE execution_environment_id = #{@execution_environment.id})
+            WHERE exercise_id IN (SELECT ID FROM exercises WHERE #{ExecutionEnvironment.sanitize_sql(['execution_environment_id = ?', @execution_environment.id])})
             GROUP BY exercise_id, user_id, id) AS foo) AS bar
       GROUP BY user_id, exercise_id
     ) AS baz GROUP BY exercise_id;
@@ -79,7 +79,7 @@ class ExecutionEnvironmentsController < ApplicationController
               COUNT(s.id) AS submission_count
        FROM submissions s
        JOIN exercises e ON e.id = s.exercise_id
-       WHERE e.execution_environment_id = #{@execution_environment.id}
+       WHERE #{ExecutionEnvironment.sanitize_sql(['e.execution_environment_id = ?', @execution_environment.id])}
        GROUP BY e.id,
                 s.user_id) AS inner_query
     GROUP BY id;
@@ -173,7 +173,7 @@ class ExecutionEnvironmentsController < ApplicationController
       Runner.strategy_class.sync_environment(@execution_environment)
     rescue Runner::Error => e
       Rails.logger.warn { "Runner error while synchronizing execution environment with id #{@execution_environment.id}: #{e.message}" }
-      redirect_to @execution_environment, alert: t('execution_environments.index.synchronize.failure', error: e.message)
+      redirect_to @execution_environment, alert: t('execution_environments.index.synchronize.failure', error: html_escape(e.message))
     else
       redirect_to @execution_environment, notice: t('execution_environments.index.synchronize.success')
     end
