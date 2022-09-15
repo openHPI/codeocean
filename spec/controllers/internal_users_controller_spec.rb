@@ -3,8 +3,7 @@
 require 'rails_helper'
 
 describe InternalUsersController do
-  let(:user) { build(:admin) }
-  let!(:users) { create_pair(:teacher) }
+  let(:user) { create(:admin) }
 
   describe 'GET #activate' do
     let(:user) { InternalUser.create(attributes_for(:teacher)) }
@@ -144,15 +143,20 @@ describe InternalUsersController do
   end
 
   describe 'DELETE #destroy' do
+    let(:second_user) { create(:teacher) }
+    let(:third_user) { create(:teacher) }
+
     before do
       allow(controller).to receive(:current_user).and_return(user)
-      delete :destroy, params: {id: users.first.id}
+      delete :destroy, params: {id: second_user.id}
     end
 
     expect_assigns(user: InternalUser)
 
     it 'destroys the internal user' do
-      expect { delete :destroy, params: {id: InternalUser.last.id} }.to change(InternalUser, :count).by(-1)
+      # We want to ensure that the user is activated and valid before proceeding
+      third_user.activate!
+      expect { delete :destroy, params: {id: third_user.id} }.to change(InternalUser, :count).by(-1)
     end
 
     expect_redirect(:internal_users)
@@ -161,7 +165,7 @@ describe InternalUsersController do
   describe 'GET #edit' do
     before do
       allow(controller).to receive(:current_user).and_return(user)
-      get :edit, params: {id: users.first.id}
+      get :edit, params: {id: user.id}
     end
 
     expect_assigns(user: InternalUser)
@@ -241,8 +245,6 @@ describe InternalUsersController do
   end
 
   describe 'GET #reset_password' do
-    let(:user) { users.first }
-
     context 'without a valid password reset token' do
       before { get :reset_password, params: {id: user.id} }
 
@@ -262,8 +264,6 @@ describe InternalUsersController do
   end
 
   describe 'PUT #reset_password' do
-    let(:user) { users.first }
-
     before { user.deliver_reset_password_instructions! }
 
     context 'without a valid password reset token' do
@@ -308,7 +308,7 @@ describe InternalUsersController do
 
       context 'without a matching password confirmation' do
         before do
-          put :reset_password, params: {internal_user: {password: password, password_confirmation: ''}, id: users.first.id, token: user.reset_password_token}
+          put :reset_password, params: {internal_user: {password: password, password_confirmation: ''}, id: user.id, token: user.reset_password_token}
         end
 
         expect_assigns(user: :user)
@@ -321,7 +321,7 @@ describe InternalUsersController do
   describe 'GET #show' do
     before do
       allow(controller).to receive(:current_user).and_return(user)
-      get :show, params: {id: users.first.id}
+      get :show, params: {id: user.id}
     end
 
     expect_assigns(user: InternalUser)
@@ -333,14 +333,14 @@ describe InternalUsersController do
     before { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      before { put :update, params: {internal_user: attributes_for(:teacher), id: users.first.id} }
+      before { put :update, params: {internal_user: attributes_for(:teacher), id: user.id} }
 
       expect_assigns(user: InternalUser)
       expect_redirect { user }
     end
 
     context 'with an invalid internal user' do
-      before { put :update, params: {internal_user: {email: ''}, id: users.first.id} }
+      before { put :update, params: {internal_user: {email: ''}, id: user.id} }
 
       expect_assigns(user: InternalUser)
       expect_http_status(:ok)
