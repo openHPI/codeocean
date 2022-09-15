@@ -47,11 +47,13 @@ describe ApplicationController do
 
     context 'with an admin' do
       let(:user) { create(:admin) }
+
       expect_flash_message(:alert, I18n.t('application.not_found'))
     end
 
     context 'with a teacher' do
       let(:user) { create(:teacher) }
+
       expect_flash_message(:alert, I18n.t('application.not_authorized'))
     end
   end
