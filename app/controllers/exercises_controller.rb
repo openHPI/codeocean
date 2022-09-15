@@ -13,6 +13,7 @@ class ExercisesController < ApplicationController
     only: MEMBER_ACTIONS + %i[clone implement working_times intervention search run statistics submit reload feedback
                               requests_for_comments study_group_dashboard export_external_check export_external_confirm
                               external_user_statistics]
+  before_action :collect_set_and_unset_exercise_tags, only: MEMBER_ACTIONS
   before_action :set_external_user_and_authorize, only: [:external_user_statistics]
   before_action :set_file_types, only: %i[create edit new update]
   before_action :set_course_token, only: [:implement]
@@ -74,35 +75,19 @@ class ExercisesController < ApplicationController
 
   def create
     @exercise = Exercise.new(exercise_params&.except(:tips))
-    collect_set_and_unset_exercise_tags
+    authorize!
     handle_exercise_tips
+    collect_set_and_unset_exercise_tags
     return if performed?
 
-    myparam = exercise_params.presence || {}
-    checked_exercise_tags = @exercise_tags.select {|et| myparam[:tag_ids].include? et.tag.id.to_s }
-    removed_exercise_tags = @exercise_tags.reject {|et| myparam[:tag_ids].include? et.tag.id.to_s }
-
-    checked_exercise_tags.each do |et|
-      et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
-      et.exercise = @exercise
-    end
-
-    myparam[:exercise_tags] = checked_exercise_tags
-    myparam.delete :tag_ids
-    myparam.delete :tips
-    removed_exercise_tags.map(&:destroy)
-
-    authorize!
-    create_and_respond(object: @exercise)
+    create_and_respond(object: @exercise, params: exercise_params_with_tags)
   end
 
   def destroy
     destroy_and_respond(object: @exercise)
   end
 
-  def edit
-    collect_set_and_unset_exercise_tags
-  end
+  def edit; end
 
   def feedback
     authorize!
@@ -233,6 +218,24 @@ class ExercisesController < ApplicationController
   end
 
   private :exercise_params
+
+  def exercise_params_with_tags
+    myparam = exercise_params.presence || {}
+    checked_exercise_tags = @exercise_tags.select {|et| myparam[:tag_ids]&.include? et.tag.id.to_s }
+    removed_exercise_tags = @exercise_tags.reject {|et| myparam[:tag_ids]&.include? et.tag.id.to_s }
+
+    checked_exercise_tags.each do |et|
+      et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
+      et.exercise = @exercise
+    end
+
+    myparam[:exercise_tags] = checked_exercise_tags
+    myparam.delete :tag_ids
+    myparam.delete :tips
+    removed_exercise_tags.map(&:destroy)
+    myparam
+  end
+  private :exercise_params_with_tags
 
   def handle_file_uploads
     if exercise_params
@@ -429,9 +432,8 @@ class ExercisesController < ApplicationController
 
   def new
     @exercise = Exercise.new
-    collect_set_and_unset_exercise_tags
-
     authorize!
+    collect_set_and_unset_exercise_tags
   end
 
   def not_authorized_for_exercise(_exception)
@@ -592,24 +594,10 @@ class ExercisesController < ApplicationController
   private :transmit_lti_score
 
   def update
-    collect_set_and_unset_exercise_tags
     handle_exercise_tips
     return if performed?
 
-    myparam = exercise_params
-    checked_exercise_tags = @exercise_tags.select {|et| myparam[:tag_ids].include? et.tag.id.to_s }
-    removed_exercise_tags = @exercise_tags.reject {|et| myparam[:tag_ids].include? et.tag.id.to_s }
-
-    checked_exercise_tags.each do |et|
-      et.factor = params[:tag_factors][et.tag_id.to_s][:factor]
-      et.exercise = @exercise
-    end
-
-    myparam[:exercise_tags] = checked_exercise_tags
-    myparam.delete :tag_ids
-    myparam.delete :tips
-    removed_exercise_tags.map(&:destroy)
-    update_and_respond(object: @exercise, params: myparam)
+    update_and_respond(object: @exercise, params: exercise_params_with_tags)
   end
 
   def study_group_dashboard
