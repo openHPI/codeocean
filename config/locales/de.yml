@@ -553,6 +553,8 @@ de:
       tag_statistics: "Lernbereichstatistiken"
       empty_tag_statistics: "Keine Statistiken verfügbar"
       exercise_statistics: "Aufgabenstatistiken"
+    form:
+      study_groups: Lerngruppen
   files:
     roles:
       main_file: Hauptdatei

@@ -553,6 +553,8 @@ en:
       tag_statistics: "Tag Statistics"
       empty_tag_statistics: "No statistics available"
       exercise_statistics: "Exercise Statistics"
+    form:
+      study_groups: Study Groups
   files:
     roles:
       main_file: Main File
