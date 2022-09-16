@@ -7,6 +7,7 @@ h1 = @user.displayname
     = @user.external_id
 = row(label: 'external_user.consumer', value: link_to_if(policy(@user.consumer).show?, @user.consumer, @user.consumer))
 = row(label: 'external_user.platform_admin', value: @user.platform_admin?)
+= row(label: 'external_users.form.study_groups', value: @user.study_groups.map{|sg| "#{sg.name}"}.sort.join(", "))
 
 h4.mt-4 = link_to(t('.exercise_statistics'), statistics_external_user_path(@user)) if policy(@user).statistics?
 
