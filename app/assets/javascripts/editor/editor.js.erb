@@ -529,7 +529,7 @@ var CodeOceanEditor = {
                     ul.append(li);
 
                     const sub_ul = document.createElement("ul");
-                    sub_ul.setAttribute('class', 'error_messages_list');
+                    sub_ul.setAttribute('class', 'inline_list');
                     for (let check_run of linter_results) {
                         const sub_li = document.createElement("li");
 
@@ -559,9 +559,9 @@ var CodeOceanEditor = {
 
             // one or more errors?
             if (errorMessagesToShow.length > 1) {
-                ul.setAttribute('class', 'error_messages_list');
+                ul.setAttribute('class', 'inline_list');
             } else {
-                ul.setAttribute('class', 'single_error_message');
+                ul.setAttribute('class', 'single_entry_inline_list');
             }
             targetNode.append(ul);
         }

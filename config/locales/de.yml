@@ -891,8 +891,16 @@ de:
       history: Punkteverlauf
       percentage: Prozentzahl
       siblings: Dazugehörige Abgaben
+  study_groups:
+    set_as_current:
+      success: Die Lerngruppe wurde erfolgreich gewechselt.
   users:
     platform_admin: Plattform Administrator
+    show:
+      current_study_group: Aktuelle Lerngruppe
+      set_as_current_study_group: Als aktuelle Lerngruppe setzen
+      study_groups: Lerngruppen
+      no_groups: Diese Person ist keiner Lerngruppe zugeordnet oder Sie sind nicht berechtigt, die Lerngruppen einzusehen.
   will_paginate:
     next_label: 'Nächste Seite &#8594;'
     page_gap: '&hellip;'

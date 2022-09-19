@@ -37,4 +37,8 @@ class InternalUser < User
   def displayname
     name
   end
+
+  def current_study_group_id
+    study_groups.find_by(external_id: nil)&.id
+  end
 end

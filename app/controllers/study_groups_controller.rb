@@ -3,7 +3,7 @@
 class StudyGroupsController < ApplicationController
   include CommonBehavior
 
-  before_action :set_group, only: MEMBER_ACTIONS
+  before_action :set_group, only: MEMBER_ACTIONS + %w[set_as_current]
 
   def index
     @search = policy_scope(StudyGroup).ransack(params[:q])
@@ -36,6 +36,12 @@ class StudyGroupsController < ApplicationController
     params[:study_group].permit(:id, :name, study_group_membership_ids: []) if params[:study_group].present?
   end
   private :study_group_params
+
+  def set_as_current
+    session[:study_group_id] = @study_group.id
+    current_user.store_current_study_group_id(@study_group.id)
+    redirect_back(fallback_location: root_path, notice: t('study_groups.set_as_current.success'))
+  end
 
   def set_group
     @study_group = StudyGroup.find(params[:id])
