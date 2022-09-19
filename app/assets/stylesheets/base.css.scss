@@ -139,3 +139,15 @@ span.caret {
 .table-row-clickable {
   cursor: pointer;
 }
+
+.inline_list {
+  list-style-type: disc;
+  padding-inline-start: 1.25rem;
+  white-space: pre-wrap;
+}
+
+.single_entry_inline_list {
+  list-style-type: none;
+  padding-inline-start: 0;
+  white-space: pre-wrap;
+}

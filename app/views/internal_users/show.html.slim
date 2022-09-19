@@ -7,6 +7,25 @@ h1
 = row(label: 'internal_user.consumer', value: @user.consumer ? link_to_if(policy(@user.consumer).show?, @user.consumer, @user.consumer) : nil)
 = row(label: 'internal_user.platform_admin', value: @user.platform_admin?)
 = row(label: 'internal_user.activated', value: @user.activated?)
-= row(label: 'internal_users.form.study_groups', value: @user.study_groups.map{|sg| "#{sg.name}"}.sort.join(", "))
+= row(label: 'users.show.study_groups') do
+  - visible_memberships = @user.study_group_memberships.select { |study_group_membership| policy(study_group_membership.study_group).show? }
+  - if visible_memberships.any?
+    ul.mb-0 class="#{visible_memberships.one? ? 'single_entry_inline_list' : 'inline_list'}"
+      - visible_memberships = visible_memberships.sort_by{ |study_group_membership| study_group_membership.study_group.name}
+      - visible_memberships.each do |study_group_membership|
+        li
+          => link_to(study_group_membership.study_group.name, study_group_membership.study_group)
+          | (
+          = t("activerecord.attributes.study_group_membership.role_type.#{study_group_membership.role}")
+          // All internal users (except learners) are allowed to switch their study group here.
+          - if @user == current_user && study_group_membership.role_teacher?
+            | ,
+            - if study_group_membership.study_group_id == current_user.current_study_group_id
+              span.text-success =< t('users.show.current_study_group')
+            - else
+              =< link_to(t('users.show.set_as_current_study_group'), set_as_current_study_group_path(study_group_membership.study_group), method: :post, class: 'text-muted')
+          | )
+  - else
+    = t('users.show.no_groups')
 
 = row(label: 'codeharbor_link.profile_label', value: @user.codeharbor_link.nil? ? link_to(t('codeharbor_link.new'), new_codeharbor_link_path, class: 'btn btn-secondary') : link_to(t('codeharbor_link.edit'), edit_codeharbor_link_path(@user.codeharbor_link), class: 'btn btn-secondary'))

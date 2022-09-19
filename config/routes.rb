@@ -160,7 +160,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :study_groups, only: %i[index show edit destroy update]
+  resources :study_groups, only: %i[index show edit destroy update] do
+    member do
+      post :set_as_current
+    end
+  end
 
   resources :events, only: [:create]
 
