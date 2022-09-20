@@ -17,7 +17,7 @@
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
-unless RUBY_PLATFORM == 'java'
+unless RUBY_PLATFORM == 'java' || ENV.fetch('RUBYMINE_SIMPLECOV_COVERAGE_PATH', nil)
   require 'simplecov'
   SimpleCov.start('rails')
 end
