@@ -48,7 +48,15 @@ class ApplicationController < ActionController::Base
 
     if token.expire_at.future?
       token.update(expire_at: Time.zone.now)
-      auto_login(token.user)
+      session[:study_group_id] = token.study_group_id
+
+      # Sorcery Login only works for InternalUsers
+      return auto_login(token.user) if token.user.is_a? InternalUser
+
+      # All external users are logged in "manually"
+      session[:external_user_id] = token.user.id
+      session.delete(:lti_parameters_id)
+      token.user
     end
   end
 
