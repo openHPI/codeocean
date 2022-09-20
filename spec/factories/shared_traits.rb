@@ -20,4 +20,17 @@ FactoryBot.define do
       initialize_with { klass.where(email: email).first_or_create }
     end
   end
+
+  trait :member_of_study_group do
+    after(:create) do |user, evaluator|
+      # Do not create a study group if already passed
+      if user.study_groups.blank?
+        study_group = create(:study_group)
+        user.study_groups << study_group
+      end
+
+      user.study_group_memberships.update(role: 'teacher') if evaluator.teacher_in_study_group
+      user.store_current_study_group_id(user.study_group_memberships.first)
+    end
+  end
 end

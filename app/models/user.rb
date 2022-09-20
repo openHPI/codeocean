@@ -3,7 +3,7 @@
 class User < ApplicationRecord
   self.abstract_class = true
 
-  ROLES = %w[admin teacher learner].freeze
+  attr_reader :current_study_group_id
 
   belongs_to :consumer
   has_many :authentication_token, dependent: :destroy
@@ -26,9 +26,7 @@ class User < ApplicationRecord
                               joins(:study_group_memberships).where(study_group_memberships: {study_group_id: user.study_groups}) unless user.admin?
                             }
 
-  ROLES.each do |role|
-    define_method("#{role}?") { try(:role) == role }
-  end
+  validates :platform_admin, boolean_presence: true
 
   def internal_user?
     is_a?(InternalUser)
@@ -36,6 +34,30 @@ class User < ApplicationRecord
 
   def external_user?
     is_a?(ExternalUser)
+  end
+
+  def learner?
+    return true if current_study_group_id.nil?
+
+    @learner ||= current_study_group_membership.exists?(role: :learner) && !platform_admin?
+  end
+
+  def teacher?
+    @teacher ||= current_study_group_membership.exists?(role: :teacher) && !platform_admin?
+  end
+
+  def admin?
+    @admin ||= platform_admin?
+  end
+
+  def store_current_study_group_id(study_group_id)
+    @current_study_group_id = study_group_id
+    self
+  end
+
+  def current_study_group_membership
+    # We use `where(...).limit(1)` instead of `find_by(...)` to allow query chaining
+    study_group_memberships.where(study_group: current_study_group_id).limit(1)
   end
 
   def to_s

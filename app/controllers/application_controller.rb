@@ -16,12 +16,17 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
 
   def current_user
-    @current_user ||= ExternalUser.find_by(id: session[:external_user_id]) ||
-                      login_from_session ||
-                      login_from_other_sources ||
-                      login_from_authentication_token ||
-                      nil
+    @current_user ||= find_or_login_current_user&.store_current_study_group_id(session[:study_group_id])
   end
+
+  def find_or_login_current_user
+    ExternalUser.find_by(id: session[:external_user_id]) ||
+      login_from_session ||
+      login_from_other_sources ||
+      login_from_authentication_token ||
+      nil
+  end
+  private :find_or_login_current_user
 
   def require_user!
     raise Pundit::NotAuthorizedError unless current_user

@@ -32,7 +32,7 @@ class InternalUsersController < ApplicationController
 
   def create
     @user = InternalUser.new(internal_user_params)
-    @user.role = role_param if current_user.admin?
+    @user.platform_admin = platform_admin_param if current_user.admin?
     authorize!
     @user.send(:setup_activation)
     create_and_respond(object: @user) do
@@ -77,10 +77,10 @@ class InternalUsersController < ApplicationController
   end
   private :internal_user_params
 
-  def role_param
-    params.require(:internal_user).permit(:role)[:role]
+  def platform_admin_param
+    params.require(:internal_user).permit(:platform_admin)[:platform_admin]
   end
-  private :role_param
+  private :platform_admin_param
 
   def new
     @user = InternalUser.new
@@ -139,8 +139,7 @@ class InternalUsersController < ApplicationController
     # the form by another user. Otherwise, the update might fail if an
     # activation_token or password_reset_token is present
     @user.validate_password = current_user == @user
-    @user.role = role_param if current_user.admin?
-
+    @user.platform_admin = platform_admin_param if current_user.admin?
     update_and_respond(object: @user, params: internal_user_params)
   end
 end

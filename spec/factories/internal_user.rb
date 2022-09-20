@@ -7,8 +7,12 @@ FactoryBot.define do
     email { 'admin@example.org' }
     generated_user_name
     password { 'admin' }
-    role { 'admin' }
+    platform_admin { true }
     singleton_internal_user
+    member_of_study_group
+    transient do
+      teacher_in_study_group { true }
+    end
   end
 
   factory :teacher, class: 'InternalUser' do
@@ -17,8 +21,12 @@ FactoryBot.define do
     generated_email
     generated_user_name
     password { 'teacher' }
-    role { 'teacher' }
+    platform_admin { false }
     singleton_internal_user
+    member_of_study_group
+    transient do
+      teacher_in_study_group { true }
+    end
   end
 
   factory :learner, class: 'InternalUser' do
@@ -27,8 +35,12 @@ FactoryBot.define do
     generated_email
     generated_user_name
     password { 'learner' }
-    role { 'learner' }
+    platform_admin { false }
     singleton_internal_user
+    member_of_study_group
+    transient do
+      teacher_in_study_group { false }
+    end
   end
 
   trait :activated_user do

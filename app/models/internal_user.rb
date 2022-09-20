@@ -10,7 +10,6 @@ class InternalUser < User
   validates :email, presence: true, uniqueness: true
   validates :password, confirmation: true, if: -> { password_void? && validate_password? }, on: :update, presence: true
   validate :password_strength, if: -> { password_void? && validate_password? }, on: :update
-  validates :role, inclusion: {in: ROLES}
 
   def activated?
     activation_state == 'active'
@@ -31,10 +30,6 @@ class InternalUser < User
   def password_strength
     result = Zxcvbn.test(password, [email, name, 'CodeOcean'])
     errors.add(:password, :weak) if result.score < 4
-  end
-
-  def teacher?
-    role == 'teacher'
   end
 
   def displayname

@@ -14,6 +14,7 @@ FactoryBot.define do
       after(:create) do |rfc|
         rfc.file = rfc.submission.files.first
         Comment.create(file: rfc.file, user: rfc.user, row: 1, text: "comment for rfc #{rfc.question}")
+        rfc.submission.study_group_id = rfc.user.current_study_group_id
       end
     end
   end
