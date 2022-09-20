@@ -27,30 +27,23 @@ class ApplicationPolicy
   end
   private :no_one
 
-  def everyone_in_study_group
+  def teacher_in_study_group?
     # !! Order is important !!
     if @record.respond_to? :study_group # e.g. submission
-      study_group = @record.study_group
-      return false if study_group.blank?
-
-      study_groups = [study_group]
+      study_groups = @record.study_group
     elsif @record.respond_to? :user # e.g. exercise
-      # ToDo: Add role to study_group_membership and use for check
-      study_groups = @record.user.study_groups
+      study_groups = @record.author.study_groups.where(study_group_memberships: {role: :teacher})
     elsif @record.respond_to? :users # e.g. study_group
-      study_groups = [@record]
+      study_groups = @record
     elsif @record.respond_to? :study_groups # e.g. user
+      # Access is granted regardless of the `@record`'s role in the study group
       study_groups = @record.study_groups
     else
       return false
     end
 
-    @user.study_groups.any? {|i| study_groups.include?(i) }
-  end
-  private :everyone_in_study_group
-
-  def teacher_in_study_group?
-    teacher? && everyone_in_study_group
+    # Instance variable `study_groups` can be one group or an array of group
+    @user.study_groups.where(study_group_memberships: {role: :teacher}).where(id: study_groups).any?
   end
   private :teacher_in_study_group?
 
