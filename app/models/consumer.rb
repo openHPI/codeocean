@@ -2,6 +2,7 @@
 
 class Consumer < ApplicationRecord
   has_many :users
+  has_many :study_groups, dependent: :destroy
 
   scope :with_internal_users, -> { where('id IN (SELECT DISTINCT consumer_id FROM internal_users)') }
   scope :with_external_users, -> { where('id IN (SELECT DISTINCT consumer_id FROM external_users)') }

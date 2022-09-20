@@ -6,6 +6,8 @@ class StudyGroup < ApplicationRecord
   has_many :internal_users, through: :study_group_memberships, source_type: 'InternalUser', source: :user
   has_many :submissions, dependent: :nullify
   has_many :remote_evaluation_mappings, dependent: :nullify
+  has_many :subscriptions, dependent: :nullify
+  has_many :authentication_tokens, dependent: :nullify
   belongs_to :consumer
 
   def users
