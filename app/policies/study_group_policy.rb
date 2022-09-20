@@ -5,8 +5,15 @@ class StudyGroupPolicy < AdminOnlyPolicy
     admin? || teacher?
   end
 
-  %i[show? destroy? edit? update? stream_la?].each do |action|
+  %i[show? edit? update? stream_la?].each do |action|
     define_method(action) { admin? || (@user.teacher? && @record.present? && @user.study_groups.exists?(@record.id)) }
+  end
+
+  def destroy?
+    # A default study group should not get deleted without the consumer
+    return no_one if @record.external_id.blank?
+
+    admin? || teacher_in_study_group?
   end
 
   class Scope < Scope
