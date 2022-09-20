@@ -11,7 +11,7 @@ describe Admin::DashboardPolicy do
     end
 
     it 'does not grant access to teachers' do
-      expect(policy).not_to permit(build(:teacher), :dashboard)
+      expect(policy).not_to permit(create(:teacher), :dashboard)
     end
 
     it 'does not grant access to external users' do

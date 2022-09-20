@@ -22,7 +22,7 @@ describe CodeOcean::FilePolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), file)
+          expect(policy).not_to permit(create(factory_name), file)
         end
       end
     end
@@ -52,7 +52,7 @@ describe CodeOcean::FilePolicy do
 
       it 'does not grant access to all other users' do
         %i[admin external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), file)
+          expect(policy).not_to permit(create(factory_name), file)
         end
       end
     end
@@ -72,7 +72,7 @@ describe CodeOcean::FilePolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), file)
+          expect(policy).not_to permit(create(factory_name), file)
         end
       end
     end
@@ -82,7 +82,7 @@ describe CodeOcean::FilePolicy do
 
       it 'does not grant access to anyone' do
         %i[admin external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), file)
+          expect(policy).not_to permit(create(factory_name), file)
         end
       end
     end

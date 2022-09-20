@@ -89,8 +89,8 @@ describe InternalUser do
 
   describe '#teacher?' do
     it 'is only true for teachers' do
-      expect(build(:admin).teacher?).to be false
-      expect(build(:teacher).teacher?).to be true
+      expect(create(:admin).teacher?).to be false
+      expect(create(:teacher).teacher?).to be true
     end
   end
 end

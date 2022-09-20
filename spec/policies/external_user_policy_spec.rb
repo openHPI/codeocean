@@ -10,7 +10,7 @@ describe ExternalUserPolicy do
       it 'grants access to admins only' do
         expect(policy).to permit(build(:admin), ExternalUser.new)
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), ExternalUser.new)
+          expect(policy).not_to permit(create(factory_name), ExternalUser.new)
         end
       end
     end
@@ -18,10 +18,10 @@ describe ExternalUserPolicy do
 
   permissions :index? do
     it 'grants access to admins and teachers only' do
-      expect(policy).to permit(build(:admin), ExternalUser.new)
-      expect(policy).to permit(build(:teacher), ExternalUser.new)
+      expect(policy).to permit(create(:admin), ExternalUser.new)
+      expect(policy).to permit(create(:teacher), ExternalUser.new)
       [:external_user].each do |factory_name|
-        expect(policy).not_to permit(build(factory_name), ExternalUser.new)
+        expect(policy).not_to permit(create(factory_name), ExternalUser.new)
       end
     end
   end

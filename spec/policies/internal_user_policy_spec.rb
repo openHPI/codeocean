@@ -10,7 +10,7 @@ describe InternalUserPolicy do
       it 'grants access to admins only' do
         expect(policy).to permit(build(:admin), InternalUser.new)
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), InternalUser.new)
+          expect(policy).not_to permit(create(factory_name), InternalUser.new)
         end
       end
     end
@@ -20,7 +20,7 @@ describe InternalUserPolicy do
     context 'with an admin user' do
       it 'grants access to no one' do
         %i[admin external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), build(:admin))
+          expect(policy).not_to permit(create(factory_name), build(:admin))
         end
       end
     end
@@ -29,7 +29,7 @@ describe InternalUserPolicy do
       it 'grants access to admins only' do
         expect(policy).to permit(build(:admin), InternalUser.new)
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), build(:teacher))
+          expect(policy).not_to permit(create(factory_name), create(:teacher))
         end
       end
     end

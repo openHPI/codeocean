@@ -8,7 +8,7 @@ describe SubmissionPolicy do
   permissions :create? do
     it 'grants access to anyone' do
       %i[admin external_user teacher].each do |factory_name|
-        expect(policy).to permit(build(factory_name), Submission.new)
+        expect(policy).to permit(create(factory_name), Submission.new)
       end
     end
   end
@@ -30,7 +30,7 @@ describe SubmissionPolicy do
     it 'grants access to admins only' do
       expect(policy).to permit(build(:admin), Submission.new)
       %i[external_user teacher].each do |factory_name|
-        expect(policy).not_to permit(build(factory_name), Submission.new)
+        expect(policy).not_to permit(create(factory_name), Submission.new)
       end
     end
   end

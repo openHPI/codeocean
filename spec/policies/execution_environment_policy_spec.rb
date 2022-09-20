@@ -13,7 +13,7 @@ describe ExecutionEnvironmentPolicy do
     end
 
     it 'grants access to teachers' do
-      expect(policy).to permit(build(:teacher), execution_environment)
+      expect(policy).to permit(create(:teacher), execution_environment)
     end
 
     it 'does not grant access to external users' do
@@ -33,7 +33,7 @@ describe ExecutionEnvironmentPolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), execution_environment)
+          expect(policy).not_to permit(create(factory_name), execution_environment)
         end
       end
     end
@@ -51,7 +51,7 @@ describe ExecutionEnvironmentPolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), execution_environment)
+          expect(policy).not_to permit(create(factory_name), execution_environment)
         end
       end
     end
@@ -64,7 +64,7 @@ describe ExecutionEnvironmentPolicy do
 
     it 'does not grant access to all other users' do
       %i[external_user teacher].each do |factory_name|
-        expect(policy).not_to permit(build(factory_name))
+        expect(policy).not_to permit(create(factory_name))
       end
     end
   end

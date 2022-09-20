@@ -11,7 +11,7 @@ describe ExercisePolicy do
     it 'grants access to admins only' do
       expect(policy).to permit(build(:admin), exercise)
       %i[external_user teacher].each do |factory_name|
-        expect(policy).not_to permit(build(factory_name), exercise)
+        expect(policy).not_to permit(create(factory_name), exercise)
       end
     end
   end
@@ -23,7 +23,7 @@ describe ExercisePolicy do
       end
 
       it 'grants access to teachers' do
-        expect(policy).to permit(build(:teacher), exercise)
+        expect(policy).to permit(create(:teacher), exercise)
       end
 
       it 'does not grant access to external users' do
@@ -44,7 +44,7 @@ describe ExercisePolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), exercise)
+          expect(policy).not_to permit(create(factory_name), exercise)
         end
       end
     end
@@ -86,7 +86,7 @@ describe ExercisePolicy do
 
       %i[external_user teacher].each do |factory_name|
         context "when user is #{factory_name}" do
-          let(:user) { build(factory_name) }
+          let(:user) { create(factory_name) }
 
           it 'does not grant access' do
             expect(policy).not_to permit(user, exercise)
@@ -117,7 +117,7 @@ describe ExercisePolicy do
 
         it 'does not grant access to anyone' do
           %i[admin external_user teacher].each do |factory_name|
-            expect(policy).not_to permit(build(factory_name), exercise)
+            expect(policy).not_to permit(create(factory_name), exercise)
           end
         end
       end
@@ -127,7 +127,7 @@ describe ExercisePolicy do
 
         it 'grants access to anyone' do
           %i[admin external_user teacher].each do |factory_name|
-            expect(policy).to permit(build(factory_name), exercise)
+            expect(policy).to permit(create(factory_name), exercise)
           end
         end
       end
@@ -137,7 +137,7 @@ describe ExercisePolicy do
 
         it 'grants access to anyone' do
           %i[admin external_user teacher].each do |factory_name|
-            expect(policy).to permit(build(factory_name), exercise)
+            expect(policy).to permit(create(factory_name), exercise)
           end
         end
       end
@@ -155,7 +155,7 @@ describe ExercisePolicy do
 
         it 'does not grant access to everyone' do
           %i[external_user teacher].each do |factory_name|
-            expect(policy).not_to permit(build(factory_name), exercise)
+            expect(policy).not_to permit(create(factory_name), exercise)
           end
         end
       end
@@ -168,7 +168,7 @@ describe ExercisePolicy do
 
       it 'grants access to anyone' do
         %i[admin external_user teacher].each do |factory_name|
-          expect(policy).to permit(build(factory_name), exercise)
+          expect(policy).to permit(create(factory_name), exercise)
         end
       end
     end
@@ -176,7 +176,7 @@ describe ExercisePolicy do
     context 'when teacher-defined assessments are not available' do
       it 'does not grant access to anyone' do
         %i[admin external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), exercise)
+          expect(policy).not_to permit(create(factory_name), exercise)
         end
       end
     end
