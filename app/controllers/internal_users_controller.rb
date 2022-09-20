@@ -6,6 +6,7 @@ class InternalUsersController < ApplicationController
   before_action :require_activation_token, only: :activate
   before_action :require_reset_password_token, only: :reset_password
   before_action :set_user, only: MEMBER_ACTIONS
+  before_action :collect_set_and_unset_study_group_memberships, only: MEMBER_ACTIONS + %i[create]
   after_action :verify_authorized, except: %i[activate forgot_password reset_password]
 
   def activate
@@ -73,7 +74,19 @@ class InternalUsersController < ApplicationController
   end
 
   def internal_user_params
-    params.require(:internal_user).permit(:consumer_id, :email, :name)
+    permitted_params = params.require(:internal_user).permit(:consumer_id, :email, :name, study_group_ids: []).presence || {}
+    checked_study_group_memberships = @study_group_memberships.select {|sgm| permitted_params[:study_group_ids]&.include? sgm.study_group.id.to_s }
+    removed_study_group_memberships = @study_group_memberships.reject {|sgm| permitted_params[:study_group_ids]&.include? sgm.study_group.id.to_s }
+
+    checked_study_group_memberships.each do |sgm|
+      sgm.role = params[:study_group_membership_roles][sgm.study_group.id.to_s][:role]
+      sgm.user = @user
+    end
+
+    permitted_params[:study_group_memberships] = checked_study_group_memberships
+    permitted_params.delete :study_group_ids
+    removed_study_group_memberships.map(&:destroy)
+    permitted_params
   end
   private :internal_user_params
 
@@ -85,6 +98,7 @@ class InternalUsersController < ApplicationController
   def new
     @user = InternalUser.new
     authorize!
+    collect_set_and_unset_study_group_memberships
   end
 
   def render_forgot_password_form
@@ -131,6 +145,19 @@ class InternalUsersController < ApplicationController
     authorize!
   end
   private :set_user
+
+  def collect_set_and_unset_study_group_memberships
+    @study_groups = policy_scope(StudyGroup)
+    @user ||= InternalUser.new # Only needed for the `create` action
+    checked_study_group_memberships = @user.study_group_memberships
+    checked_study_groups = checked_study_group_memberships.collect(&:study_group).sort.to_set
+    unchecked_study_groups = StudyGroup.all.order(name: :asc).to_set.subtract checked_study_groups
+    @study_group_memberships = checked_study_group_memberships + unchecked_study_groups.collect do |study_group|
+      StudyGroupMembership.new(user: @user, study_group: study_group)
+    end
+  end
+
+  private :collect_set_and_unset_study_group_memberships
 
   def show; end
 
