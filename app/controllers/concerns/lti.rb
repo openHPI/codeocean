@@ -181,11 +181,7 @@ module Lti
 
   def set_current_user
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
-    external_role = external_user_role(@provider)
-    internal_role = @current_user.role
-    desired_role = internal_role == 'admin' ? internal_role : external_role
-    # Update user with new information but change the role only if he is no admin user
-    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider), role: desired_role)
+    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))
   end
 
   private :set_current_user
@@ -199,8 +195,9 @@ module Lti
             else
               StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
             end
-    group.external_users << @current_user unless group.external_users.include? @current_user
-    group.save
+
+    study_group_membership = StudyGroupMembership.find_or_create_by(study_group: group, user: @current_user)
+    study_group_membership.update(role: external_user_role(@provider))
     session[:study_group_id] = group.id
   end
 

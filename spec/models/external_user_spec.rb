@@ -36,4 +36,10 @@ describe ExternalUser do
       expect(build(:external_user).teacher?).to be false
     end
   end
+
+  describe 'external_user has no current_study_group_id' do
+    it 'defaults to being a learner' do
+      expect(build(:external_user).learner?).to be true
+    end
+  end
 end

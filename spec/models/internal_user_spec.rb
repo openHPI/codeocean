@@ -63,13 +63,9 @@ describe InternalUser do
     end
   end
 
-  it 'validates the domain of the role' do
-    user.update(role: 'Foo')
-    expect(user.errors[:role]).to be_present
-  end
-
-  it 'validates the presence of a role' do
-    expect(user.errors[:role]).to be_present
+  it 'validates the presence of the platform_admin flag' do
+    user.update(platform_admin: nil)
+    expect(user.errors[:platform_admin]).to be_present
   end
 
   describe '#admin?' do

@@ -62,14 +62,10 @@ describe ExecutionEnvironmentPolicy do
       expect(policy).to permit(build(:admin))
     end
 
-    shared_examples 'it does not grant access' do |user|
-      it "does not grant access to a user with role #{user.role}" do
-        expect(policy).not_to permit(user)
+    it 'does not grant access to all other users' do
+      %i[external_user teacher].each do |factory_name|
+        expect(policy).not_to permit(build(factory_name))
       end
-    end
-
-    %i[teacher external_user].each do |user|
-      include_examples 'it does not grant access', FactoryBot.build(user) # rubocop:disable RSpec/FactoryBot/SyntaxMethods
     end
   end
 end
