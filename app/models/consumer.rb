@@ -12,6 +12,13 @@ class Consumer < ApplicationRecord
   validates :oauth_key, presence: true, uniqueness: true
   validates :oauth_secret, presence: true
 
+  after_create :generate_internal_study_group
+
+  def generate_internal_study_group
+    StudyGroup.create!(consumer: self, name: "Default Study Group for #{name}", external_id: nil)
+  end
+  private :generate_internal_study_group
+
   def to_s
     name
   end
