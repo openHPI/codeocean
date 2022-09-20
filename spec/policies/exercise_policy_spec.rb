@@ -105,8 +105,32 @@ describe ExercisePolicy do
   end
 
   permissions :show? do
-    it 'not grants access to external users' do
-      expect(policy).not_to permit(build(:external_user), exercise)
+    let(:teacher) { create(:teacher) }
+    let(:exercise_not_public) { build(:dummy, public: false) }
+
+    it 'does not grant access to external users' do
+      expect(policy).not_to permit(build(:external_user), exercise_not_public)
+    end
+
+    context 'when a teacher is not a member in the same study group as the exercise author' do
+      it 'not grants access to the user' do
+        expect(policy).not_to permit(teacher, exercise_not_public)
+      end
+    end
+
+    context "when a teacher is only a member of type 'learner' in the same study group as the exercise author" do
+      it 'not grants access to the user' do
+        exercise_not_public.author.study_groups << teacher.study_groups.first
+        expect(policy).not_to permit(teacher, exercise_not_public)
+      end
+    end
+
+    context 'when a teacher and the exercise author are teaching team members of the same study group' do
+      it 'grants access to the user' do
+        exercise_not_public.author.study_groups << teacher.study_groups.first
+        exercise_not_public.author.study_group_memberships.last.update(role: 'teacher')
+        expect(policy).to permit(teacher, exercise_not_public)
+      end
     end
   end
 
