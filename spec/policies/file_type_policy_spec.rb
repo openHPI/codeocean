@@ -19,7 +19,7 @@ describe FileTypePolicy do
 
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(build(factory_name), file_type)
+          expect(policy).not_to permit(create(factory_name), file_type)
         end
       end
     end
