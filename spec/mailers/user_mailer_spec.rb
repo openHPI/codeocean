@@ -118,7 +118,7 @@ describe UserMailer do
     let(:user) { create(:learner) }
     let(:token) { AuthenticationToken.find_by(user: user) }
     let(:request_for_comment) { create(:rfc_with_comment, user: user) }
-    let(:subscription) { Subscription.create(request_for_comment: request_for_comment, user: user) }
+    let(:subscription) { Subscription.create(request_for_comment: request_for_comment, user: user, study_group_id: user.current_study_group_id) }
     let(:from_user) { InternalUser.create(attributes_for(:teacher)) }
     let(:mail) { described_class.got_new_comment_for_subscription(request_for_comment.comments.first, subscription, from_user).deliver_now }
 

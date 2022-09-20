@@ -48,15 +48,16 @@ describe 'Authentication' do
 
     context 'with an authentication token' do
       let(:user) { create(:learner) }
+      let(:study_group) { request_for_comment.submission.study_group }
       let(:request_for_comment) { create(:rfc_with_comment, user: user) }
       let(:commenting_user) { InternalUser.create(attributes_for(:teacher)) }
       let(:mail) { UserMailer.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user) }
       let(:rfc_link) { request_for_comment_url(request_for_comment, token: token.shared_secret) }
 
-      before { allow(AuthenticationToken).to receive(:generate!).with(user).and_return(token).once }
+      before { allow(AuthenticationToken).to receive(:generate!).with(user, study_group).and_return(token).once }
 
       context 'when the token is valid' do
-        let(:token) { create(:authentication_token, user: user) }
+        let(:token) { create(:authentication_token, user: user, study_group: study_group) }
 
         it 'allows access to the request for comment' do
           mail.deliver_now
@@ -67,7 +68,7 @@ describe 'Authentication' do
       end
 
       context 'with an expired authentication token' do
-        let(:token) { create(:authentication_token, :invalid, user: user) }
+        let(:token) { create(:authentication_token, :invalid, user: user, study_group: study_group) }
 
         it 'denies access to the request for comment' do
           mail.deliver_now
@@ -80,7 +81,7 @@ describe 'Authentication' do
       end
 
       context 'when the authentication token is used to login' do
-        let(:token) { create(:authentication_token, user: user) }
+        let(:token) { create(:authentication_token, user: user, study_group: study_group) }
 
         it 'invalidates the token on login' do
           mail.deliver_now

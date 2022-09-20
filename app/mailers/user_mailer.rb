@@ -20,7 +20,7 @@ class UserMailer < ApplicationMailer
 
   def got_new_comment(comment, request_for_comment, commenting_user)
     # TODO: check whether we can take the last known locale of the receiver?
-    token = AuthenticationToken.generate!(request_for_comment.user)
+    token = AuthenticationToken.generate!(request_for_comment.user, request_for_comment.submission.study_group)
     @receiver_displayname = request_for_comment.user.displayname
     @commenting_user_displayname = commenting_user.displayname
     @comment_text = ERB::Util.html_escape comment.text
@@ -32,7 +32,7 @@ class UserMailer < ApplicationMailer
   end
 
   def got_new_comment_for_subscription(comment, subscription, from_user)
-    token = AuthenticationToken.generate!(subscription.user)
+    token = AuthenticationToken.generate!(subscription.user, subscription.study_group)
     @receiver_displayname = subscription.user.displayname
     @author_displayname = from_user.displayname
     @comment_text = ERB::Util.html_escape comment.text
@@ -45,7 +45,7 @@ class UserMailer < ApplicationMailer
   end
 
   def send_thank_you_note(request_for_comment, receiver)
-    token = AuthenticationToken.generate!(receiver)
+    token = AuthenticationToken.generate!(receiver, request_for_comment.submission.study_group)
     @receiver_displayname = receiver.displayname
     @author = request_for_comment.user.displayname
     @thank_you_note = ERB::Util.html_escape request_for_comment.thank_you_note
