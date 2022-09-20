@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_21_131946) do
+ActiveRecord::Schema.define(version: 2022_09_06_142603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -37,7 +37,9 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
     t.datetime "expire_at", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "study_group_id"
     t.index ["shared_secret"], name: "index_authentication_tokens_on_shared_secret", unique: true
+    t.index ["study_group_id"], name: "index_authentication_tokens_on_study_group_id"
     t.index ["user_type", "user_id"], name: "index_authentication_tokens_on_user"
   end
 
@@ -238,7 +240,7 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "role", default: "learner", null: false
+    t.boolean "platform_admin", default: false
   end
 
   create_table "file_templates", id: :serial, force: :cascade do |t|
@@ -288,7 +290,6 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
     t.integer "consumer_id"
     t.string "email"
     t.string "name"
-    t.string "role"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "crypted_password"
@@ -304,6 +305,7 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
     t.string "activation_state"
     t.string "activation_token"
     t.datetime "activation_token_expires_at"
+    t.boolean "platform_admin", default: false
     t.index ["activation_token"], name: "index_internal_users_on_activation_token"
     t.index ["email"], name: "index_internal_users_on_email", unique: true
     t.index ["remember_me_token"], name: "index_internal_users_on_remember_me_token"
@@ -429,6 +431,7 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
     t.bigint "study_group_id"
     t.string "user_type"
     t.bigint "user_id"
+    t.integer "role", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
     t.index ["study_group_id"], name: "index_study_group_memberships_on_study_group_id"
     t.index ["user_type", "user_id"], name: "index_study_group_memberships_on_user"
   end
@@ -465,6 +468,8 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "deleted"
+    t.bigint "study_group_id"
+    t.index ["study_group_id"], name: "index_subscriptions_on_study_group_id"
   end
 
   create_table "tags", id: :serial, force: :cascade do |t|
@@ -563,6 +568,7 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user"
   end
 
+  add_foreign_key "authentication_tokens", "study_groups"
   add_foreign_key "community_solution_contributions", "community_solution_locks"
   add_foreign_key "community_solution_contributions", "community_solutions"
   add_foreign_key "community_solution_contributions", "study_groups"
@@ -573,6 +579,7 @@ ActiveRecord::Schema.define(version: 2022_07_21_131946) do
   add_foreign_key "exercise_tips", "tips"
   add_foreign_key "remote_evaluation_mappings", "study_groups"
   add_foreign_key "submissions", "study_groups"
+  add_foreign_key "subscriptions", "study_groups"
   add_foreign_key "testrun_execution_environments", "execution_environments"
   add_foreign_key "testrun_execution_environments", "testruns"
   add_foreign_key "testrun_messages", "testruns"
