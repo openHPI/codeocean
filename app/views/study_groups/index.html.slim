@@ -8,25 +8,5 @@ h1 = StudyGroup.model_name.human(count: 2)
     = f.label(:name_cont, t('activerecord.attributes.study_group.name'), class: 'visually-hidden form-label')
     = f.search_field(:name_cont, class: 'form-control', placeholder: t('activerecord.attributes.study_group.name'))
 
-.table-responsive
-  table.table.mt-4
-    thead
-      tr
-        th = t('activerecord.attributes.study_group.name')
-        th = t('activerecord.attributes.study_group.external_id')
-        th = t('activerecord.attributes.study_group.consumer')
-        th = t('activerecord.attributes.study_group.member_count')
-        th colspan=3 = t('shared.actions')
-    tbody
-      - @study_groups.each do |group|
-        tr
-          td = link_to_if(policy(group).show?, group.to_s, group)
-          td
-            code = group.external_id
-          td = link_to_if(policy(group.consumer).show?, group.consumer, group.consumer)
-          td = group.user_count
-          td = link_to(t('shared.show'), group) if policy(group).show?
-          td = link_to(t('shared.edit'), edit_study_group_path(group)) if policy(group).edit?
-          td = link_to(t('shared.destroy'), group, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(group).destroy?
-
+= render('table', study_groups: @study_groups)
 = render('shared/pagination', collection: @study_groups)
