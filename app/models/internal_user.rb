@@ -11,6 +11,8 @@ class InternalUser < User
   validates :password, confirmation: true, if: -> { password_void? && validate_password? }, on: :update, presence: true
   validate :password_strength, if: -> { password_void? && validate_password? }, on: :update
 
+  accepts_nested_attributes_for :study_group_memberships
+
   def activated?
     activation_state == 'active'
   end

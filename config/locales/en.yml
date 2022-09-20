@@ -119,6 +119,12 @@ en:
         consumer: Consumer
         members: Members
         member_count: Member Count
+        selection: Selected
+      study_group_membership:
+        role: Role
+        role_type:
+          learner: Learner
+          teacher: Teacher
       tag:
         name: Name
         usage: Used
@@ -573,6 +579,9 @@ en:
       headline: Complete Registration
       submit: Set Password
       success: You successfully completed your registration.
+    form:
+      study_groups: Study Groups
+      click_to_collapse: Click to expand/collapse...
     forgot_password:
       headline: Reset Password
       submit: Send Password Reset Instructions

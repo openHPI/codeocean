@@ -119,6 +119,12 @@ de:
         consumer: Konsument
         members: Mitglieder
         member_count: Anzahl der Mitglieder
+        selection: Ausgewählt
+      study_group_membership:
+        role: Rolle
+        role_type:
+          learner: Lernender
+          teacher: Lehrender
       tag:
         name: Name
         usage: Verwendet
@@ -583,6 +589,9 @@ de:
       success: Sie haben Ihr Passwort erfolgreich geändert.
     show:
       link: Profil
+    form:
+      study_groups: Lerngruppen
+      click_to_collapse: Zum Aus-/Einklappen hier klicken...
   search:
     search_in_forum: "Probleme? Suche hier im Forum"
   locales:
