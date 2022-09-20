@@ -18,7 +18,14 @@ class ProxyExercisePolicy < AdminOrAuthorPolicy
       if @user.admin?
         @scope.all
       elsif @user.teacher?
-        @scope.where('user_id = ? OR public = TRUE', @user.id)
+        @scope.distinct
+          .joins('LEFT OUTER JOIN study_group_memberships ON proxy_exercises.user_type = study_group_memberships.user_type AND proxy_exercises.user_id = study_group_memberships.user_id')
+          # The proxy_exercise's author is a teacher in the study group
+          .where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
+          # The current user is a teacher in the *same* study group
+          .where(study_group_memberships: {study_group_id: @user.study_group_memberships.where(role: :teacher).select(:study_group_id)})
+          .or(@scope.distinct.where(user: @user))
+          .or(@scope.distinct.where(public: true))
       else
         @scope.none
       end

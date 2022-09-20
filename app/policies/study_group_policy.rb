@@ -21,7 +21,7 @@ class StudyGroupPolicy < AdminOnlyPolicy
       if @user.admin?
         @scope.all
       elsif @user.teacher?
-        @scope.joins(:study_group_memberships).where('user_id = ? AND user_type = ?', @user.id, @user.class.name)
+        @scope.joins(:study_group_memberships).where(study_group_memberships: {user: @user, role: StudyGroupMembership.roles[:teacher]})
       else
         @scope.none
       end
