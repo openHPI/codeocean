@@ -46,13 +46,14 @@ class ExercisePolicy < AdminOrAuthorPolicy
       if @user.admin?
         @scope.all
       elsif @user.teacher?
-        @scope.where(
-          'exercises.user_id IN (SELECT user_id FROM study_group_memberships WHERE study_group_id IN (?))
-          OR (exercises.user_id = ? AND exercises.user_type = ?)
-          OR public = TRUE',
-          @user.study_groups.pluck(:id),
-          @user.id, @user.class.name
-        )
+        @scope.distinct
+          .joins('LEFT OUTER JOIN study_group_memberships ON exercises.user_type = study_group_memberships.user_type AND exercises.user_id = study_group_memberships.user_id')
+          # The exercise's author is a teacher in the study group
+          .where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
+          # The current user is a teacher in the *same* study group
+          .where(study_group_memberships: {study_group_id: @user.study_group_memberships.where(role: :teacher).select(:study_group_id)})
+          .or(@scope.distinct.where(user: @user))
+          .or(@scope.distinct.where(public: true))
       else
         @scope.none
       end
