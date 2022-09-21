@@ -32,16 +32,4 @@ class UserGroupSeparator
         :no_community_solution
     end
   end
-
-  # Different user groups for using AWS lambda functions instead of Nomad based on the user_id
-  # This test is independent from any other A/B Test
-  def self.get_aws_group(user_id)
-    user_group = user_id % 2 # => 0, 1
-    case user_group
-      when 0
-        :no_aws
-      else # 1
-        :use_aws
-    end
-  end
 end

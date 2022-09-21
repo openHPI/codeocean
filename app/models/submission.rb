@@ -200,8 +200,7 @@ class Submission < ApplicationRecord
   def prepared_runner
     request_time = Time.zone.now
     begin
-      @used_execution_environment = AwsStudy.get_execution_environment(user, exercise)
-      runner = Runner.for(user, @used_execution_environment)
+      runner = Runner.for(user, exercise.execution_environment)
       files = collect_files
       files.reject!(&:teacher_defined_assessment?) if cause == 'run'
       Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Copying files to Runner #{runner.id} for #{user_type} #{user_id} and Submission #{id}." }
