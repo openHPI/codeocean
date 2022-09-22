@@ -15,7 +15,7 @@ class StudyGroup < ApplicationRecord
   end
 
   def user_count
-    external_users.count + internal_users.count
+    study_group_memberships.distinct.count
   end
 
   def to_s
