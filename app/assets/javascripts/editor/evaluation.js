@@ -148,7 +148,7 @@ CodeOceanEditorEvaluation = {
      */
     stopCode: function (event) {
         event.preventDefault();
-        if (this.isActiveFileStoppable()) {
+        if (this.isActiveFileStoppable() && this.websocket) {
             this.websocket.send(JSON.stringify({'cmd': 'client_kill'}));
             this.killWebsocket();
             this.cleanUpUI();
