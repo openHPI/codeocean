@@ -6,7 +6,7 @@ h1 = @user.displayname
   code
     = @user.external_id
 = row(label: 'external_user.consumer', value: link_to_if(policy(@user.consumer).show?, @user.consumer, @user.consumer))
-= row(label: 'external_user.platform_admin', value: @user.platform_admin?)
+= row(label: 'external_user.platform_admin', value: @user.platform_admin?) if current_user.admin?
 = row(label: 'users.show.study_groups') do
   - visible_memberships = @user.study_group_memberships.select { |study_group_membership| policy(study_group_membership.study_group).show? }
   - if visible_memberships.any?

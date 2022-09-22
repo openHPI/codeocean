@@ -12,10 +12,10 @@ h1
 
 h2.mt-4 = t('activerecord.attributes.study_group.members')
 .table-responsive
-  table.table
+  table.sortable.table
     thead
       tr
-        th = sort_link(@search, :name, t('navigation.sections.users'))
+        th =  t('navigation.sections.users')
     - @study_group.users.each do |user|
       tr
         td = link_to_if(policy(user).show?, user.displayname, user)

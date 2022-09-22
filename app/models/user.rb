@@ -23,7 +23,14 @@ class User < ApplicationRecord
   scope :with_submissions, -> { where('id IN (SELECT user_id FROM submissions)') }
 
   scope :in_study_group_of, lambda {|user|
-                              joins(:study_group_memberships).where(study_group_memberships: {study_group_id: user.study_groups}) unless user.admin?
+                              unless user.admin?
+                                joins(:study_group_memberships)
+                                  .where(study_group_memberships: {
+                                    study_group_id: user.study_group_memberships
+                                                        .where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
+                                                        .select(:study_group_id),
+                                  })
+                              end
                             }
 
   validates :platform_admin, boolean_presence: true
@@ -65,7 +72,7 @@ class User < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object)
-    if auth_object.admin?
+    if auth_object.present? && auth_object.admin?
       %w[name email external_id consumer_id platform_admin]
     else
       %w[name external_id]

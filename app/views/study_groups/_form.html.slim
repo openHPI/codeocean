@@ -6,11 +6,11 @@
 
   h3 = t('activerecord.attributes.study_group.members')
   .table-responsive
-    table.table
+    table.sortable.table
       thead
         tr
           th = t('activerecord.attributes.exercise.selection')
-          th = sort_link(@search, :name, t('navigation.sections.users'))
+          th = t('navigation.sections.users')
       = collection_check_boxes :study_group, :study_group_membership_ids, @members, :id, :id do |b|
         tr
           td = b.check_box class: 'form-check-input'

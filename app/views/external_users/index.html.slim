@@ -32,12 +32,15 @@ h1 = ExternalUser.model_name.human(count: 2)
       tr
         th = t('activerecord.attributes.external_user.name')
         th = t('activerecord.attributes.external_user.consumer')
+        th = t('activerecord.attributes.external_user.platform_admin')
         th = t('shared.actions')
     tbody
       - @users.each do |user|
         tr
           td = link_to_if(policy(user).show?, user.displayname, user)
           td = link_to_if(user.consumer.present? && policy(user.consumer).show?, user.consumer, user.consumer)
+          - if current_user.admin?
+            td = symbol_for(user.platform_admin?)
           td = link_to(t('shared.show'), user) if policy(user).show?
 
 = render('shared/pagination', collection: @users)

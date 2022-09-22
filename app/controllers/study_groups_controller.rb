@@ -11,13 +11,10 @@ class StudyGroupsController < ApplicationController
     authorize!
   end
 
-  def show
-    @search = @study_group.external_users.ransack(params[:q])
-  end
+  def show; end
 
   def edit
-    @search = @study_group.external_users.ransack(params[:q])
-    @members = StudyGroupMembership.where(user: @search.result, study_group: @study_group)
+    @members = StudyGroupMembership.where(user: @study_group.users, study_group: @study_group).includes(:user)
   end
 
   def update

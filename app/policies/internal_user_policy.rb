@@ -2,10 +2,14 @@
 
 class InternalUserPolicy < AdminOnlyPolicy
   def destroy?
-    super && !@record.admin?
+    admin? && !@record.admin?
+  end
+
+  def index?
+    admin? || teacher?
   end
 
   def show?
-    super || @record == @user
+    admin? || @record == @user || teacher_in_study_group?
   end
 end
