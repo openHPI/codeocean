@@ -10,17 +10,18 @@ describe ConsumersController do
 
   describe 'POST #create' do
     context 'with a valid consumer' do
-      let(:perform_request) { proc { post :create, params: {consumer: attributes_for(:consumer)} } }
+      let(:perform_request) { proc { post :create, params: {consumer: build(:consumer, name: 'New Consumer').attributes} } }
 
-      before { perform_request.call }
+      context 'when the request is performed' do
+        before { perform_request.call }
 
-      expect_assigns(consumer: Consumer)
+        expect_assigns(consumer: Consumer)
+        expect_redirect(Consumer.last)
+      end
 
       it 'creates the consumer' do
         expect { perform_request.call }.to change(Consumer, :count).by(1)
       end
-
-      expect_redirect(Consumer.last)
     end
 
     context 'with an invalid consumer' do
@@ -29,6 +30,22 @@ describe ConsumersController do
       expect_assigns(consumer: Consumer)
       expect_http_status(:ok)
       expect_template(:new)
+    end
+
+    context 'with a duplicated consumer' do
+      let(:perform_request) { proc { post :create, params: {consumer: build(:consumer).attributes} } }
+
+      context 'when the request is performed' do
+        before { perform_request.call }
+
+        expect_assigns(consumer: Consumer)
+        expect_http_status(:ok)
+        expect_template(:new)
+      end
+
+      it 'does not create a new consumer' do
+        expect { perform_request.call }.not_to change(Consumer, :count)
+      end
     end
   end
 
