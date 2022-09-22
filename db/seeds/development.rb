@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'highline/import'
+
 # consumers
 FactoryBot.create(:consumer)
 FactoryBot.create(:consumer, name: 'openSAP')
@@ -9,15 +11,17 @@ FactoryBot.create(:consumer, name: 'Xikolo Development', oauth_key: 'consumer', 
 # users
 # Set default_url_options explicitly, required for rake task
 Rails.application.routes.default_url_options = Rails.application.config.action_mailer.default_url_options
-admin = FactoryBot.create(:admin)
-teacher = FactoryBot.create(:teacher, email: 'teacher@example.org')
-FactoryBot.create(:learner, email: 'learner@example.org')
-external_user = FactoryBot.create(:external_user)
+UserMailer.delivery_method = :test
+admin = FactoryBot.create(:admin, study_groups: StudyGroup.all)
+teacher = FactoryBot.create(:teacher, email: 'teacher@example.org', study_groups: StudyGroup.all)
+FactoryBot.create(:learner, email: 'learner@example.org', study_groups: StudyGroup.all)
+external_user = FactoryBot.create(:external_user, study_groups: StudyGroup.all)
 
 # file types
 FileType.create_factories user: admin
 
 # execution environments
+ExecutionEnvironment.skip_callback(:commit, :after, :sync_runner_environment)
 ExecutionEnvironment.create_factories user: admin
 
 # exercises
@@ -25,3 +29,15 @@ ExecutionEnvironment.create_factories user: admin
 
 # submissions
 FactoryBot.create(:submission, exercise: @exercises[:fibonacci], user: external_user)
+
+say(<<~CONFIRMATION_MESSAGE)
+  Development data has been seeded successfully.
+
+  As part of this setup, some execution environments have been \
+  stored in the database. However, these haven't been yet \
+  synchronized with a runner management. Please take care \
+  to configure a runner management according to the \
+  documentation and synchronize environments thorugh the \
+  user interface. To do so, open `/execution_environments` \
+  and click on the "Synchronize all" button.
+CONFIRMATION_MESSAGE
