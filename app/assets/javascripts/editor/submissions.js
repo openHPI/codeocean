@@ -139,17 +139,21 @@ CodeOceanEditorSubmissions = {
         const active_file = CodeOceanEditor.active_file.filename.replace(/#$/,''); // remove # if it is the last character, this is not part of the filename and just an anchor
         const desired_file = response.render_url.filter(hash => hash.filepath === active_file);
         const url = desired_file[0].url;
-        var pop_up_window = window.open(url, '_blank');
-        if (pop_up_window) {
-          pop_up_window.onerror = function (message) {
-            this.clearOutput();
-            this.printOutput({
-              stderr: message
-            }, true, 0);
-            this.sendError(message, response.id);
-            this.showOutputBar();
-          };
-        }
+        // Allow to open the new tab even in Safari.
+        // See: https://stackoverflow.com/a/70463940
+        setTimeout(() => {
+          var pop_up_window = window.open(url, '_blank');
+          if (pop_up_window) {
+            pop_up_window.onerror = function (message) {
+              this.clearOutput();
+              this.printOutput({
+                stderr: message
+              }, true, 0);
+              this.sendError(message, response.id);
+              this.showOutputBar();
+            };
+          }
+        })
       });
     }
   },
