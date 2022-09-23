@@ -1,4 +1,8 @@
 default: &default
+  # A public-facing host to be used for the render_file function of the SubmissionsController.
+  # User content will be served from this host. If not set, the default host is used (less secure!).
+  # render_host: codeoceanusercontent.com
+
   flowr:
     # When enabled, flowr can assist learners with related search results from
     # StackOverflow.com regarding exceptions that occurred during code execution.

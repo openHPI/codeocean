@@ -5,6 +5,12 @@ module CodeOcean
     include CommonBehavior
     include FileParameters
 
+    # Overwrite the CSP header and some default actions for the :render_protected_upload action
+    content_security_policy false, only: :render_protected_upload
+    skip_before_action :deny_access_from_render_host, only: :render_protected_upload
+    skip_before_action :verify_authenticity_token, only: :render_protected_upload
+    before_action :require_user!, except: :render_protected_upload
+
     def authorize!
       authorize(@file)
     end
@@ -17,6 +23,18 @@ module CodeOcean
 
       real_location = Pathname(@file.native_file.current_path).realpath
       send_file(real_location, type: @file.native_file.content_type, filename: @file.name_with_extension, disposition: 'attachment')
+    end
+
+    def render_protected_upload
+      # Set @current_user with a new *learner* for Pundit checks
+      @current_user = ExternalUser.new
+
+      @file = authorize AuthenticatedUrlHelper.retrieve!(CodeOcean::File, request)
+
+      raise Pundit::NotAuthorizedError unless @file.name_with_extension == params[:filename]
+
+      real_location = Pathname(@file.native_file.current_path).realpath
+      send_file(real_location, type: @file.native_file.content_type, filename: @file.name_with_extension)
     end
 
     def create

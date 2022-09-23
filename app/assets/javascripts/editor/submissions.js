@@ -134,7 +134,11 @@ CodeOceanEditorSubmissions = {
     event.preventDefault();
     if ($('#render').is(':visible')) {
       this.createSubmission('#render', null, function (response) {
-        var url = response.render_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
+        if (response.render_url === undefined) return;
+
+        const active_file = CodeOceanEditor.active_file.filename.replace(/#$/,''); // remove # if it is the last character, this is not part of the filename and just an anchor
+        const desired_file = response.render_url.filter(hash => hash.filepath === active_file);
+        const url = desired_file[0].url;
         var pop_up_window = window.open(url);
         if (pop_up_window) {
           pop_up_window.onerror = function (message) {

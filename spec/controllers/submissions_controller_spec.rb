@@ -40,7 +40,7 @@ describe SubmissionsController do
 
   describe 'GET #download_file' do
     context 'with an invalid filename' do
-      before { get :download_file, params: {filename: SecureRandom.hex, id: submission.id} }
+      before { get :download_file, params: {filename: SecureRandom.hex, id: submission.id, format: :json} }
 
       expect_http_status(:not_found)
     end
@@ -108,28 +108,32 @@ describe SubmissionsController do
 
   describe 'GET #render_file' do
     let(:file) { submission.files.first }
+    let(:signed_url) { AuthenticatedUrlHelper.sign(render_submission_url(submission, filename), submission) }
+    let(:token) { Rack::Utils.parse_nested_query(URI.parse(signed_url).query)['token'] }
 
     context 'with an invalid filename' do
-      before { get :render_file, params: {filename: SecureRandom.hex, id: submission.id} }
+      let(:filename) { SecureRandom.hex }
+
+      before { get :render_file, params: {filename: filename, id: submission.id, token: token} }
 
       expect_http_status(:not_found)
     end
 
     context 'with a valid filename' do
       let(:submission) { create(:submission, exercise: create(:audio_video)) }
+      let(:filename) { file.name_with_extension }
 
-      before { get :render_file, params: {filename: file.name_with_extension, id: submission.id} }
+      before { get :render_file, params: {filename: filename, id: submission.id, token: token} }
 
       context 'with a binary file' do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
+        let(:signed_url_video) { AuthenticatedUrlHelper.sign(render_protected_upload_url(id: file, filename: file.name_with_extension), file) }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
-        expect_content_type('video/mp4')
-        expect_http_status(:ok)
 
-        it 'renders the file content' do
-          expect(response.body).to eq(file.read)
+        it 'sets the correct redirect' do
+          expect(response.location).to eq signed_url_video
         end
       end
 
@@ -184,7 +188,7 @@ describe SubmissionsController do
     expect_assigns(submission: :submission)
     expect_http_status(:ok)
 
-    %i[render run test].each do |action|
+    %i[run test].each do |action|
       describe "##{action}_url" do
         let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
 
@@ -196,6 +200,20 @@ describe SubmissionsController do
         it 'ends with a placeholder' do
           expect(url).to end_with("#{Submission::FILENAME_URL_PLACEHOLDER}.json")
         end
+      end
+    end
+
+    describe '#render_url' do
+      let(:supported_urls) { JSON.parse(response.body).with_indifferent_access.fetch('render_url') }
+      let(:file) { submission.collect_files.detect(&:main_file?) }
+      let(:url) { supported_urls.find {|hash| hash[:filepath] == file.filepath }['url'] }
+
+      it 'starts like the render path' do
+        expect(url).to start_with(Rails.application.routes.url_helpers.render_submission_url(submission, file.filepath, host: request.host))
+      end
+
+      it 'includes a token' do
+        expect(url).to include '?token='
       end
     end
 

@@ -571,6 +571,7 @@ DEPENDENCIES
   jbuilder
   js-routes
   json_schemer
+  jwt
   kramdown
   letter_opener
   listen

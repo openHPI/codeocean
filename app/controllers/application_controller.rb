@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
   RENDER_HOST = CodeOcean::Config.new(:code_ocean).read[:render_host]
 
+  before_action :deny_access_from_render_host
   after_action :verify_authorized, except: %i[welcome]
   around_action :mnemosyne_trace
   around_action :switch_locale
@@ -68,7 +69,7 @@ class ApplicationController < ActionController::Base
       id: current_user.id,
       type: current_user.class.name,
       username: current_user.displayname,
-      consumer: current_user.consumer.name
+      consumer: current_user.consumer&.name
     )
   end
   private :set_sentry_context
@@ -95,10 +96,13 @@ class ApplicationController < ActionController::Base
   def render_error(message, status)
     set_sentry_context
     respond_to do |format|
-      format.html do
+      format.any do
         # Prevent redirect loop
         if request.url == request.referer
           redirect_to :root, alert: message
+        # Redirect to main domain if the request originated from our render_host
+        elsif request.path == '/' && request.host == RENDER_HOST
+          redirect_to Rails.application.config.action_mailer.default_url_options
         else
           redirect_back fallback_location: :root, allow_other_host: false, alert: message
         end
@@ -115,6 +119,10 @@ class ApplicationController < ActionController::Base
     I18n.with_locale(locale, &action)
   end
   private :switch_locale
+
+  def deny_access_from_render_host
+    raise Pundit::NotAuthorizedError if RENDER_HOST.present? && request.host == RENDER_HOST
+  end
 
   def welcome
     # Show root page

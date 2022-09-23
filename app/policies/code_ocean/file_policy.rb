@@ -26,6 +26,14 @@ module CodeOcean
       end
     end
 
+    def render_protected_upload?
+      return no_one if @record.native_file? && !@record.native_file_location_valid?
+      return no_one if @record.context.is_a?(Exercise) && (@record.context.unpublished || @record.hidden)
+
+      # The AuthenticatedUrlHelper will check for more details, but we cannot determine a specific user
+      everyone
+    end
+
     def create?
       if @record.context.is_a?(Exercise)
         admin? || author?

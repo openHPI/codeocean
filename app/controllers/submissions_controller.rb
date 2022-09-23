@@ -7,22 +7,17 @@ class SubmissionsController < ApplicationController
   include SubmissionParameters
   include Tubesock::Hijack
 
-  before_action :require_user!
-  before_action :set_submission, only: %i[download download_file render_file run score show statistics test]
+  before_action :set_submission, only: %i[download download_file run score show statistics test]
   before_action :set_testrun, only: %i[run score test]
   before_action :set_files, only: %i[download show]
-  before_action :set_files_and_specific_file, only: %i[download_file render_file run test]
+  before_action :set_files_and_specific_file, only: %i[download_file run test]
   before_action :set_content_type_nosniff, only: %i[download download_file render_file]
 
-  # Overwrite the CSP header for the :render_file action
-  content_security_policy only: :render_file do |policy|
-    policy.img_src        :none
-    policy.script_src     :none
-    policy.font_src       :none
-    policy.style_src      :none
-    policy.connect_src    :none
-    policy.form_action    :none
-  end
+  # Overwrite the CSP header and some default actions for the :render_file action
+  content_security_policy false, only: :render_file
+  skip_before_action :deny_access_from_render_host, only: :render_file
+  skip_before_action :verify_authenticity_token, only: :render_file
+  before_action :require_user!, except: :render_file
 
   def create
     @submission = Submission.new(submission_params)
@@ -80,10 +75,28 @@ class SubmissionsController < ApplicationController
   end
 
   def render_file
-    # If a file should not be downloaded, it should not be rendered either
-    raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
+    # Set @current_user with a new *learner* for Pundit checks
+    @current_user = ExternalUser.new
 
-    send_data(@file.read, filename: @file.name_with_extension, disposition: 'inline')
+    @submission = authorize AuthenticatedUrlHelper.retrieve!(Submission, request, cookies)
+
+    # Throws an exception if the file is not found
+    set_files_and_specific_file
+
+    # Allows access to other files of the same submission, e.g., a linked JS or CSS file where we cannot expect a token in the URL
+    cookie_name = AuthenticatedUrlHelper.cookie_name_for(:render_file_token)
+    if params[AuthenticatedUrlHelper.query_parameter].present?
+      cookies[cookie_name] = AuthenticatedUrlHelper.prepare_short_living_cookie(request.url)
+      cookies.commit!
+    end
+
+    # Finally grant access and send the file
+    if @file.native_file?
+      url = render_protected_upload_url(id: @file.id, filename: @file.name_with_extension)
+      redirect_to AuthenticatedUrlHelper.sign(url, @file)
+    else
+      send_data(@file.content, filename: @file.name_with_extension, disposition: 'inline')
+    end
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity
@@ -372,7 +385,7 @@ class SubmissionsController < ApplicationController
     # @file contains the specific file requested for run / test / render / ...
     set_files
     @file = @files.detect {|file| file.filepath == sanitize_filename }
-    head :not_found unless @file
+    raise ActiveRecord::RecordNotFound unless @file
   end
 
   def set_files

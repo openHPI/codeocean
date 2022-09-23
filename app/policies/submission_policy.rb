@@ -6,9 +6,13 @@ class SubmissionPolicy < ApplicationPolicy
   end
 
   # insights? is used in the flowr_controller.rb as we use it to authorize the user for a submission
-  %i[download? download_file? render_file? run? score? show? statistics? stop? test?
+  %i[download? download_file? run? score? show? statistics? stop? test?
      insights?].each do |action|
     define_method(action) { admin? || author? }
+  end
+
+  def render_file?
+    everyone
   end
 
   def index?
