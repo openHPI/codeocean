@@ -15,6 +15,7 @@ h1.d-inline-block = ExecutionEnvironment.model_name.human(count: 2)
         th = t('activerecord.attributes.execution_environment.memory_limit')
         th = t('activerecord.attributes.execution_environment.cpu_limit')
         th = t('activerecord.attributes.execution_environment.network_enabled')
+        th = t('activerecord.attributes.execution_environment.privileged_execution')
         th = t('activerecord.attributes.execution_environment.permitted_execution_time')
         th colspan=5 = t('shared.actions')
     tbody
@@ -26,6 +27,7 @@ h1.d-inline-block = ExecutionEnvironment.model_name.human(count: 2)
           td = execution_environment.memory_limit
           td = execution_environment.cpu_limit
           td = symbol_for(execution_environment.network_enabled)
+          td = symbol_for(execution_environment.privileged_execution)
           td = execution_environment.permitted_execution_time
           td = link_to(t('shared.show'), execution_environment) if policy(execution_environment).show?
           td = link_to(t('shared.edit'), edit_execution_environment_path(execution_environment)) if policy(execution_environment).edit?

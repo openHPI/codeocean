@@ -11,7 +11,7 @@ h1.d-inline-block = @execution_environment
 = row(label: 'execution_environment.name', value: @execution_environment.name)
 = row(label: 'execution_environment.user', value: link_to_if(policy(@execution_environment.author).show?, @execution_environment.author, @execution_environment.author))
 = row(label: 'execution_environment.file_type', value: @execution_environment.file_type.present? ? link_to(@execution_environment.file_type, @execution_environment.file_type) : nil)
-- [:docker_image, :exposed_ports_list, :memory_limit, :cpu_limit, :network_enabled, :permitted_execution_time, :pool_size].each do |attribute|
+- [:docker_image, :exposed_ports_list, :memory_limit, :cpu_limit, :network_enabled, :privileged_execution, :permitted_execution_time, :pool_size].each do |attribute|
   = row(label: "execution_environment.#{attribute}", value: @execution_environment.send(attribute))
 - [:run_command, :test_command].each do |attribute|
   = row(label: "execution_environment.#{attribute}") do

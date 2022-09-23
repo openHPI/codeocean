@@ -27,6 +27,7 @@ class ExecutionEnvironment < ApplicationRecord
   validates :memory_limit,
     numericality: {greater_than_or_equal_to: MINIMUM_MEMORY_LIMIT, only_integer: true}, presence: true
   validates :network_enabled, boolean_presence: true
+  validates :privileged_execution, boolean_presence: true
   validates :name, presence: true
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
   validates :pool_size, numericality: {only_integer: true}, presence: true

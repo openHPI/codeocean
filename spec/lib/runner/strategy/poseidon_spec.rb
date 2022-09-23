@@ -247,7 +247,11 @@ describe Runner::Strategy::Poseidon do
       WebMock
         .stub_request(:post, "#{described_class.config[:url]}/runners/#{runner_id}/execute")
         .with(
-          body: {command: command, timeLimit: execution_environment.permitted_execution_time},
+          body: {
+            command: command,
+            timeLimit: execution_environment.permitted_execution_time,
+            privilegedExecution: execution_environment.privileged_execution,
+          },
           headers: {'Content-Type' => 'application/json'}
         )
         .to_return(body: response_body, status: response_status)

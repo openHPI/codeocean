@@ -24,6 +24,7 @@ en:
         test_command: Test Command
         testing_framework: Testing Framework
         user: Author
+        privileged_execution: Privileged Execution as "root"
       exercise:
         average_score_percentage: "Average Score Percentage"
         description: Description

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe ExecutionEnvironment do
-  let(:execution_environment) { described_class.create.tap {|execution_environment| execution_environment.update(network_enabled: nil) } }
+  let(:execution_environment) { described_class.create.tap {|execution_environment| execution_environment.update(network_enabled: nil, privileged_execution: nil) } }
 
   it 'validates that the Docker image works' do
     allow(execution_environment).to receive(:validate_docker_image?).and_return(true)
@@ -54,6 +54,12 @@ describe ExecutionEnvironment do
     expect(execution_environment.errors[:network_enabled]).to be_present
     execution_environment.update(network_enabled: false)
     expect(execution_environment.errors[:network_enabled]).to be_blank
+  end
+
+  it 'validates the presence of the privileged_execution enabled flag' do
+    expect(execution_environment.errors[:privileged_execution]).to be_present
+    execution_environment.update(privileged_execution: false)
+    expect(execution_environment.errors[:privileged_execution]).to be_blank
   end
 
   it 'validates the numericality of the permitted run time' do
