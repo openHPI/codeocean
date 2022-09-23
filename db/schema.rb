@@ -240,7 +240,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_142603) do
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean "platform_admin", default: false
+    t.boolean "platform_admin", default: false, null: false
   end
 
   create_table "file_templates", id: :serial, force: :cascade do |t|
@@ -305,7 +305,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_142603) do
     t.string "activation_state"
     t.string "activation_token"
     t.datetime "activation_token_expires_at"
-    t.boolean "platform_admin", default: false
+    t.boolean "platform_admin", default: false, null: false
     t.index ["activation_token"], name: "index_internal_users_on_activation_token"
     t.index ["email"], name: "index_internal_users_on_email", unique: true
     t.index ["remember_me_token"], name: "index_internal_users_on_remember_me_token"
