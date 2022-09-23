@@ -3,6 +3,8 @@
 module ExerciseHelper
   include LtiHelper
 
+  CODEPILOT_CONFIG = CodeOcean::Config.new(:code_ocean).read[:code_pilot]
+
   def embedding_parameters(exercise)
     "locale=#{I18n.locale}&token=#{exercise.token}"
   end
@@ -12,11 +14,6 @@ module ExerciseHelper
   end
 
   def qa_url
-    config = CodeOcean::Config.new(:code_ocean)
-    enabled = config.read[:code_pilot][:enabled]
-
-    if enabled
-      config.read[:code_pilot][:url]
-    end
+    CODEPILOT_CONFIG[:url] if CODEPILOT_CONFIG[:enabled]
   end
 end

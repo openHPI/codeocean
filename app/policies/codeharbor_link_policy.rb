@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CodeharborLinkPolicy < ApplicationPolicy
+  CODEHARBOR_CONFIG = CodeOcean::Config.new(:code_ocean).read[:codeharbor]
+
   def index?
     false
   end
@@ -30,7 +32,7 @@ class CodeharborLinkPolicy < ApplicationPolicy
   end
 
   def enabled?
-    CodeOcean::Config.new(:code_ocean).read[:codeharbor][:enabled]
+    CODEHARBOR_CONFIG[:enabled]
   end
 
   private

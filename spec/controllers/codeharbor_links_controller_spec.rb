@@ -5,12 +5,9 @@ require 'rails_helper'
 describe CodeharborLinksController do
   let(:user) { create(:teacher) }
 
-  let(:codeocean_config) { instance_double(CodeOcean::Config) }
-  let(:codeharbor_config) { {codeharbor: {enabled: true, url: 'https://test.url'}} }
-
   before do
-    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
-    allow(codeocean_config).to receive(:read).and_return(codeharbor_config)
+    allow(CodeharborLinkPolicy::CODEHARBOR_CONFIG).to receive(:[]).with(:enabled).and_return(true)
+    allow(CodeharborLinkPolicy::CODEHARBOR_CONFIG).to receive(:[]).with(:url).and_return('https://test.url')
     allow(controller).to receive(:current_user).and_return(user)
   end
 

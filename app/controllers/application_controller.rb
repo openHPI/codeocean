@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
+  RENDER_HOST = CodeOcean::Config.new(:code_ocean).read[:render_host]
 
   after_action :verify_authorized, except: %i[welcome]
   around_action :mnemosyne_trace

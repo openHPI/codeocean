@@ -8,12 +8,8 @@ describe CodeharborLinkPolicy do
   let(:codeharbor_link) { create(:codeharbor_link) }
 
   context 'when CodeHarbor link is enabled' do
-    let(:codeocean_config) { instance_double(CodeOcean::Config) }
-    let(:codeharbor_config) { {codeharbor: {enabled: true}} }
-
     before do
-      allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
-      allow(codeocean_config).to receive(:read).and_return(codeharbor_config)
+      allow(CodeharborLinkPolicy::CODEHARBOR_CONFIG).to receive(:[]).with(:enabled).and_return(true)
     end
 
     %i[index? show?].each do |action|
@@ -64,12 +60,8 @@ describe CodeharborLinkPolicy do
   end
 
   context 'when CodeHabor link is disabled' do
-    let(:codeocean_config) { instance_double(CodeOcean::Config) }
-    let(:codeharbor_config) { {codeharbor: {enabled: false}} }
-
     before do
-      allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
-      allow(codeocean_config).to receive(:read).and_return(codeharbor_config)
+      allow(CodeharborLinkPolicy::CODEHARBOR_CONFIG).to receive(:[]).with(:enabled).and_return(false)
     end
 
     permissions :enabled? do
