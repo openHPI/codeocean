@@ -245,7 +245,11 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
   def execute_command(command)
     url = "#{runner_url}/execute"
-    body = {command: command, timeLimit: @execution_environment.permitted_execution_time}
+    body = {
+      command: command,
+      timeLimit: @execution_environment.permitted_execution_time,
+      privilegedExecution: @execution_environment.privileged_execution,
+    }
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Preparing command execution at #{url}: #{command}" }
     response = self.class.http_connection.post url, body.to_json
 

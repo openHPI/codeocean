@@ -10,6 +10,7 @@ FactoryBot.define do
     help
     name { 'CoffeeScript' }
     network_enabled { false }
+    privileged_execution { false }
     permitted_execution_time { 10.seconds }
     pool_size { 0 }
     run_command { 'coffee' }
@@ -25,6 +26,7 @@ FactoryBot.define do
     help
     name { 'HTML5' }
     network_enabled { false }
+    privileged_execution { false }
     permitted_execution_time { 10.seconds }
     pool_size { 0 }
     run_command { 'touch' }
@@ -42,6 +44,7 @@ FactoryBot.define do
     help
     name { 'Java 8' }
     network_enabled { false }
+    privileged_execution { false }
     permitted_execution_time { 10.seconds }
     pool_size { 0 }
     run_command { 'make run' }
@@ -59,6 +62,7 @@ FactoryBot.define do
     help
     name { 'JRuby 1.7' }
     network_enabled { false }
+    privileged_execution { false }
     permitted_execution_time { 10.seconds }
     pool_size { 0 }
     run_command { 'jruby %{filename}' }
@@ -76,6 +80,7 @@ FactoryBot.define do
     help
     name { 'Node.js' }
     network_enabled { false }
+    privileged_execution { false }
     permitted_execution_time { 10.seconds }
     pool_size { 0 }
     run_command { 'node %{filename}' }
@@ -91,6 +96,7 @@ FactoryBot.define do
     help
     name { 'Python 3.4' }
     network_enabled { false }
+    privileged_execution { false }
     permitted_execution_time { 10.seconds }
     pool_size { 0 }
     run_command { 'python3 %{filename}' }
@@ -108,6 +114,7 @@ FactoryBot.define do
     help
     name { 'Ruby 2.2' }
     network_enabled { false }
+    privileged_execution { false }
     permitted_execution_time { 10.seconds }
     pool_size { 0 }
     run_command { 'ruby %{filename}' }
@@ -126,6 +133,7 @@ FactoryBot.define do
     help
     name { 'Sinatra' }
     network_enabled { true }
+    privileged_execution { false }
     permitted_execution_time { 15.minutes }
     pool_size { 0 }
     run_command { 'ruby %{filename}' }
@@ -143,6 +151,7 @@ FactoryBot.define do
     help
     name { 'SQLite' }
     network_enabled { false }
+    privileged_execution { false }
     permitted_execution_time { 1.minute }
     pool_size { 0 }
     run_command { 'sqlite3 /database.db -init %{filename} -html' }

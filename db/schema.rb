@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_06_142603) do
+ActiveRecord::Schema.define(version: 2022_09_23_214003) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_142603) do
     t.boolean "network_enabled"
     t.integer "cpu_limit", default: 20, null: false
     t.integer "exposed_ports", default: [], array: true
+    t.boolean "privileged_execution", default: false, null: false
   end
 
   create_table "exercise_collection_items", id: :serial, force: :cascade do |t|
@@ -240,7 +241,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_142603) do
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean "platform_admin", default: false, null: false
+    t.boolean "platform_admin", default: false
   end
 
   create_table "file_templates", id: :serial, force: :cascade do |t|
@@ -305,7 +306,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_142603) do
     t.string "activation_state"
     t.string "activation_token"
     t.datetime "activation_token_expires_at"
-    t.boolean "platform_admin", default: false, null: false
+    t.boolean "platform_admin", default: false
     t.index ["activation_token"], name: "index_internal_users_on_activation_token"
     t.index ["email"], name: "index_internal_users_on_email", unique: true
     t.index ["remember_me_token"], name: "index_internal_users_on_remember_me_token"

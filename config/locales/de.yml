@@ -24,6 +24,7 @@ de:
         test_command: Testbefehl
         testing_framework: Testing-Framework
         user: Autor
+        privileged_execution: Priviligierte Ausführung als "root"
       exercise:
         average_score_percentage: "Durchschnittliche Bewertung in Prozent"
         description: Beschreibung
