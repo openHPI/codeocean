@@ -19,6 +19,7 @@ module CodeOcean
     def show_protected_upload
       @file = CodeOcean::File.find(params[:id])
       authorize!
+      # The `@file.name_with_extension` is assembled based on the user-selected file type, not on the actual file name stored on disk.
       raise Pundit::NotAuthorizedError if @embed_options[:disable_download] || @file.name_with_extension != params[:filename]
 
       real_location = Pathname(@file.native_file.current_path).realpath
@@ -31,6 +32,7 @@ module CodeOcean
 
       @file = authorize AuthenticatedUrlHelper.retrieve!(CodeOcean::File, request)
 
+      # The `@file.name_with_extension` is assembled based on the user-selected file type, not on the actual file name stored on disk.
       raise Pundit::NotAuthorizedError unless @file.name_with_extension == params[:filename]
 
       real_location = Pathname(@file.native_file.current_path).realpath
