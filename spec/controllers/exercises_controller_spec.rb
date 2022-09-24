@@ -539,10 +539,10 @@ describe ExercisesController do
     end
   end
 
-  describe 'POST #import_exercise' do
+  describe 'POST #import_task' do
     let(:codeharbor_link) { create(:codeharbor_link, user: user) }
     let!(:imported_exercise) { create(:fibonacci) }
-    let(:post_request) { post :import_exercise, body: zip_file_content }
+    let(:post_request) { post :import_task, body: zip_file_content }
     let(:zip_file_content) { 'zipped task xml' }
     let(:headers) { {'Authorization' => "Bearer #{codeharbor_link.api_key}"} }
 

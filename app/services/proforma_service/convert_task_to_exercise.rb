@@ -10,13 +10,13 @@ module ProformaService
     end
 
     def execute
-      import_exercise
+      import_task
       @exercise
     end
 
     private
 
-    def import_exercise
+    def import_task
       @exercise.assign_attributes(
         user: @user,
         title: @task.title,
