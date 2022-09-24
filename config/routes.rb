@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-FILENAME_REGEXP = %r{[\w./]+}.freeze unless Kernel.const_defined?(:FILENAME_REGEXP)
+FILENAME_REGEXP = %r{[\w\-./]+}.freeze unless Kernel.const_defined?(:FILENAME_REGEXP)
 
 Rails.application.routes.draw do
   resources :community_solutions, only: %i[index edit update]
