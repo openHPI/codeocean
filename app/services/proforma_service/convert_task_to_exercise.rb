@@ -26,10 +26,24 @@ module ProformaService
         allow_file_creation: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_file_creation)),
         allow_auto_completion: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_auto_completion)),
         expected_difficulty: @task.meta_data[:CodeOcean]&.dig(:expected_difficulty),
-        execution_environment_id: @task.meta_data[:CodeOcean]&.dig(:execution_environment_id),
+        execution_environment_id: execution_environment_id,
 
         files: files
       )
+    end
+
+    def execution_environment_id
+      from_meta_data = @task.meta_data[:CodeOcean]&.dig(:execution_environment_id)
+      return from_meta_data if from_meta_data
+      return nil unless @task.proglang
+
+      ex_envs_with_name_and_version = ExecutionEnvironment.where('docker_image ilike ?', "%#{@task.proglang[:name]}%#{@task.proglang[:version]}%")
+      return ex_envs_with_name_and_version.first.id if ex_envs_with_name_and_version.any?
+
+      ex_envs_with_name = ExecutionEnvironment.where('docker_image like ?', "%#{@task.proglang[:name]}%")
+      return ex_envs_with_name.first.id if ex_envs_with_name.any?
+
+      nil
     end
 
     def string_to_bool(str)

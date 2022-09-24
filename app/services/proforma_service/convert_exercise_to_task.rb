@@ -23,7 +23,7 @@ module ProformaService
           title: @exercise.title,
           description: @exercise.description,
           internal_description: nil,
-          # proglang: proglang, where can we get this information?
+          proglang: proglang,
           files: task_files,
           tests: tests,
           uuid: uuid,
@@ -42,6 +42,12 @@ module ProformaService
           },
         }.compact
       )
+    end
+
+    def proglang
+      regex = %r{^openhpi/co_execenv_(?<language>[^:]*):(?<version>[^-]*)(?>-.*)?$}
+      match = regex.match @exercise.execution_environment.docker_image
+      match ? {name: match[:language], version: match[:version]} : nil
     end
 
     def uuid

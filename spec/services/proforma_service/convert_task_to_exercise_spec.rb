@@ -32,7 +32,7 @@ describe ProformaService::ConvertTaskToExercise do
       Proforma::Task.new(
         title: 'title',
         description: 'description',
-        # proglang: {name: 'proglang-name', version: 'proglang-version'},
+        proglang: {name: 'python', version: '3.4'},
         uuid: 'uuid',
         parent_uuid: 'parent_uuid',
         language: 'language',
@@ -57,7 +57,7 @@ describe ProformaService::ConvertTaskToExercise do
           allow_file_creation: allow_file_creation,
           allow_auto_completion: allow_auto_completion,
           expected_difficulty: expected_difficulty,
-          execution_environment_id: execution_environment.id,
+          execution_environment_id: execution_environment&.id,
           files: files_meta_data,
         },
       }
@@ -85,6 +85,16 @@ describe ProformaService::ConvertTaskToExercise do
         expected_difficulty: 7,
         execution_environment_id: execution_environment.id
       )
+    end
+
+    context 'when execution environment is not set in meta_data' do
+      let(:execution_environment) { nil }
+
+      before { create(:python) }
+
+      it 'sets the execution_environment based on proglang name and value' do
+        expect(convert_to_exercise_service).to have_attributes(execution_environment: have_attributes(name: 'Python 3.4'))
+      end
     end
 
     context 'when task has a file' do

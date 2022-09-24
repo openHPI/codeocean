@@ -19,22 +19,19 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
     let(:convert_to_task) { described_class.new(exercise: exercise) }
     let(:exercise) do
       create(:dummy,
+        execution_environment: execution_environment,
         instructions: 'instruction',
         uuid: SecureRandom.uuid,
         files: files + tests)
     end
     let(:files) { [] }
     let(:tests) { [] }
+    let(:execution_environment) { create(:java) }
 
     it 'creates a task with all basic attributes' do
       expect(task).to have_attributes(
         title: exercise.title,
         description: exercise.description,
-        # internal_description: exercise.instructions,
-        # proglang: {
-        #   name: exercise.execution_environment.language,
-        #   version: exercise.execution_environment.version
-        # },
         uuid: exercise.uuid,
         language: described_class::DEFAULT_LANGUAGE,
         meta_data: {
@@ -48,11 +45,16 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
             files: {},
           },
         },
-        # parent_uuid: exercise.clone_relations.first&.origin&.uuid,
         files: [],
         tests: [],
         model_solutions: []
       )
+    end
+
+    context 'when exercise has execution_environment with correct docker-image name' do
+      it 'creates a task with the correct proglang attribute' do
+        expect(task).to have_attributes(proglang: {name: 'java', version: '8'})
+      end
     end
 
     context 'when exercise has a mainfile' do
