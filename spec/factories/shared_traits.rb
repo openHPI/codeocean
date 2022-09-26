@@ -30,7 +30,7 @@ FactoryBot.define do
       end
 
       user.study_group_memberships.update(role: 'teacher') if evaluator.teacher_in_study_group
-      user.store_current_study_group_id(user.study_group_memberships.first)
+      user.store_current_study_group_id(user.study_group_memberships.first.study_group_id)
     end
   end
 end
