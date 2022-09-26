@@ -21,11 +21,11 @@ module ProformaService
         user: @user,
         title: @task.title,
         description: @task.description,
-        public: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:public)),
-        hide_file_tree: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:hide_file_tree)),
-        allow_file_creation: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_file_creation)),
-        allow_auto_completion: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_auto_completion)),
-        expected_difficulty: @task.meta_data[:CodeOcean]&.dig(:expected_difficulty),
+        public: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:public)) || false,
+        hide_file_tree: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:hide_file_tree)) || false,
+        allow_file_creation: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_file_creation)) || false,
+        allow_auto_completion: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_auto_completion)) || false,
+        expected_difficulty: @task.meta_data[:CodeOcean]&.dig(:expected_difficulty) || 1,
         execution_environment_id: execution_environment_id,
 
         files: files

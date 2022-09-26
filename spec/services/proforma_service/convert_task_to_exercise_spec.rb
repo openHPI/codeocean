@@ -49,26 +49,13 @@ describe ProformaService::ConvertTaskToExercise do
     let(:model_solutions) { [] }
     let(:exercise) { nil }
 
-    let(:meta_data) do
-      {
-        CodeOcean: {
-          public: public,
-          hide_file_tree: hide_file_tree,
-          allow_file_creation: allow_file_creation,
-          allow_auto_completion: allow_auto_completion,
-          expected_difficulty: expected_difficulty,
-          execution_environment_id: execution_environment&.id,
-          files: files_meta_data,
-        },
-      }
-    end
+    let(:meta_data) { {} }
     let(:public) { 'true' }
     let(:hide_file_tree) { 'true' }
     let(:allow_file_creation) { 'true' }
     let(:allow_auto_completion) { 'true' }
     let(:expected_difficulty) { 7 }
     let!(:execution_environment) { create(:java) }
-    let(:files_meta_data) { {} }
 
     it 'creates an exercise with the correct attributes' do
       expect(convert_to_exercise_service).to have_attributes(
@@ -78,13 +65,49 @@ describe ProformaService::ConvertTaskToExercise do
         unpublished: true,
         user: user,
         files: be_empty,
-        public: true,
-        hide_file_tree: true,
-        allow_file_creation: true,
-        allow_auto_completion: true,
-        expected_difficulty: 7,
-        execution_environment_id: execution_environment.id
+        public: false,
+        hide_file_tree: false,
+        allow_file_creation: false,
+        allow_auto_completion: false,
+        expected_difficulty: 1,
+        execution_environment_id: nil
       )
+    end
+
+    it { is_expected.to be_valid }
+
+    context 'when meta_data is set' do
+      let(:meta_data) do
+        {
+          CodeOcean: {
+            public: public,
+            hide_file_tree: hide_file_tree,
+            allow_file_creation: allow_file_creation,
+            allow_auto_completion: allow_auto_completion,
+            expected_difficulty: expected_difficulty,
+            execution_environment_id: execution_environment&.id,
+            files: files_meta_data,
+          },
+        }
+      end
+      let(:files_meta_data) { {} }
+
+      it 'creates an exercise with the correct attributes' do
+        expect(convert_to_exercise_service).to have_attributes(
+          title: 'title',
+          description: 'description',
+          uuid: be_blank,
+          unpublished: true,
+          user: user,
+          files: be_empty,
+          public: true,
+          hide_file_tree: true,
+          allow_file_creation: true,
+          allow_auto_completion: true,
+          expected_difficulty: 7,
+          execution_environment_id: execution_environment.id
+        )
+      end
     end
 
     context 'when execution environment is not set in meta_data' do
@@ -135,6 +158,13 @@ describe ProformaService::ConvertTaskToExercise do
       end
 
       context 'when file is a main_file' do
+        let(:meta_data) do
+          {
+            CodeOcean: {
+              files: files_meta_data,
+            },
+          }
+        end
         let(:files_meta_data) { {"CO-#{file.id}".to_sym => {role: 'main_file'}} }
 
         it 'creates an exercise with a file that has the correct attributes' do
@@ -309,6 +339,13 @@ describe ProformaService::ConvertTaskToExercise do
       end
 
       context 'when test file is a teacher_defined_linter' do
+        let(:meta_data) do
+          {
+            CodeOcean: {
+              files: files_meta_data,
+            },
+          }
+        end
         let(:files_meta_data) { {"CO-#{test_file.id}".to_sym => {role: 'teacher_defined_linter'}} }
 
         it 'creates an exercise with a test' do
@@ -365,8 +402,8 @@ describe ProformaService::ConvertTaskToExercise do
         convert_to_exercise_service.save
         expect(exercise.reload).to have_attributes(
           id: exercise.id,
-          title: task.title,
-          description: task.description,
+          title: exercise.title,
+          description: exercise.description,
           execution_environment: exercise.execution_environment,
           uuid: exercise.uuid,
           user: exercise.user,
