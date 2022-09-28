@@ -76,7 +76,7 @@ describe SubmissionsController do
         expect_assigns(submission: :submission)
 
         it 'sets the correct redirect' do
-          expect(response.location).to eq protected_upload_url(id: file, filename: file.name_with_extension)
+          expect(response.location).to eq protected_upload_url(id: file, filename: file.filepath)
         end
       end
 
@@ -127,7 +127,7 @@ describe SubmissionsController do
 
       context 'with a binary file' do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
-        let(:signed_url_video) { AuthenticatedUrlHelper.sign(render_protected_upload_url(id: file, filename: file.name_with_extension), file) }
+        let(:signed_url_video) { AuthenticatedUrlHelper.sign(render_protected_upload_url(id: file, filename: file.filepath), file) }
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
