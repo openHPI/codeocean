@@ -17,6 +17,8 @@ module CodeOcean
     before_validation :hash_content, if: :content_present?
     before_validation :set_ancestor_values, if: :incomplete_descendent?
 
+    attr_writer :size
+
     belongs_to :context, polymorphic: true
     belongs_to :file, class_name: 'CodeOcean::File', optional: true # This is only required for submissions and is validated below
     alias ancestor file
@@ -127,6 +129,14 @@ module CodeOcean
 
     def visible
       !hidden
+    end
+
+    def size
+      @size ||= if native_file?
+                  native_file.size
+                else
+                  content.size
+                end
     end
   end
 end

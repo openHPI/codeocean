@@ -54,7 +54,9 @@ class SubmissionsController < ApplicationController
         zio.write(File.read(File.join(scripts_path, file)))
       end
     end
-    send_data(stringio.string, filename: "#{@submission.exercise.title.tr(' ', '_')}.zip")
+    zip_data = stringio.string
+    response.set_header('Content-Length', zip_data.size)
+    send_data(zip_data, filename: "#{@submission.exercise.title.tr(' ', '_')}.zip")
   end
 
   def download_file
@@ -63,6 +65,7 @@ class SubmissionsController < ApplicationController
     if @file.native_file?
       redirect_to protected_upload_path(id: @file.id, filename: @file.filepath)
     else
+      response.set_header('Content-Length', @file.size)
       send_data(@file.content, filename: @file.name_with_extension, disposition: 'attachment')
     end
   end
@@ -93,6 +96,7 @@ class SubmissionsController < ApplicationController
       url = render_protected_upload_url(id: @file.id, filename: @file.filepath)
       redirect_to AuthenticatedUrlHelper.sign(url, @file)
     else
+      response.set_header('Content-Length', @file.size)
       send_data(@file.content, filename: @file.name_with_extension, disposition: 'inline')
     end
   end
