@@ -365,7 +365,7 @@ class SubmissionsController < ApplicationController
       cause: cause,
       submission: @submission,
       exit_code: @testrun[:exit_code], # might be nil, e.g., when the run did not finish
-      status: @testrun[:status],
+      status: @testrun[:status] || :failed,
       output: @testrun[:output].presence, # TODO: Remove duplicated saving of the output after creating TestrunMessages
       container_execution_time: @testrun[:container_execution_time],
       waiting_for_container_time: @testrun[:waiting_for_container_time]
