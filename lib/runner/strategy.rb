@@ -33,6 +33,14 @@ class Runner::Strategy
     raise NotImplementedError
   end
 
+  def retrieve_files(_path:, _recursive:, privileged_execution:)
+    raise NotImplementedError
+  end
+
+  def download_file(_file, privileged_execution:, &_block)
+    raise NotImplementedError
+  end
+
   def attach_to_execution(_command, _event_loop, _starting_time, privileged_execution:)
     raise NotImplementedError
   end

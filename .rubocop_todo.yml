@@ -27,7 +27,7 @@ Metrics/CyclomaticComplexity:
   Max: 20
 
 Metrics/PerceivedComplexity:
-  Max: 22
+  Max: 23
 
 # We don't want to change previous migrations...
 #

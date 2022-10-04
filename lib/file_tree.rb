@@ -58,7 +58,8 @@ class FileTree
         disabled: !node.leaf?,
         opened: !node.leaf?,
       },
-      text: node.name,
+      text: name(node),
+      download_path: node.content.try(:download_path),
     }
   end
   private :map_to_js_tree
@@ -71,6 +72,17 @@ class FileTree
     end
   end
   private :node_icon
+
+  def name(node)
+    # We just need any information that is only present in files retrieved from the runner's file system.
+    # In our case, that is the presence of the `privileged_execution` attribute.
+    if node.content.is_a?(CodeOcean::File) && !node.content.privileged_execution.nil?
+      node.content.name_with_extension_and_size
+    else
+      node.name
+    end
+  end
+  private :name
 
   def to_js_tree
     {

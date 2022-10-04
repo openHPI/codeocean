@@ -385,6 +385,9 @@ en:
         disclaimer: If unsure about a deadline, please contact a course instructor. The deadline shown here is only informational and information from the e-learning platform should always take precedence.
     editor_file_tree:
       file_root: Files
+    download_file_tree:
+      file_root: Generated Files
+      gone: The requested file could not be retrieved. Generated files are only held for a short time and are then deleted. Please run the code again and then try downloading the file a second time.
     import_codeharbor:
       import_errors:
         invalid: Invalid exercise

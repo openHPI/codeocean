@@ -669,6 +669,7 @@ var CodeOceanEditor = {
         $('#flowrHint').fadeOut();
         this.clearHints();
         this.showOutputBar();
+        this.clearFileDownloads();
     },
 
     isActiveFileBinary: function () {
@@ -735,6 +736,24 @@ var CodeOceanEditor = {
         var container = $('#error-hints');
         container.find('ul.body').append(template(message.description, message.hint));
         container.fadeIn();
+    },
+
+    prepareFileDownloads: function(message) {
+        const fileTree = $('#download-file-tree');
+        fileTree.jstree(message.data);
+        fileTree.on('select_node.jstree', function (node, selected, _event) {
+            selected.instance.deselect_all();
+            const downloadPath = selected.node.original.download_path;
+            if (downloadPath) {
+                window.location = downloadPath;
+            }
+        }.bind(this));
+        $('#download-files').removeClass('d-none');
+    },
+
+    clearFileDownloads: function() {
+        $('#download-files').addClass('d-none');
+        $('#download-file-tree').replaceWith($('<div id="download-file-tree">'));
     },
 
     showContainerDepletedMessage: function () {

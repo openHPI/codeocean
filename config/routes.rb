@@ -153,6 +153,7 @@ Rails.application.routes.draw do
     member do
       get 'download', as: :download, action: :download
       get 'download/:filename', as: :download_file, constraints: {filename: FILENAME_REGEXP}, action: :download_file
+      get 'download_stream/:filename', as: :download_stream_file, constraints: {filename: FILENAME_REGEXP}, action: :download_submission_file, controller: 'live_streams'
       get 'render/:filename', as: :render, constraints: {filename: FILENAME_REGEXP}, action: :render_file
       get 'run/:filename', as: :run, constraints: {filename: FILENAME_REGEXP}, action: :run
       get :score

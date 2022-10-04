@@ -25,6 +25,12 @@ class Runner::Strategy::Null < Runner::Strategy
 
   def copy_files(_files); end
 
+  def retrieve_files(_path:, _recursive:, privileged_execution: false); end
+
+  def download_file(_file, privileged_execution: false, &_block) # rubocop:disable Lint/UnusedMethodArgument for the keyword argument
+    raise Runner::Error.new
+  end
+
   def attach_to_execution(command, event_loop, starting_time, privileged_execution: false) # rubocop:disable Lint/UnusedMethodArgument for the keyword argument
     socket = Connection.new(nil, self, event_loop)
     # We don't want to return an error if the execution environment is changed

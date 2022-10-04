@@ -48,6 +48,7 @@ CodeOceanEditorWebsocket = {
     this.websocket.on('exit', this.handleExitCommand.bind(this));
     this.websocket.on('status', this.showStatus.bind(this));
     this.websocket.on('hint', this.showHint.bind(this));
+    this.websocket.on('files', this.prepareFileDownloads.bind(this));
   },
 
   handleExitCommand: function() {

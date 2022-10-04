@@ -17,14 +17,14 @@ module AuthenticatedUrlHelper
       add_query_parameters(url, {TOKEN_PARAM => token})
     end
 
-    def retrieve!(klass, request, cookies = {})
+    def retrieve!(klass, request, cookies = {}, force_render_host: true)
       # Don't use the default session mechanism and default cookie
-      request.session_options[:skip] = true
+      request.session_options[:skip] = true if force_render_host
       # Show errors as JSON format, if any
       request.format = :json
 
       # Disallow access from normal domain and show an error instead
-      if ApplicationController::RENDER_HOST.present? && request.host != ApplicationController::RENDER_HOST
+      if force_render_host && ApplicationController::RENDER_HOST.present? && request.host != ApplicationController::RENDER_HOST
         raise Pundit::NotAuthorizedError
       end
 

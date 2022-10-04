@@ -3,6 +3,7 @@
 class SubmissionsController < ApplicationController
   include CommonBehavior
   include Lti
+  include FileConversion
   include SubmissionParameters
   include Tubesock::Hijack
 
@@ -177,7 +178,7 @@ class SubmissionsController < ApplicationController
         send_and_store client_socket, message
       end
 
-      runner_socket.on :exit do |exit_code|
+      runner_socket.on :exit do |exit_code, files|
         @testrun[:exit_code] = exit_code
         exit_statement =
           if @testrun[:output].empty? && exit_code.zero?
@@ -198,6 +199,12 @@ class SubmissionsController < ApplicationController
         if exit_code == 137
           send_and_store client_socket, {cmd: :status, status: :out_of_memory}
           @testrun[:status] = :out_of_memory
+        end
+
+        downloadable_files, = convert_files_json_to_files files
+        if downloadable_files.present?
+          js_tree = FileTree.new(downloadable_files).to_js_tree
+          send_and_store client_socket, {cmd: :files, data: js_tree}
         end
 
         close_client_connection(client_socket)
@@ -426,5 +433,20 @@ class SubmissionsController < ApplicationController
     end
   rescue JSON::ParserError
     {cmd: :write, stream: stream, data: data}
+  end
+
+  def augment_files_for_download(files)
+    submission_files = @submission.collect_files
+    files.filter_map do |file|
+      # Reject files that were already present in the submission
+      # We further reject files that share the same name (excl. file extension) and path as a file in the submission
+      # This is, for example, used to filter compiled .class files in Java submissions
+      next if submission_files.any? {|submission_file| submission_file.filepath_without_extension == file.filepath_without_extension }
+
+      # Downloadable files get a signed download_path and an indicator whether we performed a privileged execution
+      file.download_path = AuthenticatedUrlHelper.sign(download_stream_file_submission_url(@submission, file.filepath), @submission)
+      file.privileged_execution = @submission.execution_environment.privileged_execution
+      file
+    end
   end
 end
