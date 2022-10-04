@@ -22,7 +22,7 @@ h1
   #stats-editor.row
     - index = 0
     - all_files.each do |files|
-      .files class=(@exercise.hide_file_tree ? 'd-none col-sm-3' : 'col-sm-3') data-index=index data-entries=FileTree.new(files).to_js_tree
+      .files class=(@exercise.hide_file_tree ? 'd-none col-sm-3' : 'col-sm-3') data-index=index data-entries=FileTree.new(files).to_js_tree_in_json
       - index += 1
     div class=(@exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
       #current-file.editor
