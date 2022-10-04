@@ -66,6 +66,8 @@ Rails.application.routes.draw do
     member do
       get :shell
       post 'shell', as: :execute_command, action: :execute_command
+      get :list_files, as: :list_files_in
+      get 'download/:filename', as: :download_file_from, constraints: {filename: FILENAME_REGEXP}, action: :download_arbitrary_file, controller: 'live_streams'
       get :statistics
       post :sync_to_runner_management
     end

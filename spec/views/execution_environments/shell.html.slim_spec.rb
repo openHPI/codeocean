@@ -12,6 +12,6 @@ describe 'execution_environments/shell.html.slim' do
 
   it 'contains the required data attributes' do
     expect(rendered).to have_css('#shell[data-message-timeout]')
-    expect(rendered).to have_css("#shell[data-url='#{execute_command_execution_environment_path(execution_environment)}']")
+    expect(rendered).to have_css("#shell[data-id='#{execution_environment.id}']")
   end
 end

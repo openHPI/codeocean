@@ -11,6 +11,8 @@ module CodeOcean
     ROLES = %w[regular_file main_file reference_implementation executable_file teacher_defined_test user_defined_file
                user_defined_test teacher_defined_linter].freeze
     TEACHER_DEFINED_ROLES = ROLES - %w[user_defined_file]
+    OWNER_READ_PERMISSION = 0o400
+    OTHER_READ_PERMISSION = 0o004
 
     after_initialize :set_default_values
     before_validation :clear_weight, unless: :teacher_defined_assessment?
@@ -19,7 +21,8 @@ module CodeOcean
 
     attr_writer :size
     # These attributes are mainly used when retrieving files from a runner
-    attr_accessor :download_path
+    attr_accessor :download_path, :owner, :group, :privileged_execution
+    attr_reader :permissions
 
     belongs_to :context, polymorphic: true
     belongs_to :file, class_name: 'CodeOcean::File', optional: true # This is only required for submissions and is validated below
@@ -151,6 +154,32 @@ module CodeOcean
                 else
                   content.size
                 end
+    end
+
+    def permissions=(permission_string)
+      # We iterate through the permission string (e.g., `rwxrw-r--`) as received through Linux
+      # For each character in the string, we check for a corresponding permission (which is available if the character is not `-`)
+      # Then, we use a bit shift to move a `1` to the position of the given permission.
+      # First, it is moved within a group (e.g., `r` in `rwx` is moved twice to the left, `w` once, `x` not at all)
+      # Second, the bit is moved in accordance with the group (e.g., the `owner` is moved twice, the `group` once, the `other` group not at all)
+      # Finally, a sum is created, which technically could be an OR operation as well.
+      @permissions = permission_string.chars.map.with_index do |permission, index|
+        next 0 if permission == '-' # No permission
+
+        bit = 0b1 << ((2 - index) % 3) # Align bit in respective group
+        bit << ((2 - (index / 3)) * 3) # Align bit in bytes (for the group)
+      end.sum
+    end
+
+    def missing_read_permissions?
+      return false if permissions.blank?
+
+      # We use a bitwise AND with the permission bits and compare that to zero
+      if privileged_execution.present?
+        (permissions & OWNER_READ_PERMISSION).zero?
+      else
+        (permissions & OTHER_READ_PERMISSION).zero?
+      end
     end
   end
 end

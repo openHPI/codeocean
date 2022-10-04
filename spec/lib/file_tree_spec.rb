@@ -161,7 +161,7 @@ describe FileTree do
     end
 
     context 'with leaf nodes' do
-      let(:node) { root.add(Tree::TreeNode.new('')) }
+      let(:node) { root.add(Tree::TreeNode.new('', CodeOcean::File.new)) }
 
       it 'is a file icon' do
         expect(file_tree).to receive(:file_icon)

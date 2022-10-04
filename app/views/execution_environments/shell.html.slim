@@ -1,11 +1,29 @@
 h1 = @execution_environment
 
-#shell data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @execution_environment.permitted_execution_time) data-message-out-of-memory=t('exercises.editor.out_of_memory',  memory_limit: @execution_environment.memory_limit) data-url=execute_command_execution_environment_path(@execution_environment)
+#shell data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @execution_environment.permitted_execution_time) data-message-out-of-memory=t('exercises.editor.out_of_memory',  memory_limit: @execution_environment.memory_limit) data-id=@execution_environment.id
   label.form-label for='command' = t('execution_environments.shell.command')
   .input-group.mb-3
     .input-group-text.form-switch.ps-5.text-muted
       input#sudo.form-check-input.mt-0 type='checkbox'
       label.ms-2 for='sudo' = 'sudo'
     input#command.form-control type='text'
+
+  .card.mb-3
+    .card-header#download-files role="tab"
+      a.file-heading.collapsed.d-flex.justify-content-between.align-items-center data-bs-toggle="collapse" href="#collapse_files" aria-expanded="false"
+        div.clearfix role="button"
+          i.fa-solid aria-hidden="true"
+          span = t('execution_environments.shell.file_tree.headline')
+        div
+          = render('exercises/editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-url' => list_files_in_execution_environment_path(@execution_environment)}, icon: 'fa-solid fa-arrows-rotate', id: 'reload-files', label: t('execution_environments.shell.file_tree.reload'), title: t('execution_environments.shell.file_tree.reload_tooltip'))
+    .card-collapse.collapse id="collapse_files" role="tabpanel"
+      .card-body.pt-0.pe-0.ps-1.pb-1
+        #download-file-tree.justify-content-center.d-flex.my-3
+          span.mx-1 = t('execution_environments.shell.file_tree.empty')
+          button#reload-now-link.btn.btn-link.p-0.m-0.border-0 = t('execution_environments.shell.file_tree.list_now')
+      .card-footer.justify-content-center.align-items-center.d-flex.text-muted
+        i.fa-solid.fa-info
+        span.ms-2 = t('execution_environments.shell.file_tree.root_notice')
+
   pre#output data-message-no-output=t('exercises.implement.no_output', timestamp: l(Time.now, format: :short))
     p = t('exercises.implement.no_output_yet')

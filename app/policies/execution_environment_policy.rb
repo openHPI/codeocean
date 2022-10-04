@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class ExecutionEnvironmentPolicy < AdminOnlyPolicy
-  %i[execute_command? shell? statistics? show? sync_to_runner_management?].each do |action|
+  # download_arbitrary_file? is used in the live_streams_controller.rb
+  %i[execute_command? shell? list_files? statistics? show? sync_to_runner_management? download_arbitrary_file?].each do |action|
     define_method(action) { admin? || author? }
   end
 
