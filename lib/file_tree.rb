@@ -4,16 +4,26 @@ class FileTree
   def file_icon(file)
     if file.file_type.audio?
       'fa-regular fa-file-audio'
+    elsif file.file_type.compressed?
+      'fa-regular fa-file-zipper'
+    elsif file.file_type.excel?
+      'fa-regular fa-file-excel'
     elsif file.file_type.image?
       'fa-regular fa-file-image'
+    elsif file.file_type.pdf?
+      'fa-regular fa-file-pdf'
+    elsif file.file_type.powerpoint?
+      'fa-regular fa-file-powerpoint'
     elsif file.file_type.video?
       'fa-regular fa-file-video'
+    elsif file.file_type.word?
+      'fa-regular fa-file-word'
     elsif file.read_only?
       'fa-solid fa-lock'
     elsif file.file_type.executable?
       'fa-regular fa-file-code'
-    elsif file.file_type.renderable?
-      'fa-regular fa-file-text'
+    elsif file.file_type.renderable? || file.file_type.csv?
+      'fa-regular fa-file-lines'
     else
       'fa-regular fa-file'
     end

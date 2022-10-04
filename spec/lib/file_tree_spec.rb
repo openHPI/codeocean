@@ -60,7 +60,7 @@ describe FileTree do
         let(:file) { build(:file, file_type: build(:dot_svg)) }
 
         it 'is a text file icon' do
-          expect(file_icon).to include('fa-file-text')
+          expect(file_icon).to include('fa-file-lines')
           expect(file_icon).to include('fa-regular')
         end
       end
