@@ -99,7 +99,7 @@ module AuthenticatedUrlHelper
 
       # Remove the given parameters from the query string
       query_params = Rack::Utils.parse_nested_query(parsed_url.query || '')
-      removed_params = query_params.slice!(parameters)
+      removed_params = query_params.extract!(*parameters.map(&:to_s))
 
       # Add the query string back to the URL
       parsed_url.query = URI.encode_www_form(query_params).presence
