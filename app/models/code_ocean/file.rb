@@ -18,6 +18,8 @@ module CodeOcean
     before_validation :set_ancestor_values, if: :incomplete_descendent?
 
     attr_writer :size
+    # These attributes are mainly used when retrieving files from a runner
+    attr_accessor :download_path
 
     belongs_to :context, polymorphic: true
     belongs_to :file, class_name: 'CodeOcean::File', optional: true # This is only required for submissions and is validated below
@@ -100,6 +102,14 @@ module CodeOcean
       end
     end
 
+    def filepath_without_extension
+      if path.present?
+        ::File.join(path, name)
+      else
+        name
+      end
+    end
+
     def hash_content
       self.hashed_content = Digest::MD5.new.hexdigest(read || '')
     end
@@ -112,6 +122,10 @@ module CodeOcean
 
     def name_with_extension
       name.to_s + (file_type&.file_extension || '')
+    end
+
+    def name_with_extension_and_size
+      "#{name_with_extension} (#{ActionController::Base.helpers.number_to_human_size(size)})"
     end
 
     def set_ancestor_values

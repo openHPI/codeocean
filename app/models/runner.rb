@@ -52,6 +52,34 @@ class Runner < ApplicationRecord
     @strategy.copy_files(files)
   end
 
+  def download_file(path, **options, &block)
+    @strategy.download_file(path, **options, &block)
+  end
+
+  def retrieve_files(raise_exception: true, **options)
+    try = 0
+    begin
+      if try.nonzero?
+        request_new_id
+        save
+      end
+      @strategy.retrieve_files(**options)
+    rescue Runner::Error::RunnerNotFound => e
+      Rails.logger.debug { "Retrieving files failed for the first time: #{e.message}" }
+      try += 1
+
+      if try == 1
+        # This is only used if no files were copied to the runner. Thus requesting a second runner is performed here
+        # Reset the variable. This is required to prevent raising an outdated exception after a successful second try
+        e = nil
+        retry
+      end
+    ensure
+      # We forward the exception if requested
+      raise e if raise_exception && defined?(e) && e.present?
+    end
+  end
+
   def attach_to_execution(command, privileged_execution: false, &block)
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Starting execution with Runner #{id} for #{user_type} #{user_id}." }
     starting_time = Time.zone.now

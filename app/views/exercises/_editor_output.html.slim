@@ -3,7 +3,10 @@ div.d-grid id='output_sidebar_collapsed'
 div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output_yet')
   = render('editor_button', classes: 'btn-outline-dark btn overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
 
+
   #content-right-sidebar.overflow-scroll
+    = render('download_file_tree')
+
     div.enforce-bottom-margin.overflow-auto.d-none id='score_div'
       #results
         h2 = t('exercises.implement.results')

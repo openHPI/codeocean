@@ -104,6 +104,10 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
+  def retrieve_files(_path:, _recursive:, privileged_execution:)
+    # The DockerContainerPool does not support retrieving files from the runner.
+  end
+
   def attach_to_execution(command, event_loop, starting_time, privileged_execution: false) # rubocop:disable Lint/UnusedMethodArgument for the keyword argument
     reset_inactivity_timer
 

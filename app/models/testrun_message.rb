@@ -17,6 +17,7 @@ class TestrunMessage < ApplicationRecord
     exception: 10,
     result: 11,
     canvasevent: 12,
+    files: 13,
   }, _default: :write, _prefix: true
 
   enum stream: {

@@ -146,7 +146,7 @@ class Runner::Connection
         @strategy.destroy_at_management
         @error = Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
       when :terminated_by_codeocean, :terminated_by_management
-        @exit_callback.call @exit_code
+        @exit_callback.call @exit_code, @strategy.retrieve_files
       when :terminated_by_client, :error
         @strategy.destroy_at_management
       else # :established

@@ -385,6 +385,9 @@ de:
         disclaimer: Bei Fragen zu Deadlines wenden Sie sich bitte an das Teaching Team. Die hier angezeigte Abgabefrist dient nur zur Information und Angaben auf der jeweiligen Kursseite in der E-Learning-Plattform sollen immer Vorrang haben.
     editor_file_tree:
       file_root: Dateien
+    download_file_tree:
+      file_root: Erstellte Dateien
+      gone: Die angeforderte Datei konnte nicht abgerufen werden. Erstellte Dateien werden nur kurzzeitig vorgehalten und dann gelöscht. Bitte führen Sie den Code erneut aus und versuchen Sie dann wieder den Download der Datei.
     import_codeharbor:
       import_errors:
         invalid: Fehlerhafte Aufgabe
