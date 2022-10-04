@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class SubmissionsController < ApplicationController
-  include ActionController::Live
   include CommonBehavior
   include Lti
   include SubmissionParameters
@@ -87,7 +86,6 @@ class SubmissionsController < ApplicationController
     cookie_name = AuthenticatedUrlHelper.cookie_name_for(:render_file_token)
     if params[AuthenticatedUrlHelper.query_parameter].present?
       cookies[cookie_name] = AuthenticatedUrlHelper.prepare_short_living_cookie(request.url)
-      cookies.commit!
     end
 
     # Finally grant access and send the file
