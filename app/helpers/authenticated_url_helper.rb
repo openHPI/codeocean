@@ -92,6 +92,8 @@ module AuthenticatedUrlHelper
 
       # Return the full URL
       parsed_url.to_s
+    rescue URI::InvalidURIError
+      url
     end
 
     def remove_query_parameters(url, parameters)
@@ -106,6 +108,8 @@ module AuthenticatedUrlHelper
 
       # Return the full URL and removed parameters
       [parsed_url.to_s, removed_params.symbolize_keys]
+    rescue URI::InvalidURIError
+      [url, {}]
     end
   end
 end
