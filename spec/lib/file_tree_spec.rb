@@ -180,8 +180,8 @@ describe FileTree do
     end
   end
 
-  describe '#to_js_tree' do
-    let(:js_tree) { file_tree.to_js_tree }
+  describe '#to_js_tree_in_json' do
+    let(:js_tree) { file_tree.to_js_tree_in_json }
 
     it 'returns a String' do
       expect(js_tree).to be_a(String)
@@ -196,7 +196,7 @@ describe FileTree do
     context 'with files' do
       let(:files) { build_list(:file, 10, context: nil, path: 'foo/bar/baz') }
       let(:file_tree) { described_class.new(files) }
-      let(:js_tree) { file_tree.to_js_tree }
+      let(:js_tree) { file_tree.to_js_tree_in_json }
 
       it 'produces the required JSON format with a file' do
         # We ignore the root node and only use the children here

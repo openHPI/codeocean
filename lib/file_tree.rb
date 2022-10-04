@@ -77,6 +77,10 @@ class FileTree
       core: {
         data: @root.children.map {|child| map_to_js_tree(child) },
       },
-    }.to_json
+    }
+  end
+
+  def to_js_tree_in_json
+    to_js_tree.to_json
   end
 end
