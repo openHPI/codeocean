@@ -2,9 +2,10 @@
 
 class ExecutionEnvironmentsController < ApplicationController
   include CommonBehavior
+  include FileConversion
 
   before_action :set_docker_images, only: %i[create edit new update]
-  before_action :set_execution_environment, only: MEMBER_ACTIONS + %i[execute_command shell statistics sync_to_runner_management]
+  before_action :set_execution_environment, only: MEMBER_ACTIONS + %i[execute_command shell list_files statistics sync_to_runner_management]
   before_action :set_testing_framework_adapters, only: %i[create edit new update]
 
   def authorize!
@@ -30,9 +31,22 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def execute_command
     runner = Runner.for(current_user, @execution_environment)
-    sudo = ActiveModel::Type::Boolean.new.cast(params[:sudo])
-    output = runner.execute_command(params[:command], privileged_execution: sudo, raise_exception: false)
+    @privileged_execution = ActiveModel::Type::Boolean.new.cast(params[:sudo]) || @execution_environment.privileged_execution
+    output = runner.execute_command(params[:command], privileged_execution: @privileged_execution, raise_exception: false)
     render json: output.except(:messages)
+  end
+
+  def list_files
+    runner = Runner.for(current_user, @execution_environment)
+    @privileged_execution = ActiveModel::Type::Boolean.new.cast(params[:sudo]) || @execution_environment.privileged_execution
+    begin
+      files = runner.retrieve_files(path: params[:path], recursive: false, privileged_execution: @privileged_execution)
+      downloadable_files, additional_directories = convert_files_json_to_files files
+      js_tree = FileTree.new(downloadable_files, additional_directories, force_closed: true).to_js_tree
+      render json: js_tree[:core][:data]
+    rescue Runner::Error::WorkspaceError
+      render json: []
+    end
   end
 
   def working_time_query
@@ -225,4 +239,14 @@ class ExecutionEnvironmentsController < ApplicationController
       redirect_to ExecutionEnvironment, alert: t('execution_environments.index.synchronize_all.failure')
     end
   end
+
+  def augment_files_for_download(files)
+    files.map do |file|
+      # Downloadable files get an indicator whether we performed a privileged execution.
+      # The download path is added dynamically in the frontend.
+      file.privileged_execution = @privileged_execution
+      file
+    end
+  end
+  private :augment_files_for_download
 end

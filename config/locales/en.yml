@@ -326,6 +326,14 @@ en:
     shell:
       command: Command
       headline: Shell
+      file_tree:
+        reload: Reload
+        reload_tooltip: Reload the file system of the runner. This action might take a few seconds.
+        list_now: List now.
+        headline: File System
+        empty: The file system has not been queried yet.
+        root_notice: Files are retrieved with a non-privileged user by default. To retrieve files as "root", you must enable the "sudo" switch shown next to the command input and then reload the file system before accessing any file.
+        permission_denied: Access to the requested file has been denied. Please verify that the file exists, the current user has read permissions, and try requesting the file with "root" privileges if necessary.  To retrieve files as "root", you must enable the "sudo" switch shown next to the command input and then reload the file system before accessing any file.
     statistics:
       exercise: Exercise
       users: (External) Users Count

@@ -326,6 +326,14 @@ de:
     shell:
       command: Befehl
       headline: Shell
+      file_tree:
+        reload: Aktualisieren
+        reload_tooltip: Aktualisieren Sie die Liste der verfügbaren Dateien im Runners. Diese Aktion wird einige Sekunden in Anspruch nehmen.
+        list_now: Jetzt laden.
+        headline: Dateisystem
+        empty: Das Dateisystem wurde bisher noch nicht aufgelistet.
+        root_notice: Dateien werden standardmäßig mit einem nicht-priviligerten Nutzer abgerufen. Um Dateien als "root" abzurufen, müssen Sie den "sudo" Schalter neben der Befehlszeile aktivieren und anschließend das Dateisystem vor dem Herunterladen einer Datei aktualisieren.
+        permission_denied: Der Zugriff auf die angeforderte Datei wurde verweigert. Bitte überprüfen Sie, dass die Datei existiert, der aktuelle Benutzer Leseberechtigungen besitzt und versuchen Sie ggf. die Datei mit "root"-Rechten anzufordern. Dazu müssen Sie den "sudo"-Schalter neben der Befehlszeile aktivieren und anschließend das Dateisystem vor dem Herunterladen einer Datei aktualisieren.
     statistics:
       exercise: Übung
       users: Anzahl (externer) Nutzer
