@@ -29,7 +29,8 @@ class ExecutionEnvironmentsController < ApplicationController
 
   def execute_command
     runner = Runner.for(current_user, @execution_environment)
-    output = runner.execute_command(params[:command], raise_exception: false)
+    sudo = ActiveModel::Type::Boolean.new.cast(params[:sudo])
+    output = runner.execute_command(params[:command], privileged_execution: sudo, raise_exception: false)
     render json: output.except(:messages)
   end
 

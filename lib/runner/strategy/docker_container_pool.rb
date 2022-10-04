@@ -104,7 +104,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
-  def attach_to_execution(command, event_loop, starting_time)
+  def attach_to_execution(command, event_loop, starting_time, _privileged_execution: false)
     reset_inactivity_timer
 
     @command = command

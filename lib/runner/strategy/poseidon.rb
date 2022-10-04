@@ -134,8 +134,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
-  def attach_to_execution(command, event_loop, starting_time)
-    websocket_url = execute_command(command)
+  def attach_to_execution(command, event_loop, starting_time, privileged_execution: false)
+    websocket_url = execute_command(command, privileged_execution: privileged_execution)
     socket = Connection.new(websocket_url, self, event_loop)
     yield(socket, starting_time)
     socket
@@ -243,12 +243,12 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
   private
 
-  def execute_command(command)
+  def execute_command(command, privileged_execution: false)
     url = "#{runner_url}/execute"
     body = {
       command: command,
       timeLimit: @execution_environment.permitted_execution_time,
-      privilegedExecution: @execution_environment.privileged_execution,
+      privilegedExecution: privileged_execution || @execution_environment.privileged_execution,
     }
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Preparing command execution at #{url}: #{command}" }
     response = self.class.http_connection.post url, body.to_json

@@ -1,8 +1,11 @@
 h1 = @execution_environment
 
 #shell data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @execution_environment.permitted_execution_time) data-message-out-of-memory=t('exercises.editor.out_of_memory',  memory_limit: @execution_environment.memory_limit) data-url=execute_command_execution_environment_path(@execution_environment)
-  .mb-3
-    label for='command' = t('.command')
+  label.form-label for='command' = t('execution_environments.shell.command')
+  .input-group.mb-3
+    .input-group-text.form-switch.ps-5.text-muted
+      input#sudo.form-check-input.mt-0 type='checkbox'
+      label.ms-2 for='sudo' = 'sudo'
     input#command.form-control type='text'
   pre#output data-message-no-output=t('exercises.implement.no_output', timestamp: l(Time.now, format: :short))
     p = t('exercises.implement.no_output_yet')

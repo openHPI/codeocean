@@ -52,7 +52,7 @@ class Runner < ApplicationRecord
     @strategy.copy_files(files)
   end
 
-  def attach_to_execution(command, &block)
+  def attach_to_execution(command, privileged_execution: false, &block)
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Starting execution with Runner #{id} for #{user_type} #{user_id}." }
     starting_time = Time.zone.now
     begin
@@ -62,7 +62,7 @@ class Runner < ApplicationRecord
       # initializing its Runner::Connection with the given event loop. The Runner::Connection class ensures that
       # this event loop is stopped after the socket was closed.
       event_loop = Runner::EventLoop.new
-      socket = @strategy.attach_to_execution(command, event_loop, starting_time, &block)
+      socket = @strategy.attach_to_execution(command, event_loop, starting_time, privileged_execution: privileged_execution, &block)
       event_loop.wait
       raise socket.error if socket.error.present?
     rescue Runner::Error => e
@@ -74,7 +74,7 @@ class Runner < ApplicationRecord
     Time.zone.now - starting_time # execution duration
   end
 
-  def execute_command(command, raise_exception: true)
+  def execute_command(command, privileged_execution: false, raise_exception: true)
     output = {
       stdout: +'',
       stderr: +'',
@@ -89,7 +89,7 @@ class Runner < ApplicationRecord
         save
       end
 
-      execution_time = attach_to_execution(command) do |socket, starting_time|
+      execution_time = attach_to_execution(command, privileged_execution: privileged_execution) do |socket, starting_time|
         socket.on :stderr do |data|
           output[:stderr] << data
           output[:messages].push({cmd: :write, stream: :stderr, log: data, timestamp: Time.zone.now - starting_time})

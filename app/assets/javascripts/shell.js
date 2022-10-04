@@ -8,7 +8,8 @@ $(document).on('turbolinks:load', function () {
     const executeCommand = function (command) {
         $.ajax({
             data: {
-                command: command
+                command: command,
+                sudo: $('#sudo').is(':checked')
             },
             method: 'POST',
             url: $('#shell').data('url')
@@ -92,6 +93,12 @@ $(document).on('turbolinks:load', function () {
         const command = $('#command')
         command.focus();
         command.on('keypress', handleKeyPress);
+
+        const sudo = $('#sudo');
+        sudo.on('change', function () {
+            sudo.parent().toggleClass('text-muted')
+            command.focus();
+        });
     }
 })
 ;
