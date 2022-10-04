@@ -17,8 +17,6 @@ class TestrunMessage < ApplicationRecord
     exception: 10,
     result: 11,
     canvasevent: 12,
-    timeout: 13, # TODO: Shouldn't be in the data, this is a status and can be removed after the migration finished
-    out_of_memory: 14, # TODO: Shouldn't be in the data, this is a status and can be removed after the migration finished
   }, _default: :write, _prefix: true
 
   enum stream: {
