@@ -3,7 +3,7 @@
 module CodeOcean
   class FilePolicy < AdminOrAuthorPolicy
     def author?
-      @user == @record.context.author
+      @user == @record.context&.author
     end
 
     def show?
