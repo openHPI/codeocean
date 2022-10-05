@@ -11,6 +11,9 @@ module CodeOcean
     skip_before_action :verify_authenticity_token, only: :render_protected_upload
     before_action :require_user!, except: :render_protected_upload
 
+    # In case the .realpath cannot resolve a file (for example because it is no longer available)
+    rescue_from Errno::ENOENT, with: :render_not_found
+
     def authorize!
       authorize(@file)
     end
