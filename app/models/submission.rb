@@ -147,13 +147,16 @@ class Submission < ApplicationRecord
       assessments = collect_files.select(&:teacher_defined_assessment?)
       assessment_number = assessments.size
 
-      file_scores = assessments.map.with_index(1) do |file, index|
+      # We sort the test files, so that the linter checks are run first. This prevents a modification of the test file
+      file_scores = assessments.sort_by {|file| file.teacher_defined_linter? ? 0 : 1 }.map.with_index(1) do |file, index|
         output = run_test_file file, runner, waiting_duration
         # If the previous execution failed and there is at least one more test, we request a new runner.
         runner, waiting_duration = swap_runner(runner) if output[:status] == :timeout && index < assessment_number
         score_file(output, file)
       end
     end
+    # We sort the files again, so that the linter tests are displayed last.
+    file_scores&.sort_by! {|file| file[:file_role] == 'teacher_defined_linter' ? 1 : 0 }
     combine_file_scores(file_scores)
   end
 
