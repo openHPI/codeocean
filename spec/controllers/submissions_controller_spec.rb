@@ -85,7 +85,7 @@ describe SubmissionsController do
 
         expect_assigns(file: :file)
         expect_assigns(submission: :submission)
-        expect_content_type('text/javascript')
+        expect_content_type('application/octet-stream')
         expect_http_status(:ok)
 
         it 'sets the correct filename' do

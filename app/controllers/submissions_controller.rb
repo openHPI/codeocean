@@ -57,7 +57,7 @@ class SubmissionsController < ApplicationController
     end
     zip_data = stringio.string
     response.set_header('Content-Length', zip_data.size)
-    send_data(zip_data, filename: "#{@submission.exercise.title.tr(' ', '_')}.zip")
+    send_data(zip_data, type: 'application/octet-stream', filename: "#{@submission.exercise.title.tr(' ', '_')}.zip", disposition: 'attachment')
   end
 
   def download_file
@@ -67,7 +67,7 @@ class SubmissionsController < ApplicationController
       redirect_to protected_upload_path(id: @file.id, filename: @file.filepath)
     else
       response.set_header('Content-Length', @file.size)
-      send_data(@file.content, filename: @file.name_with_extension, disposition: 'attachment')
+      send_data(@file.content, type: 'application/octet-stream', filename: @file.name_with_extension, disposition: 'attachment')
     end
   end
 

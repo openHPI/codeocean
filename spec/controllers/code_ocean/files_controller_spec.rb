@@ -17,7 +17,7 @@ describe CodeOcean::FilesController do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
 
         expect_assigns(file: :file)
-        expect_content_type('video/mp4')
+        expect_content_type('application/octet-stream')
         expect_http_status(:ok)
 
         it 'sets the correct filename' do
