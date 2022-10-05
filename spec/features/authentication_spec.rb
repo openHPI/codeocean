@@ -107,6 +107,23 @@ describe 'Authentication' do
       visit(root_path)
     end
 
+    context "with an authentication token" do
+      let(:request_for_comment) { create(:rfc_with_comment, user: user) }
+      let(:study_group) { request_for_comment.submission.study_group }
+      let(:commenting_user) { InternalUser.create(attributes_for(:teacher)) }
+      let(:mail) { UserMailer.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user) }
+      let(:rfc_link) { request_for_comment_url(request_for_comment, token: token.shared_secret) }
+
+      it 'still invalidates the token on login' do
+        token = create(:authentication_token, user: user, study_group: study_group)
+        mail = UserMailer.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user)
+        mail.deliver_now
+        visit(request_for_comment_url(request_for_comment, token: token.shared_secret))
+        expect(token.reload.expire_at).to be_within(10.seconds).of(Time.zone.now)
+      end
+
+    end
+
     it "displays the user's displayname" do
       expect(page).to have_content(user.displayname)
     end

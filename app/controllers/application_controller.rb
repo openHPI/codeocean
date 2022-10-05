@@ -22,10 +22,10 @@ class ApplicationController < ActionController::Base
   end
 
   def find_or_login_current_user
-    ExternalUser.find_by(id: session[:external_user_id]) ||
+    login_from_authentication_token ||
+      ExternalUser.find_by(id: session[:external_user_id]) ||
       login_from_session ||
       login_from_other_sources ||
-      login_from_authentication_token ||
       nil
   end
   private :find_or_login_current_user
