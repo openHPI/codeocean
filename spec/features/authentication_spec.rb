@@ -107,7 +107,7 @@ describe 'Authentication' do
       visit(root_path)
     end
 
-    context "with an authentication token" do
+    context 'with an authentication token' do
       let(:request_for_comment) { create(:rfc_with_comment, user: user) }
       let(:study_group) { request_for_comment.submission.study_group }
       let(:commenting_user) { InternalUser.create(attributes_for(:teacher)) }
@@ -121,7 +121,6 @@ describe 'Authentication' do
         visit(request_for_comment_url(request_for_comment, token: token.shared_secret))
         expect(token.reload.expire_at).to be_within(10.seconds).of(Time.zone.now)
       end
-
     end
 
     it "displays the user's displayname" do
