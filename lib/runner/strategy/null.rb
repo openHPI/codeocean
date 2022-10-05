@@ -25,7 +25,7 @@ class Runner::Strategy::Null < Runner::Strategy
 
   def copy_files(_files); end
 
-  def attach_to_execution(command, event_loop, starting_time, _privileged_execution: false)
+  def attach_to_execution(command, event_loop, starting_time, privileged_execution: false) # rubocop:disable Lint/UnusedMethodArgument for the keyword argument
     socket = Connection.new(nil, self, event_loop)
     # We don't want to return an error if the execution environment is changed
     socket.status = :terminated_by_codeocean if command == ExecutionEnvironment::VALIDATION_COMMAND
