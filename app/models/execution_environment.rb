@@ -99,7 +99,7 @@ class ExecutionEnvironment < ApplicationRecord
     rescue Runner::Error => e
       # In case of an Runner::Error, we retry multiple times before giving up.
       # The time between each retry increases to allow the runner management to catch up.
-      if retries < 30 && !Rails.env.test?
+      if retries < 60 && !Rails.env.test?
         retries += 1
         sleep 1.second.to_i
         retry
