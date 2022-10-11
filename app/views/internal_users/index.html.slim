@@ -1,14 +1,15 @@
 h1 = InternalUser.model_name.human(count: 2)
 
-= render(layout: 'shared/form_filters') if current_user.admin? do |f|
-  .col-auto
-    = f.label(:consumer_id_eq, t('activerecord.attributes.internal_user.consumer'), class: 'visually-hidden form-label')
-    = f.collection_select(:consumer_id_eq, Consumer.with_internal_users, :id, :name, class: 'form-control', include_blank: true, prompt: t('activerecord.attributes.internal_user.consumer'))
-  .col-sm
-    = f.label(:email_cont, t('activerecord.attributes.internal_user.email'), class: 'visually-hidden form-label')
-    = f.search_field(:email_cont, class: 'form-control', placeholder: t('activerecord.attributes.internal_user.email'))
-  .col-auto
-    = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], { include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : '' }
+- if current_user.admin?
+  = render(layout: 'shared/form_filters') do |f|
+    .col-auto
+      = f.label(:consumer_id_eq, t('activerecord.attributes.internal_user.consumer'), class: 'visually-hidden form-label')
+      = f.collection_select(:consumer_id_eq, Consumer.with_internal_users, :id, :name, class: 'form-control', include_blank: true, prompt: t('activerecord.attributes.internal_user.consumer'))
+    .col-sm
+      = f.label(:email_cont, t('activerecord.attributes.internal_user.email'), class: 'visually-hidden form-label')
+      = f.search_field(:email_cont, class: 'form-control', placeholder: t('activerecord.attributes.internal_user.email'))
+    .col-auto
+      = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], { include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : '' }
 .table-responsive
   table.table.mt-4
     thead
