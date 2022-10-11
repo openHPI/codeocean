@@ -195,7 +195,7 @@ class Submission < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[study_group_id]
+    %w[study_group_id exercise_id cause]
   end
 
   private
