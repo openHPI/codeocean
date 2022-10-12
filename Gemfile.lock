@@ -289,7 +289,7 @@ GEM
     parser (3.1.2.1)
       ast (~> 2.4.1)
     path_expander (1.1.1)
-    pg (1.4.3)
+    pg (1.4.4)
     prometheus_exporter (2.0.3)
       webrick
     pry (0.14.1)
