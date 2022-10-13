@@ -1,7 +1,5 @@
 .exercise.clearfix
   div
-    span.badge.rounded-pill.bg-primary.float-end.score
-
     h1 id="exercise-headline"
       i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
       => @community_solution.model_name.human(count: 1)

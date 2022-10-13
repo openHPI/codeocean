@@ -1,7 +1,5 @@
 = form_for(@uef) do |f|
   div
-    span.badge.rounded-pill.bg-primary.float-end.score
-
     h1 id="exercise-headline"
       = t('activerecord.models.user_exercise_feedback.one') + " " + @exercise.title
   = render('shared/form_errors', object: @uef)
