@@ -10,31 +10,29 @@ class TagsController < ApplicationController
   end
   private :authorize!
 
-  def create
-    @tag = Tag.new(tag_params)
+  def index
+    @tags = Tag.all.paginate(page: params[:page], per_page: per_page_param)
     authorize!
-    create_and_respond(object: @tag)
   end
 
-  def destroy
-    destroy_and_respond(object: @tag)
-  end
+  def show; end
 
-  def edit; end
+  def new
+    @tag = Tag.new
+    authorize!
+  end
 
   def tag_params
     params[:tag].permit(:name) if params[:tag].present?
   end
   private :tag_params
 
-  def index
-    @tags = Tag.all.paginate(page: params[:page], per_page: per_page_param)
-    authorize!
-  end
+  def edit; end
 
-  def new
-    @tag = Tag.new
+  def create
+    @tag = Tag.new(tag_params)
     authorize!
+    create_and_respond(object: @tag)
   end
 
   def set_tag
@@ -43,10 +41,12 @@ class TagsController < ApplicationController
   end
   private :set_tag
 
-  def show; end
-
   def update
     update_and_respond(object: @tag, params: tag_params)
+  end
+
+  def destroy
+    destroy_and_respond(object: @tag)
   end
 
   def to_s

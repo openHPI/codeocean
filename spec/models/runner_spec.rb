@@ -8,7 +8,7 @@ describe Runner do
   let(:strategy) { instance_double(strategy_class) }
 
   describe 'attribute validation' do
-    let(:runner) { create :runner }
+    let(:runner) { create(:runner) }
 
     it 'validates the presence of the runner id' do
       described_class.skip_callback(:validation, :before, :request_id)
@@ -164,8 +164,8 @@ describe Runner do
   end
 
   describe 'creation' do
-    let(:user) { create :external_user }
-    let(:execution_environment) { create :ruby }
+    let(:user) { create(:external_user) }
+    let(:execution_environment) { create(:ruby) }
     let(:create_action) { -> { described_class.create(user: user, execution_environment: execution_environment) } }
 
     it 'requests a runner id from the runner management' do
@@ -194,7 +194,7 @@ describe Runner do
   end
 
   describe '#request_new_id' do
-    let(:runner) { create :runner }
+    let(:runner) { create(:runner) }
 
     context 'when the environment is available in the runner management' do
       it 'requests the runner management' do
@@ -242,8 +242,8 @@ describe Runner do
   end
 
   describe '::for' do
-    let(:user) { create :external_user }
-    let(:exercise) { create :fibonacci }
+    let(:user) { create(:external_user) }
+    let(:exercise) { create(:fibonacci) }
 
     context 'when the runner could not be saved' do
       before { allow(strategy_class).to receive(:request_from_management).and_return(nil) }

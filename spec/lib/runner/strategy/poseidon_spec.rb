@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe Runner::Strategy::Poseidon do
   let(:runner_id) { attributes_for(:runner)[:runner_id] }
-  let(:execution_environment) { create :ruby }
+  let(:execution_environment) { create(:ruby) }
   let(:poseidon) { described_class.new(runner_id, execution_environment) }
   let(:error_message) { 'test error message' }
   let(:response_body) { nil }

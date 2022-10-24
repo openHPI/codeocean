@@ -73,21 +73,21 @@ class ExercisesController < ApplicationController
 
   private :collect_paths
 
-  def create
-    @exercise = Exercise.new(exercise_params&.except(:tips))
+  def index
+    @search = policy_scope(Exercise).ransack(params[:q])
+    @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page], per_page: per_page_param)
     authorize!
-    handle_exercise_tips
+  end
+
+  def show
+    # Show exercise details for teachers and admins
+  end
+
+  def new
+    @exercise = Exercise.new
+    authorize!
     collect_set_and_unset_exercise_tags
-    return if performed?
-
-    create_and_respond(object: @exercise, params: exercise_params_with_tags)
   end
-
-  def destroy
-    destroy_and_respond(object: @exercise)
-  end
-
-  def edit; end
 
   def feedback
     authorize!
@@ -424,16 +424,16 @@ class ExercisesController < ApplicationController
     end
   end
 
-  def index
-    @search = policy_scope(Exercise).ransack(params[:q])
-    @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page], per_page: per_page_param)
-    authorize!
-  end
+  def edit; end
 
-  def new
-    @exercise = Exercise.new
+  def create
+    @exercise = Exercise.new(exercise_params&.except(:tips))
     authorize!
+    handle_exercise_tips
     collect_set_and_unset_exercise_tags
+    return if performed?
+
+    create_and_respond(object: @exercise, params: exercise_params_with_tags)
   end
 
   def not_authorized_for_exercise(_exception)
@@ -489,8 +489,11 @@ class ExercisesController < ApplicationController
 
   private :collect_set_and_unset_exercise_tags
 
-  def show
-    # Show exercise details for teachers and admins
+  def update
+    handle_exercise_tips
+    return if performed?
+
+    update_and_respond(object: @exercise, params: exercise_params_with_tags)
   end
 
   def reload
@@ -579,7 +582,7 @@ class ExercisesController < ApplicationController
     if response[:status] == 'success'
       if response[:score_sent] != @submission.normalized_score
         # Score has been reduced due to the passed deadline
-        flash[:warning] = I18n.t('exercises.submit.too_late')
+        flash.now[:warning] = I18n.t('exercises.submit.too_late')
         flash.keep(:warning)
       end
       redirect_after_submit
@@ -593,11 +596,8 @@ class ExercisesController < ApplicationController
 
   private :transmit_lti_score
 
-  def update
-    handle_exercise_tips
-    return if performed?
-
-    update_and_respond(object: @exercise, params: exercise_params_with_tags)
+  def destroy
+    destroy_and_respond(object: @exercise)
   end
 
   def study_group_dashboard

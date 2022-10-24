@@ -11,17 +11,17 @@ class TipsController < ApplicationController
   end
   private :authorize!
 
-  def create
-    @tip = Tip.new(tip_params)
+  def index
+    @tips = Tip.all.paginate(page: params[:page], per_page: per_page_param)
     authorize!
-    create_and_respond(object: @tip)
   end
 
-  def destroy
-    destroy_and_respond(object: @tip)
-  end
+  def show; end
 
-  def edit; end
+  def new
+    @tip = Tip.new
+    authorize!
+  end
 
   def tip_params
     return if params[:tip].blank?
@@ -33,14 +33,12 @@ class TipsController < ApplicationController
   end
   private :tip_params
 
-  def index
-    @tips = Tip.all.paginate(page: params[:page], per_page: per_page_param)
-    authorize!
-  end
+  def edit; end
 
-  def new
-    @tip = Tip.new
+  def create
+    @tip = Tip.new(tip_params)
     authorize!
+    create_and_respond(object: @tip)
   end
 
   def set_tip
@@ -49,10 +47,12 @@ class TipsController < ApplicationController
   end
   private :set_tip
 
-  def show; end
-
   def update
     update_and_respond(object: @tip, params: tip_params)
+  end
+
+  def destroy
+    destroy_and_respond(object: @tip)
   end
 
   def set_file_types

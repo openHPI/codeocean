@@ -5,7 +5,7 @@ require 'pathname'
 
 describe Runner::Strategy::DockerContainerPool do
   let(:runner_id) { attributes_for(:runner)[:runner_id] }
-  let(:execution_environment) { create :ruby }
+  let(:execution_environment) { create(:ruby) }
   let(:container_pool) { described_class.new(runner_id, execution_environment) }
   let(:docker_container_pool_url) { 'https://localhost:1234' }
   let(:config) { {url: docker_container_pool_url, unused_runner_expiration_time: 180} }

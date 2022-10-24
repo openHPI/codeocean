@@ -7,17 +7,17 @@ namespace :export_exercises do
     successful_exports = []
     failed_exports = []
     Exercise.where(public: true).each do |exercise|
-      puts "Exporting exercise \##{exercise.id}"
+      puts "Exporting exercise ##{exercise.id}"
       error = ExerciseService::PushExternal.call(
         zip: ProformaService::ExportTask.call(exercise: exercise),
         codeharbor_link: codeharbor_link
       )
       if error.nil?
         successful_exports << exercise.id
-        puts "Successfully exported exercise\# #{exercise.id}"
+        puts "Successfully exported exercise# #{exercise.id}"
       else
         failed_exports << exercise.id
-        puts "An error occured during export of exercise\# #{exercise.id}: #{error}"
+        puts "An error occured during export of exercise# #{exercise.id}: #{error}"
       end
     end
 

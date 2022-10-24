@@ -22,20 +22,19 @@ class ProxyExercisesController < ApplicationController
     end
   end
 
-  def create
-    myparams = proxy_exercise_params
-    myparams[:exercises] = Exercise.find(myparams[:exercise_ids].compact_blank)
-    @proxy_exercise = ProxyExercise.new(myparams)
+  def index
+    @search = policy_scope(ProxyExercise).ransack(params[:q])
+    @proxy_exercises = @search.result.order(:title).paginate(page: params[:page], per_page: per_page_param)
     authorize!
-
-    create_and_respond(object: @proxy_exercise)
   end
 
-  def destroy
-    destroy_and_respond(object: @proxy_exercise)
+  def show
+    @search = @proxy_exercise.exercises.ransack
+    @exercises = @proxy_exercise.exercises.ransack.result.order(:title)
   end
 
-  def edit
+  def new
+    @proxy_exercise = ProxyExercise.new
     @search = policy_scope(Exercise).ransack(params[:q])
     @exercises = @search.result.order(:title)
     authorize!
@@ -49,17 +48,19 @@ class ProxyExercisesController < ApplicationController
   end
   private :proxy_exercise_params
 
-  def index
-    @search = policy_scope(ProxyExercise).ransack(params[:q])
-    @proxy_exercises = @search.result.order(:title).paginate(page: params[:page], per_page: per_page_param)
-    authorize!
-  end
-
-  def new
-    @proxy_exercise = ProxyExercise.new
+  def edit
     @search = policy_scope(Exercise).ransack(params[:q])
     @exercises = @search.result.order(:title)
     authorize!
+  end
+
+  def create
+    myparams = proxy_exercise_params
+    myparams[:exercises] = Exercise.find(myparams[:exercise_ids].compact_blank)
+    @proxy_exercise = ProxyExercise.new(myparams)
+    authorize!
+
+    create_and_respond(object: @proxy_exercise)
   end
 
   def set_exercise_and_authorize
@@ -68,14 +69,13 @@ class ProxyExercisesController < ApplicationController
   end
   private :set_exercise_and_authorize
 
-  def show
-    @search = @proxy_exercise.exercises.ransack
-    @exercises = @proxy_exercise.exercises.ransack.result.order(:title)
-  end
-
   def update
     myparams = proxy_exercise_params
     myparams[:exercises] = Exercise.find(myparams[:exercise_ids].compact_blank)
     update_and_respond(object: @proxy_exercise, params: myparams)
+  end
+
+  def destroy
+    destroy_and_respond(object: @proxy_exercise)
   end
 end

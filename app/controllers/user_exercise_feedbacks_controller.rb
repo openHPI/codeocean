@@ -22,6 +22,21 @@ class UserExerciseFeedbacksController < ApplicationController
      [4, t('user_exercise_feedback.estimated_time_more_30')]]
   end
 
+  def new
+    exercise_id = if params[:user_exercise_feedback].nil?
+                    params[:exercise_id]
+                  else
+                    params[:user_exercise_feedback][:exercise_id]
+                  end
+    @exercise = Exercise.find(exercise_id)
+    @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
+    authorize!
+  end
+
+  def edit
+    authorize!
+  end
+
   def create
     Sentry.set_extras(params: uef_params)
 
@@ -46,30 +61,10 @@ class UserExerciseFeedbacksController < ApplicationController
           end
         create_and_respond(object: @uef, path: proc { path })
       else
-        flash[:danger] = t('shared.message_failure')
+        flash.now[:danger] = t('shared.message_failure')
         redirect_back fallback_location: user_exercise_feedback_path(@uef)
       end
     end
-  end
-
-  def destroy
-    authorize!
-    destroy_and_respond(object: @uef)
-  end
-
-  def edit
-    authorize!
-  end
-
-  def new
-    exercise_id = if params[:user_exercise_feedback].nil?
-                    params[:exercise_id]
-                  else
-                    params[:user_exercise_feedback][:exercise_id]
-                  end
-    @exercise = Exercise.find(exercise_id)
-    @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
-    authorize!
   end
 
   def update
@@ -89,9 +84,14 @@ class UserExerciseFeedbacksController < ApplicationController
         end
       update_and_respond(object: @uef, params: uef_params, path: path)
     else
-      flash[:danger] = t('shared.message_failure')
+      flash.now[:danger] = t('shared.message_failure')
       redirect_back fallback_location: user_exercise_feedback_path(@uef)
     end
+  end
+
+  def destroy
+    authorize!
+    destroy_and_respond(object: @uef)
   end
 
   private

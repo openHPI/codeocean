@@ -17,6 +17,8 @@ class ExerciseCollectionsController < ApplicationController
     authorize!
   end
 
+  def edit; end
+
   def create
     @exercise_collection = ExerciseCollection.new
     authorize!
@@ -24,16 +26,14 @@ class ExerciseCollectionsController < ApplicationController
     update_and_respond(object: @exercise_collection, params: exercise_collection_params)
   end
 
-  def destroy
-    authorize!
-    destroy_and_respond(object: @exercise_collection)
-  end
-
-  def edit; end
-
   def update
     authorize!
     update_and_respond(object: @exercise_collection, params: exercise_collection_params)
+  end
+
+  def destroy
+    authorize!
+    destroy_and_respond(object: @exercise_collection)
   end
 
   def statistics; end

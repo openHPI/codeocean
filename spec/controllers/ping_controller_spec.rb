@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PingController, type: :controller do
+RSpec.describe PingController do
   describe 'index' do
     it 'returns the wanted page and answer with HTTP Status 200' do
       get :index

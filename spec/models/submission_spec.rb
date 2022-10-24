@@ -126,7 +126,7 @@ describe Submission do
   end
 
   describe '#calculate_score' do
-    let(:runner) { create :runner }
+    let(:runner) { create(:runner) }
 
     before do
       allow(Runner).to receive(:for).and_return(runner)

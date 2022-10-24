@@ -11,17 +11,17 @@ class FileTypesController < ApplicationController
   end
   private :authorize!
 
-  def create
-    @file_type = FileType.new(file_type_params)
+  def index
+    @file_types = FileType.all.includes(:user).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
-    create_and_respond(object: @file_type)
   end
 
-  def destroy
-    destroy_and_respond(object: @file_type)
-  end
+  def show; end
 
-  def edit; end
+  def new
+    @file_type = FileType.new
+    authorize!
+  end
 
   def file_type_params
     if params[:file_type].present?
@@ -32,14 +32,12 @@ class FileTypesController < ApplicationController
   end
   private :file_type_params
 
-  def index
-    @file_types = FileType.all.includes(:user).order(:name).paginate(page: params[:page], per_page: per_page_param)
-    authorize!
-  end
+  def edit; end
 
-  def new
-    @file_type = FileType.new
+  def create
+    @file_type = FileType.new(file_type_params)
     authorize!
+    create_and_respond(object: @file_type)
   end
 
   def set_editor_modes
@@ -56,9 +54,11 @@ class FileTypesController < ApplicationController
   end
   private :set_file_type
 
-  def show; end
-
   def update
     update_and_respond(object: @file_type, params: file_type_params)
+  end
+
+  def destroy
+    destroy_and_respond(object: @file_type)
   end
 end

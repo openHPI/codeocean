@@ -31,17 +31,10 @@ class InternalUsersController < ApplicationController
   end
   private :change_password
 
-  def create
-    @user = InternalUser.new(internal_user_params)
-    @user.platform_admin = platform_admin_param if current_user.admin?
+  def index
+    @search = InternalUser.ransack(params[:q], {auth_object: current_user})
+    @users = @search.result.in_study_group_of(current_user).includes(:consumer).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
-    @user.send(:setup_activation)
-    create_and_respond(object: @user) do
-      @user.send(:send_activation_needed_email!)
-      # The return value is used as a flash message. If this block does not
-      # have any specific return value, a default success message is shown.
-      nil
-    end
   end
 
   def deliver_reset_password_instructions
@@ -53,11 +46,13 @@ class InternalUsersController < ApplicationController
   end
   private :deliver_reset_password_instructions
 
-  def destroy
-    destroy_and_respond(object: @user)
-  end
+  def show; end
 
-  def edit; end
+  def new
+    @user = InternalUser.new
+    authorize!
+    collect_set_and_unset_study_group_memberships
+  end
 
   def forgot_password
     if request.get?
@@ -67,11 +62,7 @@ class InternalUsersController < ApplicationController
     end
   end
 
-  def index
-    @search = InternalUser.ransack(params[:q], {auth_object: current_user})
-    @users = @search.result.in_study_group_of(current_user).includes(:consumer).order(:name).paginate(page: params[:page], per_page: per_page_param)
-    authorize!
-  end
+  def edit; end
 
   def internal_user_params
     permitted_params = params.require(:internal_user).permit(:consumer_id, :email, :name, study_group_ids: []).presence || {}
@@ -95,10 +86,17 @@ class InternalUsersController < ApplicationController
   end
   private :platform_admin_param
 
-  def new
-    @user = InternalUser.new
+  def create
+    @user = InternalUser.new(internal_user_params)
+    @user.platform_admin = platform_admin_param if current_user.admin?
     authorize!
-    collect_set_and_unset_study_group_memberships
+    @user.send(:setup_activation)
+    create_and_respond(object: @user) do
+      @user.send(:send_activation_needed_email!)
+      # The return value is used as a flash message. If this block does not
+      # have any specific return value, a default success message is shown.
+      nil
+    end
   end
 
   def render_forgot_password_form
@@ -159,8 +157,6 @@ class InternalUsersController < ApplicationController
 
   private :collect_set_and_unset_study_group_memberships
 
-  def show; end
-
   def update
     # Let's skip the password validation if the user is edited through
     # the form by another user. Otherwise, the update might fail if an
@@ -168,5 +164,9 @@ class InternalUsersController < ApplicationController
     @user.validate_password = current_user == @user
     @user.platform_admin = platform_admin_param if current_user.admin?
     update_and_respond(object: @user, params: internal_user_params)
+  end
+
+  def destroy
+    destroy_and_respond(object: @user)
   end
 end

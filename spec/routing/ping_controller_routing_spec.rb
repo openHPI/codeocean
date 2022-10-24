@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe PingController, type: :routing do
+describe PingController do
   context 'with routes to #show' do
     it { expect(get: '/ping').to route_to('ping#index', format: :json) }
   end

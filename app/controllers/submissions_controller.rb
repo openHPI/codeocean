@@ -19,10 +19,10 @@ class SubmissionsController < ApplicationController
   # We want to serve .js files without raising a `ActionController::InvalidCrossOriginRequest` exception
   skip_before_action :verify_authenticity_token, only: %i[render_file download_file]
 
-  def create
-    @submission = Submission.new(submission_params)
+  def index
+    @search = Submission.ransack(params[:q])
+    @submissions = @search.result.includes(:exercise, :user).paginate(page: params[:page], per_page: per_page_param)
     authorize!
-    create_and_respond(object: @submission)
   end
 
   def download
@@ -71,11 +71,7 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def index
-    @search = Submission.ransack(params[:q])
-    @submissions = @search.result.includes(:exercise, :user).paginate(page: params[:page], per_page: per_page_param)
-    authorize!
-  end
+  def show; end
 
   def render_file
     # Set @current_user with a new *learner* for Pundit checks
@@ -250,7 +246,11 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  def show; end
+  def create
+    @submission = Submission.new(submission_params)
+    authorize!
+    create_and_respond(object: @submission)
+  end
 
   def statistics; end
 
