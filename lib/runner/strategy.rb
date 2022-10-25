@@ -33,7 +33,7 @@ class Runner::Strategy
     raise NotImplementedError
   end
 
-  def retrieve_files(_path:, _recursive:, privileged_execution:)
+  def retrieve_files(path:, recursive:, privileged_execution:)
     raise NotImplementedError
   end
 
