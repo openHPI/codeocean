@@ -1,14 +1,14 @@
 - if error
-    = button_tag type: 'button', class:'btn btn-primary float-end export-button export-retry-button', data: {exercise_id: exercise.id} do
-      i.fa-solid.fa-arrows-rotate.confirm-icon
-      = t('exercises.export_codeharbor.buttons.retry')
+  = button_tag type: 'button', class:'btn btn-primary float-end export-button export-retry-button', data: {exercise_id: exercise.id} do
+    i.fa-solid.fa-arrows-rotate.confirm-icon
+    = t('exercises.export_codeharbor.buttons.retry')
 - else
   - unless exported
-    - if !exercise_found || update_right
+    - if !uuid_found || update_right
       = button_tag type: 'button', class:'btn btn-primary float-end export-action export-button', data: {exercise_id: exercise.id} do
         i.fa-solid.fa-check.confirm-icon
         = t('exercises.export_codeharbor.buttons.export')
 
-= button_tag type: 'submit', class:'btn btn-secondary float-end export-button', data: {dismiss: 'modal'} do
+= button_tag type: 'submit', class:'btn btn-secondary float-end export-button', data: {bs_dismiss: 'modal'} do
   i.fa-solid.fa-xmark.abort-icon
   = exported ? t('exercises.export_codeharbor.buttons.close') : t('exercises.export_codeharbor.buttons.abort')

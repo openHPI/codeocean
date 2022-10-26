@@ -73,7 +73,7 @@ Rails.application.routes.draw do
     post :sync_all_to_runner_management, on: :collection
   end
 
-  post '/import_exercise' => 'exercises#import_exercise'
+  post '/import_task' => 'exercises#import_task'
   post '/import_uuid_check' => 'exercises#import_uuid_check'
 
   resources :exercises do

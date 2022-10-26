@@ -29,6 +29,10 @@ describe ProformaService::Import do
         instructions: 'instruction',
         execution_environment: execution_environment,
         files: files + tests,
+        hide_file_tree:  true,
+        allow_file_creation: false,
+        allow_auto_completion: true,
+        expected_difficulty: 7,
         uuid: uuid,
         user: user)
     end

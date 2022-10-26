@@ -10,31 +10,67 @@ module ProformaService
     end
 
     def execute
-      import_exercise
+      import_task
       @exercise
     end
 
     private
 
-    def import_exercise
+    def import_task
       @exercise.assign_attributes(
         user: @user,
         title: @task.title,
         description: @task.description,
-        instructions: @task.internal_description,
+        public: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:public)) || false,
+        hide_file_tree: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:hide_file_tree)) || false,
+        allow_file_creation: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_file_creation)) || false,
+        allow_auto_completion: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_auto_completion)) || false,
+        expected_difficulty: @task.meta_data[:CodeOcean]&.dig(:expected_difficulty) || 1,
+        execution_environment_id: execution_environment_id,
+
         files: files
       )
     end
 
+    def execution_environment_id
+      from_meta_data = @task.meta_data[:CodeOcean]&.dig(:execution_environment_id)
+      return from_meta_data if from_meta_data
+      return nil unless @task.proglang
+
+      ex_envs_with_name_and_version = ExecutionEnvironment.where('docker_image ilike ?', "%#{@task.proglang[:name]}%#{@task.proglang[:version]}%")
+      return ex_envs_with_name_and_version.first.id if ex_envs_with_name_and_version.any?
+
+      ex_envs_with_name = ExecutionEnvironment.where('docker_image like ?', "%#{@task.proglang[:name]}%")
+      return ex_envs_with_name.first.id if ex_envs_with_name.any?
+
+      nil
+    end
+
+    def string_to_bool(str)
+      return true if str == 'true'
+      return false if str == 'false'
+
+      nil
+    end
+
     def files
-      test_files + task_files.values
+      model_solution_files + test_files + task_files.values.tap {|array| array.each {|file| file.role ||= 'regular_file' } }
     end
 
     def test_files
       @task.tests.map do |test_object|
         task_files.delete(test_object.files.first.id).tap do |file|
-          file.weight = 1.0
-          file.feedback_message = test_object.meta_data['feedback-message']
+          file.weight = test_object.meta_data[:CodeOcean]&.dig(:weight) || 1.0
+          file.feedback_message = test_object.meta_data[:CodeOcean]&.dig(:'feedback-message').presence || 'Feedback'
+          file.role ||= 'teacher_defined_test'
+        end
+      end
+    end
+
+    def model_solution_files
+      @task.model_solutions.map do |model_solution_object|
+        task_files.delete(model_solution_object.files.first.id).tap do |file|
+          file.role ||= 'reference_implementation'
         end
       end
     end
@@ -53,7 +89,7 @@ module ProformaService
         hidden: file.visible == 'no',
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
-        role: file.internal_description,
+        role: @task.meta_data[:CodeOcean]&.dig(:files)&.dig("CO-#{file.id}".to_sym)&.dig(:role),
         path: File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename)
       )
       if file.binary

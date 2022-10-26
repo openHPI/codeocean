@@ -3,8 +3,6 @@
 require 'rails_helper'
 
 describe ProformaService::ConvertTaskToExercise do
-  # TODO: Add teacher_defined_linter for tests
-
   describe '.new' do
     subject(:convert_to_exercise_service) { described_class.new(task: task, user: user, exercise: exercise) }
 
@@ -34,33 +32,92 @@ describe ProformaService::ConvertTaskToExercise do
       Proforma::Task.new(
         title: 'title',
         description: 'description',
-        internal_description: 'internal_description',
-        proglang: {name: 'proglang-name', version: 'proglang-version'},
+        proglang: {name: 'python', version: '3.4'},
         uuid: 'uuid',
         parent_uuid: 'parent_uuid',
         language: 'language',
+        meta_data: meta_data,
         model_solutions: model_solutions,
         files: files,
         tests: tests
       )
     end
     let(:user) { create(:teacher) }
+
     let(:files) { [] }
     let(:tests) { [] }
     let(:model_solutions) { [] }
     let(:exercise) { nil }
 
+    let(:meta_data) { {} }
+    let(:public) { 'true' }
+    let(:hide_file_tree) { 'true' }
+    let(:allow_file_creation) { 'true' }
+    let(:allow_auto_completion) { 'true' }
+    let(:expected_difficulty) { 7 }
+    let!(:execution_environment) { create(:java) }
+
     it 'creates an exercise with the correct attributes' do
       expect(convert_to_exercise_service).to have_attributes(
         title: 'title',
         description: 'description',
-        instructions: 'internal_description',
-        execution_environment: be_blank,
         uuid: be_blank,
         unpublished: true,
         user: user,
-        files: be_empty
+        files: be_empty,
+        public: false,
+        hide_file_tree: false,
+        allow_file_creation: false,
+        allow_auto_completion: false,
+        expected_difficulty: 1,
+        execution_environment_id: nil
       )
+    end
+
+    it { is_expected.to be_valid }
+
+    context 'when meta_data is set' do
+      let(:meta_data) do
+        {
+          CodeOcean: {
+            public: public,
+            hide_file_tree: hide_file_tree,
+            allow_file_creation: allow_file_creation,
+            allow_auto_completion: allow_auto_completion,
+            expected_difficulty: expected_difficulty,
+            execution_environment_id: execution_environment&.id,
+            files: files_meta_data,
+          },
+        }
+      end
+      let(:files_meta_data) { {} }
+
+      it 'creates an exercise with the correct attributes' do
+        expect(convert_to_exercise_service).to have_attributes(
+          title: 'title',
+          description: 'description',
+          uuid: be_blank,
+          unpublished: true,
+          user: user,
+          files: be_empty,
+          public: true,
+          hide_file_tree: true,
+          allow_file_creation: true,
+          allow_auto_completion: true,
+          expected_difficulty: 7,
+          execution_environment_id: execution_environment.id
+        )
+      end
+    end
+
+    context 'when execution environment is not set in meta_data' do
+      let(:execution_environment) { nil }
+
+      before { create(:python) }
+
+      it 'sets the execution_environment based on proglang name and value' do
+        expect(convert_to_exercise_service).to have_attributes(execution_environment: have_attributes(name: 'Python 3.4'))
+      end
     end
 
     context 'when task has a file' do
@@ -74,7 +131,6 @@ describe ProformaService::ConvertTaskToExercise do
           visible: 'yes',
           usage_by_lms: usage_by_lms,
           binary: binary,
-          internal_description: 'regular_file',
           mimetype: mimetype
         )
       end
@@ -99,6 +155,21 @@ describe ProformaService::ConvertTaskToExercise do
 
       it 'creates a new Exercise on save' do
         expect { convert_to_exercise_service.save! }.to change(Exercise, :count).by(1)
+      end
+
+      context 'when file is a main_file' do
+        let(:meta_data) do
+          {
+            CodeOcean: {
+              files: files_meta_data,
+            },
+          }
+        end
+        let(:files_meta_data) { {"CO-#{file.id}".to_sym => {role: 'main_file'}} }
+
+        it 'creates an exercise with a file that has the correct attributes' do
+          expect(convert_to_exercise_service.files.first).to have_attributes(role: 'main_file')
+        end
       end
 
       context 'when path is folder/' do
@@ -150,7 +221,7 @@ describe ProformaService::ConvertTaskToExercise do
         end
       end
 
-      context 'when file has an unkown file_type' do
+      context 'when file has an unknown file_type' do
         let(:filename) { 'unknown_file_type.asdf' }
 
         it 'creates a new Exercise on save' do
@@ -180,8 +251,7 @@ describe ProformaService::ConvertTaskToExercise do
           used_by_grader: 'used_by_grader',
           visible: 'yes',
           usage_by_lms: 'display',
-          binary: false,
-          internal_description: 'reference_implementation'
+          binary: false
         )
       end
 
@@ -226,13 +296,14 @@ describe ProformaService::ConvertTaskToExercise do
           id: 'test-id',
           title: 'title',
           description: 'description',
-          internal_description: 'internal_description',
           test_type: 'test_type',
           files: test_files,
           meta_data: {
-            'feedback-message' => 'feedback-message',
-            'testing-framework' => 'testing-framework',
-            'testing-framework-version' => 'testing-framework-version',
+            CodeOcean: {
+              'feedback-message': 'feedback-message',
+              'testing-framework': 'testing-framework',
+              'testing-framework-version': 'testing-framework-version',
+            },
           }
         )
       end
@@ -267,15 +338,32 @@ describe ProformaService::ConvertTaskToExercise do
         )
       end
 
+      context 'when test file is a teacher_defined_linter' do
+        let(:meta_data) do
+          {
+            CodeOcean: {
+              files: files_meta_data,
+            },
+          }
+        end
+        let(:files_meta_data) { {"CO-#{test_file.id}".to_sym => {role: 'teacher_defined_linter'}} }
+
+        it 'creates an exercise with a test' do
+          expect(convert_to_exercise_service.files.select {|file| file.role == 'teacher_defined_linter' }).to have(1).item
+        end
+      end
+
       context 'when task has multiple tests' do
         let(:tests) { [test, test2] }
         let(:test2) do
           Proforma::Test.new(
             files: test_files2,
             meta_data: {
-              'feedback-message' => 'feedback-message',
-              'testing-framework' => 'testing-framework',
-              'testing-framework-version' => 'testing-framework-version',
+              CodeOcean: {
+                'feedback-message': 'feedback-message',
+                'testing-framework': 'testing-framework',
+                'testing-framework-version': 'testing-framework-version',
+              },
             }
           )
         end
@@ -304,8 +392,7 @@ describe ProformaService::ConvertTaskToExercise do
         create(
           :files,
           title: 'exercise-title',
-          description: 'exercise-description',
-          instructions: 'exercise-instruction'
+          description: 'exercise-description'
         )
       end
 
@@ -315,9 +402,8 @@ describe ProformaService::ConvertTaskToExercise do
         convert_to_exercise_service.save
         expect(exercise.reload).to have_attributes(
           id: exercise.id,
-          title: task.title,
-          description: task.description,
-          instructions: task.internal_description,
+          title: exercise.title,
+          description: exercise.description,
           execution_environment: exercise.execution_environment,
           uuid: exercise.uuid,
           user: exercise.user,
@@ -339,8 +425,7 @@ describe ProformaService::ConvertTaskToExercise do
             used_by_grader: 'used_by_grader',
             visible: 'yes',
             usage_by_lms: 'display',
-            binary: false,
-            internal_description: 'regular_file'
+            binary: false
           )
         end
         let(:tests) { [test] }
@@ -349,13 +434,14 @@ describe ProformaService::ConvertTaskToExercise do
             id: 'test-id',
             title: 'title',
             description: 'description',
-            internal_description: 'regular_file',
             test_type: 'test_type',
             files: test_files,
             meta_data: {
-              'feedback-message' => 'feedback-message',
-              'testing-framework' => 'testing-framework',
-              'testing-framework-version' => 'testing-framework-version',
+              CodeOcean: {
+                'feedback-message': 'feedback-message',
+                'testing-framework': 'testing-framework',
+                'testing-framework-version': 'testing-framework-version',
+              },
             }
           )
         end

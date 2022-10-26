@@ -19,29 +19,42 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
     let(:convert_to_task) { described_class.new(exercise: exercise) }
     let(:exercise) do
       create(:dummy,
+        execution_environment: execution_environment,
         instructions: 'instruction',
         uuid: SecureRandom.uuid,
         files: files + tests)
     end
     let(:files) { [] }
     let(:tests) { [] }
+    let(:execution_environment) { create(:java) }
 
     it 'creates a task with all basic attributes' do
       expect(task).to have_attributes(
         title: exercise.title,
         description: exercise.description,
-        internal_description: exercise.instructions,
-        # proglang: {
-        #   name: exercise.execution_environment.language,
-        #   version: exercise.execution_environment.version
-        # },
         uuid: exercise.uuid,
         language: described_class::DEFAULT_LANGUAGE,
-        # parent_uuid: exercise.clone_relations.first&.origin&.uuid,
+        meta_data: {
+          CodeOcean: {
+            allow_auto_completion: exercise.allow_auto_completion,
+            allow_file_creation: exercise.allow_file_creation,
+            execution_environment_id: exercise.execution_environment_id,
+            expected_difficulty: exercise.expected_difficulty,
+            hide_file_tree: exercise.hide_file_tree,
+            public: exercise.public,
+            files: {},
+          },
+        },
         files: [],
         tests: [],
         model_solutions: []
       )
+    end
+
+    context 'when exercise has execution_environment with correct docker-image name' do
+      it 'creates a task with the correct proglang attribute' do
+        expect(task).to have_attributes(proglang: {name: 'java', version: '8'})
+      end
     end
 
     context 'when exercise has a mainfile' do
@@ -57,7 +70,15 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           usage_by_lms: 'edit',
           visible: 'yes',
           binary: false,
-          internal_description: 'main_file'
+          internal_description: nil
+        )
+      end
+
+      it 'adds the file\'s role to the file hash in task-meta_data' do
+        expect(task).to have_attributes(
+          meta_data: {
+            CodeOcean: a_hash_including(files: {"CO-#{file.id}" => {role: 'main_file'}}),
+          }
         )
       end
     end
@@ -77,7 +98,15 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           usage_by_lms: 'display',
           visible: 'no',
           binary: false,
-          internal_description: 'regular_file'
+          internal_description: nil
+        )
+      end
+
+      it 'adds the file\'s role to the file hash in task-meta_data' do
+        expect(task).to have_attributes(
+          meta_data: {
+            CodeOcean: a_hash_including(files: {"CO-#{file.id}" => {role: 'regular_file'}}),
+          }
         )
       end
 
@@ -134,7 +163,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           usage_by_lms: 'display',
           visible: 'yes',
           binary: false,
-          internal_description: 'reference_implementation'
+          internal_description: nil
         )
       end
     end
@@ -161,7 +190,12 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           id: test_file.id,
           title: test_file.name,
           files: have(1).item,
-          meta_data: {'feedback-message' => test_file.feedback_message}
+          meta_data: {
+            CodeOcean: {
+              'feedback-message': 'feedback_message',
+              weight: test_file.weight,
+            },
+          }
         )
       end
 
@@ -173,7 +207,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           used_by_grader: true,
           visible: 'no',
           binary: false,
-          internal_description: 'teacher_defined_test'
+          internal_description: nil
         )
       end
 

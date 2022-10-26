@@ -19,9 +19,9 @@ class ExercisesController < ApplicationController
   before_action :set_course_token, only: [:implement]
   before_action :set_available_tips, only: %i[implement show new edit]
 
-  skip_before_action :verify_authenticity_token, only: %i[import_exercise import_uuid_check]
-  skip_after_action :verify_authorized, only: %i[import_exercise import_uuid_check]
-  skip_after_action :verify_policy_scoped, only: %i[import_exercise import_uuid_check], raise: false
+  skip_before_action :verify_authenticity_token, only: %i[import_task import_uuid_check]
+  skip_after_action :verify_authorized, only: %i[import_task import_uuid_check]
+  skip_after_action :verify_policy_scoped, only: %i[import_task import_uuid_check], raise: false
 
   rescue_from Pundit::NotAuthorizedError, with: :not_authorized_for_exercise
 
@@ -106,7 +106,7 @@ class ExercisesController < ApplicationController
         partial: 'export_actions',
         locals: {
           exercise: @exercise,
-          exercise_found: codeharbor_check[:exercise_found],
+          uuid_found: codeharbor_check[:uuid_found],
           update_right: codeharbor_check[:update_right],
           error: codeharbor_check[:error],
           exported: false,
@@ -148,13 +148,13 @@ class ExercisesController < ApplicationController
     uuid = params[:uuid]
     exercise = Exercise.find_by(uuid: uuid)
 
-    return render json: {exercise_found: false} if exercise.nil?
-    return render json: {exercise_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
+    return render json: {uuid_found: false} if exercise.nil?
+    return render json: {uuid_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
 
-    render json: {exercise_found: true, update_right: true}
+    render json: {uuid_found: true, update_right: true}
   end
 
-  def import_exercise
+  def import_task
     tempfile = Tempfile.new('codeharbor_import.zip')
     tempfile.write request.body.read.force_encoding('UTF-8')
     tempfile.rewind

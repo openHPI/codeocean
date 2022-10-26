@@ -402,9 +402,9 @@ en:
         close: Close
         abort: Abort
       check:
-        no_exercise: No corresponding exercise found on CodeHarbor. Pushing this exercise will create a new exercise on CodeHarbor, which will be linked to this one on Codeocean. Any changes to either one can be pushed to the respective other platform.
-        exercise_found: 'A corresponding exercise has been found on CodeHarbor. You can export the exercise to transfer all changes made on Codeocean to CodeHarbor. Careful: This will overwrite all potential changes made on CodeHarbor.'
-        exercise_found_no_right: A corresponding exercise has been found on CodeHarbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the exercise on CodeHarbor.
+        no_task: No corresponding task found on CodeHarbor. Pushing this exercise will create a new task on CodeHarbor, which will be linked to this one on CodeOcean. Any changes to either one can be pushed to the respective other platform.
+        task_found: 'A corresponding task has been found on CodeHarbor. You can export the exercise to transfer all changes made on CodeOcean to CodeHarbor. Careful: This will overwrite all potential changes made on CodeHarbor.'
+        task_found_no_right: A corresponding task has been found on CodeHarbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the task on CodeHarbor.
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.

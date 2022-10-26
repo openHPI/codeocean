@@ -402,9 +402,9 @@ de:
         close: Schließen
         abort: Abbrechen
       check:
-        no_exercise: Auf CodeHarbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf CodeHarbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
-        exercise_found: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen, die auf Codeocean vorgenommen wurden, exportiert und die Aufgabe auf CodeHarbor überschrieben.
-        exercise_found_no_right: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
+        no_task: Auf CodeHarbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf CodeHarbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
+        task_found: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen, die auf CodeOcean vorgenommen wurden, exportiert und die Aufgabe auf CodeHarbor überschrieben.
+        task_found_no_right: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
     file_form:
       hints:
         feedback_message: Diese Nachricht wird als Hinweis zu fehlschlagenden Tests angezeigt.
