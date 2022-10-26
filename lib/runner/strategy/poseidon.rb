@@ -111,7 +111,15 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     url = "#{runner_url}/files"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Sending files to #{url}" }
 
-    copy = files.map do |file|
+    # First create all the directories to apply the sticky bit for additional protection
+    # See https://github.com/openHPI/poseidon/pull/240
+    copy = files.uniq(&:path).filter_map do |file|
+      next if file.path.blank?
+
+      {path: "#{file.path}/"}
+    end
+
+    copy += files.map do |file|
       {
         path: file.filepath,
         content: Base64.strict_encode64(file.read || ''),
