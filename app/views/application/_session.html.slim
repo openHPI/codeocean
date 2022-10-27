@@ -8,7 +8,7 @@
       li = link_to(t('request_for_comments.index.all'), request_for_comments_path, class: 'dropdown-item') if policy(:request_for_comment).index?
       li = link_to(t('request_for_comments.index.my_rfc_activity'), my_rfc_activity_path, class: 'dropdown-item')
       li = link_to(t('request_for_comments.index.my_comment_requests'), my_request_for_comments_path, class: 'dropdown-item')
-      - if current_user.try(:admin?) or current_user.try(:teacher?)
+      - if current_user.try(:admin?) or current_user.try(:teacher?) or current_user.try(:internal_user?)
         li = link_to(t('consumers.show.link'), current_user.consumer, class: 'dropdown-item') if current_user.consumer and policy(current_user.consumer).show?
         li = link_to(t('internal_users.show.link'), current_user, class: 'dropdown-item') if policy(current_user).show?
         li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
