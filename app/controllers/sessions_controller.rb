@@ -50,6 +50,12 @@ class SessionsController < ApplicationController
   def destroy
     if current_user&.external_user?
       clear_lti_session_data
+
+      # In case we have another session as an internal user, we set the study group for this one
+      internal_user = find_or_login_current_user
+      if internal_user.present?
+        session[:study_group_id] = internal_user.study_groups.find_by(external_id: nil)&.id
+      end
     else
       logout
     end
