@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
 
   def find_or_login_current_user
     login_from_authentication_token ||
-      ExternalUser.find_by(id: session[:external_user_id]) ||
+      login_from_lti_session ||
       login_from_session ||
       login_from_other_sources ||
       nil
@@ -44,7 +44,15 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def login_from_lti_session
+    return unless session[:external_user_id]
+
+    ExternalUser.find_by(id: session[:external_user_id])
+  end
+
   def login_from_authentication_token
+    return unless params[:token]
+
     token = AuthenticationToken.find_by(shared_secret: params[:token])
     return unless token
 
