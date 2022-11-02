@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe FileTypesController do
+  render_views
+
   let(:file_type) { create(:dot_rb) }
   let(:user) { create(:admin) }
 

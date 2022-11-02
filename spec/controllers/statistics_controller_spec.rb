@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe StatisticsController do
+  render_views
+
   let(:user) { create(:admin) }
 
   before { allow(controller).to receive(:current_user).and_return(user) }

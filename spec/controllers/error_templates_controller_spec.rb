@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe ErrorTemplatesController do
+  render_views
+
   let!(:error_template) { create(:error_template) }
   let(:user) { create(:admin) }
 

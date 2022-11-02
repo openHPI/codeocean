@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe ConsumersController do
+  render_views
+
   let(:consumer) { create(:consumer) }
   let(:user) { create(:admin) }
 

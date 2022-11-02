@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe InternalUsersController do
+  render_views
+
   let(:user) { create(:admin) }
 
   describe 'GET #activate' do

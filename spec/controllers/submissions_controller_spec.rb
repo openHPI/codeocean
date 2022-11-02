@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe SubmissionsController do
+  render_views
+
   let(:submission) { create(:submission) }
   let(:user) { create(:admin) }
 

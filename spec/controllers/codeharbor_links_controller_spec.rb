@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe CodeharborLinksController do
+  render_views
+
   let(:user) { create(:teacher) }
 
   before do

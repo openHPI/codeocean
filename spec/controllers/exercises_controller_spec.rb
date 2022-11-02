@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe ExercisesController do
+  render_views
+
   let(:exercise) { create(:dummy) }
   let(:user) { create(:admin) }
 

@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe Admin::DashboardController do
+  render_views
+
   before { allow(controller).to receive(:current_user).and_return(build(:admin)) }
 
   describe 'GET #show' do

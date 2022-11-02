@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe ExecutionEnvironmentsController do
+  render_views
+
   let(:execution_environment) { create(:ruby) }
   let(:user) { create(:admin) }
 

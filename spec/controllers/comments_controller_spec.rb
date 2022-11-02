@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe CommentsController do
+  render_views
+
   let(:user) { create(:learner) }
   let(:rfc_with_comment) { create(:rfc_with_comment, user: user) }
   let(:comment) { rfc_with_comment.comments.first }

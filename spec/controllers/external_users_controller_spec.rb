@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe ExternalUsersController do
+  render_views
+
   let(:user) { build(:admin) }
   let!(:users) { create_pair(:external_user) }
 

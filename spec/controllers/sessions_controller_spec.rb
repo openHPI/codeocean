@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe SessionsController do
+  render_views
+
   let(:consumer) { create(:consumer) }
 
   describe 'POST #create' do

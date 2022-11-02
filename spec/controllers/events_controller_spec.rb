@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe EventsController do
+  render_views
+
   let(:user) { create(:admin) }
   let(:exercise) { create(:fibonacci) }
 

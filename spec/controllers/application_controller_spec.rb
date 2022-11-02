@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe ApplicationController do
+  render_views
+
   describe '#current_user' do
     context 'with an external user' do
       let(:external_user) { create(:external_user) }
