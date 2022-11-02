@@ -108,7 +108,7 @@ module Lti
     @exercise = if proxy_exercise.nil?
                   Exercise.find_by(token: params[:custom_token])
                 else
-                  proxy_exercise.get_matching_exercise(@current_user)
+                  proxy_exercise.get_matching_exercise(current_user)
                 end
     session[:lti_exercise_id] = @exercise.id if @exercise
     refuse_lti_launch(message: t('sessions.oauth.invalid_exercise_token')) unless @exercise
@@ -181,7 +181,7 @@ module Lti
 
   def set_current_user
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
-    @current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))
+    current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))
   end
 
   private :set_current_user
@@ -196,7 +196,7 @@ module Lti
               StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
             end
 
-    study_group_membership = StudyGroupMembership.find_or_create_by(study_group: group, user: @current_user)
+    study_group_membership = StudyGroupMembership.find_or_create_by(study_group: group, user: current_user)
     study_group_membership.update(role: external_user_role(@provider))
     session[:study_group_id] = group.id
   end
@@ -228,14 +228,14 @@ module Lti
 
   def store_lti_session_data(options = {})
     lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,
-      external_users_id: @current_user.id,
+      external_users_id: current_user.id,
       exercises_id: @exercise.id)
 
     lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).permit!.to_h
     lti_parameters.save!
     @lti_parameters = lti_parameters
 
-    session[:external_user_id] = @current_user.id
+    session[:external_user_id] = current_user.id
     session[:lti_parameters_id] = lti_parameters.id
   end
 

@@ -6,9 +6,9 @@
     - if object
       - current_element = object
   - else
-    - root_element = link_to_if(@current_user && policy(model).index?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+    - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
     - if object
-      - current_element = link_to_if(@current_user && policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
+      - current_element = link_to_if(current_user && policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
   - if I18n.translation_present?("shared.#{params[:action]}")
     - active_action = t("shared.#{params[:action]}", model: model&.model_name&.human)
   - else

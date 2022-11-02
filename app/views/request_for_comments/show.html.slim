@@ -41,7 +41,7 @@
               pre= testrun.log or t('request_for_comments.no_output')
 
         - assess_runs = testruns.select {|run| run.cause == 'assess' }
-        - unless @current_user.admin?
+        - unless current_user.admin?
           - assess_runs = assess_runs.select {|run| run.file.present? ? run.file.teacher_defined_test? : true }
         - if assess_runs.size > 0
           h5.mt-4= t('request_for_comments.test_results')
@@ -53,7 +53,7 @@
                   span.fa-solid.fa-chevron-down.collapse-button
                   pre= testrun.log or t('request_for_comments.no_output')
 
-    - if @current_user.admin? && user.is_a?(ExternalUser)
+    - if current_user.admin? && user.is_a?(ExternalUser)
       = render('admin_menu')
 
     hr

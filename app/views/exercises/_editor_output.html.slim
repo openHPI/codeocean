@@ -52,7 +52,7 @@ div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-botto
                     | 0
                 = row(label: 'exercises.implement.feedback')
                 = row(label: 'exercises.implement.messages')
-      #score data-maximum-score=@exercise.maximum_score data-score=@exercise.final_submission(@current_user).try(:score)
+      #score data-maximum-score=@exercise.maximum_score data-score=@exercise.final_submission(current_user).try(:score)
         h4
           span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
           span.score

@@ -26,13 +26,13 @@ html lang="#{I18n.locale || I18n.default_locale}"
         |      release: "#{SentryJavascript.release}",
         |      environment: "#{SentryJavascript.environment}",
         |  });
-        - if @current_user
+        - if current_user
           | Sentry.configureScope(function(scope) {
           |   scope.setUser({
-          |      "id": "#{@current_user.id}",
-          |      "type": "#{@current_user.class.name}",
-          |      "username": "#{@current_user.displayname}",
-          |      "consumer": "#{@current_user.consumer.name}"
+          |      "id": "#{current_user.id}",
+          |      "type": "#{current_user.class.name}",
+          |      "username": "#{current_user.displayname}",
+          |      "consumer": "#{current_user.consumer.name}"
           |    });
           |  });
   body

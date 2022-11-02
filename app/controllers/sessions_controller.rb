@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
       redirect_to(URI.parse(params[:custom_redirect_target].to_s).path)
     else
       redirect_to(implement_exercise_path(@exercise),
-        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, @current_user.id) ? 'with' : 'without'}_outcome",
+        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, current_user.id) ? 'with' : 'without'}_outcome",
           consumer: @consumer))
     end
   end

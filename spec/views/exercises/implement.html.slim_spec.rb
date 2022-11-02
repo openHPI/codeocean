@@ -8,7 +8,7 @@ describe 'exercises/implement.html.slim' do
   let(:non_binary_files) { files.reject {|file| file.file_type.binary? } }
 
   before do
-    assign(:current_user, create(:admin))
+    allow(view).to receive(:current_user).and_return(create(:admin))
     assign(:exercise, exercise)
     assign(:files, files)
     assign(:paths, [])
