@@ -34,14 +34,15 @@ class LiveStreamsController < ApplicationController
 
   def send_runner_file(runner, desired_file, redirect_fallback = root_path, privileged: false)
     filename = File.basename(desired_file)
-    send_stream(filename: filename, disposition: 'attachment') do |stream|
-      runner.download_file desired_file, privileged_execution: privileged do |chunk, overall_size, content_type|
+    send_stream(filename: filename, type: 'application/octet-stream', disposition: 'attachment') do |stream|
+      runner.download_file desired_file, privileged_execution: privileged do |chunk, overall_size, _content_type|
         unless response.committed?
           # Disable Rack::ETag, which would otherwise cause the response to be cached
           # See https://github.com/rack/rack/issues/1619#issuecomment-848460528
           response.set_header('Last-Modified', Time.now.httpdate)
           response.set_header('Content-Length', overall_size) if overall_size
-          response.set_header('Content-Type', content_type) if content_type
+          # We set the content type to 'application/octet-stream' in send_stream
+          # response.set_header('Content-Type', content_type) if content_type
           # Commit the response headers immediately, as streaming would otherwise remove the Content-Length header
           # This will prevent chunked transfer encoding from being used, which is okay as we know the overall size
           # See https://github.com/rails/rails/issues/18714
