@@ -9,21 +9,6 @@ GIT
       nokogiri (>= 1.10.2, < 2.0.0)
       rubyzip (>= 1.2.2, < 3.0.0)
 
-GIT
-  remote: https://github.com/teamcapybara/capybara.git
-  revision: 2d05c203d79bca7b3b093c37f866ee41f294925b
-  branch: master
-  specs:
-    capybara (3.38.0)
-      addressable
-      matrix
-      mini_mime (>= 0.1.3)
-      nokogiri (~> 1.8)
-      rack (>= 1.6.0)
-      rack-test (>= 0.6.3)
-      regexp_parser (>= 1.5, < 3.0)
-      xpath (~> 3.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -116,6 +101,15 @@ GEM
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
     byebug (11.1.3)
+    capybara (3.38.0)
+      addressable
+      matrix
+      mini_mime (>= 0.1.3)
+      nokogiri (~> 1.8)
+      rack (>= 1.6.0)
+      rack-test (>= 0.6.3)
+      regexp_parser (>= 1.5, < 3.0)
+      xpath (~> 3.2)
     carrierwave (2.2.2)
       activemodel (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -401,7 +395,7 @@ GEM
     rspec-expectations (3.12.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.12.0)
-    rspec-github (2.3.1)
+    rspec-github (2.4.0)
       rspec-core (~> 3.0)
     rspec-mocks (3.12.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -453,7 +447,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    selenium-webdriver (4.5.0)
+    selenium-webdriver (4.6.1)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -543,7 +537,7 @@ GEM
     will_paginate (3.3.1)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.1)
+    zeitwerk (2.6.5)
     zxcvbn-ruby (1.2.0)
 
 PLATFORMS
@@ -557,7 +551,7 @@ DEPENDENCIES
   binding_of_caller
   bootsnap
   bootstrap-will_paginate
-  capybara!
+  capybara
   carrierwave
   charlock_holmes
   database_cleaner

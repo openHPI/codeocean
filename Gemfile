@@ -82,7 +82,7 @@ end
 group :test do
   gem 'autotest' # required by autotest-rails
   gem 'autotest-rails'
-  gem 'capybara', github: 'teamcapybara/capybara', branch: 'master' # Required with Puma 6, remove with 3.37.2+. See https://github.com/teamcapybara/capybara/tags
+  gem 'capybara'
   gem 'database_cleaner'
   gem 'headless'
   gem 'nyan-cat-formatter'
