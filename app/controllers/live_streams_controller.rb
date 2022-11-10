@@ -49,9 +49,9 @@ class LiveStreamsController < ApplicationController
           response.commit!
         end
 
-        if stream.connected?
+        begin
           stream.write chunk
-        else
+        rescue ClientDisconnected
           # The client disconnected, so we stop streaming
           break
         end
