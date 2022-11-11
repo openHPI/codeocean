@@ -3,7 +3,7 @@
 class Junit5Adapter < TestingFrameworkAdapter
   COUNT_REGEXP = /(\d+) tests found/.freeze
   FAILURES_REGEXP = /(\d+) tests failed/.freeze
-  ASSERTION_ERROR_REGEXP = /=> java\.lang\.AssertionError:?\s(.*?)\s*org\.junit|=> org\.junit\.ComparisonFailure:\s(.*?)\s*org\.junit|=>\s(.*?)\s*org\.junit\.internal\.ComparisonCriteria\.arrayEquals/m.freeze
+  ASSERTION_ERROR_REGEXP = /=> java\.lang\.AssertionError:?\s(.*?)\s*org\.junit|=> org\.junit\.ComparisonFailure:\s(.*?)\s*org\.junit|=>\s(.*?)\s*org\.junit\.internal\.ComparisonCriteria\.arrayEquals|=> org\.opentest4j\.AssertionFailedError:?\s(.*?)\s*org.junit/m.freeze
 
   def self.framework_name
     'JUnit 5'
