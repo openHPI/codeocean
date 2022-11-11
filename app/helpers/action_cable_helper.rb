@@ -13,6 +13,8 @@ module ActionCableHelper
             locals: {request_for_comment: self})
         )
       end
+    rescue StandardError => e
+      Sentry.capture_exception(e)
     ensure
       ActiveRecord::Base.connection_pool.release_connection
     end
@@ -33,6 +35,8 @@ module ActionCableHelper
           working_time_data: exercise.get_working_times_for_study_group(study_group_id, user)
         )
       end
+    rescue StandardError => e
+      Sentry.capture_exception(e)
     ensure
       ActiveRecord::Base.connection_pool.release_connection
     end

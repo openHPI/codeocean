@@ -19,6 +19,8 @@ module Prometheus
             initialize_rfc_metrics
           rescue StandardError => e
             Sentry.capture_exception(e)
+          ensure
+            ActiveRecord::Base.connection_pool.release_connection
           end
         end
       end

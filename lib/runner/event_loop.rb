@@ -32,6 +32,8 @@ class Runner::EventLoop
       queue = Queue.new
       Thread.new do
         EventMachine.run { queue.push nil }
+      rescue StandardError => e
+        Sentry.capture_exception(e)
       ensure
         ActiveRecord::Base.connection_pool.release_connection
       end

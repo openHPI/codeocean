@@ -312,6 +312,8 @@ class Submission < ApplicationRecord
           rfc.full_score_reached = true
           rfc.save
         end
+      rescue StandardError => e
+        Sentry.capture_exception(e)
       ensure
         ActiveRecord::Base.connection_pool.release_connection
       end
