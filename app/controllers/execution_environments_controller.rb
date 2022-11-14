@@ -44,7 +44,7 @@ class ExecutionEnvironmentsController < ApplicationController
       downloadable_files, additional_directories = convert_files_json_to_files files
       js_tree = FileTree.new(downloadable_files, additional_directories, force_closed: true).to_js_tree
       render json: js_tree[:core][:data]
-    rescue Runner::Error::WorkspaceError
+    rescue Runner::Error::RunnerNotFound, Runner::Error::WorkspaceError
       render json: []
     end
   end

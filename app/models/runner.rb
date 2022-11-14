@@ -77,6 +77,9 @@ class Runner < ApplicationRecord
     ensure
       # We forward the exception if requested
       raise e if raise_exception && defined?(e) && e.present?
+
+      # Otherwise, we return an hash with empty files
+      {'files' => []}
     end
   end
 
