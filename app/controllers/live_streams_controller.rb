@@ -12,7 +12,7 @@ class LiveStreamsController < ApplicationController
       # TODO: Option to disable?
       # Using the submission ID parameter would allow looking up the corresponding exercise ID
       # Therefore, we just redirect to the root_path, but actually expect to redirect back (that should work!)
-      redirect_back(fallback_location: root_path, alert: t('exercises.download_file_tree.gone'))
+      return redirect_back(fallback_location: root_path, alert: t('exercises.download_file_tree.gone'))
     end
 
     desired_file = params[:filename].to_s
