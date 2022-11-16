@@ -1,7 +1,7 @@
 /* eslint no-console:0 */
 
 // JS
-import 'vis'
+import * as vis from 'vis';
 window.vis = vis;
 
 // CSS

@@ -19,6 +19,9 @@ const relative_url_root = process.env.RAILS_RELATIVE_URL_ROOT || '';
 const public_output_path = webpackConfig.output.publicPath;
 
 const envConfig = module.exports = {
+    node: {
+      global: false,
+    },
     module: {
         rules: [
             erb
@@ -41,20 +44,6 @@ const envConfig = module.exports = {
         hints: false
     },
     plugins: [
-        new webpack.ProvidePlugin({
-            $: 'jquery',
-            JQuery: 'jquery',
-            jQuery: 'jquery',
-            jquery: 'jquery',
-            'window.Tether': "tether",
-            Popper: ['popper.js', 'default'],
-            _: 'underscore',
-            vis: 'vis',
-            d3: 'd3',
-            Sentry: '@sentry/browser',
-            Sortable: 'sortablejs',
-            sorttable: 'sorttable',
-        }),
         new CompressionPlugin(),
         new MiniCssExtractPlugin(),
         new SubresourceIntegrityPlugin(),
