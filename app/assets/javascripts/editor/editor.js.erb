@@ -705,12 +705,6 @@ var CodeOceanEditor = {
             this.showContainerDepletedMessage();
         } else if (output.status === 'out_of_memory') {
             this.showOutOfMemoryMessage();
-        } else if (output.stderr) {
-            $.flash.danger({
-                icon: ['fa-solid', 'fa-bug'],
-                text: $('#run').data('message-failure')
-            });
-            Sentry.captureException(JSON.stringify(output));
         }
     },
 
