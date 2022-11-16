@@ -43,6 +43,8 @@ Rails.application.config.content_security_policy do |policy|
   # Our ACE editor unfortunately requires :unsafe_inline for the code highlighting
   policy.style_src            :self, :unsafe_inline, :report_sample
   policy.connect_src          :self
+  # Our ACE editor uses web workers to highlight code, preferably via URL or otherwise with a blob.
+  policy.child_src            :self, :blob
   policy.form_action          :self
   policy.frame_ancestors      :none
 
