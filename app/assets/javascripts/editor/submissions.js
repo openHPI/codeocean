@@ -76,7 +76,7 @@ CodeOceanEditorSubmissions = {
       if (file_id_old != null && data.files){
         // if we find file_id_old (this is the reference to the base file) in the submission, this is the match
         for(var j = 0; j< data.files.length; j++){
-          if(data.files[j].file_id == file_id_old){
+          if(data.files[j].file_id === file_id_old){
             //$(editors[i].container).data('id') = data.files[j].id;
             $(this.editors[i].container).data('id', data.files[j].id );
           }
@@ -230,8 +230,8 @@ CodeOceanEditorSubmissions = {
 
   unloadAutoSave: function() {
     if(this.autosaveTimer != null){
-      this.autosave();
       clearTimeout(this.autosaveTimer);
+      this.autosave();
     }
   },
 
