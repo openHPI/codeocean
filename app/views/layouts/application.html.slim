@@ -1,5 +1,5 @@
 doctype html
-html lang="#{I18n.locale || I18n.default_locale}"
+html lang="#{I18n.locale || I18n.default_locale}" data-default-locale="#{I18n.default_locale}"
   head
     meta charset='utf8'
     meta name='viewport' content='width=device-width, initial-scale=1'
@@ -15,26 +15,8 @@ html lang="#{I18n.locale || I18n.default_locale}"
     = javascript_include_tag('application', 'data-turbolinks-track': true, integrity: true, crossorigin: 'anonymous')
     = yield(:head)
     = csrf_meta_tags
-    = timeago_script_tag nonce: true
-    = javascript_tag nonce: true do
-      | I18n.defaultLocale = "#{I18n.default_locale}";
-      | I18n.locale = "#{I18n.locale}";
-      - if SentryJavascript.active?
-        | Sentry.init({
-        |      dsn: 'https://2616b10855e04ce1b748775203ff0f7c@o257002.ingest.sentry.io/5667283',
-        |      attachStacktrace: true,
-        |      release: "#{SentryJavascript.release}",
-        |      environment: "#{SentryJavascript.environment}",
-        |  });
-        - if current_user
-          | Sentry.configureScope(function(scope) {
-          |   scope.setUser({
-          |      "id": "#{current_user.id}",
-          |      "type": "#{current_user.class.name}",
-          |      "username": "#{current_user.displayname}",
-          |      "consumer": "#{current_user.consumer.name}"
-          |    });
-          |  });
+    meta name='sentry' data-enabled=SentryJavascript.active?.to_s data-release=SentryJavascript.release data-dsn=SentryJavascript.dsn data-environment=SentryJavascript.environment
+    meta name='current-user' content=current_user&.to_sentry_context&.to_json
   body
     - unless @embed_options[:hide_navbar]
       nav.navbar.navbar-dark.bg-dark.navbar-expand-md.mb-4.py-1 role='navigation'

@@ -1,5 +1,4 @@
 $(document).on('turbolinks:load', function() {
-    $('[data-bs-toggle="tooltip"]').tooltip();
     if($.isController('codeharbor_links')) {
         if ($('.edit_codeharbor_link, .new_codeharbor_link').isPresent()) {
 

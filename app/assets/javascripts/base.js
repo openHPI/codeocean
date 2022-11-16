@@ -28,11 +28,40 @@ $.fn.scrollTo = function(selector) {
 // See https://github.com/vakata/jstree/issues/1717 for details
 $.jstree.defaults.core.worker = false;
 
-// Update all CSRF tokens on the page to reduce InvalidAuthenticityToken errors
-// See https://github.com/rails/jquery-ujs/issues/456 for details
-$(document).on('turbolinks:load', function(){
+$(document).on('turbolinks:load', function() {
+    // Update all CSRF tokens on the page to reduce InvalidAuthenticityToken errors
+    // See https://github.com/rails/jquery-ujs/issues/456 for details
     $.rails.refreshCSRFTokens();
     $('.reloadCurrentPage').on('click', function() {
         window.location.reload();
     });
+
+    // Set locale for all JavaScript functions
+    const htmlTag = $('html')
+    I18n.defaultLocale = htmlTag.data('default-locale');
+    I18n.locale = htmlTag.attr('lang');
+    jQuery.timeago.settings.lang = I18n.locale;
+
+    // Initialize Sentry
+    const sentrySettings = $('meta[name="sentry"]')
+    if (sentrySettings.data()['enabled']) {
+        Sentry.init({
+            dsn: sentrySettings.data('dsn'),
+            attachStacktrace: true,
+            release: sentrySettings.data('release'),
+            environment: sentrySettings.data('environment'),
+            autoSessionTracking: false
+        });
+
+        Sentry.configureScope(function (scope) {
+            const user = $('meta[name="current-user"]').attr('content');
+
+            if (user) {
+                scope.setUser(JSON.parse(user));
+            }
+        });
+    }
+
+    // Enable all tooltips
+    $('[data-bs-toggle="tooltip"]').tooltip();
 });

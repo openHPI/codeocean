@@ -71,6 +71,15 @@ class User < ApplicationRecord
     displayname
   end
 
+  def to_sentry_context
+    {
+      id: id,
+      type: self.class.name,
+      username: displayname,
+      consumer: consumer.name,
+    }
+  end
+
   def self.ransackable_attributes(auth_object)
     if auth_object.present? && auth_object.admin?
       %w[name email external_id consumer_id platform_admin]

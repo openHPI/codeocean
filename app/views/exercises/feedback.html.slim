@@ -35,6 +35,3 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
               span.working_time.float-end = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user) or 0}"
 
   = render('shared/pagination', collection: @feedbacks)
-
-  = javascript_tag nonce: true do
-    | $(function () { $('[data-bs-toggle="tooltip"]').tooltip() });
