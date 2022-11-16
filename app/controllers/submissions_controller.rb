@@ -298,6 +298,7 @@ class SubmissionsController < ApplicationController
   def kill_client_socket(client_socket)
     # We don't want to store this (arbitrary) exit command and redirect it ourselves
     client_socket.send_data JSON.dump({cmd: :exit})
+    client_socket.send_data nil, :close
     client_socket.close
   end
 
