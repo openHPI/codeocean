@@ -168,13 +168,13 @@ class SubmissionsController < ApplicationController
 
       runner_socket.on :stdout do |data|
         message = retrieve_message_from_output data, :stdout
-        @testrun[:output] << message[:data][0, max_output_buffer_size - @testrun[:output].size] if message[:data]
+        @testrun[:output] << message[:data].to_s[0, max_output_buffer_size - @testrun[:output].size] if message[:data]
         send_and_store client_socket, message
       end
 
       runner_socket.on :stderr do |data|
         message = retrieve_message_from_output data, :stderr
-        @testrun[:output] << message[:data][0, max_output_buffer_size - @testrun[:output].size] if message[:data]
+        @testrun[:output] << message[:data].to_s[0, max_output_buffer_size - @testrun[:output].size] if message[:data]
         send_and_store client_socket, message
       end
 
