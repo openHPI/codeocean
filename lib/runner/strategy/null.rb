@@ -25,7 +25,7 @@ class Runner::Strategy::Null < Runner::Strategy
 
   def copy_files(_files); end
 
-  def retrieve_files(path:, recursive:, privileged_execution: false); end
+  def retrieve_files(path: './', recursive: true, privileged_execution: false); end
 
   def download_file(_file, privileged_execution: false, &_block) # rubocop:disable Lint/UnusedMethodArgument for the keyword argument
     raise Runner::Error.new

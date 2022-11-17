@@ -104,7 +104,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished copying files" }
   end
 
-  def retrieve_files(path:, recursive:, privileged_execution:)
+  def retrieve_files(path: './', recursive: true, privileged_execution: false)
     # The DockerContainerPool does not support retrieving files from the runner.
   end
 
