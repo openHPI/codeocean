@@ -29,7 +29,11 @@ module AuthenticatedUrlHelper
       end
 
       cookie_name = AuthenticatedUrlHelper.cookie_name_for(:render_file_token)
-      object = klass.find(request.parameters[:id])
+      begin
+        object = klass.find(request.parameters[:id])
+      rescue ActiveRecord::RecordNotFound
+        raise Pundit::NotAuthorizedError
+      end
 
       signed_url = request.parameters[TOKEN_PARAM].present? ? request.url : cookies[cookie_name]
       # Throws an exception if the token is not matching the object or has expired
