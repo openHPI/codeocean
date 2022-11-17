@@ -437,7 +437,7 @@ class SubmissionsController < ApplicationController
   end
 
   def augment_files_for_download(files)
-    submission_files = @submission.collect_files
+    submission_files = @submission.collect_files + @submission.exercise.files
     files.filter_map do |file|
       # Reject files that were already present in the submission
       # We further reject files that share the same name (excl. file extension) and path as a file in the submission
