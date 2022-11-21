@@ -17,3 +17,6 @@ Rails/UnknownEnv:
     - staging
     - production
     - test
+
+Rails/I18nLazyLookup:
+  Enabled: false
