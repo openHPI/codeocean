@@ -35,6 +35,21 @@ RailsAdmin.config do |config|
     list { limited_pagination true }
   end
 
+  # Disable some file associations to increase performance
+  %w[ExecutionEnvironment Exercise FileType Intervention ProxyExercise StudyGroup CodeOcean::File].each do |model|
+    config.model model do
+      columns = RailsAdmin::Config::Fields.factory(self).filter {|col| col.type.to_s.exclude?('association') }.map {|i| {i.name.to_sym => i.class} }
+      list do
+        columns.each do |hash|
+          key = hash.keys.first
+          field(key, hash[key].to_s.demodulize.underscore)
+        end
+      end
+    end
+  end
+
+  config.excluded_models = %w[Generators::TestingFrameworkAdapterGenerator]
+
   config.actions do
     # mandatory
     dashboard do
