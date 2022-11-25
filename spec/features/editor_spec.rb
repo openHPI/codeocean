@@ -111,7 +111,7 @@ describe 'Editor', js: true do
   end
 
   it 'contains a button for submitting the exercise' do
-    submission = build(:submission, user: user, exercise: exercise)
+    submission = build(:submission, user:, exercise:)
     allow(submission).to receive(:calculate_score).and_return(scoring_response)
     allow(Submission).to receive(:find).and_return(submission)
     click_button(I18n.t('exercises.editor.score'))

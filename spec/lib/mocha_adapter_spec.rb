@@ -10,7 +10,7 @@ describe MochaAdapter do
 
   describe '#parse_output' do
     it 'returns the correct numbers' do
-      expect(adapter.parse_output(stdout: stdout)).to eq(count: count, failed: failed)
+      expect(adapter.parse_output(stdout:)).to eq(count:, failed:)
     end
   end
 end

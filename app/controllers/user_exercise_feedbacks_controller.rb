@@ -82,7 +82,7 @@ class UserExerciseFeedbacksController < ApplicationController
         else
           implement_exercise_path(@exercise)
         end
-      update_and_respond(object: @uef, params: uef_params, path: path)
+      update_and_respond(object: @uef, params: uef_params, path:)
     else
       flash.now[:danger] = t('shared.message_failure')
       redirect_back fallback_location: user_exercise_feedback_path(@uef)
@@ -126,15 +126,15 @@ class UserExerciseFeedbacksController < ApplicationController
     user_id = current_user.id
     user_type = current_user.class.name
     latest_submission = Submission
-      .where(user_id: user_id, user_type: user_type, exercise_id: exercise_id)
+      .where(user_id:, user_type:, exercise_id:)
       .order(created_at: :desc).final.first
 
     authorize(latest_submission, :show?)
 
     params[:user_exercise_feedback]
       .permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime)
-      .merge(user_id: user_id,
-        user_type: user_type,
+      .merge(user_id:,
+        user_type:,
         submission: latest_submission,
         normalized_score: latest_submission&.normalized_score)
   end

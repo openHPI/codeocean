@@ -67,7 +67,7 @@ describe Submission do
   end
 
   describe '#siblings' do
-    let(:siblings) { described_class.find_by(user: user).siblings }
+    let(:siblings) { described_class.find_by(user:).siblings }
     let(:user) { create(:external_user) }
 
     before do
@@ -93,7 +93,7 @@ describe Submission do
     context 'with no exercise feedback' do
       let(:exercise) { create(:dummy) }
       let(:user) { build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) % 10) }
-      let(:submission) { build(:submission, exercise: exercise, user: user) }
+      let(:submission) { build(:submission, exercise:, user:) }
 
       it 'sends 10% of users to feedback page' do
         expect(submission.send(:redirect_to_feedback?)).to be_truthy
@@ -101,7 +101,7 @@ describe Submission do
 
       it 'does not redirect other users' do
         9.times do |i|
-          submission = build(:submission, exercise: exercise, user: build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
+          submission = build(:submission, exercise:, user: build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end
@@ -110,7 +110,7 @@ describe Submission do
     context 'with little exercise feedback' do
       let(:exercise) { create(:dummy_with_user_feedbacks) }
       let(:user) { build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) % 10) }
-      let(:submission) { build(:submission, exercise: exercise, user: user) }
+      let(:submission) { build(:submission, exercise:, user:) }
 
       it 'sends 10% of users to feedback page' do
         expect(submission.send(:redirect_to_feedback?)).to be_truthy
@@ -118,7 +118,7 @@ describe Submission do
 
       it 'does not redirect other users' do
         9.times do |i|
-          submission = build(:submission, exercise: exercise, user: build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
+          submission = build(:submission, exercise:, user: build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end

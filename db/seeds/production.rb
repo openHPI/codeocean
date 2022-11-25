@@ -13,7 +13,7 @@ passwords = ['password', 'password confirmation'].map do |attribute|
 end
 
 if passwords.uniq.length == 1
-  admin = FactoryBot.create(:admin, email: email, name: 'Administrator', password: passwords.first, study_groups: StudyGroup.all)
+  admin = FactoryBot.create(:admin, email:, name: 'Administrator', password: passwords.first, study_groups: StudyGroup.all)
 else
   abort('Passwords do not match!')
 end

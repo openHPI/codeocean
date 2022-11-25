@@ -16,14 +16,14 @@ module FileConversion
       path = File.dirname(file['name']).sub(%r{^(?>\./|\.)}, '').presence
       file_type = all_file_types.detect {|ft| ft.file_extension == extension } || FileType.new(file_extension: extension)
       CodeOcean::File.new(
-        name: name,
-        path: path,
+        name:,
+        path:,
         size: file['size'],
         owner: file['owner'],
         group: file['group'],
         permissions: file['permissions'],
         updated_at: file['modificationTime'],
-        file_type: file_type
+        file_type:
       )
     end
     [augment_files_for_download(files), directories]

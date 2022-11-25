@@ -56,7 +56,7 @@ describe Lti do
     it 'returns to the tool consumer' do
       message = I18n.t('sessions.oauth.invalid_consumer')
       expect(controller).to receive(:return_to_consumer).with(lti_errorlog: message, lti_errormsg: I18n.t('sessions.oauth.failure'))
-      controller.send(:refuse_lti_launch, message: message)
+      controller.send(:refuse_lti_launch, message:)
     end
   end
 
@@ -174,14 +174,14 @@ describe Lti do
       controller.instance_variable_set(:@exercise, create(:fibonacci))
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
       expect(controller.session).to receive(:[]=).with(:lti_parameters_id, anything)
-      controller.send(:store_lti_session_data, consumer: build(:consumer), parameters: parameters)
+      controller.send(:store_lti_session_data, consumer: build(:consumer), parameters:)
     end
 
     it 'creates an LtiParameter Object' do
       before_count = LtiParameter.count
       controller.instance_variable_set(:@current_user, create(:external_user))
       controller.instance_variable_set(:@exercise, create(:fibonacci))
-      controller.send(:store_lti_session_data, consumer: build(:consumer), parameters: parameters)
+      controller.send(:store_lti_session_data, consumer: build(:consumer), parameters:)
       expect(LtiParameter.count).to eq(before_count + 1)
     end
   end

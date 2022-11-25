@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe ExerciseService::CheckExternal do
   describe '.new' do
-    subject(:export_service) { described_class.new(uuid: uuid, codeharbor_link: codeharbor_link) }
+    subject(:export_service) { described_class.new(uuid:, codeharbor_link:) }
 
     let(:uuid) { SecureRandom.uuid }
     let(:codeharbor_link) { build(:codeharbor_link) }
@@ -19,7 +19,7 @@ describe ExerciseService::CheckExternal do
   end
 
   describe '#execute' do
-    subject(:check_external_service) { described_class.call(uuid: uuid, codeharbor_link: codeharbor_link) }
+    subject(:check_external_service) { described_class.call(uuid:, codeharbor_link:) }
 
     let(:uuid) { SecureRandom.uuid }
     let(:codeharbor_link) { build(:codeharbor_link) }
@@ -38,7 +38,7 @@ describe ExerciseService::CheckExternal do
 
     it 'submits the correct body' do
       expect(check_external_service).to have_requested(:post, codeharbor_link.check_uuid_url)
-        .with(body: {uuid: uuid}.to_json)
+        .with(body: {uuid:}.to_json)
     end
 
     context 'when response contains a JSON with expected keys' do

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe ProformaService::ConvertTaskToExercise do
   describe '.new' do
-    subject(:convert_to_exercise_service) { described_class.new(task: task, user: user, exercise: exercise) }
+    subject(:convert_to_exercise_service) { described_class.new(task:, user:, exercise:) }
 
     let(:task) { Proforma::Task.new }
     let(:user) { build(:teacher) }
@@ -24,7 +24,7 @@ describe ProformaService::ConvertTaskToExercise do
   end
 
   describe '#execute' do
-    subject(:convert_to_exercise_service) { described_class.call(task: task, user: user, exercise: exercise) }
+    subject(:convert_to_exercise_service) { described_class.call(task:, user:, exercise:) }
 
     before { create(:dot_txt) }
 
@@ -36,10 +36,10 @@ describe ProformaService::ConvertTaskToExercise do
         uuid: 'uuid',
         parent_uuid: 'parent_uuid',
         language: 'language',
-        meta_data: meta_data,
-        model_solutions: model_solutions,
-        files: files,
-        tests: tests
+        meta_data:,
+        model_solutions:,
+        files:,
+        tests:
       )
     end
     let(:user) { create(:teacher) }
@@ -63,7 +63,7 @@ describe ProformaService::ConvertTaskToExercise do
         description: 'description',
         uuid: be_blank,
         unpublished: true,
-        user: user,
+        user:,
         files: be_empty,
         public: false,
         hide_file_tree: false,
@@ -80,11 +80,11 @@ describe ProformaService::ConvertTaskToExercise do
       let(:meta_data) do
         {
           CodeOcean: {
-            public: public,
-            hide_file_tree: hide_file_tree,
-            allow_file_creation: allow_file_creation,
-            allow_auto_completion: allow_auto_completion,
-            expected_difficulty: expected_difficulty,
+            public:,
+            hide_file_tree:,
+            allow_file_creation:,
+            allow_auto_completion:,
+            expected_difficulty:,
             execution_environment_id: execution_environment&.id,
             files: files_meta_data,
           },
@@ -98,7 +98,7 @@ describe ProformaService::ConvertTaskToExercise do
           description: 'description',
           uuid: be_blank,
           unpublished: true,
-          user: user,
+          user:,
           files: be_empty,
           public: true,
           hide_file_tree: true,
@@ -125,13 +125,13 @@ describe ProformaService::ConvertTaskToExercise do
       let(:file) do
         Proforma::TaskFile.new(
           id: 'id',
-          content: content,
-          filename: filename,
+          content:,
+          filename:,
           used_by_grader: 'used_by_grader',
           visible: 'yes',
-          usage_by_lms: usage_by_lms,
-          binary: binary,
-          mimetype: mimetype
+          usage_by_lms:,
+          binary:,
+          mimetype:
         )
       end
       let(:filename) { "#{path}filename.txt" }
@@ -192,7 +192,7 @@ describe ProformaService::ConvertTaskToExercise do
         let(:content) { 'test' * (10**5) }
 
         it 'creates an exercise with a file that has the correct attributes' do
-          expect(convert_to_exercise_service.files.first).to have_attributes(content: content)
+          expect(convert_to_exercise_service.files.first).to have_attributes(content:)
         end
       end
 

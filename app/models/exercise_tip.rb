@@ -14,7 +14,7 @@ class ExerciseTip < ApplicationRecord
   def tip_chain?
     # Ensure each referenced parent exercise tip is set for this exercise
     unless ExerciseTip.exists?(
-      exercise: exercise, id: parent_exercise_tip
+      exercise:, id: parent_exercise_tip
     )
       errors.add :parent_exercise_tip,
         I18n.t('activerecord.errors.messages.together',

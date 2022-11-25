@@ -11,7 +11,7 @@ module CommonBehavior
           notice = result if result.present?
         end
         path = options[:path].try(:call) || @object
-        respond_with_valid_object(format, notice: notice, path: path, status: :created)
+        respond_with_valid_object(format, notice:, path:, status: :created)
       else
         respond_with_invalid_object(format, template: :new)
       end
@@ -51,7 +51,7 @@ module CommonBehavior
           notice = result if result.present?
         end
         path = options[:path] || @object
-        respond_with_valid_object(format, notice: notice, path: path, status: :ok)
+        respond_with_valid_object(format, notice:, path:, status: :ok)
       else
         respond_with_invalid_object(format, template: :edit)
       end

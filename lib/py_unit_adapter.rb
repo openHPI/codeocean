@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class PyUnitAdapter < TestingFrameworkAdapter
-  COUNT_REGEXP = /Ran (\d+) test/.freeze
-  FAILURES_REGEXP = /FAILED \(.*failures=(\d+).*\)/.freeze
-  ERRORS_REGEXP = /FAILED \(.*errors=(\d+).*\)/.freeze
-  ASSERTION_ERROR_REGEXP = /^(ERROR|FAIL):\ (.*?)\ .*?^[^.\n]*?(Error|Exception):\s((\s|\S)*?)(>>>[^>]*?)*\s\s(-|=){70}/m.freeze
+  COUNT_REGEXP = /Ran (\d+) test/
+  FAILURES_REGEXP = /FAILED \(.*failures=(\d+).*\)/
+  ERRORS_REGEXP = /FAILED \(.*errors=(\d+).*\)/
+  ASSERTION_ERROR_REGEXP = /^(ERROR|FAIL):\ (.*?)\ .*?^[^.\n]*?(Error|Exception):\s((\s|\S)*?)(>>>[^>]*?)*\s\s(-|=){70}/m
 
   def self.framework_name
     'PyUnit'
@@ -32,6 +32,6 @@ class PyUnitAdapter < TestingFrameworkAdapter
       Sentry.capture_message({stderr: output[:stderr], regex: ASSERTION_ERROR_REGEXP}.to_json)
       assertion_error_matches = []
     end
-    {count: count, failed: failed + errors, error_messages: assertion_error_matches.flatten.compact_blank}
+    {count:, failed: failed + errors, error_messages: assertion_error_matches.flatten.compact_blank}
   end
 end

@@ -24,7 +24,7 @@ describe InternalUser do
     end
 
     it 'validates the confirmation of the password' do
-      user.update(password: password, password_confirmation: '')
+      user.update(password:, password_confirmation: '')
       expect(user.errors[:password_confirmation]).to be_present
     end
 
@@ -40,7 +40,7 @@ describe InternalUser do
     before { user.deliver_reset_password_instructions! }
 
     it 'validates the confirmation of the password' do
-      user.update(password: password, password_confirmation: '')
+      user.update(password:, password_confirmation: '')
       expect(user.errors[:password_confirmation]).to be_present
     end
 
@@ -54,7 +54,7 @@ describe InternalUser do
     let(:user) { create(:teacher, activation_state: 'active') }
 
     it 'does not validate the confirmation of the password' do
-      user.update(password: password, password_confirmation: '')
+      user.update(password:, password_confirmation: '')
       expect(user.errors[:password_confirmation]).not_to be_present
     end
 

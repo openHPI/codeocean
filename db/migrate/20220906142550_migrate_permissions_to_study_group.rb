@@ -10,7 +10,7 @@ class MigratePermissionsToStudyGroup < ActiveRecord::Migration[6.1]
 
   def create_default_groups
     Consumer.find_each do |consumer|
-      StudyGroup.find_or_create_by!(consumer: consumer, external_id: nil) do |new_group|
+      StudyGroup.find_or_create_by!(consumer:, external_id: nil) do |new_group|
         new_group.name = "Default Study Group for #{consumer.name}"
       end
     end
@@ -25,7 +25,7 @@ class MigratePermissionsToStudyGroup < ActiveRecord::Migration[6.1]
 
       # All platform admins will "just" be a teacher in the study group
       new_role = %w[admin teacher].include?(user.role) ? :teacher : :learner
-      membership = StudyGroupMembership.find_or_create_by!(study_group: study_group, user: user)
+      membership = StudyGroupMembership.find_or_create_by!(study_group:, user:)
       membership.update_columns(role: new_role)
     end
   end

@@ -9,8 +9,8 @@ namespace :export_exercises do
     Exercise.where(public: true).each do |exercise|
       puts "Exporting exercise ##{exercise.id}"
       error = ExerciseService::PushExternal.call(
-        zip: ProformaService::ExportTask.call(exercise: exercise),
-        codeharbor_link: codeharbor_link
+        zip: ProformaService::ExportTask.call(exercise:),
+        codeharbor_link:
       )
       if error.nil?
         successful_exports << exercise.id

@@ -40,7 +40,7 @@ module CodeOcean
     scope :visible, -> { where(hidden: false) }
 
     ROLES.each do |role|
-      scope :"#{role}s", -> { where(role: role) }
+      scope :"#{role}s", -> { where(role:) }
     end
     scope :teacher_defined_assessments, -> { where(role: %w[teacher_defined_test teacher_defined_linter]) }
 

@@ -7,7 +7,7 @@ describe Exercise do
   let(:users) { create_list(:external_user, 10) }
 
   def create_submissions
-    create_list(:submission, 10, cause: 'submit', exercise: exercise, score: Forgery(:basic).number, user: users.sample)
+    create_list(:submission, 10, cause: 'submit', exercise:, score: Forgery(:basic).number, user: users.sample)
   end
 
   it 'validates the number of main files' do
@@ -113,7 +113,7 @@ describe Exercise do
 
     it 'overwrites the supplied attributes' do
       title = Forgery(:basic).text
-      expect(exercise.duplicate(title: title).title).to eq(title)
+      expect(exercise.duplicate(title:).title).to eq(title)
     end
 
     it 'duplicates all associated files' do

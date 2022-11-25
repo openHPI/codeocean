@@ -48,7 +48,7 @@ class ExecutionEnvironment < ApplicationRecord
 
   def to_json(*_args)
     {
-      id: id,
+      id:,
       image: docker_image,
       prewarmingPoolSize: pool_size,
       cpuLimit: cpu_limit,

@@ -42,7 +42,7 @@ class ProxyExercise < ApplicationRecord
   end
 
   def get_matching_exercise(user)
-    assigned_user_proxy_exercise = user_proxy_exercise_exercises.find_by(user: user)
+    assigned_user_proxy_exercise = user_proxy_exercise_exercises.find_by(user:)
     if assigned_user_proxy_exercise
       Rails.logger.debug { "retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}" }
       assigned_user_proxy_exercise.exercise
@@ -57,7 +57,7 @@ class ProxyExercise < ApplicationRecord
           @reason[:error] = "#{$ERROR_INFO}:\n\t#{e.backtrace.join("\n\t")}"
           exercises.where('expected_difficulty > 1').sample # difficulty should be > 1 to prevent dummy exercise from being chosen.
         end
-      user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user: user,
+      user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user:,
         exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
       matching_exercise
     end
@@ -105,9 +105,9 @@ class ProxyExercise < ApplicationRecord
       relative_knowledge_improvement[potex] = 0.0
       Rails.logger.debug { "review potential exercise #{potex.id}" }
       tags.each do |tag|
-        tag_ratio = potex.exercise_tags.find_by(tag: tag).factor.to_f / potex.exercise_tags.inject(0) do |sum, et|
-                                                                          sum + et.factor
-                                                                        end
+        tag_ratio = potex.exercise_tags.find_by(tag:).factor.to_f / potex.exercise_tags.inject(0) do |sum, et|
+                                                                      sum + et.factor
+                                                                    end
         max_topic_knowledge_ratio = potex.expected_difficulty * tag_ratio
         old_relative_loss_tag = topic_knowledge_user[tag] / topic_knowledge_max[tag]
         new_relative_loss_tag = topic_knowledge_user[tag] / (topic_knowledge_max[tag] + max_topic_knowledge_ratio)

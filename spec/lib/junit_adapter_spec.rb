@@ -13,7 +13,7 @@ describe JunitAdapter do
       let(:error_matches) { [] }
 
       it 'returns the correct numbers' do
-        expect(adapter.parse_output(stdout: stdout)).to eq(count: count, failed: failed, error_messages: error_matches)
+        expect(adapter.parse_output(stdout:)).to eq(count:, failed:, error_messages: error_matches)
       end
     end
 
@@ -22,7 +22,7 @@ describe JunitAdapter do
       let(:stdout) { "OK (#{count} tests)" }
 
       it 'returns the correct numbers' do
-        expect(adapter.parse_output(stdout: stdout)).to eq(count: count, passed: count)
+        expect(adapter.parse_output(stdout:)).to eq(count:, passed: count)
       end
     end
   end

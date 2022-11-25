@@ -128,7 +128,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
 
     # First, clean the workspace and second, copy all files to their location.
     # This ensures that no artifacts from a previous submission remain in the workspace.
-    body = {copy: copy, delete: ['./*']}
+    body = {copy:, delete: ['./*']}
     response = self.class.http_connection.patch url, body.to_json
     return if response.status == 204
 
@@ -143,8 +143,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   def retrieve_files(path: './', recursive: true, privileged_execution: false)
     url = "#{runner_url}/files"
     params = {
-      path: path,
-      recursive: recursive,
+      path:,
+      recursive:,
       privilegedExecution: privileged_execution || @execution_environment.privileged_execution,
     }
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Retrieving files at #{runner_url} with #{params}" }
@@ -199,7 +199,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def attach_to_execution(command, event_loop, starting_time, privileged_execution: false)
-    websocket_url = execute_command(command, privileged_execution: privileged_execution)
+    websocket_url = execute_command(command, privileged_execution:)
     socket = Connection.new(websocket_url, self, event_loop)
     yield(socket, starting_time)
     socket
@@ -293,13 +293,13 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   end
 
   def self.http_connection
-    @http_connection ||= Faraday.new(ssl: {ca_file: config[:ca_file]}, headers: headers) do |faraday|
+    @http_connection ||= Faraday.new(ssl: {ca_file: config[:ca_file]}, headers:) do |faraday|
       faraday.adapter :net_http_persistent
     end
   end
 
   def self.new_http_connection
-    Faraday.new(ssl: {ca_file: config[:ca_file]}, headers: headers) do |faraday|
+    Faraday.new(ssl: {ca_file: config[:ca_file]}, headers:) do |faraday|
       faraday.adapter :net_http
     end
   end
@@ -316,7 +316,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   def execute_command(command, privileged_execution: false)
     url = "#{runner_url}/execute"
     body = {
-      command: command,
+      command:,
       timeLimit: @execution_environment.permitted_execution_time,
       privilegedExecution: privileged_execution || @execution_environment.privileged_execution,
     }

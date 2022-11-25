@@ -8,7 +8,7 @@ json.download_file_url download_file_submission_path(@submission, 'a.', format: 
 unless @embed_options[:disable_download]
   json.render_url @submission.collect_files.select(&:visible) do |files|
     host = ApplicationController::RENDER_HOST || request.host
-    url = render_submission_url(@submission, files.filepath, host: host)
+    url = render_submission_url(@submission, files.filepath, host:)
 
     json.filepath files.filepath
     json.url AuthenticatedUrlHelper.sign(url, @submission)

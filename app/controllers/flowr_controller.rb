@@ -28,7 +28,7 @@ class FlowrController < ApplicationController
       # once the programming language model becomes available, the language name can be added to the query to
       # produce more relevant results
       query = attributes.map(&:value).join(' ')
-      {submission: submission, error: error, attributes: attributes, query: query}
+      {submission:, error:, attributes:, query:}
     end
 
     # Always return JSON

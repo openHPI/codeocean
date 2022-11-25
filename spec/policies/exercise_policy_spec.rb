@@ -215,7 +215,7 @@ describe ExercisePolicy do
       before do
         [admin, teacher].each do |user|
           [true, false].each do |public|
-            create(:dummy, public: public, user_id: user.id, user_type: InternalUser.name)
+            create(:dummy, public:, user_id: user.id, user_type: InternalUser.name)
           end
         end
       end

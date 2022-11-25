@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ExerciseService::PushExternal do
   describe '.new' do
-    subject(:push_external) { described_class.new(zip: zip, codeharbor_link: codeharbor_link) }
+    subject(:push_external) { described_class.new(zip:, codeharbor_link:) }
 
     let(:zip) { ProformaService::ExportTask.call(exercise: build(:dummy)) }
     let(:codeharbor_link) { build(:codeharbor_link) }
@@ -19,14 +19,14 @@ RSpec.describe ExerciseService::PushExternal do
   end
 
   describe '#execute' do
-    subject(:push_external) { described_class.call(zip: zip, codeharbor_link: codeharbor_link) }
+    subject(:push_external) { described_class.call(zip:, codeharbor_link:) }
 
     let(:zip) { ProformaService::ExportTask.call(exercise: build(:dummy)) }
     let(:codeharbor_link) { build(:codeharbor_link) }
     let(:status) { 200 }
     let(:response) { '' }
 
-    before { stub_request(:post, codeharbor_link.push_url).to_return(status: status, body: response) }
+    before { stub_request(:post, codeharbor_link.push_url).to_return(status:, body: response) }
 
     it 'calls the correct url' do
       expect(push_external).to have_requested(:post, codeharbor_link.push_url)

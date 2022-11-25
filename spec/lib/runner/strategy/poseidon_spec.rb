@@ -145,7 +145,7 @@ describe Runner::Strategy::Poseidon do
       it "returns true on status #{status}" do
         faraday_connection = instance_double Faraday::Connection
         allow(described_class).to receive(:http_connection).and_return(faraday_connection)
-        allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
+        allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status:))
         expect(action.call).to be_truthy
       end
     end
@@ -154,7 +154,7 @@ describe Runner::Strategy::Poseidon do
       it "raises an exception on status #{status}" do
         faraday_connection = instance_double Faraday::Connection
         allow(described_class).to receive(:http_connection).and_return(faraday_connection)
-        allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status: status))
+        allow(faraday_connection).to receive(:put).and_return(Faraday::Response.new(status:))
         expect { action.call }.to raise_exception Runner::Error::UnexpectedResponse
       end
     end
@@ -248,7 +248,7 @@ describe Runner::Strategy::Poseidon do
         .stub_request(:post, "#{described_class.config[:url]}/runners/#{runner_id}/execute")
         .with(
           body: {
-            command: command,
+            command:,
             timeLimit: execution_environment.permitted_execution_time,
             privilegedExecution: execution_environment.privileged_execution,
           },

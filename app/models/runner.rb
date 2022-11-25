@@ -31,9 +31,9 @@ class Runner < ApplicationRecord
   end
 
   def self.for(user, execution_environment)
-    runner = find_by(user: user, execution_environment: execution_environment)
+    runner = find_by(user:, execution_environment:)
     if runner.nil?
-      runner = Runner.create(user: user, execution_environment: execution_environment)
+      runner = Runner.create(user:, execution_environment:)
       # The `strategy` is added through the before_validation hook `:request_id`.
       raise Runner::Error::Unknown.new("Runner could not be saved: #{runner.errors.inspect}") unless runner.persisted?
     else
@@ -52,8 +52,8 @@ class Runner < ApplicationRecord
     @strategy.copy_files(files)
   end
 
-  def download_file(path, **options, &block)
-    @strategy.download_file(path, **options, &block)
+  def download_file(path, **options, &)
+    @strategy.download_file(path, **options, &)
   end
 
   def retrieve_files(raise_exception: true, **options)
@@ -93,7 +93,7 @@ class Runner < ApplicationRecord
       # initializing its Runner::Connection with the given event loop. The Runner::Connection class ensures that
       # this event loop is stopped after the socket was closed.
       event_loop = Runner::EventLoop.new
-      socket = @strategy.attach_to_execution(command, event_loop, starting_time, privileged_execution: privileged_execution, &block)
+      socket = @strategy.attach_to_execution(command, event_loop, starting_time, privileged_execution:, &block)
       event_loop.wait
       raise socket.error if socket.error.present?
     rescue Runner::Error => e
@@ -120,7 +120,7 @@ class Runner < ApplicationRecord
         save
       end
 
-      execution_time = attach_to_execution(command, privileged_execution: privileged_execution) do |socket, starting_time|
+      execution_time = attach_to_execution(command, privileged_execution:) do |socket, starting_time|
         socket.on :stderr do |data|
           output[:stderr] << data
           output[:messages].push({cmd: :write, stream: :stderr, log: data, timestamp: Time.zone.now - starting_time})

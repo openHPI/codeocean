@@ -30,7 +30,7 @@ describe CodeOcean::FilesController do
   end
 
   describe 'POST #create' do
-    let(:submission) { create(:submission, user: user) }
+    let(:submission) { create(:submission, user:) }
 
     context 'with a valid file' do
       let(:perform_request) { proc { post :create, params: {code_ocean_file: build(:file, context: submission).attributes, format: :json} } }

@@ -63,8 +63,8 @@ describe UserMailer do
 
   describe '#got_new_comment' do
     let(:user) { create(:learner) }
-    let(:token) { AuthenticationToken.find_by(user: user) }
-    let(:request_for_comment) { create(:rfc_with_comment, user: user) }
+    let(:token) { AuthenticationToken.find_by(user:) }
+    let(:request_for_comment) { create(:rfc_with_comment, user:) }
     let(:commenting_user) { InternalUser.create(attributes_for(:teacher)) }
     let(:mail) { described_class.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user).deliver_now }
 
@@ -116,9 +116,9 @@ describe UserMailer do
 
   describe '#got_new_comment_for_subscription' do
     let(:user) { create(:learner) }
-    let(:token) { AuthenticationToken.find_by(user: user) }
-    let(:request_for_comment) { create(:rfc_with_comment, user: user) }
-    let(:subscription) { Subscription.create(request_for_comment: request_for_comment, user: user, study_group_id: user.current_study_group_id) }
+    let(:token) { AuthenticationToken.find_by(user:) }
+    let(:request_for_comment) { create(:rfc_with_comment, user:) }
+    let(:subscription) { Subscription.create(request_for_comment:, user:, study_group_id: user.current_study_group_id) }
     let(:from_user) { InternalUser.create(attributes_for(:teacher)) }
     let(:mail) { described_class.got_new_comment_for_subscription(request_for_comment.comments.first, subscription, from_user).deliver_now }
 
@@ -172,7 +172,7 @@ describe UserMailer do
     let(:user) { create(:learner) }
     let(:receiver) { create(:teacher) }
     let(:token) { AuthenticationToken.find_by(user: receiver) }
-    let(:request_for_comment) { create(:rfc_with_comment, user: user) }
+    let(:request_for_comment) { create(:rfc_with_comment, user:) }
     let(:mail) { described_class.send_thank_you_note(request_for_comment, receiver).deliver_now }
 
     it 'sets the correct sender' do

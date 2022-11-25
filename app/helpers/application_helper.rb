@@ -53,9 +53,9 @@ module ApplicationHelper
     ActionController::Base.helpers.sanitize Kramdown::Document.new(markdown).to_html
   end
 
-  def row(options = {}, &block)
+  def row(options = {}, &)
     tag.div(class: 'attribute-row row') do
-      label_column(options[:label]) + value_column(options[:value], &block)
+      label_column(options[:label]) + value_column(options[:value], &)
     end
   end
 

@@ -26,14 +26,14 @@ class LiveStreamsController < ApplicationController
     runner = Runner.for(current_user, @execution_environment)
     fallback_location = shell_execution_environment_path(@execution_environment)
     privileged = params[:sudo] || @execution_environment.privileged_execution?
-    send_runner_file(runner, desired_file, fallback_location, privileged: privileged)
+    send_runner_file(runner, desired_file, fallback_location, privileged:)
   end
 
   private
 
   def send_runner_file(runner, desired_file, redirect_fallback = root_path, privileged: false)
     filename = File.basename(desired_file)
-    send_stream(filename: filename, type: 'application/octet-stream', disposition: 'attachment') do |stream|
+    send_stream(filename:, type: 'application/octet-stream', disposition: 'attachment') do |stream|
       runner.download_file desired_file, privileged_execution: privileged do |chunk, overall_size, _content_type|
         unless response.committed?
           # Disable Rack::ETag, which would otherwise cause the response to be cached

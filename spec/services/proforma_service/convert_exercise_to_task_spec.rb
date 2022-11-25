@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ProformaService::ConvertExerciseToTask do
   describe '.new' do
-    subject(:convert_to_task) { described_class.new(exercise: exercise) }
+    subject(:convert_to_task) { described_class.new(exercise:) }
 
     let(:exercise) { build(:dummy) }
 
@@ -16,10 +16,10 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
   describe '#execute' do
     subject(:task) { convert_to_task.execute }
 
-    let(:convert_to_task) { described_class.new(exercise: exercise) }
+    let(:convert_to_task) { described_class.new(exercise:) }
     let(:exercise) do
       create(:dummy,
-        execution_environment: execution_environment,
+        execution_environment:,
         instructions: 'instruction',
         uuid: SecureRandom.uuid,
         files: files + tests)
@@ -85,7 +85,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
     context 'when exercise has a regular file' do
       let(:files) { [file] }
-      let(:file) { build(:file, role: 'regular_file', hidden: hidden, read_only: read_only) }
+      let(:file) { build(:file, role: 'regular_file', hidden:, read_only:) }
       let(:hidden) { true }
       let(:read_only) { true }
 

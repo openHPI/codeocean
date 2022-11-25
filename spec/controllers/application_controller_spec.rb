@@ -76,7 +76,7 @@ describe ApplicationController do
       context "when using the 'locale' parameter" do
         it 'overwrites the session' do
           expect(session).to receive(:[]=).with(:locale, locale)
-          get :welcome, params: {locale: locale}
+          get :welcome, params: {locale:}
         end
       end
     end

@@ -19,12 +19,12 @@ class LinterCheckRun < ApplicationRecord
         result: linter_result[:result],
         line: linter_result[:line],
         scope: linter_result[:scope],
-        testrun: testrun,
-        file: file
+        testrun:,
+        file:
       )
     rescue ActiveRecord::RecordInvalid
       # Something bad happened. Probably, the RegEx in lib/py_lint_adapter.rb didn't work.
-      Sentry.set_extras(testrun: testrun.inspect, linter_result: linter_result)
+      Sentry.set_extras(testrun: testrun.inspect, linter_result:)
     end
   end
 end

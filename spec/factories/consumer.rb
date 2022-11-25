@@ -8,7 +8,7 @@ FactoryBot.define do
 
   trait :singleton_consumer do
     initialize_with do
-      Consumer.find_or_initialize_by(name: name) do |consumer|
+      Consumer.find_or_initialize_by(name:) do |consumer|
         consumer.oauth_key = SecureRandom.hex
         consumer.oauth_secret = SecureRandom.hex
       end

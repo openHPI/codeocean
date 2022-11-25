@@ -23,12 +23,12 @@ module ProformaService
           title: @exercise.title,
           description: @exercise.description,
           internal_description: nil,
-          proglang: proglang,
+          proglang:,
           files: task_files,
-          tests: tests,
-          uuid: uuid,
+          tests:,
+          uuid:,
           language: DEFAULT_LANGUAGE,
-          model_solutions: model_solutions,
+          model_solutions:,
           meta_data: {
             CodeOcean: {
               public: @exercise.public,

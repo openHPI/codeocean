@@ -133,7 +133,7 @@ namespace :detect_exercise_anomalies do
         segment.each do |user|
           reason = "{\"segment\": \"#{key}\", \"feature\": \"#{user[:reason]}\", value: \"#{user[:value]}\"}"
           AnomalyNotification.create(user_id: user[:user_id], user_type: user[:user_type],
-            exercise: exercise, exercise_collection: collection, reason: reason)
+            exercise:, exercise_collection: collection, reason:)
         end
       end
 
@@ -142,7 +142,7 @@ namespace :detect_exercise_anomalies do
         user = u[:user_type] == InternalUser.name ? InternalUser.find(u[:user_id]) : ExternalUser.find(u[:user_id])
         host = CodeOcean::Application.config.action_mailer.default_url_options[:host]
         feedback_link = Rails.application.routes.url_helpers.url_for(action: :new,
-          controller: :user_exercise_feedbacks, exercise_id: exercise.id, host: host)
+          controller: :user_exercise_feedbacks, exercise_id: exercise.id, host:)
         UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
       end
       log("Asked #{users_to_notify.size} users for feedback.", 2)

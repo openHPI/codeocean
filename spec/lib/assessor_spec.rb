@@ -6,7 +6,7 @@ describe Assessor do
   let(:assessor) { described_class.new(execution_environment: build(:ruby)) }
 
   describe '#assess' do
-    let(:assess) { assessor.assess(stdout: stdout) }
+    let(:assess) { assessor.assess(stdout:) }
     let(:stdout) { "Finished in 0.1 seconds (files took 0.1 seconds to load)\n2 examples, 1 failure" }
 
     context 'when an error occurs' do
@@ -39,7 +39,7 @@ describe Assessor do
   describe '#calculate_score' do
     let(:count) { 42 }
     let(:passed) { 17 }
-    let(:test_outcome) { {count: count, passed: passed} }
+    let(:test_outcome) { {count:, passed:} }
 
     it 'returns the correct score' do
       expect(assessor.send(:calculate_score, test_outcome)).to eq(passed.to_f / count)

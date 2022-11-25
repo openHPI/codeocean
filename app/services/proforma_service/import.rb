@@ -17,7 +17,7 @@ module ProformaService
         exercise = base_exercise
         exercise_files = exercise&.files&.to_a
 
-        exercise = ConvertTaskToExercise.call(task: @task, user: @user, exercise: exercise)
+        exercise = ConvertTaskToExercise.call(task: @task, user: @user, exercise:)
         exercise_files&.each(&:destroy) # feels suboptimal
 
         exercise

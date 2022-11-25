@@ -79,7 +79,7 @@ class Exercise < ApplicationRecord
   end
 
   def time_maximum_score(user)
-    submissions.where(user: user).where("cause IN ('submit','assess')").where.not(score: nil).order('score DESC, created_at ASC').first.created_at
+    submissions.where(user:).where("cause IN ('submit','assess')").where.not(score: nil).order('score DESC, created_at ASC').first.created_at
   rescue StandardError
     Time.zone.at(0)
   end
@@ -251,7 +251,7 @@ class Exercise < ApplicationRecord
       end
     end
 
-    {user_progress: user_progress, additional_user_data: additional_user_data}
+    {user_progress:, additional_user_data:}
   end
 
   def get_quantiles(quantiles)
@@ -495,7 +495,7 @@ class Exercise < ApplicationRecord
     description = task_node.xpath('p:description/text()')[0].content
     self.attributes = {
       title: task_node.xpath('p:meta-data/p:title/text()')[0].content,
-      description: description,
+      description:,
       instructions: description,
     }
     task_node.xpath('p:files/p:file').all? do |file|
@@ -508,7 +508,7 @@ class Exercise < ApplicationRecord
         content: file.xpath('text()').first.content,
         read_only: false,
         hidden: file_class == 'internal',
-        role: role,
+        role:,
         feedback_message: role == 'teacher_defined_test' ? feedback_message_nodes.first.content : nil,
         file_type: FileType.find_by(
           file_extension: ".#{file_name_split.second}"
@@ -527,7 +527,7 @@ class Exercise < ApplicationRecord
     if user
       # FIXME: where(user: user) will not work here!
       begin
-        submissions.where(user: user).where("cause IN ('submit','assess')").where.not(score: nil).order('score DESC').first.score || 0
+        submissions.where(user:).where("cause IN ('submit','assess')").where.not(score: nil).order('score DESC').first.score || 0
       rescue StandardError
         0
       end

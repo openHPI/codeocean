@@ -60,7 +60,7 @@ module CodeOcean
           yield if block_given?
           path = options[:path].try(:call) || @object
           respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human),
-            path: path, status: :created)
+            path:, status: :created)
         else
           filename = "#{@object.path || ''}/#{@object.name || ''}#{@object.file_type.try(:file_extension) || ''}"
           format.html do

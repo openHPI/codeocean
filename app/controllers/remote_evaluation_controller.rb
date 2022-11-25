@@ -15,7 +15,7 @@ class RemoteEvaluationController < ApplicationController
              else
                201
              end
-    render json: result, status: status
+    render json: result, status:
   end
 
   # POST /submit
@@ -29,7 +29,7 @@ class RemoteEvaluationController < ApplicationController
       status = result[:status]
     end
 
-    render json: result, status: status
+    render json: result, status:
   end
 
   def try_lti
@@ -62,7 +62,7 @@ class RemoteEvaluationController < ApplicationController
 
   def create_and_score_submission(cause)
     validation_token = remote_evaluation_params[:validation_token]
-    if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(validation_token: validation_token))
+    if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(validation_token:))
       @submission = Submission.create(build_submission_params(cause, remote_evaluation_mapping))
       @submission.calculate_score
     else

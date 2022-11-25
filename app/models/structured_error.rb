@@ -7,7 +7,7 @@ class StructuredError < ApplicationRecord
   has_many :structured_error_attributes
 
   def self.create_from_template(template, message_buffer, submission)
-    instance = create(error_template: template, submission: submission)
+    instance = create(error_template: template, submission:)
     template.error_template_attributes.each do |attribute|
       StructuredErrorAttribute.create_from_template(attribute, instance, message_buffer)
     end

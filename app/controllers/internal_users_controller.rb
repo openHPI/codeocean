@@ -151,7 +151,7 @@ class InternalUsersController < ApplicationController
     checked_study_groups = checked_study_group_memberships.collect(&:study_group).sort.to_set
     unchecked_study_groups = StudyGroup.all.order(name: :asc).to_set.subtract checked_study_groups
     @study_group_memberships = checked_study_group_memberships + unchecked_study_groups.collect do |study_group|
-      StudyGroupMembership.new(user: @user, study_group: study_group)
+      StudyGroupMembership.new(user: @user, study_group:)
     end
   end
 

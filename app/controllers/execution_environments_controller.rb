@@ -115,8 +115,8 @@ class ExecutionEnvironmentsController < ApplicationController
     end
 
     render locals: {
-      working_time_statistics: working_time_statistics,
-      user_statistics: user_statistics,
+      working_time_statistics:,
+      user_statistics:,
     }
   end
 
@@ -132,7 +132,7 @@ class ExecutionEnvironmentsController < ApplicationController
       params[:execution_environment]
         .permit(:docker_image, :editor_mode, :file_extension, :file_type_id, :help, :indent_size, :memory_limit, :cpu_limit, :name,
           :network_enabled, :privileged_execution, :permitted_execution_time, :pool_size, :run_command, :test_command, :testing_framework)
-        .merge(user_id: current_user.id, user_type: current_user.class.name, exposed_ports: exposed_ports)
+        .merge(user_id: current_user.id, user_type: current_user.class.name, exposed_ports:)
     end
   end
   private :execution_environment_params

@@ -6,7 +6,7 @@ describe CommentsController do
   render_views
 
   let(:user) { create(:learner) }
-  let(:rfc_with_comment) { create(:rfc_with_comment, user: user) }
+  let(:rfc_with_comment) { create(:rfc_with_comment, user:) }
   let(:comment) { rfc_with_comment.comments.first }
   let(:updated_comment) { comment.reload }
   let(:perform_request) { proc { put :update, format: :json, params: {id: comment.id, comment: comment_params} } }

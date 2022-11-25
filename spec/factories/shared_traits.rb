@@ -17,7 +17,7 @@ FactoryBot.define do
 
   [ExternalUser, InternalUser].each do |klass|
     trait :"singleton_#{klass.name.underscore}" do
-      initialize_with { klass.where(email: email).first_or_create }
+      initialize_with { klass.where(email:).first_or_create }
     end
   end
 

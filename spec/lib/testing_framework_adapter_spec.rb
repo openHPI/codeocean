@@ -11,19 +11,19 @@ describe TestingFrameworkAdapter do
   describe '#augment_output' do
     context 'when missing the count of all tests' do
       it 'adds the count of all tests' do
-        expect(adapter.send(:augment_output, failed: failed, passed: passed)).to include(count: count)
+        expect(adapter.send(:augment_output, failed:, passed:)).to include(count:)
       end
     end
 
     context 'when missing the count of failed tests' do
       it 'adds the count of failed tests' do
-        expect(adapter.send(:augment_output, count: count, passed: passed)).to include(failed: failed)
+        expect(adapter.send(:augment_output, count:, passed:)).to include(failed:)
       end
     end
 
     context 'when missing the count of passed tests' do
       it 'adds the count of passed tests' do
-        expect(adapter.send(:augment_output, count: count, failed: failed)).to include(passed: passed)
+        expect(adapter.send(:augment_output, count:, failed:)).to include(passed:)
       end
     end
   end
@@ -42,7 +42,7 @@ describe TestingFrameworkAdapter do
 
   describe '#test_outcome' do
     it 'calls the framework-specific implementation' do
-      allow(adapter).to receive(:parse_output).and_return(count: count, failed: failed, passed: passed)
+      allow(adapter).to receive(:parse_output).and_return(count:, failed:, passed:)
       expect(adapter).to receive(:parse_output)
       adapter.test_outcome('')
     end

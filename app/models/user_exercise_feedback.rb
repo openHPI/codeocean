@@ -17,7 +17,7 @@ class UserExerciseFeedback < ApplicationRecord
   end
 
   def anomaly_notification
-    AnomalyNotification.where({exercise_id: exercise.id, user_id: user_id, user_type: user_type})
+    AnomalyNotification.where({exercise_id: exercise.id, user_id:, user_type:})
       .where('created_at < ?', created_at).order('created_at DESC').to_a.first
   end
 end

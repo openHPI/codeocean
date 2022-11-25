@@ -61,7 +61,7 @@ describe InternalUsersController do
     context 'with an already activated user' do
       before do
         user.activate!
-        put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: password}}
+        put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password:, password_confirmation: password}}
       end
 
       expect_redirect(:root)
@@ -80,7 +80,7 @@ describe InternalUsersController do
     end
 
     context 'without a valid password confirmation' do
-      before { put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: ''}} }
+      before { put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password:, password_confirmation: ''}} }
 
       expect_assigns(user: InternalUser)
 
@@ -92,7 +92,7 @@ describe InternalUsersController do
     end
 
     context 'with valid preconditions' do
-      before { put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password: password, password_confirmation: password}} }
+      before { put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password:, password_confirmation: password}} }
 
       expect_assigns(user: InternalUser)
 
@@ -278,7 +278,7 @@ describe InternalUsersController do
       let(:password) { 'foo' }
 
       context 'with a matching password confirmation' do
-        let(:perform_request) { proc { put :reset_password, params: {internal_user: {password: password, password_confirmation: password}, id: user.id, token: user.reset_password_token} } }
+        let(:perform_request) { proc { put :reset_password, params: {internal_user: {password:, password_confirmation: password}, id: user.id, token: user.reset_password_token} } }
 
         before { perform_request.call }
 
@@ -310,7 +310,7 @@ describe InternalUsersController do
 
       context 'without a matching password confirmation' do
         before do
-          put :reset_password, params: {internal_user: {password: password, password_confirmation: ''}, id: user.id, token: user.reset_password_token}
+          put :reset_password, params: {internal_user: {password:, password_confirmation: ''}, id: user.id, token: user.reset_password_token}
         end
 
         expect_assigns(user: :user)

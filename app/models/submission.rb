@@ -88,7 +88,7 @@ class Submission < ApplicationRecord
   end
 
   def siblings
-    user.submissions.where(exercise_id: exercise_id)
+    user.submissions.where(exercise_id:)
   end
 
   def to_s
@@ -129,7 +129,7 @@ class Submission < ApplicationRecord
   end
 
   def own_unsolved_rfc
-    RequestForComment.unsolved.find_by(exercise_id: exercise, user_id: user_id)
+    RequestForComment.unsolved.find_by(exercise_id: exercise, user_id:)
   end
 
   def unsolved_rfc
@@ -162,11 +162,11 @@ class Submission < ApplicationRecord
 
   # @raise [Runner::Error] if the code could not be run due to a failure with the runner.
   #                        See the specific type and message for more details.
-  def run(file, &block)
+  def run(file, &)
     run_command = command_for execution_environment.run_command, file.filepath
     durations = {}
     prepared_runner do |runner, waiting_duration|
-      durations[:execution_duration] = runner.attach_to_execution(run_command, &block)
+      durations[:execution_duration] = runner.attach_to_execution(run_command, &)
       durations[:waiting_duration] = waiting_duration
     rescue Runner::Error => e
       e.waiting_duration = waiting_duration
@@ -237,13 +237,13 @@ class Submission < ApplicationRecord
   def command_substitutions(filename)
     {
       class_name: File.basename(filename, File.extname(filename)).upcase_first,
-      filename: filename,
+      filename:,
       module_name: File.basename(filename, File.extname(filename)).underscore,
     }
   end
 
   def score_file(output, file)
-    assessor = Assessor.new(execution_environment: execution_environment)
+    assessor = Assessor.new(execution_environment:)
     assessment = assessor.assess(output)
     passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
     testrun_output = passed ? nil : "status: #{output[:status]}\n stdout: #{output[:stdout]}\n stderr: #{output[:stderr]}"
@@ -256,8 +256,8 @@ class Submission < ApplicationRecord
     testrun = Testrun.create(
       submission: self,
       cause: 'assess', # Required to differ run and assess for RfC show
-      file: file, # Test file that was executed
-      passed: passed,
+      file:, # Test file that was executed
+      passed:,
       exit_code: output[:exit_code],
       status: output[:status],
       output: testrun_output.presence,
@@ -265,7 +265,7 @@ class Submission < ApplicationRecord
       waiting_for_container_time: output[:waiting_for_container_time]
     )
     TestrunMessage.create_for(testrun, output[:messages])
-    TestrunExecutionEnvironment.create(testrun: testrun, execution_environment: @used_execution_environment)
+    TestrunExecutionEnvironment.create(testrun:, execution_environment: @used_execution_environment)
 
     filename = file.filepath
 
@@ -278,7 +278,7 @@ class Submission < ApplicationRecord
     end
 
     output.merge!(assessment)
-    output.merge!(filename: filename, message: feedback_message(file, output), weight: file.weight)
+    output.merge!(filename:, message: feedback_message(file, output), weight: file.weight)
     output.except!(:messages)
   end
 
@@ -308,7 +308,7 @@ class Submission < ApplicationRecord
     update(score: score.to_d)
     if normalized_score.to_d == BigDecimal('1.0')
       Thread.new do
-        RequestForComment.where(exercise_id: exercise_id, user_id: user_id, user_type: user_type).find_each do |rfc|
+        RequestForComment.where(exercise_id:, user_id:, user_type:).find_each do |rfc|
           rfc.full_score_reached = true
           rfc.save
         end

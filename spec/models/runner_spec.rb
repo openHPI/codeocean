@@ -31,7 +31,7 @@ describe Runner do
   describe '::strategy_class' do
     shared_examples 'uses the strategy defined in the constant' do |strategy, strategy_class|
       let(:codeocean_config) { instance_double(CodeOcean::Config) }
-      let(:runner_management_config) { {runner_management: {enabled: true, strategy: strategy}} }
+      let(:runner_management_config) { {runner_management: {enabled: true, strategy:}} }
 
       before do
         # Ensure to reset the memorized helper
@@ -166,7 +166,7 @@ describe Runner do
   describe 'creation' do
     let(:user) { create(:external_user) }
     let(:execution_environment) { create(:ruby) }
-    let(:create_action) { -> { described_class.create(user: user, execution_environment: execution_environment) } }
+    let(:create_action) { -> { described_class.create(user:, execution_environment:) } }
 
     it 'requests a runner id from the runner management' do
       expect(strategy_class).to receive(:request_from_management)
@@ -254,7 +254,7 @@ describe Runner do
     end
 
     context 'when a runner already exists' do
-      let!(:existing_runner) { create(:runner, user: user, execution_environment: exercise.execution_environment) }
+      let!(:existing_runner) { create(:runner, user:, execution_environment: exercise.execution_environment) }
 
       it 'returns the existing runner' do
         new_runner = described_class.for(user, exercise.execution_environment)

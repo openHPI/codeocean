@@ -22,7 +22,7 @@ describe CodeharborLinksController do
   end
 
   describe 'GET #edit' do
-    let(:codeharbor_link) { create(:codeharbor_link, user: user) }
+    let(:codeharbor_link) { create(:codeharbor_link, user:) }
 
     before { get :edit, params: {id: codeharbor_link.id} }
 
@@ -56,7 +56,7 @@ describe CodeharborLinksController do
   end
 
   describe 'PUT #update' do
-    let(:codeharbor_link) { create(:codeharbor_link, user: user) }
+    let(:codeharbor_link) { create(:codeharbor_link, user:) }
     let(:put_request) { patch :update, params: {id: codeharbor_link.id, codeharbor_link: params} }
     let(:params) { {push_url: 'https://foo.bar/push', check_uuid_url: 'https://foo.bar/check', api_key: 'api_key'} }
 
@@ -91,7 +91,7 @@ describe CodeharborLinksController do
   end
 
   describe 'DELETE #destroy' do
-    let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
+    let!(:codeharbor_link) { create(:codeharbor_link, user:) }
     let(:destroy_request) { delete :destroy, params: {id: codeharbor_link.id} }
 
     it 'deletes codeharbor_link' do

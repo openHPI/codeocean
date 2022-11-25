@@ -73,7 +73,7 @@ class User < ApplicationRecord
 
   def to_sentry_context
     {
-      id: id,
+      id:,
       type: self.class.name,
       username: displayname,
       consumer: consumer.name,

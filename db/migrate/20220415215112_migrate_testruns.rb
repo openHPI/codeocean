@@ -293,7 +293,7 @@ class MigrateTestruns < ActiveRecord::Migration[6.1]
     # Using the string keys by design. Otherwise, we would need to call #symbolize_keys!
 
     message = {
-      testrun: testrun,
+      testrun:,
       cmd: json['cmd'],
       # We cannot infer any timestamp and thus use arbitrary, distinct millisecond values (1s = 1000ms)
       timestamp: ActiveSupport::Duration.build(order / 1000.0),

@@ -58,7 +58,7 @@ class SubscriptionsController < ApplicationController
     study_group_id = current_user.try(:current_study_group_id)
     if params[:subscription].present?
       params[:subscription].permit(:request_for_comment_id, :subscription_type).merge(user_id: current_user_id,
-        user_type: current_user_class_name, study_group_id: study_group_id, deleted: false)
+        user_type: current_user_class_name, study_group_id:, deleted: false)
     end
   end
   private :subscription_params

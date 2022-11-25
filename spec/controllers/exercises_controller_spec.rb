@@ -37,7 +37,7 @@ describe ExercisesController do
       expect_assigns(exercise: Exercise)
 
       it 'clones the exercise' do
-        expect_any_instance_of(Exercise).to receive(:duplicate).with(hash_including(public: false, user: user)).and_call_original
+        expect_any_instance_of(Exercise).to receive(:duplicate).with(hash_including(public: false, user:)).and_call_original
         expect { perform_request.call }.to change(Exercise, :count).by(1)
       end
 
@@ -78,7 +78,7 @@ describe ExercisesController do
     end
 
     context 'when including a file' do
-      let(:perform_request) { proc { post :create, params: {exercise: exercise_attributes.merge(files_attributes: files_attributes)} } }
+      let(:perform_request) { proc { post :create, params: {exercise: exercise_attributes.merge(files_attributes:)} } }
 
       context 'when specifying the file content within the form' do
         let(:files_attributes) { {'0' => build(:file).attributes} }
@@ -89,7 +89,7 @@ describe ExercisesController do
       end
 
       context 'when uploading a file' do
-        let(:files_attributes) { {'0' => build(:file, file_type: file_type).attributes.merge(content: uploaded_file)} }
+        let(:files_attributes) { {'0' => build(:file, file_type:).attributes.merge(content: uploaded_file)} }
 
         context 'when uploading a binary file' do
           let(:file_path) { Rails.root.join('db/seeds/audio_video/devstories.mp4') }
@@ -255,14 +255,14 @@ describe ExercisesController do
   end
 
   describe 'GET #external_user_statistics' do
-    let(:perform_request) { get :external_user_statistics, params: params }
+    let(:perform_request) { get :external_user_statistics, params: }
     let(:params) { {id: exercise.id, external_user_id: external_user.id} }
     let(:external_user) { create(:external_user) }
 
     before do
-      2.times { create(:submission, cause: 'autosave', user: external_user, exercise: exercise) }
-      2.times { create(:submission, cause: 'run', user: external_user, exercise: exercise) }
-      create(:submission, cause: 'assess', user: external_user, exercise: exercise)
+      2.times { create(:submission, cause: 'autosave', user: external_user, exercise:) }
+      2.times { create(:submission, cause: 'run', user: external_user, exercise:) }
+      create(:submission, cause: 'assess', user: external_user, exercise:)
     end
 
     context 'when viewing the default submission statistics page without a parameter' do
@@ -312,8 +312,8 @@ describe ExercisesController do
     end
 
     before do
-      create(:lti_parameter, external_user: user, exercise: exercise)
-      submission = build(:submission, exercise: exercise, user: user)
+      create(:lti_parameter, external_user: user, exercise:)
+      submission = build(:submission, exercise:, user:)
       allow(submission).to receive(:normalized_score).and_return(1)
       allow(submission).to receive(:calculate_score).and_return(scoring_response)
       allow(Submission).to receive(:create).and_return(submission)
@@ -404,13 +404,13 @@ describe ExercisesController do
     render_views
 
     let(:post_request) { post :export_external_check, params: {id: exercise.id} }
-    let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
-    let(:external_check_hash) { {message: message, uuid_found: true, update_right: update_right, error: error} }
+    let!(:codeharbor_link) { create(:codeharbor_link, user:) }
+    let(:external_check_hash) { {message:, uuid_found: true, update_right:, error:} }
     let(:message) { 'message' }
     let(:update_right) { true }
     let(:error) { nil }
 
-    before { allow(ExerciseService::CheckExternal).to receive(:call).with(uuid: exercise.uuid, codeharbor_link: codeharbor_link).and_return(external_check_hash) }
+    before { allow(ExerciseService::CheckExternal).to receive(:call).with(uuid: exercise.uuid, codeharbor_link:).and_return(external_check_hash) }
 
     it 'renders the correct contents as json' do
       post_request
@@ -457,14 +457,14 @@ describe ExercisesController do
   describe 'POST #export_external_confirm' do
     render_views
 
-    let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
+    let!(:codeharbor_link) { create(:codeharbor_link, user:) }
     let(:post_request) { post :export_external_confirm, params: {id: exercise.id, codeharbor_link: codeharbor_link.id} }
     let(:error) { nil }
     let(:zip) { 'zip' }
 
     before do
-      allow(ProformaService::ExportTask).to receive(:call).with(exercise: exercise).and_return(zip)
-      allow(ExerciseService::PushExternal).to receive(:call).with(zip: zip, codeharbor_link: codeharbor_link).and_return(error)
+      allow(ProformaService::ExportTask).to receive(:call).with(exercise:).and_return(zip)
+      allow(ExerciseService::PushExternal).to receive(:call).with(zip:, codeharbor_link:).and_return(error)
     end
 
     it 'renders correct response' do
@@ -493,9 +493,9 @@ describe ExercisesController do
 
   describe 'POST #import_uuid_check' do
     let(:exercise) { create(:dummy, uuid: SecureRandom.uuid) }
-    let!(:codeharbor_link) { create(:codeharbor_link, user: user) }
+    let!(:codeharbor_link) { create(:codeharbor_link, user:) }
     let(:uuid) { exercise.reload.uuid }
-    let(:post_request) { post :import_uuid_check, params: {uuid: uuid} }
+    let(:post_request) { post :import_uuid_check, params: {uuid:} }
     let(:headers) { {'Authorization' => "Bearer #{codeharbor_link.api_key}"} }
 
     before { request.headers.merge! headers }
@@ -542,7 +542,7 @@ describe ExercisesController do
   end
 
   describe 'POST #import_task' do
-    let(:codeharbor_link) { create(:codeharbor_link, user: user) }
+    let(:codeharbor_link) { create(:codeharbor_link, user:) }
     let!(:imported_exercise) { create(:fibonacci) }
     let(:post_request) { post :import_task, body: zip_file_content }
     let(:zip_file_content) { 'zipped task xml' }
@@ -560,7 +560,7 @@ describe ExercisesController do
 
     it 'calls service' do
       post_request
-      expect(ProformaService::Import).to have_received(:call).with(zip: be_a(Tempfile).and(has_content(zip_file_content)), user: user)
+      expect(ProformaService::Import).to have_received(:call).with(zip: be_a(Tempfile).and(has_content(zip_file_content)), user:)
     end
 
     context 'when import fails with ProformaError' do

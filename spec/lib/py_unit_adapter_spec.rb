@@ -11,7 +11,7 @@ describe PyUnitAdapter do
 
   describe '#parse_output' do
     it 'returns the correct numbers' do
-      expect(adapter.parse_output(stderr: stderr)).to eq(count: count, failed: failed, error_messages: error_matches)
+      expect(adapter.parse_output(stderr:)).to eq(count:, failed:, error_messages: error_matches)
     end
   end
 end

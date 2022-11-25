@@ -9,9 +9,9 @@ class AuthenticationToken < ApplicationRecord
   def self.generate!(user, study_group)
     create!(
       shared_secret: SecureRandom.hex(32),
-      user: user,
+      user:,
       expire_at: 7.days.from_now,
-      study_group: study_group
+      study_group:
     )
   end
 end

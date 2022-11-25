@@ -26,9 +26,9 @@ module ProformaService
         allow_file_creation: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_file_creation)) || false,
         allow_auto_completion: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_auto_completion)) || false,
         expected_difficulty: @task.meta_data[:CodeOcean]&.dig(:expected_difficulty) || 1,
-        execution_environment_id: execution_environment_id,
+        execution_environment_id:,
 
-        files: files
+        files:
       )
     end
 

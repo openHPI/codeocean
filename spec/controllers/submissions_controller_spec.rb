@@ -116,7 +116,7 @@ describe SubmissionsController do
     context 'with an invalid filename' do
       let(:filename) { SecureRandom.hex }
 
-      before { get :render_file, params: {filename: filename, id: submission.id, token: token} }
+      before { get :render_file, params: {filename:, id: submission.id, token:} }
 
       expect_http_status(:not_found)
     end
@@ -125,7 +125,7 @@ describe SubmissionsController do
       let(:submission) { create(:submission, exercise: create(:audio_video)) }
       let(:filename) { file.name_with_extension }
 
-      before { get :render_file, params: {filename: filename, id: submission.id, token: token} }
+      before { get :render_file, params: {filename:, id: submission.id, token:} }
 
       context 'with a binary file' do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }

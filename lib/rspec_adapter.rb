@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class RspecAdapter < TestingFrameworkAdapter
-  REGEXP = /(\d+) examples?, (\d+) failures?/.freeze
+  REGEXP = /(\d+) examples?, (\d+) failures?/
 
   def self.framework_name
     'RSpec 3'
@@ -11,6 +11,6 @@ class RspecAdapter < TestingFrameworkAdapter
     captures = output[:stdout].scan(REGEXP).try(:last).map(&:to_i)
     count = captures.first
     failed = captures.second
-    {count: count, failed: failed}
+    {count:, failed:}
   end
 end

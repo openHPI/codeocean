@@ -10,7 +10,7 @@ class StructuredErrorAttribute < ApplicationRecord
     if !result.nil? && result.captures.size.positive?
       value = result.captures[0]
     end
-    create(structured_error: structured_error, error_template_attribute: attribute, value: value,
+    create(structured_error:, error_template_attribute: attribute, value:,
       match: !result.nil?)
   end
 end

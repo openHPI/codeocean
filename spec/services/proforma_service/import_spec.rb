@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe ProformaService::Import do
   describe '.new' do
-    subject(:import_service) { described_class.new(zip: zip, user: user) }
+    subject(:import_service) { described_class.new(zip:, user:) }
 
     let(:zip) { Tempfile.new('proforma_test_zip_file') }
     let(:user) { build(:teacher) }
@@ -27,14 +27,14 @@ describe ProformaService::Import do
     let(:exercise) do
       create(:dummy,
         instructions: 'instruction',
-        execution_environment: execution_environment,
+        execution_environment:,
         files: files + tests,
         hide_file_tree:  true,
         allow_file_creation: false,
         allow_auto_completion: true,
         expected_difficulty: 7,
-        uuid: uuid,
-        user: user)
+        uuid:,
+        user:)
     end
 
     let(:uuid) { nil }

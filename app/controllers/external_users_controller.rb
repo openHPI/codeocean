@@ -72,7 +72,7 @@ class ExternalUsersController < ApplicationController
     end
 
     render locals: {
-      statistics: statistics,
+      statistics:,
     }
   end
 

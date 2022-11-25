@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class PyLintAdapter < TestingFrameworkAdapter
-  REGEXP = %r{Your code has been rated at (-?\d+\.?\d*)/(\d+\.?\d*)}.freeze
-  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):(.*?)\(([^,]*?), ([^,]*?),([^,]*?)\) (.*?)$/.freeze
+  REGEXP = %r{Your code has been rated at (-?\d+\.?\d*)/(\d+\.?\d*)}
+  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):(.*?)\(([^,]*?), ([^,]*?),([^,]*?)\) (.*?)$/
 
   def self.framework_name
     'PyLint'
@@ -41,8 +41,8 @@ class PyLintAdapter < TestingFrameworkAdapter
     end
     concatenated_errors = assertion_error_matches.map {|result| "#{result[:name]}: #{result[:result]}" }
     {
-      count: count,
-      failed: failed,
+      count:,
+      failed:,
       error_messages: concatenated_errors.flatten.compact_blank,
       detailed_linter_results: assertion_error_matches.flatten.compact_blank,
     }
@@ -69,7 +69,7 @@ class PyLintAdapter < TestingFrameworkAdapter
         captures = message[:result].match(Regexp.new(regex))&.named_captures&.symbolize_keys
 
         if captures.nil?
-          Sentry.capture_message({regex: regex, message: message[:result]}.to_json)
+          Sentry.capture_message({regex:, message: message[:result]}.to_json)
           replacement = {}
         else
           replacement = captures.each do |key, value|
@@ -100,7 +100,7 @@ class PyLintAdapter < TestingFrameworkAdapter
   def self.get_t(key, default)
     # key might be "linter.#{severity}.#{name}.#{key}.#{value}"
     # or something like "linter.#{severity}.#{name}.replacement"
-    translation = I18n.t(key, default: default)
+    translation = I18n.t(key, default:)
     cleaned_key = key.delete_suffix(".#{default}") # Remove any custom prefix, might have no effect
     keys = cleaned_key.split('.')
     final_key = keys.pop
@@ -111,7 +111,7 @@ class PyLintAdapter < TestingFrameworkAdapter
                     # Read config key
                     I18n.t(keys.append('log_missing').join('.'), default: false)
                   end
-    Sentry.capture_message({key: cleaned_key, default: default}.to_json) if translation == default && log_missing
+    Sentry.capture_message({key: cleaned_key, default:}.to_json) if translation == default && log_missing
     translation
   end
 end

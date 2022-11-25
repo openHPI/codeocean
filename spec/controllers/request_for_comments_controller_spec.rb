@@ -19,7 +19,7 @@ describe RequestForCommentsController do
 
     it 'shows only rfc`s belonging to selected study group' do
       my_study_group = create(:study_group)
-      rfc_within_my_study_group = create(:rfc, user: user)
+      rfc_within_my_study_group = create(:rfc, user:)
       user.update(study_groups: [my_study_group])
       rfc_within_my_study_group.submission.update(study_group: my_study_group)
 

@@ -9,13 +9,13 @@ describe SessionsController do
 
   describe 'POST #create' do
     let(:password) { attributes_for(:teacher)[:password] }
-    let(:user) { InternalUser.create(user_attributes.merge(password: password)) }
+    let(:user) { InternalUser.create(user_attributes.merge(password:)) }
     let(:user_attributes) { build(:teacher).attributes }
 
     context 'with valid credentials' do
       before do
         user.activate!
-        post :create, params: {email: user.email, password: password, remember_me: 1}
+        post :create, params: {email: user.email, password:, remember_me: 1}
       end
 
       expect_flash_message(:notice, :'sessions.create.success')
@@ -113,7 +113,7 @@ describe SessionsController do
 
       context 'when LTI outcomes are supported' do
         # The expected message should be localized in the requested localization
-        let(:message) { I18n.t('sessions.create_through_lti.session_with_outcome', consumer: consumer, locale: locale) }
+        let(:message) { I18n.t('sessions.create_through_lti.session_with_outcome', consumer:, locale:) }
 
         before do
           allow(controller).to receive(:lti_outcome_service?).and_return(true)
@@ -125,7 +125,7 @@ describe SessionsController do
 
       context 'when LTI outcomes are not supported' do
         # The expected message should be localized in the requested localization
-        let(:message) { I18n.t('sessions.create_through_lti.session_without_outcome', consumer: consumer, locale: locale) }
+        let(:message) { I18n.t('sessions.create_through_lti.session_without_outcome', consumer:, locale:) }
 
         before do
           allow(controller).to receive(:lti_outcome_service?).and_return(false)

@@ -95,7 +95,7 @@ describe ExecutionEnvironmentsController do
       runner = instance_double Runner
       allow(Runner).to receive(:for).with(user, execution_environment).and_return runner
       allow(runner).to receive(:execute_command).and_return({})
-      post :execute_command, params: {command: command, id: execution_environment.id}
+      post :execute_command, params: {command:, id: execution_environment.id}
     end
 
     expect_assigns(execution_environment: :execution_environment)
