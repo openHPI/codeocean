@@ -3642,7 +3642,8 @@ qs@6.11.0:
 
 rails-erb-loader@usabilityhub/rails-erb-loader#master:
   version "5.5.2"
-  resolved "https://codeload.github.com/usabilityhub/rails-erb-loader/tar.gz/43472ff4cb041044af891c5ac386e6e8912b9a39"
+  uid ce2d166632cc08b50408beef745dc8abfcfdc749
+  resolved "https://codeload.github.com/usabilityhub/rails-erb-loader/tar.gz/ce2d166632cc08b50408beef745dc8abfcfdc749"
   dependencies:
     loader-utils "^2.0.0"
     lodash.defaults "^4.2.0"
