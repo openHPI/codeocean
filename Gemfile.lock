@@ -119,7 +119,6 @@ GEM
       mini_mime (>= 0.1.3)
       ssrf_filter (~> 1.0)
     charlock_holmes (0.7.7)
-    childprocess (4.1.0)
     chronic (0.10.2)
     coderay (1.1.3)
     concurrent-ruby (1.1.10)
@@ -428,8 +427,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
-    selenium-webdriver (4.6.1)
-      childprocess (>= 0.5, < 5.0)
+    selenium-webdriver (4.7.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
