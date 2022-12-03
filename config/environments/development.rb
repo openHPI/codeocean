@@ -18,6 +18,9 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  # Enable server timing
+  config.server_timing = true
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join('tmp/caching-dev.txt').exist?
@@ -38,11 +41,11 @@ Rails.application.configure do
   config.active_storage.service = :local
 
   # Don't care if the mailer can't send.
-  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = false
 
   # Perform deliveries via letter opener
+  config.action_mailer.perform_deliveries = true
   config.action_mailer.delivery_method = :letter_opener
-  config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.perform_caching = false
 
@@ -74,11 +77,6 @@ Rails.application.configure do
 
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
-
-  # Adds additional error checking when serving assets at runtime.
-  # Checks for improperly declared sprockets dependencies.
-  # Raises helpful error messages.
-  config.assets.raise_runtime_errors = true
 
   BetterErrors::Middleware.allow_ip! ENV.fetch('TRUSTED_IP', nil) if ENV['TRUSTED_IP']
 
