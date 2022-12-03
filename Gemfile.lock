@@ -600,6 +600,7 @@ DEPENDENCIES
   slim-rails
   sorcery
   spring
+  sprockets-rails
   telegraf
   tubesock
   turbolinks

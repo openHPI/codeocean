@@ -45,6 +45,7 @@ gem 'rubyzip'
 gem 'sass-rails'
 gem 'shakapacker', '6.5.4'
 gem 'slim-rails'
+gem 'sprockets-rails'
 gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.com/Sorcery/sorcery/pull/255
 gem 'telegraf'
 gem 'tubesock'
