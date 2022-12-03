@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_23_214003) do
-
+ActiveRecord::Schema[7.0].define(version: 2022_12_04_120508) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -35,8 +34,8 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
     t.string "user_type", null: false
     t.bigint "user_id", null: false
     t.datetime "expire_at", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.bigint "study_group_id"
     t.index ["shared_secret"], name: "index_authentication_tokens_on_shared_secret", unique: true
     t.index ["study_group_id"], name: "index_authentication_tokens_on_study_group_id"
@@ -77,8 +76,8 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
     t.boolean "timely_contribution", null: false
     t.boolean "autosave", null: false
     t.interval "working_time", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["community_solution_id", "timely_contribution", "autosave", "proposed_changes"], name: "index_community_solution_valid_contributions"
     t.index ["community_solution_lock_id"], name: "index_community_solution_contributions_lock"
     t.index ["user_type", "user_id"], name: "index_community_solution_contributions_on_user"
@@ -89,16 +88,16 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
     t.string "user_type", null: false
     t.bigint "user_id", null: false
     t.datetime "locked_until"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["community_solution_id", "locked_until"], name: "index_community_solution_locks_until", unique: true
     t.index ["user_type", "user_id"], name: "index_community_solution_locks_on_user"
   end
 
   create_table "community_solutions", force: :cascade do |t|
     t.bigint "exercise_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["exercise_id"], name: "index_community_solutions_on_exercise_id"
   end
 
@@ -241,7 +240,7 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean "platform_admin", default: false
+    t.boolean "platform_admin", default: false, null: false
   end
 
   create_table "file_templates", id: :serial, force: :cascade do |t|
@@ -306,7 +305,7 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
     t.string "activation_state"
     t.string "activation_token"
     t.datetime "activation_token_expires_at"
-    t.boolean "platform_admin", default: false
+    t.boolean "platform_admin", default: false, null: false
     t.index ["activation_token"], name: "index_internal_users_on_activation_token"
     t.index ["email"], name: "index_internal_users_on_email", unique: true
     t.index ["remember_me_token"], name: "index_internal_users_on_remember_me_token"
@@ -396,8 +395,8 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
     t.bigint "execution_environment_id"
     t.string "user_type"
     t.bigint "user_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["execution_environment_id"], name: "index_runners_on_execution_environment_id"
     t.index ["user_type", "user_id"], name: "index_runners_on_user"
   end
@@ -482,8 +481,8 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
   create_table "testrun_execution_environments", force: :cascade do |t|
     t.bigint "testrun_id", null: false
     t.bigint "execution_environment_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["execution_environment_id"], name: "index_testrun_execution_environments"
     t.index ["testrun_id"], name: "index_testrun_execution_environments_on_testrun_id"
   end
@@ -495,10 +494,10 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
     t.integer "stream", limit: 2, comment: "Used as enum in Rails"
     t.text "log"
     t.jsonb "data"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["testrun_id"], name: "index_testrun_messages_on_testrun_id"
-    t.check_constraint "(log IS NULL) OR (data IS NULL)", name: "either_data_or_log"
+    t.check_constraint "log IS NULL OR data IS NULL", name: "either_data_or_log"
   end
 
   create_table "testruns", id: :serial, force: :cascade do |t|
@@ -514,7 +513,7 @@ ActiveRecord::Schema.define(version: 2022_09_23_214003) do
     t.integer "exit_code", limit: 2, comment: "No exit code is available in case of a timeout"
     t.integer "status", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
     t.index ["submission_id"], name: "index_testruns_on_submission_id"
-    t.check_constraint "(exit_code >= 0) AND (exit_code <= 255)", name: "exit_code_constraint"
+    t.check_constraint "exit_code >= 0 AND exit_code <= 255", name: "exit_code_constraint"
   end
 
   create_table "tips", force: :cascade do |t|

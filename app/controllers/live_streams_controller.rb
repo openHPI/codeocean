@@ -59,21 +59,4 @@ class LiveStreamsController < ApplicationController
       redirect_back(fallback_location: redirect_fallback, alert: t('exercises.download_file_tree.gone'))
     end
   end
-
-  # TODO: Taken from Rails 7, remove when upgrading
-  # rubocop:disable all
-  def send_stream(filename:, disposition: "attachment", type: nil)
-    response.headers["Content-Type"] =
-      (type.is_a?(Symbol) ? Mime[type].to_s : type) ||
-        Mime::Type.lookup_by_extension(File.extname(filename).downcase.delete(".")) ||
-        "application/octet-stream"
-
-    response.headers["Content-Disposition"] =
-      ActionDispatch::Http::ContentDisposition.format(disposition: disposition, filename: filename)
-
-    yield response.stream
-  ensure
-    response.stream.close
-  end
-  # rubocop:enable all
 end

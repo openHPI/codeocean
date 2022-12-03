@@ -34,7 +34,7 @@ gem 'prometheus_exporter'
 gem 'pry-byebug'
 gem 'puma'
 gem 'pundit'
-gem 'rails', '~> 6.1.7'
+gem 'rails', '~> 7.0.4'
 gem 'rails_admin', '< 4.0.0'
 gem 'rails-i18n'
 gem 'rails-timeago'
@@ -74,10 +74,6 @@ group :development, :staging do
   gem 'rubocop-performance'
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec'
-end
-
-group :development, :test, :staging do
-  gem 'spring'
 end
 
 group :test do
