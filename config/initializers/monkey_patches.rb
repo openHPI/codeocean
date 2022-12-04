@@ -7,9 +7,3 @@ unless Array.respond_to?(:average)
     end
   end
 end
-
-module I18n
-  def self.translation_present?(key)
-    t(key, default: '').present?
-  end
-end

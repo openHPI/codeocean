@@ -24,7 +24,7 @@ module ApplicationHelper
   def label_column(label)
     tag.div(class: 'col-md-3') do
       tag.strong do
-        I18n.translation_present?("activerecord.attributes.#{label}") ? t("activerecord.attributes.#{label}") : t(label)
+        I18n.exists?("activerecord.attributes.#{label}") ? t("activerecord.attributes.#{label}") : t(label)
       end
     end
   end

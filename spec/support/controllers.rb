@@ -76,7 +76,7 @@ private :obtain_object
 def obtain_message(object)
   if object.is_a?(String)
     object
-  elsif I18n.translation_present?(object)
+  elsif I18n.exists?(object)
     I18n.t(object)
   else
     send(object)
