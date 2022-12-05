@@ -4,8 +4,8 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
   .header = t('activerecord.attributes.exercise.description')
   .value = render_markdown(@exercise.description)
 
-  span.header.col-sm-3.ps-0 = "#{t('activerecord.attributes.exercise.maximum_score')}"
-  span.col-sm-9 = @exercise.maximum_score
+  span.header.col-sm-3.ps-0 = "#{t('activerecord.attributes.exercise.maximum_score')}:"
+  span.col-sm-9 =< @exercise.maximum_score
 
   .header.mt-3 = t('activerecord.models.user_exercise_feedback.other')
   - if @feedbacks.nil? or @feedbacks.size == 0
