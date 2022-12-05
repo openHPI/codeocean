@@ -110,7 +110,7 @@ class ApplicationController < ActionController::Base
           redirect_to :root, alert: message
         # Redirect to main domain if the request originated from our render_host
         elsif request.path == '/' && request.host == RENDER_HOST
-          redirect_to Rails.application.config.action_mailer.default_url_options
+          redirect_to Rails.application.config.action_mailer.default_url_options, allow_other_host: true
         else
           redirect_back fallback_location: :root, allow_other_host: false, alert: message
         end

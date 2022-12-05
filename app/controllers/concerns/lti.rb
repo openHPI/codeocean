@@ -124,10 +124,10 @@ module Lti
   private :require_valid_oauth_signature
 
   def return_to_consumer(options = {})
-    consumer_return_url = @provider.try(:launch_presentation_return_url) || params[:launch_presentation_return_url]
+    consumer_return_url = @provider.try(:launch_presentation_return_url)
     if consumer_return_url
       consumer_return_url += "?#{options.to_query}" if options.present?
-      redirect_to(consumer_return_url)
+      redirect_to(consumer_return_url, allow_other_host: true)
     else
       flash[:danger] = options[:lti_errormsg]
       flash[:info] = options[:lti_msg]

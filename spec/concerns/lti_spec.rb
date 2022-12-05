@@ -63,17 +63,18 @@ describe Lti do
   describe '#return_to_consumer' do
     context 'with a return URL' do
       let(:consumer_return_url) { 'https://example.org' }
+      let(:provider) { instance_double(IMS::LTI::ToolProvider, launch_presentation_return_url: consumer_return_url) }
 
-      before { allow(controller).to receive(:params).and_return(launch_presentation_return_url: consumer_return_url) }
+      before { controller.instance_variable_set(:@provider, provider) }
 
       it 'redirects to the tool consumer' do
-        expect(controller).to receive(:redirect_to).with(consumer_return_url)
+        expect(controller).to receive(:redirect_to).with(consumer_return_url, allow_other_host: true)
         controller.send(:return_to_consumer)
       end
 
       it 'passes messages to the consumer' do
         message = I18n.t('sessions.oauth.failure')
-        expect(controller).to receive(:redirect_to).with("#{consumer_return_url}?lti_errorlog=#{CGI.escape(message)}")
+        expect(controller).to receive(:redirect_to).with("#{consumer_return_url}?lti_errorlog=#{CGI.escape(message)}", allow_other_host: true)
         controller.send(:return_to_consumer, lti_errorlog: message)
       end
     end
