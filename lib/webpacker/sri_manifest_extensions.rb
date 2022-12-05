@@ -26,4 +26,6 @@ module Webpacker::SriManifestExtensions
   end
 end
 
-Webpacker::Manifest.prepend(Webpacker::SriManifestExtensions)
+if Webpacker::Manifest.ancestors.map(&:name).exclude?(Webpacker::SriManifestExtensions.name)
+  Webpacker::Manifest.prepend(Webpacker::SriManifestExtensions)
+end

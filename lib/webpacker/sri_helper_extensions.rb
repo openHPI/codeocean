@@ -24,4 +24,6 @@ module Webpacker::SriHelperExtensions
   end
 end
 
-Sprockets::Rails::Helper.prepend(Webpacker::SriHelperExtensions)
+if Sprockets::Rails::Helper.ancestors.map(&:name).exclude?(Webpacker::SriHelperExtensions.name)
+  Sprockets::Rails::Helper.prepend(Webpacker::SriHelperExtensions)
+end
