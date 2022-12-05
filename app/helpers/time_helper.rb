@@ -12,6 +12,28 @@ module TimeHelper
 
   # given a delta in seconds, return a "Hours:Minutes:Seconds" representation
   def format_time_difference(delta)
-    Time.at(delta).utc.strftime('%H:%M:%S')
+    format_time(delta, '%H:%M:%S')
+  end
+
+  # given a delta in seconds, return a "Hours:Minutes:Seconds.Milliseconds" representation
+  def format_time_difference_detailed(delta)
+    format_time(delta, '%H:%M:%S.%L')
+  end
+
+  # given a ISO8601 duration (PT27M47.975972S), return a ActiveSupport::Duration
+  def parse_duration(duration)
+    return ActiveSupport::Duration.build(0) if duration.nil?
+
+    ActiveSupport::Duration.parse(duration)
+  end
+
+  private
+
+  def format_time(delta, format)
+    unless delta.is_a?(Numeric)
+      delta = parse_duration(delta)
+    end
+
+    Time.at(delta).utc.strftime(format)
   end
 end
