@@ -49,7 +49,7 @@ const envConfig = module.exports = {
         new SubresourceIntegrityPlugin(),
         new WebpackAssetsManifest({
             entrypoints: true,
-            integrity: false,
+            integrity: true,
             writeToDisk: true,
             entrypointsUseAssets: true,
             publicPath: true,
