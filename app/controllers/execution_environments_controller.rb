@@ -3,6 +3,7 @@
 class ExecutionEnvironmentsController < ApplicationController
   include CommonBehavior
   include FileConversion
+  include TimeHelper
 
   before_action :set_docker_images, only: %i[create edit new update]
   before_action :set_execution_environment, only: MEMBER_ACTIONS + %i[execute_command shell list_files statistics sync_to_runner_management]
@@ -107,6 +108,10 @@ class ExecutionEnvironmentsController < ApplicationController
     user_statistics = {}
 
     ApplicationRecord.connection.execute(working_time_query).each do |tuple|
+      tuple = tuple.merge({
+        'average_time' => format_time_difference(tuple['average_time']),
+        'stddev_time' => format_time_difference(tuple['stddev_time']),
+      })
       working_time_statistics[tuple['exercise_id'].to_i] = tuple
     end
 
