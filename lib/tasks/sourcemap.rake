@@ -48,11 +48,17 @@ namespace :assets do
                        end
 
       # Read the source map file and append the source map link
-      existing_file_content = file.readlines
-      next if existing_file_content.blank? || existing_file_content[-1].include?(mapping_string)
+      existing_file_content = file.readlines.map(&:strip)
 
-      new_content = existing_file_content + ["\n", mapping_string]
-      write_asset(file, new_content.join, manifest)
+      if existing_file_content.blank? || existing_file_content[-1] == mapping_string
+        # Just "restore" the integrity hash
+        mtime = Sprockets::PathUtils.stat(file)&.mtime
+        manifest[File.basename(file)].merge!(changed_manifest(existing_file_content.join("\n"), mtime))
+      else
+        # Append the source map link to the file
+        new_content = existing_file_content + [mapping_string]
+        write_asset(file, new_content.join("\n"), manifest)
+      end
     end
 
     # We need to write the manifest file again to include the new integrity hashes
