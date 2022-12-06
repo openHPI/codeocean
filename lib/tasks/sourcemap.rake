@@ -55,6 +55,8 @@ namespace :assets do
       write_asset(file, new_content.join, manifest)
     end
 
+    # We need to write the manifest file again to include the new integrity hashes
+    manifest_json['files'] = manifest
     File.write(manifest_path, manifest_json.to_json)
   end
 
