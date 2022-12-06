@@ -28,7 +28,7 @@
     "jquery-ujs": "^1.2.3",
     "jstree": "^3.3.12",
     "keycharm": "^0.4.0",
-    "mini-css-extract-plugin": "^2.7.1",
+    "mini-css-extract-plugin": "^2.7.2",
     "moment": "^2.29.4",
     "opensans-webkit": "^1.1.0",
     "pnp-webpack-plugin": "^1.7.0",
