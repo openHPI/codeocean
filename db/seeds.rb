@@ -22,6 +22,10 @@ end
 Rails.application.eager_load!
 (ApplicationRecord.descendants - [ActiveRecord::SchemaMigration, User]).each(&:delete_all)
 
+# Set the default intervalstyle to iso_8601
+dbname = ApplicationRecord.connection.current_database
+ApplicationRecord.connection.exec_query("ALTER DATABASE \"#{dbname}\" SET intervalstyle = 'iso_8601';")
+
 # delete file uploads
 FileUtils.rm_rf(Rails.public_path.join('uploads'))
 

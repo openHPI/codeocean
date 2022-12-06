@@ -50,6 +50,7 @@ In order to execute code submissions using the [DockerContainerPool](https://git
 
 - We recommend using [Capistrano](https://capistranorb.com/) for deployment.
 - Once deployed, CodeOcean assumes to run exclusively under a (sub)domain. If you want to use it under a custom subpath, you can specify the desired path using an environment variable: `RAILS_RELATIVE_URL_ROOT=/codeocean`. Please ensure to rebuild all assets and restart the server to apply the new path.
+- When using [PgBouncer](https://www.pgbouncer.org), please make sure to correctly set the `intervalstyle` to `iso_8601` for the database. Otherwise, the application will not be able to parse timestamps correctly. See [a similar issue here](https://gitlab.com/gitlab-org/gitlab/-/issues/349912) and [our migration](./db/migrate/20221206221333_set_database_interval_style.rb) for more details.
 
 ## Monitoring
 - We use a [Prometheus Exporter](https://github.com/discourse/prometheus_exporter) and a [Telegraf Client](https://github.com/jgraichen/telegraf-ruby)
