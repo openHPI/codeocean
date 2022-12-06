@@ -48,7 +48,11 @@ namespace :assets do
                        end
 
       # Read the source map file and append the source map link
-      write_asset(file, "#{file.read}\n#{mapping_string}", manifest)
+      existing_file_content = file.readlines
+      next if existing_file_content.blank? || existing_file_content[-1].include?(mapping_string)
+
+      new_content = existing_file_content + ["\n", mapping_string]
+      write_asset(file, new_content.join, manifest)
     end
 
     File.write(manifest_path, manifest_json.to_json)
