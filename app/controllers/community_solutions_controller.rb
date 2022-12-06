@@ -60,7 +60,7 @@ class CommunitySolutionsController < ApplicationController
 
     # Acquire lock here! This is expensive but required for synchronization
     @community_solution_lock = ActiveRecord::Base.transaction do
-      ActiveRecord::Base.connection.execute("LOCK #{CommunitySolutionLock.table_name} IN ACCESS EXCLUSIVE MODE")
+      ApplicationRecord.connection.exec_query("LOCK #{CommunitySolutionLock.table_name} IN ACCESS EXCLUSIVE MODE")
 
       lock = CommunitySolutionLock.where(user: current_user, community_solution: @community_solution).order(locked_until: :asc).last
 

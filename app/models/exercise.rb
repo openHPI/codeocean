@@ -68,7 +68,7 @@ class Exercise < ApplicationRecord
   def average_score
     if submissions.exists?(cause: 'submit')
       maximum_scores_query = submissions.select('MAX(score) AS maximum_score').group(:user_id).to_sql.sub('$1', id.to_s)
-      self.class.connection.execute("SELECT AVG(maximum_score) AS average_score FROM (#{maximum_scores_query}) AS maximum_scores").first['average_score'].to_f
+      self.class.connection.exec_query("SELECT AVG(maximum_score) AS average_score FROM (#{maximum_scores_query}) AS maximum_scores").first['average_score'].to_f
     else
       0
     end
@@ -222,7 +222,7 @@ class Exercise < ApplicationRecord
                           "AND user_id = #{user.id} AND user_type = '#{user.class.name}'"
                         end
 
-    results = self.class.connection.execute(study_group_working_time_query(id, study_group_id,
+    results = self.class.connection.exec_query(study_group_working_time_query(id, study_group_id,
       additional_filter)).each do |tuple|
       bucket = if maximum_score > 0.0 && tuple['score'] <= maximum_score
                  (tuple['score'] / maximum_score * max_bucket).round
@@ -253,7 +253,7 @@ class Exercise < ApplicationRecord
   end
 
   def get_quantiles(quantiles)
-    result = self.class.connection.execute("
+    result = self.class.connection.exec_query("
             WITH working_time AS
       (
                SELECT   user_id,
@@ -369,14 +369,14 @@ class Exercise < ApplicationRecord
 
   def retrieve_working_time_statistics
     @working_time_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
-    self.class.connection.execute(user_working_time_query).each do |tuple|
+    self.class.connection.exec_query(user_working_time_query).each do |tuple|
       tuple = tuple.merge('working_time' => format_time_difference(tuple['working_time']))
       @working_time_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
     end
   end
 
   def average_working_time
-    result = self.class.connection.execute("
+    result = self.class.connection.exec_query("
       SELECT avg(working_time) as average_time
       FROM
         (#{self.class.sanitize_sql(user_working_time_query)}) AS baz;
@@ -392,7 +392,7 @@ class Exercise < ApplicationRecord
   def accumulated_working_time_for_only(user)
     user_type = user.external_user? ? 'ExternalUser' : 'InternalUser'
     begin
-      result = self.class.connection.execute("
+      result = self.class.connection.exec_query("
               WITH WORKING_TIME AS
               (SELECT user_id,
                                  id,

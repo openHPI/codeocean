@@ -69,7 +69,7 @@ class ExternalUsersController < ApplicationController
 
     statistics = {}
 
-    ApplicationRecord.connection.execute(working_time_query(tag&.id)).each do |tuple|
+    ApplicationRecord.connection.exec_query(working_time_query(tag&.id)).each do |tuple|
       tuple = tuple.merge('working_time' => format_time_difference(tuple['working_time']))
       statistics[tuple['exercise_id'].to_i] = tuple
     end

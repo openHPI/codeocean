@@ -107,7 +107,7 @@ class ExecutionEnvironmentsController < ApplicationController
     working_time_statistics = {}
     user_statistics = {}
 
-    ApplicationRecord.connection.execute(working_time_query).each do |tuple|
+    ApplicationRecord.connection.exec_query(working_time_query).each do |tuple|
       tuple = tuple.merge({
         'average_time' => format_time_difference(tuple['average_time']),
         'stddev_time' => format_time_difference(tuple['stddev_time']),
@@ -115,7 +115,7 @@ class ExecutionEnvironmentsController < ApplicationController
       working_time_statistics[tuple['exercise_id'].to_i] = tuple
     end
 
-    ApplicationRecord.connection.execute(user_query).each do |tuple|
+    ApplicationRecord.connection.exec_query(user_query).each do |tuple|
       user_statistics[tuple['exercise_id'].to_i] = tuple
     end
 
