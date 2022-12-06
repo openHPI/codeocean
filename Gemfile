@@ -48,6 +48,7 @@ gem 'slim-rails'
 gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.com/Sorcery/sorcery/pull/255
 gem 'sprockets-rails'
 gem 'telegraf'
+gem 'terser'
 gem 'tubesock'
 gem 'turbolinks'
 gem 'whenever', require: false
