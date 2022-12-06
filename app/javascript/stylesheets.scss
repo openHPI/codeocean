@@ -17,4 +17,38 @@ $fa-font-path: '~@fortawesome/fontawesome-free/webfonts/';
 @import '../../node_modules/@fortawesome/fontawesome-free/scss/regular';
 @import '../../node_modules/@fortawesome/fontawesome-free/scss/v4-shims';
 $opensans-path: '~opensans-webkit/fonts/';
-@import '../../node_modules/opensans-webkit/src/sass/open-sans';
+
+// Import the Open Sans font. We need to override the font-display property
+// to swap, otherwise the font will block rendering. This is done manually.
+// as no variable is included yet.
+// We inline the `opensans-webkit/src/sass/open-sans.scss`
+@import '../../node_modules/opensans-webkit/src/sass/variables';
+
+@mixin opensans-font($path, $name, $style, $weight, $variant) {
+
+  @font-face {
+    font-display: swap; // Manually added
+    font-family: '#{$name}';
+    font-style: $style;
+    font-weight: $weight;
+    src: local('Open Sans #{$variant}'),
+    local('Open-Sans-#{$variant}'),
+    url('#{$path}OpenSans-#{$variant}.woff2') format('woff2'),
+    url('#{$path}OpenSans-#{$variant}.woff') format('woff');
+  }
+}
+
+@include opensans-font($opensans-path, $opensans-name, normal, $opensans-weight-extrabold, 'ExtraBold');
+@include opensans-font($opensans-path, $opensans-name, italic, $opensans-weight-extrabold, 'ExtraBoldItalic');
+
+@include opensans-font($opensans-path, $opensans-name, normal, $opensans-weight-bold, 'Bold');
+@include opensans-font($opensans-path, $opensans-name, italic, $opensans-weight-bold, 'BoldItalic');
+
+@include opensans-font($opensans-path, $opensans-name, normal, $opensans-weight-semibold, 'SemiBold');
+@include opensans-font($opensans-path, $opensans-name, italic, $opensans-weight-semibold, 'SemiBoldItalic');
+
+@include opensans-font($opensans-path, $opensans-name, normal, $opensans-weight-normal, 'Regular');
+@include opensans-font($opensans-path, $opensans-name, italic, $opensans-weight-normal, 'Italic');
+
+@include opensans-font($opensans-path, $opensans-name, normal, $opensans-weight-light, 'Light');
+@include opensans-font($opensans-path, $opensans-name, italic, $opensans-weight-light, 'LightItalic');
