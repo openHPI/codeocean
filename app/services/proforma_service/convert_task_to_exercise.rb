@@ -86,7 +86,7 @@ module ProformaService
       codeocean_file = CodeOcean::File.new(
         context: @exercise,
         file_type: file_type(extension),
-        hidden: file.visible == 'no',
+        hidden: file.visible != 'yes', # hides 'delayed' and 'no'
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
         role: @task.meta_data[:CodeOcean]&.dig(:files)&.dig("CO-#{file.id}".to_sym)&.dig(:role),

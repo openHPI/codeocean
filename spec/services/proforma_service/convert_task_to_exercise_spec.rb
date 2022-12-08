@@ -472,7 +472,7 @@ describe ProformaService::ConvertTaskToExercise do
             content: 'ms-content',
             filename: 'filename.txt',
             used_by_grader: 'used_by_grader',
-            visible: 'yes',
+            visible: 'delayed',
             usage_by_lms: 'display',
             binary: false,
             internal_description: 'reference_implementation'
@@ -483,9 +483,9 @@ describe ProformaService::ConvertTaskToExercise do
           expect(convert_to_exercise_service).to have_attributes(
             id: exercise.id,
             files: have(3).items
-              .and(include(have_attributes(content: 'ms-content', role: 'reference_implementation')))
-              .and(include(have_attributes(content: 'content', role: 'regular_file')))
-              .and(include(have_attributes(content: 'testfile-content', role: 'teacher_defined_test')))
+              .and(include(have_attributes(content: 'ms-content', role: 'reference_implementation', hidden: true)))
+              .and(include(have_attributes(content: 'content', role: 'regular_file', hidden: false)))
+              .and(include(have_attributes(content: 'testfile-content', role: 'teacher_defined_test', hidden: true)))
           )
         end
       end
