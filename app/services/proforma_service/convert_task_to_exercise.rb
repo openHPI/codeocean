@@ -101,7 +101,7 @@ module ProformaService
     end
 
     def file_type(extension)
-      FileType.find_or_create_by(file_extension: extension) do |file_type|
+      FileType.find_or_create_by(file_extension: extension.presence) do |file_type|
         file_type.name = extension[1..]
         file_type.user = @user
         file_type.indent_size = 4
