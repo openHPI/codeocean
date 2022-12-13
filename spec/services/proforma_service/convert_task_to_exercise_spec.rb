@@ -232,6 +232,20 @@ describe ProformaService::ConvertTaskToExercise do
           expect { convert_to_exercise_service.save! }.to change(FileType, :count).by(1)
         end
       end
+
+      context 'when file has a Makefile' do
+        let!(:file_type) { create(:makefile) }
+
+        let(:filename) { 'Makefile' }
+
+        it 'creates a new Exercise on save' do
+          expect { convert_to_exercise_service.save! }.to change(Exercise, :count).by(1)
+        end
+
+        it 'creates an exercise with a file with correct attributes' do
+          expect(convert_to_exercise_service.files.first.file_type).to eql file_type
+        end
+      end
     end
 
     context 'when task has a model-solution' do
