@@ -106,6 +106,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
 
   def retrieve_files(path: './', recursive: true, privileged_execution: false)
     # The DockerContainerPool does not support retrieving files from the runner.
+    {'files' => []}
   end
 
   def attach_to_execution(command, event_loop, starting_time, privileged_execution: false) # rubocop:disable Lint/UnusedMethodArgument for the keyword argument
