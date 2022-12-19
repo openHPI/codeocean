@@ -439,6 +439,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    sd_notify (0.1.1)
     selenium-webdriver (4.7.1)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
@@ -604,6 +605,7 @@ DEPENDENCIES
   rubytree
   rubyzip
   sass-rails
+  sd_notify
   selenium-webdriver
   sentry-rails
   sentry-ruby
