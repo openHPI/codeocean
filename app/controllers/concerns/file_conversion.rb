@@ -4,6 +4,9 @@ module FileConversion
   private
 
   def convert_files_json_to_files(files_json)
+    # Return an empty list of files and directories if the files_json is nil
+    return [[], []] if files_json.blank?
+
     all_file_types = FileType.all
     directories = []
     files = files_json['files'].filter_map do |file|
