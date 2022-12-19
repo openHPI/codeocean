@@ -13,7 +13,7 @@ import 'jquery-ujs'
 import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle';
 import 'chosen-js/chosen.jquery';
 import 'jstree';
-import 'underscore';
+import * as _ from 'underscore';
 import * as d3 from 'd3';
 import * as Sentry from '@sentry/browser';
 import 'sorttable';
