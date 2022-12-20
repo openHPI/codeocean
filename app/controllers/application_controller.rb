@@ -122,7 +122,7 @@ class ApplicationController < ActionController::Base
 
   def switch_locale(&)
     session[:locale] = sanitize_locale(params[:custom_locale] || params[:locale] || session[:locale])
-    locale = session[:locale] || I18n.default_locale
+    locale = session[:locale] || http_accept_language.compatible_language_from(I18n.available_locales) || I18n.default_locale
     Sentry.set_extras(locale:)
     I18n.with_locale(locale, &)
   end

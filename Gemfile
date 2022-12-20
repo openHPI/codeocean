@@ -14,6 +14,7 @@ gem 'faraday-net_http_persistent'
 gem 'faye-websocket'
 gem 'forgery'
 gem 'highline'
+gem 'http_accept_language'
 gem 'i18n-js'
 gem 'ims-lti', '< 2.0.0' # Version 2 implements LTI 2.0, which is deprecated. Hence, we stay with version 1.
 gem 'jbuilder'
