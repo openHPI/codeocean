@@ -23,7 +23,7 @@
     "d3-tip": "^0.9.1",
     "highlight.js": "^11.7.0",
     "i18n-js": "^4.2.2",
-    "jquery": "^3.6.2",
+    "jquery": "^3.6.3",
     "jquery-ui": "^1.13.1",
     "jquery-ujs": "^1.2.3",
     "jstree": "^3.3.12",
