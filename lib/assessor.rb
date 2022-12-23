@@ -30,7 +30,7 @@ class Assessor
   end
 
   def translate_linter(result, locale)
-    @testing_framework_adapter.translate_linter(result, locale)
+    @testing_framework_adapter.try(:translate_linter, result, locale) || result
   end
 
   class Error < RuntimeError; end
