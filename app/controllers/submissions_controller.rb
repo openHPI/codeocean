@@ -248,6 +248,11 @@ class SubmissionsController < ApplicationController
           Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
           @testrun[:passed] = false
           save_testrun_output 'assess'
+        rescue StandardError => e
+          Sentry.capture_exception(e)
+          raise e
+        ensure
+          ActiveRecord::Base.connection_pool.release_connection
         end
       end
     end
