@@ -240,7 +240,7 @@ class ProxyExercise < ApplicationRecord
 
   def tag_diminishing_return_function(count_tag, total_count_tag)
     total_count_tag += 1 # bonus exercise comes on top
-    1 / (1 + (Math::E**(-3 / (0.5 * total_count_tag) * (count_tag - (0.5 * total_count_tag)))))
+    1 / ((Math::E**(-3 / (total_count_tag * 0.5) * (count_tag - (total_count_tag * 0.5)))) + 1)
   end
 
   def select_easiest_exercise(exercises)

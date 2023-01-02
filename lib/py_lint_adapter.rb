@@ -16,7 +16,7 @@ class PyLintAdapter < TestingFrameworkAdapter
     else
       captures = regex_match.map(&:to_f)
       count = captures.second
-      passed = captures.first >= 0 ? captures.first : 0
+      passed = [captures.first, 0].max
       failed = count - passed
     end
 
