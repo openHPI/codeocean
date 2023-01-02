@@ -45,7 +45,7 @@ gem 'rubytree'
 gem 'rubyzip'
 gem 'sass-rails'
 gem 'sd_notify' # Watchdog service monitoring for systemd, automatically used by Puma if this gem is installed
-gem 'shakapacker', '6.5.4'
+gem 'shakapacker', '6.5.5'
 gem 'slim-rails'
 gem 'sorcery' # Causes a deprecation warning in Rails 6.0+, see: https://github.com/Sorcery/sorcery/pull/255
 gem 'sprockets-rails'
