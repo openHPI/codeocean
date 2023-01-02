@@ -7,6 +7,12 @@ default: &default
   # Alternatively, you can use '/' to use the whole source_path directory.
   source_entry_path: /
 
+  #  While using a File-System-based automated bundle generation feature, miscellaneous warnings suggesting css order
+  #  conflicts may arise due to the mini-css-extract-plugin. For projects where css ordering has been mitigated through
+  #  consistent use of scoping or naming conventions, the css order warnings can be disabled by setting
+  #  css_extract_ignore_order_warnings to true
+  css_extract_ignore_order_warnings: false
+
   # If nested_entries is true, then we'll pick up subdirectories within the source_entry_path.
   # You cannot set this option to true if you set source_entry_path to '/'
   nested_entries: false
@@ -43,11 +49,13 @@ development:
   compiler_strategy: mtime
 
   # Reference: https://webpack.js.org/configuration/dev-server/
+  # Keys not described there are documented inline and in https://github.com/shakacode/shakapacker/
   dev_server:
     https: false
     host: localhost
     port: 3035
     # Hot Module Replacement updates modules while the application is running without a full reload
+    # Used instead of the `hot` key in https://webpack.js.org/configuration/dev-server/#devserverhot
     hmr: false
     # If HMR is on, CSS will by inlined by delivering it as part of the script payload via style-loader. Be sure
     # that you add style-loader to your project dependencies.
@@ -64,13 +72,14 @@ development:
       overlay: true
       # May also be a string
       # webSocketURL:
-      #  hostname: "0.0.0.0"
-      #  pathname: "/ws"
+      #  hostname: '0.0.0.0'
+      #  pathname: '/ws'
       #  port: 8080
     # Should we use gzip compression?
     compress: true
     # Note that apps that do not check the host are vulnerable to DNS rebinding attacks
-    allowed_hosts: "all"
+    allowed_hosts: 'all'
+    # Shows progress and colorizes output of bin/webpacker[-dev-server]
     pretty: true
     headers:
       'Access-Control-Allow-Origin': '*'
