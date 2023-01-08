@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'nokogiri'
-require File.expand_path('../../lib/active_model/validations/boolean_presence_validator', __dir__)
 
 class Exercise < ApplicationRecord
   include Context
@@ -38,8 +37,8 @@ class Exercise < ApplicationRecord
   validate :valid_submission_deadlines?
   validates :description, presence: true
   validates :execution_environment, presence: true, if: -> { !unpublished? }
-  validates :public, boolean_presence: true
-  validates :unpublished, boolean_presence: true
+  validates :public, inclusion: [true, false]
+  validates :unpublished, inclusion: [true, false]
   validates :title, presence: true
   validates :token, presence: true, uniqueness: true
   validates :uuid, uniqueness: {if: -> { uuid.present? }}

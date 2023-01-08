@@ -33,7 +33,7 @@ class User < ApplicationRecord
                               end
                             }
 
-  validates :platform_admin, boolean_presence: true
+  validates :platform_admin, inclusion: [true, false]
 
   def internal_user?
     is_a?(InternalUser)

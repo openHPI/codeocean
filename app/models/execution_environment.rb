@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require File.expand_path('../../lib/active_model/validations/boolean_presence_validator', __dir__)
-
 class ExecutionEnvironment < ApplicationRecord
   include Creation
   include DefaultValues
@@ -26,8 +24,8 @@ class ExecutionEnvironment < ApplicationRecord
   validates :docker_image, presence: true
   validates :memory_limit,
     numericality: {greater_than_or_equal_to: MINIMUM_MEMORY_LIMIT, only_integer: true}, presence: true
-  validates :network_enabled, boolean_presence: true
-  validates :privileged_execution, boolean_presence: true
+  validates :network_enabled, inclusion: [true, false]
+  validates :privileged_execution, inclusion: [true, false]
   validates :name, presence: true
   validates :permitted_execution_time, numericality: {only_integer: true}, presence: true
   validates :pool_size, numericality: {only_integer: true}, presence: true

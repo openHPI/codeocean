@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require File.expand_path('../../uploaders/file_uploader', __dir__)
-require File.expand_path('../../../lib/active_model/validations/boolean_presence_validator', __dir__)
 
 module CodeOcean
   class File < ApplicationRecord
@@ -49,9 +48,9 @@ module CodeOcean
     validates :feedback_message, if: :teacher_defined_assessment?, presence: true
     validates :feedback_message, absence: true, unless: :teacher_defined_assessment?
     validates :hashed_content, if: :content_present?, presence: true
-    validates :hidden, boolean_presence: true
+    validates :hidden, inclusion: [true, false]
     validates :name, presence: true
-    validates :read_only, boolean_presence: true
+    validates :read_only, inclusion: [true, false]
     validates :role, inclusion: {in: ROLES}
     validates :weight, if: :teacher_defined_assessment?, numericality: true, presence: true
     validates :weight, absence: true, unless: :teacher_defined_assessment?

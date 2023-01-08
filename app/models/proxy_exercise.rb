@@ -11,7 +11,7 @@ class ProxyExercise < ApplicationRecord
   has_and_belongs_to_many :exercises
   has_many :user_proxy_exercise_exercises
 
-  validates :public, boolean_presence: true
+  validates :public, inclusion: [true, false]
 
   def count_files
     exercises.count

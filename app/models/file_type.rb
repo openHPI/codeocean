@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require File.expand_path('../../lib/active_model/validations/boolean_presence_validator', __dir__)
-
 class FileType < ApplicationRecord
   include Creation
   include DefaultValues
@@ -22,12 +20,12 @@ class FileType < ApplicationRecord
   has_many :files, class_name: 'CodeOcean::File'
   has_many :file_templates
 
-  validates :binary, boolean_presence: true
+  validates :binary, inclusion: [true, false]
   validates :editor_mode, presence: true, unless: :binary?
-  validates :executable, boolean_presence: true
+  validates :executable, inclusion: [true, false]
   validates :indent_size, presence: true, unless: :binary?
   validates :name, presence: true
-  validates :renderable, boolean_presence: true
+  validates :renderable, inclusion: [true, false]
 
   %i[audio compressed csv excel image pdf powerpoint video word].each do |type|
     define_method("#{type}?") do

@@ -7,8 +7,8 @@ class CommunitySolutionContribution < ApplicationRecord
   belongs_to :community_solution
   belongs_to :community_solution_lock
 
-  validates :proposed_changes, boolean_presence: true
-  validates :timely_contribution, boolean_presence: true
-  validates :autosave, boolean_presence: true
+  validates :proposed_changes, inclusion: [true, false]
+  validates :timely_contribution, inclusion: [true, false]
+  validates :autosave, inclusion: [true, false]
   validates :working_time, presence: true
 end
