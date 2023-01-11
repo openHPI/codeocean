@@ -351,7 +351,7 @@ class ExercisesController < ApplicationController
       lti_json = lti_parameters.lti_parameters['launch_presentation_return_url']
 
       @course_token =
-        if lti_json.present? && (match = lti_json.match(%r{^.*courses/([a-z0-9\-]+)/sections}))
+        if lti_json.present? && (match = lti_json.match(%r{^.*courses/([a-z0-9-]+)/sections}))
           match.captures.first
         else
           ''
