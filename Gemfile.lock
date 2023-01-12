@@ -103,7 +103,7 @@ GEM
     bootstrap-will_paginate (1.0.0)
       will_paginate
     builder (3.2.4)
-    bunny (2.20.1)
+    bunny (2.20.2)
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
     byebug (11.1.3)
@@ -151,7 +151,7 @@ GEM
       regexp_parser (~> 2.2)
     erubi (1.12.0)
     eventmachine (1.2.7)
-    excon (0.96.0)
+    excon (0.97.1)
     execjs (2.8.1)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
@@ -296,7 +296,7 @@ GEM
     pg (1.4.5)
     prometheus_exporter (2.0.6)
       webrick
-    pry (0.14.1)
+    pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
     pry-byebug (3.10.1)
