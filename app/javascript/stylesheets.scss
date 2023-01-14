@@ -8,21 +8,21 @@
 // layout file, like app/views/layouts/application.html.slim
 
 $web-font-path: '//';
-@import '../../node_modules/bootswatch/dist/yeti/variables';
-@import '../../node_modules/bootstrap/scss/bootstrap';
-@import '../../node_modules/bootswatch/dist/yeti/bootswatch';
+@import '~bootswatch/dist/yeti/variables';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootswatch/dist/yeti/bootswatch';
 $fa-font-path: '~@fortawesome/fontawesome-free/webfonts/';
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/solid';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/regular';
-@import '../../node_modules/@fortawesome/fontawesome-free/scss/v4-shims';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/v4-shims';
 $opensans-path: '~opensans-webkit/fonts/';
 
 // Import the Open Sans font. We need to override the font-display property
 // to swap, otherwise the font will block rendering. This is done manually.
 // as no variable is included yet.
 // We inline the `opensans-webkit/src/sass/open-sans.scss`
-@import '../../node_modules/opensans-webkit/src/sass/variables';
+@import '~opensans-webkit/src/sass/variables';
 
 @mixin opensans-font($path, $name, $style, $weight, $variant) {
 
