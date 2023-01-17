@@ -2932,7 +2932,7 @@ jquery-ujs@^1.2.3:
   resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.3.tgz#dcac6026ab7268e5ee41faf9d31c997cd4ddd603"
   integrity sha512-59wvfx5vcCTHMeQT1/OwFiAj+UffLIwjRIoXdpO7Z7BCFGepzq9T9oLVeoItjTqjoXfUrHJvV7QU6pUR+UzOoA==
 
-"jquery@>=1.8.0 <4.0.0", jquery@>=1.9.1, jquery@^3.6.3:
+"jquery@>=1.8.0 <4.0.0", jquery@^3.6.0, jquery@^3.6.3:
   version "3.6.3"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.3.tgz#23ed2ffed8a19e048814f13391a19afcdba160e6"
   integrity sha512-bZ5Sy3YzKo9Fyc8wH2iIQK4JImJ6R0GWI9kL1/k7Z91ZBNgkRXE6U0JfHIizZbort8ZunhSI3jw9I6253ahKfg==
@@ -2979,12 +2979,12 @@ json5@^2.1.2, json5@^2.2.2:
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
   integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
 
-jstree@^3.3.12:
-  version "3.3.12"
-  resolved "https://registry.yarnpkg.com/jstree/-/jstree-3.3.12.tgz#cf206bc85dcf4a4664ed6617eaae3bd5983d8601"
-  integrity sha512-vHNLWkUr02ZYH7RcIckvhtLUtneWCVEtIKpIp2G9WtRh01ITv18EoNtNQcFG3ozM+oK6wp1Z300gSLXNQWCqGA==
+jstree@^3.3.14:
+  version "3.3.14"
+  resolved "https://registry.yarnpkg.com/jstree/-/jstree-3.3.14.tgz#f0615160a39ad1b48b2bd734388ca3eb3f44577b"
+  integrity sha512-W8t+nFOKENXNIulvu+DW4gPcnpOXY0FswiTiOn1Fnhs6poRe6eA/Kf6fS1/GJJ8C8KEy0q3ttF6tbGRDmHIM/g==
   dependencies:
-    jquery ">=1.9.1"
+    jquery "^3.6.0"
 
 keycharm@^0.4.0:
   version "0.4.0"
