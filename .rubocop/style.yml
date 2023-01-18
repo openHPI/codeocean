@@ -52,14 +52,6 @@ Style/GuardClause:
 Style/IfUnlessModifier:
   Enabled: false
 
-##
-## Scripts might include on top-level
-##
-#Style/MixinUsage:
-#  Exclude:
-#    - "scripts/**/*"
-#    - "services/*/scripts/**/*"
-
 #
 # Well, we do this. To often to disable them. Studid.
 #
@@ -71,27 +63,6 @@ Style/MultilineBlockChain:
 
 Style/RaiseArgs:
   EnforcedStyle: compact
-
-##
-## Quick single line rescues in specs
-##
-#Style/RescueModifier:
-#  Exclude:
-#    - "spec/**/*_spec.rb"
-#
-##
-## Quick single line rescues in specs
-##
-#Style/RescueStandardError:
-#  Enabled: false
-
-##
-## Often used pattern in chaining subjects in specs
-##
-#Style/Semicolon:
-#  Exclude:
-#    - "services/*/spec/**/*_spec.rb"
-#    - "spec/**/*_spec.rb"
 
 Style/SignalException:
   EnforcedStyle: only_raise

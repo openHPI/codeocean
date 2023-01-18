@@ -7,14 +7,3 @@
 Lint/AmbiguousBlockAssociation:
   Exclude:
     - "spec/**/*_spec.rb"
-
-#Lint/ShadowingOuterLocalVariable:
-#  Exclude:
-#    - "spec/**/*_spec.rb"
-#
-##
-## Assume we know what we do when resucing exception, as we do it much less often
-## than we actually should.
-##
-#Lint/SuppressedException:
-#  Enabled: false

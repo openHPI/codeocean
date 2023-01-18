@@ -1,12 +1,5 @@
 # TODOs
 
-# The API seems to use huge amounts of {...} blocks for it's API design.
-#
-Style/BlockDelimiters:
-  Exclude:
-    - api/**/*.rb
-
-
 # Lots of line are too long too.
 #
 Layout/LineLength:

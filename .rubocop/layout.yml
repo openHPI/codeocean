@@ -24,7 +24,6 @@ Layout/HashAlignment:
 
 Layout/LineLength:
   Exclude:
-    - "api/**/*"
     - "config/**/*"
     - "db/**/*"
     - "spec/**/*"
