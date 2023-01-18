@@ -74,6 +74,7 @@ group :development, :staging do
   gem 'pry-rails'
   gem 'rack-mini-profiler'
   gem 'rubocop', require: false
+  gem 'rubocop-capybara'
   gem 'rubocop-performance'
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec'
