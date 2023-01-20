@@ -443,6 +443,7 @@ class ExercisesController < ApplicationController
     if current_user.admin? || current_user.teacher?
       redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished?
       redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
+      redirect_to(@exercise, alert: t('exercises.implement.no_execution_environment')) if @exercise.execution_environment.blank?
     else
       render_not_authorized
     end

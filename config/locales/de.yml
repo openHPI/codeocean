@@ -451,6 +451,7 @@ de:
       not_graded: ohne Punkte
       hint: Hinweis
       no_files: Die Aufgabe umfasst noch keine sichtbaren Dateien.
+      no_execution_environment: Für die Aufgabe wurde noch keine Ausführungsumgebung gewählt.
       no_output: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe.
       no_output_exit_successful: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe and wurde erfolgreich beendet (Statuscode %{exit_code}).
       no_output_exit_failure: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe und wurde mit einem Fehler beendet (Statuscode %{exit_code}).

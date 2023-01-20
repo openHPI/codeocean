@@ -451,6 +451,7 @@ en:
       not_graded: not graded
       hint: Hint
       no_files: The exercise does not comprise visible files yet.
+      no_execution_environment: No execution environment has been selected for the exercise yet.
       no_output: The last code run finished on %{timestamp} without any output.
       no_output_exit_successful: The last code run finished on %{timestamp} without any output and exited successfully (status code %{exit_code}).
       no_output_exit_failure: The last code run finished on %{timestamp} without any output and exited with a failure (status code %{exit_code}).
@@ -464,7 +465,7 @@ en:
       results: Results
       start: Start Coding
       test_count: '<span class="number">%{count}</span> test files have been executed.'
-      unpublished: The selected exercises has been deactivated. Hence, you cannot implement this exercise at the moment.
+      unpublished: The selected exercise has been deactivated. Hence, you cannot implement this exercise at the moment.
       workspace: Workspace
       comment:
         a_comment: comment
