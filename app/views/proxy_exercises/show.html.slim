@@ -5,6 +5,7 @@ h1
 = row(label: 'exercise.title', value: @proxy_exercise.title)
 = row(label: 'exercise.user', value: link_to_if(policy(@proxy_exercise.author).show?, @proxy_exercise.author, @proxy_exercise.author))
 = row(label: 'proxy_exercise.files_count', value: @exercises.count)
+= row(label: 'proxy_exercise.algorithm', value: t("activerecord.attributes.proxy_exercise.algorithm_type.#{@proxy_exercise.algorithm}"))
 = row(label: 'exercise.public', value: @proxy_exercise.public?)
 = row(label: 'exercise.description', value: @proxy_exercise.description)
 = row(label: 'exercise.embedding_parameters', class: 'mb-4') do

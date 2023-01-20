@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_06_221333) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_20_185807) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -358,6 +358,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_06_221333) do
     t.string "user_type"
     t.bigint "user_id"
     t.boolean "public", default: false, null: false
+    t.integer "algorithm", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
     t.index ["user_type", "user_id"], name: "index_proxy_exercises_on_user_type_and_user_id"
   end
 

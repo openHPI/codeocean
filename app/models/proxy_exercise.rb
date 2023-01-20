@@ -4,6 +4,11 @@ class ProxyExercise < ApplicationRecord
   include Creation
   include DefaultValues
 
+  enum algorithm: {
+    best_match: 0,
+    random: 1,
+  }, _default: :write, _prefix: true
+
   after_initialize :generate_token
   after_initialize :set_reason
   after_initialize :set_default_values
@@ -47,16 +52,25 @@ class ProxyExercise < ApplicationRecord
       Rails.logger.debug { "retrieved assigned exercise for user #{user.id}: Exercise #{assigned_user_proxy_exercise.exercise}" }
       assigned_user_proxy_exercise.exercise
     else
-      Rails.logger.debug { "find new matching exercise for user #{user.id}" }
       matching_exercise =
-        begin
-          find_matching_exercise(user)
-        rescue StandardError => e # fallback
-          Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$ERROR_INFO}")
-          @reason[:reason] = 'fallback because of error'
-          @reason[:error] = "#{$ERROR_INFO}:\n\t#{e.backtrace.join("\n\t")}"
-          exercises.where('expected_difficulty > 1').sample # difficulty should be > 1 to prevent dummy exercise from being chosen.
+        case algorithm
+          when 'best_match'
+            Rails.logger.debug { "find new matching exercise for user #{user.id}" }
+            begin
+              find_matching_exercise(user)
+            rescue StandardError => e # fallback
+              Rails.logger.error("finding matching exercise failed. Fall back to random exercise! Error: #{$ERROR_INFO}")
+              @reason[:reason] = 'fallback because of error'
+              @reason[:error] = "#{$ERROR_INFO}:\n\t#{e.backtrace.join("\n\t")}"
+              exercises.where('expected_difficulty > 1').sample # difficulty should be > 1 to prevent dummy exercise from being chosen.
+            end
+          when 'random'
+            @reason[:reason] = 'random exercise requested'
+            exercises.sample
+          else
+            raise "Unknown algorithm #{algorithm}"
         end
+
       user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user:,
         exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
       matching_exercise

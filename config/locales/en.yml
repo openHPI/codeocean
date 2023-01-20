@@ -54,6 +54,10 @@ en:
       proxy_exercise:
         title: Title
         files_count: Exercises Count
+        algorithm: Algorithm
+        algorithm_type:
+          best_match: Best Match
+          random: Random Exercise
       external_user:
         consumer: Consumer
         email: Email

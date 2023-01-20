@@ -54,6 +54,10 @@ de:
       proxy_exercise:
         title: Title
         files_count: Anzahl der Aufgaben
+        algorithm: Algorithmus
+        algorithm_type:
+          best_match: Beste Übereinstimmung
+          random: Zufällige Aufgabe
       external_user:
         consumer: Konsument
         email: E-Mail

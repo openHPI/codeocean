@@ -6,6 +6,9 @@
   .mb-3
     = f.label(:description, class: 'form-label')
     = f.pagedown :description, input_html: { preview: true, rows: 10 }
+  .mb-3
+    = f.label(:algorithm, class: 'form-label')
+    = f.collection_select(:algorithm, ProxyExercise.algorithms.map { |algorithm, _id| [t("activerecord.attributes.proxy_exercise.algorithm_type.#{algorithm}"), algorithm] }, :second, :first, {}, class: 'form-control form-control-sm')
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:public, class: 'form-check-input')

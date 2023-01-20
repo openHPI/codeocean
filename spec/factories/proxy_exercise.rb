@@ -5,5 +5,6 @@ FactoryBot.define do
     created_by_teacher
     token { 'dummytoken' }
     title { 'Dummy' }
+    algorithm { 'best_match' }
   end
 end
