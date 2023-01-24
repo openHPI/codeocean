@@ -10,7 +10,7 @@
 # the maximum value specified for Puma. Default is set to 5 threads for minimum
 # and maximum; this matches the default thread size of Active Record.
 max_threads_count = ENV.fetch('RAILS_MAX_THREADS', 5)
-min_threads_count = ENV.fetch('RAILS_MIN_THREADS') { max_threads_count }
+min_threads_count = ENV.fetch('RAILS_MIN_THREADS', max_threads_count)
 threads min_threads_count, max_threads_count
 
 # Specifies that the worker count should equal the number of processors in production.
@@ -19,7 +19,9 @@ threads min_threads_count, max_threads_count
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 if ENV['RAILS_ENV'] == 'production'
-  worker_count = ENV.fetch('WEB_CONCURRENCY', Concurrent.physical_processor_count)
+  require 'concurrent'
+
+  worker_count = Integer(ENV.fetch('WEB_CONCURRENCY', Concurrent.physical_processor_count))
   workers worker_count if worker_count > 1
 end
 
