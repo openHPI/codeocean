@@ -76,7 +76,6 @@ class ApplicationController < ActionController::Base
     Sentry.set_user(
       id: current_user.id,
       type: current_user.class.name,
-      username: current_user.displayname,
       consumer: current_user.consumer&.name
     )
   end

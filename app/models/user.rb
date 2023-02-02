@@ -75,7 +75,6 @@ class User < ApplicationRecord
     {
       id:,
       type: self.class.name,
-      username: displayname,
       consumer: consumer.name,
     }
   end
