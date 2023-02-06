@@ -26,7 +26,7 @@ class FileType < ApplicationRecord
   validates :indent_size, presence: true, unless: :binary?
   validates :name, presence: true
   validates :renderable, inclusion: [true, false]
-  validates :file_extension, length: { minimum:0, allow_nil: false}
+  validates :file_extension, length: {minimum: 0, allow_nil: false}
 
   %i[audio compressed csv excel image pdf powerpoint video word].each do |type|
     define_method("#{type}?") do

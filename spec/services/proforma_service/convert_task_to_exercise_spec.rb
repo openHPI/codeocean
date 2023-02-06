@@ -157,6 +157,24 @@ describe ProformaService::ConvertTaskToExercise do
         expect { convert_to_exercise_service.save! }.to change(Exercise, :count).by(1)
       end
 
+      context 'when file is a Makefile' do
+        let(:filename) { "#{path}Makefile" }
+
+        it 'creates an exercise with a file with a Filetype, that has the correct attributes' do
+          expect(convert_to_exercise_service.files.first).to have_attributes(
+            file_type: be_a(FileType).and(have_attributes(file_extension: '', name: 'Imported'))
+          )
+        end
+
+        context 'when FileType for Makefile exists' do
+          let!(:makefile_filetype) { create(:makefile) }
+
+          it 'creates an exercise with a file with a Filetype, that has the correct attributes' do
+            expect(convert_to_exercise_service.files.first).to have_attributes(file_type: makefile_filetype)
+          end
+        end
+      end
+
       context 'when file is a main_file' do
         let(:meta_data) do
           {
