@@ -186,6 +186,7 @@ FactoryBot.define do
   factory :makefile, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/makefile' }
+    file_extension { '' }
     executable
     indent_size { 2 }
     name { 'Makefile' }

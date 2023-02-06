@@ -54,4 +54,10 @@ describe FileType do
   it 'validates the presence of a user' do
     expect(file_type.errors[:user]).to be_present
   end
+
+  it 'validates the presence of the file_extension' do
+    expect(file_type.errors[:file_extension]).to be_present
+    file_type.update(file_extension: '')
+    expect(file_type.errors[:file_extension]).to be_blank
+  end
 end
