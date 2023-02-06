@@ -264,7 +264,7 @@ $(document).on('turbolinks:load', function () {
     var inferFileAttributes = function () {
         $(document).on('change', 'input[type="file"]', function () {
             var filename = $(this).val().split(/\\|\//g).pop();
-            var file_extension = '.' + filename.split('.')[1];
+            var file_extension = filename.includes('.') ? '.' + filename.split('.')[1] : '';
             var file_type = findFileTypeByFileExtension(file_extension);
             var name = filename.split('.')[0];
             var parent = $(this).parents('li');
