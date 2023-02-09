@@ -9,6 +9,7 @@ The following environment variables are specifically support in CodeOcean and ar
 | `SENTRY_DSN` | ` ` | Specifies the [Sentry error reporting](https://sentry.io) endpoint for the Rails server |  
 | `SENTRY_JAVASCRIPT_DSN` | ` `    | Specifies the [Sentry error reporting](https://sentry.io) endpoint for the frontend used by browsers |  
 | `SENTRY_CURRENT_ENV` | ` ` | Specifies the [Sentry](https://sentry.io) environment used for error reporting |  
+| `SENTRY_TRACE_SAMPLE_RATE` | `1.0` | Specifies the sampling rate for traces in [Sentry](https://sentry.io) |  
 | `RAILS_LOG_LEVEL` | `info` in production<br>`debug` in development | Specifies how many log messages to print. The available log levels are: `debug`, `info`, `warn`, `error`, `fatal`, and `unknown`. |
 | `RAILS_LOG_TO_STDOUT` | `false` in `production` | Enables the server to print log output to the command line |  
 | `RAILS_SERVE_STATIC_FILES` | `true` in `development` and `test`<br>`false` in `production` and `staging` | Specifies whether the Rails server should be able to handle requests for non-dynamic resources (e.g., assets) |  

@@ -30,10 +30,10 @@ Sentry.init do |config|
           when '/', '/ping'
             0.00 # ignore health check
           else
-            0.01
+            ENV.fetch('SENTRY_TRACE_SAMPLE_RATE', 1.0).to_f
         end
       else
-        0.0 # ignore all other transactions
+        ENV.fetch('SENTRY_TRACE_SAMPLE_RATE', 1.0).to_f # sample all other transactions
     end
   end
 end
