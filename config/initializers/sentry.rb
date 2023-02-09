@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 Sentry.init do |config|
-  # Do not send full list of gems with each event
-  config.send_modules = false
+  config.send_modules = true
+  config.include_local_variables = true
+  config.breadcrumbs_logger = %i[sentry_logger monotonic_active_support_logger http_logger]
 
   # Set tracesSampleRate to 1.0 to capture 100%
   # of transactions for performance monitoring.
