@@ -67,36 +67,6 @@ Style/RaiseArgs:
 Style/SignalException:
   EnforcedStyle: only_raise
 
-#
-# Rails callbacks and all methods action on the arity of the given block will
-# behave differently if passed a symbol proc.
-#
-# See here for more details:
-#   https://github.com/rubocop-hq/rubocop/issues/3071#issuecomment-214550737
-#
-# Ignore all known Rails callback methods.
-#
-Style/SymbolProc:
-  IgnoredMethods:
-    - after_commit
-    - after_create
-    - after_destroy
-    - after_rollback
-    - after_save
-    - after_update
-    - after_validation
-    - around_create
-    - around_destroy
-    - around_save
-    - around_update
-    - before_create
-    - before_destroy
-    - before_save
-    - before_update
-    - before_validation
-    # Migrations look better with blocks
-    - create_table
-
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
 
