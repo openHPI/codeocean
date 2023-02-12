@@ -23,7 +23,7 @@ class Runner::Connection
 
     sentry_transaction = Sentry.get_current_scope&.get_span
     sentry_span = sentry_transaction&.start_child(op: SENTRY_OP_NAME, start_timestamp: Sentry.utc_now.to_f)
-    http_headers = strategy.class.websocket_header.merge sentry_trace_header(sentry_span)
+    http_headers = strategy.class.websocket_header.deep_merge sentry_trace_header(sentry_span)
 
     @socket = Faye::WebSocket::Client.new(url, [], http_headers)
     @strategy = strategy
