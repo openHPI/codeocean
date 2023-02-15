@@ -57,7 +57,7 @@ git clone https://github.com/openHPI/codeocean.git
 git clone https://github.com/openHPI/poseidon.git
 ```
 
-Vagrant assumes that these repositories are completely clean. For example, Vagrant will setup all configuration files in `config` (in both repositories) based on the examples provided in the same directory. Therefore it is **important** that these configuration files do not exist before running `vagrant up`. It is recommended to have a freshly cloned repository but you can also try to remove untracked files by running `git clean -xf` in both repositories.
+Vagrant assumes that these repositories are completely clean. For example, Vagrant will setup all configuration files in `config` for CodeOcean based on the examples provided in the same directory. Therefore it is **important** that these configuration files do not exist before running `vagrant up`. It is recommended to have a freshly cloned repository but you can also try to remove untracked files by running `git clean -xf` in both repositories.
 
 ## Switch current working directory
 

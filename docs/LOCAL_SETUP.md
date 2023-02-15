@@ -127,7 +127,7 @@ git clone https://github.com/openHPI/codeocean.git
 
 ### Switch current working directory
 
-This guide focusses on CodeOcean, as checked out in the previous step. Therefore, we are switching the working directory in the following. For Poseidon, please follow the [dedicated setup guide for Poseidon](https://github.com/openHPI/poseidon/blob/main/docs/development.md).
+This guide focuses on CodeOcean, as checked out in the previous step. Therefore, we are switching the working directory in the following. For Poseidon, please follow the [dedicated setup guide for Poseidon](https://github.com/openHPI/poseidon/blob/main/docs/development.md).
 
 ```shell
 cd codeocean
@@ -228,7 +228,7 @@ bundle exec prometheus_exporter
 
 ## Native Setup for Nomad
 
-As detailed earlier, this guide focusses on CodeOcean. Nevertheless, the following provides a short overview of the most important steps to get started with Nomad (as required for Poseidon). Please refer to the [full setup guide](https://github.com/openHPI/poseidon/blob/main/docs/development.md) for more details.
+As detailed earlier, this guide focuses on CodeOcean. Nevertheless, the following provides a short overview of the most important steps to get started with Nomad (as required for Poseidon). Please refer to the [full setup guide](https://github.com/openHPI/poseidon/blob/main/docs/development.md) for more details.
 
 ### Install Nomad
 
@@ -276,7 +276,7 @@ docker -v
 
 ## Native Setup for Poseidon
 
-As detailed earlier, this guide focusses on CodeOcean. Nevertheless, the following provides a short overview of the most important steps to get started with Poseidon. Please refer to the [full setup guide](https://github.com/openHPI/poseidon/blob/main/docs/development.md) for more details.
+As detailed earlier, this guide focuses on CodeOcean. Nevertheless, the following provides a short overview of the most important steps to get started with Poseidon. Please refer to the [full setup guide](https://github.com/openHPI/poseidon/blob/main/docs/development.md) for more details.
 
 ### Install Go
 
