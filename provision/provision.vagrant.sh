@@ -1,14 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+cd /home/vagrant/codeocean
 
 ######## VERSION INFORMATION ########
 
-postgres_version=14
-node_version=14
-ruby_version=2.7.6
-
-########## INSTALL SCRIPT ###########
+postgres_version=15
+node_version=lts/hydrogen
+ruby_version=$(cat .ruby-version)
 
 DISTRO="$(lsb_release -cs)"
+ARCH=$(dpkg --print-architecture)
+
+########## INSTALL SCRIPT ###########
 
 # Disable any optimizations for comparing checksums.
 # Otherwise, a hash collision might prevent apt to work correctly
@@ -16,83 +19,40 @@ DISTRO="$(lsb_release -cs)"
 sudo mkdir -p /etc/gcrypt
 echo all | sudo tee /etc/gcrypt/hwf.deny
 
+# Always set language to English
+sudo locale-gen en_US en_US.UTF-8
+
 # Prerequisites
 sudo apt -qq update
-sudo apt -qq -y install apt-transport-https ca-certificates curl gnupg-agent software-properties-common firefox firefox-geckodriver libpq-dev libicu-dev acl
+sudo apt -qq -y install ca-certificates curl libpq-dev libicu-dev
 sudo apt -qq -y upgrade
 
 # PostgreSQL
-curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-echo "deb https://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-sudo apt -qq update && sudo apt -qq install -y postgresql-client-$postgres_version postgresql-$postgres_version
-
-sudo sed -i "/# TYPE/q" /etc/postgresql/$postgres_version/main/pg_hba.conf
-sudo tee -a /etc/postgresql/$postgres_version/main/pg_hba.conf <<EOF
-# code_ocean: drop access control
-local all all trust
-host  all all 127.0.0.1/32 trust
-host  all all ::1/128 trust
-EOF
-sudo systemctl restart postgresql
-
-# Install node
-curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
-echo "deb https://deb.nodesource.com/node_$node_version.x $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
-echo "deb-src https://deb.nodesource.com/node_$node_version.x $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
-sudo apt -qq update && sudo apt -qq install -y nodejs
-
-# yarn
-curl -sSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt -qq update && sudo apt -qq install -y yarn
-
-# Docker
-curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-   $DISTRO \
-   stable"
-sudo apt -qq update && sudo apt -qq -y install docker-ce docker-ce-cli containerd.io
-
-sudo usermod -aG docker ${USER}
-
-sudo tee -a /etc/docker/daemon.json <<EOF
-{
-        "userns-remap": "default"
-}
-EOF
-
-sudo mkdir -p /etc/systemd/system/docker.service.d/
-sudo tee -a /etc/systemd/system/docker.service.d/override.conf <<EOF
-[Service]
-# Empty line is required
-ExecStart=
-ExecStart=/usr/bin/dockerd -H fd:// -H tcp://127.0.0.1:2376
-EOF
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-
-# Pull example docker image
-sudo docker pull openhpi/co_execenv_python:3.8
+curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null
+echo "deb [arch=$ARCH] http://apt.postgresql.org/pub/repos/apt $DISTRO-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+sudo apt-get update && sudo apt-get -y install postgresql-$postgres_version postgresql-client-$postgres_version
+sudo -u postgres createuser $(whoami) -ed
 
 # RVM
-curl -sSL https://rvm.io/mpapis.asc | gpg --import -
-curl -sSL https://rvm.io/pkuczynski.asc | gpg --import -
+gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 7D2BAF1CF37B13E2069D6956105BD0E739499BDB
 curl -sSL https://get.rvm.io | bash -s stable
-source "/home/vagrant/.profile"
+source ~/.rvm/scripts/rvm
 
-# ruby
+# Install NodeJS (without NVM)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+source ~/.nvm/nvm.sh
+nvm install $node_version
+
+# Enable Yarn
+corepack enable
+
+# Install Ruby
 rvm install $ruby_version
-rvm use $ruby_version --default
-
-# bundler
-gem install bundler
 
 ######## CODEOCEAN INSTALL ##########
-cd /home/vagrant/codeocean
 
-# config
-for f in action_mailer.yml database.yml secrets.yml docker.yml.erb mnemosyne.yml content_security_policy.yml
+# Prepare config
+for f in action_mailer.yml code_ocean.yml content_security_policy.yml database.yml docker.yml.erb mnemosyne.yml secrets.yml
 do
   if [ ! -f config/$f ]
   then
@@ -100,29 +60,39 @@ do
   fi
 done
 
-# We want to use a preconfigured code_ocean.yml file which is using the DockerContainerPool
-if [ ! -f config/code_ocean.yml ]
-then
-  cp provision/code_ocean.vagrant.yml config/code_ocean.yml
-fi
-
-# install dependencies
+# Install dependencies
 bundle install
 yarn install
 
-# create database
-export RAILS_ENV=development
-rake db:create
-rake db:schema:load
-rake db:migrate
-rake db:seed
+# Initialize database
+rake db:setup
 
-# Always set language to English
-sudo locale-gen en_US en_US.UTF-8
+######## NOMAD INSTALL ########
 
-# Set ACL to ensure access to files created by Docker
-mkdir -p tmp/files
-setfacl -Rdm user:codeocean:rwx tmp/files
+# Install Nomad
+wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt-get -y install nomad
+sudo systemctl enable nomad
+sudo systemctl start nomad
 
-#### DOCKERCONTAINERPOOL INSTALL ####
-../dockercontainerpool/provision.sh
+# Enable Memory Oversubscription
+until curl -s --fail http://localhost:4646/v1/agent/health ; do sleep 1; done
+curl -X POST -d '{"SchedulerAlgorithm": "spread", "MemoryOversubscriptionEnabled": true}' http://localhost:4646/v1/operator/scheduler/configuration
+
+# Install Docker
+curl -fsSL https://get.docker.com | sudo sh
+
+######## POSEIDON INSTALL ########
+
+# Install Golang
+gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 52B59B1571A79DBC054901C0F6BC817356A3D45E
+gpg --export 52B59B1571A79DBC054901C0F6BC817356A3D45E | sudo tee /usr/share/keyrings/golang-backports.gpg >/dev/null
+echo "deb [signed-by=/usr/share/keyrings/golang-backports.gpg] https://ppa.launchpadcontent.net/longsleep/golang-backports/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/golang.list
+sudo apt-get update && sudo apt-get -y install golang
+
+# Install Poseidon
+cd ../poseidon
+cp configuration.example.yaml configuration.yaml
+make bootstrap
+make build
