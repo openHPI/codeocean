@@ -37,7 +37,7 @@ FactoryBot.define do
 
   factory :java, class: 'ExecutionEnvironment' do
     created_by_teacher
-    default_memory_limit
+    memory_limit { 2 * ExecutionEnvironment::DEFAULT_MEMORY_LIMIT }
     default_cpu_limit
     docker_image { 'openhpi/co_execenv_java:8-antlr' }
     file_type { association :dot_java, user: }
