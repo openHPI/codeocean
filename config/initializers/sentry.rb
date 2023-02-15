@@ -37,4 +37,17 @@ Sentry.init do |config|
         ENV.fetch('SENTRY_TRACE_SAMPLE_RATE', 1.0).to_f # sample all other transactions
     end
   end
+
+  config.before_send_transaction = lambda do |event, _hint|
+    url_spans = %w[http.client websocket.client]
+
+    event.spans.each do |span|
+      next unless url_spans.include?(span[:op])
+
+      # Replace UUIDs in URLs with asterisks to allow better grouping of similar requests
+      span[:description].gsub!(/[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}/i, '*')
+    end
+
+    event
+  end
 end
