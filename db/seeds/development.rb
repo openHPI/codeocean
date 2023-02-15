@@ -30,6 +30,9 @@ ExecutionEnvironment.create_factories user: admin
 # submissions
 FactoryBot.create(:submission, exercise: @exercises[:fibonacci], user: external_user)
 
+# The old images included in the seed data do not feature a dedicated `user` and therefore require a privileged execution.
+ExecutionEnvironment.update_all privileged_execution: true # rubocop:disable Rails/SkipsModelValidations
+
 say(<<~CONFIRMATION_MESSAGE)
   Development data has been seeded successfully.
 
@@ -37,7 +40,7 @@ say(<<~CONFIRMATION_MESSAGE)
   stored in the database. However, these haven't been yet \
   synchronized with a runner management. Please take care \
   to configure a runner management according to the \
-  documentation and synchronize environments thorugh the \
+  documentation and synchronize environments through the \
   user interface. To do so, open `/execution_environments` \
   and click on the "Synchronize all" button.
 CONFIRMATION_MESSAGE
