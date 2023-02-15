@@ -1,10 +1,10 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  password: CHANGE_ME
   pool: 16
-  username: postgres
-  host: localhost
+  # username: CHANGE_ME
+  # password: CHANGE_ME
+  # host: localhost
 
 development:
   <<: *default

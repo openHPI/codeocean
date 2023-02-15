@@ -1,4 +1,5 @@
-#Why erb?
+# This file is only used for the deprecated DockerContainerPool (and not for Poseidon).
+
 default: &default
   connection_timeout: 3
   pool:

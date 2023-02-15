@@ -1,4 +1,5 @@
-#Why erb?
+# This file is only used for the deprecated DockerContainerPool (and not for Poseidon).
+
 default: &default
   # Specify the Docker host below, once for container management and once for output streaming.
   # Always use the TCP socket (instead of a unix socket) and an IPv4 address for best compatibility.

@@ -41,18 +41,18 @@ default: &default
     # When enabled, CodeOcean delegates the handling and management of (containerized) runners
     # to a dedicated runner management. Otherwise, code executions are performed locally using
     # Docker and without pre-warming support (one container per execution).
-    enabled: false
+    enabled: true
     # The strategy to use. Possible values are: poseidon, docker_container_pool
     strategy: poseidon
     # The root URL of the runner management to use (include any API prefix if required)
     # If a hostname is specified and the target host is reachable via IPv6, the WebSocket
     # connection might not use the IPv6-to-IPv4 fallback but rather fail unexpectedly.
-    url: https://runners.example.org/api/v1
+    url: http://127.0.0.1:7200/api/v1
     # The root certificate authority to trust for TLS connections to the runner management (Poseidon only)
-    ca_file: /example/certificates/ca.crt
+    # ca_file: /example/certificates/ca.crt
     # The authorization token for connections to the runner management (Poseidon only)
     # If TLS support is not enabled, this token is transmitted in clear text!
-    token: SECRET
+    # token: SECRET
     # The maximum time in seconds a runner may idle at the runner management before it is removed.
     # Each begin of an interaction with the runner resets this time. Thus, this value should
     # be truly greater than any permitted execution time of an execution environment.
