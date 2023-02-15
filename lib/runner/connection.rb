@@ -5,7 +5,7 @@ require 'json_schemer'
 
 class Runner::Connection
   # These are events for which callbacks can be registered.
-  EVENTS = %i[start exit stdout stderr].freeze
+  EVENTS = %i[start exit stdout stderr files].freeze
   WEBSOCKET_MESSAGE_TYPES = %i[start stdout stderr error timeout exit].freeze
   BACKEND_OUTPUT_SCHEMA = JSONSchemer.schema(JSON.parse(File.read('lib/runner/backend-output.schema.json')))
   SENTRY_OP_NAME = 'websocket.client'
@@ -15,6 +15,7 @@ class Runner::Connection
   # @!attribute exit_callback
   # @!attribute stdout_callback
   # @!attribute stderr_callback
+  # @!attribute files_callback
   attr_writer :status
   attr_reader :error
 
@@ -158,12 +159,8 @@ class Runner::Connection
         @strategy.destroy_at_management
         @error = Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
       when :terminated_by_codeocean, :terminated_by_management
-        files = begin
-          @strategy.retrieve_files
-        rescue Runner::Error::RunnerNotFound, Runner::Error::WorkspaceError
-          {'files' => []}
-        end
-        @exit_callback.call @exit_code, files
+        @exit_callback.call @exit_code
+        list_filesystem
       when :terminated_by_client, :error
         @strategy.destroy_at_management
       else # :established
@@ -180,6 +177,20 @@ class Runner::Connection
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Closed connection to #{@socket.url} with status: #{@status}" }
     @event_loop.stop
   end
+
+  def list_filesystem
+    files = {'files' => []}
+    begin
+      # Retrieve files from runner management ONLY IF the callback was defined outside of this class.
+      # Otherwise, we would call our default callback and retrieve the files without any further processing.
+      files = @strategy.retrieve_files if @files_callback.source_location.first != __FILE__
+    rescue Runner::Error::RunnerNotFound, Runner::Error::WorkspaceError
+      # Ignore errors when retrieving files. This is not critical and a suitable default is already provided.
+    ensure
+      @files_callback.call files
+    end
+  end
+  private :list_filesystem
 
   # === Message Handlers
   # Each message type indicated by the +type+ attribute in the JSON

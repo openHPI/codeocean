@@ -178,7 +178,7 @@ class SubmissionsController < ApplicationController
         send_and_store client_socket, message
       end
 
-      runner_socket.on :exit do |exit_code, files|
+      runner_socket.on :exit do |exit_code|
         @testrun[:exit_code] = exit_code
         exit_statement =
           if @testrun[:output].empty? && exit_code.zero?
@@ -201,6 +201,10 @@ class SubmissionsController < ApplicationController
           @testrun[:status] = :out_of_memory
         end
 
+        # The client connection will be closed once the file listing finished.
+      end
+
+      runner_socket.on :files do |files|
         downloadable_files, = convert_files_json_to_files files
         if downloadable_files.present?
           js_tree = FileTree.new(downloadable_files).to_js_tree
