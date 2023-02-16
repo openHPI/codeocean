@@ -172,6 +172,11 @@ class Runner::Connection
         @strategy.destroy_at_management
         @error = Runner::Error::Unknown.new('Execution terminated with an unknown reason')
     end
+  rescue Runner::Error::FaradayError, Runner::Error::UnexpectedResponse => e
+    # In some circumstances, the runner might be destroyed which could fail.
+    # In these cases, we catch the error to pass it to the callee through the existing error handling.
+    @error = e
+  ensure
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Closed connection to #{@socket.url} with status: #{@status}" }
     @event_loop.stop
   end
@@ -205,7 +210,7 @@ class Runner::Connection
 
   def handle_error(event)
     # In case of a (Nomad) error during execution, the runner management will notify us with an error message here.
-    # This shouldn't happen to often and can be considered an internal server error by the runner management.
+    # This shouldn't happen too often and can be considered an internal server error by the runner management.
     # More information is available in the logs of the runner management or the orchestrator (e.g., Nomad).
     Sentry.set_extras(event: event.inspect)
     Sentry.capture_message("An error occurred during code execution while being connected to #{@socket.url}.")

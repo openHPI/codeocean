@@ -220,6 +220,7 @@ class SubmissionsController < ApplicationController
     @testrun[:output] = "timeout: #{@testrun[:output]}"
     extract_durations(e)
   rescue Runner::Error => e
+    # Regardless of the specific error cause, we send a `container_depleted` status to the client.
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
     close_client_connection(client_socket)
     @testrun[:status] ||= :container_depleted
