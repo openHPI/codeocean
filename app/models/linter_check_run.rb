@@ -42,7 +42,7 @@ class LinterCheckRun < ApplicationRecord
     end
 
     # Now, we store all check runs and skip validations (they are already done)
-    LinterCheckRun.insert_all!(validated_check_runs) # rubocop:disable Rails/SkipsModelValidations
+    LinterCheckRun.insert_all!(validated_check_runs) if validated_check_runs.present? # rubocop:disable Rails/SkipsModelValidations
   end
   private_class_method :validate_and_store!
 end
