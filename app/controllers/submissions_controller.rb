@@ -110,7 +110,7 @@ class SubmissionsController < ApplicationController
       client_socket = tubesock
 
       client_socket.onopen do |_event|
-        return kill_client_socket(client_socket) if @embed_options[:disable_run]
+        kill_client_socket(client_socket) and return true if @embed_options[:disable_run]
       end
 
       client_socket.onclose do |_event|
@@ -159,6 +159,9 @@ class SubmissionsController < ApplicationController
         Sentry.capture_exception(e)
       end
     end
+
+    # If running is not allowed (and the socket is closed), we can stop here.
+    return true if @embed_options[:disable_run]
 
     @testrun[:output] = +''
     durations = @submission.run(@file) do |socket, starting_time|
