@@ -94,7 +94,7 @@ class TestrunMessage < ApplicationRecord
     end
 
     # Now, we store all messages and skip validations (they are already done)
-    TestrunMessage.insert_all!(validated_messages) # rubocop:disable Rails/SkipsModelValidations
+    TestrunMessage.insert_all!(validated_messages) if validated_messages.present? # rubocop:disable Rails/SkipsModelValidations
   end
   private_class_method :validate_and_store!
 
