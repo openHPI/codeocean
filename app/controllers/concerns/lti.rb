@@ -174,7 +174,7 @@ module Lti
       begin
         response = provider.post_replace_result!(normalized_lit_score)
         {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lit_score}
-      rescue IMS::LTI::XMLParseError
+      rescue IMS::LTI::XMLParseError, Net::OpenTimeout
         # A parsing error might happen if the LTI provider is down and doesn't return a valid XML response
         {status: 'error'}
       end

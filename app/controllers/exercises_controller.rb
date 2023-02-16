@@ -589,7 +589,7 @@ class ExercisesController < ApplicationController
       redirect_after_submit
     else
       respond_to do |format|
-        format.html { redirect_to(implement_exercise_path(@submission.exercise)) }
+        format.html { redirect_to(implement_exercise_path(@submission.exercise, alert: I18n.t('exercises.submit.failure'))) }
         format.json { render(json: {message: I18n.t('exercises.submit.failure')}, status: :service_unavailable) }
       end
     end
