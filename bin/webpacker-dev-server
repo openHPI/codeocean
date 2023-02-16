@@ -1,16 +1,16 @@
 #!/usr/bin/env ruby
 
-ENV["RAILS_ENV"] ||= "development"
-ENV["NODE_ENV"]  ||= ENV["RAILS_ENV"]
-
 require "pathname"
-ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile",
-  Pathname.new(__FILE__).realpath)
-
 require "bundler/setup"
-
 require "webpacker"
 require "webpacker/dev_server_runner"
+
+ENV["RAILS_ENV"] ||= "development"
+ENV["NODE_ENV"]  ||= ENV["RAILS_ENV"]
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile", Pathname.new(__FILE__).realpath)
+# We need to specify the path to the node_modules/.bin directory
+# The automatic detection of the path doesn't work in all cases, as it could contain an escape sequence.
+ENV["WEBPACKER_NODE_MODULES_BIN_PATH"] ||= File.expand_path("../../node_modules/.bin", Pathname.new(__FILE__).realpath)
 
 APP_ROOT = File.expand_path("..", __dir__)
 Dir.chdir(APP_ROOT) do
