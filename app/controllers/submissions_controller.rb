@@ -239,31 +239,32 @@ class SubmissionsController < ApplicationController
   # rubocop:enable Metrics/CyclomaticComplexity:
 
   def score
-    hijack do |tubesock|
-      tubesock.onopen do |_event|
-        switch_locale do
-          return kill_client_socket(tubesock) if @embed_options[:disable_score] || !@submission.exercise.teacher_defined_assessment?
+    client_socket = nil
+    disable_scoring = @embed_options[:disable_score] || !@submission.exercise.teacher_defined_assessment?
 
-          # The score is stored separately, we can forward it to the client immediately
-          tubesock.send_data(JSON.dump(@submission.calculate_score))
-          # To enable hints when scoring a submission, uncomment the next line:
-          # send_hints(tubesock, StructuredError.where(submission: @submission))
-          kill_client_socket(tubesock)
-        rescue Runner::Error => e
-          extract_durations(e)
-          send_and_store tubesock, {cmd: :status, status: :container_depleted}
-          kill_client_socket(tubesock)
-          Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
-          @testrun[:passed] = false
-          save_testrun_output 'assess'
-        rescue StandardError => e
-          Sentry.capture_exception(e)
-          raise e
-        ensure
-          ActiveRecord::Base.connection_pool.release_connection
-        end
+    hijack do |tubesock|
+      client_socket = tubesock
+      tubesock.onopen do |_event|
+        kill_client_socket(tubesock) and return true if disable_scoring
       end
     end
+
+    # If scoring is not allowed (and the socket is closed), we can stop here.
+    return true if disable_scoring
+
+    # The score is stored separately, we can forward it to the client immediately
+    client_socket&.send_data(JSON.dump(@submission.calculate_score))
+    # To enable hints when scoring a submission, uncomment the next line:
+    # send_hints(client_socket, StructuredError.where(submission: @submission))
+    kill_client_socket(client_socket)
+  rescue Runner::Error => e
+    extract_durations(e)
+    send_and_store client_socket, {cmd: :status, status: :container_depleted}
+    kill_client_socket(client_socket)
+    Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
+    @testrun[:passed] = false
+  ensure
+    save_testrun_output 'assess'
   end
 
   def create
@@ -275,24 +276,29 @@ class SubmissionsController < ApplicationController
   def statistics; end
 
   def test
-    hijack do |tubesock|
-      tubesock.onopen do |_event|
-        switch_locale do
-          return kill_client_socket(tubesock) if @embed_options[:disable_run]
+    client_socket = nil
 
-          # The score is stored separately, we can forward it to the client immediately
-          tubesock.send_data(JSON.dump(@submission.test(@file)))
-          kill_client_socket(tubesock)
-        rescue Runner::Error => e
-          extract_durations(e)
-          send_and_store tubesock, {cmd: :status, status: :container_depleted}
-          kill_client_socket(tubesock)
-          Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
-          @testrun[:passed] = false
-          save_testrun_output 'assess'
-        end
+    hijack do |tubesock|
+      client_socket = tubesock
+      tubesock.onopen do |_event|
+        kill_client_socket(tubesock) and return true if @embed_options[:disable_run]
       end
     end
+
+    # If running is not allowed (and the socket is closed), we can stop here.
+    return true if @embed_options[:disable_run]
+
+    # The score is stored separately, we can forward it to the client immediately
+    client_socket&.send_data(JSON.dump(@submission.test(@file)))
+    kill_client_socket(client_socket)
+  rescue Runner::Error => e
+    extract_durations(e)
+    send_and_store client_socket, {cmd: :status, status: :container_depleted}
+    kill_client_socket(client_socket)
+    Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
+    @testrun[:passed] = false
+  ensure
+    save_testrun_output 'assess'
   end
 
   private

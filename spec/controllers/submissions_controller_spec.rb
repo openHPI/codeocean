@@ -233,6 +233,7 @@ describe SubmissionsController do
 
     before do
       allow_any_instance_of(described_class).to receive(:hijack)
+      allow_any_instance_of(described_class).to receive(:kill_client_socket)
       perform_request.call
     end
 
@@ -247,6 +248,7 @@ describe SubmissionsController do
     before do
       file.update(hidden: false)
       allow_any_instance_of(described_class).to receive(:hijack)
+      allow_any_instance_of(described_class).to receive(:kill_client_socket)
       get :test, params: {filename: "#{file.filepath}.json", id: submission.id}
     end
 
