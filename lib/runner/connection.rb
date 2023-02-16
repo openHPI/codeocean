@@ -39,7 +39,7 @@ class Runner::Connection
       @socket.on(event_type) do |event|
         # The initial locale when establishing the connection is used for all callbacks
         I18n.with_locale(@locale) do
-          clone_sentry_hub_from_sentry_span(sentry_span)
+          clone_sentry_hub_from_span(sentry_span)
           __send__(:"on_#{event_type}", event, sentry_span)
         end
       end
@@ -229,7 +229,7 @@ class Runner::Connection
   # The methods below are inspired by the Sentry::Net:HTTP class
   # and adapted to the Websocket protocol running with EventMachine.
 
-  def clone_sentry_hub_from_sentry_span(sentry_span)
+  def clone_sentry_hub_from_span(sentry_span)
     Thread.current.thread_variable_set(Sentry::THREAD_LOCAL, sentry_span.transaction.hub) if sentry_span
   end
 
