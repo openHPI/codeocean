@@ -38,7 +38,7 @@ gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys 409B6B1796C275462A1703113
 curl -sSL https://get.rvm.io | bash -s stable
 source ~/.rvm/scripts/rvm
 
-# Install NodeJS (without NVM)
+# Install NodeJS
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 source ~/.nvm/nvm.sh
 nvm install $node_version
