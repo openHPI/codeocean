@@ -254,11 +254,11 @@ class ExercisesController < ApplicationController
 
   private :handle_file_uploads
 
-  def handle_exercise_tips
-    return unless exercise_params && exercise_params[:tips]
+  def handle_exercise_tips(tips_params)
+    return unless tips_params
 
     begin
-      exercise_tips = JSON.parse(exercise_params[:tips])
+      exercise_tips = JSON.parse(tips_params)
       # Order is important to ensure no foreign key restraints are violated during delete
       previous_exercise_tips = ExerciseTip.where(exercise: @exercise).select(:id).order(rank: :desc).ids
       remaining_exercise_tips = update_exercise_tips exercise_tips, nil, 1
@@ -429,11 +429,14 @@ class ExercisesController < ApplicationController
   def create
     @exercise = Exercise.new(exercise_params&.except(:tips))
     authorize!
-    handle_exercise_tips
     collect_set_and_unset_exercise_tags
+    tips_params = exercise_params&.dig(:tips)
     return if performed?
 
-    create_and_respond(object: @exercise, params: exercise_params_with_tags)
+    create_and_respond(object: @exercise, params: exercise_params_with_tags) do
+      # We first need to create the exercise before handling tips
+      handle_exercise_tips tips_params
+    end
   end
 
   def not_authorized_for_exercise(_exception)
@@ -491,7 +494,7 @@ class ExercisesController < ApplicationController
   private :collect_set_and_unset_exercise_tags
 
   def update
-    handle_exercise_tips
+    handle_exercise_tips exercise_params&.dig(:tips)
     return if performed?
 
     update_and_respond(object: @exercise, params: exercise_params_with_tags)
