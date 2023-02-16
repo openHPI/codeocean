@@ -500,7 +500,7 @@ GEM
       execjs (>= 0.3.0, < 3)
     thor (1.2.1)
     tilt (2.0.11)
-    timeout (0.3.1)
+    timeout (0.3.2)
     tubesock (0.2.9)
       rack (>= 1.5.0)
       websocket (>= 1.1.0)
@@ -630,4 +630,4 @@ DEPENDENCIES
   zxcvbn-ruby
 
 BUNDLED WITH
-   2.4.3
+   2.4.7
