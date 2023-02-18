@@ -14,9 +14,9 @@ Capybara.register_driver :selenium do |app|
   profile = Selenium::WebDriver::Firefox::Profile.new
   profile['intl.accept_languages'] = 'en'
   options = Selenium::WebDriver::Firefox::Options.new
-  options.headless! if ENV.fetch('CI', nil) == 'true'
+  options.add_argument('-headless') if ENV.fetch('CI', nil) == 'true'
   options.profile = profile
-  driver = Capybara::Selenium::Driver.new(app, browser: :firefox, capabilities: options)
+  driver = Capybara::Selenium::Driver.new(app, browser: :firefox, options:)
   driver.browser.manage.window.resize_to(1280, 960)
   driver
 end
