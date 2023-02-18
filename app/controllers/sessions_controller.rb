@@ -10,6 +10,7 @@ class SessionsController < ApplicationController
 
   skip_after_action :verify_authorized
   skip_before_action :verify_authenticity_token, only: :create_through_lti
+  after_action :set_sentry_context
 
   def new
     redirect_to(:root, alert: t('shared.already_signed_in')) if current_user
