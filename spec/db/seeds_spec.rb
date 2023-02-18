@@ -18,6 +18,9 @@ describe 'seeds' do
     }
     allow_any_instance_of(ExecutionEnvironment).to receive(:working_docker_image?).and_return true
     allow_any_instance_of(ExecutionEnvironment).to receive(:sync_runner_environment).and_return true
+
+    # Disable confirmation message while testing seeds
+    allow(HighLine).to receive(:say)
   end
 
   describe 'execute db:seed', cleaning_strategy: :truncation do

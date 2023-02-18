@@ -21,3 +21,6 @@ Capybara.register_driver :selenium do |app|
   driver
 end
 Capybara.javascript_driver = :selenium
+
+# Specify to use puma as server and disable debug output
+Capybara.server = :puma, {Silent: true}
