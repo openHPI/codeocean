@@ -30,7 +30,7 @@ gem 'net-smtp', require: false
 gem 'nokogiri'
 gem 'pagedown-bootstrap-rails'
 gem 'pg'
-gem 'proforma', github: 'openHPI/proforma', tag: 'v0.7.1'
+gem 'proforma', github: 'openHPI/proforma', tag: 'v0.8'
 gem 'prometheus_exporter'
 gem 'puma'
 gem 'pundit'
