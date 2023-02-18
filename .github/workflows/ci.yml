@@ -16,19 +16,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      co_execenv_java:
-        image: openhpi/co_execenv_java:8-antlr
 
     steps:
-      - name: Configure Docker host
-        run: |
-          echo $'{"hosts": ["tcp://127.0.0.1:2376", "unix:///var/run/docker.sock"], "iptables": false, "live-restore": true}' | sudo tee /etc/docker/daemon.json
-          sudo mkdir -p /etc/systemd/system/docker.service.d
-          echo $'[Service]\nExecStart=\nExecStart=/usr/bin/dockerd --containerd /var/run/containerd/containerd.sock' | sudo tee /etc/systemd/system/docker.service.d/override.conf
-          sudo systemctl daemon-reload
-          sudo systemctl restart docker
-          docker restart $(docker ps -aq)
-
       - name: Checkout code
         uses: actions/checkout@v3
 
