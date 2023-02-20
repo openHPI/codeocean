@@ -91,6 +91,8 @@ GEM
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
     bindex (0.8.1)
+    binding_of_caller (1.0.0)
+      debug_inspector (>= 0.0.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     bootstrap-will_paginate (1.0.0)
@@ -132,6 +134,7 @@ GEM
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
     date (3.3.3)
+    debug_inspector (1.1.0)
     diff-lcs (1.5.0)
     docile (1.4.0)
     docker-api (2.2.0)
@@ -514,6 +517,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt
   better_errors
+  binding_of_caller
   bootsnap
   bootstrap-will_paginate
   capybara
