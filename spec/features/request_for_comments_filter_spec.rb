@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 describe 'Request_for_Comments' do
-  let(:exercise) { create(:audio_video, description: Forgery(:lorem_ipsum).sentence) }
   let(:user) { create(:teacher) }
 
   before do
