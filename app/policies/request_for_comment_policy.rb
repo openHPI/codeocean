@@ -63,14 +63,14 @@ class RequestForCommentPolicy < ApplicationPolicy
           when 'all'
             @scope.all
           when 'consumer'
-            rfcs_with_users = @scope.distinct
+            rfcs_with_users = @scope
               .joins('LEFT OUTER JOIN external_users ON request_for_comments.user_type = \'ExternalUser\' AND request_for_comments.user_id = external_users.id')
               .joins('LEFT OUTER JOIN internal_users ON request_for_comments.user_type = \'InternalUser\' AND request_for_comments.user_id = internal_users.id')
 
             rfcs_with_users.where(external_users: {consumer_id: @user.consumer.id})
               .or(rfcs_with_users.where(internal_users: {consumer_id: @user.consumer.id}))
           when 'study_group'
-            @scope.distinct
+            @scope
               .joins(:submission)
               .where(submission: {study_group: @user.current_study_group_id})
           else

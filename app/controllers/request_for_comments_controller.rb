@@ -17,15 +17,24 @@ class RequestForCommentsController < ApplicationController
   def index
     @search = policy_scope(RequestForComment)
       .last_per_user(2)
-      .with_last_activity
-      .ransack(params[:q])
-    @request_for_comments = @search.result
       .joins(:exercise)
       .where(exercises: {unpublished: false})
+      .order(created_at: :desc) # Order for the LIMIT part of the query
+      .ransack(params[:q])
+
+    # This total is used later to calculate the total number of entries
+    request_for_comments = @search.result
+      # All conditions are included in the query, so get the number of requested records
+      .paginate(page: params[:page], per_page: per_page_param)
+
+    @request_for_comments = RequestForComment.where(id: request_for_comments)
+      .with_last_activity # expensive query, so we only do it for the current page
       .includes(submission: %i[study_group exercise])
       .includes(:file, :comments, :user)
-      .order(created_at: :desc)
-      .paginate(page: params[:page], per_page: per_page_param)
+      .order(created_at: :desc) # Order for the view
+      # We need to "paginate" again to enable the pagination links.
+      # This `paginate` call is not expensive, because the total number of entries is already known.
+      .paginate(page: params[:page], per_page: per_page_param, total_entries: @search.result.length)
 
     authorize!
   end
@@ -33,20 +42,32 @@ class RequestForCommentsController < ApplicationController
   # GET /my_request_for_comments
   def my_comment_requests
     @search = policy_scope(RequestForComment)
-      .with_last_activity
       .where(user: current_user)
+      .order(created_at: :desc) # Order for the LIMIT part of the query
       .ransack(params[:q])
-    @request_for_comments = @search.result
+
+    # This total is used later to calculate the total number of entries
+    request_for_comments = @search.result
+      # All conditions are included in the query, so get the number of requested records
+      .paginate(page: params[:page], per_page: per_page_param)
+
+    @request_for_comments = RequestForComment.where(id: request_for_comments)
+      .with_last_activity
       .includes(submission: %i[study_group exercise])
       .includes(:file, :comments, :user)
-      .order(created_at: :desc)
-      .paginate(page: params[:page], per_page: per_page_param)
+      .order(created_at: :desc) # Order for the view
+      # We need to "paginate" again to enable the pagination links.
+      # This `paginate` call is not expensive, because the total number of entries is already known.
+      .paginate(page: params[:page], per_page: per_page_param, total_entries: @search.result.length)
+
     authorize!
     render 'index'
   end
 
   # GET /my_rfc_activity
   def rfcs_with_my_comments
+    # As we order by `last_comment`, we need to include `with_last_activity` in the original query.
+    # Therefore, the optimization chosen above doesn't work here.
     @search = policy_scope(RequestForComment)
       .with_last_activity
       .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
