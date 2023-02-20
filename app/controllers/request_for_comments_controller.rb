@@ -22,9 +22,10 @@ class RequestForCommentsController < ApplicationController
     @request_for_comments = @search.result
       .joins(:exercise)
       .where(exercises: {unpublished: false})
-      .includes(submission: [:study_group])
-      .order('created_at DESC')
-      .paginate(page: params[:page], per_page: per_page_param, total_entries: @search.result.length)
+      .includes(submission: %i[study_group exercise])
+      .includes(:file, :comments, :user)
+      .order(created_at: :desc)
+      .paginate(page: params[:page], per_page: per_page_param)
 
     authorize!
   end
@@ -36,7 +37,9 @@ class RequestForCommentsController < ApplicationController
       .where(user: current_user)
       .ransack(params[:q])
     @request_for_comments = @search.result
-      .order('created_at DESC')
+      .includes(submission: %i[study_group exercise])
+      .includes(:file, :comments, :user)
+      .order(created_at: :desc)
       .paginate(page: params[:page], per_page: per_page_param)
     authorize!
     render 'index'
@@ -47,10 +50,12 @@ class RequestForCommentsController < ApplicationController
     @search = policy_scope(RequestForComment)
       .with_last_activity
       .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
-      .where(comments: {user_id: current_user.id})
+      .where(comments: {user: current_user})
       .ransack(params[:q])
     @request_for_comments = @search.result
-      .order('last_comment DESC')
+      .includes(submission: [:study_group, :exercise, {files: %i[comments]}])
+      .includes(:user)
+      .order(last_comment: :desc)
       .paginate(page: params[:page], per_page: per_page_param)
     authorize!
     render 'index'
@@ -65,7 +70,7 @@ class RequestForCommentsController < ApplicationController
       .ransack(params[:q])
     @request_for_comments = @search.result
       .joins(:exercise)
-      .order('last_comment DESC')
+      .order(last_comment: :desc)
       .paginate(page: params[:page], per_page: per_page_param)
     # let the exercise decide, whether its rfcs should be visible
     authorize(exercise)
