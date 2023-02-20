@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :consumer do
     name { 'openHPI' }
+    rfc_visibility { 'all' }
     singleton_consumer
   end
 

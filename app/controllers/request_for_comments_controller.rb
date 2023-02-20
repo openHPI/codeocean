@@ -15,7 +15,7 @@ class RequestForCommentsController < ApplicationController
   # GET /request_for_comments
   # GET /request_for_comments.json
   def index
-    @search = RequestForComment
+    @search = policy_scope(RequestForComment)
       .last_per_user(2)
       .with_last_activity
       .ransack(params[:q])
@@ -31,7 +31,7 @@ class RequestForCommentsController < ApplicationController
 
   # GET /my_request_for_comments
   def my_comment_requests
-    @search = RequestForComment
+    @search = policy_scope(RequestForComment)
       .with_last_activity
       .where(user: current_user)
       .ransack(params[:q])
@@ -44,7 +44,7 @@ class RequestForCommentsController < ApplicationController
 
   # GET /my_rfc_activity
   def rfcs_with_my_comments
-    @search = RequestForComment
+    @search = policy_scope(RequestForComment)
       .with_last_activity
       .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
       .where(comments: {user_id: current_user.id})
@@ -59,7 +59,7 @@ class RequestForCommentsController < ApplicationController
   # GET /exercises/:id/request_for_comments
   def rfcs_for_exercise
     exercise = Exercise.find(params[:exercise_id])
-    @search = RequestForComment
+    @search = policy_scope(RequestForComment)
       .with_last_activity
       .where(exercise_id: exercise.id)
       .ransack(params[:q])
@@ -155,8 +155,14 @@ class RequestForCommentsController < ApplicationController
   # The study groups are grouped by the current study group and other study groups of the user
   def set_study_group_grouping
     current_study_group = StudyGroup.find_by(id: session[:study_group_id])
-    my_study_groups = current_user.study_groups.reject {|group| group == current_study_group }
+    my_study_groups = case current_user.consumer.rfc_visibility
+                        when 'all' then current_user.study_groups.order(name: :desc)
+                        when 'consumer' then current_user.study_groups.where(consumer: current_user.consumer).order(name: :desc)
+                        when 'study_group' then current_study_group.present? ? Array(current_study_group) : []
+                        else raise "Unknown RfC Visibility #{current_user.consumer.rfc_visibility}"
+                      end
+
     @study_groups_grouping = [[t('request_for_comments.index.study_groups.current'), Array(current_study_group)],
-                              [t('request_for_comments.index.study_groups.my'), my_study_groups]]
+                              [t('request_for_comments.index.study_groups.my'), my_study_groups.reject {|group| group == current_study_group }]]
   end
 end

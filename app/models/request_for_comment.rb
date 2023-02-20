@@ -88,7 +88,20 @@ class RequestForComment < ApplicationRecord
     private
 
     def row_number_user_sql
-      select('id, user_id, user_type, exercise_id, file_id, question, created_at, updated_at, solved, full_score_reached, submission_id, row_number() OVER (PARTITION BY user_id, user_type ORDER BY created_at DESC) as row_number')
+      select('
+        request_for_comments.id,
+        request_for_comments.user_id,
+        request_for_comments.user_type,
+        request_for_comments.exercise_id,
+        request_for_comments.file_id,
+        request_for_comments.question,
+        request_for_comments.created_at,
+        request_for_comments.updated_at,
+        request_for_comments.solved,
+        request_for_comments.full_score_reached,
+        request_for_comments.submission_id,
+        row_number() OVER (PARTITION BY request_for_comments.user_id, request_for_comments.user_type ORDER BY request_for_comments.created_at DESC) as row_number
+      ')
     end
   end
 end

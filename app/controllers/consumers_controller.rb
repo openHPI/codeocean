@@ -23,7 +23,7 @@ class ConsumersController < ApplicationController
   end
 
   def consumer_params
-    params[:consumer].permit(:name, :oauth_key, :oauth_secret) if params[:consumer].present?
+    params[:consumer].permit(:name, :oauth_key, :oauth_secret, :rfc_visibility) if params[:consumer].present?
   end
   private :consumer_params
 

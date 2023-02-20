@@ -9,11 +9,12 @@ h1 = RequestForComment.model_name.human(count: 2)
       .col-auto.mt-3.mt-md-0
         = f.label(:title_cont,  t('request_for_comments.solved'), class: 'visually-hidden form-label')
         = f.select(:solved_not_eq,  [[t('request_for_comments.show_all'), 2], [t('request_for_comments.show_unsolved'), 1], [t('request_for_comments.show_solved'), 0]])
-    .row
-      .col
-        = f.label(:submission_study_group_id_eq,  t('request_for_comments.index.study_groups.placeholder'), class: 'visually-hidden form-label')
-        = f.grouped_collection_select(:submission_study_group_id_in, @study_groups_grouping, :second, :first, :id, :to_s, {},
-                { class: 'form-control', multiple: true, "data-placeholder": t('request_for_comments.index.study_groups.placeholder') })
+    - unless current_user.consumer.rfc_visibility_study_group?
+      .row
+        .col
+          = f.label(:submission_study_group_id_eq,  t('request_for_comments.index.study_groups.placeholder'), class: 'visually-hidden form-label')
+          = f.grouped_collection_select(:submission_study_group_id_in, @study_groups_grouping, :second, :first, :id, :to_s, {},
+                  { class: 'form-control', multiple: true, "data-placeholder": t('request_for_comments.index.study_groups.placeholder') })
 
 .table-responsive
   table.table.sortable.mt-4

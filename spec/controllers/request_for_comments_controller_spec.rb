@@ -9,6 +9,57 @@ describe RequestForCommentsController do
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
+  shared_examples 'RfC visibility settings' do
+    let(:user) { create(:learner) }
+
+    let!(:rfc_other_consumer) do
+      rfc = create(:rfc)
+      rfc.user.update(consumer: create(:consumer, name: 'Other Consumer'))
+      rfc
+    end
+
+    let!(:rfc_other_study_group) do
+      rfc = create(:rfc)
+      rfc.user.update(consumer: user.consumer)
+      rfc.submission.update(study_group: create(:study_group))
+      rfc
+    end
+
+    let!(:rfc_peer) do
+      rfc = create(:rfc)
+      rfc.user.update(consumer: user.consumer)
+      rfc.submission.update(study_group: user.study_groups.first)
+      rfc
+    end
+
+    context 'when rfc_visibility is set to all' do
+      before { user.consumer.update(rfc_visibility: 'all') }
+
+      it 'shows all RfCs' do
+        get :index
+        expect(assigns(:request_for_comments)).to match_array([rfc_other_consumer, rfc_other_study_group, rfc_peer])
+      end
+    end
+
+    context 'when rfc_visibility is set to consumer' do
+      before { user.consumer.update(rfc_visibility: 'consumer') }
+
+      it 'shows only RfCs of the same consumer' do
+        get :index
+        expect(assigns(:request_for_comments)).to match_array([rfc_other_study_group, rfc_peer])
+      end
+    end
+
+    context 'when rfc_visibility is set to study_group' do
+      before { user.consumer.update(rfc_visibility: 'study_group') }
+
+      it 'shows only RfCs of the same study group' do
+        get :index
+        expect(assigns(:request_for_comments)).to match_array([rfc_peer])
+      end
+    end
+  end
+
   describe 'GET #index' do
     it 'renders the index template' do
       get :index
@@ -32,6 +83,8 @@ describe RequestForCommentsController do
 
       expect(assigns(:request_for_comments)).to eq([rfc_within_my_study_group])
     end
+
+    include_examples 'RfC visibility settings'
   end
 
   describe 'GET #my_comment_requests' do
@@ -39,6 +92,8 @@ describe RequestForCommentsController do
 
     expect_http_status(:ok)
     expect_template(:index)
+
+    include_examples 'RfC visibility settings'
   end
 
   describe 'GET #rfcs_with_my_comments' do
@@ -46,6 +101,8 @@ describe RequestForCommentsController do
 
     expect_http_status(:ok)
     expect_template(:index)
+
+    include_examples 'RfC visibility settings'
   end
 
   describe 'GET #rfcs_for_exercise' do

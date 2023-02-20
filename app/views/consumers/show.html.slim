@@ -6,5 +6,6 @@ h1
 - %w[oauth_key oauth_secret].each do |attribute|
   = row(label: "consumer.#{attribute}") do
     = content_tag(:input, nil, class: 'form-control bg-secondary', readonly: true, value: @consumer.send(attribute))
+= row(label: 'consumer.rfc_visibility', value: t("activerecord.attributes.consumer.rfc_visibility_type.#{@consumer.rfc_visibility}"))
 
 = render('study_groups/table', study_groups: @consumer.study_groups.sort)

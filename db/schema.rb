@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_06_203117) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_19_113125) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -107,6 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_06_203117) do
     t.datetime "updated_at"
     t.string "oauth_key"
     t.string "oauth_secret"
+    t.integer "rfc_visibility", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
   end
 
   create_table "error_template_attributes", id: :serial, force: :cascade do |t|
