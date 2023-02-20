@@ -10,7 +10,7 @@ class RequestForCommentPolicy < ApplicationPolicy
   end
 
   def show?
-    everyone
+    admin? || rfc_visibility
   end
 
   def destroy?
@@ -18,11 +18,11 @@ class RequestForCommentPolicy < ApplicationPolicy
   end
 
   def mark_as_solved?
-    admin? || author?
+    admin? || (author? && rfc_visibility)
   end
 
   def set_thank_you_note?
-    admin? || author?
+    admin? || (author? && rfc_visibility)
   end
 
   def clear_question?
@@ -47,6 +47,19 @@ class RequestForCommentPolicy < ApplicationPolicy
 
   def rfcs_with_my_comments?
     everyone
+  end
+
+  def rfc_visibility
+    case @user.consumer.rfc_visibility
+      when 'all'
+        everyone
+      when 'consumer'
+        @record.author.consumer == @user.consumer
+      when 'study_group'
+        @record.submission.study_group.present? && @record.submission.study_group.id == @user.current_study_group_id
+      else
+        raise "Unknown RfC Visibility #{current_user.consumer.rfc_visibility}"
+    end
   end
 
   class Scope < Scope
