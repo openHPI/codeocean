@@ -26,7 +26,7 @@
     "jquery": "^3.6.3",
     "jquery-ui": "^1.13.1",
     "jquery-ujs": "^1.2.3",
-    "jstree": "^3.3.14",
+    "jstree": "^3.3.15",
     "keycharm": "^0.4.0",
     "mini-css-extract-plugin": "^2.7.2",
     "moment": "^2.29.4",
