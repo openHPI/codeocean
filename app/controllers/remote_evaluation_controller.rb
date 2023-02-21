@@ -6,6 +6,7 @@ class RemoteEvaluationController < ApplicationController
 
   skip_after_action :verify_authorized
   skip_before_action :verify_authenticity_token
+  skip_before_action :set_sentry_context
 
   # POST /evaluate
   def evaluate
@@ -77,6 +78,12 @@ class RemoteEvaluationController < ApplicationController
   private :create_and_score_submission
 
   def build_submission_params(cause, remote_evaluation_mapping)
+    Sentry.set_user(
+      id: remote_evaluation_mapping.user_id,
+      type: remote_evaluation_mapping.user_type,
+      consumer: remote_evaluation_mapping.user.consumer&.name
+    )
+
     files_attributes = remote_evaluation_params[:files_attributes]
     submission_params = remote_evaluation_params.except(:validation_token)
     submission_params[:exercise_id] = remote_evaluation_mapping.exercise_id
