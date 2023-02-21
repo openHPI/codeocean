@@ -21,7 +21,7 @@ module RedirectBehavior
           return
         end
 
-        rfc = @submission.own_unsolved_rfc
+        rfc = @submission.own_unsolved_rfc(current_user)
         if rfc
           # set a message that informs the user that his own RFC should be closed.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
@@ -36,7 +36,7 @@ module RedirectBehavior
         end
 
         # else: show open rfc for same exercise if available
-        rfc = @submission.unsolved_rfc
+        rfc = @submission.unsolved_rfc(current_user)
         unless rfc.nil? || @embed_options[:disable_redirect_to_rfcs] || @embed_options[:disable_rfc]
           # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')

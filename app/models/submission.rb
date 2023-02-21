@@ -128,12 +128,12 @@ class Submission < ApplicationRecord
     (user_id + exercise.created_at.to_i) % 10 == 1
   end
 
-  def own_unsolved_rfc
-    RequestForComment.unsolved.find_by(exercise_id: exercise, user_id:)
+  def own_unsolved_rfc(user = self.user)
+    Pundit.policy_scope(user, RequestForComment).unsolved.find_by(exercise_id: exercise, user_id:)
   end
 
-  def unsolved_rfc
-    RequestForComment.unsolved.where(exercise_id: exercise).where.not(question: nil).where(created_at: OLDEST_RFC_TO_SHOW.ago..Time.current).order('RANDOM()').find do |rfc_element|
+  def unsolved_rfc(user = self.user)
+    Pundit.policy_scope(user, RequestForComment).unsolved.where(exercise_id: exercise).where.not(question: nil).where(created_at: OLDEST_RFC_TO_SHOW.ago..Time.current).order('RANDOM()').find do |rfc_element|
       ((rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) && !rfc_element.question.empty?)
     end
   end
