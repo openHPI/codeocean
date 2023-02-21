@@ -34,7 +34,7 @@ class RequestForCommentsController < ApplicationController
       .order(created_at: :desc) # Order for the view
       # We need to manually enable the pagination links.
       .extending(WillPaginate::ActiveRecord::RelationMethods)
-    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page])
+    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page] || 1)
     @request_for_comments.limit_value = per_page_param
     @request_for_comments.total_entries = @search.result.length
 
@@ -60,7 +60,7 @@ class RequestForCommentsController < ApplicationController
       .order(created_at: :desc) # Order for the view
       # We need to manually enable the pagination links.
       .extending(WillPaginate::ActiveRecord::RelationMethods)
-    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page])
+    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page] || 1)
     @request_for_comments.limit_value = per_page_param
     @request_for_comments.total_entries = @search.result.length
 
