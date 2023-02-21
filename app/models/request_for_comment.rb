@@ -17,7 +17,7 @@ class RequestForComment < ApplicationRecord
   has_many :subscriptions, dependent: :destroy
 
   scope :unsolved, -> { where(solved: [false, nil]) }
-  scope :in_range, ->(from, to) { where(created_at: from..to) }
+  scope :in_range, ->(from, to) { from == DateTime.new(0) && to > 5.seconds.ago ? all : where(created_at: from..to) }
   scope :with_comments, -> { select {|rfc| rfc.comments.any? } }
 
   # after_save :trigger_rfc_action_cable

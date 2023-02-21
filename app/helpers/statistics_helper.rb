@@ -43,9 +43,7 @@ module StatisticsHelper
       {
         key: 'currently_active',
           name: t('statistics.entries.users.currently_active'),
-          data: ExternalUser.joins(:submissions)
-            .where(['submissions.created_at >= ?', DateTime.now - 5.minutes])
-            .distinct('external_users.id').count,
+          data: Submission.where(created_at: 5.minutes.ago.., user_type: ExternalUser.name).distinct.count(:user_id),
           url: statistics_graphs_path,
       },
     ]
@@ -81,6 +79,7 @@ module StatisticsHelper
       {
         key: 'container_requests_per_minute',
           name: t('statistics.entries.exercises.container_requests_per_minute'),
+          # This query is actually quite expensive since we do not have an index on the created_at column.
           data: (Testrun.where(created_at: DateTime.now - 1.hour..).count.to_f / 60).round(2),
           unit: '/min',
       },
