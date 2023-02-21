@@ -15,7 +15,10 @@ RailsAdmin.config do |config|
 
   ## == Pundit ==
   # config.authorize_with :pundit
+  config.parent_controller = '::RailsAdminController'
+
   config.authorize_with do
+    # Important! We need to check the authorization here, we skip Pundit checks in the RailsAdminController.
     unless current_user&.admin?
       flash[:alert] = t('application.not_authorized')
       redirect_to main_app.root_path
