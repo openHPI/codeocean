@@ -32,9 +32,11 @@ class RequestForCommentsController < ApplicationController
       .includes(submission: %i[study_group exercise])
       .includes(:file, :comments, :user)
       .order(created_at: :desc) # Order for the view
-      # We need to "paginate" again to enable the pagination links.
-      # This `paginate` call is not expensive, because the total number of entries is already known.
-      .paginate(page: params[:page], per_page: per_page_param, total_entries: @search.result.length)
+      # We need to manually enable the pagination links.
+      .extending(WillPaginate::ActiveRecord::RelationMethods)
+    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page])
+    @request_for_comments.limit_value = per_page_param
+    @request_for_comments.total_entries = @search.result.length
 
     authorize!
   end
@@ -56,9 +58,11 @@ class RequestForCommentsController < ApplicationController
       .includes(submission: %i[study_group exercise])
       .includes(:file, :comments, :user)
       .order(created_at: :desc) # Order for the view
-      # We need to "paginate" again to enable the pagination links.
-      # This `paginate` call is not expensive, because the total number of entries is already known.
-      .paginate(page: params[:page], per_page: per_page_param, total_entries: @search.result.length)
+      # We need to manually enable the pagination links.
+      .extending(WillPaginate::ActiveRecord::RelationMethods)
+    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page])
+    @request_for_comments.limit_value = per_page_param
+    @request_for_comments.total_entries = @search.result.length
 
     authorize!
     render 'index'
