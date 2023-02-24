@@ -30,7 +30,7 @@ html lang="#{I18n.locale || I18n.default_locale}" data-default-locale="#{I18n.de
             = render('navigation', cached: true)
             ul.nav.navbar-nav.ms-auto
               = render('locale_selector', cached: true)
-              li.nav-item.me-3 = link_to(t('shared.help.link'), '#modal-help', data: {toggle: 'modal'}, class: 'nav-link')
+              li.nav-item.me-3 = link_to(t('shared.help.link'), '#modal-help', data: {'bs-toggle': 'modal'}, class: 'nav-link')
               = render('session')
     div data-controller=controller_name
       = render('flash')
