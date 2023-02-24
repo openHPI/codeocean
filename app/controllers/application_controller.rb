@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
   RENDER_HOST = CodeOcean::Config.new(:code_ocean).read[:render_host]
+  LEGAL_SETTINGS = CodeOcean::Config.new(:code_ocean).read[:legal] || {}
 
   before_action :deny_access_from_render_host
   after_action :verify_authorized, except: %i[welcome]

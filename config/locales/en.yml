@@ -870,6 +870,8 @@ en:
       general_help: General Help
       headline: Help
       link: Help
+      imprint: Imprint
+      privacy_policy: Privacy Policy
     index: Index
     message_failure: 'Sorry, something went wrong.'
     websocket_failure: Sorry, a connection issue occoured. <a href="https://websocketstest.com" target="_blank" rel="noopener">Please check WebSocket connections with this tool</a> and try again.

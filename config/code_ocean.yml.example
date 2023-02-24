@@ -1,4 +1,9 @@
 default: &default
+  # The following legal URLs are displayed in the help modal of the application.
+  # legal:
+    # imprint_url: https://open.hpi.de/pages/imprint
+    # privacy_policy_url: https://open.hpi.de/pages/data-protection
+
   # A public-facing host to be used for the render_file function of the SubmissionsController.
   # User content will be served from this host. If not set, the default host is used (less secure!).
   # render_host: codeoceanusercontent.com

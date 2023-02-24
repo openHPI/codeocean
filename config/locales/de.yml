@@ -870,6 +870,8 @@ de:
       general_help: Allgemeine Hilfe
       headline: Hilfe
       link: Hilfe
+      imprint: Impressum
+      privacy_policy: Datenschutzerklärung
     index: Index
     message_failure: Leider ist ein Fehler auf unserer Plattform aufgetreten. Bitte probieren Sie es später noch einmal.
     websocket_failure: Leider ist ein Verbindungsproblem aufgetreten. <a href="https://websocketstest.com" target="_blank" rel="noopener">Bitte überprüfen Sie Websocket-Verbindungen mit diesem Tool</a> und versuchen Sie es erneut.

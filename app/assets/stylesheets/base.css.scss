@@ -153,3 +153,26 @@ span.caret {
   padding-inline-start: 0;
   white-space: pre-wrap;
 }
+
+.modal-footer {
+  ul.horizontal {
+    list-style: none;
+    padding: 0;
+    display: inline;
+
+    li {
+      display: inline;
+    }
+
+    &.dash {
+      li:after {
+        // \00a0 is for &nbsp;, \2013 for &ndash;
+        content: "\00a0\2013\00a0";
+      }
+    }
+
+    li:last-child:after {
+      content: "";
+    }
+  }
+}

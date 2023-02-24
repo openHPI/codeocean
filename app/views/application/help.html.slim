@@ -4,3 +4,10 @@
 - if local_assigns.has_key?(:execution_environment)
   h2 = t('shared.help.execution_environment_specific_help', execution_environment: execution_environment)
   = render_markdown(execution_environment.help)
+
+- content_for :modal_footer do
+  - if ApplicationController::LEGAL_SETTINGS.present?
+    ul.horizontal.dash.pull-start
+      - ApplicationController::LEGAL_SETTINGS.each do |name, link|
+        li
+          = link_to(t("shared.help.#{name.delete_suffix('_url')}"), link, target: '_blank', rel: 'noopener')

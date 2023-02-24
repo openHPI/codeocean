@@ -11,3 +11,4 @@
         - else
           = render(layout: false, locals: (local_assigns[:template_variables] || {}).merge(modal: true), template: template)
       .modal-footer
+        = yield(:modal_footer)
