@@ -192,7 +192,7 @@ describe SubmissionsController do
 
     %i[run test].each do |action|
       describe "##{action}_url" do
-        let(:url) { JSON.parse(response.body).with_indifferent_access.fetch("#{action}_url") }
+        let(:url) { response.parsed_body.with_indifferent_access.fetch("#{action}_url") }
 
         it "starts like the #{action} path" do
           filename = File.basename(__FILE__)
@@ -206,7 +206,7 @@ describe SubmissionsController do
     end
 
     describe '#render_url' do
-      let(:supported_urls) { JSON.parse(response.body).with_indifferent_access.fetch('render_url') }
+      let(:supported_urls) { response.parsed_body.with_indifferent_access.fetch('render_url') }
       let(:file) { submission.collect_files.detect(&:main_file?) }
       let(:url) { supported_urls.find {|hash| hash[:filepath] == file.filepath }['url'] }
 
@@ -220,7 +220,7 @@ describe SubmissionsController do
     end
 
     describe '#score_url' do
-      let(:url) { JSON.parse(response.body).with_indifferent_access.fetch('score_url') }
+      let(:url) { response.parsed_body.with_indifferent_access.fetch('score_url') }
 
       it 'corresponds to the score path' do
         expect(url).to eq(Rails.application.routes.url_helpers.score_submission_path(submission, format: :json))
