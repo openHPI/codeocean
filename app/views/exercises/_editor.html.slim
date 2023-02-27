@@ -26,7 +26,7 @@
       = render('editor_button', data: {:'data-bs-placement' => 'top', :'data-bs-toggle' => 'tooltip', :'data-bs-container' => 'body'}, icon: 'fa-solid fa-rocket', id: 'test', label: t('exercises.editor.test'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + t')) unless @embed_options[:disable_run]
       = render('editor_button', data: {:'data-bs-placement' => 'top', :'data-bs-toggle' => 'tooltip', :'data-bs-container' => 'body'}, icon: 'fa-solid fa-trophy', id: 'assess', label: t('exercises.editor.score'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + s')) unless @embed_options[:disable_score]
       - unless hide_rfc_button
-        = render('editor_button', icon: 'fa-solid fa-comment', id: 'requestComments', label: t('exercises.editor.requestComments'), title: t('exercises.editor.requestCommentsTooltip'))
+        = render('editor_button', data: {:'data-bs-placement' => 'top', :'data-bs-toggle' => 'tooltip', :'data-bs-container' => 'body'}, icon: 'fa-solid fa-comment', id: 'requestComments', label: t('exercises.editor.requestComments'), title: t('exercises.editor.requestCommentsTooltip'))
 
     - @files.each do |file|
       - file.read_only = true if @embed_options[:read_only]
