@@ -67,7 +67,7 @@ div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-botto
             h4 = t('exercises.editor.deadline')
             = t('exercises.editor.hints.disclaimer')
       - else
-        p.text-center = render('editor_button', classes: 'btn-lg btn-secondary disabled', data: {:'data-bs-placement' => 'bottom', :'data-tooltip' => true}, icon: 'fa-regular fa-clock', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
+        p.text-center.disabled = render('editor_button', classes: 'btn-lg btn-secondary', data: {:'data-bs-placement' => 'bottom', :'data-bs-toggle' => 'tooltip', :'data-bs-container' => 'body'}, icon: 'fa-regular fa-clock', id: 'submit_outdated', label: t('exercises.editor.exercise_deadline_passed'), title: t('exercises.editor.tooltips.exercise_deadline_passed'))
       hr
     #turtlediv.enforce-big-bottom-margin.overflow-auto.d-none
       canvas#turtlecanvas width=400 height=400

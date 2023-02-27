@@ -415,11 +415,6 @@ var CodeOceanEditor = {
         this.regex_for_language.set("ace/mode/java", /(?:\.\/)?(.*\.java):(\d+):/g);
     },
 
-    initializeTooltips: function () {
-        $('[data-tooltip]').tooltip();
-    },
-
-
     initializeWorkspaceButtons: function () {
         $('#submit').one('click', this.submitCode.bind(this));
         $('#assess').on('click', this.scoreCode.bind(this));
@@ -964,7 +959,6 @@ var CodeOceanEditor = {
         this.initializeOutputBarToggle();
         this.initializeDescriptionToggle();
         this.initializeSideBarTooltips();
-        this.initializeTooltips();
         this.initializeInterventionTimer();
         this.initializeSearchButton();
         this.initPrompt();
