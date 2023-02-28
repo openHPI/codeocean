@@ -724,7 +724,7 @@ var CodeOceanEditor = {
     },
 
     showStatus: function (output) {
-        if (output.status === 'timeout') {
+        if (output.status === 'timeout' || output.status === 'buffer_overflow') {
             this.showTimeoutMessage();
         } else if (output.status === 'container_depleted') {
             this.showContainerDepletedMessage();
