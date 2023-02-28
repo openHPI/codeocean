@@ -56,17 +56,19 @@ var CodeOceanEditor = {
 
     confirmReset: function (event) {
         event.preventDefault();
-        if (confirm($('#start-over').data('message-confirm'))) {
-            this.resetCode();
+        const initiator = $(event.target.closest("button"));
+        if (confirm(initiator.data('message-confirm'))) {
+            this.resetCode(initiator);
         }
     },
 
     confirmResetActiveFile: function (event) {
         event.preventDefault();
-        let message = $('#start-over-active-file').data('message-confirm');
+        const initiator = $(event.target.closest("button"));
+        let message = initiator.data('message-confirm');
         message = message.replace('%{filename}', CodeOceanEditor.active_file.filename.replace(/#$/, ''))
         if (confirm(message)) {
-            this.resetCode(true); // delete only active file
+            this.resetCode(initiator, true); // delete only active file
         }
     },
 

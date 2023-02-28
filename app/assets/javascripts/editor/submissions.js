@@ -111,8 +111,8 @@ CodeOceanEditorSubmissions = {
     });
   },
 
-  resetCode: function(onlyActiveFile = false) {
-    this.showSpinner(this);
+  resetCode: function(initiator, onlyActiveFile = false) {
+    this.showSpinner(initiator);
     this.ajax({
       method: 'GET',
       url: $('#start-over').data('url') || $('#start-over-active-file').data('url')
