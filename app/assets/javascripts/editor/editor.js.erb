@@ -878,6 +878,11 @@ var CodeOceanEditor = {
                             // timeUntilIntervention passed
                             if (editor.data('tips-interventions')) {
                                 const modal = $('#tips-intervention-modal');
+                                if (!modal.isPresent()) {
+                                    // The modal is not present (e.g., because the site was navigated), so we don't continue here.
+                                    return;
+                                }
+
                                 modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
                                 new bootstrap.Modal(modal).show();
                                 $.ajax({
@@ -890,6 +895,11 @@ var CodeOceanEditor = {
                                 });
                             } else if (editor.data('break-interventions')) {
                                 const modal = $('#break-intervention-modal');
+                                if (!modal.isPresent()) {
+                                    // The modal is not present (e.g., because the site was navigated), so we don't continue here.
+                                    return;
+                                }
+
                                 modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
                                 new bootstrap.Modal(modal).show();
                                 $.ajax({
@@ -905,7 +915,12 @@ var CodeOceanEditor = {
                                 // only show intervention if user did not requested for a comment already
                                 if (!button.prop('disabled')) {
                                     $('#rfc_intervention_text').show();
-                                    modal = $('#comment-modal');
+                                    const modal = $('#comment-modal');
+                                    if (!modal.isPresent()) {
+                                        // The modal is not present (e.g., because the site was navigated), so we don't continue here.
+                                        return;
+                                    }
+
                                     modal.find('.modal-footer').html(I18n.t("exercises.implement.intervention.explanation", {duration: Math.round(percentile75 / 60)}));
                                     modal.on('hidden.bs.modal', function () {
                                         modal.find('.modal-footer').text('');
