@@ -333,10 +333,36 @@ var CodeOceanEditor = {
             editor.on("copy", this.handleCopyEvent.bind(element));
 
             // listener for autosave
-            session.on("change", function (deltaObject) {
+            session.on("change", function (deltaObject, session) {
+                // TODO: This is a workaround for a bug in Ace. Remove when upgrading Ace.
+                this.handleUTF16Surrogates(deltaObject, session);
                 this.resetSaveTimer();
             }.bind(this));
         }.bind(this));
+    },
+
+    handleUTF16Surrogates: function (AceDeltaObject, AceSession) {
+        if (AceDeltaObject.data === undefined || AceDeltaObject.data.action !== "removeText") {
+            return;
+        }
+
+        const codePoint = AceDeltaObject.data.text.codePointAt(0);
+        if (0xDC00 <= codePoint && codePoint <= 0xDFFF) {
+            // The text contains a UTF-16 surrogate pair, and the only the lower part is removed.
+            // We need to remove the high surrogate pair as well.
+            const currentCharacter = AceDeltaObject.data.range
+            const previousCharacter = {
+                start: {
+                    row: currentCharacter.start.row,
+                    column: currentCharacter.start.column - 1
+                },
+                end: {
+                    row: currentCharacter.start.row,
+                    column: currentCharacter.start.column
+                }
+            }
+            AceSession.remove(previousCharacter);
+        }
     },
 
     initializeEventHandlers: function () {
