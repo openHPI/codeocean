@@ -204,7 +204,7 @@ CodeOceanEditorSubmissions = {
     const button = $(event.target) || $('#submit');
     this.createSubmission(button, null, function (response) {
       if (response.redirect) {
-        this.unloadAutoSave();
+        this.autosaveIfChanged();
         this.editors = [];
         Turbolinks.clearCache();
         Turbolinks.visit(response.redirect);
@@ -228,13 +228,6 @@ CodeOceanEditorSubmissions = {
     this.autosaveTimer = setTimeout(this.autosave.bind(this), this.AUTOSAVE_INTERVAL);
   },
 
-  unloadAutoSave: function() {
-    if(this.autosaveTimer != null){
-      clearTimeout(this.autosaveTimer);
-      this.autosave();
-    }
-  },
-
   updateSaveStateLabel: function() {
     var date = new Date();
     var autosaveLabel = $(this.autosaveLabel);
@@ -243,7 +236,15 @@ CodeOceanEditorSubmissions = {
     autosaveLabel.text(date.toLocaleTimeString());
   },
 
+  autosaveIfChanged: function() {
+    // Only save if the user has changed the code in the meantime (represented by an active timer)
+    if(this.autosaveTimer != null){
+      this.autosave();
+    }
+  },
+
   autosave: function () {
+    clearTimeout(this.autosaveTimer);
     this.autosaveTimer = null;
     this.createSubmission($('#autosave'), null);
   }
