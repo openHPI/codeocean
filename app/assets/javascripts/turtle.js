@@ -79,20 +79,18 @@ function Turtle(unused_pipe_reference, canvas) {
 }
 
 Turtle.prototype.update = function () {
-    var i, k, canvas, ctx, dx, dy, item, c, length;
-    canvas = this.canvas[0];
+    let k, c;
+    const canvas = this.canvas[0];
     canvas.width = this.get_width() * devicePixelRatio;
     canvas.height = this.get_height() * devicePixelRatio;
     canvas.style.width = `${this.get_width()}px`;
     canvas.style.height = `${this.get_height()}px`;
-    ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, this.get_width(), this.get_height());
     ctx.scale(devicePixelRatio, devicePixelRatio);
-    length = this.items.length;
-    dx = canvas.width / (2 * devicePixelRatio);
-    dy = canvas.height / (2 * devicePixelRatio);
-    for (i = 0; i < length; i += 1) {
-        item = this.items[i];
+    const dx = canvas.width / (2 * devicePixelRatio);
+    const dy = canvas.height / (2 * devicePixelRatio);
+    for (let item of this.items) {
         c = item.coords;
         switch (item.type) {
         case 'line':
