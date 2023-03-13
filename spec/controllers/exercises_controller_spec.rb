@@ -268,11 +268,11 @@ describe ExercisesController do
     context 'when viewing the default submission statistics page without a parameter' do
       it 'does not list autosaved submissions' do
         perform_request
-        expect(assigns(:all_events).filter {|event| event.is_a? Submission }).to match_array [
+        expect(assigns(:all_events).filter {|event| event.is_a? Submission }).to contain_exactly(
           an_object_having_attributes(cause: 'run', user_id: external_user.id),
           an_object_having_attributes(cause: 'assess', user_id: external_user.id),
-          an_object_having_attributes(cause: 'run', user_id: external_user.id),
-        ]
+          an_object_having_attributes(cause: 'run', user_id: external_user.id)
+        )
       end
     end
 

@@ -37,7 +37,7 @@ describe RequestForCommentsController do
 
       it 'shows all RfCs' do
         get :index
-        expect(assigns(:request_for_comments)).to match_array([rfc_other_consumer, rfc_other_study_group, rfc_peer])
+        expect(assigns(:request_for_comments)).to contain_exactly(rfc_other_consumer, rfc_other_study_group, rfc_peer)
       end
     end
 
@@ -46,7 +46,7 @@ describe RequestForCommentsController do
 
       it 'shows only RfCs of the same consumer' do
         get :index
-        expect(assigns(:request_for_comments)).to match_array([rfc_other_study_group, rfc_peer])
+        expect(assigns(:request_for_comments)).to contain_exactly(rfc_other_study_group, rfc_peer)
       end
     end
 
@@ -55,7 +55,7 @@ describe RequestForCommentsController do
 
       it 'shows only RfCs of the same study group' do
         get :index
-        expect(assigns(:request_for_comments)).to match_array([rfc_peer])
+        expect(assigns(:request_for_comments)).to contain_exactly(rfc_peer)
       end
     end
   end
