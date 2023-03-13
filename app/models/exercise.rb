@@ -517,7 +517,7 @@ class Exercise < ApplicationRecord
         0
       end
     else
-      files.teacher_defined_assessments.sum(:weight)
+      @maximum_score ||= files.teacher_defined_assessments.sum(:weight)
     end
   end
 

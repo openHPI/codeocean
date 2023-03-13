@@ -3,13 +3,20 @@
 module FileParameters
   def reject_illegal_file_attributes(exercise, params)
     if exercise && params
+      # We only want to load the files once, to avoid multiple database queries.
+      # Further, we use `unscope` to avoid that the `order` scope is applied
+      files = CodeOcean::File.unscope(:order).where(id: params.values.pluck(:file_id))
+
       params.reject do |_, file_attributes|
-        file = CodeOcean::File.find_by(id: file_attributes[:file_id])
+        # This mechanism seems cumbersome, but we cannot use an index here.
+        # The ordering of the files is not guaranteed to be the same as the ordering of the file attributes.
+        file = files.find {|f| f.id == file_attributes[:file_id].to_i }
+
         next true if file.nil? || file.hidden || file.read_only
         # avoid that public files from other contexts can be created
         # `next` is similar to an early return and will proceed with the next iteration of the loop
-        next true if file.context_type == 'Exercise' && file.context != exercise
-        next true if file.context_type == 'Submission' && file.context.user != current_user
+        next true if file.context_type == 'Exercise' && file.context_id != exercise.id
+        next true if file.context_type == 'Submission' && (file.context.user_id != current_user.id || file.context.user_type != current_user.class.name)
         next true if file.context_type == 'CommunitySolution' && controller_name != 'community_solutions'
 
         false

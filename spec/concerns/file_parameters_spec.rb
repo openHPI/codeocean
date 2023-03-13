@@ -12,7 +12,7 @@ describe FileParameters do
 
   describe '#reject_illegal_file_attributes!' do
     def file_accepted?(file)
-      files = [[0, attributes_for(:file, context: hello_world, file_id: file.id)]]
+      files = {'0': attributes_for(:file, context: hello_world, file_id: file.id)}
       filtered_files = controller.send(:reject_illegal_file_attributes, hello_world, files)
       files.eql?(filtered_files)
     end
