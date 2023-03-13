@@ -53,6 +53,10 @@ class Runner::Strategy
     raise NotImplementedError
   end
 
+  def self.health
+    raise NotImplementedError
+  end
+
   def self.release
     raise NotImplementedError
   end

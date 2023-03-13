@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PingController < ApplicationController
-  before_action :postgres_connected!
+  before_action :postgres_connected!, :runner_manager_healthy!
   after_action :verify_authorized, except: %i[index]
 
   def index
@@ -19,5 +19,12 @@ class PingController < ApplicationController
     return if ApplicationRecord.connection.exec_query('SELECT 1 as result').first['result'] == 1
 
     raise ActiveRecord::ConnectionNotEstablished
+  end
+
+  def runner_manager_healthy!
+    # any unhandled exception leads to a HTTP 500 response.
+    return if Runner.strategy_class.health == true
+
+    raise Runner::Error::InternalServerError
   end
 end

@@ -153,6 +153,16 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
     end
   end
 
+  def self.health
+    url = "#{config[:url]}/ping"
+    response = Faraday.get(url)
+    JSON.parse(response.body)['message'] == 'Pong'
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to DockerContainerPool failed: #{e.inspect}")
+  rescue JSON::ParserError => e
+    raise Runner::Error::UnexpectedResponse.new("DockerContainerPool returned invalid JSON: #{e.inspect}")
+  end
+
   def self.release
     url = "#{config[:url]}/docker_container_pool/dump_info"
     response = Faraday.get(url)

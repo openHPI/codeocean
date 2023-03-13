@@ -216,6 +216,22 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     @config ||= CodeOcean::Config.new(:code_ocean).read[:runner_management] || {}
   end
 
+  def self.health
+    url = "#{config[:url]}/health"
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Checking health from #{url}" }
+    response = http_connection.get url
+    case response.status
+      when 204
+        true
+      else
+        raise Runner::Error::UnexpectedResponse.new("Poseidon sent unexpected response status code #{response.status}")
+    end
+  rescue Faraday::Error => e
+    raise Runner::Error::FaradayError.new("Request to Poseidon failed: #{e.inspect}")
+  ensure
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Finished getting health information" }
+  end
+
   def self.release
     url = "#{config[:url]}/version"
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Getting release from #{url}" }

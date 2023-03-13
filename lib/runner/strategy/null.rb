@@ -45,6 +45,10 @@ class Runner::Strategy::Null < Runner::Strategy
 
   def self.config; end
 
+  def self.health
+    true
+  end
+
   def self.release
     'N/A'
   end
