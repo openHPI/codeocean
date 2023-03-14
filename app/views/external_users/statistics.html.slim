@@ -7,7 +7,7 @@ h1 = t('.title')
 
 - if submissions.any?
   .table-responsive
-    table.table.table-striped.sortable
+    table.table.table-striped class="#{exercises.present? ? 'sortable' : ''}"
       thead
         tr
           th.header = t('.exercise')

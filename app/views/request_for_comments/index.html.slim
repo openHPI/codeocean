@@ -17,7 +17,7 @@ h1 = RequestForComment.model_name.human(count: 2)
                   { class: 'form-control', multiple: true, "data-placeholder": t('request_for_comments.index.study_groups.placeholder') })
 
 .table-responsive
-  table.table.sortable.mt-4
+  table.table.mt-4 class="#{@request_for_comments.present? ? 'sortable' : ''}"
     thead
       tr
         th

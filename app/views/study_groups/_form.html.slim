@@ -6,7 +6,7 @@
 
   h3 = t('activerecord.attributes.study_group.members')
   .table-responsive
-    table.sortable.table
+    table.table class="#{@members.present? ? 'sortable' : ''}"
       thead
         tr
           th = t('activerecord.attributes.exercise.selection')

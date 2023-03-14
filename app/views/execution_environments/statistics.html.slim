@@ -1,7 +1,7 @@
 h1 = @execution_environment
 
 .table-responsive
-  table.table.table-striped.sortable
+  table.table.table-striped class="#{@execution_environment.present? ? 'sortable' : ''}"
     thead
       tr
         - ['.exercise', '.users', '.score', '.maximum_score', '.stddev_score', '.percentage_correct', '.runs', '.worktime', '.stddev_worktime'].each do |title|

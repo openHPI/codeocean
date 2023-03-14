@@ -1,7 +1,7 @@
 h1 = Tip.model_name.human(count: 2)
 
 .table-responsive
-  table.sortable.table
+  table.table class="#{@tips.present? ? 'sortable' : ''}"
     thead
       tr
         th = t('activerecord.attributes.tip.title')

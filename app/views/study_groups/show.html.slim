@@ -12,7 +12,7 @@ h1
 
 h2.mt-4 = t('activerecord.attributes.study_group.members')
 .table-responsive
-  table.sortable.table
+  table.table class="#{@study_group.users.present? ? 'sortable' : ''}"
     thead
       tr
         th =  t('navigation.sections.users')
