@@ -643,7 +643,8 @@ var CodeOceanEditor = {
         $('#start-over-active-file').prop('disabled', this.active_frame.data('role') === 'user_defined_file' || this.active_frame.data('read-only') !== undefined);
         $('#dummy').toggle(!this.fileActionsAvailable());
         $('#render').toggle(this.isActiveFileRenderable());
-        $('#run').tooltip('hide').toggle(this.isActiveFileRunnable() && !this.running);
+        $('#run-stop-button-group').tooltip('hide');
+        $('#run').toggle(this.isActiveFileRunnable() && !this.running);
         $('#stop').toggle(this.isActiveFileStoppable());
         $('#test').toggle(this.isActiveFileTestable());
     },
@@ -718,7 +719,7 @@ var CodeOceanEditor = {
     },
 
     showSpinner: function (initiator) {
-        $(initiator).tooltip('hide');
+        $(initiator).closest('[data-bs-toggle="tooltip"]').tooltip('hide');
         $(initiator).find('i.fa-solid, i.fa-regular').hide();
         $(initiator).find('i.fa-spin').addClass('d-inline-block').removeClass('d-none');
     },
