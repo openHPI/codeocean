@@ -31,7 +31,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
 
   %i[implement? working_times? intervention? search? reload?].each do |action|
     define_method(action) do
-      return no_one unless @record.files.visible.exists? && @record.execution_environment.present?
+      return no_one unless @record.files.any? {|f| f.hidden == false } && @record.execution_environment.present?
 
       admin? || teacher_in_study_group? || author? || (everyone && !@record.unpublished?)
     end

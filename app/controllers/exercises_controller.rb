@@ -75,7 +75,7 @@ class ExercisesController < ApplicationController
 
   def index
     @search = policy_scope(Exercise).ransack(params[:q])
-    @exercises = @search.result.includes(:execution_environment, :user).order(:title).paginate(page: params[:page], per_page: per_page_param)
+    @exercises = @search.result.includes(:execution_environment, :user, :files, :exercise_tags).order(:title).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
@@ -460,7 +460,7 @@ class ExercisesController < ApplicationController
   private :set_execution_environments
 
   def set_exercise_and_authorize
-    @exercise = Exercise.find(params[:id])
+    @exercise = Exercise.includes(:exercise_tips, files: [:file_type]).find(params[:id])
     authorize!
   end
 

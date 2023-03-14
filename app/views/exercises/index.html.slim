@@ -29,9 +29,9 @@ h1 = Exercise.model_name.human(count: 2)
         tr data-id=exercise.id
           td.p-1.pt-2 = link_to_if(policy(exercise).show?, exercise.title, exercise, 'data-turbolinks' => "false")
           td.p-1.pt-2 = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
-          td.p-1.pt-2 = exercise.files.teacher_defined_assessments.count
+          td.p-1.pt-2 = exercise.files.filter(&:teacher_defined_assessment?).length
           td.p-1.pt-2 = exercise.maximum_score
-          td.p-1.pt-2 = exercise.exercise_tags.count
+          td.p-1.pt-2 = exercise.exercise_tags.length
           td.p-1.pt-2 = exercise.expected_difficulty
           td.p-1.pt-2.public data-value=exercise.public? = symbol_for(exercise.public?)
           td.p-1.pt-2 = link_to(t('shared.edit'), edit_exercise_path(exercise)) if policy(exercise).edit?
