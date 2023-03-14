@@ -82,8 +82,6 @@ module AuthenticatedUrlHelper
       TOKEN_PARAM
     end
 
-    private
-
     def add_query_parameters(url, parameters)
       parsed_url = URI.parse url
 
@@ -99,6 +97,8 @@ module AuthenticatedUrlHelper
     rescue URI::InvalidURIError
       url
     end
+
+    private
 
     def remove_query_parameters(url, parameters)
       parsed_url = URI.parse url
