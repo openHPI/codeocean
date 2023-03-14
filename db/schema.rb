@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_19_113125) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_14_084733) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -387,6 +387,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_19_113125) do
     t.text "thank_you_note"
     t.boolean "full_score_reached", default: false
     t.integer "times_featured", default: 0
+    t.index ["exercise_id", "created_at"], name: "index_unresolved_recommended_rfcs", where: "(((NOT solved) OR (solved IS NULL)) AND ((question IS NOT NULL) AND (question <> ''::text)))"
     t.index ["exercise_id"], name: "index_request_for_comments_on_exercise_id"
     t.index ["submission_id"], name: "index_request_for_comments_on_submission_id"
     t.index ["user_id", "user_type", "created_at"], name: "index_rfc_on_user_and_created_at", order: { created_at: :desc }
@@ -568,6 +569,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_19_113125) do
     t.index ["exercise_id"], name: "index_user_proxy_exercise_exercises_on_exercise_id"
     t.index ["proxy_exercise_id"], name: "index_user_proxy_exercise_exercises_on_proxy_exercise_id"
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user"
+  end
+
+  create_table "wk2020_until_rfc_reply", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "exercise_id"
+    t.interval "working_time_until_rfc_reply"
+  end
+
+  create_table "wk2020_with_wk_until_rfc", id: false, force: :cascade do |t|
+    t.string "external_user_id", limit: 255
+    t.integer "user_id"
+    t.integer "exercise_id"
+    t.float "max_score"
+    t.float "max_reachable_points"
+    t.interval "working_time"
+    t.interval "working_time_until_rfc"
+    t.interval "working_time_until_rfc_reply"
+    t.time "percentile75"
+    t.time "percentile90"
   end
 
   add_foreign_key "authentication_tokens", "study_groups"

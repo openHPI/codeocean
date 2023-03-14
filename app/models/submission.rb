@@ -133,9 +133,14 @@ class Submission < ApplicationRecord
   end
 
   def unsolved_rfc(user = self.user)
-    Pundit.policy_scope(user, RequestForComment).unsolved.where(exercise_id: exercise).where.not(question: nil).where(created_at: OLDEST_RFC_TO_SHOW.ago..Time.current).order('RANDOM()').find do |rfc_element|
-      ((rfc_element.comments_count < MAX_COMMENTS_ON_RECOMMENDED_RFC) && !rfc_element.question.empty?)
-    end
+    Pundit.policy_scope(user, RequestForComment)
+      .unsolved.where.not(question: [nil, ''])
+      .where(exercise_id: exercise, created_at: OLDEST_RFC_TO_SHOW.ago...)
+      .left_joins(:comments)
+      .having('COUNT(comments.id) < ?', MAX_COMMENTS_ON_RECOMMENDED_RFC)
+      .group(:id)
+      .order('RANDOM()').limit(1)
+      .first
   end
 
   # @raise [Runner::Error] if the score could not be calculated due to a failure with the runner.
