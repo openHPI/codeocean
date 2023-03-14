@@ -91,6 +91,12 @@ Turtle.prototype.update = function () {
     const dx = canvas.width / (2 * devicePixelRatio);
     const dy = canvas.height / (2 * devicePixelRatio);
     for (let item of this.items) {
+        // This should not happen, but it does for some unknown reason.
+        // Therefore, we just check for the potential error and break.
+        if (item === undefined || item === null) {
+            break;
+        }
+
         c = item.coords;
         switch (item.type) {
         case 'line':
