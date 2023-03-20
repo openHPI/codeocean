@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_14_084733) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_20_220012) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -420,6 +420,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_14_084733) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "match"
+    t.index ["structured_error_id"], name: "index_structured_error_attributes_on_structured_error_id"
   end
 
   create_table "structured_errors", id: :serial, force: :cascade do |t|
@@ -600,6 +601,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_14_084733) do
   add_foreign_key "exercise_tips", "exercises"
   add_foreign_key "exercise_tips", "tips"
   add_foreign_key "remote_evaluation_mappings", "study_groups"
+  add_foreign_key "structured_error_attributes", "error_template_attributes"
+  add_foreign_key "structured_error_attributes", "structured_errors"
+  add_foreign_key "structured_errors", "error_templates"
+  add_foreign_key "structured_errors", "error_templates", name: "structured_errors_error_templates_id_fk"
+  add_foreign_key "structured_errors", "submissions"
   add_foreign_key "submissions", "study_groups"
   add_foreign_key "subscriptions", "study_groups"
   add_foreign_key "testrun_execution_environments", "execution_environments"

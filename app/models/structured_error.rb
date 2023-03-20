@@ -4,7 +4,7 @@ class StructuredError < ApplicationRecord
   belongs_to :error_template
   belongs_to :submission
 
-  has_many :structured_error_attributes
+  has_many :structured_error_attributes, dependent: :destroy
 
   def self.create_from_template(template, message_buffer, submission)
     create(

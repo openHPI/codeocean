@@ -15,7 +15,7 @@ class Submission < ApplicationRecord
   belongs_to :study_group, optional: true
 
   has_many :testruns
-  has_many :structured_errors
+  has_many :structured_errors, dependent: :destroy
   has_many :comments, through: :files
 
   belongs_to :external_users, lambda {
