@@ -83,6 +83,7 @@ development:
     pretty: true
     headers:
       'Access-Control-Allow-Origin': '*'
+      'Cache-Control': 'no-cache'
     static:
       watch:
         ignored: '**/node_modules/**'
