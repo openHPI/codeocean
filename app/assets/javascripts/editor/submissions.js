@@ -205,6 +205,7 @@ CodeOceanEditorSubmissions = {
     this.createSubmission(button, null, function (response) {
       if (response.redirect) {
         this.autosaveIfChanged();
+        this.stopCode(event);
         this.editors = [];
         Turbolinks.clearCache();
         Turbolinks.visit(response.redirect);
