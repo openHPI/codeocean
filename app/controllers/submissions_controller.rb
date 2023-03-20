@@ -353,7 +353,7 @@ class SubmissionsController < ApplicationController
   def extract_errors
     results = []
     if @testrun[:output].present?
-      @submission.exercise.execution_environment.error_templates.each do |template|
+      @submission.exercise.execution_environment.error_templates.left_joins(:error_template_attributes).includes(:error_template_attributes).each do |template|
         pattern = Regexp.new(template.signature).freeze
         results << StructuredError.create_from_template(template, @testrun[:output], @submission) if pattern.match(@testrun[:output])
       end
