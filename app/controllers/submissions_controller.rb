@@ -353,9 +353,17 @@ class SubmissionsController < ApplicationController
   def extract_errors
     results = []
     if @testrun[:output].present?
-      @submission.exercise.execution_environment.error_templates.left_joins(:error_template_attributes).includes(:error_template_attributes).each do |template|
+      # First, we test all error templates for a match.
+      matching_error_templates = @submission.exercise.execution_environment.error_templates.select do |template|
         pattern = Regexp.new(template.signature).freeze
-        results << StructuredError.create_from_template(template, @testrun[:output], @submission) if pattern.match(@testrun[:output])
+        pattern.match(@testrun[:output])
+      end
+      # Second, if there is a match, we preload all ErrorTemplateAttributes and create a StructuredError
+      #
+      # Reloading the ErrorTemplate is necessary to allow preloading the ErrorTemplateAttributes.
+      # However, this results in less (and faster) SQL queries than performing manual lookups.
+      ErrorTemplate.where(id: matching_error_templates).joins(:error_template_attributes).includes(:error_template_attributes).each do |template|
+        results << StructuredError.create_from_template(template, @testrun[:output], @submission)
       end
     end
     results
