@@ -4313,10 +4313,10 @@ vary@~1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
 
-vis-data@^7.1.4:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/vis-data/-/vis-data-7.1.4.tgz#90e5e796a79e1901de14c0808fb32a1a0735c1dc"
-  integrity sha512-usy+ePX1XnArNvJ5BavQod7YRuGQE1pjFl+pu7IS6rCom2EBoG0o1ZzCqf3l5US6MW51kYkLR+efxRbnjxNl7w==
+vis-data@^7.1.5:
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/vis-data/-/vis-data-7.1.5.tgz#ab6e8bad804641f56b4fed6842415a5ef19406ff"
+  integrity sha512-qgtqXEw6KL8lm1/3BgtDZkT4LEORQSY+NL7Jcc5NtpSxRBaogTm7CGMW3t1aUpczGu9xE7ZuqC/YacPbiprtqg==
 
 vis-timeline@^7.7.1:
   version "7.7.1"
