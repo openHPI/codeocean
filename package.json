@@ -43,7 +43,7 @@
     "terser-webpack-plugin": "^5.3.7",
     "underscore": "^1.13.4",
     "uuid": "^9.0.0",
-    "vis-data": "^7.1.5",
+    "vis-data": "^7.1.6",
     "vis-timeline": "^7.7.1",
     "vis-util": "^5.0.3",
     "webpack": "^5.76.3",
