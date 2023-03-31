@@ -75,6 +75,8 @@ jobs:
           CC_TEST_REPORTER_ID: true
         run: bundle exec rspec --color --format RSpec::Github::Formatter --format progress --require spec_helper --require rails_helper
 
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
       - name: Send coverage to CodeClimate
         uses: paambaati/codeclimate-action@v3.2.0
         continue-on-error: true
