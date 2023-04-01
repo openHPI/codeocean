@@ -77,6 +77,9 @@ jobs:
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
+        if: ${{ success() || failure() }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
       - name: Send coverage to CodeClimate
         uses: paambaati/codeclimate-action@v3.2.0
         continue-on-error: true
