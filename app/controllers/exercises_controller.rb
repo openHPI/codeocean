@@ -366,7 +366,7 @@ class ExercisesController < ApplicationController
 
   def set_available_tips
     # Order of elements is important and will be kept
-    available_tips = ExerciseTip.where(exercise: @exercise).order(rank: :asc)
+    available_tips = ExerciseTip.where(exercise: @exercise).order(rank: :asc).includes(:tip)
 
     # Transform result set in a hash and prepare (temporary) children array.
     # The children array will contain the sorted list of nested tips,
