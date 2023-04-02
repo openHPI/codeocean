@@ -131,7 +131,7 @@ module CodeOcean
     end
 
     def set_ancestor_values
-      %i[feedback_message file_type_id hidden name path read_only role weight].each do |attribute|
+      %i[feedback_message file_type hidden name path read_only role weight].each do |attribute|
         send(:"#{attribute}=", ancestor.send(attribute))
       end
     end

@@ -5,7 +5,8 @@ module FileParameters
     if exercise && params
       # We only want to load the files once, to avoid multiple database queries.
       # Further, we use `unscope` to avoid that the `order` scope is applied
-      files = CodeOcean::File.unscope(:order).where(id: params.values.pluck(:file_id))
+      # Optimization: We query for the `file_type` here, which is used in `CodeOcean::File#set_ancestor_values`.
+      files = CodeOcean::File.unscope(:order).where(id: params.values.pluck(:file_id)).includes(:file_type)
 
       params.reject do |_, file_attributes|
         # This mechanism seems cumbersome, but we cannot use an index here.
@@ -18,6 +19,10 @@ module FileParameters
         next true if file.context_type == 'Exercise' && file.context_id != exercise.id
         next true if file.context_type == 'Submission' && (file.context.user_id != current_user.id || file.context.user_type != current_user.class.name)
         next true if file.context_type == 'CommunitySolution' && controller_name != 'community_solutions'
+
+        # Optimization: We already queried the ancestor file, let's reuse the object.
+        file_attributes[:file] = file
+        file_attributes.delete(:file_id)
 
         false
       end
