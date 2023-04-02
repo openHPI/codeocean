@@ -373,6 +373,15 @@ var CodeOceanEditor = {
         this.initializeRequestForComments()
     },
 
+    teardownEventHandlers: function () {
+        $(document).unbind('click');
+        $(document).unbind('keydown');
+        this.teardownWorkspaceButtons();
+        this.teardownRequestForComments();
+        bootstrap.Modal.getInstance($('#comment-modal'))?.hide();
+        this.teardownFileTreeButtons();
+    },
+
     updateEditorModeToFileTypeID: function (editor, fileTypeID) {
         var newMode = 'ace/mode/text'
 
@@ -413,7 +422,13 @@ var CodeOceanEditor = {
         $('#destroy-file').on('click', this.confirmDestroy.bind(this));
         $('#destroy-file-collapsed').on('click', this.confirmDestroy.bind(this));
         $('#download').on('click', this.downloadCode.bind(this));
-        $('#request-for-comments').on('click', this.requestComments.bind(this));
+    },
+
+    teardownFileTreeButtons: function () {
+        $('#create-file').unbind('click');
+        $('#destroy-file').unbind('click');
+        $('#destroy-file-collapsed').unbind('click');
+        $('#download').unbind('click');
     },
 
     initializeSideBarCollapse: function () {
@@ -446,16 +461,23 @@ var CodeOceanEditor = {
     initializeWorkspaceButtons: function () {
         $('#submit').one('click', this.submitCode.bind(this));
         $('#assess').on('click', this.scoreCode.bind(this));
-        $('#dropdown-render, #render').on('click', this.renderCode.bind(this));
-        $('#dropdown-run, #run').on('click', this.runCode.bind(this));
-        $('#dropdown-stop, #stop').on('click', this.stopCode.bind(this));
-        $('#dropdown-test, #test').on('click', this.testCode.bind(this));
-        $('#save').on('click', this.saveCode.bind(this));
+        $('#render').on('click', this.renderCode.bind(this));
+        $('#run').on('click', this.runCode.bind(this));
+        $('#stop').on('click', this.stopCode.bind(this));
+        $('#test').on('click', this.testCode.bind(this));
         $('#start-over').on('click', this.confirmReset.bind(this));
-        $('#start-over-collapsed').on('click', this.confirmReset.bind(this));
         $('#start-over-active-file').on('click', this.confirmResetActiveFile.bind(this));
-        $('#start-over-active-file-collapsed').on('click', this.confirmResetActiveFile.bind(this));
+    },
 
+    teardownWorkspaceButtons: function () {
+        $('#submit').unbind('click');
+        $('#assess').unbind('click');
+        $('#render').unbind('click');
+        $('#run').unbind('click');
+        $('#stop').unbind('click');
+        $('#test').unbind('click');
+        $('#start-over').unbind('click');
+        $('#start-over-active-file').unbind('click');
     },
 
     initializeRequestForComments: function () {
@@ -481,6 +503,12 @@ var CodeOceanEditor = {
                 }, this.REQUEST_TOOLTIP_TIME);
             }, this.REQUEST_TOOLTIP_DELAY)
         }.bind(this), this.REQUEST_FOR_COMMENTS_DELAY);
+    },
+
+    teardownRequestForComments: function () {
+        $('#requestComments').unbind('click');
+        $('#askForCommentsButton').unbind('click');
+        $('#closeAskForCommentsButton').unbind('click');
     },
 
     isActiveFileRenderable: function () {

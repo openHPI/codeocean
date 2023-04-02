@@ -202,6 +202,7 @@ CodeOceanEditorSubmissions = {
 
   submitCode: function(event) {
     const button = $(event.target) || $('#submit');
+    this.teardownEventHandlers();
     this.createSubmission(button, null, function (response) {
       if (response.redirect) {
         this.autosaveIfChanged();
@@ -211,13 +212,12 @@ CodeOceanEditorSubmissions = {
         Turbolinks.visit(response.redirect);
       } else if (response.status === 'container_depleted') {
           this.showContainerDepletedMessage();
-          button.one('click', this.submitCode.bind(this));
       } else if (response.message) {
           $.flash.danger({
               text: response.message
           });
-          button.one('click', this.submitCode.bind(this));
       }
+      this.initializeEventHandlers();
     })
   },
 
