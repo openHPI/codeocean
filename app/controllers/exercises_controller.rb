@@ -484,7 +484,7 @@ class ExercisesController < ApplicationController
   def collect_set_and_unset_exercise_tags
     @tags = policy_scope(Tag)
     checked_exercise_tags = @exercise.exercise_tags
-    checked_tags = checked_exercise_tags.collect(&:tag).to_set
+    checked_tags = checked_exercise_tags.to_set(&:tag)
     unchecked_tags = Tag.all.to_set.subtract checked_tags
     @exercise_tags = checked_exercise_tags + unchecked_tags.collect do |tag|
       ExerciseTag.new(exercise: @exercise, tag:)
