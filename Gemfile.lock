@@ -158,7 +158,7 @@ GEM
     faraday-net_http_persistent (2.1.0)
       faraday (~> 2.5)
       net-http-persistent (~> 4.0)
-    faye-websocket (0.11.1)
+    faye-websocket (0.11.2)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
     ffi (1.15.5)
