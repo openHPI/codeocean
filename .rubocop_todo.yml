@@ -36,6 +36,9 @@ Rails/ReversibleMigration:
 Rails/NotNullColumn:
   Enabled: false
 
+Rails/ThreeStateBooleanColumn:
+  Enabled: false
+
 # The models need to be fixed anyway
 #
 Rails/UniqueValidationWithoutIndex:
