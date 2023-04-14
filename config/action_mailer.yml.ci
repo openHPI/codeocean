@@ -1,6 +1,6 @@
 test:
   default_options:
-    from: codeocean@hpi.de
+    from: codeocean@openhpi.de
   default_url_options:
     host: localhost
   delivery_method: :test

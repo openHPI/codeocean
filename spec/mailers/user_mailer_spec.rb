@@ -14,7 +14,7 @@ describe UserMailer do
     end
 
     it 'sets the correct sender' do
-      expect(mail.from).to include('codeocean@hpi.de')
+      expect(mail.from).to include('codeocean@openhpi.de')
     end
 
     it 'sets the correct subject' do
@@ -45,7 +45,7 @@ describe UserMailer do
     end
 
     it 'sets the correct sender' do
-      expect(mail.from).to include('codeocean@hpi.de')
+      expect(mail.from).to include('codeocean@openhpi.de')
     end
 
     it 'sets the correct subject' do
@@ -69,7 +69,7 @@ describe UserMailer do
     let(:mail) { described_class.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user).deliver_now }
 
     it 'sets the correct sender' do
-      expect(mail.from).to include('codeocean@hpi.de')
+      expect(mail.from).to include('codeocean@openhpi.de')
     end
 
     it 'sets the correct subject' do
@@ -123,7 +123,7 @@ describe UserMailer do
     let(:mail) { described_class.got_new_comment_for_subscription(request_for_comment.comments.first, subscription, from_user).deliver_now }
 
     it 'sets the correct sender' do
-      expect(mail.from).to include('codeocean@hpi.de')
+      expect(mail.from).to include('codeocean@openhpi.de')
     end
 
     it 'sets the correct subject' do
@@ -176,7 +176,7 @@ describe UserMailer do
     let(:mail) { described_class.send_thank_you_note(request_for_comment, receiver).deliver_now }
 
     it 'sets the correct sender' do
-      expect(mail.from).to include('codeocean@hpi.de')
+      expect(mail.from).to include('codeocean@openhpi.de')
     end
 
     it 'sets the correct subject' do

@@ -1,19 +1,22 @@
 default: &default
   default_options:
-    from: codeocean@hpi.de
-  delivery_method: :smtp
+    from: codeocean@openhpi.de
 
 development:
   <<: *default
   default_url_options:
     host: localhost
     port: 7000
-  delivery_method: :test
+  # Open mails in the browser (not compatible with Vagrant)
+  delivery_method: :letter_opener
+  # Print mails to the console
+  # delivery_method: :test
 
 production:
   <<: *default
   default_url_options:
     host: CHANGE_ME
+  delivery_method: :smtp
 
 test:
   <<: *default
