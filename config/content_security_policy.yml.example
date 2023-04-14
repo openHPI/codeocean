@@ -1,6 +1,7 @@
-# This file allows to further customize the Content Security Policy (CSP)
-# All settings will be applied **in addition** to the application CSP
-# Default directives are defined here: `initializers/content_security_policy.rb`
+# This file allows to further customize the Content Security Policy (CSP).
+# All settings will be applied **in addition** to the application CSP.
+# Additional keys can be added if required.
+# Default directives are defined here: `initializers/content_security_policy.rb`.
 
 default: &default
   # Allow the S3 service hosted by the openHPI Cloud to be used for images
@@ -15,7 +16,8 @@ default: &default
     - wss://codeocean.openhpi.de
     # Enable the StackExchange API for Flowr
     # - https://api.stackexchange.com
-  # Optionally: Specify a custom, non-Sentry URL for reporting CSP violations
+  # Optionally: Specify a custom, non-Sentry URL for reporting CSP violations.
+  # For Sentry, set the `SENTRY_CSP_REPORT_URL` environment variable.
   # report_uri: https://example.com/csp-report
 
 
