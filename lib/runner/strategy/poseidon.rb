@@ -27,12 +27,11 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     case response.status
       when 200
         response_body = parse response
-        execution_environments = response_body[:executionEnvironments]
 
-        if execution_environments.nil?
+        if response_body.key? :executionEnvironments
           raise(Runner::Error::UnexpectedResponse.new("Could not get the list of execution environments in Poseidon, got response: #{response.as_json}"))
         else
-          execution_environments
+          response_body[:executionEnvironments] || []
         end
       else
         handle_error response
