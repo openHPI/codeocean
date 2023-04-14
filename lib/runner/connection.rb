@@ -42,6 +42,9 @@ class Runner::Connection
         I18n.with_locale(@locale) do
           clone_sentry_hub_from_span(sentry_span)
           __send__(:"on_#{event_type}", event, sentry_span)
+        rescue StandardError => e
+          Sentry.capture_exception(e)
+          raise e
         end
       end
     end
@@ -241,7 +244,7 @@ class Runner::Connection
   # and adapted to the Websocket protocol running with EventMachine.
 
   def clone_sentry_hub_from_span(sentry_span)
-    Thread.current.thread_variable_set(Sentry::THREAD_LOCAL, sentry_span.transaction.hub) if sentry_span
+    Thread.current.thread_variable_set(Sentry::THREAD_LOCAL, sentry_span.transaction.hub.clone) if sentry_span
   end
 
   def sentry_trace_header(sentry_span)
