@@ -21,18 +21,17 @@ $(document).on('turbolinks:load', function() {
       minutes_array = _.map(working_times, function(item){return get_minutes(item)});
       minutes_array_length = minutes_array.length;
 
-      maximum_minutes = _.max(minutes_array);
-      var minutes_count = new Array(maximum_minutes);
+      if (minutes_array_length === 0){
+          return;
+      }
+      maximum_minutes = _.max(minutes_array) + 1; // We need to respect the last minute as well
+      const minutes_count = new Array(maximum_minutes).fill(0);
 
       for (var i = 0; i < minutes_array_length; i++){
           var studentTime = minutes_array[i];
 
           for (var j = 0; j < studentTime; j++){
-              if (minutes_count[j] === undefined){
-                  minutes_count[j] = 0;
-              } else{
-                  minutes_count[j] += 1;
-              }
+              minutes_count[j] += 1;
           }
       }
 

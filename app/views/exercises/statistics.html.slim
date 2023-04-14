@@ -43,26 +43,25 @@ h1 = @exercise
     p = @exercise.average_working_time
 
 - Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
-  - if symbol==:internal_users && current_user.admin?
-    strong = label
-  - if symbol==:external_users
-    - working_time_array = []
-    - @exercise.send(symbol).distinct().each do |user|
-      - working_time = @exercise.average_working_time_for(user) or 0
-      - working_time_array.push working_time
-    hr
-    .d-none#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
-    .working-time-graphs
-    div#chart_1
-    hr
-    div#chart_2
-    hr
   - submissions = Submission.where(user: @exercise.send(symbol).distinct, exercise: @exercise).in_study_group_of(current_user)
   - if !policy(@exercise).detailed_statistics?
     - submissions = submissions.final
   - if submissions.any?
+    strong = label
+    - if symbol==:external_users
+      - working_time_array = []
+      - @exercise.send(symbol).distinct().each do |user|
+        - working_time = @exercise.average_working_time_for(user) or 0
+        - working_time_array.push working_time
+      hr
+      .d-none#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
+      .working-time-graphs
+      div#chart_1
+      hr
+      div#chart_2
+      hr
     - users = symbol.to_s.classify.constantize.where(id: submissions.joins(symbol).group(:user_id).select(:user_id).distinct)
-    .table-responsive
+    .table-responsive.mb-4
       table.table.table-striped class="#{users.present? ? 'sortable' : ''}"
         thead
           tr
