@@ -62,3 +62,15 @@ In order to execute code submissions using the [DockerContainerPool](https://git
 
 ## Additional Note
 - If you want to change the default port of the underlying rails server, you can use [authbind](https://www.mwells.org/coding/2016/authbind-port-80-443/) to bind it to the regular 80/443 port.
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/openHPI/codeocean. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/openHPI/codeocean/blob/master/CODE_OF_CONDUCT.md).
+
+## License
+
+CodeOcean is available as open source under the terms of the [BSD 3-Clause License](https://opensource.org/licenses/BSD-3-clause).
+
+## Code of Conduct
+
+Everyone interacting in this project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/openHPI/codeocean/blob/master/CODE_OF_CONDUCT.md).
