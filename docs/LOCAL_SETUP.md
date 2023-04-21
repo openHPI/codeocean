@@ -110,6 +110,7 @@ corepack enable
 node -v
 yarn -v
 ```
+If you have several node versions installed, check that you are using the correct version. To view your installed versions, run `nvm list`. `lts/hydrogen` should be the current and default version. You can adjust this by running `nvm alias default lts/hydrogen`.
 
 ### Clone the repository:
 
@@ -143,6 +144,7 @@ rvm install $(cat .ruby-version)
 ```shell
 ruby -v
 ```
+If you have several Ruby versions installed, check that you are using the latest version. To view your installed versions, run `rvm list`. The most recent should be the current and default version. You can adjust this by running `rvm use <version_nr> --default`.
 
 ### Create all necessary config files:
 
@@ -159,6 +161,9 @@ done
 ```
 
 Then, you should check all config files manually and adjust settings where necessary for your environment.
+For the basic setup you only need to 
+- generate a secret with e.g. `rails secret` and then add it into the three CHANGE_ME fields in `secrets.yml`.
+- add your username for the database in `database.yml`. For macOS, it is the same as your mac username.
 
 ### Install required project libraries
 
@@ -251,7 +256,7 @@ sudo systemctl start nomad
 Open your web browser at <http://localhost:4646>
 
 ### Enable Memory Oversubscription for Nomad
-
+The following command must be executed **every time** nomad is started.
 ```shell
 curl -X POST -d '{"SchedulerAlgorithm": "spread", "MemoryOversubscriptionEnabled": true}' http://localhost:4646/v1/operator/scheduler/configuration 
 ```
@@ -349,3 +354,9 @@ Then, you should check the config file manually and adjust settings where necess
 ### Synchronize execution environments
 
 As part of the CodeOcean setup, some execution environments have been stored in the database. However, these haven't been yet synchronized with Poseidon yet. Therefore, please take care to synchronize environments through the user interface. To do so, open <http://localhost:7000/execution_environments> and click the "Synchronize all" button.
+Hints in case it does not work:
+- Press the button a second time after a few seconds.
+- Docker must be started.
+- Execution environments with network access are not running on macOS. Therefore, all execution environments in the list must be edited so that network access is disabled.
+
+To check that everything works, you should also set the prewarming pool size to 1 for at least one execution environment. This can also be done via the edit function. Afterward it can be checked here http://127.0.0.1:7000/admin/dashboard that there are as many free runners as you have set before at pool size. In the nomad UI on http://localhost:4646/ui/jobs one can see the running jobs.
