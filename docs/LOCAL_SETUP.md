@@ -359,4 +359,4 @@ Hints in case it does not work:
 - Docker must be started.
 - Execution environments with network access are not running on macOS. Therefore, all execution environments in the list must be edited so that network access is disabled.
 
-To check that everything works, you should also set the prewarming pool size to 1 for at least one execution environment. This can also be done via the edit function. Afterward it can be checked here http://127.0.0.1:7000/admin/dashboard that there are as many free runners as you have set before at pool size. In the nomad UI on http://localhost:4646/ui/jobs one can see the running jobs.
+To check that everything works, you should also set the prewarming pool size to 1 for at least one execution environment. This can also be done via the edit function. Afterward it can be checked here <http://localhost:7000/admin/dashboard> that there are as many free runners as you have set before at pool size. In the nomad UI on <http://localhost:4646/ui/jobs> one can see the running jobs.
