@@ -671,7 +671,7 @@ var CodeOceanEditor = {
         $('#start-over-active-file').prop('disabled', this.active_frame.data('role') === 'user_defined_file' || this.active_frame.data('read-only') !== undefined);
         $('#dummy').toggle(!this.fileActionsAvailable());
         $('#render').toggle(this.isActiveFileRenderable());
-        $('#run-stop-button-group').tooltip('hide');
+        $('#run-stop-button-group').tooltip('hide').toggleClass('flex-grow-1', this.isActiveFileRunnable() || this.isActiveFileStoppable());
         $('#run').toggle(this.isActiveFileRunnable() && !this.running);
         $('#stop').toggle(this.isActiveFileStoppable());
         $('#test').toggle(this.isActiveFileTestable());
