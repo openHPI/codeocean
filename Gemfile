@@ -55,7 +55,8 @@ gem 'zxcvbn-ruby', require: 'zxcvbn'
 
 # Error Tracing
 gem 'mnemosyne-ruby'
-gem 'sentry-rails'
+gem 'stackprof' # Must be loaded before the Sentry SDK.
+gem 'sentry-rails' # rubocop:disable Bundler/OrderedGems
 gem 'sentry-ruby'
 
 group :development do
