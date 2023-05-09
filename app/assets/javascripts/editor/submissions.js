@@ -184,15 +184,6 @@ CodeOceanEditorSubmissions = {
     this.initializeSocketForRunning(url);
   },
 
-  saveCode: function(event) {
-    event.preventDefault();
-    this.createSubmission('#save', null, function() {
-      $.flash.success({
-        text: $('#save').data('message-success')
-      });
-    });
-  },
-
   testCode: function(event) {
     const cause = $('#test');
     this.startSentryTransaction(cause);
