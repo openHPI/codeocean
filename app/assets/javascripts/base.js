@@ -45,27 +45,23 @@ $(document).on('turbolinks:load', function() {
     // Initialize Sentry
     const sentrySettings = $('meta[name="sentry"]')
     if (sentrySettings.data()['enabled']) {
-        // Workaround for Turbolinks: We must not re-initialize the Relay object when visiting another page
-        window.SentryReplay ||= new Sentry.Replay();
-
         Sentry.init({
             dsn: sentrySettings.data('dsn'),
             attachStacktrace: true,
             release: sentrySettings.data('release'),
             environment: sentrySettings.data('environment'),
-            autoSessionTracking: false,
+            autoSessionTracking: true,
+            tracesSampleRate: 1.0,
             replaysSessionSampleRate: 0.0,
             replaysOnErrorSampleRate: 1.0,
-            integrations: [
-                SentryReplay,
-            ],
-        });
+            integrations: window.SentryIntegrations,
+            initialScope: scope =>{
+                const user = $('meta[name="current-user"]').attr('content');
 
-        Sentry.configureScope(function (scope) {
-            const user = $('meta[name="current-user"]').attr('content');
-
-            if (user) {
-                scope.setUser(JSON.parse(user));
+                if (user) {
+                    scope.setUser(JSON.parse(user));
+                }
+                return scope;
             }
         });
     }

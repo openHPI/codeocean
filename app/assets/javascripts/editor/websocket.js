@@ -14,6 +14,10 @@ CommandSocket.prototype.onError = function(callback){
   this.websocket.onerror = callback
 };
 
+CommandSocket.prototype.onClose = function(callback){
+  this.websocket.onclose = callback
+};
+
 /**
  * Allows it to register an event-handler on the given cmd.
  * The handler needs to accept one argument, the message.

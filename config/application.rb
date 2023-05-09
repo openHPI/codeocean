@@ -9,6 +9,7 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 require 'telegraf/rails'
+require_relative '../lib/middleware/websocket_sentry_headers'
 
 module CodeOcean
   class Application < Rails::Application
@@ -56,5 +57,8 @@ module CodeOcean
 
     # Allow tables in addition to existing default tags
     config.action_view.sanitized_allowed_tags = ActionView::Base.sanitized_allowed_tags + %w[table thead tbody tfoot td tr]
+
+    # Extract Sentry-related parameters from WebSocket connection
+    config.middleware.insert_before 0, Middleware::WebSocketSentryHeaders
   end
 end

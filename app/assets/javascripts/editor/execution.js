@@ -1,7 +1,7 @@
 CodeOceanEditorWebsocket = {
   websocket: null,
 
-  createSocketUrl: function(url) {
+  createSocketUrl: function(url, span) {
       const sockURL = new URL(url, window.location);
       // not needed any longer, we put it directly into the url: sockURL.pathname = url;
 
@@ -11,17 +11,27 @@ CodeOceanEditorWebsocket = {
       // strip anchor if it is in the url
       sockURL.hash = '';
 
+      sockURL.searchParams.set('HTTP_SENTRY_TRACE', span.toTraceparent());
+      const dynamicContext = this.sentryTransaction.getDynamicSamplingContext();
+      const baggage = SentryUtils.dynamicSamplingContextToSentryBaggageHeader(dynamicContext);
+      sockURL.searchParams.set('HTTP_BAGGAGE', baggage);
+
       return sockURL.toString();
   },
 
   initializeSocket: function(url) {
-    this.websocket = new CommandSocket(this.createSocketUrl(url),
+    const cleanedPath = url.replace(/\/\d+\//, '/*/').replace(/\/[^\/]+$/, '/*');
+    const websocketHost = window.location.origin.replace(/^http/, 'ws');
+    const sentryDescription = `WebSocket ${websocketHost}${cleanedPath}`;
+    const span = this.sentryTransaction.startChild({op: 'websocket.client', description: sentryDescription})
+    this.websocket = new CommandSocket(this.createSocketUrl(url, span),
         function (evt) {
           this.resetOutputTab();
         }.bind(this)
     );
     CodeOceanEditorWebsocket.websocket = this.websocket;
     this.websocket.onError(this.showWebsocketError.bind(this));
+    this.websocket.onClose(span.finish.bind(span));
   },
 
   initializeSocketForTesting: function(url) {

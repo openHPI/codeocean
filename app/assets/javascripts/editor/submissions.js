@@ -112,6 +112,7 @@ CodeOceanEditorSubmissions = {
   },
 
   resetCode: function(initiator, onlyActiveFile = false) {
+    this.startSentryTransaction(initiator);
     this.showSpinner(initiator);
     this.ajax({
       method: 'GET',
@@ -131,9 +132,11 @@ CodeOceanEditorSubmissions = {
   },
 
   renderCode: function(event) {
+    const cause = $('#render');
+    this.startSentryTransaction(cause);
     event.preventDefault();
     if ($('#render').is(':visible')) {
-      this.createSubmission('#render', null, function (response) {
+      this.createSubmission(cause, null, function (response) {
         if (response.render_url === undefined) return;
 
         const active_file = CodeOceanEditor.active_file.filename.replace(/#$/,''); // remove # if it is the last character, this is not part of the filename and just an anchor
@@ -162,10 +165,12 @@ CodeOceanEditorSubmissions = {
    * Execution-Logic
    */
   runCode: function(event) {
+    const cause = $('#run');
+    this.startSentryTransaction(cause);
     event.preventDefault();
     this.stopCode(event);
     if ($('#run').is(':visible')) {
-      this.createSubmission('#run', null, this.runSubmission.bind(this));
+      this.createSubmission(cause, null, this.runSubmission.bind(this));
     }
   },
 
@@ -189,9 +194,11 @@ CodeOceanEditorSubmissions = {
   },
 
   testCode: function(event) {
+    const cause = $('#test');
+    this.startSentryTransaction(cause);
     event.preventDefault();
     if ($('#test').is(':visible')) {
-      this.createSubmission('#test', null, function(response) {
+      this.createSubmission(cause, null, function(response) {
         this.showSpinner($('#test'));
         $('#score_div').addClass('d-none');
         var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
@@ -202,6 +209,7 @@ CodeOceanEditorSubmissions = {
 
   submitCode: function(event) {
     const button = $(event.target) || $('#submit');
+    this.startSentryTransaction(button);
     this.teardownEventHandlers();
     this.createSubmission(button, null, function (response) {
       if (response.redirect) {

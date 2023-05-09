@@ -3,16 +3,19 @@ CodeOceanEditorEvaluation = {
     // A list of non-printable characters that are not allowed in the code output.
     // Taken from https://stackoverflow.com/a/69024306
     nonPrintableRegEx: /[\u0000-\u0008\u000B\u000C\u000F-\u001F\u007F-\u009F\u2000-\u200F\u2028-\u202F\u205F-\u206F\u3000\uFEFF]/g,
+    sentryTransaction: null,
 
     /**
      * Scoring-Functions
      */
     scoreCode: function (event) {
+        const cause = $('#assess');
+        this.startSentryTransaction(cause);
         event.preventDefault();
         this.stopCode(event);
         this.clearScoringOutput();
         $('#submit').addClass("d-none");
-        this.createSubmission('#assess', null, function (response) {
+        this.createSubmission(cause, null, function (response) {
             this.showSpinner($('#assess'));
             $('#score_div').removeClass('d-none');
             var url = response.score_url;

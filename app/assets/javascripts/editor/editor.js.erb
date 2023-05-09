@@ -212,6 +212,16 @@ var CodeOceanEditor = {
         $('button i.fa-spin').removeClass('d-inline-block').addClass('d-none');
     },
 
+    startSentryTransaction: function (initiator) {
+        const cause = initiator.data('cause') || initiator.prop('id');
+        this.sentryTransaction = window.SentryUtils.startIdleTransaction(
+          Sentry.getCurrentHub(),
+          { name: cause, op: "transaction" },
+          0, // Idle Timeout
+          window.SentryUtils.TRACING_DEFAULTS.finalTimeout,
+          true); // onContext
+        Sentry.getCurrentHub().configureScope(scope => scope.setSpan(this.sentryTransaction));
+    },
 
     resizeAceEditors: function (own_solution = false) {
         let editorSelector;
