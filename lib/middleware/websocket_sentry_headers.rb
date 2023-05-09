@@ -15,8 +15,7 @@ module Middleware
     private
 
     def websocket_upgrade?(request)
-      request.get_header('HTTP_CONNECTION')&.casecmp?('Upgrade') &&
-        request.get_header('HTTP_UPGRADE')&.casecmp?('websocket')
+      request.has_header?('HTTP_SEC_WEBSOCKET_VERSION')
     end
 
     def extract_sentry_parameters(request)
