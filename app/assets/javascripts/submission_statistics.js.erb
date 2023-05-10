@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbolinks:load', function(event) {
 
   var ACE_FILES_PATH = '<%= "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/" %>';
   var THEME = 'ace/theme/textmate';
@@ -57,7 +57,7 @@ $(document).on('turbolinks:load', function() {
     $(fileTrees[index]).show();
   };
 
-  if ($.isController('exercises') && $('#timeline').isPresent()) {
+  if ($.isController('exercises') && $('#timeline').isPresent() && event.originalEvent.data.url.includes("/statistics")) {
 
     _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
       ace.config.set(attribute, ACE_FILES_PATH);
