@@ -474,7 +474,7 @@ GEM
     telegraf (2.1.1)
       influxdb
     temple (0.10.0)
-    terser (1.1.14)
+    terser (1.1.15)
       execjs (>= 0.3.0, < 3)
     thor (1.2.1)
     tilt (2.1.0)
