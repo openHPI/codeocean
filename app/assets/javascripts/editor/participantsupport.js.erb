@@ -134,6 +134,9 @@ CodeOceanEditorCodePilot = {
 
 CodeOceanEditorRequestForComments = {
   requestComments: function () {
+    const cause = $('#requestComments');
+    this.startSentryTransaction(cause);
+
     var user_id = $('#editor').data('user-id');
     var exercise_id = $('#editor').data('exercise-id');
     var file_id = $('.editor').data('id');
@@ -159,7 +162,7 @@ CodeOceanEditorRequestForComments = {
       }.bind(this)).fail(this.ajaxError.bind(this));
     };
 
-    this.createSubmission($('#requestComments'), null, createRequestForComments.bind(this));
+    this.createSubmission(cause, null, createRequestForComments.bind(this));
 
     bootstrap.Modal.getInstance($('#comment-modal')).hide();
     $('#question').val('');
