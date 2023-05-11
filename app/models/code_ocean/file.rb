@@ -43,7 +43,7 @@ module CodeOcean
     end
     scope :teacher_defined_assessments, -> { where(role: %w[teacher_defined_test teacher_defined_linter]) }
 
-    default_scope { order(name: :asc) }
+    default_scope { order(path: :asc, name: :asc) }
 
     validates :feedback_message, if: :teacher_defined_assessment?, presence: true
     validates :feedback_message, absence: true, unless: :teacher_defined_assessment?
