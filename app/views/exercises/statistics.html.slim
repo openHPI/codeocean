@@ -43,7 +43,7 @@ h1 = @exercise
     p = @exercise.average_working_time
 
 - Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
-  - submissions = Submission.where(user: @exercise.send(symbol).distinct, exercise: @exercise).in_study_group_of(current_user)
+  - submissions = Submission.where(user: @exercise.send(symbol), exercise: @exercise).in_study_group_of(current_user)
   - if !policy(@exercise).detailed_statistics?
     - submissions = submissions.final
   - if submissions.any?
