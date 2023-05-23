@@ -52,7 +52,7 @@
     "webpack": "^5.83.1",
     "webpack-assets-manifest": "^5.1.0",
     "webpack-cli": "^5.1.0",
-    "webpack-merge": "^5.8.0",
+    "webpack-merge": "^5.9.0",
     "webpack-sources": "^3.2.3",
     "webpack-subresource-integrity": "^5.1.0",
     "xss": "^1.0.14"
