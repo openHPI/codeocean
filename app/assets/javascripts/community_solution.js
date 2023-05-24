@@ -21,8 +21,29 @@ $(document).on('turbolinks:load', function() {
         )
 
         $(document).on('theme:change:ace', CodeOceanEditor.handleAceThemeChangeEvent.bind(CodeOceanEditor));
-        $('#submit').one('click', CodeOceanEditorSubmissions.submitCode.bind(CodeOceanEditor));
-        $('#accept').one('click', CodeOceanEditorSubmissions.submitCode.bind(CodeOceanEditor));
+        $('#submit').one('click', submitCode.bind(CodeOceanEditor));
+        $('#accept').one('click', submitCode.bind(CodeOceanEditor));
     }
-
 });
+
+function submitCode(event) {
+    const button = $(event.target) || $('#submit');
+    this.startSentryTransaction(button);
+    this.teardownEventHandlers();
+    this.createSubmission(button, null, function (response) {
+        if (response.redirect) {
+            this.autosaveIfChanged();
+            this.stopCode(event);
+            this.editors = [];
+            Turbolinks.clearCache();
+            Turbolinks.visit(response.redirect);
+        } else if (response.status === 'container_depleted') {
+            this.showContainerDepletedMessage();
+        } else if (response.message) {
+            $.flash.danger({
+                text: response.message
+            });
+        }
+        this.initializeEventHandlers();
+    })
+}

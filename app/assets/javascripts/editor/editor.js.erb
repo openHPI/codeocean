@@ -472,8 +472,7 @@ var CodeOceanEditor = {
     },
 
     initializeWorkspaceButtons: function () {
-        $('#submit').one('click', this.submitCode.bind(this));
-        $('#assess').on('click', this.scoreCode.bind(this));
+        $('#assess').one('click', this.scoreCode.bind(this));
         $('#render').on('click', this.renderCode.bind(this));
         $('#run').on('click', this.runCode.bind(this));
         $('#stop').on('click', this.stopCode.bind(this));
@@ -483,7 +482,6 @@ var CodeOceanEditor = {
     },
 
     teardownWorkspaceButtons: function () {
-        $('#submit').unbind('click');
         $('#assess').unbind('click');
         $('#render').unbind('click');
         $('#run').unbind('click');
@@ -775,14 +773,32 @@ var CodeOceanEditor = {
     },
 
     showStatus: function (output) {
-        if (output.status === 'timeout' || output.status === 'buffer_overflow') {
-            this.showTimeoutMessage();
-        } else if (output.status === 'container_depleted') {
-            this.showContainerDepletedMessage();
-        } else if (output.status === 'out_of_memory') {
-            this.showOutOfMemoryMessage();
-        } else if (output.status === 'runner_in_use') {
-            this.showRunnerInUseMessage();
+        switch (output.status) {
+            case 'timeout':
+            case 'buffer_overflow':
+                this.showTimeoutMessage();
+                break;
+            case 'container_depleted':
+                this.showContainerDepletedMessage();
+                break;
+            case 'out_of_memory':
+                this.showOutOfMemoryMessage();
+                break;
+            case 'runner_in_use':
+                this.showRunnerInUseMessage();
+                break;
+            case 'scoring_failure':
+                this.showScoringFailureMessage();
+                break;
+            case 'not_for_all_users_submitted':
+                this.showNotForAllUsersSubmittedMessage(output.failed_users);
+                break;
+            case 'scoring_too_late':
+                this.showScoringTooLateMessage(output.score_sent);
+                break;
+            case 'exercise_finished':
+                this.showExerciseFinishedMessage(output.url);
+                break;
         }
     },
 
@@ -846,6 +862,35 @@ var CodeOceanEditor = {
         $.flash.warning({
             icon: ['fa-solid', 'fa-triangle-exclamation'],
             text: I18n.t('exercises.editor.runner_in_use')
+        });
+    },
+
+    showScoringFailureMessage: function () {
+        $.flash.danger({
+            icon: ['fa-solid', 'fa-exclamation-circle'],
+            text: I18n.t('exercises.editor.submit_failure_all')
+        });
+    },
+
+    showNotForAllUsersSubmittedMessage: function (failed_users) {
+        $.flash.warning({
+            icon: ['fa-solid', 'fa-triangle-exclamation'],
+            text: I18n.t('exercises.editor.submit_failure_other_users', {user: failed_users})
+        });
+    },
+
+    showScoringTooLateMessage: function (score_sent) {
+        $.flash.info({
+            icon: ['fa-solid', 'fa-circle-info'],
+            text: I18n.t('exercises.editor.submit_too_late', {score_sent: score_sent})
+        });
+    },
+
+    showExerciseFinishedMessage: function (url) {
+        $.flash.success({
+            showPermanent: true,
+            icon: ['fa-solid', 'fa-graduation-cap'],
+            text: I18n.t('exercises.editor.exercise_finished', {url: url})
         });
     },
 

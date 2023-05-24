@@ -10,7 +10,7 @@ class ExercisesController < ApplicationController
   before_action :handle_file_uploads, only: %i[create update]
   before_action :set_execution_environments, only: %i[index create edit new update]
   before_action :set_exercise_and_authorize,
-    only: MEMBER_ACTIONS + %i[clone implement working_times intervention statistics submit reload feedback
+    only: MEMBER_ACTIONS + %i[clone implement working_times intervention statistics reload feedback
                               study_group_dashboard export_external_check export_external_confirm
                               external_user_statistics]
   before_action :collect_set_and_unset_exercise_tags, only: MEMBER_ACTIONS
@@ -547,57 +547,6 @@ class ExercisesController < ApplicationController
 
     render 'exercises/external_users/statistics'
   end
-
-  def submit
-    @submission = Submission.create(submission_params)
-    @submission.calculate_score(current_user)
-
-    if @submission.users.map {|user| lti_outcome_service?(@submission.exercise, user, @submission.study_group_id) }.any?
-      transmit_lti_score
-    else
-      redirect_after_submit
-    end
-  rescue Runner::Error => e
-    Rails.logger.debug { "Runner error while submitting submission #{@submission.id}: #{e.message}" }
-    respond_to do |format|
-      format.html { redirect_to(implement_exercise_path(@submission.exercise)) }
-      format.json { render(json: {danger: I18n.t('exercises.editor.depleted'), status: :container_depleted}) }
-    end
-  end
-
-  def transmit_lti_score
-    responses = send_scores(@submission)
-    messages = {}
-    failed_users = []
-
-    responses.each do |response|
-      if Lti::ERROR_STATUS.include? response[:status]
-        failed_users << response[:user]
-      elsif response[:score_sent] != @submission.normalized_score # the score was sent successfully, but received too late
-        messages[:warning] = I18n.t('exercises.submit.too_late')
-      end
-    end
-
-    if failed_users.size == responses.size # all submissions failed
-      messages[:danger] = I18n.t('exercises.submit.failure')
-    elsif failed_users.size.positive? # at least one submission failed
-      messages[:warning] = [[messages[:warning]], I18n.t('exercises.submit.warning_not_for_all_users_submitted', user: failed_users.join(', '))].join('<br><br>')
-      messages[:warning] = "#{messages[:warning]}\n\n#{I18n.t('exercises.submit.warning_not_for_all_users_submitted', user: failed_users.join(', '))}".strip
-    else
-      messages.each do |type, message_text|
-        flash.now[type] = message_text
-        flash.keep(type)
-      end
-      return redirect_after_submit
-    end
-
-    respond_to do |format|
-      format.html { redirect_to(implement_exercise_path(@submission.exercise), **messages) }
-      format.json { render(json: messages) } # We must not change the HTTP status code here, since otherwise the custom message is not displayed.
-    end
-  end
-
-  private :transmit_lti_score
 
   def destroy
     destroy_and_respond(object: @exercise)

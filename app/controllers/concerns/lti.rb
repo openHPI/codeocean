@@ -123,47 +123,68 @@ module Lti
       raise Error.new("Score #{submission.normalized_score} must be between 0 and #{MAXIMUM_SCORE}!")
     end
 
-    submission.users.map {|user| send_score_for submission, user }
+    # Prepare score to be sent
+    score = submission.normalized_score
+    deadline = :none
+    if submission.before_deadline?
+      # Keep the full score
+      deadline = :before_deadline
+    elsif submission.within_grace_period?
+      # Reduce score by 20%
+      score *= 0.8
+      deadline = :within_grace_period
+    elsif submission.after_late_deadline?
+      # Reduce score by 100%
+      score *= 0.0
+      deadline = :after_late_deadline
+    end
+
+    # Actually send the score for all users
+    detailed_results = submission.users.map {|user| send_score_for submission, user, score }
+
+    # Prepare return value
+    erroneous_results = detailed_results.filter {|result| result[:status] == 'error' }
+    unsupported_results = detailed_results.filter {|result| result[:status] == 'unsupported' }
+    statistics = {
+      all: detailed_results,
+      success: detailed_results - erroneous_results - unsupported_results,
+      error: erroneous_results,
+      unsupported: unsupported_results,
+    }
+
+    {
+      users: statistics.transform_values {|value| value.pluck(:user) },
+      score: {original: submission.normalized_score, sent: score},
+      deadline:,
+      detailed_results:,
+    }
   end
 
   private :send_scores
 
-  def send_score_for(submission, user)
-    if user.external_user? && user.consumer
-      lti_parameter = user.lti_parameters.find_by(exercise: submission.exercise, study_group: submission.study_group)
-      provider = build_tool_provider(consumer: user.consumer, parameters: lti_parameter&.lti_parameters)
-    end
+  def send_score_for(submission, user, score)
+    return {status: 'error', user:} unless user.external_user? && user.consumer
 
-    if provider.nil?
-      {status: 'error', user: user.displayname}
-    elsif provider.outcome_service?
-      Sentry.set_extras({
-        provider: provider.inspect,
-        score: submission.normalized_score,
-        lti_parameter: lti_parameter.inspect,
-        session: session.to_hash,
-        exercise_id: submission.exercise_id,
-      })
-      normalized_lti_score = submission.normalized_score
-      if submission.before_deadline?
-        # Keep the full score
-      elsif submission.within_grace_period?
-        # Reduce score by 20%
-        normalized_lti_score *= 0.8
-      elsif submission.after_late_deadline?
-        # Reduce score by 100%
-        normalized_lti_score *= 0.0
-      end
+    lti_parameter = user.lti_parameters.find_by(exercise: submission.exercise, study_group: submission.study_group)
+    provider = build_tool_provider(consumer: user.consumer, parameters: lti_parameter&.lti_parameters)
+    return {status: 'error', user:} if provider.nil?
+    return {status: 'unsupported', user:} unless provider.outcome_service?
 
-      begin
-        response = provider.post_replace_result!(normalized_lti_score)
-        {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lti_score, user: user.displayname}
-      rescue IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET, SocketError, EOFError
-        # A parsing error might happen if the LTI provider is down and doesn't return a valid XML response
-        {status: 'error', user: user.displayname}
-      end
-    else
-      {status: 'unsupported', user: user.displayname}
+    Sentry.set_extras({
+      provider: provider.inspect,
+      normalized_score: submission.normalized_score,
+      score:,
+      lti_parameter: lti_parameter.inspect,
+      session: defined?(session) ? session.to_hash : nil,
+      exercise_id: submission.exercise_id,
+    })
+
+    begin
+      response = provider.post_replace_result!(score)
+      {code: response.response_code, message: response.post_response.body, status: response.code_major, user:}
+    rescue IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET, SocketError, EOFError
+      # A parsing error might happen if the LTI provider is down and doesn't return a valid XML response
+      {status: 'error', user:}
     end
   end
 

@@ -29,27 +29,6 @@ CodeOceanEditorEvaluation = {
         }, 0).toFixed(2);
         $('#score').data('score', score);
         this.renderScore();
-        this.showSubmitButton();
-    },
-
-    showSubmitButton: function () {
-        if (this.submission_deadline || this.late_submission_deadline) {
-            const now = new Date();
-            if (now <= this.submission_deadline) {
-                // before_deadline
-                // default is btn-success, so no change in color
-                $('#submit').get(0).lastChild.nodeValue = I18n.t('exercises.editor.submit_on_time');
-            } else if (now > this.submission_deadline && this.late_submission_deadline && now <= this.late_submission_deadline) {
-                // within_grace_period
-                $('#submit').removeClass("btn-success btn-warning").addClass("btn-warning");
-                $('#submit').get(0).lastChild.nodeValue = I18n.t('exercises.editor.submit_within_grace_period');
-            } else if (this.late_submission_deadline && now > this.late_submission_deadline || now > this.submission_deadline) {
-                // after_late_deadline
-                $('#submit').removeClass("btn-success btn-warning btn-danger").addClass("btn-danger");
-                $('#submit').get(0).lastChild.nodeValue = I18n.t('exercises.editor.submit_after_late_deadline');
-            }
-        }
-        $('#submit').removeClass("d-none");
     },
 
     printScoringResult: function (result, index) {

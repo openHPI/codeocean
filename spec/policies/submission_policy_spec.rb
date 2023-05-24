@@ -13,7 +13,7 @@ RSpec.describe SubmissionPolicy do
     end
   end
 
-  %i[download_file? render_file? run? score? show? statistics? stop? test?].each do |action|
+  %i[download? download_file? download_submission_file? render_file? run? score? show? statistics? stop? test? insights? finalize?].each do |action|
     permissions(action) do
       let(:exercise) { build(:math) }
       let(:group_author) { build(:external_user) }

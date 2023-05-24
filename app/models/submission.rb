@@ -74,6 +74,10 @@ class Submission < ApplicationRecord
     collect_files.detect {|file| file.filepath == file_path }
   end
 
+  def full_score?
+    score == exercise.maximum_score
+  end
+
   def normalized_score
     @normalized_score ||= if !score.nil? && !exercise.maximum_score.nil? && exercise.maximum_score.positive?
                             score / exercise.maximum_score
@@ -123,7 +127,7 @@ class Submission < ApplicationRecord
   def redirect_to_feedback?
     # Redirect 10% of users to the exercise feedback page. Ensure, that always the same
     # users get redirected per exercise and different users for different exercises. If
-    # desired, the number of feedbacks can be limited with exercise.needs_more_feedback?(submission)
+    # desired, the number of feedbacks can be limited with exercise.needs_more_feedback?
     (contributor_id + exercise.created_at.to_i) % 10 == 1
   end
 

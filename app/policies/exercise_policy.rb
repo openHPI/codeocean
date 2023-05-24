@@ -41,10 +41,6 @@ class ExercisePolicy < AdminOrAuthorPolicy
     admin?
   end
 
-  def submit?
-    everyone && @record.teacher_defined_assessment?
-  end
-
   class Scope < Scope
     def resolve
       if @user.admin?
