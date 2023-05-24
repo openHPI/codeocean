@@ -188,29 +188,6 @@ RSpec.describe ExercisePolicy do
     end
   end
 
-  permissions :submit? do
-    context 'when teacher-defined assessments are available' do
-      before do
-        create(:test_file, context: exercise)
-        exercise.reload
-      end
-
-      it 'grants access to anyone' do
-        %i[admin external_user teacher].each do |factory_name|
-          expect(policy).to permit(create(factory_name), exercise)
-        end
-      end
-    end
-
-    context 'when teacher-defined assessments are not available' do
-      it 'does not grant access to anyone' do
-        %i[admin external_user teacher].each do |factory_name|
-          expect(policy).not_to permit(create(factory_name), exercise)
-        end
-      end
-    end
-  end
-
   describe ExercisePolicy::Scope do
     describe '#resolve' do
       let(:admin) { create(:admin) }

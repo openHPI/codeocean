@@ -21,7 +21,7 @@ CodeOceanEditorWebsocket = {
       return sockURL.toString();
   },
 
-  initializeSocket: function(url) {
+  initializeSocket: function(url, closeCallback) {
     const cleanedPath = url.replace(/\/\d+\//, '/*/').replace(/\/[^\/]+$/, '/*');
     const websocketHost = window.location.origin.replace(/^http/, 'ws');
     const sentryDescription = `WebSocket ${websocketHost}${cleanedPath}`;
@@ -33,7 +33,12 @@ CodeOceanEditorWebsocket = {
     );
     CodeOceanEditorWebsocket.websocket = this.websocket;
     this.websocket.onError(this.showWebsocketError.bind(this));
-    this.websocket.onClose(span?.finish?.bind(span));
+    this.websocket.onClose( function(span, callback){
+      span?.finish()
+      if(callback != null){
+        callback();
+      }
+    }.bind(this, span, closeCallback));
   },
 
   initializeSocketForTesting: function(url) {
@@ -43,10 +48,13 @@ CodeOceanEditorWebsocket = {
   },
 
   initializeSocketForScoring: function(url) {
-    this.initializeSocket(url);
+    this.initializeSocket(url, function() {
+      $('#assess').one('click', this.scoreCode.bind(this))
+    }.bind(this));
     this.websocket.on('default',this.handleScoringResponse.bind(this));
     this.websocket.on('hint', this.showHint.bind(this));
     this.websocket.on('exit', this.handleExitCommand.bind(this));
+    this.websocket.on('status', this.showStatus.bind(this));
   },
 
   initializeSocketForRunning: function(url) {

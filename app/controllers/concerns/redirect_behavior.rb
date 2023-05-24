@@ -6,60 +6,19 @@ module RedirectBehavior
   def redirect_after_submit
     Rails.logger.debug { "Redirecting user with score:s #{@submission.normalized_score}" }
 
-    if @submission.normalized_score.to_d == BigDecimal('1.0')
-      if redirect_to_community_solution?
-        redirect_to_community_solution
-        return
-      end
+    # Redirect to the corresponding community solution if enabled and the user is eligible.
+    return redirect_to_community_solution if redirect_to_community_solution?
 
-      # if user is external and has an own rfc, redirect to it and message him to clean up and accept the answer. (we need to check that the user is external,
-      # otherwise an internal user could be shown a false rfc here, since current_user.id is polymorphic, but only makes sense for external users when used with rfcs.)
-      # redirect 10 percent pseudorandomly to the feedback page
-      if current_user.respond_to? :external_id
-        if @submission.redirect_to_feedback? && !@embed_options[:disable_redirect_to_feedback]
-          redirect_to_user_feedback
-          return
-        end
+    # Redirect 10 percent pseudo-randomly to the feedback page.
+    return redirect_to_user_feedback if !@embed_options[:disable_redirect_to_feedback] && @submission.redirect_to_feedback?
 
-        rfc = @submission.own_unsolved_rfc(current_user)
-        if rfc
-          # set a message that informs the user that his own RFC should be closed.
-          flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
-          flash.keep(:notice)
+    # If the user has an own rfc, redirect to it and message them to resolve and reflect on it.
+    return redirect_to_unsolved_rfc(own: true) if redirect_to_own_unsolved_rfc?
 
-          respond_to do |format|
-            format.html { redirect_to(rfc) }
-            format.json { render(json: {redirect: url_for(rfc)}) }
-          end
-          return
-        end
+    # Otherwise, redirect to an unsolved rfc and ask for assistance.
+    return redirect_to_unsolved_rfc if redirect_to_unsolved_rfc?
 
-        # else: show open rfc for same exercise if available
-        rfc = @submission.unsolved_rfc(current_user)
-        unless rfc.nil? || @embed_options[:disable_redirect_to_rfcs] || @embed_options[:disable_rfc]
-          # set a message that informs the user that his score was perfect and help in RFC is greatly appreciated.
-          flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_rfc')
-          flash.keep(:notice)
-
-          # increase counter 'times_featured' in rfc
-          rfc.increment(:times_featured)
-
-          respond_to do |format|
-            format.html { redirect_to(rfc) }
-            format.json { render(json: {redirect: url_for(rfc)}) }
-          end
-          return
-        end
-      end
-    else
-      # redirect to feedback page if score is less than 100 percent
-      if @exercise.needs_more_feedback?(@submission) && !@embed_options[:disable_redirect_to_feedback]
-        redirect_to_user_feedback
-      else
-        redirect_to_lti_return_path
-      end
-      return
-    end
+    # Fallback: Show the score and allow learners to return to the LTI consumer.
     redirect_to_lti_return_path
   end
 
@@ -74,9 +33,9 @@ module RedirectBehavior
   end
 
   def redirect_to_community_solution?
-    return false unless Java21Study.allow_redirect_to_community_solution?(current_user, @exercise)
+    return false unless Java21Study.allow_redirect_to_community_solution?(current_user, @submission.exercise)
 
-    @community_solution = CommunitySolution.find_by(exercise: @exercise)
+    @community_solution = CommunitySolution.find_by(exercise: @submission.exercise)
     return false if @community_solution.blank?
 
     last_contribution = CommunitySolutionContribution.where(community_solution: @community_solution).order(created_at: :asc).last
@@ -100,17 +59,43 @@ module RedirectBehavior
   end
 
   def redirect_to_user_feedback
-    uef = UserExerciseFeedback.find_by(exercise: @exercise, user: current_user)
+    uef = UserExerciseFeedback.find_by(exercise: @submission.exercise, user: current_user)
     url = if uef
             edit_user_exercise_feedback_path(uef)
           else
-            new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @exercise.id})
+            new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @submission.exercise.id})
           end
 
     respond_to do |format|
       format.html { redirect_to(url) }
       format.json { render(json: {redirect: url}) }
     end
+  end
+
+  def redirect_to_unsolved_rfc(own: false)
+    # Set a message that informs the user that their own RFC should be closed or help in another RFC is greatly appreciated.
+    flash[:notice] = I18n.t("exercises.editor.exercise_finished_redirect_to_#{own ? 'own_' : ''}rfc")
+    flash.keep(:notice)
+
+    # Increase counter 'times_featured' in rfc
+    @rfc.increment(:times_featured) unless own
+
+    respond_to do |format|
+      format.html { redirect_to(@rfc) }
+      format.json { render(json: {redirect: url_for(@rfc)}) }
+    end
+  end
+
+  def redirect_to_own_unsolved_rfc?
+    @rfc = @submission.own_unsolved_rfc(current_user)
+    @rfc.present?
+  end
+
+  def redirect_to_unsolved_rfc?
+    return false if @embed_options[:disable_redirect_to_rfcs] || @embed_options[:disable_rfc]
+
+    @rfc = @submission.unsolved_rfc(current_user)
+    @rfc.present?
   end
 
   def redirect_to_lti_return_path

@@ -205,33 +205,6 @@ CodeOceanEditorSubmissions = {
     }
   },
 
-  submitCode: function(event) {
-    const button = $(event.target) || $('#submit');
-    this.startSentryTransaction(button);
-    this.teardownEventHandlers();
-    this.createSubmission(button, null, function (response) {
-      if (response.redirect) {
-        App.synchronized_editor?.disconnect();
-        this.autosaveIfChanged();
-        this.stopCode(event);
-        this.editors = [];
-        Turbolinks.clearCache();
-        Turbolinks.visit(response.redirect);
-      } else if (response.status === 'container_depleted') {
-        this.initializeEventHandlers();
-        this.showContainerDepletedMessage();
-      } else {
-        this.initializeEventHandlers();
-        for (let [type, text] of Object.entries(response)) {
-          $.flash[type]({
-            text: text,
-            showPermanent: true // We might display a very long text message!
-          })
-        }
-      }
-    })
-  },
-
   /**
    * Autosave-Logic
    */

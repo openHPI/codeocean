@@ -6,7 +6,8 @@ RSpec.describe SubmissionsController do
   render_views
 
   let(:exercise) { create(:math) }
-  let(:submission) { create(:submission, exercise:, contributor:) }
+  let(:cause) { 'save' }
+  let(:submission) { create(:submission, exercise:, contributor:, cause:) }
 
   shared_examples 'a regular user' do |record_not_found_status_code|
     describe 'POST #create' do
@@ -37,6 +38,15 @@ RSpec.describe SubmissionsController do
         expect_json
         expect_http_status(:unprocessable_entity)
       end
+    end
+
+    describe 'GET #download' do
+      let(:perform_request) { proc { get :download, params: {id: submission.id} } }
+
+      before { perform_request.call }
+
+      expect_assigns(submission: :submission)
+      expect_http_status(:ok)
     end
 
     describe 'GET #download_file' do
@@ -95,6 +105,84 @@ RSpec.describe SubmissionsController do
             expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
           end
         end
+      end
+    end
+
+    describe 'GET #finalize' do
+      let(:perform_request) { proc { get :finalize, params: {id: submission.id} } }
+      let(:cause) { 'assess' }
+
+      context 'when the request is performed' do
+        before { perform_request.call }
+
+        expect_assigns(submission: :submission)
+        expect_redirect
+      end
+
+      it 'updates cause to submit' do
+        expect { perform_request.call && submission.reload }.to change(submission, :cause).from('assess').to('submit')
+      end
+
+      context 'when contributing to a community solution is possible' do
+        let!(:community_solution) { CommunitySolution.create(exercise:) }
+
+        before do
+          allow(Java21Study).to receive(:allow_redirect_to_community_solution?).and_return(true)
+          perform_request.call
+        end
+
+        expect_redirect { edit_community_solution_path(community_solution, lock_id: CommunitySolutionLock.last) }
+      end
+
+      context 'when sharing exercise feedback is desired' do
+        before do
+          uef&.save!
+          allow_any_instance_of(Submission).to receive(:redirect_to_feedback?).and_return(true)
+          perform_request.call
+        end
+
+        context 'without any previous feedback' do
+          let(:uef) { nil }
+
+          expect_redirect { new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: submission.exercise.id}) }
+        end
+
+        context 'with a previous feedback for the same exercise' do
+          let(:uef) { create(:user_exercise_feedback, exercise:, user: current_user) }
+
+          expect_redirect { edit_user_exercise_feedback_path(uef) }
+        end
+      end
+
+      context 'with an RfC' do
+        before do
+          rfc.save!
+          allow_any_instance_of(Submission).to receive(:redirect_to_feedback?).and_return(false)
+          perform_request.call
+        end
+
+        context 'when an own RfC is unsolved' do
+          let(:rfc) { create(:rfc, user: current_user, exercise:, submission:) }
+
+          expect_flash_message(:notice, I18n.t('exercises.editor.exercise_finished_redirect_to_own_rfc'))
+          expect_redirect { request_for_comment_url(rfc) }
+        end
+
+        context 'when another RfC is unsolved' do
+          let(:rfc) { create(:rfc, exercise:) }
+
+          expect_flash_message(:notice, I18n.t('exercises.editor.exercise_finished_redirect_to_rfc'))
+          expect_redirect { request_for_comment_url(rfc) }
+        end
+      end
+
+      context 'when neither a community solution, feedback nor RfC is available' do
+        before do
+          allow_any_instance_of(Submission).to receive(:redirect_to_feedback?).and_return(false)
+          perform_request.call
+        end
+
+        expect_redirect { lti_return_path(submission_id: submission.id) }
       end
     end
 
@@ -259,8 +347,9 @@ RSpec.describe SubmissionsController do
 
   context 'with an admin user' do
     let(:contributor) { create(:admin) }
+    let(:current_user) { contributor }
 
-    before { allow(controller).to receive(:current_user).and_return(contributor) }
+    before { allow(controller).to receive_messages(current_user:) }
 
     describe 'GET #index' do
       before do
@@ -280,10 +369,9 @@ RSpec.describe SubmissionsController do
     let(:group_author) { create(:external_user) }
     let(:other_group_author) { create(:external_user) }
     let(:contributor) { create(:programming_group, exercise:, users: [group_author, other_group_author]) }
+    let(:current_user) { group_author }
 
-    before do
-      allow(controller).to receive_messages(current_contributor: contributor, current_user: group_author)
-    end
+    before { allow(controller).to receive_messages(current_contributor: contributor, current_user:) }
 
     it_behaves_like 'a regular user', :unauthorized
     it_behaves_like 'denies access for regular, non-admin users'
@@ -291,10 +379,9 @@ RSpec.describe SubmissionsController do
 
   context 'with a learner' do
     let(:contributor) { create(:external_user) }
+    let(:current_user) { contributor }
 
-    before do
-      allow(controller).to receive_messages(current_user: contributor)
-    end
+    before { allow(controller).to receive_messages(current_user:) }
 
     it_behaves_like 'a regular user', :unauthorized
     it_behaves_like 'denies access for regular, non-admin users'

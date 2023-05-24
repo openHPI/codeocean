@@ -593,12 +593,8 @@ class Exercise < ApplicationRecord
   end
   private :valid_submission_deadlines?
 
-  def needs_more_feedback?(submission)
-    if submission.normalized_score.to_d == BigDecimal('1.0')
-      user_exercise_feedbacks.final.size <= MAX_GROUP_EXERCISE_FEEDBACKS
-    else
-      user_exercise_feedbacks.intermediate.size <= MAX_GROUP_EXERCISE_FEEDBACKS
-    end
+  def needs_more_feedback?
+    user_exercise_feedbacks.size <= MAX_GROUP_EXERCISE_FEEDBACKS
   end
 
   def last_submission_per_contributor

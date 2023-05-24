@@ -8,7 +8,7 @@ class SubmissionPolicy < ApplicationPolicy
   # insights? is used in the flowr_controller.rb as we use it to authorize the user for a submission
   # download_submission_file? is used in the live_streams_controller.rb
   %i[download? download_file? download_submission_file? run? score? show? statistics? stop? test?
-     insights?].each do |action|
+     insights? finalize?].each do |action|
     define_method(action) { admin? || author? || author_in_programming_group? }
   end
 

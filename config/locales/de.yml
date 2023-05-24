@@ -383,12 +383,14 @@ de:
       collapse_output_sidebar: Ausgabe-Leiste Einklappen
       confirm_start_over: Wollen Sie in dieser Aufgabe wirklich von vorne anfangen? Ihre bisherigen Änderungen in dieser Aufgabe werden entfernt; andere Aufgaben bleiben unverändert. Diese Aktion kann nicht rückgängig gemacht werden.
       confirm_start_over_active_file: Wollen Sie wirklich Ihre Änderungen in der ausgewählten Datei '%{filename}' zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.
-      confirm_submit: Wollen Sie Ihren Code wirklich zur Bewertung abgeben?
       create_file: Neue Datei
       depleted: Alle Ausführungsumgebungen sind momentan in Benutzung. Probiere es später nochmal.
       destroy_file: Datei löschen
       download: Herunterladen
       dummy: Keine Aktion
+      exercise_finished: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst. <a href="%{url}" class="alert-link">Klicken Sie hier, um die Aufgabe jetzt abzuschließen.</a>
+      exercise_finished_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über Ihre Hilfe und Kommentare freuen.
+      exercise_finished_redirect_to_own_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Ihre Frage ist damit wahrscheinlich gelöst? Falls ja, fügen Sie doch den entscheidenden Kniff als Antwort hinzu und markieren die Frage als gelöst, bevor Sie das Fenster schließen.
       expand_action_sidebar: Aktions-Leiste Ausklappen
       expand_output_sidebar: Ausgabe-Leiste Ausklappen
       input: Ihre Eingabe
@@ -410,11 +412,10 @@ de:
       start_over_active_file: Diese Datei zurücksetzen
       start_video: (Video-) Chat starten
       stop: Stoppen
-      submit: Code zur Bewertung abgeben
+      submit_failure_all: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+      submit_failure_other_users: "Die Punkteübertragung war nur teilweise erfolgreich. Die Punkte konnten nicht für %{user} übertragen werden. Diese Person(en) sollte die Aufgabe über die e-Learning Platform erneut öffnen und anschließend die Punkte selbst übermitteln."
+      submit_too_late: Ihre Abgabe wurde erfolgreich gespeichert, ging jedoch nach der Abgabefrist ein, sodass nur %{score_sent} Punkte übertragen wurden.
       deadline: Deadline
-      submit_on_time: Code rechtzeitig zur Bewertung abgeben
-      submit_within_grace_period: Code innerhalb der Gnadenfrist zur Bewertung abgeben
-      submit_after_late_deadline: Code verspätet zur Bewertung abgeben
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'
       out_of_memory: 'Ausführung gestoppt. Ihr Code hat den erlaubten Arbeitsspeicher von %{memory_limit} MB überschritten.'
@@ -424,7 +425,7 @@ de:
         exercise_deadline_passed: 'Entweder ist die Abgabefrist bereits abgelaufen oder Sie haben die Aufgabe nicht direkt über die E-Learning Plattform gestartet. (Möglicherweise haben Sie den Zurück Button Ihres Browsers benutzt nachdem Sie Ihre Aufgabe abgegeben haben?)'
       request_for_comments_sent: "Kommentaranfrage gesendet."
       hints:
-        submission_deadline: Diese Abgabe ist am <b>%{deadline}</b> fällig.<br/><small>Klicken Sie daher rechtzeitig auf 'Abgeben', um Ihre Punktzahl an die E-Learning-Plattform zu übertragen. %{otherwise}</small>
+        submission_deadline: Diese Abgabe ist am <b>%{deadline}</b> fällig.<br/><small>Bitte schließen Sie daher die Aufgabe rechtzeitig vorher ab. %{otherwise}</small>
         late_submission_deadline: Bis <b>%{deadline}</b> werden 80% Ihrer Punktzahl anerkannt.<br/><small>Wenn Sie diese erweiterte Frist ungenutzt verstreichen lassen und Ihre Abgabe später einreichen, werden 0 Punkte übertragen.</small>
         otherwise: Nach der Abgabefrist werden 0 Punkte übertragen.
         disclaimer: Bei Fragen zu Deadlines wenden Sie sich bitte an das Teaching Team. Die hier angezeigte Abgabefrist dient nur zur Information und Angaben auf der jeweiligen Kursseite in der E-Learning-Plattform sollen immer Vorrang haben.
@@ -478,7 +479,7 @@ de:
       default_test_feedback: Sehr gut. Alle Tests waren erfolgreich.
       default_linter_feedback: Sehr gut. Der Linter hat nichts mehr zu beanstanden.
       error_messages: Fehlermeldungen
-      existing_programming_group: Sie arbeiten gerade an der Übung mit dem Titel '%{exercise}' als Teil einer Programmiergruppe. Bitte schließen Sie Ihre Arbeit dort ab, indem Sie Ihren Code bewerten und abgeben, bevor Sie mit der Bearbeitung dieser Übung beginnen.
+      existing_programming_group: Sie arbeiten gerade an der Übung mit dem Titel '%{exercise}' als Teil einer Programmiergruppe. Bitte schließen Sie Ihre Arbeit dort ab, bevor Sie mit der Bearbeitung dieser Übung beginnen.
       external_privacy_policy: Datenschutzerklärung
       messages: Meldungen
       feedback: Feedback
@@ -560,12 +561,6 @@ de:
       external_users: Externe Nutzer
       programming_groups: Programmiergruppen
       finishing_rate: Abschlussrate
-    submit:
-      failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
-      too_late: Ihre Abgabe wurde erfolgreich gespeichert, ging jedoch nach der Abgabefrist ein.
-      full_score_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über ihre Hilfe und Kommentare freuen.
-      full_score_redirect_to_own_rfc: Herzlichen Glückwunsch! Sie haben die maximale Punktzahl für diese Aufgabe an den Kurs übertragen. Ihre Frage ist damit wahrscheinlich gelöst? Falls ja, fügen Sie doch den entscheidenden Kniff als Antwort hinzu und markieren die Frage als gelöst, bevor sie das Fenster schließen.
-      warning_not_for_all_users_submitted: "Die Punkteübertragung war nur teilweise erfolgreich. Die Punkte konnten nicht für %{user} übertragen werden. Diese Person(en) sollte die Aufgabe über die e-Learning Platform erneut öffnen und anschließend die Punkte selbst übermitteln."
     study_group_dashboard:
       live_dashboard: Live Dashboard
       time_spent_per_learner: Verwendete Zeit pro Lerner
@@ -876,7 +871,7 @@ de:
       failure: Fehlerhafte E-Mail oder Passwort.
       success: Sie haben sich erfolgreich angemeldet.
     create_through_lti:
-      session_with_outcome: 'Bitte beachten Sie, dass zur Gutschrift der Punkte Ihr Code nach der Bearbeitung durch Klicken auf den Button "Code zur Bewertung abgeben" eingetragen werden muss.'
+      session_with_outcome: 'Ihre Punkte werden durch Klicken auf "Bewerten" automatisch Ihrem Fortschritt gutgeschrieben.'
       session_without_outcome: 'Dies ist eine Übungs-Session. Ihre Bewertung wird nicht an %{consumer} übermittelt.'
     destroy:
       link: Abmelden

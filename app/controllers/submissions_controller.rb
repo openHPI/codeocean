@@ -2,12 +2,13 @@
 
 class SubmissionsController < ApplicationController
   include CommonBehavior
-  include Lti
   include FileConversion
+  include Lti
+  include RedirectBehavior
   include SubmissionParameters
   include Tubesock::Hijack
 
-  before_action :set_submission, only: %i[download download_file run score show statistics test]
+  before_action :set_submission, only: %i[download download_file run score show statistics test finalize]
   before_action :set_testrun, only: %i[run score test]
   before_action :set_files, only: %i[download show]
   before_action :set_files_and_specific_file, only: %i[download_file run test]
@@ -70,6 +71,11 @@ class SubmissionsController < ApplicationController
       response.set_header('Content-Length', @file.size)
       send_data(@file.content, type: 'application/octet-stream', filename: @file.name_with_extension, disposition: 'attachment')
     end
+  end
+
+  def finalize
+    @submission.update!(cause: 'submit')
+    redirect_after_submit
   end
 
   def show; end
@@ -166,7 +172,7 @@ class SubmissionsController < ApplicationController
     durations = @submission.run(@file) do |socket, starting_time|
       runner_socket = socket
       @testrun[:starting_time] = starting_time
-      client_socket.send_data JSON.dump({cmd: :status, status: :container_running})
+      client_socket.send_data({cmd: :status, status: :container_running}.to_json)
 
       runner_socket.on :stdout do |data|
         message = retrieve_message_from_output data, :stdout
@@ -256,9 +262,11 @@ class SubmissionsController < ApplicationController
     return true if disable_scoring
 
     # The score is stored separately, we can forward it to the client immediately
-    client_socket&.send_data(JSON.dump(@submission.calculate_score(current_user)))
+    client_socket&.send_data(@submission.calculate_score(current_user).to_json)
     # To enable hints when scoring a submission, uncomment the next line:
     # send_hints(client_socket, StructuredError.where(submission: @submission))
+
+    transmit_lti_score(client_socket)
   rescue Runner::Error::RunnerInUse => e
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :runner_in_use}
@@ -300,7 +308,7 @@ class SubmissionsController < ApplicationController
     return true if @embed_options[:disable_run]
 
     # The score is stored separately, we can forward it to the client immediately
-    client_socket&.send_data(JSON.dump(@submission.test(@file, current_user)))
+    client_socket&.send_data(@submission.test(@file, current_user).to_json)
   rescue Runner::Error::RunnerInUse => e
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :runner_in_use}
@@ -338,7 +346,7 @@ class SubmissionsController < ApplicationController
     return unless client_socket
 
     # We don't want to store this (arbitrary) exit command and redirect it ourselves
-    client_socket.send_data JSON.dump({cmd: :exit})
+    client_socket.send_data({cmd: :exit}.to_json)
     client_socket.send_data nil, :close
     # We must not close the socket manually (with `client_socket.close`), as this would close it twice.
     # When the socket is closed twice, nginx registers a `Connection reset by peer` error.
@@ -401,7 +409,7 @@ class SubmissionsController < ApplicationController
                           end
     @testrun[:messages].push message
     @testrun[:status] = message[:status] if message[:status]
-    client_socket.send_data JSON.dump(message)
+    client_socket.send_data(message.to_json)
   end
 
   def max_output_buffer_size
@@ -471,6 +479,53 @@ class SubmissionsController < ApplicationController
       exit_code: nil,
       status: nil,
     }
+  end
+
+  def check_scoring_too_late(submit_info)
+    # The submission was either performed before any deadline or no deadline was configured at all for the current exercise.
+    return if %i[within_grace_period after_late_deadline].exclude? submit_info[:deadline]
+    # The `lis_outcome_service` was not provided by the LMS, hence we were not able to send any score.
+    return if submit_info[:users][:unsupported].include?(current_user)
+
+    {status: :scoring_too_late, score_sent: submit_info[:score][:sent]}
+  end
+
+  def check_full_score
+    # The submission was not scored with the full score, hence the exercise is not finished yet.
+    return unless @submission.full_score?
+
+    {status: :exercise_finished, url: finalize_submission_path(@submission)}
+  end
+
+  def transmit_lti_score(client_socket)
+    submit_info = send_scores(@submission)
+    scored_users = submit_info[:users]
+
+    notifications = []
+    if scored_users[:all] == scored_users[:error] || scored_users[:error].include?(current_user)
+      # The score was not sent for any user or sending the score for the current user failed.
+      # In the latter case, we want to encourage the current user to reopen the exercise through the LMS.
+      # Hence, we always display the most severe error message.
+      notifications << {status: :scoring_failure}
+    elsif scored_users[:all] != scored_users[:success] && scored_users[:success].include?(current_user)
+      # The score was sent successfully for current user.
+      # However, at the same time, the transmission failed for some other users.
+      # This could either be due to a temporary network error, which is unlikely, or a more "permanent" error.
+      # Permanent errors would be that the deadline has passed on the LMS (which would then not provide a `lis_outcome_service`),
+      # working together with an internal user, or with someone who has never opened the exercise before.
+      notifications << {status: :not_for_all_users_submitted, failed_users: scored_users[:error].map(&:displayname).join(', ')}
+    end
+
+    if notifications.empty? || notifications.first[:status] != :scoring_failure
+      # Either, the score was sent successfully for the current user,
+      # or it was not attempted for any user (i.e., no `lis_outcome_service`).
+      notifications << check_scoring_too_late(submit_info)
+      notifications << check_full_score
+    end
+
+    notifications.compact.each do |notification|
+      client_socket&.send_data(notification&.merge(cmd: :status)&.to_json)
+    end
   end
 
   def retrieve_message_from_output(data, stream)

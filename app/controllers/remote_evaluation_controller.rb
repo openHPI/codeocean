@@ -52,11 +52,11 @@ class RemoteEvaluationController < ApplicationController
   def process_lti_response(lti_response)
     if (lti_response[:status] == 'success') && (lti_response[:score_sent] != @submission.normalized_score)
       # Score has been reduced due to the passed deadline
-      {message: I18n.t('exercises.submit.too_late'), status: 207, score: lti_response[:score_sent] * 100}
+      {message: I18n.t('exercises.editor.submit_too_late', score_sent: lti_response[:score_sent] * 100), status: 207, score: lti_response[:score_sent] * 100}
     elsif lti_response[:status] == 'success'
       {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name), status: 202}
     else
-      {message: I18n.t('exercises.submit.failure'), status: 424}
+      {message: I18n.t('exercises.editor.submit_failure_all'), status: 424}
     end
     # TODO: Delete LTI parameters?
   end

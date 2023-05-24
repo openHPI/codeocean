@@ -16,3 +16,4 @@ unless @embed_options[:disable_download]
 end
 json.run_url run_submission_path(@submission, 'a.', format: :json).gsub(/a\.\.json$/, '{filename}.json')
 json.test_url test_submission_path(@submission, 'a.', format: :json).gsub(/a\.\.json$/, '{filename}.json')
+json.finalize_url finalize_submission_path(@submission)

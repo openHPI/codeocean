@@ -91,7 +91,6 @@ Rails.application.routes.draw do
       get :statistics
       get :feedback
       get :reload
-      post :submit
       get 'study_group_dashboard/:study_group_id', to: 'exercises#study_group_dashboard'
       post :export_external_check
       post :export_external_confirm
@@ -164,6 +163,7 @@ Rails.application.routes.draw do
       get :score
       get :statistics
       get 'test/:filename', as: :test, constraints: {filename: FILENAME_REGEXP}, action: :test
+      get :finalize
     end
   end
 

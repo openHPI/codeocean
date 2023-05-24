@@ -114,17 +114,19 @@ RSpec.describe Lti do
           it 'returns a corresponding status' do
             allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
             allow(submission).to receive(:normalized_score).and_return score
-            expect(controller.send(:send_scores, submission).first[:status]).to eq('unsupported')
+            submit_info = controller.send(:send_scores, submission)
+            expect(submit_info[:users][:all]).to eq(submit_info[:users][:unsupported])
           end
         end
 
         context 'when grading is supported' do
           let(:response) { double }
-          let(:send_scores) { controller.send(:send_scores, submission).first }
+          let(:send_scores) { controller.send(:send_scores, submission) }
+          let(:score_sent) { score }
 
           before do
             allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
-            allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score).and_return(response)
+            allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score_sent).and_return(response)
             allow(response).to receive(:response_code).at_least(:once).and_return(200)
             allow(response).to receive(:post_response).and_return(response)
             allow(response).to receive(:body).at_least(:once).and_return('')
@@ -133,14 +135,83 @@ RSpec.describe Lti do
           end
 
           it 'sends the score' do
-            expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score)
+            expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score_sent)
             send_scores
           end
 
-          it 'returns code, message, and status' do
-            expect(send_scores[:code]).to eq(response.response_code)
-            expect(send_scores[:message]).to eq(response.body)
-            expect(send_scores[:status]).to eq(response.code_major)
+          it 'returns code, message, deadline and status' do
+            expect(send_scores[:users][:all]).to eq(send_scores[:users][:success])
+            expect(send_scores[:deadline]).to eq(:none)
+            expect(send_scores[:detailed_results].first[:code]).to eq(response.response_code)
+            expect(send_scores[:detailed_results].first[:message]).to eq(response.body)
+            expect(send_scores[:detailed_results].first[:status]).to eq(response.code_major)
+          end
+
+          context 'when submission is before deadline' do
+            before do
+              allow(submission).to receive(:before_deadline?).and_return true
+            end
+
+            it 'returns deadline' do
+              expect(send_scores[:deadline]).to eq(:before_deadline)
+            end
+          end
+
+          context 'when submission is within grace period' do
+            let(:score_sent) { score * 0.8 }
+
+            before do
+              allow(submission).to receive_messages(before_deadline?: false, within_grace_period?: true)
+            end
+
+            it 'returns deadline and reduced score' do
+              expect(send_scores[:deadline]).to eq(:within_grace_period)
+              expect(send_scores[:score][:sent]).to eq(score * 0.8)
+            end
+
+            it 'sends the reduced score' do
+              expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score_sent)
+              send_scores
+            end
+          end
+
+          context 'when submission is after late deadline' do
+            let(:score_sent) { score * 0 }
+
+            before do
+              allow(submission).to receive_messages(before_deadline?: false,
+                within_grace_period?: false,
+                after_late_deadline?: true)
+            end
+
+            it 'returns deadline and reduced score' do
+              expect(send_scores[:deadline]).to eq(:after_late_deadline)
+              expect(send_scores[:score][:sent]).to eq(score * 0)
+            end
+
+            it 'sends the reduced score' do
+              expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score_sent)
+              send_scores
+            end
+          end
+        end
+
+        context 'when transmission fails' do
+          let(:send_scores) { controller.send(:send_scores, submission) }
+          let(:score_sent) { 0 }
+
+          before do
+            allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
+            allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score_sent).and_raise(IMS::LTI::XMLParseError)
+          end
+
+          it 'does not raise an exception' do
+            expect { send_scores }.not_to raise_error
+          end
+
+          it 'returns an error status' do
+            expect(send_scores[:users][:all]).to eq(send_scores[:users][:error])
+            expect(send_scores[:detailed_results].first[:status]).to eq('error')
           end
         end
       end
@@ -150,7 +221,8 @@ RSpec.describe Lti do
           submission.contributor.consumer = nil
 
           allow(submission).to receive(:normalized_score).and_return score
-          expect(controller.send(:send_scores, submission).first[:status]).to eq('error')
+          submit_info = controller.send(:send_scores, submission)
+          expect(submit_info[:users][:all]).to eq(submit_info[:users][:unsupported])
         end
       end
     end
