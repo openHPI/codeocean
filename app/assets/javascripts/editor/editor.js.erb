@@ -2,7 +2,7 @@ var CodeOceanEditor = {
     //ACE-Editor-Path
     // ruby part adds the relative_url_root, if it is set.
     ACE_FILES_PATH: '<%= "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/" %>',
-    THEME: 'ace/theme/textmate',
+    THEME: window.getCurrentTheme() === 'dark' ? 'ace/theme/tomorrow_night' : 'ace/theme/tomorrow',
 
     //Color-Encoding for Percentages in Progress Bars (For submissions)
     ADEQUATE_PERCENTAGE: 50,
@@ -88,13 +88,13 @@ var CodeOceanEditor = {
 
     getCardClass: function (result) {
         if (result.file_role === 'teacher_defined_linter') {
-            return 'card bg-info text-white'
+            return 'bg-info text-white'
         } else if (result.stderr && !result.score) {
-            return 'card bg-danger text-white';
+            return 'bg-danger text-white';
         } else if (result.score < 1) {
-            return 'card bg-warning text-white';
+            return 'bg-warning text-white';
         } else {
-            return 'card bg-success text-white';
+            return 'bg-success text-white';
         }
     },
 
@@ -127,7 +127,7 @@ var CodeOceanEditor = {
 
         if (!filetree.hasClass('jstree-loading')) {
             filetree.jstree("deselect_all");
-            filetree.jstree().select_node(file_id);
+            filetree.jstree(true).select_node(file_id);
         } else {
             setTimeout(CodeOceanEditor.selectFileInJsTree.bind(null, filetree, file_id), 250);
         }
@@ -309,16 +309,12 @@ var CodeOceanEditor = {
                 });
             }
 
-
             editor.commands.bindKey("ctrl+alt+0", null);
             this.editors.push(editor);
             this.editor_for_file.set($(element).parent().data('filename'), editor);
             var session = editor.getSession();
             var mode = $(element).data('mode')
             session.setMode(mode);
-            if (mode === 'ace/mode/python') {
-                editor.setTheme('ace/theme/tomorrow')
-            }
             session.setTabSize($(element).data('indent-size'));
             session.setUseSoftTabs(true);
             session.setUseWrapMode(true);
@@ -342,6 +338,12 @@ var CodeOceanEditor = {
                 this.handleUTF16Surrogates(deltaObject, session);
                 this.resetSaveTimer();
             }.bind(this));
+        }.bind(this));
+    },
+
+    handleAceThemeChangeEvent: function (event) {
+        this.editors.forEach(function (editor) {
+            editor.setTheme(this.THEME);
         }.bind(this));
     },
 
@@ -372,6 +374,7 @@ var CodeOceanEditor = {
     initializeEventHandlers: function () {
         $(document).on('click', '#results a', this.showOutput.bind(this));
         $(document).on('keydown', this.handleKeyPress.bind(this));
+        $(document).on('theme:change:ace', this.handleAceThemeChangeEvent.bind(this));
         this.initializeFileTreeButtons();
         this.initializeWorkspaceButtons();
         this.initializeRequestForComments()
@@ -398,9 +401,6 @@ var CodeOceanEditor = {
         }).fail(_.noop)
             .always(function () {
                 ace.edit(editor).session.setMode(newMode);
-                if (newMode === 'ace/mode/python') {
-                    ace.edit(editor).setTheme('ace/theme/tomorrow')
-                }
             });
     },
 
@@ -411,7 +411,9 @@ var CodeOceanEditor = {
         } else {
             filesInstance = $('#files');
         }
-        filesInstance.jstree(filesInstance.data('entries'));
+        const jsTreeConfig = filesInstance.data('entries') || {core: {}};
+        jsTreeConfig.core.themes = {...jsTreeConfig.core.themes, name: window.getCurrentTheme() === "dark" ? "default-dark" : "default"}
+        filesInstance.jstree(jsTreeConfig);
         filesInstance.on('click', 'li.jstree-leaf > a', function (event) {
             const file_id = parseInt($(event.target).parent().attr('id'));
             const frame = $('[data-file-id="' + file_id + '"]').parent();
@@ -419,6 +421,11 @@ var CodeOceanEditor = {
             this.showFrame(frame);
             this.toggleButtonStates();
         }.bind(this));
+        $(document).on('theme:change', function(event) {
+            const newColorScheme = event.detail.currentTheme;
+            // Update the JStree theme
+            filesInstance.jstree(true).set_theme(newColorScheme === "dark" ? "default-dark" : "default");
+        });
     },
 
     initializeFileTreeButtons: function () {
@@ -539,7 +546,8 @@ var CodeOceanEditor = {
     },
 
     populateCard: function (card, result, index) {
-        card.addClass(this.getCardClass(result));
+        card.addClass('card');
+        card.find('.card-header').addClass(this.getCardClass(result));
         card.find('.card-title .filename').text(result.filename);
         card.find('.card-title .number').text(index + 1);
         card.find('.row .col-md-9').eq(0).find('.number').eq(0).text(result.passed);

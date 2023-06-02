@@ -1,11 +1,11 @@
 div.d-grid.gap-2 id='sidebar-collapsed' class=(@exercise.hide_file_tree && @tips.blank? ? '' : 'd-none')
-  = render('editor_button', classes: 'btn-outline-dark', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-square-plus', id: 'sidebar-collapse-collapsed', label:'', title:t('exercises.editor.expand_action_sidebar'))
+  = render('editor_button', classes: 'btn-outline-contrast', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-square-plus', id: 'sidebar-collapse-collapsed', label:'', title:t('exercises.editor.expand_action_sidebar'))
 
   - unless @embed_options[:disable_hints] or @tips.blank?
     = render('editor_button', classes: 'btn-secondary btn mb-4', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-lightbulb', id: 'tips-collapsed', label:'', title: t('exercises.form.tips'))
 
 div.d-grid.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_file_tree && @tips.blank? ? 'd-none' : '')
-  = render('editor_button', classes: 'btn-outline-dark overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
+  = render('editor_button', classes: 'btn-outline-contrast overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
   #content-left-sidebar.overflow-scroll
     - unless @exercise.hide_file_tree
       div.overflow-scroll

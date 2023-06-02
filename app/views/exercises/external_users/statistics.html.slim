@@ -40,17 +40,17 @@ h1
             =index
           - index += 1
   - if policy(@exercise).detailed_statistics?
-    .bg-light.w-100.p-2.mb-4.align-items-center.d-flex.justify-content-between
+    .bg-body-secondary.w-100.p-2.mb-4.align-items-center.d-flex.justify-content-between
       - if @show_autosaves
         span.ps-1.pb-1
           i.fa-solid.fa-circle-info.align-middle
           small.me-5.ms-1 = t('.toggle_status_on')
-        = link_to t('.toggle_autosave_off'), statistics_external_user_exercise_path(show_autosaves: false), class: "btn btn-outline-dark float-end btn-sm"
+        = link_to t('.toggle_autosave_off'), statistics_external_user_exercise_path(show_autosaves: false), class: "btn btn-outline-contrast float-end btn-sm"
       - else
         span.ps-1.pb-1
           i.fa-solid.fa-circle-info.align-middle
           small.me-5.ms-1 = t('.toggle_status_off')
-        = link_to t('.toggle_autosave_on'), statistics_external_user_exercise_path(show_autosaves: true), class: "btn btn-outline-dark float-end btn-sm"
+        = link_to t('.toggle_autosave_on'), statistics_external_user_exercise_path(show_autosaves: true), class: "btn btn-outline-contrast float-end btn-sm"
   #timeline
     .table-responsive
       table.table

@@ -9,7 +9,7 @@ h1
 = row(label: 'exercise.public', value: @proxy_exercise.public?)
 = row(label: 'exercise.description', value: @proxy_exercise.description)
 = row(label: 'exercise.embedding_parameters', class: 'mb-4') do
-  = content_tag(:input, nil, class: 'form-control bg-secondary mb-4', readonly: true, value: embedding_parameters(@proxy_exercise))
+  = content_tag(:input, nil, class: 'form-control bg-body-secondary mb-4', readonly: true, value: embedding_parameters(@proxy_exercise))
 
 h2.mt-4 Exercises
 .table-responsive

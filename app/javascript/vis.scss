@@ -1,0 +1,19 @@
+// CSS
+
+@import 'vis-timeline/dist/vis-timeline-graph2d';
+
+html[data-bs-theme="dark"] {
+  // Color overwrites for dark mode
+
+  .vis-legend {
+    background-color: rgba(var(--bs-secondary-bg-rgb), 0.65) !important;
+  }
+
+  .vis-timeline .vis-outline {
+    fill: var(--bs-body-bg) !important;
+  }
+
+  .vis-data-axis .vis-major, .vis-time-axis .vis-text {
+    color: var(--bs-secondary-text-emphasis) !important;
+  }
+}

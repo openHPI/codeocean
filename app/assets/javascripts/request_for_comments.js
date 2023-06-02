@@ -70,12 +70,21 @@ $(document).on('turbolinks:load', function () {
         // set editor mode (used for syntax highlighting
         currentEditor.getSession().setMode($(editor).data('mode'));
         currentEditor.getSession().setOption("useWorker", false);
+        currentEditor.setTheme(CodeOceanEditor.THEME);
 
         currentEditor.commentVisualsByLine = {};
         setAnnotations(currentEditor, $(editor).data('file-id'));
         currentEditor.on("guttermousedown", handleSidebarClick);
         currentEditor.on("guttermousemove", showPopover);
     });
+
+    const handleAceThemeChangeEvent = function() {
+        $('.editor').each(function (_, editor) {
+            ace.edit(editor).setTheme(CodeOceanEditor.THEME);
+        }.bind(this));
+    };
+
+    $(document).on('theme:change:ace', handleAceThemeChangeEvent.bind(this));
 
     function preprocess(commentText) {
         // sanitize comments to deal with XSS attacks:

@@ -1,8 +1,4 @@
 $(document).on('turbolinks:load', function(event) {
-
-  var ACE_FILES_PATH = '<%= "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/" %>';
-  var THEME = 'ace/theme/textmate';
-
   var currentSubmission = 0;
   var active_file = undefined;
   var fileTrees = [];
@@ -24,7 +20,7 @@ $(document).on('turbolinks:load', function(event) {
     var selectFileInJsTree = function() {
       if (!filetree.hasClass('jstree-loading')) {
         filetree.jstree("deselect_all");
-        filetree.jstree().select_node(active_file.file_id);
+        filetree.jstree("select_node", active_file.file_id);
       } else {
         setTimeout(selectFileInJsTree, 250);
       }
@@ -38,8 +34,10 @@ $(document).on('turbolinks:load', function(event) {
 
   var initializeFileTree = function() {
     $('.files').each(function(index, element) {
-      fileTree = $(element).jstree($(element).data('entries'));
-      fileTree.on('click', 'li.jstree-leaf', function() {
+      const jsTreeConfig = $(element).data('entries')
+      jsTreeConfig.core.themes = {...jsTreeConfig.core.themes, name: window.getCurrentTheme() === "dark" ? "default-dark" : "default"}
+      const fileTree = $(element).jstree(jsTreeConfig);
+        $(element).on('click', 'li.jstree-leaf', function() {
         var id = parseInt($(this).attr('id'));
         _.each(files[currentSubmission], function(file) {
           if (file.file_id === id) {
@@ -47,6 +45,11 @@ $(document).on('turbolinks:load', function(event) {
           }
         });
         showActiveFile();
+      });
+      $(document).on('theme:change', function(event) {
+          const newColorScheme = event.detail.currentTheme;
+          // Update the JStree theme
+          fileTree.jstree(true).set_theme(newColorScheme === "dark" ? "default-dark" : "default");
       });
       fileTrees.push(fileTree);
     });
@@ -60,7 +63,7 @@ $(document).on('turbolinks:load', function(event) {
   if ($.isController('exercises') && $('#timeline').isPresent() && event.originalEvent.data.url.includes("/statistics")) {
 
     _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
-      ace.config.set(attribute, ACE_FILES_PATH);
+      ace.config.set(attribute, CodeOceanEditor.ACE_FILES_PATH);
     });
 
     var slider = $('#submissions-slider>input');
@@ -72,7 +75,7 @@ $(document).on('turbolinks:load', function(event) {
 
     editor = ace.edit('current-file');
     editor.setShowPrintMargin(false);
-    editor.setTheme(THEME);
+    editor.setTheme(CodeOceanEditor.THEME);
     editor.$blockScrolling = Infinity;
     editor.setReadOnly(true);
 
@@ -89,6 +92,12 @@ $(document).on('turbolinks:load', function(event) {
         slider.change()
       });
     });
+
+    const handleAceThemeChangeEvent = function() {
+        editor.setTheme(CodeOceanEditor.THEME);
+    };
+
+    $(document).on('theme:change:ace', handleAceThemeChangeEvent.bind(this));
 
     const onSliderChange = function(event) {
       currentSubmission = slider.val();

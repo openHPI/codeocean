@@ -9,7 +9,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .lead {
   font-size: 16px;
-  color: rgba(70, 70, 70, 1);
+  color: var(--bs-dark-text-emphasis);
 }
 
 a:not(.dropdown-item, .dropdown-toggle, .dropdown-link, .btn, .page-link), .btn-link {
@@ -26,10 +26,10 @@ i.fa-solid, i.fa-regular, i.fa-solid {
 }
 
 pre, .output-element {
-  background-color: #FAFAFA;
+  background-color: var(--bs-light-bg-subtle);
   margin: 0;
   padding: .25rem!important;
-  border: 1px solid #CCCCCC;
+  border: 1px solid var(--bs-border-color-translucent);
 }
 
 span.caret {
@@ -50,14 +50,14 @@ span.caret {
 
 .progress {
   margin: 0;
-  border: 1px solid #CCCCCC;
+  border: 1px solid var(--bs-border-color-translucent);
   padding: 0.125rem !important;
   height: 1.25rem !important;
 
   .progress-bar {
     line-height: initial;
     min-width: 2em;
-    color: white;
+    color: var(--bs-white);
   }
 }
 
@@ -96,10 +96,17 @@ span.caret {
 
 .flash {
   font-size: 100%;
+}
 
-  a, a:hover {
-    color: white;
-    font-weight: bold;
+html[data-bs-theme="dark"] {
+  .alert .alert-link:hover {
+    filter: brightness(135%);
+  }
+}
+
+html[data-bs-theme="light"] {
+  .alert .alert-link:hover {
+    filter: brightness(175%);
   }
 }
 
@@ -110,7 +117,7 @@ span.caret {
 .spinner {
   width: 40px;
   height: 40px;
-  background-color: #333;
+  background-color: var(--bs-body-color);
 
   margin: 100px auto;
   -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;

@@ -120,19 +120,19 @@ $(document).on('turbolinks:load', function() {
             var largestSubmittedTimeStamp = submissions[submissions_length-1];
             var largestArrayForRange;
 
-            if(largestSubmittedTimeStamp.cause == "assess"){
+            if(largestSubmittedTimeStamp.cause === "assess"){
                 largestArrayForRange = submissionsScoreAndTimeAssess;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
-            } else if(largestSubmittedTimeStamp.cause == "submit"){
+            } else if(largestSubmittedTimeStamp.cause === "submit"){
                 largestArrayForRange = submissionsScoreAndTimeSubmits;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
-            } else if(largestSubmittedTimeStamp.cause == "run"){
+            } else if(largestSubmittedTimeStamp.cause === "run"){
                 largestArrayForRange = submissionsScoreAndTimeRuns;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
-            } else if(largestSubmittedTimeStamp.cause == "autosave"){
+            } else if(largestSubmittedTimeStamp.cause === "autosave"){
                 largestArrayForRange = submissionsAutosaves;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
-            } else if(largestSubmittedTimeStamp.cause == "save"){
+            } else if(largestSubmittedTimeStamp.cause === "save"){
                 largestArrayForRange = submissionsSaves;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1]]).clamp(true);
             }
@@ -163,6 +163,7 @@ $(document).on('turbolinks:load', function() {
                 .call(yAxis);
 
             svg.append("text") // y axis label
+                .attr("class", "y axis")
                 .attr("transform", "rotate(-90)")
                 .attr("x", -height / 2)
                 .attr("dy", "-3em")
@@ -180,12 +181,12 @@ $(document).on('turbolinks:load', function() {
                 .style('font-size', 20)
                 .style('text-decoration', 'underline');
 
-            
+
              svg.append("path")
                 //.datum()
                 .attr("class", "line")
                 .attr('id', 'myPath')// new
-                .attr("stroke", "black")
+                .attr("stroke", "var(--bs-emphasis-color)")
                 .attr("stroke-width", 5)
                 .attr("fill", "none")// end new
                 .attr("d", line(submissionsScoreAndTimeAssess));//---
@@ -194,7 +195,7 @@ $(document).on('turbolinks:load', function() {
                 .datum(submissionsScoreAndTimeAssess)
                 .attr("class", "line")
                 .attr('id', 'myPath')// new
-                .attr("stroke", "orange")
+                .attr("stroke", "var(--bs-warning)")
                 .attr("stroke-width", 5)
                 .attr("fill", "none")// end new
                 .attr("d", line);//---
@@ -203,6 +204,7 @@ $(document).on('turbolinks:load', function() {
             svg.selectAll("dot") // Add dots to assesses
                 .data(submissionsScoreAndTimeAssess)
                 .enter().append("circle")
+                .attr("fill", "var(--bs-secondary)")
                 .attr("r", 3.5)
                 .attr("cx", function(d) { return x(d[1]); })
                 .attr("cy", function(d) { return y(d[0]); });
@@ -216,14 +218,14 @@ $(document).on('turbolinks:load', function() {
                 .data(submissionsScoreAndTimeSubmits)
                 .enter().append("circle")
                 .attr("r", 6)
-                .attr("stroke", "black")
-                .attr("fill", "blue")
+                .attr("stroke", "var(--bs-emphasis-color)")
+                .attr("fill", "var(--bs-blue)")
                 .attr("cx", function(d) { return x(d[1]); })
                 .attr("cy", function(d) { return y(d[0]); });
 
             for (var i = 0; i < submissionsScoreAndTimeRuns.length; i++) {
                 svg.append("line")
-                    .attr("stroke", "red")
+                    .attr("stroke", "var(--bs-red)")
                     .attr("stroke-width", 1)
                     .attr("fill", "none")// end new
                     .attr("y1", y(0))
@@ -232,9 +234,9 @@ $(document).on('turbolinks:load', function() {
                     .attr("x2", x(submissionsScoreAndTimeRuns[i]));
             }
 
-            var color_hash = {  0 : ["Submissions", "blue"],
-                1 : ["Assesses", "orange"],
-                2 : ["Runs", "red"]
+            var color_hash = {  0 : ["Submissions", "var(--bs-blue)"],
+                1 : ["Assesses", "var(--bs-orange)"],
+                2 : ["Runs", "var(--bs-red)"]
             };
 
             // add legend

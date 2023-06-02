@@ -20,6 +20,7 @@ $(document).on('turbolinks:load', function() {
             CodeOceanEditorSubmissions
         )
 
+        $(document).on('theme:change:ace', CodeOceanEditor.handleAceThemeChangeEvent.bind(CodeOceanEditor));
         $('#submit').one('click', CodeOceanEditorSubmissions.submitCode.bind(CodeOceanEditor));
         $('#accept').one('click', CodeOceanEditorSubmissions.submitCode.bind(CodeOceanEditor));
     }

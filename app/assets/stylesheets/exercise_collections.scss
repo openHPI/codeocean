@@ -1,7 +1,7 @@
-$time-color: #008cba;
-$min-color: #8efa00;
-$avg-color: #ffca00;
-$max-color: #ff2600;
+$time-color: var(--bs-blue);
+$min-color: var(--bs-yellow);
+$avg-color: var(--bs-teal);
+$max-color: var(--bs-red);
 
 path.line.minimum-working-time {
   stroke: $min-color;
@@ -31,7 +31,7 @@ rect.value-bar {
     .box {
       width: 20px;
       height: 20px;
-      border: solid 1px #000;
+      border: solid 1px var(--bs-emphasis-color);
     }
 
     .box.time {
@@ -62,8 +62,8 @@ rect.value-bar {
   display: none;
   min-width: 80px;
   height: auto;
-  background: none repeat scroll 0 0 #ffffff;
-  border: 1px solid #008cba;
+  background: none repeat scroll 0 0 var(--bs-body-bg);
+  border: 1px solid var(--bs-primary);
   padding: 14px;
   text-align: center;
 }

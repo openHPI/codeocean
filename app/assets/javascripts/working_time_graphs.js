@@ -113,6 +113,7 @@ $(document).on('turbolinks:load', function() {
               .call(yAxis);
 
           svg.append("text") // y axis label
+              .attr("class", "y axis")
               .attr("transform", "rotate(-90)")
               .attr("x", -height / 2)
               .attr("dy", "-3em")
@@ -134,7 +135,7 @@ $(document).on('turbolinks:load', function() {
               .datum(minutes_count)
               .attr("class", "line")
               .attr('id', 'myPath')
-              .attr("stroke", "orange")
+              .attr("stroke", "var(--bs-warning)")
               .attr("stroke-width", 5)
               .attr("fill", "none")
               .attr("d", line);
@@ -216,7 +217,7 @@ $(document).on('turbolinks:load', function() {
               .attr('class', 'd3-tip')
               .offset([-10, 0])
               .html(function(_event, d) {
-                  return "<strong>Students: </strong><span style='color:orange'>" + d + "</span>";
+                  return "<strong>Students: </strong><span style='color:var(--bs-warning)'>" + d + "</span>";
               });
 
           var svg = d3.select("#chart_2").append("svg")
@@ -248,6 +249,7 @@ $(document).on('turbolinks:load', function() {
               .attr("dy", ".71em");
 
           svg.append("text")
+              .attr("class", "y axis")
               .attr("transform", "rotate(-90)")
               .attr("x", -height / 2)
               .attr("dy", "-3em")

@@ -1,0 +1,17 @@
+li.nav-item.dropdown
+  a.nav-link.dropdown-toggle.me-3 data-bs-toggle='dropdown' href='#'
+    = t('shared.color_mode.title')
+    span.caret
+  ul.dropdown-menu.p-0.mt-1 role='menu'
+    li
+      button.dropdown-item.d-flex.align-items-center data={ 'bs-theme-value': 'light' }
+        i.fa-fw.fa-solid.fa-sun
+        = t('shared.color_mode.light')
+    li
+      button.dropdown-item.d-flex.align-items-center data={ 'bs-theme-value': 'dark' }
+        i.fa-fw.fa-solid.fa-moon
+        = t('shared.color_mode.dark')
+    li
+      button.dropdown-item.d-flex.align-items-center data={ 'bs-theme-value': 'auto' }
+        i.fa-fw.fa-solid.fa-wand-magic-sparkles
+        = t('shared.color_mode.auto')

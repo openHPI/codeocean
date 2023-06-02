@@ -29,6 +29,7 @@ html lang="#{I18n.locale || I18n.default_locale}" data-default-locale="#{I18n.de
           #navbar-collapse.collapse.navbar-collapse
             = render('navigation', cached: true)
             ul.nav.navbar-nav.ms-auto
+              = render('color_mode_selector', cached: true)
               = render('locale_selector', cached: true)
               li.nav-item.me-3 = link_to(t('shared.help.link'), '#modal-help', data: {'bs-toggle': 'modal'}, class: 'nav-link')
               = render('session')

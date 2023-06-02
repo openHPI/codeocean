@@ -37,7 +37,9 @@ window.SentryUtils = { dynamicSamplingContextToSentryBaggageHeader, startIdleTra
 
 // CSS
 import 'chosen-js/chosen.css';
+import 'chosen-dark.scss';
 import 'jstree/dist/themes/default/style.min.css';
+import 'jstree/dist/themes/default-dark/style.min.css';
 
 // custom jquery-ui library for minimal mouse interaction support
 import 'jquery-ui/ui/widget'

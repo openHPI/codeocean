@@ -1,7 +1,7 @@
 div.d-grid id='output_sidebar_collapsed'
-  = render('editor_button', classes: 'btn-outline-dark btn', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa-solid fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
+  = render('editor_button', classes: 'btn-outline-contrast btn', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa-solid fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
 div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output_yet')
-  = render('editor_button', classes: 'btn-outline-dark btn overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
+  = render('editor_button', classes: 'btn-outline-contrast btn overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
 
 
   #content-right-sidebar.overflow-scroll
@@ -17,7 +17,7 @@ div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-botto
             li.card.mt-2
               .card-header.py-2
                 h5.card-title.m-0 == t('exercises.implement.test_file', filename: '', number: 0)
-              .card-body.bg-white.text-dark
+              .card-body
                 = row(label: 'exercises.implement.passed_tests') do
                   span.number
                     | 0
@@ -37,7 +37,7 @@ div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-botto
             li.card.mt-2
               .card-header.py-2
                 h5.card-title.m-0 == t('exercises.implement.linter_file', filename: '', number: 0)
-              .card-body.bg-white.text-dark
+              .card-body
                 = row(label: 'exercises.implement.code_rating') do
                   span.number
                     | 0
@@ -84,6 +84,6 @@ div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-botto
       #output
         .output-element.overflow-scroll = t('exercises.implement.no_output_yet')
       - if CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] && !@embed_options[:disable_hints] && !@embed_options[:hide_test_results]
-        #flowrHint.mb-2.card.text-white.bg-info data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
-          .card-header = t('exercises.implement.flowr.heading')
-          .card-body.text-dark.bg-white
+        #flowrHint.mb-2.card data-url=CodeOcean::Config.new(:code_ocean).read[:flowr][:url] role='tab'
+          .card-header.text-white.bg-info = t('exercises.implement.flowr.heading')
+          .card-body

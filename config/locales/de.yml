@@ -817,7 +817,7 @@ de:
     runtime_output: "Programmausgabe"
     test_results: "Testergebnisse"
   sessions:
-    expired: Ihre Session ist abgelaufen. Bitte <a href="" class="reloadCurrentPage">laden Sie diese Seite neu</a> bevor Sie fortfahren.
+    expired: Ihre Session ist abgelaufen. Bitte <a href="" class="reloadCurrentPage alert-link">laden Sie diese Seite neu</a> bevor Sie fortfahren.
     create:
       failure: Fehlerhafte E-Mail oder Passwort.
       success: Sie haben sich erfolgreich angemeldet.
@@ -859,6 +859,11 @@ de:
     confirm_destroy: Sind Sie sicher?
     create: '%{model} erstellen'
     created_at: Erstellt
+    color_mode:
+      title: Erscheinungsbild
+      light: Hell
+      dark: Dunkel
+      auto: Automatisch
     destroy: Löschen
     edit: Bearbeiten
     actions_button: 'Andere Aktionen'
@@ -873,7 +878,7 @@ de:
       privacy_policy: Datenschutzerklärung
     index: Index
     message_failure: Leider ist ein Fehler auf unserer Plattform aufgetreten. Bitte probieren Sie es später noch einmal.
-    websocket_failure: Leider ist ein Verbindungsproblem aufgetreten. <a href="https://websocketstest.com" target="_blank" rel="noopener">Bitte überprüfen Sie Websocket-Verbindungen mit diesem Tool</a> und versuchen Sie es erneut.
+    websocket_failure: Leider ist ein Verbindungsproblem aufgetreten. <a href="https://websocketstest.com" target="_blank" rel="noopener" class="alert-link">Bitte überprüfen Sie Websocket-Verbindungen mit diesem Tool</a> und versuchen Sie es erneut.
     new: Hinzufügen
     new_model: '%{model} hinzufügen'
     number: Nummer

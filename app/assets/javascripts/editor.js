@@ -19,4 +19,13 @@ $(document).on('turbolinks:load', function(event) {
     // Search for insertLines and Turbolinks reload / cache control
     CodeOceanEditor.initializeEverything();
   }
+
+  function handleThemeChangeEvent(event) {
+    if (CodeOceanEditor) {
+      CodeOceanEditor.THEME = event.detail.currentTheme === 'dark' ? 'ace/theme/tomorrow_night' : 'ace/theme/tomorrow';
+      document.dispatchEvent(new Event('theme:change:ace'));
+    }
+  }
+
+  $(document).on('theme:change', handleThemeChangeEvent.bind(this));
 });

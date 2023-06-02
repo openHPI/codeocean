@@ -17,6 +17,7 @@
 //
 // lib/assets
 //= require flash
+//= require color_mode_picker
 //
 // vendor/assets
 //= require ace/ace

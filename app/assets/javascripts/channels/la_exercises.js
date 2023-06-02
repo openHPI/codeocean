@@ -208,7 +208,7 @@ $(document).on('turbolinks:load', function() {
                 .html(function(_event, _d) {
                     const e = rect.nodes();
                     const i = e.indexOf(this) % learners.length;
-                    return "<strong>Student: </strong><span style='color:orange'>" + learners_name(i) + "</span><br/>" +
+                    return "<strong>Student: </strong><span style='color:var(--bs-warning)'>" + learners_name(i) + "</span><br/>" +
                         "0: " + learners_time(0, i) + "<br/>" +
                         "1: " + learners_time(1, i) + "<br/>" +
                         "2: " + learners_time(2, i) + "<br/>" +

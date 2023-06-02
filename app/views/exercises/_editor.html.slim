@@ -35,8 +35,8 @@
 
     #statusbar.d-flex.justify-content-between
       div
-        - if !@embed_options[:disable_download] && @exercise.hide_file_tree?
-          button#download.p-0.border-0.btn-link.visible.bg-white.text-primary
+        - if !@embed_options[:disable_download] && !@exercise.hide_file_tree?
+          button#download.p-0.border-0.btn-link.visible.bg-body.text-primary
             i.fa-solid.fa-arrow-down
             = t('exercises.editor.download')
 
@@ -47,7 +47,7 @@
 
         = " | "
 
-        button#start-over-active-file.p-0.border-0.btn-link.bg-white.text-primary data-message-confirm=t('exercises.editor.confirm_start_over_active_file') data-url=reload_exercise_path(@exercise)
+        button#start-over-active-file.p-0.border-0.btn-link.bg-body.text-primary data-message-confirm=t('exercises.editor.confirm_start_over_active_file') data-url=reload_exercise_path(@exercise)
           i.fa-solid.fa-circle-notch.fa-spin.d-none
           i.fa-solid.fa-clock-rotate-left
           = t('exercises.editor.start_over_active_file')

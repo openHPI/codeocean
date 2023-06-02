@@ -1,17 +1,13 @@
 $(document).on('turbolinks:load', function () {
-    // ruby part adds the relative_url_root, if it is set.
-    var ACE_FILES_PATH = '<%= "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/" %>';
-    var THEME = 'ace/theme/textmate';
-
     var TAB_KEY_CODE = 9;
 
     var execution_environments;
     var file_types;
-
+    const editors = [];
 
     var configureEditors = function () {
         _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
-            ace.config.set(attribute, ACE_FILES_PATH);
+            ace.config.set(attribute, CodeOceanEditor.ACE_FILES_PATH);
         });
     };
 
@@ -28,7 +24,8 @@ $(document).on('turbolinks:load', function () {
         // document.removeLines(document.getLength() - 1, document.getLength() - 1);
         editor.setReadOnly($(element).data('read-only') !== undefined);
         editor.setShowPrintMargin(false);
-        editor.setTheme(THEME);
+        editor.setTheme(CodeOceanEditor.THEME);
+        editors.push(editor);
 
         // For creating / editing an exercise
         var textarea = $('textarea[id="exercise_files_attributes_' + index + '_content"]');
@@ -51,6 +48,14 @@ $(document).on('turbolinks:load', function () {
         session.setUseSoftTabs(true);
         session.setUseWrapMode(true);
     }
+
+    const handleAceThemeChangeEvent = function(event) {
+        editors.forEach(function (editor) {
+            editor.setTheme(CodeOceanEditor.THEME);
+        }.bind(this));
+    };
+
+    $(document).on('theme:change:ace', handleAceThemeChangeEvent.bind(this));
 
     var initializeEditors = function () {
         // initialize ace editors for all code textareas in the dom except the last one. The last one is the dummy area for new files, which is cloned when needed.

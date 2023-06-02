@@ -99,13 +99,16 @@ $(document).on('turbolinks:load', function () {
             fileTree.removeClass('my-3 justify-content-center');
             fileTree.jstree({
                 'core': {
+                    'themes': {
+                        'name': window.getCurrentTheme() === "dark" ? "default-dark" : "default"
+                    },
                     'data': {
                         'url': function (node) {
                             const params = {sudo: sudo.is(':checked')};
                             return Routes.list_files_in_execution_environment_path(id, params);
                         },
                         'data': function (node) {
-                            return {'path': getPath(fileTree.jstree(), node)|| '/'};
+                            return {'path': getPath(fileTree.jstree(true), node)|| '/'};
                         }
                     }
                 }
@@ -130,6 +133,11 @@ $(document).on('turbolinks:load', function () {
                     window.location = downloadPath;
                 }
             }.bind(this));
+            $(document).on('theme:change', function(event) {
+                const newColorScheme = event.detail.currentTheme;
+                // Update the JStree theme
+                fileTree.jstree(true).set_theme(newColorScheme === "dark" ? "default-dark" : "default");
+            });
         }
     }
 

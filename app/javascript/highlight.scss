@@ -1,0 +1,9 @@
+// CSS for highlight.js
+
+html[data-bs-theme="light"] {
+  @import 'highlight.js/styles/base16/tomorrow';
+}
+
+html[data-bs-theme="dark"] {
+  @import 'highlight.js/styles/base16/tomorrow-night';
+}

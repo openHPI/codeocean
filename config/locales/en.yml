@@ -817,7 +817,7 @@ en:
     runtime_output: "Runtime Output"
     test_results: "Test Results"
   sessions:
-    expired: Your session has expired. Please <a href="" class="reloadCurrentPage">reload this page</a> before continuing.
+    expired: Your session has expired. Please <a href="" class="reloadCurrentPage alert-link">reload this page</a> before continuing.
     create:
       failure: Invalid email or password.
       success: Successfully signed in.
@@ -859,6 +859,11 @@ en:
     confirm_destroy: Are you sure?
     create: 'Create %{model}'
     created_at: Created At
+    color_mode:
+      title: Appearance
+      light: Light
+      dark: Dark
+      auto: Auto
     destroy: Delete
     edit: Edit
     actions_button: 'Other actions'
@@ -873,7 +878,7 @@ en:
       privacy_policy: Privacy Policy
     index: Index
     message_failure: 'Sorry, something went wrong.'
-    websocket_failure: Sorry, a connection issue occoured. <a href="https://websocketstest.com" target="_blank" rel="noopener">Please check WebSocket connections with this tool</a> and try again.
+    websocket_failure: Sorry, a connection issue occoured. <a href="https://websocketstest.com" target="_blank" rel="noopener" class="alert-link">Please check WebSocket connections with this tool</a> and try again.
     new: Add
     new_model: 'Add %{model}'
     number: Number

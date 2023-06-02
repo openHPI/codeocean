@@ -6,8 +6,11 @@
 .own-editor {
   height: 100%;
   width: 100%;
-  .ace_scroller .ace_content {
-    background: #FAFAFA;
+}
+
+html[data-bs-theme="light"] {
+  .own-editor .ace_scroller .ace_content {
+    background-color: var(--bs-secondary-border-subtle);
   }
 }
 
@@ -51,7 +54,7 @@
 }
 
 #editor-buttons {
-  background-color: #008CBA;
+  background-color: var(--bs-primary);
   margin-top: 0;
   width: 100%;
   display: flex;
@@ -97,7 +100,7 @@
   visibility: hidden;
   margin-top: .2em;
   height: 1.6em;
-  color: #777;
+  color: var(--bs-tertiary-color);
   font-size: 0.8em;
 }
 
@@ -188,7 +191,7 @@
 
 #error-hints {
   display: none;
-  background-color: #FAFAFA;
+  background-color: var(--bs-light-bg-subtle);
 
   .heading {
     font-weight: bold;

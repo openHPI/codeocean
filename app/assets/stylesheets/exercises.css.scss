@@ -1,5 +1,5 @@
 code {
-  background-color: #F8F8F8 !important;
+  background-color: var(--bs-light-bg-subtle) !important;
   max-height: 100px;
   overflow: scroll;
 }
@@ -14,7 +14,7 @@ input[type='file'] {
 
 .exercise {
   border-radius: 3px;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px 0 rgba(var(--bs-black-rgb), 0.2);
   padding: 1px 10px 1px 10px;
   margin-bottom: 10px;
 
@@ -50,15 +50,17 @@ input[type='file'] {
 
 // Graph Settings
 
+text.axis, {
+  fill: var(--bs-body-color);
+}
+
 .axis path {
   fill: none;
-  stroke: #100;
   shape-rendering: crispEdges;
 }
 .axis line {
   fill: none;
-  stroke: #999;
-  //shape-rendering: crispEdges;
+  stroke: var(--bs-tertiary-color);
 }
 
 .y.axis path {
@@ -77,29 +79,29 @@ input[type='file'] {
 }
 
 div#chart_1 {
-  background-color: #FAFAFA;
+  background-color: var(--bs-light-bg-subtle);
 }
 
 div#chart_2 {
-  background-color: #FAFAFA;
+  background-color: var(--bs-light-bg-subtle);
 }
 
 div#chart_stacked {
   max-height: 500px;
-  background-color: #FAFAFA;
+  background-color: var(--bs-light-bg-subtle);
 }
 
 a.file-heading {
-  color: black !important;
+  color: var(--bs-body-color) !important;
   text-decoration: none;
 }
 
 .bar {
-  fill: orange;
+  fill: var(--bs-warning);
 }
 
 .bar:hover {
-  fill:  #ffd897;
+  fill: var(--bs-warning-border-subtle);
 }
 
 .container > form > .actions {
@@ -110,8 +112,8 @@ a.file-heading {
   line-height: 1;
   font-weight: bold;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
+  background: rgba(var(--bs-black-rgb), 0.8);
+  color: var(--bs-white);
   border-radius: 2px;
 }
 
@@ -122,7 +124,7 @@ a.file-heading {
   font-size: 14px;
   width: 100%;
   line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
+  color: rgba(var(--bs-black-rgb), 0.8);
   content: "\25BC";
   position: absolute;
   text-align: center;
@@ -142,7 +144,7 @@ a.file-heading {
   }
 
   .value {
-    border: 1px solid grey;
+    border: 1px solid var(--bs-border-color-translucent);
     padding: 10px;
     margin-bottom: 10px;
   }
@@ -216,11 +218,11 @@ a.file-heading {
 }
 
 .export-success {
-  color: darkgreen;
+  color: var(--bs-success);
   font-size: 12pt;
   font-weight: 600;
 }
 
 .export-failure {
-  color: darkred;
+  color: var(--bs-danger);
 }

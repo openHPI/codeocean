@@ -9,5 +9,5 @@
   .card-header.py-2
     i.fa-solid.fa-lightbulb
     = t('exercises.implement.tips.heading')
-  .card-body.text-dark.bg-white.p-2
+  .card-body.p-2
     = render(partial: 'tips/collapsed_card', collection: @tips, as: :exercise_tip, locals: { tip_prefix: '' })
