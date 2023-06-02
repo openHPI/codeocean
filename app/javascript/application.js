@@ -24,13 +24,15 @@ window.bootstrap = bootstrap; // Publish bootstrap in global namespace
 window._ = _; // Publish underscore's `_` in global namespace
 window.d3 = d3; // Publish d3 in global namespace
 window.Sentry = Sentry; // Publish sentry in global namespace
-window.SentryIntegrations = [ // Publish sentry integration in global namespace
-    new SentryIntegration.ReportingObserver(),
-    new SentryIntegration.ExtraErrorData(),
-    new SentryIntegration.HttpClient(),
-    new Sentry.BrowserTracing(),
-    new Sentry.Replay(),
-];
+window.SentryIntegrations = function() { // Publish sentry integration in global namespace
+    return [
+        new SentryIntegration.ReportingObserver(),
+        new SentryIntegration.ExtraErrorData(),
+        new SentryIntegration.HttpClient(),
+        new Sentry.BrowserTracing(),
+        new Sentry.Replay(),
+    ]
+};
 window.SentryUtils = { dynamicSamplingContextToSentryBaggageHeader, startIdleTransaction, TRACING_DEFAULTS };
 
 // CSS

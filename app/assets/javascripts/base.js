@@ -44,7 +44,9 @@ $(document).on('turbolinks:load', function() {
 
     // Initialize Sentry
     const sentrySettings = $('meta[name="sentry"]')
-    if (sentrySettings.data()['enabled']) {
+
+    // Workaround for Turbolinks: We must not re-initialize the Relay object when visiting another page
+    if (sentrySettings.data()['enabled'] && !Sentry.Replay.prototype._isInitialized) {
         Sentry.init({
             dsn: sentrySettings.data('dsn'),
             attachStacktrace: true,
@@ -54,7 +56,7 @@ $(document).on('turbolinks:load', function() {
             tracesSampleRate: 1.0,
             replaysSessionSampleRate: 0.0,
             replaysOnErrorSampleRate: 1.0,
-            integrations: window.SentryIntegrations,
+            integrations: window.SentryIntegrations(),
             initialScope: scope =>{
                 const user = $('meta[name="current-user"]').attr('content');
 
