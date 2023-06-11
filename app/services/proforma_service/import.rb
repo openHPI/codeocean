@@ -67,7 +67,7 @@ module ProformaService
         zip_file.map(&:name)
       end
 
-      filenames.select {|f| f[/\.xml$/] }.any?
+      filenames.any? {|f| f[/\.xml$/] }
     rescue Zip::Error
       raise Proforma::InvalidZip
     end

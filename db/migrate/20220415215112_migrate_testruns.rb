@@ -4,17 +4,17 @@ class MigrateTestruns < ActiveRecord::Migration[6.1]
   # We are not changing any tables but only backfilling data.
   disable_ddl_transaction!
 
-  SPLIT_OUTPUT = Regexp.compile(/(?<meta>message: (?<message>.*)\n|status: (?<status>.*)\n)? stdout: (?<stdout>.*)\n stderr: ?(?<stderr>.*)/m)
-  PYTHON_BYTE_OUTPUT = Regexp.compile(/^b'(?<raw_output>.*)'$/)
-  PYTHON_JSON_OUTPUT = Regexp.compile(/{"cmd":"write","stream":"(?<stream>.*)","data":"(?<data_output>.*)"}/)
-  RUN_OUTPUT = Regexp.compile(%r{(?<prefix>timeout:)? ?(?>make run\r\n)?(?>python3 /usr/lib/[^\r\n]*\r\n|/usr/bin/python3[^\r\n]*\r\n|ruby [^\r\n]*\r\n)?(?<cleaned_output>[^ "\e][^\e]*?[^#\e])?(?<shell>\r\e.*?)?#?(?<suffix>exit|timeout)?\r?\Z}m)
-  REAL_EXIT = Regexp.compile(/\A(?>(?<json>(?<json_output>{".*?)?(?>{"cmd":(?> |"write","stream":"stdout","data":)?"#?exit(?>\\[nr])?"})+(?<more_shell_output_after_json>.*))|(?<program_output>.*?)(?>#?exit\s*)+(?<more_shell_output_after_program>.*))\z/m)
-  STDERR_WRITTEN = Regexp.compile(/^(?:(?<rb_error>\r*[^\n\r]*\.rb:\d+:.*)|(?<other_error>\r*[^\n\r]*\.java:\d+: error.*|\r*Exception in thread.*|\r*There was .*|\r*[^\n\r]*java\.lang\..*|\r*make: \*\*\* \[.*))\z/m)
-  FIND_JSON = Regexp.compile(/{(?:(?:"(?:\\.|[^\\"])+?"\s*:\s*(?:"(?:\\.|[^\\"])*?"|-?\d++(?:\.\d++)?|\[.*?\]|{.*?}|null))+?\s*,?\s*)+}/)
+  SPLIT_OUTPUT = /(?<meta>message: (?<message>.*)\n|status: (?<status>.*)\n)? stdout: (?<stdout>.*)\n stderr: ?(?<stderr>.*)/m
+  PYTHON_BYTE_OUTPUT = /^b'(?<raw_output>.*)'$/
+  PYTHON_JSON_OUTPUT = /{"cmd":"write","stream":"(?<stream>.*)","data":"(?<data_output>.*)"}/
+  RUN_OUTPUT = %r{(?<prefix>timeout:)? ?(?>make run\r\n)?(?>python3 /usr/lib/[^\r\n]*\r\n|/usr/bin/python3[^\r\n]*\r\n|ruby [^\r\n]*\r\n)?(?<cleaned_output>[^ "\e][^\e]*?[^#\e])?(?<shell>\r\e.*?)?#?(?<suffix>exit|timeout)?\r?\Z}m
+  REAL_EXIT = /\A(?>(?<json>(?<json_output>{".*?)?(?>{"cmd":(?> |"write","stream":"stdout","data":)?"#?exit(?>\\[nr])?"})+(?<more_shell_output_after_json>.*))|(?<program_output>.*?)(?>#?exit\s*)+(?<more_shell_output_after_program>.*))\z/m
+  STDERR_WRITTEN = /^(?:(?<rb_error>\r*[^\n\r]*\.rb:\d+:.*)|(?<other_error>\r*[^\n\r]*\.java:\d+: error.*|\r*Exception in thread.*|\r*There was .*|\r*[^\n\r]*java\.lang\..*|\r*make: \*\*\* \[.*))\z/m
+  FIND_JSON = /{(?:(?:"(?:\\.|[^\\"])+?"\s*:\s*(?:"(?:\\.|[^\\"])*?"|-?\d++(?:\.\d++)?|\[.*?\]|{.*?}|null))+?\s*,?\s*)+}/
   # We identify incomplete Unicode characters. Valid unicode characters are:
   # \uXXXX, \u{XXXXX}, \udYXX\udZXX with X = 0-9a-f, Y = 89ab, Z = cdef
   # Every incomplete prefix of a valid unicode character is identified
-  REPLACE_INCOMPLETE_UNICODE = Regexp.compile(/(?:\\?\\u[\da-f]{0,3}|\\?\\ud[89ab][\da-f]{2}\\?(?:\\(?:u(?:d(?:[cdef][\da-f]?)?)?)?)?|\\?\\u\{[\da-f]{0,4})"}\z/)
+  REPLACE_INCOMPLETE_UNICODE = /(?:\\?\\u[\da-f]{0,3}|\\?\\ud[89ab][\da-f]{2}\\?(?:\\(?:u(?:d(?:[cdef][\da-f]?)?)?)?)?|\\?\\u\{[\da-f]{0,4})"}\z/
 
   # NOTE: `update_columns` won't run validations nor update the `updated_at` timestamp.
   # This is what we want here, thus we disable Rubocop for this migration.

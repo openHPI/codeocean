@@ -184,7 +184,7 @@ describe RequestForCommentPolicy do
           end
 
           it 'does not grant access to authors of another primary study groups' do
-            rfc_other_study_group.author.update(study_groups: [create(:study_group)])
+            rfc_other_study_group.author.update(study_groups: create_list(:study_group, 1))
             expect(policy).not_to permit(rfc_other_study_group.author, rfc_other_study_group)
           end
 

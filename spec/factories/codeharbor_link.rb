@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :codeharbor_link do
-    user { build(:teacher) }
+    user factory: :teacher
     push_url { 'https://push.url' }
     check_uuid_url { 'https://check-uuid.url' }
     sequence(:api_key) {|n| "api_key#{n}" }

@@ -8,9 +8,9 @@ FactoryBot.define do
   }.freeze
 
   factory :lti_parameter do
-    association :consumer
-    association :exercise, factory: :math
-    association :external_user
+    consumer
+    exercise factory: :math
+    external_user
 
     lti_parameters { lti_params }
 

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :study_group, class: 'StudyGroup' do
-    association :consumer
+    consumer
     sequence :name do |n|
       "TestGroup#{n}"
     end

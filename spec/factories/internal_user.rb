@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :admin, class: 'InternalUser' do
     activated_user
-    association :consumer
+    consumer
     email { 'admin@example.org' }
     generated_user_name
     password { 'admin' }
@@ -17,7 +17,7 @@ FactoryBot.define do
 
   factory :teacher, class: 'InternalUser' do
     activated_user
-    association :consumer
+    consumer
     generated_email
     generated_user_name
     password { 'teacher' }
@@ -31,7 +31,7 @@ FactoryBot.define do
 
   factory :learner, class: 'InternalUser' do
     activated_user
-    association :consumer
+    consumer
     generated_email
     generated_user_name
     password { 'learner' }

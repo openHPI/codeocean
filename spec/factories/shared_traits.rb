@@ -3,7 +3,7 @@
 FactoryBot.define do
   %i[admin external_user teacher].each do |factory_name|
     trait :"created_by_#{factory_name}" do
-      association :user, factory: factory_name
+      user factory: factory_name
     end
   end
 

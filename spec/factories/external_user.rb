@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :external_user do
-    association :consumer
+    consumer
     generated_email
     external_id { SecureRandom.uuid }
     generated_user_name
