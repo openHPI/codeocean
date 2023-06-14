@@ -30,4 +30,11 @@ describe 'Request_for_Comments' do
     visit(request_for_comments_path)
     expect(page.find_by_id('q_submission_study_group_id_in')).not_to be_nil
   end
+
+  it 'works with the pagination' do
+    submission = create(:submission)
+    create_list(:rfc, 25, submission:, exercise: submission.exercise)
+    visit(request_for_comments_path)
+    expect(page).to have_css('ul.pagination')
+  end
 end
