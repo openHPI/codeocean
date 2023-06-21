@@ -98,7 +98,7 @@ GEM
     bootstrap-will_paginate (1.0.0)
       will_paginate
     builder (3.2.4)
-    bunny (2.21.0)
+    bunny (2.22.0)
       amq-protocol (~> 2.3, >= 2.3.1)
       sorted_set (~> 1, >= 1.0.2)
     byebug (11.1.3)
