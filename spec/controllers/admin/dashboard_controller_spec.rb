@@ -5,7 +5,15 @@ require 'rails_helper'
 describe Admin::DashboardController do
   render_views
 
-  before { allow(controller).to receive(:current_user).and_return(build(:admin)) }
+  let(:codeocean_config) { instance_double(CodeOcean::Config) }
+  let(:runner_management_config) { {runner_management: {enabled: false}} }
+
+  before do
+    allow(controller).to receive(:current_user).and_return(build(:admin))
+
+    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+    allow(codeocean_config).to receive(:read).and_return(runner_management_config)
+  end
 
   describe 'GET #show' do
     describe 'with format HTML' do
