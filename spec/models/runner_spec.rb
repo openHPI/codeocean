@@ -34,8 +34,6 @@ describe Runner do
       let(:runner_management_config) { {runner_management: {enabled: true, strategy:}} }
 
       before do
-        # Ensure to reset the memorized helper
-        described_class.instance_variable_set :@strategy_class, nil
         allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
         allow(codeocean_config).to receive(:read).and_return(runner_management_config)
       end
