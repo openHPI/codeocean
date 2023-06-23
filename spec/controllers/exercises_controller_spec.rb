@@ -316,6 +316,7 @@ describe ExercisesController do
       submission = build(:submission, exercise:, user:)
       allow(submission).to receive(:normalized_score).and_return(1)
       allow(submission).to receive(:calculate_score).and_return(scoring_response)
+      allow(submission).to receive(:redirect_to_feedback?).and_return(false)
       allow(Submission).to receive(:create).and_return(submission)
     end
 
