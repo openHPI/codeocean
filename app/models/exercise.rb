@@ -556,18 +556,23 @@ cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
   private :valid_main_file?
 
   def valid_submission_deadlines?
-    return unless submission_deadline.present? || late_submission_deadline.present?
+    return true unless submission_deadline.present? || late_submission_deadline.present?
 
+    valid = true
     if late_submission_deadline.present? && submission_deadline.blank?
       errors.add(:late_submission_deadline,
         I18n.t('activerecord.errors.models.exercise.late_submission_deadline_not_alone'))
+      valid = false
     end
 
     if submission_deadline.present? && late_submission_deadline.present? &&
        late_submission_deadline < submission_deadline
       errors.add(:late_submission_deadline,
         I18n.t('activerecord.errors.models.exercise.late_submission_deadline_not_before_submission_deadline'))
+      valid = false
     end
+
+    valid
   end
   private :valid_submission_deadlines?
 
