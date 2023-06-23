@@ -80,12 +80,6 @@ jobs:
         if: ${{ success() || failure() }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-      - name: Send coverage to CodeClimate
-        uses: paambaati/codeclimate-action@v3.2.0
-        continue-on-error: true
-        if: ${{ success() || failure() }}
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   lint:
     runs-on: ubuntu-latest

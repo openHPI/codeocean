@@ -2,8 +2,6 @@ CodeOcean
 ==========
 
 [![Build Status](https://github.com/openHPI/codeocean/workflows/CI/badge.svg)](https://github.com/openHPI/codeocean/actions?query=workflow%3ACI)
-[![Code Climate](https://codeclimate.com/github/openHPI/codeocean/badges/gpa.svg)](https://codeclimate.com/github/openHPI/codeocean)
-[![Test Coverage](https://codeclimate.com/github/openHPI/codeocean/badges/coverage.svg)](https://codeclimate.com/github/openHPI/codeocean)
 [![codecov](https://codecov.io/gh/openHPI/codeocean/branch/master/graph/badge.svg?token=imei686C2r)](https://codecov.io/gh/openHPI/codeocean)
 
 ![Learner Interface](docs/implement.png)
