@@ -3,6 +3,13 @@
 require 'rails_helper'
 
 describe Admin::DashboardHelper do
+  before do
+    create(:ruby)
+    dcp = class_double Runner::Strategy::DockerContainerPool
+    allow(Runner).to receive(:strategy_class).and_return dcp
+    allow(dcp).to receive(:pool_size).and_return({})
+  end
+
   describe '#dashboard_data' do
     it 'includes Docker-related data' do
       expect(dashboard_data).to include(:docker)
@@ -10,13 +17,6 @@ describe Admin::DashboardHelper do
   end
 
   describe '#docker_data' do
-    before do
-      create(:ruby)
-      dcp = class_double Runner::Strategy::DockerContainerPool
-      allow(Runner).to receive(:strategy_class).and_return dcp
-      allow(dcp).to receive(:pool_size).and_return({})
-    end
-
     it 'contains an entry for every execution environment' do
       expect(docker_data.length).to eq(ExecutionEnvironment.count)
     end
