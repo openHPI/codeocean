@@ -86,7 +86,7 @@ module AuthenticatedUrlHelper
       parsed_url = URI.parse url
 
       # Add the given parameters to the query string
-      query_params = CGI.parse(parsed_url.query || '')
+      query_params = CGI.parse(parsed_url.query || '').with_indifferent_access
       query_params.merge!(parameters)
 
       # Add the query string back to the URL
