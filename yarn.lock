@@ -1724,9 +1724,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001503:
-  version "1.0.30001507"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001507.tgz#fae53f6286e7564783eadea9b447819410a59534"
-  integrity sha512-SFpUDoSLCaE5XYL2jfqe9ova/pbQHEmbheDf5r4diNwbAgR3qxM9NQtfsiSscjqoya5K7kFcHPUQ+VsUkIJR4A==
+  version "1.0.30001508"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001508.tgz#4461bbc895c692a96da399639cc1e146e7302a33"
+  integrity sha512-sdQZOJdmt3GJs1UMNpCCCyeuS2IEGLXnHyAo9yIO5JJDjbjoVRij4M1qep6P6gFpptD1PqIYgzM+gwJbOi92mw==
 
 chalk@^2.0.0:
   version "2.4.2"
@@ -2770,9 +2770,9 @@ hpack.js@^2.1.6:
     wbuf "^1.1.0"
 
 html-entities@^2.3.2:
-  version "2.3.6"
-  resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-2.3.6.tgz#966391d58e5737c77bca4025e31721b496ab7454"
-  integrity sha512-9o0+dcpIw2/HxkNuYKxSJUF/MMRZQECK4GnF+oQOmJ83yCVHTWgCH5aOXxK5bozNRmM8wtgryjHD3uloPBDEGw==
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-2.4.0.tgz#edd0cee70402584c8c76cc2c0556db09d1f45061"
+  integrity sha512-igBTJcNNNhvZFRtm8uA6xMY6xYleeDwn3PeBCkDz7tHttv4F2hsDI2aPgNERWzvRcNYHNT3ymRaQzllmXj4YsQ==
 
 http-deceiver@^1.2.7:
   version "1.2.7"
@@ -4076,10 +4076,10 @@ setprototypeof@1.2.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.2.0.tgz#66c9a24a73f9fc28cbe66b09fed3d33dcaf1b424"
   integrity sha512-E5LDX7Wrp85Kil5bhZv46j8jOeboKq5JMmYM3gVGdGH8xFpPWXUMsNrlODCrkoxMEeNi/XZIwuRvY4XNwYMJpw==
 
-shakapacker@6.6.0:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/shakapacker/-/shakapacker-6.6.0.tgz#1e372a7ce6fa93f1a7bd1820737b8168679eb220"
-  integrity sha512-7sNnv8PXMlgm2Ob7vZOayLKu0+PPMN3q0HEyAlkFIJtHJt7wA3p1rObhlk0/OrNeBa4dio/9HiBUeEU7bZsHvw==
+shakapacker@7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/shakapacker/-/shakapacker-7.0.0.tgz#788c96e86eb78e44ee84c3cc03b7c091e4621fc3"
+  integrity sha512-yL5lbCdgtI8nUxZHarL7X5aB40r069wAunHwb59Hgw1gPg6/nMuYo7ofNTGXg11v1eunwAdjx8EfYnk4XwX27Q==
   dependencies:
     glob "^7.2.0"
     js-yaml "^4.1.0"
