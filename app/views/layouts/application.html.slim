@@ -19,7 +19,7 @@ html lang="#{I18n.locale || I18n.default_locale}" data-default-locale="#{I18n.de
     meta name='current-user' content=current_user&.to_sentry_context&.to_json
   body
     - unless @embed_options[:hide_navbar]
-      nav.navbar.navbar-dark.bg-dark.navbar-expand-md.mb-4.py-1 role='navigation'
+      nav.navbar.bg-dark.navbar-expand-md.mb-4.py-1 role='navigation' data-bs-theme="dark"
         .container
           .navbar-brand
             i.fa-solid.fa-code

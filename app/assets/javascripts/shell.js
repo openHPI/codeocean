@@ -67,7 +67,7 @@ $(document).on('turbolinks:load', function () {
 
             if (!output.stdout && !output.stderr) {
                 const element = $('<p>');
-                element.addClass('text-muted');
+                element.addClass('text-body-secondary');
                 element.text(log.data('message-no-output'));
                 log.append(element);
             }
@@ -164,7 +164,7 @@ $(document).on('turbolinks:load', function () {
 
     const sudo = $('#sudo');
     sudo.on('change', function () {
-        sudo.parent().toggleClass('text-muted')
+        sudo.parent().toggleClass('text-body-secondary')
         command.focus();
     });
     $('#reload-files').on('click', function () {

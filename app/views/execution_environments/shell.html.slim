@@ -3,7 +3,7 @@ h1 = @execution_environment
 #shell data-message-timeout=t('exercises.editor.timeout', permitted_execution_time: @execution_environment.permitted_execution_time) data-message-out-of-memory=t('exercises.editor.out_of_memory',  memory_limit: @execution_environment.memory_limit) data-id=@execution_environment.id
   label.form-label for='command' = t('execution_environments.shell.command')
   .input-group.mb-3
-    .input-group-text.form-switch.ps-5 class=('text-muted' unless @execution_environment.privileged_execution?)
+    .input-group-text.form-switch.ps-5 class=('text-body-secondary' unless @execution_environment.privileged_execution?)
       input#sudo.form-check-input.mt-0 type='checkbox' disabled=('disabled' if @execution_environment.privileged_execution?)  checked=('checked' if @execution_environment.privileged_execution?)
       label.ms-2 for='sudo' = 'sudo'
     input#command.form-control type='text'
@@ -22,7 +22,7 @@ h1 = @execution_environment
           span.mx-1 = t('execution_environments.shell.file_tree.empty')
           button#reload-now-link.btn.btn-link.p-0.m-0.border-0 = t('execution_environments.shell.file_tree.list_now')
       - unless @execution_environment.privileged_execution?
-        .card-footer.justify-content-center.align-items-center.d-flex.text-muted
+        .card-footer.justify-content-center.align-items-center.d-flex.text-body-secondary
           i.fa-solid.fa-info
           span.ms-2 = t('execution_environments.shell.file_tree.root_notice')
 

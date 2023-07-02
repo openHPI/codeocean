@@ -221,7 +221,7 @@ CodeOceanEditorEvaluation = {
 
         if (sanitizedStdout === '' && sanitizedStderr === '') {
             if (colorize) {
-                pre.addClass('text-muted');
+                pre.addClass('text-body-secondary');
             }
             pre.text($('#output').data('message-no-output'))
         }
