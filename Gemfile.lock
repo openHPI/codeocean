@@ -414,7 +414,7 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
-    rubytree (2.0.1)
+    rubytree (2.0.2)
       json (~> 2.0, > 2.3.1)
     rubyzip (2.3.2)
     sass-rails (6.0.0)
