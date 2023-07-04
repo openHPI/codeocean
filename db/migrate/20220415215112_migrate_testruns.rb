@@ -79,7 +79,7 @@ class MigrateTestruns < ActiveRecord::Migration[6.1]
       #
       # The output is manually converted in a dumped ruby string (from Python) and undumped.
       # All Python test output is printed on STDERR, even for successful code runs.
-      dumped_raw_output = Regexp.last_match(:raw_output)&.gsub(/"/, '\\"')
+      dumped_raw_output = Regexp.last_match(:raw_output)&.gsub('"', '\\"')
       stderr = "\"#{dumped_raw_output}\"".undump
       # There is no other output format present in the database (checked manually), so nothing for `else`
     end
@@ -104,7 +104,7 @@ class MigrateTestruns < ActiveRecord::Migration[6.1]
         stderr = Regexp.last_match(:stderr)&.presence
       when PYTHON_BYTE_OUTPUT
         # The output is manually converted in a dumped ruby string (from Python) and undumped
-        dumped_raw_output = Regexp.last_match(:raw_output)&.gsub(/"/, '\\"')
+        dumped_raw_output = Regexp.last_match(:raw_output)&.gsub('"', '\\"')
         stderr = "\"#{dumped_raw_output}\"".undump
       when PYTHON_JSON_OUTPUT
         # A very few (N=2) assess runs contain a single raw JSON message.
