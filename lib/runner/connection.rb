@@ -161,9 +161,19 @@ class Runner::Connection
         # However, it might not be required for Poseidon.
         @strategy.destroy_at_management
         @error = Runner::Error::ExecutionTimeout.new('Execution exceeded its time limit')
+      when :out_of_memory
+        # This status is only used by Poseidon (with gVisor).
+        # The runner will be destroyed (and recreated) automatically.
+        @error = Runner::Error::OutOfMemory.new('Execution exceeded its memory limit')
       when :terminated_by_codeocean, :terminated_by_management
-        @exit_callback.call @exit_code
-        list_filesystem
+        # Poseidon (without gVisor) and DockerContainerPool do not handle memory limits explicitly.
+        # Instead, they signal that the program was terminated with exit code 137 (128 + 9).
+        if @exit_code == 137
+          @error = Runner::Error::OutOfMemory.new('Execution exceeded its memory limit')
+        else
+          @exit_callback.call @exit_code
+          list_filesystem
+        end
       when :terminated_by_client, :error
         @strategy.destroy_at_management
       else # :established
@@ -223,6 +233,11 @@ class Runner::Connection
   end
 
   def handle_error(event)
+    # Poseidon (with gVisor enabled!) sends an error message when the execution exceeds its memory limit.
+    # This is not an error in the sense of the runner management but rather a message.
+    # We handle it here to avoid the error handling in the default case.
+    return @status = :out_of_memory if event[:data] == 'the allocation was OOM Killed'
+
     # In case of a (Nomad) error during execution, the runner management will notify us with an error message here.
     # This shouldn't happen too often and can be considered an internal server error by the runner management.
     # More information is available in the logs of the runner management or the orchestrator (e.g., Nomad).

@@ -161,6 +161,7 @@ describe SubmissionsController do
     context 'when no errors occur during execution' do
       before do
         allow_any_instance_of(described_class).to receive(:hijack)
+        allow_any_instance_of(described_class).to receive(:close_client_connection)
         allow_any_instance_of(Submission).to receive(:run).and_return({})
         allow_any_instance_of(described_class).to receive(:save_testrun_output)
         perform_request

@@ -24,6 +24,8 @@ class Runner
 
     class WorkspaceError < Error; end
 
+    class OutOfMemory < Error; end
+
     class Unknown < Error; end
   end
 end

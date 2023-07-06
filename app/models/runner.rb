@@ -137,6 +137,9 @@ class Runner < ApplicationRecord
     rescue Runner::Error::ExecutionTimeout => e
       Rails.logger.debug { "Running command `#{command}` timed out: #{e.message}" }
       output.merge!(status: :timeout, container_execution_time: e.execution_duration)
+    rescue Runner::Error::OutOfMemory => e
+      Rails.logger.debug { "Running command `#{command}` caused an out of memory error: #{e.message}" }
+      output.merge!(status: :out_of_memory, container_execution_time: e.execution_duration)
     rescue Runner::Error::RunnerNotFound => e
       Rails.logger.debug { "Running command `#{command}` failed for the first time: #{e.message}" }
       try += 1
