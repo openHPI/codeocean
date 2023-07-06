@@ -99,8 +99,7 @@ class SubmissionsController < ApplicationController
     end
   end
 
-  # rubocop:disable Metrics/CyclomaticComplexity
-  def run
+  def run # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
     # These method-local socket variables are required in order to use one socket
     # in the callbacks of the other socket. As the callbacks for the client socket
     # are registered first, the runner socket may still be nil.
@@ -199,12 +198,6 @@ class SubmissionsController < ApplicationController
           end
         stream = @testrun[:status] == :ok ? :stdout : :stderr
         send_and_store client_socket, {cmd: :write, stream:, data: "#{exit_statement}\n"}
-        if exit_code == 137
-          send_and_store client_socket, {cmd: :status, status: :out_of_memory}
-          @testrun[:status] = :out_of_memory
-        end
-
-        # The client connection will be closed once the file listing finished.
       end
 
       runner_socket.on :files do |files|
@@ -213,30 +206,33 @@ class SubmissionsController < ApplicationController
           js_tree = FileTree.new(downloadable_files).to_js_tree
           send_and_store client_socket, {cmd: :files, data: js_tree}
         end
-
-        close_client_connection(client_socket)
       end
     end
     @testrun[:container_execution_time] = durations[:execution_duration]
     @testrun[:waiting_for_container_time] = durations[:waiting_duration]
   rescue Runner::Error::ExecutionTimeout => e
     send_and_store client_socket, {cmd: :status, status: :timeout}
-    close_client_connection(client_socket)
     Rails.logger.debug { "Running a submission timed out: #{e.message}" }
     @testrun[:status] ||= :timeout
     @testrun[:output] = "timeout: #{@testrun[:output]}"
     extract_durations(e)
+  rescue Runner::Error::OutOfMemory => e
+    send_and_store client_socket, {cmd: :status, status: :out_of_memory}
+    Rails.logger.debug { "Running a submission caused an out of memory error: #{e.message}" }
+    @testrun[:status] ||= :out_of_memory
+    @testrun[:exit_code] ||= 137
+    @testrun[:output] = "out_of_memory: #{@testrun[:output]}"
+    extract_durations(e)
   rescue Runner::Error => e
     # Regardless of the specific error cause, we send a `container_depleted` status to the client.
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
-    close_client_connection(client_socket)
     @testrun[:status] ||= :container_depleted
     Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
     extract_durations(e)
   ensure
+    close_client_connection(client_socket)
     save_testrun_output 'run'
   end
-  # rubocop:enable Metrics/CyclomaticComplexity:
 
   def score
     client_socket = nil
@@ -256,14 +252,14 @@ class SubmissionsController < ApplicationController
     client_socket&.send_data(JSON.dump(@submission.calculate_score))
     # To enable hints when scoring a submission, uncomment the next line:
     # send_hints(client_socket, StructuredError.where(submission: @submission))
-    kill_client_socket(client_socket)
   rescue Runner::Error => e
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
-    kill_client_socket(client_socket)
     Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
     @testrun[:passed] = false
     save_testrun_output 'assess'
+  ensure
+    kill_client_socket(client_socket)
   end
 
   def create
@@ -289,7 +285,6 @@ class SubmissionsController < ApplicationController
 
     # The score is stored separately, we can forward it to the client immediately
     client_socket&.send_data(JSON.dump(@submission.test(@file)))
-    kill_client_socket(client_socket)
   rescue Runner::Error => e
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
@@ -297,6 +292,8 @@ class SubmissionsController < ApplicationController
     Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
     @testrun[:passed] = false
     save_testrun_output 'assess'
+  ensure
+    kill_client_socket(client_socket)
   end
 
   private
