@@ -572,25 +572,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_20_220012) do
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user"
   end
 
-  create_table "wk2020_until_rfc_reply", id: false, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "exercise_id"
-    t.interval "working_time_until_rfc_reply"
-  end
-
-  create_table "wk2020_with_wk_until_rfc", id: false, force: :cascade do |t|
-    t.string "external_user_id", limit: 255
-    t.integer "user_id"
-    t.integer "exercise_id"
-    t.float "max_score"
-    t.float "max_reachable_points"
-    t.interval "working_time"
-    t.interval "working_time_until_rfc"
-    t.interval "working_time_until_rfc_reply"
-    t.time "percentile75"
-    t.time "percentile90"
-  end
-
   add_foreign_key "authentication_tokens", "study_groups"
   add_foreign_key "community_solution_contributions", "community_solution_locks"
   add_foreign_key "community_solution_contributions", "community_solutions"
@@ -604,7 +585,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_20_220012) do
   add_foreign_key "structured_error_attributes", "error_template_attributes"
   add_foreign_key "structured_error_attributes", "structured_errors"
   add_foreign_key "structured_errors", "error_templates"
-  add_foreign_key "structured_errors", "error_templates", name: "structured_errors_error_templates_id_fk"
   add_foreign_key "structured_errors", "submissions"
   add_foreign_key "submissions", "study_groups"
   add_foreign_key "subscriptions", "study_groups"
