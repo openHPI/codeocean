@@ -49,150 +49,245 @@ describe RequestForCommentPolicy do
   end
 
   context 'when the RfC visibility is considered' do
-    let(:user) { create(:learner, consumer:) }
+    shared_examples 'grants access to everyone' do
+      it 'grants access to everyone' do
+        %i[external_user teacher admin].each do |factory_name|
+          expect(policy).to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+        end
+      end
 
-    let(:rfc_other_consumer) do
-      rfc = create(:rfc, user:)
-      rfc.user.update(consumer: create(:consumer, name: 'Other Consumer'))
-      rfc
+      it 'grants access to authors' do
+        expect(policy).to permit(rfc.author, rfc)
+      end
     end
 
-    let(:rfc_other_study_group) do
-      rfc = create(:rfc, user:)
-      rfc.user.update(consumer: user.consumer)
-      rfc.submission.update(study_group: create(:study_group))
-      rfc
+    shared_examples 'grants access to admins and authors only' do
+      it 'grants access to admins' do
+        expect(policy).to permit(create(:admin, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+      end
+
+      it 'grants access to authors' do
+        expect(policy).to permit(rfc.author, rfc)
+      end
+
+      it 'does not grant access to all other users' do
+        %i[external_user teacher].each do |factory_name|
+          expect(policy).not_to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+        end
+      end
     end
 
-    let(:rfc_peer) do
-      rfc = create(:rfc, user:)
-      rfc.user.update(consumer: user.consumer)
-      rfc.submission.update(study_group: user.study_groups.first)
-      rfc
-    end
+    let(:rfc_author) { create(:learner, consumer: author_consumer, study_groups: author_study_groups) }
+    let(:author_study_groups) { create_list(:study_group, 1, consumer: author_consumer) }
+    let(:rfc) { create(:rfc, user: rfc_author) }
 
-    let(:all_rfcs) { [rfc_other_consumer, rfc_other_study_group, rfc_peer] }
-    let(:same_consumer_rfcs) { [rfc_other_study_group, rfc_peer] }
-    let(:other_study_groups_rfcs) { [rfc_other_consumer, rfc_other_study_group] }
+    context "when the author's rfc_visibility is set to all" do
+      let(:author_consumer) { create(:consumer, rfc_visibility: 'all') }
 
-    context 'when rfc_visibility is set to all' do
-      let(:consumer) { create(:consumer, rfc_visibility: 'all') }
+      context 'when the viewer is from another consumer' do
+        context "when the viewer's rfc_visibility is set to all" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'all') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
 
-      permissions(:show?) do
-        it 'grants access to everyone' do
-          %i[external_user teacher admin].each do |factory_name|
-            all_rfcs.each do |specific_rfc|
-              expect(policy).to permit(create(factory_name, consumer:), specific_rfc)
+          permissions(:show?) do
+            include_examples 'grants access to everyone'
+          end
+
+          %i[mark_as_solved? set_thank_you_note?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
+            end
+          end
+        end
+
+        context "when the viewer's rfc_visibility is set to consumer" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'consumer') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
+            end
+          end
+        end
+
+        context "when the viewer's rfc_visibility is set to study_group" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'study_group') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
             end
           end
         end
       end
 
-      %i[mark_as_solved? set_thank_you_note?].each do |action|
-        permissions(action) do
-          it 'grants access to admins' do
-            all_rfcs.each do |specific_rfc|
-              expect(policy).to permit(create(:admin, consumer:), specific_rfc)
-            end
+      context 'when the viewer is from the same consumer' do
+        let(:viewer_consumer) { author_consumer }
+
+        context 'when the viewer is from another study group' do
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          permissions(:show?) do
+            include_examples 'grants access to everyone'
           end
 
-          it 'grants access to authors' do
-            all_rfcs.each do |specific_rfc|
-              expect(policy).to permit(specific_rfc.author, specific_rfc)
+          %i[mark_as_solved? set_thank_you_note?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
             end
           end
+        end
 
-          it 'does not grant access to all other users' do
-            %i[external_user teacher].each do |factory_name|
-              all_rfcs.each do |specific_rfc|
-                expect(policy).not_to permit(create(factory_name, consumer:), specific_rfc)
-              end
+        context 'when the viewer is from the same study group' do
+          let(:viewer_study_groups) { author_study_groups }
+
+          permissions(:show?) do
+            include_examples 'grants access to everyone'
+          end
+
+          %i[mark_as_solved? set_thank_you_note?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
             end
           end
         end
       end
     end
 
-    context 'when rfc_visibility is set to consumer' do
-      let(:consumer) { create(:consumer, rfc_visibility: 'consumer') }
+    context "when the author's rfc_visibility is set to consumer" do
+      let(:author_consumer) { create(:consumer, rfc_visibility: 'consumer') }
 
-      permissions(:show?) do
-        it 'grants access to admins' do
-          all_rfcs.each do |specific_rfc|
-            expect(policy).to permit(create(:admin, consumer:), specific_rfc)
-          end
-        end
+      context 'when the viewer is from another consumer' do
+        context "when the viewer's rfc_visibility is set to all" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'all') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
 
-        it 'grants access to users from the same consumer' do
-          %i[external_user teacher].each do |factory_name|
-            same_consumer_rfcs.each do |specific_rfc|
-              expect(policy).to permit(create(factory_name, consumer:), specific_rfc)
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
             end
           end
         end
 
-        it 'does not grant access to users from other consumers' do
-          %i[external_user teacher].each do |factory_name|
-            expect(policy).not_to permit(create(factory_name, consumer:), rfc_other_consumer)
+        context "when the viewer's rfc_visibility is set to consumer" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'consumer') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
+            end
+          end
+        end
+
+        context "when the viewer's rfc_visibility is set to study_group" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'study_group') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
+            end
           end
         end
       end
 
-      # Testing `mark_as_solved?` and `set_thank_you_note?` is not necessary here,
-      # because an author of an RfC can only be a user from the same consumer.
+      context 'when the viewer is from the same consumer' do
+        let(:viewer_consumer) { author_consumer }
+
+        context 'when the viewer is from another study group' do
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          permissions(:show?) do
+            include_examples 'grants access to everyone'
+          end
+
+          %i[mark_as_solved? set_thank_you_note?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
+            end
+          end
+        end
+
+        context 'when the viewer is from the same study group' do
+          let(:viewer_study_groups) { author_study_groups }
+
+          permissions(:show?) do
+            include_examples 'grants access to everyone'
+          end
+
+          %i[mark_as_solved? set_thank_you_note?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
+            end
+          end
+        end
+      end
     end
 
-    context 'when rfc_visibility is set to study_group' do
-      let(:consumer) { create(:consumer, rfc_visibility: 'study_group') }
+    context "when the author's rfc_visibility is set to study_group" do
+      let(:author_consumer) { create(:consumer, rfc_visibility: 'study_group') }
 
-      permissions(:show?) do
-        it 'grants access to admins' do
-          all_rfcs.each do |specific_rfc|
-            expect(policy).to permit(create(:admin, consumer:), specific_rfc)
+      context 'when the viewer is from another consumer' do
+        context "when the viewer's rfc_visibility is set to all" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'all') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
+            end
           end
         end
 
-        it 'grants access to users from the same study group' do
-          %i[external_user teacher].each do |factory_name|
-            expect(policy).to permit(create(factory_name, consumer:, study_groups: [rfc_peer.submission.study_group]), rfc_peer)
+        context "when the viewer's rfc_visibility is set to consumer" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'consumer') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
+            end
           end
         end
 
-        it 'does not grant access to users from other consumers' do
-          %i[external_user teacher].each do |factory_name|
-            other_study_groups_rfcs.each do |specific_rfc|
-              expect(policy).not_to permit(create(factory_name, consumer:), specific_rfc)
+        context "when the viewer's rfc_visibility is set to study_group" do
+          let(:viewer_consumer) { create(:consumer, name: 'Other Consumer', rfc_visibility: 'study_group') }
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
             end
           end
         end
       end
 
-      %i[mark_as_solved? set_thank_you_note?].each do |action|
-        permissions(action) do
-          it 'grants access to admins' do
-            all_rfcs.each do |specific_rfc|
-              expect(policy).to permit(create(:admin, consumer:), specific_rfc)
+      context 'when the viewer is from the same consumer' do
+        let(:viewer_consumer) { author_consumer }
+
+        context 'when the viewer is from another study group' do
+          let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
+
+          %i[mark_as_solved? set_thank_you_note? show?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
             end
           end
+        end
 
-          # Testing `mark_as_solved?` and `set_thank_you_note?` with another consumer is not
-          # necessary here, because an author of an RfC can only be a user from the same consumer.
+        context 'when the viewer is from the same study group' do
+          let(:viewer_study_groups) { author_study_groups }
 
-          it 'grants access to authors of the same primary study group' do
-            rfc_peer.author.update(study_groups: [rfc_peer.submission.study_group])
-            expect(policy).to permit(rfc_peer.author, rfc_peer)
+          permissions(:show?) do
+            include_examples 'grants access to everyone'
           end
 
-          it 'does not grant access to authors of another primary study groups' do
-            rfc_other_study_group.author.update(study_groups: create_list(:study_group, 1))
-            expect(policy).not_to permit(rfc_other_study_group.author, rfc_other_study_group)
-          end
-
-          it 'does not grant access to all other users' do
-            %i[external_user teacher].each do |factory_name|
-              all_rfcs.each do |specific_rfc|
-                expect(policy).not_to permit(create(factory_name, consumer:), specific_rfc)
-              end
+          %i[mark_as_solved? set_thank_you_note?].each do |action|
+            permissions(action) do
+              include_examples 'grants access to admins and authors only'
             end
           end
         end

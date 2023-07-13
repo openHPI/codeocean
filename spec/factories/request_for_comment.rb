@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :rfc, class: 'RequestForComment' do
     user factory: :external_user
     exercise factory: :math
-    submission { association :submission, exercise:, user: }
+    submission { association :submission, exercise:, user:, study_group: user&.study_groups&.first }
     file
     sequence :question do |n|
       "test question #{n}"
