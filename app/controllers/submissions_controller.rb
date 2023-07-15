@@ -263,7 +263,6 @@ class SubmissionsController < ApplicationController
     kill_client_socket(client_socket)
     Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
     @testrun[:passed] = false
-  ensure
     save_testrun_output 'assess'
   end
 
@@ -297,7 +296,6 @@ class SubmissionsController < ApplicationController
     kill_client_socket(client_socket)
     Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
     @testrun[:passed] = false
-  ensure
     save_testrun_output 'assess'
   end
 
