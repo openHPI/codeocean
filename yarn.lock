@@ -1082,13 +1082,13 @@
     "@sentry/utils" "7.58.1"
     tslib "^2.4.1 || ^1.9.3"
 
-"@sentry/core@^7.59.3":
-  version "7.59.3"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.59.3.tgz#6fc443e83f8cff0f2ebf004a2275b46c7d0020e8"
-  integrity sha512-cGBOwT9gziIn50fnlBH1WGQlGcHi7wrbvOCyrex4MxKnn1LSBYWBhwU0ymj8DI/9MyPrGDNGkrgpV0WJWBSClg==
+"@sentry/core@^7.60.0":
+  version "7.60.0"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.60.0.tgz#c256d1305b52210d608e71de8d8f365ca9377f15"
+  integrity sha512-B02OlFMoqdkfDZlbQfmk7tL2vObShofk7ySd/7mp+oRdUuCvX0tyrGlwI87YJvd8YWSZOCKINs3aVYivw/b6gg==
   dependencies:
-    "@sentry/types" "7.59.3"
-    "@sentry/utils" "7.59.3"
+    "@sentry/types" "7.60.0"
+    "@sentry/utils" "7.60.0"
     tslib "^2.4.1 || ^1.9.3"
 
 "@sentry/integrations@^7.60.0":
@@ -1115,11 +1115,6 @@
   resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.58.1.tgz#c67f99f9af82ea930cdf895d71ae049575e38bf7"
   integrity sha512-OnKG+yrilPBeVNQK3biF0u/4IDjwH+boJU1XzJOnYdMRO8uzTWxvaRqpt0C8sVE9VAetRi2eutkzOgCXZISRrw==
 
-"@sentry/types@7.59.3":
-  version "7.59.3"
-  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.59.3.tgz#a3025d05f575b5a6d264b51e5db54470b3c8b922"
-  integrity sha512-HQ/Pd3YHyIa4HM0bGfOsfI4ZF+sLVs6II9VtlS4hsVporm4ETl3Obld5HywO3aVYvWOk5j/bpAW9JYsxXjRG5A==
-
 "@sentry/types@7.60.0":
   version "7.60.0"
   resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.60.0.tgz#e3e5f16436feff802b1b126a16dba537000cef55"
@@ -1131,14 +1126,6 @@
   integrity sha512-iC9xZJBHp4+MDrZjKwcmMUhI5sTmpUcttwmsJL9HA6ACW+L1XX2eGSDky5pSlhhVFR7q7jJnQ7YUlMQ/jcd8eQ==
   dependencies:
     "@sentry/types" "7.58.1"
-    tslib "^2.4.1 || ^1.9.3"
-
-"@sentry/utils@7.59.3":
-  version "7.59.3"
-  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-7.59.3.tgz#423fd47966f9813d4d3a8589ece4f2ad2d270f31"
-  integrity sha512-Q57xauMKuzd6S+POA1fmulfjzTsb/z118TNAfZZNkHqVB48hHBqgzdhbEBmN4jPCSKV2Cx7VJUoDZxJfzQyLUQ==
-  dependencies:
-    "@sentry/types" "7.59.3"
     tslib "^2.4.1 || ^1.9.3"
 
 "@sentry/utils@7.60.0", "@sentry/utils@^7.58.1":
