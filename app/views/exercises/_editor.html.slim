@@ -21,7 +21,7 @@
     #editor-buttons.btn-group.enforce-bottom-margin
       = render('editor_button', disabled: true, icon: 'fa-solid fa-ban', id: 'dummy', label: t('exercises.editor.dummy'))
       = render('editor_button', icon: 'fa-solid fa-desktop', id: 'render', label: t('exercises.editor.render')) unless @embed_options[:hide_run_button]
-      span.flex-grow-1#run-stop-button-group data-bs-placement='top' data-bs-toggle='tooltip' data-bs-container='body' title=t('shared.tooltips.shortcut', shortcut: 'ALT + r')
+      span.flex-grow-1.d-inline-flex#run-stop-button-group data-bs-placement='top' data-bs-toggle='tooltip' data-bs-container='body' title=t('shared.tooltips.shortcut', shortcut: 'ALT + r')
         = render('editor_button', data: {:'data-message-failure' => t('exercises.editor.run_failure'), :'data-message-network' => t('exercises.editor.network'), :'data-message-success' => t('exercises.editor.run_success'),}, icon: 'fa-solid fa-play', id: 'run', label: t('exercises.editor.run'), classes: 'w-100 h-100 btn-primary') unless @embed_options[:disable_run]
         = render('editor_button', icon: 'fa-solid fa-stop', id: 'stop', label: t('exercises.editor.stop'),  classes: 'w-100 h-100 btn-primary') unless @embed_options[:disable_run]
       = render('editor_button', data: {:'data-bs-placement' => 'top', :'data-bs-toggle' => 'tooltip', :'data-bs-container' => 'body'}, icon: 'fa-solid fa-rocket', id: 'test', label: t('exercises.editor.test'), title: t('shared.tooltips.shortcut', shortcut: 'ALT + t')) unless @embed_options[:disable_run]
