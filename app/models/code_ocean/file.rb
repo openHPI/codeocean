@@ -49,6 +49,7 @@ module CodeOcean
     validates :feedback_message, absence: true, unless: :teacher_defined_assessment?
     validates :hashed_content, if: :content_present?, presence: true
     validates :hidden, inclusion: [true, false]
+    validates :hidden_feedback, inclusion: [true, false]
     validates :name, presence: true
     validates :read_only, inclusion: [true, false]
     validates :role, inclusion: {in: ROLES}

@@ -75,6 +75,7 @@ en:
         file_type: File Type
         file_type_id: File Type
         hidden: Hidden
+        hidden_feedback: Suppress feedback
         name: Name
         path: Path
         read_only: Read-only

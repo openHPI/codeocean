@@ -75,6 +75,7 @@ de:
         file_type: Dateityp
         file_type_id: Dateityp
         hidden: Versteckt
+        hidden_feedback: Feedback ausblenden
         name: Name
         path: Pfad
         read_only: Schreibgeschützt

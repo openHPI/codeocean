@@ -283,7 +283,7 @@ class Submission < ApplicationRecord
     end
 
     output.merge!(assessment)
-    output.merge!(filename:, message: feedback_message(file, output), weight: file.weight)
+    output.merge!(filename:, message: feedback_message(file, output), weight: file.weight, hidden_feedback: file.hidden_feedback)
     output.except!(:messages)
   end
 
@@ -329,12 +329,6 @@ class Submission < ApplicationRecord
       end
     end
 
-    # Return all test results except for those of a linter if not allowed
-    show_linter = Python20CourseWeek.show_linter? exercise
-    outputs&.reject do |output|
-      next if show_linter || output.blank?
-
-      output[:file_role] == 'teacher_defined_linter'
-    end
+    outputs&.reject {|output| output[:hidden_feedback] if output.present? }
   end
 end

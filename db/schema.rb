@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_20_220012) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_27_080619) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -284,6 +284,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_20_220012) do
     t.float "weight"
     t.string "path"
     t.integer "file_template_id"
+    t.boolean "hidden_feedback", default: false, null: false
     t.index ["context_id", "context_type"], name: "index_files_on_context_id_and_context_type"
   end
 
