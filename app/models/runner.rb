@@ -52,18 +52,18 @@ class Runner < ApplicationRecord
     @strategy.copy_files(files)
   end
 
-  def download_file(path, **options, &)
-    @strategy.download_file(path, **options, &)
+  def download_file(...)
+    @strategy.download_file(...)
   end
 
-  def retrieve_files(raise_exception: true, **options)
+  def retrieve_files(raise_exception: true, **)
     try = 0
     begin
       if try.nonzero?
         request_new_id
         save
       end
-      @strategy.retrieve_files(**options)
+      @strategy.retrieve_files(**)
     rescue Runner::Error::RunnerNotFound => e
       Rails.logger.debug { "Retrieving files failed for the first time: #{e.message}" }
       try += 1
