@@ -330,8 +330,6 @@ class ExercisesController < ApplicationController
 
     @hide_rfc_button = @embed_options[:disable_rfc]
 
-    @search = Search.new
-    @search.exercise = @exercise
     @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:filepath)
     @paths = collect_paths(@files)
@@ -385,18 +383,6 @@ class ExercisesController < ApplicationController
     end
   end
 
-  def search
-    search_text = params[:search_text]
-    search = Search.new(user: current_user, exercise: @exercise, search: search_text)
-
-    begin
-      search.save
-      render(json: {success: 'true'})
-    rescue StandardError
-      render(json: {success: 'false', error: "could not save search: #{$ERROR_INFO}"})
-    end
-  end
-
   def edit; end
 
   def create
@@ -414,7 +400,7 @@ class ExercisesController < ApplicationController
 
   def not_authorized_for_exercise(_exception)
     return render_not_authorized unless current_user
-    return render_not_authorized unless %w[implement working_times intervention search reload].include?(action_name)
+    return render_not_authorized unless %w[implement working_times intervention reload].include?(action_name)
 
     if current_user.admin? || current_user.teacher?
       redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished?

@@ -617,8 +617,6 @@ de:
     form:
       study_groups: Lerngruppen
       click_to_collapse: Zum Aus-/Einklappen hier klicken...
-  search:
-    search_in_forum: "Probleme? Suche hier im Forum"
   locales:
     de: Deutsch
     en: Englisch

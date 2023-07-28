@@ -29,7 +29,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
     define_method(action) { (admin? || teacher_in_study_group? || author?) && @user.codeharbor_link }
   end
 
-  %i[implement? working_times? intervention? search? reload?].each do |action|
+  %i[implement? working_times? intervention? reload?].each do |action|
     define_method(action) do
       return no_one unless @record.files.any? {|f| f.hidden == false } && @record.execution_environment.present?
 

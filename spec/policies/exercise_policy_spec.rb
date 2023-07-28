@@ -134,7 +134,7 @@ describe ExercisePolicy do
     end
   end
 
-  %i[implement? working_times? intervention? search? reload?].each do |action|
+  %i[implement? working_times? intervention? reload?].each do |action|
     permissions(action) do
       context 'when the exercise has no visible files' do
         let(:exercise) { create(:dummy) }

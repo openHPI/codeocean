@@ -617,8 +617,6 @@ en:
       success: You successfully changed your password.
     show:
       link: Profile
-  search:
-    search_in_forum: "Problems? Search here in forum"
   locales:
     de: German
     en: English
