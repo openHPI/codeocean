@@ -16,7 +16,6 @@ class ExercisesController < ApplicationController
   before_action :collect_set_and_unset_exercise_tags, only: MEMBER_ACTIONS
   before_action :set_external_user_and_authorize, only: [:external_user_statistics]
   before_action :set_file_types, only: %i[create edit new update]
-  before_action :set_course_token, only: [:implement]
   before_action :set_available_tips, only: %i[implement show new edit]
 
   skip_before_action :verify_authenticity_token, only: %i[import_task import_uuid_check]
@@ -343,26 +342,6 @@ class ExercisesController < ApplicationController
                  current_user.id
                end
   end
-
-  def set_course_token
-    lti_parameters = LtiParameter.where(external_users_id: current_user.id,
-      exercises_id: @exercise.id).last
-    if lti_parameters
-      lti_json = lti_parameters.lti_parameters['launch_presentation_return_url']
-
-      @course_token =
-        if lti_json.present? && (match = lti_json.match(%r{^.*courses/([a-z0-9-]+)/sections}))
-          match.captures.first
-        else
-          ''
-        end
-    else
-      # no consumer, therefore implementation with internal user
-      @course_token = '702cbd2a-c84c-4b37-923a-692d7d1532d0'
-    end
-  end
-
-  private :set_course_token
 
   def set_available_tips
     # Order of elements is important and will be kept

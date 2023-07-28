@@ -4,9 +4,6 @@ div.d-grid.gap-2 id='sidebar-collapsed' class=(@exercise.hide_file_tree && @tips
   - unless @embed_options[:disable_hints] or @tips.blank?
     = render('editor_button', classes: 'btn-secondary btn mb-4', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-lightbulb', id: 'tips-collapsed', label:'', title: t('exercises.form.tips'))
 
-  //- if !@course_token.blank?
-    = render('editor_button', classes: 'btn-primary btn enforce-top-margin', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-magnifying-glass', id: 'sidebar-search-collapsed', label: '', title: t('search.search_in_forum'))
-
 div.d-grid.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_file_tree && @tips.blank? ? 'd-none' : '')
   = render('editor_button', classes: 'btn-outline-dark overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
   #content-left-sidebar.overflow-scroll
@@ -31,14 +28,6 @@ div.d-grid.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_
 
     - unless @embed_options[:disable_hints] or @tips.blank?
       = render(partial: 'tips_content')
-
-      //- if !@course_token.blank?
-          .input-group.enforce-top-margin
-            .enforce-right-margin
-              = text_field_tag 'search-input-text', nil, placeholder: t('search.search_in_forum'), class: 'form-control'
-            .input-group-btn
-              = button_tag(class: 'btn btn-primary', id: 'btn-search-col') do
-                i.fa-solid.fa-magnifying-glass
 
 - if @exercise.allow_file_creation?
   = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))

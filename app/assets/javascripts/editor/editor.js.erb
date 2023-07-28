@@ -1010,27 +1010,6 @@ var CodeOceanEditor = {
         }
     },
 
-    initializeSearchButton: function () {
-        $('#btn-search-col').button().click(function () {
-            var search = $('#search-input-text').val();
-            var course_token = $('#editor').data('course_token')
-            var save_search_url = $('#editor').data('search-save-url')
-            window.open("https://open.hpi.de/courses/" + course_token + "/pinboard?query=" + search, '_blank');
-            // save search
-            $.ajax({
-                data: {
-                    search_text: search
-                },
-                dataType: 'json',
-                type: 'POST',
-                url: save_search_url
-            });
-        })
-
-        $('#sidebar-search-collapsed').on('click', this.handleSideBarToggle.bind(this));
-    },
-
-
     initializeEverything: function () {
         CodeOceanEditor.editors = [];
         this.initializeRegexes();
@@ -1044,7 +1023,6 @@ var CodeOceanEditor = {
         this.initializeDescriptionToggle();
         this.initializeSideBarTooltips();
         this.initializeInterventionTimer();
-        this.initializeSearchButton();
         this.initPrompt();
         this.renderScore();
         this.showFirstFile();
