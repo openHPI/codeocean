@@ -281,12 +281,6 @@ var CodeOceanEditor = {
 
             var editor = ace.edit(element);
 
-            if (this.qa_api) {
-                editor.getSession().on("change", function (deltaObject) {
-                    this.qa_api.executeCommand('syncEditor', [this.active_file, deltaObject]);
-                }.bind(this));
-            }
-
             var document = editor.getSession().getDocument();
             // insert pre-existing code into editor. we have to use insertLines, otherwise the deltas are not properly added
             var file_id = $(element).data('file-id');
@@ -1013,7 +1007,6 @@ var CodeOceanEditor = {
     initializeEverything: function () {
         CodeOceanEditor.editors = [];
         this.initializeRegexes();
-        this.initializeCodePilot();
         this.configureEditors();
         this.initializeEditors();
         this.initializeEventHandlers();

@@ -114,10 +114,6 @@ CodeOceanEditorEvaluation = {
         })) {
             this.showContainerDepletedMessage();
         }
-        if (this.qa_api) {
-            // send test response to QA
-            this.qa_api.executeCommand('syncOutput', [response]);
-        }
     },
 
     renderScore: function () {
@@ -138,9 +134,6 @@ CodeOceanEditorEvaluation = {
     handleTestResponse: function (result) {
         this.clearOutput();
         this.printOutput(result, false, 0);
-        if (this.qa_api) {
-            this.qa_api.executeCommand('syncOutput', [result]);
-        }
         this.showStatus(result);
         this.showOutputBar();
     },

@@ -1,8 +1,6 @@
 test:
   flowr:
     enabled: false
-  code_pilot:
-    enabled: false
   codeharbor:
     enabled: false
   codeocean_events:

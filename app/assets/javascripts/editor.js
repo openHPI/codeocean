@@ -10,7 +10,6 @@ $(document).on('turbolinks:load', function(event) {
       CodeOceanEditorTurtle,
       CodeOceanEditorWebsocket,
       CodeOceanEditorPrompt,
-      CodeOceanEditorCodePilot,
       CodeOceanEditorRequestForComments
   );
 

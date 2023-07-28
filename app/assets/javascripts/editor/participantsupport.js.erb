@@ -107,31 +107,6 @@ CodeOceanEditorFlowr = {
   }
 };
 
-CodeOceanEditorCodePilot = {
-  qa_api: undefined,
-  QaApiOutputBuffer: {'stdout': '', 'stderr': ''},
-
-  initializeCodePilot: function () {
-    if ($('#questions-column').isPresent() && (typeof QaApi != 'undefined')) {
-      $('#editor-column').addClass('col-md-10').removeClass('col-md-12');
-      $('#questions-column').addClass('col-md-2');
-
-      var node = document.getElementById('questions-holder');
-      var url = $('#questions-holder').data('url');
-
-      this.qa_api = new QaApi(node, url);
-    }
-  },
-
-  handleQaApiOutput: function () {
-    if (this.qa_api) {
-      this.qa_api.executeCommand('syncOutput', [[this.QaApiOutputBuffer]]);
-      // reset the object
-    }
-    this.QaApiOutputBuffer = {'stdout': '', 'stderr': ''};
-  }
-};
-
 CodeOceanEditorRequestForComments = {
   requestComments: function () {
     const cause = $('#requestComments');

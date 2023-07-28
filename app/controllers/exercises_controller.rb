@@ -335,12 +335,6 @@ class ExercisesController < ApplicationController
     @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:filepath)
     @paths = collect_paths(@files)
-
-    @user_id = if current_user.respond_to? :external_id
-                 current_user.external_id
-               else
-                 current_user.id
-               end
   end
 
   def set_available_tips

@@ -3,8 +3,7 @@
      Otherwise, lti_parameters might be nil
   meta name="turbolinks-cache-control" content="no-cache"
 
-// col-md-12 required for CodePilot
-#editor-column.col-md-12
+#editor-column
   - unless @embed_options[:hide_exercise_description]
     .exercise.clearfix
       div
@@ -25,9 +24,3 @@
 
 
   = render('editor', exercise: @exercise, files: @files, submission: @submission)
-
-- if qa_url
-  #questions-column
-    #questions-holder data-url="#{qa_url}/qa/index/#{@exercise.id}/#{@user_id}"
-  = qa_js_tag
-

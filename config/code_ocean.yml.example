@@ -16,14 +16,6 @@ default: &default
     # The number of search results to be displayed
     answers_per_query: 3
 
-  code_pilot:
-    # When enabled, CodePilot can be used by learners to request individual help by a tutor
-    # through a video conferencing system. Optionally, it also provides access to recordings
-    # of previous sessions. Support for CodePilot is currently in beta.
-    enabled: false
-    # The root URL of CodePilot
-    url: //localhost:3000
-
   codeharbor:
     # When enabled, CodeHarbor is integrated in the teachers' view and allows importing
     # and exporting exercises from CodeOcean using the ProFormA XML format to CodeHarbor.
