@@ -63,7 +63,6 @@ CodeOceanEditorWebsocket = {
 
   handleExitCommand: function() {
     this.killWebsocket();
-    this.handleQaApiOutput();
     this.handleStderrOutputForFlowr();
     this.augmentStacktraceInOutput();
     this.cleanUpTurtle();
