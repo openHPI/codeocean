@@ -178,9 +178,8 @@ describe InternalUsersController do
   describe 'GET #forgot_password' do
     context 'when no user is logged in' do
       before do
-        allow(controller).to receive(:set_sentry_context).and_return(nil)
+        allow(controller).to receive_messages(set_sentry_context: nil, current_user: nil)
 
-        allow(controller).to receive(:current_user).and_return(nil)
         get :forgot_password
       end
 
@@ -190,9 +189,8 @@ describe InternalUsersController do
 
     context 'when a user is already logged in' do
       before do
-        allow(controller).to receive(:set_sentry_context).and_return(nil)
+        allow(controller).to receive_messages(set_sentry_context: nil, current_user: user)
 
-        allow(controller).to receive(:current_user).and_return(user)
         get :forgot_password
       end
 

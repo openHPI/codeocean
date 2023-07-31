@@ -227,9 +227,8 @@ describe SessionsController do
   describe 'GET #new' do
     context 'when no user is logged in' do
       before do
-        allow(controller).to receive(:set_sentry_context).and_return(nil)
+        allow(controller).to receive_messages(set_sentry_context: nil, current_user: nil)
 
-        allow(controller).to receive(:current_user).and_return(nil)
         get :new
       end
 
@@ -239,9 +238,8 @@ describe SessionsController do
 
     context 'when a user is already logged in' do
       before do
-        allow(controller).to receive(:set_sentry_context).and_return(nil)
+        allow(controller).to receive_messages(set_sentry_context: nil, current_user: build(:teacher))
 
-        allow(controller).to receive(:current_user).and_return(build(:teacher))
         get :new
       end
 

@@ -56,8 +56,7 @@ describe Runner do
     let(:runner) { described_class.create }
 
     before do
-      allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
-      allow(strategy_class).to receive(:new).and_return(strategy)
+      allow(strategy_class).to receive_messages(request_from_management: runner_id, new: strategy)
     end
 
     it 'delegates to its strategy' do
@@ -73,8 +72,7 @@ describe Runner do
     let(:connection) { instance_double(Runner::Connection) }
 
     before do
-      allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
-      allow(strategy_class).to receive(:new).and_return(strategy)
+      allow(strategy_class).to receive_messages(request_from_management: runner_id, new: strategy)
       allow(event_loop).to receive(:wait)
       allow(connection).to receive(:error).and_return(nil)
       allow(Runner::EventLoop).to receive(:new).and_return(event_loop)
@@ -128,8 +126,7 @@ describe Runner do
     let(:runner) { described_class.create }
 
     before do
-      allow(strategy_class).to receive(:request_from_management).and_return(runner_id)
-      allow(strategy_class).to receive(:new).and_return(strategy)
+      allow(strategy_class).to receive_messages(request_from_management: runner_id, new: strategy)
     end
 
     it 'delegates to its strategy' do

@@ -314,9 +314,7 @@ describe ExercisesController do
     before do
       create(:lti_parameter, external_user: user, exercise:)
       submission = build(:submission, exercise:, user:)
-      allow(submission).to receive(:normalized_score).and_return(1)
-      allow(submission).to receive(:calculate_score).and_return(scoring_response)
-      allow(submission).to receive(:redirect_to_feedback?).and_return(false)
+      allow(submission).to receive_messages(normalized_score: 1, calculate_score: scoring_response, redirect_to_feedback?: false)
       allow(Submission).to receive(:create).and_return(submission)
     end
 

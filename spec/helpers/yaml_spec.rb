@@ -9,10 +9,8 @@ describe 'yaml config files' do
     next unless /.*.\.yml/.match?(path)
 
     before do
-      allow(Rails).to receive(:root).and_return(Pathname.new('/tmp'))
-
       app = instance_double Rails::Application
-      allow(Rails).to receive(:application).and_return app
+      allow(Rails).to receive_messages(root: Pathname.new('/tmp'), application: app)
       allow(app).to receive(:credentials).and_return({})
     end
 
