@@ -28,11 +28,12 @@ describe CommentsController do
     end
 
     context 'with additional params' do
-      let(:comment_params) { {text: 'test100', row: 5, file_id: 50} }
+      let(:file) { create(:file) }
+      let(:comment_params) { {text: 'test100', row: 5, file_id: file.id} }
 
       it 'applies the permitted changes' do
         expect(updated_comment.row).not_to eq(5)
-        expect(updated_comment.file_id).not_to eq(50)
+        expect(updated_comment.file_id).not_to eq(file.id)
         expect(updated_comment.row).to eq(1)
         expect(updated_comment.file_id).to eq(comment.file_id)
         expect(updated_comment.text).to eq('test100')
