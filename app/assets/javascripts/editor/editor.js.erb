@@ -422,9 +422,13 @@ var CodeOceanEditor = {
             this.toggleButtonStates();
         }.bind(this));
         $(document).on('theme:change', function(event) {
-            const newColorScheme = event.detail.currentTheme;
-            // Update the JStree theme
-            filesInstance.jstree(true).set_theme(newColorScheme === "dark" ? "default-dark" : "default");
+            const jsTree = filesInstance?.jstree(true);
+
+            if (jsTree) {
+                const newColorScheme = event.detail.currentTheme;
+                // Update the JStree theme
+                jsTree?.set_theme(newColorScheme === "dark" ? "default-dark" : "default");
+            }
         });
     },
 
