@@ -1068,13 +1068,22 @@
     "@sentry/utils" "7.60.1"
     tslib "^2.4.1 || ^1.9.3"
 
-"@sentry/core@7.60.1", "@sentry/core@^7.60.1":
+"@sentry/core@7.60.1":
   version "7.60.1"
   resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.60.1.tgz#789ebb2ba6808042e8c288f6881b82ff108c9c7c"
   integrity sha512-yr/0VFYWOJyXj+F2nifkRYxXskotsNnDggUnFOZZN2ZgTG94IzRFsOZQ6RslHJ8nrYPTBNO74reU0C0GB++xRw==
   dependencies:
     "@sentry/types" "7.60.1"
     "@sentry/utils" "7.60.1"
+    tslib "^2.4.1 || ^1.9.3"
+
+"@sentry/core@^7.61.0":
+  version "7.61.0"
+  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.61.0.tgz#0de4f73055bd156c5c0cbac50bb814b272567188"
+  integrity sha512-zl0ZKRjIoYJQWYTd3K/U6zZfS4GDY9yGd2EH4vuYO4kfYtEp/nJ8A+tfAeDo0c9FGxZ0Q+5t5F4/SfwbgyyQzg==
+  dependencies:
+    "@sentry/types" "7.61.0"
+    "@sentry/utils" "7.61.0"
     tslib "^2.4.1 || ^1.9.3"
 
 "@sentry/integrations@^7.61.0":
