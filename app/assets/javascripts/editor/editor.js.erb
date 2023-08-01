@@ -88,13 +88,13 @@ var CodeOceanEditor = {
 
     getCardClass: function (result) {
         if (result.file_role === 'teacher_defined_linter') {
-            return 'bg-info text-white'
+            return 'info'
         } else if (result.stderr && !result.score) {
-            return 'bg-danger text-white';
+            return 'danger';
         } else if (result.score < 1) {
-            return 'bg-warning text-white';
+            return 'warning';
         } else {
-            return 'bg-success text-white';
+            return 'success';
         }
     },
 
@@ -546,8 +546,8 @@ var CodeOceanEditor = {
     },
 
     populateCard: function (card, result, index) {
-        card.addClass('card');
-        card.find('.card-header').addClass(this.getCardClass(result));
+        card.addClass(`card border-${this.getCardClass(result)}`);
+        card.find('.card-header').addClass(`bg-${this.getCardClass(result)} text-white`);
         card.find('.card-title .filename').text(result.filename);
         card.find('.card-title .number').text(index + 1);
         card.find('.row .col-md-9').eq(0).find('.number').eq(0).text(result.passed);
