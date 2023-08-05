@@ -6,7 +6,7 @@ class AddHashedContentToFiles < ActiveRecord::Migration[4.2]
 
     reversible do |direction|
       direction.up do
-        CodeOcean::File.all.each(&:save)
+        CodeOcean::File.unscope(:order).all.each(&:save)
       end
     end
   end
