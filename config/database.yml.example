@@ -1,6 +1,5 @@
 default: &default
   adapter: postgresql
-  encoding: unicode
   pool: 16
   # username: CHANGE_ME
   # password: CHANGE_ME
