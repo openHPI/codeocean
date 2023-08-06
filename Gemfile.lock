@@ -81,7 +81,7 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-    addressable (2.8.4)
+    addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
     amq-protocol (2.3.2)
     ast (2.4.2)
@@ -318,7 +318,7 @@ GEM
       actionpack (>= 5.0.1.rc1)
       actionview (>= 5.0.1.rc1)
       activesupport (>= 5.0.1.rc1)
-    rails-dom-testing (2.1.1)
+    rails-dom-testing (2.2.0)
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
@@ -523,7 +523,7 @@ GEM
     will_paginate (4.0.0)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.10)
+    zeitwerk (2.6.11)
     zxcvbn-ruby (1.2.0)
 
 PLATFORMS
