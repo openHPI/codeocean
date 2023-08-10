@@ -1,0 +1,14 @@
+h1 = t('shared.new_model', model: ProgrammingGroup.model_name.human)
+p
+  => t('programming_groups.new.own_user_id')
+  b
+    = current_user.id_with_type
+p
+  = t('programming_groups.new.enter_partner_id', exercise_title: @exercise.title)
+= render('form')
+
+div.mt-4
+  a.btn.btn-success href=new_exercise_programming_group_path(@exercise) == t('programming_groups.new.check_invitation')
+
+  p.mt-4
+    == t('programming_groups.new.work_alone', path: implement_exercise_path(@exercise))

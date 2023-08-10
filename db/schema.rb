@@ -351,6 +351,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_080619) do
     t.index ["external_users_id"], name: "index_lti_parameters_on_external_users_id"
   end
 
+  create_table "programming_group_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "programming_group_id", null: false
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["programming_group_id"], name: "index_programming_group_memberships_on_programming_group_id"
+    t.index ["user_type", "user_id"], name: "index_programming_group_memberships_on_user"
+  end
+
+  create_table "programming_groups", force: :cascade do |t|
+    t.bigint "exercise_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exercise_id"], name: "index_programming_groups_on_exercise_id"
+  end
+
   create_table "proxy_exercises", id: :serial, force: :cascade do |t|
     t.string "title"
     t.string "description"
@@ -582,6 +599,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_080619) do
   add_foreign_key "exercise_tips", "exercise_tips", column: "parent_exercise_tip_id"
   add_foreign_key "exercise_tips", "exercises"
   add_foreign_key "exercise_tips", "tips"
+  add_foreign_key "programming_group_memberships", "programming_groups"
+  add_foreign_key "programming_groups", "exercises"
   add_foreign_key "remote_evaluation_mappings", "study_groups"
   add_foreign_key "structured_error_attributes", "error_template_attributes"
   add_foreign_key "structured_error_attributes", "structured_errors"

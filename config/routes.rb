@@ -96,6 +96,8 @@ Rails.application.routes.draw do
       post :export_external_check
       post :export_external_confirm
     end
+
+    resources :programming_groups, only: %i[new create]
   end
 
   resources :exercise_collections do

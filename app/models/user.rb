@@ -9,6 +9,8 @@ class User < ApplicationRecord
   has_many :authentication_token, dependent: :destroy
   has_many :study_group_memberships, as: :user
   has_many :study_groups, through: :study_group_memberships, as: :user
+  has_many :programming_group_memberships, as: :user
+  has_many :programming_groups, through: :programming_group_memberships, as: :user
   has_many :exercises, as: :user
   has_many :file_types, as: :user
   has_many :submissions, as: :contributor
@@ -43,6 +45,10 @@ class User < ApplicationRecord
     is_a?(ExternalUser)
   end
 
+  def programming_group?
+    false
+  end
+
   def learner?
     return true if current_study_group_id.nil?
 
@@ -55,6 +61,10 @@ class User < ApplicationRecord
 
   def admin?
     @admin ||= platform_admin?
+  end
+
+  def id_with_type
+    self.class.name.downcase.first + id.to_s
   end
 
   def store_current_study_group_id(study_group_id)
@@ -77,6 +87,16 @@ class User < ApplicationRecord
       type: self.class.name,
       consumer: consumer.name,
     }
+  end
+
+  def self.find_by_id_with_type(id_with_type)
+    if id_with_type[0].casecmp('e').zero?
+      ExternalUser.find(id_with_type[1..])
+    elsif id_with_type[0].casecmp('i').zero?
+      InternalUser.find(id_with_type[1..])
+    else
+      raise ActiveRecord::RecordNotFound
+    end
   end
 
   def self.ransackable_attributes(auth_object)

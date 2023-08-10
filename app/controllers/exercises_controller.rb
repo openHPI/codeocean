@@ -92,7 +92,7 @@ class ExercisesController < ApplicationController
     authorize!
     @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page], per_page: per_page_param)
     @submissions = @feedbacks.map do |feedback|
-      feedback.exercise.final_submission(feedback.user)
+      feedback.exercise.final_submission(feedback.user.programming_groups.where(exercise: @exercise).presence || feedback.user)
     end
   end
 
@@ -298,7 +298,7 @@ class ExercisesController < ApplicationController
   private :update_exercise_tips
 
   def implement
-    user_solved_exercise = @exercise.solved_by?(current_user)
+    user_solved_exercise = @exercise.solved_by?(current_contributor)
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?',
       Time.zone.now.beginning_of_day).count
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user,
@@ -330,7 +330,7 @@ class ExercisesController < ApplicationController
 
     @hide_rfc_button = @embed_options[:disable_rfc]
 
-    @submission = current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
+    @submission = current_contributor.submissions.order(created_at: :desc).find_by(exercise: @exercise)
     @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:filepath)
     @paths = collect_paths(@files)
   end
@@ -363,7 +363,7 @@ class ExercisesController < ApplicationController
   private :set_available_tips
 
   def working_times
-    working_time_accumulated = @exercise.accumulated_working_time_for_only(current_user)
+    working_time_accumulated = @exercise.accumulated_working_time_for_only(current_contributor)
     working_time_75_percentile = @exercise.get_quantiles([0.75]).first
     render(json: {working_time_75_percentile:,
                    working_time_accumulated:})
@@ -375,8 +375,8 @@ class ExercisesController < ApplicationController
       render(json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"})
     else
       uei = UserExerciseIntervention.new(
-        user: current_user, exercise: @exercise, intervention:,
-        accumulated_worktime_s: @exercise.accumulated_working_time_for_only(current_user)
+        user: current_contributor, exercise: @exercise, intervention:,
+        accumulated_worktime_s: @exercise.accumulated_working_time_for_only(current_contributor)
       )
       uei.save
       render(json: {success: 'true'})
@@ -465,7 +465,7 @@ class ExercisesController < ApplicationController
 
   def statistics
     # Show general statistic page for specific exercise
-    user_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
+    contributor_statistics = {'InternalUser' => {}, 'ExternalUser' => {}, 'ProgrammingGroup' => {}}
 
     query = Submission.select('contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
       .where(exercise_id: @exercise.id)
@@ -481,11 +481,11 @@ class ExercisesController < ApplicationController
             end
 
     query.each do |tuple|
-      user_statistics[tuple['contributor_type']][tuple['contributor_id'].to_i] = tuple
+      contributor_statistics[tuple['contributor_type']][tuple['contributor_id'].to_i] = tuple
     end
 
     render locals: {
-      user_statistics:,
+      contributor_statistics:,
     }
   end
 
@@ -495,7 +495,7 @@ class ExercisesController < ApplicationController
     if policy(@exercise).detailed_statistics?
       submissions = Submission.where(contributor: @external_user, exercise: @exercise)
         .in_study_group_of(current_user)
-        .order('created_at')
+        .order(:created_at)
       @show_autosaves = params[:show_autosaves] == 'true' || submissions.none? {|s| s.cause != 'autosave' }
       submissions = submissions.where.not(cause: 'autosave') unless @show_autosaves
       interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
@@ -526,7 +526,8 @@ class ExercisesController < ApplicationController
   def submit
     @submission = Submission.create(submission_params)
     @submission.calculate_score
-    if @submission.user.external_user? && lti_outcome_service?(@submission.exercise_id, @submission.user.id)
+
+    if @submission.users.map {|user| user.external_user? && lti_outcome_service?(@submission.exercise_id, user.id) }.any?
       transmit_lti_score
     else
       redirect_after_submit

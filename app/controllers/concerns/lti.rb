@@ -21,18 +21,17 @@ module Lti
   # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
   # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
   # Only the lti_parameters are deleted.
-  def clear_lti_session_data(exercise_id = nil, _user_id = nil)
+  def clear_lti_session_data(exercise_id = nil)
     if exercise_id.nil?
       session.delete(:external_user_id)
       session.delete(:study_group_id)
       session.delete(:embed_options)
-      session.delete(:lti_exercise_id)
-      session.delete(:lti_parameters_id)
     end
+    session.delete(:pg_id)
 
-    # March 2022: We temporarily allow reusing the LTI credentials and don't remove them on purpose.
+    # We allow reusing the LTI credentials and don't remove them on purpose.
     # This allows users to jump between remote and web evaluation with the same behavior.
-    # LtiParameter.where(external_users_id: user_id, exercises_id: exercise_id).destroy_all
+    # Also it prevents the user from deleting the lti_parameters for their programming team members.
   end
 
   private :clear_lti_session_data
@@ -159,20 +158,20 @@ module Lti
         session: session.to_hash,
         exercise_id: submission.exercise_id,
       })
-      normalized_lit_score = submission.normalized_score
+      normalized_lti_score = submission.normalized_score
       if submission.before_deadline?
         # Keep the full score
       elsif submission.within_grace_period?
         # Reduce score by 20%
-        normalized_lit_score *= 0.8
+        normalized_lti_score *= 0.8
       elsif submission.after_late_deadline?
         # Reduce score by 100%
-        normalized_lit_score *= 0.0
+        normalized_lti_score *= 0.0
       end
 
       begin
-        response = provider.post_replace_result!(normalized_lit_score)
-        {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lit_score}
+        response = provider.post_replace_result!(normalized_lti_score)
+        {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lti_score}
       rescue IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET, SocketError
         # A parsing error might happen if the LTI provider is down and doesn't return a valid XML response
         {status: 'error'}

@@ -4,7 +4,7 @@ h1 = @execution_environment
   table.table.table-striped class="#{@execution_environment.present? ? 'sortable' : ''}"
     thead
       tr
-        - ['.exercise', '.users', '.score', '.maximum_score', '.stddev_score', '.percentage_correct', '.runs', '.worktime', '.stddev_worktime'].each do |title|
+        - ['.exercise', '.users_and_programming_groups', '.score', '.maximum_score', '.stddev_score', '.percentage_correct', '.runs', '.worktime', '.stddev_worktime'].each do |title|
           th.header = t(title)
     tbody
       - @execution_environment.exercises.each do |exercise|

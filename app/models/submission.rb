@@ -24,6 +24,9 @@ class Submission < ApplicationRecord
   belongs_to :internal_users, lambda {
                                 where(submissions: {contributor_type: 'InternalUser'}).includes(:submissions)
                               }, foreign_key: :contributor_id, class_name: 'InternalUser', optional: true
+  belongs_to :programming_groups, lambda {
+                                    where(submissions: {contributor_type: 'ProgrammingGroup'}).includes(:submissions)
+                                  }, foreign_key: :contributor_id, class_name: 'ProgrammingGroup', optional: true
   delegate :execution_environment, to: :exercise
 
   scope :final, -> { where(cause: %w[submit remoteSubmit]) }
@@ -48,12 +51,6 @@ class Submission < ApplicationRecord
   attr_reader :used_execution_environment
 
   # after_save :trigger_working_times_action_cable
-
-  def build_files_hash(files, attribute)
-    files.map(&attribute.to_proc).zip(files).to_h
-  end
-
-  private :build_files_hash
 
   def collect_files
     @collect_files ||= begin
@@ -202,7 +199,15 @@ class Submission < ApplicationRecord
     %w[study_group_id exercise_id cause]
   end
 
+  def users
+    contributor.try(:users) || [contributor]
+  end
+
   private
+
+  def build_files_hash(files, attribute)
+    files.map(&attribute.to_proc).zip(files).to_h
+  end
 
   def prepared_runner
     request_time = Time.zone.now

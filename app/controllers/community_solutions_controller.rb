@@ -100,6 +100,6 @@ class CommunitySolutionsController < ApplicationController
 
   def set_exercise_and_submission
     @exercise = @community_solution.exercise
-    @submission = current_user.submissions.final.where(exercise_id: @community_solution.exercise.id).order('created_at DESC').first
+    @submission = current_contributor.submissions.final.where(exercise: @community_solution.exercise).order(created_at: :desc).first
   end
 end

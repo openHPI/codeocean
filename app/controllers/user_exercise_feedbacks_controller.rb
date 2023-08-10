@@ -41,9 +41,9 @@ class UserExerciseFeedbacksController < ApplicationController
     Sentry.set_extras(params: uef_params)
 
     @exercise = Exercise.find(uef_params[:exercise_id])
-    rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
+    rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user: current_user).first
     submission = begin
-      current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
+      current_contributor.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
     rescue StandardError
       nil
     end
@@ -69,11 +69,11 @@ class UserExerciseFeedbacksController < ApplicationController
 
   def update
     submission = begin
-      current_user.submissions.where(exercise_id: @exercise.id).order('created_at DESC').final.first
+      current_contributor.submissions.where(exercise: @exercise).order(created_at: :desc).final.first
     rescue StandardError
       nil
     end
-    rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user_id: current_user.id).first
+    rfc = RequestForComment.unsolved.where(exercise: @exercise, user: current_user).first
     authorize!
     if @exercise && validate_inputs(uef_params)
       path =
@@ -123,18 +123,15 @@ class UserExerciseFeedbacksController < ApplicationController
                     params[:user_exercise_feedback][:exercise_id]
                   end
 
-    user_id = current_user.id
-    user_type = current_user.class.name
     latest_submission = Submission
-      .where(contributor_id: user_id, contributor_type: user_type, exercise_id:)
+      .where(contributor: current_contributor, exercise_id:)
       .order(created_at: :desc).final.first
 
     authorize(latest_submission, :show?)
 
     params[:user_exercise_feedback]
       .permit(:feedback_text, :difficulty, :exercise_id, :user_estimated_worktime)
-      .merge(user_id:,
-        user_type:,
+      .merge(user: current_user,
         submission: latest_submission,
         normalized_score: latest_submission&.normalized_score)
   end

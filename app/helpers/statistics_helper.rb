@@ -9,9 +9,9 @@ module StatisticsHelper
   def statistics_data
     [
       {
-        key: 'users',
-          name: t('statistics.sections.users'),
-          entries: user_statistics,
+        key: 'contributors',
+          name: t('statistics.sections.contributors'),
+          entries: contributor_statistics,
       },
       {
         key: 'exercises',
@@ -26,7 +26,7 @@ module StatisticsHelper
     ]
   end
 
-  def user_statistics
+  def contributor_statistics
     [
       {
         key: 'internal_users',
@@ -41,9 +41,14 @@ module StatisticsHelper
           url: external_users_path,
       },
       {
+        key: 'programming_groups',
+        name: t('activerecord.models.programming_group.other'),
+        data: ProgrammingGroup.count,
+      },
+      {
         key: 'currently_active',
           name: t('statistics.entries.users.currently_active'),
-          data: Submission.where(created_at: 5.minutes.ago.., contributor_type: ExternalUser.name).distinct.count(:contributor_id),
+          data: Submission.from(Submission.where(created_at: 5.minutes.ago..).distinct.select(:contributor_id, :contributor_type)).count,
           url: statistics_graphs_path,
       },
     ]
@@ -108,6 +113,7 @@ module StatisticsHelper
     ]
   end
 
+  # TODO: Need to consider and support programming groups
   def user_activity_live_data
     [
       {
@@ -209,6 +215,7 @@ module StatisticsHelper
     ]
   end
 
+  # TODO: Need to consider and support programming groups
   def ranged_user_data(interval = 'year', from = DateTime.new(0), to = DateTime.now)
     [
       {

@@ -22,8 +22,7 @@ module SubmissionParameters
   def merge_user(params)
     # The study_group_id might not be present in the session (e.g. for internal users), resulting in session[:study_group_id] = nil which is intended.
     params.merge(
-      contributor_id: current_user.id,
-      contributor_type: current_user.class.name,
+      contributor: current_contributor,
       study_group_id: current_user.current_study_group_id
     )
   end
