@@ -5,25 +5,26 @@
   - append_javascript_pack_tag('d3-tip')
 h1 = @exercise
 
-= row(label: '.participants', value: @exercise.users.distinct.count)
+= row(label: '.participants', value: @exercise.contributors.size)
 
 - [:intermediate, :final].each do |scope|
   = row(label: ".#{scope}_submissions") do
-    = "#{@exercise.submissions.send(scope).count} (#{t('.users', count: @exercise.submissions.send(scope).distinct.count(:contributor_id))})"
+    /TODO: Refactor next line
+    = "#{@exercise.submissions.send(scope).count} (#{t('.users_and_programming_groups', count: Submission.from(@exercise.submissions.send(scope).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)})"
 
 = row(label: '.finishing_rate') do
   p
-    - if @exercise.finishers.count
+    - if @exercise.finishers_count
       span.number
-        = @exercise.finishers.count
+        = @exercise.finishers_count
       =<> t('shared.out_of')
       span.number
-        = @exercise.users.distinct.count
+        = @exercise.contributors.size
       =< t('exercises.statistics.external_users')
     - else
       = empty
-  - finishers_count = @exercise.users.distinct.count
-  - finishers_percentage = finishers_count == 0 ? 0 : (100.0 / finishers_count * @exercise.finishers.count).round(2)
+  - finishers_count = @exercise.contributors.size
+  - finishers_percentage = finishers_count == 0 ? 0 : (100.0 / finishers_count * @exercise.finishers_count).round(2)
   p = progress_bar(finishers_percentage)
 
 = row(label: '.average_score') do
@@ -42,7 +43,7 @@ h1 = @exercise
   = row(label: '.average_worktime') do
     p = @exercise.average_working_time
 
-- Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
+- Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users'), :programming_groups => t('.programming_groups')].each_pair do |symbol, label|
   - submissions = Submission.where(contributor: @exercise.send(symbol), exercise: @exercise).in_study_group_of(current_user)
   - if !policy(@exercise).detailed_statistics?
     - submissions = submissions.final

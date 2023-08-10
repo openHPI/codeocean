@@ -45,7 +45,7 @@ de:
         maximum_score: Erreichbare Punktzahl
         submission_deadline: Abgabefrist
         late_submission_deadline: Verspätete Abgabefrist
-        number_of_users: "# Nutzer"
+        number_of_users_and_programming_groups: "# Nutzer und Programmiergruppen"
         public: Öffentlich
         selection: Ausgewählt
         title: Titel
@@ -56,6 +56,10 @@ de:
         token: "Aufgaben-Token"
         uuid: UUID
         unpublished: Deaktiviert
+      programming_group:
+        programming_partner_ids: Nutzer-IDs der Programmierpartner
+      programming_group/programming_group_memberships:
+        base: Programmiergruppenmitgliedschaft
       proxy_exercise:
         title: Title
         files_count: Anzahl der Aufgaben
@@ -172,7 +176,7 @@ de:
         exercises: "Aufgaben"
         solutions: "Gesamtanzahl Lösungsversuche"
         submissions: "Gesamtanzahl Submissions"
-        users: "Teilnehmer"
+        users_and_programming_groups: "Teilnehmer und Programmiergruppen"
       user_exercise_feedback:
         user: "Autor"
         exercise: "Aufgabe"
@@ -225,6 +229,12 @@ de:
       internal_user:
         one: Interner Nutzer
         other: Interne Nutzer
+      programming_group:
+        one: Programmiergruppe
+        other: Programmiergruppen
+      programming_group_membership:
+        one: Programmiergruppenmitgliedschaft
+        other: Programmiergruppenmitgliedschaften
       request_for_comment:
         one: Kommentaranfrage
         other: Kommentaranfragen
@@ -259,6 +269,11 @@ de:
           attributes:
             password:
               weak: ist zu schwach. Versuchen Sie es mit einem  langen Passwort, welches Groß-, Kleinbuchstaben, Zahlen und Sonderzeichen enthält.
+        programming_group:
+          size_too_small: Die Größe dieser Programmiergruppe ist zu klein. Geben Sie mindestens eine andere Nutzer-ID an.
+          invalid_partner_id: Die Nutzer-ID '%{partner_id}' ist ungültig und wurde entfernt. Bitte überprüfen Sie die Nutzer-IDs der Programmierpartner.
+        programming_group_membership:
+          already_exists: 'existiert bereits für diese Aufgabe für den Nutzer mit der ID %{id_with_type}.'
   admin:
     dashboard:
       show:
@@ -346,7 +361,7 @@ de:
         permission_denied: Der Zugriff auf die angeforderte Datei wurde verweigert. Bitte überprüfen Sie, dass die Datei existiert, der aktuelle Benutzer Leseberechtigungen besitzt und versuchen Sie ggf. die Datei mit "root"-Rechten anzufordern. Dazu müssen Sie den "sudo"-Schalter neben der Befehlszeile aktivieren und anschließend das Dateisystem vor dem Herunterladen einer Datei aktualisieren.
     statistics:
       exercise: Übung
-      users: Anzahl (externer) Nutzer
+      users_and_programming_groups: Anzahl Nutzer und Programmiergruppen
       score: Durchschnittliche Punktzahl
       stddev_score: stdabw (Punktzahl)
       stddev_worktime: stdabw (Arbeitszeit)
@@ -519,7 +534,7 @@ de:
       final_submissions: Finale Abgaben
       intermediate_submissions: Intermediäre Abgaben
       participants: Bearbeitende Nutzer
-      users: '%{count} verschiedene Nutzer'
+      users_and_programming_groups: '%{count} verschiedene Nutzer und Programmiergruppen'
       user: Nutzer
       score: Maximale Punktzahl
       deadline: Abgabefrist
@@ -528,6 +543,7 @@ de:
       average_worktime: Durchschnittliche Arbeitszeit
       internal_users: Interne Nutzer
       external_users: Externe Nutzer
+      programming_groups: Programmiergruppen
       finishing_rate: Abschlussrate
     submit:
       failure: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
@@ -563,6 +579,15 @@ de:
   proxy_exercises:
       index:
         clone: Duplizieren
+  programming_groups:
+    form:
+      hints:
+        programming_partner_ids: "Sie können mehrere Nutzer-IDs mit Kommata getrennt eingeben, wie z.B.: 'e123, e234'."
+    new:
+      check_invitation: "Einladung prüfen"
+      enter_partner_id: "Bitte geben Sie hier die Nutzer-IDs der Personen ein, mit denen Sie zusammen die Aufgabe '%{exercise_title}' lösen möchten. Beachten Sie jedoch, dass anschließend keiner aus der Gruppe austreten kann. Alle Teammitglieder können also sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Für die nächste Aufgabe können Sie sich erneuert entscheiden, ob und mit wem Sie zusammen arbeiten möchten."
+      own_user_id: "Ihre Nutzer-ID:"
+      work_alone: "Sie können sich einmalig dafür entscheiden, die Aufgabe alleine zu bearbeiten. Anschließend können Sie jedoch nicht mehr in die Gruppenarbeit für diese Aufgabe wechseln. Klicken Sie <a href=%{path})>hier</a>, um die Aufgabe im Einzelmodus zu starten."
   external_users:
     statistics:
       title: Statistiken für Externe Benutzer
@@ -967,7 +992,7 @@ de:
     subscription_not_existent: "Das Abonnement, von dem Sie sich abmelden wollen, existiert nicht."
   statistics:
     sections:
-      users: "Benutzer"
+      contributors: "Mitwirkende"
       exercises: "Aufgaben"
       request_for_comments: "Kommentaranfragen"
     entries:

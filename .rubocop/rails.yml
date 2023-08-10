@@ -20,3 +20,8 @@ Rails/UnknownEnv:
 
 Rails/I18nLazyLookup:
   Enabled: false
+
+Rails/DynamicFindBy:
+  Whitelist:
+    - find_by_sql # Default value for this cop
+    - find_by_id_with_type # custom method defined in the `User` model

@@ -49,6 +49,13 @@ class ApplicationPolicy
   end
   private :teacher_in_study_group?
 
+  def author_in_programming_group?
+    return false unless @record.contributor.programming_group?
+
+    @record.contributor.users.include?(@user)
+  end
+  private :author_in_programming_group?
+
   def initialize(user, record)
     @user = user
     @record = record

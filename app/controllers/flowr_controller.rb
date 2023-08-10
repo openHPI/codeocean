@@ -5,7 +5,7 @@ class FlowrController < ApplicationController
     require_user!
     # get the latest submission for this user that also has a test run (i.e. structured_errors if applicable)
     submission = Submission.joins(:testruns)
-      .where(submissions: {contributor: current_user})
+      .where(submissions: {contributor: current_contributor})
       .includes(structured_errors: [structured_error_attributes: [:error_template_attribute]])
       .merge(Testrun.order(created_at: :desc)).first
 

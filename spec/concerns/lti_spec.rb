@@ -22,6 +22,7 @@ describe Lti do
       expect(controller.session).to receive(:delete).with(:external_user_id)
       expect(controller.session).to receive(:delete).with(:study_group_id)
       expect(controller.session).to receive(:delete).with(:embed_options)
+      expect(controller.session).to receive(:delete).with(:pg_id)
       controller.send(:clear_lti_session_data)
     end
   end

@@ -29,7 +29,7 @@ class Exercise < ApplicationRecord
 
   has_many :external_users, source: :contributor, source_type: 'ExternalUser', through: :submissions
   has_many :internal_users, source: :contributor, source_type: 'InternalUser', through: :submissions
-  alias users external_users
+  has_many :programming_groups
 
   scope :with_submissions, -> { where('id IN (SELECT exercise_id FROM submissions)') }
 
@@ -57,10 +57,10 @@ class Exercise < ApplicationRecord
   end
 
   def finishers_percentage
-    if users.distinct.count.zero?
+    if contributors.empty?
       0
     else
-      (100.0 / users.distinct.count * finishers.count).round(2)
+      (100.0 / contributors.size * finishers_count).round(2)
     end
   end
 
@@ -72,8 +72,11 @@ class Exercise < ApplicationRecord
   end
 
   def average_number_of_submissions
-    user_count = internal_users.distinct.count + external_users.distinct.count
-    user_count.zero? ? 0 : submissions.count / user_count.to_f
+    contributors.empty? ? 0 : submissions.count / contributors.size.to_f
+  end
+
+  def contributors
+    @contributors ||= internal_users.distinct + external_users.distinct + programming_groups.distinct
   end
 
   def time_maximum_score(contributor)
@@ -201,6 +204,17 @@ class Exercise < ApplicationRecord
        total_working_time
     FROM working_times_with_index
        JOIN internal_users ON contributor_type = 'InternalUser' AND contributor_id = internal_users.id
+    UNION ALL
+    SELECT index,
+       contributor_id,
+       contributor_type,
+       concat('PG ', programming_groups.id::varchar) AS name,
+       score,
+       start_time,
+       working_time_per_score,
+       total_working_time
+    FROM working_times_with_index
+       JOIN programming_groups ON contributor_type = 'ProgrammingGroup' AND contributor_id = programming_groups.id
     ORDER BY index, score ASC;
     "
   end
@@ -262,7 +276,7 @@ class Exercise < ApplicationRecord
                         (created_at - Lag(created_at) OVER (partition BY contributor_id, exercise_id ORDER BY created_at)) AS working_time
                FROM     submissions
                WHERE    #{self.class.sanitize_sql(['exercise_id = ?', id])}
-               AND      contributor_type = 'ExternalUser'
+               AND      contributor_type IN ('ExternalUser', 'ProgrammingGroup')
                GROUP BY contributor_id,
                         id,
                         exercise_id), max_points AS
@@ -367,7 +381,7 @@ class Exercise < ApplicationRecord
   end
 
   def retrieve_working_time_statistics
-    @working_time_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
+    @working_time_statistics = {'InternalUser' => {}, 'ExternalUser' => {}, 'ProgrammingGroup' => {}}
     self.class.connection.exec_query(user_working_time_query).each do |tuple|
       tuple = tuple.merge('working_time' => format_time_difference(tuple['working_time']))
       @working_time_statistics[tuple['contributor_type']][tuple['contributor_id'].to_i] = tuple
@@ -532,9 +546,8 @@ class Exercise < ApplicationRecord
     maximum_score(contributor).to_i == maximum_score.to_i
   end
 
-  def finishers
-    ExternalUser.joins(:submissions).where(submissions: {exercise_id: id, score: maximum_score,
-cause: %w[submit assess remoteSubmit remoteAssess]}).distinct
+  def finishers_count
+    Submission.from(submissions.where(score: maximum_score, cause: %w[submit assess remoteSubmit remoteAssess]).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type), 'submissions').count
   end
 
   def set_default_values

@@ -33,7 +33,7 @@ h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
       tr
         th = '#'
         th = t('activerecord.attributes.exercise.title')
-        th = t('activerecord.attributes.exercise.number_of_users')
+        th = t('activerecord.attributes.exercise.number_of_users_and_programming_groups')
         th = t('activerecord.attributes.exercise.distinct_final_submissions')
         th = t('activerecord.attributes.exercise.finishing_rate')
         th = t('activerecord.attributes.exercise.average_score_percentage')
@@ -44,8 +44,8 @@ h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
         tr
           td = exercise_collection_item.position
           td = link_to_if(policy(exercise).show?, exercise.title, exercise)
-          td = exercise.users.distinct.count
-          td = exercise.submissions.send(:final).distinct.count(:user_id)
+          td = exercise.contributors.size
+          td = exercise.submissions.send(:final).distinct.count(:contributor_id)
           td = exercise.finishers_percentage
           td = exercise.average_percentage
           td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks' => "false") if policy(exercise).statistics?

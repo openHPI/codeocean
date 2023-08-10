@@ -45,7 +45,7 @@ en:
         maximum_score: Maximum Score
         submission_deadline: Submission Deadline
         late_submission_deadline: Late Submission Deadline
-        number_of_users: "# Users"
+        number_of_users_and_programming_groups: "# Users and Programming Groups"
         public: Public
         selection: Selected
         title: Title
@@ -56,6 +56,10 @@ en:
         token: "Exercise Token"
         uuid: UUID
         unpublished: Unpublished
+      programming_group:
+        programming_partner_ids: Programming Partner IDs
+      programming_group/programming_group_memberships:
+        base: Programming Group Membership
       proxy_exercise:
         title: Title
         files_count: Exercises Count
@@ -172,7 +176,7 @@ en:
         exercises: "Exercises"
         solutions: "Solution Attempts (accumulated)"
         submissions: "Submissions (accumulated)"
-        users: "Users"
+        users_and_programming_groups: "Users and Programming Groups"
       user_exercise_feedback:
         user: "Author"
         exercise: "Exercise"
@@ -225,6 +229,12 @@ en:
       internal_user:
         one: Internal User
         other: Internal Users
+      programming_group:
+        one: Programming Group
+        other: Programming Groups
+      programming_group_membership:
+        one: Programming Group Membership
+        other: Programming Group Memberships
       request_for_comment:
         one: Request for Comments
         other: Requests for Comments
@@ -259,6 +269,11 @@ en:
           attributes:
             password:
               weak: is too weak. Try to use a long password with upper and lower case letters, numbers and special characters.
+        programming_group:
+          size_too_small: The size of this programming group is too small. Enter at least one other user ID to work with.
+          invalid_partner_id: The user ID '%{partner_id}' is invalid and was removed. Please check the user IDs of your programming partners.
+        programming_group_membership:
+          already_exists: 'already exists for this exercise for the user with ID %{id_with_type}.'
   admin:
     dashboard:
       show:
@@ -346,7 +361,7 @@ en:
         permission_denied: Access to the requested file has been denied. Please verify that the file exists, the current user has read permissions, and try requesting the file with "root" privileges if necessary.  To retrieve files as "root", you must enable the "sudo" switch shown next to the command input and then reload the file system before accessing any file.
     statistics:
       exercise: Exercise
-      users: (External) Users Count
+      users_and_programming_groups: Users and Programming Groups Count
       score: Average Score
       stddev_score: stddev (score)
       stddev_worktime: stddev (working time)
@@ -519,7 +534,7 @@ en:
       final_submissions: Final Submissions
       intermediate_submissions: Intermediate Submissions
       participants: Participating Users
-      users: '%{count} distinct users'
+      users_and_programming_groups: '%{count} distinct users and programming groups'
       user: User
       score: Maximum Score
       deadline: Deadline
@@ -528,6 +543,7 @@ en:
       average_worktime: Average Working Time
       internal_users: Internal Users
       external_users: External Users
+      programming_groups: Programming Groups
       finishing_rate: Finishing Rate
     submit:
       failure: An error occurred while transmitting your score. Please try again later.
@@ -563,6 +579,15 @@ en:
   proxy_exercises:
       index:
         clone: Duplicate
+  programming_groups:
+    form:
+      hints:
+        programming_partner_ids: "You can enter several user IDs separated by commas such as 'e123, e234'."
+    new:
+      check_invitation: "Check invitation"
+      enter_partner_id: "Please enter the user IDs from the practice partners with whom you want to solve the exercise '%{exercise_title}'. However, note that no one can leave the group afterward. Hence, all team members can see what you write in this exercise and vice versa. For the next exercise, you can decide again whether and with whom you want to work together."
+      own_user_id: "Your user ID:"
+      work_alone: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to group work for this exercise. Click <a href=%{path}>here</a> to get to the exercise in single mode."
   external_users:
     statistics:
       title: External User Statistics
@@ -967,7 +992,7 @@ en:
     subscription_not_existent: "The subscription you want to unsubscribe from does not exist."
   statistics:
     sections:
-      users: "Users"
+      contributors: "Contributors"
       exercises: "Exercises"
       request_for_comments: "Requests for Comment"
     entries:
