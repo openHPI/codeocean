@@ -21,6 +21,8 @@ class SessionsController < ApplicationController
     store_nonce(params[:oauth_nonce])
     if params[:custom_redirect_target]
       redirect_to(URI.parse(params[:custom_redirect_target].to_s).path)
+    elsif PairProgramming23Study.participate?
+      redirect_to(new_exercise_programming_group_path(@exercise))
     else
       redirect_to(implement_exercise_path(@exercise),
         notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, current_user.id) ? 'with' : 'without'}_outcome",
