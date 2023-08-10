@@ -102,7 +102,7 @@ describe Lti do
     end
   end
 
-  describe '#send_score' do
+  describe '#send_scores' do
     let(:consumer) { create(:consumer) }
     let(:score) { 0.5 }
     let(:submission) { create(:submission) }
@@ -114,7 +114,7 @@ describe Lti do
     context 'with an invalid score' do
       it 'raises an exception' do
         allow(submission).to receive(:normalized_score).and_return Lti::MAXIMUM_SCORE * 2
-        expect { controller.send(:send_score, submission) }.to raise_error(Lti::Error)
+        expect { controller.send(:send_scores, submission) }.to raise_error(Lti::Error)
       end
     end
 
@@ -124,13 +124,13 @@ describe Lti do
           it 'returns a corresponding status' do
             allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(false)
             allow(submission).to receive(:normalized_score).and_return score
-            expect(controller.send(:send_score, submission)[:status]).to eq('unsupported')
+            expect(controller.send(:send_scores, submission).first[:status]).to eq('unsupported')
           end
         end
 
         context 'when grading is supported' do
           let(:response) { double }
-          let(:send_score) { controller.send(:send_score, submission) }
+          let(:send_scores) { controller.send(:send_scores, submission).first }
 
           before do
             allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:outcome_service?).and_return(true)
@@ -144,13 +144,13 @@ describe Lti do
 
           it 'sends the score' do
             expect_any_instance_of(IMS::LTI::ToolProvider).to receive(:post_replace_result!).with(score)
-            send_score
+            send_scores
           end
 
           it 'returns code, message, and status' do
-            expect(send_score[:code]).to eq(response.response_code)
-            expect(send_score[:message]).to eq(response.body)
-            expect(send_score[:status]).to eq(response.code_major)
+            expect(send_scores[:code]).to eq(response.response_code)
+            expect(send_scores[:message]).to eq(response.body)
+            expect(send_scores[:status]).to eq(response.code_major)
           end
         end
       end
@@ -160,7 +160,7 @@ describe Lti do
           submission.contributor.consumer = nil
 
           allow(submission).to receive(:normalized_score).and_return score
-          expect(controller.send(:send_score, submission)[:status]).to eq('error')
+          expect(controller.send(:send_scores, submission).first[:status]).to eq('error')
         end
       end
     end

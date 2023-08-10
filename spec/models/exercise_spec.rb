@@ -91,7 +91,7 @@ describe Exercise do
 
     context 'without submissions' do
       it 'returns nil' do
-        expect(exercise.average_score).to be 0
+        expect(exercise.average_score).to be 0.0
       end
     end
 

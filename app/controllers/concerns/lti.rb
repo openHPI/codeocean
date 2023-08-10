@@ -9,6 +9,7 @@ module Lti
   MAXIMUM_SCORE = 1
   MAXIMUM_SESSION_AGE = 60.minutes
   SESSION_PARAMETERS = %w[launch_presentation_return_url lis_outcome_service_url lis_result_sourcedid].freeze
+  ERROR_STATUS = %w[error unsupported].freeze
 
   def build_tool_provider(options = {})
     if options[:consumer] && options[:parameters]
@@ -135,21 +136,27 @@ module Lti
 
   private :return_to_consumer
 
-  def send_score(submission)
+  def send_scores(submission)
     unless (0..MAXIMUM_SCORE).cover?(submission.normalized_score)
       raise Error.new("Score #{submission.normalized_score} must be between 0 and #{MAXIMUM_SCORE}!")
     end
 
-    if submission.contributor.consumer
-      lti_parameter = LtiParameter.where(consumers_id: submission.contributor.consumer.id,
-        external_users_id: submission.contributor_id,
+    submission.users.map {|user| send_score_for submission, user }
+  end
+
+  private :send_scores
+
+  def send_score_for(submission, user)
+    if user.consumer
+      lti_parameter = LtiParameter.where(consumers_id: user.consumer.id,
+        external_users_id: user.id,
         exercises_id: submission.exercise_id).last
 
-      provider = build_tool_provider(consumer: submission.contributor.consumer, parameters: lti_parameter.lti_parameters)
+      provider = build_tool_provider(consumer: user.consumer, parameters: lti_parameter&.lti_parameters)
     end
 
     if provider.nil?
-      {status: 'error'}
+      {status: 'error', user: user.displayname}
     elsif provider.outcome_service?
       Sentry.set_extras({
         provider: provider.inspect,
@@ -171,17 +178,17 @@ module Lti
 
       begin
         response = provider.post_replace_result!(normalized_lti_score)
-        {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lti_score}
+        {code: response.response_code, message: response.post_response.body, status: response.code_major, score_sent: normalized_lti_score, user: user.displayname}
       rescue IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET, SocketError
         # A parsing error might happen if the LTI provider is down and doesn't return a valid XML response
-        {status: 'error'}
+        {status: 'error', user: user.displayname}
       end
     else
-      {status: 'unsupported'}
+      {status: 'unsupported', user: user.displayname}
     end
   end
 
-  private :send_score
+  private :send_score_for
 
   def set_current_user
     @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)

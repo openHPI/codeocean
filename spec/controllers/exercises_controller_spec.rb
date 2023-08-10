@@ -325,7 +325,7 @@ describe ExercisesController do
 
       context 'when the score transmission succeeds' do
         before do
-          allow(controller).to receive(:send_score).and_return(status: 'success')
+          allow(controller).to receive(:send_scores).and_return([{status: 'success'}])
           perform_request
         end
 
@@ -341,7 +341,7 @@ describe ExercisesController do
 
       context 'when the score transmission fails' do
         before do
-          allow(controller).to receive(:send_score).and_return(status: 'unsupported')
+          allow(controller).to receive(:send_scores).and_return([{status: 'unsupported'}])
           perform_request
         end
 
@@ -351,8 +351,11 @@ describe ExercisesController do
           expect(assigns(:submission)).to be_a(Submission)
         end
 
+        it 'returns an error message' do
+          expect(response.parsed_body).to eq('danger' => I18n.t('exercises.submit.failure'))
+        end
+
         expect_json
-        expect_http_status(:service_unavailable)
       end
     end
 
@@ -369,7 +372,7 @@ describe ExercisesController do
       end
 
       it 'does not send scores' do
-        expect(controller).not_to receive(:send_score)
+        expect(controller).not_to receive(:send_scores)
       end
 
       expect_json

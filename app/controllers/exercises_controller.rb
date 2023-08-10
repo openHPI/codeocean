@@ -536,25 +536,39 @@ class ExercisesController < ApplicationController
     Rails.logger.debug { "Runner error while submitting submission #{@submission.id}: #{e.message}" }
     respond_to do |format|
       format.html { redirect_to(implement_exercise_path(@submission.exercise)) }
-      format.json { render(json: {message: I18n.t('exercises.editor.depleted'), status: :container_depleted}) }
+      format.json { render(json: {danger: I18n.t('exercises.editor.depleted'), status: :container_depleted}) }
     end
   end
 
   def transmit_lti_score
-    response = send_score(@submission)
+    responses = send_scores(@submission)
+    messages = {}
+    failed_users = []
 
-    if response[:status] == 'success'
-      if response[:score_sent] != @submission.normalized_score
-        # Score has been reduced due to the passed deadline
-        flash.now[:warning] = I18n.t('exercises.submit.too_late')
-        flash.keep(:warning)
+    responses.each do |response|
+      if Lti::ERROR_STATUS.include? response[:status]
+        failed_users << response[:user]
+      elsif response[:score_sent] != @submission.normalized_score # the score was sent successfully, but received too late
+        messages[:warning] = I18n.t('exercises.submit.too_late')
       end
-      redirect_after_submit
+    end
+
+    if failed_users.size == responses.size # all submissions failed
+      messages[:danger] = I18n.t('exercises.submit.failure')
+    elsif failed_users.size.positive? # at least one submission failed
+      messages[:warning] = [[messages[:warning]], I18n.t('exercises.submit.warning_not_for_all_users_submitted', user: failed_users.join(', '))].join('<br><br>')
+      messages[:warning] = "#{messages[:warning]}\n\n#{I18n.t('exercises.submit.warning_not_for_all_users_submitted', user: failed_users.join(', '))}".strip
     else
-      respond_to do |format|
-        format.html { redirect_to(implement_exercise_path(@submission.exercise, alert: I18n.t('exercises.submit.failure'))) }
-        format.json { render(json: {message: I18n.t('exercises.submit.failure')}, status: :service_unavailable) }
+      messages.each do |type, message_text|
+        flash.now[type] = message_text
+        flash.keep(type)
       end
+      return redirect_after_submit
+    end
+
+    respond_to do |format|
+      format.html { redirect_to(implement_exercise_path(@submission.exercise), **messages) }
+      format.json { render(json: messages) } # We must not change the HTTP status code here, since otherwise the custom message is not displayed.
     end
   end
 
