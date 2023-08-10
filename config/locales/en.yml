@@ -550,6 +550,7 @@ en:
       too_late: Your submission was saved successfully but was received after the deadline passed.
       full_score_redirect_to_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Another participant has a question concerning the exercise you just solved. Your help and comments will be greatly appreciated!
       full_score_redirect_to_own_rfc: Congratulations! You achieved and submitted the highest possible score for this exercise. Your question concerning the exercise is solved? If so, please share the essential insight with your fellows and mark the question as solved, before you close this window!
+      warning_not_for_all_users_submitted: "The transmission of points was only partially successful. The score was not transmitted for %{user}. The user(s) should reopen the exercise via the e-learning platform and then try to submit the points themselves."
     study_group_dashboard:
       live_dashboard: Live Dashboard
       time_spent_per_learner: Time spent per Learner

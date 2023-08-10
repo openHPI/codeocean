@@ -211,10 +211,13 @@ CodeOceanEditorSubmissions = {
         Turbolinks.visit(response.redirect);
       } else if (response.status === 'container_depleted') {
           this.showContainerDepletedMessage();
-      } else if (response.message) {
-          $.flash.danger({
-              text: response.message
-          });
+      } else {
+        for (let [type, text] of Object.entries(response)) {
+          $.flash[type]({
+            text: text,
+            showPermanent: true // We might display a very long text message!
+          })
+        }
       }
       this.initializeEventHandlers();
     })

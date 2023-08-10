@@ -72,11 +72,11 @@ class Submission < ApplicationRecord
   end
 
   def normalized_score
-    if !score.nil? && !exercise.maximum_score.nil? && exercise.maximum_score.positive?
-      score / exercise.maximum_score
-    else
-      0
-    end
+    @normalized_score ||= if !score.nil? && !exercise.maximum_score.nil? && exercise.maximum_score.positive?
+                            score / exercise.maximum_score
+                          else
+                            0
+                          end
   end
 
   def percentage

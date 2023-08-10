@@ -1,6 +1,6 @@
 h1 = t('.headline')
 
-- consumer = @submission.user.consumer
+- consumer = current_user.consumer
 
 p
   = t(".success_#{consumer ? 'with' : 'without'}_outcome", consumer: consumer)

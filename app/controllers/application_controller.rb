@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
   rescue_from ActionController::InvalidAuthenticityToken, with: :render_csrf_error
+  add_flash_types :danger, :warning, :info, :success
 
   def current_user
     @current_user ||= find_or_login_current_user&.store_current_study_group_id(session[:study_group_id])
