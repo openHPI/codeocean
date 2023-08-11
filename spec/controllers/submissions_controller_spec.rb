@@ -6,9 +6,9 @@ describe SubmissionsController do
   render_views
 
   let(:submission) { create(:submission) }
-  let(:user) { create(:admin) }
+  let(:contributor) { create(:admin) }
 
-  before { allow(controller).to receive(:current_user).and_return(user) }
+  before { allow(controller).to receive(:current_user).and_return(contributor) }
 
   describe 'POST #create' do
     before do

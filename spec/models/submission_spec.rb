@@ -13,8 +13,8 @@ describe Submission do
     expect(described_class.create.errors[:exercise]).to be_present
   end
 
-  it 'validates the presence of a user' do
-    expect(described_class.create.errors[:user]).to be_present
+  it 'validates the presence of a contributor' do
+    expect(described_class.create.errors[:contributor]).to be_present
   end
 
   describe '#main_file' do
@@ -67,19 +67,19 @@ describe Submission do
   end
 
   describe '#siblings' do
-    let(:siblings) { described_class.find_by(user:).siblings }
-    let(:user) { create(:external_user) }
+    let(:siblings) { described_class.find_by(contributor:).siblings }
+    let(:contributor) { create(:external_user) }
 
     before do
       10.times.each_with_index do |_, index|
-        create(:submission, exercise: submission.exercise, user: (index.even? ? user : create(:external_user)))
+        create(:submission, exercise: submission.exercise, contributor: (index.even? ? contributor : create(:external_user)))
       end
     end
 
     it "returns all the creator's submissions for the same exercise" do
       expect(siblings).to be_an(ActiveRecord::Relation)
       expect(siblings.map(&:exercise).uniq).to eq([submission.exercise])
-      expect(siblings.map(&:user).uniq).to eq([user])
+      expect(siblings.map(&:contributor).uniq).to eq([contributor])
     end
   end
 
@@ -92,8 +92,8 @@ describe Submission do
   describe '#redirect_to_feedback?' do
     context 'with no exercise feedback' do
       let(:exercise) { create(:dummy) }
-      let(:user) { build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) % 10) }
-      let(:submission) { build(:submission, exercise:, user:) }
+      let(:contributor) { build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) % 10) }
+      let(:submission) { build(:submission, exercise:, contributor:) }
 
       it 'sends 10% of users to feedback page' do
         expect(submission.send(:redirect_to_feedback?)).to be_truthy
@@ -101,7 +101,7 @@ describe Submission do
 
       it 'does not redirect other users' do
         9.times do |i|
-          submission = build(:submission, exercise:, user: build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
+          submission = build(:submission, exercise:, contributor: build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end
@@ -109,8 +109,8 @@ describe Submission do
 
     context 'with little exercise feedback' do
       let(:exercise) { create(:dummy_with_user_feedbacks) }
-      let(:user) { build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) % 10) }
-      let(:submission) { build(:submission, exercise:, user:) }
+      let(:contributor) { build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) % 10) }
+      let(:submission) { build(:submission, exercise:, contributor:) }
 
       it 'sends 10% of users to feedback page' do
         expect(submission.send(:redirect_to_feedback?)).to be_truthy
@@ -118,7 +118,7 @@ describe Submission do
 
       it 'does not redirect other users' do
         9.times do |i|
-          submission = build(:submission, exercise:, user: build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
+          submission = build(:submission, exercise:, contributor: build(:external_user, id: (11 - (exercise.created_at.to_i % 10)) - i - 1))
           expect(submission.send(:redirect_to_feedback?)).to be_falsey
         end
       end

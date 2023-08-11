@@ -43,7 +43,7 @@ module StatisticsHelper
       {
         key: 'currently_active',
           name: t('statistics.entries.users.currently_active'),
-          data: Submission.where(created_at: 5.minutes.ago.., user_type: ExternalUser.name).distinct.count(:user_id),
+          data: Submission.where(created_at: 5.minutes.ago.., contributor_type: ExternalUser.name).distinct.count(:contributor_id),
           url: statistics_graphs_path,
       },
     ]

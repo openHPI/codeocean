@@ -28,7 +28,7 @@ ExecutionEnvironment.create_factories user: admin
 @exercises = find_factories_by_class(Exercise).map(&:name).index_with {|factory_name| FactoryBot.create(factory_name, user: teacher) }
 
 # submissions
-FactoryBot.create(:submission, exercise: @exercises[:fibonacci], user: external_user)
+FactoryBot.create(:submission, exercise: @exercises[:fibonacci], contributor: external_user)
 
 # The old images included in the seed data do not feature a dedicated `user` and therefore require a privileged execution.
 ExecutionEnvironment.update_all privileged_execution: true # rubocop:disable Rails/SkipsModelValidations

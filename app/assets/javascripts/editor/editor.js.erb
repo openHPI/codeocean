@@ -919,10 +919,6 @@ var CodeOceanEditor = {
             const delta = 100; // time in ms to wait for window event before time gets stopped
             let tid;
             $.ajax({
-                data: {
-                    exercise_id: editor.data('exercise-id'),
-                    user_id: editor.data('user-id')
-                },
                 dataType: 'json',
                 method: 'GET',
                 // get working times for this exercise

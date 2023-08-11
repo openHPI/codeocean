@@ -2,7 +2,7 @@
 
 class Submission < ApplicationRecord
   include Context
-  include Creation
+  include ContributorCreation
   include ActionCableHelper
 
   CAUSES = %w[assess download file render run save submit test autosave requestComments remoteAssess
@@ -19,12 +19,11 @@ class Submission < ApplicationRecord
   has_many :comments, through: :files
 
   belongs_to :external_users, lambda {
-                                where(submissions: {user_type: 'ExternalUser'}).includes(:submissions)
-                              }, foreign_key: :user_id, class_name: 'ExternalUser', optional: true
+                                where(submissions: {contributor_type: 'ExternalUser'}).includes(:submissions)
+                              }, foreign_key: :contributor_id, class_name: 'ExternalUser', optional: true
   belongs_to :internal_users, lambda {
-                                where(submissions: {user_type: 'InternalUser'}).includes(:submissions)
-                              }, foreign_key: :user_id, class_name: 'InternalUser', optional: true
-
+                                where(submissions: {contributor_type: 'InternalUser'}).includes(:submissions)
+                              }, foreign_key: :contributor_id, class_name: 'InternalUser', optional: true
   delegate :execution_environment, to: :exercise
 
   scope :final, -> { where(cause: %w[submit remoteSubmit]) }
@@ -88,7 +87,7 @@ class Submission < ApplicationRecord
   end
 
   def siblings
-    user.submissions.where(exercise_id:)
+    contributor.submissions.where(exercise_id:)
   end
 
   def to_s
@@ -125,11 +124,11 @@ class Submission < ApplicationRecord
     # Redirect 10% of users to the exercise feedback page. Ensure, that always the same
     # users get redirected per exercise and different users for different exercises. If
     # desired, the number of feedbacks can be limited with exercise.needs_more_feedback?(submission)
-    (user_id + exercise.created_at.to_i) % 10 == 1
+    (contributor_id + exercise.created_at.to_i) % 10 == 1
   end
 
   def own_unsolved_rfc(user = self.user)
-    Pundit.policy_scope(user, RequestForComment).unsolved.find_by(exercise_id: exercise, user_id:)
+    Pundit.policy_scope(user, RequestForComment).unsolved.find_by(exercise:, user:)
   end
 
   def unsolved_rfc(user = self.user)
@@ -208,11 +207,11 @@ class Submission < ApplicationRecord
   def prepared_runner
     request_time = Time.zone.now
     begin
-      runner = Runner.for(user, exercise.execution_environment)
+      runner = Runner.for(contributor, exercise.execution_environment)
       files = collect_files
       files.reject!(&:reference_implementation?) if cause == 'run'
       files.reject!(&:teacher_defined_assessment?) if cause == 'run'
-      Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Copying files to Runner #{runner.id} for #{user_type} #{user_id} and Submission #{id}." }
+      Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Copying files to Runner #{runner.id} for #{contributor_type} #{contributor_id} and Submission #{id}." }
       runner.copy_files(files)
     rescue Runner::Error => e
       e.waiting_duration = Time.zone.now - request_time
@@ -313,7 +312,7 @@ class Submission < ApplicationRecord
     update(score: score.to_d)
     if normalized_score.to_d == BigDecimal('1.0')
       Thread.new do
-        RequestForComment.where(exercise_id:, user_id:, user_type:).find_each do |rfc|
+        RequestForComment.joins(:submission).where(submission: {contributor:}, exercise:).find_each do |rfc|
           rfc.full_score_reached = true
           rfc.save
         end

@@ -25,7 +25,7 @@ describe FileParameters do
 
       it 'new file' do
         submission = create(:submission, exercise: hello_world, id: 1337)
-        controller.instance_variable_set(:@current_user, submission.user)
+        controller.instance_variable_set(:@current_user, submission.contributor)
 
         new_file = create(:file, context: submission)
         expect(file_accepted?(new_file)).to be true
@@ -58,8 +58,8 @@ describe FileParameters do
       it 'file of another submission' do
         learner1 = create(:learner)
         learner2 = create(:learner)
-        submission_learner1 = create(:submission, exercise: hello_world, user: learner1)
-        _submission_learner2 = create(:submission, exercise: hello_world, user: learner2)
+        submission_learner1 = create(:submission, exercise: hello_world, contributor: learner1)
+        _submission_learner2 = create(:submission, exercise: hello_world, contributor: learner2)
 
         controller.instance_variable_set(:@current_user, learner2)
         other_submissions_file = create(:file, context: submission_learner1)

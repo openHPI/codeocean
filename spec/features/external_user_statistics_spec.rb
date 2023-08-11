@@ -9,10 +9,10 @@ describe 'ExternalUserStatistics', js: true do
   let(:password) { 'password123456' }
 
   before do
-    2.times { create(:submission, cause: 'autosave', user: learner, exercise:, study_group:) }
-    2.times { create(:submission, cause: 'run', user: learner, exercise:, study_group:) }
-    create(:submission, cause: 'assess', user: learner, exercise:, study_group:)
-    create(:submission, cause: 'submit', user: learner, exercise:, study_group:)
+    2.times { create(:submission, cause: 'autosave', contributor: learner, exercise:, study_group:) }
+    2.times { create(:submission, cause: 'run', contributor: learner, exercise:, study_group:) }
+    create(:submission, cause: 'assess', contributor: learner, exercise:, study_group:)
+    create(:submission, cause: 'submit', contributor: learner, exercise:, study_group:)
 
     study_group.external_users << learner
     study_group.internal_users << user

@@ -3,14 +3,14 @@ h1 = @exercise_collection
 = row(label: 'exercise_collections.name', value: @exercise_collection.name)
 = row(label: 'exercise_collections.updated_at', value: @exercise_collection.updated_at)
 = row(label: 'exercise_collections.exercises', value: @exercise_collection.exercises.count)
-= row(label: 'exercise_collections.users', value: @exercise_collection.exercises.joins(:submissions).group("submissions.user_id").count.count)
-= row(label: 'exercise_collections.solutions', value: @exercise_collection.exercises.joins(:submissions).group("submissions.user_id").group("id").count.count)
+= row(label: 'exercise_collections.users_and_programming_groups', value: Submission.from(@exercise_collection.exercises.joins(:submissions).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)
+= row(label: 'exercise_collections.solutions', value: Submission.from(@exercise_collection.exercises.joins(:submissions).group(:contributor_id, :contributor_type, :id).select(:contributor_id, :contributor_type)).count)
 = row(label: 'exercise_collections.submissions', value: @exercise_collection.exercises.joins(:submissions).count)
 / further metrics:
-/   number of users that attempted at least one exercise @exercise_collection.exercises.joins(:submissions).group("submissions.user_id").count.count
-/   number of solutions:                                  @exercise_collection.exercises.joins(:submissions).group("submissions.user_id").group("id").count.count
+/   number of contributors that attempted at least one exercise @exercise_collection.exercises.joins(:submissions).group("submissions.contributor_id", "submissions.contributor_type").count.count
+/   number of solutions:                                  @exercise_collection.exercises.joins(:submissions).group("submissions.contributor_id", "submissions.contributor_type").group("id").count.count
 / further filters:
-/     Only before specific date: date = DateTime.parse("2015-01-01 00:00:00.000000") ;  @exercise_collection.exercises.joins(:submissions).where(["submissions.created_at > ?", date]).group("submissions.user_id").count.count
+/     Only before specific date: date = DateTime.parse("2015-01-01 00:00:00.000000") ;  @exercise_collection.exercises.joins(:submissions).where(["submissions.created_at > ?", date]).group("submissions.contributor_id", "submissions.contributor_type").count.count
 /     Only with specific cause: @exercise_collection.exercises.joins(:submissions).where("submissions.cause" == 'assess').count
 
 = row(label: 'exercises.statistics.average_worktime', value: @exercise_collection.average_working_time.round(3).to_s + 's')

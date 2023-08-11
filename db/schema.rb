@@ -454,15 +454,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_080619) do
   create_table "submissions", id: :serial, force: :cascade do |t|
     t.integer "exercise_id"
     t.float "score"
-    t.integer "user_id"
+    t.integer "contributor_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "cause"
-    t.string "user_type"
+    t.string "contributor_type"
     t.bigint "study_group_id"
+    t.index ["contributor_id"], name: "index_submissions_on_contributor_id"
     t.index ["exercise_id"], name: "index_submissions_on_exercise_id"
     t.index ["study_group_id"], name: "index_submissions_on_study_group_id"
-    t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 
   create_table "subscriptions", id: :serial, force: :cascade do |t|

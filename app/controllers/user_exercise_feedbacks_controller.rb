@@ -126,7 +126,7 @@ class UserExerciseFeedbacksController < ApplicationController
     user_id = current_user.id
     user_type = current_user.class.name
     latest_submission = Submission
-      .where(user_id:, user_type:, exercise_id:)
+      .where(contributor_id: user_id, contributor_type: user_type, exercise_id:)
       .order(created_at: :desc).final.first
 
     authorize(latest_submission, :show?)

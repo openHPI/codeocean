@@ -8,14 +8,14 @@ h1 = @execution_environment
           th.header = t(title)
     tbody
       - @execution_environment.exercises.each do |exercise|
-        - us = user_statistics[exercise.id]
-        - if not us then us = {"users" => 0, "average_score" => 0.0, "maximum_score" => 0, "stddev_score" => 0.0, "percent_correct" => nil, "average_submission_count" => 0}
+        - us = contributor_statistics[exercise.id]
+        - if not us then us = {"contributors" => 0, "average_score" => 0.0, "maximum_score" => 0, "stddev_score" => 0.0, "percent_correct" => nil, "average_submission_count" => 0}
         - wts = working_time_statistics[exercise.id]
         - if wts then average_time = wts["average_time"] else 0
         - if wts then stddev_time = wts["stddev_time"] else 0
         tr
           td = link_to_if policy(exercise).statistics?, exercise.title, controller: "exercises", action: "statistics", id: exercise.id, 'data-turbolinks' => "false"
-          td = us["users"]
+          td = us["contributors"]
           td = us["average_score"].to_f.round(4)
           td = us["maximum_score"].to_f.round(2)
           td = us["stddev_score"].to_f.round(4)

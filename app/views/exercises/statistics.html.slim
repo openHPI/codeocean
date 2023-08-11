@@ -9,7 +9,7 @@ h1 = @exercise
 
 - [:intermediate, :final].each do |scope|
   = row(label: ".#{scope}_submissions") do
-    = "#{@exercise.submissions.send(scope).count} (#{t('.users', count: @exercise.submissions.send(scope).distinct.count(:user_id))})"
+    = "#{@exercise.submissions.send(scope).count} (#{t('.users', count: @exercise.submissions.send(scope).distinct.count(:contributor_id))})"
 
 = row(label: '.finishing_rate') do
   p
@@ -43,7 +43,7 @@ h1 = @exercise
     p = @exercise.average_working_time
 
 - Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users')].each_pair do |symbol, label|
-  - submissions = Submission.where(user: @exercise.send(symbol), exercise: @exercise).in_study_group_of(current_user)
+  - submissions = Submission.where(contributor: @exercise.send(symbol), exercise: @exercise).in_study_group_of(current_user)
   - if !policy(@exercise).detailed_statistics?
     - submissions = submissions.final
   - if submissions.any?
@@ -60,9 +60,9 @@ h1 = @exercise
       hr
       div#chart_2
       hr
-    - users = symbol.to_s.classify.constantize.where(id: submissions.joins(symbol).group(:user_id).select(:user_id).distinct)
+    - contributors = symbol.to_s.classify.constantize.where(id: submissions.joins(symbol).group(:contributor_id).select(:contributor_id).distinct)
     .table-responsive.mb-4
-      table.table.table-striped class="#{users.present? ? 'sortable' : ''}"
+      table.table.table-striped class="#{contributors.present? ? 'sortable' : ''}"
         thead
           tr
             th.header = t('.user')
@@ -71,14 +71,14 @@ h1 = @exercise
             th.header = t('.runs') if policy(@exercise).detailed_statistics?
             th.header = t('.worktime') if policy(@exercise).detailed_statistics?
         tbody
-          - users.each do |user|
-            - if user_statistics[user.class.name][user.id] then us = user_statistics[user.class.name][user.id] else us = {"maximum_score" => nil, "runs" => nil}
-            - label = "#{user.displayname}"
+          - contributors.each do |contributor|
+            - if contributor_statistics[contributor.class.name][contributor.id] then us = contributor_statistics[contributor.class.name][contributor.id] else us = {"maximum_score" => nil, "runs" => nil}
+            - label = "#{contributor.displayname}"
             tr
-              td = link_to_if symbol==:external_users && policy(user).statistics?, label, {controller: "exercises", action: "external_user_statistics", external_user_id: user.id, id: @exercise.id}
+              td = link_to_if symbol==:external_users && policy(contributor).statistics?, label, {controller: "exercises", action: "external_user_statistics", external_user_id: contributor.id, id: @exercise.id}
               td = us['maximum_score'] or 0
               td.align-middle
-                - latest_user_submission = submissions.where(user: user).final.latest
+                - latest_user_submission = submissions.where(contributor:).final.latest
                 - if latest_user_submission.present?
                   - if latest_user_submission.before_deadline?
                     .unit-test-result.positive-result
@@ -87,4 +87,4 @@ h1 = @exercise
                   - elsif latest_user_submission.after_late_deadline?
                     .unit-test-result.negative-result
               td = us['runs'] if policy(@exercise).detailed_statistics?
-              td = @exercise.average_working_time_for(user) or 0 if policy(@exercise).detailed_statistics?
+              td = @exercise.average_working_time_for(contributor) or 0 if policy(@exercise).detailed_statistics?
