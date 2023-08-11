@@ -1,9 +1,16 @@
 GIT
-  remote: https://github.com/openHPI/proforma.git
-  revision: d8bf59938f7605e7e01f0650b67b0ca564e7907b
-  tag: v0.8
+  remote: https://github.com/openHPI/dachsfisch.git
+  revision: 79983095747d9adac02bb7a495a624a0136aa859
   specs:
-    proforma (0.8.0)
+    dachsfisch (0.1.0)
+      nokogiri (>= 1.14.1, < 1.16.0)
+
+GIT
+  remote: https://github.com/openHPI/proforma.git
+  revision: 86627fa0b4ab265f06d7a4fdc0349ba201302dc8
+  tag: v0.9
+  specs:
+    proforma (0.9.0)
       activemodel (>= 5.2.3, < 8.0.0)
       activesupport (>= 5.2.3, < 8.0.0)
       nokogiri (>= 1.10.2, < 2.0.0)
@@ -540,6 +547,7 @@ DEPENDENCIES
   capybara
   carrierwave
   charlock_holmes
+  dachsfisch!
   database_cleaner
   docker-api
   eventmachine
