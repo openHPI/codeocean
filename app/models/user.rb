@@ -11,7 +11,7 @@ class User < ApplicationRecord
   has_many :study_groups, through: :study_group_memberships, as: :user
   has_many :exercises, as: :user
   has_many :file_types, as: :user
-  has_many :submissions, as: :user
+  has_many :submissions, as: :contributor
   has_many :participations, through: :submissions, source: :exercise, as: :user
   has_many :user_proxy_exercise_exercises, as: :user
   has_many :user_exercise_interventions, as: :user

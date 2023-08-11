@@ -13,7 +13,7 @@ h1 = Submission.model_name.human(count: 2)
     thead
       tr
         th = sort_link(@search, :exercise_id, t('activerecord.attributes.submission.exercise'))
-        th = sort_link(@search, :user_id, t('activerecord.attributes.submission.user'))
+        th = sort_link(@search, :user_id, t('activerecord.attributes.submission.contributor'))
         th = sort_link(@search, :cause, t('activerecord.attributes.submission.cause'))
         th = sort_link(@search, :score, t('activerecord.attributes.submission.score'))
         th = sort_link(@search, :created_at, t('shared.created_at'))
@@ -22,7 +22,7 @@ h1 = Submission.model_name.human(count: 2)
       - @submissions.each do |submission|
         tr
           td = link_to_if(submission.exercise && policy(submission.exercise).show?, submission.exercise, submission.exercise)
-          td = link_to_if(policy(submission.user).show?, submission.user, submission.user)
+          td = link_to_if(policy(submission.contributor).show?, submission.contributor, submission.contributor)
           td = t("submissions.causes.#{submission.cause}")
           td = submission.score
           td = l(submission.created_at, format: :short)

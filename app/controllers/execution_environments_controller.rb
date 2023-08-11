@@ -55,32 +55,32 @@ class ExecutionEnvironmentsController < ApplicationController
       SELECT exercise_id, avg(working_time) as average_time, stddev_samp(extract('epoch' from working_time)) * interval '1 second' as stddev_time
       FROM
         (
-      SELECT user_id,
+      SELECT contributor_id,
              exercise_id,
              sum(working_time_new) AS working_time
       FROM
-        (SELECT user_id,
+        (SELECT contributor_id,
                 exercise_id,
                 CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_new
          FROM
-            (SELECT user_id,
+            (SELECT contributor_id,
                     exercise_id,
                     id,
-                    (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
+                    (created_at - lag(created_at) over (PARTITION BY contributor_id, exercise_id
                                                         ORDER BY created_at)) AS working_time
             FROM submissions
             WHERE exercise_id IN (SELECT ID FROM exercises WHERE #{ExecutionEnvironment.sanitize_sql(['execution_environment_id = ?', @execution_environment.id])})
-            GROUP BY exercise_id, user_id, id) AS foo) AS bar
-      GROUP BY user_id, exercise_id
+            GROUP BY exercise_id, contributor_id, id) AS foo) AS bar
+      GROUP BY contributor_id, exercise_id
     ) AS baz GROUP BY exercise_id;
     "
   end
 
-  def user_query
+  def contributor_query
     "
     SELECT
       id AS exercise_id,
-      COUNT(DISTINCT user_id) AS users,
+      COUNT(DISTINCT contributor_id) AS contributors,
       AVG(score) AS average_score,
       MAX(score) AS maximum_score,
       stddev_samp(score) as stddev_score,
@@ -88,24 +88,24 @@ class ExecutionEnvironmentsController < ApplicationController
         WHEN MAX(score)=0 THEN 0
         ELSE 100 / MAX(score) * AVG(score)
       END AS percent_correct,
-      SUM(submission_count) / COUNT(DISTINCT user_id) AS average_submission_count
+      SUM(submission_count) / COUNT(DISTINCT contributor_id) AS average_submission_count
     FROM
       (SELECT e.id,
-              s.user_id,
+              s.contributor_id,
               MAX(s.score) AS score,
               COUNT(s.id) AS submission_count
        FROM submissions s
        JOIN exercises e ON e.id = s.exercise_id
        WHERE #{ExecutionEnvironment.sanitize_sql(['e.execution_environment_id = ?', @execution_environment.id])}
        GROUP BY e.id,
-                s.user_id) AS inner_query
+                s.contributor_id) AS inner_query
     GROUP BY id;
     "
   end
 
   def statistics
     working_time_statistics = {}
-    user_statistics = {}
+    contributor_statistics = {}
 
     ApplicationRecord.connection.exec_query(working_time_query).each do |tuple|
       tuple = tuple.merge({
@@ -115,13 +115,13 @@ class ExecutionEnvironmentsController < ApplicationController
       working_time_statistics[tuple['exercise_id'].to_i] = tuple
     end
 
-    ApplicationRecord.connection.exec_query(user_query).each do |tuple|
-      user_statistics[tuple['exercise_id'].to_i] = tuple
+    ApplicationRecord.connection.exec_query(contributor_query).each do |tuple|
+      contributor_statistics[tuple['exercise_id'].to_i] = tuple
     end
 
     render locals: {
       working_time_statistics:,
-      user_statistics:,
+      contributor_statistics:,
     }
   end
 

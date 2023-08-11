@@ -141,12 +141,12 @@ module Lti
       raise Error.new("Score #{submission.normalized_score} must be between 0 and #{MAXIMUM_SCORE}!")
     end
 
-    if submission.user.consumer
-      lti_parameter = LtiParameter.where(consumers_id: submission.user.consumer.id,
-        external_users_id: submission.user_id,
+    if submission.contributor.consumer
+      lti_parameter = LtiParameter.where(consumers_id: submission.contributor.consumer.id,
+        external_users_id: submission.contributor_id,
         exercises_id: submission.exercise_id).last
 
-      provider = build_tool_provider(consumer: submission.user.consumer, parameters: lti_parameter.lti_parameters)
+      provider = build_tool_provider(consumer: submission.contributor.consumer, parameters: lti_parameter.lti_parameters)
     end
 
     if provider.nil?

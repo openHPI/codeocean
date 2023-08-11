@@ -119,10 +119,10 @@ de:
       submission:
         cause: Anlass
         code: Code
+        contributor: Mitwirkende:r
         exercise: Aufgabe
         files: Dateien
         score: Punktzahl
-        user: Autor
         study_group: Lerngruppe
       study_group:
         name: Name

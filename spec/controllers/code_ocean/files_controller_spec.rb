@@ -5,9 +5,9 @@ require 'rails_helper'
 describe CodeOcean::FilesController do
   render_views
 
-  let(:user) { create(:admin) }
+  let(:contributor) { create(:admin) }
 
-  before { allow(controller).to receive(:current_user).and_return(user) }
+  before { allow(controller).to receive(:current_user).and_return(contributor) }
 
   describe 'GET #show_protected_upload' do
     context 'with a valid filename' do
@@ -30,7 +30,7 @@ describe CodeOcean::FilesController do
   end
 
   describe 'POST #create' do
-    let(:submission) { create(:submission, user:) }
+    let(:submission) { create(:submission, contributor:) }
 
     context 'with a valid file' do
       let(:perform_request) { proc { post :create, params: {code_ocean_file: build(:file, context: submission).attributes, format: :json} } }

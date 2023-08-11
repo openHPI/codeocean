@@ -7,7 +7,7 @@ describe RequestForCommentPolicy do
 
   context 'when the RfC visibility is not considered' do
     let(:submission) { create(:submission, study_group: create(:study_group)) }
-    let(:rfc) { create(:rfc, submission:, user: submission.user) }
+    let(:rfc) { create(:rfc, submission:, user: submission.contributor) }
 
     %i[destroy? edit?].each do |action|
       permissions(action) do

@@ -119,10 +119,10 @@ en:
       submission:
         cause: Cause
         code: Code
+        contributor: Contributor
         exercise: Exercise
         files: Files
         score: Score
-        user: Author
         study_group: Study Group
       study_group:
         name: Name

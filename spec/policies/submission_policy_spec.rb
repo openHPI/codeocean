@@ -20,8 +20,8 @@ describe SubmissionPolicy do
       end
 
       it 'grants access to authors' do
-        user = create(:external_user)
-        expect(policy).to permit(user, build(:submission, exercise: Exercise.new, user_id: user.id, user_type: user.class.name))
+        contributor = create(:external_user)
+        expect(policy).to permit(contributor, build(:submission, exercise: Exercise.new, contributor:))
       end
     end
   end

@@ -107,7 +107,7 @@ describe Lti do
     let(:submission) { create(:submission) }
 
     before do
-      create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.user_id, exercises_id: submission.exercise_id)
+      create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.contributor_id, exercises_id: submission.exercise_id)
     end
 
     context 'with an invalid score' do
@@ -156,7 +156,7 @@ describe Lti do
 
       context 'without a tool consumer' do
         it 'returns a corresponding status' do
-          submission.user.consumer = nil
+          submission.contributor.consumer = nil
 
           allow(submission).to receive(:normalized_score).and_return score
           expect(controller.send(:send_score, submission)[:status]).to eq('error')

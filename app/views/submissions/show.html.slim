@@ -8,7 +8,7 @@
 h1 = @submission
 
 = row(label: 'submission.exercise', value: link_to_if(policy(@submission.exercise).show?, @submission.exercise, @submission.exercise))
-= row(label: 'submission.user', value: link_to_if(policy(@submission.user).show?, @submission.user, @submission.user))
+= row(label: 'submission.contributor', value: link_to_if(policy(@submission.contributor).show?, @submission.contributor, @submission.contributor))
 = row(label: 'submission.study_group', value: link_to_if(@submission.study_group.present? && policy(@submission.study_group).show?, @submission.study_group, @submission.study_group))
 = row(label: 'submission.cause', value: t("submissions.causes.#{@submission.cause}"))
 = row(label: 'submission.score', value: @submission.score)

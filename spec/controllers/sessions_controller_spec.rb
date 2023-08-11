@@ -210,7 +210,7 @@ describe SessionsController do
       # Todo replace session with lti_parameter
       # Todo create LtiParameter Object
       # session[:lti_parameters] = {}
-      allow(controller).to receive(:current_user).and_return(submission.user)
+      allow(controller).to receive(:current_user).and_return(submission.contributor)
       perform_request.call
     end
 

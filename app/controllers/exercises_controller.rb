@@ -467,9 +467,9 @@ class ExercisesController < ApplicationController
     # Show general statistic page for specific exercise
     user_statistics = {'InternalUser' => {}, 'ExternalUser' => {}}
 
-    query = Submission.select('user_id, user_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
+    query = Submission.select('contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
       .where(exercise_id: @exercise.id)
-      .group('user_id, user_type')
+      .group('contributor_id, contributor_type')
 
     query = if policy(@exercise).detailed_statistics?
               query
@@ -481,7 +481,7 @@ class ExercisesController < ApplicationController
             end
 
     query.each do |tuple|
-      user_statistics[tuple['user_type']][tuple['user_id'].to_i] = tuple
+      user_statistics[tuple['contributor_type']][tuple['contributor_id'].to_i] = tuple
     end
 
     render locals: {
@@ -493,7 +493,7 @@ class ExercisesController < ApplicationController
     # Render statistics page for one specific external user
 
     if policy(@exercise).detailed_statistics?
-      submissions = Submission.where(user: @external_user, exercise: @exercise)
+      submissions = Submission.where(contributor: @external_user, exercise: @exercise)
         .in_study_group_of(current_user)
         .order('created_at')
       @show_autosaves = params[:show_autosaves] == 'true' || submissions.none? {|s| s.cause != 'autosave' }
@@ -510,7 +510,7 @@ class ExercisesController < ApplicationController
         @working_times_until.push((format_time_difference(@deltas[0..index].sum) if index.positive?))
       end
     else
-      final_submissions = Submission.where(user: @external_user,
+      final_submissions = Submission.where(contributor: @external_user,
         exercise_id: @exercise.id).in_study_group_of(current_user).final
       submissions = []
       %i[before_deadline within_grace_period after_late_deadline].each do |filter|
