@@ -39,7 +39,7 @@
     "rails-erb-loader": "usabilityhub/rails-erb-loader#master",
     "sass": "^1.65.1",
     "sass-loader": "^13.3.2",
-    "shakapacker": "7.0.2",
+    "shakapacker": "7.0.3",
     "sortablejs": "^1.15.0",
     "sorttable": "^1.0.2",
     "style-loader": "^3.3.3",
