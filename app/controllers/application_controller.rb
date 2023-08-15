@@ -67,7 +67,6 @@ class ApplicationController < ActionController::Base
 
       # All external users are logged in "manually"
       session[:external_user_id] = token.user.id
-      session.delete(:lti_parameters_id)
       token.user
     end
   end
