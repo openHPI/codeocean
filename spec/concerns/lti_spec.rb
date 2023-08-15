@@ -22,8 +22,6 @@ describe Lti do
       expect(controller.session).to receive(:delete).with(:external_user_id)
       expect(controller.session).to receive(:delete).with(:study_group_id)
       expect(controller.session).to receive(:delete).with(:embed_options)
-      expect(controller.session).to receive(:delete).with(:lti_exercise_id)
-      expect(controller.session).to receive(:delete).with(:lti_parameters_id)
       controller.send(:clear_lti_session_data)
     end
   end
@@ -174,7 +172,6 @@ describe Lti do
       controller.instance_variable_set(:@current_user, create(:external_user))
       controller.instance_variable_set(:@exercise, create(:fibonacci))
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
-      expect(controller.session).to receive(:[]=).with(:lti_parameters_id, anything)
       controller.send(:store_lti_session_data, consumer: build(:consumer), parameters:)
     end
 
