@@ -1,16 +1,16 @@
 GIT
   remote: https://github.com/openHPI/dachsfisch.git
-  revision: 79983095747d9adac02bb7a495a624a0136aa859
+  revision: a167274cf4480de84ac41fb38c5006ae60c0ac1b
   specs:
     dachsfisch (0.1.0)
       nokogiri (>= 1.14.1, < 1.16.0)
 
 GIT
   remote: https://github.com/openHPI/proforma.git
-  revision: 86627fa0b4ab265f06d7a4fdc0349ba201302dc8
-  tag: v0.9
+  revision: 10642d8d4ec27e0bdaa27482dac6b6c7e47bc660
+  tag: v0.9.1
   specs:
-    proforma (0.9.0)
+    proforma (0.9.1)
       activemodel (>= 5.2.3, < 8.0.0)
       activesupport (>= 5.2.3, < 8.0.0)
       nokogiri (>= 1.10.2, < 2.0.0)
