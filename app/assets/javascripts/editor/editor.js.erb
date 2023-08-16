@@ -385,7 +385,10 @@ var CodeOceanEditor = {
         $(document).unbind('keydown');
         this.teardownWorkspaceButtons();
         this.teardownRequestForComments();
-        bootstrap.Modal.getInstance($('#comment-modal'))?.hide();
+        const rfcModal = $('#comment-modal');
+        if (rfcModal.isPresent()) {
+            bootstrap.Modal.getInstance(rfcModal)?.hide();
+        }
         this.teardownFileTreeButtons();
     },
 
