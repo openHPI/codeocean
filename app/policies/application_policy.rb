@@ -50,14 +50,15 @@ class ApplicationPolicy
   private :teacher_in_study_group?
 
   def author_in_programming_group?
+    # !! Order is important !!
     if @record.respond_to? :contributor # e.g. submission
       possible_programming_group = @record.contributor
-
     elsif @record.respond_to? :context # e.g. file
       possible_programming_group = @record.context.contributor
-
     elsif @record.respond_to? :submission # e.g. request_for_comment
       possible_programming_group = @record.submission.contributor
+    elsif @record.respond_to? :users # e.g. programming_group
+      possible_programming_group = @record
     else
       return false
     end

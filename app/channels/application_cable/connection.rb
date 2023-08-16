@@ -2,10 +2,12 @@
 
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
-    identified_by :current_user
+    identified_by :current_user, :current_contributor
 
     def connect
+      # The order is important here, because a valid user is required to find a valid contributor.
       self.current_user = find_verified_user
+      self.current_contributor = find_verified_contributor
     end
 
     def disconnect
@@ -23,6 +25,15 @@ module ApplicationCable
       # Finding the current_user is similar to the code used in application_controller.rb#current_user
       current_user = ExternalUser.find_by(id: session[:external_user_id]) || InternalUser.find_by(id: session[:user_id])
       current_user || reject_unauthorized_connection
+    end
+
+    def find_verified_contributor
+      # Finding the current_contributor is similar to the code used in application_controller.rb#current_contributor
+      if session[:pg_id]
+        current_user.programming_groups.find(session[:pg_id])
+      else
+        current_user
+      end
     end
   end
 end

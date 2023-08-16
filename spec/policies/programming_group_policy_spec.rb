@@ -15,5 +15,21 @@ describe ProgrammingGroupPolicy do
         end
       end
     end
+
+    permissions(:stream_sync_editor?) do
+      it 'grants access to admins' do
+        expect(policy).to permit(create(:admin), programming_group)
+      end
+
+      it 'grants access to members of the programming group' do
+        programming_group.users do |user|
+          expect(policy).to permit(user, programming_group)
+        end
+      end
+
+      it 'does not grant access to someone who is not a member of the programming group' do
+        expect(policy).not_to permit(create(:external_user), programming_group)
+      end
+    end
   end
 end

@@ -8,4 +8,8 @@ class ProgrammingGroupPolicy < ApplicationPolicy
   def create?
     everyone
   end
+
+  def stream_sync_editor?
+    admin? || author_in_programming_group?
+  end
 end
