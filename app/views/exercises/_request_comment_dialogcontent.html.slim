@@ -7,5 +7,7 @@ p = ''
 / data-cause='requestComments' is not used here right now, we pass the button #requestComments (not askForCommentsButton) as initiator of the action.
 / But if we use this button, it will work since the correct cause is supplied
 .d-grid.gap-2
-  button#askForCommentsButton.btn.btn-primary(type='button' data-cause='requestComments' data-message-success=t('exercises.editor.request_for_comments_sent')) =t('exercises.implement.comment.request')
+  button#askForCommentsButton.btn.btn-primary(type='button' data-cause='requestComments' data-message-success=t('exercises.editor.request_for_comments_sent'))
+    i.fa-solid.fa-circle-notch.fa-spin.d-none
+    =t('exercises.implement.comment.request')
   button#closeAskForCommentsButton.btn.btn-warning(type='button') =t('activerecord.attributes.request_for_comments.close')

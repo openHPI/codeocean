@@ -507,7 +507,7 @@ var CodeOceanEditor = {
             new bootstrap.Modal($('#comment-modal')).show();
         });
 
-        $('#askForCommentsButton').on('click', this.requestComments.bind(this));
+        $('#askForCommentsButton').one('click', this.requestComments.bind(this));
         $('#closeAskForCommentsButton').on('click', function () {
             bootstrap.Modal.getInstance($('#comment-modal')).hide();
         });
