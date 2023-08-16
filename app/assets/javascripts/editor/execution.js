@@ -23,7 +23,7 @@ CodeOceanEditorWebsocket = {
     const cleanedPath = url.replace(/\/\d+\//, '/*/').replace(/\/[^\/]+$/, '/*');
     const websocketHost = window.location.origin.replace(/^http/, 'ws');
     const sentryDescription = `WebSocket ${websocketHost}${cleanedPath}`;
-    const span = this.sentryTransaction.startChild({op: 'websocket.client', description: sentryDescription})
+    const span = this.sentryTransaction?.startChild({op: 'websocket.client', description: sentryDescription})
     this.websocket = new CommandSocket(this.createSocketUrl(url, span),
         function (evt) {
           this.resetOutputTab();
