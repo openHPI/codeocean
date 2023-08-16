@@ -4,7 +4,7 @@ h1
 
 = row(label: 'internal_user.email', value: @user.email) if current_user.admin?
 = row(label: 'internal_user.name', value: @user.name)
-= row(label: 'internal_user.consumer', value: @user.consumer ? link_to_if(policy(@user.consumer).show?, @user.consumer, @user.consumer) : nil)
+= row(label: 'internal_user.consumer', value: @user.consumer ? link_to_if(user.consumer.present? && policy(@user.consumer).show?, @user.consumer, @user.consumer) : nil)
 = row(label: 'internal_user.platform_admin', value: @user.platform_admin?) if current_user.admin?
 = row(label: 'internal_user.activated', value: @user.activated?)
 = row(label: 'users.show.study_groups') do
