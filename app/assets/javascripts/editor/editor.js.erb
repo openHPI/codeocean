@@ -29,6 +29,7 @@ var CodeOceanEditor = {
     running: false,
 
     lastCopyText: null,
+    lastDeltaObject: null,
 
     <% self.class.include Rails.application.routes.url_helpers %>
     <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
@@ -334,6 +335,12 @@ var CodeOceanEditor = {
 
             // listener for autosave
             session.on("change", function (deltaObject, session) {
+                if (this.compareDeltaObjects(deltaObject, CodeOceanEditor.lastDeltaObject)) {
+                    CodeOceanEditor.lastDeltaObject = null;
+                    return;
+                }
+                App.synchronized_editor?.send_changes(deltaObject);
+
                 // TODO: This is a workaround for a bug in Ace. Remove when upgrading Ace.
                 this.handleUTF16Surrogates(deltaObject, session);
                 this.resetSaveTimer();
@@ -1013,6 +1020,27 @@ var CodeOceanEditor = {
                 }
             });
         }
+    },
+
+    applyChanges: function (delta) {
+        this.lastDeltaObject = delta;
+        this.editors[0].session.doc.applyDeltas([delta]);
+    },
+
+    compareDeltaObjects: function (delta, last_delta) {
+        if (delta === null || last_delta === null) {
+            return false;
+        }
+
+        const delta_data = delta.data
+        // We need this manual comparison because the range uses two different classes
+        // and there is no function to compare these two objects.
+        return delta_data.action === last_delta.action &&
+          delta_data.range.start.row === last_delta.range.start.row &&
+          delta_data.range.start.column === last_delta.range.start.column &&
+          delta_data.range.end.row === last_delta.range.end.row &&
+          delta_data.range.end.column === last_delta.range.end.column &&
+          delta_data.text === last_delta.text;
     },
 
     initializeEverything: function () {
