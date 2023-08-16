@@ -14,5 +14,4 @@
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'IO'
-  inflect.acronym 'WebSocket'
 end

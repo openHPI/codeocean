@@ -9,7 +9,7 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 require 'telegraf/rails'
-require_relative '../lib/middleware/websocket_sentry_headers'
+require_relative '../lib/middleware/web_socket_sentry_headers'
 
 module CodeOcean
   class Application < Rails::Application
