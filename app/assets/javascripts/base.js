@@ -57,6 +57,7 @@ $(document).on('turbolinks:load', function() {
             replaysSessionSampleRate: 0.0,
             replaysOnErrorSampleRate: 1.0,
             integrations: window.SentryIntegrations(),
+            profilesSampleRate: 1.0,
             initialScope: scope =>{
                 const user = $('meta[name="current-user"]').attr('content');
 

@@ -29,6 +29,7 @@ window.SentryIntegrations = function() { // Publish sentry integration in global
         new SentryIntegration.ReportingObserver(),
         new SentryIntegration.ExtraErrorData(),
         new SentryIntegration.HttpClient(),
+        new Sentry.BrowserProfilingIntegration(),
         new Sentry.BrowserTracing(),
         new Sentry.Replay(),
     ]

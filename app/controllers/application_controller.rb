@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized, except: %i[welcome]
   around_action :mnemosyne_trace
   around_action :switch_locale
-  before_action :set_sentry_context, :load_embed_options
+  before_action :set_sentry_context, :load_embed_options, :set_document_policy
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
@@ -71,6 +71,12 @@ class ApplicationController < ActionController::Base
       token.user
     end
   end
+
+  def set_document_policy
+    # Instruct browsers to capture profiling data
+    response.set_header('Document-Policy', 'js-profiling')
+  end
+  private :set_document_policy
 
   def set_sentry_context
     return if current_user.blank?
