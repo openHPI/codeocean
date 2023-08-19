@@ -527,7 +527,7 @@ class ExercisesController < ApplicationController
     @submission = Submission.create(submission_params)
     @submission.calculate_score
 
-    if @submission.users.map {|user| user.external_user? && lti_outcome_service?(@submission.exercise_id, user.id) }.any?
+    if @submission.users.map {|user| lti_outcome_service?(@submission.exercise, user, @submission.study_group_id) }.any?
       transmit_lti_score
     else
       redirect_after_submit

@@ -8,11 +8,17 @@ FactoryBot.define do
   }.freeze
 
   factory :lti_parameter do
-    consumer
     exercise factory: :math
     external_user
 
     lti_parameters { lti_params }
+
+    after(:create) do |lti_parameter|
+      # Do not change anything if a study group was provided explicitly or user has no study groups
+      next if lti_parameter.study_group.present? || lti_parameter.external_user.study_groups.blank?
+
+      lti_parameter.update!(study_group: lti_parameter.external_user.study_groups.first)
+    end
 
     trait :without_outcome_service_url do
       lti_parameters { lti_params.except(:lis_outcome_service_url) }

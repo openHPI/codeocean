@@ -60,7 +60,7 @@ div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-botto
           .progress-bar role='progressbar'
 
       br
-      - if lti_outcome_service?(@exercise.id, external_user_id)
+      - if lti_outcome_service?(@exercise, current_user)
         p.text-center = render('editor_button', classes: 'btn-lg btn-success d-none', data: {:'data-url' => submit_exercise_path(@exercise)}, icon: 'fa-solid fa-paper-plane', id: 'submit', label: t('exercises.editor.submit'))
         - if @exercise.submission_deadline.present? || @exercise.late_submission_deadline.present?
           #deadline data-submission-deadline=@exercise.submission_deadline&.rfc2822 data-late-submission-deadline=@exercise.late_submission_deadline&.rfc2822

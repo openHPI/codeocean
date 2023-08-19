@@ -8,6 +8,7 @@ class StudyGroup < ApplicationRecord
   has_many :remote_evaluation_mappings, dependent: :nullify
   has_many :subscriptions, dependent: :nullify
   has_many :authentication_tokens, dependent: :nullify
+  has_many :lti_parameters, dependent: :delete_all
   belongs_to :consumer
 
   def users

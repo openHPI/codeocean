@@ -108,7 +108,7 @@ describe Lti do
     let(:submission) { create(:submission) }
 
     before do
-      create(:lti_parameter, consumers_id: consumer.id, external_users_id: submission.contributor_id, exercises_id: submission.exercise_id)
+      create(:lti_parameter, external_user: submission.contributor, exercise: submission.exercise)
     end
 
     context 'with an invalid score' do
@@ -173,15 +173,15 @@ describe Lti do
       controller.instance_variable_set(:@current_user, create(:external_user))
       controller.instance_variable_set(:@exercise, create(:fibonacci))
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
-      controller.send(:store_lti_session_data, consumer: build(:consumer), parameters:)
+      controller.send(:store_lti_session_data, parameters)
     end
 
     it 'creates an LtiParameter Object' do
-      before_count = LtiParameter.count
-      controller.instance_variable_set(:@current_user, create(:external_user))
-      controller.instance_variable_set(:@exercise, create(:fibonacci))
-      controller.send(:store_lti_session_data, consumer: build(:consumer), parameters:)
-      expect(LtiParameter.count).to eq(before_count + 1)
+      expect do
+        controller.instance_variable_set(:@current_user, create(:external_user))
+        controller.instance_variable_set(:@exercise, create(:fibonacci))
+        controller.send(:store_lti_session_data, parameters)
+      end.to change(LtiParameter, :count).by(1)
     end
   end
 
