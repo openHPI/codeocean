@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'oauth/request_proxy/rack_request'
+require 'oauth/request_proxy/action_controller_request'
 
 module Lti
   extend ActiveSupport::Concern
@@ -21,7 +21,7 @@ module Lti
 
   # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
   # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
-  # Only the lti_parameters are deleted.
+  # Only the assignment of the programming group is deleted.
   def clear_lti_session_data(exercise_id = nil)
     if exercise_id.nil?
       session.delete(:external_user_id)
@@ -148,10 +148,7 @@ module Lti
 
   def send_score_for(submission, user)
     if user.consumer
-      lti_parameter = LtiParameter.where(consumers_id: user.consumer.id,
-        external_users_id: user.id,
-        exercises_id: submission.exercise_id).last
-
+      lti_parameter = user.lti_parameters.find_by(exercise: submission.exercise, study_group: submission.study_group)
       provider = build_tool_provider(consumer: user.consumer, parameters: lti_parameter&.lti_parameters)
     end
 
@@ -237,14 +234,13 @@ module Lti
 
   private :set_embedding_options
 
-  def store_lti_session_data(options = {})
-    lti_parameters = LtiParameter.find_or_create_by(consumers_id: options[:consumer].id,
-      external_users_id: current_user.id,
-      exercises_id: @exercise.id)
+  def store_lti_session_data(parameters)
+    @lti_parameters = LtiParameter.find_or_initialize_by(external_user: current_user,
+      study_group_id: session[:study_group_id],
+      exercise: @exercise)
 
-    lti_parameters.lti_parameters = options[:parameters].slice(*SESSION_PARAMETERS).permit!.to_h
-    lti_parameters.save!
-    @lti_parameters = lti_parameters
+    @lti_parameters.lti_parameters = parameters.slice(*SESSION_PARAMETERS).permit!.to_h
+    @lti_parameters.save!
 
     session[:external_user_id] = current_user.id
   end

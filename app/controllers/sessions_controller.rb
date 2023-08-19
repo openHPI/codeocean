@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
   end
 
   def create_through_lti
-    store_lti_session_data(consumer: @consumer, parameters: params)
+    store_lti_session_data(params)
     store_nonce(params[:oauth_nonce])
     if params[:custom_redirect_target]
       redirect_to(URI.parse(params[:custom_redirect_target].to_s).path)
@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
       redirect_to(new_exercise_programming_group_path(@exercise))
     else
       redirect_to(implement_exercise_path(@exercise),
-        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, current_user.id) ? 'with' : 'without'}_outcome",
+        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, current_user) ? 'with' : 'without'}_outcome",
           consumer: @consumer))
     end
   end
@@ -44,7 +44,7 @@ class SessionsController < ApplicationController
   def destroy_through_lti
     @submission = Submission.find(params[:submission_id])
     authorize(@submission, :show?)
-    lti_parameter = LtiParameter.where(external_users_id: current_user.id, exercises_id: @submission.exercise_id).last
+    lti_parameter = current_user.lti_parameters.find_by(exercise: @submission.exercise, study_group_id: current_user.current_study_group_id)
     @url = consumer_return_url(build_tool_provider(consumer: current_user.consumer, parameters: lti_parameter&.lti_parameters))
 
     clear_lti_session_data(@submission.exercise_id)

@@ -13,7 +13,7 @@ class ProgrammingGroupsController < ApplicationController
     if existing_programming_group
       session[:pg_id] = existing_programming_group.id
       redirect_to(implement_exercise_path(@exercise),
-        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise.id, current_user.id) ? 'with' : 'without'}_outcome", consumer: @consumer))
+        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, current_user) ? 'with' : 'without'}_outcome", consumer: @consumer))
     end
   end
 

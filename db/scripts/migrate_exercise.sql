@@ -40,7 +40,7 @@ BEGIN
 
     DELETE FROM anomaly_notifications WHERE exercise_id = duplicated_exercise;
     DELETE FROM exercise_tags WHERE exercise_id = duplicated_exercise;
-    DELETE FROM lti_parameters WHERE exercises_id = duplicated_exercise;
+    DELETE FROM lti_parameters WHERE exercise_id = duplicated_exercise;
     DELETE FROM remote_evaluation_mappings WHERE exercise_id = duplicated_exercise;
 
     -- Preventing duplicated entries in exercise_collection_items

@@ -1,6 +1,4 @@
 - external_user_external_id = current_user.respond_to?(:external_id) ? current_user.external_id : ''
-- external_user_id = current_user.respond_to?(:external_id) ? current_user.id : ''
-- consumer_id = current_user.respond_to?(:external_id) ? current_user.consumer_id : ''
 - show_break_interventions = @show_break_interventions || "false"
 - show_rfc_interventions = @show_rfc_interventions || "false"
 - show_tips_interventions = @show_tips_interventions || "false"
@@ -53,7 +51,7 @@
           = t('exercises.editor.start_over_active_file')
 
   - unless @embed_options[:disable_run] && @embed_options[:disable_score]
-    div id='output_sidebar' class='output-col-collapsed' = render('exercises/editor_output', external_user_id: external_user_id, consumer_id: consumer_id )
+    div id='output_sidebar' class='output-col-collapsed' = render('exercises/editor_output')
 
 
 = render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.request'), template: 'exercises/_request_comment_dialogcontent') unless @embed_options[:disable_rfc]

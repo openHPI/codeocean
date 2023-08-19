@@ -35,7 +35,7 @@ class RemoteEvaluationController < ApplicationController
 
   def try_lti
     # TODO: Need to consider and support programming groups
-    if !@submission.user.nil? && lti_outcome_service?(@submission.exercise_id, @submission.user.id)
+    if !@submission.user.nil? && lti_outcome_service?(@submission.exercise, @submission.user, @submission.study_group_id)
       lti_responses = send_scores(@submission)
       process_lti_response(lti_responses.first)
     else

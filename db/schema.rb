@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_27_080619) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_19_084917) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -341,14 +341,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_080619) do
     t.string "severity"
   end
 
-  create_table "lti_parameters", id: :serial, force: :cascade do |t|
-    t.integer "external_users_id"
-    t.integer "consumers_id"
-    t.integer "exercises_id"
+  create_table "lti_parameters", force: :cascade do |t|
+    t.integer "external_user_id", null: false
+    t.integer "exercise_id", null: false
     t.jsonb "lti_parameters", default: {}, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["external_users_id"], name: "index_lti_parameters_on_external_users_id"
+    t.bigint "study_group_id"
+    t.index ["external_user_id", "study_group_id", "exercise_id"], name: "index_lti_params_on_external_user_and_study_group_and_exercise", unique: true
+    t.index ["external_user_id"], name: "index_lti_parameters_on_external_user_id"
+    t.index ["study_group_id"], name: "index_lti_parameters_on_study_group_id"
   end
 
   create_table "programming_group_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -599,6 +601,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_27_080619) do
   add_foreign_key "exercise_tips", "exercise_tips", column: "parent_exercise_tip_id"
   add_foreign_key "exercise_tips", "exercises"
   add_foreign_key "exercise_tips", "tips"
+  add_foreign_key "lti_parameters", "exercises"
+  add_foreign_key "lti_parameters", "external_users"
+  add_foreign_key "lti_parameters", "study_groups"
   add_foreign_key "programming_group_memberships", "programming_groups"
   add_foreign_key "programming_groups", "exercises"
   add_foreign_key "remote_evaluation_mappings", "study_groups"

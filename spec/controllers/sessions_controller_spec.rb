@@ -101,7 +101,6 @@ describe SessionsController do
       end
 
       it 'stores LTI parameters in the session' do
-        # Todo replace session with lti_parameter /should be done already
         expect(controller).to receive(:store_lti_session_data)
         perform_request
       end
@@ -191,7 +190,6 @@ describe SessionsController do
       end
 
       it 'clears the session' do
-        # Todo replace session with lti_parameter /should be done already
         expect(controller).to receive(:clear_lti_session_data)
         delete :destroy
       end
@@ -207,15 +205,12 @@ describe SessionsController do
     let(:submission) { create(:submission, exercise: create(:dummy)) }
 
     before do
-      # Todo replace session with lti_parameter
-      # Todo create LtiParameter Object
-      # session[:lti_parameters] = {}
+      create(:lti_parameter, external_user: submission.contributor)
       allow(controller).to receive(:current_user).and_return(submission.contributor)
       perform_request.call
     end
 
     it 'clears the session' do
-      # Todo replace session with lti_parameter /should be done already
       expect(controller).to receive(:clear_lti_session_data)
       perform_request.call
     end
