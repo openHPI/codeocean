@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class StudyGroupMembership < ApplicationRecord
-  ROLES = %w[learner teacher].freeze
-
-  belongs_to :user, polymorphic: true
+  include Creation
   belongs_to :study_group
 
   before_save :destroy_if_empty_study_group_or_user
+
+  ROLES = %w[learner teacher].freeze
 
   def destroy_if_empty_study_group_or_user
     destroy if study_group.blank? || user.blank?

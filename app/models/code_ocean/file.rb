@@ -12,6 +12,7 @@ module CodeOcean
     TEACHER_DEFINED_ROLES = ROLES - %w[user_defined_file]
     OWNER_READ_PERMISSION = 0o400
     OTHER_READ_PERMISSION = 0o004
+    ALLOWED_CONTEXT_TYPES = %w[Exercise Submission CommunitySolution CommunitySolutionContribution].freeze
 
     after_initialize :set_default_values
     before_validation :clear_weight, unless: :teacher_defined_assessment?
@@ -56,6 +57,7 @@ module CodeOcean
     validates :weight, if: :teacher_defined_assessment?, numericality: true, presence: true
     validates :weight, absence: true, unless: :teacher_defined_assessment?
     validates :file, presence: true if :context.is_a?(Submission)
+    validates :context_type, inclusion: {in: ALLOWED_CONTEXT_TYPES}
 
     validates_with FileNameValidator, fields: %i[name path file_type_id]
 

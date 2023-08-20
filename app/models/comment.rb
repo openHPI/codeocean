@@ -8,7 +8,6 @@ class Comment < ApplicationRecord
   attr_accessor :username, :date, :updated, :editable
 
   belongs_to :file, class_name: 'CodeOcean::File'
-  belongs_to :user, polymorphic: true
   # after_save :trigger_rfc_action_cable_from_comment
 
   def request_for_comment
