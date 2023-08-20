@@ -525,7 +525,7 @@ class ExercisesController < ApplicationController
 
   def submit
     @submission = Submission.create(submission_params)
-    @submission.calculate_score
+    @submission.calculate_score(current_user)
 
     if @submission.users.map {|user| lti_outcome_service?(@submission.exercise, user, @submission.study_group_id) }.any?
       transmit_lti_score

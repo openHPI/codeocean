@@ -141,7 +141,7 @@ class Submission < ApplicationRecord
 
   # @raise [Runner::Error] if the score could not be calculated due to a failure with the runner.
   #                        See the specific type and message for more details.
-  def calculate_score
+  def calculate_score(requesting_user)
     file_scores = nil
     # If prepared_runner raises an error, no Testrun will be created.
     prepared_runner do |runner, waiting_duration|
@@ -153,7 +153,7 @@ class Submission < ApplicationRecord
         output = run_test_file file, runner, waiting_duration
         # If the previous execution failed and there is at least one more test, we request a new runner.
         runner, waiting_duration = swap_runner(runner) if output[:status] == :timeout && index < assessment_number
-        score_file(output, file)
+        score_file(output, file, requesting_user)
       end
     end
     # We sort the files again, so that the linter tests are displayed last.
@@ -178,10 +178,10 @@ class Submission < ApplicationRecord
 
   # @raise [Runner::Error] if the file could not be tested due to a failure with the runner.
   #                        See the specific type and message for more details.
-  def test(file)
+  def test(file, requesting_user)
     prepared_runner do |runner, waiting_duration|
       output = run_test_file file, runner, waiting_duration
-      score_file output, file
+      score_file output, file, requesting_user
     rescue Runner::Error => e
       e.waiting_duration = waiting_duration
       raise
@@ -251,7 +251,7 @@ class Submission < ApplicationRecord
     }
   end
 
-  def score_file(output, file)
+  def score_file(output, file, requesting_user)
     assessor = Assessor.new(execution_environment:)
     assessment = assessor.assess(output)
     passed = ((assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?)
@@ -264,6 +264,7 @@ class Submission < ApplicationRecord
     end
     testrun = Testrun.create(
       submission: self,
+      user: requesting_user,
       cause: 'assess', # Required to differ run and assess for RfC show
       file:, # Test file that was executed
       passed:,

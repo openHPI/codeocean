@@ -134,12 +134,12 @@ describe Submission do
       allow(runner).to receive(:attach_to_execution).and_return(1.0)
     end
 
-    after { submission.calculate_score }
+    after { submission.calculate_score(submission.contributor) }
 
     it 'executes every teacher-defined test file' do
       allow(submission).to receive(:combine_file_scores)
       submission.collect_files.select(&:teacher_defined_assessment?).each do |file|
-        expect(submission).to receive(:score_file).with(any_args, file)
+        expect(submission).to receive(:score_file).with(any_args, file, submission.contributor)
       end
     end
 

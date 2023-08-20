@@ -157,7 +157,7 @@ class RequestForCommentsController < ApplicationController
         # execute the tests here and wait until they finished.
         # As the same runner is used for the score and test run, no parallelization is possible
         # A run is triggered from the frontend and does not need to be handled here.
-        @request_for_comment.submission.calculate_score
+        @request_for_comment.submission.calculate_score(current_user)
         format.json { render :show, status: :created, location: @request_for_comment }
       else
         format.html { render :new }
