@@ -249,7 +249,7 @@ class SubmissionsController < ApplicationController
     return true if disable_scoring
 
     # The score is stored separately, we can forward it to the client immediately
-    client_socket&.send_data(JSON.dump(@submission.calculate_score))
+    client_socket&.send_data(JSON.dump(@submission.calculate_score(current_user)))
     # To enable hints when scoring a submission, uncomment the next line:
     # send_hints(client_socket, StructuredError.where(submission: @submission))
   rescue Runner::Error => e
@@ -284,7 +284,7 @@ class SubmissionsController < ApplicationController
     return true if @embed_options[:disable_run]
 
     # The score is stored separately, we can forward it to the client immediately
-    client_socket&.send_data(JSON.dump(@submission.test(@file)))
+    client_socket&.send_data(JSON.dump(@submission.test(@file, current_user)))
   rescue Runner::Error => e
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
@@ -396,6 +396,7 @@ class SubmissionsController < ApplicationController
       passed: @testrun[:passed],
       cause:,
       submission: @submission,
+      user: current_user,
       exit_code: @testrun[:exit_code], # might be nil, e.g., when the run did not finish
       status: @testrun[:status] || :failed,
       output: @testrun[:output].presence, # TODO: Remove duplicated saving of the output after creating TestrunMessages

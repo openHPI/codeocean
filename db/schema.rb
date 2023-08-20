@@ -473,11 +473,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_084917) do
   create_table "submissions", id: :serial, force: :cascade do |t|
     t.integer "exercise_id"
     t.float "score"
-    t.integer "contributor_id"
+    t.integer "contributor_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "cause"
-    t.string "contributor_type"
+    t.string "contributor_type", null: false
     t.bigint "study_group_id"
     t.index ["contributor_id"], name: "index_submissions_on_contributor_id"
     t.index ["exercise_id"], name: "index_submissions_on_exercise_id"
@@ -528,7 +528,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_084917) do
     t.boolean "passed"
     t.text "output"
     t.integer "file_id"
-    t.integer "submission_id"
+    t.integer "submission_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "cause"
@@ -536,7 +536,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_084917) do
     t.interval "waiting_for_container_time"
     t.integer "exit_code", limit: 2, comment: "No exit code is available in case of a timeout"
     t.integer "status", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
     t.index ["submission_id"], name: "index_testruns_on_submission_id"
+    t.index ["user_type", "user_id"], name: "index_testruns_on_user"
     t.check_constraint "exit_code >= 0 AND exit_code <= 255", name: "exit_code_constraint"
   end
 
@@ -616,6 +619,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_084917) do
   add_foreign_key "testrun_execution_environments", "execution_environments"
   add_foreign_key "testrun_execution_environments", "testruns"
   add_foreign_key "testrun_messages", "testruns"
+  add_foreign_key "testruns", "submissions"
   add_foreign_key "tips", "file_types"
   add_foreign_key "user_exercise_feedbacks", "submissions"
 end

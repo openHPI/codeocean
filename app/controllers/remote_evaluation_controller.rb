@@ -66,7 +66,7 @@ class RemoteEvaluationController < ApplicationController
     validation_token = remote_evaluation_params[:validation_token]
     if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(validation_token:))
       @submission = Submission.create(build_submission_params(cause, remote_evaluation_mapping))
-      @submission.calculate_score
+      @submission.calculate_score(remote_evaluation_mapping.user)
     else
       # TODO: better output
       # TODO: check token expired?
