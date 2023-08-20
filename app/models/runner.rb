@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class Runner < ApplicationRecord
+  include Creation
   belongs_to :execution_environment
-  belongs_to :user, polymorphic: true
 
   before_validation :request_id
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AnomalyNotification < ApplicationRecord
-  belongs_to :user, polymorphic: true
+  include Creation
   belongs_to :exercise
   belongs_to :exercise_collection
 end

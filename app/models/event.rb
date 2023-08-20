@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Event < ApplicationRecord
-  belongs_to :user, polymorphic: true
+  include Creation
   belongs_to :exercise
   belongs_to :file, class_name: 'CodeOcean::File'
 

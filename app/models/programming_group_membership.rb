@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ProgrammingGroupMembership < ApplicationRecord
-  belongs_to :user, polymorphic: true
+  include Creation
   belongs_to :programming_group
 
   validate :unique_membership_for_exercise
