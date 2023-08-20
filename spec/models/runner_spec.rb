@@ -22,9 +22,9 @@ describe Runner do
       expect(runner.errors[:execution_environment]).to be_present
     end
 
-    it 'validates the presence of a user' do
-      runner.update(user: nil)
-      expect(runner.errors[:user]).to be_present
+    it 'validates the presence of a contributor' do
+      runner.update(contributor: nil)
+      expect(runner.errors[:contributor]).to be_present
     end
   end
 
@@ -159,9 +159,9 @@ describe Runner do
   end
 
   describe 'creation' do
-    let(:user) { create(:external_user) }
+    let(:contributor) { create(:external_user) }
     let(:execution_environment) { create(:ruby) }
-    let(:create_action) { -> { described_class.create(user:, execution_environment:) } }
+    let(:create_action) { -> { described_class.create(contributor:, execution_environment:) } }
 
     it 'requests a runner id from the runner management' do
       expect(strategy_class).to receive(:request_from_management)
@@ -184,7 +184,7 @@ describe Runner do
     it 'does not call the runner management again while a runner id is set' do
       expect(strategy_class).to receive(:request_from_management).and_return(runner_id).once
       runner = create_action.call
-      runner.update(user: create(:external_user))
+      runner.update(contributor: create(:external_user))
     end
   end
 
@@ -237,27 +237,27 @@ describe Runner do
   end
 
   describe '::for' do
-    let(:user) { create(:external_user) }
+    let(:contributor) { create(:external_user) }
     let(:exercise) { create(:fibonacci) }
 
     context 'when the runner could not be saved' do
       before { allow(strategy_class).to receive(:request_from_management).and_return(nil) }
 
       it 'raises an error' do
-        expect { described_class.for(user, exercise.execution_environment) }.to raise_error(Runner::Error::Unknown, /could not be saved/)
+        expect { described_class.for(contributor, exercise.execution_environment) }.to raise_error(Runner::Error::Unknown, /could not be saved/)
       end
     end
 
     context 'when a runner already exists' do
-      let!(:existing_runner) { create(:runner, user:, execution_environment: exercise.execution_environment) }
+      let!(:existing_runner) { create(:runner, contributor:, execution_environment: exercise.execution_environment) }
 
       it 'returns the existing runner' do
-        new_runner = described_class.for(user, exercise.execution_environment)
+        new_runner = described_class.for(contributor, exercise.execution_environment)
         expect(new_runner).to eq(existing_runner)
       end
 
       it 'sets the strategy' do
-        runner = described_class.for(user, exercise.execution_environment)
+        runner = described_class.for(contributor, exercise.execution_environment)
         expect(runner.strategy).to be_present
       end
     end
@@ -266,7 +266,7 @@ describe Runner do
       before { allow(strategy_class).to receive(:request_from_management).and_return(runner_id) }
 
       it 'returns a new runner' do
-        runner = described_class.for(user, exercise.execution_environment)
+        runner = described_class.for(contributor, exercise.execution_environment)
         expect(runner).to be_valid
       end
     end

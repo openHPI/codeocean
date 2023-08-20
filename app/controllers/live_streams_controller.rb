@@ -15,7 +15,7 @@ class LiveStreamsController < ApplicationController
     redirect_back(fallback_location: root_path, allow_other_host: true, alert: t('exercises.download_file_tree.gone'))
   else
     desired_file = params[:filename].to_s
-    runner = Runner.for(current_user, @submission.exercise.execution_environment)
+    runner = Runner.for(current_contributor, @submission.exercise.execution_environment)
     fallback_location = implement_exercise_path(@submission.exercise)
     send_runner_file(runner, desired_file, fallback_location)
   end

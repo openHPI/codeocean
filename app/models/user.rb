@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_many :testruns, as: :user
   has_many :interventions, through: :user_exercise_interventions
   has_many :remote_evaluation_mappings, as: :user
+  has_many :runners, as: :contributor
   has_one :codeharbor_link, dependent: :destroy
   accepts_nested_attributes_for :user_proxy_exercise_exercises
 

@@ -5,6 +5,6 @@ FactoryBot.define do
   factory :runner do
     runner_id { SecureRandom.uuid }
     execution_environment factory: :ruby
-    user factory: :external_user
+    contributor factory: :external_user
   end
 end

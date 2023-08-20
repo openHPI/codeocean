@@ -7,6 +7,7 @@ class ProgrammingGroup < ApplicationRecord
   has_many :external_users, through: :programming_group_memberships, source_type: 'ExternalUser', source: :user
   has_many :internal_users, through: :programming_group_memberships, source_type: 'InternalUser', source: :user
   has_many :testruns, through: :submissions
+  has_many :runners, as: :contributor, dependent: :destroy
   belongs_to :exercise
 
   validate :group_size
