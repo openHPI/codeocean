@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_19_084917) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_20_182149) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -416,12 +416,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_19_084917) do
   create_table "runners", force: :cascade do |t|
     t.string "runner_id"
     t.bigint "execution_environment_id"
-    t.string "user_type"
-    t.bigint "user_id"
+    t.string "contributor_type"
+    t.bigint "contributor_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["contributor_type", "contributor_id"], name: "index_runners_on_user"
     t.index ["execution_environment_id"], name: "index_runners_on_execution_environment_id"
-    t.index ["user_type", "user_id"], name: "index_runners_on_user"
   end
 
   create_table "searches", id: :serial, force: :cascade do |t|

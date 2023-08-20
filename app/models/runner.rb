@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class Runner < ApplicationRecord
-  include Creation
+  include ContributorCreation
   belongs_to :execution_environment
 
   before_validation :request_id
-
   validates :runner_id, presence: true
 
   attr_accessor :strategy
@@ -30,10 +29,10 @@ class Runner < ApplicationRecord
     end
   end
 
-  def self.for(user, execution_environment)
-    runner = find_by(user:, execution_environment:)
+  def self.for(contributor, execution_environment)
+    runner = find_by(contributor:, execution_environment:)
     if runner.nil?
-      runner = Runner.create(user:, execution_environment:)
+      runner = Runner.create(contributor:, execution_environment:)
       # The `strategy` is added through the before_validation hook `:request_id`.
       raise Runner::Error::Unknown.new("Runner could not be saved: #{runner.errors.inspect}") unless runner.persisted?
     else
@@ -84,7 +83,7 @@ class Runner < ApplicationRecord
   end
 
   def attach_to_execution(command, privileged_execution: false, &block)
-    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Starting execution with Runner #{id} for #{user_type} #{user_id}." }
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Starting execution with Runner #{id} for #{contributor_type} #{contributor_id}." }
     starting_time = Time.zone.now
     begin
       # As the EventMachine reactor is probably shared with other threads, we cannot use EventMachine.run with
@@ -101,7 +100,7 @@ class Runner < ApplicationRecord
       e.execution_duration = Time.zone.now - starting_time
       raise
     end
-    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Stopped execution with Runner #{id} for #{user_type} #{user_id}." }
+    Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Stopped execution with Runner #{id} for #{contributor_type} #{contributor_id}." }
     Time.zone.now - starting_time # execution duration
   end
 
