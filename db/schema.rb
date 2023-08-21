@@ -10,23 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_20_182149) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_21_063101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "anomaly_notifications", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.string "user_type"
-    t.integer "exercise_id"
-    t.integer "exercise_collection_id"
-    t.string "reason"
+    t.integer "contributor_id", null: false
+    t.string "contributor_type", null: false
+    t.integer "exercise_id", null: false
+    t.integer "exercise_collection_id", null: false
+    t.jsonb "reason"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["contributor_type", "contributor_id"], name: "index_anomaly_notifications_on_contributor"
     t.index ["exercise_collection_id"], name: "index_anomaly_notifications_on_exercise_collection_id"
     t.index ["exercise_id"], name: "index_anomaly_notifications_on_exercise_id"
-    t.index ["user_type", "user_id"], name: "index_anomaly_notifications_on_user"
   end
 
   create_table "authentication_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -595,6 +595,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_20_182149) do
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user"
   end
 
+  add_foreign_key "anomaly_notifications", "exercise_collections"
+  add_foreign_key "anomaly_notifications", "exercises"
   add_foreign_key "authentication_tokens", "study_groups"
   add_foreign_key "community_solution_contributions", "community_solution_locks"
   add_foreign_key "community_solution_contributions", "community_solutions"

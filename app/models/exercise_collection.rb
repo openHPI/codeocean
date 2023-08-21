@@ -4,6 +4,7 @@ class ExerciseCollection < ApplicationRecord
   include Creation
   include TimeHelper
 
+  has_many :anomaly_notifications, dependent: :destroy
   has_many :exercise_collection_items, dependent: :delete_all
   alias items exercise_collection_items
   has_many :exercises, through: :exercise_collection_items, inverse_of: :exercise_collections

@@ -14,6 +14,7 @@ class Exercise < ApplicationRecord
   belongs_to :execution_environment, optional: true
   has_many :submissions
 
+  has_many :anomaly_notifications, as: :contributor, dependent: :destroy
   has_and_belongs_to_many :proxy_exercises
   has_many :user_proxy_exercise_exercises
   has_many :exercise_collection_items, dependent: :delete_all
@@ -596,14 +597,14 @@ class Exercise < ApplicationRecord
     end
   end
 
-  def last_submission_per_user
+  def last_submission_per_contributor
     Submission.joins("JOIN (
           SELECT
               contributor_id,
               contributor_type,
-              first_value(id) OVER (PARTITION BY contributor_id ORDER BY created_at DESC) AS fv
+              first_value(id) OVER (PARTITION BY contributor_id, contributor_type ORDER BY created_at DESC) AS fv
           FROM submissions
-          WHERE exercise_id = #{id}
+          WHERE #{Submission.sanitize_sql(['exercise_id = ?', id])}
         ) AS t ON t.fv = submissions.id").distinct
   end
 
