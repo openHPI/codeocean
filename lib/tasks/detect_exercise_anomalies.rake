@@ -12,11 +12,11 @@ namespace :detect_exercise_anomalies do
   MIN_TIME_FACTOR = 0.1
   MAX_TIME_FACTOR = 2
 
-  # Determines how many users are picked from the best/average/worst performers of each anomaly for feedback
-  NUMBER_OF_USERS_PER_CLASS = 10
+  # Determines how many contributors are picked from the best/average/worst performers of each anomaly for feedback
+  NUMBER_OF_CONTRIBUTORS_PER_CLASS = 10
 
-  # Determines margin below which user working times will be considered data errors (e.g. copy/paste solutions)
-  MIN_USER_WORKING_TIME = 0.0
+  # Determines margin below which contributor working times will be considered data errors (e.g. copy/paste solutions)
+  MIN_CONTRIBUTOR_WORKING_TIME = 0.0
 
   # Cache exercise working times, because queries are expensive and values do not change between collections
   # rubocop:disable Style/MutableConstant
@@ -25,16 +25,19 @@ namespace :detect_exercise_anomalies do
   # rubocop:enable Style/MutableConstant
   # rubocop:enable Lint/ConstantDefinitionInBlock
 
-  task :with_at_least, %i[number_of_exercises number_of_users] => :environment do |_task, args|
+  task :with_at_least, %i[number_of_exercises number_of_contributors] => :environment do |_task, args|
     include TimeHelper
 
-    number_of_exercises = args[:number_of_exercises]
-    number_of_users = args[:number_of_users]
+    # Set intervalstyle to iso_8601 to avoid problems with time parsing.
+    ApplicationRecord.connection.exec_query("SET intervalstyle = 'iso_8601';")
 
-    log "Searching for exercise collections with at least #{number_of_exercises} exercises and #{number_of_users} users."
+    number_of_exercises = args[:number_of_exercises]
+    number_of_contributors = args[:number_of_contributors]
+
+    log "Searching for exercise collections with at least #{number_of_exercises} exercises and #{number_of_contributors} contributors."
     # Get all exercise collections that have at least the specified amount of exercises and at least the specified
-    # number of users AND are flagged for anomaly detection
-    collections = get_collections(number_of_exercises, number_of_users)
+    # number of contributors AND are flagged for anomaly detection
+    collections = get_collections(number_of_exercises, number_of_contributors)
     log "Found #{collections.length}."
 
     collections.each do |collection|
@@ -44,7 +47,7 @@ namespace :detect_exercise_anomalies do
       next unless anomalies.length.positive?
 
       notify_collection_author(collection, anomalies) unless collection.user.nil?
-      notify_users(collection, anomalies)
+      notify_contributors(collection, anomalies)
       reset_anomaly_detection_flag(collection)
     end
     log 'Done.'
@@ -56,17 +59,18 @@ namespace :detect_exercise_anomalies do
 
   def get_collections(number_of_exercises, number_of_solutions)
     ExerciseCollection
+      .joins(:exercises)
       .where(use_anomaly_detection: true)
-      .joins("join exercise_collection_items eci on exercise_collections.id = eci.exercise_collection_id
-                            join
-                              (select e.id
-                               from exercises e
-                                 join submissions s on s.exercise_id = e.id
-                               group by e.id
-                               having #{ExerciseCollection.sanitize_sql(['count(s.user_id) > ?', number_of_solutions])}
-                              ) as exercises_with_submissions on exercises_with_submissions.id = eci.exercise_id")
-      .group('exercise_collections.id')
-      .having('count(exercises_with_submissions.id) > ?', number_of_exercises)
+      .where(
+        exercises: Submission.from(
+          Submission.group(:contributor_id, :contributor_type, :exercise_id)
+                    .select(:contributor_id, :contributor_type, :exercise_id),
+          'submissions'
+        ).group(:exercise_id)
+        .having('count(submissions.exercise_id) >= ?', number_of_solutions)
+        .select(:exercise_id)
+      ).group(:id)
+      .having('count(exercises.id) >= ?', number_of_exercises)
   end
 
   def collect_working_times(collection)
@@ -97,10 +101,14 @@ namespace :detect_exercise_anomalies do
     AVERAGE_WORKING_TIME_CACHE[exercise.id]
   end
 
-  def get_user_working_times(exercise)
+  def get_contributor_working_times(exercise)
     unless WORKING_TIME_CACHE.key?(exercise.id)
       exercise.retrieve_working_time_statistics
-      WORKING_TIME_CACHE[exercise.id] = exercise.working_time_statistics
+      WORKING_TIME_CACHE[exercise.id] = exercise.working_time_statistics.filter_map do |contributor_type, contributor_id_with_result|
+        contributor_id_with_result.flat_map do |contributor_id, result|
+          [[contributor_type, contributor_id], result]
+        end.presence
+      end.to_h
     end
     WORKING_TIME_CACHE[exercise.id]
   end
@@ -110,64 +118,69 @@ namespace :detect_exercise_anomalies do
     UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
   end
 
-  def notify_users(collection, anomalies)
-    by_id_and_type = proc {|u| {user_id: u[:user_id], user_type: u[:user_type]} }
+  def notify_contributors(collection, anomalies)
+    by_id_and_type = proc {|u| {contributor_id: u[:contributor_id], contributor_type: u[:contributor_type]} }
 
-    log('Sending E-Mails to best and worst performing users of each anomaly...', 2)
+    log('Sending E-Mails to best and worst performing contributors of each anomaly...', 2)
     anomalies.each do |exercise_id, average_working_time|
       log("Anomaly in exercise #{exercise_id} (avg: #{average_working_time} seconds):", 2)
       exercise = Exercise.find(exercise_id)
-      users_to_notify = []
+      contributors_to_notify = []
 
-      users = {}
+      contributors = {}
       methods = %i[performers_by_time performers_by_score]
       methods.each do |method|
-        # merge users found by multiple methods returning a hash {best: [], worst: []}
-        users = users.merge(send(method, exercise, NUMBER_OF_USERS_PER_CLASS)) {|_key, this, other| this + other }
+        # merge contributors found by multiple methods returning a hash {best: [], worst: []}
+        contributors = contributors.merge(send(method, exercise, NUMBER_OF_CONTRIBUTORS_PER_CLASS)) {|_key, this, other| this + other }
       end
 
       # write reasons for feedback emails to db
-      users.each_key do |key|
-        segment = users[key].uniq(&by_id_and_type)
-        users_to_notify += segment
-        segment.each do |user|
-          reason = "{\"segment\": \"#{key}\", \"feature\": \"#{user[:reason]}\", value: \"#{user[:value]}\"}"
-          AnomalyNotification.create(user_id: user[:user_id], user_type: user[:user_type],
+      contributors.each_key do |key|
+        segment = contributors[key].uniq(&by_id_and_type)
+        contributors_to_notify += segment
+        segment.each do |contributor|
+          reason = {segment: key, feature: contributor[:reason], value: contributor[:value]}
+          AnomalyNotification.create(contributor_id: contributor[:contributor_id], contributor_type: contributor[:contributor_type],
             exercise:, exercise_collection: collection, reason:)
         end
       end
 
-      users_to_notify.uniq!(&by_id_and_type)
-      users_to_notify.each do |u|
-        user = u[:user_type] == InternalUser.name ? InternalUser.find(u[:user_id]) : ExternalUser.find(u[:user_id])
-        host = CodeOcean::Application.config.action_mailer.default_url_options[:host]
-        feedback_link = Rails.application.routes.url_helpers.url_for(action: :new,
-          controller: :user_exercise_feedbacks, exercise_id: exercise.id, host:)
-        UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
+      # send feedback emails
+      # Potentially, a user that solved the exercise alone and as part of a study group is notified multiple times.
+      contributors_to_notify.uniq!(&by_id_and_type)
+      contributors_to_notify.each do |c|
+        contributor = c[:contributor_type].constantize.find(c[:contributor_id])
+        users = contributor.try(:users) || [contributor]
+        users.each do |user|
+          host = CodeOcean::Application.config.action_mailer.default_url_options[:host]
+          feedback_link = Rails.application.routes.url_helpers.url_for(action: :new,
+            controller: :user_exercise_feedbacks, exercise_id: exercise.id, host:)
+          UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
+        end
       end
-      log("Asked #{users_to_notify.size} users for feedback.", 2)
+      log("Asked #{contributors_to_notify.size} contributors for feedback.", 2)
     end
   end
 
-  def performers_by_score(exercise, users)
-    submissions = exercise.last_submission_per_user.where.not(score: nil).order(score: :desc)
-    map_block = proc {|item| {user_id: item.user_id, user_type: item.user_type, value: item.score, reason: 'score'} }
-    best_performers = submissions.first(users).to_a.map(&map_block)
-    worst_performers = submissions.last(users).to_a.map(&map_block)
+  def performers_by_score(exercise, contributors)
+    submissions = exercise.last_submission_per_contributor.where.not(score: nil).order(score: :desc)
+    map_block = proc {|item| {contributor_id: item.contributor_id, contributor_type: item.contributor_type, value: item.score, reason: 'score'} }
+    best_performers = submissions.first(contributors).to_a.map(&map_block)
+    worst_performers = submissions.last(contributors).to_a.map(&map_block)
     {best: best_performers, worst: worst_performers}
   end
 
-  def performers_by_time(exercise, users)
-    working_times = get_user_working_times(exercise).values.map do |item|
-      {user_id: item['user_id'], user_type: item['user_type'], score: item['score'].to_f,
+  def performers_by_time(exercise, contributors)
+    working_times = get_contributor_working_times(exercise).values.map do |item|
+      {contributor_id: item['contributor_id'], contributor_type: item['contributor_type'], score: item['score'].to_f,
        value: time_to_f(item['working_time']), reason: 'time'}
     end
     avg_score = exercise.average_score
     working_times.reject! do |item|
-      item[:value].nil? or item[:value] <= MIN_USER_WORKING_TIME or item[:score] < avg_score
+      item[:value].nil? or item[:value] <= MIN_CONTRIBUTOR_WORKING_TIME or item[:score] < avg_score
     end
     working_times.sort_by! {|item| item[:value] }
-    {best: working_times.first(users), worst: working_times.last(users)}
+    {best: working_times.first(contributors), worst: working_times.last(contributors)}
   end
 
   def reset_anomaly_detection_flag(collection)

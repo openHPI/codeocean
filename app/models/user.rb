@@ -6,6 +6,7 @@ class User < ApplicationRecord
   attr_reader :current_study_group_id
 
   belongs_to :consumer
+  has_many :anomaly_notifications, as: :contributor, dependent: :destroy
   has_many :authentication_token, dependent: :destroy
   has_many :study_group_memberships, as: :user
   has_many :study_groups, through: :study_group_memberships, as: :user

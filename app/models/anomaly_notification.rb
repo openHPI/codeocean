@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AnomalyNotification < ApplicationRecord
-  include Creation
+  include ContributorCreation
   belongs_to :exercise
   belongs_to :exercise_collection
 end

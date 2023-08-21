@@ -3,6 +3,7 @@
 class ProgrammingGroup < ApplicationRecord
   include Contributor
 
+  has_many :anomaly_notifications, as: :contributor, dependent: :destroy
   has_many :programming_group_memberships, dependent: :destroy
   has_many :external_users, through: :programming_group_memberships, source_type: 'ExternalUser', source: :user
   has_many :internal_users, through: :programming_group_memberships, source_type: 'InternalUser', source: :user
