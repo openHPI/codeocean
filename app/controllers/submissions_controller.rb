@@ -313,7 +313,9 @@ class SubmissionsController < ApplicationController
     # We don't want to store this (arbitrary) exit command and redirect it ourselves
     client_socket.send_data JSON.dump({cmd: :exit})
     client_socket.send_data nil, :close
-    client_socket.close
+    # We must not close the socket manually (with `client_socket.close`), as this would close it twice.
+    # When the socket is closed twice, nginx registers a `Connection reset by peer` error.
+    # Tubesock automatically closes the socket when the `hijack` block ends and otherwise ignores `Errno::ECONNRESET`.
   end
 
   def create_remote_evaluation_mapping
