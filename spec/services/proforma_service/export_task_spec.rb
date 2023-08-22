@@ -24,13 +24,13 @@ describe ProformaService::ExportTask do
   describe '#execute' do
     subject(:export_task) { described_class.call(exercise:) }
 
-    let(:task) { Proforma::Task.new }
+    let(:task) { ProformaXML::Task.new }
     let(:exercise) { build(:dummy) }
-    let(:exporter) { instance_double(Proforma::Exporter, perform: 'zip') }
+    let(:exporter) { instance_double(ProformaXML::Exporter, perform: 'zip') }
 
     before do
       allow(ProformaService::ConvertExerciseToTask).to receive(:call).with(exercise:).and_return(task)
-      allow(Proforma::Exporter).to receive(:new).with(task:, custom_namespaces: [{prefix: 'CodeOcean', uri: 'codeocean.openhpi.de'}]).and_return(exporter)
+      allow(ProformaXML::Exporter).to receive(:new).with(task:, custom_namespaces: [{prefix: 'CodeOcean', uri: 'codeocean.openhpi.de'}]).and_return(exporter)
     end
 
     it do

@@ -166,9 +166,9 @@ class ExercisesController < ApplicationController
       exercise.save!
       render json: {}, status: :created
     end
-  rescue Proforma::ExerciseNotOwned
+  rescue ProformaXML::ExerciseNotOwned
     render json: {}, status: :unauthorized
-  rescue Proforma::ProformaError
+  rescue ProformaXML::ProformaError
     render json: t('exercises.import_codeharbor.import_errors.invalid'), status: :bad_request
   rescue StandardError => e
     Sentry.capture_exception(e)

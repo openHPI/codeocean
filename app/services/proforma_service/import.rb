@@ -10,7 +10,7 @@ module ProformaService
 
     def execute
       if single_task?
-        importer = Proforma::Importer.new(zip: @zip)
+        importer = ProformaXML::Importer.new(zip: @zip)
         import_result = importer.perform
         @task = import_result[:task]
 
@@ -31,7 +31,7 @@ module ProformaService
     def base_exercise
       exercise = Exercise.find_by(uuid: @task.uuid)
       if exercise
-        raise Proforma::ExerciseNotOwned unless ExercisePolicy.new(@user, exercise).update?
+        raise ProformaXML::ExerciseNotOwned unless ExercisePolicy.new(@user, exercise).update?
 
         exercise
       else
@@ -69,7 +69,7 @@ module ProformaService
 
       filenames.any? {|f| f[/\.xml$/] }
     rescue Zip::Error
-      raise Proforma::InvalidZip
+      raise ProformaXML::InvalidZip
     end
   end
 end
