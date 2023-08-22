@@ -50,9 +50,21 @@ class ApplicationPolicy
   private :teacher_in_study_group?
 
   def author_in_programming_group?
-    return false unless @record.contributor.programming_group?
+    if @record.respond_to? :contributor # e.g. submission
+      possible_programming_group = @record.contributor
 
-    @record.contributor.users.include?(@user)
+    elsif @record.respond_to? :context # e.g. file
+      possible_programming_group = @record.context.contributor
+
+    elsif @record.respond_to? :submission # e.g. request_for_comment
+      possible_programming_group = @record.submission.contributor
+    else
+      return false
+    end
+
+    return false unless possible_programming_group.programming_group?
+
+    possible_programming_group.users.include?(@user)
   end
   private :author_in_programming_group?
 

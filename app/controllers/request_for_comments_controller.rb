@@ -44,7 +44,11 @@ class RequestForCommentsController < ApplicationController
   # GET /my_request_for_comments
   def my_comment_requests
     @search = policy_scope(RequestForComment)
+      .joins(:submission)
       .where(user: current_user)
+      .or(policy_scope(RequestForComment)
+            .joins(:submission)
+            .where(submission: {contributor: current_user.programming_groups}))
       .order(created_at: :desc) # Order for the LIMIT part of the query
       .ransack(params[:q])
 
