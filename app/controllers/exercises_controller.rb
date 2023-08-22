@@ -298,6 +298,23 @@ class ExercisesController < ApplicationController
   private :update_exercise_tips
 
   def implement
+    if session[:pg_id] && current_contributor.exercise != @exercise
+      # we are acting on behalf of a programming group
+      if current_user.admin?
+        session.delete(:pg_id)
+        @current_contributor = current_user
+      else
+        return redirect_back(
+          fallback_location: implement_exercise_path(current_contributor.exercise),
+          alert: t('exercises.implement.existing_programming_group', exercise: current_contributor.exercise.title)
+        )
+      end
+    elsif session[:pg_id].blank? && (pg = current_user.programming_groups.find_by(exercise: @exercise)) && pg.submissions.where(study_group_id: current_user.current_study_group_id).any?
+      # we are just acting on behalf of a single user who has already worked on this exercise as part of a programming group **in the context of the current study group**
+      session[:pg_id] = pg.id
+      @current_contributor = pg
+    end
+
     user_solved_exercise = @exercise.solved_by?(current_contributor)
     count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?',
       Time.zone.now.beginning_of_day).count
