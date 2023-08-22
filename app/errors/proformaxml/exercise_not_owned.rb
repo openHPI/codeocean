@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module Proforma
+module ProformaXML
   class ExerciseNotOwned < StandardError; end
 end

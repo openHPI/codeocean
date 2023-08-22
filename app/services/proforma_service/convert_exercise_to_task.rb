@@ -18,7 +18,7 @@ module ProformaService
     private
 
     def create_task
-      Proforma::Task.new(
+      ProformaXML::Task.new(
         {
           title: @exercise.title,
           description: @exercise.description,
@@ -57,7 +57,7 @@ module ProformaService
 
     def model_solutions
       @exercise.files.filter {|file| file.role == 'reference_implementation' }.map do |file|
-        Proforma::ModelSolution.new(
+        ProformaXML::ModelSolution.new(
           id: "ms-#{file.id}",
           files: model_solution_file(file)
         )
@@ -75,7 +75,7 @@ module ProformaService
 
     def tests
       @exercise.files.filter(&:teacher_defined_assessment?).map do |file|
-        Proforma::Test.new(
+        ProformaXML::Test.new(
           id: file.id,
           title: file.name,
           files: test_file(file),
@@ -122,7 +122,7 @@ module ProformaService
     end
 
     def task_file(file)
-      task_file = Proforma::TaskFile.new(
+      task_file = ProformaXML::TaskFile.new(
         id: file.id,
         filename: filename(file),
         usage_by_lms: file.read_only ? 'display' : 'edit',
