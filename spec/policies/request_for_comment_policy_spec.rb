@@ -59,6 +59,12 @@ describe RequestForCommentPolicy do
       it 'grants access to authors' do
         expect(policy).to permit(rfc.author, rfc)
       end
+
+      it 'grant access to other authors of the programming group' do
+        rfc.submission.update(contributor: programming_group)
+        expect(policy).to permit(author_other_group_member, rfc)
+        expect(policy).to permit(viewer_other_group_member, rfc)
+      end
     end
 
     shared_examples 'grants access to admins and authors only' do
@@ -68,6 +74,12 @@ describe RequestForCommentPolicy do
 
       it 'grants access to authors' do
         expect(policy).to permit(rfc.author, rfc)
+      end
+
+      it 'grant access to other authors of the programming group' do
+        rfc.submission.update(contributor: programming_group)
+        expect(policy).to permit(author_other_group_member, rfc)
+        expect(policy).to permit(viewer_other_group_member, rfc)
       end
 
       it 'does not grant access to all other users' do
@@ -80,6 +92,10 @@ describe RequestForCommentPolicy do
     let(:rfc_author) { create(:learner, consumer: author_consumer, study_groups: author_study_groups) }
     let(:author_study_groups) { create_list(:study_group, 1, consumer: author_consumer) }
     let(:rfc) { create(:rfc, user: rfc_author) }
+
+    let(:author_other_group_member) { create(:external_user, consumer: author_consumer) }
+    let(:viewer_other_group_member) { create(:external_user, consumer: viewer_consumer) }
+    let(:programming_group) { create(:programming_group, exercise: rfc.submission.exercise, users: [rfc.author, author_other_group_member, viewer_other_group_member]) }
 
     context "when the author's rfc_visibility is set to all" do
       let(:author_consumer) { create(:consumer, rfc_visibility: 'all') }

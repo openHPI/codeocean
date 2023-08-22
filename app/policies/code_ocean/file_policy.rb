@@ -38,7 +38,7 @@ module CodeOcean
       if @record.context.is_a?(Exercise)
         admin? || author?
       elsif @record.context.is_a?(Submission) && @record.context.exercise.allow_file_creation
-        author?
+        author? || author_in_programming_group?
       else
         no_one
       end

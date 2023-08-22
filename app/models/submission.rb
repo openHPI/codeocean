@@ -124,8 +124,8 @@ class Submission < ApplicationRecord
     (contributor_id + exercise.created_at.to_i) % 10 == 1
   end
 
-  def own_unsolved_rfc(user = self.user)
-    Pundit.policy_scope(user, RequestForComment).unsolved.find_by(exercise:, user:)
+  def own_unsolved_rfc(user)
+    Pundit.policy_scope(user, RequestForComment).joins(:submission).where(submission: {contributor:}).unsolved.find_by(exercise:)
   end
 
   def unsolved_rfc(user = self.user)

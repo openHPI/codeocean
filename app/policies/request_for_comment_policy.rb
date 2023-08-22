@@ -6,7 +6,7 @@ class RequestForCommentPolicy < ApplicationPolicy
   end
 
   def show?
-    admin? || author? || rfc_visibility
+    admin? || author? || author_in_programming_group? || rfc_visibility
   end
 
   def destroy?
@@ -14,11 +14,11 @@ class RequestForCommentPolicy < ApplicationPolicy
   end
 
   def mark_as_solved?
-    admin? || author?
+    admin? || author? || author_in_programming_group?
   end
 
   def set_thank_you_note?
-    admin? || author?
+    admin? || author? || author_in_programming_group?
   end
 
   def clear_question?
