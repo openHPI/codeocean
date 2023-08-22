@@ -7,13 +7,18 @@ class ProgrammingGroupsController < ApplicationController
   before_action :set_exercise_and_authorize
 
   def new
-    @programming_group = ProgrammingGroup.new(exercise: @exercise)
-    authorize!
-    existing_programming_group = current_user.programming_groups.find_by(exercise: @exercise)
-    if existing_programming_group
+    if current_user.submissions.where(exercise: @exercise, study_group_id: current_user.current_study_group_id).any?
+      # A learner has worked on this exercise **alone** in the context of the **current study group**, so we redirect them to their progress.
+      redirect_to_exercise
+    elsif (existing_programming_group = current_user.programming_groups.find_by(exercise: @exercise))
+      # A learner has worked on this exercise **as part of a programming group**, so we redirect them to their progress.
       session[:pg_id] = existing_programming_group.id
-      redirect_to(implement_exercise_path(@exercise),
-        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, current_user) ? 'with' : 'without'}_outcome", consumer: @consumer))
+      redirect_to_exercise
+    else
+      # The learner has neither worked on this exercise alone in the context of the current study group
+      # nor as part of a programming group (overall), so we allow creating a new programming group.
+      @programming_group = ProgrammingGroup.new(exercise: @exercise)
+      authorize!
     end
   end
 
@@ -40,7 +45,7 @@ class ProgrammingGroupsController < ApplicationController
   private
 
   def authorize!
-    authorize(@programming_group || @programming_groups)
+    authorize(@programming_group)
   end
 
   def programming_group_params
@@ -50,5 +55,11 @@ class ProgrammingGroupsController < ApplicationController
   def set_exercise_and_authorize
     @exercise = Exercise.find(params[:exercise_id])
     authorize(@exercise, :implement?)
+  end
+
+  def redirect_to_exercise
+    skip_authorization
+    redirect_to(implement_exercise_path(@exercise),
+      notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, current_user) ? 'with' : 'without'}_outcome", consumer: @consumer))
   end
 end
