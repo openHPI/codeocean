@@ -465,6 +465,7 @@ de:
       default_test_feedback: Sehr gut. Alle Tests waren erfolgreich.
       default_linter_feedback: Sehr gut. Der Linter hat nichts mehr zu beanstanden.
       error_messages: Fehlermeldungen
+      existing_programming_group: Sie arbeiten gerade an der Übung mit dem Titel '%{exercise}' als Teil einer Programmiergruppe. Bitte schließen Sie Ihre Arbeit dort ab, indem Sie Ihren Code bewerten und abgeben, bevor Sie mit der Bearbeitung dieser Übung beginnen.
       messages: Meldungen
       feedback: Feedback
       test_file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'

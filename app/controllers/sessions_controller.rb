@@ -17,6 +17,7 @@ class SessionsController < ApplicationController
   end
 
   def create_through_lti
+    session.delete(:pg_id) # Remove any previous pg_id from the session
     store_lti_session_data(params)
     store_nonce(params[:oauth_nonce])
     if params[:custom_redirect_target]
