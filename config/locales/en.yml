@@ -909,6 +909,9 @@ en:
       download: Download
       file: User-defined file
       render: Rendering
+      remoteAssess: Remote Scoring
+      remoteSubmit: Remote Submission
+      requestComments: Request Comments
       run: Execution
       save: Save
       submit: Submission
