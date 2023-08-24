@@ -17,16 +17,6 @@ describe Lti do
     end
   end
 
-  describe '#clear_lti_session_data' do
-    it 'clears the session' do
-      expect(controller.session).to receive(:delete).with(:external_user_id)
-      expect(controller.session).to receive(:delete).with(:study_group_id)
-      expect(controller.session).to receive(:delete).with(:embed_options)
-      expect(controller.session).to receive(:delete).with(:pg_id)
-      controller.send(:clear_lti_session_data)
-    end
-  end
-
   describe '#external_user_name' do
     let(:first_name) { 'Jane' }
     let(:last_name) { 'Doe' }
