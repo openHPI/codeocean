@@ -190,7 +190,10 @@ describe SessionsController do
       end
 
       it 'clears the session' do
-        expect(controller).to receive(:clear_lti_session_data)
+        expect(controller.session).to receive(:delete).with(:external_user_id)
+        expect(controller.session).to receive(:delete).with(:study_group_id)
+        expect(controller.session).to receive(:delete).with(:embed_options)
+        expect(controller.session).to receive(:delete).with(:pg_id)
         delete :destroy
       end
 
@@ -207,11 +210,6 @@ describe SessionsController do
     before do
       create(:lti_parameter, external_user: submission.contributor)
       allow(controller).to receive(:current_user).and_return(submission.contributor)
-      perform_request.call
-    end
-
-    it 'clears the session' do
-      expect(controller).to receive(:clear_lti_session_data)
       perform_request.call
     end
 

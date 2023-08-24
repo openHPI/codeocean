@@ -16,7 +16,6 @@ module RedirectBehavior
       # redirect 10 percent pseudorandomly to the feedback page
       if current_user.respond_to? :external_id
         if @submission.redirect_to_feedback? && !@embed_options[:disable_redirect_to_feedback]
-          clear_lti_session_data(@submission.exercise_id)
           redirect_to_user_feedback
           return
         end
@@ -27,7 +26,6 @@ module RedirectBehavior
           flash[:notice] = I18n.t('exercises.submit.full_score_redirect_to_own_rfc')
           flash.keep(:notice)
 
-          clear_lti_session_data(@submission.exercise_id)
           respond_to do |format|
             format.html { redirect_to(rfc) }
             format.json { render(json: {redirect: url_for(rfc)}) }
@@ -45,7 +43,6 @@ module RedirectBehavior
           # increase counter 'times_featured' in rfc
           rfc.increment(:times_featured)
 
-          clear_lti_session_data(@submission.exercise_id)
           respond_to do |format|
             format.html { redirect_to(rfc) }
             format.json { render(json: {redirect: url_for(rfc)}) }
@@ -56,7 +53,6 @@ module RedirectBehavior
     else
       # redirect to feedback page if score is less than 100 percent
       if @exercise.needs_more_feedback?(@submission) && !@embed_options[:disable_redirect_to_feedback]
-        clear_lti_session_data(@submission.exercise_id)
         redirect_to_user_feedback
       else
         redirect_to_lti_return_path
@@ -128,7 +124,6 @@ module RedirectBehavior
     )
 
     path = lti_return_path(submission_id: @submission.id)
-    clear_lti_session_data(@submission.exercise_id)
     respond_to do |format|
       format.html { redirect_to(path) }
       format.json { render(json: {redirect: path}) }

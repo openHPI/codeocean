@@ -47,13 +47,14 @@ class SessionsController < ApplicationController
     authorize(@submission, :show?)
     lti_parameter = current_user.lti_parameters.find_by(exercise: @submission.exercise, study_group_id: current_user.current_study_group_id)
     @url = consumer_return_url(build_tool_provider(consumer: current_user.consumer, parameters: lti_parameter&.lti_parameters))
-
-    clear_lti_session_data(@submission.exercise_id)
   end
 
   def destroy
     if current_user&.external_user?
-      clear_lti_session_data
+      session.delete(:external_user_id)
+      session.delete(:study_group_id)
+      session.delete(:embed_options)
+      session.delete(:pg_id)
 
       # In case we have another session as an internal user, we set the study group for this one
       internal_user = find_or_login_current_user

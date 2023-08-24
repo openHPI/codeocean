@@ -19,24 +19,6 @@ module Lti
 
   private :build_tool_provider
 
-  # exercise_id.nil? ==> the user has logged out. All session data is to be destroyed
-  # exercise_id.exists? ==> the user has submitted the results of an exercise to the consumer.
-  # Only the assignment of the programming group is deleted.
-  def clear_lti_session_data(exercise_id = nil)
-    if exercise_id.nil?
-      session.delete(:external_user_id)
-      session.delete(:study_group_id)
-      session.delete(:embed_options)
-    end
-    session.delete(:pg_id)
-
-    # We allow reusing the LTI credentials and don't remove them on purpose.
-    # This allows users to jump between remote and web evaluation with the same behavior.
-    # Also it prevents the user from deleting the lti_parameters for their programming team members.
-  end
-
-  private :clear_lti_session_data
-
   def consumer_return_url(provider, options = {})
     consumer_return_url = provider.try(:launch_presentation_return_url) || params[:launch_presentation_return_url]
     consumer_return_url += "?#{options.to_query}" if consumer_return_url && options.present?
