@@ -23,8 +23,9 @@ class EventsController < ApplicationController
   def event_params
     # The file ID processed here is the context of the exercise (template),
     # not in the context of the submission!
-    params[:event]&.permit(:category, :data, :exercise_id, :file_id)
-        &.merge(user_id: current_user&.id, user_type: current_user&.class&.name)
+    params[:event]
+      &.permit(:category, :data, :exercise_id, :file_id)
+      &.merge(user: current_user)
   end
   private :event_params
 end

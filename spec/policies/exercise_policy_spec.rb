@@ -215,7 +215,7 @@ describe ExercisePolicy do
       before do
         [admin, teacher].each do |user|
           [true, false].each do |public|
-            create(:dummy, public:, user_id: user.id, user_type: InternalUser.name)
+            create(:dummy, public:, user:)
           end
         end
       end
@@ -244,11 +244,11 @@ describe ExercisePolicy do
         end
 
         it 'includes all authored non-public exercises' do
-          expect(scope.map(&:id)).to include(*Exercise.where(public: false, user_id: teacher.id).map(&:id))
+          expect(scope.map(&:id)).to include(*Exercise.where(public: false, user: teacher).map(&:id))
         end
 
         it "does not include other authors' non-public exercises" do
-          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where("user_id <> #{teacher.id}").map(&:id))
+          expect(scope.map(&:id)).not_to include(*Exercise.where(public: false).where.not(user: teacher).map(&:id))
         end
       end
     end

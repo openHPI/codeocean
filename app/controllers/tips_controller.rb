@@ -29,7 +29,7 @@ class TipsController < ApplicationController
     params[:tip]
       .permit(:title, :description, :example, :file_type_id)
       .each {|_key, value| value.strip! unless value.is_a?(Array) }
-      .merge(user_id: current_user.id, user_type: current_user.class.name)
+      .merge(user: current_user)
   end
   private :tip_params
 

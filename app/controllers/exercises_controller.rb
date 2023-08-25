@@ -210,8 +210,7 @@ class ExercisesController < ApplicationController
                              files_attributes: file_attributes,
                              tag_ids: []
                            ).merge(
-                             user_id: current_user.id,
-                             user_type: current_user.class.name
+                             user: current_user
                            )
                          end
   end

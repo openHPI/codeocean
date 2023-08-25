@@ -42,8 +42,7 @@ class ProxyExercisesController < ApplicationController
 
   def proxy_exercise_params
     if params[:proxy_exercise].present?
-      params[:proxy_exercise].permit(:description, :title, :algorithm, :public, exercise_ids: []).merge(user_id: current_user.id,
-        user_type: current_user.class.name)
+      params[:proxy_exercise].permit(:description, :title, :algorithm, :public, exercise_ids: []).merge(user: current_user)
     end
   end
   private :proxy_exercise_params

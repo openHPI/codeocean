@@ -83,10 +83,7 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    # params.require(:comment).permit(:user_id, :file_id, :row, :column, :text)
-    # fuer production mode, damit böse menschen keine falsche user_id uebergeben:
-    params.require(:comment).permit(:file_id, :row, :column, :text, :request_id).merge(user_id: current_user.id,
-      user_type: current_user.class.name)
+    params.require(:comment).permit(:file_id, :row, :column, :text, :request_id).merge(user: current_user)
   end
 
   def send_mail_to_author(comment, request_for_comment)
@@ -100,8 +97,7 @@ class CommentsController < ApplicationController
       already_sent_mail = false
       subscriptions = Subscription.where(
         request_for_comment_id: request_for_comment.id,
-        user_id: commenter.id, user_type: commenter.class.name,
-        deleted: false
+        user: commenter, deleted: false
       )
       subscriptions.each do |subscription|
         if (((subscription.subscription_type == 'author') && (current_user == request_for_comment.user)) || (subscription.subscription_type == 'all')) && !((subscription.user == current_user) || already_sent_mail)
