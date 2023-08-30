@@ -39,6 +39,9 @@
             = t('exercises.editor.download')
 
       div
+        - if current_contributor.programming_group?
+          = t('exercises.editor.pair_programming_session')
+          = " | "
         = t('exercises.editor.lastsaved')
         span
         button style="display:none" id="autosave"
