@@ -17,7 +17,9 @@ class UserExerciseFeedback < ApplicationRecord
   end
 
   def anomaly_notification
-    AnomalyNotification.where({exercise_id: exercise.id, user:})
-      .where('created_at < ?', created_at).order('created_at DESC').to_a.first
+    AnomalyNotification
+      .where(exercise:, contributor: user, created_at: ...created_at)
+      .order(created_at: :desc)
+      .first
   end
 end
