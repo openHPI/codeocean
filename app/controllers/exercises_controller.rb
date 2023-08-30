@@ -90,9 +90,12 @@ class ExercisesController < ApplicationController
 
   def feedback
     authorize!
-    @feedbacks = @exercise.user_exercise_feedbacks.paginate(page: params[:page], per_page: per_page_param)
+    @feedbacks = @exercise
+      .user_exercise_feedbacks
+      .includes(:exercise, user: [:programming_groups])
+      .paginate(page: params[:page], per_page: per_page_param)
     @submissions = @feedbacks.map do |feedback|
-      feedback.exercise.final_submission(feedback.user.programming_groups.where(exercise: @exercise).presence || feedback.user)
+      feedback.exercise.final_submission(feedback.user.programming_groups.select {|pg| pg.exercise = @exercise }.presence || feedback.user)
     end
   end
 
