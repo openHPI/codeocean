@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
     store_nonce(params[:oauth_nonce])
     if params[:custom_redirect_target]
       redirect_to(URI.parse(params[:custom_redirect_target].to_s).path)
-    elsif PairProgramming23Study.participate?
+    elsif PairProgramming23Study.participate?(current_user, @exercise)
       redirect_to(new_exercise_programming_group_path(@exercise))
     else
       redirect_to(implement_exercise_path(@exercise),
