@@ -591,6 +591,8 @@ de:
     new:
       check_invitation: "Einladung prüfen"
       enter_partner_id: "Bitte geben Sie hier die Nutzer-IDs der Personen ein, mit denen Sie zusammen die Aufgabe '%{exercise_title}' lösen möchten. Beachten Sie jedoch, dass anschließend keiner aus der Gruppe austreten kann. Alle Teammitglieder können also sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Für die nächste Aufgabe können Sie sich erneuert entscheiden, ob und mit wem Sie zusammen arbeiten möchten."
+      find_partner_title: "Finde einen Programmierpartner für die Aufgabe"
+      find_partner_description: "Kopiere eine andere Nutzer-ID aus der Liste unten und lösche sie anschließend. Wenn noch keine Nutzer-IDs in der Liste vorhanden sind, fügen Sie Ihre Nutzer-ID hinzu und warten Sie, bis ein anderer Nutzer eine Programmiergruppe mit Ihnen erstellt. Dies können Sie mit dem Knopf 'Einladung prüfen' testen. Wenn Sie allein arbeiten möchten, löschen Sie bitte Ihre Nutzer-ID aus der Liste."
       own_user_id: "Ihre Nutzer-ID:"
       work_alone: "Sie können sich einmalig dafür entscheiden, die Aufgabe alleine zu bearbeiten. Anschließend können Sie jedoch nicht mehr in die Gruppenarbeit für diese Aufgabe wechseln. Klicken Sie <a href=%{path})>hier</a>, um die Aufgabe im Einzelmodus zu starten."
   external_users:

@@ -591,6 +591,8 @@ en:
     new:
       check_invitation: "Check invitation"
       enter_partner_id: "Please enter the user IDs from the practice partners with whom you want to solve the exercise '%{exercise_title}'. However, note that no one can leave the group afterward. Hence, all team members can see what you write in this exercise and vice versa. For the next exercise, you can decide again whether and with whom you want to work together."
+      find_partner_title: "Find a programming partner for the exercise"
+      find_partner_description: "Copy another user ID from the list below and delete it afterward. If there are no user IDs on the list yet, add your user ID and wait for another user to create a programming group with you. You can test this with the 'Check invitation' button. If you decide to work alone, please delete your user ID from the list."
       own_user_id: "Your user ID:"
       work_alone: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to group work for this exercise. Click <a href=%{path}>here</a> to get to the exercise in single mode."
   external_users:
