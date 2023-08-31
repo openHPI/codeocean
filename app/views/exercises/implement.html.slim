@@ -6,12 +6,19 @@
 #editor-column
   - unless @embed_options[:hide_exercise_description]
     .exercise.clearfix
-      div
-        span.badge.rounded-pill.bg-primary.float-end.score
+      div.col-3.float-end
+        span.badge.rounded-pill.bg-primary.float-end.mt-2.score
+        - if current_contributor.programming_group?
+            a.btn.btn-sm.btn-primary.me-3.mt-1(href='https://jitsi.fem.tu-ilmenau.de/openHPI_ProgrammingGroup#{current_contributor.id}', target='_blank')
+              i.fa-solid.fa-video
+              span = t('exercises.editor.start_video')
 
-        h1 id="exercise-headline"
-          i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
-          = @exercise.title
+            div.small.text-body-tertiary.mt-1
+              == t('exercises.implement.external_privacy_policy', url:'https://www.tu-ilmenau.de/datenschutz')
+
+      h1 id="exercise-headline"
+        i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
+        = @exercise.title
 
       #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
         = render_markdown(@exercise.description)
