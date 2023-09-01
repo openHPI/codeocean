@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Webpacker::SriHelperExtensions
+module Shakapacker::SriHelperExtensions
   def stylesheet_link_tag(*sources, **options)
     tags = sources.map do |stylesheet|
       if stylesheet.is_a?(Hash)
@@ -24,6 +24,6 @@ module Webpacker::SriHelperExtensions
   end
 end
 
-if Sprockets::Rails::Helper.ancestors.map(&:name).exclude?(Webpacker::SriHelperExtensions.name)
-  Sprockets::Rails::Helper.prepend(Webpacker::SriHelperExtensions)
+if Sprockets::Rails::Helper.ancestors.map(&:name).exclude?(Shakapacker::SriHelperExtensions.name)
+  Sprockets::Rails::Helper.prepend(Shakapacker::SriHelperExtensions)
 end

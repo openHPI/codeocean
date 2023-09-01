@@ -44,7 +44,7 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache
-            tmp/webpacker
+            tmp/shakapacker
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-

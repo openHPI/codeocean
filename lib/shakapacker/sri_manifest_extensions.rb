@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Webpacker::SriManifestExtensions
+module Shakapacker::SriManifestExtensions
   def lookup(name, pack_type = {})
     asset = super
 
@@ -26,6 +26,6 @@ module Webpacker::SriManifestExtensions
   end
 end
 
-if Webpacker::Manifest.ancestors.map(&:name).exclude?(Webpacker::SriManifestExtensions.name)
-  Webpacker::Manifest.prepend(Webpacker::SriManifestExtensions)
+if Shakapacker::Manifest.ancestors.map(&:name).exclude?(Shakapacker::SriManifestExtensions.name)
+  Shakapacker::Manifest.prepend(Shakapacker::SriManifestExtensions)
 end

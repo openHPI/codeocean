@@ -2,7 +2,6 @@
 
 const { globalMutableWebpackConfig, generateWebpackConfig, config, merge } = require('shakapacker')
 const webpackConfig = generateWebpackConfig()
-const webpack = require('webpack');
 
 const CompressionPlugin = require("compression-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
