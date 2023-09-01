@@ -3,6 +3,7 @@
 class InternalUsersController < ApplicationController
   include CommonBehavior
 
+  before_action :require_user!, except: %i[activate forgot_password reset_password]
   before_action :require_activation_token, only: :activate
   before_action :require_reset_password_token, only: :reset_password
   before_action :set_user, only: MEMBER_ACTIONS
