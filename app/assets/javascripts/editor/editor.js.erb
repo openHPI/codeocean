@@ -339,7 +339,7 @@ var CodeOceanEditor = {
                     CodeOceanEditor.lastDeltaObject = null;
                     return;
                 }
-                App.synchronized_editor?.send_changes(deltaObject);
+                App.synchronized_editor?.send_changes(deltaObject, this.active_file);
 
                 // TODO: This is a workaround for a bug in Ace. Remove when upgrading Ace.
                 this.handleUTF16Surrogates(deltaObject, session);
@@ -1022,9 +1022,10 @@ var CodeOceanEditor = {
         }
     },
 
-    applyChanges: function (delta) {
+    applyChanges: function (delta, active_file) {
         this.lastDeltaObject = delta;
-        this.editors[0].session.doc.applyDeltas([delta]);
+        const editor = this.editor_for_file.get(active_file.filename)
+        editor.session.doc.applyDeltas([delta]);
     },
 
     compareDeltaObjects: function (delta, last_delta) {
