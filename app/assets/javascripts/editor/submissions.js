@@ -3,7 +3,7 @@ CodeOceanEditorSubmissions = {
 
   AUTOSAVE_INTERVAL: 15 * 1000,
   autosaveTimer: null,
-  autosaveLabel: "#statusbar span",
+  autosaveLabel: "#statusbar #autosave",
 
   /**
    * Submission-Creation

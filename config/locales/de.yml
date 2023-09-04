@@ -385,6 +385,8 @@ de:
       expand_action_sidebar: Aktions-Leiste Ausklappen
       expand_output_sidebar: Ausgabe-Leiste Ausklappen
       input: Ihre Eingabe
+      is_offline: "%{name} ist offline"
+      is_online: "%{name} ist online"
       lastsaved: 'Zuletzt gespeichert: '
       network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
       pair_programming_session: Pair Programming Session
