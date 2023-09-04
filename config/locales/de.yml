@@ -57,7 +57,7 @@ de:
         uuid: UUID
         unpublished: Deaktiviert
       programming_group:
-        programming_partner_ids: Nutzer-IDs der Programmierpartner
+        programming_partner_id: Nutzer-ID der Programmierpartnerin / des Programmierpartners
       programming_group/programming_group_memberships:
         base: Programmiergruppenmitgliedschaft
       proxy_exercise:
@@ -270,7 +270,8 @@ de:
             password:
               weak: ist zu schwach. Versuchen Sie es mit einem  langen Passwort, welches Groß-, Kleinbuchstaben, Zahlen und Sonderzeichen enthält.
         programming_group:
-          size_too_small: Die Größe dieser Programmiergruppe ist zu klein. Geben Sie mindestens eine andere Nutzer-ID an.
+          size_too_large: Die Größe dieser Programmiergruppe ist zu groß. Geben Sie nur eine andere Nutzer-ID an.
+          size_too_small: Die Größe dieser Programmiergruppe ist zu klein. Geben Sie eine andere Nutzer-ID an.
           invalid_partner_id: Die Nutzer-ID '%{partner_id}' ist ungültig und wurde entfernt. Bitte überprüfen Sie die Nutzer-IDs der Programmierpartner.
         programming_group_membership:
           already_exists: 'existiert bereits für diese Aufgabe für den Nutzer mit der ID %{id_with_type}.'
@@ -589,12 +590,13 @@ de:
       hints:
         programming_partner_ids: "Sie können mehrere Nutzer-IDs mit Kommata getrennt eingeben, wie z.B.: 'e123, e234'."
     new:
+      create_programming_pair: Programmierpaar erstellen
       check_invitation: "Einladung prüfen"
-      enter_partner_id: "Bitte geben Sie hier die Nutzer-IDs der Personen ein, mit denen Sie zusammen die Aufgabe '%{exercise_title}' lösen möchten. Beachten Sie jedoch, dass anschließend keiner aus der Gruppe austreten kann. Alle Teammitglieder können also sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Für die nächste Aufgabe können Sie sich erneuert entscheiden, ob und mit wem Sie zusammen arbeiten möchten."
-      find_partner_title: "Finde einen Programmierpartner für die Aufgabe"
-      find_partner_description: "Kopiere eine andere Nutzer-ID aus der Liste unten und lösche sie anschließend. Wenn noch keine Nutzer-IDs in der Liste vorhanden sind, fügen Sie Ihre Nutzer-ID hinzu und warten Sie, bis ein anderer Nutzer eine Programmiergruppe mit Ihnen erstellt. Dies können Sie mit dem Knopf 'Einladung prüfen' testen. Wenn Sie allein arbeiten möchten, löschen Sie bitte Ihre Nutzer-ID aus der Liste."
-      own_user_id: "Ihre Nutzer-ID:"
-      work_alone: "Sie können sich einmalig dafür entscheiden, die Aufgabe alleine zu bearbeiten. Anschließend können Sie jedoch nicht mehr in die Gruppenarbeit für diese Aufgabe wechseln. Klicken Sie <a href=%{path})>hier</a>, um die Aufgabe im Einzelmodus zu starten."
+      enter_partner_id: "Bitte gib hier die Nutzer-ID der Person ein, mit der du zusammen die Aufgabe '%{exercise_title}' lösen möchtest. Beachte jedoch, dass anschließend keiner die Zusammenarbeit beenden kann. Dein:e Teampartner:in kann sehen, was du in dieser Aufgabe schreibst und umgekehrt. Für die nächste Aufgabe kannst du dich erneuert entscheiden, ob und mit wem du zusammen arbeiten möchtest."
+      find_partner_title: "Finde eine:n Programmierpartner:in für die Aufgabe"
+      find_partner_description: "Kopiere eine andere Nutzer-ID aus der Liste unten und lösche sie anschließend. Wenn noch keine Nutzer-IDs in der Liste vorhanden sind, füge deine Nutzer-ID hinzu und warte, bis ein andere:r Nutzer:in ein Programmierpaar mit dir erstellt. Dies kannst du mit dem Knopf 'Einladung prüfen' testen. Wenn du allein arbeiten möchtest, lösche bitte deine Nutzer-ID aus der Liste, falls du sie hinzugefügt hast."
+      own_user_id: "Deine Nutzer-ID:"
+      work_alone: "Du kannst dich einmalig dafür entscheiden, die Aufgabe alleine zu bearbeiten. Anschließend kannst du jedoch nicht mehr in die Partnerarbeit für diese Aufgabe wechseln. <a href=%{path})>Klicke hier, um die Aufgabe im Einzelmodus zu starten.</a>"
   external_users:
     statistics:
       title: Statistiken für Externe Benutzer

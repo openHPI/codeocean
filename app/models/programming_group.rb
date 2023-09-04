@@ -11,7 +11,8 @@ class ProgrammingGroup < ApplicationRecord
   has_many :runners, as: :contributor, dependent: :destroy
   belongs_to :exercise
 
-  validate :group_size
+  validate :min_group_size
+  validate :max_group_size
   validate :no_erroneous_users
   accepts_nested_attributes_for :programming_group_memberships
 
@@ -71,9 +72,15 @@ class ProgrammingGroup < ApplicationRecord
 
   private
 
-  def group_size
+  def min_group_size
     if users.size < 2
       errors.add(:base, :size_too_small)
+    end
+  end
+
+  def max_group_size
+    if users.size > 2
+      errors.add(:base, :size_too_large)
     end
   end
 
