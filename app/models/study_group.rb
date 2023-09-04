@@ -9,6 +9,8 @@ class StudyGroup < ApplicationRecord
   has_many :subscriptions, dependent: :nullify
   has_many :authentication_tokens, dependent: :nullify
   has_many :lti_parameters, dependent: :delete_all
+  has_many :events
+  has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
   belongs_to :consumer
 
   def users

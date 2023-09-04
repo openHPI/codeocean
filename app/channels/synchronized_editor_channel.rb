@@ -22,7 +22,10 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
   end
 
   def send_changes(message)
-    ActionCable.server.broadcast(specific_channel, message['delta_with_user_id'])
+    change = message['delta_with_user_id'].deep_symbolize_keys
+
+    Event::SynchronizedEditor.create_for_editor_change(change, current_user, programming_group)
+    ActionCable.server.broadcast(specific_channel, change)
   end
 
   def send_hello

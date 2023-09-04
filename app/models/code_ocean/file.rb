@@ -32,6 +32,7 @@ module CodeOcean
     has_many :files, class_name: 'CodeOcean::File'
     has_many :testruns
     has_many :comments
+    has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
     alias descendants files
 
     mount_uploader :native_file, FileUploader

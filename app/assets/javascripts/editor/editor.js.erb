@@ -382,6 +382,20 @@ var CodeOceanEditor = {
         $(document).on('click', '#results a', this.showOutput.bind(this));
         $(document).on('keydown', this.handleKeyPress.bind(this));
         $(document).on('theme:change:ace', this.handleAceThemeChangeEvent.bind(this));
+        $('#start_chat').on('click', function(event) {
+            this.createEventHandler('pp_start_chat', null)(event)
+            // Allow to open the new tab even in Safari.
+            // See: https://stackoverflow.com/a/70463940
+            setTimeout(() => {
+                var pop_up_window = window.open($('#start_chat').data('url'), '_blank');
+                if (pop_up_window) {
+                    pop_up_window.onerror = function (message) {
+                        $.flash.danger({text: message});
+                        this.sendError(message, null);
+                    };
+                }
+            })
+        }.bind(this));
         this.initializeFileTreeButtons();
         this.initializeWorkspaceButtons();
         this.initializeRequestForComments()
