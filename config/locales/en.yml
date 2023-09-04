@@ -57,7 +57,7 @@ en:
         uuid: UUID
         unpublished: Unpublished
       programming_group:
-        programming_partner_ids: Programming Partner IDs
+        programming_partner_id: Programming Partner ID
       programming_group/programming_group_memberships:
         base: Programming Group Membership
       proxy_exercise:
@@ -270,6 +270,7 @@ en:
             password:
               weak: is too weak. Try to use a long password with upper and lower case letters, numbers and special characters.
         programming_group:
+          size_too_large: The size of this programming group is too large. Enter at most one other user ID to work with.
           size_too_small: The size of this programming group is too small. Enter at least one other user ID to work with.
           invalid_partner_id: The user ID '%{partner_id}' is invalid and was removed. Please check the user IDs of your programming partners.
         programming_group_membership:
@@ -589,12 +590,13 @@ en:
       hints:
         programming_partner_ids: "You can enter several user IDs separated by commas such as 'e123, e234'."
     new:
+      create_programming_pair: Create Programming Pair
       check_invitation: "Check invitation"
-      enter_partner_id: "Please enter the user IDs from the practice partners with whom you want to solve the exercise '%{exercise_title}'. However, note that no one can leave the group afterward. Hence, all team members can see what you write in this exercise and vice versa. For the next exercise, you can decide again whether and with whom you want to work together."
+      enter_partner_id: "Please enter the user ID from the practice partner with whom you want to solve the exercise '%{exercise_title}'. However, note that no one can leave the pair afterward. Hence, your team partner can see what you write in this exercise and vice versa. For the next exercise, you can decide again whether and with whom you want to work together."
       find_partner_title: "Find a programming partner for the exercise"
-      find_partner_description: "Copy another user ID from the list below and delete it afterward. If there are no user IDs on the list yet, add your user ID and wait for another user to create a programming group with you. You can test this with the 'Check invitation' button. If you decide to work alone, please delete your user ID from the list."
+      find_partner_description: "Copy another user ID from the list below and delete it afterward. If there are no user IDs on the list yet, add your user ID and wait for another user to create a programming group with you. You can test this with the 'Check invitation' button. If you decide to work alone, please delete your user ID from the list if you added it before."
       own_user_id: "Your user ID:"
-      work_alone: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to group work for this exercise. Click <a href=%{path}>here</a> to get to the exercise in single mode."
+      work_alone: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to work in a pair for this exercise. <a href=%{path}>Click here to get to the exercise in single mode.</a>"
   external_users:
     statistics:
       title: External User Statistics
