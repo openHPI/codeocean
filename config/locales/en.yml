@@ -385,6 +385,8 @@ en:
       expand_action_sidebar: Expand Action Sidebar
       expand_output_sidebar: Expand Output Sidebar
       input: Your input
+      is_offline: "%{name} is offline"
+      is_online: "%{name} is online"
       lastsaved: 'Last saved: '
       network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
       pair_programming_session: Pair Programming Session

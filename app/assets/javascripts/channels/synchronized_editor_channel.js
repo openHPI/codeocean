@@ -23,13 +23,24 @@ $(document).on('turbolinks:load', function () {
 
         received(data) {
           // Called when there's incoming data on the websocket for this channel
-          if (current_user_id !== data['current_user_id']) {
-            CodeOceanEditor.applyChanges(data['delta']['data'], data['active_file']);
+          if (current_user_id !== data.current_user_id) {
+            switch(data.command) {
+              case 'editor_change':
+                CodeOceanEditor.applyChanges(data.delta.data, data.active_file);
+                break;
+              case 'connection_change':
+                CodeOceanEditor.showPartnersConnectionStatus(data.status, data.current_user_name);
+                this.perform('send_hello');
+                break;
+              case 'hello':
+                CodeOceanEditor.showPartnersConnectionStatus(data.status, data.current_user_name);
+                break;
+            }
           }
         },
 
         send_changes(delta, active_file) {
-          const delta_with_user_id = {current_user_id: current_user_id, active_file: active_file, delta: delta}
+          const delta_with_user_id = {command: 'editor_change', current_user_id: current_user_id, active_file: active_file, delta: delta}
           this.perform('send_changes', {delta_with_user_id: delta_with_user_id});
         }
       });

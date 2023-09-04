@@ -1044,6 +1044,17 @@ var CodeOceanEditor = {
           delta_data.text === last_delta.text;
     },
 
+    showPartnersConnectionStatus: function (status, username) {
+        switch(status) {
+            case 'connected':
+                $('#pg_session').text(I18n.t('exercises.editor.is_online', {name: username}));
+                break;
+            case 'disconnected':
+                $('#pg_session').text(I18n.t('exercises.editor.is_offline', {name: username}));
+                break;
+        }
+    },
+
     initializeEverything: function () {
         CodeOceanEditor.editors = [];
         this.initializeRegexes();
