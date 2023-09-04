@@ -9,6 +9,8 @@ class ProgrammingGroup < ApplicationRecord
   has_many :internal_users, through: :programming_group_memberships, source_type: 'InternalUser', source: :user
   has_many :testruns, through: :submissions
   has_many :runners, as: :contributor, dependent: :destroy
+  has_many :events
+  has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
   belongs_to :exercise
 
   validate :min_group_size

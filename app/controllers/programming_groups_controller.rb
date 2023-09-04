@@ -7,6 +7,7 @@ class ProgrammingGroupsController < ApplicationController
   before_action :set_exercise_and_authorize
 
   def new
+    Event.create(category: 'page_visit', user: current_user, exercise: @exercise, data: 'programming_groups_new', file_id: nil)
     if current_user.submissions.where(exercise: @exercise, study_group_id: current_user.current_study_group_id).any?
       # A learner has worked on this exercise **alone** in the context of the **current study group**, so we redirect them to their progress.
       redirect_to_exercise
@@ -34,6 +35,10 @@ class ProgrammingGroupsController < ApplicationController
 
     unless programming_partner_ids.include? current_user.id_with_type
       @programming_group.add(current_user)
+    end
+
+    unless @programming_group.valid?
+      Event.create(category: 'pp_invalid_partners', user: current_user, exercise: @exercise, data: programming_group_params[:programming_partner_ids], file_id: nil)
     end
 
     create_and_respond(object: @programming_group, path: proc { implement_exercise_path(@exercise) }) do

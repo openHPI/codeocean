@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_21_063101) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_04_180123) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -143,6 +143,35 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_21_063101) do
     t.integer "file_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "programming_group_id"
+    t.bigint "study_group_id"
+    t.index ["programming_group_id"], name: "index_events_on_programming_group_id"
+    t.index ["study_group_id"], name: "index_events_on_study_group_id"
+  end
+
+  create_table "events_synchronized_editor", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "programming_group_id", null: false
+    t.bigint "study_group_id", null: false
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.integer "command", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
+    t.integer "status", limit: 2, comment: "Used as enum in Rails"
+    t.bigint "file_id"
+    t.integer "action", limit: 2, comment: "Used as enum in Rails"
+    t.integer "range_start_row"
+    t.integer "range_start_column"
+    t.integer "range_end_row"
+    t.integer "range_end_column"
+    t.text "text"
+    t.text "lines", array: true
+    t.string "nl", limit: 2, comment: "Identifies the line break type (i.e., \\r\\n or \\n)"
+    t.jsonb "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["file_id"], name: "index_events_synchronized_editor_on_file_id"
+    t.index ["programming_group_id"], name: "index_events_synchronized_editor_on_programming_group_id"
+    t.index ["study_group_id"], name: "index_events_synchronized_editor_on_study_group_id"
+    t.index ["user_type", "user_id"], name: "index_events_synchronized_editor_on_user"
   end
 
   create_table "execution_environments", id: :serial, force: :cascade do |t|
@@ -603,6 +632,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_21_063101) do
   add_foreign_key "community_solution_contributions", "study_groups"
   add_foreign_key "community_solution_locks", "community_solutions"
   add_foreign_key "community_solutions", "exercises"
+  add_foreign_key "events", "programming_groups"
+  add_foreign_key "events", "study_groups"
+  add_foreign_key "events_synchronized_editor", "files"
+  add_foreign_key "events_synchronized_editor", "programming_groups"
+  add_foreign_key "events_synchronized_editor", "study_groups"
   add_foreign_key "exercise_tips", "exercise_tips", column: "parent_exercise_tip_id"
   add_foreign_key "exercise_tips", "exercises"
   add_foreign_key "exercise_tips", "tips"

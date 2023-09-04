@@ -24,6 +24,7 @@ module ApplicationCable
     def find_verified_user
       # Finding the current_user is similar to the code used in application_controller.rb#current_user
       current_user = ExternalUser.find_by(id: session[:external_user_id]) || InternalUser.find_by(id: session[:user_id])
+      current_user&.store_current_study_group_id(session[:study_group_id])
       current_user || reject_unauthorized_connection
     end
 
