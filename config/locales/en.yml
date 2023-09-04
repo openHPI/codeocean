@@ -487,6 +487,7 @@ en:
       exit_failure: The last code run exited with a failure (status code %{exit_code}).
       no_output_yet: There is no output yet.
       output: Program Output
+      pair_programming_feedback: If you notice any errors with the pair programming feature, feel free to <a target='_blank', href=%{url}>write them down here</a>. Thanks a lot!
       passed_tests: Passed Tests
       code_rating: Code Rating
       progress: Progress

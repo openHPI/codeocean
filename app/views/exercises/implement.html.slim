@@ -23,6 +23,10 @@
       #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
         = render_markdown(@exercise.description)
 
+      - if current_contributor.programming_group?
+        .small.text-body-tertiary
+          == t('exercises.implement.pair_programming_feedback', url: 'https://etherpad.xopic.de/p/openHPI_PairProgrammingFeedback')
+
       a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide')
         - if @embed_options[:collapse_exercise_description]
           = t('shared.show')
