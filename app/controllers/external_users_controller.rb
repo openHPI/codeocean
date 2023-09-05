@@ -23,13 +23,13 @@ class ExternalUsersController < ApplicationController
 
   def working_time_query(tag = nil)
     "
-    SELECT user_id,
+    SELECT contributor_id,
            bar.exercise_id,
            max(score) as maximum_score,
            count(bar.id) as runs,
            sum(working_time_new) AS working_time
     FROM
-      (SELECT user_id,
+      (SELECT contributor_id,
               exercise_id,
               score,
               id,
@@ -38,23 +38,23 @@ class ExternalUsersController < ApplicationController
                   ELSE working_time
               END AS working_time_new
        FROM
-         (SELECT user_id,
+         (SELECT contributor_id,
                  exercise_id,
                  max(score) AS score,
                  id,
-                 (created_at - lag(created_at) over (PARTITION BY user_id, exercise_id
+                 (created_at - lag(created_at) over (PARTITION BY contributor_id, exercise_id
                                                      ORDER BY created_at)) AS working_time
           FROM submissions
-          WHERE #{ExternalUser.sanitize_sql(['user_id = ?', @user.id])}
-            AND user_type = 'ExternalUser'
+          WHERE #{ExternalUser.sanitize_sql(['contributor_id = ?', @user.id])}
+            AND contributor_type = 'ExternalUser'
           #{current_user.admin? ? '' : "AND #{ExternalUser.sanitize_sql(['study_group_id IN (?)', current_user.study_groups.pluck(:id)])} AND cause = 'submit'"}
           GROUP BY exercise_id,
-                   user_id,
+                   contributor_id,
                    id
           ) AS foo
       ) AS bar
     #{tag.nil? ? '' : " JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND #{ExternalUser.sanitize_sql(['et.tag_id = ?', tag])}"}
-    GROUP BY user_id,
+    GROUP BY contributor_id,
              bar.exercise_id;
     "
   end
