@@ -189,6 +189,7 @@ module Lti
     study_group_membership = StudyGroupMembership.find_or_create_by(study_group: group, user: current_user)
     study_group_membership.update(role: external_user_role(@provider))
     session[:study_group_id] = group.id
+    current_user.store_current_study_group_id(group.id)
   end
 
   def set_embedding_options
