@@ -204,7 +204,7 @@ CodeOceanEditorSubmissions = {
     this.teardownEventHandlers();
     this.createSubmission(button, null, function (response) {
       if (response.redirect) {
-        App.synchronized_editor?.unsubscribe();
+        App.synchronized_editor?.disconnect();
         this.autosaveIfChanged();
         this.stopCode(event);
         this.editors = [];

@@ -42,6 +42,16 @@ $(document).on('turbolinks:load', function () {
         send_changes(delta, active_file) {
           const delta_with_user_id = {command: 'editor_change', current_user_id: current_user_id, active_file: active_file, delta: delta}
           this.perform('send_changes', {delta_with_user_id: delta_with_user_id});
+        },
+
+        is_connected() {
+          return App.cable.subscriptions.findAll(App.synchronized_editor.identifier).length > 0
+        },
+
+        disconnect() {
+          if (this.is_connected()) {
+            this.unsubscribe();
+          }
         }
       });
     }
