@@ -11,6 +11,7 @@ class ProgrammingGroup < ApplicationRecord
   has_many :runners, as: :contributor, dependent: :destroy
   has_many :events
   has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
+  has_many :pair_programming_exercise_feedbacks
   belongs_to :exercise
 
   validate :min_group_size
