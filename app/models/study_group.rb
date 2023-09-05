@@ -11,6 +11,7 @@ class StudyGroup < ApplicationRecord
   has_many :lti_parameters, dependent: :delete_all
   has_many :events
   has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
+  has_many :pair_programming_exercise_feedbacks
   belongs_to :consumer
 
   def users

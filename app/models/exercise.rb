@@ -25,6 +25,7 @@ class Exercise < ApplicationRecord
   has_many :tags, through: :exercise_tags
   accepts_nested_attributes_for :exercise_tags
   has_many :user_exercise_feedbacks
+  has_many :pair_programming_exercise_feedbacks
   has_many :exercise_tips
   has_many :tips, through: :exercise_tips
 
@@ -590,6 +591,8 @@ class Exercise < ApplicationRecord
   private :valid_submission_deadlines?
 
   def needs_more_feedback?(submission)
+    return false if PairProgramming23Study.experiment_course?(submission.study_group_id)
+
     if submission.normalized_score.to_d == BigDecimal('1.0')
       user_exercise_feedbacks.final.size <= MAX_GROUP_EXERCISE_FEEDBACKS
     else

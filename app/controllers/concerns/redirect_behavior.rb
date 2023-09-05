@@ -5,6 +5,13 @@ module RedirectBehavior
 
   def redirect_after_submit
     Rails.logger.debug { "Redirecting user with score:s #{@submission.normalized_score}" }
+
+    # TEMPORARY: For the pythonjunior2023 course, we want to have a lot of feedback!
+    if @submission.redirect_to_survey?
+      redirect_to_pair_programming_survey
+      return
+    end
+
     if @submission.normalized_score.to_d == BigDecimal('1.0')
       if redirect_to_community_solution?
         redirect_to_community_solution
@@ -96,6 +103,16 @@ module RedirectBehavior
     end
 
     @community_solution_lock.user == current_user
+  end
+
+  # TEMPORARY: For the pythonjunior2023 course, we introduced a pair programming survey
+  def redirect_to_pair_programming_survey
+    url = new_pair_programming_exercise_feedback_path(pair_programming_exercise_feedback: {exercise_id: @exercise.id, submission_id: @submission.id})
+
+    respond_to do |format|
+      format.html { redirect_to(url) }
+      format.json { render(json: {redirect: url}) }
+    end
   end
 
   def redirect_to_user_feedback
