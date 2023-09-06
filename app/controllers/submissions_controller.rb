@@ -228,6 +228,7 @@ class SubmissionsController < ApplicationController
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
     @testrun[:status] ||= :container_depleted
     Rails.logger.debug { "Runner error while running a submission: #{e.message}" }
+    Sentry.capture_exception(e)
     extract_durations(e)
   ensure
     close_client_connection(client_socket)
@@ -256,6 +257,7 @@ class SubmissionsController < ApplicationController
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
     Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
+    Sentry.capture_exception(e)
     @testrun[:passed] = false
     save_testrun_output 'assess'
   ensure
@@ -290,6 +292,7 @@ class SubmissionsController < ApplicationController
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
     kill_client_socket(client_socket)
     Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
+    Sentry.capture_exception(e)
     @testrun[:passed] = false
     save_testrun_output 'assess'
   ensure
