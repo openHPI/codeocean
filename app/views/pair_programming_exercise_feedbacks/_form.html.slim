@@ -18,6 +18,14 @@
         label.form-check-label
           = b.radio_button(class: 'form-check-input')
           = b.text
+    - if PairProgramming23Study.participate?(current_user, @exercise) && !current_contributor.programming_group?
+      h5.mt-4 = t('pair_programming_exercise_feedback.reason_work_alone')
+      = f.collection_radio_buttons :reason_work_alone, @reasons, :first, :last  do |b|
+        .form-check
+          label.form-check-label
+            = b.radio_button(class: 'form-check-input')
+            == b.text
+
     = f.hidden_field(:exercise_id, :value => @exercise.id)
     = f.hidden_field(:submission_id, :value => @submission.id)
   .actions = render('shared/submit_button', f: f, object: @uef)
