@@ -16,7 +16,7 @@ html lang="#{I18n.locale || I18n.default_locale}" data-default-locale="#{I18n.de
     = yield(:head)
     = csrf_meta_tags
     meta name='sentry' data-enabled=SentryJavascript.active?.to_s data-release=SentryJavascript.release data-dsn=SentryJavascript.dsn data-environment=SentryJavascript.environment
-    meta name='current-user' content=current_user&.to_sentry_context&.to_json
+    meta name='current-user' content=current_user&.to_page_context&.to_json
   body
     - unless @embed_options[:hide_navbar]
       nav.navbar.bg-dark.navbar-expand-md.mb-4.py-1 role='navigation' data-bs-theme="dark"
