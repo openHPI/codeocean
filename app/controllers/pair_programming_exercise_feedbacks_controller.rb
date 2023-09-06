@@ -22,6 +22,16 @@ class PairProgrammingExerciseFeedbacksController < ApplicationController
      [4, t('pair_programming_exercise_feedback.estimated_time_more_30')]]
   end
 
+  def reasons_presets
+    [[0, t('pair_programming_exercise_feedback.reason_no_partner')],
+     [1, t('pair_programming_exercise_feedback.reason_to_difficult_to_find_partner')],
+     [2, t('pair_programming_exercise_feedback.reason_faster_alone')],
+     [3, t('pair_programming_exercise_feedback.reason_not_working_with_strangers')],
+     [4, t('pair_programming_exercise_feedback.reason_want_to_work_alone')],
+     [5, t('pair_programming_exercise_feedback.reason_accidentally_alone')],
+     [6, t('pair_programming_exercise_feedback.reason_other')]]
+  end
+
   def new
     exercise_id = if params[:pair_programming_exercise_feedback].nil?
                     params[:exercise_id]
@@ -64,6 +74,7 @@ class PairProgrammingExerciseFeedbacksController < ApplicationController
   def set_presets
     @texts = comment_presets.to_a
     @times = time_presets.to_a
+    @reasons = reasons_presets.to_a
   end
 
   def uef_params

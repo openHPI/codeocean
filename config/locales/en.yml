@@ -992,6 +992,14 @@ en:
     estimated_time_20_to_30: "between 20 and 30 minutes"
     estimated_time_more_30: "more than 30 minutes"
     working_time: "Estimated time working on this exercise:"
+    reason_no_partner: I have not found a team partner.
+    reason_to_difficult_to_find_partner: It was too difficult to find a team partner.
+    reason_faster_alone: It was faster to work alone.
+    reason_not_working_with_strangers: I do not want to work with <i>strangers</i>.
+    reason_want_to_work_alone: I prefer to work alone.
+    reason_accidentally_alone: I accidentally worked alone on this exercise.
+    reason_other: <i>Other</i>
+    reason_work_alone: Why did you decide to solve this exercise alone?
     no_feedback: "There is no feedback for this exercise yet."
   user_exercise_feedback:
     difficulty_easy: "the exercise was too easy"
