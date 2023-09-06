@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_05_190519) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_06_163923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -154,10 +154,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_05_190519) do
     t.bigint "study_group_id", null: false
     t.string "user_type", null: false
     t.bigint "user_id", null: false
-    t.integer "command", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
+    t.integer "action", limit: 2, default: 0, null: false, comment: "Used as enum in Rails"
     t.integer "status", limit: 2, comment: "Used as enum in Rails"
     t.bigint "file_id"
-    t.integer "action", limit: 2, comment: "Used as enum in Rails"
+    t.integer "editor_action", limit: 2, comment: "Used as enum in Rails"
     t.integer "range_start_row"
     t.integer "range_start_column"
     t.integer "range_end_row"

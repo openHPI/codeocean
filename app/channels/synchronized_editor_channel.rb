@@ -3,13 +3,19 @@
 class SynchronizedEditorChannel < ApplicationCable::Channel
   def subscribed
     stream_from specific_channel
-    ActionCable.server.broadcast(specific_channel, {command: 'connection_change', status: 'connected', current_user_id: current_user.id, current_user_name: current_user.name})
+    message = create_message('connection_change', 'connected')
+
+    Event::SynchronizedEditor.create_for_connection_change(message, current_user, programming_group)
+    ActionCable.server.broadcast(specific_channel, message)
   end
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
     stop_all_streams
-    ActionCable.server.broadcast(specific_channel, {command: 'connection_change', status: 'disconnected', current_user_id: current_user.id, current_user_name: current_user.name})
+    message = create_message('connection_change', 'disconnected')
+
+    Event::SynchronizedEditor.create_for_connection_change(message, current_user, programming_group)
+    ActionCable.server.broadcast(specific_channel, message)
   end
 
   def specific_channel
@@ -21,14 +27,22 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
     current_contributor if current_contributor.programming_group?
   end
 
-  def send_changes(message)
-    change = message['delta_with_user_id'].deep_symbolize_keys
+  def editor_change(message)
+    change = message.deep_symbolize_keys
 
     Event::SynchronizedEditor.create_for_editor_change(change, current_user, programming_group)
     ActionCable.server.broadcast(specific_channel, change)
   end
 
-  def send_hello
-    ActionCable.server.broadcast(specific_channel, {command: 'hello', status: 'connected', current_user_id: current_user.id, current_user_name: current_user.name})
+  def connection_status
+    ActionCable.server.broadcast(specific_channel, create_message('connection_status', 'connected'))
+  end
+
+  def create_message(action, status)
+    {
+      action:,
+      status:,
+      user: current_user.to_page_context,
+    }
   end
 end
