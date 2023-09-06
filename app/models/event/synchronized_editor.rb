@@ -7,53 +7,51 @@ class Event::SynchronizedEditor < ApplicationRecord
 
   belongs_to :programming_group
   belongs_to :study_group
-  belongs_to :file, class_name: 'CodeOcean::File'
+  belongs_to :file, class_name: 'CodeOcean::File', optional: true
 
-  enum command: {
+  enum action: {
     editor_change: 0,
     connection_change: 1,
-    hello: 2,
-    ### TODO: Kira's commands
+    connection_status: 2,
   }, _prefix: true
 
   enum status: {
     connected: 0,
     disconnected: 1,
-    ### TODO: connected, disconnected ...
   }, _prefix: true
 
-  enum action: {
+  enum editor_action: {
     insertText: 0,
     insertLines: 1,
     removeText: 2,
     removeLines: 3,
     changeFold: 4,
     removeFold: 5,
-    ### TODO: AceEditor Actions: insertText, insertLines, removeText, removesLines, ...
   }, _prefix: true
 
-  validates :status, presence: true, if: -> { command_connection_change? }
-  validates :action, presence: true, if: -> { command_editor_change? }
-  validates :range_start_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { command_editor_change? }
-  validates :range_start_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { command_editor_change? }
-  validates :range_end_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { command_editor_change? }
-  validates :range_end_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { command_editor_change? }
-  validates :nl, inclusion: {in: %W[\n \r\n]}, if: -> { action_removeLines? }
+  validates :status, presence: true, if: -> { action_connection_change? }
+  validates :file_id, presence: true, if: -> { action_editor_change? }
+  validates :editor_action, presence: true, if: -> { action_editor_change? }
+  validates :range_start_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
+  validates :range_start_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
+  validates :range_end_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
+  validates :range_end_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
+  validates :nl, inclusion: {in: %W[\n \r\n]}, if: -> { editor_action_removeLines? }
 
   validate :either_lines_or_text
 
   def self.create_for_editor_change(event, user, programming_group)
     event_copy = event.deep_dup
     file = event_copy.delete(:active_file)
-    delta = event_copy.delete(:delta)[:data]
+    delta = event_copy.delete(:delta)
     range = delta.delete(:range)
 
     create!(
       user:,
       programming_group:,
       study_group_id: user.current_study_group_id,
-      command: event_copy.delete(:command),
-      action: delta.delete(:action),
+      action: event_copy.delete(:action),
+      editor_action: delta.delete(:action),
       file_id: file[:id],
       range_start_row: range[:start][:row],
       range_start_column: range[:start][:column],
@@ -66,9 +64,19 @@ class Event::SynchronizedEditor < ApplicationRecord
     )
   end
 
+  def self.create_for_connection_change(message, user, programming_group)
+    create!(
+      user:,
+      programming_group:,
+      study_group_id: user.current_study_group_id,
+      action: message[:action],
+      status: message[:status]
+    )
+  end
+
   def self.data_attribute(event, delta)
     event[:delta] = {data: delta} if delta.present?
-    event.presence if event.present? # TODO: As of now, we are storing the `current_user_id` most of the times. Intended?
+    event.presence if event.present? # TODO: As of now, we are storing the `session_id` most of the times. Intended?
   end
   private_class_method :data_attribute
 
