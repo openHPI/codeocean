@@ -29,7 +29,7 @@ var CodeOceanEditor = {
     running: false,
 
     lastCopyText: null,
-    lastDeltaObject: null,
+    lastDeltaObject_for_file: new Map(),
 
     <% self.class.include Rails.application.routes.url_helpers %>
     <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
@@ -313,6 +313,7 @@ var CodeOceanEditor = {
             editor.commands.bindKey("ctrl+alt+0", null);
             this.editors.push(editor);
             this.editor_for_file.set($(element).parent().data('filename'), editor);
+            this.lastDeltaObject_for_file.set($(element).parent().data('filename'), null);
             var session = editor.getSession();
             var mode = $(element).data('mode')
             session.setMode(mode);
@@ -335,8 +336,8 @@ var CodeOceanEditor = {
 
             // listener for autosave
             session.on("change", function (deltaObject, session) {
-                if (this.compareDeltaObjects(deltaObject, CodeOceanEditor.lastDeltaObject)) {
-                    CodeOceanEditor.lastDeltaObject = null;
+                if (this.compareDeltaObjects(deltaObject, this.lastDeltaObject_for_file.get(this.active_file.filename))) {
+                    this.lastDeltaObject_for_file.set(this.active_file.filename, null);
                     return;
                 }
                 App.synchronized_editor?.editor_change(deltaObject, this.active_file);
@@ -1037,7 +1038,7 @@ var CodeOceanEditor = {
     },
 
     applyChanges: function (delta, active_file) {
-        this.lastDeltaObject = delta;
+        this.lastDeltaObject_for_file.set(active_file.filename, delta);
         const editor = this.editor_for_file.get(active_file.filename)
         editor.session.doc.applyDeltas([delta]);
     },
