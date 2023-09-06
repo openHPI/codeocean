@@ -490,7 +490,7 @@ de:
       exit_failure: Die letzte Code-Ausführung wurde mit einem Fehler beendet (Statuscode %{exit_code}).
       no_output_yet: Bisher existiert noch keine Ausgabe.
       output: Programm-Ausgabe
-      pair_programming_feedback: Falls dir Probleme bei der Zusammenarbeit auffallen, kannst du diese gerne <a target='_blank', href=%{url}>hier aufschreiben</a>. Vielen Dank!"
+      pair_programming_feedback: Falls dir Probleme bei der Zusammenarbeit auffallen, kannst du diese gerne <a target='_blank', href=%{url}>hier aufschreiben</a>. Vielen Dank!
       passed_tests: Erfolgreiche Tests
       code_rating: Code-Stil
       progress: Fortschritt
