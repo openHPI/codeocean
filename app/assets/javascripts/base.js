@@ -36,6 +36,9 @@ $(document).on('turbolinks:load', function() {
         window.location.reload();
     });
 
+    // Set current user
+    window.current_user = JSON.parse($('meta[name="current-user"]')?.attr('content') || null);
+
     // Set locale for all JavaScript functions
     const htmlTag = $('html')
     I18n.defaultLocale = htmlTag.data('default-locale');
@@ -59,10 +62,8 @@ $(document).on('turbolinks:load', function() {
             integrations: window.SentryIntegrations(),
             profilesSampleRate: 1.0,
             initialScope: scope =>{
-                const user = $('meta[name="current-user"]').attr('content');
-
-                if (user) {
-                    scope.setUser(JSON.parse(user));
+                if (current_user) {
+                    scope.setUser(_.omit(current_user, 'displayname'));
                 }
                 return scope;
             }

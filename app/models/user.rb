@@ -84,11 +84,12 @@ class User < ApplicationRecord
     displayname
   end
 
-  def to_sentry_context
+  def to_page_context
     {
       id:,
       type: self.class.name,
       consumer: consumer.name,
+      displayname:,
     }
   end
 
