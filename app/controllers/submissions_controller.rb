@@ -105,19 +105,23 @@ class SubmissionsController < ApplicationController
     # are registered first, the runner socket may still be nil.
     client_socket, runner_socket = nil
 
+    @tubesock_debug_events = []
     hijack do |tubesock|
       client_socket = tubesock
 
-      client_socket.onopen do |_event|
+      client_socket.onopen do |event|
+        @tubesock_debug_events << {type: :open, data: event}
         kill_client_socket(client_socket) and return true if @embed_options[:disable_run]
       end
 
-      client_socket.onclose do |_event|
+      client_socket.onclose do |event|
+        @tubesock_debug_events << {type: :close, data: event}
         runner_socket&.close(:terminated_by_client)
         @testrun[:status] ||= :terminated_by_client
       end
 
       client_socket.onmessage do |raw_event|
+        @tubesock_debug_events << {type: :message, data: raw_event}
         # Obviously, this is just flushing the current connection: Filtering.
         next if raw_event == "\n"
 
@@ -157,6 +161,10 @@ class SubmissionsController < ApplicationController
         Sentry.set_extras(data: raw_event)
         Sentry.capture_exception(e)
       end
+
+      client_socket.onerror do |event|
+        @tubesock_debug_events << {type: :error, data: event}
+      end
     end
 
     # If running is not allowed (and the socket is closed), we can stop here.
@@ -166,6 +174,7 @@ class SubmissionsController < ApplicationController
     durations = @submission.run(@file) do |socket, starting_time|
       runner_socket = socket
       @testrun[:starting_time] = starting_time
+      @tubesock_debug_events << {type: :send, data: {cmd: :status, status: :container_running}}
       client_socket.send_data JSON.dump({cmd: :status, status: :container_running})
 
       runner_socket.on :stdout do |data|
@@ -233,9 +242,11 @@ class SubmissionsController < ApplicationController
   ensure
     close_client_connection(client_socket)
     save_testrun_output 'run'
+    Sentry.capture_message('Execution got terminated by client', extra: {websocket: @tubesock_debug_events, submission: @submission.id}) if @testrun[:status] == :terminated_by_client
   end
 
   def score
+    @tubesock_debug_events = []
     client_socket = nil
     disable_scoring = @embed_options[:disable_score] || !@submission.exercise.teacher_defined_assessment?
 
@@ -273,6 +284,7 @@ class SubmissionsController < ApplicationController
   def statistics; end
 
   def test
+    @tubesock_debug_events = []
     client_socket = nil
 
     hijack do |tubesock|
@@ -316,6 +328,7 @@ class SubmissionsController < ApplicationController
     # We don't want to store this (arbitrary) exit command and redirect it ourselves
     client_socket.send_data JSON.dump({cmd: :exit})
     client_socket.send_data nil, :close
+    @tubesock_debug_events << {type: :send, data: {cmd: :exit}}
     # We must not close the socket manually (with `client_socket.close`), as this would close it twice.
     # When the socket is closed twice, nginx registers a `Connection reset by peer` error.
     # Tubesock automatically closes the socket when the `hijack` block ends and otherwise ignores `Errno::ECONNRESET`.
@@ -377,6 +390,7 @@ class SubmissionsController < ApplicationController
                           end
     @testrun[:messages].push message
     @testrun[:status] = message[:status] if message[:status]
+    @tubesock_debug_events << {type: :send, data: message}
     client_socket.send_data JSON.dump(message)
   end
 
