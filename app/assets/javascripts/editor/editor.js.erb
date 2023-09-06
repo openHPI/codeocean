@@ -1048,14 +1048,7 @@ var CodeOceanEditor = {
         }
 
         const delta_data = delta.data
-        // We need this manual comparison because the range uses two different classes
-        // and there is no function to compare these two objects.
-        return delta_data.action === last_delta.action &&
-          delta_data.range.start.row === last_delta.range.start.row &&
-          delta_data.range.start.column === last_delta.range.start.column &&
-          delta_data.range.end.row === last_delta.range.end.row &&
-          delta_data.range.end.column === last_delta.range.end.column &&
-          delta_data.text === last_delta.text;
+        return !_.isEqual(delta_data, last_delta);
     },
 
     showPartnersConnectionStatus: function (status, username) {
