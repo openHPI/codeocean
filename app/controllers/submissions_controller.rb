@@ -106,6 +106,7 @@ class SubmissionsController < ApplicationController
     client_socket, runner_socket = nil
 
     @tubesock_debug_events = []
+    client_kill = false
     hijack do |tubesock|
       client_socket = tubesock
 
@@ -137,6 +138,7 @@ class SubmissionsController < ApplicationController
 
         case event[:cmd]
           when :client_kill
+            client_kill = true
             @testrun[:status] = :terminated_by_client
             close_client_connection(client_socket)
             Rails.logger.debug('Client exited container.')
@@ -242,7 +244,7 @@ class SubmissionsController < ApplicationController
   ensure
     close_client_connection(client_socket)
     save_testrun_output 'run'
-    Sentry.capture_message('Execution got terminated by client', extra: {websocket: @tubesock_debug_events, submission: @submission.id}) if @testrun[:status] == :terminated_by_client
+    Sentry.capture_message('Execution got terminated by client', extra: {websocket: @tubesock_debug_events, submission: @submission.id}) if @testrun[:status] == :terminated_by_client && !client_kill
   end
 
   def score
