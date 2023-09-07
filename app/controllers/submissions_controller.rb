@@ -242,7 +242,7 @@ class SubmissionsController < ApplicationController
     Sentry.capture_exception(e)
     extract_durations(e)
   ensure
-    close_client_connection(client_socket)
+    close_client_connection(client_socket) unless client_kill
     save_testrun_output 'run'
     Sentry.capture_message('Execution got terminated by client', extra: {websocket: @tubesock_debug_events, submission: @submission.id}) if @testrun[:status] == :terminated_by_client && !client_kill
   end
