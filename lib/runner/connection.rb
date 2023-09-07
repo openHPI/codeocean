@@ -265,17 +265,8 @@ class Runner::Connection
   def sentry_trace_header(sentry_span)
     return {} unless sentry_span
 
-    http_headers = {}
-    client = Sentry.get_current_client
-
-    trace = client.generate_sentry_trace(sentry_span)
-    http_headers[Sentry::SENTRY_TRACE_HEADER_NAME] = trace if trace
-
-    baggage = client.generate_baggage(sentry_span)
-    http_headers[Sentry::BAGGAGE_HEADER_NAME] = baggage if baggage.present?
-
     {
-      headers: http_headers,
+      headers: Sentry.get_trace_propagation_headers,
     }
   end
 
