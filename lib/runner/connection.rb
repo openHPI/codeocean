@@ -147,7 +147,7 @@ class Runner::Connection
 
   def on_close(event, sentry_span)
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Closing connection to #{@socket.url} with status: #{@status}" }
-    record_sentry_breadcrumb(event)
+    record_sentry_breadcrumb(sentry_span, event)
     end_sentry_span(sentry_span, event)
     flush_buffers
 
@@ -278,7 +278,7 @@ class Runner::Connection
     sentry_span.finish(end_timestamp: Sentry.utc_now.to_f)
   end
 
-  def record_sentry_breadcrumb(event)
+  def record_sentry_breadcrumb(sentry_span, event)
     return unless Sentry.initialized? && Sentry.configuration.breadcrumbs_logger.include?(:http_logger)
 
     crumb = Sentry::Breadcrumb.new(
@@ -286,10 +286,11 @@ class Runner::Connection
       category: SENTRY_BREADCRUMB_CATEGORY,
       type: :info,
       data: {
-        status: event.code.to_i,
+        close_status: event.code.to_i,
+        connection_status: @status,
         url: @socket.url,
       }
     )
-    Sentry.add_breadcrumb(crumb)
+    sentry_span.transaction.hub.add_breadcrumb(crumb)
   end
 end
