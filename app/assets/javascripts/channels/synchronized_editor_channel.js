@@ -48,6 +48,13 @@ $(document).on('turbolinks:load', function () {
                 CodeOceanEditor.showPartnersConnectionStatus(data.status, data.user.displayname);
                 this.perform('connection_status');
               }
+              // If a user has multiple open windows and closes one of them,
+              // the other group members will show that the user is offline.
+              // Therefore, we check if the person is still connected with another open window.
+              // Then, the user sends again their connection status.
+              else if (data.status === 'disconnected') {
+                  this.perform('connection_status');
+              }
               break;
             case 'connection_status':
               if (is_other_user(data.user)) {
