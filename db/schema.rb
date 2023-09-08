@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_06_163923) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_08_091810) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -168,6 +168,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_06_163923) do
     t.jsonb "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "session_id"
     t.index ["file_id"], name: "index_events_synchronized_editor_on_file_id"
     t.index ["programming_group_id"], name: "index_events_synchronized_editor_on_programming_group_id"
     t.index ["study_group_id"], name: "index_events_synchronized_editor_on_study_group_id"
