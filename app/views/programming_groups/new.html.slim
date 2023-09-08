@@ -15,10 +15,7 @@ h1 = t('programming_groups.new.create_programming_pair')
     = render('form')
 
     div.mt-4
-      a.btn.btn-success href=new_exercise_programming_group_path(@exercise) == t('programming_groups.new.check_invitation')
-
-      p.mt-4
-        == t('programming_groups.new.work_alone', path: implement_exercise_path(@exercise))
+      == t('programming_groups.new.work_alone', path: implement_exercise_path(@exercise))
 
   .col-md-6
     h5 = t('programming_groups.new.find_partner_title')

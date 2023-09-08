@@ -474,7 +474,7 @@ de:
       default_linter_feedback: Sehr gut. Der Linter hat nichts mehr zu beanstanden.
       error_messages: Fehlermeldungen
       existing_programming_group: Sie arbeiten gerade an der Übung mit dem Titel '%{exercise}' als Teil einer Programmiergruppe. Bitte schließen Sie Ihre Arbeit dort ab, indem Sie Ihren Code bewerten und abgeben, bevor Sie mit der Bearbeitung dieser Übung beginnen.
-      external_privacy_policy: Durch Nutzung des Videochats stimmen Sie der <a href=%{url}>externen Datenschutzerklärung</a> zu.
+      external_privacy_policy: "Videochat: <a href=%{url}>Datenschutzerklärung</a>"
       messages: Meldungen
       feedback: Feedback
       test_file: 'Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
