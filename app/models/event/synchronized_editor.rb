@@ -31,6 +31,7 @@ class Event::SynchronizedEditor < ApplicationRecord
 
   validates :status, presence: true, if: -> { action_connection_change? }
   validates :file_id, presence: true, if: -> { action_editor_change? }
+  validates :session_id, presence: true, if: -> { action_editor_change? }
   validates :editor_action, presence: true, if: -> { action_editor_change? }
   validates :range_start_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
   validates :range_start_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
@@ -53,6 +54,7 @@ class Event::SynchronizedEditor < ApplicationRecord
       action: event_copy.delete(:action),
       editor_action: delta.delete(:action),
       file_id: file[:id],
+      session_id: event_copy.delete(:session_id),
       range_start_row: range[:start][:row],
       range_start_column: range[:start][:column],
       range_end_row: range[:end][:row],
