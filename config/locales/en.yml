@@ -474,7 +474,7 @@ en:
       default_linter_feedback: Well done. The linter is completly satisfied.
       error_messages: Error Messages
       existing_programming_group: You are currently working on the exercise entitled '%{exercise}' as part of a programming group. Please finish your work there by scoring and submitting your code before you start implementing this exercise.
-      external_privacy_policy: By using the video chat, you agree to the <a href=%{url}> external privacy policy</a>.
+      external_privacy_policy: "Video chat: <a href=%{url}>privacy policy</a>"
       messages: Messages
       feedback: Feedback
       test_file: 'Test File <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
