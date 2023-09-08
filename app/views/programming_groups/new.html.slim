@@ -5,7 +5,12 @@ h1 = t('programming_groups.new.create_programming_pair')
       => t('programming_groups.new.own_user_id')
       b
         = current_user.id_with_type
-    p
+
+    button.btn.btn-success data-bs-toggle= 'modal' data-bs-target= '#modal-info-pair-programming'
+      i.fa-solid.fa-circle-info
+      = t('programming_groups.new.pair_programming_info')
+
+    p.mt-4
       = t('programming_groups.new.enter_partner_id', exercise_title: @exercise.title)
     = render('form')
 
@@ -20,3 +25,5 @@ h1 = t('programming_groups.new.create_programming_pair')
     p
       = t('programming_groups.new.find_partner_description')
     iframe name="embed_readwrite" src="https://etherpad.xopic.de/p/find_programming_group_for_exercise_#{@exercise.id}?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false" width="100%" height="300" style='border: 1px solid black;'
+
+= render('shared/modal', classes: 'modal-lg', id: 'modal-info-pair-programming', template: 'programming_groups/_info_pair_programming', title: t('programming_groups.new.pair_programming_info'))

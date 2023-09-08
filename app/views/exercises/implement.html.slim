@@ -17,6 +17,11 @@
           div.small.text-body-tertiary.mt-1
             == t('exercises.implement.external_privacy_policy', url:'https://www.tu-ilmenau.de/datenschutz')
 
+          button.btn.btn-sm.btn-secondary.me-3.mt-1 data-bs-toggle= 'modal' data-bs-target= '#modal-info-pair-programming'
+            i.fa-solid.fa-circle-info
+            = t('programming_groups.new.pair_programming_info')
+
+
       h1 id="exercise-headline"
         i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
         = @exercise.title
@@ -36,3 +41,4 @@
 
 
   = render('editor', exercise: @exercise, files: @files, submission: @submission)
+  = render('shared/modal', classes: 'modal-lg', id: 'modal-info-pair-programming', template: 'programming_groups/_info_pair_programming', title: t('programming_groups.new.pair_programming_info'))

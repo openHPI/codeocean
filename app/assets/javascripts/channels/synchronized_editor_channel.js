@@ -17,10 +17,9 @@ $(document).on('turbolinks:load', function () {
 
     const editor = $('#editor');
     const exercise_id = editor.data('exercise-id');
-    const current_contributor_id = editor.data('contributor-id');
     const session_id = generateUUID();
 
-    if ($.isController('exercises') && current_user.id !== current_contributor_id) {
+    if ($.isController('exercises') && is_other_user(current_contributor)) {
 
       App.synchronized_editor = App.cable.subscriptions.create({
         channel: "SynchronizedEditorChannel", exercise_id: exercise_id
