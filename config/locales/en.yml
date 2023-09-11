@@ -608,6 +608,8 @@ en:
       own_user_id: "Your user ID:"
       pair_programming_info: Pair Programming Info
       work_alone: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to work in a pair for this exercise. <a href=%{path}>Click here to get to the exercise in single mode.</a>"
+    implement:
+      info_disconnected: You are disconnected from the server. Please check your internet connection and reload the page.
   external_users:
     statistics:
       title: External User Statistics

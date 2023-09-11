@@ -32,6 +32,7 @@ $(document).on('turbolinks:load', function () {
 
         disconnected() {
           // Called when the subscription has been terminated by the server
+          alert(I18n.t('programming_groups.implement.info_disconnected'));
         },
 
         received(data) {
@@ -43,6 +44,11 @@ $(document).on('turbolinks:load', function () {
               }
               break;
             case 'connection_change':
+              // TODO: Check session id instead of user id to support multiple windows per user
+              if (is_other_user(data.user) && data.status === 'connected') {
+                const message = {files: CodeOceanEditor.collectFiles(), session_id: session_id};
+                this.perform('current_content', message);
+              }
               if (is_other_user(data.user)) {
                 CodeOceanEditor.showPartnersConnectionStatus(data.status, data.user.displayname);
                 this.perform('connection_status');
@@ -58,6 +64,11 @@ $(document).on('turbolinks:load', function () {
             case 'connection_status':
               if (is_other_user(data.user)) {
                 CodeOceanEditor.showPartnersConnectionStatus(data.status, data.user.displayname);
+              }
+              break;
+            case 'current_content':
+              if (is_other_session(data.session_id)) {
+                CodeOceanEditor.setEditorContent(data);
               }
               break;
           }
