@@ -608,6 +608,8 @@ de:
       own_user_id: "Deine Nutzer-ID:"
       pair_programming_info: Pair Programming Info
       work_alone: "Du kannst dich einmalig dafür entscheiden, die Aufgabe alleine zu bearbeiten. Anschließend kannst du jedoch nicht mehr in die Partnerarbeit für diese Aufgabe wechseln. <a href=%{path}>Klicke hier, um die Aufgabe im Einzelmodus zu starten.</a>"
+    implement:
+      info_disconnected: Ihre Verbindung zum Server wurde unterbrochen. Bitte überprüfen Sie Ihre Internetverbindung und laden Sie die Seite erneut.
   external_users:
     statistics:
       title: Statistiken für Externe Benutzer

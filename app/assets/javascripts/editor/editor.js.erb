@@ -311,7 +311,7 @@ var CodeOceanEditor = {
 
             editor.commands.bindKey("ctrl+alt+0", null);
             this.editors.push(editor);
-            this.editor_for_file.set($(element).parent().data('filename'), editor);
+            this.editor_for_file.set($(element).data('file-id'), editor);
             var session = editor.getSession();
             var mode = $(element).data('mode')
             session.setMode(mode);
@@ -753,7 +753,7 @@ var CodeOceanEditor = {
         this.setActiveFile(frame.data('filename'), file_id);
         this.selectFileInJsTree($('#files'), file_id);
 
-        const editor = this.editor_for_file.get(file);
+        const editor = this.editor_for_file.get(file_id);
         editor.gotoLine(line, 0);
         event.preventDefault();
     },
@@ -1061,7 +1061,7 @@ var CodeOceanEditor = {
     },
 
     applyChanges: function (delta, active_file) {
-        const editor = this.editor_for_file.get(active_file.filename)
+        const editor = this.editor_for_file.get(active_file.id)
         editor.session.doc.applyDeltas([delta]);
     },
 

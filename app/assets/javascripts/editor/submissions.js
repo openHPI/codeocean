@@ -119,15 +119,21 @@ CodeOceanEditorSubmissions = {
       url: $('#start-over').data('url') || $('#start-over-active-file').data('url')
     }).done(function(response) {
       this.hideSpinner();
-      _.each(this.editors, function(editor) {
-        var file_id = $(editor.container).data('file-id');
-        var file = _.find(response.files, function(file) {
-          return file.id === file_id;
-        });
-        if(file && !onlyActiveFile || file && file.id === CodeOceanEditor.active_file.id){
-            editor.setValue(file.content);
-        }
-      }.bind(this));
+      this.setEditorContent(response, onlyActiveFile);
+    }.bind(this));
+  },
+
+  setEditorContent: function(new_content, onlyActiveFile = false) {
+    _.each(this.editors, function(editor) {
+      const editor_file_id = $(editor.container).data('file-id');
+      const found_file = _.find(new_content.files, function(file) {
+        // File.id is used to reload the exercise and file.file_id is used to update the editor content for pair programming group members
+        return (file.id || file.file_id) === editor_file_id;
+      });
+      if(found_file && !onlyActiveFile || found_file && found_file.id === CodeOceanEditor.active_file.id){
+        editor.setValue(found_file.content);
+        editor.clearSelection();
+      }
     }.bind(this));
   },
 
