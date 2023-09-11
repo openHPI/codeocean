@@ -55,6 +55,15 @@ class ProgrammingGroup < ApplicationRecord
     "Programming Group #{id}"
   end
 
+  def to_page_context
+    {
+      id:,
+      type: self.class.name,
+      consumer: '',
+      displayname:,
+    }
+  end
+
   def programming_partner_ids
     users.map(&:id_with_type)
   end
