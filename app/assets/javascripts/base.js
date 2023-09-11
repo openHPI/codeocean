@@ -36,8 +36,9 @@ $(document).on('turbolinks:load', function() {
         window.location.reload();
     });
 
-    // Set current user
+    // Set current user and current contributor
     window.current_user = JSON.parse($('meta[name="current-user"]')?.attr('content') || null);
+    window.current_contributor = JSON.parse($('meta[name="current-contributor"]')?.attr('content') || null);
 
     // Set locale for all JavaScript functions
     const htmlTag = $('html')
