@@ -434,7 +434,7 @@ class ExercisesController < ApplicationController
   private :not_authorized_for_exercise
 
   def set_execution_environments
-    @execution_environments = ExecutionEnvironment.all.order(:name)
+    @execution_environments = ExecutionEnvironment.order(:name)
   end
 
   private :set_execution_environments
@@ -456,7 +456,7 @@ class ExercisesController < ApplicationController
   private :set_external_user_and_authorize
 
   def set_file_types
-    @file_types = FileType.all.order(:name)
+    @file_types = FileType.order(:name)
   end
 
   private :set_file_types

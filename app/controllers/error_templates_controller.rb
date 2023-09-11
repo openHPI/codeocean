@@ -11,7 +11,7 @@ class ErrorTemplatesController < ApplicationController
   # GET /error_templates
   # GET /error_templates.json
   def index
-    @error_templates = ErrorTemplate.all.order(:execution_environment_id, :name).paginate(page: params[:page], per_page: per_page_param)
+    @error_templates = ErrorTemplate.order(:execution_environment_id, :name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

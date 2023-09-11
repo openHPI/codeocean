@@ -12,7 +12,7 @@ class FileTypesController < ApplicationController
   private :authorize!
 
   def index
-    @file_types = FileType.all.includes(:user).order(:name).paginate(page: params[:page], per_page: per_page_param)
+    @file_types = FileType.includes(:user).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

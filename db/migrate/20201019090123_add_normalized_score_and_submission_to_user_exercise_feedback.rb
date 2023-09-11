@@ -7,7 +7,7 @@ class AddNormalizedScoreAndSubmissionToUserExerciseFeedback < ActiveRecord::Migr
 
     # Disable automatic timestamp modification
     ActiveRecord::Base.record_timestamps = false
-    UserExerciseFeedback.all.find_each do |uef|
+    UserExerciseFeedback.find_each do |uef|
       latest_submission = Submission
         .where(user_id: uef.user_id, user_type: uef.user_type, exercise_id: uef.exercise_id)
         .where('created_at < ?', uef.updated_at)

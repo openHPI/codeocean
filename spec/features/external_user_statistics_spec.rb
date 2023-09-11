@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'ExternalUserStatistics', js: true do
+describe 'ExternalUserStatistics', :js do
   let(:learner) { create(:external_user) }
   let(:exercise) { create(:dummy, user:) }
   let(:study_group) { create(:study_group) }

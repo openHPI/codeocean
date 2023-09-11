@@ -4,7 +4,7 @@ class CreateExerciseCollectionItems < ActiveRecord::Migration[4.2]
   def up
     rename_table :exercise_collections_exercises, :exercise_collection_items
     add_column :exercise_collection_items,  :position, :integer, default: 0, null: false
-    add_column :exercise_collection_items,  :id, :primary_key
+    add_column :exercise_collection_items,  :id, :primary_key # rubocop:disable Rails/DangerousColumnNames
   end
 
   def down

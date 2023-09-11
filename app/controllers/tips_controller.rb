@@ -56,7 +56,7 @@ class TipsController < ApplicationController
   end
 
   def set_file_types
-    @file_types = FileType.all.order(:name)
+    @file_types = FileType.order(:name)
   end
   private :set_file_types
 end

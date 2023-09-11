@@ -24,7 +24,7 @@ class DropErrors < ActiveRecord::Migration[5.2]
     submissions_controller = SubmissionsController.new
 
     # Iterate only over those Errors containing a message and submission_id
-    CodeOcean::Error.where.not(message: [nil, '']).where.not(submission_id: [nil, '']).each do |error|
+    CodeOcean::Error.where.not(message: [nil, '']).where.not(submission_id: [nil, '']).find_each do |error|
       raw_output = error.message
       submission = Submission.find_by(id: error.submission_id)
 

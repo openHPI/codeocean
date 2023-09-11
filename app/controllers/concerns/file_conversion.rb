@@ -21,7 +21,7 @@ module FileConversion
       # Optimize SQL queries: We are first fetching all required file types from the database.
       # Then, we store them in a hash, so that we can access them by using their file extension.
       file_types = {}
-      FileType.where(file_extension: files.pluck('extension')).each do |file_type|
+      FileType.where(file_extension: files.pluck('extension')).find_each do |file_type|
         file_types[file_type.file_extension] = file_type
       end
 

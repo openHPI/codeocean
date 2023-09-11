@@ -4,7 +4,7 @@ class AddForeignKeysToAnomalyNotifications < ActiveRecord::Migration[7.0]
   def change
     up_only do
       # We cannot add a foreign key to a table that has rows that violate the constraint.
-      AnomalyNotification.where.not(exercise_id: Exercise.all.select(:id)).delete_all
+      AnomalyNotification.where.not(exercise_id: Exercise.select(:id)).delete_all
     end
 
     change_column_null :anomaly_notifications, :contributor_id, false

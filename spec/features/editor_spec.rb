@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Editor', js: true do
+describe 'Editor', :js do
   let(:exercise) { create(:audio_video, description: Forgery(:lorem_ipsum).sentence) }
   let(:scoring_response) do
     [{

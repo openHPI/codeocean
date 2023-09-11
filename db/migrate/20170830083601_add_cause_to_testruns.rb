@@ -4,7 +4,7 @@ class AddCauseToTestruns < ActiveRecord::Migration[4.2]
   def up
     add_column :testruns, :cause, :string
     Testrun.reset_column_information
-    Testrun.all.each do |testrun|
+    Testrun.find_each do |testrun|
       if testrun.submission.nil?
         say_with_time "#{testrun.id} has no submission"
       else

@@ -20,6 +20,6 @@ class Testrun < ApplicationRecord
   validates :status, presence: true
 
   def log
-    testrun_messages.output.select(:log).map(&:log).join.presence
+    testrun_messages.output.pluck(:log).join.presence
   end
 end

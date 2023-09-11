@@ -6,7 +6,7 @@ namespace :export_exercises do
     codeharbor_link = CodeharborLink.find(args.codeharbor_link_id)
     successful_exports = []
     failed_exports = []
-    Exercise.where(public: true).each do |exercise|
+    Exercise.where(public: true).find_each do |exercise|
       puts "Exporting exercise ##{exercise.id}"
       error = ExerciseService::PushExternal.call(
         zip: ProformaService::ExportTask.call(exercise:),

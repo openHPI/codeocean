@@ -6,13 +6,13 @@ class UnifyLtiParameters < ActiveRecord::Migration[7.0]
       dir.up do
         # We cannot add a foreign key to a table that has rows that violate the constraint.
         LtiParameter.where(external_users_id: nil)
-          .or(LtiParameter.where.not(external_users_id: ExternalUser.all.select(:id)))
+          .or(LtiParameter.where.not(external_users_id: ExternalUser.select(:id)))
           .or(LtiParameter.where(exercises_id: nil))
-          .or(LtiParameter.where.not(exercises_id: Exercise.all.select(:id)))
+          .or(LtiParameter.where.not(exercises_id: Exercise.select(:id)))
           .delete_all
 
         # For each user/exercise pair, keep the most recent LtiParameter.
-        LtiParameter.all.group(:external_users_id, :exercises_id).having('count(*) > 1').count.each do |ids, count|
+        LtiParameter.group(:external_users_id, :exercises_id).having('count(*) > 1').count.each do |ids, count|
           LtiParameter.where(external_users_id: ids.first, exercises_id: ids.second).order(updated_at: :asc).limit(count - 1).delete_all
         end
         change_column :lti_parameters, :id, :bigint

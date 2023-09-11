@@ -11,7 +11,7 @@ class ErrorTemplateAttributesController < ApplicationController
   # GET /error_template_attributes
   # GET /error_template_attributes.json
   def index
-    @error_template_attributes = ErrorTemplateAttribute.all.order('important DESC', :key,
+    @error_template_attributes = ErrorTemplateAttribute.order('important DESC', :key,
       :id).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end

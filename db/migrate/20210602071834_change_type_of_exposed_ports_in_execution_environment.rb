@@ -6,7 +6,7 @@ class ChangeTypeOfExposedPortsInExecutionEnvironment < ActiveRecord::Migration[6
     rename_column :execution_environments, :exposed_ports, :exposed_ports_migration
     add_column :execution_environments, :exposed_ports, :integer, array: true, default: [], nil: true
 
-    ExecutionEnvironment.all.each do |execution_environment|
+    ExecutionEnvironment.find_each do |execution_environment|
       next if execution_environment.exposed_ports_migration.nil?
 
       cleaned = execution_environment.exposed_ports_migration.scan(/\d+/)
@@ -21,7 +21,7 @@ class ChangeTypeOfExposedPortsInExecutionEnvironment < ActiveRecord::Migration[6
     rename_column :execution_environments, :exposed_ports, :exposed_ports_migration
     add_column :execution_environments, :exposed_ports, :string
 
-    ExecutionEnvironment.all.each do |execution_environment|
+    ExecutionEnvironment.find_each do |execution_environment|
       next if execution_environment.exposed_ports_migration.empty?
 
       list = execution_environment.exposed_ports_migration

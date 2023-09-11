@@ -19,7 +19,7 @@ class FileTemplatesController < ApplicationController
   # GET /file_templates
   # GET /file_templates.json
   def index
-    @file_templates = FileTemplate.all.order(:file_type_id).paginate(page: params[:page], per_page: per_page_param)
+    @file_templates = FileTemplate.order(:file_type_id).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

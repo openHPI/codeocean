@@ -2,7 +2,7 @@
 
 class ConvertReasonToJsonInAnomalyNotifications < ActiveRecord::Migration[7.0]
   def up
-    AnomalyNotification.where("reason LIKE '%value:%'").each do |anomaly_notification|
+    AnomalyNotification.where("reason LIKE '%value:%'").find_each do |anomaly_notification|
       reason = anomaly_notification.reason
       reason = reason.gsub('value:', '"value":')
       reason = reason.gsub(/"(\d+\.\d+)"/) {|_| Regexp.last_match(1) }

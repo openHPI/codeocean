@@ -377,7 +377,7 @@ class SubmissionsController < ApplicationController
       #
       # Reloading the ErrorTemplate is necessary to allow preloading the ErrorTemplateAttributes.
       # However, this results in less (and faster) SQL queries than performing manual lookups.
-      ErrorTemplate.where(id: matching_error_templates).joins(:error_template_attributes).includes(:error_template_attributes).each do |template|
+      ErrorTemplate.where(id: matching_error_templates).joins(:error_template_attributes).includes(:error_template_attributes).find_each do |template|
         results << StructuredError.create_from_template(template, @testrun[:output], @submission)
       end
     end
