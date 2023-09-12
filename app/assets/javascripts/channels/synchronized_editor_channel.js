@@ -64,7 +64,7 @@ $(document).on('turbolinks:load', function () {
         },
 
         editor_change(delta, active_file) {
-          const message = {session_id: session_id, active_file: active_file, delta: delta.data}
+          const message = {session_id: session_id, active_file: active_file, delta: delta}
           this.perform('editor_change', message);
         },
 

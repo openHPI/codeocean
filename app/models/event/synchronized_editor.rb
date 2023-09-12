@@ -21,12 +21,8 @@ class Event::SynchronizedEditor < ApplicationRecord
   }, _prefix: true
 
   enum editor_action: {
-    insertText: 0,
-    insertLines: 1,
-    removeText: 2,
-    removeLines: 3,
-    changeFold: 4,
-    removeFold: 5,
+    insert: 0,
+    remove: 1,
   }, _prefix: true
 
   validates :status, presence: true, if: -> { action_connection_change? }
@@ -37,15 +33,14 @@ class Event::SynchronizedEditor < ApplicationRecord
   validates :range_start_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
   validates :range_end_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
   validates :range_end_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
-  validates :nl, inclusion: {in: %W[\n \r\n]}, if: -> { editor_action_removeLines? }
-
-  validate :either_lines_or_text
+  validates :lines, presence: true, if: -> { action_editor_change? }
 
   def self.create_for_editor_change(event, user, programming_group)
     event_copy = event.deep_dup
     file = event_copy.delete(:active_file)
     delta = event_copy.delete(:delta)
-    range = delta.delete(:range)
+    start_range = delta.delete(:start)
+    end_range = delta.delete(:end)
 
     create!(
       user:,
@@ -55,12 +50,10 @@ class Event::SynchronizedEditor < ApplicationRecord
       editor_action: delta.delete(:action),
       file_id: file[:id],
       session_id: event_copy.delete(:session_id),
-      range_start_row: range[:start][:row],
-      range_start_column: range[:start][:column],
-      range_end_row: range[:end][:row],
-      range_end_column: range[:end][:column],
-      text: delta.delete(:text),
-      nl: delta.delete(:nl),
+      range_start_row: start_range[:row],
+      range_start_column: start_range[:column],
+      range_end_row: end_range[:row],
+      range_end_column: end_range[:column],
       lines: delta.delete(:lines),
       data: data_attribute(event_copy, delta)
     )
@@ -81,22 +74,4 @@ class Event::SynchronizedEditor < ApplicationRecord
     event.presence if event.present? # TODO: As of now, we are storing the `session_id` most of the times. Intended?
   end
   private_class_method :data_attribute
-
-  private
-
-  def strip_strings
-    # trim whitespace from beginning and end of string attributes
-    # except the `text` and `nl` of Event::SynchronizedEditor
-    attribute_names.without('text', 'nl').each do |name|
-      if send(name.to_sym).respond_to?(:strip)
-        send("#{name}=".to_sym, send(name).strip)
-      end
-    end
-  end
-
-  def either_lines_or_text
-    if [lines, text].count(&:present?) > 1
-      errors.add(:text, "can't be present if lines is also present")
-    end
-  end
 end

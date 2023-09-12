@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_08_091810) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_12_142620) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -162,9 +162,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_08_091810) do
     t.integer "range_start_column"
     t.integer "range_end_row"
     t.integer "range_end_column"
-    t.text "text"
     t.text "lines", array: true
-    t.string "nl", limit: 2, comment: "Identifies the line break type (i.e., \\r\\n or \\n)"
     t.jsonb "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
