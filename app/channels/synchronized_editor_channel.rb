@@ -3,8 +3,12 @@
 class SynchronizedEditorChannel < ApplicationCable::Channel
   def subscribed
     stream_from specific_channel
-    message = create_message('connection_change', 'connected')
 
+    # We generate a session_id for the user and send it to the client
+    @session_id = SecureRandom.uuid
+    connection.transmit identifier: @identifier, message: {action: :session_id, session_id: @session_id}
+
+    message = create_message('connection_change', 'connected')
     Event::SynchronizedEditor.create_for_connection_change(message, current_user, programming_group)
     ActionCable.server.broadcast(specific_channel, message)
   end
@@ -47,6 +51,7 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
       action:,
       status:,
       user: current_user.to_page_context,
+      session_id: @session_id,
     }
   end
 end
