@@ -63,11 +63,16 @@ $(document).on('turbolinks:load', function () {
               }
               break;
             case 'current_content':
+            case 'reset_content':
               if (is_other_session(data.session_id)) {
                 CodeOceanEditor.setEditorContent(data);
               }
               break;
           }
+        },
+
+        reset_content(content) {
+          this.perform('reset_content', content);
         },
 
         editor_change(delta, active_file) {

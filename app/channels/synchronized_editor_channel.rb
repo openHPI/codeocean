@@ -46,10 +46,24 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
     ActionCable.server.broadcast(specific_channel, message)
   end
 
+  def reset_content(content)
+    message = create_reset_content_message(content)
+    ActionCable.server.broadcast(specific_channel, message)
+  end
+
   def create_message(action, status)
     {
       action:,
       status:,
+      user: current_user.to_page_context,
+      session_id: @session_id,
+    }
+  end
+
+  def create_reset_content_message(content)
+    {
+      action: content['action'],
+      files: content['files'],
       user: current_user.to_page_context,
       session_id: @session_id,
     }

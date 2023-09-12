@@ -119,6 +119,7 @@ CodeOceanEditorSubmissions = {
       url: $('#start-over').data('url') || $('#start-over-active-file').data('url')
     }).done(function(response) {
       this.hideSpinner();
+      App.synchronized_editor?.reset_content(response);
       this.setEditorContent(response, onlyActiveFile);
     }.bind(this));
   },
