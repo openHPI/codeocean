@@ -269,7 +269,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
-    proformaxml (0.10.0)
+    proformaxml (1.0.0)
       activemodel (>= 5.2.3, < 8.0.0)
       activesupport (>= 5.2.3, < 8.0.0)
       dachsfisch (>= 0.1.0, < 1.0.0)
