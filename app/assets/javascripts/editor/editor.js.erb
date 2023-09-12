@@ -341,9 +341,6 @@ var CodeOceanEditor = {
                     return;
                 }
                 App.synchronized_editor?.editor_change(deltaObject, this.active_file);
-
-                // TODO: This is a workaround for a bug in Ace. Remove when upgrading Ace.
-                this.handleUTF16Surrogates(deltaObject, session);
                 this.resetSaveTimer();
             }.bind(this, editor));
         }.bind(this));
@@ -353,53 +350,6 @@ var CodeOceanEditor = {
         this.editors.forEach(function (editor) {
             editor.setTheme(this.THEME);
         }.bind(this));
-    },
-
-    handleUTF16Surrogates: function (AceDeltaObject, AceSession) {
-        if (_.isEmpty(AceDeltaObject.lines) || AceDeltaObject.action !== "remove") {
-            return;
-        }
-
-        const firstCodePoint = AceDeltaObject.lines[0].codePointAt(0);
-        if (0xDC00 <= firstCodePoint && firstCodePoint <= 0xDFFF) {
-            // The text contains a UTF-16 surrogate pair, and the only the lower part is removed.
-            // We need to remove the high surrogate pair as well.
-            const previousCharacter = {
-                start: {
-                    row: AceDeltaObject.start.row,
-                    column: AceDeltaObject.start.column - 1
-                },
-                end: {
-                    row: AceDeltaObject.start.row,
-                    column: AceDeltaObject.start.column
-                }
-            }
-            const previousCharacterCodePoint = AceSession.getTextRange(previousCharacter).codePointAt(0);
-            if (0xD800 <= previousCharacterCodePoint && previousCharacterCodePoint <= 0xDBFF) {
-                AceSession.remove(previousCharacter);
-            }
-        }
-
-        const lastLine = AceDeltaObject.lines.slice(-1)[0];
-        const lastCodePoint = lastLine.codePointAt(lastLine.length - 1);
-        if (0xD800 <= lastCodePoint && lastCodePoint <= 0xDBFF) {
-            // The text contains a UTF-16 surrogate pair, and the only the higher part is removed.
-            // We need to remove the high surrogate pair as well.
-            const nextCharacter = {
-                start: {
-                    row: AceDeltaObject.end.row,
-                    column: AceDeltaObject.end.column - 1
-                },
-                end: {
-                    row: AceDeltaObject.end.row,
-                    column: AceDeltaObject.end.column
-                }
-            }
-            const nextCharacterCodePoint = AceSession.getTextRange(nextCharacter).codePointAt(0);
-            if (0xDC00 <= nextCharacterCodePoint && nextCharacterCodePoint <= 0xDFFF) {
-                AceSession.remove(nextCharacter);
-            }
-        }
     },
 
     initializeEventHandlers: function () {
