@@ -29,7 +29,6 @@ var CodeOceanEditor = {
     running: false,
 
     lastCopyText: null,
-    lastDeltaObject_for_file: new Map(),
 
     <% self.class.include Rails.application.routes.url_helpers %>
     <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
@@ -313,7 +312,6 @@ var CodeOceanEditor = {
             editor.commands.bindKey("ctrl+alt+0", null);
             this.editors.push(editor);
             this.editor_for_file.set($(element).parent().data('filename'), editor);
-            this.lastDeltaObject_for_file.set($(element).parent().data('filename'), null);
             var session = editor.getSession();
             var mode = $(element).data('mode')
             session.setMode(mode);
@@ -335,9 +333,11 @@ var CodeOceanEditor = {
             editor.on("copy", this.handleCopyEvent.bind(element));
 
             // listener for autosave
-            session.on("change", function (deltaObject, session) {
-                if (this.compareDeltaObjects(deltaObject, this.lastDeltaObject_for_file.get(this.active_file.filename))) {
-                    this.lastDeltaObject_for_file.set(this.active_file.filename, null);
+            session.on("change", function (editor, deltaObject, session) {
+                // editor.curOp.command is empty for changes that are not caused by user input.
+                // With that we can differentiate between changes caused by user input and
+                // changes caused by changed text because of WebSocket notifications from a pair programming partner.
+                if(_.isEmpty(editor.curOp.command)) {
                     return;
                 }
                 App.synchronized_editor?.editor_change(deltaObject, this.active_file);
@@ -345,7 +345,7 @@ var CodeOceanEditor = {
                 // TODO: This is a workaround for a bug in Ace. Remove when upgrading Ace.
                 this.handleUTF16Surrogates(deltaObject, session);
                 this.resetSaveTimer();
-            }.bind(this));
+            }.bind(this, editor));
         }.bind(this));
     },
 
@@ -1061,18 +1061,8 @@ var CodeOceanEditor = {
     },
 
     applyChanges: function (delta, active_file) {
-        this.lastDeltaObject_for_file.set(active_file.filename, delta);
         const editor = this.editor_for_file.get(active_file.filename)
         editor.session.doc.applyDeltas([delta]);
-    },
-
-    compareDeltaObjects: function (delta, last_delta) {
-        if (delta === null || last_delta === null) {
-            return false;
-        }
-
-        const delta_data = delta.data
-        return !_.isEqual(delta_data, last_delta);
     },
 
     showPartnersConnectionStatus: function (status, username) {
