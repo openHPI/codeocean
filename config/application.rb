@@ -60,5 +60,8 @@ module CodeOcean
 
     # Extract Sentry-related parameters from WebSocket connection
     config.middleware.insert_before 0, Middleware::WebSocketSentryHeaders
+
+    # Disable concurrent ActionCable workers to ensure ACE change events keep their order
+    config.action_cable.worker_pool_size = 1
   end
 end
