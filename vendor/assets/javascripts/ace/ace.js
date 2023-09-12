@@ -14819,6 +14819,8 @@ var Gutter = function(parentEl) {
                 rowInfo.className = " ace_warning";
             else if (type == "info" && (!rowInfo.className))
                 rowInfo.className = " ace_info";
+            else if (!!!type && annotation.className)
+                rowInfo.className = " " + annotation.className
         }
     };
 
