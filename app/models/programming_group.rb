@@ -59,7 +59,7 @@ class ProgrammingGroup < ApplicationRecord
     {
       id:,
       type: self.class.name,
-      consumer: '',
+      consumer: nil, # A programming group is not associated with a consumer.
       displayname:,
     }
   end
