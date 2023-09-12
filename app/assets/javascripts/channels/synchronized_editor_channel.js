@@ -1,12 +1,6 @@
 $(document).on('turbolinks:load', function () {
 
   if (window.location.pathname.includes('/implement')) {
-    function generateUUID() {
-      // We decided to use this function instead of crypto.randomUUID() because it also supports older browser versions
-      // https://caniuse.com/?search=createObjectURL
-      return URL.createObjectURL(new Blob()).slice(-36)
-    }
-
     function is_other_user(user) {
       return !_.isEqual(current_user, user);
     }
@@ -17,7 +11,7 @@ $(document).on('turbolinks:load', function () {
 
     const editor = $('#editor');
     const exercise_id = editor.data('exercise-id');
-    const session_id = generateUUID();
+    let session_id;
 
     if ($.isController('exercises') && is_other_user(current_contributor)) {
 
@@ -38,14 +32,16 @@ $(document).on('turbolinks:load', function () {
         received(data) {
           // Called when there's incoming data on the websocket for this channel
           switch (data.action) {
+            case 'session_id':
+              session_id = data.session_id;
+              break;
             case 'editor_change':
               if (is_other_session(data.session_id)) {
                 CodeOceanEditor.applyChanges(data.delta, data.active_file);
               }
               break;
             case 'connection_change':
-              // TODO: Check session id instead of user id to support multiple windows per user
-              if (is_other_user(data.user) && data.status === 'connected') {
+              if (is_other_session(data.session_id) && data.status === 'connected') {
                 const message = {files: CodeOceanEditor.collectFiles(), session_id: session_id};
                 this.perform('current_content', message);
               }
