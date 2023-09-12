@@ -607,6 +607,7 @@ en:
       info_study: "As part of my master's thesis, I would like to analyze the use of pair programming in this MOOC. Therefore, I would be very happy if you work on the exercises together with another person and then give me your feedback in the surveys. Please note that this feature is a beta version that has not yet been activated for all users."
       own_user_id: "Your user ID:"
       pair_programming_info: Pair Programming Info
+      safari_not_supported: "Safari does not support embedding the user IDs page. <a target='_blank', style='display: contents;' href=%{url}>Please click here to open the list of user IDs.</a>"
       work_alone: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to work in a pair for this exercise. <a href=%{path}>Click here to get to the exercise in single mode.</a>"
     implement:
       info_disconnected: You are disconnected from the server. Please check your internet connection and reload the page.

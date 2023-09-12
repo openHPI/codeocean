@@ -21,6 +21,10 @@ h1 = t('programming_groups.new.create_programming_pair')
     h5 = t('programming_groups.new.find_partner_title')
     p
       = t('programming_groups.new.find_partner_description')
-    iframe name="embed_readwrite" src="https://etherpad.xopic.de/p/find_programming_group_for_exercise_#{@exercise.id}?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false" width="100%" height="300" style='border: 1px solid black;'
+    - if !browser.safari?
+      iframe name="embed_readwrite" src="https://etherpad.xopic.de/p/find_programming_group_for_exercise_#{@exercise.id}?userName=#{CGI.escape(current_user.displayname)}&showControls=false&showChat=false&showLineNumbers=true&useMonospaceFont=false" width="100%" height="300" style='border: 1px solid black;'
+    - else
+      == t('programming_groups.new.safari_not_supported', url: "https://etherpad.xopic.de/p/find_programming_group_for_exercise_#{@exercise.id}?userName=#{CGI.escape(current_user.displayname)}&showControls=false&showChat=false&showLineNumbers=true&useMonospaceFont=false")
+
 
 = render('shared/modal', classes: 'modal-lg', id: 'modal-info-pair-programming', template: 'programming_groups/_info_pair_programming', title: t('programming_groups.new.pair_programming_info'))
