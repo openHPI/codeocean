@@ -392,7 +392,6 @@ en:
       is_online: "%{name} is online"
       lastsaved: 'Last saved: '
       network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
-      pair_programming_session: Pair Programming Session
       render: Render
       run: Run
       run_failure: Your code could not be run.
