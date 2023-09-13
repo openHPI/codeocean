@@ -30,7 +30,7 @@
             span.badge.rounded-pill.bg-primary.float-end.mt-2.mb-5.score
 
           - if !current_contributor.programming_group?
-            span.badge.rounded-pill.bg-primary.float-end.mt-2.mb-5.score
+            span.badge.rounded-pill.bg-primary.float-end.mt-2.score
 
       #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
         = render_markdown(@exercise.description)
