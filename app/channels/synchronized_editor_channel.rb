@@ -6,11 +6,15 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
 
     # We generate a session_id for the user and send it to the client
     @session_id = SecureRandom.uuid
-    connection.transmit identifier: @identifier, message: {action: :session_id, session_id: @session_id}
 
-    message = create_message('connection_change', 'connected')
-    Event::SynchronizedEditor.create_for_connection_change(message, current_user, programming_group)
-    ActionCable.server.broadcast(specific_channel, message)
+    # We need to wait for the subscription to be confirmed before we can send further messages
+    send_after_streaming_confirmed do
+      connection.transmit identifier: @identifier, message: {action: :session_id, session_id: @session_id}
+
+      message = create_message('connection_change', 'connected')
+      Event::SynchronizedEditor.create_for_connection_change(message, current_user, programming_group)
+      ActionCable.server.broadcast(specific_channel, message)
+    end
   end
 
   def unsubscribed
