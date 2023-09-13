@@ -18,7 +18,11 @@ $(document).on('turbolinks:load', function () {
     if (modal.isPresent()) {
         ProgrammingGroups.initializeEventHandler();
 
-        if (ProgrammingGroups.getStoredViewedPPInfo() !== 'true' && !_.isEqual(current_user, current_contributor)) {
+        // We only show the modal if the user has not decided to hide it on the current device.
+        // Further, the modal is either shown on /implement for a programming group or on /programming_groups/new.
+        if (ProgrammingGroups.getStoredViewedPPInfo() !== 'true' &&
+            ((window.location.pathname.includes('/implement') && !_.isEqual(current_user, current_contributor)) ||
+              window.location.pathname.includes('/programming_groups/new'))) {
             new bootstrap.Modal(modal).show();
         }
     }
