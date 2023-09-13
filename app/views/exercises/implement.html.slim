@@ -37,7 +37,7 @@
 
       - if current_contributor.programming_group?
         .small.text-body-tertiary
-          == t('exercises.implement.pair_programming_feedback', url: 'https://etherpad.xopic.de/p/openHPI_PairProgrammingFeedback')
+          == t('exercises.implement.pair_programming_feedback', url: "https://etherpad.xopic.de/p/openHPI_PairProgrammingFeedback?userName=#{CGI.escape(current_user.displayname)}")
 
       a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide')
         - if @embed_options[:collapse_exercise_description]
