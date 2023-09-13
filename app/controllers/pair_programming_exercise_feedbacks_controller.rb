@@ -85,7 +85,7 @@ class PairProgrammingExerciseFeedbacksController < ApplicationController
     authorize(@submission, :show?)
 
     params[:pair_programming_exercise_feedback]
-      .permit(:difficulty, :user_estimated_worktime, :exercise_id)
+      .permit(:difficulty, :user_estimated_worktime, :exercise_id, :reason_work_alone)
       .merge(user: current_user,
         submission: @submission,
         normalized_score: @submission&.normalized_score)
