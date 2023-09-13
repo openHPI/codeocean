@@ -43,10 +43,14 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
   end
 
   def connection_status
-    ActionCable.server.broadcast(specific_channel, create_message('connection_status', 'connected'))
+    message = create_message('connection_status', 'connected')
+
+    Event::SynchronizedEditor.create_for_connection_change(message, current_user, programming_group)
+    ActionCable.server.broadcast(specific_channel, message)
   end
 
   def current_content(message)
+    Event::SynchronizedEditor.create_for_current_content(message, current_user, programming_group)
     ActionCable.server.broadcast(specific_channel, message)
   end
 

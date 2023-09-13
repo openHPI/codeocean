@@ -13,6 +13,7 @@ class Event::SynchronizedEditor < ApplicationRecord
     editor_change: 0,
     connection_change: 1,
     connection_status: 2,
+    current_content: 3,
   }, _prefix: true
 
   enum status: {
@@ -27,13 +28,13 @@ class Event::SynchronizedEditor < ApplicationRecord
 
   validates :session_id, presence: true
   validates :status, presence: true, if: -> { action_connection_change? }
-  validates :file_id, presence: true, if: -> { action_editor_change? }
+  validates :file_id, presence: true, if: -> { action_editor_change? || action_current_content? }
   validates :editor_action, presence: true, if: -> { action_editor_change? }
   validates :range_start_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
   validates :range_start_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
   validates :range_end_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
   validates :range_end_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
-  validates :lines, presence: true, if: -> { action_editor_change? }
+  validates :lines, presence: true, if: -> { action_editor_change? || action_current_content? }
 
   def self.create_for_editor_change(event, user, programming_group)
     event_copy = event.deep_dup
@@ -57,6 +58,20 @@ class Event::SynchronizedEditor < ApplicationRecord
       lines: delta.delete(:lines),
       data: data_attribute(event_copy, delta)
     )
+  end
+
+  def self.create_for_current_content(message, user, programming_group)
+    message['files'].each do |file|
+      create!(
+        user:,
+        programming_group:,
+        study_group_id: user.current_study_group_id,
+        action: message['action'],
+        file_id: file['file_id'],
+        session_id: message['session_id'],
+        lines: file['content'].split("\n")
+      )
+    end
   end
 
   def self.create_for_connection_change(message, user, programming_group)
