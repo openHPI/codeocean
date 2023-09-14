@@ -34,7 +34,8 @@ class Event::SynchronizedEditor < ApplicationRecord
   validates :range_start_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
   validates :range_end_row, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
   validates :range_end_column, numericality: {only_integer: true, greater_than_or_equal_to: 0}, if: -> { action_editor_change? }
-  validates :lines, presence: true, if: -> { action_editor_change? || action_current_content? }
+  validates :lines, presence: true, if: -> { action_editor_change? }
+  validate :lines_not_nil, if: -> { action_current_content? }
 
   def self.create_for_editor_change(event, user, programming_group)
     event_copy = event.deep_dup
@@ -90,4 +91,12 @@ class Event::SynchronizedEditor < ApplicationRecord
     event.presence if event.present? # TODO: As of now, we are storing the `session_id` most of the times. Intended?
   end
   private_class_method :data_attribute
+end
+
+private
+
+def lines_not_nil
+  if lines.nil?
+    errors.add(:lines, 'cannot be nil')
+  end
 end
