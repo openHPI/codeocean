@@ -9,21 +9,16 @@ class ProgrammingGroup < ApplicationRecord
   has_many :internal_users, through: :programming_group_memberships, source_type: 'InternalUser', source: :user
   has_many :testruns, through: :submissions
   has_many :runners, as: :contributor, dependent: :destroy
-  has_many :events
-  has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
-  has_many :pair_programming_exercise_feedbacks
-  has_many :pair_programming_waiting_users
+  has_many :events, dependent: :destroy
+  has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor', dependent: :destroy
+  has_many :pair_programming_exercise_feedbacks, dependent: :destroy
+  has_many :pair_programming_waiting_users, dependent: :destroy
   belongs_to :exercise
 
   validate :min_group_size
   validate :max_group_size
   validate :no_erroneous_users
   accepts_nested_attributes_for :programming_group_memberships
-
-  def initialize(attributes = nil)
-    @erroneous_users = []
-    super
-  end
 
   def external_user?
     false
@@ -76,14 +71,26 @@ class ProgrammingGroup < ApplicationRecord
   def users=(users)
     self.internal_users = []
     self.external_users = []
-    users.each do |user|
-      next @erroneous_users << user unless user.is_a?(User)
+    users&.each do |user|
+      next erroneous_users << user unless user.is_a?(User)
 
       add(user)
     end
   end
 
+  def self.ransackable_associations(_auth_object = nil)
+    %w[exercise programming_group_memberships]
+  end
+
+  def self.ransortable_attributes(_auth_object = nil)
+    %w[id created_at]
+  end
+
   private
+
+  def erroneous_users
+    @erroneous_users ||= []
+  end
 
   def min_group_size
     if users.size < 2
@@ -98,7 +105,7 @@ class ProgrammingGroup < ApplicationRecord
   end
 
   def no_erroneous_users
-    @erroneous_users.each do |partner_id|
+    erroneous_users.each do |partner_id|
       errors.add(:base, :invalid_partner_id, partner_id:)
     end
   end

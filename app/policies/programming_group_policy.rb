@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class ProgrammingGroupPolicy < ApplicationPolicy
-  def new?
+class ProgrammingGroupPolicy < AdminOnlyPolicy
+  def create?
     everyone
   end
 
-  def create?
+  def new?
     everyone
   end
 

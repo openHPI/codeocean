@@ -58,6 +58,12 @@ de:
         uuid: UUID
         unpublished: Deaktiviert
       programming_group:
+        exercise: Aufgabe
+        external_user_id: Externe Nutzer-ID
+        internal_user_id: Interne Nutzer-ID
+        member: Mitglieder
+        member_count: Anzahl der Mitglieder
+        name: Name
         programming_partner_ids: Nutzer-ID der Programmierpartnerin / des Programmierpartners
       programming_group/programming_group_memberships:
         base: Programmiergruppenmitgliedschaft
@@ -599,10 +605,10 @@ de:
       enter_partner_id: "Kennen Sie eine Person in dem Kurs, mit der Sie gemeinsam die Aufgabe lösen möchten? Dann geben Sie hier die Nutzer-ID dieser Person ein."
       find_partner_title: "Eine:n Programmierpartner:in für die Aufgabe finden"
       find_partner_description: "Wenn Sie keine Person aus dem Kurs kennen, haben Sie die Möglichkeit mit einer anderen Person gepaart zu werden. Sie werden dann zur Aufgabe weitergeleitet, sobald eine andere Person ebenfalls diese Aufgabe im Team lösen möchte."
+      find_programming_partner: Programmierpartner:in finden
       info_pair_programming: "Pair Programming (Programmieren in Paaren) ist eine Methode, bei der zwei Personen gemeinsam programmieren. Dabei übernehmen sie <i>abwechselnd</i> zwei verschiedene Rollen:  Den <i>Driver</i>, der den Code schreibt und sich auf die Details fokussiert und den <i>Navigator</i>, der Tippfehler korrigiert, die Aufgabenstellung im Blick behält und Verbesserungsideen vorschlägt. Kommunikation miteinander ist von entscheidender Bedeutung für erfolgreiches Pair Programming."
       info_forced_work_together: "Sie können die Aufgabe '%{exercise_title}' nur gemeinsam mit einer anderen Person lösen. Ihr:e Teampartner:in kann sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Für das Lösen der Aufgabe erhalten Sie Bonuspunkte."
       info_work_together: "Sie haben die Möglichkeit, die Aufgabe '%{exercise_title}' zusammen mit einer anderen Person zu lösen. Ihr:e Teampartner:in kann sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Beachten Sie dabei, dass anschließend keiner die Zusammenarbeit beenden kann. Für die nächste Aufgabe können Sie sich erneuert entscheiden, ob und mit wem Sie zusammen arbeiten möchten."
-      find_programming_partner: Programmierpartner:in finden
       own_user_id: "Ihre Nutzer-ID:"
       pair_programming_info: Pair Programming Info
       work_alone: "Alleine arbeiten"
@@ -1044,10 +1050,11 @@ de:
       update: "Aktualisieren"
   navigation:
     sections:
+      contributors: "Mitwirkende"
       errors: "Fehler"
       files: "Dateien"
-      users: "Benutzer"
       integrations: "Integrationen"
+      users: "Nutzer"
   exercise_collections:
     form:
       add_exercises: "Aufgaben hinzufügen"

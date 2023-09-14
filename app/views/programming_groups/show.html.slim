@@ -1,0 +1,19 @@
+h1
+  = @programming_group
+  - if policy(@programming_group).edit?
+    = render('shared/edit_button', object: @programming_group)
+
+= row(label: 'activerecord.attributes.programming_group.name', value: @programming_group.displayname)
+= row(label: 'activerecord.attributes.programming_group.exercise', value: link_to_if(policy(@programming_group.exercise).show?, @programming_group.exercise.title, @programming_group.exercise))
+= row(label: 'activerecord.attributes.programming_group.member_count', value: @programming_group.users.size)
+= row(label: 'shared.created_at', value: l(@programming_group.created_at, format: :short))
+
+h2.mt-4 = t('activerecord.attributes.study_group.members')
+.table-responsive
+  table.table class="#{@programming_group.users.present? ? 'sortable' : ''}"
+    thead
+      tr
+        th =  t('navigation.sections.contributors')
+    - @programming_group.users.each do |user|
+      tr
+        td = link_to_if(policy(user).show?, user.displayname, user)

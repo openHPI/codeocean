@@ -37,6 +37,10 @@ class ExercisePolicy < AdminOrAuthorPolicy
     end
   end
 
+  def programming_groups_for_exercise?
+    admin?
+  end
+
   def submit?
     everyone && @record.teacher_defined_assessment?
   end

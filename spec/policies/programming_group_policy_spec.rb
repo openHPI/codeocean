@@ -7,6 +7,17 @@ RSpec.describe ProgrammingGroupPolicy do
 
   let(:programming_group) { build(:programming_group) }
 
+  %i[index? destroy? show? edit? update?].each do |action|
+    permissions(action) do
+      it 'grants access to admins only' do
+        expect(policy).to permit(create(:admin), programming_group)
+        %i[external_user teacher].each do |factory_name|
+          expect(policy).not_to permit(create(factory_name), programming_group)
+        end
+      end
+    end
+  end
+
   %i[new? create?].each do |action|
     permissions(action) do
       it 'grants access to everyone' do

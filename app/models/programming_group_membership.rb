@@ -12,4 +12,8 @@ class ProgrammingGroupMembership < ApplicationRecord
       errors.add(:base, :already_exists, id_with_type: user.id_with_type)
     end
   end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user]
+  end
 end

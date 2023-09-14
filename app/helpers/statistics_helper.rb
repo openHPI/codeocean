@@ -44,6 +44,7 @@ module StatisticsHelper
         key: 'programming_groups',
         name: t('activerecord.models.programming_group.other'),
         data: ProgrammingGroup.count,
+        url: programming_groups_path,
       },
       {
         key: 'currently_active',

@@ -36,6 +36,7 @@ class Exercise < ApplicationRecord
   has_many :request_for_comments
 
   scope :with_submissions, -> { where('id IN (SELECT exercise_id FROM submissions)') }
+  scope :with_programming_groups, -> { where('id IN (SELECT exercise_id FROM programming_groups)') }
 
   validate :valid_main_file?
   validate :valid_submission_deadlines?
@@ -612,7 +613,7 @@ class Exercise < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[title internal_title]
+    %w[title id internal_title]
   end
 
   def self.ransackable_associations(_auth_object = nil)
