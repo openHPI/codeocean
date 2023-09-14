@@ -97,8 +97,10 @@ Rails.application.routes.draw do
       post :export_external_confirm
     end
 
-    resources :programming_groups, only: %i[new create]
+    resources :programming_groups
   end
+
+  resources :programming_groups, except: %i[new create]
 
   resources :exercise_collections do
     member do

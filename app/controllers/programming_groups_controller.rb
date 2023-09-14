@@ -4,7 +4,17 @@ class ProgrammingGroupsController < ApplicationController
   include CommonBehavior
   include LtiHelper
 
-  before_action :set_exercise_and_authorize
+  before_action :set_exercise_and_authorize, only: %i[new create]
+  before_action :set_programming_group_and_authorize, only: MEMBER_ACTIONS
+
+  def index
+    set_exercise_and_authorize if params[:exercise_id].present?
+    @search = ProgrammingGroup.ransack(params[:q], {auth_object: current_user})
+    @programming_groups = @search.result.includes(:exercise, :programming_group_memberships, :internal_users, :external_users).order(:id).paginate(page: params[:page], per_page: per_page_param)
+    authorize!
+  end
+
+  def show; end
 
   def new
     Event.create(category: 'page_visit', user: current_user, exercise: @exercise, data: 'programming_groups_new', file_id: nil)
@@ -23,9 +33,13 @@ class ProgrammingGroupsController < ApplicationController
     end
   end
 
+  def edit
+    @members = @programming_group.programming_group_memberships.includes(:user)
+  end
+
   def create
-    programming_partner_ids = programming_group_params[:programming_partner_ids].split(',').map(&:strip).uniq
-    users = programming_partner_ids.map do |partner_id|
+    programming_partner_ids = programming_group_params&.fetch(:programming_partner_ids, [])&.split(',')&.map(&:strip)&.uniq
+    users = programming_partner_ids&.map do |partner_id|
       User.find_by_id_with_type(partner_id)
     rescue ActiveRecord::RecordNotFound
       partner_id
@@ -33,12 +47,12 @@ class ProgrammingGroupsController < ApplicationController
     @programming_group = ProgrammingGroup.new(exercise: @exercise, users:)
     authorize!
 
-    unless programming_partner_ids.include? current_user.id_with_type
+    unless programming_partner_ids&.include? current_user.id_with_type
       @programming_group.add(current_user)
     end
 
     unless @programming_group.valid?
-      Event.create(category: 'pp_invalid_partners', user: current_user, exercise: @exercise, data: programming_group_params[:programming_partner_ids], file_id: nil)
+      Event.create(category: 'pp_invalid_partners', user: current_user, exercise: @exercise, data: programming_group_params&.fetch(:programming_partner_ids), file_id: nil)
     end
 
     create_and_respond(object: @programming_group, path: proc { implement_exercise_path(@exercise) }) do
@@ -65,19 +79,36 @@ class ProgrammingGroupsController < ApplicationController
     end
   end
 
+  def update
+    myparams = programming_group_params || {}
+    @members = @programming_group.programming_group_memberships.includes(:user)
+    myparams[:users] = @members.where(id: myparams&.fetch(:programming_group_membership_ids, [])&.compact_blank).map(&:user)
+    update_and_respond(object: @programming_group, params: myparams)
+  end
+
+  def destroy
+    session.delete(:pg_id) if current_contributor == @programming_group
+    destroy_and_respond(object: @programming_group)
+  end
+
   private
 
   def authorize!
-    authorize(@programming_group)
+    authorize(@programming_group || @programming_groups)
   end
 
   def programming_group_params
-    params.require(:programming_group).permit(:programming_partner_ids)
+    params.require(:programming_group).permit(:programming_partner_ids, programming_group_membership_ids: []) if params[:programming_group].present?
   end
 
   def set_exercise_and_authorize
     @exercise = Exercise.find(params[:exercise_id])
     authorize(@exercise, :implement?)
+  end
+
+  def set_programming_group_and_authorize
+    @programming_group = ProgrammingGroup.find(params[:id])
+    authorize!
   end
 
   def redirect_to_exercise

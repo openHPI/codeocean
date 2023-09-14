@@ -22,7 +22,7 @@ h1 = Submission.model_name.human(count: 2)
       - @submissions.each do |submission|
         tr
           td = link_to_if(submission.exercise && policy(submission.exercise).show?, submission.exercise, submission.exercise)
-          td = link_to_if(submission.contributor.is_a?(User) && policy(submission.contributor).show?, submission.contributor, submission.contributor)
+          td = link_to_if(policy(submission.contributor).show?, submission.contributor, submission.contributor)
           td = t("submissions.causes.#{submission.cause}")
           td = submission.score
           td = l(submission.created_at, format: :short)

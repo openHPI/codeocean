@@ -12,7 +12,7 @@
           li.dropdown-divider role='separator'
         = render('navigation_submenu', title: t('activerecord.models.exercise.other'),
                 models: [Exercise, ExerciseCollection, ProxyExercise, Tag, Tip, Submission], link: exercises_path, cached: true)
-        = render('navigation_submenu', title: t('navigation.sections.users'), models: [InternalUser, ExternalUser],
+        = render('navigation_submenu', title: t('navigation.sections.contributors'), models: [InternalUser, ExternalUser, ProgrammingGroup],
                 cached: true)
         = render('navigation_collection_link', model: StudyGroup, cached: true)
         = render('navigation_collection_link', model: ExecutionEnvironment, cached: true)

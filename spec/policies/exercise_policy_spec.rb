@@ -7,11 +7,13 @@ RSpec.describe ExercisePolicy do
 
   let(:exercise) { build(:dummy, public: true) }
 
-  permissions :batch_update? do
-    it 'grants access to admins only' do
-      expect(policy).to permit(build(:admin), exercise)
-      %i[external_user teacher].each do |factory_name|
-        expect(policy).not_to permit(create(factory_name), exercise)
+  %i[batch_update? programming_groups_for_exercise?].each do |action|
+    permissions(action) do
+      it 'grants access to admins only' do
+        expect(policy).to permit(build(:admin), exercise)
+        %i[external_user teacher].each do |factory_name|
+          expect(policy).not_to permit(create(factory_name), exercise)
+        end
       end
     end
   end
