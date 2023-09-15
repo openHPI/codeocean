@@ -2,7 +2,7 @@
   "name": "codeocean",
   "private": true,
   "dependencies": {
-    "@babel/core": "^7.22.17",
+    "@babel/core": "^7.22.19",
     "@babel/plugin-transform-runtime": "^7.22.15",
     "@babel/preset-env": "^7.22.15",
     "@babel/runtime": "^7.22.15",
