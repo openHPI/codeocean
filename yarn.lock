@@ -4454,10 +4454,10 @@ vis-timeline@^7.7.2:
   resolved "https://registry.yarnpkg.com/vis-timeline/-/vis-timeline-7.7.2.tgz#af3565367a0271344b22ee0ecf4694a7459c7803"
   integrity sha512-l7hDBFJ0FI6gX4kzsxAONnAacowK3sHWx3uc5jR1DYs/FAsOEZsHDclVNW3+QAwmV3Xvg61U8//ha6hZNw7G1Q==
 
-vis-util@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/vis-util/-/vis-util-5.0.3.tgz#6a9d67c6ed92f2bfa67e50c20166bb5f59ac07bf"
-  integrity sha512-Wf9STUcFrDzK4/Zr7B6epW2Kvm3ORNWF+WiwEz2dpf5RdWkLUXFSbLcuB88n1W6tCdFwVN+v3V4/Xmn9PeL39g==
+vis-util@^5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/vis-util/-/vis-util-5.0.4.tgz#6356fbbb507188991e220bda0bff226375afa025"
+  integrity sha512-N7RDzCAqxXMY+Uyxj5GNB6BOkKjrr2FvjFpm0goX8wE6r8AjzYG8IuxniAePRZqOYhpJnEYqXpb6lMx1oAOHKg==
 
 watchpack@^2.4.0:
   version "2.4.0"
