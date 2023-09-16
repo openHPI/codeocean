@@ -188,7 +188,10 @@ describe ExercisePolicy do
 
   permissions :submit? do
     context 'when teacher-defined assessments are available' do
-      before { create(:test_file, context: exercise) }
+      before do
+        create(:test_file, context: exercise)
+        exercise.reload
+      end
 
       it 'grants access to anyone' do
         %i[admin external_user teacher].each do |factory_name|

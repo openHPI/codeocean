@@ -144,7 +144,7 @@ describe Exercise do
       before { create(:test_file, context: exercise) }
 
       it 'returns true' do
-        expect(exercise).to be_teacher_defined_assessment
+        expect(exercise.reload).to be_teacher_defined_assessment
       end
     end
 
@@ -152,7 +152,7 @@ describe Exercise do
       before { create(:test_file, context: exercise, role: 'teacher_defined_linter') }
 
       it 'returns true' do
-        expect(exercise).to be_teacher_defined_assessment
+        expect(exercise.reload).to be_teacher_defined_assessment
       end
     end
 
@@ -163,7 +163,7 @@ describe Exercise do
       end
 
       it 'returns true' do
-        expect(exercise).to be_teacher_defined_assessment
+        expect(exercise.reload).to be_teacher_defined_assessment
       end
     end
   end

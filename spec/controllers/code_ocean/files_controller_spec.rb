@@ -63,20 +63,21 @@ describe CodeOcean::FilesController do
   end
 
   describe 'DELETE #destroy' do
-    let(:exercise) { create(:fibonacci) }
-    let(:perform_request) { proc { delete :destroy, params: {id: exercise.files.first.id} } }
+    let!(:exercise) { create(:fibonacci) }
+    let(:perform_request) { proc { delete :destroy, params: {id: exercise.files.reject(&:main_file?).first.id} } }
 
-    before { perform_request.call }
+    context 'with request performed' do
+      before { perform_request.call }
 
-    expect_assigns(file: CodeOcean::File)
+      expect_assigns(file: CodeOcean::File)
 
-    it 'destroys the file' do
-      create(:fibonacci)
-      expect { perform_request.call }.to change(CodeOcean::File, :count).by(-1)
+      it 'redirects to exercise path' do
+        expect(controller).to redirect_to(exercise)
+      end
     end
 
-    it 'redirects to exercise path' do
-      expect(controller).to redirect_to(exercise)
+    it 'destroys the file' do
+      expect { perform_request.call }.to change(CodeOcean::File, :count).by(-1)
     end
   end
 end
