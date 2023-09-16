@@ -562,7 +562,7 @@ class Exercise < ApplicationRecord
   end
 
   def valid_main_file?
-    if files.main_files.count > 1
+    if files.count(&:main_file?) > 1
       errors.add(:files,
         I18n.t('activerecord.errors.models.exercise.at_most_one_main_file'))
     end
