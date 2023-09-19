@@ -6,38 +6,36 @@
     {
       "properties": {
         "type": {
-          "const": "exit",
-          "required": true
+          "const": "exit"
         },
         "data": {
           "type": "integer",
-          "required": true,
           "minimum": 0,
           "maximum": 255
         }
       },
+      "required": ["type", "data"],
       "additionalProperties": false
     },
     {
       "properties": {
         "type": {
-          "enum": [ "stdout", "stderr", "error" ],
-          "required": true
+          "enum": [ "stdout", "stderr", "error" ]
         },
         "data": {
-          "type": "string",
-          "required": true
+          "type": "string"
         }
       },
+      "required": ["type", "data"],
       "additionalProperties": false
     },
     {
       "properties": {
         "type": {
-          "enum": [ "start", "timeout" ],
-          "required": true
+          "enum": [ "start", "timeout" ]
         }
       },
+      "required": ["type"],
       "additionalProperties": false
     }
   ]
