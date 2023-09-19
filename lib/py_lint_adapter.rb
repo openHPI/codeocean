@@ -2,7 +2,7 @@
 
 class PyLintAdapter < TestingFrameworkAdapter
   REGEXP = %r{Your code has been rated at (-?\d+\.?\d*)/(\d+\.?\d*)}
-  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):(.*?)\(([^,]*?), ([^,]*?),([^,]*?)\) (.*?)$/
+  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):(.*?)\(([^,]*?), ([^,]*?),([^,]*?)\) ((?>.|\r|\n)*?)(?<!\r\n)\n(?!\n)/
 
   def self.framework_name
     'PyLint'
@@ -66,7 +66,7 @@ class PyLintAdapter < TestingFrameworkAdapter
       regex = get_t("linter.#{severity}.#{name}.regex", nil)&.strip
 
       if regex.present?
-        captures = message[:result].match(Regexp.new(regex))&.named_captures&.symbolize_keys
+        captures = message[:result].match(Regexp.new(regex, Regexp::MULTILINE))&.named_captures&.symbolize_keys
 
         if captures.nil?
           Sentry.capture_message({regex:, message: message[:result]}.to_json)
