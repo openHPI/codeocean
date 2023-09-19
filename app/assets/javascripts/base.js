@@ -50,7 +50,7 @@ $(document).on('turbolinks:load', function() {
     const sentrySettings = $('meta[name="sentry"]')
 
     // Workaround for Turbolinks: We must not re-initialize the Relay object when visiting another page
-    if (sentrySettings.data()['enabled'] && !Sentry.Replay.prototype._isInitialized) {
+    if (sentrySettings && sentrySettings.data()['enabled'] && !Sentry.Replay.prototype._isInitialized) {
         Sentry.init({
             dsn: sentrySettings.data('dsn'),
             attachStacktrace: true,
