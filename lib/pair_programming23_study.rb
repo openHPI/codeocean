@@ -11,7 +11,7 @@ class PairProgramming23Study
   def self.participate_in_pp?(user, exercise)
     # All easy tasks of the first week to be solved by the participants on their own
     if experiment_course?(user.current_study_group_id) && [636, 647, 648, 649, 637, 638, 623, 639, 650, 625, 624, 651, 653, 654, 655, 664, 656].exclude?(exercise.id)
-      return true if fixed_enrolled_users.include? [user.consumer_id.to_s, user.external_id]
+      return true if user.external_user? && fixed_enrolled_users.include?([user.consumer_id.to_s, user.external_id])
 
       user_group = user.id % 3 # => 0, 1, 2
       case user_group
