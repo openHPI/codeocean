@@ -1,25 +1,14 @@
 $(document).on('turbolinks:load', function () {
 
   if (window.location.pathname.includes('/implement')) {
-    function is_other_user(user) {
-      return !_.isEqual(current_user, user);
-    }
-
-    function is_other_session(other_session_id) {
-      return session_id !== other_session_id;
-    }
-
     const editor = $('#editor');
     const exercise_id = editor.data('exercise-id');
-    let session_id;
 
-    if ($.isController('exercises') && is_other_user(current_contributor)) {
+    if ($.isController('exercises') && ProgrammingGroups.is_other_user(current_contributor)) {
 
       App.synchronized_editor = App.cable.subscriptions.create({
         channel: "SynchronizedEditorChannel", exercise_id: exercise_id
       }, {
-
-
         connected() {
           // Called when the subscription is ready for use on the server
         },
@@ -33,19 +22,19 @@ $(document).on('turbolinks:load', function () {
           // Called when there's incoming data on the websocket for this channel
           switch (data.action) {
             case 'session_id':
-              session_id = data.session_id;
+              ProgrammingGroups.session_id = data.session_id;
               break;
             case 'editor_change':
-              if (is_other_session(data.session_id)) {
+              if (ProgrammingGroups.is_other_session(data.session_id)) {
                 CodeOceanEditor.applyChanges(data.delta, data.active_file);
               }
               break;
             case 'connection_change':
-              if (is_other_session(data.session_id) && data.status === 'connected') {
-                const message = {files: CodeOceanEditor.collectFiles(), session_id: session_id};
+              if (ProgrammingGroups.is_other_session(data.session_id) && data.status === 'connected') {
+                const message = {files: CodeOceanEditor.collectFiles(), session_id: ProgrammingGroups.session_id};
                 this.perform('current_content', message);
               }
-              if (is_other_user(data.user)) {
+              if (ProgrammingGroups.is_other_user(data.user)) {
                 CodeOceanEditor.showPartnersConnectionStatus(data.status, data.user.displayname);
                 this.perform('connection_status');
               }
@@ -58,13 +47,13 @@ $(document).on('turbolinks:load', function () {
               }
               break;
             case 'connection_status':
-              if (is_other_user(data.user)) {
+              if (ProgrammingGroups.is_other_user(data.user)) {
                 CodeOceanEditor.showPartnersConnectionStatus(data.status, data.user.displayname);
               }
               break;
             case 'current_content':
             case 'reset_content':
-              if (is_other_session(data.session_id)) {
+              if (ProgrammingGroups.is_other_session(data.session_id)) {
                 CodeOceanEditor.setEditorContent(data);
               }
               break;
@@ -76,7 +65,7 @@ $(document).on('turbolinks:load', function () {
         },
 
         editor_change(delta, active_file) {
-          const message = {session_id: session_id, active_file: active_file, delta: delta}
+          const message = {session_id: ProgrammingGroups.session_id, active_file: active_file, delta: delta}
           this.perform('editor_change', message);
         },
 

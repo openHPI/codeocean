@@ -42,7 +42,21 @@ class ProgrammingGroupsController < ApplicationController
     end
 
     create_and_respond(object: @programming_group, path: proc { implement_exercise_path(@exercise) }) do
+      # Inform all other users in the programming group that they have been invited.
+      @programming_group.users.each do |user|
+        next if user == current_user
+
+        message = {
+          action: 'invited',
+          user: user.to_page_context,
+        }
+        ActionCable.server.broadcast("pg_matching_channel_exercise_#{@exercise.id}", message)
+      end
+
+      # Just set the programming group id in the session for the creator of the group, so that the user can be redirected.
       session[:pg_id] = @programming_group.id
+
+      # Don't return a specific value from this block, so that the default is used.
       nil
     end
   end

@@ -597,7 +597,6 @@ de:
     new:
       close: Schließen
       create_programming_pair: Programmierpaar erstellen
-      check_invitation: "Einladung prüfen"
       dont_show_modal_again: "Auf diesem Gerät nicht mehr anzeigen"
       enter_partner_id: "Bitte gib hier die Nutzer-ID der Person ein, mit der du zusammen die Aufgabe '%{exercise_title}' lösen möchtest. Beachte jedoch, dass anschließend keiner die Zusammenarbeit beenden kann. Dein:e Teampartner:in kann sehen, was du in dieser Aufgabe schreibst und umgekehrt. Für die nächste Aufgabe kannst du dich erneuert entscheiden, ob und mit wem du zusammen arbeiten möchtest."
       find_partner_title: "Finde eine:n Programmierpartner:in für die Aufgabe"
