@@ -20,7 +20,8 @@
                 = t('exercises.editor.start_video')
 
               div.small.text-body-tertiary.text-nowrap.mt-1
-                == t('exercises.implement.external_privacy_policy', url: 'https://www.tu-ilmenau.de/datenschutz')
+                a href='https://www.tu-ilmenau.de/datenschutz' target='_blank' rel='noopener'
+                  = t('exercises.implement.external_privacy_policy')
 
             span.me-3.mt-1
               button.btn.btn-sm.btn-secondary.text-nowrap#info data-bs-toggle= 'modal' data-bs-target= '#modal-info-pair-programming'
