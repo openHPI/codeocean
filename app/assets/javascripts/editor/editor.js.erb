@@ -1011,7 +1011,7 @@ var CodeOceanEditor = {
     },
 
     applyChanges: function (delta, active_file) {
-        const editor = this.editor_for_file.get(active_file.id);
+        const editor = this.editor_for_file?.get(active_file.id);
         if (editor === undefined) {
             return;
         }
