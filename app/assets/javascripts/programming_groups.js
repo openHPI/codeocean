@@ -1,4 +1,6 @@
-var ProgrammingGroups = {
+const ProgrammingGroups = {
+    session_id: null,
+
     getStoredViewedPPInfo: function () {
         return localStorage.getItem('viewed_pp_info')
     },
@@ -7,10 +9,17 @@ var ProgrammingGroups = {
         localStorage.setItem('viewed_pp_info', 'true')
     },
 
-
     initializeEventHandler: function () {
         $('#dont_show_info_pp_modal_again').on('click', this.setStoredViewedPPInfo.bind(this));
-    }
+    },
+
+    is_other_user: function (user) {
+        return !_.isEqual(current_user, user);
+    },
+
+    is_other_session: function (other_session_id) {
+        return this.session_id !== other_session_id;
+    },
 };
 
 $(document).on('turbolinks:load', function () {
