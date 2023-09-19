@@ -4,8 +4,8 @@ $(document).on('turbolinks:load', function () {
         const matching_page = $('#matching');
         const exercise_id = matching_page.data('exercise-id');
 
-        App.pp_matching = App.cable.subscriptions.create({
-            channel: "PpMatchingChannel", exercise_id: exercise_id
+        App.pg_matching = App.cable.subscriptions.create({
+            channel: "PgMatchingChannel", exercise_id: exercise_id
         }, {
             connected() {
                 // Called when the subscription is ready for use on the server

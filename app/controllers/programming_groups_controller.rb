@@ -50,7 +50,7 @@ class ProgrammingGroupsController < ApplicationController
           action: 'invited',
           user: user.to_page_context,
         }
-        ActionCable.server.broadcast("pp_matching_channel_exercise_#{@exercise.id}", message)
+        ActionCable.server.broadcast("pg_matching_channel_exercise_#{@exercise.id}", message)
       end
 
       # Just set the programming group id in the session for the creator of the group, so that the user can be redirected.

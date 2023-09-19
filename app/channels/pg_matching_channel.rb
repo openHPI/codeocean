@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PpMatchingChannel < ApplicationCable::Channel
+class PgMatchingChannel < ApplicationCable::Channel
   def subscribed
     set_and_authorize_exercise
     stream_from specific_channel
@@ -12,7 +12,7 @@ class PpMatchingChannel < ApplicationCable::Channel
   end
 
   def specific_channel
-    "pp_matching_channel_exercise_#{@exercise.id}"
+    "pg_matching_channel_exercise_#{@exercise.id}"
   end
 
   private
