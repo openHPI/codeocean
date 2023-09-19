@@ -282,6 +282,7 @@ class Runner::Connection
   end
 
   def record_sentry_breadcrumb(sentry_span, event)
+    return unless sentry_span
     return unless Sentry.initialized? && Sentry.configuration.breadcrumbs_logger.include?(:http_logger)
 
     crumb = Sentry::Breadcrumb.new(
