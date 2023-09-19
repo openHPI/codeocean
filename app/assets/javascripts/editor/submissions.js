@@ -218,8 +218,10 @@ CodeOceanEditorSubmissions = {
         Turbolinks.clearCache();
         Turbolinks.visit(response.redirect);
       } else if (response.status === 'container_depleted') {
-          this.showContainerDepletedMessage();
+        this.initializeEventHandlers();
+        this.showContainerDepletedMessage();
       } else {
+        this.initializeEventHandlers();
         for (let [type, text] of Object.entries(response)) {
           $.flash[type]({
             text: text,
@@ -227,7 +229,6 @@ CodeOceanEditorSubmissions = {
           })
         }
       }
-      this.initializeEventHandlers();
     })
   },
 
