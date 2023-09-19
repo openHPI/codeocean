@@ -33,7 +33,7 @@ CodeOceanEditorWebsocket = {
     );
     CodeOceanEditorWebsocket.websocket = this.websocket;
     this.websocket.onError(this.showWebsocketError.bind(this));
-    this.websocket.onClose(span.finish.bind(span));
+    this.websocket.onClose(span?.finish?.bind(span));
   },
 
   initializeSocketForTesting: function(url) {
