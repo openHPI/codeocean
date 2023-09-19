@@ -19,7 +19,7 @@ gem 'http_accept_language'
 gem 'i18n-js'
 gem 'ims-lti', '< 2.0.0' # Version 2 implements LTI 2.0, which is deprecated. Hence, we stay with version 1.
 gem 'jbuilder'
-gem 'json_schemer', '< 2.0.0' # Version 2 currently has a bug that prevents validating timeout messages. See https://github.com/openHPI/codeocean/issues/1914
+gem 'json_schemer'
 gem 'js-routes'
 gem 'jwt'
 gem 'kramdown'
