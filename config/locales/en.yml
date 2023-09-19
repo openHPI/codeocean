@@ -597,7 +597,6 @@ en:
     new:
       close: Close
       create_programming_pair: Create Programming Pair
-      check_invitation: "Check invitation"
       dont_show_modal_again: "Don't display on this device anymore"
       enter_partner_id: "Please enter the user ID from the practice partner with whom you want to solve the exercise '%{exercise_title}'. However, note that no one can leave the pair afterward. Hence, your team partner can see what you write in this exercise and vice versa. For the next exercise, you can decide again whether and with whom you want to work together."
       find_partner_title: "Find a programming partner for the exercise"
