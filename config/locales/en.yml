@@ -57,7 +57,7 @@ en:
         uuid: UUID
         unpublished: Unpublished
       programming_group:
-        programming_partner_id: Programming Partner ID
+        programming_partner_ids: Programming Partner ID
       programming_group/programming_group_memberships:
         base: Programming Group Membership
       proxy_exercise:

@@ -1,7 +1,7 @@
 = form_for(@programming_group, url: exercise_programming_groups_path) do |f|
   = render('shared/form_errors', object: @programming_group)
   .mb-3
-    = f.label(:programming_partner_id, class: 'form-label')
+    = f.label(:programming_partner_ids, class: 'form-label')
     = f.text_field(:programming_partner_ids, class: 'form-control', required: true, value: (@programming_group.programming_partner_ids - [current_user.id_with_type]).join(', '))
     /.help-block.form-text = t('.hints.programming_partner_ids')
   .actions.mb-0

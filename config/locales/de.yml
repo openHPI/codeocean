@@ -57,7 +57,7 @@ de:
         uuid: UUID
         unpublished: Deaktiviert
       programming_group:
-        programming_partner_id: Nutzer-ID der Programmierpartnerin / des Programmierpartners
+        programming_partner_ids: Nutzer-ID der Programmierpartnerin / des Programmierpartners
       programming_group/programming_group_memberships:
         base: Programmiergruppenmitgliedschaft
       proxy_exercise:
