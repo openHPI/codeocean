@@ -120,7 +120,10 @@ class Runner::Connection
   def on_message(raw_event, _sentry_span)
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Receiving from #{@socket.url}: #{raw_event.data.inspect}" }
     event = decode(raw_event.data)
-    return unless BACKEND_OUTPUT_SCHEMA.valid?(event)
+    unless BACKEND_OUTPUT_SCHEMA.valid?(event)
+      Sentry.capture_message('Received invalid JSON from runner management', extra: {event:})
+      return
+    end
 
     event = event.deep_symbolize_keys
     message_type = event[:type].to_sym
