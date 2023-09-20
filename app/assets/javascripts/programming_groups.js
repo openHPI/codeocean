@@ -1,4 +1,4 @@
-const ProgrammingGroups = {
+var ProgrammingGroups = {
     session_id: null,
 
     getStoredViewedPPInfo: function () {
