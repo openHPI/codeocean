@@ -44,6 +44,7 @@ Sentry.init do |config|
 
     event.spans.each do |span|
       next unless url_spans.include?(span[:op])
+      next unless span[:description]
 
       # Replace UUIDs in URLs with asterisks to allow better grouping of similar requests
       span[:description].gsub!(/[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}/i, '*')
