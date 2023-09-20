@@ -32,6 +32,7 @@ class Exercise < ApplicationRecord
   has_many :external_users, source: :contributor, source_type: 'ExternalUser', through: :submissions
   has_many :internal_users, source: :contributor, source_type: 'InternalUser', through: :submissions
   has_many :programming_groups
+  has_many :pair_programming_waiting_users
 
   scope :with_submissions, -> { where('id IN (SELECT exercise_id FROM submissions)') }
 

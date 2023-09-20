@@ -23,8 +23,18 @@ $(document).on('turbolinks:load', function () {
                             window.location.reload();
                         }
                         break;
+                    case 'joined_pg':
+                        debugger
+                        if (data.users.find(e => ProgrammingGroups.is_other_user(e) === false) !== undefined) {
+                            window.location.reload();
+                        }
+                        break;
                 }
             },
+
+            waiting_for_match() {
+                this.perform('waiting_for_match');
+            }
         });
     }
 });

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_12_162208) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_20_094122) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -401,6 +401,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_12_162208) do
     t.index ["user_type", "user_id"], name: "index_pair_programming_exercise_feedbacks_on_user"
   end
 
+  create_table "pair_programming_waiting_users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.bigint "exercise_id", null: false
+    t.integer "status", limit: 2, null: false, comment: "Used as enum in Rails"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["exercise_id"], name: "index_pair_programming_waiting_users_on_exercise_id"
+    t.index ["user_type", "user_id"], name: "index_pair_programming_waiting_users_on_user"
+  end
+
   create_table "programming_group_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "programming_group_id", null: false
     t.string "user_type", null: false
@@ -666,6 +677,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_12_162208) do
   add_foreign_key "pair_programming_exercise_feedbacks", "programming_groups"
   add_foreign_key "pair_programming_exercise_feedbacks", "study_groups"
   add_foreign_key "pair_programming_exercise_feedbacks", "submissions"
+  add_foreign_key "pair_programming_waiting_users", "exercises"
   add_foreign_key "programming_group_memberships", "programming_groups"
   add_foreign_key "programming_groups", "exercises"
   add_foreign_key "remote_evaluation_mappings", "study_groups"

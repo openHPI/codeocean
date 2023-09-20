@@ -35,4 +35,12 @@ $(document).on('turbolinks:load', function () {
             new bootstrap.Modal(modal).show();
         }
     }
+
+    const join_pair_button = $('#join_programming_pair');
+    if (join_pair_button.isPresent()) {
+        join_pair_button.on('click', function() {
+            App.pg_matching?.waiting_for_match();
+            CodeOceanEditor.showSpinner(join_pair_button);
+        }).bind(App.pg_matching);
+    }
 });
