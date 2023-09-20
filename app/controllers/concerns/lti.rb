@@ -226,7 +226,7 @@ module Lti
     @lti_parameters.save!
 
     session[:external_user_id] = current_user.id
-  rescue ActiveRecord::RecordNotUnique
+  rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
     retry
   end
 
