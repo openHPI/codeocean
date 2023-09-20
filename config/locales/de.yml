@@ -233,8 +233,8 @@ de:
         one: Feedback
         other: Feedbacks
       programming_group:
-        one: Programmiergruppe
-        other: Programmiergruppen
+        one: Programmierpaar
+        other: Programmierpaare
       programming_group_membership:
         one: Programmiergruppenmitgliedschaft
         other: Programmiergruppenmitgliedschaften
