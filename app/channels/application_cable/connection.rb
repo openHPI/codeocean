@@ -8,6 +8,8 @@ module ApplicationCable
       # The order is important here, because a valid user is required to find a valid contributor.
       self.current_user = find_verified_user
       self.current_contributor = find_verified_contributor
+
+      set_sentry_context
     end
 
     def disconnect
@@ -31,10 +33,21 @@ module ApplicationCable
     def find_verified_contributor
       # Finding the current_contributor is similar to the code used in application_controller.rb#current_contributor
       if session[:pg_id]
+        Sentry.set_extras(pg_id: session[:pg_id])
         current_user.programming_groups.find(session[:pg_id])
       else
         current_user
       end
+    end
+
+    def set_sentry_context
+      return if current_user.blank?
+
+      Sentry.set_user(
+        id: current_user.id,
+        type: current_user.class.name,
+        consumer: current_user.consumer&.name
+      )
     end
   end
 end
