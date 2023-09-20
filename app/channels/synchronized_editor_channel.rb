@@ -20,6 +20,8 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
     stop_all_streams
+    return unless programming_group && @session_id
+
     message = create_message('connection_change', 'disconnected')
 
     Event::SynchronizedEditor.create_for_connection_change(message, current_user, programming_group)
