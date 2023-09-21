@@ -50,6 +50,7 @@ class ProgrammingGroupsController < ApplicationController
           action: 'invited',
           user: user.to_page_context,
         }
+        user.pair_programming_waiting_users&.find_by(exercise: @exercise)&.update(status: :invited_to_pg, programming_group: @programming_group)
         ActionCable.server.broadcast("pg_matching_channel_exercise_#{@exercise.id}", message)
       end
 
