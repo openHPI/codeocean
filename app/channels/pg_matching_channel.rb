@@ -9,7 +9,6 @@ class PgMatchingChannel < ApplicationCable::Channel
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
     @current_waiting_user.status_disconnected! if @current_waiting_user.reload.status_waiting?
-    Event.create(category: 'pp_matching', user: current_user, exercise: @exercise, data: 'disconnected')
 
     stop_all_streams
   end
@@ -19,7 +18,6 @@ class PgMatchingChannel < ApplicationCable::Channel
   end
 
   def waiting_for_match
-    Event.create(category: 'pp_matching', user: current_user, exercise: @exercise, data: 'waiting')
     @current_waiting_user = PairProgrammingWaitingUser.find_or_initialize_by(user: current_user, exercise: @exercise)
     @current_waiting_user.status_waiting!
 
@@ -31,16 +29,15 @@ class PgMatchingChannel < ApplicationCable::Channel
   def match_waiting_users
     # Check if there is another waiting user for this exercise
     waiting_user = PairProgrammingWaitingUser.where(exercise: @exercise, status: :waiting).where.not(user: current_user).order(created_at: :asc).first
-    if waiting_user.present?
-      ProgrammingGroup.create(exercise: @exercise, users: [waiting_user.user, current_user])
-      waiting_user.status_joined_pg!
-      Event.create(category: 'pp_matching', user: waiting_user.user, exercise: @exercise, data: 'joined_pg')
+    return if waiting_user.blank?
 
-      @current_waiting_user.status_joined_pg!
-      Event.create(category: 'pp_matching', user: current_user, exercise: @exercise, data: 'joined_pg')
-
-      ActionCable.server.broadcast(specific_channel, {action: 'joined_pg', users: [current_user.to_page_context, waiting_user.user.to_page_context]})
-    end
+    # If there is another waiting user, create a programming group with both users
+    match = [waiting_user, @current_waiting_user]
+    # Create the programming group. Note that an unhandled exception will be raised if the programming group
+    # is not valid (i.e., if one of the users already joined a programming group for this exercise).
+    pg = ProgrammingGroup.create!(exercise: @exercise, users: match.map(&:user))
+    match.each {|wu| wu.update(status: :created_pg, programming_group: pg) }
+    ActionCable.server.broadcast(specific_channel, {action: 'joined_pg', users: pg.users.map(&:to_page_context)})
   end
 
   def set_and_authorize_exercise

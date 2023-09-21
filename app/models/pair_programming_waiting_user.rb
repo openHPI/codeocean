@@ -16,4 +16,10 @@ class PairProgrammingWaitingUser < ApplicationRecord
 
   validates :user_id, uniqueness: {scope: %i[exercise_id user_type]}
   validates :programming_group_id, presence: true, if: -> { status_joined_pg? || status_created_pg? }
+
+  after_save :capture_event
+
+  def capture_event
+    Event.create(category: 'pp_matching', user:, exercise:, data: status.to_s)
+  end
 end

@@ -299,7 +299,7 @@ class ExercisesController < ApplicationController
 
   private :update_exercise_tips
 
-  def implement
+  def implement # rubocop:disable Metrics/CyclomaticComplexity
     if session[:pg_id] && current_contributor.exercise != @exercise
       # we are acting on behalf of a programming group
       if current_user.admin?
@@ -317,12 +317,7 @@ class ExercisesController < ApplicationController
       @current_contributor = pg
     elsif PairProgramming23Study.participate?(current_user, @exercise) && current_user.submissions.where(study_group_id: current_user.current_study_group_id, exercise: @exercise).none?
       Event.create(category: 'pp_work_alone', user: current_user, exercise: @exercise, data: nil, file_id: nil)
-      waiting_user = PairProgrammingWaitingUser.find_by(exercise: @exercise, user: current_user)
-      if waiting_user.present?
-        waiting_user.status_worked_alone!
-
-        Event.create(category: 'pp_matching', user: current_user, exercise: @exercise, data: 'worked_alone')
-      end
+      current_user.pair_programming_waiting_users&.find_by(exercise: @exercise)&.update(status: :worked_alone)
     end
 
     user_solved_exercise = @exercise.solved_by?(current_contributor)

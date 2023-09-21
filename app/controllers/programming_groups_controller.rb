@@ -54,12 +54,7 @@ class ProgrammingGroupsController < ApplicationController
       end
 
       # Check if the user was waiting for a programming group match and update the status
-      waiting_user = PairProgrammingWaitingUser.find_by(exercise: @exercise, user: current_user)
-      if waiting_user.present?
-        waiting_user.status_created_pg!
-
-        Event.create(category: 'pp_matching', user: current_user, exercise: @exercise, data: 'created_pg')
-      end
+      current_user.pair_programming_waiting_users&.find_by(exercise: @exercise)&.update(status: :created_pg, programming_group: @programming_group)
 
       # Just set the programming group id in the session for the creator of the group, so that the user can be redirected.
       session[:pg_id] = @programming_group.id
