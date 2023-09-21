@@ -2,7 +2,7 @@ h1.d-inline-block = t('programming_groups.new.create_programming_pair')
 .btn.btn-success.float-end data-bs-toggle= 'modal' data-bs-target= '#modal-info-pair-programming'
   i.fa-solid.fa-circle-info
   = t('programming_groups.new.pair_programming_info')
-#matching.row data-exercise-id=@exercise.id
+#matching.row data-exercise-id=@exercise.id.to_s
 
   .col-12.mt-2
     = t('programming_groups.new.info_work_together', exercise_title: @exercise.title)
