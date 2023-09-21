@@ -20,6 +20,10 @@ var ProgrammingGroups = {
     is_other_session: function (other_session_id) {
         return this.session_id !== other_session_id;
     },
+
+    contains_own_user: function (users) {
+        return users.find(e => ProgrammingGroups.is_other_user(e) === false) !== undefined
+    }
 };
 
 $(document).on('turbolinks:load', function () {

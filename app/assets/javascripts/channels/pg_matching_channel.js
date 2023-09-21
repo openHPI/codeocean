@@ -24,8 +24,7 @@ $(document).on('turbolinks:load', function () {
                         }
                         break;
                     case 'joined_pg':
-                        debugger
-                        if (data.users.find(e => ProgrammingGroups.is_other_user(e) === false) !== undefined) {
+                        if (ProgrammingGroups.contains_own_user(data.users)) {
                             window.location.reload();
                         }
                         break;
