@@ -45,6 +45,6 @@ $(document).on('turbolinks:load', function () {
         join_pair_button.on('click', function() {
             App.pg_matching?.waiting_for_match();
             CodeOceanEditor.showSpinner(join_pair_button);
-        }).bind(App.pg_matching);
+        });
     }
 });
