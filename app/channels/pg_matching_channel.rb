@@ -26,6 +26,8 @@ class PgMatchingChannel < ApplicationCable::Channel
     match_waiting_users
   end
 
+  private
+
   def match_waiting_users
     # Check if there is another waiting user for this exercise
     waiting_user = PairProgrammingWaitingUser.where(exercise: @exercise, status: :waiting).where.not(user: current_user).order(created_at: :asc).first
@@ -40,8 +42,6 @@ class PgMatchingChannel < ApplicationCable::Channel
       ActionCable.server.broadcast(specific_channel, {action: 'joined_pg', users: [current_user.to_page_context, waiting_user.user.to_page_context]})
     end
   end
-
-  private
 
   def set_and_authorize_exercise
     @exercise = Exercise.find(params[:exercise_id])
