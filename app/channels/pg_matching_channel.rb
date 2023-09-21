@@ -8,7 +8,7 @@ class PgMatchingChannel < ApplicationCable::Channel
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
-    @current_waiting_user.status_disconnected! if @current_waiting_user.reload.status_waiting?
+    @current_waiting_user.status_disconnected! if @current_waiting_user&.reload&.status_waiting?
 
     stop_all_streams
   end
