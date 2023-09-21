@@ -36,7 +36,7 @@ class PgMatchingChannel < ApplicationCable::Channel
     # Create the programming group. Note that an unhandled exception will be raised if the programming group
     # is not valid (i.e., if one of the users already joined a programming group for this exercise).
     pg = ProgrammingGroup.create!(exercise: @exercise, users: match.map(&:user))
-    match.each {|wu| wu.update(status: :created_pg, programming_group: pg) }
+    match.each {|wu| wu.update(status: :joined_pg, programming_group: pg) }
     ActionCable.server.broadcast(specific_channel, {action: 'joined_pg', users: pg.users.map(&:to_page_context)})
   end
 
