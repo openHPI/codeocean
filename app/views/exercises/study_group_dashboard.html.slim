@@ -7,7 +7,7 @@
 h1
   = t('.live_dashboard')
 
-div.teacher_dashboard data-exercise-id="#{@exercise.id}" data-study-group-id="#{@study_group_id}"
+div.teacher_dashboard data-exercise-id=@exercise.id.to_s data-study-group-id=@study_group_id.to_s
 
 h4.mt-4
   = t('.time_spent_per_learner')
