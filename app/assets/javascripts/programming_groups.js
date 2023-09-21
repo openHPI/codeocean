@@ -20,6 +20,10 @@ var ProgrammingGroups = {
     is_other_session: function (other_session_id) {
         return this.session_id !== other_session_id;
     },
+
+    contains_own_user: function (users) {
+        return users.find(e => ProgrammingGroups.is_other_user(e) === false) !== undefined
+    }
 };
 
 $(document).on('turbolinks:load', function () {
@@ -34,5 +38,13 @@ $(document).on('turbolinks:load', function () {
               window.location.pathname.includes('/programming_groups/new'))) {
             new bootstrap.Modal(modal).show();
         }
+    }
+
+    const join_pair_button = $('.join_programming_pair');
+    if (join_pair_button.isPresent()) {
+        join_pair_button.on('click', function() {
+            App.pg_matching?.waiting_for_match();
+            CodeOceanEditor.showSpinner(join_pair_button);
+        });
     }
 });

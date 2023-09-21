@@ -233,8 +233,8 @@ en:
         one: Feedback
         other: Feedbacks
       programming_group:
-        one: Programming Group
-        other: Programming Groups
+        one: Programming Pair
+        other: Programming Pairs
       programming_group_membership:
         one: Programming Group Membership
         other: Programming Group Memberships
@@ -598,15 +598,18 @@ en:
       close: Close
       create_programming_pair: Create Programming Pair
       dont_show_modal_again: "Don't display on this device anymore"
-      enter_partner_id: "Please enter the user ID from the practice partner with whom you want to solve the exercise '%{exercise_title}'. However, note that no one can leave the pair afterward. Hence, your team partner can see what you write in this exercise and vice versa. For the next exercise, you can decide again whether and with whom you want to work together."
+      enter_partner_id: "Do you know a person in the course with whom you would like to solve the task together? Then enter that person's user ID here."
       find_partner_title: "Find a programming partner for the exercise"
-      find_partner_description: "Copy another user ID from the list below and delete it afterward. If there are no user IDs on the list yet, add your user ID and wait for another user to create a programming group with you. Once a partner invited you to a group, you'll be redirected automatically to start working on this exercise collaboratively. If you decide to work alone, please delete your user ID from the list if you added it before."
+      find_partner_description: "If you don't know a person from the course, you have the possibility to be paired with another person. Then, you will be redirected to the task as soon as another person also wants to solve this task in a team."
       info_pair_programming: "Pair Programming is a method where two people program together. They alternate between two distinct roles: the <i>Driver</i>, responsible for writing the code and focusing on the details, and the <i>Navigator</i>, tasked with correcting typos, overseeing the task's progress, and offering suggestions for improvement. Effective communication in the pair is crucial for the success of pair programming."
       info_study: "As part of my master's thesis, I would like to analyze the use of pair programming in this MOOC. Therefore, I would be very happy if you work on the exercises together with another person and then give me your feedback in the surveys. Please note that this feature is a beta version that has not yet been activated for all users."
+      info_work_together: "You have the possibility to solve the task '%{exercise_title}' together with another person. Your team partner can see what you write in this task and vice versa. Note that no one can stop the collaboration afterwards. For the next task you can decide again if and with whom you want to work together."
+      find_programming_partner: Find Programming Partner
       own_user_id: "Your user ID:"
       pair_programming_info: Pair Programming Info
-      safari_not_supported: "Safari does not support embedding the user IDs page. <a target='_blank', style='display: contents;' href=%{url}>Please click here to open the list of user IDs.</a>"
-      work_alone: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to work in a pair for this exercise. <a href=%{path}>Click here to get to the exercise in single mode.</a>"
+      work_alone: Work Alone
+      work_alone_description: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to work in a pair for this exercise. <br> <a href=%{path}>Click here to get to the exercise in single mode.</a>"
+      work_with_a_friend: "Work with a friend"
     implement:
       info_disconnected: You are disconnected from the server. Please check your internet connection and reload the page.
   external_users:
