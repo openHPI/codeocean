@@ -22,6 +22,9 @@ class User < ApplicationRecord
   has_many :interventions, through: :user_exercise_interventions
   has_many :remote_evaluation_mappings, as: :user
   has_many :runners, as: :contributor
+  has_many :events
+  has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
+  has_many :pair_programming_exercise_feedbacks
   has_one :codeharbor_link, dependent: :destroy
   accepts_nested_attributes_for :user_proxy_exercise_exercises
 
