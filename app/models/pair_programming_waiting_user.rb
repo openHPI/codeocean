@@ -4,6 +4,7 @@ class PairProgrammingWaitingUser < ApplicationRecord
   include Creation
 
   belongs_to :exercise
+  belongs_to :programming_group, optional: true
 
   enum status: {
     waiting: 0,
@@ -14,4 +15,5 @@ class PairProgrammingWaitingUser < ApplicationRecord
   }, _prefix: true
 
   validates :user_id, uniqueness: {scope: %i[exercise_id user_type]}
+  validates :programming_group_id, presence: true, if: -> { status_joined_pg? || status_created_pg? }
 end

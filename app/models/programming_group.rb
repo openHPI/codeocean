@@ -12,6 +12,7 @@ class ProgrammingGroup < ApplicationRecord
   has_many :events
   has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
   has_many :pair_programming_exercise_feedbacks
+  has_many :pair_programming_waiting_users
   belongs_to :exercise
 
   validate :min_group_size
