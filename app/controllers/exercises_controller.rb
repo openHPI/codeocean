@@ -320,8 +320,7 @@ class ExercisesController < ApplicationController
     end
 
     user_solved_exercise = @exercise.solved_by?(current_contributor)
-    count_interventions_today = UserExerciseIntervention.where(user: current_user).where('created_at >= ?',
-      Time.zone.now.beginning_of_day).count
+    count_interventions_today = UserExerciseIntervention.where(user: current_user).where(created_at: Time.zone.now.beginning_of_day..).count
     user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user,
       exercise: @exercise).size >= max_intervention_count_per_exercise
     (user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day) || user_got_intervention_in_exercise
