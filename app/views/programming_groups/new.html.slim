@@ -2,38 +2,38 @@ h1.d-inline-block = t('programming_groups.new.create_programming_pair')
 .btn.btn-success.float-end data-bs-toggle= 'modal' data-bs-target= '#modal-info-pair-programming'
   i.fa-solid.fa-circle-info
   = t('programming_groups.new.pair_programming_info')
-#matching.row data-exercise-id=@exercise.id.to_s
+#matching data-exercise-id=@exercise.id.to_s
+  .row
+    .col-12.mt-2.mb-4
+      = t('programming_groups.new.info_work_together', exercise_title: @exercise.title)
+      br
+      == t('exercises.implement.pair_programming_feedback', url: "https://etherpad.xopic.de/p/openHPI_PairProgrammingFeedback?userName=#{CGI.escape(current_user.displayname)}")
 
-  .col-12.mt-2
-    = t('programming_groups.new.info_work_together', exercise_title: @exercise.title)
-    br
-    == t('exercises.implement.pair_programming_feedback', url: "https://etherpad.xopic.de/p/openHPI_PairProgrammingFeedback?userName=#{CGI.escape(current_user.displayname)}")
-  .col-md-6
-    p.mt-4
-    h5 = t('programming_groups.new.work_with_a_friend')
+  .row
+    .col-md-6
+      h5 = t('programming_groups.new.work_with_a_friend')
+      p = t('programming_groups.new.enter_partner_id', exercise_title: @exercise.title)
 
-    = t('programming_groups.new.enter_partner_id', exercise_title: @exercise.title)
 
-    p
-    => t('programming_groups.new.own_user_id')
-    b
-      = current_user.id_with_type
+      => t('programming_groups.new.own_user_id')
+      b = current_user.id_with_type
+      .d-md-none
+        = render('form')
 
-    = render('form')
+    .col-md-6
+      h5 = t('programming_groups.new.find_partner_title')
+      p = t('programming_groups.new.find_partner_description')
 
-  .col-md-6
-    p.mt-4
-    h5 = t('programming_groups.new.find_partner_title')
+      .join_programming_pair.button.btn.btn-primary.d-md-none
+        i.fa-solid.fa-circle-notch.fa-spin.d-none
+        = t('programming_groups.new.join_programming_pair')
+  .row
+    .col-12.d-none.d-md-block
+      = render('form')
 
-    = t('programming_groups.new.find_partner_description')
-
-    p.mt-4
-    #join_programming_pair.button.btn.btn-primary
-      i.fa-solid.fa-circle-notch.fa-spin.d-none
-      = t('programming_groups.new.join_programming_pair')
-
-  .col-12.mt-4
-    h5 = t('programming_groups.new.work_alone')
-    == t('programming_groups.new.work_alone_description', path: implement_exercise_path(@exercise))
+  .row
+    .col-12
+      h5 = t('programming_groups.new.work_alone')
+      == t('programming_groups.new.work_alone_description', path: implement_exercise_path(@exercise))
 
 = render('shared/modal', classes: 'modal-lg', id: 'modal-info-pair-programming', template: 'programming_groups/_info_pair_programming', title: t('programming_groups.new.pair_programming_info'))

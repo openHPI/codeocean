@@ -40,7 +40,7 @@ $(document).on('turbolinks:load', function () {
         }
     }
 
-    const join_pair_button = $('#join_programming_pair');
+    const join_pair_button = $('.join_programming_pair');
     if (join_pair_button.isPresent()) {
         join_pair_button.on('click', function() {
             App.pg_matching?.waiting_for_match();
