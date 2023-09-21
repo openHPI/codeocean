@@ -315,7 +315,7 @@ class ExercisesController < ApplicationController
       # we are just acting on behalf of a single user who has already worked on this exercise as part of a programming group **in the context of the current study group**
       session[:pg_id] = pg.id
       @current_contributor = pg
-    elsif PairProgramming23Study.participate?(current_user, @exercise) && current_user.submissions.where(study_group_id: current_user.current_study_group_id, exercise: @exercise).blank?
+    elsif PairProgramming23Study.participate?(current_user, @exercise) && current_user.submissions.where(study_group_id: current_user.current_study_group_id, exercise: @exercise).none?
       Event.create(category: 'pp_work_alone', user: current_user, exercise: @exercise, data: nil, file_id: nil)
       waiting_user = PairProgrammingWaitingUser.find_by(exercise: @exercise, user: current_user)
       if waiting_user.present?
