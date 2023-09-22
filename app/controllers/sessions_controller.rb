@@ -17,6 +17,8 @@ class SessionsController < ApplicationController
   end
 
   def create_through_lti
+    return redirect_to_survey if params[:custom_survey_id]
+
     session.delete(:pg_id) # Remove any previous pg_id from the session
     store_lti_session_data(params)
     store_nonce(params[:oauth_nonce])
@@ -65,5 +67,36 @@ class SessionsController < ApplicationController
       logout
     end
     redirect_to(:root, notice: t('.success'))
+  end
+
+  private
+
+  def redirect_to_survey
+    # This method is taken from Xikolo and slightly adapted.
+    # Forward arbitrary optional query params to LimeSurvey
+    # and remove tracking and other sensitive user params.
+    query_params = request
+      .query_parameters
+      .delete_if {|key, _| key.to_s.match(/.*(tracking|referrer|user_id).*/) }
+      .merge(
+        r: 'survey/index', # required LimeSurvey path passed as query param
+        sid: params[:custom_survey_id], # required LimeSurvey survey ID
+        newtest: 'Y', # force a new LimeSurvey session
+        xi_platform: 'openhpi' # pass a platform identifier
+      ).tap do |qp|
+      if current_user
+        # add a user pseudo ID if applicable
+        qp[:xi_pseudo_id] = Digest::SHA256.hexdigest(current_user.external_id)
+        qp[:co_study_group_id] = current_user.current_study_group_id
+        qp[:co_pair_programming23_study] = PairProgramming23Study.participate_in_pp?(current_user, @exercise).to_s
+        qp[:co_rfcs] = current_user.request_for_comments.includes(:submission).where(submission: {study_group_id: current_user.current_study_group_id}).size.to_s
+        qp[:co_comments] = current_user.comments.includes(:submission).where(submission: {study_group_id: current_user.current_study_group_id}).size.to_s
+      end
+    end
+
+    uri = Addressable::URI.parse 'https://survey.openhpi.de/survey/index.php'
+    uri.query_values = query_params
+
+    redirect_to uri.to_s, allow_other_host: true
   end
 end
