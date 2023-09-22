@@ -31,6 +31,8 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
   def specific_channel
     reject unless ProgrammingGroupPolicy.new(current_user, programming_group).stream_sync_editor?
     "synchronized_editor_channel_group_#{programming_group.id}"
+  rescue NoMethodError => e
+    Sentry.capture_exception(e, extras: {current_user:, programming_group:, session_id: @session_id, identifier: @identifier})
   end
 
   def programming_group
