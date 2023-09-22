@@ -30,9 +30,10 @@ h1.d-inline-block = t('programming_groups.new.create_programming_pair')
     .col-12.d-none.d-md-block
       = render('form')
 
-  .row
-    .col-12
-      h5 = t('programming_groups.new.work_alone')
-      == t('programming_groups.new.work_alone_description', path: implement_exercise_path(@exercise))
+  - unless PairProgramming23Study.participate_in_pp?(current_user, @exercise) && PairProgramming23Study::FORCED_EXERCISE_IDS.include?(@exercise.id)
+    .row
+      .col-12
+        h5 = t('programming_groups.new.work_alone')
+        == t('programming_groups.new.work_alone_description', path: implement_exercise_path(@exercise))
 
 = render('shared/modal', classes: 'modal-lg', id: 'modal-info-pair-programming', template: 'programming_groups/_info_pair_programming', title: t('programming_groups.new.pair_programming_info'))
