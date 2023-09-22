@@ -6,7 +6,7 @@ tr.table-row-clickable data-id=request_for_comment.id data-href=request_for_comm
       span.fa-solid.fa-check.fa-2x style="color: var(--bs-secondary-text-emphasis);" aria-hidden="true"
     - else
       = ''
-  td.text-center = request_for_comment.comments_count
+  td.text-center = request_for_comment.comments.size
   - if request_for_comment.has_attribute?(:question) && request_for_comment.question.present?
     td.text-primary = truncate(request_for_comment.question, length: 200)
   - else

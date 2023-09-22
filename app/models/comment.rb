@@ -8,11 +8,9 @@ class Comment < ApplicationRecord
   attr_accessor :username, :date, :updated, :editable
 
   belongs_to :file, class_name: 'CodeOcean::File'
+  has_one :submission, through: :file, source: :context, source_type: 'Submission'
+  has_one :request_for_comment, through: :submission
   # after_save :trigger_rfc_action_cable_from_comment
-
-  def request_for_comment
-    RequestForComment.find_by(submission_id: file.context.id)
-  end
 
   def only_comment_for_rfc?
     request_for_comment.comments.one?

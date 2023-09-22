@@ -17,6 +17,7 @@ class Submission < ApplicationRecord
   has_many :testruns
   has_many :structured_errors, dependent: :destroy
   has_many :comments, through: :files
+  has_one :request_for_comment
   has_one :user_exercise_feedback
   has_one :pair_programming_exercise_feedback
 

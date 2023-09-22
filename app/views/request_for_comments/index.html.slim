@@ -45,7 +45,7 @@ h1 = RequestForComment.model_name.human(count: 2)
             td = truncate(request_for_comment.question, length: 200)
           - else
             td = '-'
-          td = request_for_comment.comments_count
+          td = request_for_comment.comments.size
           td = link_to_if(request_for_comment.user && policy(request_for_comment.user).show?, request_for_comment.user.displayname, request_for_comment.user)
           td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.created_at))
           td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.last_comment.nil? ? request_for_comment.updated_at : request_for_comment.last_comment))

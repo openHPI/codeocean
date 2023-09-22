@@ -8,6 +8,7 @@ class User < ApplicationRecord
   belongs_to :consumer
   has_many :anomaly_notifications, as: :contributor, dependent: :destroy
   has_many :authentication_token, dependent: :destroy
+  has_many :comments, as: :user
   has_many :study_group_memberships, as: :user
   has_many :study_groups, through: :study_group_memberships, as: :user
   has_many :programming_group_memberships, as: :user
@@ -21,6 +22,7 @@ class User < ApplicationRecord
   has_many :testruns, as: :user
   has_many :interventions, through: :user_exercise_interventions
   has_many :remote_evaluation_mappings, as: :user
+  has_many :request_for_comments, as: :user
   has_many :runners, as: :contributor
   has_many :events
   has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'

@@ -32,6 +32,7 @@ module CodeOcean
     has_many :files, class_name: 'CodeOcean::File'
     has_many :testruns
     has_many :comments
+    has_one :request_for_comment
     has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
     alias descendants files
 
