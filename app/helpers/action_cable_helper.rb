@@ -22,7 +22,7 @@ module ActionCableHelper
 
   def trigger_rfc_action_cable_from_comment
     # Context: Comment
-    RequestForComment.find_by(submission: file.context).trigger_rfc_action_cable
+    request_for_comment.trigger_rfc_action_cable
   end
 
   def trigger_working_times_action_cable

@@ -41,9 +41,9 @@ class UserExerciseFeedbacksController < ApplicationController
     Sentry.set_extras(params: uef_params)
 
     @exercise = Exercise.find(uef_params[:exercise_id])
-    rfc = RequestForComment.unsolved.where(exercise_id: @exercise.id, user: current_user).first
+    rfc = RequestForComment.unsolved.where(exercise: @exercise, user: current_user).first
     submission = begin
-      current_contributor.submissions.where(exercise_id: @exercise.id).order('created_at DESC').first
+      current_contributor.submissions.where(exercise: @exercise).order(created_at: :desc).first
     rescue StandardError
       nil
     end

@@ -22,10 +22,6 @@ class RequestForComment < ApplicationRecord
 
   # after_save :trigger_rfc_action_cable
 
-  def comments_count
-    submission.files.sum {|file| file.comments.size }
-  end
-
   def commenters
     comments.map(&:user).uniq
   end
