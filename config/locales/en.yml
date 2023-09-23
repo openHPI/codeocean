@@ -608,7 +608,7 @@ en:
       own_user_id: "Your user ID:"
       pair_programming_info: Pair Programming Info
       work_alone: Work Alone
-      work_alone_description: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to work in a pair for this exercise. <br> <a href=%{path}>Click here to get to the exercise in single mode.</a>"
+      work_alone_description: "You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to work in a pair for this exercise. <br> <a href=%{path} data-turbolinks=\"false\">Click here to get to the exercise in single mode.</a>"
       work_with_a_friend: "Work with a friend"
     implement:
       info_disconnected: You are disconnected from the server. Please check your internet connection and reload the page.

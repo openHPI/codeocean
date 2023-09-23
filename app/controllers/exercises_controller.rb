@@ -316,7 +316,7 @@ class ExercisesController < ApplicationController
       session[:pg_id] = pg.id
       @current_contributor = pg
     elsif session[:pg_id].blank? && PairProgramming23Study.participate?(current_user, @exercise) && current_user.submissions.where(study_group_id: current_user.current_study_group_id, exercise: @exercise).none?
-      Event.create(category: 'pp_work_alone', user: current_user, exercise: @exercise, data: nil, file_id: nil)
+      Event.find_or_create_by(category: 'pp_work_alone', user: current_user, exercise: @exercise, data: nil, file_id: nil)
       current_user.pair_programming_waiting_users&.find_by(exercise: @exercise)&.update(status: :worked_alone)
     end
 
