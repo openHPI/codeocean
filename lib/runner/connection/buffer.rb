@@ -82,7 +82,8 @@ class Runner::Connection::Buffer
     @global_buffer = +''
     # For our buffering, we identified line breaks with the `\n` and removed those temporarily.
     # Thus, we now re-add the `\n` at the end of the string and remove the `\r` at the same time.
-    message = message.gsub(/\r$/, "\n")
+    # Still, some messages might still contain a `\r\n` within strings (e.g., received from Python for the linter).
+    message = message.gsub(/\r(?!\n)$/, "\n")
     @line_buffer.push message
   end
 
