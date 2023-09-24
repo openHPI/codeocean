@@ -51,7 +51,7 @@ class Runner::Connection::Buffer
     # We split lines by `\n` and want to normalize them to be separated by `\r\n`.
     # This allows us to identify a former line end with `\r` (as the `\n` is not matched)
     # All results returned from this buffer are normalized to feature `\n` line endings.
-    message_parts.encode(crlf_newline: true).scan(SPLIT_INDIVIDUAL_LINES).each do |line|
+    normalized_line_endings(message_parts).scan(SPLIT_INDIVIDUAL_LINES).each do |line|
       # Same argumentation as above: We can always append (previous empty or invalid)
       buffer += line
 
@@ -68,6 +68,13 @@ class Runner::Connection::Buffer
     end
     # Return the remaining buffer which might become the `@global_buffer`
     buffer
+  end
+
+  def normalized_line_endings(string)
+    # First, we ensure line endings are only represented by `\n`, regardless of the original line ending.
+    # Then, we convert all line endings to `\r\n` to ensure we can identify the `\r` at the end of a line.
+    # This "double conversion" is required to prevent line endings with \r\r\n.
+    string.encode(universal_newline: true).encode(crlf_newline: true)
   end
 
   def add_to_line_buffer(message)
