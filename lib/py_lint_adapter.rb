@@ -2,7 +2,7 @@
 
 class PyLintAdapter < TestingFrameworkAdapter
   REGEXP = %r{Your code has been rated at (-?\d+\.?\d*)/(\d+\.?\d*)}
-  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):(.*?)\(([^,]*?), ([^,]*?),([^,]*?)\) ((?>.|\r|\n)*?)(?<!\r\n)\n(?!\n)/
+  ASSERTION_ERROR_REGEXP = /^(.*?\.py):(\d+):(.*?)\(([^,]*?), ([^,]*?),([^,]*?)\) ((?>.|\r|\n)*?)(?<!\r)\n(?!\n)/
 
   def self.framework_name
     'PyLint'
