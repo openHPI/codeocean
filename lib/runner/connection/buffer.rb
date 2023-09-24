@@ -74,7 +74,16 @@ class Runner::Connection::Buffer
     # First, we ensure line endings are only represented by `\n`, regardless of the original line ending.
     # Then, we convert all line endings to `\r\n` to ensure we can identify the `\r` at the end of a line.
     # This "double conversion" is required to prevent line endings with \r\r\n.
-    string.encode(universal_newline: true).encode(crlf_newline: true)
+    normalized = string.encode(universal_newline: true).encode(crlf_newline: true)
+
+    # If the original input string ends with `\r`, it is incomplete and needs buffering.
+    # However, through our above normalization, the string would not end with `\r` anymore (but `\r\n`).
+    # Hence, in this case, we just remove the last character, so that all other line endings within the string remain unchanged.
+    if string.ends_with?("\r")
+      normalized[...-1]
+    else
+      normalized
+    end
   end
 
   def add_to_line_buffer(message)
