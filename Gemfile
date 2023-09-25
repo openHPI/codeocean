@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 
 gem 'bcrypt'
 gem 'bootstrap-will_paginate'
-gem 'browser'
 gem 'carrierwave'
 gem 'charlock_holmes', require: 'charlock_holmes/string'
 gem 'docker-api', require: 'docker'
