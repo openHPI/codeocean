@@ -29,8 +29,8 @@ class RequestForCommentsController < ApplicationController
 
     @request_for_comments = RequestForComment.where(id: request_for_comments)
       .with_last_activity # expensive query, so we only do it for the current page
-      .includes(submission: %i[study_group exercise])
-      .includes(:file, :comments, :user)
+      .includes(submission: %i[study_group exercise contributor])
+      .includes(:file, :comments, user: [:consumer])
       .order(created_at: :desc) # Order for the view
       # We need to manually enable the pagination links.
       .extending(WillPaginate::ActiveRecord::RelationMethods)
@@ -77,15 +77,24 @@ class RequestForCommentsController < ApplicationController
     # As we order by `last_comment`, we need to include `with_last_activity` in the original query.
     # Therefore, the optimization chosen above doesn't work here.
     @search = policy_scope(RequestForComment)
-      .with_last_activity
       .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
       .where(comments: {user: current_user})
       .ransack(params[:q])
-    @request_for_comments = @search.result
-      .includes(submission: [:study_group, :exercise, {files: %i[comments]}])
-      .includes(:user)
-      .order(last_comment: :desc)
+    # This total is used later to calculate the total number of entries
+    request_for_comments = @search.result
       .paginate(page: params[:page], per_page: per_page_param)
+
+    @request_for_comments = RequestForComment.where(id: request_for_comments)
+      .with_last_activity
+      .includes(submission: %i[study_group exercise contributor])
+      .includes(:file, :comments, user: [:consumer])
+      .order(last_comment: :desc)
+      # We need to manually enable the pagination links.
+      .extending(WillPaginate::ActiveRecord::RelationMethods)
+    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page] || 1)
+    @request_for_comments.limit_value = per_page_param
+    @request_for_comments.total_entries = @search.result.length
+
     authorize!
     render 'index'
   end
