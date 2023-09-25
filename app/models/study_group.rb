@@ -19,7 +19,7 @@ class StudyGroup < ApplicationRecord
   end
 
   def user_count
-    study_group_memberships.distinct.count
+    attributes['user_count'] || study_group_memberships.size
   end
 
   def to_s

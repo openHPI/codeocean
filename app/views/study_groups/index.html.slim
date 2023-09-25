@@ -9,4 +9,4 @@ h1 = StudyGroup.model_name.human(count: 2)
     = f.search_field(:name_cont, class: 'form-control', placeholder: t('activerecord.attributes.study_group.name'))
 
 = render('table', study_groups: @study_groups)
-= render('shared/pagination', collection: @study_groups)
+= render('shared/pagination', collection: @study_groups_paginate)
