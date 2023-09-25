@@ -5,7 +5,10 @@ h1.d-inline-block = t('programming_groups.new.create_programming_pair')
 #matching data-exercise-id=@exercise.id.to_s
   .row
     .col-12.mt-2.mb-4
-      p = t('programming_groups.new.info_work_together', exercise_title: @exercise.title)
+      - if PairProgramming23Study.participate_in_pp?(current_user, @exercise) && PairProgramming23Study::FORCED_EXERCISE_IDS.include?(@exercise.id)
+        p = t('programming_groups.new.info_forced_work_together', exercise_title: @exercise.title)
+      - else
+        p = t('programming_groups.new.info_work_together', exercise_title: @exercise.title)
       .text-body-tertiary == t('exercises.implement.pair_programming_feedback', url: "https://etherpad.xopic.de/p/openHPI_PairProgrammingFeedback?userName=#{CGI.escape(current_user.displayname)}")
 
   .row
