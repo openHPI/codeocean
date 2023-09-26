@@ -72,6 +72,16 @@ class SessionsController < ApplicationController
   private
 
   def redirect_to_survey
+    # The following code is taken from store_lti_session_data(params) & send_score_for(submission, user)
+    # It gives a bonus point to users who opened the survey
+    begin
+      lti_parameters = params.slice(*Lti::SESSION_PARAMETERS).permit!.to_h
+      provider = build_tool_provider(consumer: current_user.consumer, parameters: lti_parameters)
+      provider.post_replace_result!(1.0)
+    rescue IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET, SocketError, EOFError
+      # We don't do anything here because it is only a bonus point and we want the users to do the survey
+    end
+
     # This method is taken from Xikolo and slightly adapted.
     # Forward arbitrary optional query params to LimeSurvey
     # and remove tracking and other sensitive user params.
