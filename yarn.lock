@@ -1063,13 +1063,13 @@
     "@sentry/utils" "7.71.0"
     tslib "^2.4.1 || ^1.9.3"
 
-"@sentry/integrations@^7.69.0":
-  version "7.71.0"
-  resolved "https://registry.yarnpkg.com/@sentry/integrations/-/integrations-7.71.0.tgz#5f54ee7ea97c83da794511cc0807baf86c11d9b2"
-  integrity sha512-7Ay58ckFq+ra8OzV6HjO/SrCJIkuanp7NP/X2KVLKTyRfS+V3kqj/bAnyIodqQlJCiZV40PaEagIhDM9Fr/7/Q==
+"@sentry/integrations@^7.72.0":
+  version "7.72.0"
+  resolved "https://registry.yarnpkg.com/@sentry/integrations/-/integrations-7.72.0.tgz#ad7b23f6ed2fbf40351c4839a0f86a2b27798887"
+  integrity sha512-ay2WgLtjsr0WS8+N7i7VmKzondoZRh3ISx8rb91LjmVrDNu8baleZAB59jkKe/JSy0gYh99umJuptc2te/65+A==
   dependencies:
-    "@sentry/types" "7.71.0"
-    "@sentry/utils" "7.71.0"
+    "@sentry/types" "7.72.0"
+    "@sentry/utils" "7.72.0"
     localforage "^1.8.1"
     tslib "^2.4.1 || ^1.9.3"
 
@@ -1087,12 +1087,25 @@
   resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.71.0.tgz#51a4eeeed35e2b58dda9483e1c89819ea55aa1cf"
   integrity sha512-30PRLZI1RoeWbLE9K7AHsRPWDH22CqC4WcLNeVmRfLC5m1vE1FHb53r98QSKFhLoONMPMVzDhZZgl4ZcC5mptQ==
 
-"@sentry/utils@7.71.0", "@sentry/utils@^7.61.0":
+"@sentry/types@7.72.0":
+  version "7.72.0"
+  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.72.0.tgz#b474d3821338a545fb2db109715d9aad502bc810"
+  integrity sha512-g6u0mk62yGshx02rfFADIfyR/S9VXcf3RG2qQPuvykrWtOfN/BOTrZypF7I+MiqKwRW76r3Pcu2C/AB+6z9XQA==
+
+"@sentry/utils@7.71.0":
   version "7.71.0"
   resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-7.71.0.tgz#e7a468fa023630130f8dffe33fb3759c321a517e"
   integrity sha512-aS53l/E/5XsSJMOXHKvS0GlX4gZHBgNAMfhEB3f8rUIn5iLF2uu8lCA1uEvX6VB8b7q/Cg4WFTi6BiJ0hvJHQg==
   dependencies:
     "@sentry/types" "7.71.0"
+    tslib "^2.4.1 || ^1.9.3"
+
+"@sentry/utils@7.72.0", "@sentry/utils@^7.61.0":
+  version "7.72.0"
+  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-7.72.0.tgz#798c764ac61bb658e2117792010ccd20ad8c7b02"
+  integrity sha512-o/MtqI7WJXuswidH0bSgBP40KN2lrnyQEIx5uoyJUJi/QEaboIsqbxU62vaFJpde8SYrbA+rTnP3J3ujF2gUag==
+  dependencies:
+    "@sentry/types" "7.72.0"
     tslib "^2.4.1 || ^1.9.3"
 
 "@sinclair/typebox@^0.27.8":
