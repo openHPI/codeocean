@@ -2,7 +2,10 @@
 
 class SynchronizedEditorChannel < ApplicationCable::Channel
   def subscribed
-    stream_from specific_channel
+    set_and_authorize_exercise
+    authorize_programming_group
+
+    stream_from specific_channel unless subscription_rejected?
 
     # We generate a session_id for the user and send it to the client
     @session_id = SecureRandom.uuid
@@ -26,17 +29,6 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
 
     Event::SynchronizedEditor.create_for_connection_change(message, current_user, programming_group)
     ActionCable.server.broadcast(specific_channel, message)
-  end
-
-  def specific_channel
-    reject unless ProgrammingGroupPolicy.new(current_user, programming_group).stream_sync_editor?
-    "synchronized_editor_channel_group_#{programming_group.id}"
-  rescue NoMethodError => e
-    Sentry.capture_exception(e, extra: {current_user:, programming_group:, session_id: @session_id, identifier: @identifier})
-  end
-
-  def programming_group
-    current_contributor if current_contributor.programming_group?
   end
 
   def editor_change(message)
@@ -63,6 +55,16 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
     ActionCable.server.broadcast(specific_channel, message)
   end
 
+  private
+
+  def specific_channel
+    "synchronized_editor_channel_group_#{programming_group.id}"
+  end
+
+  def programming_group
+    current_contributor if current_contributor.programming_group?
+  end
+
   def create_message(action, status)
     {
       action:,
@@ -79,5 +81,16 @@ class SynchronizedEditorChannel < ApplicationCable::Channel
       user: current_user.to_page_context,
       session_id: @session_id,
     }
+  end
+
+  def set_and_authorize_exercise
+    @exercise = Exercise.find(params[:exercise_id])
+    reject unless ExercisePolicy.new(current_user, @exercise).implement?
+  rescue ActiveRecord::RecordNotFound
+    reject
+  end
+
+  def authorize_programming_group
+    reject unless ProgrammingGroupPolicy.new(current_user, programming_group).stream_sync_editor?
   end
 end

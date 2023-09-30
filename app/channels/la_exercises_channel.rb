@@ -2,7 +2,10 @@
 
 class LaExercisesChannel < ApplicationCable::Channel
   def subscribed
-    stream_from specific_channel
+    set_and_authorize_exercise
+    set_and_authorize_study_group
+
+    stream_from specific_channel unless subscription_rejected?
   end
 
   def unsubscribed
@@ -12,7 +15,20 @@ class LaExercisesChannel < ApplicationCable::Channel
   private
 
   def specific_channel
-    reject unless StudyGroupPolicy.new(current_user, StudyGroup.find(params[:study_group_id])).stream_la?
-    "la_exercises_#{params[:exercise_id]}_channel_study_group_#{params[:study_group_id]}"
+    "la_exercises_#{@exercise.id}_channel_study_group_#{@study_group.id}"
+  end
+
+  def set_and_authorize_exercise
+    @exercise = Exercise.find(params[:exercise_id])
+    reject unless ExercisePolicy.new(current_user, @exercise).implement?
+  rescue ActiveRecord::RecordNotFound
+    reject
+  end
+
+  def set_and_authorize_study_group
+    @study_group = @exercise.study_groups.find(params[:study_group_id])
+    reject unless StudyGroupPolicy.new(current_user, @study_group).stream_la?
+  rescue ActiveRecord::RecordNotFound
+    reject
   end
 end

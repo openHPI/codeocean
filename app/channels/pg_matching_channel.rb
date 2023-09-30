@@ -3,7 +3,8 @@
 class PgMatchingChannel < ApplicationCable::Channel
   def subscribed
     set_and_authorize_exercise
-    stream_from specific_channel
+
+    stream_from specific_channel unless subscription_rejected?
   end
 
   def unsubscribed
@@ -11,10 +12,6 @@ class PgMatchingChannel < ApplicationCable::Channel
     @current_waiting_user.status_disconnected! if @current_waiting_user&.reload&.status_waiting?
 
     stop_all_streams
-  end
-
-  def specific_channel
-    "pg_matching_channel_exercise_#{@exercise.id}"
   end
 
   def waiting_for_match
@@ -40,8 +37,14 @@ class PgMatchingChannel < ApplicationCable::Channel
     ActionCable.server.broadcast(specific_channel, {action: 'joined_pg', users: pg.users.map(&:to_page_context)})
   end
 
+  def specific_channel
+    "pg_matching_channel_exercise_#{@exercise.id}"
+  end
+
   def set_and_authorize_exercise
     @exercise = Exercise.find(params[:exercise_id])
     reject unless ExercisePolicy.new(current_user, @exercise).implement?
+  rescue ActiveRecord::RecordNotFound
+    reject
   end
 end
