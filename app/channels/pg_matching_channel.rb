@@ -15,6 +15,12 @@ class PgMatchingChannel < ApplicationCable::Channel
   end
 
   def waiting_for_match
+    if (existing_programming_group = current_user.programming_groups.find_by(exercise: @exercise))
+      message = {action: 'joined_pg', users: existing_programming_group.users.map(&:to_page_context)}
+      ActionCable.server.broadcast(specific_channel, message)
+      return
+    end
+
     @current_waiting_user = PairProgrammingWaitingUser.find_or_initialize_by(user: current_user, exercise: @exercise)
     @current_waiting_user.status_waiting!
 
