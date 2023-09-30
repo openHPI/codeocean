@@ -9,6 +9,8 @@ class PairProgramming23Study
   FORCED_EXERCISE_IDS = [723].freeze
 
   def self.participate?(user, exercise)
+    return false if Rails.env.test?
+
     ENABLE || participate_in_pp?(user, exercise)
   end
 
