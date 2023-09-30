@@ -133,7 +133,7 @@ GEM
       multi_json
     erubi (1.12.0)
     eventmachine (1.2.7)
-    excon (0.103.0)
+    excon (0.104.0)
     execjs (2.9.1)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
@@ -402,7 +402,7 @@ GEM
     rubocop-performance (1.19.1)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.21.1)
+    rubocop-rails (2.21.2)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
