@@ -33,7 +33,7 @@ class StudyGroupsController < ApplicationController
   end
 
   def study_group_params
-    params[:study_group].permit(:id, :name, study_group_membership_ids: []) if params[:study_group].present?
+    params.require(:study_group).permit(:name, study_group_membership_ids: [])
   end
   private :study_group_params
 
