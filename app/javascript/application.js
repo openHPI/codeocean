@@ -64,7 +64,7 @@ import { I18n } from "i18n-js";
 import locales from "../../tmp/locales.json";
 
 // Fetch user locale from html#lang.
-// This value is being set on `app/views/layouts/application.html.erb` and
+// This value is being set on `app/views/layouts/application.html.slim` and
 // is inferred from `ACCEPT-LANGUAGE` header.
 const userLocale = document.documentElement.lang;
 
