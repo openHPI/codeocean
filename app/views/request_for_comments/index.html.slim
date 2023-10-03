@@ -22,7 +22,7 @@ h1 = RequestForComment.model_name.human(count: 2)
       tr
         th
           i class="fa-regular fa-lightbulb" aria-hidden="true" title = t('request_for_comments.solved') align="right"
-        th =  sort_link(@search, :title,  t('activerecord.attributes.request_for_comments.exercise'))
+        th.sorttable_nosort =  sort_link(@search, :title,  t('activerecord.attributes.request_for_comments.exercise'))
         th = t('activerecord.attributes.request_for_comments.question')
         th
           i class="fa-solid fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
