@@ -116,7 +116,7 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    dachsfisch (0.1.1)
+    dachsfisch (0.2.0)
       nokogiri (>= 1.14.1, < 2.0.0)
     database_cleaner (2.0.2)
       database_cleaner-active_record (>= 2, < 3)
@@ -268,10 +268,10 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.4)
-    proformaxml (1.0.0)
+    proformaxml (1.1.0)
       activemodel (>= 5.2.3, < 8.0.0)
       activesupport (>= 5.2.3, < 8.0.0)
-      dachsfisch (>= 0.1.0, < 1.0.0)
+      dachsfisch (>= 0.2.0, < 1.0.0)
       nokogiri (>= 1.10.2, < 2.0.0)
       rubyzip (>= 1.2.2, < 3.0.0)
     prometheus_exporter (2.0.8)
@@ -559,7 +559,7 @@ DEPENDENCIES
   nokogiri
   pagedown-bootstrap-rails
   pg
-  proformaxml (= 1.0.0)
+  proformaxml (= 1.1.0)
   prometheus_exporter
   pry-byebug
   pry-rails
