@@ -1032,35 +1032,26 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.8.tgz#6b79032e760a0899cd4204710beede972a3a185f"
   integrity sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==
 
-"@sentry-internal/tracing@7.72.0":
-  version "7.72.0"
-  resolved "https://registry.yarnpkg.com/@sentry-internal/tracing/-/tracing-7.72.0.tgz#6293a08b8b3dff80499207a4b4994ae70aafc34c"
-  integrity sha512-DToryaRSHk9R5RLgN4ktYEXZjQdqncOAWPqyyIurji8lIobXFRfmLtGL1wjoCK6sQNgWsjhSM9kXxwGnva1DNw==
+"@sentry-internal/tracing@7.73.0":
+  version "7.73.0"
+  resolved "https://registry.yarnpkg.com/@sentry-internal/tracing/-/tracing-7.73.0.tgz#4838f31e41d23a6041ef4520519b80f788bf1cac"
+  integrity sha512-ig3WL/Nqp8nRQ52P205NaypGKNfIl/G+cIqge9xPW6zfRb5kJdM1YParw9GSJ1SPjEZBkBORGAML0on5H2FILw==
   dependencies:
-    "@sentry/core" "7.72.0"
-    "@sentry/types" "7.72.0"
-    "@sentry/utils" "7.72.0"
+    "@sentry/core" "7.73.0"
+    "@sentry/types" "7.73.0"
+    "@sentry/utils" "7.73.0"
     tslib "^2.4.1 || ^1.9.3"
 
 "@sentry/browser@^7.60.1":
-  version "7.72.0"
-  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-7.72.0.tgz#8920d32920031de7ef70140ac13de267e773e5c7"
-  integrity sha512-fcFDTzqhPd3VZAmmYW3KvBTBaEfrKjPmRhlAsfhkGWYLCHqVkNtzsFER4cmUNRGNxjyt9tcG3WlTTqgLRucycQ==
+  version "7.73.0"
+  resolved "https://registry.yarnpkg.com/@sentry/browser/-/browser-7.73.0.tgz#a8eaeb50cf16ca32f0039a81719c503d7045495f"
+  integrity sha512-e301hUixcJ5+HNKCJwajFF5smF4opXEFSclyWsJuFNufv5J/1C1SDhbwG2JjBt5zzdSoKWJKT1ewR6vpICyoDw==
   dependencies:
-    "@sentry-internal/tracing" "7.72.0"
-    "@sentry/core" "7.72.0"
-    "@sentry/replay" "7.72.0"
-    "@sentry/types" "7.72.0"
-    "@sentry/utils" "7.72.0"
-    tslib "^2.4.1 || ^1.9.3"
-
-"@sentry/core@7.72.0":
-  version "7.72.0"
-  resolved "https://registry.yarnpkg.com/@sentry/core/-/core-7.72.0.tgz#df19f9dc1c2cfc5993a73c0c36283c35f9c52f94"
-  integrity sha512-G03JdQ5ZsFNRjcNNi+QvCjqOuBvYqU92Gs1T2iK3GE8dSBTu2khThydMpG4xrKZQLIpHOyiIhlFZiuPtZ66W8w==
-  dependencies:
-    "@sentry/types" "7.72.0"
-    "@sentry/utils" "7.72.0"
+    "@sentry-internal/tracing" "7.73.0"
+    "@sentry/core" "7.73.0"
+    "@sentry/replay" "7.73.0"
+    "@sentry/types" "7.73.0"
+    "@sentry/utils" "7.73.0"
     tslib "^2.4.1 || ^1.9.3"
 
 "@sentry/core@7.73.0", "@sentry/core@^7.72.0":
@@ -1083,32 +1074,19 @@
     localforage "^1.8.1"
     tslib "^2.4.1 || ^1.9.3"
 
-"@sentry/replay@7.72.0":
-  version "7.72.0"
-  resolved "https://registry.yarnpkg.com/@sentry/replay/-/replay-7.72.0.tgz#39da5d971045a6d9bf5d3bd16ccc1f5c0c42c4c8"
-  integrity sha512-dHH/mYCFBwJ/kYmL9L5KihjwQKcefiuvcH0otHSwKSpbbeEoM/BV+SHQoYGd6OMSYnL9fq1dHfF7Zo26p5Yu0Q==
+"@sentry/replay@7.73.0":
+  version "7.73.0"
+  resolved "https://registry.yarnpkg.com/@sentry/replay/-/replay-7.73.0.tgz#4e6c522bac5c12f596ef76afe15ecb3807407669"
+  integrity sha512-a8IC9SowBisLYD2IdLkXzx7gN4iVwHDJhQvLp2B8ARs1PyPjJ7gCxSMHeGrYp94V0gOXtorNYkrxvuX8ayPROA==
   dependencies:
-    "@sentry/core" "7.72.0"
-    "@sentry/types" "7.72.0"
-    "@sentry/utils" "7.72.0"
-
-"@sentry/types@7.72.0":
-  version "7.72.0"
-  resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.72.0.tgz#b474d3821338a545fb2db109715d9aad502bc810"
-  integrity sha512-g6u0mk62yGshx02rfFADIfyR/S9VXcf3RG2qQPuvykrWtOfN/BOTrZypF7I+MiqKwRW76r3Pcu2C/AB+6z9XQA==
+    "@sentry/core" "7.73.0"
+    "@sentry/types" "7.73.0"
+    "@sentry/utils" "7.73.0"
 
 "@sentry/types@7.73.0":
   version "7.73.0"
   resolved "https://registry.yarnpkg.com/@sentry/types/-/types-7.73.0.tgz#6d811bbe413d319df0a592a672d6d72a94a8e716"
   integrity sha512-/v8++bly8jW7r4cP2wswYiiVpn7eLLcqwnfPUMeCQze4zj3F3nTRIKc9BGHzU0V+fhHa3RwRC2ksqTGq1oJMDg==
-
-"@sentry/utils@7.72.0":
-  version "7.72.0"
-  resolved "https://registry.yarnpkg.com/@sentry/utils/-/utils-7.72.0.tgz#798c764ac61bb658e2117792010ccd20ad8c7b02"
-  integrity sha512-o/MtqI7WJXuswidH0bSgBP40KN2lrnyQEIx5uoyJUJi/QEaboIsqbxU62vaFJpde8SYrbA+rTnP3J3ujF2gUag==
-  dependencies:
-    "@sentry/types" "7.72.0"
-    tslib "^2.4.1 || ^1.9.3"
 
 "@sentry/utils@7.73.0", "@sentry/utils@^7.61.0":
   version "7.73.0"
@@ -1251,9 +1229,9 @@
   integrity sha512-Ys+/St+2VF4+xuY6+kDIXGxbNRO0mesVg0bbxEfB97Od1Vjpjx9KD1qxs64Gcb3CWPirk9Xe+PT4YiiHQ9T+eg==
 
 "@types/node@*":
-  version "20.8.0"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.8.0.tgz#10ddf0119cf20028781c06d7115562934e53f745"
-  integrity sha512-LzcWltT83s1bthcvjBmiBvGJiiUe84NWRHkw+ZV6Fr41z2FbIzvc815dk2nQ3RAKMuN2fkenM/z3Xv2QzEpYxQ==
+  version "20.8.2"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.8.2.tgz#d76fb80d87d0d8abfe334fc6d292e83e5524efc4"
+  integrity sha512-Vvycsc9FQdwhxE3y3DzeIxuEJbWGDsnrxvMADzTDF/lcdR9/K+AQIeAghTQsHtotg/q0j3WEOYS/jQgSdWue3w==
 
 "@types/qs@*":
   version "6.9.8"
@@ -1724,9 +1702,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001541:
-  version "1.0.30001542"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001542.tgz#823ddb5aed0a70d5e2bfb49126478e84e9514b85"
-  integrity sha512-UrtAXVcj1mvPBFQ4sKd38daP8dEcXXr5sQe6QNNinaPd0iA/cxg9/l3VrSdL73jgw5sKyuQ6jNgiKO12W3SsVA==
+  version "1.0.30001546"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001546.tgz#10fdad03436cfe3cc632d3af7a99a0fb497407f0"
+  integrity sha512-zvtSJwuQFpewSyRrI3AsftF6rM0X80mZkChIt1spBGEvRglCrjTniXvinc8JKRoqTwXAgvqTImaN9igfSMtUBw==
 
 chalk@^2.4.2:
   version "2.4.2"
@@ -1771,9 +1749,9 @@ chrome-trace-event@^1.0.2:
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
 ci-info@^3.2.0:
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.8.0.tgz#81408265a5380c929f0bc665d62256628ce9ef91"
-  integrity sha512-eXTggHWSooYhq49F2opQhuHWgzucfF2YgODK4e1566GQs5BIfP30B0oenwBJHfWxAs2fyPB1s7Mg949zLf61Yw==
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-3.9.0.tgz#4279a62028a7b1f262f3473fc9605f5e218c59b4"
+  integrity sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==
 
 clone-deep@^4.0.1:
   version "4.0.1"
@@ -2425,9 +2403,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.535:
-  version "1.4.537"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.537.tgz#aac4101db53066be1e49baedd000a26bc754adc9"
-  integrity sha512-W1+g9qs9hviII0HAwOdehGYkr+zt7KKdmCcJcjH0mYg6oL8+ioT3Skjmt7BLoAQqXhjf40AXd+HlR4oAWMlXjA==
+  version "1.4.543"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.543.tgz#51116ffc9fba1ee93514d6a40d34676aa6d7d1c4"
+  integrity sha512-t2ZP4AcGE0iKCCQCBx/K2426crYdxD3YU6l0uK2EO3FZH0pbC4pFz/sZm2ruZsND6hQBTcDWWlo/MLpiOdif5g==
 
 emojis-list@^3.0.0:
   version "3.0.0"
@@ -2755,11 +2733,9 @@ has-symbols@^1.0.3:
   integrity sha512-l3LCuF6MgDNwTDKkdYGEihYjt5pRPbEg46rtlmnSPlUbgmB8LOIrKJbYYFBSbnPaJexMKtiPO8hmeRjRz2Td+A==
 
 has@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/has/-/has-1.0.3.tgz#722d7cbfc1f6aa8241f16dd814e011e1f41e8796"
-  integrity sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==
-  dependencies:
-    function-bind "^1.1.1"
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/has/-/has-1.0.4.tgz#2eb2860e000011dae4f1406a86fe80e530fb2ec6"
+  integrity sha512-qdSAmqLF6209RFj4VVItywPMbm3vWylknmB3nvNiUIs72xAimcM8nVYxYr7ncvZq5qzk9MKIZR8ijqD/1QuYjQ==
 
 highlight.js@^11.8.0:
   version "11.8.0"
@@ -4313,9 +4289,9 @@ terser-webpack-plugin@^5.3.7, terser-webpack-plugin@^5.3.9:
     terser "^5.16.8"
 
 terser@^5.16.8:
-  version "5.20.0"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.20.0.tgz#ea42aea62578703e33def47d5c5b93c49772423e"
-  integrity sha512-e56ETryaQDyebBwJIWYB2TT6f2EZ0fL0sW/JRXNMN26zZdKi2u/E/5my5lG6jNxym6qsrVXfFRmOdV42zlAgLQ==
+  version "5.21.0"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.21.0.tgz#d2b27e92b5e56650bc83b6defa00a110f0b124b2"
+  integrity sha512-WtnFKrxu9kaoXuiZFSGrcAvvBqAdmKx0SFNmVNYdJamMu9yyN3I/QF0FbH4QcqJQ+y1CJnzxGIKH0cSj+FGYRw==
   dependencies:
     "@jridgewell/source-map" "^0.3.3"
     acorn "^8.8.2"
