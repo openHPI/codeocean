@@ -83,7 +83,6 @@ group :test do
   gem 'capybara'
   gem 'database_cleaner'
   gem 'headless'
-  gem 'nyan-cat-formatter'
   gem 'rails-controller-testing'
   gem 'rspec-collection_matchers'
   gem 'rspec-github', require: false

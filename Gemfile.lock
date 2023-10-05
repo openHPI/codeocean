@@ -248,8 +248,6 @@ GEM
     nokogiri (1.15.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nyan-cat-formatter (0.12.0)
-      rspec (>= 2.99, >= 2.14.2, < 4)
     oauth (1.1.0)
       oauth-tty (~> 1.0, >= 1.0.1)
       snaky_hash (~> 2.0)
@@ -563,7 +561,6 @@ DEPENDENCIES
   net-pop
   net-smtp
   nokogiri
-  nyan-cat-formatter
   pagedown-bootstrap-rails
   pg
   proformaxml
