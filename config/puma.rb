@@ -60,7 +60,7 @@ fork_worker
 
 # Disable explicit preloading of our app.
 # With `fork_worker`, we will have an implicit preloading.
-# preload_app!
+preload_app! false
 
 # Disable automatic tagging of the service.
 tag ''
