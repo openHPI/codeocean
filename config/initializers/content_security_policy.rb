@@ -19,7 +19,8 @@ module CSP
                           else
                             policy.public_send(directive) || []
                           end
-      all_settings = existing_settings + additional_settings
+      all_settings = additional_settings
+      all_settings += existing_settings unless existing_settings == ["'none'"]
       policy.public_send(directive, *all_settings)
     end
   end
