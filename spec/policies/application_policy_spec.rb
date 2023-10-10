@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ApplicationPolicy do
+RSpec.describe ApplicationPolicy do
   describe '#initialize' do
     context 'without a user' do
       it 'raises an error' do

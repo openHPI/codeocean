@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExercisePolicy do
+RSpec.describe ExercisePolicy do
   subject(:policy) { described_class }
 
   let(:exercise) { build(:dummy, public: true) }

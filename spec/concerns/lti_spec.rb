@@ -6,7 +6,7 @@ class Controller < AnonymousController
   include Lti
 end
 
-describe Lti do
+RSpec.describe Lti do
   let(:controller) { Controller.new }
   let(:session) { double }
 

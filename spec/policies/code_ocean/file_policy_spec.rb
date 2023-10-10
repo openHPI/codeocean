@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe CodeOcean::FilePolicy do
+RSpec.describe CodeOcean::FilePolicy do
   subject(:policy) { described_class }
 
   let(:exercise) { create(:fibonacci) }

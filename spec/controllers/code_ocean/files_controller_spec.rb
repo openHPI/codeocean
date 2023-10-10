@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe CodeOcean::FilesController do
+RSpec.describe CodeOcean::FilesController do
   render_views
 
   let(:contributor) { create(:admin) }

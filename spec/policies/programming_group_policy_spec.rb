@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ProgrammingGroupPolicy do
+RSpec.describe ProgrammingGroupPolicy do
   subject(:policy) { described_class }
 
   let(:programming_group) { build(:programming_group) }

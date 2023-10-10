@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ErrorTemplatesController do
+RSpec.describe ErrorTemplatesController do
   render_views
 
   let!(:error_template) { create(:error_template) }
@@ -10,39 +10,67 @@ describe ErrorTemplatesController do
 
   before { allow(controller).to receive(:current_user).and_return(user) }
 
-  it 'gets index' do
-    get :index
-    expect(response).to have_http_status(:ok)
-    expect(assigns(:error_templates)).not_to be_nil
+  describe 'GET #index' do
+    before { get :index }
+
+    expect_assigns(error_templates: ErrorTemplate.all)
+    expect_http_status(:ok)
+    expect_template(:index)
   end
 
-  it 'gets new' do
-    get :new
-    expect(response).to have_http_status(:ok)
+  describe 'GET #new' do
+    before { get :new }
+
+    expect_http_status(:ok)
+    expect_template(:new)
   end
 
-  it 'creates error_template' do
-    expect { post :create, params: {error_template: {execution_environment_id: error_template.execution_environment.id}} }.to change(ErrorTemplate, :count).by(1)
-    expect(response).to redirect_to(error_template_path(assigns(:error_template)))
+  describe 'POST #create' do
+    before { post :create, params: {error_template: {execution_environment_id: error_template.execution_environment.id}} }
+
+    expect_assigns(error_template: ErrorTemplate)
+
+    it 'creates the error template' do
+      expect { post :create, params: {error_template: {execution_environment_id: error_template.execution_environment.id}} }.to change(ErrorTemplate, :count).by(1)
+    end
+
+    expect_redirect { error_template_path(assigns(:error_template)) }
   end
 
-  it 'shows error_template' do
-    get :show, params: {id: error_template}
-    expect(response).to have_http_status(:ok)
+  describe 'GET #show' do
+    before { get :show, params: {id: error_template} }
+
+    expect_assigns(error_template: ErrorTemplate)
+    expect_http_status(:ok)
+    expect_template(:show)
   end
 
-  it 'gets edit' do
-    get :edit, params: {id: error_template}
-    expect(response).to have_http_status(:ok)
+  describe 'GET #edit' do
+    before { get :edit, params: {id: error_template} }
+
+    expect_assigns(error_template: ErrorTemplate)
+    expect_http_status(:ok)
+    expect_template(:edit)
   end
 
-  it 'updates error_template' do
-    patch :update, params: {id: error_template, error_template: attributes_for(:error_template)}
-    expect(response).to redirect_to(error_template_path(assigns(:error_template)))
+  describe 'PATCH #update' do
+    before { patch :update, params: {id: error_template, error_template: attributes_for(:error_template)} }
+
+    expect_assigns(error_template: ErrorTemplate)
+
+    expect_redirect { error_template }
   end
 
-  it 'destroys error_template' do
-    expect { delete :destroy, params: {id: error_template} }.to change(ErrorTemplate, :count).by(-1)
-    expect(response).to redirect_to(error_templates_path)
+  describe 'DELETE #destroy' do
+    before { delete :destroy, params: {id: error_template} }
+
+    expect_assigns(error_template: ErrorTemplate)
+
+    it 'destroys the error template' do
+      error_template = create(:error_template)
+      expect { delete :destroy, params: {id: error_template} }.to change(ErrorTemplate, :count).by(-1)
+    end
+
+    expect_redirect { error_template }
   end
 end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe CommentsController do
+RSpec.describe CommentsController do
   render_views
 
   let(:user) { create(:learner) }

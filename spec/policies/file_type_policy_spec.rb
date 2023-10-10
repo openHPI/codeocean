@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe FileTypePolicy do
+RSpec.describe FileTypePolicy do
   subject(:policy) { described_class }
 
   let(:file_type) { build(:dot_rb) }

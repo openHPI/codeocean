@@ -3,6 +3,7 @@
 source 'https://rubygems.org'
 
 gem 'bcrypt'
+gem 'bootsnap', require: false
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
 gem 'charlock_holmes', require: 'charlock_holmes/string'
@@ -66,7 +67,6 @@ end
 group :development, :staging do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'bootsnap', require: false
   gem 'letter_opener'
   gem 'listen'
   gem 'pry-byebug'

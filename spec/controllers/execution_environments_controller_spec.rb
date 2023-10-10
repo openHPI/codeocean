@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExecutionEnvironmentsController do
+RSpec.describe ExecutionEnvironmentsController do
   render_views
 
   let(:execution_environment) { create(:ruby) }

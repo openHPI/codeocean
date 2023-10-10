@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Request_for_Comments' do
+RSpec.describe 'Request_for_Comments' do
   let(:user) { create(:teacher) }
 
   before do

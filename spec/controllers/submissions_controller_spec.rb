@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe SubmissionsController do
+RSpec.describe SubmissionsController do
   render_views
 
   let(:exercise) { create(:math) }

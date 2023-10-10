@@ -20,7 +20,7 @@ const public_output_path = webpackConfig.output.publicPath;
 
 const envConfig = module.exports = {
     node: {
-      global: false,
+        global: false,
     },
     module: {
         rules: [

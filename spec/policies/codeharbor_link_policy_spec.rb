@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe CodeharborLinkPolicy do
+RSpec.describe CodeharborLinkPolicy do
   subject(:policy) { described_class }
 
   let(:codeharbor_link) { create(:codeharbor_link) }

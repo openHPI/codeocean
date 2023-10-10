@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Prometheus::Controller do
+RSpec.describe Prometheus::Controller do
   let(:codeocean_config) { instance_double(CodeOcean::Config) }
   let(:prometheus_config) { {prometheus_exporter: {enabled: true}} }
 

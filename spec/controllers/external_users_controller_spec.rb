@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExternalUsersController do
+RSpec.describe ExternalUsersController do
   render_views
 
   let(:user) { build(:admin) }

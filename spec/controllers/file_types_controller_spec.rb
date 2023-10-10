@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe FileTypesController do
+RSpec.describe FileTypesController do
   render_views
 
   let(:file_type) { create(:dot_rb) }

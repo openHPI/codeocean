@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExecutionEnvironmentPolicy do
+RSpec.describe ExecutionEnvironmentPolicy do
   subject(:policy) { described_class }
 
   let(:execution_environment) { build(:ruby) }

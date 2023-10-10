@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExercisesController do
+RSpec.describe ExercisesController do
   render_views
 
   let(:exercise) { create(:dummy) }

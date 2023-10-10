@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'seeds' do
+RSpec.describe 'seeds' do
   subject(:seed) { Rake::Task['db:seed'].invoke }
 
   before do

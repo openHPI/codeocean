@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe NonceStore do
+RSpec.describe NonceStore do
   let(:nonce) { SecureRandom.hex }
 
   before do

@@ -2,13 +2,14 @@
 
 require 'rails_helper'
 
-describe InternalUsersController do
+RSpec.describe InternalUsersController do
   render_views
 
-  let(:user) { create(:admin) }
+  let(:consumer) { create(:consumer) }
+  let(:user) { create(:admin, consumer:) }
 
   describe 'GET #activate' do
-    let(:user) { InternalUser.create(attributes_for(:teacher)) }
+    let(:user) { InternalUser.create(attributes_for(:teacher).merge(consumer:)) }
 
     before do
       user.send(:setup_activation)
@@ -40,7 +41,7 @@ describe InternalUsersController do
   end
 
   describe 'PUT #activate' do
-    let(:user) { InternalUser.create(build(:teacher).attributes) }
+    let(:user) { InternalUser.create(build(:teacher, consumer:).attributes) }
     let(:password) { SecureRandom.hex }
 
     before do
@@ -145,8 +146,8 @@ describe InternalUsersController do
   end
 
   describe 'DELETE #destroy' do
-    let(:second_user) { create(:teacher) }
-    let(:third_user) { create(:teacher) }
+    let(:second_user) { create(:teacher, consumer:) }
+    let(:third_user) { create(:teacher, consumer:) }
 
     before do
       allow(controller).to receive(:current_user).and_return(user)

@@ -6,7 +6,7 @@ class Controller < AnonymousController
   include FileParameters
 end
 
-describe FileParameters do
+RSpec.describe FileParameters do
   let(:controller) { Controller.new }
   let(:hello_world) { create(:hello_world) }
 

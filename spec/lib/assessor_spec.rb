@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Assessor do
+RSpec.describe Assessor do
   let(:assessor) { described_class.new(execution_environment: build(:ruby)) }
 
   describe '#assess' do

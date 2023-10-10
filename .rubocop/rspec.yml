@@ -15,6 +15,7 @@ RSpec/DescribeClass:
   Enabled: false
   Exclude:
     - "spec/views/**/*_spec.rb"
+    - "spec/custom_matchers/*"
 
 RSpec/ExampleLength:
   Enabled: false

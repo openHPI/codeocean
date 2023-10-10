@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Exercise do
+RSpec.describe Exercise do
   let(:exercise) { described_class.create.tap {|exercise| exercise.update(public: nil, token: nil) } }
   let(:users) { create_list(:external_user, 10) }
 

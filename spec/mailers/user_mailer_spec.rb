@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe UserMailer do
+RSpec.describe UserMailer do
   let(:user) { InternalUser.create(attributes_for(:teacher)) }
 
   describe '#activation_needed_email' do

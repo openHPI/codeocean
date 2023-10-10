@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe TestingFrameworkAdapter do
+RSpec.describe TestingFrameworkAdapter do
   let(:adapter) { described_class.new }
   let(:count) { 42 }
   let(:failed) { 25 }

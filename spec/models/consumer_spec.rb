@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Consumer do
+RSpec.describe Consumer do
   let(:consumer) { described_class.create }
   let(:valid_consumer) { create(:consumer) }
 

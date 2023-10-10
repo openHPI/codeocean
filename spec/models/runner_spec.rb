@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Runner do
+RSpec.describe Runner do
   let(:runner_id) { attributes_for(:runner)[:runner_id] }
   let(:strategy_class) { described_class.strategy_class }
   let(:strategy) { instance_double(strategy_class) }

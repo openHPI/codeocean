@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe RequestForComment do
+RSpec.describe RequestForComment do
   let!(:rfc) { create(:rfc) }
 
   describe 'scope with_comments' do

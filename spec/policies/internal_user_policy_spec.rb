@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe InternalUserPolicy do
+RSpec.describe InternalUserPolicy do
   subject(:policy) { described_class }
 
   %i[create? edit? new? show? update?].each do |action|

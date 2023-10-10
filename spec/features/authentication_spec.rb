@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Authentication' do
+RSpec.describe 'Authentication' do
   let(:user) { create(:admin) }
   let(:password) { attributes_for(:admin)[:password] }
 

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExternalUser do
+RSpec.describe ExternalUser do
   let(:user) { described_class.create }
 
   it 'validates the presence of a consumer' do

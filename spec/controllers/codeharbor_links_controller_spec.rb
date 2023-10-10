@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe CodeharborLinksController do
+RSpec.describe CodeharborLinksController do
   render_views
 
   let(:user) { create(:teacher) }
@@ -44,14 +44,13 @@ describe CodeharborLinksController do
     context 'with invalid params' do
       let(:params) { {push_url: '', check_uuid_url: '', api_key: ''} }
 
+      before { post_request }
+
       it 'does not create a codeharbor_link' do
         expect { post_request }.not_to change(CodeharborLink, :count)
       end
 
-      it 'redirects to user show' do
-        post_request
-        expect(response).to render_template(:new)
-      end
+      expect_template(:new)
     end
   end
 
@@ -79,14 +78,13 @@ describe CodeharborLinksController do
     context 'with invalid params' do
       let(:params) { {push_url: '', check_uuid_url: '', api_key: ''} }
 
+      before { put_request }
+
       it 'does not change codeharbor_link' do
         expect { put_request }.not_to(change { codeharbor_link.reload.attributes })
       end
 
-      it 'redirects to user show' do
-        put_request
-        expect(response).to render_template(:edit)
-      end
+      expect_template(:edit)
     end
   end
 

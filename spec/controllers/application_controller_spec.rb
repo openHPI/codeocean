@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ApplicationController do
+RSpec.describe ApplicationController do
   render_views
 
   describe '#current_user' do

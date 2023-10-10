@@ -2,14 +2,14 @@
 
 require 'rails_helper'
 
-describe SessionsController do
+RSpec.describe SessionsController do
   render_views
 
   let(:consumer) { create(:consumer) }
 
   describe 'POST #create' do
     let(:password) { attributes_for(:teacher)[:password] }
-    let(:user) { InternalUser.create(user_attributes.merge(password:)) }
+    let(:user) { InternalUser.create(user_attributes.merge(password:, consumer:)) }
     let(:user_attributes) { build(:teacher).attributes }
 
     context 'with valid credentials' do
@@ -76,7 +76,7 @@ describe SessionsController do
     context 'with valid launch parameters' do
       let(:locale) { :de }
       let(:perform_request) { post :create_through_lti, params: {custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id} }
-      let(:user) { create(:external_user, consumer_id: consumer.id) }
+      let(:user) { create(:external_user, consumer:) }
 
       before { allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
 

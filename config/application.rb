@@ -45,6 +45,9 @@ module CodeOcean
 
     config.action_cable.mount_path = "#{ENV.fetch('RAILS_RELATIVE_URL_ROOT', '')}/cable"
 
+    # Disable concurrent ActionCable workers to ensure ACE change events keep their order
+    config.action_cable.worker_pool_size = 1
+
     config.telegraf.tags = {application: 'codeocean'}
 
     config.after_initialize do
@@ -55,13 +58,15 @@ module CodeOcean
       Runner.strategy_class.initialize_environment
     end
 
+    # Specify default options for Rails generators
+    config.generators do |g|
+      g.orm :active_record, primary_key_type: :uuid
+    end
+
     # Allow tables in addition to existing default tags
     config.action_view.sanitized_allowed_tags = ActionView::Base.sanitized_allowed_tags + %w[table thead tbody tfoot td tr]
 
     # Extract Sentry-related parameters from WebSocket connection
     config.middleware.insert_before 0, Middleware::WebSocketSentryHeaders
-
-    # Disable concurrent ActionCable workers to ensure ACE change events keep their order
-    config.action_cable.worker_pool_size = 1
   end
 end

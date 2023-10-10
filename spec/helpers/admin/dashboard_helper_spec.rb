@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Admin::DashboardHelper do
+RSpec.describe Admin::DashboardHelper do
   before do
     create(:ruby)
     dcp = class_double Runner::Strategy::DockerContainerPool

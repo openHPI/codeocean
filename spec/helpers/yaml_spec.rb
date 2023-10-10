@@ -4,7 +4,7 @@ require 'find'
 require 'active_support'
 require 'rails'
 
-describe 'yaml config files' do
+RSpec.describe 'yaml config files' do
   Find.find(__dir__, 'config') do |path|
     next unless /.*.\.yml/.match?(path)
 

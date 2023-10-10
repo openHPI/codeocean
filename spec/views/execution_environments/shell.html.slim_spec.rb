@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'execution_environments/shell.html.slim' do
+RSpec.describe 'execution_environments/shell.html.slim' do
   let(:execution_environment) { create(:ruby) }
 
   before do

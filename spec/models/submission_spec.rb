@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Submission do
+RSpec.describe Submission do
   let(:submission) { create(:submission, exercise: create(:dummy)) }
 
   it 'validates the presence of a cause' do

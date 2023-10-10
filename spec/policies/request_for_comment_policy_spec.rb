@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe RequestForCommentPolicy do
+RSpec.describe RequestForCommentPolicy do
   subject(:policy) { described_class }
 
   context 'when the RfC visibility is not considered' do

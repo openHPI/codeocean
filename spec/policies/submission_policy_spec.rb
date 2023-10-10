@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe SubmissionPolicy do
+RSpec.describe SubmissionPolicy do
   subject(:policy) { described_class }
 
   permissions :create? do

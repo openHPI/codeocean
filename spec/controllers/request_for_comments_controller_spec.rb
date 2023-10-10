@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe RequestForCommentsController do
+RSpec.describe RequestForCommentsController do
   render_views
 
   let(:user) { create(:admin) }
@@ -61,12 +61,10 @@ describe RequestForCommentsController do
   end
 
   describe 'GET #index' do
-    it 'renders the index template' do
-      get :index
+    before { get :index }
 
-      expect(response).to have_http_status :ok
-      expect(response).to render_template :index
-    end
+    expect_template(:index)
+    expect_http_status(:ok)
 
     it 'shows only rfc`s belonging to selected study group' do
       my_study_group = create(:study_group)

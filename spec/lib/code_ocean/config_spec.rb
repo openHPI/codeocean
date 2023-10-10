@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe CodeOcean::Config do
+RSpec.describe CodeOcean::Config do
   describe '#read' do
     let(:content) { {'foo' => 'bar'} }
     let(:filename) { :foo }

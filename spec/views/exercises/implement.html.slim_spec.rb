@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'exercises/implement.html.slim' do
+RSpec.describe 'exercises/implement.html.slim' do
   let(:exercise) { create(:fibonacci) }
   let(:files) { exercise.files.visible }
   let(:non_binary_files) { files.reject {|file| file.file_type.binary? } }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExerciseHelper do
+RSpec.describe ExerciseHelper do
   describe '#embedding_parameters' do
     let(:exercise) { build(:dummy) }
 

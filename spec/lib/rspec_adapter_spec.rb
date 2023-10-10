@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe RspecAdapter do
+RSpec.describe RspecAdapter do
   let(:adapter) { described_class.new }
   let(:count) { 42 }
   let(:failed) { 25 }

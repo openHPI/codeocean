@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe CodeharborLink do
+RSpec.describe CodeharborLink do
   it { is_expected.to validate_presence_of(:check_uuid_url) }
   it { is_expected.to validate_presence_of(:push_url) }
   it { is_expected.to validate_presence_of(:api_key) }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Runner::Strategy::Poseidon::Connection do
+RSpec.describe Runner::Strategy::Poseidon::Connection do
   let(:runner_id) { attributes_for(:runner)[:runner_id] }
   let(:execution_environment) { create(:ruby) }
   let(:strategy) { Runner::Strategy::Poseidon.new(runner_id, execution_environment) }

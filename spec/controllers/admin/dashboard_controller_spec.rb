@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Admin::DashboardController do
+RSpec.describe Admin::DashboardController do
   render_views
 
   let(:codeocean_config) { instance_double(CodeOcean::Config) }

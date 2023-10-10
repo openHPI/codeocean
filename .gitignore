@@ -1,27 +1,52 @@
+# Ignore application configuration
 /config/action_mailer.yml
 /config/code_ocean.yml
+/config/content_security_policy.yml
 /config/database.yml
+/config/docker.yml.erb
 /config/mnemosyne.yml
 /config/secrets.yml
-/config/docker.yml.erb
-/config/content_security_policy.yml
+/config/settings.local.yml
+/config/settings/*.local.yml
+/config/environments/*.local.yml
+
+# Ignore temporary files
 /coverage
-/log/*.*
-/public/assets
-/public/uploads
+/log
 /rubocop.html
 /tmp
-/vagrant/
-/.capistrano
-/.vagrant
-*.sublime-*
-/.idea
-/.vagrant
-*.iml
 *.DS_Store
+
+## Ignore editor-specific artifacts
+# Vagrant
+/.vagrant
+/vagrant
+# Sublime
+*.sublime-*
+# IntelliJ
+/.idea
+*.iml
+
+## Environment normalisation:
+/.bundle
+/vendor/bundle
+
+# Ignore Byebug command history file.
+.byebug_history
+
+# Ignore node_modules
+node_modules/
+
+# Ignore precompiled javascript packs
 /public/packs
 /public/packs-test
-/node_modules
+/public/assets
+
+# Ignore yarn files
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+# Ignore uploaded files in development
+/storage
+/public/uploads

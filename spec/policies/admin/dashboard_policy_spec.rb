@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Admin::DashboardPolicy do
+RSpec.describe Admin::DashboardPolicy do
   subject(:policy) { described_class }
 
   permissions :show? do

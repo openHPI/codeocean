@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ConsumerPolicy do
+RSpec.describe ConsumerPolicy do
   subject(:policy) { described_class }
 
   %i[create? destroy? edit? index? new? show? update?].each do |action|

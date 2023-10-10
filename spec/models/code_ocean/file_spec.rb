@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe CodeOcean::File do
+RSpec.describe CodeOcean::File do
   let(:file) { described_class.create.tap {|file| file.update(content: nil, hidden: nil, read_only: nil) } }
 
   it 'validates the presence of a file type' do

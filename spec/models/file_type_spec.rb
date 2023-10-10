@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe FileType do
+RSpec.describe FileType do
   let(:file_type) { described_class.create.tap {|file_type| file_type.update(binary: nil, executable: nil, renderable: nil) } }
 
   it 'validates the presence of the binary flag' do

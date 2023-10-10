@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe MochaAdapter do
+RSpec.describe MochaAdapter do
   let(:adapter) { described_class.new }
   let(:count) { 42 }
   let(:failed) { 25 }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe InternalUser do
+RSpec.describe InternalUser do
   let(:password) { SecureRandom.hex }
   let(:user) { described_class.create }
 

@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pathname'
 
-describe Runner::Strategy::DockerContainerPool do
+RSpec.describe Runner::Strategy::DockerContainerPool do
   let(:runner_id) { attributes_for(:runner)[:runner_id] }
   let(:execution_environment) { create(:ruby) }
   let(:container_pool) { described_class.new(runner_id, execution_environment) }

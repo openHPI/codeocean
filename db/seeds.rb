@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+# Meta seed file that required depending on the Rails env different files from
+# db/seeds/ Please put the seed in the best matching file
+#
+#   * all: Objects are needed in every environment (production, development)
+#   * production: Objects are only needed for deployment
+#   * development: Only needed for local development
+#
+
 def find_factories_by_class(klass)
   FactoryBot.factories.select do |factory|
     factory.instance_variable_get(:@class_name).to_s == klass.to_s || factory.instance_variable_get(:@name) == klass.model_name.singular.to_sym
@@ -22,12 +30,15 @@ end
 Rails.application.eager_load!
 (ApplicationRecord.descendants - [ActiveRecord::SchemaMigration, User]).each(&:delete_all)
 
-# Set the default intervalstyle to iso_8601
-dbname = ApplicationRecord.connection.current_database
-ApplicationRecord.connection.exec_query("ALTER DATABASE \"#{dbname}\" SET intervalstyle = 'iso_8601';")
-
 # delete file uploads
 FileUtils.rm_rf(Rails.public_path.join('uploads'))
 
-# load environment-dependent seeds
-load(Rails.root.join("db/seeds/#{Rails.env}.rb"))
+['all', Rails.env].each do |seed|
+  seed_file = Rails.root.join("db/seeds/#{seed}.rb")
+  if seed_file.exist?
+    puts "*** Loading \"#{seed}\" seed data" # rubocop:disable Rails/Output
+    load seed_file
+  else
+    puts "*** Skipping \"#{seed}\" seed data: \"#{seed_file}\" not found" # rubocop:disable Rails/Output
+  end
+end

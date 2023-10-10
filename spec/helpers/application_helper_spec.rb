@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ApplicationHelper do
+RSpec.describe ApplicationHelper do
   describe '#code_tag' do
     context 'with code' do
       let(:code) { 'puts 42' }
@@ -80,7 +80,7 @@ describe ApplicationHelper do
   end
 
   describe '#row' do
-    let(:html) { row(label: 'foo', value: 42) }
+    let(:html) { row(label: 'shared.show', value: 42) }
 
     it "builds nested 'div' tags" do
       expect(html).to have_css('div.attribute-row.row div.col-md-3 + div.col-md-9')

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe StatisticsController do
+RSpec.describe StatisticsController do
   render_views
 
   let(:user) { create(:admin) }

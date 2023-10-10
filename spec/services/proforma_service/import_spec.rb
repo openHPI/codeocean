@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ProformaService::Import do
+RSpec.describe ProformaService::Import do
   describe '.new' do
     subject(:import_service) { described_class.new(zip:, user:) }
 

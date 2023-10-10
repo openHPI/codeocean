@@ -7,15 +7,15 @@ default: &default
   # Alternatively, you can use '/' to use the whole source_path directory.
   source_entry_path: /
 
+  # If nested_entries is true, then we'll pick up subdirectories within the source_entry_path.
+  # You cannot set this option to true if you set source_entry_path to '/'
+  nested_entries: false
+
   #  While using a File-System-based automated bundle generation feature, miscellaneous warnings suggesting css order
   #  conflicts may arise due to the mini-css-extract-plugin. For projects where css ordering has been mitigated through
   #  consistent use of scoping or naming conventions, the css order warnings can be disabled by setting
   #  css_extract_ignore_order_warnings to true
   css_extract_ignore_order_warnings: false
-
-  # If nested_entries is true, then we'll pick up subdirectories within the source_entry_path.
-  # You cannot set this option to true if you set source_entry_path to '/'
-  nested_entries: false
 
   public_root_path: public
   public_output_path: packs
@@ -38,7 +38,7 @@ default: &default
   webpack_loader: 'babel'
 
   # Set to true to enable check for matching versions of shakapacker gem and NPM package - will raise an error if there is a mismatch or wildcard versioning is used
-  ensure_consistent_versioning: true
+  ensure_consistent_versioning: false
 
   # Select whether the compiler will use SHA digest ('digest' option) or most most recent modified timestamp ('mtime') to determine freshness
   compiler_strategy: digest
@@ -60,10 +60,10 @@ development:
     # If HMR is on, CSS will by inlined by delivering it as part of the script payload via style-loader. Be sure
     # that you add style-loader to your project dependencies.
     #
-    # If you want to instead deliver CSS via <link> with the mini-extract-css-plugin, set inline_css to false.
+    # If you want to instead deliver CSS via <link> with the mini-css-extract-plugin, set inline_css to false.
     # In that case, style-loader is not needed as a dependency.
     #
-    # mini-extract-css-plugin is a required dependency in both cases.
+    # mini-css-extract-plugin is a required dependency in both cases.
     inline_css: true
     # Defaults to the inverse of hmr. Uncomment to manually set this.
     # live_reload: true

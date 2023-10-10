@@ -2,12 +2,13 @@
 
 require 'rails_helper'
 
-describe ExecutionEnvironment do
+RSpec.describe ExecutionEnvironment do
   let(:execution_environment) { described_class.create.tap {|execution_environment| execution_environment.update(network_enabled: nil, privileged_execution: nil) } }
 
   it 'validates that the Docker image works' do
     allow(execution_environment).to receive_messages(validate_docker_image?: true, working_docker_image?: true)
-    execution_environment.update(build(:ruby).attributes)
+    execution_environment.assign_attributes(build(:ruby).attributes)
+    execution_environment.save(validate: false)
     expect(execution_environment).to have_received(:working_docker_image?)
   end
 

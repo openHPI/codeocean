@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe FileTree do
+RSpec.describe FileTree do
   let(:file_tree) { described_class.new }
 
   describe '#file_icon' do

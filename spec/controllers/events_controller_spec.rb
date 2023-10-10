@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe EventsController do
+RSpec.describe EventsController do
   render_views
 
   let(:user) { create(:admin) }

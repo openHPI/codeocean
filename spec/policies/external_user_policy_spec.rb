@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExternalUserPolicy do
+RSpec.describe ExternalUserPolicy do
   subject(:policy) { described_class }
 
   %i[create? destroy? edit? new? show? update?].each do |action|

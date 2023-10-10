@@ -4,7 +4,7 @@ require 'rails/generators'
 require 'generators/testing_framework_adapter_generator'
 require 'rails_helper'
 
-describe TestingFrameworkAdapterGenerator do
+RSpec.describe TestingFrameworkAdapterGenerator do
   include Silencer
 
   describe '#create_testing_framework_adapter' do

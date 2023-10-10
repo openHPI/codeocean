@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ExerciseService::CheckExternal do
+RSpec.describe ExerciseService::CheckExternal do
   describe '.new' do
     subject(:export_service) { described_class.new(uuid:, codeharbor_link:) }
 

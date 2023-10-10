@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe SqlResultSetComparatorAdapter do
+RSpec.describe SqlResultSetComparatorAdapter do
   let(:adapter) { described_class.new }
 
   describe '#parse_output' do

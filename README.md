@@ -1,5 +1,4 @@
-CodeOcean
-==========
+# CodeOcean
 
 [![Build Status](https://github.com/openHPI/codeocean/workflows/CI/badge.svg)](https://github.com/openHPI/codeocean/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/openHPI/codeocean/branch/master/graph/badge.svg?token=imei686C2r)](https://codecov.io/gh/openHPI/codeocean)
@@ -39,14 +38,12 @@ In order to execute code submissions using the [DockerContainerPool](https://git
 - is always writeable by the user executing the web server (in this case the `codeocean` user): `setfacl -Rdm user:codeocean:rwx /var/www/app/current/tmp/files`.
 
 ### Optional Steps
-
-- Use Docker Machine or vagrant if there is no native support for docker on your OS
-- If you want to use the app without docker (and hence without code execution) comment the validation `validate :working_docker_image?` in `models/execution_environments.rb` otherwise the seed will fail (because of missing docker connection)
-- Create seed data by executing `rake db:seed`
+- Use Docker Machine or Vagrant if there is no native support for Docker on your OS
+- If you want to use the app without Docker or a Runner management (and hence without code execution), comment the validation `validate :working_docker_image?` in `models/execution_environments.rb`. Otherwise the seed will fail.
+- Create seed data by executing `rails db:seed`
 - If you already created a configuration for your local installation and want to use vagrant, too, be sure to log into the vagrant instance via ssh and add your database user manually to the database. Afterwards, create, migrate and seed.
 
 ## Production Setup
-
 - We recommend using [Capistrano](https://capistranorb.com/) for deployment.
 - Once deployed, CodeOcean assumes to run exclusively under a (sub)domain. If you want to use it under a custom subpath, you can specify the desired path using an environment variable: `RAILS_RELATIVE_URL_ROOT=/codeocean`. Please ensure to rebuild all assets and restart the server to apply the new path.
 - When using [PgBouncer](https://www.pgbouncer.org), please make sure to correctly set the `intervalstyle` to `iso_8601` for the database. Otherwise, the application will not be able to parse timestamps correctly. See [a similar issue here](https://gitlab.com/gitlab-org/gitlab/-/issues/349912) and [our migration](./db/migrate/20221206221333_set_database_interval_style.rb) for more details.
@@ -56,7 +53,6 @@ In order to execute code submissions using the [DockerContainerPool](https://git
 - The Telegraf client collects the data from the Prometheus endpoint, adds its own datasets and forwards them to an InfluxDB
 - The Prometheus Exporter must be started separately **before** running the Rails server via `bundle exec prometheus_exporter`
 - The InfluxDB data can be visualized using Grafana, for example. There is also an adapted [dashboard](docs/grafana/prometheus_exporter_grafana_dashboard.json) for this purpose
-
 
 ## Additional Note
 - If you want to change the default port of the underlying rails server, you can use [authbind](https://www.mwells.org/coding/2016/authbind-port-80-443/) to bind it to the regular 80/443 port.
