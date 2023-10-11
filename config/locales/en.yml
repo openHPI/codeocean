@@ -928,7 +928,7 @@ en:
       privacy_policy: Privacy Policy
     index: Index
     message_failure: 'Sorry, something went wrong.'
-    websocket_failure: Sorry, a connection issue occoured. <a href="https://websocketstest.com" target="_blank" rel="noopener" class="alert-link">Please check WebSocket connections with this tool</a> and try again.
+    websocket_failure: Sorry, a connection issue occurred. <a href="https://websocketstest.com" target="_blank" rel="noopener" class="alert-link">Please check WebSocket connections with this tool</a> and try again.
     new: Add
     new_model: 'Add %{model}'
     number: Number
