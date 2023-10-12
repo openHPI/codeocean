@@ -39,7 +39,7 @@ Rails.application.configure do
     policy.default_src          :none
     policy.base_uri             :self
     policy.font_src             :self
-    # Code executions might return a base64 encoded image as a :data URI
+    # Code executions might return a base64 encoded image as a :data URI and ACE uses :data URIs for images
     policy.img_src              :self, :data
     policy.object_src           :none
     policy.media_src            :self
