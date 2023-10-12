@@ -8,7 +8,7 @@ window.CodeOcean = {
   }
 };
 
-var ANIMATION_DURATION = 500;
+const ANIMATION_DURATION = 500;
 
 $.isController = function(name) {
   return $('div[data-controller="' + name + '"]').isPresent();
