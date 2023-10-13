@@ -121,16 +121,10 @@ class Submission < ApplicationRecord
   end
 
   def redirect_to_feedback?
-    return false if PairProgramming23Study.experiment_course?(study_group_id)
-
     # Redirect 10% of users to the exercise feedback page. Ensure, that always the same
     # users get redirected per exercise and different users for different exercises. If
     # desired, the number of feedbacks can be limited with exercise.needs_more_feedback?(submission)
     (contributor_id + exercise.created_at.to_i) % 10 == 1
-  end
-
-  def redirect_to_survey?
-    cause == 'submit' && pair_programming_exercise_feedback.blank? && PairProgramming23Study.experiment_course?(study_group_id)
   end
 
   def own_unsolved_rfc(user)

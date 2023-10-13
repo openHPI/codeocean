@@ -230,9 +230,6 @@ de:
       internal_user:
         one: Interner Nutzer
         other: Interne Nutzer
-      pair_programming_exercise_feedback:
-        one: Feedback
-        other: Feedbacks
       programming_group:
         one: Programmierpaar
         other: Programmierpaare
@@ -990,29 +987,6 @@ de:
     previous_label: '&#8592; Vorherige Seite'
   file_template:
     no_template_label: "Leere Datei"
-  pair_programming_exercise_feedback:
-    difficulty_easy: "Die Aufgabe war viel zu einfach."
-    difficulty_some_what_easy: "Die Aufgabe war etwas zu einfach."
-    difficulty_ok: "Die Aufgabenschwierigkeit war genau richtig."
-    difficulty_some_what_difficult: "Die Aufgabe war etwas zu schwierig."
-    difficult_too_difficult: "Die Aufgabe war viel zu schwierig."
-    difficulty: "Schwierigkeit der Aufgabe:"
-    description: "Vielen Dank für Deine Abgabe! Bevor du die Aufgabe beendest, würden wir uns freuen, wenn Du uns hier Feedback zur Aufgabe gibst."
-    estimated_time_less_5: "weniger als 5 Minuten"
-    estimated_time_5_to_10: "zwischen 5 und 10 Minuten"
-    estimated_time_10_to_20: "zwischen 10 und 20 Minuten"
-    estimated_time_20_to_30: "zwischen 20 und 30 Minuten"
-    estimated_time_more_30: "mehr als 30 Minuten"
-    working_time: "Geschätze Bearbeitungszeit für diese Aufgabe:"
-    reason_no_partner: Ich habe keine:n Team-Partner:in gefunden.
-    reason_to_difficult_to_find_partner: Es war zu schwierig/aufwändig, eine:n Team Partner:in zu finden.
-    reason_faster_alone: Es ging schneller alleine zu arbeiten.
-    reason_not_working_with_strangers: Ich möchte nicht mit  <i>fremden</i> Personen zusammenarbeiten.
-    reason_want_to_work_alone: Ich arbeite lieber alleine.
-    reason_accidentally_alone: Ich habe versehentlich alleine an dieser Aufgabe gearbeitet.
-    reason_other: <i>Sonstiges</i>
-    reason_work_alone: Warum hast Du Dich dafür entschieden die Aufgabe alleine zu lösen?
-    no_feedback: "Es wurde noch kein Feedback zu dieser Aufgabe gegeben."
   user_exercise_feedback:
     difficulty_easy: "Die Aufgabe war zu einfach"
     difficulty_some_what_easy: "Die Aufgabe war etwas zu einfach"
