@@ -49,6 +49,7 @@ de:
         public: Öffentlich
         selection: Ausgewählt
         title: Titel
+        internal_title: Alternativer Titel
         user: Autor
         allow_auto_completion: "Autovervollständigung aktivieren"
         allow_file_creation: "Dateierstellung erlauben"
@@ -463,6 +464,7 @@ de:
       no_execution_environment_selected: Bitte eine Ausführungsumgebung auswählen, bevor die Aufgabe aktiviert wird.
       none: Keine
       hints:
+        internal_title: Ein alternativer Titel für diese Aufgabe, der nur für Lehrende sichtbar ist.
         submission_deadline: Ein Zeitpunkt in UTC, zu dem die Abgabe geschlossen wird. Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet und nur mit 20% Punktabzug an die E-Learning-Plattform übertragen.
         late_submission_deadline: Eine Gnadenfrist für Abgaben in UTC. Die verlängerte Abgabefrist soll nicht vor der eigentlichen Abgabefrist liegen. Abgaben nach der Abgabefrist werden deutlich gekennzeichnet und mit 100% Punktabzug an die E-Learning-Plattform übertragen.
     implement:

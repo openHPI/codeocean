@@ -5,8 +5,8 @@ h1 = Exercise.model_name.human(count: 2)
     = f.label(:execution_environment_id_eq, t('activerecord.attributes.exercise.execution_environment'), class: 'visually-hidden form-label')
     = f.collection_select(:execution_environment_id_eq, @execution_environments.with_exercises, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.exercise.execution_environment'))
   .col-auto
-    = f.label(:title_cont, t('activerecord.attributes.exercise.title'), class: 'visually-hidden form-label')
-    = f.search_field(:title_cont, class: 'form-control', placeholder: t('activerecord.attributes.exercise.title'))
+    = f.label(:title_or_internal_title_cont, t('activerecord.attributes.exercise.title'), class: 'visually-hidden form-label')
+    = f.search_field(:title_or_internal_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.exercise.title'))
 
 .table-responsive
   table.table.mt-2
@@ -27,7 +27,12 @@ h1 = Exercise.model_name.human(count: 2)
     tbody
       - @exercises.each do |exercise|
         tr data-id=exercise.id
-          td.p-1.pt-2 = link_to_if(policy(exercise).show?, exercise.title, exercise, 'data-turbolinks' => "false")
+          td.p-1.pt-2
+            = link_to_if(policy(exercise).show?, exercise.title, exercise, 'data-turbolinks' => "false")
+            - if exercise.internal_title.present?
+              p.mb-0.text-muted
+                i.fa-solid.fa-arrow-turn-up.fa-rotate-90
+                span = exercise.internal_title
           td.p-1.pt-2 = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
           td.p-1.pt-2 = exercise.files.filter(&:teacher_defined_assessment?).length
           td.p-1.pt-2 = exercise.maximum_score

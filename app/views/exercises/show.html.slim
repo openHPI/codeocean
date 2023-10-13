@@ -5,7 +5,12 @@
   - append_javascript_pack_tag('highlight')
   - append_stylesheet_pack_tag('highlight')
 
-h1.d-inline-block = @exercise
+h1.d-inline-block
+  = @exercise
+  - if @exercise.internal_title.present?
+    p.mb-0.ps-1.text-muted.small
+      i.fa-solid.fa-arrow-turn-up.fa-rotate-90
+      span = @exercise.internal_title
 .btn-group.float-end
   = render('shared/edit_button', object: @exercise)
   button.btn.btn-secondary.float-end.dropdown-toggle data-bs-toggle='dropdown' type='button'
@@ -19,6 +24,7 @@ h1.d-inline-block = @exercise
     li = link_to(t('exercises.export_codeharbor.label'), '', class: 'dropdown-item export-start', data: {'exercise-id' => @exercise.id}) if policy(@exercise).export_external_confirm?
 
 = row(label: 'exercise.title', value: @exercise.title)
+= row(label: 'exercise.internal_title', value: @exercise.internal_title)
 = row(label: 'exercise.user', value: link_to_if(policy(@exercise.author).show?, @exercise.author, @exercise.author))
 = row(label: 'exercise.description', value: render_markdown(@exercise.description), class: 'm-0')
 = row(label: 'exercise.execution_environment', value: link_to_if(@exercise.execution_environment && policy(@exercise.execution_environment).show?, @exercise.execution_environment, @exercise.execution_environment))

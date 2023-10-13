@@ -614,7 +614,7 @@ class Exercise < ApplicationRecord
   end
 
   def self.ransackable_attributes(_auth_object = nil)
-    %w[title]
+    %w[title internal_title]
   end
 
   def self.ransackable_associations(_auth_object = nil)

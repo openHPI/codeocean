@@ -208,6 +208,7 @@ class ExercisesController < ApplicationController
                              :allow_file_creation,
                              :allow_auto_completion,
                              :title,
+                             :internal_title,
                              :expected_difficulty,
                              :tips,
                              files_attributes: file_attributes,

@@ -13,6 +13,10 @@
     = f.label(:title, class: 'form-label')
     = f.text_field(:title, class: 'form-control', required: true)
   .mb-3
+    = f.label(:internal_title, class: 'form-label')
+    = f.text_field(:internal_title, class: 'form-control')
+    .help-block.form-text == t('.hints.internal_title')
+  .mb-3
     = f.label(:description, class: 'form-label')
     = f.pagedown :description, input_html: { preview: true, rows: 10 }
   .mb-3

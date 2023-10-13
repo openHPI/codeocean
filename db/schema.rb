@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_20_094122) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_13_194635) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -248,8 +248,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_094122) do
     t.boolean "unpublished", default: false
     t.datetime "submission_deadline"
     t.datetime "late_submission_deadline"
+    t.string "internal_title"
     t.index ["id"], name: "index_exercises_on_id"
     t.index ["id"], name: "index_unpublished_exercises", where: "(NOT unpublished)"
+    t.index ["internal_title"], name: "index_exercises_on_internal_title", opclass: :gin_trgm_ops, using: :gin
     t.index ["title"], name: "index_exercises_on_title", opclass: :gin_trgm_ops, using: :gin
   end
 

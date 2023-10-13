@@ -49,6 +49,7 @@ en:
         public: Public
         selection: Selected
         title: Title
+        internal_title: Alternative Title
         user: Author
         allow_auto_completion: "Allow auto completion"
         allow_file_creation: "Allow file creation"
@@ -463,6 +464,7 @@ en:
       no_execution_environment_selected: Select an execution environment before publishing the exercise.
       none: None
       hints:
+        internal_title: An alternative title for this exercise that is only visible to teachers.
         submission_deadline: A date and time in UTC to close the submission. Any submission obtained after the deadline will be considered late and the score sent to the e-learning platform will be reduced by 20%.
         late_submission_deadline: A grace period for submissions in UTC. The late submission deadline should not be set or any timestamp before the original submission deadline. Any submission obtained after the deadline will be clearly marked and the score sent to the e-learning platform will be reduced by 100%.
     implement:
