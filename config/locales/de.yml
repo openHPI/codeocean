@@ -488,7 +488,6 @@ de:
       exit_failure: Die letzte Code-Ausführung wurde mit einem Fehler beendet (Statuscode %{exit_code}).
       no_output_yet: Bisher existiert noch keine Ausgabe.
       output: Programm-Ausgabe
-      pair_programming_feedback: "Falls dir Probleme bei der Zusammenarbeit auffallen, kannst du diese gerne <a target='_blank', style='display: contents;' href=%{url}>hier aufschreiben</a>. Vielen Dank!"
       passed_tests: Erfolgreiche Tests
       code_rating: Code-Stil
       progress: Fortschritt
@@ -601,7 +600,6 @@ de:
       find_partner_title: "Eine:n Programmierpartner:in für die Aufgabe finden"
       find_partner_description: "Wenn Sie keine Person aus dem Kurs kennen, haben Sie die Möglichkeit mit einer anderen Person gepaart zu werden. Sie werden dann zur Aufgabe weitergeleitet, sobald eine andere Person ebenfalls diese Aufgabe im Team lösen möchte."
       info_pair_programming: "Pair Programming (Programmieren in Paaren) ist eine Methode, bei der zwei Personen gemeinsam programmieren. Dabei übernehmen sie <i>abwechselnd</i> zwei verschiedene Rollen:  Den <i>Driver</i>, der den Code schreibt und sich auf die Details fokussiert und den <i>Navigator</i>, der Tippfehler korrigiert, die Aufgabenstellung im Blick behält und Verbesserungsideen vorschlägt. Kommunikation miteinander ist von entscheidender Bedeutung für erfolgreiches Pair Programming."
-      info_study: "Im Rahmen meiner Masterarbeit möchte ich das Anwenden von Pair Programming in diesem MOOC analysieren. Ich würde mich daher sehr darüber freuen, wenn ihr gemeinsam mit einer anderen Person die Aufgaben bearbeitet und mir anschließend euer Feedback in den Umfragen mitteilt. Bitte beachtet, dass es sich bei dieser Funktion um eine Beta-Version handelt, die bisher noch nicht für alle Nutzer:innen freigeschaltet wurde."
       info_forced_work_together: "Sie können die Aufgabe '%{exercise_title}' nur gemeinsam mit einer anderen Person lösen. Ihr:e Teampartner:in kann sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Für das Lösen der Aufgabe erhalten Sie Bonuspunkte."
       info_work_together: "Sie haben die Möglichkeit, die Aufgabe '%{exercise_title}' zusammen mit einer anderen Person zu lösen. Ihr:e Teampartner:in kann sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Beachten Sie dabei, dass anschließend keiner die Zusammenarbeit beenden kann. Für die nächste Aufgabe können Sie sich erneuert entscheiden, ob und mit wem Sie zusammen arbeiten möchten."
       find_programming_partner: Programmierpartner:in finden

@@ -1,6 +1,4 @@
 = render_markdown(t('programming_groups.new.info_pair_programming'))
-= render_markdown(t('programming_groups.new.info_study'))
-== t('exercises.implement.pair_programming_feedback', url: "https://etherpad.xopic.de/p/openHPI_PairProgrammingFeedback?userName=#{CGI.escape(current_user.displayname)}")
 
 - content_for :modal_footer do
   button.btn.btn-secondary#dont_show_info_pp_modal_again data-bs-dismiss='modal'
