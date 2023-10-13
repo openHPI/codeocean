@@ -305,6 +305,7 @@ class ExercisesController < ApplicationController
       # we are acting on behalf of a programming group
       if current_user.admin?
         session.delete(:pg_id)
+        session.delete(:pair_programming)
         @current_contributor = current_user
       else
         return redirect_back(
@@ -316,9 +317,9 @@ class ExercisesController < ApplicationController
       # we are just acting on behalf of a single user who has already worked on this exercise as part of a programming group **in the context of the current study group**
       session[:pg_id] = pg.id
       @current_contributor = pg
-    elsif session[:pg_id].blank? && PairProgramming23Study.participate_in_pp?(current_user, @exercise) && PairProgramming23Study::FORCED_EXERCISE_IDS.include?(@exercise.id)
+    elsif session[:pg_id].blank? && session[:pair_programming] == 'mandatory'
       return redirect_back(fallback_location: new_exercise_programming_group_path(@exercise))
-    elsif session[:pg_id].blank? && PairProgramming23Study.participate?(current_user, @exercise) && current_user.submissions.where(study_group_id: current_user.current_study_group_id, exercise: @exercise).none?
+    elsif session[:pg_id].blank? && session[:pair_programming] == 'optional' && current_user.submissions.where(study_group_id: current_user.current_study_group_id, exercise: @exercise).none?
       Event.find_or_create_by(category: 'pp_work_alone', user: current_user, exercise: @exercise, data: nil, file_id: nil)
       current_user.pair_programming_waiting_users&.find_by(exercise: @exercise)&.update(status: :worked_alone)
     end

@@ -194,6 +194,7 @@ RSpec.describe SessionsController do
         expect(controller.session).to receive(:delete).with(:study_group_id)
         expect(controller.session).to receive(:delete).with(:embed_options)
         expect(controller.session).to receive(:delete).with(:pg_id)
+        expect(controller.session).to receive(:delete).with(:pair_programming)
         delete :destroy
       end
 

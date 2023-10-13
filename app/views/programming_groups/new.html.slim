@@ -5,7 +5,7 @@ h1.d-inline-block = t('programming_groups.new.create_programming_pair')
 #matching data-exercise-id=@exercise.id.to_s
   .row
     .col-12.mt-2.mb-4
-      - if PairProgramming23Study.participate_in_pp?(current_user, @exercise) && PairProgramming23Study::FORCED_EXERCISE_IDS.include?(@exercise.id)
+      - if session[:pair_programming] == 'mandatory'
         p = t('programming_groups.new.info_forced_work_together', exercise_title: @exercise.title)
       - else
         p = t('programming_groups.new.info_work_together', exercise_title: @exercise.title)
@@ -32,7 +32,7 @@ h1.d-inline-block = t('programming_groups.new.create_programming_pair')
     .col-12.d-none.d-md-block
       = render('form')
 
-  - unless PairProgramming23Study.participate_in_pp?(current_user, @exercise) && PairProgramming23Study::FORCED_EXERCISE_IDS.include?(@exercise.id)
+  - unless session[:pair_programming] == 'mandatory'
     .row
       .col-12
         h5 = t('programming_groups.new.work_alone')
