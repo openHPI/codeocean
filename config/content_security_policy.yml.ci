@@ -1,5 +1,7 @@
 default: &default
-  default_src: []
+  #
+  # No additional directives, remove this line to add other directives.
+  { }
 
 
 development:
