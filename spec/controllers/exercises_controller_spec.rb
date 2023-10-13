@@ -14,7 +14,7 @@ RSpec.describe ExercisesController do
   end
 
   describe 'PUT #batch_update' do
-    let(:attributes) { {public: 'true'} }
+    let(:attributes) { ActionController::Parameters.new(public: 'true').permit! }
     let(:perform_request) { proc { put :batch_update, params: {exercises: {0 => attributes.merge(id: exercise.id)}} } }
 
     before { perform_request.call }

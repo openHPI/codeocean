@@ -10,8 +10,8 @@ class ExercisesController < ApplicationController
   before_action :handle_file_uploads, only: %i[create update]
   before_action :set_execution_environments, only: %i[index create edit new update]
   before_action :set_exercise_and_authorize,
-    only: MEMBER_ACTIONS + %i[clone implement working_times intervention search run statistics submit reload feedback
-                              requests_for_comments study_group_dashboard export_external_check export_external_confirm
+    only: MEMBER_ACTIONS + %i[clone implement working_times intervention statistics submit reload feedback
+                              study_group_dashboard export_external_check export_external_confirm
                               external_user_statistics]
   before_action :collect_set_and_unset_exercise_tags, only: MEMBER_ACTIONS
   before_action :set_external_user_and_authorize, only: [:external_user_statistics]
@@ -43,7 +43,7 @@ class ExercisesController < ApplicationController
     authorize!
     @exercises = params[:exercises].values.map do |exercise_params|
       exercise = Exercise.find(exercise_params.delete(:id))
-      exercise.update(exercise_params)
+      exercise.update(exercise_params.permit(:public))
       exercise
     end
     render(json: {exercises: @exercises})
