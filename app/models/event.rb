@@ -9,7 +9,7 @@ class Event < ApplicationRecord
 
   validates :category, presence: true
 
-  # We temporary allow an event to be stored without data.
+  # We allow an event to be stored without data for pair programming (pp).
   # This is useful if the category (together with the user and exercise) is already enough.
   validates :data, presence: true, if: -> { %w[pp_start_chat pp_invalid_partners pp_work_alone].exclude?(category) }
 
