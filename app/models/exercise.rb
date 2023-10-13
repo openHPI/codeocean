@@ -593,8 +593,6 @@ class Exercise < ApplicationRecord
   private :valid_submission_deadlines?
 
   def needs_more_feedback?(submission)
-    return false if PairProgramming23Study.experiment_course?(submission.study_group_id)
-
     if submission.normalized_score.to_d == BigDecimal('1.0')
       user_exercise_feedbacks.final.size <= MAX_GROUP_EXERCISE_FEEDBACKS
     else

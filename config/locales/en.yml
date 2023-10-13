@@ -230,9 +230,6 @@ en:
       internal_user:
         one: Internal User
         other: Internal Users
-      pair_programming_exercise_feedback:
-        one: Feedback
-        other: Feedbacks
       programming_group:
         one: Programming Pair
         other: Programming Pairs
@@ -990,29 +987,6 @@ en:
     previous_label: '&#8592; Previous Page'
   file_template:
     no_template_label: "Empty File"
-  pair_programming_exercise_feedback:
-    difficulty_easy: "The exercise was far too easy."
-    difficulty_some_what_easy: "The exercise was a bit too easy."
-    difficulty_ok: "The exercise difficulty was just right."
-    difficulty_some_what_difficult: "The exercise was a bit too difficult."
-    difficult_too_difficult: "The exercise was far too difficult."
-    difficulty: "Difficulty of the exercise:"
-    description: "Thank you for your submission! Before you finish the task, we kindly ask you for feedback for this exercise."
-    estimated_time_less_5: "less than 5 minutes"
-    estimated_time_5_to_10: "between 5 and 10 minutes"
-    estimated_time_10_to_20: "between 10 and 20 minutes"
-    estimated_time_20_to_30: "between 20 and 30 minutes"
-    estimated_time_more_30: "more than 30 minutes"
-    working_time: "Estimated time working on this exercise:"
-    reason_no_partner: I have not found a team partner.
-    reason_to_difficult_to_find_partner: It was too difficult to find a team partner.
-    reason_faster_alone: It was faster to work alone.
-    reason_not_working_with_strangers: I do not want to work with <i>strangers</i>.
-    reason_want_to_work_alone: I prefer to work alone.
-    reason_accidentally_alone: I accidentally worked alone on this exercise.
-    reason_other: <i>Other</i>
-    reason_work_alone: Why did you decide to solve this exercise alone?
-    no_feedback: "There is no feedback for this exercise yet."
   user_exercise_feedback:
     difficulty_easy: "the exercise was too easy"
     difficulty_some_what_easy: "the exercise was somewhat easy"
