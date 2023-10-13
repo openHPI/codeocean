@@ -19,12 +19,15 @@ class SessionsController < ApplicationController
   def create_through_lti
     return redirect_to_survey if params[:custom_survey_id]
 
-    session.delete(:pg_id) # Remove any previous pg_id from the session
+    # Remove any previous pg_id and pair_programming option from the session
+    session.delete(:pg_id)
+    session.delete(:pair_programming)
+
     store_lti_session_data(params)
     store_nonce(params[:oauth_nonce])
     if params[:custom_redirect_target]
       redirect_to(URI.parse(params[:custom_redirect_target].to_s).path)
-    elsif PairProgramming23Study.participate?(current_user, @exercise)
+    elsif params[:custom_pair_programming]
       redirect_to(new_exercise_programming_group_path(@exercise))
     else
       redirect_to(implement_exercise_path(@exercise),
@@ -57,6 +60,7 @@ class SessionsController < ApplicationController
       session.delete(:study_group_id)
       session.delete(:embed_options)
       session.delete(:pg_id)
+      session.delete(:pair_programming)
 
       # In case we have another session as an internal user, we set the study group for this one
       internal_user = find_or_login_current_user
@@ -98,7 +102,6 @@ class SessionsController < ApplicationController
         # add a user pseudo ID if applicable
         qp[:xi_pseudo_id] = Digest::SHA256.hexdigest(current_user.external_id)
         qp[:co_study_group_id] = current_user.current_study_group_id
-        qp[:co_pair_programming23_study] = PairProgramming23Study.participate_in_pp?(current_user, @exercise).to_s
         qp[:co_rfcs] = current_user.request_for_comments.includes(:submission).where(submission: {study_group_id: current_user.current_study_group_id}).size.to_s
         qp[:co_comments] = current_user.comments.includes(:submission).where(submission: {study_group_id: current_user.current_study_group_id}).size.to_s
       end

@@ -163,6 +163,7 @@ RSpec.describe Lti do
       controller.instance_variable_set(:@current_user, create(:external_user))
       controller.instance_variable_set(:@exercise, create(:fibonacci))
       expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
+      expect(controller.session).to receive(:[]=).with(:pair_programming, anything)
       controller.send(:store_lti_session_data, parameters)
     end
 
