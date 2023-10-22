@@ -69,13 +69,14 @@ class ProgrammingGroup < ApplicationRecord
   end
 
   def users=(users)
-    self.internal_users = []
-    self.external_users = []
     users&.each do |user|
       next erroneous_users << user unless user.is_a?(User)
 
       add(user)
     end
+
+    # Remove all users that are no longer part of the programming group.
+    programming_group_memberships.where.not(user: users).destroy_all
   end
 
   def self.ransackable_associations(_auth_object = nil)
