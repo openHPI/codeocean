@@ -28,8 +28,8 @@ class ProgrammingGroup < ApplicationRecord
     false
   end
 
-  def self.nested_resource?
-    true
+  def self.parent_resource
+    Exercise
   end
 
   def programming_group?

@@ -11,8 +11,8 @@ class DropErrors < ActiveRecord::Migration[5.2]
 
       validates :message, presence: true
 
-      def self.nested_resource?
-        true
+      def self.parent_resource
+        ExecutionEnvironment
       end
 
       delegate :to_s, to: :id
