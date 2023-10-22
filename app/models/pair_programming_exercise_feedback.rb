@@ -39,6 +39,6 @@ class PairProgrammingExerciseFeedback < ApplicationRecord
   }, _prefix: true
 
   def to_s
-    'Pair Programming Exercise Feedback'
+    "Pair Programming Exercise Feedback #{id}"
   end
 end
