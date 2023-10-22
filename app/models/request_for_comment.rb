@@ -42,6 +42,10 @@ class RequestForComment < ApplicationRecord
     state(solved_before_last_save, full_score_reached_before_last_save)
   end
 
+  def self.parent_resource
+    Exercise
+  end
+
   private
 
   def state(solved, full_score_reached)
