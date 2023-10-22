@@ -1,10 +1,19 @@
 - model = controller_path.classify.constantize rescue nil
 - if model
   - object = model.find_by(id: params[:id])
-  - if model.try(:nested_resource?)
-    - root_element = model.model_name.human(count: 2)
-    - if object
-      - current_element = object
+  - if (parent_model = model.try(:parent_resource))
+    - parent_route_key = parent_model.model_name.singular_route_key
+    - if params["#{parent_route_key}_id"].present?
+      - parent_object = object.try(parent_route_key) || parent_model.find_by(id: params["#{parent_route_key}_id"])
+      - parent_element = link_to_if(current_user && policy(parent_object).show?, parent_object, send(:"#{parent_route_key}_path", parent_object))
+      - parent_root_element = link_to_if(current_user && policy(parent_model).index?, parent_model.model_name.human(count: 2), send(:"#{parent_model.model_name.collection}_path"))
+      - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: 2), send(:"#{parent_route_key}_#{model.model_name.collection}_path", parent_object))
+      - if object
+        - current_element = link_to_if(current_user && policy(object).show?, object, send(:"#{parent_route_key}_#{model.model_name.singular}_path", parent_object, object))
+    - else
+      - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
+      - if object
+        - current_element = link_to_if(current_user && policy(object).show?, object, send(:"#{model.model_name.singular}_path", object))
   - else
     - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: 2), send(:"#{model.model_name.collection}_path"))
     - if object
@@ -21,6 +30,12 @@
 - content_for :breadcrumbs do
   .container.mb-4
     ul.breadcrumb.bg-body-secondary.px-3.py-2
+      - if defined?(parent_root_element) && parent_root_element.present?
+        li.breadcrumb-item.small
+          = parent_root_element
+        li.breadcrumb-item.small
+          = parent_element
+        - title = "#{parent_object} - #{title}"
       - if root_element.present?
         li.breadcrumb-item.small
           = root_element
