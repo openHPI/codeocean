@@ -13,7 +13,7 @@ class UserExerciseFeedback < ApplicationRecord
   scope :final, -> { where(normalized_score: 1.00) }
 
   def to_s
-    'User Exercise Feedback'
+    "User Exercise Feedback #{id}"
   end
 
   def anomaly_notification
