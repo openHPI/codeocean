@@ -3,9 +3,10 @@ h1 = RequestForComment.model_name.human(count: 2)
 = render(layout: 'shared/form_filters') do |f|
   .col-md-9.col
     .row.align-items-center
-      .col-auto
-        = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'visually-hidden form-label')
-        = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
+      - if params[:exercise_id].nil?
+        .col-auto
+          = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'visually-hidden form-label')
+          = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
       .col-auto.mt-3.mt-md-0
         = f.label(:title_cont,  t('request_for_comments.solved'), class: 'visually-hidden form-label')
         = f.select(:solved_not_eq,  [[t('request_for_comments.show_all'), 2], [t('request_for_comments.show_unsolved'), 1], [t('request_for_comments.show_solved'), 0]])
