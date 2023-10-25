@@ -10,7 +10,7 @@
     "@fortawesome/fontawesome-free": "^6.4.2",
     "@popperjs/core": "^2.11.8",
     "@sentry/browser": "^7.60.1",
-    "@sentry/core": "^7.72.0",
+    "@sentry/core": "^7.75.0",
     "@sentry/integrations": "^7.74.1",
     "@sentry/utils": "^7.61.0",
     "@webpack-cli/serve": "^2.0.5",
