@@ -175,7 +175,7 @@ RSpec.describe ExecutionEnvironment do
     it 'executes the validation command' do
       allow(runner).to receive(:execute_command).and_return({})
       working_docker_image?
-      expect(runner).to have_received(:execute_command).with(ExecutionEnvironment::VALIDATION_COMMAND)
+      expect(runner).to have_received(:execute_command).with(ExecutionEnvironment::VALIDATION_COMMAND, exclusive: false)
     end
 
     context 'when the command produces an error' do

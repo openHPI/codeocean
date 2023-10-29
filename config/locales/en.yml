@@ -398,6 +398,7 @@ en:
       network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
       render: Render
       run: Run
+      runner_in_use: You are currently running code. Please stop the previous execution, or wait a moment before proceeding.
       run_failure: Your code could not be run.
       run_success: Your code was run on our servers.
       requestComments: Request Comments

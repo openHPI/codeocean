@@ -234,6 +234,12 @@ class SubmissionsController < ApplicationController
     @testrun[:exit_code] ||= 137
     @testrun[:output] = "out_of_memory: #{@testrun[:output]}"
     extract_durations(e)
+  rescue Runner::Error::RunnerInUse => e
+    send_and_store client_socket, {cmd: :status, status: :runner_in_use}
+    Rails.logger.debug { "Running a submission failed because the runner was already in use: #{e.message}" }
+    @testrun[:status] ||= :runner_in_use
+    @testrun[:output] = "runner_in_use: #{@testrun[:output]}"
+    extract_durations(e)
   rescue Runner::Error => e
     # Regardless of the specific error cause, we send a `container_depleted` status to the client.
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
@@ -266,6 +272,14 @@ class SubmissionsController < ApplicationController
     client_socket&.send_data(JSON.dump(@submission.calculate_score(current_user)))
     # To enable hints when scoring a submission, uncomment the next line:
     # send_hints(client_socket, StructuredError.where(submission: @submission))
+  rescue Runner::Error::RunnerInUse => e
+    extract_durations(e)
+    send_and_store client_socket, {cmd: :status, status: :runner_in_use}
+    Rails.logger.debug { "Scoring a submission failed because the runner was already in use: #{e.message}" }
+    @testrun[:passed] = false
+    @testrun[:status] ||= :runner_in_use
+    @testrun[:output] = "runner_in_use: #{@testrun[:output]}"
+    save_testrun_output 'assess'
   rescue Runner::Error => e
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
@@ -301,10 +315,17 @@ class SubmissionsController < ApplicationController
 
     # The score is stored separately, we can forward it to the client immediately
     client_socket&.send_data(JSON.dump(@submission.test(@file, current_user)))
+  rescue Runner::Error::RunnerInUse => e
+    extract_durations(e)
+    send_and_store client_socket, {cmd: :status, status: :runner_in_use}
+    Rails.logger.debug { "Scoring a submission failed because the runner was already in use: #{e.message}" }
+    @testrun[:passed] = false
+    @testrun[:status] ||= :runner_in_use
+    @testrun[:output] = "runner_in_use: #{@testrun[:output]}"
+    save_testrun_output 'assess'
   rescue Runner::Error => e
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :container_depleted}
-    kill_client_socket(client_socket)
     Rails.logger.debug { "Runner error while testing submission #{@submission.id}: #{e.message}" }
     Sentry.capture_exception(e)
     @testrun[:passed] = false

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_13_194635) do
+ActiveRecord::Schema[7.1].define(version: 2023_10_29_172331) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -483,6 +483,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_13_194635) do
     t.bigint "contributor_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "reserved_until"
     t.index ["contributor_type", "contributor_id"], name: "index_runners_on_user"
     t.index ["execution_environment_id"], name: "index_runners_on_execution_environment_id"
   end

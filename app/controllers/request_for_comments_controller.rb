@@ -167,11 +167,20 @@ class RequestForCommentsController < ApplicationController
 
     respond_to do |format|
       if @request_for_comment.save
-        # execute the tests here and wait until they finished.
-        # As the same runner is used for the score and test run, no parallelization is possible
-        # A run is triggered from the frontend and does not need to be handled here.
-        @request_for_comment.submission.calculate_score(current_user)
-        format.json { render :show, status: :created, location: @request_for_comment }
+        begin
+          # execute the tests here and wait until they finished.
+          # As the same runner is used for the score and test run, no parallelization is possible
+          # A run is triggered from the frontend and does not need to be handled here.
+          @request_for_comment.submission.calculate_score(current_user)
+        rescue Runner::Error::RunnerInUse => e
+          Rails.logger.debug { "Scoring a submission failed because the runner was already in use: #{e.message}" }
+          format.json { render json: {error: t('exercises.editor.runner_in_use'), status: :runner_in_use}, status: :conflict }
+        rescue Runner::Error => e
+          Rails.logger.debug { "Runner error while requesting comments: #{e.message}" }
+          format.json { render json: {danger: t('exercises.editor.depleted'), status: :container_depleted}, status: :service_unavailable }
+        else
+          format.json { render :show, status: :created, location: @request_for_comment }
+        end
       else
         format.html { render :new }
         format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
