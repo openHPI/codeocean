@@ -53,7 +53,7 @@ RSpec.describe Runner do
   end
 
   describe '#destroy_at_management' do
-    let(:runner) { described_class.create }
+    let(:runner) { create(:runner) }
 
     before do
       allow(strategy_class).to receive_messages(request_from_management: runner_id, new: strategy)
@@ -66,7 +66,7 @@ RSpec.describe Runner do
   end
 
   describe '#attach to execution' do
-    let(:runner) { described_class.create }
+    let(:runner) { create(:runner) }
     let(:command) { 'ls' }
     let(:event_loop) { instance_double(Runner::EventLoop) }
     let(:connection) { instance_double(Runner::Connection) }
@@ -123,7 +123,7 @@ RSpec.describe Runner do
   end
 
   describe '#copy_files' do
-    let(:runner) { described_class.create }
+    let(:runner) { create(:runner) }
 
     before do
       allow(strategy_class).to receive_messages(request_from_management: runner_id, new: strategy)

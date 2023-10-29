@@ -6,5 +6,9 @@ FactoryBot.define do
     runner_id { SecureRandom.uuid }
     execution_environment factory: :ruby
     contributor factory: :external_user
+
+    after(:build) do |runner|
+      runner.strategy = Runner.strategy_class.new(runner.runner_id, runner.execution_environment)
+    end
   end
 end
