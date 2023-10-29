@@ -398,6 +398,7 @@ de:
       network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
       render: Anzeigen
       run: Ausführen
+      runner_in_use: Sie führen momentan Code aus. Bitte stoppen Sie die vorherige Ausführung oder warten Sie einen Moment, bevor Sie fortfahren.
       run_failure: Ihr Code konnte nicht auf der Plattform ausgeführt werden.
       run_success: Ihr Code wurde auf der Plattform ausgeführt.
       requestComments: Kommentare erbitten

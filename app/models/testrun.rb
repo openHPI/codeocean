@@ -14,6 +14,7 @@ class Testrun < ApplicationRecord
     timeout: 3,
     out_of_memory: 4,
     terminated_by_client: 5,
+    runner_in_use: 6,
   }, _default: :ok, _prefix: true
 
   validates :exit_code, numericality: {only_integer: true, min: 0, max: 255}, allow_nil: true

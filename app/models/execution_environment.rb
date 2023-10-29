@@ -92,7 +92,7 @@ class ExecutionEnvironment < ApplicationRecord
     retries = 0
     begin
       runner = Runner.for(author, self)
-      output = runner.execute_command(VALIDATION_COMMAND)
+      output = runner.execute_command(VALIDATION_COMMAND, exclusive: false)
       errors.add(:docker_image, "error: #{output[:stderr]}") if output[:stderr].present?
     rescue Runner::Error => e
       # In case of an Runner::Error, we retry multiple times before giving up.

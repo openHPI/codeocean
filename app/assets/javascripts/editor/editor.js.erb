@@ -773,6 +773,8 @@ var CodeOceanEditor = {
             this.showContainerDepletedMessage();
         } else if (output.status === 'out_of_memory') {
             this.showOutOfMemoryMessage();
+        } else if (output.status === 'runner_in_use') {
+            this.showRunnerInUseMessage();
         }
     },
 
@@ -829,6 +831,13 @@ var CodeOceanEditor = {
         $.flash.info({
             icon: ['fa-regular', 'fa-clock'],
             text: $('#editor').data('message-out-of-memory')
+        });
+    },
+
+    showRunnerInUseMessage: function () {
+        $.flash.warning({
+            icon: ['fa-solid', 'fa-triangle-exclamation'],
+            text: I18n.t('exercises.editor.runner_in_use')
         });
     },
 

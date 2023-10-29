@@ -72,6 +72,9 @@ class RemoteEvaluationController < ApplicationController
       # TODO: check token expired?
       {message: 'No exercise found for this validation_token! Please keep out!', status: 401}
     end
+  rescue Runner::Error::RunnerInUse => e
+    Rails.logger.debug { "Scoring a submission failed because the runner was already in use: #{e.message}" }
+    {message: I18n.t('exercises.editor.runner_in_use'), status: 409}
   rescue Runner::Error => e
     Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
     {message: I18n.t('exercises.editor.depleted'), status: 503}

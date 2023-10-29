@@ -33,7 +33,7 @@ class ExecutionEnvironmentsController < ApplicationController
   def execute_command
     runner = Runner.for(current_user, @execution_environment)
     @privileged_execution = ActiveModel::Type::Boolean.new.cast(params[:sudo]) || @execution_environment.privileged_execution
-    output = runner.execute_command(params[:command], privileged_execution: @privileged_execution, raise_exception: false)
+    output = runner.execute_command(params[:command], privileged_execution: @privileged_execution, raise_exception: false, exclusive: false)
     render json: output.except(:messages)
   end
 
@@ -41,11 +41,11 @@ class ExecutionEnvironmentsController < ApplicationController
     runner = Runner.for(current_user, @execution_environment)
     @privileged_execution = ActiveModel::Type::Boolean.new.cast(params[:sudo]) || @execution_environment.privileged_execution
     begin
-      files = runner.retrieve_files(path: params[:path], recursive: false, privileged_execution: @privileged_execution)
+      files = runner.retrieve_files(path: params[:path], recursive: false, privileged_execution: @privileged_execution, exclusive: false)
       downloadable_files, additional_directories = convert_files_json_to_files files
       js_tree = FileTree.new(downloadable_files, additional_directories, force_closed: true).to_js_tree
       render json: js_tree[:core][:data]
-    rescue Runner::Error::RunnerNotFound, Runner::Error::WorkspaceError
+    rescue Runner::Error::RunnerNotFound, Runner::Error::WorkspaceError, Runner::Error::RunnerInUse
       render json: []
     end
   end

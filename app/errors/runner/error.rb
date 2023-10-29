@@ -16,6 +16,8 @@ class Runner
 
     class Unauthorized < Error; end
 
+    class RunnerInUse < Error; end
+
     class RunnerNotFound < Error; end
 
     class FaradayError < Error; end
