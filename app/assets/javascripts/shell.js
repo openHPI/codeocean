@@ -148,13 +148,22 @@ $(document).on('turbolinks:load', function () {
         }
 
         // We build the path to the file by concatenating the paths of all parent nodes.
-        let file_path = node.parents.reverse().map(function (id) {
+        let file_path = getParents(jstree, node.parent).map(function (id) {
             return jstree.get_text(id);
         }).filter(function (text) {
             return text !== false;
         }).join('/');
 
         return `${node.parent !== '#' ? '/' : ''}${file_path}${node.original.path}`;
+    }
+
+    const getParents = function (jstree, node_id) {
+        debugger;
+        if (node_id === '#') {
+            return ['#'];
+        }
+
+        return getParents(jstree, jstree.get_parent(node_id)).concat([node_id]);
     }
 
     const shell = $('#shell');
