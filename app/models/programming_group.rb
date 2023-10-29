@@ -28,6 +28,18 @@ class ProgrammingGroup < ApplicationRecord
     false
   end
 
+  def learner?
+    true
+  end
+
+  def teacher?
+    false
+  end
+
+  def admin?
+    false
+  end
+
   def self.parent_resource
     Exercise
   end
