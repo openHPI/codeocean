@@ -4468,10 +4468,10 @@ vis-data@^7.1.7:
   resolved "https://registry.yarnpkg.com/vis-data/-/vis-data-7.1.7.tgz#e70475e69e01ed0f4535352ed0eae64a6337f298"
   integrity sha512-Jfrb6Ixyr3jdqFgpCBWnzb4w7PdD3UjOY6vea9yXixoKSLveUj+rAuxByoRKRvdjhsRtsYCEXG6MXjjx+uvGvQ==
 
-vis-timeline@^7.7.2:
-  version "7.7.2"
-  resolved "https://registry.yarnpkg.com/vis-timeline/-/vis-timeline-7.7.2.tgz#af3565367a0271344b22ee0ecf4694a7459c7803"
-  integrity sha512-l7hDBFJ0FI6gX4kzsxAONnAacowK3sHWx3uc5jR1DYs/FAsOEZsHDclVNW3+QAwmV3Xvg61U8//ha6hZNw7G1Q==
+vis-timeline@^7.7.3:
+  version "7.7.3"
+  resolved "https://registry.yarnpkg.com/vis-timeline/-/vis-timeline-7.7.3.tgz#79434eb3029169bff8de1b5012aa5c29786d6594"
+  integrity sha512-hGMzTttdOFWaw1PPlJuCXU2/4UjnsIxT684Thg9fV6YU1JuKZJs3s3BrJgZ4hO3gu5i1hsMe1YIi96o+eNT0jg==
 
 vis-util@^5.0.5:
   version "5.0.5"
