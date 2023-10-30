@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 68c4dd34519b315cee8d4056724148a77b93a695
+  revision: fbe75b4ea64e700278ebd9e80264fb1179af1193
   branch: 7-1-stable
   specs:
     actioncable (7.1.1)
@@ -373,7 +373,7 @@ GEM
       rails (>= 6.0, < 8)
       turbo-rails (~> 1.0)
     rainbow (3.1.1)
-    rake (13.0.6)
+    rake (13.1.0)
     ransack (4.1.1)
       activerecord (>= 6.1.5)
       activesupport (>= 6.1.5)
