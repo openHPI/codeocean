@@ -306,6 +306,7 @@ GEM
       rack (>= 1.2, < 4)
       snaky_hash (~> 2.0)
       version_gem (~> 1.1)
+    package_json (0.1.0)
     pagedown-bootstrap-rails (2.1.4)
       railties (> 3.1)
     parallel (1.23.0)
@@ -464,8 +465,9 @@ GEM
     sentry-ruby (5.12.0)
       concurrent-ruby (~> 1.0, >= 1.0.2)
     set (1.0.3)
-    shakapacker (7.1.0)
+    shakapacker (7.2.0.rc.0)
       activesupport (>= 5.2)
+      package_json
       rack-proxy (>= 0.6.1)
       railties (>= 5.2)
       semantic_range (>= 2.3.0)
@@ -621,7 +623,7 @@ DEPENDENCIES
   selenium-webdriver
   sentry-rails
   sentry-ruby
-  shakapacker (= 7.1.0)
+  shakapacker (= 7.2.0.rc.0)
   shoulda-matchers
   simplecov
   slim-rails
