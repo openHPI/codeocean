@@ -4,8 +4,8 @@ cd /home/vagrant/codeocean
 
 ######## VERSION INFORMATION ########
 
-postgres_version=15
-node_version=lts/hydrogen
+postgres_version=16
+node_version=lts/iron
 ruby_version=$(cat .ruby-version)
 
 DISTRO="$(lsb_release -cs)"

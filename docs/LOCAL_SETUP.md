@@ -22,19 +22,19 @@ sudo apt-get update
 sudo apt-get -y install git ca-certificates curl libpq-dev libicu-dev
 ```
 
-### Install PostgreSQL 15:
+### Install PostgreSQL 16:
 
 **macOS:**
 ```shell
-brew install postgresql@15
-brew services start postgresql@15 
+brew install postgresql@16
+brew services start postgresql@16
 ```
 
 **Linux:**
 ```shell
 curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null
 echo "deb [arch=$(dpkg --print-architecture)] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-sudo apt-get update && sudo apt-get -y install postgresql-15 postgresql-client-15
+sudo apt-get update && sudo apt-get -y install postgresql-16 postgresql-client-16
 sudo -u postgres createuser $(whoami) -ed
 ```
 
@@ -96,12 +96,12 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 nvm -v
 ```
 
-### Install NodeJS 18 and Yarn:
+### Install NodeJS 20 and Yarn:
 
 Reload your shell (e.g., by closing and reopening the terminal) and continue with installing Node:
 
 ```shell
-nvm install lts/hydrogen
+nvm install lts/iron
 corepack enable 
 ```
 
@@ -110,7 +110,7 @@ corepack enable
 node -v
 yarn -v
 ```
-If you have several node versions installed, check that you are using the correct version. To view your installed versions, run `nvm list`. `lts/hydrogen` should be the current and default version. You can adjust this by running `nvm alias default lts/hydrogen`.
+If you have several node versions installed, check that you are using the correct version. To view your installed versions, run `nvm list`. `lts/iron` should be the current and default version. You can adjust this by running `nvm alias default lts/iron`.
 
 ### Clone the repository:
 
