@@ -71,5 +71,6 @@
   "scripts": {
     "webpack": "./bin/shakapacker",
     "webpack-dev-server": "./bin/shakapacker-dev-server"
-  }
+  },
+  "packageManager": "yarn@4.0.1"
 }
