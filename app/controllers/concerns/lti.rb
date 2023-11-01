@@ -163,7 +163,7 @@ module Lti
   private :send_scores
 
   def send_score_for(submission, user, score)
-    return {status: 'error', user:} unless user.external_user? && user.consumer
+    return {status: 'unsupported', user:} unless user.external_user? && user.consumer
 
     lti_parameter = user.lti_parameters.find_by(exercise: submission.exercise, study_group: submission.study_group)
     provider = build_tool_provider(consumer: user.consumer, parameters: lti_parameter&.lti_parameters)
