@@ -5,6 +5,7 @@ class SubmissionsController < ApplicationController
   include FileConversion
   include Lti
   include RedirectBehavior
+  include ScoringChecks
   include SubmissionParameters
   include Tubesock::Hijack
 
@@ -266,7 +267,10 @@ class SubmissionsController < ApplicationController
     # To enable hints when scoring a submission, uncomment the next line:
     # send_hints(client_socket, StructuredError.where(submission: @submission))
 
-    transmit_lti_score(client_socket)
+    # Finally, send the score to the LTI consumer and check for notifications
+    check_submission(send_scores(@submission)).compact.each do |notification|
+      client_socket&.send_data(notification&.merge(cmd: :status)&.to_json)
+    end
   rescue Runner::Error::RunnerInUse => e
     extract_durations(e)
     send_and_store client_socket, {cmd: :status, status: :runner_in_use}
@@ -479,53 +483,6 @@ class SubmissionsController < ApplicationController
       exit_code: nil,
       status: nil,
     }
-  end
-
-  def check_scoring_too_late(submit_info)
-    # The submission was either performed before any deadline or no deadline was configured at all for the current exercise.
-    return if %i[within_grace_period after_late_deadline].exclude? submit_info[:deadline]
-    # The `lis_outcome_service` was not provided by the LMS, hence we were not able to send any score.
-    return if submit_info[:users][:unsupported].include?(current_user)
-
-    {status: :scoring_too_late, score_sent: submit_info[:score][:sent]}
-  end
-
-  def check_full_score
-    # The submission was not scored with the full score, hence the exercise is not finished yet.
-    return unless @submission.full_score?
-
-    {status: :exercise_finished, url: finalize_submission_path(@submission)}
-  end
-
-  def transmit_lti_score(client_socket)
-    submit_info = send_scores(@submission)
-    scored_users = submit_info[:users]
-
-    notifications = []
-    if scored_users[:all] == scored_users[:error] || scored_users[:error].include?(current_user)
-      # The score was not sent for any user or sending the score for the current user failed.
-      # In the latter case, we want to encourage the current user to reopen the exercise through the LMS.
-      # Hence, we always display the most severe error message.
-      notifications << {status: :scoring_failure}
-    elsif scored_users[:all] != scored_users[:success] && scored_users[:success].include?(current_user)
-      # The score was sent successfully for current user.
-      # However, at the same time, the transmission failed for some other users.
-      # This could either be due to a temporary network error, which is unlikely, or a more "permanent" error.
-      # Permanent errors would be that the deadline has passed on the LMS (which would then not provide a `lis_outcome_service`),
-      # working together with an internal user, or with someone who has never opened the exercise before.
-      notifications << {status: :not_for_all_users_submitted, failed_users: scored_users[:error].map(&:displayname).join(', ')}
-    end
-
-    if notifications.empty? || notifications.first[:status] != :scoring_failure
-      # Either, the score was sent successfully for the current user,
-      # or it was not attempted for any user (i.e., no `lis_outcome_service`).
-      notifications << check_scoring_too_late(submit_info)
-      notifications << check_full_score
-    end
-
-    notifications.compact.each do |notification|
-      client_socket&.send_data(notification&.merge(cmd: :status)&.to_json)
-    end
   end
 
   def retrieve_message_from_output(data, stream)

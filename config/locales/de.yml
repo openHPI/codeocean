@@ -391,6 +391,7 @@ de:
       exercise_finished: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst. <a href="%{url}" class="alert-link">Klicken Sie hier, um die Aufgabe jetzt abzuschließen.</a>
       exercise_finished_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über Ihre Hilfe und Kommentare freuen.
       exercise_finished_redirect_to_own_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Ihre Frage ist damit wahrscheinlich gelöst? Falls ja, fügen Sie doch den entscheidenden Kniff als Antwort hinzu und markieren die Frage als gelöst, bevor Sie das Fenster schließen.
+      exercise_finished_remote: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte erfolgreich an %{consumer} übertragen.
       expand_action_sidebar: Aktions-Leiste Ausklappen
       expand_output_sidebar: Ausgabe-Leiste Ausklappen
       input: Ihre Eingabe
@@ -414,7 +415,9 @@ de:
       stop: Stoppen
       submit_failure_all: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
       submit_failure_other_users: "Die Punkteübertragung war nur teilweise erfolgreich. Die Punkte konnten nicht für %{user} übertragen werden. Diese Person(en) sollte die Aufgabe über die e-Learning Platform erneut öffnen und anschließend die Punkte selbst übermitteln."
-      submit_too_late: Ihre Abgabe wurde erfolgreich gespeichert, ging jedoch nach der Abgabefrist ein, sodass nur %{score_sent} Punkte übertragen wurden.
+      submit_failure_remote: "Ihre Abgabe wurde erfolgreich mit %{score}% bewertet. Ihr Ergebnis konnte jedoch nicht an die E-Learning-Plattform gesendet werden. Bitte überprüfen Sie die Abgabefrist, öffnen Sie die Übung über die E-Learning-Plattform und versuchen Sie es erneut."
+      submit_no_validation_token: Keine Übung für dieses Validierungstoken gefunden!
+      submit_too_late: Ihre Abgabe wurde erfolgreich gespeichert, ging jedoch nach der Abgabefrist ein, sodass nur %{score_sent}% übertragen wurden.
       deadline: Deadline
       test: Testen
       timeout: 'Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.'

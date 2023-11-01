@@ -389,6 +389,7 @@ en:
       download: Download
       dummy: No Action
       exercise_finished: Congratulations! You have completely solved this exercise. <a href="%{url}" class="alert-link">Please click here to finish the exercise now.</a>
+      exercise_finished_remote: Congratulations! You have completely solved this exercise and submitted the points to %{consumer}.
       exercise_finished_redirect_to_rfc: Congratulations! You have completely solved this exercise and submitted the points. Another participant has a question concerning the exercise you just solved. Your help and comments will be greatly appreciated!
       exercise_finished_redirect_to_own_rfc: Congratulations! You have completely solved this exercise and submitted the points. Your question concerning the exercise is solved? If so, please share the essential insight with your fellows and mark the question as solved, before you close this window!
       expand_action_sidebar: Expand Action Sidebar
@@ -414,7 +415,9 @@ en:
       stop: Stop
       submit_failure_all: An error occurred while transmitting your score. Please try again later.
       submit_failure_other_users: "The transmission of points was only partially successful. The score was not transmitted for %{user}. The user(s) should reopen the exercise via the e-learning platform and then try to submit the points themselves."
-      submit_too_late: Your submission was saved successfully but was received after the deadline, so that only %{score_sent} points were transmitted.
+      submit_failure_remote: "Your submission was successfully scored with %{score}%. However, your score could not be sent to the e-learning platform. Please check the submission deadline, reopen the exercise through the e-learning platform, and try again."
+      submit_no_validation_token: No exercise found for this validation token! Please keep out!
+      submit_too_late: Your submission was saved successfully but was received after the deadline, so that only %{score_sent}% were transmitted.
       deadline: Deadline
       test: Test
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
