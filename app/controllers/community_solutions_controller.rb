@@ -52,6 +52,7 @@ class CommunitySolutionsController < ApplicationController
   def update
     authorize!
     contribution_params = submission_params
+    contribution_params[:user] = current_user
     cause = contribution_params.delete(:cause)
     contribution_params[:proposed_changes] = cause == 'change-community-solution'
     contribution_params[:autosave] = cause == 'autosave-community-solution'
@@ -78,7 +79,7 @@ class CommunitySolutionsController < ApplicationController
 
     contribution_params[:community_solution_lock] = @community_solution_lock
     contribution_params[:working_time] = @community_solution_lock.working_time
-    CommunitySolutionContribution.create(contribution_params)
+    CommunitySolutionContribution.create(contribution_params.except(:contributor, :exercise))
 
     redirect_after_submit
   end
