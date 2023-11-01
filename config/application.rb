@@ -52,6 +52,8 @@ module CodeOcean
       Runner.strategy_class.initialize_environment
     end
 
+    config.action_mailer.preview_paths << Rails.root.join('spec/mailers/previews')
+
     # Specify default options for Rails generators
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
