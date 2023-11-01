@@ -54,6 +54,7 @@ class RemoteEvaluationController < ApplicationController
     validation_token = remote_evaluation_params[:validation_token]
     if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(validation_token:))
       @current_user = remote_evaluation_mapping.user
+      @current_contributor = remote_evaluation_mapping.programming_group || remote_evaluation_mapping.user
       @submission = Submission.create(build_submission_params(cause, remote_evaluation_mapping))
       feedback = @submission.calculate_score(remote_evaluation_mapping.user)
       {message: I18n.t('exercises.editor.run_success'), status: 201, feedback:}
@@ -80,7 +81,7 @@ class RemoteEvaluationController < ApplicationController
     files_attributes = remote_evaluation_params[:files_attributes]
     submission_params = remote_evaluation_params.except(:validation_token)
     submission_params[:exercise] = remote_evaluation_mapping.exercise
-    submission_params[:user] = remote_evaluation_mapping.user
+    submission_params[:contributor] = current_contributor
     submission_params[:study_group_id] = remote_evaluation_mapping.study_group_id
     submission_params[:cause] = cause
     submission_params[:files_attributes] =
