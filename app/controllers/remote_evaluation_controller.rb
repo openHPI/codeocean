@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class RemoteEvaluationController < ApplicationController
-  include RemoteEvaluationParameters
   include Lti
+  include ScoringChecks
+  include RemoteEvaluationParameters
 
   skip_after_action :verify_authorized
   skip_before_action :verify_authenticity_token
@@ -11,66 +12,55 @@ class RemoteEvaluationController < ApplicationController
   # POST /evaluate
   def evaluate
     result = create_and_score_submission('remoteAssess')
-    status = if result.is_a?(Hash) && result.key?(:status)
-               result[:status]
-             else
-               201
-             end
-    render json: result, status:
+    # For this route, we don't want to display the LTI result, but only the result of the submission.
+    try_lti if result.key?(:feedback)
+    render json: result.fetch(:feedback, result), status: result.fetch(:status, 201)
   end
 
   # POST /submit
   def submit
     result = create_and_score_submission('remoteSubmit')
-    status = 201
-    if @submission.present?
-      score_achieved_percentage = @submission.normalized_score
-      result = try_lti
-      result[:score] = score_achieved_percentage * 100 unless result[:score]
-      status = result[:status]
-    end
-
-    render json: result, status:
+    result = try_lti if result.key?(:feedback)
+    render json: result, status: result.fetch(:status, 201)
   end
+
+  private
 
   def try_lti
-    # TODO: Need to consider and support programming groups
-    if !@submission.user.nil? && lti_outcome_service?(@submission.exercise, @submission.user, @submission.study_group_id)
-      lti_responses = send_scores(@submission)
-      process_lti_response(lti_responses.first)
-    else
-      {
-        message: "Your submission was successfully scored with #{@submission.normalized_score * 100}%. " \
-                 'However, your score could not be sent to the e-Learning platform. Please check ' \
-                 'the submission deadline, reopen the exercise through the e-Learning platform and try again.',
-        status: 410,
-      }
-    end
-  end
-  private :try_lti
+    lti_responses = send_scores(@submission)
+    check_lti_results = check_lti_transmission(lti_responses[:users]) || {}
+    score = (@submission.normalized_score * 100).to_i
 
-  def process_lti_response(lti_response)
-    if (lti_response[:status] == 'success') && (lti_response[:score_sent] != @submission.normalized_score)
-      # Score has been reduced due to the passed deadline
-      {message: I18n.t('exercises.editor.submit_too_late', score_sent: lti_response[:score_sent] * 100), status: 207, score: lti_response[:score_sent] * 100}
-    elsif lti_response[:status] == 'success'
-      {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: @submission.user.consumer.name), status: 202}
+    # Since we are in an API context, we only want to return a **single** JSON response.
+    # For simplicity, we always return the most severe error message.
+    if lti_responses[:users][:all] == lti_responses[:users][:unsupported]
+      # No LTI transmission was attempted, i.e., no `lis_outcome_service` was provided by the LMS.
+      {message: I18n.t('exercises.editor.submit_failure_remote', score:), status: 410, score:}
+    elsif check_lti_results[:status] == :scoring_failure
+      {message: I18n.t('exercises.editor.submit_failure_all'), status: 424, score:}
+    elsif check_lti_results[:status] == :not_for_all_users_submitted
+      {message: I18n.t('exercises.editor.submit_failure_other_users', user: check_lti_results[:failed_users]), status: 417, score:}
+    elsif check_scoring_too_late(lti_responses).present?
+      score_sent = (lti_responses[:score][:sent] * 100).to_i
+      {message: I18n.t('exercises.editor.submit_too_late', score_sent:), status: 207, score: score_sent}
+    elsif check_full_score.present?
+      {message: I18n.t('exercises.editor.exercise_finished_remote', consumer: current_user.consumer.name), status: 200, score:}
     else
-      {message: I18n.t('exercises.editor.submit_failure_all'), status: 424}
+      {message: I18n.t('sessions.destroy_through_lti.success_with_outcome', consumer: current_user.consumer.name), status: 202, score:}
     end
-    # TODO: Delete LTI parameters?
   end
-  private :process_lti_response
 
   def create_and_score_submission(cause)
     validation_token = remote_evaluation_params[:validation_token]
     if (remote_evaluation_mapping = RemoteEvaluationMapping.find_by(validation_token:))
+      @current_user = remote_evaluation_mapping.user
       @submission = Submission.create(build_submission_params(cause, remote_evaluation_mapping))
-      @submission.calculate_score(remote_evaluation_mapping.user)
+      feedback = @submission.calculate_score(remote_evaluation_mapping.user)
+      {message: I18n.t('exercises.editor.run_success'), status: 201, feedback:}
     else
       # TODO: better output
       # TODO: check token expired?
-      {message: 'No exercise found for this validation_token! Please keep out!', status: 401}
+      {message: I18n.t('exercises.editor.submit_no_validation_token'), status: 401}
     end
   rescue Runner::Error::RunnerInUse => e
     Rails.logger.debug { "Scoring a submission failed because the runner was already in use: #{e.message}" }
@@ -79,7 +69,6 @@ class RemoteEvaluationController < ApplicationController
     Rails.logger.debug { "Runner error while scoring submission #{@submission.id}: #{e.message}" }
     {message: I18n.t('exercises.editor.depleted'), status: 503}
   end
-  private :create_and_score_submission
 
   def build_submission_params(cause, remote_evaluation_mapping)
     Sentry.set_user(
@@ -98,5 +87,4 @@ class RemoteEvaluationController < ApplicationController
       reject_illegal_file_attributes(remote_evaluation_mapping.exercise, files_attributes)
     submission_params
   end
-  private :build_submission_params
 end
