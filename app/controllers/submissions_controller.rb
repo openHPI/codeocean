@@ -358,17 +358,17 @@ class SubmissionsController < ApplicationController
   end
 
   def create_remote_evaluation_mapping
-    user = @submission.user
-    exercise_id = @submission.exercise_id
+    programming_group = current_contributor if current_contributor.programming_group?
 
     remote_evaluation_mapping = RemoteEvaluationMapping.create(
-      user:,
-      exercise_id:,
+      user: current_user,
+      programming_group:,
+      exercise: @submission.exercise,
       study_group_id: session[:study_group_id]
     )
 
     # create .co file
-    path = "tmp/#{user.id}.co"
+    path = "tmp/#{current_user.id}.co"
     # parse validation token
     content = "#{remote_evaluation_mapping.validation_token}\n"
     # parse remote request url

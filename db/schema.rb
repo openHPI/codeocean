@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_10_29_172331) do
+ActiveRecord::Schema[7.1].define(version: 2023_11_01_222855) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -454,6 +454,8 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_29_172331) do
     t.datetime "updated_at"
     t.string "user_type"
     t.bigint "study_group_id"
+    t.bigint "programming_group_id"
+    t.index ["programming_group_id"], name: "index_remote_evaluation_mappings_on_programming_group_id"
     t.index ["study_group_id"], name: "index_remote_evaluation_mappings_on_study_group_id"
   end
 
@@ -686,6 +688,7 @@ ActiveRecord::Schema[7.1].define(version: 2023_10_29_172331) do
   add_foreign_key "pair_programming_waiting_users", "programming_groups"
   add_foreign_key "programming_group_memberships", "programming_groups"
   add_foreign_key "programming_groups", "exercises"
+  add_foreign_key "remote_evaluation_mappings", "programming_groups"
   add_foreign_key "remote_evaluation_mappings", "study_groups"
   add_foreign_key "structured_error_attributes", "error_template_attributes"
   add_foreign_key "structured_error_attributes", "structured_errors"
