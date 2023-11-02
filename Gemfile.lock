@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: d33fb3dcded46f050727e21eba1e997a02e005dd
+  revision: 8be97569325f99c4456b257a180a05c891665d7e
   branch: 7-1-stable
   specs:
     actioncable (7.1.1)
@@ -337,7 +337,7 @@ GEM
       nio4r (~> 2.0)
     pundit (2.3.1)
       activesupport (>= 3.0.0)
-    racc (1.7.1)
+    racc (1.7.2)
     rack (3.0.8)
     rack-mini-profiler (3.1.1)
       rack (>= 1.2.0)
