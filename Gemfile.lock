@@ -103,6 +103,10 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    actioncable-enhanced-postgresql-adapter (1.0.1)
+      actioncable (>= 6.0)
+      connection_pool (>= 2.2.5)
+      pg (~> 1.5)
     activemodel-serializers-xml (1.0.2)
       activemodel (> 5.x)
       activesupport (> 5.x)
@@ -559,6 +563,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  actioncable-enhanced-postgresql-adapter
   bcrypt
   better_errors
   binding_of_caller

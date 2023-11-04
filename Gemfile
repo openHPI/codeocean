@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'actioncable-enhanced-postgresql-adapter'
 gem 'bcrypt'
 gem 'bootsnap', require: false
 gem 'bootstrap-will_paginate'

@@ -1,14 +1,20 @@
 development:
-  adapter: async
+  adapter: enhanced_postgresql
 
 test:
   adapter: test
 
 staging:
-  adapter: postgresql
+  adapter: enhanced_postgresql
 
 production:
-  adapter: postgresql # redis
-  # all other options below are only used for redis
+  adapter: enhanced_postgresql # OR postgresql OR redis
+
+  ### Config options for `enhanced_postgresql`
+  # payload_encryptor_secret: # Required. Will be the defined value or `Rails.application.secret_key_base` or `ENV["SECRET_KEY_BASE"]`
+  # url: <%= ENV.fetch("DATABASE_URL") { "postgresql://localhost:5432/code_ocean_production" } %>
+  # connection_pool_size: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i %> # Only used in conjunction with `url`
+
+  ### Config options for `redis`
   # url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
   # channel_prefix: code_ocean_production
