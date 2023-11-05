@@ -12,7 +12,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     permissions:
       actions: read
       contents: read
@@ -22,6 +22,11 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'javascript', 'ruby' ]
+        include:
+          - runner: ubuntu-latest # Default runner
+          # Custom runner for Ruby
+          - runner: ubuntu-latest-4core
+            language: 'ruby'
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
 
