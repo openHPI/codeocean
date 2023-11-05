@@ -20,7 +20,7 @@ module ApplicationCable
 
     def session
       # `session` is not available here, so that we need to use `cookies.encrypted` instead
-      cookies.encrypted[Rails.application.config.session_options[:key]].symbolize_keys
+      cookies.encrypted[Rails.application.config.session_options[:key]]&.symbolize_keys || {}
     end
 
     def find_verified_user
