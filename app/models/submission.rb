@@ -57,7 +57,7 @@ class Submission < ApplicationRecord
 
   def collect_files
     @collect_files ||= begin
-      ancestors = build_files_hash(exercise.files.includes(:file_type), :id)
+      ancestors = build_files_hash(exercise&.files&.includes(:file_type), :id)
       descendants = build_files_hash(files.includes(:file_type), :file_id)
       ancestors.merge(descendants).values
     end
@@ -209,7 +209,7 @@ class Submission < ApplicationRecord
   private
 
   def build_files_hash(files, attribute)
-    files.map(&attribute.to_proc).zip(files).to_h
+    files&.map(&attribute.to_proc)&.zip(files)&.to_h || {}
   end
 
   def prepared_runner
