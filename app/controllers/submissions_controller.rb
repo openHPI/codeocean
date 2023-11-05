@@ -348,6 +348,9 @@ class SubmissionsController < ApplicationController
   end
 
   def kill_client_socket(client_socket)
+    # Do nothing if the socket is not passed, i.e., because the pipe broke
+    return unless client_socket
+
     # We don't want to store this (arbitrary) exit command and redirect it ourselves
     client_socket.send_data JSON.dump({cmd: :exit})
     client_socket.send_data nil, :close
