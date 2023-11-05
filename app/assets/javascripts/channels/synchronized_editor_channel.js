@@ -1,8 +1,8 @@
 $(document).on('turbolinks:load', function () {
 
   if (window.location.pathname.includes('/implement')) {
-    const editor = $('#editor');
-    const exercise_id = editor.data('exercise-id');
+    var editor = $('#editor');
+    var exercise_id = editor.data('exercise-id');
 
     if ($.isController('exercises') && ProgrammingGroups.is_other_user(current_contributor)) {
 
