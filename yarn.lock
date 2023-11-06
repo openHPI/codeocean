@@ -2630,7 +2630,7 @@ __metadata:
     uuid: "npm:^9.0.1"
     vis-data: "npm:^7.1.7"
     vis-timeline: "npm:^7.7.3"
-    vis-util: "npm:^5.0.5"
+    vis-util: "npm:^5.0.6"
     webpack: "npm:^5.89.0"
     webpack-assets-manifest: "npm:^5.1.0"
     webpack-cli: "npm:^5.1.4"
@@ -6907,13 +6907,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vis-util@npm:^5.0.5":
-  version: 5.0.5
-  resolution: "vis-util@npm:5.0.5"
+"vis-util@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "vis-util@npm:5.0.6"
   peerDependencies:
     "@egjs/hammerjs": ^2.0.0
     component-emitter: ^1.3.0
-  checksum: 8496807d74c55870f5c0d781b9e2d2c2cd3998167afe66a843e95e4baf074b113ab8b16761dab9f808b5c1d41b87092b17b2625e71ab61cdfebb853270a8fca6
+  checksum: f38c7954d24a53ef651ef8469db2d3bac71423a1c617fb34e417b9b070d752cbab07d5e997be32787e3fcc2dd489982340c8d00a61be5966bf1c5b28cfc08a94
   languageName: node
   linkType: hard
 
