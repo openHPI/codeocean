@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: e9521336186a9388bc5679d0dda6aaef440dc6ea
+  revision: 55f4a62638b6c8319bfd276d9d2d7b1adb0a6d71
   branch: 7-1-stable
   specs:
     actioncable (7.1.1)
@@ -280,7 +280,7 @@ GEM
     msgpack (1.7.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
-    mutex_m (0.1.2)
+    mutex_m (0.2.0)
     nested_form (0.3.2)
     net-http-persistent (4.0.2)
       connection_pool (~> 2.2)
@@ -387,7 +387,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rbtree (0.4.6)
-    rdoc (6.5.0)
+    rdoc (6.6.0)
       psych (>= 4.0.0)
     regexp_parser (2.8.2)
     reline (0.3.9)
