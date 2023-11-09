@@ -13,6 +13,7 @@ jobs:
   analyze:
     name: Analyze
     runs-on: ${{ matrix.runner }}
+    if: github.event_name == 'schedule' || github.actor != 'dependabot[bot]'
     permissions:
       actions: read
       contents: read
