@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/rails/rails.git
-  revision: 7f6714ed182d3d8968f580a60cbaabe7a3b45463
+  revision: f6987c46572666c439a1ad68b3ab5b41645f2bcf
   branch: 7-1-stable
   specs:
     actioncable (7.1.1)
@@ -511,7 +511,7 @@ GEM
       sprockets (>= 3.0.0)
     ssrf_filter (1.1.2)
     stackprof (0.2.25)
-    stringio (3.0.8)
+    stringio (3.0.9)
     telegraf (2.1.1)
       influxdb
     temple (0.10.3)
