@@ -34,17 +34,37 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
         description: exercise.description,
         uuid: exercise.uuid,
         language: described_class::DEFAULT_LANGUAGE,
-        meta_data: {
-          CodeOcean: {
-            allow_auto_completion: exercise.allow_auto_completion,
-            allow_file_creation: exercise.allow_file_creation,
-            execution_environment_id: exercise.execution_environment_id,
-            expected_difficulty: exercise.expected_difficulty,
-            hide_file_tree: exercise.hide_file_tree,
-            public: exercise.public,
-            files: {},
+        meta_data:
+          {
+            '@@order' => ['meta-data'], 'meta-data' =>
+            {'@@order' => %w[CodeOcean:public CodeOcean:hide_file_tree CodeOcean:allow_file_creation CodeOcean:allow_auto_completion CodeOcean:expected_difficulty CodeOcean:execution_environment_id CodeOcean:files],
+              '@xmlns' => {'CodeOcean' => 'codeocean.openhpi.de'},
+              'CodeOcean:allow_auto_completion' => {
+                '@@order' => ['$1'],
+                '$1' => exercise.allow_auto_completion,
+              },
+              'CodeOcean:allow_file_creation' => {
+                '@@order' => ['$1'],
+                '$1' => exercise.allow_file_creation,
+              },
+              'CodeOcean:execution_environment_id' => {
+                '@@order' => ['$1'],
+                '$1' => exercise.execution_environment_id,
+              },
+              'CodeOcean:expected_difficulty' => {
+                '@@order' => ['$1'],
+                '$1' => exercise.expected_difficulty,
+              },
+              'CodeOcean:files' => {'@@order' => []},
+              'CodeOcean:hide_file_tree' => {
+                '@@order' => ['$1'],
+                '$1' => exercise.hide_file_tree,
+              },
+              'CodeOcean:public' => {
+                '@@order' => ['$1'],
+                '$1' => exercise.public,
+              }}
           },
-        },
         files: [],
         tests: [],
         model_solutions: []
@@ -76,9 +96,17 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
       it 'adds the file\'s role to the file hash in task-meta_data' do
         expect(task).to have_attributes(
-          meta_data: {
-            CodeOcean: a_hash_including(files: {"CO-#{file.id}" => {role: 'main_file'}}),
-          }
+          meta_data: a_hash_including(
+            'meta-data' => a_hash_including(
+              'CodeOcean:files' => {
+                '@@order' => ["CodeOcean:CO-#{file.id}"],
+                "CodeOcean:CO-#{file.id}" => {
+                  '@@order' => ['CodeOcean:role'],
+                  'CodeOcean:role' => {'$1' => 'main_file', '@@order' => ['$1']},
+                },
+              }
+            )
+          )
         )
       end
     end
@@ -104,9 +132,17 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
       it 'adds the file\'s role to the file hash in task-meta_data' do
         expect(task).to have_attributes(
-          meta_data: {
-            CodeOcean: a_hash_including(files: {"CO-#{file.id}" => {role: 'regular_file'}}),
-          }
+          meta_data: a_hash_including(
+              'meta-data' => a_hash_including(
+                'CodeOcean:files' => {
+                  '@@order' => ["CodeOcean:CO-#{file.id}"],
+                  "CodeOcean:CO-#{file.id}" => {
+                    '@@order' => ['CodeOcean:role'],
+                    'CodeOcean:role' => {'$1' => 'regular_file', '@@order' => ['$1']},
+                  },
+                }
+              )
+            )
         )
       end
 
@@ -190,12 +226,12 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           id: test_file.id,
           title: test_file.name,
           files: have(1).item,
-          meta_data: {
-            CodeOcean: {
-              'feedback-message': 'feedback_message',
-              weight: test_file.weight,
-            },
-          }
+          meta_data: a_hash_including(
+            'test-meta-data' => a_hash_including(
+              'CodeOcean:feedback-message' => {'$1' => 'feedback_message', '@@order' => ['$1']},
+              'CodeOcean:weight' => {'$1' => test_file.weight, '@@order' => ['$1']}
+            )
+          )
         )
       end
 

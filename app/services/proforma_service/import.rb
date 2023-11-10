@@ -12,7 +12,7 @@ module ProformaService
       if single_task?
         importer = ProformaXML::Importer.new(zip: @zip)
         import_result = importer.perform
-        @task = import_result[:task]
+        @task = import_result
 
         exercise = base_exercise
         exercise_files = exercise&.files&.to_a

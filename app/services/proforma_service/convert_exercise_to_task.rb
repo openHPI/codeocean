@@ -30,14 +30,35 @@ module ProformaService
           language: DEFAULT_LANGUAGE,
           model_solutions:,
           meta_data: {
-            CodeOcean: {
-              public: @exercise.public,
-              hide_file_tree: @exercise.hide_file_tree,
-              allow_file_creation: @exercise.allow_file_creation,
-              allow_auto_completion: @exercise.allow_auto_completion,
-              expected_difficulty: @exercise.expected_difficulty,
-              execution_environment_id: @exercise.execution_environment_id,
-              files: task_files_meta_data,
+            '@@order' => %w[meta-data],
+            'meta-data' => {
+              '@@order' => %w[CodeOcean:public CodeOcean:hide_file_tree CodeOcean:allow_file_creation CodeOcean:allow_auto_completion CodeOcean:expected_difficulty CodeOcean:execution_environment_id CodeOcean:files],
+              '@xmlns' => {'CodeOcean' => 'codeocean.openhpi.de'},
+              'CodeOcean:public' => {
+                '@@order' => %w[$1],
+                '$1' => @exercise.public,
+              },
+              'CodeOcean:hide_file_tree' => {
+                '@@order' => %w[$1],
+                '$1' => @exercise.hide_file_tree,
+              },
+              'CodeOcean:allow_file_creation' => {
+                '@@order' => %w[$1],
+                '$1' => @exercise.allow_file_creation,
+              },
+              'CodeOcean:allow_auto_completion' => {
+                '@@order' => %w[$1],
+                '$1' => @exercise.allow_auto_completion,
+              },
+              'CodeOcean:expected_difficulty' => {
+                '@@order' => %w[$1],
+                '$1' => @exercise.expected_difficulty,
+              },
+              'CodeOcean:execution_environment_id' => {
+                '@@order' => %w[$1],
+                '$1' => @exercise.execution_environment_id,
+              },
+              'CodeOcean:files' => task_files_meta_data,
             },
           },
         }.compact
@@ -86,9 +107,18 @@ module ProformaService
 
     def test_meta_data(file)
       {
-        CodeOcean: {
-          'feedback-message': file.feedback_message,
-          weight: file.weight,
+        '@@order' => %w[test-meta-data],
+        'test-meta-data' => {
+          '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight],
+          '@xmlns' => {'CodeOcean' => 'codeocean.openhpi.de'},
+          'CodeOcean:feedback-message' => {
+            '@@order' => %w[$1],
+            '$1' => file.feedback_message,
+          },
+          'CodeOcean:weight' => {
+            '@@order' => %w[$1],
+            '$1' => file.weight,
+          },
         },
       }
     end
@@ -109,10 +139,20 @@ module ProformaService
     end
 
     def task_files_meta_data
-      exercise_files.to_h do |file|
-        # added CO- to id, otherwise the key would have CodeOcean as a prefix after export and import (cause unknown)
-        ["CO-#{file.id}", {role: file.role}]
+      # TODO: refactor?
+      task_files_hash = {
+        '@@order' => exercise_files.map {|file| "CodeOcean:CO-#{file.id}" },
+      }
+      exercise_files.each do |file|
+        task_files_hash["CodeOcean:CO-#{file.id}"] = {
+          '@@order' => ['CodeOcean:role'],
+          'CodeOcean:role' => {
+            '@@order' => ['$1'],
+            '$1' => file.role,
+          },
+        }
       end
+      task_files_hash
     end
 
     def task_files

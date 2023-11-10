@@ -21,19 +21,25 @@ module ProformaService
         user: @user,
         title: @task.title,
         description: @task.description,
-        public: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:public)) || false,
-        hide_file_tree: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:hide_file_tree)) || false,
-        allow_file_creation: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_file_creation)) || false,
-        allow_auto_completion: string_to_bool(@task.meta_data[:CodeOcean]&.dig(:allow_auto_completion)) || false,
-        expected_difficulty: @task.meta_data[:CodeOcean]&.dig(:expected_difficulty) || 1,
+        public: string_to_bool(extract_meta_data(@task.meta_data&.dig('meta-data'), 'public')) || false,
+        hide_file_tree: string_to_bool(extract_meta_data(@task.meta_data&.dig('meta-data'), 'hide_file_tree')) || false,
+        allow_file_creation: string_to_bool(extract_meta_data(@task.meta_data&.dig('meta-data'), 'allow_file_creation')) || false,
+        allow_auto_completion: string_to_bool(extract_meta_data(@task.meta_data&.dig('meta-data'), 'allow_auto_completion')) || false,
+        expected_difficulty: extract_meta_data(@task.meta_data&.dig('meta-data'), 'expected_difficulty') || 1,
         execution_environment_id:,
 
         files:
       )
     end
 
+    def extract_meta_data(meta_data, *path)
+      current_level = meta_data
+      path.each {|attribute| current_level = current_level&.dig("CodeOcean:#{attribute}") }
+      current_level&.dig('$1')
+    end
+
     def execution_environment_id
-      from_meta_data = @task.meta_data[:CodeOcean]&.dig(:execution_environment_id)
+      from_meta_data = extract_meta_data(@task.meta_data&.dig('meta-data'), 'execution_environment_id')
       return from_meta_data if from_meta_data
       return nil unless @task.proglang
 
@@ -60,8 +66,8 @@ module ProformaService
     def test_files
       @task.tests.map do |test_object|
         task_files.delete(test_object.files.first.id).tap do |file|
-          file.weight = test_object.meta_data[:CodeOcean]&.dig(:weight) || 1.0
-          file.feedback_message = test_object.meta_data[:CodeOcean]&.dig(:'feedback-message').presence || 'Feedback'
+          file.weight = extract_meta_data(test_object.meta_data&.dig('test-meta-data'), 'weight').presence || 1.0
+          file.feedback_message = extract_meta_data(test_object.meta_data&.dig('test-meta-data'), 'feedback-message').presence || 'Feedback'
           file.role ||= 'teacher_defined_test'
         end
       end
@@ -89,7 +95,7 @@ module ProformaService
         hidden: file.visible != 'yes', # hides 'delayed' and 'no'
         name: File.basename(file.filename, '.*'),
         read_only: file.usage_by_lms != 'edit',
-        role: @task.meta_data[:CodeOcean]&.dig(:files)&.dig("CO-#{file.id}".to_sym)&.dig(:role),
+        role: extract_meta_data(@task.meta_data&.dig('meta-data'), 'files', "CO-#{file.id}", 'role'),
         path: File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename)
       )
       if file.binary
