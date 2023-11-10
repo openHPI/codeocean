@@ -1079,9 +1079,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-runtime@npm:^7.22.15":
-  version: 7.23.2
-  resolution: "@babel/plugin-transform-runtime@npm:7.23.2"
+"@babel/plugin-transform-runtime@npm:^7.23.3":
+  version: 7.23.3
+  resolution: "@babel/plugin-transform-runtime@npm:7.23.3"
   dependencies:
     "@babel/helper-module-imports": "npm:^7.22.15"
     "@babel/helper-plugin-utils": "npm:^7.22.5"
@@ -1091,7 +1091,7 @@ __metadata:
     semver: "npm:^6.3.1"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 440291cd42e51c3f8789a0bd45cebbf597cf5d4ee4185050f1151f579465db016902054c50684e288342a03c9f1af8cec365fc02d85d14dc2b2a30ad5eb07c42
+  checksum: 111fc412cc3968402183086879e1625ad4b869309f2e5aa33498a71ba700d3196c151d506977b5b535e8ff2c42c0731d59bfbfcb158ecddeeb3c49d5d4a58c0a
   languageName: node
   linkType: hard
 
@@ -2619,7 +2619,7 @@ __metadata:
   resolution: "codeocean@workspace:."
   dependencies:
     "@babel/core": "npm:^7.23.2"
-    "@babel/plugin-transform-runtime": "npm:^7.22.15"
+    "@babel/plugin-transform-runtime": "npm:^7.23.3"
     "@babel/preset-env": "npm:^7.23.3"
     "@babel/runtime": "npm:^7.22.15"
     "@egjs/hammerjs": "npm:^2.0.17"
