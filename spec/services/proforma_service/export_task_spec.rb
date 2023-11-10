@@ -30,7 +30,7 @@ RSpec.describe ProformaService::ExportTask do
 
     before do
       allow(ProformaService::ConvertExerciseToTask).to receive(:call).with(exercise:).and_return(task)
-      allow(ProformaXML::Exporter).to receive(:new).with(task:, custom_namespaces: [{prefix: 'CodeOcean', uri: 'codeocean.openhpi.de'}]).and_return(exporter)
+      allow(ProformaXML::Exporter).to receive(:new).with(task:).and_return(exporter)
     end
 
     it do
