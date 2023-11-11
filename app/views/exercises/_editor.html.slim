@@ -33,7 +33,7 @@
 
     #statusbar.d-flex.justify-content-between
       div
-        - if !@embed_options[:disable_download] && !@exercise.hide_file_tree?
+        - if !@embed_options[:disable_download] && @exercise.hide_file_tree?
           button#download.p-0.border-0.btn-link.visible.bg-body.text-primary
             i.fa-solid.fa-arrow-down
             = t('exercises.editor.download')
