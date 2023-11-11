@@ -8,7 +8,7 @@ FactoryBot.define do
   end
 
   trait :generated_email do
-    email { "#{name.underscore.tr(' ', '.')}@example.org" }
+    sequence(:email) {|n| "#{name.underscore.tr(' ', '.')}.#{n}@example.org" }
   end
 
   trait :generated_user_name do
