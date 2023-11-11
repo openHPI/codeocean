@@ -17,11 +17,3 @@ module WillPaginate
     end
   end
 end
-
-# Temporary required for Rails 7.1+ and Slim 5.1+.
-# TODO: No GitHub issue yet
-module ActionView
-  class OutputBuffer
-    alias + concat
-  end
-end
