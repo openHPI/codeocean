@@ -139,11 +139,12 @@ module ProformaService
     end
 
     def task_files_meta_data
-      # TODO: refactor?
       task_files_hash = {
-        '@@order' => exercise_files.map {|file| "CodeOcean:CO-#{file.id}" },
+        '@@order' => [],
       }
+
       exercise_files.each do |file|
+        task_files_hash['@@order'] << "CodeOcean:CO-#{file.id}"
         task_files_hash["CodeOcean:CO-#{file.id}"] = {
           '@@order' => ['CodeOcean:role'],
           'CodeOcean:role' => {
@@ -152,6 +153,7 @@ module ProformaService
           },
         }
       end
+
       task_files_hash
     end
 
