@@ -8,8 +8,6 @@ class CommunitySolution < ApplicationRecord
   has_and_belongs_to_many :users, polymorphic: true, through: :community_solution_contributions
   has_many :files, class_name: 'CodeOcean::File', through: :community_solution_contributions
 
-  validates :user_type, inclusion: {in: ALLOWED_USER_TYPES}
-
   def to_s
     "Gemeinschaftslösung für #{exercise}"
   end
