@@ -109,7 +109,7 @@ module ProformaService
       {
         '@@order' => %w[test-meta-data],
         'test-meta-data' => {
-          '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight],
+          '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight CodeOcean:hidden-feedback],
           '@xmlns' => {'CodeOcean' => 'codeocean.openhpi.de'},
           'CodeOcean:feedback-message' => {
             '@@order' => %w[$1],
@@ -118,6 +118,10 @@ module ProformaService
           'CodeOcean:weight' => {
             '@@order' => %w[$1],
             '$1' => file.weight,
+          },
+          'CodeOcean:hidden-feedback' => {
+            '@@order' => %w[$1],
+            '$1' => file.hidden_feedback,
           },
         },
       }

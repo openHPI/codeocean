@@ -361,9 +361,10 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
           files: test_files,
           meta_data: {
             'test-meta-data' => {
-              '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight],
+              '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight CodeOcean:hidden-feedback],
               'CodeOcean:feedback-message' => {'$1' => 'feedback-message', '@@order' => ['$1']},
               'CodeOcean:weight' => {'$1' => '0.7', '@@order' => ['$1']},
+              'CodeOcean:hidden-feedback' => {'$1' => 'true', '@@order' => ['$1']},
             },
           }
         )
@@ -396,6 +397,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
           role: 'teacher_defined_test',
           hidden: true,
           read_only: true,
+          hidden_feedback: true,
           file_type: be_a(FileType).and(have_attributes(file_extension: '.txt'))
         )
       end
