@@ -214,7 +214,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
     context 'when exercise has a test' do
       let(:tests) { [test_file] }
-      let(:test_file) { build(:test_file) }
+      let(:test_file) { build(:test_file, hidden_feedback: true) }
       # let(:file) { FactoryBot.build(:codeharbor_test_file) }
 
       it 'creates a task with one test' do
@@ -229,7 +229,8 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           meta_data: a_hash_including(
             'test-meta-data' => a_hash_including(
               'CodeOcean:feedback-message' => {'$1' => 'feedback_message', '@@order' => ['$1']},
-              'CodeOcean:weight' => {'$1' => test_file.weight, '@@order' => ['$1']}
+              'CodeOcean:weight' => {'$1' => test_file.weight, '@@order' => ['$1']},
+              'CodeOcean:hidden-feedback' => {'$1' => test_file.hidden_feedback, '@@order' => ['$1']}
             )
           )
         )

@@ -68,6 +68,7 @@ module ProformaService
         task_files.delete(test_object.files.first.id).tap do |file|
           file.weight = extract_meta_data(test_object.meta_data&.dig('test-meta-data'), 'weight').presence || 1.0
           file.feedback_message = extract_meta_data(test_object.meta_data&.dig('test-meta-data'), 'feedback-message').presence || 'Feedback'
+          file.hidden_feedback = extract_meta_data(test_object.meta_data&.dig('test-meta-data'), 'hidden-feedback').presence || false
           file.role ||= 'teacher_defined_test'
         end
       end
