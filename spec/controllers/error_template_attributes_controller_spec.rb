@@ -71,6 +71,6 @@ RSpec.describe ErrorTemplateAttributesController do
       expect { delete :destroy, params: {id: error_template_attribute} }.to change(ErrorTemplateAttribute, :count).by(-1)
     end
 
-    expect_redirect { error_template_attribute }
+    expect_redirect(:error_template_attributes)
   end
 end
