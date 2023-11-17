@@ -142,6 +142,9 @@ Turtle.prototype.update = function () {
 
 Turtle.prototype.get_width = function () {
     if (width === undefined) {
+        if (this.canvas === undefined || this.canvas[0] === undefined) {
+            return;
+        }
         width = this.canvas[0].width;
     }
     return width;
@@ -149,6 +152,9 @@ Turtle.prototype.get_width = function () {
 
 Turtle.prototype.get_height = function () {
     if (height === undefined) {
+        if (this.canvas === undefined || this.canvas[0] === undefined) {
+            return;
+        }
         height = this.canvas[0].height;
     }
     return height;
