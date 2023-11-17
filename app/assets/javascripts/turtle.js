@@ -81,6 +81,9 @@ function Turtle(unused_pipe_reference, canvas) {
 Turtle.prototype.update = function () {
     let k, c;
     const canvas = this.canvas[0];
+    if (canvas === undefined) {
+        return;
+    }
     canvas.width = this.get_width() * devicePixelRatio;
     canvas.height = this.get_height() * devicePixelRatio;
     canvas.style.width = `${this.get_width()}px`;
