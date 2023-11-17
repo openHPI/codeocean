@@ -45,7 +45,7 @@ CodeOceanEditorTurtle = {
 
   hideCanvas: function () {
     const turtlediv = $('#turtlediv');
-    if (turtlediv.isPresent() && !turtlediv.hasClass('d-none')) {
+    if (turtlediv && turtlediv.isPresent() && !turtlediv.hasClass('d-none')) {
       turtlediv.addClass('d-none');
     }
   }
