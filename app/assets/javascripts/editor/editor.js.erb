@@ -761,9 +761,13 @@ var CodeOceanEditor = {
     },
 
     showSpinner: function (initiator) {
-        $(initiator).closest('[data-bs-toggle="tooltip"]').tooltip('hide');
-        $(initiator).find('i.fa-solid, i.fa-regular').hide();
-        $(initiator).find('i.fa-spin').addClass('d-inline-block').removeClass('d-none');
+        const element = $(initiator);
+
+        if (initiator && element) {
+            $(initiator).closest('[data-bs-toggle="tooltip"]').tooltip('hide');
+            $(initiator).find('i.fa-solid, i.fa-regular').hide();
+            $(initiator).find('i.fa-spin').addClass('d-inline-block').removeClass('d-none');
+        }
     },
 
     showStatus: function (output) {
