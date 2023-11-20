@@ -128,9 +128,10 @@ $(document).on('turbolinks:load', function () {
     var buildCheckboxes = function () {
         $('tbody tr').each(function (index, element) {
             var td = $('td.public', element);
-            var checkbox = $('<input class="form-check-input">', {
+            var checkbox = $('<input>', {
                 checked: td.data('value'),
-                type: 'checkbox'
+                type: 'checkbox',
+                class: 'form-check-input',
             });
             td.on('click', function (event) {
                 event.preventDefault();
