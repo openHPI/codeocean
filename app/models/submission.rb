@@ -217,8 +217,16 @@ class Submission < ApplicationRecord
     begin
       runner = Runner.for(contributor, exercise.execution_environment)
       files = collect_files
-      files.reject!(&:reference_implementation?) if cause == 'run'
-      files.reject!(&:teacher_defined_assessment?) if cause == 'run'
+
+      case cause
+        when 'run'
+          files.reject!(&:reference_implementation?)
+          files.reject!(&:teacher_defined_assessment?)
+        when 'assess'
+          regular_filepaths = files.reject(&:reference_implementation?).map(&:filepath)
+          files.reject! {|file| file.reference_implementation? && regular_filepaths.include?(file.filepath) }
+      end
+
       Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Copying files to Runner #{runner.id} for #{contributor_type} #{contributor_id} and Submission #{id}." }
       runner.copy_files(files)
     rescue Runner::Error => e
