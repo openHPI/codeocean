@@ -131,6 +131,26 @@ RSpec.describe Exercise do
     end
   end
 
+  describe '#needs_more_feedback?' do
+    let(:exercise) { create(:dummy) }
+
+    before { stub_const('Exercise::MAX_GROUP_EXERCISE_FEEDBACKS', 5) }
+
+    context 'when too few feedback was collected' do
+      it 'returns true' do
+        expect(exercise).to be_needs_more_feedback
+      end
+    end
+
+    context 'when enough feedback was collected' do
+      before { create_list(:user_exercise_feedback, Exercise::MAX_GROUP_EXERCISE_FEEDBACKS, exercise:) }
+
+      it 'returns false' do
+        expect(exercise).to be_needs_more_feedback
+      end
+    end
+  end
+
   describe '#teacher_defined_assessment?' do
     let(:exercise) { create(:dummy) }
 
