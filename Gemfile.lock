@@ -151,10 +151,10 @@ GEM
     eventmachine (1.2.7)
     excon (0.104.0)
     execjs (2.9.1)
-    factory_bot (6.2.1)
+    factory_bot (6.4.1)
       activesupport (>= 5.0.0)
-    factory_bot_rails (6.2.0)
-      factory_bot (~> 6.2.0)
+    factory_bot_rails (6.4.0)
+      factory_bot (~> 6.4)
       railties (>= 5.0.0)
     faraday (2.7.12)
       base64
@@ -192,7 +192,7 @@ GEM
       rexml
     influxdb (0.8.1)
     io-console (0.6.0)
-    irb (1.9.0)
+    irb (1.9.1)
       rdoc
       reline (>= 0.3.8)
     jbuilder (2.11.5)
