@@ -94,6 +94,8 @@ class ProgrammingGroupsController < ApplicationController
   private
 
   def authorize!
+    raise Pundit::NotAuthorizedError if @programming_group.present? && @exercise.present? && @programming_group.exercise != @exercise
+
     authorize(@programming_group || @programming_groups)
   end
 
