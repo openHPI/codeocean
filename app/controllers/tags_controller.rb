@@ -48,8 +48,4 @@ class TagsController < ApplicationController
   def destroy
     destroy_and_respond(object: @tag)
   end
-
-  def to_s
-    name
-  end
 end
