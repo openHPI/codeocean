@@ -186,10 +186,6 @@ RSpec.describe SubmissionsController do
     end
 
     describe 'GET #show.json' do
-      # Render views requested in controller tests in order to get json responses
-      # https://github.com/rails/jbuilder/issues/32
-      render_views
-
       before { get :show, params: {id: submission.id}, format: :json }
 
       expect_assigns(submission: :submission)
