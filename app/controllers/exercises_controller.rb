@@ -95,7 +95,7 @@ class ExercisesController < ApplicationController
       .includes(:exercise, user: [:programming_groups])
       .paginate(page: params[:page], per_page: per_page_param)
     @submissions = @feedbacks.map do |feedback|
-      feedback.exercise.final_submission(feedback.user.programming_groups.select {|pg| pg.exercise = @exercise }.presence || feedback.user)
+      feedback.exercise.final_submission(feedback.user.programming_groups.find_by(exercise: @exercise).presence || feedback.user)
     end
   end
 
