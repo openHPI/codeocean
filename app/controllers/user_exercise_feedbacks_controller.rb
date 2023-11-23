@@ -3,6 +3,7 @@
 class UserExerciseFeedbacksController < ApplicationController
   include CommonBehavior
 
+  before_action :set_exercise_and_authorize
   before_action :set_user_exercise_feedback, only: %i[edit update destroy]
   before_action :set_presets, only: %i[new edit create update]
 
@@ -23,24 +24,15 @@ class UserExerciseFeedbacksController < ApplicationController
   end
 
   def new
-    exercise_id = if params[:user_exercise_feedback].nil?
-                    params[:exercise_id]
-                  else
-                    params[:user_exercise_feedback][:exercise_id]
-                  end
-    @exercise = Exercise.find(exercise_id)
     @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
     authorize!
   end
 
-  def edit
-    authorize!
-  end
+  def edit; end
 
   def create
     Sentry.set_extras(params: uef_params)
 
-    @exercise = Exercise.find(uef_params[:exercise_id])
     rfc = RequestForComment.unsolved.where(exercise: @exercise, user: current_user).first
     submission = begin
       current_contributor.submissions.where(exercise: @exercise).order(created_at: :desc).first
@@ -48,22 +40,20 @@ class UserExerciseFeedbacksController < ApplicationController
       nil
     end
 
-    if @exercise
-      @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
-      @uef.update(uef_params)
-      authorize!
-      if validate_inputs(uef_params)
-        path =
-          if rfc && submission && submission.normalized_score.to_d == BigDecimal('1.0')
-            request_for_comment_path(rfc)
-          else
-            implement_exercise_path(@exercise)
-          end
-        create_and_respond(object: @uef, path: proc { path })
-      else
-        flash.now[:danger] = t('shared.message_failure')
-        redirect_back fallback_location: user_exercise_feedback_path(@uef)
-      end
+    @uef = UserExerciseFeedback.find_or_initialize_by(user: current_user, exercise: @exercise)
+    @uef.assign_attributes(uef_params)
+    authorize!
+    if validate_inputs(uef_params)
+      path =
+        if rfc && submission && submission.normalized_score.to_d == BigDecimal('1.0')
+          request_for_comment_path(rfc)
+        else
+          implement_exercise_path(@exercise)
+        end
+      create_and_respond(object: @uef, path: proc { path })
+    else
+      flash.now[:danger] = t('shared.message_failure')
+      redirect_back fallback_location: exercise_user_exercise_feedback_path(@uef)
     end
   end
 
@@ -75,7 +65,7 @@ class UserExerciseFeedbacksController < ApplicationController
     end
     rfc = RequestForComment.unsolved.where(exercise: @exercise, user: current_user).first
     authorize!
-    if @exercise && validate_inputs(uef_params)
+    if validate_inputs(uef_params)
       path =
         if rfc && submission && submission.normalized_score.to_d == BigDecimal('1.0')
           request_for_comment_path(rfc)
@@ -85,7 +75,7 @@ class UserExerciseFeedbacksController < ApplicationController
       update_and_respond(object: @uef, params: uef_params, path:)
     else
       flash.now[:danger] = t('shared.message_failure')
-      redirect_back fallback_location: user_exercise_feedback_path(@uef)
+      redirect_back fallback_location: exercise_user_exercise_feedback_path(@uef)
     end
   end
 
@@ -97,16 +87,19 @@ class UserExerciseFeedbacksController < ApplicationController
   private
 
   def authorize!
-    authorize(@uef || @uefs)
+    raise Pundit::NotAuthorizedError if @uef.present? && @uef.exercise != @exercise
+
+    authorize(@uef)
   end
 
-  def to_s
-    name
+  def set_exercise_and_authorize
+    @exercise = Exercise.find(params[:exercise_id])
+    authorize(@exercise, :implement?)
   end
 
   def set_user_exercise_feedback
     @uef = UserExerciseFeedback.find(params[:id])
-    @exercise = @uef.exercise
+    authorize!
   end
 
   def set_presets

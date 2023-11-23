@@ -61,9 +61,9 @@ module RedirectBehavior
   def redirect_to_user_feedback
     uef = UserExerciseFeedback.find_by(exercise: @submission.exercise, user: current_user)
     url = if uef
-            edit_user_exercise_feedback_path(uef)
+            edit_exercise_user_exercise_feedback_path(uef, exercise_id: @submission.exercise)
           else
-            new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: @submission.exercise.id})
+            new_exercise_user_exercise_feedback_path(exercise_id: @submission.exercise)
           end
 
     respond_to do |format|

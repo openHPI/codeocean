@@ -22,4 +22,8 @@ class UserExerciseFeedback < ApplicationRecord
       .order(created_at: :desc)
       .first
   end
+
+  def self.parent_resource
+    Exercise
+  end
 end
