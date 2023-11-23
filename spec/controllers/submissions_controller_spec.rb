@@ -144,13 +144,13 @@ RSpec.describe SubmissionsController do
         context 'without any previous feedback' do
           let(:uef) { nil }
 
-          expect_redirect { new_user_exercise_feedback_path(user_exercise_feedback: {exercise_id: submission.exercise.id}) }
+          expect_redirect { new_exercise_user_exercise_feedback_path(exercise_id: submission.exercise) }
         end
 
         context 'with a previous feedback for the same exercise' do
           let(:uef) { create(:user_exercise_feedback, exercise:, user: current_user) }
 
-          expect_redirect { edit_user_exercise_feedback_path(uef) }
+          expect_redirect { edit_exercise_user_exercise_feedback_path(uef, exercise_id: exercise) }
         end
       end
 

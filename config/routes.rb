@@ -89,7 +89,7 @@ Rails.application.routes.draw do
       get :working_times
       post :intervention
       get :statistics
-      get :feedback
+      get :feedback, path: 'feedbacks'
       get :reload
       get 'study_group_dashboard/:study_group_id', to: 'exercises#study_group_dashboard'
       post :export_external_check
@@ -97,6 +97,7 @@ Rails.application.routes.draw do
     end
 
     resources :programming_groups
+    resources :user_exercise_feedbacks, except: %i[show index], path: 'feedbacks'
   end
 
   resources :programming_groups, except: %i[new create]
@@ -117,8 +118,6 @@ Rails.application.routes.draw do
   resources :tags
 
   resources :tips
-
-  resources :user_exercise_feedbacks, except: %i[show index]
 
   resources :external_users, only: %i[index show], concerns: :statistics do
     resources :exercises do
