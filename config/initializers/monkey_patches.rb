@@ -17,3 +17,22 @@ module WillPaginate
     end
   end
 end
+
+# Required until Rails 7.1 is officially supported.
+# See https://github.com/mnemosyne-mon/mnemosyne-ruby/pull/70
+module Mnemosyne
+  class Trace
+    def attach_error(error)
+      case error
+        when ActionDispatch::ExceptionWrapper
+          @errors << Error.new(error.exception)
+        when Exception
+          @errors << Error.new(error)
+        when String
+          @errors << Error.new(RuntimeError.new(error))
+        else
+          raise ArgumentError.new "Invalid error type: #{error.inspect}"
+      end
+    end
+  end
+end
