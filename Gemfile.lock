@@ -151,10 +151,10 @@ GEM
     eventmachine (1.2.7)
     excon (0.104.0)
     execjs (2.9.1)
-    factory_bot (6.2.1)
+    factory_bot (6.4.2)
       activesupport (>= 5.0.0)
-    factory_bot_rails (6.2.0)
-      factory_bot (~> 6.2.0)
+    factory_bot_rails (6.4.2)
+      factory_bot (~> 6.4)
       railties (>= 5.0.0)
     faraday (2.7.12)
       base64
