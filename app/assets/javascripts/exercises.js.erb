@@ -134,6 +134,10 @@ $(document).on('turbolinks:load', function () {
                 class: 'form-check-input',
             });
             td.on('click', function (event) {
+                if (event.target !== this) {
+                    // We don't want to trigger the handler when clicking directly on the checkbox.
+                    return;
+                }
                 event.preventDefault();
                 checkbox.prop('checked', !checkbox.prop('checked'));
             });
