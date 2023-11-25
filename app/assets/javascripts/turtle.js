@@ -1,15 +1,10 @@
-var output;
-var editor;
-var pipeurl;
-var filename;
-var pendingChanges = -1;
+// These variables are polluting the global namespace, but there's currently no alternative.
+// Otherwise, the turtle won't work (click events won't be registered properly) or
+// running the turtle again after a timeout yields a too large canvas (when devicePixelRatio is > 1).
 var height;
 var width;
-var devicePixelRatio = window.devicePixelRatio || 1;
 
-// The `unused_pipe_reference` might get outdated. Somehow...
-// Hence, we use the `CodeOceanEditorWebsocket.websocket`
-function Turtle(unused_pipe_reference, canvas) {
+function Turtle(canvas) {
     var dx, dy, xpos, ypos;
     this.canvas = canvas; // jQuery object
 
@@ -61,8 +56,8 @@ function Turtle(unused_pipe_reference, canvas) {
             return;
         }
         e.stopPropagation();
-        dx = this.width / (2 * devicePixelRatio);
-        dy = this.height / (2 * devicePixelRatio);
+        dx = this.canvas[0].width / (2 * this.get_devicePixelRatio());
+        dy = this.canvas[0].height / (2 * this.get_devicePixelRatio());
         if(e.offsetX===undefined)
         {
             var offset = canvas.offset();
@@ -75,7 +70,7 @@ function Turtle(unused_pipe_reference, canvas) {
             ypos = e.offsetY;
         }
         sendEvent(xpos - dx, ypos - dy);
-    });
+    }.bind(this));
 }
 
 Turtle.prototype.update = function () {
@@ -84,15 +79,15 @@ Turtle.prototype.update = function () {
     if (canvas === undefined) {
         return;
     }
-    canvas.width = this.get_width() * devicePixelRatio;
-    canvas.height = this.get_height() * devicePixelRatio;
+    canvas.width = this.get_width() * this.get_devicePixelRatio();
+    canvas.height = this.get_height() * this.get_devicePixelRatio();
     canvas.style.width = `${this.get_width()}px`;
     canvas.style.height = `${this.get_height()}px`;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, this.get_width(), this.get_height());
-    ctx.scale(devicePixelRatio, devicePixelRatio);
-    const dx = canvas.width / (2 * devicePixelRatio);
-    const dy = canvas.height / (2 * devicePixelRatio);
+    ctx.scale(this.get_devicePixelRatio(), this.get_devicePixelRatio());
+    const dx = canvas.width / (2 * this.get_devicePixelRatio());
+    const dy = canvas.height / (2 * this.get_devicePixelRatio());
     for (let item of this.items) {
         // This should not happen, but it does for some unknown reason.
         // Therefore, we just check for the potential error and break.
@@ -159,6 +154,10 @@ Turtle.prototype.get_height = function () {
     }
     return height;
 };
+
+Turtle.prototype.get_devicePixelRatio = function () {
+    return window.devicePixelRatio || 1;
+}
 
 Turtle.prototype.delete = function (item) {
     if (item === 'all') {

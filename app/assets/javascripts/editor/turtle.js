@@ -7,7 +7,7 @@ CodeOceanEditorTurtle = {
     if (this.resetTurtle) {
       this.resetTurtle = false;
       this.turtlecanvas = $('#turtlecanvas');
-      this.turtlescreen = new Turtle(this.websocket, this.turtlecanvas);
+      this.turtlescreen = new Turtle(this.turtlecanvas);
     }
   },
 
