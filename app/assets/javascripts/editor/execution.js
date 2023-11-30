@@ -12,10 +12,12 @@ CodeOceanEditorWebsocket = {
       sockURL.hash = '';
 
       if (span) {
-        sockURL.searchParams.set('HTTP_SENTRY_TRACE', span.toTraceparent());
         const dynamicContext = this.sentryTransaction.getDynamicSamplingContext();
         const baggage = SentryUtils.dynamicSamplingContextToSentryBaggageHeader(dynamicContext);
-        sockURL.searchParams.set('HTTP_BAGGAGE', baggage);
+        if (baggage) {
+          sockURL.searchParams.set('HTTP_SENTRY_TRACE', span.toTraceparent());
+          sockURL.searchParams.set('HTTP_BAGGAGE', baggage);
+        }
       }
 
       return sockURL.toString();
