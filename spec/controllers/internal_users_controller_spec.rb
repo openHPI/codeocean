@@ -19,7 +19,7 @@ RSpec.describe InternalUsersController do
     context 'without a valid activation token' do
       before { get :activate, params: {id: user.id} }
 
-      expect_redirect(:root)
+      expect_redirect(:sign_in)
     end
 
     context 'with an already activated user' do
@@ -28,7 +28,7 @@ RSpec.describe InternalUsersController do
         get :activate, params: {id: user.id, token: user.activation_token}
       end
 
-      expect_redirect(:root)
+      expect_redirect(:sign_in)
     end
 
     context 'with valid preconditions' do
@@ -56,7 +56,7 @@ RSpec.describe InternalUsersController do
     context 'without a valid activation token' do
       before { put :activate, params: {id: user.id} }
 
-      expect_redirect(:root)
+      expect_redirect(:sign_in)
     end
 
     context 'with an already activated user' do
@@ -65,7 +65,7 @@ RSpec.describe InternalUsersController do
         put :activate, params: {id: user.id, internal_user: {activation_token: user.activation_token, password:, password_confirmation: password}}
       end
 
-      expect_redirect(:root)
+      expect_redirect(:sign_in)
     end
 
     context 'without a password' do
@@ -249,7 +249,7 @@ RSpec.describe InternalUsersController do
     context 'without a valid password reset token' do
       before { get :reset_password, params: {id: user.id} }
 
-      expect_redirect(:root)
+      expect_redirect(:sign_in)
     end
 
     context 'with a valid password reset token' do
@@ -270,7 +270,7 @@ RSpec.describe InternalUsersController do
     context 'without a valid password reset token' do
       before { put :reset_password, params: {id: user.id} }
 
-      expect_redirect(:root)
+      expect_redirect(:sign_in)
     end
 
     context 'with a valid password reset token' do

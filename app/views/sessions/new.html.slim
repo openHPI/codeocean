@@ -1,5 +1,13 @@
 h1 = t('.headline')
 
+.lead
+  .card.border-info-subtle.mb-3
+    .card-header
+      i.fa-solid.fa-circle-info.text-info
+      strong.text-info
+        => t('.instructors_only')
+      = t('.instructors_only_explanation', application_name:)
+
 = form_tag(sessions_path) do
   .mb-3
     = label_tag(:email, t('activerecord.attributes.internal_user.email'))

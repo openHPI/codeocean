@@ -294,6 +294,7 @@ de:
   application:
     not_authorized: Sie sind nicht berechtigt, diese Aktion auszuführen.
     not_found: Die angeforderte Ressource konnte nicht gefunden werden.
+    not_signed_in: Sie müssen angemeldet sein, um diese Aktion auszuführen.
     welcome:
       text_signed_in_as_external_user: 'Bitte rufen Sie %{application_name} von einer E-Learning-Plattform auf.'
       text_signed_in_as_internal_user: 'Schön, Sie zu sehen, %{user_name}!'
@@ -892,6 +893,8 @@ de:
     new:
       forgot_password: Passwort vergessen?
       headline: Anmelden
+      instructors_only: 'Zugriff ausschließlich für Lehrende:'
+      instructors_only_explanation: Das Anmelden mittels Passwort ist ausschließlich Lehrenden vorbehalten. Als Lernende:r greifen Sie bitte über die E-Learning-Plattform auf %{application_name} zu, um direkt zu einer Aufgabe zu gelangen.
       link: Anmelden
       remember_me: Angemeldet bleiben
     oauth:

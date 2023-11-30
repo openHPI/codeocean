@@ -294,6 +294,7 @@ en:
   application:
     not_authorized: You are not authorized to perform this action.
     not_found: The requested resource could not be found.
+    not_signed_in: You must be signed in to perform this action.
     welcome:
       text_signed_in_as_external_user: 'Please access %{application_name} from an e-learning platform.'
       text_signed_in_as_internal_user: 'Good to see you, %{user_name}!'
@@ -893,6 +894,8 @@ en:
       forgot_password: Forgot password?
       headline: Sign In
       link: Sign In
+      instructors_only: 'Exclusive access for instructors:'
+      instructors_only_explanation: Signing in via password is reserved exclusively for instructors. As a learner, please access %{application_name} via the e-learning platform to proceed directly to an exercise.
       remember_me: Remember me
     oauth:
       failure: 'Sorry, something went wrong.'

@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Authentication' do
-  let(:user) { create(:admin) }
-  let(:password) { attributes_for(:admin)[:password] }
+  let(:user) { create(:teacher) }
+  let(:password) { attributes_for(:teacher)[:password] }
 
   context 'when signed out' do
     before { visit(root_path) }
@@ -33,6 +33,38 @@ RSpec.describe 'Authentication' do
       end
     end
 
+    context 'when a restricted sub-page is opened' do
+      let(:exercise) { create(:math, user:, public: false) }
+
+      before { visit(exercise_path(exercise)) }
+
+      it 'displays a sign in link' do
+        expect(page).to have_content(I18n.t('sessions.new.link'))
+      end
+
+      it 'shows a notification' do
+        expect(page).to have_content(I18n.t('application.not_signed_in'))
+      end
+
+      it 'redirects to the desired page immediately after sign-in' do
+        fill_in('Email', with: user.email)
+        fill_in('Password', with: password)
+        click_button(I18n.t('sessions.new.link'))
+        expect(page).to have_content(exercise.title)
+      end
+
+      context 'when a user still has no access' do
+        let(:exercise) { create(:math, public: false) }
+
+        it 'informs the user about missing permissions' do
+          fill_in('Email', with: user.email)
+          fill_in('Password', with: password)
+          click_button(I18n.t('sessions.new.link'))
+          expect(page).to have_content(I18n.t('application.not_authorized'))
+        end
+      end
+    end
+
     context 'with no authentication token' do
       let(:request_for_comment) { create(:rfc_with_comment, user:) }
       let(:rfc_path) { request_for_comment_url(request_for_comment) }
@@ -41,8 +73,8 @@ RSpec.describe 'Authentication' do
         visit(rfc_path)
         expect(page).not_to have_current_path(rfc_path)
         expect(page).not_to have_content(request_for_comment.exercise.title)
-        expect(page).to have_current_path(root_path)
-        expect(page).to have_content(I18n.t('application.not_authorized'))
+        expect(page).to have_current_path(sign_in_path)
+        expect(page).to have_content(I18n.t('application.not_signed_in'))
       end
     end
 
@@ -75,8 +107,8 @@ RSpec.describe 'Authentication' do
           visit(rfc_link)
           expect(page).not_to have_current_path(rfc_link)
           expect(page).not_to have_content(request_for_comment.exercise.title)
-          expect(page).to have_current_path(root_path)
-          expect(page).to have_content(I18n.t('application.not_authorized'))
+          expect(page).to have_current_path(sign_in_path)
+          expect(page).to have_content(I18n.t('application.not_signed_in'))
         end
       end
 
@@ -95,7 +127,7 @@ RSpec.describe 'Authentication' do
           expect(page).to have_current_path(rfc_link)
           visit(sign_out_path)
           visit(rfc_link)
-          expect(page).to have_current_path(root_path)
+          expect(page).to have_current_path(sign_in_path)
         end
       end
     end
