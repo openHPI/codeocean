@@ -22,9 +22,13 @@ class Runner::Connection
   def initialize(url, strategy, event_loop, locale = I18n.locale)
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Opening connection to #{url}" }
 
-    sentry_transaction = Sentry.get_current_scope&.get_span
-    sentry_span = sentry_transaction&.start_child(op: SENTRY_OP_NAME, start_timestamp: Sentry.utc_now.to_f)
+    sentry_parent_transaction = Sentry.get_current_scope&.get_span
+    sentry_span = sentry_parent_transaction&.start_child(op: SENTRY_OP_NAME, start_timestamp: Sentry.utc_now.to_f)
+
+    # Set the span as the current span in the scope for correct trace headers.
+    Sentry.get_current_scope&.set_span(sentry_span) if sentry_span
     http_headers = strategy.class.websocket_header.deep_merge sentry_trace_header(sentry_span)
+    Sentry.get_current_scope&.set_span(sentry_parent_transaction) if sentry_parent_transaction
 
     @socket = Faye::WebSocket::Client.new(url, [], http_headers)
     @strategy = strategy
