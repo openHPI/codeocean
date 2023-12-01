@@ -1442,10 +1442,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-free@npm:^6.5.0":
-  version: 6.5.0
-  resolution: "@fortawesome/fontawesome-free@npm:6.5.0"
-  checksum: a7b38c80ad0e9fa18e44888cab7119bd00b310c0e8c1d3ab17fe807057d857480685c5c6d3017af9530a7b8e00dd4e59bd6772dabe2deb701350590d6a59c55c
+"@fortawesome/fontawesome-free@npm:^6.5.1":
+  version: 6.5.1
+  resolution: "@fortawesome/fontawesome-free@npm:6.5.1"
+  checksum: dc359ede1ddfc6d91915345143008420001c56b164a6fe95d81bcca631eecca41009bfacf794d55bdb9d927c112119ce90a11cb4f576a815ed69ec681e5eb824
   languageName: node
   linkType: hard
 
@@ -2692,7 +2692,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.23.5"
     "@babel/runtime": "npm:^7.23.5"
     "@egjs/hammerjs": "npm:^2.0.17"
-    "@fortawesome/fontawesome-free": "npm:^6.5.0"
+    "@fortawesome/fontawesome-free": "npm:^6.5.1"
     "@popperjs/core": "npm:^2.11.8"
     "@sentry/browser": "npm:^7.80.0"
     "@sentry/core": "npm:^7.83.0"
