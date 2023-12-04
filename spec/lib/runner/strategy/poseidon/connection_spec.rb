@@ -25,7 +25,7 @@ RSpec.describe Runner::Strategy::Poseidon::Connection do
 
     shared_examples 'calls a message handler' do
       it 'calls the corresponding handler' do
-        handler = "handle_#{message[:type]}".to_sym
+        handler = :"handle_#{message[:type]}"
         expect(connection).to receive(handler)
         process_message
       end

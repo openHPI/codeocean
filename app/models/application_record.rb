@@ -12,7 +12,7 @@ class ApplicationRecord < ActiveRecord::Base
     # and except the `log` of TestrunMessages or the `output` of Testruns
     attribute_names.without('content', 'log', 'output').each do |name|
       if send(name.to_sym).respond_to?(:strip)
-        send("#{name}=".to_sym, send(name).strip)
+        send(:"#{name}=", send(name).strip)
       end
     end
   end
@@ -21,7 +21,7 @@ class ApplicationRecord < ActiveRecord::Base
     # remove null bytes from string attributes
     attribute_names.each do |name|
       if send(name.to_sym).respond_to?(:tr)
-        send("#{name}=".to_sym, send(name).tr("\0", ''))
+        send(:"#{name}=", send(name).tr("\0", ''))
       end
     end
   end
