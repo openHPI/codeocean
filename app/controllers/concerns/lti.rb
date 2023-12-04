@@ -229,7 +229,7 @@ module Lti
        hide_test_results
        disable_hints
        disable_download].each do |option|
-      value = params["custom_embed_options_#{option}".to_sym] == 'true'
+      value = params[:"custom_embed_options_#{option}"] == 'true'
       # Optimize storage and save only those that are true, the session cookie is limited to 4KB
       @embed_options[option] = value if value.present?
     end
