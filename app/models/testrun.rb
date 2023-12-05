@@ -7,6 +7,8 @@ class Testrun < ApplicationRecord
   belongs_to :testrun_execution_environment, optional: true, dependent: :destroy
   has_many :testrun_messages, dependent: :destroy
 
+  CONSOLE_OUTPUT = %i[stdout stderr].freeze
+
   enum status: {
     ok: 0,
     failed: 1,
@@ -21,6 +23,10 @@ class Testrun < ApplicationRecord
   validates :status, presence: true
 
   def log
-    testrun_messages.output.pluck(:log).join.presence
+    if testrun_messages.loaded?
+      testrun_messages.filter {|m| m.cmd_write? && CONSOLE_OUTPUT.include?(m.stream) }.pluck(:log).join.presence
+    else
+      testrun_messages.output.pluck(:log).join.presence
+    end
   end
 end

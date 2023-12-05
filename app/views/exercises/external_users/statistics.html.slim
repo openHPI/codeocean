@@ -76,7 +76,7 @@ h1
                 td = this.cause
                 td = this.score
                 td.align-middle
-                  -this.testruns.includes(:file).order("files.name").each do |run|
+                  -this.testruns.sort_by {|t| [t.file&.name ? 0 : 1, t.file&.name]}.each do |run|
                     - if run.passed
                       .unit-test-result.positive-result title=[run.file&.filepath, run.log].join.strip
                     - else
