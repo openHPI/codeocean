@@ -120,7 +120,7 @@ Rails.application.routes.draw do
   resources :tips
 
   resources :external_users, only: %i[index show], concerns: :statistics do
-    resources :exercises do
+    resources :exercises, only: [] do
       get :statistics, to: 'exercises#external_user_statistics', on: :member
     end
     member do
