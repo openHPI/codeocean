@@ -39,12 +39,17 @@ class ExercisesController < ApplicationController
   end
 
   def batch_update
-    @exercises = Exercise.all
+    update_map = {}
+    update_params = params.permit(exercises: %i[id public])
+    update_params[:exercises].each_value do |param|
+      update_map[param[:id]] = param[:public]
+    end
+
+    @exercises = Exercise.where(id: update_map.keys).includes(:execution_environment, :files)
     authorize!
-    @exercises = params[:exercises].values.map do |exercise_params|
-      exercise = Exercise.find(exercise_params.delete(:id))
-      exercise.update(exercise_params.permit(:public))
-      exercise
+
+    @exercises.each do |exercise|
+      exercise.update(public: update_map[exercise.id.to_s])
     end
     render(json: {exercises: @exercises})
   end
