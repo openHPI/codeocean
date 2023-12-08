@@ -145,8 +145,8 @@ de:
       study_group_membership:
         role: Rolle
         role_type:
-          learner: Lernender
-          teacher: Lehrender
+          learner: Lernende:r
+          teacher: Lehrende:r
       tag:
         name: Name
         usage: Verwendet
