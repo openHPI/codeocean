@@ -39,8 +39,8 @@ li.card.mt-2
           .form-check
             label.form-check-label
               = f.check_box(:hidden_feedback, class: 'form-check-input')
-              = f.label(:hidden_feedback, t('activerecord.attributes.file.hidden_feedback'), class: 'form-label')
-              .help-block.form-text = t('.hints.hidden_feedback')
+              = f.label(:hidden_feedback, t('activerecord.attributes.file.hidden_feedback'), class: 'form-label mb-0')
+              .help-block.form-text.mb-0 = t('.hints.hidden_feedback')
         .mb-3
           = f.label(:name, t('activerecord.attributes.file.feedback_message'), class: 'form-label')
           = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
