@@ -461,6 +461,7 @@ de:
     file_form:
       hints:
         feedback_message: Diese Nachricht wird als Hinweis zu fehlschlagenden Tests angezeigt.
+        hidden_feedback: Bei Aktivierung dieser Option werden Tests nur im Hintergrund ausgeführt, das Ergebnis und Feedback Lernenden allerdings nicht angezeigt.
         path: 'Pfad der Datei im Projektverzeichnis. Kann auch leer gelassen werden.'
         upload: Eine hochgeladene Datei hat Vorrang vor Änderungen im Textfeld und wird nach dem Speichern sichtbar. Der Dateiname und die Dateiendung wird automatisch von der hochgeladenen Datei übernommen.
     form:

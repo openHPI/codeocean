@@ -302,6 +302,7 @@ $(document).on('turbolinks:load', function () {
                 fields.slideUp();
                 parent.find('[name$="[feedback_message]"]').val('');
                 parent.find('[name$="[weight]"]').val(1);
+                parent.find('[name$="[hidden_feedback]"]').prop('checked', false);
             }
         });
     };

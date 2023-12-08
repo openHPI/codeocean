@@ -34,11 +34,13 @@ li.card.mt-2
         label.form-check-label
           = f.check_box(:read_only, class: 'form-check-input')
           = t('activerecord.attributes.file.read_only')
-      .form-check.mb-3
-        label.form-check-label
-          = f.check_box(:hidden_feedback, class: 'form-check-input')
-          = t('activerecord.attributes.file.hidden_feedback')
       .test-related-fields style="display: #{f.object.teacher_defined_assessment? ? 'initial' : 'none'};"
+        .mb-3
+          .form-check
+            label.form-check-label
+              = f.check_box(:hidden_feedback, class: 'form-check-input')
+              = f.label(:hidden_feedback, t('activerecord.attributes.file.hidden_feedback'), class: 'form-label')
+              .help-block.form-text = t('.hints.hidden_feedback')
         .mb-3
           = f.label(:name, t('activerecord.attributes.file.feedback_message'), class: 'form-label')
           = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)

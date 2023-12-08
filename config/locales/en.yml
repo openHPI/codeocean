@@ -86,7 +86,7 @@ en:
         file_type: File Type
         file_type_id: File Type
         hidden: Hidden
-        hidden_feedback: Suppress feedback
+        hidden_feedback: Suppress Feedback
         name: Name
         path: Path
         read_only: Read-only
@@ -461,6 +461,7 @@ en:
     file_form:
       hints:
         feedback_message: This message is used as a hint for failing tests.
+        hidden_feedback: If this option is checked, tests are only executed in the background, but the result and feedback are not displayed to learners.
         path: "The file's path in the project tree. Can be left blank."
         upload: An uploaded file takes precedence over changes in the text area and will be visible once saved. The resulting file name and file type will be set to match the uploaded file automatically.
     form:
