@@ -18,7 +18,7 @@ class User < ApplicationRecord
   has_many :submissions, as: :contributor
   has_many :participations, through: :submissions, source: :exercise, as: :user
   has_many :user_proxy_exercise_exercises, as: :user
-  has_many :user_exercise_interventions, as: :user
+  has_many :user_exercise_interventions, as: :contributor
   has_many :testruns, as: :user
   has_many :interventions, through: :user_exercise_interventions
   has_many :remote_evaluation_mappings, as: :user

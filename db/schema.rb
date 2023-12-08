@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_01_222855) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_08_194632) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -638,14 +638,17 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_222855) do
   end
 
   create_table "user_exercise_interventions", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.string "user_type"
-    t.integer "exercise_id"
-    t.integer "intervention_id"
+    t.integer "contributor_id", null: false
+    t.string "contributor_type", null: false
+    t.integer "exercise_id", null: false
+    t.integer "intervention_id", null: false
     t.integer "accumulated_worktime_s"
     t.text "reason"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["contributor_type", "contributor_id"], name: "idx_on_contributor_type_contributor_id_10a7504bcc"
+    t.index ["exercise_id"], name: "index_user_exercise_interventions_on_exercise_id"
+    t.index ["intervention_id"], name: "index_user_exercise_interventions_on_intervention_id"
   end
 
   create_table "user_proxy_exercise_exercises", id: :serial, force: :cascade do |t|
@@ -702,4 +705,6 @@ ActiveRecord::Schema[7.1].define(version: 2023_11_01_222855) do
   add_foreign_key "testruns", "submissions"
   add_foreign_key "tips", "file_types"
   add_foreign_key "user_exercise_feedbacks", "submissions"
+  add_foreign_key "user_exercise_interventions", "exercises"
+  add_foreign_key "user_exercise_interventions", "interventions"
 end

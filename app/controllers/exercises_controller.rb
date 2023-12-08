@@ -330,9 +330,8 @@ class ExercisesController < ApplicationController
     end
 
     user_solved_exercise = @exercise.solved_by?(current_contributor)
-    count_interventions_today = UserExerciseIntervention.where(user: current_user).where(created_at: Time.zone.now.beginning_of_day..).count
-    user_got_intervention_in_exercise = UserExerciseIntervention.where(user: current_user,
-      exercise: @exercise).size >= max_intervention_count_per_exercise
+    count_interventions_today = current_contributor.user_exercise_interventions.where(created_at: Time.zone.now.beginning_of_day..).count
+    user_got_intervention_in_exercise = current_contributor.user_exercise_interventions.where(exercise: @exercise).size >= max_intervention_count_per_exercise
     (user_got_enough_interventions = count_interventions_today >= max_intervention_count_per_day) || user_got_intervention_in_exercise
 
     if @embed_options[:disable_interventions]
@@ -529,8 +528,7 @@ class ExercisesController < ApplicationController
         .includes(:exercise, testruns: [:testrun_messages, {file: [:file_type]}], files: [:file_type])
       @show_autosaves = params[:show_autosaves] == 'true' || submissions.where.not(cause: 'autosave').none?
       submissions = submissions.where.not(cause: 'autosave') unless @show_autosaves
-      interventions = UserExerciseIntervention.where('user_id = ?  AND exercise_id = ?', @external_user.id,
-        @exercise.id)
+      interventions = @external_user.user_exercise_interventions.where(exercise: @exercise)
       @all_events = (submissions + interventions).sort_by(&:created_at)
       @deltas = @all_events.map.with_index do |item, index|
         delta = item.created_at - @all_events[index - 1].created_at if index.positive?
