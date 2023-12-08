@@ -84,7 +84,7 @@ class ExternalUsersController < ApplicationController
     authorize!
 
     statistics = []
-    tags = ProxyExercise.new.get_user_knowledge_and_max_knowledge(@user, @user.participations.uniq.compact)
+    tags = ProxyExercise.new.get_user_knowledge_and_max_knowledge(@user, @user.participations.includes(:files, :tags, exercise_tags: [:tag]).uniq.compact)
     tags[:user_topic_knowledge].each_pair do |tag, value|
       statistics.append({key: tag.name.to_s, value: (100.0 / tags[:max_topic_knowledge][tag] * value).round,
         id: tag.id})

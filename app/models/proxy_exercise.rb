@@ -226,20 +226,16 @@ class ProxyExercise < ApplicationRecord
     tags_counter = all_used_tags_with_count.keys.index_with {|_tag| 0 }
     topic_knowledge_loss_user = all_used_tags_with_count.keys.index_with {|_t| 0 }
     topic_knowledge_max = all_used_tags_with_count.keys.index_with {|_t| 0 }
-    exercises_sorted = exercises.sort_by {|ex| ex.time_maximum_score(user) }
-    exercises_sorted.each do |ex|
+    exercises.each do |ex|
       Rails.logger.debug { "exercise: #{ex.id}: #{ex}" }
       user_score_factor = score(user, ex)
-      ex.tags.each do |t|
+      ex.exercise_tags.each do |ex_t|
+        t = ex_t.tag
         tags_counter[t] += 1
         tag_diminishing_return_factor = tag_diminishing_return_function(tags_counter[t], all_used_tags_with_count[t])
-        tag_ratio = ex.exercise_tags.find_by(tag: t).factor.to_f / ex.exercise_tags.inject(0) do |sum, et|
-                                                                     sum + et.factor
-                                                                   end
+        tag_ratio = ex_t.factor.to_f / ex.exercise_tags.inject(0) {|sum, et| sum + et.factor }
         Rails.logger.debug do
-          "tag: #{t}, factor: #{ex.exercise_tags.find_by(tag: t).factor}, sumall: #{ex.exercise_tags.inject(0) do |sum, et|
-                                                                                      sum + et.factor
-                                                                                    end }"
+          "tag: #{t}, factor: #{ex_t.factor}, sumall: #{ex.exercise_tags.inject(0) {|sum, et| sum + et.factor }}"
         end
         Rails.logger.debug { "tag #{t}, count #{tags_counter[t]}, max: #{all_used_tags_with_count[t]}, factor: #{tag_diminishing_return_factor}" }
         Rails.logger.debug { "tag_ratio #{tag_ratio}" }
