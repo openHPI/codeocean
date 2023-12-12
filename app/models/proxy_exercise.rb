@@ -151,7 +151,7 @@ class ProxyExercise < ApplicationRecord
     Rails.logger.debug { "select most appropiate exercise for user. his highest difficulty was #{highest_difficulty_user_has_accessed}" }
     sorted_exercises = relative_knowledge_improvement.sort_by {|_k, v| v }.reverse
 
-    sorted_exercises.each do |ex, _diff|
+    sorted_exercises.each do |ex, _diff| # rubocop:disable Style/HashEachMethods
       Rails.logger.debug { "review exercise #{ex.id} diff: #{ex.expected_difficulty}" }
       if (ex.expected_difficulty - highest_difficulty_user_has_accessed) <= 1
         Rails.logger.debug { "matched exercise #{ex.id}" }

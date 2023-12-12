@@ -185,7 +185,7 @@ class ExercisesController < ApplicationController
 
   def user_from_api_key
     authorization_header = request.headers['Authorization']
-    api_key = authorization_header&.split(' ')&.second
+    api_key = authorization_header&.split&.second
     user_by_codeharbor_token(api_key)
   end
 
