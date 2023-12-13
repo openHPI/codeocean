@@ -174,7 +174,7 @@ $(document).on('turbolinks:load', function() {
           var template = '<tr data-id="' + exercise.id + '">' +
             '<td><span class="fa-solid fa-bars"></span></td>' +
             '<td>' + exercise.title + '</td>' +
-            '<td><a href="/exercises/' + exercise.id + '"><%= I18n.t('shared.show') %></td>' +
+            `<td><a href="${Routes.exercise_path(exercise.id)}"><%= I18n.t('shared.show') %></td>` +
             '<td><a class="remove-exercise" href="#"><%= I18n.t('shared.destroy') %></td></tr>';
           exerciseList.find('tbody').append(template);
           $('#exercise-list').find('option[value="' + exercise.id + '"]').prop('selected', true);

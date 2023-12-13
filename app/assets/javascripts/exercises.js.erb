@@ -236,7 +236,7 @@ $(document).on('turbolinks:load', function () {
             const template =
                 '<div class="list-group-item d-block" data-tip-id=' + tip.id + ' data-id="">' +
                 '<span class="fa-solid fa-bars me-3"></span>' + tip.title +
-                '<a class="fa-regular fa-eye ms-2" href="/tips/' + tip.id + '" target="_blank"></a>' +
+                `<a class="fa-regular fa-eye ms-2" href="${Routes.tip_path(tip.id)}" target="_blank"></a>` +
                 '<a class="fa-solid fa-xmark ms-2 remove-tip" href="#""></a>' +
                 '<div class="list-group nested-sortable-list"></div>' +
                 '</div>';
