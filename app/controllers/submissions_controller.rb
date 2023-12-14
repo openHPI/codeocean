@@ -46,8 +46,7 @@ class SubmissionsController < ApplicationController
 
       # zip .co file
       zio.put_next_entry('.co')
-      zio.write(File.read(id_file))
-      FileUtils.rm_rf(id_file)
+      zio.write(id_file)
 
       # zip client scripts
       scripts_path = 'app/assets/remote_scripts'
@@ -367,8 +366,6 @@ class SubmissionsController < ApplicationController
       study_group_id: session[:study_group_id]
     )
 
-    # create .co file
-    path = "tmp/#{current_user.id}.co"
     # parse validation token
     content = "#{remote_evaluation_mapping.validation_token}\n"
     # parse remote request url
@@ -376,8 +373,7 @@ class SubmissionsController < ApplicationController
     @submission.files.each do |file|
       content += "#{file.filepath}=#{file.file_id}\n"
     end
-    File.write(path, content)
-    path
+    content
   end
 
   def extract_durations(error)
