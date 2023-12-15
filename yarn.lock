@@ -1357,12 +1357,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.23.5":
-  version: 7.23.5
-  resolution: "@babel/runtime@npm:7.23.5"
+"@babel/runtime@npm:^7.23.6":
+  version: 7.23.6
+  resolution: "@babel/runtime@npm:7.23.6"
   dependencies:
     regenerator-runtime: "npm:^0.14.0"
-  checksum: ca679cc91bb7e424bc2db87bb58cc3b06ade916b9adb21fbbdc43e54cdaacb3eea201ceba2a0464b11d2eb65b9fe6a6ffcf4d7521fa52994f19be96f1af14788
+  checksum: d886954e985ef8e421222f7a2848884d96a752e0020d3078b920dd104e672fdf23bcc6f51a44313a048796319f1ac9d09c2c88ec8cbb4e1f09174bcd3335b9ff
   languageName: node
   linkType: hard
 
@@ -2690,7 +2690,7 @@ __metadata:
     "@babel/core": "npm:^7.23.5"
     "@babel/plugin-transform-runtime": "npm:^7.23.4"
     "@babel/preset-env": "npm:^7.23.5"
-    "@babel/runtime": "npm:^7.23.5"
+    "@babel/runtime": "npm:^7.23.6"
     "@egjs/hammerjs": "npm:^2.0.17"
     "@fortawesome/fontawesome-free": "npm:^6.5.1"
     "@popperjs/core": "npm:^2.11.8"
