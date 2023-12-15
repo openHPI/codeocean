@@ -10,6 +10,8 @@ updates:
     labels:
       - dependencies
       - ruby
+    ignore:
+      - dependency-name: rubocop*
 
   - package-ecosystem: npm
     directory: "/"
