@@ -24,6 +24,7 @@ gem 'json_schemer'
 gem 'js-routes'
 gem 'jwt'
 gem 'kramdown'
+gem 'kramdown-parser-gfm'
 gem 'mimemagic'
 gem 'net-http-persistent'
 gem 'net-imap', require: false
