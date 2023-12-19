@@ -1,6 +1,4 @@
 CodeOceanEditorSubmissions = {
-  FILENAME_URL_PLACEHOLDER: '{filename}',
-
   AUTOSAVE_INTERVAL: 15 * 1000,
   autosaveTimer: null,
   autosaveLabel: "#statusbar #autosave",
@@ -31,7 +29,7 @@ CodeOceanEditorSubmissions = {
       },
       dataType: 'json',
       method: $(initiator).data('http-method') || 'POST',
-      url: url + '.json'
+      url: url,
     });
     jqxhr.always(this.hideSpinner.bind(this));
     jqxhr.done(this.createSubmissionCallback.bind(this));
@@ -99,12 +97,10 @@ CodeOceanEditorSubmissions = {
 
   downloadCode: function(event) {
     event.preventDefault();
-    this.createSubmission('#download', null,function(response) {
-      var url = response.download_url;
-
+    this.createSubmission('#download', null,function(submission) {
       // to download just a single file, use the following url
-      //var url = response.download_file_url.replace(FILENAME_URL_PLACEHOLDER, active_file.filename);
-      window.location = url;
+      // window.location = Routes.download_file_submission_url(submission.id, CodeOceanEditor.active_file.filename);
+      window.location = Routes.download_submission_url(submission.id);
     });
   },
 
@@ -140,11 +136,11 @@ CodeOceanEditorSubmissions = {
     this.startSentryTransaction(cause);
     event.preventDefault();
     if (cause.is(':visible')) {
-      this.createSubmission(cause, null, function (response) {
-        if (response.render_url === undefined) return;
+      this.createSubmission(cause, null, function (submission) {
+        if (submission.render_url === undefined) return;
 
         const active_file = CodeOceanEditor.active_file.filename;
-        const desired_file = response.render_url.filter(hash => hash.filepath === active_file);
+        const desired_file = submission.render_url.filter(hash => hash.filepath === active_file);
         const url = desired_file[0].url;
         // Allow to open the new tab even in Safari.
         // See: https://stackoverflow.com/a/70463940
@@ -156,7 +152,7 @@ CodeOceanEditorSubmissions = {
               this.printOutput({
                 stderr: message
               }, true, 0);
-              this.sendError(message, response.id);
+              this.sendError(message, submission.id);
               this.showOutputBar();
             };
           }
@@ -184,8 +180,7 @@ CodeOceanEditorSubmissions = {
     this.showSpinner($('#run'));
     $('#score_div').addClass('d-none');
     this.toggleButtonStates();
-    const url = submission.run_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
-    this.initializeSocketForRunning(url);
+    this.initializeSocketForRunning(submission.id, CodeOceanEditor.active_file.filename);
   },
 
   testCode: function(event) {
@@ -193,11 +188,10 @@ CodeOceanEditorSubmissions = {
     this.startSentryTransaction(cause);
     event.preventDefault();
     if (cause.is(':visible')) {
-      this.createSubmission(cause, null, function(response) {
+      this.createSubmission(cause, null, function(submission) {
         this.showSpinner($('#test'));
         $('#score_div').addClass('d-none');
-        var url = response.test_url.replace(this.FILENAME_URL_PLACEHOLDER, CodeOceanEditor.active_file.filename.replace(/#$/,'')); // remove # if it is the last character, this is not part of the filename and just an anchor
-        this.initializeSocketForTesting(url);
+        this.initializeSocketForTesting(submission.id, CodeOceanEditor.active_file.filename);
       }.bind(this));
     }
   },

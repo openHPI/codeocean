@@ -14,11 +14,10 @@ CodeOceanEditorEvaluation = {
         this.stopCode(event);
         this.clearScoringOutput();
         $('#submit').addClass("d-none");
-        this.createSubmission(cause, null, function (response) {
+        this.createSubmission(cause, null, function (submission) {
             this.showSpinner($('#assess'));
             $('#score_div').removeClass('d-none');
-            var url = response.score_url;
-            this.initializeSocketForScoring(url);
+            this.initializeSocketForScoring(submission.id);
         }.bind(this));
     },
 

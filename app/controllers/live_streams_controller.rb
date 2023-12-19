@@ -22,7 +22,7 @@ class LiveStreamsController < ApplicationController
 
   def download_arbitrary_file
     @execution_environment = authorize ExecutionEnvironment.find(params[:id])
-    desired_file = params[:filename].to_s
+    desired_file = "/#{params[:filename]}" # The filename given is absolute; this is an admin-only action.
     runner = Runner.for(current_user, @execution_environment)
     fallback_location = shell_execution_environment_path(@execution_environment)
     privileged = params[:sudo] || @execution_environment.privileged_execution?
