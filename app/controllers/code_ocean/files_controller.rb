@@ -9,6 +9,7 @@ module CodeOcean
     content_security_policy false, only: :render_protected_upload
     skip_before_action :deny_access_from_render_host, only: :render_protected_upload
     skip_before_action :verify_authenticity_token, only: :render_protected_upload
+    skip_before_action :set_sentry_context, only: :render_protected_upload
     before_action :require_user!, except: :render_protected_upload
 
     # In case the .realpath cannot resolve a file (for example because it is no longer available)
