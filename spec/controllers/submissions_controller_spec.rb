@@ -279,19 +279,9 @@ RSpec.describe SubmissionsController do
       expect_assigns(submission: :submission)
       expect_http_status(:ok)
 
-      %i[run test].each do |action|
-        describe "##{action}_url" do
-          let(:url) { response.parsed_body.with_indifferent_access.fetch("#{action}_url") }
-
-          it "starts like the #{action} path" do
-            filename = File.basename(__FILE__)
-            expect(url).to start_with(Rails.application.routes.url_helpers.send(:"#{action}_submission_path", submission, filename).sub(filename, ''))
-          end
-
-          it 'ends with a placeholder' do
-            expect(url).to end_with("#{Submission::FILENAME_URL_PLACEHOLDER}.json")
-          end
-        end
+      it 'includes the desired fields' do
+        expect(response.parsed_body.keys).to include('id', 'files')
+        expect(response.parsed_body['files'].first.keys).to include('id', 'file_id')
       end
 
       describe '#render_url' do
@@ -305,14 +295,6 @@ RSpec.describe SubmissionsController do
 
         it 'includes a token' do
           expect(url).to include '?token='
-        end
-      end
-
-      describe '#score_url' do
-        let(:url) { response.parsed_body.with_indifferent_access.fetch('score_url') }
-
-        it 'corresponds to the score path' do
-          expect(url).to eq(Rails.application.routes.url_helpers.score_submission_path(submission, format: :json))
         end
       end
     end

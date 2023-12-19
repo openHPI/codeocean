@@ -104,9 +104,9 @@ $(document).on('turbolinks:load', function () {
             var jqxhr = $.ajax({
                 // normal file path (without json) would destroy the context object (the exercise) as well, due to redirection
                 // to the context after the :destroy action.
-                contentType: 'Application/json',
-                url: fileUrl + '.json',
-                method: 'DELETE'
+                dataType: 'json',
+                method: 'DELETE',
+                url: fileUrl,
             });
             jqxhr.done(function () {
                 removeFileForm(fileUrl)

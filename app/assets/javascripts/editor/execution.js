@@ -1,56 +1,59 @@
 CodeOceanEditorWebsocket = {
   websocket: null,
+  // Replace `http` with `ws` for the WebSocket connection. This also works with `https` and `wss`.
+  webSocketProtocol: window.location.protocol.replace(/^http/, 'ws').split(':')[0],
 
-  createSocketUrl: function(url, span) {
-      const sockURL = new URL(url, window.location);
-      // not needed any longer, we put it directly into the url: sockURL.pathname = url;
+  initializeSocket: function(urlHelper, params, closeCallback) {
+    // 1. Specify the protocol for all URLs to generate
+    params.protocol = this.webSocketProtocol;
+    params._options = true;
 
-      // replace `http` with `ws` for the WebSocket connection. This also works with `https` and `wss`.
-      sockURL.protocol = sockURL.protocol.replace("http", "ws");
+    // 2. Create a new Sentry transaction.
+    //    Since we want to group similar URLs, we use the URL without the ID and filename as the description.
+    const cleanedUrl = urlHelper({
+      ...params,
+      ...(params.id && {id: '*'}), // Overwrite the ID with a wildcard only if it is present.
+      ...(params.filename && {filename: '*'}), // Overwrite the filename with a wildcard only if it is present.
+    });
+    const sentryDescription = `WebSocket ${cleanedUrl}`;
+    const span = this.sentryTransaction?.startChild({op: 'websocket.client', description: sentryDescription, data: {...params}})
 
-      // strip anchor if it is in the url
-      sockURL.hash = '';
-
-      if (span) {
-        const dynamicContext = this.sentryTransaction.getDynamicSamplingContext();
-        const baggage = SentryUtils.dynamicSamplingContextToSentryBaggageHeader(dynamicContext);
-        if (baggage) {
-          sockURL.searchParams.set('HTTP_SENTRY_TRACE', span.toTraceparent());
-          sockURL.searchParams.set('HTTP_BAGGAGE', baggage);
-        }
+    // 3. Create the actual WebSocket URL.
+    //    This URL might contain Sentry Tracing headers to propagate the Sentry transaction.
+    if (span) {
+      const dynamicContext = this.sentryTransaction.getDynamicSamplingContext();
+      const baggage = SentryUtils.dynamicSamplingContextToSentryBaggageHeader(dynamicContext);
+      if (baggage) {
+        params.HTTP_SENTRY_TRACE = span.toTraceparent();
+        params.HTTP_BAGGAGE = baggage;
       }
+    }
+    const url = urlHelper({...params});
 
-      return sockURL.toString();
-  },
-
-  initializeSocket: function(url, closeCallback) {
-    const cleanedPath = url.replace(/\/\d+\//, '/*/').replace(/\/[^\/]+$/, '/*');
-    const websocketHost = window.location.origin.replace(/^http/, 'ws');
-    const sentryDescription = `WebSocket ${websocketHost}${cleanedPath}`;
-    const span = this.sentryTransaction?.startChild({op: 'websocket.client', description: sentryDescription})
-    this.websocket = new CommandSocket(this.createSocketUrl(url, span),
+    // 4. Connect to the given URL.
+    this.websocket = new CommandSocket(url,
         function (evt) {
           this.resetOutputTab();
         }.bind(this)
     );
     CodeOceanEditorWebsocket.websocket = this.websocket;
     this.websocket.onError(this.showWebsocketError.bind(this));
-    this.websocket.onClose( function(span, callback){
-      span?.finish()
+    this.websocket.onClose(function(span, callback){
+      span?.finish();
       if(callback != null){
         callback();
       }
     }.bind(this, span, closeCallback));
   },
 
-  initializeSocketForTesting: function(url) {
-    this.initializeSocket(url);
+  initializeSocketForTesting: function(submissionID, filename) {
+    this.initializeSocket(Routes.test_submission_url, {id: submissionID, filename: filename});
     this.websocket.on('default',this.handleTestResponse.bind(this));
     this.websocket.on('exit', this.handleExitCommand.bind(this));
   },
 
-  initializeSocketForScoring: function(url) {
-    this.initializeSocket(url, function() {
+  initializeSocketForScoring: function(submissionID) {
+    this.initializeSocket(Routes.score_submission_url, {id: submissionID}, function() {
       $('#assess').one('click', this.scoreCode.bind(this))
     }.bind(this));
     this.websocket.on('default',this.handleScoringResponse.bind(this));
@@ -59,8 +62,8 @@ CodeOceanEditorWebsocket = {
     this.websocket.on('status', this.showStatus.bind(this));
   },
 
-  initializeSocketForRunning: function(url) {
-    this.initializeSocket(url);
+  initializeSocketForRunning: function(submissionID, filename) {
+    this.initializeSocket(Routes.run_submission_url, {id: submissionID, filename: filename});
     this.websocket.on('input',this.showPrompt.bind(this));
     this.websocket.on('write', this.printWebsocketOutput.bind(this));
     this.websocket.on('clear', this.clearOutput.bind(this));

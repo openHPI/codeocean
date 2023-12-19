@@ -7,7 +7,6 @@ class Submission < ApplicationRecord
 
   CAUSES = %w[assess download file render run save submit test autosave requestComments remoteAssess
               remoteSubmit].freeze
-  FILENAME_URL_PLACEHOLDER = '{filename}'
   MAX_COMMENTS_ON_RECOMMENDED_RFC = 5
   OLDEST_RFC_TO_SHOW = 1.month
 
