@@ -461,7 +461,7 @@ GEM
     sentry-rails (5.15.0)
       railties (>= 5.0)
       sentry-ruby (~> 5.15.0)
-    sentry-ruby (5.15.0)
+    sentry-ruby (5.15.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
     set (1.0.4)
     shakapacker (7.2.0.rc.0)
