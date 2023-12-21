@@ -586,10 +586,7 @@ var CodeOceanEditor = {
                     return map;
                 }, {});
 
-                for (let severity in severity_groups) {
-                    if (!severity_groups.hasOwnProperty(severity)) {
-                        continue;
-                    }
+                for (const severity of severity_groups) {
                     const linter_results = severity_groups[severity]
 
                     const li = document.createElement("li");
@@ -599,7 +596,7 @@ var CodeOceanEditor = {
 
                     const sub_ul = document.createElement("ul");
                     sub_ul.setAttribute('class', 'inline_list');
-                    for (let check_run of linter_results) {
+                    for (const check_run of linter_results) {
                         const sub_li = document.createElement("li");
 
                         let scope = '';
