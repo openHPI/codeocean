@@ -328,7 +328,7 @@ $(document).on('turbolinks:load', function () {
                 if (!confirm(I18n.t('exercises.form.unpublish_warning'))) {
                     $('#exercise_unpublished').prop('checked', false);
                 }
-            } else if ($('#exercise_execution_environment_id').val() == '') {
+            } else if ($('#exercise_execution_environment_id').val() === '') {
                 alert(I18n.t('exercises.form.no_execution_environment_selected'));
                 $('#exercise_unpublished').prop('checked', true);
             }
