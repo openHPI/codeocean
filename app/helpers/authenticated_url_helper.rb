@@ -6,7 +6,7 @@ module AuthenticatedUrlHelper
   class << self
     TOKEN_ALGORITHM = 'HS512'
     TOKEN_EXPIRATION = 10.minutes
-    TOKEN_SECRET = Rails.application.secrets.secret_key_base
+    TOKEN_SECRET = Rails.application.secret_key_base
     TOKEN_PARAM = :token
     COOKIE_EXPIRATION = 30.seconds
 
