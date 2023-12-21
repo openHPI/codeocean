@@ -49,7 +49,7 @@ var CodeOceanEditor = {
 
     confirmDestroy: function (event) {
         event.preventDefault();
-        if (confirm($(event.target).data('message-confirm'))) {
+        if (confirm(I18n.t('shared.confirm_destroy'))) {
             this.destroyFile();
         }
     },
