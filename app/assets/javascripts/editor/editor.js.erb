@@ -66,7 +66,7 @@ var CodeOceanEditor = {
         event.preventDefault();
         const initiator = $(event.target.closest("button"));
         let message = initiator.data('message-confirm');
-        message = message.replace('%{filename}', CodeOceanEditor.active_file.filename.replace(/#$/, ''))
+        message = message.replace('%{filename}', CodeOceanEditor.active_file.filename)
         if (confirm(message)) {
             this.resetCode(initiator, true); // delete only active file
         }
