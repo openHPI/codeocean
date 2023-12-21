@@ -6,14 +6,16 @@ class SubmissionPolicy < ApplicationPolicy
   end
 
   # insights? is used in the flowr_controller.rb as we use it to authorize the user for a submission
-  # download_submission_file? is used in the live_streams_controller.rb
-  %i[download? download_file? download_submission_file? run? score? show? statistics? stop? test?
-     insights? finalize?].each do |action|
+  %i[download? download_file? run? score? show? statistics? stop? test? insights? finalize?].each do |action|
     define_method(action) { admin? || author? || author_in_programming_group? }
   end
 
-  def render_file?
-    everyone
+  # download_submission_file? is used in the live_streams_controller.rb
+  %i[render_file? download_submission_file?].each do |action|
+    define_method(action) do
+      # The AuthenticatedUrlHelper will check for more details, but we cannot determine a specific user
+      everyone
+    end
   end
 
   def index?

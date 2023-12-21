@@ -498,6 +498,7 @@ class SubmissionsController < ApplicationController
 
   def augment_files_for_download(files)
     submission_files = @submission.collect_files + @submission.exercise.files
+    host = ApplicationController::RENDER_HOST || request.host
     files.filter_map do |file|
       # Reject files that were already present in the submission
       # We further reject files that share the same name (excl. file extension) and path as a file in the submission
@@ -505,7 +506,7 @@ class SubmissionsController < ApplicationController
       next if submission_files.any? {|submission_file| submission_file.filepath_without_extension == file.filepath_without_extension }
 
       # Downloadable files get a signed download_path and an indicator whether we performed a privileged execution
-      file.download_path = AuthenticatedUrlHelper.sign(download_stream_file_submission_url(@submission, file.filepath), @submission)
+      file.download_path = AuthenticatedUrlHelper.sign(download_stream_file_submission_url(@submission, file.filepath, host:), @submission)
       file.privileged_execution = @submission.execution_environment.privileged_execution
       file
     end
