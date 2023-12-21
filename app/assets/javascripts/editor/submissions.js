@@ -53,11 +53,6 @@ CodeOceanEditorSubmissions = {
   },
 
   createSubmissionCallback: function(submission){
-    // set all frames context types to submission
-    $('.frame').each(function(index, element) {
-      $(element).data('context-type', 'Submission');
-    });
-
     // update the ids of the editors and reload the annotations
     for (const editor of this.editors) {
 

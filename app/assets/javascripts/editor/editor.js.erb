@@ -537,10 +537,6 @@ var CodeOceanEditor = {
         return this.isActiveFileRunnable() && this.running;
     },
 
-    isActiveFileSubmission: function () {
-        return ['Submission'].includes(this.active_frame.data('contextType'));
-    },
-
     isActiveFileTestable: function () {
         return this.isActiveFileExecutable() && ['teacher_defined_test', 'user_defined_test', 'teacher_defined_linter'].includes(this.active_frame.data('role'));
     },
