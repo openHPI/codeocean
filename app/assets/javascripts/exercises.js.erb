@@ -191,12 +191,11 @@ $(document).on('turbolinks:load', function () {
 
         function serialize(sortable) {
             let serialized = [];
-            const children = [].slice.call(sortable.children);
-            for (let i in children) {
-                const nested = children[i].querySelector(nestedQuery);
+            for (const child of sortable.children) {
+                const nested = child.querySelector(nestedQuery);
                 serialized.push({
-                    tip_id: children[i].dataset['tipId'],
-                    id: children[i].dataset['id'],
+                    tip_id: child.dataset['tipId'],
+                    id: child.dataset['id'],
                     children: nested ? serialize(nested) : []
                 });
             }
