@@ -5,8 +5,16 @@ class LiveStreamsController < ApplicationController
   # Therefore, it is extracted into a separate controller
   include ActionController::Live
 
+  skip_before_action :deny_access_from_render_host, only: :download_submission_file
+  skip_before_action :verify_authenticity_token, only: :download_submission_file
+  skip_before_action :set_sentry_context, only: :download_submission_file
+  before_action :require_user!, except: :download_submission_file
+
   def download_submission_file
-    @submission = authorize AuthenticatedUrlHelper.retrieve!(Submission, request, force_render_host: false)
+    @submission = AuthenticatedUrlHelper.retrieve!(Submission, request)
+    # Set @current_user with the corresponding learner for Pundit checks
+    @current_user = @submission.user
+    authorize @submission
   rescue Pundit::NotAuthorizedError
     # TODO: Option to disable?
     # Using the submission ID parameter would allow looking up the corresponding exercise ID
