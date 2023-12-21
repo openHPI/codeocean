@@ -108,13 +108,15 @@ CodeOceanEditorFlowr = {
 CodeOceanEditorRequestForComments = {
   requestComments: function () {
     const cause = $('#requestComments');
+    const editor = $('#editor')
+    const questionElement = $('#question')
     this.startSentryTransaction(cause);
-    $('#question').prop("disabled", true);
+    questionElement.prop("disabled", true);
     $('#closeAskForCommentsButton').addClass('d-none');
 
-    var exercise_id = $('#editor').data('exercise-id');
+    var exercise_id = editor.data('exercise-id');
     var file_id = $('.editor').data('id');
-    var question = $('#question').val();
+    var question = questionElement.val();
 
     var createRequestForComments = function (submission) {
       this.showSpinner($('#askForCommentsButton'));
