@@ -19,13 +19,11 @@ CodeOceanEditorFlowr = {
     '</div>',
 
   getInsights: function () {
-    <% self.class.include Rails.application.routes.url_helpers %>
-    var flowrUrl = '<%= insights_path %>';
     var stackOverflowUrl = 'https://api.stackexchange.com/2.2/search/advanced';
 
     return jQuery.ajax({
       dataType: "json",
-      url: flowrUrl,
+      url: Routes.insights_path(),
       data: {}
     }).then(function (insights) {
       var stackoverflowRequests = _.map(insights, function (insight) {
