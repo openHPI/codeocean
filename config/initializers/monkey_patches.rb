@@ -17,3 +17,14 @@ module WillPaginate
     end
   end
 end
+
+# Sorcery is currently overwriting the redirect_back_or_to method, which has been introduced in Rails 7.0+
+# See https://github.com/Sorcery/sorcery/issues/296
+module Sorcery
+  module Controller
+    module InstanceMethods
+      define_method :sorcery_redirect_back_or_to, instance_method(:redirect_back_or_to)
+      remove_method :redirect_back_or_to
+    end
+  end
+end

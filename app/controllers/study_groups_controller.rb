@@ -39,7 +39,7 @@ class StudyGroupsController < ApplicationController
   def set_as_current
     session[:study_group_id] = @study_group.id
     current_user.store_current_study_group_id(@study_group.id)
-    redirect_back(fallback_location: root_path, notice: t('study_groups.set_as_current.success'))
+    redirect_back_or_to(root_path, notice: t('study_groups.set_as_current.success'))
   end
 
   def set_group

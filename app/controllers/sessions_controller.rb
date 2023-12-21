@@ -40,7 +40,7 @@ class SessionsController < ApplicationController
     if login(params[:email], params[:password], params[:remember_me])
       # We set the user's default study group to the "internal" group (no external id) for the given consumer.
       session[:study_group_id] = current_user.study_groups.find_by(external_id: nil)&.id
-      redirect_back_or_to(:root, notice: t('.success'))
+      sorcery_redirect_back_or_to(:root, notice: t('.success'))
     else
       flash.now[:danger] = t('.failure')
       render(:new)

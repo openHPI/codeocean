@@ -313,8 +313,8 @@ class ExercisesController < ApplicationController
         session.delete(:pair_programming)
         @current_contributor = current_user
       else
-        return redirect_back(
-          fallback_location: implement_exercise_path(current_contributor.exercise),
+        return redirect_back_or_to(
+          implement_exercise_path(current_contributor.exercise),
           alert: t('exercises.implement.existing_programming_group', exercise: current_contributor.exercise.title)
         )
       end
@@ -323,7 +323,7 @@ class ExercisesController < ApplicationController
       session[:pg_id] = pg.id
       @current_contributor = pg
     elsif session[:pg_id].blank? && session[:pair_programming] == 'mandatory'
-      return redirect_back(fallback_location: new_exercise_programming_group_path(@exercise))
+      return redirect_back_or_to(new_exercise_programming_group_path(@exercise))
     elsif session[:pg_id].blank? && session[:pair_programming] == 'optional' && current_user.submissions.where(study_group_id: current_user.current_study_group_id, exercise: @exercise).none?
       Event.find_or_create_by(category: 'pp_work_alone', user: current_user, exercise: @exercise, data: nil, file_id: nil)
       current_user.pair_programming_waiting_users&.find_by(exercise: @exercise)&.update(status: :worked_alone)
