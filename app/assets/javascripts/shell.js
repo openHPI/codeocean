@@ -158,7 +158,6 @@ $(document).on('turbolinks:load', function () {
     }
 
     const getParents = function (jstree, node_id) {
-        debugger;
         if (node_id === '#') {
             return ['#'];
         }
