@@ -15,7 +15,7 @@ div.d-grid.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_
             div
               - if @exercise.allow_file_creation
                 = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-cause' => 'file'}, icon: 'fa-solid fa-plus', id: 'create-file', label: '', title: t('exercises.editor.create_file'))
-                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-cause' => 'file', :'data-message-confirm' => t('shared.confirm_destroy') }, icon: 'fa-regular fa-trash-can', id: 'destroy-file', label: '', title: t('exercises.editor.destroy_file'))
+                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-cause' => 'file' }, icon: 'fa-regular fa-trash-can', id: 'destroy-file', label: '', title: t('exercises.editor.destroy_file'))
               - unless @embed_options[:disable_download]
                 = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip'}, icon: 'fa-solid fa-arrow-down', id: 'download', label:'', title: t('exercises.editor.download'))
               = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa-solid fa-clock-rotate-left', id: 'start-over', label: '', title: t('exercises.editor.start_over'))
