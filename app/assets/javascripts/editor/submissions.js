@@ -59,7 +59,7 @@ CodeOceanEditorSubmissions = {
     });
 
     // update the ids of the editors and reload the annotations
-    for (var i = 0; i < this.editors.length; i++) {
+    for (const editor of this.editors) {
 
       const file_id_old = $(editor.container).data('file-id');
 
@@ -67,13 +67,12 @@ CodeOceanEditorSubmissions = {
       // This is the case, since it is set via a call to ancestor_id on the model, which returns either file_id if set, or id if it is not set.
       // therefore the else part is not needed any longer...
 
-      // if we have an file_id set (the file is a copy of a teacher supplied given file) and the new file-ids are present in the response
-      if (file_id_old != null && data.files){
+      // if we have an file_id set (the file is a copy of a teacher supplied given file) and the new file-ids are present in the submission
+      if (file_id_old != null && submission.files) {
         // if we find file_id_old (this is the reference to the base file) in the submission, this is the match
-        for(var j = 0; j< data.files.length; j++){
-          if(data.files[j].file_id === file_id_old){
-            //$(editors[i].container).data('id') = data.files[j].id;
-            $(this.editors[i].container).data('id', data.files[j].id );
+        for (const file of submission.files) {
+          if (file.file_id === file_id_old) {
+            $(editor.container).data('id', file.id);
           }
         }
       }
