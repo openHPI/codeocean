@@ -153,6 +153,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def set_content_type_nosniff
+    # When sending a file, we want to ensure that browsers follow our Content-Type header
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+  end
+
   def switch_locale(&)
     session[:locale] = sanitize_locale(params[:custom_locale] || params[:locale] || session[:locale])
     locale = session[:locale] || http_accept_language.compatible_language_from(I18n.available_locales) || I18n.default_locale

@@ -5,6 +5,7 @@ module CodeOcean
     include CommonBehavior
     include FileParameters
 
+    before_action :set_content_type_nosniff
     # Overwrite the CSP header and some default actions for the :render_protected_upload action
     content_security_policy false, only: :render_protected_upload
     skip_before_action :deny_access_from_render_host, only: :render_protected_upload

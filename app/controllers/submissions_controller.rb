@@ -463,11 +463,6 @@ class SubmissionsController < ApplicationController
     @files = @submission.collect_files.select(&:visible)
   end
 
-  def set_content_type_nosniff
-    # When sending a file, we want to ensure that browsers follow our Content-Type header
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-  end
-
   def set_submission
     @submission = Submission.find(params[:id])
     authorize!
