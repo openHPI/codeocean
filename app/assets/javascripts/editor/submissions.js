@@ -163,7 +163,7 @@ CodeOceanEditorSubmissions = {
     this.startSentryTransaction(cause);
     event.preventDefault();
     this.stopCode(event);
-    if ($('#run').is(':visible')) {
+    if (cause.is(':visible')) {
       this.createSubmission(cause, null, this.runSubmission.bind(this));
     }
   },
