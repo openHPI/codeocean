@@ -94,7 +94,7 @@ CodeOceanEditorFlowr = {
         var body = resultTile.find('.card-body');
         body.html(result.body);
         body.append('<a target="_blank" href="' + questionUrl + '" class="btn btn-primary">' +
-          '<%= I18n.t('exercises.implement.flowr.go_to_question') %></a>');
+          `${I18n.t('exercises.implement.flowr.go_to_question')}</a>`);
         body.find('.btn').on('click', CodeOceanEditor.createEventHandler('editor_flowr_click_question', questionUrl));
 
         flowrHintBody.append(resultTile);

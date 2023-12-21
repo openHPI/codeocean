@@ -100,7 +100,7 @@ $(document).on('turbolinks:load', function () {
         event.preventDefault();
         var fileUrl = $(event.target).data('file-url');
 
-        if (confirm('<%= I18n.t('shared.confirm_destroy') %>')) {
+        if (confirm(I18n.t('shared.confirm_destroy'))) {
             var jqxhr = $.ajax({
                 // normal file path (without json) would destroy the context object (the exercise) as well, due to redirection
                 // to the context after the :destroy action.
@@ -312,7 +312,7 @@ $(document).on('turbolinks:load', function () {
             new_execution_environment = $('#exercise_execution_environment_id').val();
 
             if (new_execution_environment == '' && !$('#exercise_unpublished').prop('checked')) {
-                if (confirm('<%= I18n.t('exercises.form.unpublish_warning') %>')) {
+                if (confirm(I18n.t('exercises.form.unpublish_warning'))) {
                     $('#exercise_unpublished').prop('checked', true);
                 } else {
                     return $('#exercise_execution_environment_id').val(old_execution_environment).trigger("chosen:updated");
@@ -325,11 +325,11 @@ $(document).on('turbolinks:load', function () {
     var observeUnpublishedState = function () {
         $('#exercise_unpublished').on('change', function () {
             if ($('#exercise_unpublished').prop('checked')) {
-                if (!confirm('<%= I18n.t('exercises.form.unpublish_warning') %>')) {
+                if (!confirm(I18n.t('exercises.form.unpublish_warning'))) {
                     $('#exercise_unpublished').prop('checked', false);
                 }
             } else if ($('#exercise_execution_environment_id').val() == '') {
-                alert('<%= I18n.t('exercises.form.no_execution_environment_selected') %>');
+                alert(I18n.t('exercises.form.no_execution_environment_selected'));
                 $('#exercise_unpublished').prop('checked', true);
             }
         })
@@ -356,7 +356,7 @@ $(document).on('turbolinks:load', function () {
 
         $messageDiv.removeClass('export-failure');
 
-        $messageDiv.html('<%= I18n.t('exercises.export_codeharbor.checking_codeharbor') %>');
+        $messageDiv.html(I18n.t('exercises.export_codeharbor.checking_codeharbor'));
         $actionsDiv.html('<div class="spinner-border"></div>');
 
         return $.ajax({
