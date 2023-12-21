@@ -54,7 +54,7 @@ CodeOceanEditorSubmissions = {
     });
   },
 
-  createSubmissionCallback: function(data){
+  createSubmissionCallback: function(submission){
     // set all frames context types to submission
     $('.frame').each(function(index, element) {
       $(element).data('context-type', 'Submission');
@@ -63,10 +63,7 @@ CodeOceanEditorSubmissions = {
     // update the ids of the editors and reload the annotations
     for (var i = 0; i < this.editors.length; i++) {
 
-      // set the data attribute to submission
-      //$(editors[i].container).data('context-type', 'Submission');
-
-      var file_id_old = $(this.editors[i].container).data('file-id');
+      const file_id_old = $(editor.container).data('file-id');
 
       // file_id_old is always set. Either it is a reference to a teacher supplied given file, or it is the actual id of a new user created file.
       // This is the case, since it is set via a call to ancestor_id on the model, which returns either file_id if set, or id if it is not set.
@@ -142,11 +139,11 @@ CodeOceanEditorSubmissions = {
     const cause = $('#render');
     this.startSentryTransaction(cause);
     event.preventDefault();
-    if ($('#render').is(':visible')) {
+    if (cause.is(':visible')) {
       this.createSubmission(cause, null, function (response) {
         if (response.render_url === undefined) return;
 
-        const active_file = CodeOceanEditor.active_file.filename.replace(/#$/,''); // remove # if it is the last character, this is not part of the filename and just an anchor
+        const active_file = CodeOceanEditor.active_file.filename;
         const desired_file = response.render_url.filter(hash => hash.filepath === active_file);
         const url = desired_file[0].url;
         // Allow to open the new tab even in Safari.
@@ -195,7 +192,7 @@ CodeOceanEditorSubmissions = {
     const cause = $('#test');
     this.startSentryTransaction(cause);
     event.preventDefault();
-    if ($('#test').is(':visible')) {
+    if (cause.is(':visible')) {
       this.createSubmission(cause, null, function(response) {
         this.showSpinner($('#test'));
         $('#score_div').addClass('d-none');
