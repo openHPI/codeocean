@@ -1,15 +1,16 @@
 div class=(defined?(own_solution) ? "own-frame" : "frame") data-executable=file.file_type.executable? data-filename=file.filepath data-renderable=file.file_type.renderable? data-role=file.role data-binary=file.file_type.binary? data-context-type=file.context_type data-read-only=file.read_only
   - if file.file_type.binary?
+    - file_path = protected_upload_path(id: file.id, filename: file.filepath)
     .binary-file data-file-id=file.ancestor_id
       - if file.file_type.renderable?
         - if file.file_type.audio?
-          = audio_tag(file.native_file.url, controls: true)
+          = audio_tag(file_path, controls: true)
         - elsif file.file_type.image?
-          = image_tag(file.native_file.url)
+          = image_tag(file_path)
         - elsif file.file_type.video?
-          = video_tag(file.native_file.url, controls: true)
+          = video_tag(file_path, controls: true)
       - else
-        = link_to(file.native_file.file.filename, file.native_file.url)
+        = link_to(file.native_file.file.filename, file_path)
   - else
     .editor-content.d-none data-file-id=file.ancestor_id = file.content
     div class=(defined?(own_solution) ? "own-editor" : "editor") data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-allow-auto-completion=exercise.allow_auto_completion.to_s data-id=file.id
