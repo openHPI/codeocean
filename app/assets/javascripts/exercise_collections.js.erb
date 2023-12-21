@@ -92,9 +92,9 @@ $(document).on('turbolinks:load', function() {
             .style("left", event.pageX - 50 + "px")
             .style("top", event.pageY + 50 + "px")
             .style("display", "inline-block")
-            .html("<%= I18n.t('activerecord.models.exercise.one') %> ID: " + d.exercise_id + "<br>" +
-              "<%= I18n.t('activerecord.attributes.exercise.title') %>: " + d.exercise_title + "<br>" +
-              "<%= I18n.t('exercises.statistics.average_worktime') %>: " + d.working_time + "s");
+            .html(`${I18n.t('activerecord.models.exercise.one')} ID: ${d.exercise_id}<br>` +
+              `${I18n.t('activerecord.attributes.exercise.title')}: ${d.exercise_title}<br>` +
+              `${I18n.t('exercises.statistics.average_worktime')}: ${d.working_time}s`);
         })
         .on("mouseout", function () {
           tooltip.style("display", "none");
@@ -174,8 +174,8 @@ $(document).on('turbolinks:load', function() {
           var template = '<tr data-id="' + exercise.id + '">' +
             '<td><span class="fa-solid fa-bars"></span></td>' +
             '<td>' + exercise.title + '</td>' +
-            `<td><a href="${Routes.exercise_path(exercise.id)}"><%= I18n.t('shared.show') %></td>` +
-            '<td><a class="remove-exercise" href="#"><%= I18n.t('shared.destroy') %></td></tr>';
+            `<td><a href="${Routes.exercise_path(exercise.id)}">${I18n.t('shared.show')}</td>` +
+            `<td><a class="remove-exercise" href="#">${I18n.t('shared.destroy')}</td></tr>`;
           exerciseList.find('tbody').append(template);
           $('#exercise-list').find('option[value="' + exercise.id + '"]').prop('selected', true);
         }
