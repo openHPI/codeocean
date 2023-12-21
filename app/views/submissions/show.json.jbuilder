@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-json.extract! @submission, :id, :files
+json.id @submission.id
+json.files @submission.files do |file|
+  json.extract! file, :id, :file_id
+end
 json.download_url download_submission_path(@submission, format: :json)
 json.score_url score_submission_path(@submission, format: :json)
 json.download_file_url download_file_submission_path(@submission, 'a.', format: :json).gsub(/a\.\.json$/,
