@@ -169,11 +169,11 @@ class Submission < ApplicationRecord
 
   # @raise [Runner::Error] if the code could not be run due to a failure with the runner.
   #                        See the specific type and message for more details.
-  def run(file, &)
+  def run(file, &block)
     run_command = command_for execution_environment.run_command, file.filepath
     durations = {}
     prepared_runner do |runner, waiting_duration|
-      durations[:execution_duration] = runner.attach_to_execution(run_command, &)
+      durations[:execution_duration] = runner.attach_to_execution(run_command, &block)
       durations[:waiting_duration] = waiting_duration
     rescue Runner::Error => e
       e.waiting_duration = waiting_duration

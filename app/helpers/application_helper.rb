@@ -53,9 +53,9 @@ module ApplicationHelper
     ActionController::Base.helpers.sanitize Kramdown::Document.new(markdown, input: 'GFM', hard_wrap: false).to_html.strip
   end
 
-  def row(options = {}, &)
+  def row(options = {}, &block)
     tag.div(class: 'attribute-row row') do
-      label_column(options[:label]) + value_column(options[:value], &)
+      label_column(options[:label]) + value_column(options[:value], &block)
     end
   end
 

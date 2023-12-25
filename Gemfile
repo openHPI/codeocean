@@ -8,6 +8,7 @@ gem 'bootsnap', require: false
 gem 'bootstrap-will_paginate'
 gem 'carrierwave'
 gem 'charlock_holmes', require: 'charlock_holmes/string'
+gem 'csv'
 gem 'docker-api', require: 'docker'
 gem 'eventmachine'
 gem 'factory_bot_rails'

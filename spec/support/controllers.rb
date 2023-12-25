@@ -37,10 +37,10 @@ def expect_json
   expect_content_type('application/json')
 end
 
-def expect_redirect(path = nil, &)
-  if block_given?
+def expect_redirect(path = nil, &block)
+  if block
     it 'performs a redirect to the location given' do
-      expect(controller).to redirect_to(instance_eval(&))
+      expect(controller).to redirect_to(instance_eval(&block))
     end
   elsif path
     it "redirects to #{path}" do
