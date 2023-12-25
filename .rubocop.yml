@@ -17,7 +17,7 @@ inherit_from:
 
 AllCops:
   TargetRubyVersion: 3.2
-  TargetRailsVersion: 7.0
+  TargetRailsVersion: 7.1
   UseCache: True
   NewCops: enable
   Exclude:
