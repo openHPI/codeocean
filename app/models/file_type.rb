@@ -29,8 +29,8 @@ class FileType < ApplicationRecord
   validates :file_extension, length: {minimum: 0, allow_nil: false}
 
   %i[audio compressed csv excel image pdf powerpoint video word].each do |type|
-    define_method("#{type}?") do
-      self.class.const_get("#{type.upcase}_FILE_EXTENSIONS").include?(file_extension)
+    define_method(:"#{type}?") do
+      self.class.const_get(:"#{type.upcase}_FILE_EXTENSIONS").include?(file_extension)
     end
   end
 

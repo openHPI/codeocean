@@ -64,7 +64,7 @@ module CodeOcean
     validates_with FileNameValidator, fields: %i[name path file_type_id]
 
     ROLES.each do |role|
-      define_method("#{role}?") { self.role == role }
+      define_method(:"#{role}?") { self.role == role }
     end
 
     def read

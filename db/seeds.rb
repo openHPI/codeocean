@@ -17,7 +17,7 @@ end
 module ActiveRecord
   class Base
     %i[build create].each do |strategy|
-      define_singleton_method("#{strategy}_factories") do |attributes = {}|
+      define_singleton_method(:"#{strategy}_factories") do |attributes = {}|
         find_factories_by_class(self).map(&:name).map do |factory_name|
           FactoryBot.send(strategy, factory_name, attributes)
         end
