@@ -132,7 +132,7 @@ class Runner::Connection
     event = event.deep_symbolize_keys
     message_type = event[:type].to_sym
     if WEBSOCKET_MESSAGE_TYPES.include?(message_type)
-      __send__("handle_#{message_type}", event)
+      __send__(:"handle_#{message_type}", event)
     else
       @error = Runner::Error::UnexpectedResponse.new("Unknown WebSocket message type: #{message_type}")
       close(:error)
