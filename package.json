@@ -38,7 +38,7 @@
     "propagating-hammerjs": "^2.0.1",
     "rails-erb-loader": "usabilityhub/rails-erb-loader#master",
     "sass": "^1.69.5",
-    "sass-loader": "^13.3.2",
+    "sass-loader": "^13.3.3",
     "shakapacker": "7.2.0-rc.0",
     "sortablejs": "^1.15.1",
     "sorttable": "^1.0.2",
