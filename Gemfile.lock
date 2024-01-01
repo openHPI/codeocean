@@ -466,7 +466,7 @@ GEM
     sentry-ruby (5.15.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
     set (1.1.0)
-    shakapacker (7.2.0.rc.0)
+    shakapacker (7.2.0)
       activesupport (>= 5.2)
       package_json
       rack-proxy (>= 0.6.1)
@@ -626,7 +626,7 @@ DEPENDENCIES
   selenium-webdriver
   sentry-rails
   sentry-ruby
-  shakapacker (= 7.2.0.rc.0)
+  shakapacker (= 7.2.0)
   shoulda-matchers
   simplecov
   slim-rails
