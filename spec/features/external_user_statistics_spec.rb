@@ -21,7 +21,7 @@ RSpec.describe 'ExternalUserStatistics', :js do
     visit(sign_in_path)
     fill_in('email', with: user.email)
     fill_in('password', with: password)
-    click_button(I18n.t('sessions.new.link'))
+    click_button(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
     allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
     visit(statistics_external_user_exercise_path(id: exercise.id, external_user_id: learner.id))
   end
@@ -38,8 +38,8 @@ RSpec.describe 'ExternalUserStatistics', :js do
     let(:user) { create(:teacher, password:) }
 
     it 'does not display the option to enable autosaves' do
-      expect(page).not_to have_content(I18n.t('exercises.external_users.statistics.toggle_status_on'))
-      expect(page).not_to have_content(I18n.t('exercises.external_users.statistics.toggle_status_off'))
+      expect(page).to have_no_content(I18n.t('exercises.external_users.statistics.toggle_status_on'))
+      expect(page).to have_no_content(I18n.t('exercises.external_users.statistics.toggle_status_off'))
     end
   end
 end

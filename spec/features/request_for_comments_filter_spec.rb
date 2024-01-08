@@ -9,7 +9,7 @@ RSpec.describe 'Request_for_Comments' do
     visit(sign_in_path)
     fill_in('email', with: user.email)
     fill_in('password', with: attributes_for(:teacher)[:password])
-    click_button(I18n.t('sessions.new.link'))
+    click_button(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
   end
 
   it 'does not contain rfcs for unpublished exercises' do
@@ -23,7 +23,7 @@ RSpec.describe 'Request_for_Comments' do
     visit(request_for_comments_path)
 
     expect(page).to have_content(rfc.exercise.title)
-    expect(page).not_to have_content(unpublished_rfc.exercise.title)
+    expect(page).to have_no_content(unpublished_rfc.exercise.title)
   end
 
   it 'contains a filter for study group in the view' do
@@ -33,7 +33,7 @@ RSpec.describe 'Request_for_Comments' do
 
   it 'works with the pagination' do
     submission = create(:submission)
-    create_list(:rfc, 25, submission:, exercise: submission.exercise)
+    create_list(:rfc, 25, submission:, exercise: submission.exercise) # rubocop:disable RSpec/FactoryBot/ExcessiveCreateList
     visit(request_for_comments_path)
     expect(page).to have_css('ul.pagination')
   end

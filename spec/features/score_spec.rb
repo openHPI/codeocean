@@ -26,8 +26,8 @@ RSpec.describe 'Score', :js do
     it "does not show an 'exercise finished' notification" do
       # Text needs to be split because it includes the embedded URL in the HTML which is not shown in the notification.
       # We compare the shown notification text and the URL separately.
-      expect(page).not_to have_content(I18n.t('exercises.editor.exercise_finished').split('.').first)
-      expect(page).not_to have_link(nil, href: finalize_submission_path(submission))
+      expect(page).to have_no_content(I18n.t('exercises.editor.exercise_finished').split('.').first)
+      expect(page).to have_no_link(nil, href: finalize_submission_path(submission))
     end
   end
 
@@ -43,7 +43,7 @@ RSpec.describe 'Score', :js do
 
   shared_examples 'no notification' do |message_key|
     it "does not show a '#{message_key.split('.').last}' notification" do
-      expect(page).not_to have_content(I18n.t(message_key))
+      expect(page).to have_no_content(I18n.t(message_key))
     end
   end
 
@@ -84,7 +84,7 @@ RSpec.describe 'Score', :js do
       allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(lti_outcome_service?)
       allow(submission).to receive(:calculate_score).and_return(calculate_response)
       allow_any_instance_of(SubmissionsController).to receive(:send_scores).and_return(scoring_response)
-      click_button(I18n.t('exercises.editor.score'))
+      click_on(I18n.t('exercises.editor.score'))
     end
 
     shared_context 'when full score reached' do
@@ -291,7 +291,7 @@ RSpec.describe 'Score', :js do
     context 'when the desired runner is already in use' do
       before do
         allow(submission).to receive(:calculate_score).and_raise(Runner::Error::RunnerInUse)
-        click_button(I18n.t('exercises.editor.score'))
+        click_on(I18n.t('exercises.editor.score'))
       end
 
       it_behaves_like 'notification', 'exercises.editor.runner_in_use'
@@ -304,7 +304,7 @@ RSpec.describe 'Score', :js do
     context 'when no runner is available' do
       before do
         allow(submission).to receive(:calculate_score).and_raise(Runner::Error::NotAvailable)
-        click_button(I18n.t('exercises.editor.score'))
+        click_on(I18n.t('exercises.editor.score'))
       end
 
       it_behaves_like 'notification', 'exercises.editor.depleted'
