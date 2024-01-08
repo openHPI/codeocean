@@ -7,7 +7,7 @@ class Testrun < ApplicationRecord
   belongs_to :testrun_execution_environment, optional: true, dependent: :destroy
   has_many :testrun_messages, dependent: :destroy
 
-  CONSOLE_OUTPUT = %i[stdout stderr].freeze
+  CONSOLE_OUTPUT = %w[stdout stderr].freeze
 
   enum status: {
     ok: 0,
