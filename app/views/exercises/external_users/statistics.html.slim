@@ -78,9 +78,9 @@ h1
                 td.align-middle
                   -this.testruns.sort_by {|t| [t.file&.name ? 0 : 1, t.file&.name]}.each do |run|
                     - if run.passed
-                      .unit-test-result.positive-result title=[run.file&.filepath, run.log].join.strip
+                      .unit-test-result.positive-result title=[run.file&.filepath, run.log].join("\n").strip
                     - else
-                      .unit-test-result.unknown-result title=[run.file&.filepath, run.log].join.strip
+                      .unit-test-result.unknown-result title=[run.file&.filepath, run.log].join("\n").strip
                 td = @working_times_until[index] if index > 0 if policy(@exercise).detailed_statistics?
               - elsif this.is_a? UserExerciseIntervention
                 td = this.created_at.strftime("%F %T")
