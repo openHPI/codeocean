@@ -2736,7 +2736,7 @@ __metadata:
     jquery-ujs: "npm:^1.2.3"
     jstree: "npm:^3.3.16"
     keycharm: "npm:^0.4.0"
-    mini-css-extract-plugin: "npm:^2.7.6"
+    mini-css-extract-plugin: "npm:^2.7.7"
     moment: "npm:^2.30.1"
     opensans-webkit: "npm:^1.1.0"
     pnp-webpack-plugin: "npm:^1.7.0"
@@ -5044,14 +5044,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:^2.7.6":
-  version: 2.7.6
-  resolution: "mini-css-extract-plugin@npm:2.7.6"
+"mini-css-extract-plugin@npm:^2.7.7":
+  version: 2.7.7
+  resolution: "mini-css-extract-plugin@npm:2.7.7"
   dependencies:
     schema-utils: "npm:^4.0.0"
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 4862da928f52c18b37daa52d548c9f2a1ac65c900a48b63f7faa3354d8cfcd21618c049696559e73e2e27fc12d46748e6a490e0b885e54276429607d0d08c156
+  checksum: e22f76d96966ee4dfc1318e0f4c45ac75638932df468dc7d103094e1c97cb2d01ea7ccfb354e39d9e57d1971218cdc92678b9c8676472b2f1f801bb514967c44
   languageName: node
   linkType: hard
 
