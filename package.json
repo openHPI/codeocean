@@ -35,7 +35,7 @@
     "moment": "^2.30.1",
     "opensans-webkit": "^1.1.0",
     "pnp-webpack-plugin": "^1.7.0",
-    "propagating-hammerjs": "^2.0.1",
+    "propagating-hammerjs": "^3.0.0",
     "rails-erb-loader": "usabilityhub/rails-erb-loader#master",
     "sass": "^1.70.0",
     "sass-loader": "^14.0.0",

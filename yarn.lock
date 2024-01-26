@@ -2783,7 +2783,7 @@ __metadata:
     moment: "npm:^2.30.1"
     opensans-webkit: "npm:^1.1.0"
     pnp-webpack-plugin: "npm:^1.7.0"
-    propagating-hammerjs: "npm:^2.0.1"
+    propagating-hammerjs: "npm:^3.0.0"
     rails-erb-loader: "usabilityhub/rails-erb-loader#master"
     sass: "npm:^1.70.0"
     sass-loader: "npm:^14.0.0"
@@ -6001,12 +6001,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"propagating-hammerjs@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "propagating-hammerjs@npm:2.0.1"
+"propagating-hammerjs@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "propagating-hammerjs@npm:3.0.0"
   peerDependencies:
     "@egjs/hammerjs": ^2.0.17
-  checksum: c708d4fc2e11ddcc59c4d84dcb5bebc27093cbb7cab63a328b1486599be3b57a061cf58baf1f375decb62d6479589dcc5af260ee2695bcddee84785cad8eabca
+  checksum: ac3dd6e6fdf4c84abc148d2b656bb3a66dd9eadef65daa25ea1dc632334523e7b1e4f1bbffce3256e75bf77543f94f4e6334f153a8a5e98e0ea8eb47bb02fda2
   languageName: node
   linkType: hard
 
