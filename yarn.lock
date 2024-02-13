@@ -2235,6 +2235,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ace-builds@npm:^1.32.6":
+  version: 1.32.6
+  resolution: "ace-builds@npm:1.32.6"
+  checksum: 9b3ac9a500ab5ce779aed75bc0d799b57ddc24229f458a4c3541c35d2b23b51eec1cbb681335de42cac731883d52073540c52e93e2754d302ed9ed718e28cac4
+  languageName: node
+  linkType: hard
+
 "acorn-import-assertions@npm:^1.9.0":
   version: 1.9.0
   resolution: "acorn-import-assertions@npm:1.9.0"
@@ -2784,6 +2791,7 @@ __metadata:
     "@sentry/integrations": "npm:^7.100.1"
     "@sentry/utils": "npm:^7.100.1"
     "@webpack-cli/serve": "npm:^2.0.5"
+    ace-builds: "npm:^1.32.6"
     babel-loader: "npm:^9.1.3"
     bootstrap: "npm:^5.3.2"
     bootswatch: "npm:^5.3.2"

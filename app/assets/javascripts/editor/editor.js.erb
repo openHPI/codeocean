@@ -1,7 +1,4 @@
 var CodeOceanEditor = {
-    //ACE-Editor-Path
-    // ruby part adds the relative_url_root, if it is set.
-    ACE_FILES_PATH: '<%= "#{Rails.application.config.relative_url_root.chomp('/')}/assets/ace/" %>',
     THEME: window.getCurrentTheme() === 'dark' ? 'ace/theme/tomorrow_night' : 'ace/theme/tomorrow',
 
     //Color-Encoding for Percentages in Progress Bars (For submissions)
@@ -39,13 +36,6 @@ var CodeOceanEditor = {
     sendEvents: <%= @config['codeocean_events'] ? @config['codeocean_events']['enabled'] : false %>,
     eventURL: "<%= @config['codeocean_events'] ? events_path : '' %>",
     fileTypeURL: "<%= file_types_path %>",
-
-
-    configureEditors: function () {
-        _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
-            ace.config.set(attribute, this.ACE_FILES_PATH);
-        }.bind(this));
-    },
 
     confirmDestroy: function (event) {
         event.preventDefault();
@@ -1087,7 +1077,6 @@ var CodeOceanEditor = {
     initializeEverything: function () {
         CodeOceanEditor.editors = [];
         this.initializeRegexes();
-        this.configureEditors();
         this.initializeEditors();
         this.initializeEventHandlers();
         this.initializeFileTree();

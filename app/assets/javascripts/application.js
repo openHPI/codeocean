@@ -19,9 +19,5 @@
 //= require flash
 //= require color_mode_picker
 //
-// vendor/assets
-//= require ace/ace
-//= require ace/ext-language_tools
-//
 // app/assets
 //= require_tree .

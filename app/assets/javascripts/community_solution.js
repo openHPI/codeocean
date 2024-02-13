@@ -4,7 +4,6 @@ $(document).on('turbolinks:load', function() {
         CodeOceanEditor.sendEvents = false;
         CodeOceanEditor.editors = [];
         CodeOceanEditor.initializeDescriptionToggle();
-        CodeOceanEditor.configureEditors();
         CodeOceanEditor.initializeEditors();
         CodeOceanEditor.initializeEditors(true);
         CodeOceanEditor.initializeFileTree();
