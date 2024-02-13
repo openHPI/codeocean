@@ -62,10 +62,6 @@ $(document).on('turbolinks:load', function(event) {
 
   if ($.isController('exercises') && $('#timeline').isPresent() && event.originalEvent.data.url.includes("/statistics")) {
 
-    _.each(['modePath', 'themePath', 'workerPath'], function(attribute) {
-      ace.config.set(attribute, CodeOceanEditor.ACE_FILES_PATH);
-    });
-
     var slider = $('#submissions-slider>input');
     var submissions = $('#data').data('submissions');
     var files = $('#data').data('files');
