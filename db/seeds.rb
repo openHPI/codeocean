@@ -28,7 +28,7 @@ end
 
 # delete all present records
 Rails.application.eager_load!
-(ApplicationRecord.descendants - [ActiveRecord::SchemaMigration, User]).each(&:delete_all)
+(ApplicationRecord.descendants - [ActiveRecord::SchemaMigration, Contributor, User]).each(&:delete_all)
 
 # delete file uploads
 FileUtils.rm_rf(Rails.public_path.join('uploads'))

@@ -2,7 +2,6 @@
 
 module ContributorCreation
   extend ActiveSupport::Concern
-  include Contributor
 
   ALLOWED_CONTRIBUTOR_TYPES = [InternalUser, ExternalUser, ProgrammingGroup].map(&:to_s).freeze
 
