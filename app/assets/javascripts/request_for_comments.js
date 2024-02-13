@@ -159,6 +159,7 @@ $(document).on('turbolinks:load', function () {
         jqrequest.done(function (response) {
             $.each(response, function (index, comment) {
                 comment.className = 'code-ocean_comment';
+                comment.type = 'info'; // Required for the annotation to be rendered correctly (besides being hidden through CSS).
             });
             session.setAnnotations(response);
         });
@@ -267,10 +268,10 @@ $(document).on('turbolinks:load', function () {
     let lastTarget = null;
 
     function showPopover(e) {
-        const target = e.domEvent.target;
+        const target = e.domEvent.target.closest('.ace_gutter-cell');
         const row = e.getDocumentPosition().row;
 
-        if (target.className.indexOf('ace_gutter-cell') === -1 || lastRow === row) {
+        if (target?.className?.indexOf('ace_gutter-cell') === -1 || lastRow === row) {
             return;
         }
         if (lastTarget === target) {
@@ -297,8 +298,9 @@ $(document).on('turbolinks:load', function () {
     });
 
     function handleSidebarClick(e) {
-        const target = e.domEvent.target;
-        if (target.className.indexOf('ace_gutter-cell') === -1) return;
+        const target = e.domEvent.target.closest('.ace_gutter-cell');
+        if (target === null) return;
+        if (target?.className?.indexOf('ace_gutter-cell') === -1) return;
 
         const editor = e.editor;
         const fileid = $(editor.container).data('file-id');
