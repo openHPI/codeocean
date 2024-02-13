@@ -16,7 +16,7 @@ $(document).on('turbolinks:load', function(event) {
   if ($('#editor').isPresent() && CodeOceanEditor && event.originalEvent.data.url.includes("/implement")) {
     // This call will (amon other things) initializeEditors and load the content except for the last line
     // It must not be called during page navigation. Otherwise, content will be duplicated!
-    // Search for insertLines and Turbolinks reload / cache control
+    // Search for insertFullLines and Turbolinks reload / cache control
     CodeOceanEditor.initializeEverything();
   }
 
