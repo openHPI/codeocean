@@ -5,12 +5,6 @@ $(document).on('turbolinks:load', function () {
     var file_types;
     const editors = [];
 
-    var configureEditors = function () {
-        _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
-            ace.config.set(attribute, CodeOceanEditor.ACE_FILES_PATH);
-        });
-    };
-
     var initializeEditor = function (index, element) {
         var editor = ace.edit(element);
 
@@ -487,7 +481,6 @@ $(document).on('turbolinks:load', function () {
     }
 
     if ($('#editor-edit').isPresent()) {
-        configureEditors();
         initializeEditors();
         $('.frame').show();
     }

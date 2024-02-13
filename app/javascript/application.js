@@ -78,3 +78,10 @@ window.I18n = i18n;
 // Routes
 import * as Routes from 'routes.js.erb';
 window.Routes = Routes;
+
+// ACE editor
+import ace from 'ace-builds';
+import "ace-builds/esm-resolver";
+import "ace-builds/src-noconflict/ext-language_tools";
+import "ace-builds/src-noconflict/ext-modelist";
+window.ace = ace; // Publish ace in global namespace

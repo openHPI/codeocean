@@ -57,11 +57,6 @@ $(document).on('turbolinks:load', function () {
         $(this).parent().toggleClass('collapsed');
     });
 
-// set file paths for ace
-    _.each(['modePath', 'themePath', 'workerPath'], function (attribute) {
-        ace.config.set(attribute, CodeOceanEditor.ACE_FILES_PATH);
-    });
-
     const commentitor = $('.editor');
 
     commentitor.each(function (index, editor) {

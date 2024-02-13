@@ -16,7 +16,6 @@ RSpec.describe FileTypesController do
 
       before { perform_request.call }
 
-      expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)
 
       it 'creates the file type' do
@@ -29,7 +28,6 @@ RSpec.describe FileTypesController do
     context 'with an invalid file type' do
       before { post :create, params: {file_type: {}} }
 
-      expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)
       expect_http_status(:ok)
       expect_template(:new)
@@ -52,7 +50,6 @@ RSpec.describe FileTypesController do
   describe 'GET #edit' do
     before { get :edit, params: {id: file_type.id} }
 
-    expect_assigns(editor_modes: Array)
     expect_assigns(file_type: FileType)
     expect_http_status(:ok)
     expect_template(:edit)
@@ -72,7 +69,6 @@ RSpec.describe FileTypesController do
   describe 'GET #new' do
     before { get :new }
 
-    expect_assigns(editor_modes: Array)
     expect_assigns(file_type: FileType)
     expect_http_status(:ok)
     expect_template(:new)
@@ -90,7 +86,6 @@ RSpec.describe FileTypesController do
     context 'with a valid file type' do
       before { put :update, params: {file_type: attributes_for(:dot_rb), id: file_type.id} }
 
-      expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)
       expect_redirect(:file_type)
     end
@@ -98,7 +93,6 @@ RSpec.describe FileTypesController do
     context 'with an invalid file type' do
       before { put :update, params: {file_type: {name: ''}, id: file_type.id} }
 
-      expect_assigns(editor_modes: Array)
       expect_assigns(file_type: FileType)
       expect_http_status(:ok)
       expect_template(:edit)

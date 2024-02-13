@@ -3,7 +3,6 @@
 class FileTypesController < ApplicationController
   include CommonBehavior
 
-  before_action :set_editor_modes, only: %i[create edit new update]
   before_action :set_file_type, only: MEMBER_ACTIONS
 
   def authorize!
@@ -37,14 +36,6 @@ class FileTypesController < ApplicationController
     authorize!
     create_and_respond(object: @file_type)
   end
-
-  def set_editor_modes
-    @editor_modes = Dir.glob('vendor/assets/javascripts/ace/mode-*.js').map do |filename|
-      name = filename.gsub(%r{\w+/|mode-|.js$}, '')
-      [name, "ace/mode/#{name}"]
-    end
-  end
-  private :set_editor_modes
 
   def set_file_type
     @file_type = FileType.find(params[:id])
