@@ -28,3 +28,25 @@ module Sorcery
     end
   end
 end
+
+# Tubesock uses a deprecated method to clear active connections with ActiveRecord.
+# Hence, we update the method call to the new method name (including `connection_handler`).
+module Tubesock::Hijack
+  extend ActiveSupport::Concern
+
+  # First, we need to remove the old `included` definition.
+  # Otherwise, we would get an `ActiveSupport::Concern::MultipleIncludedBlocks` exception.
+  remove_instance_variable :@_included_block
+
+  included do
+    def hijack
+      sock = Tubesock.hijack(request.env)
+      yield sock
+      sock.onclose do
+        ActiveRecord::Base.connection_handler.clear_active_connections! if defined? ActiveRecord
+      end
+      sock.listen
+      render plain: nil, status: -1
+    end
+  end
+end
