@@ -37,7 +37,7 @@
     "pnp-webpack-plugin": "^1.7.0",
     "propagating-hammerjs": "^3.0.0",
     "rails-erb-loader": "usabilityhub/rails-erb-loader#master",
-    "sass": "^1.70.0",
+    "sass": "^1.71.0",
     "sass-loader": "^14.1.0",
     "shakapacker": "7.2.2",
     "sortablejs": "^1.15.2",
