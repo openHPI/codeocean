@@ -2795,7 +2795,7 @@ __metadata:
     d3: "npm:^7.8.5"
     d3-tip: "npm:^0.9.1"
     highlight.js: "npm:^11.9.0"
-    i18n-js: "npm:^4.3.2"
+    i18n-js: "npm:^4.4.3"
     jquery: "npm:^3.7.1"
     jquery-ui: "npm:^1.13.2"
     jquery-ujs: "npm:^1.2.3"
@@ -4426,14 +4426,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18n-js@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "i18n-js@npm:4.3.2"
+"i18n-js@npm:^4.4.3":
+  version: 4.4.3
+  resolution: "i18n-js@npm:4.4.3"
   dependencies:
     bignumber.js: "npm:*"
     lodash: "npm:*"
     make-plural: "npm:*"
-  checksum: ccdfa7417f29cf1bf1e68d2146a3b3a1366392a2a2a07df23336fbffb9a8918dcc9c3bdfed20decf311a69d58c85c0160149a27752280dae14b521ec8bc3ab92
+  checksum: 545ce16b5fe9323d1a92637c91c6cd503c1065577fcbe96dabb34cae822a9da6642e2953eeb0e9e610a912b92f98c885c4c9717163e351593aaf0c2e5695442d
   languageName: node
   linkType: hard
 
