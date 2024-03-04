@@ -55,7 +55,7 @@
     "webpack-merge": "^5.10.0",
     "webpack-sources": "^3.2.3",
     "webpack-subresource-integrity": "^5.2.0-rc.1",
-    "xss": "^1.0.14"
+    "xss": "^1.0.15"
   },
   "devDependencies": {
     "webpack-dev-server": "^4.15.1"
