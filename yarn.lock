@@ -2826,7 +2826,7 @@ __metadata:
     webpack-merge: "npm:^5.10.0"
     webpack-sources: "npm:^3.2.3"
     webpack-subresource-integrity: "npm:^5.2.0-rc.1"
-    xss: "npm:^1.0.14"
+    xss: "npm:^1.0.15"
   languageName: unknown
   linkType: soft
 
@@ -7439,15 +7439,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xss@npm:^1.0.14":
-  version: 1.0.14
-  resolution: "xss@npm:1.0.14"
+"xss@npm:^1.0.15":
+  version: 1.0.15
+  resolution: "xss@npm:1.0.15"
   dependencies:
     commander: "npm:^2.20.3"
     cssfilter: "npm:0.0.10"
   bin:
     xss: bin/xss
-  checksum: 0a9b4d71781c8418a0327e86e5991dffe8d8b58d465d391ea74e3fa102168d1aa70a438c85d6af90e76f457bbb6041350b700bff7ad10077c5d816512f10ee0d
+  checksum: 9b31bee62a208f78e2b7bc8154e3ee87d980f4661dc4ab850ce6f4de7bc50eb152f0bdc13fa759ff8ab6d9bfdf8c0d79cf9f6f86249872b92181912309bccd08
   languageName: node
   linkType: hard
 
