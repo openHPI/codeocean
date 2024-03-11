@@ -499,7 +499,7 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
-    sorcery (0.16.5)
+    sorcery (0.17.0)
       bcrypt (~> 3.1)
       oauth (>= 0.6)
       oauth2 (~> 2.0)
