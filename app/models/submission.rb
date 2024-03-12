@@ -314,7 +314,7 @@ class Submission < ApplicationRecord
     else
       # The render_markdown method from application_helper.rb is not available in model classes.
       ActionController::Base.helpers.sanitize(
-        Kramdown::Document.new(file.feedback_message).to_html,
+        Kramdown::Document.new(file.feedback_message, smart_quotes: 'apos,apos,quot,quot').to_html,
         tags: %w[strong],
         attributes: []
       )
