@@ -190,7 +190,6 @@ GEM
       builder (>= 1.0, < 4.0)
       oauth (>= 0.4.5)
       rexml
-    influxdb (0.8.1)
     io-console (0.7.2)
     irb (1.11.2)
       rdoc
@@ -514,8 +513,7 @@ GEM
     ssrf_filter (1.1.2)
     stackprof (0.2.26)
     stringio (3.1.0)
-    telegraf (2.1.1)
-      influxdb
+    telegraf (3.0.0)
     temple (0.10.3)
     terser (1.2.0)
       execjs (>= 0.3.0, < 3)
