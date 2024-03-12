@@ -50,7 +50,7 @@ module ApplicationHelper
   end
 
   def render_markdown(markdown)
-    ActionController::Base.helpers.sanitize Kramdown::Document.new(markdown, input: 'GFM', hard_wrap: false).to_html.strip
+    ActionController::Base.helpers.sanitize Kramdown::Document.new(markdown, input: 'GFM', hard_wrap: false, smart_quotes: 'apos,apos,quot,quot').to_html.strip
   end
 
   def row(options = {}, &block)
