@@ -13,3 +13,9 @@ jobs:
         uses: ahmadnassri/action-dependabot-auto-merge@v2
         with:
           github-token: ${{ secrets.OPENHPI_BOT_TOKEN }}
+      - name: Automerge Sentry PRs
+        run: gh pr merge --auto --rebase "$PR_URL" # Use Github CLI to merge automatically the PR
+        if: contains(github.event.pull_request.title, 'sentry')
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GITHUB_TOKEN: ${{ secrets.OPENHPI_BOT_TOKEN }}
