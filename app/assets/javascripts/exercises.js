@@ -225,7 +225,7 @@ $(document).on('turbolinks:load', function () {
         $('.remove-tip').on('click', removeTip);
 
         function addTip(id, title) {
-            const tip = {id: id, title: title}
+            const tip = {id: _.escape(id), title: _.escape(title)}
             const template =
                 '<div class="list-group-item d-block" data-tip-id=' + tip.id + ' data-id="">' +
                 '<span class="fa-solid fa-bars me-3"></span>' + tip.title +

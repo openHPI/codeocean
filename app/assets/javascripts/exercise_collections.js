@@ -167,7 +167,7 @@ $(document).on('turbolinks:load', function() {
       }
 
       var addExercise = function (id, title) {
-        var exercise = {id: id, title: title}
+        var exercise = {id: _.escape(id), title: _.escape(title)}
         var collectionExercises = collectContainedExercises();
         if (collectionExercises.indexOf(exercise.id) === -1) {
           // only add exercises that are not already contained in the collection
