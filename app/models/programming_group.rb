@@ -1,33 +1,20 @@
 # frozen_string_literal: true
 
-class ProgrammingGroup < ApplicationRecord
-  include Contributor
-
-  has_many :anomaly_notifications, as: :contributor, dependent: :destroy
+class ProgrammingGroup < Contributor
   has_many :programming_group_memberships, dependent: :destroy
   has_many :external_users, through: :programming_group_memberships, source_type: 'ExternalUser', source: :user
   has_many :internal_users, through: :programming_group_memberships, source_type: 'InternalUser', source: :user
-  has_many :testruns, through: :submissions
-  has_many :runners, as: :contributor, dependent: :destroy
-  has_many :events, dependent: :destroy
+  has_many :testruns, through: :submissions # Only a single user starts testruns, but the group has access to them through their submissions.
+  has_many :events, dependent: :destroy # Only a single user creates events, but the group might be attributed to them optionally.
   has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor', dependent: :destroy
   has_many :pair_programming_exercise_feedbacks, dependent: :destroy
   has_many :pair_programming_waiting_users, dependent: :destroy
-  has_many :user_exercise_interventions, as: :contributor
   belongs_to :exercise
 
   validate :min_group_size
   validate :max_group_size
   validate :no_erroneous_users
   accepts_nested_attributes_for :programming_group_memberships
-
-  def external_user?
-    false
-  end
-
-  def internal_user?
-    false
-  end
 
   def learner?
     true
@@ -45,10 +32,6 @@ class ProgrammingGroup < ApplicationRecord
     Exercise
   end
 
-  def programming_group?
-    true
-  end
-
   def add(user)
     # Accessing the `users` method here will preload all users, which is otherwise done during validation.
     internal_users << user if user.internal_user? && users.exclude?(user)
@@ -56,21 +39,8 @@ class ProgrammingGroup < ApplicationRecord
     user
   end
 
-  def to_s
-    displayname
-  end
-
   def displayname
     "Programming Group #{id}"
-  end
-
-  def to_page_context
-    {
-      id:,
-      type: self.class.name,
-      consumer: nil, # A programming group is not associated with a consumer.
-      displayname:,
-    }
   end
 
   def programming_partner_ids
