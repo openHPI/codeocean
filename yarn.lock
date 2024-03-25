@@ -2339,10 +2339,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:^1.32.6":
-  version: 1.32.6
-  resolution: "ace-builds@npm:1.32.6"
-  checksum: 9b3ac9a500ab5ce779aed75bc0d799b57ddc24229f458a4c3541c35d2b23b51eec1cbb681335de42cac731883d52073540c52e93e2754d302ed9ed718e28cac4
+"ace-builds@npm:^1.32.8":
+  version: 1.32.8
+  resolution: "ace-builds@npm:1.32.8"
+  checksum: 26bb4c494992e564c7b00e095bed26e9fc51daed4bf4c7b17e263fc3b7ef32b360991c6cadcc7ae877276ed65f122070c4abbb33ebfd4d27b9174db94f2dfcb6
   languageName: node
   linkType: hard
 
@@ -2954,7 +2954,7 @@ __metadata:
     "@sentry/integrations": "npm:^7.108.0"
     "@sentry/utils": "npm:^7.108.0"
     "@webpack-cli/serve": "npm:^2.0.5"
-    ace-builds: "npm:^1.32.6"
+    ace-builds: "npm:^1.32.8"
     babel-loader: "npm:^9.1.3"
     bootstrap: "npm:^5.3.3"
     bootswatch: "npm:^5.3.3"
