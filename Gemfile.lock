@@ -131,7 +131,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    csv (3.2.8)
+    csv (3.3.0)
     dachsfisch (1.0.0)
       nokogiri (>= 1.14.1, < 2.0.0)
     database_cleaner (2.0.2)
