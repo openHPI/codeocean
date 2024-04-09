@@ -43,7 +43,7 @@
     "shakapacker": "7.2.3",
     "sortablejs": "^1.15.2",
     "sorttable": "^1.0.2",
-    "style-loader": "^3.3.4",
+    "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.10",
     "underscore": "^1.13.6",
     "uuid": "^9.0.1",
