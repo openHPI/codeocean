@@ -3,7 +3,12 @@ h1 {
   margin-bottom: 0.5em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 500;
 }
 
@@ -12,24 +17,34 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--bs-dark-text-emphasis);
 }
 
-a:not(.dropdown-item, .dropdown-toggle, .dropdown-link, .btn, .page-link), .btn-link {
+a:not(.dropdown-item, .dropdown-toggle, .dropdown-link, .btn, .page-link),
+.btn-link {
   text-decoration: none;
 
   &:hover {
     text-decoration: underline;
-
   }
 }
 
-i.fa-solid, i.fa-regular, i.fa-solid {
+i.fa-solid,
+i.fa-regular,
+i.fa-solid {
   margin-right: 0.5em;
 }
 
-pre, .output-element {
+pre,
+.output-element {
   background-color: var(--bs-light-bg-subtle);
   margin: 0;
-  padding: .25rem!important;
+  padding: 0.25rem !important;
   border: 1px solid var(--bs-border-color-translucent);
+}
+
+blockquote {
+  border-left: 4px solid var(--bs-secondary-bg);
+  color: var(--bs-secondary-text-emphasis);
+  margin: 14px 0;
+  padding: 0 16px;
 }
 
 span.caret {
@@ -125,19 +140,25 @@ html[data-bs-theme="light"] {
 }
 
 @-webkit-keyframes sk-rotateplane {
-  0% { -webkit-transform: perspective(120px) }
-  50% { -webkit-transform: perspective(120px) rotateY(180deg) }
-  100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+  0% {
+    -webkit-transform: perspective(120px);
+  }
+  50% {
+    -webkit-transform: perspective(120px) rotateY(180deg);
+  }
+  100% {
+    -webkit-transform: perspective(120px) rotateY(180deg) rotateX(180deg);
+  }
 }
 
 @keyframes sk-rotateplane {
   0% {
     transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);
   }
   50% {
     transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
   }
   100% {
     transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);

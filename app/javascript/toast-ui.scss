@@ -1,0 +1,71 @@
+@import "@toast-ui/editor/dist/toastui-editor.css";
+@import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
+
+.markdown-editor {
+  * {
+    box-sizing: content-box;
+  }
+}
+
+// /*------------------------------------*\
+//     $ToastUI overrides
+// \*------------------------------------*/
+
+// Overrides for the preview section to match real output styles
+.toastui-editor-contents {
+  font-size: 14px;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0.5em 0 0.5em 0;
+    padding: 0;
+    border-bottom: 0;
+    font-weight: normal;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--bs-secondary-bg);
+    p {
+      color: var(--bs-secondary-text-emphasis);
+    }
+  }
+
+  ul > li::before {
+    content: none;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ul ul {
+    list-style-type: circle;
+  }
+
+  ol > li::before {
+    color: black;
+  }
+
+  code {
+    color: var(--bs-code-color);
+    background-color: transparent !important;
+  }
+
+  pre {
+    border: 1px solid var(--bs-border-color-translucent);
+  }
+
+  del {
+    color: var(--bs-secondary-color);
+  }
+}
+
+// Ensure multiline backquotes have same text color in "write" mode
+.toastui-editor-md-marked-text,
+.toastui-editor-md-block-quote {
+  color: var(--bs-secondary-text-emphasis);
+}

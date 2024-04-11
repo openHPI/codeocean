@@ -1,3 +1,10 @@
+- content_for :head do
+  // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
+     Otherwise, code might not be highlighted correctly (race condition)
+  meta name='turbolinks-visit-control' content='reload'
+  - append_javascript_pack_tag('toast-ui')
+  - append_stylesheet_pack_tag('toast-ui')
+
 = form_for(@proxy_exercise, multipart: true, builder: PagedownFormBuilder) do |f|
   = render('shared/form_errors', object: @proxy_exercise)
   .mb-3
@@ -5,7 +12,7 @@
     = f.text_field(:title, class: 'form-control', required: true)
   .mb-3
     = f.label(:description, class: 'form-label')
-    = f.pagedown :description, input_html: {preview: true, rows: 10}
+    = f.pagedown :description
   .mb-3
     = f.label(:algorithm, class: 'form-label')
     = f.collection_select(:algorithm, ProxyExercise.algorithms.map {|algorithm, _id| [t("activerecord.attributes.proxy_exercise.algorithm_type.#{algorithm}"), algorithm] }, :second, :first, {}, class: 'form-control form-control-sm')
