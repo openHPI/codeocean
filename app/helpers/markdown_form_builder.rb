@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class PagedownFormBuilder < ActionView::Helpers::FormBuilder
-  def pagedown(method, args = {})
+class MarkdownFormBuilder < ActionView::Helpers::FormBuilder
+  def markdown(method, args = {})
     # Adopt simple form builder to work with form_for
     @attribute_name = method
     @input_html_options = args[:input_html]

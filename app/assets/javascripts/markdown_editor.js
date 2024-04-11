@@ -2,7 +2,7 @@
  * ToastUi editor initializer
  *
  * This script transforms form textareas created with 
- * "PagedownFormBuilder" into ToastUi markdown editors.
+ * "MarkdownFormBuilder" into ToastUi markdown editors.
  *
  */
 
