@@ -13,6 +13,7 @@
     "@sentry/core": "^7.112.2",
     "@sentry/integrations": "^7.112.2",
     "@sentry/utils": "^7.112.2",
+    "@toast-ui/editor": "^3.2.2",
     "@webpack-cli/serve": "^2.0.5",
     "ace-builds": "^1.33.1",
     "babel-loader": "^9.1.3",
