@@ -9,7 +9,7 @@
 - execution_environments = ExecutionEnvironment.where.not(file_type_id: nil).select(:file_type_id, :id)
 - file_types = FileType.where.not(file_extension: nil).select(:file_extension, :id)
 
-= form_for(@exercise, data: {execution_environments:, file_types:}, multipart: true, builder: PagedownFormBuilder) do |f|
+= form_for(@exercise, data: {execution_environments:, file_types:}, multipart: true, builder: MarkdownFormBuilder) do |f|
   = render('shared/form_errors', object: @exercise)
   .mb-3
     = f.label(:title, class: 'form-label')
@@ -20,7 +20,7 @@
     .help-block.form-text == t('.hints.internal_title')
   .mb-3
     = f.label(:description, class: 'form-label')
-    = f.pagedown :description
+    = f.markdown :description
   .mb-3
     = f.label(:execution_environment_id, class: 'form-label')
     = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {include_blank: t('exercises.form.none')}, class: 'form-control')
