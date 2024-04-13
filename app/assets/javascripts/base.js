@@ -24,10 +24,6 @@ $.fn.scrollTo = function(selector) {
   }, ANIMATION_DURATION);
 };
 
-// Disable the use of web workers for JStree due to JS error
-// See https://github.com/vakata/jstree/issues/1717 for details
-$.jstree.defaults.core.worker = false;
-
 $(document).on('turbolinks:load', function() {
     // Update all CSRF tokens on the page to reduce InvalidAuthenticityToken errors
     // See https://github.com/rails/jquery-ujs/issues/456 for details
