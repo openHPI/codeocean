@@ -14,7 +14,7 @@
   h1 = "#{ProgrammingGroup.model_name.human(count: 2)} for Exercise '#{@exercise.title}'"
 
 .table-responsive
-  table.table.mt-4 class="#{@programming_groups.present? ? 'sortable' : ''}"
+  table.table.mt-4 class=(@programming_groups.present? ? 'sortable' : '')
     thead
       tr
         th.sortable_nosort = sort_link(@search, :id, t('activerecord.attributes.programming_group.name'))
@@ -33,11 +33,11 @@
         tr
           td = link_to_if(policy(programming_group).show?, programming_group.displayname, programming_group)
           - if params[:exercise_id].blank?
-            td = link_to_if(policy(programming_group.exercise).show?, programming_group.exercise.title, programming_group.exercise, 'data-turbolinks' => "false")
-          td == programming_group.users.map { |user| link_to_if(policy(user).show?, user.name, user) }.join(', ')
+            td = link_to_if(policy(programming_group.exercise).show?, programming_group.exercise.title, programming_group.exercise, 'data-turbolinks': 'false')
+          td == programming_group.users.map {|user| link_to_if(policy(user).show?, user.name, user) }.join(', ')
           td = programming_group.users.size
           td = l(programming_group.created_at, format: :short)
           td = link_to(t('shared.show'), programming_group) if policy(programming_group).show?
           td = link_to(t('shared.edit'), edit_programming_group_path(programming_group)) if policy(programming_group).edit?
-          td = link_to(t('shared.destroy'), programming_group, data: { confirm: t('shared.confirm_destroy') }, method: :delete) if policy(programming_group).destroy?
+          td = link_to(t('shared.destroy'), programming_group, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(programming_group).destroy?
 = render('shared/pagination', collection: @programming_groups)

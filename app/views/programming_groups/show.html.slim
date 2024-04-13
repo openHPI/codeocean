@@ -10,10 +10,10 @@ h1
 
 h2.mt-4 = t('activerecord.attributes.study_group.members')
 .table-responsive
-  table.table class="#{@programming_group.users.present? ? 'sortable' : ''}"
+  table.table class=(@programming_group.users.present? ? 'sortable' : '')
     thead
       tr
-        th =  t('navigation.sections.contributors')
+        th = t('navigation.sections.contributors')
     - @programming_group.users.each do |user|
       tr
         td = link_to_if(policy(user).show?, user.displayname, user)

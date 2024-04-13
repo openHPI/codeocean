@@ -1,7 +1,7 @@
 h1 = ErrorTemplate.model_name.human(count: 2)
 
 .table-responsive
-  table.table class="#{@error_templates.present? ? 'sortable' : ''}"
+  table.table class=(@error_templates.present? ? 'sortable' : '')
     thead
       tr
         th = t('activerecord.attributes.error_template.name')

@@ -15,10 +15,10 @@ h1 = ExternalUser.model_name.human(count: 2)
           = f.search_field(:external_id_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.external_id'))
       .row
         .col-auto
-          = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], { include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : '' }
+          = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], {include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : ''}
         .col-auto.mt-3.mt-lg-0
           = f.label(:consumer_id_eq, t('activerecord.attributes.external_user.consumer'), class: 'visually-hidden form-label')
-          = f.collection_select(:consumer_id_eq, Consumer.with_external_users, :id, :name, class: 'form-control', include_blank: true, prompt: t('activerecord.attributes.external_user.consumer') )
+          = f.collection_select(:consumer_id_eq, Consumer.with_external_users, :id, :name, class: 'form-control', include_blank: true, prompt: t('activerecord.attributes.external_user.consumer'))
   - else
     .col-auto
       = f.label(:name_cont, t('activerecord.attributes.external_user.name'), class: 'visually-hidden form-label')

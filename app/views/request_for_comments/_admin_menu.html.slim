@@ -1,9 +1,9 @@
 hr
 h5.mt-4 Admin Menu
 ul.text
-  li = link_to "Clear question text (in case of explicit text)", clear_question_request_for_comment_path(id: @request_for_comment.id), method: :post if policy(@request_for_comment).clear_question?
+  li = link_to 'Clear question text (in case of explicit text)', clear_question_request_for_comment_path(id: @request_for_comment.id), method: :post if policy(@request_for_comment).clear_question?
   li = link_to "User's current status of this exercise", statistics_external_user_exercise_path(id: @request_for_comment.exercise_id, external_user_id: @request_for_comment.user_id) if policy(@request_for_comment.exercise).statistics?
-  li = link_to "All exercises of this user", statistics_external_user_path(id: @request_for_comment.user_id) if policy(@request_for_comment.user).statistics?
+  li = link_to 'All exercises of this user', statistics_external_user_path(id: @request_for_comment.user_id) if policy(@request_for_comment.user).statistics?
 ul.text
-  li = link_to "Implement the exercise yourself", implement_exercise_path(id: @request_for_comment.exercise_id) if policy(@request_for_comment.exercise).implement?
-  li = link_to "Show the exercise", exercise_path(id: @request_for_comment.exercise_id) if policy(@request_for_comment.exercise).show?
+  li = link_to 'Implement the exercise yourself', implement_exercise_path(id: @request_for_comment.exercise_id) if policy(@request_for_comment.exercise).implement?
+  li = link_to 'Show the exercise', exercise_path(id: @request_for_comment.exercise_id) if policy(@request_for_comment.exercise).show?

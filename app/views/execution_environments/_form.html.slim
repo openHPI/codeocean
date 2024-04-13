@@ -5,7 +5,7 @@
     = f.text_field(:name, class: 'form-control', required: true)
   .mb-3
     = f.label(:file_type_id, class: 'form-label')
-    = f.collection_select(:file_type_id, FileType.all.order(:name), :id, :name, {include_blank: true}, class: 'form-control')
+    = f.collection_select(:file_type_id, FileType.order(:name), :id, :name, {include_blank: true}, class: 'form-control')
   .mb-3
     = f.label(:docker_image, class: 'form-label')
     | &nbsp;
@@ -53,4 +53,4 @@
     = f.label(:help, class: 'form-label')
     = f.hidden_field(:help)
     .form-control.markdown
-  .actions = render('shared/submit_button', f: f, object: @execution_environment)
+  .actions = render('shared/submit_button', f:, object: @execution_environment)

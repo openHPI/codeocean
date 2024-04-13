@@ -8,7 +8,7 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
   span.col-sm-9 =< @exercise.maximum_score
 
   .header.mt-3 = t('activerecord.models.user_exercise_feedback.other')
-  - if @feedbacks.nil? or @feedbacks.size == 0
+  - if @feedbacks.blank?
     .no-feedback = t('user_exercise_feedback.no_feedback')
 
   ul.list-unstyled
@@ -16,22 +16,22 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
     - time_presets = UserExerciseFeedbacksController.new.time_presets
     - @feedbacks.each_with_index do |feedback, index|
       li.card.mt-2
-        .card-header role="tab" id="heading"
-          div.clearfix.feedback-header
+        .card-header#heading role='tab'
+          .clearfix.feedback-header
             - if policy(@exercise).detailed_statistics?
               span.username = link_to_if(policy(feedback.user).show?, feedback.user.displayname, statistics_external_user_exercise_path(id: @exercise.id, external_user_id: feedback.user.id))
             - if feedback.anomaly_notification
-              i class="fa-regular fa-envelope" data-bs-placement="top" data-bs-toggle="tooltip" data-bs-container="body" title=feedback.anomaly_notification.reason
+              i.fa-regular.fa-envelope data-bs-placement='top' data-bs-toggle='tooltip' data-bs-container='body' title=feedback.anomaly_notification.reason
             span.date = feedback.created_at
-        .card-collapse role="tabpanel"
+        .card-collapse role='tabpanel'
           .card-body.feedback
             .text style="white-space: pre-wrap;" = feedback.feedback_text
             .difficulty = "#{t('user_exercise_feedback.difficulty')} #{comment_presets[feedback.difficulty].join(' - ')}" if feedback.difficulty
             .worktime = "#{t('user_exercise_feedback.working_time')} #{time_presets[feedback.user_estimated_worktime].join(' - ')}" if feedback.user_estimated_worktime
         - if policy(@exercise).detailed_statistics?
           .card-footer
-            div.clearfix.feedback-header
+            .clearfix.feedback-header
               span.points.flex-grow-1 = "#{t('exercises.statistics.score')}: #{@submissions[index].score}"
-              span.working_time.float-end = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user) or 0}"
+              span.working_time.float-end = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user) || 0}"
 
   = render('shared/pagination', collection: @feedbacks)

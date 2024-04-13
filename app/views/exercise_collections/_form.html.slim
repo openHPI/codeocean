@@ -24,7 +24,7 @@
             td
               span.fa-solid.fa-bars
             td = item.exercise.title
-            td = link_to(t('shared.show'), item.exercise, 'data-turbolinks' => "false")
+            td = link_to(t('shared.show'), item.exercise, 'data-turbolinks': 'false')
             td
               a.remove-exercise href='#' = t('shared.destroy')
   .d-none
@@ -33,6 +33,6 @@
     button.btn.btn-outline-primary type='button' data-bs-toggle='modal' data-bs-target='#add-exercise-modal' = t('exercise_collections.form.add_exercises')
     button.btn.btn-secondary#sort-button type='button' = t('exercise_collections.form.sort_by_title')
 
-  .actions = render('shared/submit_button', f: f, object: @exercise_collection)
+  .actions = render('shared/submit_button', f:, object: @exercise_collection)
 
 = render('shared/modal', id: 'add-exercise-modal', title: t('.add_exercises'), template: 'exercise_collections/_add_exercise_modal')

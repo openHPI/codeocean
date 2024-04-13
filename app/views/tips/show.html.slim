@@ -11,7 +11,5 @@ h1
 
 = row(label: 'tip.title', value: @tip.title)
 = row(label: 'tip.description', value: render_markdown(@tip.description), class: 'm-0')
-= row(label: 'file.file_type', value: @tip.file_type_id? ? \
-  link_to_if(policy(@tip.file_type).show?, @tip.file_type.name, @tip.file_type) : '')
-= row(label: 'tip.example', value: @tip.file_type_id? ? \
-  code_tag(@tip.example, @tip.file_type.programming_language) : '')
+= row(label: 'file.file_type', value: @tip.file_type_id? ? link_to_if(policy(@tip.file_type).show?, @tip.file_type.name, @tip.file_type) : '')
+= row(label: 'tip.example', value: @tip.file_type_id? ? code_tag(@tip.example, @tip.file_type.programming_language) : '')

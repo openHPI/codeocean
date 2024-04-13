@@ -9,17 +9,17 @@ table(border=1)
       td = t('exercises.statistics.average_worktime', locale: :de)
       td = t('shared.actions', locale: :de)
   tbody
-    - @anomalies.keys.each do | id |
+    - @anomalies.each_key do |id|
       - exercise = Exercise.find(id)
       tr
         td = link_to_if(ExercisePolicy.new(@user, exercise).show?, exercise.title, exercise_url(exercise))
         td = @anomalies[id]
         td = link_to_if(ExercisePolicy.new(@user, exercise).statistics?, t('shared.statistics', locale: :de), statistics_exercise_url(exercise))
 
-
 == t('mailers.user_mailer.exercise_anomaly_detected.body2',
         receiver_displayname: @receiver_displayname,
         collection_name: @collection.name)
+
 
 table(border=1)
   thead
@@ -28,7 +28,7 @@ table(border=1)
       td = t('exercises.statistics.average_worktime', locale: :en)
       td = t('shared.actions', locale: :en)
   tbody
-    - @anomalies.keys.each do | id |
+    - @anomalies.each_key do |id|
       - exercise = Exercise.find(id)
       tr
         td = link_to_if(ExercisePolicy.new(@user, exercise).show?, exercise.title, exercise_url(exercise))

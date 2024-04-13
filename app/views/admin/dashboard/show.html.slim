@@ -9,16 +9,16 @@ h1 = t('breadcrumbs.dashboard.show')
 
 h2 Version
 
-div.mb-4
+.mb-4
   = application_name
-  =< t("admin.dashboard.show.release")
+  =< t('admin.dashboard.show.release')
   | :
   pre = Sentry.configuration.release
 
 - if Runner.management_active?
-  div.mb-4
+  .mb-4
     = Runner.strategy_class.name.demodulize
-    =< t("admin.dashboard.show.release")
+    =< t('admin.dashboard.show.release')
     | :
     pre = Admin::DashboardHelper.runner_management_release
 

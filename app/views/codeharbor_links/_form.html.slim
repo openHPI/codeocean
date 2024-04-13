@@ -13,7 +13,6 @@
       .input-group-btn
         = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-api_key btn btn-default'
   .actions
-    = render('shared/submit_button', f: f, object: @codeharbor_link)
+    = render('shared/submit_button', f:, object: @codeharbor_link)
     - if @codeharbor_link.persisted?
       = link_to(t('codeharbor_link.delete'), codeharbor_link_path(@codeharbor_link), data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-danger float-end')
-

@@ -3,4 +3,4 @@
   .mb-3
     = f.label(:name, class: 'form-label')
     = f.text_field(:name, class: 'form-control', required: true)
-  .actions = render('shared/submit_button', f: f, object: @tag)
+  .actions = render('shared/submit_button', f:, object: @tag)

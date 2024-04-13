@@ -5,15 +5,15 @@ h1.d-inline-block = @execution_environment
   ul.dropdown-menu.dropdown-menu-end role='menu'
     li = link_to(t('execution_environments.index.synchronize.button'), sync_to_runner_management_execution_environment_path(@execution_environment), method: :post, class: 'dropdown-item') if policy(@execution_environment).sync_to_runner_management?
     li = link_to(t('execution_environments.index.shell'), shell_execution_environment_path(@execution_environment), class: 'dropdown-item') if policy(@execution_environment).shell?
-    li = link_to(t('shared.statistics'), statistics_execution_environment_path(@execution_environment), 'data-turbolinks' => "false", class: 'dropdown-item') if policy(@execution_environment).statistics?
+    li = link_to(t('shared.statistics'), statistics_execution_environment_path(@execution_environment), 'data-turbolinks': 'false', class: 'dropdown-item') if policy(@execution_environment).statistics?
     li = link_to(t('shared.destroy'), @execution_environment, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'dropdown-item') if policy(@execution_environment).destroy?
 
 = row(label: 'execution_environment.name', value: @execution_environment.name)
 = row(label: 'execution_environment.user', value: link_to_if(policy(@execution_environment.author).show?, @execution_environment.author, @execution_environment.author))
 = row(label: 'execution_environment.file_type', value: @execution_environment.file_type.present? ? link_to(@execution_environment.file_type, @execution_environment.file_type) : nil)
-- [:docker_image, :exposed_ports_list, :memory_limit, :cpu_limit, :network_enabled, :privileged_execution, :permitted_execution_time, :pool_size].each do |attribute|
+- %i[docker_image exposed_ports_list memory_limit cpu_limit network_enabled privileged_execution permitted_execution_time pool_size].each do |attribute|
   = row(label: "execution_environment.#{attribute}", value: @execution_environment.send(attribute))
-- [:run_command, :test_command].each do |attribute|
+- %i[run_command test_command].each do |attribute|
   = row(label: "execution_environment.#{attribute}") do
     code = @execution_environment.send(attribute)
 = row(label: 'execution_environment.testing_framework', value: @testing_framework_adapter.try(:framework_name))

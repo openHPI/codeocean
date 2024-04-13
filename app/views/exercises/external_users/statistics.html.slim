@@ -3,19 +3,17 @@ h1
   ' (external user
   = link_to_if(policy(@external_user).show?, @external_user.displayname, @external_user)
   ' )
-- submissions = @all_events.filter{|event| event.is_a? Submission}
+- submissions = @all_events.filter {|event| event.is_a? Submission }
 - current_submission = submissions.first
 - if current_submission
-  - initial_files = current_submission.files.to_a
-
   - all_files = []
-  - file_types = Set.new()
+  - file_types = Set.new
   - submissions.each do |submission|
     - submission.files.each do |file|
       - file_types.add(ActiveSupport::JSON.encode(file.file_type))
     - all_files.push(submission.files)
-  - all_files.reject!(&:blank?)
-  - file_types.reject!(&:blank?)
+  - all_files.compact_blank!
+  - file_types.reject!(&:blank?) # rubocop:disable Rails/CompactBlank because it's a set
 
   .d-none#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
 
@@ -28,16 +26,16 @@ h1
       #current-file.editor
 
   .flex-container
-    button.btn.btn-secondary id='play-button'
+    button.btn.btn-secondary#play-button
       span.fa-solid.fa-play
     #submissions-slider.flex-item
-      input type='range' orient='horizontal' list='datapoints' min=0 max=all_files.length-1 value=0 style="width: 100%"
+      input.w-100 type='range' orient='horizontal' list='datapoints' value=0 min=0 max=all_files.length - 1
       datalist#datapoints
-        - index=0
+        - index = 0
         - submissions.each do |submission|
           - next if submission.files.blank?
           option data-submission=submission
-            =index
+            = index
           - index += 1
   - if policy(@exercise).detailed_statistics?
     .bg-body-secondary.w-100.p-2.mb-4.align-items-center.d-flex.justify-content-between
@@ -45,12 +43,12 @@ h1
         span.ps-1.pb-1
           i.fa-solid.fa-circle-info.align-middle
           small.me-5.ms-1 = t('.toggle_status_on')
-        = link_to t('.toggle_autosave_off'), statistics_external_user_exercise_path(show_autosaves: false), class: "btn btn-outline-contrast float-end btn-sm"
+        = link_to t('.toggle_autosave_off'), statistics_external_user_exercise_path(show_autosaves: false), class: 'btn btn-outline-contrast float-end btn-sm'
       - else
         span.ps-1.pb-1
           i.fa-solid.fa-circle-info.align-middle
           small.me-5.ms-1 = t('.toggle_status_off')
-        = link_to t('.toggle_autosave_on'), statistics_external_user_exercise_path(show_autosaves: true), class: "btn btn-outline-contrast float-end btn-sm"
+        = link_to t('.toggle_autosave_on'), statistics_external_user_exercise_path(show_autosaves: true), class: 'btn btn-outline-contrast float-end btn-sm'
   #timeline
     .table-responsive
       table.table
@@ -62,8 +60,8 @@ h1
             th.header = t('.tests')
             th.header = t('.time_difference') if policy(@exercise).detailed_statistics?
         tbody
-          - @all_events.each_with_index do |this, index|
-            - highlight = (index > 0 and @deltas.present? and @deltas[index] == 0 and this.created_at.to_s != @all_events[index - 1].created_at.to_s)
+          - @all_events.each_with_index do |this, event_index|
+            - highlight = event_index.positive? && @deltas.present? && @deltas[event_index].zero? && this.created_at.to_s != @all_events[event_index - 1].created_at.to_s
             - row_classes = ''
             - row_classes += ' highlight' if highlight
             - row_classes += ' before_deadline' if this.is_a?(Submission) && this.before_deadline?
@@ -72,22 +70,22 @@ h1
             tr data-id=this.id class=row_classes
               - if this.is_a?(Submission)
                 td class=(this.files.present? ? 'clickable' : '')
-                  = this.created_at.strftime("%F %T")
+                  = this.created_at.strftime('%F %T')
                 td = this.cause
                 td = this.score
                 td.align-middle
-                  -this.testruns.sort_by {|t| [t.file&.name ? 0 : 1, t.file&.name]}.each do |run|
+                  -this.testruns.sort_by {|t| [t.file&.name ? 0 : 1, t.file&.name] }.each do |run|
                     - if run.passed
                       .unit-test-result.positive-result title=[run.file&.filepath, run.log].join("\n").strip
                     - else
                       .unit-test-result.unknown-result title=[run.file&.filepath, run.log].join("\n").strip
-                td = @working_times_until[index] if index > 0 if policy(@exercise).detailed_statistics?
+                td = @working_times_until[event_index] if event_index.positive? && policy(@exercise).detailed_statistics?
               - elsif this.is_a? UserExerciseIntervention
-                td = this.created_at.strftime("%F %T")
+                td = this.created_at.strftime('%F %T')
                 td = this.intervention.name
-                td =
-                td =
-                td = @working_times_until[index] if index > 0 if policy(@exercise).detailed_statistics?
+                td
+                td
+                td = @working_times_until[event_index] if event_index.positive? && policy(@exercise).detailed_statistics?
     small
       b
         = t('.legend')
@@ -105,8 +103,8 @@ h1
         p.mt-2 = t('.filter')
     - if current_user.try(:admin?)
       p = t('.addendum', delta: StatisticsHelper::WORKING_TIME_DELTA_IN_SECONDS / 60)
-      .d-none#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until);
-      div#progress_chart.col-lg-12
+      .d-none#wtimes data-working_times=ActiveSupport::JSON.encode(@working_times_until)
+      #progress_chart.col-lg-12
         .graph-functions-2
 
 - else

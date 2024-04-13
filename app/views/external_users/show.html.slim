@@ -8,10 +8,10 @@ h1 = @user.displayname
 = row(label: 'external_user.consumer', value: link_to_if(@user.consumer.present? && policy(@user.consumer).show?, @user.consumer, @user.consumer))
 = row(label: 'external_user.platform_admin', value: @user.platform_admin?) if current_user.admin?
 = row(label: 'users.show.study_groups') do
-  - visible_memberships = @user.study_group_memberships.select { |study_group_membership| policy(study_group_membership.study_group).show? }
+  - visible_memberships = @user.study_group_memberships.select {|study_group_membership| policy(study_group_membership.study_group).show? }
   - if visible_memberships.any?
-    ul.mb-0 class="#{visible_memberships.one? ? 'single_entry_inline_list' : 'inline_list'}"
-      - visible_memberships = visible_memberships.sort_by{ |study_group_membership| study_group_membership.study_group.name}
+    ul.mb-0 class=(visible_memberships.one? ? 'single_entry_inline_list' : 'inline_list')
+      - visible_memberships = visible_memberships.sort_by {|study_group_membership| study_group_membership.study_group.name }
       - visible_memberships.each do |study_group_membership|
         li
           => link_to(study_group_membership.study_group.name, study_group_membership.study_group)

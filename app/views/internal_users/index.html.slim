@@ -9,7 +9,7 @@ h1 = InternalUser.model_name.human(count: 2)
       = f.label(:email_cont, t('activerecord.attributes.internal_user.email'), class: 'visually-hidden form-label')
       = f.search_field(:email_cont, class: 'form-control', placeholder: t('activerecord.attributes.internal_user.email'))
     .col-auto
-      = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], { include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : '' }
+      = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], {include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : ''}
 .table-responsive
   table.table.mt-4
     thead

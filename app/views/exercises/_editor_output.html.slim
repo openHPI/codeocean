@@ -1,13 +1,12 @@
-div.d-grid id='output_sidebar_collapsed'
-  = render('editor_button', classes: 'btn-outline-contrast btn', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa-solid fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
-div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-bottom-margin' data-message-no-output=t('exercises.implement.no_output_yet')
+.d-grid#output_sidebar_collapsed
+  = render('editor_button', classes: 'btn-outline-contrast btn', data: {'data-bs-toggle': 'tooltip', 'data-bs-placement': 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa-solid fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
+.d-grid.d-none.col-sm-12.enforce-bottom-margin#output_sidebar_uncollapsed data-message-no-output=t('exercises.implement.no_output_yet')
   = render('editor_button', classes: 'btn-outline-contrast btn overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
-
 
   #content-right-sidebar.overflow-scroll
     = render('download_file_tree')
 
-    div.enforce-bottom-margin.overflow-auto.d-none id='score_div'
+    .enforce-bottom-margin.overflow-auto.d-none#score_div
       #results
         h2 = t('exercises.implement.results')
         p.test-count == t('exercises.implement.test_count', count: 0)
@@ -67,12 +66,12 @@ div.d-grid id='output_sidebar_uncollapsed' class='d-none col-sm-12 enforce-botto
       hr
     #turtlediv.enforce-big-bottom-margin.overflow-auto.d-none
       canvas#turtlecanvas width=400 height=400
-    div.enforce-big-bottom-margin.overflow-auto
+    .enforce-big-bottom-margin.overflow-auto
       #prompt.input-group.mb-2.d-none
         span.input-group-text data-prompt=t('exercises.editor.input') = t('exercises.editor.input')
         input#prompt-input.form-control type='text'
         span.input-group-btn
-          button#prompt-submit.btn.btn-primary type="button" = t('exercises.editor.send')
+          button#prompt-submit.btn.btn-primary type='button' = t('exercises.editor.send')
       - unless @embed_options[:disable_hints]
         #error-hints.mb-2.p-2
           .heading = t('exercises.implement.error_hints.heading')

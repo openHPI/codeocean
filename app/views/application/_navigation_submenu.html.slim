@@ -1,7 +1,7 @@
-- if models.any? { |model| policy(model).index? }
+- if models.any? {|model| policy(model).index? }
   li.dropdown-submenu
-    - link = link.nil? ? "#" : link
-    a.dropdown-item.dropdown-toggle href=link data-bs-toggle="dropdown" = title
+    - link = '#' if link.nil?
+    a.dropdown-item.dropdown-toggle href=link data-bs-toggle='dropdown' = title
     ul.dropdown-menu.p-0
       - models.each do |model|
-        = render('navigation_collection_link', model: model, cached: true)
+        = render('navigation_collection_link', model:, cached: true)

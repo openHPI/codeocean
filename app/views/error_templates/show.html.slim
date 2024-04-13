@@ -4,16 +4,16 @@ h1
 
 = row(label: 'error_template.name', value: @error_template.name)
 = row(label: 'exercise.execution_environment', value: link_to_if(policy(@error_template.execution_environment).show?, @error_template.execution_environment))
-= row(label: "error_template.signature") do
+= row(label: 'error_template.signature') do
   code = @error_template.signature
-- [:description, :hint].each do |attribute|
+- %i[description hint].each do |attribute|
   = row(label: "error_template.#{attribute}", value: @error_template.send(attribute))
 
 h2.mt-4
   = t 'error_templates.attributes'
 
 .table-responsive
-  table.table class="#{@error_template.error_template_attributes.present? ? 'sortable' : ''}"
+  table.table class=(@error_template.error_template_attributes.present? ? 'sortable' : '')
     thead
       tr
         th
@@ -26,16 +26,16 @@ h2.mt-4
         tr
           td
             - if attribute.important
-              span class="fa-solid fa-star" aria-hidden="true"
+              span.fa-solid.fa-star aria-hidden='true'
             - else
-              span class="fa-regular fa-star" aria-hidden="true"
+              span.fa-regular.fa-star aria-hidden='true'
           td = link_to_if(policy(attribute).show?, attribute.key, attribute)
           td = attribute.description
           td
             code = attribute.regex
           td = link_to(t('shared.show'), attribute) if policy(attribute).show?
           td = link_to(t('shared.edit'), edit_error_template_attribute_path(attribute)) if policy(attribute).edit?
-          td = link_to(t('shared.destroy'), attribute_error_template_url(:error_template_attribute_id => attribute.id), :method => :delete) if policy(attribute).destroy?
+          td = link_to(t('shared.destroy'), attribute_error_template_url(error_template_attribute_id: attribute.id), method: :delete) if policy(attribute).destroy?
 
 #add-attribute
   = collection_select({}, :error_template_attribute_id,

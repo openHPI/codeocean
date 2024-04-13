@@ -12,7 +12,7 @@ h1 = Tag.model_name.human(count: 2)
           td = link_to_if(policy(tag).show?, tag.name, tag)
           td = link_to(t('shared.show'), tag) if policy(tag).show?
           td = link_to(t('shared.edit'), edit_tag_path(tag)) if policy(tag).edit?
-          td = link_to(t('shared.destroy'), tag, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if tag.can_be_destroyed? &&  policy(tag).destroy?
+          td = link_to(t('shared.destroy'), tag, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if tag.can_be_destroyed? && policy(tag).destroy?
 
 = render('shared/pagination', collection: @tags)
 p = render('shared/new_button', model: Tag, path: new_tag_path)

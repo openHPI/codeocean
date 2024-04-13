@@ -5,9 +5,9 @@
   - append_javascript_pack_tag('highlight')
   - append_stylesheet_pack_tag('highlight')
 
-#tips.card.d-block.overflow-scroll role="tab"
+#tips.card.d-block.overflow-scroll role='tab'
   .card-header.py-2
     i.fa-solid.fa-lightbulb
     = t('exercises.implement.tips.heading')
   .card-body.p-2
-    = render(partial: 'tips/collapsed_card', collection: @tips, as: :exercise_tip, locals: { tip_prefix: '' })
+    = render(partial: 'tips/collapsed_card', collection: @tips, as: :exercise_tip, locals: {tip_prefix: ''})
