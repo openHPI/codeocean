@@ -69,6 +69,7 @@ end
 group :development, :staging do
   gem 'better_errors'
   gem 'binding_of_caller'
+  gem 'i18n-tasks'
   gem 'letter_opener'
   gem 'listen'
   gem 'pry-byebug'
