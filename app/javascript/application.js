@@ -85,4 +85,5 @@ import "ace-builds/webpack-resolver"; // Enable webpack resolver, requires `file
 // Enable ACE editor extensions. See https://github.com/ajaxorg/ace/wiki/Extensions
 import "ace-builds/src-noconflict/ext-language_tools"; // Enable autocompletion
 import "ace-builds/src-noconflict/ext-modelist"; // Enable language mode detection
+ace.config.set("useStrictCSP", true); // Enable strict CSP mode
 window.ace = ace; // Publish ace in global namespace
