@@ -80,6 +80,7 @@ group :development, :staging do
   gem 'rubocop-performance'
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec'
+  gem 'slim_lint', require: false
 end
 
 group :test do
