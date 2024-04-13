@@ -17,11 +17,11 @@
   h2.mt-4 = t('internal_users.form.study_groups')
   ul.list-unstyled.card-group
     li.card
-      .card-header role="tab" id="heading"
-        a.file-heading data-bs-toggle="collapse" href="#study-group-collapse"
-          div.clearfix role="button"
+      .card-header#heading role='tab'
+        a.file-heading data-bs-toggle='collapse' href='#study-group-collapse'
+          .clearfix role='button'
             span = t('internal_users.form.click_to_collapse')
-      .card-collapse.collapse id="study-group-collapse" role="tabpanel"
+      .card-collapse.collapse#study-group-collapse role='tabpanel'
         .table-responsive
           table.table.overflow-hidden#study-groups-table
             thead
@@ -31,8 +31,8 @@
                 th = t('activerecord.attributes.study_group_membership.role')
               = collection_check_boxes :user, :study_group_ids, @study_group_memberships, :study_group_id, :id, {namespace: :internal_user} do |b|
                 tr
-                  td = b.check_box class: 'form-check-input', name: "internal_user[study_group_ids][]"
+                  td = b.check_box class: 'form-check-input', name: 'internal_user[study_group_ids][]'
                   td = b.object.study_group.name
-                  td = select "study_group_membership_roles[#{b.object.study_group.id}]", :role, StudyGroupMembership::ROLES.map { |role| [t("activerecord.attributes.study_group_membership.role_type.#{role}"), role] }, {selected: b.object.persisted? ? b.object.role : nil, include_blank: true}, class: 'form-control form-control-sm'
+                  td = select "study_group_membership_roles[#{b.object.study_group.id}]", :role, StudyGroupMembership::ROLES.map {|role| [t("activerecord.attributes.study_group_membership.role_type.#{role}"), role] }, {selected: b.object.persisted? ? b.object.role : nil, include_blank: true}, class: 'form-control form-control-sm'
 
-  .actions = render('shared/submit_button', f: f, object: @user)
+  .actions = render('shared/submit_button', f:, object: @user)

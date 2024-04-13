@@ -13,7 +13,7 @@ h1 = @exercise_collection
 /     Only before specific date: date = DateTime.parse("2015-01-01 00:00:00.000000") ;  @exercise_collection.exercises.joins(:submissions).where(["submissions.created_at > ?", date]).group("submissions.contributor_id", "submissions.contributor_type").count.count
 /     Only with specific cause: @exercise_collection.exercises.joins(:submissions).where("submissions.cause" == 'assess').count
 
-= row(label: 'exercises.statistics.average_worktime', value: @exercise_collection.average_working_time.round(3).to_s + 's')
+= row(label: 'exercises.statistics.average_worktime', value: "#{@exercise_collection.average_working_time.round(3)}s")
 
 #graph
   #data.d-none(data-working-times=ActiveSupport::JSON.encode(@exercise_collection.collection_statistics) data-average-working-time=@exercise_collection.average_working_time)
@@ -28,7 +28,7 @@ h1 = @exercise_collection
 
 h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
 .table-responsive#exercise-list
-  table.table class="#{@exercise_collection.items.present? ? 'sortable' : ''}"
+  table.table class=(@exercise_collection.items.present? ? 'sortable' : '')
     thead
       tr
         th = '#'
@@ -39,7 +39,7 @@ h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
         th = t('activerecord.attributes.exercise.average_score_percentage')
         th = t('shared.actions')
     tbody
-      - @exercise_collection.items.sort_by{|item| item.position}.each do |exercise_collection_item|
+      - @exercise_collection.items.sort_by(&:position).each do |exercise_collection_item|
         - exercise = exercise_collection_item.exercise
         tr
           td = exercise_collection_item.position
@@ -48,4 +48,4 @@ h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
           td = exercise.submissions.send(:final).distinct.count(:contributor_id)
           td = exercise.finishers_percentage
           td = exercise.average_percentage
-          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks' => "false") if policy(exercise).statistics?
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks': 'false') if policy(exercise).statistics?

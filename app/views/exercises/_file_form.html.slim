@@ -1,14 +1,14 @@
 - id = f.object.id
 
 li.card.mt-2
-  .card-header role="tab" id="heading"
-    - collapsed_class = f.index != 'index' ? 'collapsed' : nil
-    - aria_expanded = f.index != 'index' ? 'false' : 'true'
-    a class=['file-heading', collapsed_class] data-bs-toggle="collapse" href="#collapse#{f.index}" aria-expanded="#{aria_expanded}"
-      div.clearfix role="button"
-        i.fa-solid aria-hidden="true"
+  .card-header#heading role='tab'
+    - collapsed_class = f.index == 'index' ? nil : 'collapsed'
+    - aria_expanded = f.index == 'index' ? 'true' : 'false'
+    a class=['file-heading', collapsed_class] data-bs-toggle='collapse' href="#collapse#{f.index}" aria-expanded=aria_expanded
+      .clearfix role='button'
+        i.fa-solid aria-hidden='true'
         span = f.object.filepath
-  .card-collapse.collapse class=('in' if f.object.name.nil?) id="collapse#{f.index}" role="tabpanel"
+  .card-collapse.collapse class=('in' if f.object.name.nil?) id="collapse#{f.index}" role='tabpanel'
     .card-body
       - if policy(f.object).destroy? && id.present?
         .clearfix
@@ -25,7 +25,7 @@ li.card.mt-2
         = f.collection_select(:file_type_id, @file_types, :id, :name, {}, class: 'form-control')
       .mb-3
         = f.label(:role, t('activerecord.attributes.file.role'), class: 'form-label')
-        = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map { |role| [t("files.roles.#{role}"), role] }, {}, class: 'form-control')
+        = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map {|role| [t("files.roles.#{role}"), role] }, {}, class: 'form-control')
       .form-check
         label.form-check-label
           = f.check_box(:hidden, class: 'form-check-input')

@@ -18,11 +18,11 @@ h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
         th = t('activerecord.attributes.exercise.user')
         th = t('shared.actions')
     tbody
-      - @exercise_collection.items.sort_by{|item| item.position}.each do |exercise_collection_item|
+      - @exercise_collection.items.sort_by(&:position).each do |exercise_collection_item|
         - exercise = exercise_collection_item.exercise
         tr
           td = exercise_collection_item.position
           td = link_to_if(policy(exercise).show?, exercise.title, exercise)
           td = link_to_if(exercise.execution_environment && policy(exercise.execution_environment).show?, exercise.execution_environment, exercise.execution_environment)
           td = link_to_if(exercise.user && policy(exercise.user).show?, exercise.user.displayname, exercise.user)
-          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks' => "false") if policy(exercise).statistics?
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbolinks': 'false') if policy(exercise).statistics?

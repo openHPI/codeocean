@@ -1,8 +1,8 @@
-h1 = t('.title', application_name: application_name)
+h1 = t('.title', application_name:)
 
-- if current_user.try(:admin?) or current_user.try(:teacher?)
+- if current_user.try(:admin?) || current_user.try(:teacher?)
   p = t('.text_signed_in_as_internal_user', user_name: current_user.displayname)
 - elsif current_user.try(:external_user?)
-  p = t('.text_signed_in_as_external_user', application_name: application_name)
+  p = t('.text_signed_in_as_external_user', application_name:)
 - else
-  p == t('.text_signed_out', application_name: application_name, sign_in_path: sign_in_path)
+  p == t('.text_signed_out', application_name:, sign_in_path:)

@@ -6,7 +6,7 @@ h1 = Submission.model_name.human(count: 2)
     = f.collection_select(:exercise_id_eq, Exercise.with_submissions, :id, :title, class: 'form-control', prompt: t('activerecord.attributes.submission.exercise'))
   .col-auto
     = f.label(:cause_eq, t('activerecord.attributes.submission.cause'), class: 'visually-hidden form-label')
-    = f.select(:cause_eq, Submission.select(:cause).distinct.map(&:cause).sort, class: 'form-control', prompt: t('activerecord.attributes.submission.cause'))
+    = f.select(:cause_eq, Submission.distinct.pluck(:cause).sort, class: 'form-control', prompt: t('activerecord.attributes.submission.cause'))
 
 .table-responsive
   table.table.mt-4

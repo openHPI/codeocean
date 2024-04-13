@@ -1,7 +1,7 @@
 .mb-3
   = form.label(attribute, label, class: 'form-label')
-  = form.text_area(attribute, class: 'code-field form-control', rows: 16, style: "display:none;")
-  = render partial: 'editor_edit', locals: { exercise: @exercise }
+  = form.text_area(attribute, class: 'code-field form-control', rows: 16, style: 'display:none;')
+  = render partial: 'editor_edit', locals: {exercise: @exercise}
   .card.border-warning.p-2.my-2
-    = form.file_field(attribute, class: 'form-control', style: "display: inline-block;")
+    = form.file_field(attribute, class: 'form-control', style: 'display: inline-block;')
     .help-block.form-text = t('exercises.file_form.hints.upload')

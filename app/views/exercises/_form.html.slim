@@ -4,10 +4,10 @@
   meta name='turbolinks-visit-control' content='reload'
   - append_javascript_pack_tag('sortable')
 
-- execution_environments = ExecutionEnvironment.where('file_type_id IS NOT NULL').select(:file_type_id, :id)
-- file_types = FileType.where('file_extension IS NOT NULL').select(:file_extension, :id)
+- execution_environments = ExecutionEnvironment.where.not(file_type_id: nil).select(:file_type_id, :id)
+- file_types = FileType.where.not(file_extension: nil).select(:file_extension, :id)
 
-= form_for(@exercise, data: {execution_environments: execution_environments, file_types: file_types}, multipart: true, builder: PagedownFormBuilder) do |f|
+= form_for(@exercise, data: {execution_environments:, file_types:}, multipart: true, builder: PagedownFormBuilder) do |f|
   = render('shared/form_errors', object: @exercise)
   .mb-3
     = f.label(:title, class: 'form-label')
@@ -18,7 +18,7 @@
     .help-block.form-text == t('.hints.internal_title')
   .mb-3
     = f.label(:description, class: 'form-label')
-    = f.pagedown :description, input_html: { preview: true, rows: 10 }
+    = f.pagedown :description, input_html: {preview: true, rows: 10}
   .mb-3
     = f.label(:execution_environment_id, class: 'form-label')
     = f.collection_select(:execution_environment_id, @execution_environments, :id, :name, {include_blank: t('exercises.form.none')}, class: 'form-control')
@@ -63,11 +63,11 @@
   h2 = t('exercises.form.tags')
   ul.list-unstyled.card-group
     li.card
-      .card-header role="tab" id="heading"
-        a.file-heading data-bs-toggle="collapse" href="#tag-collapse"
-          div.clearfix role="button"
+      .card-header#heading role='tab'
+        a.file-heading data-bs-toggle='collapse' href='#tag-collapse'
+          .clearfix role='button'
             span = t('exercises.form.click_to_collapse')
-      .card-collapse.collapse id="tag-collapse" role="tabpanel"
+      .card-collapse.collapse#tag-collapse role='tabpanel'
         .table-responsive
           table.table#tags-table
             thead
@@ -79,17 +79,17 @@
                 tr
                   td = b.check_box class: 'form-check-input'
                   td = b.object.tag.name
-                  td = number_field "tag_factors[#{b.object.tag.id}]", :factor, :value => b.object.factor, in: 1..10, step: 1, class: 'form-control form-control-sm'
+                  td = number_field "tag_factors[#{b.object.tag.id}]", :factor, value: b.object.factor, in: 1..10, step: 1, class: 'form-control form-control-sm'
 
   h2 = t('.tips')
   ul.list-unstyled.card-group
     li.card
-      .card-header role="tab" id="tip-heading"
-        a.file-heading data-bs-toggle="collapse" href="#tip-collapse"
-          div.clearfix role="button"
+      .card-header#tip-heading role='tab'
+        a.file-heading data-bs-toggle='collapse' href='#tip-collapse'
+          .clearfix role='button'
             span = t('exercises.form.click_to_collapse')
-      .card-collapse.collapse.mx-2 id="tip-collapse" role="tabpanel"
-        = f.hidden_field(:tips, id: "tips-json", value: "")
+      .card-collapse.collapse.mx-2#tip-collapse role='tabpanel'
+        = f.hidden_field(:tips, id: 'tips-json', value: '')
         .list-group.nested-sortable-list.mt-2#tip-list
           = render(partial: 'tips/sortable_tip', collection: @tips, as: :exercise_tip)
         button.btn.btn-outline-primary.my-2.w-100 type='button' data-bs-toggle='modal' data-bs-target='#add-tips-modal' = t('.add_tips')
@@ -103,6 +103,6 @@
   ul#dummies.d-none = f.fields_for(:files, CodeOcean::File.new, child_index: 'index') do |files_form|
     = render('file_form', f: files_form)
 
-  .actions = render('shared/submit_button', f: f, object: @exercise)
+  .actions = render('shared/submit_button', f:, object: @exercise)
 
 = render('shared/modal', id: 'add-tips-modal', title: t('.add_tips'), template: 'exercises/_add_tip_modal')

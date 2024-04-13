@@ -1,4 +1,4 @@
-- model = controller_path.classify.constantize rescue nil
+- model = controller_path.classify.constantize rescue nil # rubocop:disable Style/RescueModifier
 - if model
   - object = model.find_by(id: params[:id])
   - if (parent_model = model.try(:parent_resource))
@@ -26,7 +26,7 @@
   - active_action = t("breadcrumbs.#{controller_name}.#{params[:action]}")
 
 
-- title = "#{application_name}"
+- title = application_name.to_s
 - title = "#{active_action} - #{title}" unless %w[index show].include? params[:action]
 - content_for :breadcrumbs do
   .container.mb-4

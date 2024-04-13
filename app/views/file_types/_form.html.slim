@@ -25,4 +25,4 @@
     label.form-check-label
       = f.check_box(:renderable, class: 'form-check-input')
       = t('activerecord.attributes.file_type.renderable')
-  .actions = render('shared/submit_button', f: f, object: @file_type)
+  .actions = render('shared/submit_button', f:, object: @file_type)

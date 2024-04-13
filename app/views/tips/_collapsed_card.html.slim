@@ -1,16 +1,16 @@
 - tip = exercise_tip.tip
 - index = exercise_tip_counter + 1
-.card class="#{exercise_tip.parent_exercise_tip_id? || exercise_tip.rank != 1 ? 'mt-2' : ''}"
-  .card-header.p-2 id="tip-heading-#{exercise_tip.id}" role="tab"
+.card class=(exercise_tip.parent_exercise_tip_id? || exercise_tip.rank != 1 ? 'mt-2' : '')
+  .card-header.p-2 id="tip-heading-#{exercise_tip.id}" role='tab'
     .card-title.mb-0
-      a.collapsed aria-controls="tip-collapse-#{exercise_tip.id}" aria-expanded="false" data-bs-parent="#tips" data-bs-toggle="collapse" href="#tip-collapse-#{exercise_tip.id}"
-        .clearfix role="button"
-          i.fa-solid aria-hidden="true"
+      a.collapsed aria-controls="tip-collapse-#{exercise_tip.id}" aria-expanded='false' data-bs-parent='#tips' data-bs-toggle='collapse' href="#tip-collapse-#{exercise_tip.id}"
+        .clearfix role='button'
+          i.fa-solid aria-hidden='true'
           span
             = t('activerecord.models.tip.one')
             =< tip_prefix + index.to_s
             = ": #{tip.title}" if tip.title?
-  .card.card-collapse.collapse id="tip-collapse-#{exercise_tip.id}" aria-labelledby="tip-heading-#{exercise_tip.id}" role="tabpanel" data-exercise-tip-id=exercise_tip.id
+  .card.card-collapse.collapse id="tip-collapse-#{exercise_tip.id}" aria-labelledby="tip-heading-#{exercise_tip.id}" role='tabpanel' data-exercise-tip-id=exercise_tip.id
     .card-body.p-3
       - if tip.description?
         h5
@@ -24,4 +24,4 @@
             = tip.example
       = render(partial: 'tips/collapsed_card',
               collection: exercise_tip.children, as: :exercise_tip,
-              locals: { tip_prefix: "#{tip_prefix + index.to_s}." })
+              locals: {tip_prefix: "#{tip_prefix + index.to_s}."})

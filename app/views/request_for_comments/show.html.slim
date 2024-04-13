@@ -1,12 +1,12 @@
 .list-group
-  h4#exercise_caption.list-group-item-heading data-exercise-id="#{@request_for_comment.exercise.id}" data-rfc-id="#{@request_for_comment.id}"
+  h4#exercise_caption.list-group-item-heading data-exercise-id=@request_for_comment.exercise.id data-rfc-id=@request_for_comment.id
     - if @request_for_comment.solved?
-      span.fa-solid.fa-check.me-2 aria-hidden="true"
+      span.fa-solid.fa-check.me-2 aria-hidden='true'
     = link_to_if(policy(@request_for_comment.exercise).show?, @request_for_comment.exercise.title, [:implement, @request_for_comment.exercise])
   p.list-group-item-text
     - user = @request_for_comment.user
-    - submission =  @request_for_comment.submission
-    - testruns = Testrun.where(:submission_id => @request_for_comment.submission)
+    - submission = @request_for_comment.submission
+    - testruns = Testrun.where(submission_id: @request_for_comment.submission)
     = link_to_if(policy(user).show?, user.displayname, user)
     | | #{@request_for_comment.created_at.localtime}
     - if @request_for_comment.submission.study_group.present? && policy(@request_for_comment.submission).show_study_group?
@@ -25,33 +25,33 @@
         = t('activerecord.attributes.request_for_comments.question')
       .text
         - question = @request_for_comment.question
-        = question.blank? ? t('request_for_comments.no_question') : question
+        = question.presence || t('request_for_comments.no_question')
 
-    - if policy(@request_for_comment).mark_as_solved? and not @request_for_comment.solved?
+    - if policy(@request_for_comment).mark_as_solved? && !@request_for_comment.solved?
       = render('mark_as_solved')
 
-    - if testruns.size > 0
+    - if testruns.size.positive?
       .testruns
-        - output_runs = testruns.select {|run| run.cause == 'run'}
-        - if output_runs.size > 0
-          h5.mt-4= t('request_for_comments.runtime_output')
+        - output_runs = testruns.select {|run| run.cause == 'run' }
+        - if output_runs.size.positive?
+          h5.mt-4 = t('request_for_comments.runtime_output')
           .collapsed.testrun-output.text
             span.fa-solid.fa-chevron-down.collapse-button
             - output_runs.each do |testrun|
-              pre= testrun.log or t('request_for_comments.no_output')
+              pre = testrun.log || t('request_for_comments.no_output')
 
         - assess_runs = testruns.select {|run| run.cause == 'assess' }
         - unless current_user.admin?
-          - assess_runs = assess_runs.select {|run| run.file.present? ? !run.file.hidden_feedback?: true }
-        - if assess_runs.size > 0
-          h5.mt-4= t('request_for_comments.test_results')
+          - assess_runs = assess_runs.select {|run| run.file.present? ? !run.file.hidden_feedback? : true }
+        - if assess_runs.size.positive?
+          h5.mt-4 = t('request_for_comments.test_results')
           .testrun-assess-results
             - assess_runs.each do |testrun|
               .testrun-container
-                div class=("result #{testrun.passed ? 'passed' : 'failed'}")
+                div class="result #{testrun.passed ? 'passed' : 'failed'}"
                 .collapsed.testrun-output.text
                   span.fa-solid.fa-chevron-down.collapse-button
-                  pre= testrun.log or t('request_for_comments.no_output')
+                  pre = testrun.log || t('request_for_comments.no_output')
 
     - if current_user.admin? && user.is_a?(ExternalUser)
       = render('admin_menu')
@@ -69,12 +69,12 @@
   | do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
   | also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
 - submission.files.each do |file|
-  = (file.path or "") + "/" + file.name +  file.file_type.file_extension
+  = "#{file.path || ''}/#{file.name}#{file.file_type.file_extension}"
   br
   | &nbsp;&nbsp;
-  i.fa-solid.fa-arrow-down aria-hidden="true"
+  i.fa-solid.fa-arrow-down aria-hidden='true'
   = t('request_for_comments.click_here')
-  #commentitor.editor data-file-id="#{file.id}" data-mode="#{file.file_type.editor_mode}" data-read-only="true"
+  #commentitor.editor data-file-id=file.id data-mode=file.file_type.editor_mode data-read-only='true'
     = file.content
 
 = render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent')

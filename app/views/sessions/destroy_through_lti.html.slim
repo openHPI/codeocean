@@ -3,7 +3,7 @@ h1 = t('.headline')
 p
   = t(".success_#{@lti_parameter ? 'with' : 'without'}_outcome", consumer: current_user.consumer)
   ==< t(".finished_#{@lti_parameter ? 'with' : 'without'}_consumer", consumer: h(current_user.consumer.name), url: @url)
-  =< t(".do_not_use_backbutton")
+  =< t('.do_not_use_backbutton')
 
 h2 = t('shared.statistics')
 

@@ -4,5 +4,5 @@ h1
 
 = row(label: 'file_type.name', value: @file_type.name)
 = row(label: 'file_type.user', value: link_to_if(policy(@file_type.author).show?, @file_type.author, @file_type.author))
-- [:editor_mode, :file_extension, :indent_size, :binary, :executable, :renderable].each do |attribute|
+- %i[editor_mode file_extension indent_size binary executable renderable].each do |attribute|
   = row(label: "file_type.#{attribute}", value: @file_type.send(attribute))

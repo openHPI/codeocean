@@ -4,5 +4,5 @@
   = tip.to_s
   a.fa-regular.fa-eye.ms-2 href=tip_path(tip) target='_blank'
   a.fa-solid.fa-xmark.ms-2.remove-tip href='#'
-  .list-group.nested-sortable-list class="#{exercise_tip.children.present? ? 'mt-3' : ''}"
+  .list-group.nested-sortable-list class=(exercise_tip.children.present? ? 'mt-3' : '')
     = render(partial: 'tips/sortable_tip', collection: exercise_tip.children, as: :exercise_tip)

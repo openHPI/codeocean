@@ -6,9 +6,9 @@
         button.btn-close data-bs-dismiss='modal' type='button'
           span.visually-hidden Close
       .modal-body
-        - if local_assigns.has_key?(:body)
+        - if local_assigns.key?(:body)
           = body
         - else
-          = render(layout: false, locals: (local_assigns[:template_variables] || {}).merge(modal: true), template: template)
+          = render(layout: false, locals: (local_assigns[:template_variables] || {}).merge(modal: true), template:)
       .modal-footer
         = yield(:modal_footer)

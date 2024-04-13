@@ -1,8 +1,8 @@
 - unless local_assigns[:modal]
   h1 = t('shared.help.headline')
 
-- if local_assigns.has_key?(:execution_environment)
-  h2 = t('shared.help.execution_environment_specific_help', execution_environment: execution_environment)
+- if local_assigns.key?(:execution_environment)
+  h2 = t('shared.help.execution_environment_specific_help', execution_environment:)
   = render_markdown(execution_environment.help)
 
 - content_for :modal_footer do

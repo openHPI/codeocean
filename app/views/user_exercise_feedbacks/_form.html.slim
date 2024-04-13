@@ -1,7 +1,7 @@
 = form_for([@exercise, @uef]) do |f|
   div
-    h1 id="exercise-headline"
-      = t('activerecord.models.user_exercise_feedback.one') + " " + @exercise.title
+    h1#exercise-headline
+      = "#{t('activerecord.models.user_exercise_feedback.one')} #{@exercise.title}"
   = render('shared/form_errors', object: @uef)
   p
     == t('user_exercise_feedback.description')
@@ -9,18 +9,18 @@
     u = t('activerecord.attributes.exercise.description')
     = render_markdown(@exercise.description)
   .mb-3
-    = f.text_area(:feedback_text, class: 'form-control', required: true, :rows => "10")
+    = f.text_area(:feedback_text, class: 'form-control', required: true, rows: '10')
     h4.mt-4 = t('user_exercise_feedback.difficulty')
-    = f.collection_radio_buttons :difficulty, @texts, :first, :last  do |b|
+    = f.collection_radio_buttons :difficulty, @texts, :first, :last do |b|
       .form-check
         label.form-check-label
           = b.radio_button(class: 'form-check-input')
           = b.text
     h4.mt-4 = t('user_exercise_feedback.working_time')
-    = f.collection_radio_buttons :user_estimated_worktime, @times, :first, :last  do |b|
+    = f.collection_radio_buttons :user_estimated_worktime, @times, :first, :last do |b|
       .form-check
         label.form-check-label
           = b.radio_button(class: 'form-check-input')
           = b.text
-    = f.hidden_field(:exercise_id, :value => @exercise.id)
-  .actions = render('shared/submit_button', f: f, object: @uef)
+    = f.hidden_field(:exercise_id, value: @exercise.id)
+  .actions = render('shared/submit_button', f:, object: @uef)

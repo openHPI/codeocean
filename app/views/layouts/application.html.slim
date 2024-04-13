@@ -1,5 +1,5 @@
 doctype html
-html lang="#{I18n.locale || I18n.default_locale}" data-default-locale="#{I18n.default_locale}"
+html lang=I18n.locale data-default-locale=I18n.default_locale
   head
     meta charset='utf8'
     meta name='viewport' content='width=device-width, initial-scale=1'
@@ -36,9 +36,9 @@ html lang="#{I18n.locale || I18n.default_locale}" data-default-locale="#{I18n.de
               = render('session')
     div data-controller=controller_name
       = render('flash')
-      - if current_user.try(:admin?) or current_user.try(:teacher?) && !@embed_options[:hide_navbar]
+      - if current_user.try(:admin?) || (current_user.try(:teacher?) && !@embed_options[:hide_navbar])
         = yield(:breadcrumbs)
-    - if (controller_name == "exercises" && action_name == "implement") || (controller_name == 'community_solutions' && action_name == 'edit')
+    - if (controller_name == 'exercises' && action_name == 'implement') || (controller_name == 'community_solutions' && action_name == 'edit')
       .container-fluid
         = yield
     - else
@@ -46,4 +46,4 @@ html lang="#{I18n.locale || I18n.default_locale}" data-default-locale="#{I18n.de
         = yield
 
     - template_variables = {execution_environment: @exercise.execution_environment} if action_name == 'implement'
-    = render('shared/modal', classes: 'modal-lg', id: 'modal-help', template: 'application/help', template_variables: template_variables, title: t('shared.help.headline'))
+    = render('shared/modal', classes: 'modal-lg', id: 'modal-help', template: 'application/help', template_variables:, title: t('shared.help.headline'))

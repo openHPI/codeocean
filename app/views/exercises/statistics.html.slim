@@ -7,7 +7,7 @@ h1 = @exercise
 
 = row(label: '.participants', value: @exercise.contributors.size)
 
-- [:intermediate, :final].each do |scope|
+- %i[intermediate final].each do |scope|
   = row(label: ".#{scope}_submissions") do
     /TODO: Refactor next line
     = "#{@exercise.submissions.send(scope).count} (#{t('.users_and_programming_groups', count: Submission.from(@exercise.submissions.send(scope).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)})"
@@ -24,7 +24,7 @@ h1 = @exercise
     - else
       = empty
   - finishers_count = @exercise.contributors.size
-  - finishers_percentage = finishers_count == 0 ? 0 : (100.0 / finishers_count * @exercise.finishers_count).round(2)
+  - finishers_percentage = finishers_count.zero? ? 0 : (100.0 / finishers_count * @exercise.finishers_count).round(2)
   p = progress_bar(finishers_percentage)
 
 = row(label: '.average_score') do
@@ -43,27 +43,27 @@ h1 = @exercise
   = row(label: '.average_worktime') do
     p = @exercise.average_working_time
 
-- Hash[:internal_users => t('.internal_users'), :external_users => t('.external_users'), :programming_groups => t('.programming_groups')].each_pair do |symbol, label|
+- {internal_users: t('.internal_users'), external_users: t('.external_users'), programming_groups: t('.programming_groups')}.each_pair do |symbol, label|
   - submissions = Submission.where(contributor: @exercise.send(symbol), exercise: @exercise).in_study_group_of(current_user)
-  - if !policy(@exercise).detailed_statistics?
+  - unless policy(@exercise).detailed_statistics?
     - submissions = submissions.final
   - if submissions.any?
     strong = label
-    - if symbol==:external_users
+    - if symbol == :external_users
       - working_time_array = []
-      - @exercise.send(symbol).distinct().each do |user|
-        - working_time = @exercise.average_working_time_for(user) or 0
+      - @exercise.send(symbol).distinct.each do |user|
+        - working_time = @exercise.average_working_time_for(user) || 0
         - working_time_array.push working_time
       hr
       .d-none#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
       .working-time-graphs
-      div#chart_1
+      #chart_1
       hr
-      div#chart_2
+      #chart_2
       hr
     - contributors = symbol.to_s.classify.constantize.where(id: submissions.joins(symbol).group(:contributor_id).select(:contributor_id).distinct)
     .table-responsive.mb-4
-      table.table.table-striped class="#{contributors.present? ? 'sortable' : ''}"
+      table.table.table-striped class=(contributors.present? ? 'sortable' : '')
         thead
           tr
             th.header = t('.user')
@@ -73,11 +73,11 @@ h1 = @exercise
             th.header = t('.worktime') if policy(@exercise).detailed_statistics?
         tbody
           - contributors.each do |contributor|
-            - if contributor_statistics[contributor.class.name][contributor.id] then us = contributor_statistics[contributor.class.name][contributor.id] else us = {"maximum_score" => nil, "runs" => nil}
-            - label = "#{contributor.displayname}"
+            - us = contributor_statistics[contributor.class.name][contributor.id] || {'maximum_score' => nil, 'runs' => nil}
+            - label = contributor.displayname.to_s
             tr
-              td = link_to_if symbol==:external_users && policy(contributor).statistics?, label, {controller: "exercises", action: "external_user_statistics", external_user_id: contributor.id, id: @exercise.id}
-              td = us['maximum_score'] or 0
+              td = link_to_if symbol == :external_users && policy(contributor).statistics?, label, {controller: 'exercises', action: 'external_user_statistics', external_user_id: contributor.id, id: @exercise.id}
+              td = us['maximum_score'] || 0
               td.align-middle
                 - latest_user_submission = submissions.where(contributor:).final.latest
                 - if latest_user_submission.present?
@@ -88,4 +88,4 @@ h1 = @exercise
                   - elsif latest_user_submission.after_late_deadline?
                     .unit-test-result.negative-result
               td = us['runs'] if policy(@exercise).detailed_statistics?
-              td = @exercise.average_working_time_for(contributor) or 0 if policy(@exercise).detailed_statistics?
+              td = @exercise.average_working_time_for(contributor) || 0 if policy(@exercise).detailed_statistics?

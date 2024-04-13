@@ -7,16 +7,16 @@
 h1
   = t('.live_dashboard')
 
-div.teacher_dashboard data-exercise-id=@exercise.id.to_s data-study-group-id=@study_group_id.to_s
+.teacher_dashboard data-exercise-id=@exercise.id.to_s data-study-group-id=@study_group_id.to_s
 
 h4.mt-4
   = t('.time_spent_per_learner')
 
-.d-none#initial_graph_data data-graph_data=ActiveSupport::JSON.encode(@graph_data);
-div.w-100#chart_stacked
+.d-none#initial_graph_data data-graph_data=ActiveSupport::JSON.encode(@graph_data)
+.w-100#chart_stacked
 
 .d-none.bg-info.container.py-2#no_chart_data
-  i class="fa-solid fa-info" aria-hidden="true"
+  i.fa-solid.fa-info aria-hidden='true'
   = t('.no_data_yet')
 
 h4.mt-4
@@ -27,9 +27,9 @@ h4.mt-4
     thead
       tr
         th.text-center
-          i.me-0 class="fa-regular fa-lightbulb" aria-hidden="true" title = t('request_for_comments.solved')
+          i.me-0.fa-regular.fa-lightbulb aria-hidden='true' title = t('request_for_comments.solved')
         th.text-center
-          i.me-0 class="fa-solid fa-comment" aria-hidden="true" title = t('request_for_comments.comments') align="center"
+          i.me-0.fa-solid.fa-comment aria-hidden='true' title = t('request_for_comments.comments') align='center'
         th.col-12 = t('activerecord.attributes.request_for_comments.question')
         th = t('activerecord.attributes.request_for_comments.username')
         th.text-nowrap = t('activerecord.attributes.request_for_comments.requested_at')

@@ -1,24 +1,24 @@
-div.d-grid.gap-2 id='sidebar-collapsed' class=(@exercise.hide_file_tree && @tips.blank? ? '' : 'd-none')
-  = render('editor_button', classes: 'btn-outline-contrast', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-square-plus', id: 'sidebar-collapse-collapsed', label:'', title:t('exercises.editor.expand_action_sidebar'))
+.d-grid.gap-2#sidebar-collapsed class=(@exercise.hide_file_tree && @tips.blank? ? '' : 'd-none')
+  = render('editor_button', classes: 'btn-outline-contrast', data: {'data-bs-toggle': 'tooltip', 'data-bs-placement': 'right'}, icon: 'fa-solid fa-square-plus', id: 'sidebar-collapse-collapsed', label: '', title: t('exercises.editor.expand_action_sidebar'))
 
-  - unless @embed_options[:disable_hints] or @tips.blank?
-    = render('editor_button', classes: 'btn-secondary btn mb-4', data: {:'data-bs-toggle' => 'tooltip', :'data-bs-placement' => 'right'}, icon: 'fa-solid fa-lightbulb', id: 'tips-collapsed', label:'', title: t('exercises.form.tips'))
+  - unless @embed_options[:disable_hints] || @tips.blank?
+    = render('editor_button', classes: 'btn-secondary btn mb-4', data: {'data-bs-toggle': 'tooltip', 'data-bs-placement': 'right'}, icon: 'fa-solid fa-lightbulb', id: 'tips-collapsed', label: '', title: t('exercises.form.tips'))
 
-div.d-grid.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_file_tree && @tips.blank? ? 'd-none' : '')
+.d-grid.enforce-bottom-margin#sidebar-uncollapsed class=(@exercise.hide_file_tree && @tips.blank? ? 'd-none' : '')
   = render('editor_button', classes: 'btn-outline-contrast overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'sidebar-collapse', label: t('exercises.editor.collapse_action_sidebar'))
   #content-left-sidebar.overflow-scroll
     - unless @exercise.hide_file_tree
-      div.overflow-scroll
+      .overflow-scroll
         .card.border-secondary
           .card-header.d-flex.justify-content-between.align-items-center.px-0.py-1
             .px-2 = I18n.t('exercises.editor_file_tree.file_root')
             div
               - if @exercise.allow_file_creation
-                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-cause' => 'file'}, icon: 'fa-solid fa-plus', id: 'create-file', label: '', title: t('exercises.editor.create_file'))
-                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-cause' => 'file' }, icon: 'fa-regular fa-trash-can', id: 'destroy-file', label: '', title: t('exercises.editor.destroy_file'))
+                = render('editor_button', classes: 'btn-default btn-sm', data: {'data-bs-toggle': 'tooltip', 'data-cause': 'file'}, icon: 'fa-solid fa-plus', id: 'create-file', label: '', title: t('exercises.editor.create_file'))
+                = render('editor_button', classes: 'btn-default btn-sm', data: {'data-bs-toggle': 'tooltip', 'data-cause': 'file'}, icon: 'fa-regular fa-trash-can', id: 'destroy-file', label: '', title: t('exercises.editor.destroy_file'))
               - unless @embed_options[:disable_download]
-                = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip'}, icon: 'fa-solid fa-arrow-down', id: 'download', label:'', title: t('exercises.editor.download'))
-              = render('editor_button', classes: 'btn-default btn-sm', data: {:'data-bs-toggle' => 'tooltip', :'data-message-confirm' => t('exercises.editor.confirm_start_over'), :'data-url' => reload_exercise_path(@exercise)}, icon: 'fa-solid fa-clock-rotate-left', id: 'start-over', label: '', title: t('exercises.editor.start_over'))
+                = render('editor_button', classes: 'btn-default btn-sm', data: {'data-bs-toggle': 'tooltip'}, icon: 'fa-solid fa-arrow-down', id: 'download', label: '', title: t('exercises.editor.download'))
+              = render('editor_button', classes: 'btn-default btn-sm', data: {'data-bs-toggle': 'tooltip', 'data-message-confirm': t('exercises.editor.confirm_start_over'), 'data-url': reload_exercise_path(@exercise)}, icon: 'fa-solid fa-clock-rotate-left', id: 'start-over', label: '', title: t('exercises.editor.start_over'))
 
           .card-body.pt-0.pe-0.ps-1.pb-1
 
@@ -26,7 +26,7 @@ div.d-grid.enforce-bottom-margin id='sidebar-uncollapsed' class=(@exercise.hide_
 
         hr
 
-    - unless @embed_options[:disable_hints] or @tips.blank?
+    - unless @embed_options[:disable_hints] || @tips.blank?
       = render(partial: 'tips_content')
 
 - if @exercise.allow_file_creation?

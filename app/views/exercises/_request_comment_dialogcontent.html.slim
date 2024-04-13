@@ -1,7 +1,6 @@
 #rfc_intervention_text style='display: none;' == t('exercises.implement.rfc_intervention.text')
 == t('exercises.implement.comment.question')
 
-
 textarea.form-control.flex-grow-1#question(style='resize:none; height: 15vh;')
 p = ''
 / data-cause='requestComments' is not used here right now, we pass the button #requestComments (not askForCommentsButton) as initiator of the action.
@@ -9,5 +8,5 @@ p = ''
 .d-grid.gap-2
   button#askForCommentsButton.btn.btn-primary(type='button' data-cause='requestComments' data-message-success=t('exercises.editor.request_for_comments_sent'))
     i.fa-solid.fa-circle-notch.fa-spin.d-none
-    =t('exercises.implement.comment.request')
-  button#closeAskForCommentsButton.btn.btn-warning(type='button') =t('activerecord.attributes.request_for_comments.close')
+    = t('exercises.implement.comment.request')
+  button#closeAskForCommentsButton.btn.btn-warning(type='button') = t('activerecord.attributes.request_for_comments.close')

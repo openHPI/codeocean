@@ -1,7 +1,7 @@
 .exercise.clearfix
   div
-    h1 id="exercise-headline"
-      i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
+    h1#exercise-headline
+      i#description-symbol class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
       => @community_solution.model_name.human(count: 1)
       = @community_solution.exercise.title
 
@@ -20,7 +20,7 @@
     hr
     = render_markdown(@community_solution.exercise.description)
 
-  a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide')
+  a#toggle href='#' data-show=t('shared.show') data-hide=t('shared.hide')
     - if @embed_options[:collapse_exercise_description]
       = t('shared.show')
     - else
@@ -37,12 +37,12 @@
           .card-body.pt-0.pe-0.ps-1.pb-1
             #files data-entries=FileTree.new(@files).to_js_tree_in_json
       div class=(@community_solution.exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
-        div.editor-col.col.p-0 id='frames'
+        .editor-col.col.p-0#frames
           - @files.each do |file|
-            = render('exercises/editor_frame', exercise: @community_solution.exercise, file: file)
+            = render('exercises/editor_frame', exercise: @community_solution.exercise, file:)
 
   .col-xl-6.container-fluid
-    div.bg-contrast.h-100.float-start.row style="width: 1px"
+    .bg-contrast.h-100.float-start.row style="width: 1px"
     div
       h4
         = t('community_solutions.your_submission')
@@ -54,11 +54,11 @@
             .card-body.pt-0.pe-0.ps-1.pb-1
               #own-files data-entries=FileTree.new(@own_files).to_js_tree_in_json
         div class=(@community_solution.exercise.hide_file_tree ? 'col-sm-12' : 'col-sm-9')
-          div.editor-col.col.p-0 id='own-frames'
+          .editor-col.col.p-0#own-frames
             - @own_files.each do |file|
-              = render('exercises/editor_frame', exercise: @community_solution.exercise, file: file, own_solution: true)
+              = render('exercises/editor_frame', exercise: @community_solution.exercise, file:, own_solution: true)
 #statusbar.visible.mt-2 style="height: 5em"
   p.text-center
     = render('exercises/editor_button', classes: 'btn-lg btn-success ms-5 me-3', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'change-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa-solid fa-paper-plane', id: 'submit', label: t('community_solutions.change_community_solution'))
     = render('exercises/editor_button', classes: 'btn-lg btn-secondary ms-5', data: {'data-url': community_solution_path(@community_solution), 'data-http-method': 'PUT', 'data-cause': 'accept-community-solution', 'data-exercise-id': @community_solution.exercise.id}, icon: 'fa-solid fa-check', id: 'accept', label: t('community_solutions.accept_community_solution'))
-  button style="display:none" id="autosave" data-url=community_solution_path(@community_solution) data-http-method='PUT' data-cause='autosave-community-solution' data-exercise-id=@community_solution.exercise.id
+  button#autosave style="display:none" data-url=community_solution_path(@community_solution) data-http-method='PUT' data-cause='autosave-community-solution' data-exercise-id=@community_solution.exercise.id

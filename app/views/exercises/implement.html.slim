@@ -1,25 +1,25 @@
 - content_for :head do
   // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
      Otherwise, lti_parameters might be nil
-  meta name="turbolinks-cache-control" content="no-cache"
+  meta name='turbolinks-cache-control' content='no-cache'
 
 #editor-column
   - unless @embed_options[:hide_exercise_description]
     .exercise.clearfix
-      div.col-9div.d-lg-flex.flex-row.justify-content-between.align-items-baseline
-        div.col-lg-7
-          h1 id="exercise-headline"
-            i id="description-symbol" class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
+      .col-9.d-lg-flex.flex-row.justify-content-between.align-items-baseline
+        .col-lg-7
+          h1#exercise-headline
+            i#description-symbol class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
             = @exercise.title
 
-        div.col-lg-5.float-lg-end.ms-md-3.mb-md-3.d-flex.justify-content-end.pe-lg-3
+        .col-lg-5.float-lg-end.ms-md-3.mb-md-3.d-flex.justify-content-end.pe-lg-3
           - if current_contributor.programming_group?
             span.me-3.mt-1
-              button.btn.btn-sm.btn-primary.text-nowrap.w-100#start_chat data= { url: "https://jitsi.fem.tu-ilmenau.de/openHPI_ProgrammingGroup#{current_contributor.id}" }
+              button.btn.btn-sm.btn-primary.text-nowrap.w-100#start_chat data= {url: "https://jitsi.fem.tu-ilmenau.de/openHPI_ProgrammingGroup#{current_contributor.id}"}
                 i.fa-solid.fa-video
                 = t('exercises.editor.start_video')
 
-              div.small.text-body-tertiary.text-nowrap.mt-1
+              .small.text-body-tertiary.text-nowrap.mt-1
                 a href='https://www.tu-ilmenau.de/datenschutz' target='_blank' rel='noopener'
                   = t('exercises.implement.external_privacy_policy')
 
@@ -30,13 +30,13 @@
 
             span.badge.rounded-pill.bg-primary.float-end.mt-2.mb-5.score
 
-          - if !current_contributor.programming_group?
+          - unless current_contributor.programming_group?
             span.badge.rounded-pill.bg-primary.float-end.mt-2.score
 
       #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
         = render_markdown(@exercise.description)
 
-      a#toggle href="#" data-show=t('shared.show') data-hide=t('shared.hide')
+      a#toggle href='#' data-show=t('shared.show') data-hide=t('shared.hide')
         - if @embed_options[:collapse_exercise_description]
           = t('shared.show')
         - else

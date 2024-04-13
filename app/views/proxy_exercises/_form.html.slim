@@ -5,10 +5,10 @@
     = f.text_field(:title, class: 'form-control', required: true)
   .mb-3
     = f.label(:description, class: 'form-label')
-    = f.pagedown :description, input_html: { preview: true, rows: 10 }
+    = f.pagedown :description, input_html: {preview: true, rows: 10}
   .mb-3
     = f.label(:algorithm, class: 'form-label')
-    = f.collection_select(:algorithm, ProxyExercise.algorithms.map { |algorithm, _id| [t("activerecord.attributes.proxy_exercise.algorithm_type.#{algorithm}"), algorithm] }, :second, :first, {}, class: 'form-control form-control-sm')
+    = f.collection_select(:algorithm, ProxyExercise.algorithms.map {|algorithm, _id| [t("activerecord.attributes.proxy_exercise.algorithm_type.#{algorithm}"), algorithm] }, :second, :first, {}, class: 'form-control form-control-sm')
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:public, class: 'form-check-input')
@@ -28,4 +28,4 @@
           td = link_to_if(policy(b.object).show?, b.object, b.object)
           td = l(b.object.created_at, format: :short)
 
-  .actions = render('shared/submit_button', f: f, object: @proxy_exercise)
+  .actions = render('shared/submit_button', f:, object: @proxy_exercise)

@@ -5,7 +5,7 @@
     = f.text_field(:name, class: 'form-control', required: true)
   .mb-3
     = f.label(:execution_environment_id, class: 'form-label')
-    = f.collection_select(:execution_environment_id, ExecutionEnvironment.all.order(:name), :id, :name, {include_blank: false}, class: 'form-control')
+    = f.collection_select(:execution_environment_id, ExecutionEnvironment.order(:name), :id, :name, {include_blank: false}, class: 'form-control')
   .mb-3
     = f.label(:signature, class: 'form-label')
     = f.text_field(:signature, class: 'form-control')
@@ -17,4 +17,4 @@
     = f.label(:hint, class: 'form-label')
     = f.text_field(:hint, class: 'form-control')
     .help-block.form-text == t('error_templates.hints.hint_templates')
-  .actions = render('shared/submit_button', f: f, object: @error_template)
+  .actions = render('shared/submit_button', f:, object: @error_template)
