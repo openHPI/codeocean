@@ -1,0 +1,32 @@
+linters:
+  # Disabled a few linters that are not relevant to our use case
+  EmptyLines:
+    enabled: false
+
+  ConsecutiveControlStatements:
+    enabled: false
+
+  LineLength:
+    enabled: false
+
+  # Enable additional linters
+  EmbeddedEngines:
+    enabled: true
+    forbidden_engines:
+      # JavaScript is not allowed due to our Content Security Policy (CSP)
+      - javascript
+
+  InstanceVariables:
+    enabled: false # TODO: Enable
+    include:
+      # Include only Rails partial templates by default
+      - app/views/**/_*.html.slim
+
+  StrictLocalsMissing:
+    enabled: false # TODO: Enable
+    include:
+      # Include only Rails partial templates by default
+      - app/views/**/_*.html.slim
+
+  Zwsp:
+    enabled: true
