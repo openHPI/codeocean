@@ -15,11 +15,15 @@ Rails.application.config.permissions_policy do |policy|
   policy.fullscreen           :none
   policy.geolocation          :none
   policy.gyroscope            :none
+  policy.hid                  :none
+  policy.idle_detection       :none
   policy.magnetometer         :none
   policy.microphone           :none
   policy.midi                 :none
   policy.payment              :none
   policy.picture_in_picture   :none
-  # The `speaker` directive is used for selection of non-default audio output devices
+  policy.screen_wake_lock     :none
+  policy.serial               :none
   policy.usb                  :none
+  policy.web_share            :none
 end
