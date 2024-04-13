@@ -81,7 +81,8 @@ window.Routes = Routes;
 
 // ACE editor
 import ace from 'ace-builds';
-import "ace-builds/esm-resolver";
-import "ace-builds/src-noconflict/ext-language_tools";
-import "ace-builds/src-noconflict/ext-modelist";
+import "ace-builds/webpack-resolver"; // Enable webpack resolver, requires `file-loader` to be installed
+// Enable ACE editor extensions. See https://github.com/ajaxorg/ace/wiki/Extensions
+import "ace-builds/src-noconflict/ext-language_tools"; // Enable autocompletion
+import "ace-builds/src-noconflict/ext-modelist"; // Enable language mode detection
 window.ace = ace; // Publish ace in global namespace
