@@ -24,6 +24,17 @@ const envConfig = module.exports = {
     },
     module: {
         rules: [
+            // Extract Bootstrap's inline SVGs to actual resources.
+            // This removes the requirement for `data:` URLs in our CSP
+            // See https://getbootstrap.com/docs/5.3/getting-started/webpack/#extracting-svg-files
+            {
+                mimetype: 'image/svg+xml',
+                scheme: 'data',
+                type: 'asset/resource',
+                generator: {
+                    filename: 'icons/[hash].svg'
+                },
+            },
             erb
         ]
     },
