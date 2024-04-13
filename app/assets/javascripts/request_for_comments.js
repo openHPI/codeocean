@@ -64,7 +64,6 @@ $(document).on('turbolinks:load', function () {
         currentEditor.setReadOnly(true);
         // set editor mode (used for syntax highlighting
         currentEditor.getSession().setMode($(editor).data('mode'));
-        currentEditor.getSession().setOption("useWorker", false);
         currentEditor.setTheme(CodeOceanEditor.THEME);
 
         currentEditor.commentVisualsByLine = {};
