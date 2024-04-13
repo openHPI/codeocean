@@ -12,6 +12,12 @@ $web-font-path: '//';
 @import '~bootstrap/scss/bootstrap';
 @import '~bootswatch/dist/yeti/bootswatch';
 
+// Import the Ace editor styles
+@import url('~ace-builds/css/ace.css');
+@import url('~ace-builds/css/theme/tomorrow.css');
+@import url('~ace-builds/css/theme/tomorrow_night.css');
+
+
 // We define our own button style here, since `btn-outline-dark` and `btn-outline-light` do not switch colors.
 html[data-bs-theme="dark"] {
   .btn-outline-contrast {
