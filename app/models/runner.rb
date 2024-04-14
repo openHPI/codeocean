@@ -54,7 +54,7 @@ class Runner < ApplicationRecord
     release!
   end
 
-  def download_file(desired_file, privileged_execution:, exclusive: true, &block)
+  def download_file(desired_file, privileged_execution:, exclusive: true, &)
     reserve! if exclusive
     @strategy.download_file(desired_file, privileged_execution:, &block)
     release! if exclusive
@@ -89,7 +89,7 @@ class Runner < ApplicationRecord
     end
   end
 
-  def attach_to_execution(command, privileged_execution: false, exclusive: true, &block)
+  def attach_to_execution(command, privileged_execution: false, exclusive: true, &)
     reserve! if exclusive
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Starting execution with Runner #{id} for #{contributor_type} #{contributor_id}." }
     starting_time = Time.zone.now
@@ -100,7 +100,7 @@ class Runner < ApplicationRecord
       # initializing its Runner::Connection with the given event loop. The Runner::Connection class ensures that
       # this event loop is stopped after the socket was closed.
       event_loop = Runner::EventLoop.new
-      socket = @strategy.attach_to_execution(command, event_loop, starting_time, privileged_execution:, &block)
+      socket = @strategy.attach_to_execution(command, event_loop, starting_time, privileged_execution:, &)
       event_loop.wait
       raise socket.error if socket.error.present?
     rescue Runner::Error => e
