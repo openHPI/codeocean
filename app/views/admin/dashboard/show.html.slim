@@ -30,8 +30,8 @@ h2 Docker
     table.table
       thead
         tr
-          th = t('activerecord.models.execution_environment.one')
-          th = t('activerecord.attributes.execution_environment.pool_size')
+          th = ExecutionEnvironment.model_name.human
+          th = ExecutionEnvironment.human_attribute_name('pool_size')
           th = t('admin.dashboard.show.idleRunners')
           th = t('admin.dashboard.show.usedRunners')
       tbody

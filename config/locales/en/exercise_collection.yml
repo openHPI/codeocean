@@ -2,7 +2,7 @@
 en:
   activerecord:
     attributes:
-      exercise_collections:
+      exercise_collection:
         exercises: Exercises
         id: ID
         name: Name

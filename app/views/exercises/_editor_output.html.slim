@@ -23,7 +23,7 @@
                   =<> t('shared.out_of')
                   span.number
                     | 0
-                = row(label: 'activerecord.attributes.submission.score') do
+                = row(label: 'submission.score') do
                   span.number
                     | 0
                   =<> t('shared.out_of')
@@ -43,7 +43,7 @@
                   =<> t('shared.out_of')
                   span.number
                     | 0
-                = row(label: 'activerecord.attributes.submission.score') do
+                = row(label: 'submission.score') do
                   span.number
                     | 0
                   =<> t('shared.out_of')
@@ -53,7 +53,7 @@
                 = row(label: 'exercises.implement.messages')
       #score data-maximum-score=@exercise.maximum_score data-score=@exercise.final_submission(current_contributor).try(:score)
         h4
-          span == "#{t('activerecord.attributes.submission.score')}:&nbsp;"
+          span == "#{Submission.human_attribute_name('score')}:&nbsp;"
           span.score
         .progress
           .progress-bar role='progressbar'

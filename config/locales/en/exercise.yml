@@ -7,11 +7,11 @@ en:
         allow_file_creation: Allow file creation
         average_score_percentage: Average Score Percentage
         description: Description
-        difficulty: Difficulty
         distinct_final_submissions: Distinct Final Submissions
         embedding_parameters: LTI Embedding Parameters
         execution_environment: Execution Environment
         execution_environment_id: Execution Environment
+        expected_difficulty: Difficulty
         files: Files
         finishing_rate: Finishing Rate
         hide_file_tree: Hide File Tree

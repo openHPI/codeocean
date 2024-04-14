@@ -1,13 +1,13 @@
-h1 = ErrorTemplateAttribute.model_name.human(count: 2)
+h1 = ErrorTemplateAttribute.model_name.human(count: :other)
 
 .table-responsive
   table.table class=(@error_template_attributes.present? ? 'sortable' : '')
     thead
       tr
         th
-        th = t('activerecord.attributes.error_template_attribute.key')
-        th = t('activerecord.attributes.error_template_attribute.description')
-        th = t('activerecord.attributes.error_template_attribute.regex')
+        th = ErrorTemplateAttribute.human_attribute_name('key')
+        th = ErrorTemplateAttribute.human_attribute_name('description')
+        th = ErrorTemplateAttribute.human_attribute_name('regex')
         th colspan=3 = t('shared.actions')
     tbody
       - @error_template_attributes.each do |error_template_attribute|

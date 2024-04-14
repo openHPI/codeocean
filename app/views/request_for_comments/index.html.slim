@@ -1,12 +1,12 @@
-h1 = RequestForComment.model_name.human(count: 2)
+h1 = RequestForComment.model_name.human(count: :other)
 
 = render(layout: 'shared/form_filters') do |f|
   .col-md-9.col
     .row.align-items-center
       - if params[:exercise_id].nil?
         .col-auto
-          = f.label(:exercise_title_cont, t('activerecord.attributes.request_for_comments.exercise'), class: 'visually-hidden form-label')
-          = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
+          = f.label(:exercise_title_cont, RequestForComment.human_attribute_name('exercise'), class: 'visually-hidden form-label')
+          = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: RequestForComment.human_attribute_name('exercise'))
       .col-auto.mt-3.mt-md-0
         = f.label(:title_cont, t('request_for_comments.solved'), class: 'visually-hidden form-label')
         = f.select(:state, [[t('request_for_comments.show_all'), RequestForComment::ALL], [t('request_for_comments.show_unsolved'), RequestForComment::ONGOING], [t('request_for_comments.show_soft_solved'), RequestForComment::SOFT_SOLVED], [t('request_for_comments.show_solved'), RequestForComment::SOLVED]])
@@ -23,13 +23,13 @@ h1 = RequestForComment.model_name.human(count: 2)
       tr
         th
           i.fa-regular.fa-lightbulb aria-hidden='true' title = t('request_for_comments.solved') align='right'
-        th.sorttable_nosort = sort_link(@search, :title, t('activerecord.attributes.request_for_comments.exercise'))
-        th = t('activerecord.attributes.request_for_comments.question')
+        th.sorttable_nosort = sort_link(@search, :title, RequestForComment.human_attribute_name('exercise'))
+        th = RequestForComment.human_attribute_name('question')
         th
           i.fa-solid.fa-comment aria-hidden='true' title = t('request_for_comments.comments') align='center'
-        th = t('activerecord.attributes.request_for_comments.username')
-        th = t('activerecord.attributes.request_for_comments.requested_at')
-        th = t('activerecord.attributes.request_for_comments.last_update')
+        th = RequestForComment.human_attribute_name('username')
+        th = RequestForComment.human_attribute_name('requested_at')
+        th = RequestForComment.human_attribute_name('last_update')
     tbody
       - @request_for_comments.each do |request_for_comment|
         tr data-id=request_for_comment.id

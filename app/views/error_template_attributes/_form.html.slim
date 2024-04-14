@@ -13,5 +13,5 @@
   .form-check.mb-3
     label.form-check-label
     = f.check_box(:important, class: 'form-check-input')
-    = t('activerecord.attributes.error_template_attribute.important')
+    = ErrorTemplateAttribute.human_attribute_name('important')
   .actions = render('shared/submit_button', f:, object: @error_template_attribute)

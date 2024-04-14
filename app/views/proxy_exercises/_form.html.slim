@@ -19,15 +19,15 @@
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:public, class: 'form-check-input')
-      = t('activerecord.attributes.exercise.public')
+      = f.label(:public, class: 'form-label mb-0')
 
   h3 Exercises
   .table-responsive
     table.table
       thead
         tr
-          th = t('activerecord.attributes.exercise.selection')
-          th = sort_link(@search, :title, t('activerecord.attributes.submission.exercise'))
+          th = Exercise.human_attribute_name('selection')
+          th = sort_link(@search, :title, Submission.human_attribute_name('exercise'))
           th = sort_link(@search, :created_at, t('shared.created_at'))
       = collection_check_boxes :proxy_exercise, :exercise_ids, @exercises, :id, :title do |b|
         tr

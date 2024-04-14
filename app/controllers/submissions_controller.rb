@@ -40,7 +40,7 @@ class SubmissionsController < ApplicationController
       end
 
       # zip exercise description
-      zio.put_next_entry("#{t('activerecord.models.exercise.one')}.txt")
+      zio.put_next_entry("#{Exercise.model_name.human}.txt")
       zio.write("#{@submission.exercise.title}\r\n======================\r\n")
       zio.write(@submission.exercise.description)
 

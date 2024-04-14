@@ -16,13 +16,13 @@
   .form-check
     label.form-check-label
       = f.check_box(:binary, class: 'form-check-input')
-      = t('activerecord.attributes.file_type.binary')
+      = f.label(:binary, class: 'form-label mb-0')
   .form-check
     label.form-check-label
       = f.check_box(:executable, class: 'form-check-input')
-      = t('activerecord.attributes.file_type.executable')
+      = f.label(:executable, class: 'form-label mb-0')
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:renderable, class: 'form-check-input')
-      = t('activerecord.attributes.file_type.renderable')
+      = f.label(:renderable, class: 'form-label mb-0')
   .actions = render('shared/submit_button', f:, object: @file_type)

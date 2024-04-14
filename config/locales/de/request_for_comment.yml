@@ -2,7 +2,7 @@
 de:
   activerecord:
     attributes:
-      request_for_comments:
+      request_for_comment:
         close: Fenster schließen
         comments: Kommentare
         execution_environment: Sprache

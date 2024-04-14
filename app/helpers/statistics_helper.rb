@@ -30,19 +30,19 @@ module StatisticsHelper
     [
       {
         key: 'internal_users',
-          name: t('activerecord.models.internal_user.other'),
+          name: InternalUser.model_name.human(count: :other),
           data: InternalUser.count,
           url: internal_users_path,
       },
       {
         key: 'external_users',
-          name: t('activerecord.models.external_user.other'),
+          name: ExternalUser.model_name.human(count: :other),
           data: ExternalUser.count,
           url: external_users_path,
       },
       {
         key: 'programming_groups',
-        name: t('activerecord.models.programming_group.other'),
+        name: ProgrammingGroup.model_name.human(count: :other),
         data: ProgrammingGroup.count,
         url: programming_groups_path,
       },
@@ -59,7 +59,7 @@ module StatisticsHelper
     [
       {
         key: 'exercises',
-          name: t('activerecord.models.exercise.other'),
+          name: Exercise.model_name.human(count: :other),
           data: Exercise.count,
           url: exercises_path,
       },
@@ -91,13 +91,13 @@ module StatisticsHelper
       },
       {
         key: 'execution_environments',
-          name: t('activerecord.models.execution_environment.other'),
+          name: ExecutionEnvironment.model_name.human(count: :other),
           data: ExecutionEnvironment.count,
           url: execution_environments_path,
       },
       {
         key: 'exercise_collections',
-          name: t('activerecord.models.exercise_collection.other'),
+          name: ExerciseCollection.model_name.human(count: :other),
           data: ExerciseCollection.count,
           url: exercise_collections_path,
       },
@@ -108,7 +108,7 @@ module StatisticsHelper
     rfc_activity_data + [
       {
         key: 'comments',
-          name: t('activerecord.models.comment.other'),
+          name: Comment.model_name.human(count: :other),
           data: Comment.count,
       },
     ]
@@ -138,7 +138,7 @@ module StatisticsHelper
     [
       {
         key: 'rfcs',
-          name: t('activerecord.models.request_for_comment.other'),
+          name: RequestForComment.model_name.human(count: :other),
           data: RequestForComment.in_range(from, to).count,
           url: request_for_comments_path,
       },
@@ -185,7 +185,7 @@ module StatisticsHelper
     [
       {
         key: 'rfcs',
-          name: t('activerecord.models.request_for_comment.other'),
+          name: RequestForComment.model_name.human(count: :other),
           data: RequestForComment.in_range(from, to)
             .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
             .group('key').order('key'),

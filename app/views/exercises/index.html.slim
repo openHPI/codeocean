@@ -1,28 +1,28 @@
-h1 = Exercise.model_name.human(count: 2)
+h1 = Exercise.model_name.human(count: :other)
 
 = render(layout: 'shared/form_filters') do |f|
   .col-auto
-    = f.label(:execution_environment_id_eq, t('activerecord.attributes.exercise.execution_environment'), class: 'visually-hidden form-label')
-    = f.collection_select(:execution_environment_id_eq, @execution_environments.with_exercises, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.exercise.execution_environment'))
+    = f.label(:execution_environment_id_eq, Exercise.human_attribute_name('execution_environment'), class: 'visually-hidden form-label')
+    = f.collection_select(:execution_environment_id_eq, @execution_environments.with_exercises, :id, :name, class: 'form-control', prompt: Exercise.human_attribute_name('execution_environment'))
   .col-auto
-    = f.label(:title_or_internal_title_cont, t('activerecord.attributes.exercise.title'), class: 'visually-hidden form-label')
-    = f.search_field(:title_or_internal_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.exercise.title'))
+    = f.label(:title_or_internal_title_cont, Exercise.human_attribute_name('title'), class: 'visually-hidden form-label')
+    = f.search_field(:title_or_internal_title_cont, class: 'form-control', placeholder: Exercise.human_attribute_name('title'))
 
 .table-responsive
   table.table.mt-2
     thead
       tr
-        th.p-1 = sort_link(@search, :title, t('activerecord.attributes.exercise.title'))
-        th.p-1 = sort_link(@search, :execution_environment_id, t('activerecord.attributes.exercise.execution_environment'))
+        th.p-1 = sort_link(@search, :title, Exercise.human_attribute_name('title'))
+        th.p-1 = sort_link(@search, :execution_environment_id, Exercise.human_attribute_name('execution_environment'))
         th.p-1 = t('.test_files')
-        th.p-1 = t('activerecord.attributes.exercise.maximum_score')
-        th.p-1 = t('activerecord.attributes.exercise.tags')
-        th.p-1 = t('activerecord.attributes.exercise.difficulty')
+        th.p-1 = Exercise.human_attribute_name('maximum_score')
+        th.p-1 = Exercise.human_attribute_name('tags')
+        th.p-1 = Exercise.human_attribute_name('expected_difficulty')
         th.p-1
-          = t('activerecord.attributes.exercise.public')
+          = Exercise.human_attribute_name('public')
           - if policy(Exercise).batch_update?
             br
-            span.batch = link_to(t('shared.batch_update'), '#', 'data-text': t('shared.update', model: t('activerecord.models.exercise.other')))
+            span.batch = link_to(t('shared.batch_update'), '#', 'data-text': t('shared.update', model: Exercise.model_name.human(count: :other)))
         th.p-1 colspan=6 = t('shared.actions')
     tbody
       - @exercises.each do |exercise|
@@ -48,9 +48,9 @@ h1 = Exercise.model_name.human(count: 2)
               button.btn.btn-outline-primary.btn-sm.dropdown-toggle data-bs-toggle='dropdown' type='button' = t('shared.actions_button')
               ul.dropdown-menu.float-end role='menu'
                 li = link_to(t('shared.show'), exercise, 'data-turbolinks': 'false', class: 'dropdown-item') if policy(exercise).show?
-                li = link_to(t('activerecord.models.user_exercise_feedback.other'), feedback_exercise_path(exercise), class: 'dropdown-item') if policy(exercise).feedback?
-                li = link_to(t('activerecord.models.request_for_comment.other'), exercise_request_for_comments_path(exercise), class: 'dropdown-item') if policy(exercise).rfcs_for_exercise?
-                li = link_to(t('activerecord.models.programming_group.other'), exercise_programming_groups_path(exercise), class: 'dropdown-item') if policy(exercise).programming_groups_for_exercise?
+                li = link_to(UserExerciseFeedback.model_name.human(count: :other), feedback_exercise_path(exercise), class: 'dropdown-item') if policy(exercise).feedback?
+                li = link_to(RequestForComment.model_name.human(count: :other), exercise_request_for_comments_path(exercise), class: 'dropdown-item') if policy(exercise).rfcs_for_exercise?
+                li = link_to(ProgrammingGroup.model_name.human(count: :other), exercise_programming_groups_path(exercise), class: 'dropdown-item') if policy(exercise).programming_groups_for_exercise?
                 li = link_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'dropdown-item') if policy(exercise).destroy?
                 li = link_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post, class: 'dropdown-item') if policy(exercise).clone?
                 li = link_to(t('exercises.export_codeharbor.label'), '', class: 'dropdown-item export-start', data: {'exercise-id': exercise.id}) if policy(exercise).export_external_confirm?

@@ -7,7 +7,7 @@
         .clearfix role='button'
           i.fa-solid aria-hidden='true'
           span
-            = t('activerecord.models.tip.one')
+            = Tip.model_name.human
             =< tip_prefix + index.to_s
             = ": #{tip.title}" if tip.title?
   .card.card-collapse.collapse id="tip-collapse-#{exercise_tip.id}" aria-labelledby="tip-heading-#{exercise_tip.id}" role='tabpanel' data-exercise-tip-id=exercise_tip.id

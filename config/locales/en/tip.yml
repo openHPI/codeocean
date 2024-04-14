@@ -5,6 +5,7 @@ en:
       tip:
         description: Description
         example: Example
+        file_type: File Type
         title: Title
     models:
       tip:

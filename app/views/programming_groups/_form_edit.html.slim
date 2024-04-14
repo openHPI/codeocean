@@ -1,12 +1,12 @@
 = form_for(@programming_group) do |f|
   = render('shared/form_errors', object: @programming_group)
 
-  h3 = t('activerecord.attributes.programming_group.member')
+  h3 = ProgrammingGroup.human_attribute_name('member')
   .table-responsive
     table.table class=(@members.present? ? 'sortable' : '')
       thead
         tr
-          th = t('activerecord.attributes.exercise.selection')
+          th = Exercise.human_attribute_name('selection')
           th = t('navigation.sections.contributors')
       = collection_check_boxes :programming_group, :programming_group_membership_ids, @members, :id, :id do |b|
         tr

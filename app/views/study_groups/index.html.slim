@@ -1,12 +1,12 @@
-h1 = StudyGroup.model_name.human(count: 2)
+h1 = StudyGroup.model_name.human(count: :other)
 
 = render(layout: 'shared/form_filters') do |f|
   .col-auto
-    = f.label(:consumer_id_eq, t('activerecord.attributes.internal_user.consumer'), class: 'visually-hidden form-label')
-    = f.collection_select(:consumer_id_eq, Consumer.with_study_groups, :id, :name, class: 'form-control', prompt: t('activerecord.attributes.internal_user.consumer'))
+    = f.label(:consumer_id_eq, InternalUser.human_attribute_name('consumer'), class: 'visually-hidden form-label')
+    = f.collection_select(:consumer_id_eq, Consumer.with_study_groups, :id, :name, class: 'form-control', prompt: InternalUser.human_attribute_name('consumer'))
   .col-auto
-    = f.label(:name_cont, t('activerecord.attributes.study_group.name'), class: 'visually-hidden form-label')
-    = f.search_field(:name_cont, class: 'form-control', placeholder: t('activerecord.attributes.study_group.name'))
+    = f.label(:name_cont, StudyGroup.human_attribute_name('name'), class: 'visually-hidden form-label')
+    = f.search_field(:name_cont, class: 'form-control', placeholder: StudyGroup.human_attribute_name('name'))
 
 = render('table', study_groups: @study_groups)
 = render('shared/pagination', collection: @study_groups_paginate)

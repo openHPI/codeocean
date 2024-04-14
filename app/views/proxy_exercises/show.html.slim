@@ -16,7 +16,7 @@ h2.mt-4 Exercises
   table.table
     thead
       tr
-        th = sort_link(@search, :title, t('activerecord.attributes.submission.exercise'))
+        th = sort_link(@search, :title, Submission.human_attribute_name('exercise'))
         th = sort_link(@search, :created_at, t('shared.created_at'))
     - @proxy_exercise.exercises.each do |exercise|
       tr

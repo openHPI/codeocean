@@ -1,13 +1,13 @@
-h1 = ExerciseCollection.model_name.human(count: 2)
+h1 = ExerciseCollection.model_name.human(count: :other)
 
 .table-responsive
   table.table
     thead
       tr
-        th = t('activerecord.attributes.exercise_collections.id')
-        th = t('activerecord.attributes.exercise_collections.name')
-        th = t('activerecord.attributes.exercise_collections.updated_at')
-        th = t('activerecord.attributes.exercise_collections.exercises')
+        th = ExerciseCollection.human_attribute_name('id')
+        th = ExerciseCollection.human_attribute_name('name')
+        th = ExerciseCollection.human_attribute_name('updated_at')
+        th = ExerciseCollection.human_attribute_name('exercises')
         th colspan=4 = t('shared.actions')
     tbody
       - @exercise_collections.each do |collection|

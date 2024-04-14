@@ -8,5 +8,5 @@ p = ''
 .d-grid.gap-2
   button#askForCommentsButton.btn.btn-primary(type='button' data-cause='requestComments' data-message-success=t('exercises.editor.request_for_comments_sent'))
     i.fa-solid.fa-circle-notch.fa-spin.d-none
-    = t('exercises.implement.comment.request')
-  button#closeAskForCommentsButton.btn.btn-warning(type='button') = t('activerecord.attributes.request_for_comments.close')
+    =t('exercises.implement.comment.request')
+  button#closeAskForCommentsButton.btn.btn-warning(type='button') = RequestForComment.human_attribute_name('close')

@@ -1,27 +1,27 @@
 - if params[:exercise_id].nil?
-  h1 = ProgrammingGroup.model_name.human(count: 2)
+  h1 = ProgrammingGroup.model_name.human(count: :other)
   = render(layout: 'shared/form_filters') do |f|
     .col-auto
-      = f.label(:exercise_id_eq, t('activerecord.attributes.programming_group.exercise'), class: 'visually-hidden form-label')
-      = f.collection_select(:exercise_id_eq, Exercise.with_programming_groups, :id, :title, class: 'form-control', prompt: t('activerecord.attributes.programming_group.exercise'))
+      = f.label(:exercise_id_eq, ProgrammingGroup.human_attribute_name('exercise'), class: 'visually-hidden form-label')
+      = f.collection_select(:exercise_id_eq, Exercise.with_programming_groups, :id, :title, class: 'form-control', prompt: ProgrammingGroup.human_attribute_name('exercise'))
     .col-auto
-      = f.label(:programming_group_memberships_user_of_ExternalUser_type_id_eq, t('activerecord.attributes.programming_group.external_user_id'), class: 'visually-hidden form-label')
-      = f.search_field(:programming_group_memberships_user_of_ExternalUser_type_id_eq, class: 'form-control', placeholder: t('activerecord.attributes.programming_group.external_user_id'))
+      = f.label(:programming_group_memberships_user_of_ExternalUser_type_id_eq, ProgrammingGroup.human_attribute_name('external_user_id'), class: 'visually-hidden form-label')
+      = f.search_field(:programming_group_memberships_user_of_ExternalUser_type_id_eq, class: 'form-control', placeholder: ProgrammingGroup.human_attribute_name('external_user_id'))
     .col-auto
-      = f.label(:programming_group_memberships_user_of_InternalUser_type_id_eq, t('activerecord.attributes.programming_group.internal_user_id'), class: 'visually-hidden form-label')
-      = f.search_field(:programming_group_memberships_user_of_InternalUser_type_id_eq, class: 'form-control', placeholder: t('activerecord.attributes.programming_group.internal_user_id'))
+      = f.label(:programming_group_memberships_user_of_InternalUser_type_id_eq, ProgrammingGroup.human_attribute_name('internal_user_id'), class: 'visually-hidden form-label')
+      = f.search_field(:programming_group_memberships_user_of_InternalUser_type_id_eq, class: 'form-control', placeholder: ProgrammingGroup.human_attribute_name('internal_user_id'))
 - else
-  h1 = "#{ProgrammingGroup.model_name.human(count: 2)} for Exercise '#{@exercise.title}'"
+  h1 = "#{ProgrammingGroup.model_name.human(count: :other)} for Exercise '#{@exercise.title}'"
 
 .table-responsive
   table.table.mt-4 class=(@programming_groups.present? ? 'sortable' : '')
     thead
       tr
-        th.sortable_nosort = sort_link(@search, :id, t('activerecord.attributes.programming_group.name'))
+        th.sortable_nosort = sort_link(@search, :id, ProgrammingGroup.human_attribute_name('name'))
         - if params[:exercise_id].blank?
-          th.sorttable_nosort = sort_link(@search, :exercise_id, t('activerecord.attributes.programming_group.exercise'))
-        th = t('activerecord.attributes.programming_group.member')
-        th = t('activerecord.attributes.programming_group.member_count')
+          th.sorttable_nosort = sort_link(@search, :exercise_id, ProgrammingGroup.human_attribute_name('exercise'))
+        th = ProgrammingGroup.human_attribute_name('member')
+        th = ProgrammingGroup.human_attribute_name('member_count')
         th.sorttable_nosort = sort_link(@search, :created_at, t('shared.created_at'))
         th colspan=3 = t('shared.actions')
     tbody

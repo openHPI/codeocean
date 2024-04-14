@@ -7,11 +7,11 @@ de:
         allow_file_creation: Dateierstellung erlauben
         average_score_percentage: Durchschnittliche Bewertung in Prozent
         description: Beschreibung
-        difficulty: Schwierigkeitsgrad
         distinct_final_submissions: Endgültige Abgaben
         embedding_parameters: Parameter für LTI-Einbettung
         execution_environment: Ausführungsumgebung
         execution_environment_id: Ausführungsumgebung
+        expected_difficulty: Schwierigkeitsgrad
         files: Dateien
         finishing_rate: Abschlussquote
         hide_file_tree: Dateibaum verstecken

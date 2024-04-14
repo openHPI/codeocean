@@ -12,7 +12,7 @@ h2.mt-4 = t('.history')
       tr
         th = t('shared.number')
         th = t('shared.created_at')
-        th = t('activerecord.attributes.submission.score')
+        th = Submission.human_attribute_name('score')
         th = t('.percentage')
         th = t('shared.actions')
     tbody

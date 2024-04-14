@@ -13,7 +13,7 @@ h1 = @submission
 = row(label: 'submission.cause', value: t("submissions.causes.#{@submission.cause}"))
 = row(label: 'submission.score', value: @submission.score)
 
-h2.mt-4 = t('activerecord.attributes.submission.files')
+h2.mt-4 = Submission.human_attribute_name('files')
 
 ul.list-unstyled
   - @files.each do |file|

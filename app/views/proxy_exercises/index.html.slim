@@ -1,18 +1,18 @@
-h1 = ProxyExercise.model_name.human(count: 2)
+h1 = ProxyExercise.model_name.human(count: :other)
 
 = render(layout: 'shared/form_filters') do |f|
   .col-auto
-    = f.label(:title_cont, t('activerecord.attributes.proxy_exercise.title'), class: 'visually-hidden form-label')
-    = f.search_field(:title_cont, class: 'form-control', placeholder: t('activerecord.attributes.proxy_exercise.title'))
+    = f.label(:title_cont, ProxyExercise.human_attribute_name('title'), class: 'visually-hidden form-label')
+    = f.search_field(:title_cont, class: 'form-control', placeholder: ProxyExercise.human_attribute_name('title'))
 
 .table-responsive
   table.table.mt-4
     thead
       tr
-        th.p-1 = sort_link(@search, :title, t('activerecord.attributes.proxy_exercise.title'))
-        th.p-1 = t('activerecord.attributes.exercise.token')
-        th.p-1 = t('activerecord.attributes.exercise.public')
-        th.p-1 = t('activerecord.attributes.proxy_exercise.files_count')
+        th.p-1 = sort_link(@search, :title, ProxyExercise.human_attribute_name('title'))
+        th.p-1 = Exercise.human_attribute_name('token')
+        th.p-1 = Exercise.human_attribute_name('public')
+        th.p-1 = ProxyExercise.human_attribute_name('files_count')
         th.p-1 colspan=2 = t('shared.actions')
     tbody
       - @proxy_exercises.each do |proxy_exercise|

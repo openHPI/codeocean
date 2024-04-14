@@ -17,14 +17,14 @@
   .rfc
     .description
       h5
-        = t('activerecord.attributes.exercise.description')
+        = Exercise.human_attribute_name('description')
       .text
         span.fa-solid.fa-chevron-up.collapse-button
         = render_markdown(@request_for_comment.exercise.description)
 
     .question
       h5.mt-4
-        = t('activerecord.attributes.request_for_comments.question')
+        = RequestForComment.human_attribute_name('question')
       .text
         - question = @request_for_comment.question
         = question.presence || t('request_for_comments.no_question')

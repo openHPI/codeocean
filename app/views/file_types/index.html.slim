@@ -1,12 +1,12 @@
-h1 = FileType.model_name.human(count: 2)
+h1 = FileType.model_name.human(count: :other)
 
 .table-responsive
   table.table
     thead
       tr
-        th = t('activerecord.attributes.file_type.name')
-        th = t('activerecord.attributes.file_type.user')
-        th = t('activerecord.attributes.file_type.file_extension')
+        th = FileType.human_attribute_name('name')
+        th = FileType.human_attribute_name('user')
+        th = FileType.human_attribute_name('file_extension')
         th colspan=3 = t('shared.actions')
     tbody
       - @file_types.each do |file_type|

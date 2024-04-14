@@ -2,7 +2,7 @@
 
 form#tip-selection
   .mb-3
-    span.badge = t('activerecord.attributes.exercise_tip.tip')
+    span.badge = ExerciseTip.human_attribute_name('tip')
     .mb-2
     = collection_select({}, :tip_ids, tips, :id, :to_s, {}, {id: 'add-tip-list', class: 'form-control', multiple: true})
 

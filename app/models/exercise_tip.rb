@@ -16,9 +16,7 @@ class ExerciseTip < ApplicationRecord
     unless ExerciseTip.exists?(
       exercise:, id: parent_exercise_tip
     )
-      errors.add :parent_exercise_tip,
-        I18n.t('activerecord.errors.messages.together',
-          attribute: I18n.t('activerecord.attributes.exercise_tip.tip'))
+      errors.add :parent_exercise_tip, :together, attribute: ExerciseTip.human_attribute_name('tip')
     end
   end
 end
