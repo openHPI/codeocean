@@ -23,7 +23,7 @@ class InternalUsersController < ApplicationController
     respond_to do |format|
       if @user.update(params[:internal_user].permit(:password, :password_confirmation))
         @user.change_password!(params[:internal_user][:password])
-        format.html { redirect_to(sign_in_path, notice: t('.success')) }
+        format.html { redirect_to(sign_in_path, notice: t('internal_users.reset_password.success')) }
         format.json { head :ok }
       else
         respond_with_invalid_object(format, object: @user, template: :reset_password)
@@ -42,7 +42,7 @@ class InternalUsersController < ApplicationController
     if params[:email].present?
       user = InternalUser.arel_table
       InternalUser.where(user[:email].matches(params[:email])).first&.deliver_reset_password_instructions!
-      redirect_to(:root, notice: t('.success'))
+      redirect_to(:root, notice: t('internal_users.forgot_password.success'))
     end
   end
   private :deliver_reset_password_instructions
@@ -130,7 +130,7 @@ class InternalUsersController < ApplicationController
     respond_to do |format|
       if @user.update(params[:internal_user].permit(:password, :password_confirmation))
         @user.activate!
-        format.html { redirect_to(sign_in_path, notice: t('.success')) }
+        format.html { redirect_to(sign_in_path, notice: t('internal_users.activate.success')) }
         format.json { head :ok }
       else
         respond_with_invalid_object(format, object: @user, template: :activate)

@@ -345,8 +345,6 @@ en:
         docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank" rel="noopener">DockerHub</a>.
         exposed_ports_list: During code execution these ports are accessible for the user. Port numbers must be numeric and separated by a comma.
         cpu_limit: Specify the minimum amount of CPU shares to reserve for each runner, measured in MHz.
-      errors:
-        not_synced_to_runner_management: The execution environment was created but not synced to the runner management due to an error.
     index:
       shell: Shell
       synchronize:
@@ -359,7 +357,6 @@ en:
         failure: At least one execution environment could not be synchronised due to an error.
     shell:
       command: Command
-      headline: Shell
       file_tree:
         reload: Reload
         reload_tooltip: Reload the file system of the runner. This action might take a few seconds.
@@ -407,7 +404,6 @@ en:
       run_success: Your code was run on our servers.
       requestComments: Request Comments
       requestCommentsTooltip: If you need help with your code, you can now request comments here!
-      save: Save
       score: Score
       send: Send
       start_over: Reset this exercise
@@ -423,10 +419,6 @@ en:
       test: Test
       timeout: 'Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.'
       out_of_memory: 'Execution stopped. Your code exceeded the permitted RAM usage of %{memory_limit} MB.'
-      exercise_deadline_passed: 'The score cannot be submitted.'
-      tooltips:
-        save: Your code is automatically saved whenever you download, run, or test it. Therefore, explicitly saving is rarely necessary.
-        exercise_deadline_passed: 'Either the deadline has already passed or you did not directly access this page from the e-learning platform. (Did you use the Back button of your browser after submitting the score?)'
       request_for_comments_sent: "Request for comments sent."
       hints:
         submission_deadline: This exercise is due <b>%{deadline}</b>.<br/><small>Please finish the exercise before this deadline passes. %{otherwise}</small>
@@ -478,9 +470,6 @@ en:
         submission_deadline: A date and time in UTC to close the submission. Any submission obtained after the deadline will be considered late and the score sent to the e-learning platform will be reduced by 20%.
         late_submission_deadline: A grace period for submissions in UTC. The late submission deadline should not be set or any timestamp before the original submission deadline. Any submission obtained after the deadline will be clearly marked and the score sent to the e-learning platform will be reduced by 100%.
     implement:
-      alert:
-        text: 'Your browser does not support features required for using %{application_name}. Please access %{application_name} using a modern browser.'
-        title: Your browser is not supported!
       default_test_feedback: Well done. All tests have been passed.
       default_linter_feedback: Well done. The linter is completly satisfied.
       error_messages: Error Messages
@@ -491,7 +480,6 @@ en:
       test_file: 'Test File <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)'
       linter_file: 'Linter Feedback <span class="number d-none">%{number}</span>(<span class="filename">%{filename}</span>)'
       not_graded: not graded
-      hint: Hint
       no_files: The exercise does not comprise visible files yet.
       no_execution_environment: No execution environment has been selected for the exercise yet.
       no_output: The last code run finished on %{timestamp} without any output.
@@ -503,23 +491,14 @@ en:
       output: Program Output
       passed_tests: Passed Tests
       code_rating: Code Rating
-      progress: Progress
       results: Results
-      start: Start Coding
       test_count: '<span class="number">%{count}</span> test files have been executed.'
       unpublished: The selected exercise has been deactivated. Hence, you cannot implement this exercise at the moment.
-      workspace: Workspace
       comment:
-        a_comment: comment
-        line: line
         dialogtitle: Comment on this line
         others: Other comments on this line
         addyours: Add your comment
-        addCommentExercise: Comment this exercise
-        addComment: You can give feedback to this exercise. Keep in mind that this should refer to the exercise and not to the solution of the participant. Did you find this exercise particulary easy or difficult? Was the description sufficient?
         addCommentButton: Comment this
-        removeAllOnLine: Remove my comments on this line
-        listing: Listing the newest comment requests
         request: "Request Comments"
         question: 'Please shortly describe your problem or the program part you would like to get feedback for. Your program code and potential error messages are automatically appended to your request.'
       intervention:
@@ -630,8 +609,6 @@ en:
       tag_statistics: "Tag Statistics"
       empty_tag_statistics: "No statistics available"
       exercise_statistics: "Exercise Statistics"
-    form:
-      study_groups: Study Groups
   files:
     roles:
       main_file: Main File
@@ -644,11 +621,6 @@ en:
       teacher_defined_linter: Linter for Assessment
     error:
       filename: "The file could not be saved, because another file with the name '%{name}' already exists."
-  hints:
-    form:
-      hints:
-        message: This message is used as an error explanation. Placeholders are automatically replaced by regular expression matches.
-        regular_expression: This regular expression is used to extract relevant identifiers from the error message.
   internal_users:
     index:
       activate: Activate
@@ -863,7 +835,6 @@ en:
     show_soft_solved: "Show only requests presumably solved"
     show_unsolved: "Show only unsolved requests"
     solved: "This question has been answered"
-    comment_exercise: "I would like to give feedback for this exercise"
     write_a_thank_you_node: "If you want, you can write a thank you note to all your commenters:"
     send_thank_you_note: "Send"
     cancel_thank_you_note: "Don't send"
@@ -932,7 +903,6 @@ en:
     errors_other: '%{count} errors prohibited this %{model} from being saved'
     help:
       execution_environment_specific_help: 'Help for %{execution_environment}'
-      general_help: General Help
       headline: Help
       link: Help
       imprint: Imprint
@@ -977,8 +947,6 @@ en:
       save: Save
       submit: Submission
       test: Test
-    create:
-      success: Your code has been saved.
     statistics:
       history: Score History
       percentage: Percentage
@@ -987,7 +955,6 @@ en:
     set_as_current:
       success: The study group has been switched successfully.
   users:
-    platform_admin: Platform Admin
     show:
       current_study_group: Current Study Group
       set_as_current_study_group: Set as Current Study Group
@@ -1045,7 +1012,6 @@ en:
         with_comments: "RfCs with Comments"
       users:
         currently_active: "Active (5 minutes)"
-        currently_active60: "Active (60 minutes)"
         active: "Active Users"
     graphs:
       user_activity: "User Activity"
