@@ -35,6 +35,16 @@ const envConfig = module.exports = {
                     filename: 'icons/[hash].svg'
                 },
             },
+            // Extract ToastUi's inline PNGs to actual resources, similar to Bootstrap's SVGs.
+            // This removes the requirement for `data:` URLs in our CSP
+            {
+                mimetype: 'image/png',
+                scheme: 'data',
+                type: 'asset/resource',
+                generator: {
+                    filename: 'icons/[hash].png'
+                },
+            },
             erb
         ]
     },

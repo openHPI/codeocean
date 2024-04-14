@@ -60,6 +60,7 @@ Rails.application.configure do
     # Currently, these include turbolinks, and vis.js.
     policy.style_src_elem       :self, :unsafe_inline, :report_sample
     # We still use some inline styles within the application, and indirectly through d3.js.
+    # Further, the ToastUi markdown editor currently requires inline styles, too.
     policy.style_src_attr       :unsafe_inline, :report_sample
     # The `style_src` directive is only a fallback for browsers not supporting `style_src_elem` and `style_src_attr`.
     policy.style_src            :self, :unsafe_inline, :report_sample
