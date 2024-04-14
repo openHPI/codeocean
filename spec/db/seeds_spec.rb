@@ -6,7 +6,7 @@ RSpec.describe 'seeds' do
   subject(:seed) { Rake::Task['db:seed'].invoke }
 
   before do
-    CodeOcean::Application.load_tasks
+    Rails.application.load_tasks if Rake::Task.tasks.empty?
 
     # We need to migrate the test database before seeding
     # Otherwise, Rails 7.1+ will throw an `NoMethodError`: `pending_migrations.any?`
