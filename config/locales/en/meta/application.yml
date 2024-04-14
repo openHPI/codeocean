@@ -1,0 +1,14 @@
+---
+en:
+  application:
+    markdown_editor:
+      collapse: Collapse editor
+      expand: Expand editor
+    not_authorized: You are not authorized to perform this action.
+    not_found: The requested resource could not be found.
+    not_signed_in: You must be signed in to perform this action.
+    welcome:
+      text_signed_in_as_external_user: Please access %{application_name} from an e-learning platform.
+      text_signed_in_as_internal_user: Good to see you, %{user_name}!
+      text_signed_out: If you are a learner, please access %{application_name} from an e-learning platform. If you are an instructor, <a href="%{sign_in_path}">please sign in</a>.
+      title: Welcome to %{application_name}

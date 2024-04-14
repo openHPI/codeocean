@@ -1,0 +1,83 @@
+---
+de:
+  linter:
+    error:
+      function-redefined:
+        example: function already defined line 15
+        log_missing: false
+        name: Funktionsdefinition überschrieben
+        regex: ".*line (?<line>\\d*).*"
+        replacement: Eine Funktion mit demselben Namen wurde bereits in Zeile %{line} definiert
+      import-error:
+        example: Unable to import 'turtel'
+        log_missing: false
+        name: Import-Fehler
+        regex: ".*'(?<import>.*)'.*"
+        replacement: Der Import von '%{import}' ist fehlgeschlagen
+      return-outside-function:
+        example: Return outside function
+        log_missing: false
+        name: Return außerhalb einer Funktion
+        regex: ".*"
+        replacement: Ein Return kann nur innerhalb einer Funktion verwendet werden
+      severity_name: Fehler
+      syntax-error:
+        example: EOL while scanning string literal (<unknown>, line 1)
+        explanation:
+          Did you mean: "\" fehlen. Vielleicht meintest du folgendes:"
+          does not match opening parenthesis: " passt nicht zu der öffnenden Klammer "
+          is not allowed: "\" ist nicht erlaubt"
+        log_missing: true
+        name: Syntax-Fehler
+        regex: '(?<what>invalid syntax|EOL while scanning string literal|EOF while scanning triple-quoted string literal|cannot assign to|expected an indented block|Missing parentheses in call to|closing parenthesis|expression cannot contain assignment, perhaps you meant|f-string expression part cannot include a backslash|f-string:|invalid character in identifier|invalid decimal literal|trailing comma not allowed without surrounding parentheses|unexpected EOF while parsing|unexpected character after line continuation character|unexpected indent|unexpected unindent|unindent does not match any outer indentation level|unmatched|inconsistent use of tabs and spaces in indentation|illegal target for annotation|positional argument follows keyword argument|leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers|cannot assign to comparison|non-default argument follows default argument|cannot use assignment expressions with) ?(?<what_exactly>function call|literal|operator|set display|empty expression not allowed|single|unmatched)? ?(?:''(?<actual>[^''"]*)''\.*)? ?(?:(?<explanation>Did you mean|does not match opening parenthesis|is not allowed)(?: '')?)?(?:(?<suggestion>.*)(?:\?|''|"))? ?\((?<context>.*), line (?<line>\d*)\).*'
+        replacement: "%{what}%{what_exactly}%{actual}%{explanation}%{suggestion}"
+        what:
+          EOF while scanning triple-quoted string literal: Ein Kommentar mit drei Anführungszeichen wurde nicht geschlossen
+          EOL while scanning string literal: Ein String wurde nicht geschlossen
+          Missing parentheses in call to: Die Klammern beim Aufruf von "
+          cannot assign to: Die Zuweisung ist ungültig für
+          cannot assign to comparison: Ein Vergleich kann nicht das Ziel einer Zuweisung sein und daher nicht links von einem einfachen Gleichheitszeichen = stehen
+          cannot use assignment expressions with: Die Zuweisung ist ungültig für
+          closing parenthesis: 'Die schließende Klammer '
+          expected an indented block: Ein eingerückter Codeblock wurde erwartet
+          expression cannot contain assignment, perhaps you meant: 'Die Anweisung kann keine Zuweisung enthalten, vielleicht meintest du folgendes: '
+          f-string expression part cannot include a backslash: Ein Platzhalter in einem f-String kann keinen Backslash \ enthalten
+          'f-string:': 'f-String:'
+          illegal target for annotation: Ungültige Schreibweise eines Bezeichners mit einem Großbuchstaben
+          inconsistent use of tabs and spaces in indentation: Gemischte Einrückung mit Leerzeichen und Tabs
+          invalid character in identifier: Ungültiges Zeichen im Bezeichner
+          invalid decimal literal: Ungültige Zahl
+          invalid syntax: Ungültige Syntax
+          leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers: Eine Zahl darf nicht mit einer führenden Null beginnen
+          non-default argument follows default argument: Ein Argument ohne Standardwert darf nicht nach einem Argument mit Standardwert folgen
+          positional argument follows keyword argument: Nach einem benannten Argument darf kein Argument ohne Namen folgen
+          trailing comma not allowed without surrounding parentheses: Ein Komma am Ende einer Aufzählung ist ohne umgebende Klammern nicht erlaubt
+          unexpected EOF while parsing: Es wurden weitere Zeichen in dem Quellcode erwartet, diese fehlten jedoch
+          unexpected character after line continuation character: Nach einem Backslash \ außerhalb eines Strings darf in der selben Zeile kein weiteres Zeichen folgen
+          unexpected indent: Ungültige Einrückung
+          unexpected unindent: Ungültige Einrückung nach einem weiter eingerückten Code-Block
+          unindent does not match any outer indentation level: Die Einrückung passt nicht zu einem vorherigen Teil
+          unmatched: 'Die folgende Klammer scheint zu viel zu sein: '
+        what_exactly:
+          dict display: " ein Dictionary"
+          empty expression not allowed: " eine leere Anweisung ist nicht erlaubt"
+          f-string expression: " einem F-String"
+          function call: " eine Funktion"
+          list display: " eine Liste"
+          literal: " eine Zahl"
+          operator: " einen Operator"
+          set display: " einer Menge"
+          single: ' eine einzelne "'
+          unmatched: " unpassende Klammer "
+      undefined-variable:
+        example: Undefined variable 'beginn_fill'
+        log_missing: false
+        name: Undefinierter Bezeichner
+        regex: ".*'(?<name>.*)'.*"
+        replacement: Der Name '%{name}' ist unbekannt
+      used-before-assignment:
+        example: Using variable 'kleidung' before assignment
+        log_missing: false
+        name: Verwendung vor Zuweisung
+        regex: ".*'(?<name>.*)'.*"
+        replacement: Die Variable '%{name}' wird vor ihrer erstmaligen Zuweisung verwendet

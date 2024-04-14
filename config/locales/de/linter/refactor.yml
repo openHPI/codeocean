@@ -1,0 +1,23 @@
+---
+de:
+  linter:
+    refactor:
+      comparison-with-itself:
+        example: Redundant comparison - hauptspeise == hauptspeise
+        log_missing: false
+        name: Vergleich mit sich selbst
+        regex: ".* - (?<comparison>.*)"
+        replacement: Der Vergleich ist überflüssig - %{comparison}
+      inconsistent-return-statements:
+        example: Either all return statements in a function should return an expression, or none of them should.
+        log_missing: false
+        name: Uneinheitliche Rückgabewerte
+        regex: ".*"
+        replacement: Entweder sollten alle return Anweisungen in einer Funktion ein Ergebnis zurückgeben oder keine Anweisung sollte einen Rückgabewert haben
+      redefined-argument-from-local:
+        example: Redefining argument with the local name 'Wort'
+        log_missing: false
+        name: Überschreiben eines Arguments
+        regex: ".*'(?<name>.*)'.*"
+        replacement: Das Argument '%{name}' wird überschrieben
+      severity_name: Überarbeitung empfohlen

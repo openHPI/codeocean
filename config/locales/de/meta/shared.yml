@@ -1,0 +1,54 @@
+---
+de:
+  shared:
+    actions: Aktionen
+    actions_button: Andere Aktionen
+    admin_filter:
+      all: Alle Nutzer:innen
+      none: Reguläre Nutzer:innen
+      only: Plattform-Administratoren
+    administration: Administration
+    already_signed_in: Sie sind bereits angemeldet.
+    apply_filters: Filter anwenden
+    back: Zurück
+    batch_update: Batch-Update
+    color_mode:
+      auto: Automatisch
+      dark: Dunkel
+      light: Hell
+      title: Erscheinungsbild
+    confirm_destroy: Sind Sie sicher?
+    create: "%{model} erstellen"
+    created_at: Erstellt
+    destroy: Löschen
+    edit: Bearbeiten
+    errors_one: Beim Speichern ist ein Fehler aufgetreten
+    errors_other: Beim Speichern sind %{count} Fehler aufgetreten
+    help:
+      execution_environment_specific_help: Hilfe zu %{execution_environment}
+      headline: Hilfe
+      imprint: Impressum
+      link: Hilfe
+      privacy_policy: Datenschutzerklärung
+    hide: Verstecken
+    index: Index
+    message_failure: Leider ist ein Fehler auf unserer Plattform aufgetreten. Bitte probieren Sie es später noch einmal.
+    new: Hinzufügen
+    new_model: "%{model} hinzufügen"
+    number: Nummer
+    object_cloned: "%{model} wurde erfolgreich dupliziert."
+    object_created: "%{model} wurde erfolgreich erstellt."
+    object_destroyed: "%{model} wurde erfolgreich gelöscht."
+    object_updated: "%{model} wurde erfolgreich bearbeitet."
+    out_of: von
+    reset_filters: Filter zurücksetzen
+    resources: Ressourcen
+    show: Anzeigen
+    statistics: Statistiken
+    time:
+      before: "%{time} zuvor"
+    tooltips:
+      shortcut: 'Tastaturkürzel: %{shortcut}'
+    update: "%{model} aktualisieren"
+    upload_file: Datei hochladen
+    websocket_failure: Leider ist ein Verbindungsproblem aufgetreten. <a href="https://websocketstest.com" target="_blank" rel="noopener" class="alert-link">Bitte überprüfen Sie Websocket-Verbindungen mit diesem Tool</a> und versuchen Sie es erneut.

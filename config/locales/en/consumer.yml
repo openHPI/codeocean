@@ -1,0 +1,20 @@
+---
+en:
+  activerecord:
+    attributes:
+      consumer:
+        name: Name
+        oauth_key: OAuth Key
+        oauth_secret: OAuth Secret
+        rfc_visibility: Visibility of Request for Comments
+        rfc_visibility_type:
+          all: All Requests for Comments are visible
+          consumer: Only Requests for Comments of the current consumer are visible
+          study_group: Only Requests for Comments of the current study group are visible
+    models:
+      consumer:
+        one: Consumer
+        other: Consumers
+  consumers:
+    show:
+      link: Consumer

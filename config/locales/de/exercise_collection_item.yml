@@ -1,0 +1,6 @@
+---
+de:
+  activerecord:
+    attributes:
+      exercise_collection_item:
+        exercise: Aufgabe

@@ -1,0 +1,22 @@
+---
+en:
+  activerecord:
+    attributes:
+      exercise_collections:
+        exercises: Exercises
+        id: ID
+        name: Name
+        solutions: Solution Attempts (accumulated)
+        submissions: Submissions (accumulated)
+        updated_at: Last Update
+        use_anomaly_detection: Enable Worktime Anomaly Detection
+        user: Associated User
+        users_and_programming_groups: Users and Programming Groups
+    models:
+      exercise_collection:
+        one: Exercise Collection
+        other: Exercise Collections
+  exercise_collections:
+    form:
+      add_exercises: Add exercises
+      sort_by_title: Sort by title

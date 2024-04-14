@@ -1,0 +1,63 @@
+---
+de:
+  activerecord:
+    attributes:
+      execution_environment:
+        cpu_limit: CPU-Limit (in MHz)
+        docker_image: Docker-Image
+        exposed_ports: Zugängliche Ports
+        exposed_ports_list: Zugängliche Ports
+        file_type: Standard-Dateityp
+        file_type_id: Standard-Dateityp
+        help: Hilfetext
+        memory_limit: Speicher-Limit (in MB)
+        name: Name
+        network_enabled: Netzwerkzugriff
+        permitted_execution_time: Erlaubte Ausführungszeit (in Sekunden)
+        pool_size: Prewarming-Pool-Größe
+        privileged_execution: Priviligierte Ausführung als "root"
+        run_command: Ausführungsbefehl
+        test_command: Testbefehl
+        testing_framework: Testing-Framework
+        user: Autor
+    models:
+      execution_environment:
+        one: Ausführungsumgebung
+        other: Ausführungsumgebungen
+  execution_environments:
+    form:
+      hints:
+        command: "<em>filename</em> wird automatisch durch den richtigen Dateinamen ersetzt. Das folgende Zeichen ist verboten: ' (einfaches Anführungszeichen)"
+        cpu_limit: Geben Sie die Mindestmenge an CPU-Anteilen an, die für jeden Runner reserviert werden soll, gemessen in MHz.
+        docker_image: Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank" rel="noopener">DockerHub</a> verfügbar ist.
+        exposed_ports_list: Während der Ausführung sind diese Ports für den Nutzer zugänglich. Die Portnummern müssen nummerisch und mit Komma voneinander getrennt sein.
+    index:
+      shell: Shell
+      synchronize:
+        button: Synchronisieren
+        failure: 'Beim Synchronisieren der Ausführungsumgebung ist folgender Fehler aufgetreten: %{error}'
+        success: Die Ausführungsumgebung wurde erfolgreich synchronisiert.
+      synchronize_all:
+        button: Alle synchronisieren
+        failure: Beim Synchronisieren mindestens einer Ausführungsumgebung ist ein Fehler aufgetreten.
+        success: Alle Ausführungsumgebungen wurden erfolgreich synchronisiert.
+    shell:
+      command: Befehl
+      file_tree:
+        empty: Das Dateisystem wurde bisher noch nicht aufgelistet.
+        headline: Dateisystem
+        list_now: Jetzt laden.
+        permission_denied: Der Zugriff auf die angeforderte Datei wurde verweigert. Bitte überprüfen Sie, dass die Datei existiert, der aktuelle Benutzer Leseberechtigungen besitzt und versuchen Sie ggf. die Datei mit "root"-Rechten anzufordern. Dazu müssen Sie den "sudo"-Schalter neben der Befehlszeile aktivieren und anschließend das Dateisystem vor dem Herunterladen einer Datei aktualisieren.
+        reload: Aktualisieren
+        reload_tooltip: Aktualisieren Sie die Liste der verfügbaren Dateien im Runners. Diese Aktion wird einige Sekunden in Anspruch nehmen.
+        root_notice: Dateien werden standardmäßig mit einem nicht-priviligerten Nutzer abgerufen. Um Dateien als "root" abzurufen, müssen Sie den "sudo" Schalter neben der Befehlszeile aktivieren und anschließend das Dateisystem vor dem Herunterladen einer Datei aktualisieren.
+    statistics:
+      exercise: Übung
+      maximum_score: Maximale Punktzahl
+      percentage_correct: Prozent Korrekt
+      runs: Durchschnittliche Anzahl von Versuchen
+      score: Durchschnittliche Punktzahl
+      stddev_score: stdabw (Punktzahl)
+      stddev_worktime: stdabw (Arbeitszeit)
+      users_and_programming_groups: Anzahl Nutzer und Programmiergruppen
+      worktime: Durchschnittliche Arbeitszeit

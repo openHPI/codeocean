@@ -1,0 +1,18 @@
+---
+de:
+  activerecord:
+    attributes:
+      study_group:
+        consumer: Konsument
+        external_id: Externe ID
+        member_count: Anzahl der Mitglieder
+        members: Mitglieder
+        name: Name
+        selection: Ausgewählt
+    models:
+      study_group:
+        one: Lerngruppe
+        other: Lerngruppen
+  study_groups:
+    set_as_current:
+      success: Die Lerngruppe wurde erfolgreich gewechselt.

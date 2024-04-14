@@ -30,7 +30,7 @@ class MarkdownFormBuilder < ActionView::Helpers::FormBuilder
 
   def resize_btn
     @template.tag.button(class: 'markdown-editor__resize-btn fa-solid', type: 'button', id: "#{label_target}-resize",
-      title: I18n.t(:'markdown_editor.expand'), aria_label: I18n.t(:'markdown_editor.expand'))
+      title: I18n.t(:'application.markdown_editor.expand'), aria_label: I18n.t(:'application.markdown_editor.expand'))
   end
 
   def base_id

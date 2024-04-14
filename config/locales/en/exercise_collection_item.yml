@@ -1,0 +1,6 @@
+---
+en:
+  activerecord:
+    attributes:
+      exercise_collection_item:
+        exercise: Exercise

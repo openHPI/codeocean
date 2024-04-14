@@ -1,0 +1,6 @@
+---
+en:
+  will_paginate:
+    next_label: Next Page &#8594;
+    page_gap: "&hellip;"
+    previous_label: "&#8592; Previous Page"

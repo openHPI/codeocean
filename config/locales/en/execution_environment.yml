@@ -1,0 +1,63 @@
+---
+en:
+  activerecord:
+    attributes:
+      execution_environment:
+        cpu_limit: CPU Limit (in MHz)
+        docker_image: Docker Image
+        exposed_ports: Exposed Ports
+        exposed_ports_list: Exposed Ports
+        file_type: Default File Type
+        file_type_id: Default File Type
+        help: Help Text
+        memory_limit: Memory Limit (in MB)
+        name: Name
+        network_enabled: Network Enabled
+        permitted_execution_time: Permitted Execution Time (in Seconds)
+        pool_size: Prewarming Pool Size
+        privileged_execution: Privileged Execution as "root"
+        run_command: Run Command
+        test_command: Test Command
+        testing_framework: Testing Framework
+        user: Author
+    models:
+      execution_environment:
+        one: Execution Environment
+        other: Execution Environments
+  execution_environments:
+    form:
+      hints:
+        command: "<em>filename</em> is automatically replaced with the correct filename. The following character is disallowed: ' (single quote)"
+        cpu_limit: Specify the minimum amount of CPU shares to reserve for each runner, measured in MHz.
+        docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank" rel="noopener">DockerHub</a>.
+        exposed_ports_list: During code execution these ports are accessible for the user. Port numbers must be numeric and separated by a comma.
+    index:
+      shell: Shell
+      synchronize:
+        button: Synchronize
+        failure: 'The execution environment could not be synchronised due to the following error: %{error}'
+        success: The execution environment was synchronized successfully.
+      synchronize_all:
+        button: Synchronize all
+        failure: At least one execution environment could not be synchronised due to an error.
+        success: All execution environments were synchronized successfully.
+    shell:
+      command: Command
+      file_tree:
+        empty: The file system has not been queried yet.
+        headline: File System
+        list_now: List now.
+        permission_denied: Access to the requested file has been denied. Please verify that the file exists, the current user has read permissions, and try requesting the file with "root" privileges if necessary.  To retrieve files as "root", you must enable the "sudo" switch shown next to the command input and then reload the file system before accessing any file.
+        reload: Reload
+        reload_tooltip: Reload the file system of the runner. This action might take a few seconds.
+        root_notice: Files are retrieved with a non-privileged user by default. To retrieve files as "root", you must enable the "sudo" switch shown next to the command input and then reload the file system before accessing any file.
+    statistics:
+      exercise: Exercise
+      maximum_score: Maximum Score
+      percentage_correct: Percentage Correct
+      runs: Average Number of Runs
+      score: Average Score
+      stddev_score: stddev (score)
+      stddev_worktime: stddev (working time)
+      users_and_programming_groups: Users and Programming Groups Count
+      worktime: Average Working Time

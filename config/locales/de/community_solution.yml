@@ -1,0 +1,16 @@
+---
+de:
+  activerecord:
+    models:
+      community_solution:
+        one: Gemeinschaftslösung
+        other: Gemeinschaftslösungen
+  community_solutions:
+    accept_community_solution: Gemeinschaftslösung ohne Änderung verlassen
+    change_community_solution: Änderungen an Gemeinschaftslösung speichern
+    current_community_solution: Aktuelle Gemeinschaftslösung
+    explanation: In diesem Kurs möchten wir gerne mit Ihnen und allen anderen Lernenden eine Gemeinschaftslösung für diese Aufgabe erarbeiten, die zum Ende des Kurses allen Teilnehmenden zugänglich gemacht werden soll. Unten finden Sie sowohl den aktuellen Stand der Gemeinschaftslösung als auch Ihre Abgabe. Bitte sehen Sie sich die Gemeinschaftslösung an und überarbeiten Sie diese bei Bedarf. Ihre eigene Lösung wird nicht verändert.
+    help_us_out: Helfen Sie mit!
+    research_explanation: Die hier angebotene Mitwirkungsmöglichkeit an einer Gemeinschaftslösung ist Bestandteil unserer Forschung; daher würden wir uns sehr über Ihre aktive Beteiligung freuen.
+    research_status: 'Neue Beta-Funktion:'
+    your_submission: Ihre Abgabe (schreibgeschützt, als Referenz)

@@ -1,0 +1,11 @@
+---
+de:
+  admin:
+    dashboard:
+      show:
+        current: Aktuelle Verfügbarkeit
+        history: Nutzungsverlauf
+        idleRunners: Freie Runner
+        inactive: Es ist kein Runner Management aktiv.
+        release: Release
+        usedRunners: Reservierte Runner

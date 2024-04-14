@@ -1,0 +1,38 @@
+---
+en:
+  sessions:
+    create:
+      failure: Invalid email or password.
+      success: Successfully signed in.
+    create_through_lti:
+      session_with_outcome: By clicking on "Score", your points will be added automatically to your progress.
+      session_without_outcome: This is a practice session. Your grade will not be transmitted to %{consumer}.
+    destroy:
+      link: Sign out
+      success: Successfully signed out.
+    destroy_through_lti:
+      average_score: Average Score
+      do_not_use_backbutton: Never use the browser's "Back" button to get back to CodeOcean.
+      final_submissions: Other Users' Submissions
+      finished_with_consumer: You may close this window now or <a href="%{url}" rel="nofollow">return to %{consumer}</a>.
+      finished_without_consumer: You may close this window now.
+      headline: Well done!
+      score: Your Score
+      success_with_outcome: Your code has been successfully assessed. Your grade has been transmitted to %{consumer}.
+      success_without_outcome: Your code has been successfully assessed.
+    expired: Your session has expired. Please <a href="" class="reloadCurrentPage alert-link">reload this page</a> before continuing.
+    new:
+      forgot_password: Forgot password?
+      headline: Sign In
+      instructors_only: 'Exclusive access for instructors:'
+      instructors_only_explanation: Signing in via password is reserved exclusively for instructors. As a learner, please access %{application_name} via the e-learning platform to proceed directly to an exercise.
+      link: Sign In
+      remember_me: Remember me
+    oauth:
+      failure: Sorry, something went wrong.
+      invalid_consumer: Invalid OAuth key.
+      invalid_exercise_token: Invalid exercise token.
+      invalid_lis_outcome_service_url: Invalid LTI outcome service URL.
+      invalid_signature: Invalid OAuth signature.
+      missing_parameters: Missing OAuth parameters.
+      used_nonce: Nonce has already been used.

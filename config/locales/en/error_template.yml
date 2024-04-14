@@ -1,0 +1,19 @@
+---
+en:
+  activerecord:
+    attributes:
+      error_template:
+        description: Description
+        hint: Hint
+        name: Name
+        signature: Signature Regular Expression
+    models:
+      error_template:
+        one: Error Template
+        other: Error Templates
+  error_templates:
+    add_attribute: Add attribute
+    attributes: Attributes
+    hints:
+      hint_templates: 'Attribute names in {{double curly braces}} are replaced by the corresponding attribute value at runtime, e.g. "The error occurs in line {{Line}}." --(StructuredError: {Line: 4})--> "The error occurs in line 4."'
+      signature: A regular expression in Ruby syntax without leading and trailing "/"

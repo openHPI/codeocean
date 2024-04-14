@@ -1,0 +1,14 @@
+---
+de:
+  activerecord:
+    attributes:
+      file_template:
+        content: Code
+        file_type: Dateityp
+        name: Name
+    models:
+      file_template:
+        one: Dateivorlage
+        other: Dateivorlagen
+  file_template:
+    no_template_label: Leere Datei

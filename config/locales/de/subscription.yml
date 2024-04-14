@@ -1,0 +1,5 @@
+---
+de:
+  subscriptions:
+    subscription_not_existent: Das Abonnement, von dem Sie sich abmelden wollen, existiert nicht.
+    successfully_unsubscribed: Ihr Abonnement für weitere Kommentare auf dieser Kommentaranfrage wurde erfolgreich beendet.

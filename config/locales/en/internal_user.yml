@@ -1,0 +1,39 @@
+---
+en:
+  activerecord:
+    attributes:
+      internal_user:
+        activated: Activated
+        consumer: Consumer
+        consumer_id: Consumer
+        email: Email
+        name: Name
+        password: Password
+        password_confirmation: Passwort Confirmation
+        platform_admin: Platform Admin
+    models:
+      internal_user:
+        one: Internal User
+        other: Internal Users
+  internal_users:
+    activate:
+      headline: Complete Registration
+      submit: Set Password
+      success: You successfully completed your registration.
+    forgot_password:
+      headline: Reset Password
+      submit: Send Password Reset Instructions
+      success: Instructions to reset your password have been sent to your email address.
+    form:
+      click_to_collapse: Click to expand/collapse...
+      study_groups: Study Groups
+    index:
+      activate: Activate
+      forgot_password: Reset Password
+      reset_password: Reset Password
+    reset_password:
+      headline: Reset Password
+      submit: Set Password
+      success: You successfully changed your password.
+    show:
+      link: Profile

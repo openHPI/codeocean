@@ -1,0 +1,163 @@
+---
+en:
+  mailers:
+    user_mailer:
+      activation_needed:
+        body: Please visit %{link} and set up a password in order to complete your registration.
+        subject: Please complete your registration.
+      exercise_anomaly_detected:
+        body1: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          eine oder mehrere Aufgaben Ihrer Aufgabensammlung "%{collection_name}" zeigen Unregelmäßigkeiten in der Bearbeitungszeit. Möglicherweise sind sie zu schwer oder zu leicht.
+          <br>
+          Die Aufgaben sind:
+          <br>
+        body2: |
+          <br>
+          Falls Sie beim Klick auf einen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          at least one exercise in your exercise collection "%{collection_name}" has a much longer or much shorter average working time than the average. Perhaps they are too difficult or too easy.
+          <br>
+          The exercises are:
+          <br>
+        body3: |
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking a link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: Anomalies in exercises of your exercise collection
+      exercise_anomaly_needs_feedback:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          um die Aufgaben auf CodeOcean weiter zu verbessern, benötigen wir Ihre Mithilfe. Bitte nehmen Sie sich ein paar Minuten Zeit um ein kurzes Feedback zu folgender Aufgabe zu geben:
+          <br>
+          %{exercise} - %{link}
+          <br>
+          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          we need your help to improve the quality of the exercises on CodeOcean. Please take a few minutes to give us feedback for the following exercise:
+          <br>
+          %{exercise} - %{link}
+          <br>
+          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: An exercise on CodeOcean needs your feedback
+      got_new_comment:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          es gibt einen neuen Kommentar von %{commenting_user_displayname} zu Ihrer Kommentaranfrage auf CodeOcean. <br>
+          <br>
+          %{commenting_user_displayname} schreibt: %{comment_text}<br>
+          <br>
+          Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
+          <br>
+          Eine Übersicht Ihrer Kommentaranfragen gibt es hier: %{link_my_comments} <br>
+          Alle Kommentaranfragen aller Benutzer finden Sie hier: %{link_all_comments} <br>
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          you received a new comment from %{commenting_user_displayname} to your request for comments on CodeOcean. <br>
+          <br>
+          %{commenting_user_displayname} wrote: %{comment_text} <br>
+          <br>
+          You can find your request for comments here: %{link_to_comment} <br>
+          <br>
+          An overview of all your comments can be accessed here: %{link_my_comments} <br>
+          All comments of all participants are available here: %{link_all_comments} <br>
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: You received a new comment on CodeOcean from %{commenting_user_displayname}.
+      got_new_comment_for_subscription:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          es gibt einen neuen Kommentar von %{author_displayname} zu einer Kommentaranfrage auf CodeOcean, die Sie abonniert haben. <br>
+          <br>
+          %{author_displayname} schreibt: %{comment_text}<br>
+          <br>
+          Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
+          <br>
+          Wenn Sie keine weiteren Benachrichtigungen zu dieser Anfrage erhalten möchten, klicken Sie bitte hier: %{unsubscribe_link}
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          you received a new comment from %{author_displayname} to a request for comments on CodeOcean that you have subscribed to. <br>
+          <br>
+          %{author_displayname} wrote: %{comment_text} <br>
+          <br>
+          You can find the request for comments here: %{link_to_comment} <br>
+          <br>
+          If you don't want to be notified about further comments, please click here: %{unsubscribe_link}
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: "%{author_displayname} has posted a new comment to a discussion you subscribed to on CodeOcean."
+      reset_password:
+        body: Please visit %{link} if you want to reset your password.
+        subject: Password reset instructions
+      send_thank_you_note:
+        body: |
+          English version below <br>
+          _________________________<br>
+          <br>
+          Hallo %{receiver_displayname}, <br>
+          <br>
+          %{author} hat Ihnen für Ihren Kommentar auf CodeOcean gedankt. <br>
+          <br>
+          %{author} schreibt: %{thank_you_note}<br>
+          <br>
+          Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
+          <br>
+          Danke, dass Sie anderen Nutzern von CodeOcean helfen!
+          <br>
+          Diese Mail wurde automatisch von CodeOcean verschickt.<br>
+          <br>
+          _________________________<br>
+          <br>
+          Dear %{receiver_displayname}, <br>
+          <br>
+          %{author} thanks you for your comment. <br>
+          <br>
+          %{author} wrote: %{thank_you_note} <br>
+          <br>
+          You can find the request for comments here: %{link_to_comment} <br>
+          <br>
+          Thank you for helping other users on CodeOcean!
+          <br>
+          This mail was automatically sent by CodeOcean. <br>
+        subject: "%{author} says thank you!"

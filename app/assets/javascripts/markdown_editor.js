@@ -8,7 +8,7 @@
 
 const BACKTICK = 192;
 // These counters can be global. Scoping them to each editor becomes redundant
-// since they are reset to this state when switching editors. 
+// since they are reset to this state when switching editors.
 // Read more: https://github.com/openHPI/codeocean/pull/2242#discussion_r1576617432
 let backtickPressedCount = 0;
 let justInsertedCodeBlock = false;
@@ -180,14 +180,14 @@ const setResizeBtn = (formInput, editor) => {
       editor.setHeight("auto");
       editor.setMinHeight("400px");
       resizeBtn.classList.add("markdown-editor__resize-btn--collapse");
-      resizeBtn.title = I18n.t("markdown_editor.collapse");
-      resizeBtn.ariaLabel = I18n.t("markdown_editor.collapse");
+      resizeBtn.title = I18n.t("application.markdown_editor.collapse");
+      resizeBtn.ariaLabel = I18n.t("application.markdown_editor.collapse");
     } else {
       editor.setHeight("300px");
       editor.setMinHeight("300px");
       resizeBtn.classList.remove("markdown-editor__resize-btn--collapse");
-      resizeBtn.title = I18n.t("markdown_editor.expand");
-      resizeBtn.ariaLabel = I18n.t("markdown_editor.expand");
+      resizeBtn.title = I18n.t("application.markdown_editor.expand");
+      resizeBtn.ariaLabel = I18n.t("application.markdown_editor.expand");
     }
   });
 };

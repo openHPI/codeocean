@@ -1,0 +1,31 @@
+---
+de:
+  statistics:
+    activity_history:
+      from: Von
+      interval: Intervall
+      to: Bis
+      update: Aktualisieren
+    entries:
+      exercises:
+        autosaves_per_minute: Aktuelle Autosaves (1h)
+        average_number_of_submissions: Durchschnittliche Zahl von Abgaben
+        container_requests_per_minute: Aktuelle Containeranfragen (1h)
+        submissions: Abgaben
+        submissions_per_minute: Aktuelle Abgabenhäufigkeit (1h)
+      request_for_comments:
+        percent_soft_solved: Ungelöst mit voller Punktzahl
+        percent_solved: Beantwortete Anfragen
+        percent_unsolved: Unbeantwortete Anfragen
+        with_comments: Anfragen mit Kommentaren
+      users:
+        active: Aktive Nutzer
+        currently_active: Aktiv (5 Minuten)
+    graphs:
+      history: Historie
+      rfc_activity: Kommentaranfragenaktivität
+      user_activity: Nutzeraktivität
+    sections:
+      contributors: Mitwirkende
+      exercises: Aufgaben
+      request_for_comments: Kommentaranfragen

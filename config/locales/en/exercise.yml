@@ -1,0 +1,231 @@
+---
+en:
+  activerecord:
+    attributes:
+      exercise:
+        allow_auto_completion: Allow auto completion
+        allow_file_creation: Allow file creation
+        average_score_percentage: Average Score Percentage
+        description: Description
+        difficulty: Difficulty
+        distinct_final_submissions: Distinct Final Submissions
+        embedding_parameters: LTI Embedding Parameters
+        execution_environment: Execution Environment
+        execution_environment_id: Execution Environment
+        files: Files
+        finishing_rate: Finishing Rate
+        hide_file_tree: Hide File Tree
+        instructions: Instructions
+        internal_title: Alternative Title
+        late_submission_deadline: Late Submission Deadline
+        maximum_score: Maximum Score
+        number_of_users_and_programming_groups: "# Users and Programming Groups"
+        public: Public
+        selection: Selected
+        submission_deadline: Submission Deadline
+        tags: Tags
+        title: Title
+        token: Exercise Token
+        unpublished: Unpublished
+        user: Author
+        uuid: UUID
+    models:
+      exercise:
+        one: Exercise
+        other: Exercises
+  exercises:
+    download_file_tree:
+      file_root: Generated Files
+      gone: The requested file could not be retrieved. Generated files are only held for a short time and are then deleted. Please run the code again and then try downloading the file a second time.
+    editor:
+      collapse_action_sidebar: Collapse Action Sidebar
+      collapse_output_sidebar: Collapse Output Sidebar
+      confirm_start_over: Do you really want to start over? Your previous changes in this exercise will be reset; other exercises remain untouched. You cannot undo this action.
+      confirm_start_over_active_file: Do you really want to remove any changes in the active file '%{filename}'? You cannot undo this action.
+      create_file: New File
+      deadline: Deadline
+      depleted: All execution environments are busy. Please try again later.
+      destroy_file: Delete File
+      download: Download
+      dummy: No Action
+      exercise_finished: Congratulations! You have completely solved this exercise. <a href="%{url}" class="alert-link">Please click here to finish the exercise now.</a>
+      exercise_finished_redirect_to_own_rfc: Congratulations! You have completely solved this exercise and submitted the points. Your question concerning the exercise is solved? If so, please share the essential insight with your fellows and mark the question as solved, before you close this window!
+      exercise_finished_redirect_to_rfc: Congratulations! You have completely solved this exercise and submitted the points. Another participant has a question concerning the exercise you just solved. Your help and comments will be greatly appreciated!
+      exercise_finished_remote: Congratulations! You have completely solved this exercise and submitted the points to %{consumer}.
+      expand_action_sidebar: Expand Action Sidebar
+      expand_output_sidebar: Expand Output Sidebar
+      hints:
+        disclaimer: If unsure about a deadline, please contact a course instructor. The deadline shown here is only informational and information from the e-learning platform should always take precedence.
+        late_submission_deadline: Until <b>%{deadline}</b>, 80% of your score will be awarded.<br/><small>If you miss this extended deadline and score your code afterwards, 0 points will be transmitted.</small>
+        otherwise: Otherwise, a score of 0 points will be transmitted.
+        submission_deadline: This exercise is due <b>%{deadline}</b>.<br/><small>Please finish the exercise before this deadline passes. %{otherwise}</small>
+      input: Your input
+      is_offline: "%{name} is offline"
+      is_online: "%{name} is online"
+      lastsaved: 'Last saved: '
+      network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
+      out_of_memory: Execution stopped. Your code exceeded the permitted RAM usage of %{memory_limit} MB.
+      render: Render
+      requestComments: Request Comments
+      requestCommentsTooltip: If you need help with your code, you can now request comments here!
+      request_for_comments_sent: Request for comments sent.
+      run: Run
+      run_failure: Your code could not be run.
+      run_success: Your code was run on our servers.
+      runner_in_use: You are currently running code. Please stop the previous execution, or wait a moment before proceeding.
+      score: Score
+      send: Send
+      start_over: Reset this exercise
+      start_over_active_file: Reset this file
+      start_video: Start (video) chat
+      stop: Stop
+      submit_failure_all: An error occurred while transmitting your score. Please try again later.
+      submit_failure_other_users: The transmission of points was only partially successful. The score was not transmitted for %{user}. The user(s) should reopen the exercise via the e-learning platform and then try to submit the points themselves.
+      submit_failure_remote: Your submission was successfully scored with %{score}%. However, your score could not be sent to the e-learning platform. Please check the submission deadline, reopen the exercise through the e-learning platform, and try again.
+      submit_no_validation_token: No exercise found for this validation token! Please keep out!
+      submit_too_late: Your submission was saved successfully but was received after the deadline, so that only %{score_sent}% were transmitted.
+      test: Test
+      timeout: Execution stopped. Your code exceeded the permitted execution time of %{permitted_execution_time} seconds.
+    editor_file_tree:
+      file_root: Files
+    export_codeharbor:
+      buttons:
+        abort: Abort
+        close: Close
+        export: Export
+        retry: Retry
+      check:
+        no_task: No corresponding task found on CodeHarbor. Pushing this exercise will create a new task on CodeHarbor, which will be linked to this one on CodeOcean. Any changes to either one can be pushed to the respective other platform.
+        task_found: 'A corresponding task has been found on CodeHarbor. You can export the exercise to transfer all changes made on CodeOcean to CodeHarbor. Careful: This will overwrite all potential changes made on CodeHarbor.'
+        task_found_no_right: A corresponding task has been found on CodeHarbor, but you don't have the rights to edit it. Please contact an Admin if you think you should be able to edit the task on CodeHarbor.
+      checking_codeharbor: Checking if the exercise exists on CodeHarbor.
+      dialogtitle: Export to CodeHarbor
+      error: An error occurred while contacting CodeHarbor
+      export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
+      label: Export to CodeHarbor
+      successfully_exported: 'Exercise has been successfully exported.<br>ID: %{id}<br>Title: %{title}'
+    external_users:
+      statistics:
+        addendum: "* Deltas longer than %{delta} minutes are ignored."
+        after_late_deadline: Too Late
+        before_deadline: On Time
+        cause: Cause
+        filter: 'Remember: Only the last submission per deadline is shown.'
+        legend: 'Legend:'
+        no_data_available: No data available or insufficient permissions
+        no_deadline: No Deadline
+        score: Score
+        tests: Unit Test Results
+        time: Time (UTC)
+        time_difference: Working Time until here*
+        toggle_autosave_off: Hide Autosaves
+        toggle_autosave_on: Show Autosaves
+        toggle_status_off: Autosaves are currently hidden
+        toggle_status_on: Autosaves are currently visible
+        within_grace_period: Within Grace Period
+    file_form:
+      hints:
+        feedback_message: This message is used as a hint for failing tests.
+        hidden_feedback: If this option is checked, tests are only executed in the background, but the result and feedback are not displayed to learners.
+        path: The file's path in the project tree. Can be left blank.
+        upload: An uploaded file takes precedence over changes in the text area and will be visible once saved. The resulting file name and file type will be set to match the uploaded file automatically.
+    form:
+      add_file: Add file
+      add_tips: Add tips
+      click_to_collapse: Click to expand/collapse...
+      hints:
+        internal_title: An alternative title for this exercise that is only visible to teachers.
+        late_submission_deadline: A grace period for submissions in UTC. The late submission deadline should not be set or any timestamp before the original submission deadline. Any submission obtained after the deadline will be clearly marked and the score sent to the e-learning platform will be reduced by 100%.
+        submission_deadline: A date and time in UTC to close the submission. Any submission obtained after the deadline will be considered late and the score sent to the e-learning platform will be reduced by 20%.
+      no_execution_environment_selected: Select an execution environment before publishing the exercise.
+      none: None
+      tags: Tags
+      tips: Tips
+      unpublish_warning: This will unpublish the exercise. Any student trying to implement it will get an error message, until it is published again.
+    implement:
+      break_intervention:
+        text: If you are struggling with this exercise, you may take a break at any time and continue later. Your progress in CodeOcean is automatically saved.
+        title: Break
+      code_rating: Code Rating
+      comment:
+        addCommentButton: Comment this
+        addyours: Add your comment
+        dialogtitle: Comment on this line
+        others: Other comments on this line
+        question: Please shortly describe your problem or the program part you would like to get feedback for. Your program code and potential error messages are automatically appended to your request.
+        request: Request Comments
+      default_linter_feedback: Well done. The linter is completly satisfied.
+      default_test_feedback: Well done. All tests have been passed.
+      error_hints:
+        heading: Hints
+      error_messages: Error Messages
+      existing_programming_group: You are currently working on the exercise entitled '%{exercise}' as part of a programming group. Please finish your work there before you start implementing this exercise.
+      exit_failure: The last code run exited with a failure (status code %{exit_code}).
+      exit_successful: The last code run exited successfully (status code %{exit_code}).
+      external_privacy_policy: privacy policy
+      feedback: Feedback
+      flowr:
+        go_to_question: Go to answer
+        heading: Gain more insights here | Powered by StackOverflow
+      intervention:
+        explanation: 'This message appears because you have been working on this exercise for %{duration} minutes. 25% of your fellow learners took more time to solve the exercise, so in that sense it''s not a problem, but this has proven to be an <a href=''https://hpi.de/en/research/publications/dissertations/dissertation-ralf-teusner.html'' style=''display: contents;'' target=''_blank'' rel=''noopener''>effective time for this message</a>.'
+      linter_file: Linter Feedback <span class="number d-none">%{number}</span>(<span class="filename">%{filename}</span>)
+      messages: Messages
+      no_execution_environment: No execution environment has been selected for the exercise yet.
+      no_files: The exercise does not comprise visible files yet.
+      no_output: The last code run finished on %{timestamp} without any output.
+      no_output_exit_failure: The last code run finished on %{timestamp} without any output and exited with a failure (status code %{exit_code}).
+      no_output_exit_successful: The last code run finished on %{timestamp} without any output and exited successfully (status code %{exit_code}).
+      no_output_yet: There is no output yet.
+      not_graded: not graded
+      output: Program Output
+      passed_tests: Passed Tests
+      results: Results
+      rfc_intervention:
+        text: If you are struggling with this exercise and don't want to continue on your own, your fellow learners can help out! </br> </br>
+      test_count: <span class="number">%{count}</span> test files have been executed.
+      test_file: Test File <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)
+      tips:
+        description: Description
+        example: Example
+        heading: Tips
+      tips_intervention:
+        text: If you are struggling with this exercise, the available tips may help. You can find them at any time in the left sidebar and are also displayed below for your convenience.
+      unpublished: The selected exercise has been deactivated. Hence, you cannot implement this exercise at the moment.
+    import_codeharbor:
+      import_errors:
+        internal_error: An internal error occurred on CodeOcean while importing the exercise.
+        invalid: Invalid exercise
+    index:
+      clone: Duplicate
+      external_user_statistics: External User Statistics
+      feedback: Feedback
+      implement: Implement
+      requests_for_comments: Requests for Comments
+      study_group_dashboard: Live Dashboard
+      test_files: Test Files
+    show:
+      is_unpublished: Exercise is unpublished
+    statistics:
+      average_score: Average Score
+      average_worktime: Average Working Time
+      deadline: Deadline
+      external_users: External Users
+      final_submissions: Final Submissions
+      finishing_rate: Finishing Rate
+      intermediate_submissions: Intermediate Submissions
+      internal_users: Internal Users
+      participants: Participating Users
+      programming_groups: Programming Groups
+      runs: Runs
+      score: Maximum Score
+      user: User
+      users_and_programming_groups: "%{count} distinct users and programming groups"
+      worktime: Working Time
+    study_group_dashboard:
+      learner: Learner
+      live_dashboard: Live Dashboard
+      no_data_yet: No data available yet
+      related_requests_for_comments: Related Requests for Comments
+      time_spent_in_minutes: Time spent in Minutes
+      time_spent_per_learner: Time spent per Learner

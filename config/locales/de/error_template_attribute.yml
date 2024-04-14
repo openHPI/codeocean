@@ -1,0 +1,13 @@
+---
+de:
+  activerecord:
+    attributes:
+      error_template_attribute:
+        description: Beschreibung
+        important: Wichtig
+        key: Name
+        regex: Regulärer Ausdruck
+    models:
+      error_template_attribute:
+        one: Fehlertemplatettribut
+        other: Fehlertemplatettribute

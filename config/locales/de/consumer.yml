@@ -1,0 +1,20 @@
+---
+de:
+  activerecord:
+    attributes:
+      consumer:
+        name: Name
+        oauth_key: OAuth Key
+        oauth_secret: OAuth Secret
+        rfc_visibility: Sichtbarkeit von Kommentaranfragen
+        rfc_visibility_type:
+          all: Alle Kommentaranfrage sind sichtbar
+          consumer: Nur Kommentaranfragen des aktuellen Konsumenten sind sichtbar
+          study_group: Nur Kommentaranfragen der aktuellen Lerngruppe sind sichtbar
+    models:
+      consumer:
+        one: Konsument
+        other: Konsumenten
+  consumers:
+    show:
+      link: Konsument

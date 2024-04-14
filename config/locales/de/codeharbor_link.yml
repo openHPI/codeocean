@@ -1,0 +1,20 @@
+---
+de:
+  activerecord:
+    attributes:
+      codeharbor_link:
+        oauth2token: OAuth2 Token
+    models:
+      codeharbor_link:
+        one: CodeHarbor-Link
+        other: CodeHarbor-Links
+  codeharbor_link:
+    delete: CodeHarbor-Link entfernen
+    edit: CodeHarbor-Link bearbeiten
+    generate: Generieren
+    info:
+      api_key: Wird zum Authentifizieren gegenüber CodeHarbor genutzt. Auf CodeHarbor muss der gleiche Key eingetragen sein.
+      check_uuid_url: Die Url von CodeHarbor an der geprüft werden kann, ob die Aufgabe schon existiert. Bei Unklarheiten bitte an einen Admin wenden.
+      push_url: Die Url von CodeHarbor zu der die Aufgabe exportiert werden soll. Bei Unklarheiten bitte an einen Admin wenden.
+    new: Neuen CodeHarbor-Link anlegen
+    profile_label: CodeHarbor-Link

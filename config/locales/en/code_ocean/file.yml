@@ -1,0 +1,33 @@
+---
+en:
+  activerecord:
+    attributes:
+      code_ocean/file:
+        content: Content
+        feedback_message: Feedback Message
+        file_template_id: File Template
+        file_type: File Type
+        file_type_id: File Type
+        hidden: Hidden
+        hidden_feedback: Suppress Feedback
+        name: Name
+        path: Path
+        read_only: Read-only
+        role: Role
+        weight: Score
+    models:
+      code_ocean/file:
+        one: File
+        other: Files
+  code_ocean/files:
+    error:
+      filename: The file could not be saved, because another file with the name '%{name}' already exists.
+    roles:
+      executable_file: Executable File (similar to Main File)
+      main_file: Main File
+      reference_implementation: Reference Implementation
+      regular_file: Regular File
+      teacher_defined_linter: Linter for Assessment
+      teacher_defined_test: Test for Assessment
+      user_defined_file: User-defined File
+      user_defined_test: User-defined Test

@@ -1,0 +1,89 @@
+---
+de:
+  linter:
+    warning:
+      bad-indentation:
+        example: Bad indentation. Found 3 spaces, expected 4
+        log_missing: false
+        name: Ungültige Einrückung
+        regex: ".*(?<actual>\\d+).*(?<expected>\\d+).*"
+        replacement: Statt %{actual} Leerzeichen wurden %{expected} Leerzeichen erwartet
+      duplicate-except:
+        example: Catching previously caught exception type ValueError
+        log_missing: false
+        name: Doppeltes Except
+        regex: Catching previously caught exception type (?<exception>.*)
+        replacement: Die zuvor bereits aufgefangene Exception '%{exception}' wird erneut behandelt
+      duplicate-key:
+        example: Duplicate key 100 in dictionary
+        log_missing: false
+        name: Doppelter Schlüssel
+        regex: Duplicate key (?<key>.*) in dictionary
+        replacement: Der Schlüssel '%{key}' ist im Dictionary doppelt vorhanden
+      mixed-indentation:
+        example: Found indentation with tabs instead of spaces
+        log_missing: false
+        name: Gemischte Einrückung
+        regex: ".*"
+        replacement: Es wurde eine Einrückung mit Tabs anstelle von Leerzeichen entdeckt
+      pointless-statement:
+        example: Statement seems to have no effect
+        log_missing: false
+        name: sinnlose Anweisung
+        regex: ".*"
+        replacement: Die Anweisung scheint keine Auswirkungen zu haben
+      pointless-string-statement:
+        example: String statement has no effect
+        log_missing: false
+        name: sinnloser String
+        regex: ".*"
+        replacement: Ein einzelner String ohne Zuweisung hat keine Auswirkung
+      redefined-builtin:
+        example: Redefining built-in 'print'
+        log_missing: false
+        name: Überschreiben
+        regex: ".*'(?<builtin>.*)'.*"
+        replacement: Der interne Bezeichner '%{builtin}' wird überschrieben
+      redefined-outer-name:
+        example: Redefining name 'name' from outer scope (line 1)
+        log_missing: false
+        name: Überschreiben
+        regex: ".*'(?<name>.*)'.*\\(line (?<line>\\d*)\\).*"
+        replacement: Der Bezeichner '%{name}', der bereits in Zeile %{line} definiert wurde, wird überschrieben
+      self-assigning-variable:
+        example: Assigning the same variable 'kleidung' to itself
+        log_missing: false
+        name: Selbstzuweisung
+        regex: ".*'(?<name>.*)'.*"
+        replacement: Die Variable '%{name}' wird sich selbst zugewiesen
+      severity_name: Warnung
+      undefined-loop-variable:
+        example: Using possibly undefined loop variable 'i'
+        log_missing: false
+        name: Unbekannte Schleifenvariable
+        regex: ".*'(?<name>.*)'.*"
+        replacement: Die Schleifenvariable '%{name}' ist möglicherweise nicht definiert
+      unnecessary-semicolon:
+        example: Unnecessary semicolon
+        log_missing: false
+        name: Unnötiges Semikolon
+        regex: ".*"
+        replacement: Am Ende einer Zeile sollte kein Semikolon stehen
+      unreachable:
+        example: Unreachable code
+        log_missing: false
+        name: Unerreichbar
+        regex: ".*"
+        replacement: Die Anweisung wird nie ausgeführt
+      unused-argument:
+        example: Unused argument 'laenge'
+        log_missing: false
+        name: Unbenutztes Argument
+        regex: ".*'(?<name>.*)'.*"
+        replacement: Das Argument '%{name}' wird nicht verwendet
+      unused-variable:
+        example: Unused variable 'i'
+        log_missing: false
+        name: Unbenutzte Variable
+        regex: ".*'(?<name>.*)'.*"
+        replacement: Die Variable '%{name}' wird nicht verwendet

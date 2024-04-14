@@ -1,0 +1,14 @@
+---
+en:
+  activerecord:
+    attributes:
+      file_template:
+        content: Content
+        file_type: File Type
+        name: Name
+    models:
+      file_template:
+        one: File Template
+        other: File Templates
+  file_template:
+    no_template_label: Empty File

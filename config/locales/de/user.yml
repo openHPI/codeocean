@@ -1,0 +1,8 @@
+---
+de:
+  users:
+    show:
+      current_study_group: Aktuelle Lerngruppe
+      no_groups: Diese Person ist keiner Lerngruppe zugeordnet oder Sie sind nicht berechtigt, die Lerngruppen einzusehen.
+      set_as_current_study_group: Als aktuelle Lerngruppe setzen
+      study_groups: Lerngruppen

@@ -1,0 +1,27 @@
+---
+de:
+  activerecord:
+    attributes:
+      external_user:
+        consumer: Konsument
+        email: E-Mail
+        external_id: Externe ID
+        name: Name
+        platform_admin: Platform Admin
+    models:
+      external_user:
+        one: Externer Nutzer
+        other: Externe Nutzer
+  external_users:
+    show:
+      empty_tag_statistics: Keine Statistiken verfügbar
+      exercise_statistics: Aufgabenstatistiken
+      loading_tag_statistics: Lade Lernbereichstatistiken
+      tag_statistics: Lernbereichstatistiken
+    statistics:
+      deadline: Abgabefrist
+      exercise: Übung
+      runs: Abgaben
+      score: Maximale Punktzahl
+      title: Statistiken für Externe Benutzer
+      worktime: Arbeitszeit

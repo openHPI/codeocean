@@ -14,38 +14,38 @@ li.card.mt-2
         .clearfix
           .btn.btn-warning.btn-sm.float-end.delete-file data-file-url=code_ocean_file_path(id) = t('shared.destroy')
       .mb-3
-        = f.label(:name, t('activerecord.attributes.file.name'), class: 'form-label')
+        = f.label(:name, class: 'form-label')
         = f.text_field(:name, class: 'form-control')
       .mb-3
-        = f.label(:path, t('activerecord.attributes.file.path'), class: 'form-label')
+        = f.label(:path, class: 'form-label')
         = f.text_field(:path, class: 'form-control')
         .help-block.form-text = t('.hints.path')
       .mb-3
-        = f.label(:file_type_id, t('activerecord.attributes.file.file_type_id'), class: 'form-label')
+        = f.label(:file_type_id, class: 'form-label')
         = f.collection_select(:file_type_id, @file_types, :id, :name, {}, class: 'form-control')
       .mb-3
-        = f.label(:role, t('activerecord.attributes.file.role'), class: 'form-label')
-        = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map {|role| [t("files.roles.#{role}"), role] }, {}, class: 'form-control')
+        = f.label(:role, class: 'form-label')
+        = f.select(:role, CodeOcean::File::TEACHER_DEFINED_ROLES.map {|role| [t("code_ocean/files.roles.#{role}"), role] }, {}, class: 'form-control')
       .form-check
         label.form-check-label
           = f.check_box(:hidden, class: 'form-check-input')
-          = t('activerecord.attributes.file.hidden')
+          = f.label(:hidden, class: 'form-label mb-0')
       .form-check
         label.form-check-label
           = f.check_box(:read_only, class: 'form-check-input')
-          = t('activerecord.attributes.file.read_only')
+          = f.label(:read_only, class: 'form-label mb-0')
       .test-related-fields style="display: #{f.object.teacher_defined_assessment? ? 'initial' : 'none'};"
         .mb-3
           .form-check
             label.form-check-label
               = f.check_box(:hidden_feedback, class: 'form-check-input')
-              = f.label(:hidden_feedback, t('activerecord.attributes.file.hidden_feedback'), class: 'form-label mb-0')
+              = f.label(:hidden_feedback, class: 'form-label mb-0')
               .help-block.form-text.mb-0 = t('.hints.hidden_feedback')
         .mb-3
-          = f.label(:name, t('activerecord.attributes.file.feedback_message'), class: 'form-label')
+          = f.label(:name, class: 'form-label')
           = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
           .help-block.form-text = t('.hints.feedback_message')
         .mb-3
-          = f.label(:role, t('activerecord.attributes.file.weight'), class: 'form-label')
+          = f.label(:role, class: 'form-label')
           = f.number_field(:weight, class: 'form-control', min: 0, step: 'any')
-      = render('code_field', attribute: :content, form: f, label: t('activerecord.attributes.file.content'))
+      = render('code_field', attribute: :content, form: f)

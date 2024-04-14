@@ -1,0 +1,9 @@
+---
+en:
+  activerecord:
+    attributes:
+      exercise_tip:
+        exercise: Exercise
+        parent_exercise_tip: Parent Tip
+        rank: Rank
+        tip: Tip
