@@ -30,8 +30,8 @@ h4.mt-4
           i.me-0.fa-regular.fa-lightbulb aria-hidden='true' title = t('request_for_comments.solved')
         th.text-center
           i.me-0.fa-solid.fa-comment aria-hidden='true' title = t('request_for_comments.comments') align='center'
-        th.col-12 = t('activerecord.attributes.request_for_comments.question')
-        th = t('activerecord.attributes.request_for_comments.username')
-        th.text-nowrap = t('activerecord.attributes.request_for_comments.requested_at')
+        th.col-12 = RequestForComment.human_attribute_name('question')
+        th = RequestForComment.human_attribute_name('username')
+        th.text-nowrap = RequestForComment.human_attribute_name('requested_at')
     tbody#posted_rfcs
       = render(partial: 'request_for_comments/list_entry', collection: @request_for_comments, as: :request_for_comment)

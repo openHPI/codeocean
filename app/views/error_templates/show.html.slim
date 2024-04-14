@@ -10,16 +10,16 @@ h1
   = row(label: "error_template.#{attribute}", value: @error_template.send(attribute))
 
 h2.mt-4
-  = t 'error_templates.attributes'
+  = t('error_templates.attributes')
 
 .table-responsive
   table.table class=(@error_template.error_template_attributes.present? ? 'sortable' : '')
     thead
       tr
         th
-        th = t('activerecord.attributes.error_template_attribute.key')
-        th = t('activerecord.attributes.error_template_attribute.description')
-        th = t('activerecord.attributes.error_template_attribute.regex')
+        th = ErrorTemplateAttribute.human_attribute_name('key')
+        th = ErrorTemplateAttribute.human_attribute_name('description')
+        th = ErrorTemplateAttribute.human_attribute_name('regex')
         th colspan=3 = t('shared.actions')
     tbody
       - @error_template.error_template_attributes.order('important DESC', :key).each do |attribute|

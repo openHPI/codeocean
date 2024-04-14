@@ -1,13 +1,13 @@
 h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
 
 .feedback-page
-  .header = t('activerecord.attributes.exercise.description')
+  .header = Exercise.human_attribute_name('description')
   .value = render_markdown(@exercise.description)
 
-  span.header.col-sm-3.ps-0 = "#{t('activerecord.attributes.exercise.maximum_score')}:"
+  span.header.col-sm-3.ps-0 = "#{Exercise.human_attribute_name('maximum_score')}:"
   span.col-sm-9 =< @exercise.maximum_score
 
-  .header.mt-3 = t('activerecord.models.user_exercise_feedback.other')
+  .header.mt-3 = UserExerciseFeedback.model_name.human(count: :other)
   - if @feedbacks.blank?
     .no-feedback = t('user_exercise_feedback.no_feedback')
 

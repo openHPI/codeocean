@@ -566,8 +566,7 @@ class Exercise < ApplicationRecord
 
   def valid_main_file?
     if files.count(&:main_file?) > 1
-      errors.add(:files,
-        I18n.t('activerecord.errors.models.exercise.at_most_one_main_file'))
+      errors.add(:files, :at_most_one_main_file)
     end
   end
   private :valid_main_file?
@@ -577,15 +576,13 @@ class Exercise < ApplicationRecord
 
     valid = true
     if late_submission_deadline.present? && submission_deadline.blank?
-      errors.add(:late_submission_deadline,
-        I18n.t('activerecord.errors.models.exercise.late_submission_deadline_not_alone'))
+      errors.add(:late_submission_deadline, :not_alone)
       valid = false
     end
 
     if submission_deadline.present? && late_submission_deadline.present? &&
        late_submission_deadline < submission_deadline
-      errors.add(:late_submission_deadline,
-        I18n.t('activerecord.errors.models.exercise.late_submission_deadline_not_before_submission_deadline'))
+      errors.add(:late_submission_deadline, :not_before_submission_deadline)
       valid = false
     end
 

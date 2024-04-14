@@ -76,9 +76,7 @@ class ExecutionEnvironment < ApplicationRecord
 
   def valid_test_setup?
     if test_command? ^ testing_framework?
-      errors.add(:test_command,
-        I18n.t('activerecord.errors.messages.together',
-          attribute: I18n.t('activerecord.attributes.execution_environment.testing_framework')))
+      errors.add(:test_command, :together, attribute: ExecutionEnvironment.human_attribute_name('testing_framework'))
     end
   end
 

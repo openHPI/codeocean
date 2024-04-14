@@ -2,10 +2,10 @@
   table.table.mt-4
     thead
       tr
-        th = t('activerecord.attributes.study_group.name')
-        th = t('activerecord.attributes.study_group.external_id')
-        th = t('activerecord.attributes.study_group.consumer')
-        th = t('activerecord.attributes.study_group.member_count')
+        th = StudyGroup.human_attribute_name('name')
+        th = StudyGroup.human_attribute_name('external_id')
+        th = StudyGroup.human_attribute_name('consumer')
+        th = StudyGroup.human_attribute_name('member_count')
         th colspan=3 = t('shared.actions')
     tbody
       - study_groups.each do |group|

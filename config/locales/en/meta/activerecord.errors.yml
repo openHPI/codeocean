@@ -4,12 +4,15 @@ en:
     errors:
       messages:
         at_least: or %{attribute} must be defined
-        together: has to be set along with %{attribute}
+        together: must be defined along with %{attribute}
       models:
         exercise:
-          at_most_one_main_file: must include at most one main file
-          late_submission_deadline_not_alone: must not be used without a regular submission deadline
-          late_submission_deadline_not_before_submission_deadline: must not be before the submission deadline passed
+          attributes:
+            files:
+              at_most_one_main_file: must include at most one main file
+            late_submission_deadline:
+              not_alone: must not be used without a regular submission deadline
+              not_before_submission_deadline: must not be before the submission deadline passed
         internal_user:
           attributes:
             password:

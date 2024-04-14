@@ -1,12 +1,12 @@
-h1 = ErrorTemplate.model_name.human(count: 2)
+h1 = ErrorTemplate.model_name.human(count: :other)
 
 .table-responsive
   table.table class=(@error_templates.present? ? 'sortable' : '')
     thead
       tr
-        th = t('activerecord.attributes.error_template.name')
-        th = t('activerecord.attributes.error_template.description')
-        th = t('activerecord.attributes.exercise.execution_environment')
+        th = ErrorTemplate.human_attribute_name('name')
+        th = ErrorTemplate.human_attribute_name('description')
+        th = Exercise.human_attribute_name('execution_environment')
         th colspan=3 = t('shared.actions')
     tbody
       - @error_templates.each do |error_template|

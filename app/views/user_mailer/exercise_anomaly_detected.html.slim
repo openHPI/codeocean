@@ -5,7 +5,7 @@
 table(border=1)
   thead
     tr
-      td = t('activerecord.attributes.exercise.title', locale: :de)
+      td = Exercise.human_attribute_name('title', locale: :de)
       td = t('exercises.statistics.average_worktime', locale: :de)
       td = t('shared.actions', locale: :de)
   tbody
@@ -24,7 +24,7 @@ table(border=1)
 table(border=1)
   thead
     tr
-      td = t('activerecord.attributes.exercise.title', locale: :en)
+      td = Exercise.human_attribute_name('title', locale: :en)
       td = t('exercises.statistics.average_worktime', locale: :en)
       td = t('shared.actions', locale: :en)
   tbody

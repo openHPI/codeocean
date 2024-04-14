@@ -13,16 +13,15 @@ class Tip < ApplicationRecord
     unless [
       description?, example?
     ].include?(true)
-      errors.add :description,
-        I18n.t('activerecord.errors.messages.at_least', attribute: I18n.t('activerecord.attributes.tip.example'))
+      errors.add :description, :at_least, attribute: Tip.human_attribute_name('example')
     end
   end
 
   def to_s
     if title?
-      "#{I18n.t('activerecord.models.tip.one')}: #{title} (#{id})"
+      "#{Tip.model_name.human}: #{title} (#{id})"
     else
-      "#{I18n.t('activerecord.models.tip.one')} #{id}"
+      "#{Tip.model_name.human} #{id}"
     end
   end
 

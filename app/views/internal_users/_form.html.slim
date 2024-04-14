@@ -12,7 +12,7 @@
   .form-check
     label.form-check-label
       = f.check_box(:platform_admin, class: 'form-check-input')
-      = f.label(:platform_admin, t('activerecord.attributes.internal_user.platform_admin'), class: 'form-label')
+      = f.label(:platform_admin, class: 'form-label mb-0')
 
   h2.mt-4 = t('internal_users.form.study_groups')
   ul.list-unstyled.card-group
@@ -26,9 +26,9 @@
           table.table.overflow-hidden#study-groups-table
             thead
               tr
-                th = t('activerecord.attributes.study_group.selection')
-                th = t('activerecord.attributes.study_group.name')
-                th = t('activerecord.attributes.study_group_membership.role')
+                th = StudyGroup.human_attribute_name('selection')
+                th = StudyGroup.human_attribute_name('name')
+                th = StudyGroupMembership.human_attribute_name('role')
               = collection_check_boxes :user, :study_group_ids, @study_group_memberships, :study_group_id, :id, {namespace: :internal_user} do |b|
                 tr
                   td = b.check_box class: 'form-check-input', name: 'internal_user[study_group_ids][]'

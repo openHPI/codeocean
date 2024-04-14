@@ -34,11 +34,11 @@
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:network_enabled, class: 'form-check-input')
-      = t('activerecord.attributes.execution_environment.network_enabled')
+      = f.label(:network_enabled, class: 'form-label mb-0')
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:privileged_execution, class: 'form-check-input')
-      = t('activerecord.attributes.execution_environment.privileged_execution')
+      = f.label(:privileged_execution, class: 'form-label mb-0')
   .mb-3
     = f.label(:permitted_execution_time, class: 'form-label')
     = f.number_field(:permitted_execution_time, class: 'form-control', min: 1)

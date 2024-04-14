@@ -41,25 +41,25 @@
   .form-check
     label.form-check-label
       = f.check_box(:public, class: 'form-check-input')
-      = t('activerecord.attributes.exercise.public')
+      = f.label(:public, class: 'form-label mb-0')
   .form-check
     label.form-check-label
       = f.check_box(:unpublished, class: 'form-check-input')
-      = t('activerecord.attributes.exercise.unpublished')
+      = f.label(:unpublished, class: 'form-label mb-0')
   .form-check
     label.form-check-label
       = f.check_box(:hide_file_tree, class: 'form-check-input')
-      = t('activerecord.attributes.exercise.hide_file_tree')
+      = f.label(:hide_file_tree, class: 'form-label mb-0')
   .form-check
     label.form-check-label
       = f.check_box(:allow_file_creation, class: 'form-check-input')
-      = t('activerecord.attributes.exercise.allow_file_creation')
+      = f.label(:allow_file_creation, class: 'form-label mb-0')
   .form-check.mb-3
     label.form-check-label
       = f.check_box(:allow_auto_completion, class: 'form-check-input')
-      = t('activerecord.attributes.exercise.allow_auto_completion')
+      = f.label(:allow_auto_completion, class: 'form-label mb-0')
   .mb-3
-    = f.label(t('activerecord.attributes.exercise.difficulty'), class: 'form-label')
+    = f.label(:expected_difficulty, class: 'form-label')
     = f.number_field :expected_difficulty, in: 1..10, step: 1, class: 'form-control'
 
   h2 = t('exercises.form.tags')
@@ -74,9 +74,9 @@
           table.table#tags-table
             thead
               tr
-                th = t('activerecord.attributes.exercise.selection')
-                th = t('activerecord.attributes.tag.name')
-                th = t('activerecord.attributes.tag.difficulty')
+                th = Exercise.human_attribute_name('selection')
+                th = Tag.human_attribute_name('name')
+                th = Tag.human_attribute_name('difficulty')
               = collection_check_boxes :exercise, :tag_ids, @exercise_tags, :tag_id, :id do |b|
                 tr
                   td = b.check_box class: 'form-check-input'
@@ -96,7 +96,7 @@
           = render(partial: 'tips/sortable_tip', collection: @tips, as: :exercise_tip)
         button.btn.btn-outline-primary.my-2.w-100 type='button' data-bs-toggle='modal' data-bs-target='#add-tips-modal' = t('.add_tips')
 
-  h2 = t('activerecord.attributes.exercise.files')
+  h2 = Exercise.human_attribute_name('files')
   ul#files.list-unstyled
     = f.fields_for :files do |files_form|
       = render('file_form', f: files_form)

@@ -1,4 +1,4 @@
-h1.d-inline-block = ExecutionEnvironment.model_name.human(count: 2)
+h1.d-inline-block = ExecutionEnvironment.model_name.human(count: :other)
 
 - if Runner.management_active? && policy(ExecutionEnvironment).sync_all_to_runner_management?
   = button_to({action: :sync_all_to_runner_management}, {form_class: 'float-end mb-2', class: 'btn btn-success'})
@@ -9,14 +9,14 @@ h1.d-inline-block = ExecutionEnvironment.model_name.human(count: 2)
   table.table
     thead
       tr
-        th = t('activerecord.attributes.execution_environment.name')
-        th = t('activerecord.attributes.execution_environment.user')
-        th = t('activerecord.attributes.execution_environment.pool_size')
-        th = t('activerecord.attributes.execution_environment.memory_limit')
-        th = t('activerecord.attributes.execution_environment.cpu_limit')
-        th = t('activerecord.attributes.execution_environment.network_enabled')
-        th = t('activerecord.attributes.execution_environment.privileged_execution')
-        th = t('activerecord.attributes.execution_environment.permitted_execution_time')
+        th = ExecutionEnvironment.human_attribute_name('name')
+        th = ExecutionEnvironment.human_attribute_name('user')
+        th = ExecutionEnvironment.human_attribute_name('pool_size')
+        th = ExecutionEnvironment.human_attribute_name('memory_limit')
+        th = ExecutionEnvironment.human_attribute_name('cpu_limit')
+        th = ExecutionEnvironment.human_attribute_name('network_enabled')
+        th = ExecutionEnvironment.human_attribute_name('privileged_execution')
+        th = ExecutionEnvironment.human_attribute_name('permitted_execution_time')
         th colspan=5 = t('shared.actions')
     tbody
       - @execution_environments.each do |execution_environment|

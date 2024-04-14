@@ -1,10 +1,10 @@
-h1 = t('activerecord.models.community_solution.other')
+h1 = CommunitySolution.model_name.human(count: :other)
 
 .table-responsive
   table.table.mt-4
     thead
       tr
-        th = t('activerecord.attributes.exercise.title')
+        th = Exercise.human_attribute_name('title')
         th colspan=1 = t('shared.actions')
 
     tbody

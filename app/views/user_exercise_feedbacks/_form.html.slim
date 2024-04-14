@@ -1,12 +1,13 @@
 = form_for([@exercise, @uef]) do |f|
   div
     h1#exercise-headline
-      = "#{t('activerecord.models.user_exercise_feedback.one')} #{@exercise.title}"
+      => UserExerciseFeedback.model_name.human
+      = @exercise.title
   = render('shared/form_errors', object: @uef)
   p
     == t('user_exercise_feedback.description')
   #description-card.lead.description-card
-    u = t('activerecord.attributes.exercise.description')
+    u = Exercise.human_attribute_name('description')
     = render_markdown(@exercise.description)
   .mb-3
     = f.text_area(:feedback_text, class: 'form-control', required: true, rows: '10')

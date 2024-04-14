@@ -2,7 +2,7 @@
 
 form#exercise-selection
   .mb-3
-    span.badge = t('activerecord.attributes.exercise_collections.exercises')
+    span.badge = ExerciseCollection.human_attribute_name('exercises')
     .mb-2
     = collection_select({}, :exercise_ids, exercises, :id, :title, {}, {id: 'add-exercise-list', class: 'form-control', multiple: true})
 

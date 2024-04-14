@@ -8,7 +8,7 @@ h1
 = row(label: 'programming_group.member_count', value: @programming_group.users.size)
 = row(label: 'shared.created_at', value: l(@programming_group.created_at, format: :short))
 
-h2.mt-4 = t('activerecord.attributes.study_group.members')
+h2.mt-4 = ProgrammingGroup.human_attribute_name('member')
 .table-responsive
   table.table class=(@programming_group.users.present? ? 'sortable' : '')
     thead

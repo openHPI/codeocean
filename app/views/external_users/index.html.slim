@@ -1,38 +1,38 @@
-h1 = ExternalUser.model_name.human(count: 2)
+h1 = ExternalUser.model_name.human(count: :other)
 
 = render(layout: 'shared/form_filters') do |f|
   - if current_user.admin?
     .col-md-9.col
       .row.align-items-center
         .col
-          = f.label(:name_cont, t('activerecord.attributes.external_user.name'), class: 'visually-hidden form-label')
-          = f.search_field(:name_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.name'))
+          = f.label(:name_cont, ExternalUser.human_attribute_name('name'), class: 'visually-hidden form-label')
+          = f.search_field(:name_cont, class: 'form-control', placeholder: ExternalUser.human_attribute_name('name'))
         .col.mt-0.mt-sm-3.mt-md-0
-          = f.label(:email_cont, t('activerecord.attributes.external_user.email'), class: 'visually-hidden form-label')
-          = f.search_field(:email_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.email'))
+          = f.label(:email_cont, ExternalUser.human_attribute_name('email'), class: 'visually-hidden form-label')
+          = f.search_field(:email_cont, class: 'form-control', placeholder: ExternalUser.human_attribute_name('email'))
         .col.mt-3.mt-lg-0
-          = f.label(:external_id_cont, t('activerecord.attributes.external_user.external_id'), class: 'visually-hidden form-label')
-          = f.search_field(:external_id_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.external_id'))
+          = f.label(:external_id_cont, ExternalUser.human_attribute_name('external_id'), class: 'visually-hidden form-label')
+          = f.search_field(:external_id_cont, class: 'form-control', placeholder: ExternalUser.human_attribute_name('external_id'))
       .row
         .col-auto
           = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], {include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : ''}
         .col-auto.mt-3.mt-lg-0
-          = f.label(:consumer_id_eq, t('activerecord.attributes.external_user.consumer'), class: 'visually-hidden form-label')
-          = f.collection_select(:consumer_id_eq, Consumer.with_external_users, :id, :name, class: 'form-control', include_blank: true, prompt: t('activerecord.attributes.external_user.consumer'))
+          = f.label(:consumer_id_eq, ExternalUser.human_attribute_name('consumer'), class: 'visually-hidden form-label')
+          = f.collection_select(:consumer_id_eq, Consumer.with_external_users, :id, :name, class: 'form-control', include_blank: true, prompt: ExternalUser.human_attribute_name('consumer'))
   - else
     .col-auto
-      = f.label(:name_cont, t('activerecord.attributes.external_user.name'), class: 'visually-hidden form-label')
-      = f.search_field(:name_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.name'))
+      = f.label(:name_cont, ExternalUser.human_attribute_name('name'), class: 'visually-hidden form-label')
+      = f.search_field(:name_cont, class: 'form-control', placeholder: ExternalUser.human_attribute_name('name'))
     .col-auto
-      = f.label(:external_id_cont, t('activerecord.attributes.external_user.external_id'), class: 'visually-hidden form-label')
-      = f.search_field(:external_id_cont, class: 'form-control', placeholder: t('activerecord.attributes.external_user.external_id'))
+      = f.label(:external_id_cont, ExternalUser.human_attribute_name('external_id'), class: 'visually-hidden form-label')
+      = f.search_field(:external_id_cont, class: 'form-control', placeholder: ExternalUser.human_attribute_name('external_id'))
 .table-responsive
   table.table
     thead
       tr
-        th = t('activerecord.attributes.external_user.name')
-        th = t('activerecord.attributes.external_user.consumer')
-        th = t('activerecord.attributes.external_user.platform_admin')
+        th = ExternalUser.human_attribute_name('name')
+        th = ExternalUser.human_attribute_name('consumer')
+        th = ExternalUser.human_attribute_name('platform_admin')
         th = t('shared.actions')
     tbody
       - @users.each do |user|

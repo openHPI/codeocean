@@ -1,11 +1,11 @@
 h1 = @exercise_collection
 
-= row(label: 'exercise_collections.name', value: @exercise_collection.name)
-= row(label: 'exercise_collections.updated_at', value: @exercise_collection.updated_at)
-= row(label: 'exercise_collections.exercises', value: @exercise_collection.exercises.count)
-= row(label: 'exercise_collections.users_and_programming_groups', value: Submission.from(@exercise_collection.exercises.joins(:submissions).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)
-= row(label: 'exercise_collections.solutions', value: Submission.from(@exercise_collection.exercises.joins(:submissions).group(:contributor_id, :contributor_type, :id).select(:contributor_id, :contributor_type)).count)
-= row(label: 'exercise_collections.submissions', value: @exercise_collection.exercises.joins(:submissions).count)
+= row(label: 'exercise_collection.name', value: @exercise_collection.name)
+= row(label: 'exercise_collection.updated_at', value: @exercise_collection.updated_at)
+= row(label: 'exercise_collection.exercises', value: @exercise_collection.exercises.count)
+= row(label: 'exercise_collection.users_and_programming_groups', value: Submission.from(@exercise_collection.exercises.joins(:submissions).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)
+= row(label: 'exercise_collection.solutions', value: Submission.from(@exercise_collection.exercises.joins(:submissions).group(:contributor_id, :contributor_type, :id).select(:contributor_id, :contributor_type)).count)
+= row(label: 'exercise_collection.submissions', value: @exercise_collection.exercises.joins(:submissions).count)
 / further metrics:
 /   number of contributors that attempted at least one exercise @exercise_collection.exercises.joins(:submissions).group("submissions.contributor_id", "submissions.contributor_type").count.count
 /   number of solutions:                                  @exercise_collection.exercises.joins(:submissions).group("submissions.contributor_id", "submissions.contributor_type").group("id").count.count
@@ -26,17 +26,17 @@ h1 = @exercise_collection
         div(class="box #{klass}")
         .box-label = label
 
-h4.mt-4 = t('activerecord.attributes.exercise_collections.exercises')
+h4.mt-4 = ExerciseCollection.human_attribute_name('exercises')
 .table-responsive#exercise-list
   table.table class=(@exercise_collection.items.present? ? 'sortable' : '')
     thead
       tr
         th = '#'
-        th = t('activerecord.attributes.exercise.title')
-        th = t('activerecord.attributes.exercise.number_of_users_and_programming_groups')
-        th = t('activerecord.attributes.exercise.distinct_final_submissions')
-        th = t('activerecord.attributes.exercise.finishing_rate')
-        th = t('activerecord.attributes.exercise.average_score_percentage')
+        th = Exercise.human_attribute_name('title')
+        th = Exercise.human_attribute_name('number_of_users_and_programming_groups')
+        th = Exercise.human_attribute_name('distinct_final_submissions')
+        th = Exercise.human_attribute_name('finishing_rate')
+        th = Exercise.human_attribute_name('average_score_percentage')
         th = t('shared.actions')
     tbody
       - @exercise_collection.items.sort_by(&:position).each do |exercise_collection_item|

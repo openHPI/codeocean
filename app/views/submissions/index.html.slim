@@ -1,21 +1,21 @@
-h1 = Submission.model_name.human(count: 2)
+h1 = Submission.model_name.human(count: :other)
 
 = render(layout: 'shared/form_filters') do |f|
   .col-auto
-    = f.label(:exercise_id_eq, t('activerecord.attributes.submission.exercise'), class: 'visually-hidden form-label')
-    = f.collection_select(:exercise_id_eq, Exercise.with_submissions, :id, :title, class: 'form-control', prompt: t('activerecord.attributes.submission.exercise'))
+    = f.label(:exercise_id_eq, Submission.human_attribute_name('exercise'), class: 'visually-hidden form-label')
+    = f.collection_select(:exercise_id_eq, Exercise.with_submissions, :id, :title, class: 'form-control', prompt: Submission.human_attribute_name('exercise'))
   .col-auto
-    = f.label(:cause_eq, t('activerecord.attributes.submission.cause'), class: 'visually-hidden form-label')
-    = f.select(:cause_eq, Submission.distinct.pluck(:cause).sort, class: 'form-control', prompt: t('activerecord.attributes.submission.cause'))
+    = f.label(:cause_eq, Submission.human_attribute_name('cause'), class: 'visually-hidden form-label')
+    = f.select(:cause_eq, Submission.distinct.pluck(:cause).sort, class: 'form-control', prompt: Submission.human_attribute_name('cause'))
 
 .table-responsive
   table.table.mt-4
     thead
       tr
-        th = sort_link(@search, :exercise_id, t('activerecord.attributes.submission.exercise'))
-        th = sort_link(@search, :user_id, t('activerecord.attributes.submission.contributor'))
-        th = sort_link(@search, :cause, t('activerecord.attributes.submission.cause'))
-        th = sort_link(@search, :score, t('activerecord.attributes.submission.score'))
+        th = sort_link(@search, :exercise_id, Submission.human_attribute_name('exercise'))
+        th = sort_link(@search, :user_id, Submission.human_attribute_name('contributor'))
+        th = sort_link(@search, :cause, Submission.human_attribute_name('cause'))
+        th = sort_link(@search, :score, Submission.human_attribute_name('score'))
         th = sort_link(@search, :created_at, t('shared.created_at'))
         th colspan=2 = t('shared.actions')
     tbody
