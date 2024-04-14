@@ -1,0 +1,18 @@
+---
+de:
+  activerecord:
+    attributes:
+      proxy_exercise:
+        algorithm: Algorithmus
+        algorithm_type:
+          best_match: Beste Übereinstimmung
+          random: Zufällige Aufgabe
+        files_count: Anzahl der Aufgaben
+        title: Title
+    models:
+      proxy_exercise:
+        one: Proxy Aufgabe
+        other: Proxy Aufgaben
+  proxy_exercises:
+    index:
+      clone: Duplizieren

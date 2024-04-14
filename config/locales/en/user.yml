@@ -1,0 +1,8 @@
+---
+en:
+  users:
+    show:
+      current_study_group: Current Study Group
+      no_groups: This user is either not part of any group or you do not have the necessary permissions to view them.
+      set_as_current_study_group: Set as Current Study Group
+      study_groups: Study Groups

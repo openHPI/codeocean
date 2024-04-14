@@ -1,0 +1,12 @@
+---
+en:
+  activerecord:
+    attributes:
+      tag:
+        difficulty: Share on the Exercise
+        name: Name
+        usage: Used
+    models:
+      tag:
+        one: Tag
+        other: Tags

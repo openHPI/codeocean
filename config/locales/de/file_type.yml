@@ -1,0 +1,17 @@
+---
+de:
+  activerecord:
+    attributes:
+      file_type:
+        binary: Binär
+        editor_mode: Editor-Modus
+        executable: Ausführbar
+        file_extension: Dateiendung
+        indent_size: Einrückung
+        name: Name
+        renderable: Anzeigbar
+        user: Autor
+    models:
+      file_type:
+        one: Dateityp
+        other: Dateitypen

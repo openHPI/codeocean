@@ -1,0 +1,38 @@
+---
+de:
+  sessions:
+    create:
+      failure: Fehlerhafte E-Mail oder Passwort.
+      success: Sie haben sich erfolgreich angemeldet.
+    create_through_lti:
+      session_with_outcome: Ihre Punkte werden durch Klicken auf "Bewerten" automatisch Ihrem Fortschritt gutgeschrieben.
+      session_without_outcome: Dies ist eine Übungs-Session. Ihre Bewertung wird nicht an %{consumer} übermittelt.
+    destroy:
+      link: Abmelden
+      success: Sie haben sich erfolgreich abgemeldet.
+    destroy_through_lti:
+      average_score: Durchschnittliche Punktzahl
+      do_not_use_backbutton: Benutzen Sie nicht den "Zurück" Button des Browsers, um zu CodeOcean zurück zu kehren.
+      final_submissions: Abgaben anderer Nutzer
+      finished_with_consumer: Sie können dieses Fenster nun schließen oder <a href="%{url}" rel="nofollow">zu %{consumer} zurückkehren</a>.
+      finished_without_consumer: Sie können dieses Fenster nun schließen.
+      headline: Gut gemacht!
+      score: Ihre Punktzahl
+      success_with_outcome: Ihr Code wurde erfolgreich bewertet. Ihre Bewertung wurde an %{consumer} übermittelt.
+      success_without_outcome: Ihr Code wurde erfolgreich bewertet.
+    expired: Ihre Session ist abgelaufen. Bitte <a href="" class="reloadCurrentPage alert-link">laden Sie diese Seite neu</a> bevor Sie fortfahren.
+    new:
+      forgot_password: Passwort vergessen?
+      headline: Anmelden
+      instructors_only: 'Zugriff ausschließlich für Lehrende:'
+      instructors_only_explanation: Das Anmelden mittels Passwort ist ausschließlich Lehrenden vorbehalten. Als Lernende:r greifen Sie bitte über die E-Learning-Plattform auf %{application_name} zu, um direkt zu einer Aufgabe zu gelangen.
+      link: Anmelden
+      remember_me: Angemeldet bleiben
+    oauth:
+      failure: Leider ist ein Fehler aufgetreten.
+      invalid_consumer: Ungültiger OAuth-Key.
+      invalid_exercise_token: Ungültiges Aufgaben-Token.
+      invalid_lis_outcome_service_url: Ungültige URL für den LTI-Ergebnisdienst.
+      invalid_signature: Ungültige OAuth-Signatur.
+      missing_parameters: OAuth-Parameter fehlen.
+      used_nonce: Die Nonce wurde bereits verwendet.

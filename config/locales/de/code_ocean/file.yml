@@ -1,0 +1,33 @@
+---
+de:
+  activerecord:
+    attributes:
+      code_ocean/file:
+        content: Inhalt
+        feedback_message: Feedback-Nachricht
+        file_template_id: Dateivorlage
+        file_type: Dateityp
+        file_type_id: Dateityp
+        hidden: Versteckt
+        hidden_feedback: Feedback ausblenden
+        name: Name
+        path: Pfad
+        read_only: Schreibgeschützt
+        role: Rolle
+        weight: Punktzahl
+    models:
+      code_ocean/file:
+        one: Datei
+        other: Dateien
+  code_ocean/files:
+    error:
+      filename: Die Datei konnte nicht gespeichert werden, da eine Datei mit dem Namen '%{name}' bereits existiert.
+    roles:
+      executable_file: Ausführbare Datei (analog zur Hauptdatei)
+      main_file: Hauptdatei
+      reference_implementation: Referenzimplementierung
+      regular_file: Normale Datei
+      teacher_defined_linter: Linter als Bewertungsgrundlage
+      teacher_defined_test: Test als Bewertungsgrundlage
+      user_defined_file: Benutzerdefinierte Datei
+      user_defined_test: Benutzerdefinierter Test

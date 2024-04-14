@@ -1,0 +1,22 @@
+---
+de:
+  activerecord:
+    errors:
+      messages:
+        at_least: oder %{attribute} muss definiert sein
+        together: muss zusammen mit %{attribute} definiert werden
+      models:
+        exercise:
+          at_most_one_main_file: dürfen höchstens eine Hauptdatei enthalten
+          late_submission_deadline_not_alone: darf nicht ohne eine reguläre Abgabefrist verwendet werden
+          late_submission_deadline_not_before_submission_deadline: darf nicht vor der reguläre Abgabefrist liegen
+        internal_user:
+          attributes:
+            password:
+              weak: ist zu schwach. Versuchen Sie es mit einem  langen Passwort, welches Groß-, Kleinbuchstaben, Zahlen und Sonderzeichen enthält.
+        programming_group:
+          invalid_partner_id: Die Nutzer-ID '%{partner_id}' ist ungültig und wurde entfernt. Bitte überprüfen Sie die Nutzer-IDs der Programmierpartner.
+          size_too_large: Die Größe dieser Programmiergruppe ist zu groß. Geben Sie nur eine andere Nutzer-ID an.
+          size_too_small: Die Größe dieser Programmiergruppe ist zu klein. Geben Sie eine andere Nutzer-ID an.
+        programming_group_membership:
+          already_exists: existiert bereits für diese Aufgabe für den Nutzer mit der ID %{id_with_type}.

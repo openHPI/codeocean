@@ -1,0 +1,27 @@
+---
+de:
+  activerecord:
+    attributes:
+      user_exercise_feedback:
+        exercise: Aufgabe
+        feedback_text: Feedback Text
+        user: Autor
+    models:
+      user_exercise_feedback:
+        one: Feedback
+        other: Feedback
+  user_exercise_feedback:
+    description: Ihre Punkte wurden übertragen. Wir würden uns freuen, wenn Sie uns hier Feedback zur Aufgabe geben.<br> Wenn sie das nicht möchten, können Sie das Fenster auch einfach schließen.<br><br>Bitte beschreiben Sie, was Ihnen an der Aufgabe gefallen hat und was nicht. Gab es Schwierigkeiten bei der Aufgabe? War die Aufgabe zu leicht oder zu schwer?<br>Wir freuen uns über jedes Feedback.
+    difficult_too_difficult: Die Aufgabe war zu schwer
+    difficulty: 'Schwierigkeit der Aufgabe:'
+    difficulty_easy: Die Aufgabe war zu einfach
+    difficulty_ok: Die Aufgabe war gut zu lösen
+    difficulty_some_what_difficult: Die Aufgabe war etwas zu schwer
+    difficulty_some_what_easy: Die Aufgabe war etwas zu einfach
+    estimated_time_10_to_20: zwischen 10 und 20 Minuten
+    estimated_time_20_to_30: zwischen 20 und 30 Minuten
+    estimated_time_5_to_10: zwischen 5 und 10 Minuten
+    estimated_time_less_5: weniger als 5 Minuten
+    estimated_time_more_30: mehr als 30 Minuten
+    no_feedback: Es wurde noch kein Feedback zu dieser Aufgabe gegeben.
+    working_time: 'Geschätze Bearbeitungszeit für diese Aufgabe:'

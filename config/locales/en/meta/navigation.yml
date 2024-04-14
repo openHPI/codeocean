@@ -1,0 +1,9 @@
+---
+en:
+  navigation:
+    sections:
+      contributors: Contributors
+      errors: Errors
+      files: Files
+      integrations: Integrations
+      users: Users

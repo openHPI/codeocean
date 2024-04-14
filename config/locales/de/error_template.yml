@@ -1,0 +1,19 @@
+---
+de:
+  activerecord:
+    attributes:
+      error_template:
+        description: Beschreibung
+        hint: Hinweis
+        name: Name
+        signature: Regulärer Ausdruck
+    models:
+      error_template:
+        one: Fehlertemplate
+        other: Fehlertemplates
+  error_templates:
+    add_attribute: Attribut hinzufügen
+    attributes: Attribute
+    hints:
+      hint_templates: 'Attributnamen in {{doppelten geschweiften Klammern}} werden zur Laufzeit durch die jeweiligen Attributwerte ersetzt. Beispiel: "Der Fehler ist in Zeile {{Line}}." --(StructuredError: {Line: 4})--> "Der Fehler ist in Zeile 4."'
+      signature: Ein regulärer Ausdruck in Ruby-Syntax und ohne führende und schließende "/"

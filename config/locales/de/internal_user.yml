@@ -1,0 +1,39 @@
+---
+de:
+  activerecord:
+    attributes:
+      internal_user:
+        activated: Aktiviert
+        consumer: Konsument
+        consumer_id: Konsument
+        email: E-Mail
+        name: Name
+        password: Passwort
+        password_confirmation: Passwort-Bestätigung
+        platform_admin: Platform Admin
+    models:
+      internal_user:
+        one: Interner Nutzer
+        other: Interne Nutzer
+  internal_users:
+    activate:
+      headline: Registrierung abschließen
+      submit: Passwort speichern
+      success: Sie haben Ihre Registrierung erfolgreich abgeschlossen.
+    forgot_password:
+      headline: Passwort zurücksetzen
+      submit: Anweisungen zum Zurücksetzen senden
+      success: Anweisungen zum Zurücksetzen Ihres Passworts wurden an Ihre E-Mail-Adresse gesendet.
+    form:
+      click_to_collapse: Zum Aus-/Einklappen hier klicken...
+      study_groups: Lerngruppen
+    index:
+      activate: Aktivieren
+      forgot_password: Passwort zurücksetzen
+      reset_password: Passwort zurücksetzen
+    reset_password:
+      headline: Passwort zurücksetzen
+      submit: Passwort speichern
+      success: Sie haben Ihr Passwort erfolgreich geändert.
+    show:
+      link: Profil

@@ -1,0 +1,12 @@
+---
+de:
+  activerecord:
+    attributes:
+      tag:
+        difficulty: Anteil an der Aufgabe
+        name: Name
+        usage: Verwendet
+    models:
+      tag:
+        one: Tag
+        other: Tags

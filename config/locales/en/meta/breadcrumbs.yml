@@ -1,0 +1,18 @@
+---
+en:
+  breadcrumbs:
+    application:
+      welcome: Cover Page
+    dashboard:
+      show: Dashboard
+    rails_admin:
+      show: Rails Admin
+    sessions:
+      create: Sign In
+      destroy_through_lti: Code Submission
+      new: Sign In
+    statistics:
+      graphs: Graphs
+      rfc_activity_history: RfC Activity History
+      show: Statistics
+      user_activity_history: User Activity History

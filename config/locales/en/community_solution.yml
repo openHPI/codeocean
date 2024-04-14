@@ -1,0 +1,16 @@
+---
+en:
+  activerecord:
+    models:
+      community_solution:
+        one: Community Solution
+        other: Community Solutions
+  community_solutions:
+    accept_community_solution: Quit Community Solution without Changes
+    change_community_solution: Save Changes to Community Solution
+    current_community_solution: Current community solution
+    explanation: In this course, we would like to work together with you and all other learners to create a community solution for this exercise, which will be made available to all participants at the end of the course. For this we need your active support. Below you will find both the current status of the community solution and your submission. Please review the community solution and revise it as needed. Your own solution will not be changed.
+    help_us_out: Help us out!
+    research_explanation: The opportunity to participate in a community solution is part of our research; therefore, we would greatly appreciate your active participation.
+    research_status: 'New beta feature:'
+    your_submission: Your submission (read-only, for reference)

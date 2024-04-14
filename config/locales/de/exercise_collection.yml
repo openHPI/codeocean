@@ -1,0 +1,22 @@
+---
+de:
+  activerecord:
+    attributes:
+      exercise_collections:
+        exercises: Aufgaben
+        id: ID
+        name: Name
+        solutions: Gesamtanzahl Lösungsversuche
+        submissions: Gesamtanzahl Submissions
+        updated_at: Letzte Änderung
+        use_anomaly_detection: Abweichungen in der Arbeitszeit erkennen
+        user: Verantwortlicher
+        users_and_programming_groups: Teilnehmer und Programmiergruppen
+    models:
+      exercise_collection:
+        one: Aufgabesammlung
+        other: Aufgabensammlungen
+  exercise_collections:
+    form:
+      add_exercises: Aufgaben hinzufügen
+      sort_by_title: Nach Titel sortieren

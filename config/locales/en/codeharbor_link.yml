@@ -1,0 +1,20 @@
+---
+en:
+  activerecord:
+    attributes:
+      codeharbor_link:
+        oauth2token: OAuth2 Token
+    models:
+      codeharbor_link:
+        one: CodeHarbor Link
+        other: CodeHarbor Links
+  codeharbor_link:
+    delete: Remove CodeHarbor link
+    edit: Edit existing CodeHarbor link
+    generate: Generate
+    info:
+      api_key: Will be used to authenticate your export request. Has to be the same on both sides.
+      check_uuid_url: The url from CodeHarbor where we can check if the exercise already exists. If you don't know what to write here, ask an admin.
+      push_url: The url from CodeHarbor where your exercise can be exported to. If you don't know what to write here, ask an admin.
+    new: Create link to CodeHarbor
+    profile_label: CodeHarbor Link

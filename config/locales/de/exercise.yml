@@ -1,0 +1,231 @@
+---
+de:
+  activerecord:
+    attributes:
+      exercise:
+        allow_auto_completion: Autovervollständigung aktivieren
+        allow_file_creation: Dateierstellung erlauben
+        average_score_percentage: Durchschnittliche Bewertung in Prozent
+        description: Beschreibung
+        difficulty: Schwierigkeitsgrad
+        distinct_final_submissions: Endgültige Abgaben
+        embedding_parameters: Parameter für LTI-Einbettung
+        execution_environment: Ausführungsumgebung
+        execution_environment_id: Ausführungsumgebung
+        files: Dateien
+        finishing_rate: Abschlussquote
+        hide_file_tree: Dateibaum verstecken
+        instructions: Anweisungen
+        internal_title: Alternativer Titel
+        late_submission_deadline: Verspätete Abgabefrist
+        maximum_score: Erreichbare Punktzahl
+        number_of_users_and_programming_groups: "# Nutzer und Programmiergruppen"
+        public: Öffentlich
+        selection: Ausgewählt
+        submission_deadline: Abgabefrist
+        tags: Tags
+        title: Titel
+        token: Aufgaben-Token
+        unpublished: Deaktiviert
+        user: Autor
+        uuid: UUID
+    models:
+      exercise:
+        one: Aufgabe
+        other: Aufgaben
+  exercises:
+    download_file_tree:
+      file_root: Erstellte Dateien
+      gone: Die angeforderte Datei konnte nicht abgerufen werden. Erstellte Dateien werden nur kurzzeitig vorgehalten und dann gelöscht. Bitte führen Sie den Code erneut aus und versuchen Sie dann wieder den Download der Datei.
+    editor:
+      collapse_action_sidebar: Aktions-Leiste Einklappen
+      collapse_output_sidebar: Ausgabe-Leiste Einklappen
+      confirm_start_over: Wollen Sie in dieser Aufgabe wirklich von vorne anfangen? Ihre bisherigen Änderungen in dieser Aufgabe werden entfernt; andere Aufgaben bleiben unverändert. Diese Aktion kann nicht rückgängig gemacht werden.
+      confirm_start_over_active_file: Wollen Sie wirklich Ihre Änderungen in der ausgewählten Datei '%{filename}' zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.
+      create_file: Neue Datei
+      deadline: Deadline
+      depleted: Alle Ausführungsumgebungen sind momentan in Benutzung. Probiere es später nochmal.
+      destroy_file: Datei löschen
+      download: Herunterladen
+      dummy: Keine Aktion
+      exercise_finished: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst. <a href="%{url}" class="alert-link">Klicken Sie hier, um die Aufgabe jetzt abzuschließen.</a>
+      exercise_finished_redirect_to_own_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Ihre Frage ist damit wahrscheinlich gelöst? Falls ja, fügen Sie doch den entscheidenden Kniff als Antwort hinzu und markieren die Frage als gelöst, bevor Sie das Fenster schließen.
+      exercise_finished_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über Ihre Hilfe und Kommentare freuen.
+      exercise_finished_remote: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte erfolgreich an %{consumer} übertragen.
+      expand_action_sidebar: Aktions-Leiste Ausklappen
+      expand_output_sidebar: Ausgabe-Leiste Ausklappen
+      hints:
+        disclaimer: Bei Fragen zu Deadlines wenden Sie sich bitte an das Teaching Team. Die hier angezeigte Abgabefrist dient nur zur Information und Angaben auf der jeweiligen Kursseite in der E-Learning-Plattform sollen immer Vorrang haben.
+        late_submission_deadline: Bis <b>%{deadline}</b> werden 80% Ihrer Punktzahl anerkannt.<br/><small>Wenn Sie diese erweiterte Frist ungenutzt verstreichen lassen und Ihre Abgabe später einreichen, werden 0 Punkte übertragen.</small>
+        otherwise: Nach der Abgabefrist werden 0 Punkte übertragen.
+        submission_deadline: Diese Abgabe ist am <b>%{deadline}</b> fällig.<br/><small>Bitte schließen Sie daher die Aufgabe rechtzeitig vorher ab. %{otherwise}</small>
+      input: Ihre Eingabe
+      is_offline: "%{name} ist offline"
+      is_online: "%{name} ist online"
+      lastsaved: 'Zuletzt gespeichert: '
+      network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
+      out_of_memory: Ausführung gestoppt. Ihr Code hat den erlaubten Arbeitsspeicher von %{memory_limit} MB überschritten.
+      render: Anzeigen
+      requestComments: Kommentare erbitten
+      requestCommentsTooltip: Falls Sie Hilfe mit Ihrem Code benötigen, können Sie hier Kommentare erbitten
+      request_for_comments_sent: Kommentaranfrage gesendet.
+      run: Ausführen
+      run_failure: Ihr Code konnte nicht auf der Plattform ausgeführt werden.
+      run_success: Ihr Code wurde auf der Plattform ausgeführt.
+      runner_in_use: Sie führen momentan Code aus. Bitte stoppen Sie die vorherige Ausführung oder warten Sie einen Moment, bevor Sie fortfahren.
+      score: Bewerten
+      send: Senden
+      start_over: Diese Aufgabe zurücksetzen
+      start_over_active_file: Diese Datei zurücksetzen
+      start_video: "(Video-) Chat starten"
+      stop: Stoppen
+      submit_failure_all: Beim Übermitteln Ihrer Punktzahl ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.
+      submit_failure_other_users: Die Punkteübertragung war nur teilweise erfolgreich. Die Punkte konnten nicht für %{user} übertragen werden. Diese Person(en) sollte die Aufgabe über die e-Learning Platform erneut öffnen und anschließend die Punkte selbst übermitteln.
+      submit_failure_remote: Ihre Abgabe wurde erfolgreich mit %{score}% bewertet. Ihr Ergebnis konnte jedoch nicht an die E-Learning-Plattform gesendet werden. Bitte überprüfen Sie die Abgabefrist, öffnen Sie die Übung über die E-Learning-Plattform und versuchen Sie es erneut.
+      submit_no_validation_token: Keine Übung für dieses Validierungstoken gefunden!
+      submit_too_late: Ihre Abgabe wurde erfolgreich gespeichert, ging jedoch nach der Abgabefrist ein, sodass nur %{score_sent}% übertragen wurden.
+      test: Testen
+      timeout: Ausführung gestoppt. Ihr Code hat die erlaubte Ausführungszeit von %{permitted_execution_time} Sekunden überschritten.
+    editor_file_tree:
+      file_root: Dateien
+    export_codeharbor:
+      buttons:
+        abort: Abbrechen
+        close: Schließen
+        export: Export
+        retry: Erneut probieren
+      check:
+        no_task: Auf CodeHarbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf CodeHarbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
+        task_found: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen, die auf CodeOcean vorgenommen wurden, exportiert und die Aufgabe auf CodeHarbor überschrieben.
+        task_found_no_right: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
+      checking_codeharbor: Es wird geprüft, ob auf CodeHarbor eine korrespondierende Aufgabe gefunden werden kann.
+      dialogtitle: Zu CodeHarbor exportieren
+      error: Es ist ein Fehler bei der Kommunikation mit CodeHarbor aufgetreten.
+      export_failed: 'Export ist fehlgeschlagen.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
+      label: Zu CodeHarbor exportieren
+      successfully_exported: 'Aufgabe wurde erfolgreich exportiert.<br>ID: %{id}<br>Title: %{title}'
+    external_users:
+      statistics:
+        addendum: "* Differenzen von mehr als %{delta} Minuten werden ignoriert."
+        after_late_deadline: Verspätete Abgabe
+        before_deadline: Abgabe rechtzeitig
+        cause: Grund
+        filter: 'Hinweis: Nur die letzte Abgabe vor einer Abgabefrist ist sichtbar.'
+        legend: 'Legende:'
+        no_data_available: Keine Daten verfügbar oder fehlende Berechtigungen.
+        no_deadline: Keine Abgabefrist
+        score: Punktzahl
+        tests: Unit Tests
+        time: Zeit (UTC)
+        time_difference: Arbeitszeit bis hier*
+        toggle_autosave_off: Zwischenspeicherungen ausblenden
+        toggle_autosave_on: Zwischenspeicherungen anzeigen
+        toggle_status_off: Zwischenspeicherungen sind ausgeblendet
+        toggle_status_on: Zwischenspeicherungen sind eingeblendet
+        within_grace_period: Abgabe innerhalb der Gnadenfrist
+    file_form:
+      hints:
+        feedback_message: Diese Nachricht wird als Hinweis zu fehlschlagenden Tests angezeigt.
+        hidden_feedback: Bei Aktivierung dieser Option werden Tests nur im Hintergrund ausgeführt, das Ergebnis und Feedback Lernenden allerdings nicht angezeigt.
+        path: Pfad der Datei im Projektverzeichnis. Kann auch leer gelassen werden.
+        upload: Eine hochgeladene Datei hat Vorrang vor Änderungen im Textfeld und wird nach dem Speichern sichtbar. Der Dateiname und die Dateiendung wird automatisch von der hochgeladenen Datei übernommen.
+    form:
+      add_file: Datei hinzufügen
+      add_tips: Tipps hinzufügen
+      click_to_collapse: Zum Aus-/Einklappen hier klicken...
+      hints:
+        internal_title: Ein alternativer Titel für diese Aufgabe, der nur für Lehrende sichtbar ist.
+        late_submission_deadline: Eine Gnadenfrist für Abgaben in UTC. Die verlängerte Abgabefrist soll nicht vor der eigentlichen Abgabefrist liegen. Abgaben nach der Abgabefrist werden deutlich gekennzeichnet und mit 100% Punktabzug an die E-Learning-Plattform übertragen.
+        submission_deadline: Ein Zeitpunkt in UTC, zu dem die Abgabe geschlossen wird. Abgaben nach der Abgabefrist werden als verspätet gekennzeichnet und nur mit 20% Punktabzug an die E-Learning-Plattform übertragen.
+      no_execution_environment_selected: Bitte eine Ausführungsumgebung auswählen, bevor die Aufgabe aktiviert wird.
+      none: Keine
+      tags: Tags
+      tips: Tipps
+      unpublish_warning: Mit dieser Aktion wird die Aufgabe deaktiviert. Jeder Student, der versucht sie zu implementieren wird eine Fehlermeldung bekommen, bis die Aufgabe wieder aktiviert wurde.
+    implement:
+      break_intervention:
+        text: Falls Sie bei dieser Aufgabe momentan nicht weiterkommen, können Sie jederzeit eine Pause einlegen und später weiter knobeln. Ihr Fortschritt wird in CodeOcean automatisch gespeichert.
+        title: Pause
+      code_rating: Code-Stil
+      comment:
+        addCommentButton: Kommentar abschicken
+        addyours: Fügen Sie Ihren Kommentar hinzu
+        dialogtitle: Kommentar hinzufügen
+        others: Andere Kommentare auf dieser Zeile
+        question: Bitte beschreiben Sie kurz Ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt.
+        request: Kommentaranfrage stellen
+      default_linter_feedback: Sehr gut. Der Linter hat nichts mehr zu beanstanden.
+      default_test_feedback: Sehr gut. Alle Tests waren erfolgreich.
+      error_hints:
+        heading: Hinweise
+      error_messages: Fehlermeldungen
+      existing_programming_group: Sie arbeiten gerade an der Übung mit dem Titel '%{exercise}' als Teil einer Programmiergruppe. Bitte schließen Sie Ihre Arbeit dort ab, bevor Sie mit der Bearbeitung dieser Übung beginnen.
+      exit_failure: Die letzte Code-Ausführung wurde mit einem Fehler beendet (Statuscode %{exit_code}).
+      exit_successful: Die letzte Code-Ausführung wurde erfolgreich beendet (Statuscode %{exit_code}).
+      external_privacy_policy: Datenschutzerklärung
+      feedback: Feedback
+      flowr:
+        go_to_question: Lösung ansehen
+        heading: Weitere Hinweise | Unterstützt von StackOverflow
+      intervention:
+        explanation: 'Diese Meldung erscheint, weil Sie %{duration} Minuten an dieser Aufgabe gearbeitet haben. 25% Ihrer Mitlernenden arbeiten länger daran, insofern ist das kein Problem, aber dies hat sich als <a href=''https://hpi.de/forschung/publikationen/dissertationen/dissertation-ralf-teusner.html'' style=''display: contents;'' target=''_blank'' rel=''noopener''>effektiven Zeitpunkt für diese Meldung</a> erwiesen.'
+      linter_file: Linter-Feedback <span class="number d-none">%{number}</span>(<span class="filename">%{filename}</span>)
+      messages: Meldungen
+      no_execution_environment: Für die Aufgabe wurde noch keine Ausführungsumgebung gewählt.
+      no_files: Die Aufgabe umfasst noch keine sichtbaren Dateien.
+      no_output: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe.
+      no_output_exit_failure: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe und wurde mit einem Fehler beendet (Statuscode %{exit_code}).
+      no_output_exit_successful: Die letzte Code-Ausführung terminierte am %{timestamp} ohne Ausgabe und wurde erfolgreich beendet (Statuscode %{exit_code}).
+      no_output_yet: Bisher existiert noch keine Ausgabe.
+      not_graded: ohne Punkte
+      output: Programm-Ausgabe
+      passed_tests: Erfolgreiche Tests
+      results: Ergebnisse
+      rfc_intervention:
+        text: Falls Sie bei dieser Aufgabe nicht weiterkommen und nicht selbst weiter knobeln möchten, können Ihre Mitlernenden bestimmt helfen! </br> </br>
+      test_count: <span class="number">%{count}</span> Test-Dateien wurden ausgeführt.
+      test_file: Test-Datei <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)
+      tips:
+        description: Erklärung
+        example: Beispiel
+        heading: Tipps
+      tips_intervention:
+        text: Falls Sie bei dieser Aufgabe momentan nicht weiterkommen, können Sie die verfügbaren Tipps vielleicht unterstützen. Diese finden Sie jederzeit in der linken Seitenleiste und werden auch direkt hier angezeigt.
+      unpublished: Die gewählte Aufgabe wurde deaktiviert und kann daher derzeit nicht bearbeitet werden.
+    import_codeharbor:
+      import_errors:
+        internal_error: Beim Import der Aufgabe ist ein interner Fehler aufgetreten.
+        invalid: Fehlerhafte Aufgabe
+    index:
+      clone: Duplizieren
+      external_user_statistics: Statistik für externe Nutzer
+      feedback: Feedback
+      implement: Implementieren
+      requests_for_comments: Kommentaranfragen
+      study_group_dashboard: Live Dashboard
+      test_files: Test-Dateien
+    show:
+      is_unpublished: Aufgabe ist deaktiviert
+    statistics:
+      average_score: Durchschnittliche Punktzahl
+      average_worktime: Durchschnittliche Arbeitszeit
+      deadline: Abgabefrist
+      external_users: Externe Nutzer
+      final_submissions: Finale Abgaben
+      finishing_rate: Abschlussrate
+      intermediate_submissions: Intermediäre Abgaben
+      internal_users: Interne Nutzer
+      participants: Bearbeitende Nutzer
+      programming_groups: Programmiergruppen
+      runs: Versuche
+      score: Maximale Punktzahl
+      user: Nutzer
+      users_and_programming_groups: "%{count} verschiedene Nutzer und Programmiergruppen"
+      worktime: Arbeitszeit
+    study_group_dashboard:
+      learner: Lerner
+      live_dashboard: Live Dashboard
+      no_data_yet: Bisher sind keine Daten verfügbar
+      related_requests_for_comments: Zugehörige Kommentaranfragen
+      time_spent_in_minutes: benötigte Zeit in Minuten
+      time_spent_per_learner: Verwendete Zeit pro Lerner

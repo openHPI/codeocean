@@ -1,0 +1,52 @@
+---
+en:
+  activerecord:
+    attributes:
+      request_for_comments:
+        close: Close window
+        comments: Comments
+        execution_environment: Language
+        exercise: Exercise
+        last_update: Last Update
+        question: Question
+        requested_at: Request Date
+        username: Username
+    models:
+      request_for_comment:
+        one: Request for Comments
+        other: Requests for Comments
+  request_for_comments:
+    cancel_thank_you_note: Don't send
+    click_for_more_comments: Click to view %{numComments} more comments...
+    click_here: Click on this sidebar to comment!
+    comment_edited: edited
+    comments: Comments
+    howto: |
+      To leave comments to a specific code line, click on the respective line number. <br>
+      Enter your comment in the popup and save it by clicking "Comment this". <br>
+      Your comment will show up next to the line number as a speech bubble symbol.
+    howto_title: How to comment
+    index:
+      all: All Requests for Comments
+      my_comment_requests: My Requests for Comments
+      my_rfc_activity: My Comment Activity
+      rfcs_for_exercise: Exercise Comments
+      rfcs_with_my_comments: Requests for Comments I have commented on
+      study_groups:
+        current: Current Study Group
+        my: My Study Groups
+        placeholder: Study group
+    mark_as_solved: Mark this question as answered
+    modal_title: Add a comment to line %{line}
+    no_output: No output.
+    no_question: The author did not enter a question for this request.
+    runtime_output: Runtime Output
+    send_thank_you_note: Send
+    show_all: All requests
+    show_soft_solved: Show only requests presumably solved
+    show_solved: Show only solved requests
+    show_unsolved: Show only unsolved requests
+    solved: This question has been answered
+    subscribe_to_author: Receive E-Mail notifications for new comments of the original author
+    test_results: Test Results
+    write_a_thank_you_node: 'If you want, you can write a thank you note to all your commenters:'

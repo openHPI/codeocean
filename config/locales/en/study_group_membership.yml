@@ -1,0 +1,9 @@
+---
+en:
+  activerecord:
+    attributes:
+      study_group_membership:
+        role: Role
+        role_type:
+          learner: Learner
+          teacher: Teacher

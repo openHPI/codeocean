@@ -1,0 +1,18 @@
+---
+en:
+  activerecord:
+    attributes:
+      study_group:
+        consumer: Consumer
+        external_id: External ID
+        member_count: Member Count
+        members: Members
+        name: Name
+        selection: Selected
+    models:
+      study_group:
+        one: Study Group
+        other: Study Groups
+  study_groups:
+    set_as_current:
+      success: The study group has been switched successfully.

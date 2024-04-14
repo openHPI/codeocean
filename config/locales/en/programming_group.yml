@@ -1,0 +1,38 @@
+---
+en:
+  activerecord:
+    attributes:
+      programming_group:
+        exercise: Exercise
+        external_user_id: External User ID
+        internal_user_id: Internal User ID
+        member: Member
+        member_count: Member Count
+        name: Name
+        programming_partner_ids: Programming Partner ID
+    models:
+      programming_group:
+        one: Programming Pair
+        other: Programming Pairs
+  programming_groups:
+    form:
+      hints:
+        programming_partner_ids: You can enter several user IDs separated by commas such as 'e123, e234'.
+    implement:
+      info_disconnected: You are disconnected from the server. Please check your internet connection and reload the page.
+    new:
+      close: Close
+      create_programming_pair: Create Programming Pair
+      dont_show_modal_again: Don't display on this device anymore
+      enter_partner_id: Do you know a person in the course with whom you would like to solve the task together? Then enter that person's user ID here.
+      find_partner_description: If you don't know a person from the course, you have the possibility to be paired with another person. Then, you will be redirected to the task as soon as another person also wants to solve this task in a team.
+      find_partner_title: Find a programming partner for the exercise
+      find_programming_partner: Find Programming Partner
+      info_forced_work_together: You can solve the exercise '%{exercise_title}' only together with another person. Your team partner can see what you write in this exercise and vice versa. You will get bonus points for solving the exercise.
+      info_pair_programming: 'Pair Programming is a method where two people program together. They alternate between two distinct roles: the <i>Driver</i>, responsible for writing the code and focusing on the details, and the <i>Navigator</i>, tasked with correcting typos, overseeing the task''s progress, and offering suggestions for improvement. Effective communication in the pair is crucial for the success of pair programming.'
+      info_work_together: You have the possibility to solve the task '%{exercise_title}' together with another person. Your team partner can see what you write in this task and vice versa. Note that no one can stop the collaboration afterwards. For the next task you can decide again if and with whom you want to work together.
+      own_user_id: 'Your user ID:'
+      pair_programming_info: Pair Programming Info
+      work_alone: Work Alone
+      work_alone_description: You can choose once to work on the exercise alone. Afterward, however, you will not be able to switch to work in a pair for this exercise. <br> <a href=%{path} data-turbolinks="false">Click here to get to the exercise in single mode.</a>
+      work_with_a_friend: Work with a friend

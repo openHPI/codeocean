@@ -1,0 +1,7 @@
+---
+en:
+  activerecord:
+    models:
+      programming_group_membership:
+        one: Programming Group Membership
+        other: Programming Group Memberships

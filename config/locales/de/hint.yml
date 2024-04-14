@@ -1,0 +1,13 @@
+---
+de:
+  activerecord:
+    attributes:
+      hint:
+        locale: Sprache
+        message: Nachricht
+        name: Name
+        regular_expression: Regulärer Ausdruck
+    models:
+      hint:
+        one: Hinweis
+        other: Hinweise

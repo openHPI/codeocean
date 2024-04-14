@@ -1,0 +1,54 @@
+---
+en:
+  shared:
+    actions: Actions
+    actions_button: Other actions
+    admin_filter:
+      all: All users
+      none: Regular users
+      only: Platform admins
+    administration: Administration
+    already_signed_in: You are already signed in.
+    apply_filters: Apply filters
+    back: Back
+    batch_update: Batch Update
+    color_mode:
+      auto: Auto
+      dark: Dark
+      light: Light
+      title: Appearance
+    confirm_destroy: Are you sure?
+    create: Create %{model}
+    created_at: Created At
+    destroy: Delete
+    edit: Edit
+    errors_one: An error prohibited this %{model} from being saved
+    errors_other: "%{count} errors prohibited this %{model} from being saved"
+    help:
+      execution_environment_specific_help: Help for %{execution_environment}
+      headline: Help
+      imprint: Imprint
+      link: Help
+      privacy_policy: Privacy Policy
+    hide: Hide
+    index: Index
+    message_failure: Sorry, something went wrong.
+    new: Add
+    new_model: Add %{model}
+    number: Number
+    object_cloned: "%{model} has successfully been duplicated."
+    object_created: "%{model} has successfully been created."
+    object_destroyed: "%{model} has successfully been deleted."
+    object_updated: "%{model} has successfully been updated."
+    out_of: out of
+    reset_filters: Reset filters
+    resources: Resources
+    show: Show
+    statistics: Statistics
+    time:
+      before: "%{time} ago"
+    tooltips:
+      shortcut: 'Keyboard shortcut: %{shortcut}'
+    update: Update %{model}
+    upload_file: Upload file
+    websocket_failure: Sorry, a connection issue occurred. <a href="https://websocketstest.com" target="_blank" rel="noopener" class="alert-link">Please check WebSocket connections with this tool</a> and try again.

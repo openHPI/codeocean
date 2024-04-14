@@ -1,0 +1,27 @@
+---
+en:
+  activerecord:
+    attributes:
+      external_user:
+        consumer: Consumer
+        email: Email
+        external_id: External ID
+        name: Name
+        platform_admin: Platform Admin
+    models:
+      external_user:
+        one: External User
+        other: External Users
+  external_users:
+    show:
+      empty_tag_statistics: No statistics available
+      exercise_statistics: Exercise Statistics
+      loading_tag_statistics: Loading tag statistics...
+      tag_statistics: Tag Statistics
+    statistics:
+      deadline: Deadline
+      exercise: Exercise
+      runs: Submissions
+      score: Maximum Score
+      title: External User Statistics
+      worktime: Working Time

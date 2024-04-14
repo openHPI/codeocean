@@ -1,0 +1,43 @@
+---
+de:
+  linter:
+    convention:
+      bad-whitespace:
+        example: No space allowed before bracket
+        log_missing: true
+        name: Inkorrektes Leerzeichen
+        regex: "(?<what>Exactly one space required|No space allowed) (?<where>after|before|around) (?<when>.*)"
+        replacement: "%{where} %{when} %{what}"
+        what:
+          Exactly one space required: sollte genau ein Leerzeichen stehen
+          No space allowed: sollte kein Leerzeichen stehen
+        when:
+          ":": einem Doppelpunkt
+          assignment: einer Zuweisung
+          bracket: einer Klammer
+          comma: einem Komma
+          comparison: einem Vergleich
+          keyword argument assignment: einer Zuweisung von Schlüsselargumenten
+        where:
+          after: Hinter
+          around: Vor und hinter
+          before: Vor
+      multiple-statements:
+        example: More than one statement on a single line
+        log_missing: false
+        name: Mehrere Anweisungen
+        regex: ".*"
+        replacement: Mehr als eine Anweisung in einer Zeile
+      severity_name: Konvention
+      superfluous-parens:
+        example: Unnecessary parens after 'if' keyword
+        log_missing: false
+        name: Überflüssige Klammer
+        regex: ".*'(?<keyword>.*)'.*"
+        replacement: Nach dem Schlüsselwort '%{keyword}' ist keine Klammer notwendig
+      wrong-import-position:
+        example: Import "from turtle import *" should be placed at the top of the module
+        log_missing: false
+        name: Falsche Import-Position
+        regex: .*"(?<import>.*)".*
+        replacement: Der Import von "%{import}" sollte am Anfang der Datei stehen

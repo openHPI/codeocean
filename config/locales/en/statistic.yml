@@ -1,0 +1,31 @@
+---
+en:
+  statistics:
+    activity_history:
+      from: From
+      interval: Interval
+      to: To
+      update: Update
+    entries:
+      exercises:
+        autosaves_per_minute: Current Autosave Volume (1h)
+        average_number_of_submissions: Average Number of Submissions
+        container_requests_per_minute: Container Request Volume (1h)
+        submissions: Submissions
+        submissions_per_minute: Current Submission Volume (1h)
+      request_for_comments:
+        percent_soft_solved: Unsolved with full score
+        percent_solved: Solved Requests
+        percent_unsolved: Unsolved Requests
+        with_comments: RfCs with Comments
+      users:
+        active: Active Users
+        currently_active: Active (5 minutes)
+    graphs:
+      history: History
+      rfc_activity: RfC Activity
+      user_activity: User Activity
+    sections:
+      contributors: Contributors
+      exercises: Exercises
+      request_for_comments: Requests for Comment

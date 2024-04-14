@@ -1,0 +1,9 @@
+---
+de:
+  activerecord:
+    attributes:
+      study_group_membership:
+        role: Rolle
+        role_type:
+          learner: Lernende:r
+          teacher: Lehrende:r

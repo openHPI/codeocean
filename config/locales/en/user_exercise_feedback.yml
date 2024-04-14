@@ -1,0 +1,27 @@
+---
+en:
+  activerecord:
+    attributes:
+      user_exercise_feedback:
+        exercise: Exercise
+        feedback_text: Feedback Text
+        user: Author
+    models:
+      user_exercise_feedback:
+        one: Feedback
+        other: Feedback
+  user_exercise_feedback:
+    description: Your points have been submitted. We kindly ask you for feedback for this exercise. <br> If you do not want to give feedback you can simply close this window.<br><br>Please describe what you liked on this exercise and what you did not. Was the exercise easy to understand or did you have problems understanding? How was the difficulty of the exercise to you?<br>We are happy about any feedback.
+    difficult_too_difficult: the exercise was too difficult
+    difficulty: 'Difficulty of the exercise:'
+    difficulty_easy: the exercise was too easy
+    difficulty_ok: the difficulty of the exercise was just right
+    difficulty_some_what_difficult: the exercise was somewhat difficult
+    difficulty_some_what_easy: the exercise was somewhat easy
+    estimated_time_10_to_20: between 10 and 20 minutes
+    estimated_time_20_to_30: between 20 and 30 minutes
+    estimated_time_5_to_10: between 5 and 10 minutes
+    estimated_time_less_5: less than 5 minutes
+    estimated_time_more_30: more than 30 minutes
+    no_feedback: There is no feedback for this exercise yet.
+    working_time: 'Estimated time working on this exercise:'

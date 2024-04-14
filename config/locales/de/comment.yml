@@ -1,0 +1,10 @@
+---
+de:
+  activerecord:
+    models:
+      comment:
+        one: Kommentar
+        other: Kommentare
+  comments:
+    deleted: Gelöscht
+    save_update: Speichern

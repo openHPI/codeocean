@@ -1,0 +1,34 @@
+---
+en:
+  activerecord:
+    attributes:
+      submission:
+        cause: Cause
+        code: Code
+        contributor: Contributor
+        exercise: Exercise
+        files: Files
+        score: Score
+        study_group: Study Group
+    models:
+      submission:
+        one: Submission
+        other: Submissions
+  submissions:
+    causes:
+      assess: Scoring
+      autosave: Autosave
+      download: Download
+      file: User-defined file
+      remoteAssess: Remote Scoring
+      remoteSubmit: Remote Submission
+      render: Rendering
+      requestComments: Request Comments
+      run: Execution
+      save: Save
+      submit: Submission
+      test: Test
+    statistics:
+      history: Score History
+      percentage: Percentage
+      siblings: Associated Submissions

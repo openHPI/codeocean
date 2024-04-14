@@ -1,0 +1,9 @@
+---
+de:
+  activerecord:
+    attributes:
+      exercise_tip:
+        exercise: Aufgabe
+        parent_exercise_tip: Übergeordneter Tipp
+        rank: Rang
+        tip: Tipp

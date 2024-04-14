@@ -1,0 +1,52 @@
+---
+de:
+  activerecord:
+    attributes:
+      request_for_comments:
+        close: Fenster schließen
+        comments: Kommentare
+        execution_environment: Sprache
+        exercise: Aufgabe
+        last_update: Letzte Aktivität
+        question: Frage
+        requested_at: Angefragezeitpunkt
+        username: Benutzername
+    models:
+      request_for_comment:
+        one: Kommentaranfrage
+        other: Kommentaranfragen
+  request_for_comments:
+    cancel_thank_you_note: Nichts senden
+    click_for_more_comments: Klicken um %{numComments} weitere Kommentare zu sehen...
+    click_here: Zum Kommentieren auf die Seitenleiste klicken!
+    comment_edited: bearbeitet
+    comments: Kommentare
+    howto: |
+      Um Kommentare zu einer Programmzeile hinzuzufügen, kann einfach auf die jeweilige Zeilennummer auf der linken Seite geklickt werden. <br>
+      Es öffnet sich ein Textfeld, in dem der Kommentar eingetragen werden kann. <br>
+      Mit "Kommentar abschicken" wird der Kommentar dann gesichert und taucht als Sprechblase neben der Zeile auf.
+    howto_title: Anleitung
+    index:
+      all: Alle Kommentaranfragen
+      my_comment_requests: Meine Kommentaranfragen
+      my_rfc_activity: Meine Kommentaraktivität
+      rfcs_for_exercise: Übungsspezifische Kommentare
+      rfcs_with_my_comments: Kommentaranfragen die ich kommentiert habe
+      study_groups:
+        current: Aktuelle Lerngruppe
+        my: Meine Lerngruppen
+        placeholder: Lerngruppe
+    mark_as_solved: Diese Frage als beantwortet markieren
+    modal_title: Einen Kommentar in Zeile %{line} hinzufügen
+    no_output: Keine Ausgabe.
+    no_question: Der Autor hat keine Frage zu dieser Anfrage gestellt.
+    runtime_output: Programmausgabe
+    send_thank_you_note: Senden
+    show_all: Alle Anfragen anzeigen
+    show_soft_solved: Nur potenziell gelöste Anfragen anzeigen
+    show_solved: Nur gelöste Anfragen anzeigen
+    show_unsolved: Nur ungelöste Anfragen anzeigen
+    solved: Diese Frage wurde erfolgreich beantwortet
+    subscribe_to_author: Bei neuen Kommentaren des Autors per E-Mail benachrichtigt werden
+    test_results: Testergebnisse
+    write_a_thank_you_node: 'Wenn Sie möchten, können Sie sich bei allen Mitstudenten, die Ihnen bei der Beantwortung Ihrer Frage geholfen haben, bedanken:'

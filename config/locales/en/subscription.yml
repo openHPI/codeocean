@@ -1,0 +1,5 @@
+---
+en:
+  subscriptions:
+    subscription_not_existent: The subscription you want to unsubscribe from does not exist.
+    successfully_unsubscribed: You successfully unsubscribed from this Request for Comment

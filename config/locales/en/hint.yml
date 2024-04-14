@@ -1,0 +1,13 @@
+---
+en:
+  activerecord:
+    attributes:
+      hint:
+        locale: Locale
+        message: Message
+        name: Name
+        regular_expression: Regular Expression
+    models:
+      hint:
+        one: Hint
+        other: Hints

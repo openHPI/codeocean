@@ -1,0 +1,7 @@
+---
+de:
+  activerecord:
+    models:
+      programming_group_membership:
+        one: Programmiergruppenmitgliedschaft
+        other: Programmiergruppenmitgliedschaften
