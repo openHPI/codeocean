@@ -1,7 +1,9 @@
 h1 = t('.headline')
 
 p
+  / i18n-tasks-use t('.success_with_outcome') t('.success_without_outcome')
   = t(".success_#{@lti_parameter ? 'with' : 'without'}_outcome", consumer: current_user.consumer)
+  / i18n-tasks-use t('.finished_with_consumer') t('.finished_without_consumer')
   ==< t(".finished_#{@lti_parameter ? 'with' : 'without'}_consumer", consumer: h(current_user.consumer.name), url: @url)
   =< t('.do_not_use_backbutton')
 

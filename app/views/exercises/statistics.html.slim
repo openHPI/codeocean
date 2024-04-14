@@ -8,6 +8,7 @@ h1 = @exercise
 = row(label: '.participants', value: @exercise.contributors.size)
 
 - %i[intermediate final].each do |scope|
+  / i18n-tasks-use t('.intermediate_submissions') t('.final_submissions')
   = row(label: ".#{scope}_submissions") do
     /TODO: Refactor next line
     = "#{@exercise.submissions.send(scope).count} (#{t('.users_and_programming_groups', count: Submission.from(@exercise.submissions.send(scope).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)})"

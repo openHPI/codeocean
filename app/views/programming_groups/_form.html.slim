@@ -9,6 +9,7 @@
         .input-group.mb-3
           = f.text_field(:programming_partner_ids, class: 'form-control', required: true, value: (@programming_group.programming_partner_ids - [current_user.id_with_type]).join(', '))
           = render('shared/submit_button', f:, object: @programming_group)
+        / i18n-tasks-use t('.hints.programming_partner_ids')
         /.help-block.form-text = t('.hints.programming_partner_ids')
       .col-md-6
         .join_programming_pair.button.btn.btn-primary.d-none.d-md-block

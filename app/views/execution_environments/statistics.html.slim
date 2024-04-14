@@ -4,8 +4,15 @@ h1 = @execution_environment
   table.table.table-striped class=(@execution_environment.present? ? 'sortable' : '')
     thead
       tr
-        - ['.exercise', '.users_and_programming_groups', '.score', '.maximum_score', '.stddev_score', '.percentage_correct', '.runs', '.worktime', '.stddev_worktime'].each do |title|
-          th.header = t(title)
+        th.header = t('.exercise')
+        th.header = t('.users_and_programming_groups')
+        th.header = t('.score')
+        th.header = t('.maximum_score')
+        th.header = t('.stddev_score')
+        th.header = t('.percentage_correct')
+        th.header = t('.runs')
+        th.header = t('.worktime')
+        th.header = t('.stddev_worktime')
     tbody
       - @execution_environment.exercises.each do |exercise|
         - us = contributor_statistics[exercise.id]

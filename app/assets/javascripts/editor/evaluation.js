@@ -236,7 +236,7 @@ CodeOceanEditorEvaluation = {
             this.submission_deadline = new Date(deadline);
             let deadline_text = I18n.l("time.formats.long", this.submission_deadline);
             deadline_text += ` (${this.getUTCTime(this.submission_deadline, I18n.locale === 'en')})`;
-            const bullet_point = I18n.t('exercises.editor.hints.' + translation_key,
+            const bullet_point = I18n.t(`exercises.editor.hints.${translation_key}`,
                 { deadline: deadline_text, otherwise: otherwise })
             let text = $.parseHTML(bullet_point);
             $(li).append(text);
@@ -270,10 +270,13 @@ CodeOceanEditorEvaluation = {
             const ul = document.createElement("ul");
 
             if (submission_deadline && late_submission_deadline) {
+                // i18n-tasks-use t('exercises.editor.hints.submission_deadline')
                 ul.append(this.getDeadlineInformation(submission_deadline, 'submission_deadline', ''));
+                // i18n-tasks-use t('exercises.editor.hints.late_submission_deadline')
                 ul.append(this.getDeadlineInformation(late_submission_deadline, 'late_submission_deadline', ''));
             } else {
                 const otherwise_no_points = I18n.t('exercises.editor.hints.otherwise');
+                // i18n-tasks-use t('exercises.editor.hints.submission_deadline')
                 ul.append(this.getDeadlineInformation(submission_deadline, 'submission_deadline', otherwise_no_points));
             }
 

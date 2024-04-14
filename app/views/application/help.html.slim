@@ -10,4 +10,5 @@
     ul.horizontal.dash.pull-start
       - ApplicationController::LEGAL_SETTINGS.each do |name, link|
         li
+          / i18n-tasks-use t('shared.help.privacy_policy') t('shared.help.imprint')
           = link_to(t("shared.help.#{name.delete_suffix('_url')}"), link, target: '_blank', rel: 'noopener')
