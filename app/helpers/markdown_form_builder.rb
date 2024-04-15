@@ -8,7 +8,7 @@ class MarkdownFormBuilder < ActionView::Helpers::FormBuilder
 
     @template.capture do
       @template.concat form_textarea
-      @template.concat @template.tag.div(class: 'markdown-editor', data: {behavior: 'markdown-editor-widget', id: label_target})
+      @template.concat toast_ui_editor
     end
   end
 
@@ -19,6 +19,18 @@ class MarkdownFormBuilder < ActionView::Helpers::FormBuilder
     **(@input_html_options || {}),
       id: label_target,
       class: 'd-none'
+  end
+
+  def toast_ui_editor
+    @template.tag.div(class: 'markdown-editor__wrapper') do
+      @template.concat @template.tag.div(class: 'markdown-editor', data: {behavior: 'markdown-editor-widget', id: label_target})
+      @template.concat resize_btn
+    end
+  end
+
+  def resize_btn
+    @template.tag.button(class: 'markdown-editor__resize-btn fa-solid', type: 'button', id: "#{label_target}-resize",
+      title: I18n.t(:'markdown_editor.expand'), aria_label: I18n.t(:'markdown_editor.expand'))
   end
 
   def base_id

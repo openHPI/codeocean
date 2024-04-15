@@ -835,6 +835,9 @@ en:
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: "An exercise on CodeOcean needs your feedback"
+  markdown_editor:
+    expand: Expand editor
+    collapse: Collapse editor
   request_for_comments:
     click_here: Click on this sidebar to comment!
     comments: Comments

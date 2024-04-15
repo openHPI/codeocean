@@ -5,6 +5,36 @@
   * {
     box-sizing: content-box;
   }
+
+  &__wrapper {
+    position: relative;
+  }
+
+  &__resize-btn {
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 30px;
+    right: 0;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--bs-secondary-text-emphasis);
+    z-index: 100;
+    &::after {
+      content: "\f065";
+    }
+    &--with-scrollbar {
+      right: 18px;
+    }
+    &--collapse {
+      right: 0;
+      &::after {
+        content: "\f066";
+      }
+    }
+    &:hover {
+      background: var(--bs-secondary-bg);
+    }
+  }
 }
 
 // /*------------------------------------*\

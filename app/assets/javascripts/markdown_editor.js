@@ -1,7 +1,7 @@
 /**
  * ToastUi editor initializer
  *
- * This script transforms form textareas created with 
+ * This script transforms form textareas created with
  * "MarkdownFormBuilder" into ToastUi markdown editors.
  *
  */
@@ -25,7 +25,7 @@ const initializeMarkdownEditors = () => {
         target: "_blank",
       },
       previewHighlight: false,
-      height: "400px",
+      height: "300px",
       autofocus: false,
       usageStatistics: false,
       language: I18n.locale,
@@ -44,6 +44,8 @@ const initializeMarkdownEditors = () => {
         },
       },
     });
+
+    setResizeBtn(formInput, toastEditor);
 
     // Prevent user from drag'n'dropping images in the editor
     toastEditor.removeHook("addImageBlobHook");
@@ -78,6 +80,48 @@ const setMarkdownEditorTheme = (theme) => {
       (!hasDarkTheme && theme === "dark")
     ) {
       editor.classList.toggle("toastui-editor-dark");
+    }
+  });
+};
+
+const hasScrollBar = (el) => el.scrollHeight > el.clientHeight;
+const toggleScrollbarModifier = (btn, el) => {
+  if (el.clientHeight === 0) return;
+  btn.classList.toggle(
+    "markdown-editor__resize-btn--with-scrollbar",
+    hasScrollBar(el)
+  );
+};
+const setResizeBtn = (formInput, editor) => {
+  const resizeBtn = document.querySelector(`#${formInput.id}-resize`);
+  if (!resizeBtn) return;
+
+  const editorTextArea = editor
+    .getEditorElements()
+    .mdEditor.querySelector('[contenteditable="true"]');
+
+  toggleScrollbarModifier(resizeBtn, editorTextArea);
+  new MutationObserver(() => {
+    toggleScrollbarModifier(resizeBtn, editorTextArea);
+  }).observe(editorTextArea, {
+    attributes: true,
+  });
+
+  resizeBtn.addEventListener("click", () => {
+    const height = editor.getHeight();
+
+    if (height && height === "300px") {
+      editor.setHeight("auto");
+      editor.setMinHeight("400px");
+      resizeBtn.classList.add("markdown-editor__resize-btn--collapse");
+      resizeBtn.title = I18n.t("markdown_editor.collapse");
+      resizeBtn.ariaLabel = I18n.t("markdown_editor.collapse");
+    } else {
+      editor.setHeight("300px");
+      editor.setMinHeight("300px");
+      resizeBtn.classList.remove("markdown-editor__resize-btn--collapse");
+      resizeBtn.title = I18n.t("markdown_editor.expand");
+      resizeBtn.ariaLabel = I18n.t("markdown_editor.expand");
     }
   });
 };
