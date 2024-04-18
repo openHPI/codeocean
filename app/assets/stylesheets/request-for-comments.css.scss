@@ -198,6 +198,7 @@ html[data-bs-theme="light"] {
   }
 
   .comment-content {
+    white-space: pre-wrap;
     word-wrap: break-word;
     margin-bottom: 10px;
   }
