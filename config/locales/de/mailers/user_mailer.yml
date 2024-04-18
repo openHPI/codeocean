@@ -47,8 +47,6 @@ de:
           <br>
           %{exercise} - %{link}
           <br>
-          Falls Sie beim Klick auf diesen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
           <br>
           _________________________<br>
@@ -58,8 +56,6 @@ de:
           we need your help to improve the quality of the exercises on CodeOcean. Please take a few minutes to give us feedback for the following exercise:
           <br>
           %{exercise} - %{link}
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking the link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: Eine Aufgabe auf CodeOcean benötigt Ihr Feedback
