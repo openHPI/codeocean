@@ -35,10 +35,10 @@ h1 = RequestForComment.model_name.human(count: 2)
         tr data-id=request_for_comment.id
           - if request_for_comment.solved?
             td
-              span.fa-solid.fa-check aria-hidden='true'
-          - elsif request_for_comment.full_score_reached
+              span.fa-solid.fa-check.text-success aria-hidden='true'
+          - elsif request_for_comment.full_score_reached?
             td
-              span.fa-solid.fa-check.text-secondary-emphasis aria-hidden='true'
+              span.fa-solid.fa-check.text-body-tertiary aria-hidden='true'
           - else
             td = ''
           td = link_to_if(policy(request_for_comment).show?, request_for_comment.submission.exercise.title, request_for_comment)
