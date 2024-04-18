@@ -18,8 +18,6 @@ en:
           <br>
         body2: |
           <br>
-          Falls Sie beim Klick auf einen Link eine Fehlermeldung erhalten, dass Sie nicht berechtigt wären diese Aktion auszuführen, öffnen Sie bitte eine beliebige Programmieraufgabe aus einem Kurs heraus und klicken den Link danach noch einmal.<br>
-          <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
           <br>
           _________________________<br>
@@ -31,8 +29,6 @@ en:
           The exercises are:
           <br>
         body3: |
-          <br>
-          If you receive an error that you are not authorized to perform this action when clicking a link, please log-in through any course exercise beforehand and click the link again. <br>
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: Anomalies in exercises of your exercise collection

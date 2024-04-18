@@ -54,8 +54,25 @@ class UserMailer < ApplicationMailer
   end
 
   def exercise_anomaly_detected(exercise_collection, anomalies)
+    # First, we try to find the best matching study group for the user being notified.
+    # The study group is relevant, since it determines the access rights to the exercise within the collection.
+    # The best matching study group is the one that grants access to the most exercises in the collection.
+    # This approach might look complicated, but since it is called from a Rake task and no active user session, we need it.
+    @relevant_exercises = Exercise.where(id: anomalies.keys)
+    potential_study_groups = exercise_collection.user.study_groups.where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
+    potential_study_groups_with_expected_access = potential_study_groups.to_h do |study_group|
+      exercises_granting_access = @relevant_exercises.count do |exercise|
+        author_study_groups = exercise.author.study_groups.where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
+        author_study_groups.include?(study_group)
+      end
+      [study_group, exercises_granting_access]
+    end
+    best_matching_study_group = potential_study_groups_with_expected_access.max_by {|_study_group, exercises_granting_access| exercises_granting_access }.first
+
+    # Second, all relevant values are passed to the view
     @user = exercise_collection.user
-    @receiver_displayname = exercise_collection.user.displayname
+    @receiver_displayname = @user.displayname
+    @token = AuthenticationToken.generate!(@user, best_matching_study_group).shared_secret
     @collection = exercise_collection
     @anomalies = anomalies
     mail(subject: t('mailers.user_mailer.exercise_anomaly_detected.subject'), to: exercise_collection.user.email)
