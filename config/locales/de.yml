@@ -857,6 +857,7 @@ de:
     mark_as_solved: "Diese Frage als beantwortet markieren"
     show_all: "Alle Anfragen anzeigen"
     show_solved: "Nur gelöste Anfragen anzeigen"
+    show_soft_solved: "Nur potenziell gelöste Anfragen anzeigen"
     show_unsolved: "Nur ungelöste Anfragen anzeigen"
     solved: "Diese Frage wurde erfolgreich beantwortet"
     comment_exercise: "Ich möchte die Aufgabenstellung kommentieren"
