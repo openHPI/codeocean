@@ -2,8 +2,8 @@ tr.table-row-clickable data-id=request_for_comment.id data-href=request_for_comm
   td.p-2
     - if request_for_comment.solved?
       span.fa-solid.fa-check.fa-2x.text-success aria-hidden='true'
-    - elsif request_for_comment.full_score_reached
-      span.fa-solid.fa-check.fa-2x.text-secondary-emphasis aria-hidden='true'
+    - elsif request_for_comment.full_score_reached?
+      span.fa-solid.fa-check.fa-2x.text-body-tertiary aria-hidden='true'
     - else
       = ''
   td.text-center = request_for_comment.comments.size
