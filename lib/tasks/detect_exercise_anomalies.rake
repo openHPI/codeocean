@@ -104,11 +104,11 @@ namespace :detect_exercise_anomalies do
   def get_contributor_working_times(exercise)
     unless WORKING_TIME_CACHE.key?(exercise.id)
       exercise.retrieve_working_time_statistics
-      WORKING_TIME_CACHE[exercise.id] = exercise.working_time_statistics.filter_map do |contributor_type, contributor_id_with_result|
+      WORKING_TIME_CACHE[exercise.id] = exercise.working_time_statistics.flat_map do |contributor_type, contributor_id_with_result|
         contributor_id_with_result.flat_map do |contributor_id, result|
-          [[contributor_type, contributor_id], result]
-        end.presence
-      end.to_h
+          {[contributor_type, contributor_id] => result}
+        end
+      end.inject(:merge)
     end
     WORKING_TIME_CACHE[exercise.id]
   end
