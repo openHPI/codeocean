@@ -153,8 +153,10 @@ namespace :detect_exercise_anomalies do
         users = contributor.try(:users) || [contributor]
         users.each do |user|
           host = CodeOcean::Application.config.action_mailer.default_url_options[:host]
+          last_submission = user.submissions.where(exercise:).latest
+          token = AuthenticationToken.generate!(user, last_submission.study_group).shared_secret
           feedback_link = Rails.application.routes.url_helpers.url_for(action: :new,
-            controller: :user_exercise_feedbacks, exercise_id: exercise.id, host:)
+            controller: :user_exercise_feedbacks, exercise_id: exercise.id, host:, token:)
           UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
         end
       end
