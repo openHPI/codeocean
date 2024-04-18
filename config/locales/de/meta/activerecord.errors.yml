@@ -16,7 +16,7 @@ de:
         internal_user:
           attributes:
             password:
-              weak: ist zu schwach. Versuchen Sie es mit einem  langen Passwort, welches Groß-, Kleinbuchstaben, Zahlen und Sonderzeichen enthält.
+              weak: ist zu schwach. Versuchen Sie es mit einem langen Passwort, welches Groß-, Kleinbuchstaben, Zahlen und Sonderzeichen enthält.
         programming_group:
           invalid_partner_id: Die Personen-ID '%{partner_id}' ist ungültig und wurde entfernt. Bitte überprüfen Sie die Personen-IDs der Programmierpartner:innen.
           size_too_large: Die Größe dieser Programmiergruppe ist zu groß. Geben Sie nur eine andere Personen-ID an.
