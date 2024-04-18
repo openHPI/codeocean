@@ -11,7 +11,7 @@ de:
         one: Feedback
         other: Feedback
   user_exercise_feedback:
-    description: Ihre Punkte wurden übertragen. Wir würden uns freuen, wenn Sie uns hier Feedback zur Aufgabe geben.<br> Wenn sie das nicht möchten, können Sie das Fenster auch einfach schließen.<br><br>Bitte beschreiben Sie, was Ihnen an der Aufgabe gefallen hat und was nicht. Gab es Schwierigkeiten bei der Aufgabe? War die Aufgabe zu leicht oder zu schwer?<br>Wir freuen uns über jedes Feedback.
+    description: Ihre Punkte wurden übertragen. Wir würden uns freuen, wenn Sie uns hier Feedback zur Aufgabe geben.<br> Wenn Sie das nicht möchten, können Sie das Fenster auch einfach schließen.<br><br>Bitte beschreiben Sie, was Ihnen an der Aufgabe gefallen hat und was nicht. Gab es Schwierigkeiten bei der Aufgabe? War die Aufgabe zu leicht oder zu schwer?<br>Wir freuen uns über jedes Feedback.
     difficult_too_difficult: Die Aufgabe war zu schwer
     difficulty: 'Schwierigkeit der Aufgabe:'
     difficulty_easy: Die Aufgabe war zu einfach
