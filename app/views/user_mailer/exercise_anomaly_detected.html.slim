@@ -9,12 +9,11 @@ table(border=1)
       td = t('exercises.statistics.average_worktime', locale: :de)
       td = t('shared.actions', locale: :de)
   tbody
-    - @anomalies.each_key do |id|
-      - exercise = Exercise.find(id)
+    - @relevant_exercises.each do |exercise|
       tr
-        td = link_to_if(ExercisePolicy.new(@user, exercise).show?, exercise.title, exercise_url(exercise))
-        td = @anomalies[id]
-        td = link_to_if(ExercisePolicy.new(@user, exercise).statistics?, t('shared.statistics', locale: :de), statistics_exercise_url(exercise))
+        td = link_to_if(ExercisePolicy.new(@user, exercise).show?, exercise.title, exercise_url(exercise, token: @token))
+        td = @anomalies[exercise.id]
+        td = link_to_if(ExercisePolicy.new(@user, exercise).statistics?, t('shared.statistics', locale: :de), statistics_exercise_url(exercise, token: @token))
 
 == t('mailers.user_mailer.exercise_anomaly_detected.body2',
         receiver_displayname: @receiver_displayname,
@@ -28,11 +27,10 @@ table(border=1)
       td = t('exercises.statistics.average_worktime', locale: :en)
       td = t('shared.actions', locale: :en)
   tbody
-    - @anomalies.each_key do |id|
-      - exercise = Exercise.find(id)
+    - @relevant_exercises.each do |exercise|
       tr
-        td = link_to_if(ExercisePolicy.new(@user, exercise).show?, exercise.title, exercise_url(exercise))
-        td = @anomalies[id]
-        td = link_to_if(ExercisePolicy.new(@user, exercise).statistics?, t('shared.statistics', locale: :en), statistics_exercise_url(exercise))
+        td = link_to_if(ExercisePolicy.new(@user, exercise).show?, exercise.title, exercise_url(exercise, token: @token))
+        td = @anomalies[exercise.id]
+        td = link_to_if(ExercisePolicy.new(@user, exercise).statistics?, t('shared.statistics', locale: :en), statistics_exercise_url(exercise, token: @token))
 
 == t('mailers.user_mailer.exercise_anomaly_detected.body3')
