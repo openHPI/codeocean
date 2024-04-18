@@ -14,7 +14,7 @@ h2.mt-4 = StudyGroup.human_attribute_name('members')
   table.table class=(@study_group.users.present? ? 'sortable' : '')
     thead
       tr
-        th = t('navigation.sections.users')
+        th = StudyGroup.human_attribute_name('member')
     - @study_group.users.each do |user|
       tr
         td = link_to_if(policy(user).show?, user.displayname, user)

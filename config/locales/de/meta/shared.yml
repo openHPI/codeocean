@@ -4,9 +4,9 @@ de:
     actions: Aktionen
     actions_button: Andere Aktionen
     admin_filter:
-      all: Alle Nutzer:innen
-      none: Reguläre Nutzer:innen
-      only: Plattform-Administratoren
+      all: Alle Personen
+      none: Reguläre Personen
+      only: Plattform-Administrator:innen
     administration: Administration
     already_signed_in: Sie sind bereits angemeldet.
     apply_filters: Filter anwenden

@@ -10,5 +10,5 @@ de:
     welcome:
       text_signed_in_as_external_user: Bitte rufen Sie %{application_name} von einer E-Learning-Plattform auf.
       text_signed_in_as_internal_user: Schön, Sie zu sehen, %{user_name}!
-      text_signed_out: Wenn Sie ein Lernender sind, rufen Sie %{application_name} bitte von einer E-Learning-Plattform auf. Wenn Sie ein Lehrer sind, <a href="%{sign_in_path}">melden Sie sich bitte an</a>.
+      text_signed_out: Wenn Sie ein:e Lernende:r sind, rufen Sie %{application_name} bitte von einer E-Learning-Plattform auf. Wenn Sie Lehrende:r sind, <a href="%{sign_in_path}">melden Sie sich bitte an</a>.
       title: Willkommen bei %{application_name}

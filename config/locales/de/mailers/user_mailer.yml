@@ -76,8 +76,8 @@ de:
           <br>
           Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Eine Übersicht Ihrer Kommentaranfragen gibt es hier: %{link_my_comments} <br>
-          Alle Kommentaranfragen aller Benutzer finden Sie hier: %{link_all_comments} <br>
+          Eine Übersicht Ihrer eigenen Kommentaranfragen gibt es hier: %{link_my_comments} <br>
+          Alle Kommentaranfragen aller Lernenden finden Sie hier: %{link_all_comments} <br>
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
           <br>
@@ -143,7 +143,7 @@ de:
           <br>
           Sie finden die Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
-          Danke, dass Sie anderen Nutzern von CodeOcean helfen!
+          Danke, dass Sie anderen Lernenden auf CodeOcean helfen!
           <br>
           Diese Mail wurde automatisch von CodeOcean verschickt.<br>
           <br>
@@ -157,7 +157,7 @@ de:
           <br>
           You can find the request for comments here: %{link_to_comment} <br>
           <br>
-          Thank you for helping other users on CodeOcean!
+          Thank you for helping other learners on CodeOcean!
           <br>
           This mail was automatically sent by CodeOcean. <br>
         subject: "%{author} sagt Danke!"

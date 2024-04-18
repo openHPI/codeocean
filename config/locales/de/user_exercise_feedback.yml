@@ -5,7 +5,7 @@ de:
       user_exercise_feedback:
         exercise: Aufgabe
         feedback_text: Feedback Text
-        user: Autor
+        user: Autor:in
     models:
       user_exercise_feedback:
         one: Feedback

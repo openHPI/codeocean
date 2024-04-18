@@ -14,7 +14,7 @@ de:
     generate: Generieren
     info:
       api_key: Wird zum Authentifizieren gegenüber CodeHarbor genutzt. Auf CodeHarbor muss der gleiche Key eingetragen sein.
-      check_uuid_url: Die Url von CodeHarbor an der geprüft werden kann, ob die Aufgabe schon existiert. Bei Unklarheiten bitte an einen Admin wenden.
-      push_url: Die Url von CodeHarbor zu der die Aufgabe exportiert werden soll. Bei Unklarheiten bitte an einen Admin wenden.
+      check_uuid_url: Die URL von CodeHarbor an der geprüft werden kann, ob die Aufgabe schon existiert. Bei Unklarheiten bitte an eine:n Administrator:in wenden.
+      push_url: Die URL von CodeHarbor zu der die Aufgabe exportiert werden soll. Bei Unklarheiten bitte an eine:n Administrator:in wenden.
     new: Neuen CodeHarbor-Link anlegen
     profile_label: CodeHarbor-Link

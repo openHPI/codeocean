@@ -4,12 +4,12 @@ de:
     attributes:
       programming_group:
         exercise: Aufgabe
-        external_user_id: Externe Nutzer-ID
-        internal_user_id: Interne Nutzer-ID
+        external_user_id: Externe Personen-ID
+        internal_user_id: Interne Personen-ID
         member: Mitglieder
         member_count: Anzahl der Mitglieder
         name: Name
-        programming_partner_ids: Nutzer-ID der Programmierpartnerin / des Programmierpartners
+        programming_partner_ids: Personen-ID der Programmierpartnerin / des Programmierpartners
     models:
       programming_group:
         one: Programmierpaar
@@ -17,21 +17,21 @@ de:
   programming_groups:
     form:
       hints:
-        programming_partner_ids: 'Sie können mehrere Nutzer-IDs mit Kommata getrennt eingeben, wie z.B.: ''e123, e234''.'
+        programming_partner_ids: 'Sie können mehrere Personen-IDs mit Kommata getrennt eingeben, wie z.B.: ''e123, e234''.'
     implement:
       info_disconnected: Ihre Verbindung zum Server wurde unterbrochen. Bitte überprüfen Sie Ihre Internetverbindung und laden Sie die Seite erneut.
     new:
       close: Schließen
       create_programming_pair: Programmierpaar erstellen
       dont_show_modal_again: Auf diesem Gerät nicht mehr anzeigen
-      enter_partner_id: Kennen Sie eine Person in dem Kurs, mit der Sie gemeinsam die Aufgabe lösen möchten? Dann geben Sie hier die Nutzer-ID dieser Person ein.
+      enter_partner_id: Kennen Sie eine Person in dem Kurs, mit der Sie gemeinsam die Aufgabe lösen möchten? Dann geben Sie hier die zugehörige Personen-ID ein.
       find_partner_description: Wenn Sie keine Person aus dem Kurs kennen, haben Sie die Möglichkeit mit einer anderen Person gepaart zu werden. Sie werden dann zur Aufgabe weitergeleitet, sobald eine andere Person ebenfalls diese Aufgabe im Team lösen möchte.
       find_partner_title: Eine:n Programmierpartner:in für die Aufgabe finden
       find_programming_partner: Programmierpartner:in finden
       info_forced_work_together: Sie können die Aufgabe '%{exercise_title}' nur gemeinsam mit einer anderen Person lösen. Ihr:e Teampartner:in kann sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Für das Lösen der Aufgabe erhalten Sie Bonuspunkte.
       info_pair_programming: 'Pair Programming (Programmieren in Paaren) ist eine Methode, bei der zwei Personen gemeinsam programmieren. Dabei übernehmen sie <i>abwechselnd</i> zwei verschiedene Rollen:  Den <i>Driver</i>, der den Code schreibt und sich auf die Details fokussiert und den <i>Navigator</i>, der Tippfehler korrigiert, die Aufgabenstellung im Blick behält und Verbesserungsideen vorschlägt. Kommunikation miteinander ist von entscheidender Bedeutung für erfolgreiches Pair Programming.'
       info_work_together: Sie haben die Möglichkeit, die Aufgabe '%{exercise_title}' zusammen mit einer anderen Person zu lösen. Ihr:e Teampartner:in kann sehen, was Sie in dieser Aufgabe schreiben und umgekehrt. Beachten Sie dabei, dass anschließend keiner die Zusammenarbeit beenden kann. Für die nächste Aufgabe können Sie sich erneuert entscheiden, ob und mit wem Sie zusammen arbeiten möchten.
-      own_user_id: 'Ihre Nutzer-ID:'
+      own_user_id: 'Ihre Personen-ID:'
       pair_programming_info: Pair Programming Info
       work_alone: Alleine arbeiten
       work_alone_description: Sie können sich einmalig dafür entscheiden, die Aufgabe alleine zu bearbeiten. Anschließend können Sie jedoch nicht mehr in die Partnerarbeit für diese Aufgabe wechseln. <br> <a href=%{path} data-turbolinks="false">Klicken Sie hier, um die Aufgabe im Einzelmodus zu starten.</a>

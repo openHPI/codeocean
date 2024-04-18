@@ -19,7 +19,7 @@ de:
         internal_title: Alternativer Titel
         late_submission_deadline: Verspätete Abgabefrist
         maximum_score: Erreichbare Punktzahl
-        number_of_users_and_programming_groups: "# Nutzer und Programmiergruppen"
+        number_of_users_and_programming_groups: "# Teilnehmende und Programmiergruppen"
         public: Öffentlich
         selection: Ausgewählt
         submission_deadline: Abgabefrist
@@ -27,7 +27,7 @@ de:
         title: Titel
         token: Aufgaben-Token
         unpublished: Deaktiviert
-        user: Autor
+        user: Autor:in
         uuid: UUID
     models:
       exercise:
@@ -50,7 +50,7 @@ de:
       dummy: Keine Aktion
       exercise_finished: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst. <a href="%{url}" class="alert-link">Klicken Sie hier, um die Aufgabe jetzt abzuschließen.</a>
       exercise_finished_redirect_to_own_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Ihre Frage ist damit wahrscheinlich gelöst? Falls ja, fügen Sie doch den entscheidenden Kniff als Antwort hinzu und markieren die Frage als gelöst, bevor Sie das Fenster schließen.
-      exercise_finished_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Ein anderer Teilnehmer hat eine Frage zu der von Ihnen gelösten Aufgabe. Er würde sich sicherlich sehr über Ihre Hilfe und Kommentare freuen.
+      exercise_finished_redirect_to_rfc: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte übertragen. Eine andere Person hat eine Frage zu der von Ihnen gelösten Aufgabe und würde sich sicherlich sehr über Ihre Hilfe und Kommentare freuen.
       exercise_finished_remote: Herzlichen Glückwunsch! Sie haben die Aufgabe vollständig gelöst und die Punkte erfolgreich an %{consumer} übertragen.
       expand_action_sidebar: Aktions-Leiste Ausklappen
       expand_output_sidebar: Ausgabe-Leiste Ausklappen
@@ -97,7 +97,7 @@ de:
       check:
         no_task: Auf CodeHarbor wurde keine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe wird eine neue auf CodeHarbor angelegt, die mit dieser verbunden ist. Anschließend können Veränderungen an der Aufgabe von beiden Systemen aus jeweils in das andere Übertragen werden.
         task_found: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden. Mit dem Export der Aufgabe werden alle Veränderungen, die auf CodeOcean vorgenommen wurden, exportiert und die Aufgabe auf CodeHarbor überschrieben.
-        task_found_no_right: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an einen Admin, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
+        task_found_no_right: Auf CodeHarbor wurde eine entsprechende Aufgabe gefunden, Sie haben aber keine Rechte sie zu bearbeiten. Bitte wenden Sie sich an eine:n Administrator:in, wenn Sie denken, dass Sie die Rechte dazu besitzen sollten.
       checking_codeharbor: Es wird geprüft, ob auf CodeHarbor eine korrespondierende Aufgabe gefunden werden kann.
       dialogtitle: Zu CodeHarbor exportieren
       error: Es ist ein Fehler bei der Kommunikation mit CodeHarbor aufgetreten.
@@ -141,7 +141,7 @@ de:
       none: Keine
       tags: Tags
       tips: Tipps
-      unpublish_warning: Mit dieser Aktion wird die Aufgabe deaktiviert. Jeder Student, der versucht sie zu implementieren wird eine Fehlermeldung bekommen, bis die Aufgabe wieder aktiviert wurde.
+      unpublish_warning: Mit dieser Aktion wird die Aufgabe deaktiviert. Jeder Person, die versucht sie zu implementieren, wird eine Fehlermeldung bekommen, bis die Aufgabe wieder aktiviert wurde.
     implement:
       break_intervention:
         text: Falls Sie bei dieser Aufgabe momentan nicht weiterkommen, können Sie jederzeit eine Pause einlegen und später weiter knobeln. Ihr Fortschritt wird in CodeOcean automatisch gespeichert.
@@ -198,7 +198,7 @@ de:
         invalid: Fehlerhafte Aufgabe
     index:
       clone: Duplizieren
-      external_user_statistics: Statistik für externe Nutzer
+      external_user_statistics: Statistik für externe Personen
       feedback: Feedback
       implement: Implementieren
       requests_for_comments: Kommentaranfragen
@@ -210,17 +210,17 @@ de:
       average_score: Durchschnittliche Punktzahl
       average_worktime: Durchschnittliche Arbeitszeit
       deadline: Abgabefrist
-      external_users: Externe Nutzer
+      external_users: Externe Personen
       final_submissions: Finale Abgaben
       finishing_rate: Abschlussrate
       intermediate_submissions: Intermediäre Abgaben
-      internal_users: Interne Nutzer
-      participants: Bearbeitende Nutzer
+      internal_users: Interne Personen
+      participants: Bearbeitende
       programming_groups: Programmiergruppen
       runs: Versuche
       score: Maximale Punktzahl
-      user: Nutzer
-      users_and_programming_groups: "%{count} verschiedene Nutzer und Programmiergruppen"
+      user: Teilnehmende
+      users_and_programming_groups: "%{count} verschiedene Teilnehmende und Programmiergruppen"
       worktime: Arbeitszeit
     study_group_dashboard:
       learner: Lerner

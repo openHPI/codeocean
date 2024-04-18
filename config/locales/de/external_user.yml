@@ -10,8 +10,8 @@ de:
         platform_admin: Platform Admin
     models:
       external_user:
-        one: Externer Nutzer
-        other: Externe Nutzer
+        one: Externe Person
+        other: Externe Personen
   external_users:
     show:
       empty_tag_statistics: Keine Statistiken verfügbar
@@ -23,5 +23,5 @@ de:
       exercise: Übung
       runs: Abgaben
       score: Maximale Punktzahl
-      title: Statistiken für Externe Benutzer
+      title: Statistiken für Externe Personen
       worktime: Arbeitszeit

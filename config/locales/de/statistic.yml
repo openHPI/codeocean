@@ -19,12 +19,12 @@ de:
         percent_unsolved: Unbeantwortete Anfragen
         with_comments: Anfragen mit Kommentaren
       users:
-        active: Aktive Nutzer
+        active: Aktive Personen
         currently_active: Aktiv (5 Minuten)
     graphs:
       history: Historie
       rfc_activity: Kommentaranfragenaktivität
-      user_activity: Nutzeraktivität
+      user_activity: Nutzungsaktivität
     sections:
       contributors: Mitwirkende
       exercises: Aufgaben
