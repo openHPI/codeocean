@@ -13,8 +13,8 @@ de:
         platform_admin: Platform Admin
     models:
       internal_user:
-        one: Interner Nutzer
-        other: Interne Nutzer
+        one: Interne Person
+        other: Interne Personen
   internal_users:
     activate:
       headline: Registrierung abschließen

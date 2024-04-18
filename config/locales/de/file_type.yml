@@ -10,7 +10,7 @@ de:
         indent_size: Einrückung
         name: Name
         renderable: Anzeigbar
-        user: Autor
+        user: Autor:in
     models:
       file_type:
         one: Dateityp

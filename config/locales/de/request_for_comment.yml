@@ -10,7 +10,7 @@ de:
         last_update: Letzte Aktivität
         question: Frage
         requested_at: Angefragezeitpunkt
-        username: Benutzername
+        username: Lernende:r
     models:
       request_for_comment:
         one: Kommentaranfrage
@@ -39,7 +39,7 @@ de:
     mark_as_solved: Diese Frage als beantwortet markieren
     modal_title: Einen Kommentar in Zeile %{line} hinzufügen
     no_output: Keine Ausgabe.
-    no_question: Der Autor hat keine Frage zu dieser Anfrage gestellt.
+    no_question: Der/die Autor:in hat keine Frage zu dieser Anfrage gestellt.
     runtime_output: Programmausgabe
     send_thank_you_note: Senden
     show_all: Alle Anfragen anzeigen
@@ -47,6 +47,6 @@ de:
     show_solved: Nur gelöste Anfragen anzeigen
     show_unsolved: Nur ungelöste Anfragen anzeigen
     solved: Diese Frage wurde erfolgreich beantwortet
-    subscribe_to_author: Bei neuen Kommentaren des Autors per E-Mail benachrichtigt werden
+    subscribe_to_author: Bei neuen Kommentaren des/der Autors/Autorin per E-Mail benachrichtigt werden
     test_results: Testergebnisse
-    write_a_thank_you_node: 'Wenn Sie möchten, können Sie sich bei allen Mitstudenten, die Ihnen bei der Beantwortung Ihrer Frage geholfen haben, bedanken:'
+    write_a_thank_you_node: 'Wenn Sie möchten, können Sie sich bei allen Mitlernenden, die Ihnen bei der Beantwortung Ihrer Frage geholfen haben, bedanken:'

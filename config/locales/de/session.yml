@@ -13,7 +13,7 @@ de:
     destroy_through_lti:
       average_score: Durchschnittliche Punktzahl
       do_not_use_backbutton: Benutzen Sie nicht den "Zurück" Button des Browsers, um zu CodeOcean zurück zu kehren.
-      final_submissions: Abgaben anderer Nutzer
+      final_submissions: Abgaben der Mitlernenden
       finished_with_consumer: Sie können dieses Fenster nun schließen oder <a href="%{url}" rel="nofollow">zu %{consumer} zurückkehren</a>.
       finished_without_consumer: Sie können dieses Fenster nun schließen.
       headline: Gut gemacht!
