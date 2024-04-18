@@ -7,7 +7,8 @@ class RequestForComment < ApplicationRecord
   # SOLVED:      The author explicitly marked the RfC as solved.
   # SOFT_SOLVED: The author did not mark the RfC as solved but reached the maximum score in the corresponding exercise at any time.
   # ONGOING:     The author did not mark the RfC as solved and did not reach the maximum score in the corresponding exercise yet.
-  STATE = [SOLVED = :solved, SOFT_SOLVED = :soft_solved, ONGOING = :unsolved].freeze
+  # ALL:         Any RfC, regardless of the author marking it as solved or reaching the maximum score in the corresponding exercise.
+  STATE = [SOLVED = :solved, SOFT_SOLVED = :soft_solved, ONGOING = :unsolved, ALL = :all].freeze
 
   belongs_to :submission
   belongs_to :exercise
@@ -59,6 +60,21 @@ class RequestForComment < ApplicationRecord
   end
 
   class << self
+    def state(filter = RequestForComment::ALL)
+      # This method is used as a scope filter for Ransack
+
+      case filter.to_sym
+        when RequestForComment::SOLVED
+          where(solved: true)
+        when RequestForComment::SOFT_SOLVED
+          unsolved.where(full_score_reached: true)
+        when RequestForComment::ONGOING
+          unsolved.where(full_score_reached: false)
+        else # 'all'
+          all
+      end
+    end
+
     def with_last_activity
       joins('join "submissions" s on s.id = request_for_comments.submission_id ' \
             'left outer join "files" f on f.context_id = s.id ' \
@@ -81,8 +97,8 @@ class RequestForComment < ApplicationRecord
       %w[exercise submission]
     end
 
-    def ransackable_attributes(_auth_object = nil)
-      %w[solved]
+    def ransackable_scopes(_auth_object = nil)
+      %w[state]
     end
 
     private

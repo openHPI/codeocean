@@ -33,4 +33,8 @@ class ApplicationRecord < ActiveRecord::Base
   def self.ransackable_attributes(_auth_object = nil)
     []
   end
+
+  def self.ransackable_scopes(_auth_object = nil)
+    []
+  end
 end

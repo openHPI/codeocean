@@ -9,7 +9,7 @@ h1 = RequestForComment.model_name.human(count: 2)
           = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: t('activerecord.attributes.request_for_comments.exercise'))
       .col-auto.mt-3.mt-md-0
         = f.label(:title_cont, t('request_for_comments.solved'), class: 'visually-hidden form-label')
-        = f.select(:solved_not_eq, [[t('request_for_comments.show_all'), 2], [t('request_for_comments.show_unsolved'), 1], [t('request_for_comments.show_solved'), 0]])
+        = f.select(:state, [[t('request_for_comments.show_all'), RequestForComment::ALL], [t('request_for_comments.show_unsolved'), RequestForComment::ONGOING], [t('request_for_comments.show_soft_solved'), RequestForComment::SOFT_SOLVED], [t('request_for_comments.show_solved'), RequestForComment::SOLVED]])
     - unless current_user.consumer.rfc_visibility_study_group?
       .row
         .col
