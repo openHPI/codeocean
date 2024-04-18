@@ -44,7 +44,7 @@ de:
       confirm_start_over_active_file: Wollen Sie wirklich Ihre Änderungen in der ausgewählten Datei '%{filename}' zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.
       create_file: Neue Datei
       deadline: Deadline
-      depleted: Alle Ausführungsumgebungen sind momentan in Benutzung. Probiere es später nochmal.
+      depleted: Alle Ausführungsumgebungen sind momentan in Benutzung. Probieren Sie es später nochmal.
       destroy_file: Datei löschen
       download: Herunterladen
       dummy: Keine Aktion

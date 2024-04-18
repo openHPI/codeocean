@@ -74,7 +74,7 @@ de:
           <br>
           %{commenting_user_displayname} schreibt: %{comment_text}<br>
           <br>
-          Sie finden ihre Kommentaranfrage hier: %{link_to_comment} <br>
+          Sie finden Ihre Kommentaranfrage hier: %{link_to_comment} <br>
           <br>
           Eine Übersicht Ihrer eigenen Kommentaranfragen gibt es hier: %{link_my_comments} <br>
           Alle Kommentaranfragen aller Lernenden finden Sie hier: %{link_all_comments} <br>
