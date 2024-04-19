@@ -34,7 +34,7 @@ gem 'net-smtp', require: false
 gem 'nokogiri'
 gem 'pagedown-bootstrap-rails'
 gem 'pg'
-gem 'proformaxml', '~> 1.2.0'
+gem 'proformaxml', '~> 1.3.0'
 gem 'prometheus_exporter'
 gem 'puma'
 gem 'pundit'
