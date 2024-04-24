@@ -572,9 +572,7 @@ var CodeOceanEditor = {
                     return map;
                 }, {});
 
-                for (const severity of severity_groups) {
-                    const linter_results = severity_groups[severity]
-
+                for (const [severity, linter_results] of Object.entries(severity_groups)) {
                     const li = document.createElement("li");
                     const text = $.parseHTML(`<u>${severity}:</u>`);
                     $(li).append(text);
