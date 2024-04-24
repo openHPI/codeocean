@@ -1819,25 +1819,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/core@npm:7.111.0, @sentry/core@npm:^7.111.0":
-  version: 7.111.0
-  resolution: "@sentry/core@npm:7.111.0"
+"@sentry/core@npm:7.112.1, @sentry/core@npm:^7.112.1":
+  version: 7.112.1
+  resolution: "@sentry/core@npm:7.112.1"
   dependencies:
-    "@sentry/types": "npm:7.111.0"
-    "@sentry/utils": "npm:7.111.0"
-  checksum: 10c0/01d21eb9c418a43f1fc95f8cc92f95c8324d7713e346a3a317fc2c38c45dac3a177359e392589873e0b1b237959ce4ab31253ae57287d594d951828951fae09f
+    "@sentry/types": "npm:7.112.1"
+    "@sentry/utils": "npm:7.112.1"
+  checksum: 10c0/8dd059e2f155ed2ab8ad3fd1e5681e3091115e526e2b87f56be8c3dde0870614ac7f334d03fea7a63be31eccdfa31b6444b41e3985dd92b001be73000ca6ac0c
   languageName: node
   linkType: hard
 
-"@sentry/integrations@npm:^7.111.0":
-  version: 7.111.0
-  resolution: "@sentry/integrations@npm:7.111.0"
+"@sentry/integrations@npm:^7.112.1":
+  version: 7.112.1
+  resolution: "@sentry/integrations@npm:7.112.1"
   dependencies:
-    "@sentry/core": "npm:7.111.0"
-    "@sentry/types": "npm:7.111.0"
-    "@sentry/utils": "npm:7.111.0"
+    "@sentry/core": "npm:7.112.1"
+    "@sentry/types": "npm:7.112.1"
+    "@sentry/utils": "npm:7.112.1"
     localforage: "npm:^1.8.1"
-  checksum: 10c0/1d14fda017c485c2f358d80b89f73de492ee7d0da34760ae481ababfa268ca5582338cfa8c5212fe6887682537222e4292218c6cb0571f637b259d42636af725
+  checksum: 10c0/991c29680130127d1403960b709295400d5e0ae8d21d7f06427ed97e8c6124929e31a0e6e1dd1626b5b573972a70481bf63643270c4fd2c24f23952a51b55907
   languageName: node
   linkType: hard
 
@@ -1860,10 +1860,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:7.111.0":
-  version: 7.111.0
-  resolution: "@sentry/types@npm:7.111.0"
-  checksum: 10c0/c9b76789d99c1770b876cd1643d5ae140dc8a11ca99b5251713c763f928483712e4472fd1cefa498ebf376b40258696d58c840c5cf0678500fe1fffc79b66f1f
+"@sentry/types@npm:7.112.1":
+  version: 7.112.1
+  resolution: "@sentry/types@npm:7.112.1"
+  checksum: 10c0/984a79d5b6a3895f835790e1c1869feb7d08fea0f0b4e98607c88f95207780a6a310c73125868295852f69acd8ba51e34275911e4b6e4e3a00cba1c271f2ce29
   languageName: node
   linkType: hard
 
@@ -1876,12 +1876,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:7.111.0, @sentry/utils@npm:^7.111.0":
-  version: 7.111.0
-  resolution: "@sentry/utils@npm:7.111.0"
+"@sentry/utils@npm:7.112.1, @sentry/utils@npm:^7.112.1":
+  version: 7.112.1
+  resolution: "@sentry/utils@npm:7.112.1"
   dependencies:
-    "@sentry/types": "npm:7.111.0"
-  checksum: 10c0/080d77b573b90fa77af3231c48a074567cfa4c6e3d8ea5e91d87b174a78b2a1b606c56a16ec4aa71b8763c993f3d65114c14bed20dd703b2c94b25111fbc6d7c
+    "@sentry/types": "npm:7.112.1"
+  checksum: 10c0/9c38ef50a7f70e83278e5dadf9d11d52f574e9718e93948b18b2baed9304227eaafe5b59a9fd4fc791ac311277017bfada980a7754092d9ca08c60ca42fa0f93
   languageName: node
   linkType: hard
 
@@ -3002,9 +3002,9 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^6.5.2"
     "@popperjs/core": "npm:^2.11.8"
     "@sentry/browser": "npm:^7.110.1"
-    "@sentry/core": "npm:^7.111.0"
-    "@sentry/integrations": "npm:^7.111.0"
-    "@sentry/utils": "npm:^7.111.0"
+    "@sentry/core": "npm:^7.112.1"
+    "@sentry/integrations": "npm:^7.112.1"
+    "@sentry/utils": "npm:^7.112.1"
     "@webpack-cli/serve": "npm:^2.0.5"
     ace-builds: "npm:^1.33.0"
     babel-loader: "npm:^9.1.3"
