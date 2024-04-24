@@ -503,7 +503,7 @@ class ExercisesController < ApplicationController
     query = if policy(@exercise).detailed_statistics?
               query
             elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
-              query.where(study_groups: current_user.study_groups.pluck(:id), cause: 'submit')
+              query.where(study_group_id: current_user.study_groups.pluck(:id), cause: 'submit')
             else
               # e.g. internal user without any study groups, show no submissions
               query.where('false')
