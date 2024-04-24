@@ -4,7 +4,7 @@ $(document).on('turbolinks:load', function () {
     var editor = $('#editor');
     var exercise_id = editor.data('exercise-id');
 
-    if ($.isController('exercises') && ProgrammingGroups.is_other_user(current_contributor)) {
+    if ($.isController('exercises') && typeof ProgrammingGroups !== 'undefined' && ProgrammingGroups.is_other_user(current_contributor)) {
 
       App.synchronized_editor = App.cable.subscriptions.create({
         channel: "SynchronizedEditorChannel", exercise_id: exercise_id
