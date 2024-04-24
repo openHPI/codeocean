@@ -56,7 +56,7 @@ class Runner < ApplicationRecord
 
   def download_file(desired_file, privileged_execution:, exclusive: true, &)
     reserve! if exclusive
-    @strategy.download_file(desired_file, privileged_execution:, &block)
+    @strategy.download_file(desired_file, privileged_execution:, &)
     release! if exclusive
   end
 
