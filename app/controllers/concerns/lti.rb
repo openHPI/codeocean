@@ -85,6 +85,16 @@ module Lti
 
   private :require_valid_consumer_key
 
+  def require_valid_lis_outcome_service_url
+    # We want to check that any URL given is absolute, but none URL is fine, too.
+    return unless params[:lis_outcome_service_url]
+
+    url = URI.parse(params[:lis_outcome_service_url])
+    refuse_lti_launch(message: t('sessions.oauth.invalid_lis_outcome_service_url')) unless url.absolute?
+  end
+
+  private :require_valid_lis_outcome_service_url
+
   def require_valid_exercise_token
     proxy_exercise = ProxyExercise.find_by(token: params[:custom_token])
     @exercise = if proxy_exercise.nil?

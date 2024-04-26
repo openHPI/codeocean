@@ -65,6 +65,14 @@ RSpec.describe SessionsController do
       end
     end
 
+    context 'without a valid absolute LIS Outcome service URL' do
+      it 'refuses the LTI launch' do
+        allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
+        expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_lis_outcome_service_url')).and_call_original
+        post :create_through_lti, params: {oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, lis_outcome_service_url: '/relative/url'}
+      end
+    end
+
     context 'without a valid exercise token' do
       it 'refuses the LTI launch' do
         allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
@@ -75,7 +83,7 @@ RSpec.describe SessionsController do
 
     context 'with valid launch parameters' do
       let(:locale) { :de }
-      let(:perform_request) { post :create_through_lti, params: {custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id} }
+      let(:perform_request) { post :create_through_lti, params: {custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id, lis_outcome_service_url: 'https://example.org/'} }
       let(:user) { create(:external_user, consumer:) }
 
       before { allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
