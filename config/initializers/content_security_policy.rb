@@ -68,6 +68,8 @@ Rails.application.configure do
     # Web workers are used by the ACE editor (for syntax highlighting) and JStree (for processing trees).
     # Those dependencies are loading further code via blobs.
     policy.worker_src           :self, :blob
+    # The `child_src` directive is only a fallback for browsers not supporting `worker_src`.
+    policy.child_src            :self, :blob
     policy.form_action          :self
     policy.frame_ancestors      :none
     policy.frame_src            :none
