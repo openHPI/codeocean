@@ -3052,7 +3052,7 @@ __metadata:
     highlight.js: "npm:^11.9.0"
     i18n-js: "npm:^4.4.3"
     jquery: "npm:^3.7.1"
-    jquery-ui: "npm:^1.13.2"
+    jquery-ui: "npm:^1.13.3"
     jquery-ujs: "npm:^1.2.3"
     jstree: "npm:^3.3.16"
     keycharm: "npm:^0.4.0"
@@ -5046,12 +5046,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jquery-ui@npm:^1.13.2":
-  version: 1.13.2
-  resolution: "jquery-ui@npm:1.13.2"
+"jquery-ui@npm:^1.13.3":
+  version: 1.13.3
+  resolution: "jquery-ui@npm:1.13.3"
   dependencies:
     jquery: "npm:>=1.8.0 <4.0.0"
-  checksum: 10c0/a7895115cba1cad44b9926cf40aea457811e787fb790de7308a43fefbef1cb0e4f4bff04b25818d7227519616863aef181b90526954333c46ea7c8a9fa12d96c
+  checksum: 10c0/d6c9b330e42ecd90cbf687ebd77c3f6572a4ef151c9572375fd82efe1dc4af21c0a568095af540805cbe1a1bea50306cfb6d12bff5297d646ae3d2fe3d6c54da
   languageName: node
   linkType: hard
 
