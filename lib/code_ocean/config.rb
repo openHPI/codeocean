@@ -2,12 +2,16 @@
 
 module CodeOcean
   class Config
-    def initialize(filename)
-      @filename = filename
+    attr_reader :path, :read
+
+    def initialize(filename, options = {})
+      @path = Rails.root.join('config', "#{filename}.yml#{options[:erb] ? '.erb' : ''}")
+      @read = parse(options)
     end
 
-    def read(options = {})
-      path = Rails.root.join('config', "#{@filename}.yml#{options[:erb] ? '.erb' : ''}")
+    private
+
+    def parse(options)
       if ::File.exist?(path)
         yaml_content = ::File.new(path, 'r').read || ''
         yaml_content = ERB.new(yaml_content).result if options[:erb]

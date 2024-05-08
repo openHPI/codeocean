@@ -146,7 +146,7 @@ class Runner::Strategy::DockerContainerPool < Runner::Strategy
   def self.config
     @config ||= begin
       # Since the docker configuration file contains code that must be executed, we use ERB templating.
-      docker_config = CodeOcean::Config.new(:docker).read(erb: true)
+      docker_config = CodeOcean::Config.new(:docker, erb: true).read
       codeocean_config = CodeOcean::Config.new(:code_ocean).read[:runner_management] || {}
       # All keys in `docker_config` take precedence over those in `codeocean_config`
       docker_config.merge codeocean_config

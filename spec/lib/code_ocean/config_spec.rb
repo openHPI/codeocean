@@ -30,7 +30,7 @@ RSpec.describe CodeOcean::Config do
 
     context 'with a .yml.erb file' do
       let(:path) { Rails.root.join('config', "#{filename}.yml.erb") }
-      let(:read) { described_class.new(filename).read(erb: true) }
+      let(:read) { described_class.new(filename, erb: true).read }
 
       context 'when the file is present' do
         before { File.write(path, {Rails.env.to_s => content}.to_yaml) }
