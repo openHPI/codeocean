@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'ExternalUserStatistics', :js do
   let(:learner) { create(:external_user) }
-  let(:exercise) { create(:dummy, user:) }
+  let(:exercise) { create(:fibonacci, user:) }
   let(:study_group) { create(:study_group) }
   let(:password) { 'password123456' }
 
