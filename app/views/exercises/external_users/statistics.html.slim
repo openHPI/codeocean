@@ -29,7 +29,7 @@ h1
     button.btn.btn-secondary#play-button
       span.fa-solid.fa-play
     #submissions-slider.flex-item
-      input.w-100 type='range' orient='horizontal' list='datapoints' value=0 min=0 max=all_files.length - 1
+      input.w-100 type='range' orient='horizontal' list='datapoints' value=0 min=0 max=(all_files.length - 1)
       datalist#datapoints
         - index = 0
         - submissions.each do |submission|
