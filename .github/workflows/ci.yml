@@ -111,9 +111,9 @@ jobs:
 
   slim-lint:
     permissions:
-      # Required: allow read access to the content for analysis.
+      # Required: Allow read access to the content for analysis.
       contents: read
-      # Allow write access to checks to allow the action to annotate code in the PR.
+      # Required: Allow write access to checks to allow the action to annotate code in the PR.
       checks: write
 
     runs-on: ubuntu-latest
@@ -133,7 +133,8 @@ jobs:
 
       - name: Upload slim-lint results as GitHub annotations
         uses: lcollins/checkstyle-github-action@v2.0.0
-        if: ${{ success() || failure() }}
+        # Only create GitHub annotations for the main repo (disable for forks):
+        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           name: Slim-Lint Report
           title: Analyze Slim templates for linting issues
