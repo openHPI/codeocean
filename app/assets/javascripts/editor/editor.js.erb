@@ -27,15 +27,14 @@ var CodeOceanEditor = {
 
     lastCopyText: null,
 
-    <% self.class.include Rails.application.routes.url_helpers %>
     <% @config ||= CodeOcean::Config.new(:code_ocean).read(erb: false) %>
     // Important notice: Changing the config values requires any content-wise
     // modification for this file in the development environment. Lacking to do so
     // will result in the old, server-side cached serving of this file even across
     // server restarts!
     sendEvents: <%= @config['codeocean_events'] ? @config['codeocean_events']['enabled'] : false %>,
-    eventURL: "<%= @config['codeocean_events'] ? events_path : '' %>",
-    fileTypeURL: "<%= file_types_path %>",
+    eventURL: Routes.events_path(),
+    fileTypeURL: Routes.file_types_path(),
 
     confirmDestroy: function (event) {
         event.preventDefault();
