@@ -19,4 +19,19 @@
 //= require color_mode_picker
 //
 // app/assets
+// --> Include some assets first, as they are used by other assets.
+// --> Hence, the order specified here is important.
+//
+// 1. Some common base functions and monkey patches
+//= require base
+// 2. Programming groups are required by "channels/synchronized_editor_channel.js"
+//= require programming_groups
+// 3. The turtle library is required by "editor/turtle.js"
+//= require turtle
+// 4. Some channels are required by "editor/editor.js.erb"
+//= require_tree ./channels
+// 5. Require the editor components, as needed by "./editor.js" and "./community_solution.js"
+//= require_tree ./editor
+//
+// All remaining assets are loaded in alphabetical order
 //= require_tree .
