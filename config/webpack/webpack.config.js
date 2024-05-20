@@ -1,6 +1,6 @@
 // See the shakacode/shakapacker README and docs directory for advice on customizing your webpackConfig.
 
-const { globalMutableWebpackConfig, generateWebpackConfig, config, merge } = require('shakapacker')
+const { generateWebpackConfig, config, merge } = require('shakapacker')
 const webpackConfig = generateWebpackConfig()
 
 const CompressionPlugin = require("compression-webpack-plugin");
@@ -88,8 +88,14 @@ const envConfig = module.exports = {
     stats: 'minimal',
 }
 
-// Use the two lines below to remove the original WebpackAssetsManifest and replace it with our custom config.
-const filteredPlugins = webpackConfig.plugins.filter((plugin) => !(plugin instanceof WebpackAssetsManifest))
-globalMutableWebpackConfig.plugins = filteredPlugins;
 
-module.exports = merge(globalMutableWebpackConfig, envConfig)
+// Use the following lines below to remove original plugins and replace them with our custom config.
+// This is especially needed for the `WebpackAssetsManifest` plugin, which would otherwise run twice.
+const customPlugins = envConfig.plugins.map((plugin) => plugin.constructor.name);
+const filteredDefaultPlugins = webpackConfig.plugins.filter((plugin) => {
+    return !customPlugins.includes(plugin.constructor.name);
+});
+webpackConfig.plugins = filteredDefaultPlugins;
+
+// Create the resulting config by merging the (modified) default config and our custom setup
+module.exports = merge(webpackConfig, envConfig)
