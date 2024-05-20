@@ -108,19 +108,20 @@ CodeOceanEditorSubmissions = {
   },
 
   resetCode: function(initiator, onlyActiveFile = false) {
-    this.startSentryTransaction(initiator);
-    this.showSpinner(initiator);
+    this.newSentryTransaction(initiator, async () => {
+      this.showSpinner(initiator);
 
-    const response = await this.ajax({
-      method: 'GET',
-      url: $('#start-over').data('url') || $('#start-over-active-file').data('url')
-    }).catch(this.ajaxError.bind(this));
+      const response = await this.ajax({
+        method: 'GET',
+        url: $('#start-over').data('url') || $('#start-over-active-file').data('url')
+      }).catch(this.ajaxError.bind(this));
 
-    this.hideSpinner();
+      this.hideSpinner();
 
-    if (!response) return;
-    App.synchronized_editor?.reset_content(response);
-    this.setEditorContent(response, onlyActiveFile);
+      if (!response) return;
+      App.synchronized_editor?.reset_content(response);
+      this.setEditorContent(response, onlyActiveFile);
+    });
   },
 
   setEditorContent: function(new_content, onlyActiveFile = false) {
@@ -140,32 +141,33 @@ CodeOceanEditorSubmissions = {
   renderCode: function(event) {
     event.preventDefault();
     const cause = $('#render');
-    this.startSentryTransaction(cause);
-    if (!cause.is(':visible')) return;
+    this.newSentryTransaction(cause, async () => {
+      if (!cause.is(':visible')) return;
 
-    const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
-    if (!submission) return;
-    if (submission.render_url === undefined) return;
+      const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+      if (!submission) return;
+      if (submission.render_url === undefined) return;
 
-    const active_file = CodeOceanEditor.active_file.filename;
-    const desired_file = submission.render_url.filter(hash => hash.filepath === active_file);
-    const url = desired_file[0].url;
+      const active_file = CodeOceanEditor.active_file.filename;
+      const desired_file = submission.render_url.filter(hash => hash.filepath === active_file);
+      const url = desired_file[0].url;
 
-    // Allow to open the new tab even in Safari.
-    // See: https://stackoverflow.com/a/70463940
-    setTimeout(() => {
-      var pop_up_window = window.open(url, '_blank');
-      if (pop_up_window) {
-        pop_up_window.onerror = function (message) {
-          this.clearOutput();
-          this.printOutput({
-            stderr: message
-          }, true, 0);
-          this.sendError(message, submission.id);
-          this.showOutputBar();
-        };
-      }
-    })
+      // Allow to open the new tab even in Safari.
+      // See: https://stackoverflow.com/a/70463940
+      setTimeout(() => {
+        var pop_up_window = window.open(url, '_blank');
+        if (pop_up_window) {
+          pop_up_window.onerror = function (message) {
+            this.clearOutput();
+            this.printOutput({
+              stderr: message
+            }, true, 0);
+            this.sendError(message, submission.id);
+            this.showOutputBar();
+          };
+        }
+      })
+    });
   },
 
   /**
@@ -174,14 +176,15 @@ CodeOceanEditorSubmissions = {
   runCode: function(event) {
     event.preventDefault();
     const cause = $('#run');
-    this.startSentryTransaction(cause);
-    this.stopCode(event);
-    if (!cause.is(':visible')) return;
+    this.newSentryTransaction(cause, async () => {
+      this.stopCode(event);
+      if (!cause.is(':visible')) return;
 
-    const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
-    if (!submission) return;
+      const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+      if (!submission) return;
 
-    await this.runSubmission(submission);
+      await this.runSubmission(submission);
+    });
   },
 
   runSubmission: async function (submission) {
@@ -196,15 +199,16 @@ CodeOceanEditorSubmissions = {
   testCode: function(event) {
     event.preventDefault();
     const cause = $('#test');
-    this.startSentryTransaction(cause);
-    if (!cause.is(':visible')) return;
+    this.newSentryTransaction(cause, async () => {
+      if (!cause.is(':visible')) return;
 
-    const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
-    if (!submission) return;
+      const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+      if (!submission) return;
 
-    this.showSpinner($('#test'));
-    $('#score_div').addClass('d-none');
-    await this.socketTestCode(submission.id, CodeOceanEditor.active_file.filename);
+      this.showSpinner($('#test'));
+      $('#score_div').addClass('d-none');
+      await this.socketTestCode(submission.id, CodeOceanEditor.active_file.filename);
+    });
   },
 
   /**

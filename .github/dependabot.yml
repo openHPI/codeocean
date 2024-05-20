@@ -22,10 +22,6 @@ updates:
     labels:
       - dependencies
       - javascript
-    groups:
-      sentry-javascript:
-        patterns:
-          - "@sentry*"
 
   - package-ecosystem: github-actions
     directory: "/"

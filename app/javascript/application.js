@@ -16,9 +16,6 @@ import 'jstree';
 import * as _ from 'underscore';
 import * as d3 from 'd3';
 import * as Sentry from '@sentry/browser';
-import * as SentryIntegration from '@sentry/integrations';
-import { startIdleTransaction, TRACING_DEFAULTS } from '@sentry/core';
-import { dynamicSamplingContextToSentryBaggageHeader } from '@sentry/utils';
 import 'sorttable';
 window.bootstrap = bootstrap; // Publish bootstrap in global namespace
 window._ = _; // Publish underscore's `_` in global namespace
@@ -26,15 +23,15 @@ window.d3 = d3; // Publish d3 in global namespace
 window.Sentry = Sentry; // Publish sentry in global namespace
 window.SentryIntegrations = function() { // Publish sentry integration in global namespace
     return [
-        new SentryIntegration.ReportingObserver(),
-        new SentryIntegration.ExtraErrorData(),
-        new SentryIntegration.HttpClient(),
-        new Sentry.BrowserProfilingIntegration(),
-        new Sentry.BrowserTracing(),
-        new Sentry.Replay(),
+        Sentry.browserProfilingIntegration(),
+        Sentry.browserTracingIntegration(),
+        Sentry.extraErrorDataIntegration(),
+        Sentry.httpClientIntegration(),
+        Sentry.replayIntegration(),
+        Sentry.reportingObserverIntegration(),
+        Sentry.sessionTimingIntegration(),
     ]
 };
-window.SentryUtils = { dynamicSamplingContextToSentryBaggageHeader, startIdleTransaction, TRACING_DEFAULTS };
 
 // CSS
 import 'chosen-js/chosen.css';

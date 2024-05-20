@@ -2,7 +2,6 @@ CodeOceanEditorEvaluation = {
     // A list of non-printable characters that are not allowed in the code output.
     // Taken from https://stackoverflow.com/a/69024306
     nonPrintableRegEx: /[\u0000-\u0008\u000B\u000C\u000F-\u001F\u007F-\u009F\u2000-\u200F\u2028-\u202F\u205F-\u206F\u3000\uFEFF]/g,
-    sentryTransaction: null,
 
     /**
      * Scoring-Functions
@@ -10,17 +9,18 @@ CodeOceanEditorEvaluation = {
     scoreCode: function (event) {
         event.preventDefault();
         const cause = $('#assess');
-        this.startSentryTransaction(cause);
-        this.stopCode(event);
-        this.clearScoringOutput();
-        $('#submit').addClass("d-none");
+        this.newSentryTransaction(cause, async () => {
+            this.stopCode(event);
+            this.clearScoringOutput();
+            $('#submit').addClass("d-none");
 
-        const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
-        if (!submission) return;
+            const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+            if (!submission) return;
 
-        this.showSpinner($('#assess'));
-        $('#score_div').removeClass('d-none');
-        await this.socketScoreCode(submission.id);
+            this.showSpinner($('#assess'));
+            $('#score_div').removeClass('d-none');
+            await this.socketScoreCode(submission.id);
+        });
     },
 
     handleScoringResponse: function (results) {
