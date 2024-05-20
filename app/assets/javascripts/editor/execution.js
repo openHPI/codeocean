@@ -8,7 +8,7 @@ CodeOceanEditorWebsocket = {
     params.protocol = this.webSocketProtocol;
     params._options = true;
 
-    // 2. Create a new Sentry transaction.
+    // 2. Create a new Sentry span.
     //    Since we want to group similar URLs, we use the URL without the ID and filename as the description.
     const cleanedUrl = urlHelper({
       ...params,
@@ -16,54 +16,54 @@ CodeOceanEditorWebsocket = {
       ...(params.filename && {filename: '*'}), // Overwrite the filename with a wildcard only if it is present.
     });
     const sentryDescription = `WebSocket ${cleanedUrl}`;
-    const span = this.sentryTransaction?.startChild({op: 'websocket.client', description: sentryDescription, data: {...params}})
+    return Sentry.startSpan({op: 'websocket.client', name: sentryDescription, attributes: {...params}}, async webSocketSpan => {
 
-    // 3. Create the actual WebSocket URL.
-    //    This URL might contain Sentry Tracing headers to propagate the Sentry transaction.
-    if (span) {
-      const dynamicContext = this.sentryTransaction.getDynamicSamplingContext();
-      const baggage = SentryUtils.dynamicSamplingContextToSentryBaggageHeader(dynamicContext);
-      if (baggage) {
-        params.HTTP_SENTRY_TRACE = span.toTraceparent();
-        params.HTTP_BAGGAGE = baggage;
+      // 3. Create the actual WebSocket URL.
+      //    This URL might contain Sentry Tracing headers to propagate the Sentry transaction.
+      if (webSocketSpan) {
+        params.HTTP_SENTRY_TRACE = Sentry.spanToTraceHeader(webSocketSpan);
+
+        const baggage = Sentry.spanToBaggageHeader(webSocketSpan);
+        if (baggage) {
+          params.HTTP_BAGGAGE = Sentry.spanToBaggageHeader(webSocketSpan);
+        }
       }
-    }
-    const url = urlHelper({...params});
+      const url = urlHelper({...params});
 
-    // 4. Connect to the given URL.
-    this.websocket = new CommandSocket(url,
-      function (evt) {
-        this.resetOutputTab();
-      }.bind(this)
-    );
+      // 4. Connect to the given URL.
+      this.websocket = new CommandSocket(url,
+        function (evt) {
+          this.resetOutputTab();
+        }.bind(this)
+      );
 
-    // Attach custom handlers for messages received.
-    setupFunction(this.websocket);
+      // Attach custom handlers for messages received.
+      setupFunction(this.websocket);
 
-    CodeOceanEditorWebsocket.websocket = this.websocket;
+      CodeOceanEditorWebsocket.websocket = this.websocket;
 
-    // Create and return a new Promise. It will only resolve (or fail) once the connection has ended.
-    return new Promise((resolve, reject) => {
-      this.websocket.onError(this.showWebsocketError.bind(this));
+      // Create and return a new Promise. It will only resolve (or fail) once the connection has ended.
+      return new Promise((resolve, reject) => {
+        this.websocket.onError(this.showWebsocketError.bind(this));
 
-      // Remove event listeners for Promise handling.
-      // This is especially useful in case of an error, where a `close` event might follow the `error` event.
-      const teardown = () => {
-        this.websocket.websocket.removeEventListener(closeListener);
-        this.websocket.websocket.removeEventListener(errorListener);
-      };
+        // Remove event listeners for Promise handling.
+        // This is especially useful in case of an error, where a `close` event might follow the `error` event.
+        const teardown = () => {
+          this.websocket.websocket.removeEventListener(closeListener);
+          this.websocket.websocket.removeEventListener(errorListener);
+        };
 
-      // We are using event listeners (and not `onError` or `onClose`) here, since these listeners should never be overwritten.
-      // With `onError` or `onClose`, a new assignment would overwrite a previous one.
-      const closeListener = this.websocket.websocket.addEventListener('close', () => {
-        span?.finish();
-        resolve();
-        teardown();
-      });
-      const errorListener = this.websocket.websocket.addEventListener('error', (error) => {
-        reject(error);
-        teardown();
-        this.websocket.killWebSocket(); // In case of error, ensure we always close the connection.
+        // We are using event listeners (and not `onError` or `onClose`) here, since these listeners should never be overwritten.
+        // With `onError` or `onClose`, a new assignment would overwrite a previous one.
+        const closeListener = this.websocket.websocket.addEventListener('close', () => {
+          resolve();
+          teardown();
+        });
+        const errorListener = this.websocket.websocket.addEventListener('error', (error) => {
+          reject(error);
+          teardown();
+          this.websocket.killWebSocket(); // In case of error, ensure we always close the connection.
+        });
       });
     });
   },

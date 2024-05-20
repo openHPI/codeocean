@@ -110,46 +110,47 @@ CodeOceanEditorRequestForComments = {
     const cause = $('#requestComments');
     const editor = $('#editor')
     const questionElement = $('#question')
-    this.startSentryTransaction(cause);
-    questionElement.prop("disabled", true);
-    $('#closeAskForCommentsButton').addClass('d-none');
+    this.newSentryTransaction(cause, async () => {
+      questionElement.prop("disabled", true);
+      $('#closeAskForCommentsButton').addClass('d-none');
 
-    const exercise_id = editor.data('exercise-id');
-    const file_id = $('.editor').data('id');
-    const question = questionElement.val();
+      const exercise_id = editor.data('exercise-id');
+      const file_id = $('.editor').data('id');
+      const question = questionElement.val();
 
-    const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
-    if (!submission) return;
+      const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+      if (!submission) return;
 
-    this.showSpinner($('#askForCommentsButton'));
+      this.showSpinner($('#askForCommentsButton'));
 
-    const response = await $.ajax({
-      method: 'POST',
-      url: Routes.request_for_comments_path(),
-      data: {
-        request_for_comment: {
-          exercise_id: exercise_id,
-          file_id: file_id,
-          submission_id: submission.id,
-          question: question
+      const response = await $.ajax({
+        method: 'POST',
+        url: Routes.request_for_comments_path(),
+        data: {
+          request_for_comment: {
+            exercise_id: exercise_id,
+            file_id: file_id,
+            submission_id: submission.id,
+            question: question
+          }
         }
+      }).catch(this.ajaxError.bind(this));
+
+      bootstrap.Modal.getInstance($('#comment-modal')).hide();
+      this.hideSpinner();
+      $('#question').prop("disabled", false).val('');
+      $('#closeAskForCommentsButton').removeClass('d-none');
+      $('#askForCommentsButton').one('click', this.requestComments.bind(this));
+
+      // we disabled the button to prevent that the user spams RFCs, but decided against this now.
+      //var button = $('#requestComments');
+      //button.prop('disabled', true);
+
+      if (response) {
+        await this.runSubmission(submission);
+        $.flash.success({text: $('#askForCommentsButton').data('message-success')});
       }
-    }).catch(this.ajaxError.bind(this));
-
-    bootstrap.Modal.getInstance($('#comment-modal')).hide();
-    this.hideSpinner();
-    $('#question').prop("disabled", false).val('');
-    $('#closeAskForCommentsButton').removeClass('d-none');
-    $('#askForCommentsButton').one('click', this.requestComments.bind(this));
-
-    // we disabled the button to prevent that the user spams RFCs, but decided against this now.
-    //var button = $('#requestComments');
-    //button.prop('disabled', true);
-
-    if (response) {
-      await this.runSubmission(submission);
-      $.flash.success({text: $('#askForCommentsButton').data('message-success')});
-    }
+    });
   }
 };
 
