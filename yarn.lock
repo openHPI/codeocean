@@ -1872,13 +1872,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/core@npm:7.114.0, @sentry/core@npm:^7.114.0":
+"@sentry/core@npm:7.114.0":
   version: 7.114.0
   resolution: "@sentry/core@npm:7.114.0"
   dependencies:
     "@sentry/types": "npm:7.114.0"
     "@sentry/utils": "npm:7.114.0"
   checksum: 10c0/9ef9cd6e536180a53fdd11dfb30f19a1bf51115b6a828aae4f9dacb92233ced238e3100065429cdb50a654609519722b6cf99721cac21f09dd5d57f123aa4f3c
+  languageName: node
+  linkType: hard
+
+"@sentry/core@npm:^8.2.1":
+  version: 8.2.1
+  resolution: "@sentry/core@npm:8.2.1"
+  dependencies:
+    "@sentry/types": "npm:8.2.1"
+    "@sentry/utils": "npm:8.2.1"
+  checksum: 10c0/e354a3e98f67903de93bae920f89556f731039c4ee1eccfec3d3ed19337bd2c41bcad033d02da28644de563951a1ab10c5353de0820f034d14aa2b7493280641
   languageName: node
   linkType: hard
 
@@ -1920,6 +1930,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/types@npm:8.2.1":
+  version: 8.2.1
+  resolution: "@sentry/types@npm:8.2.1"
+  checksum: 10c0/ee13b5d770017f53bb85a687c219d309ea4524cc9d817c43ea3bab2aa128f88c2d18f05b1274d15bb8461c44cea82a74364be9a8608f260a68b86442f29d174a
+  languageName: node
+  linkType: hard
+
 "@sentry/utils@npm:7.110.1":
   version: 7.110.1
   resolution: "@sentry/utils@npm:7.110.1"
@@ -1929,12 +1946,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:7.114.0, @sentry/utils@npm:^7.114.0":
+"@sentry/utils@npm:7.114.0":
   version: 7.114.0
   resolution: "@sentry/utils@npm:7.114.0"
   dependencies:
     "@sentry/types": "npm:7.114.0"
   checksum: 10c0/b20283d62df7ea3c71988e9fc2a6b7d3d04dd4a92a3599605413e2da3ff3cb408b84d65ee7c8e0bd8f99a92dd6e364c37485023e8d2c7cbcbd3f31dfb2d15383
+  languageName: node
+  linkType: hard
+
+"@sentry/utils@npm:8.2.1, @sentry/utils@npm:^8.2.1":
+  version: 8.2.1
+  resolution: "@sentry/utils@npm:8.2.1"
+  dependencies:
+    "@sentry/types": "npm:8.2.1"
+  checksum: 10c0/f35ae06c8cdd7871f931bd8355dee5e5c951abeeb2c08e2acbf401dfd892572d315dd370e6859297d16f2483a18280fe7f17898a6a8317c284472c8f64bcc597
   languageName: node
   linkType: hard
 
@@ -3075,9 +3101,9 @@ __metadata:
     "@fortawesome/fontawesome-free": "npm:^6.5.2"
     "@popperjs/core": "npm:^2.11.8"
     "@sentry/browser": "npm:^7.110.1"
-    "@sentry/core": "npm:^7.114.0"
+    "@sentry/core": "npm:^8.2.1"
     "@sentry/integrations": "npm:^7.114.0"
-    "@sentry/utils": "npm:^7.114.0"
+    "@sentry/utils": "npm:^8.2.1"
     "@toast-ui/editor": "npm:^3.2.2"
     "@webpack-cli/serve": "npm:^2.0.5"
     ace-builds: "npm:^1.33.3"
