@@ -215,8 +215,8 @@ var CodeOceanEditor = {
                     try {
                         return await callback();
                     } catch (error) {
-                        console.error(error);
-                        Sentry.captureException(error, {mechanism: {handled: false}});
+                        console.error(JSON.stringify(error));
+                        Sentry.captureException(JSON.stringify(error), {mechanism: {handled: false}});
                     }
                 });
             });
