@@ -49,21 +49,25 @@ CodeOceanEditorWebsocket = {
         // Remove event listeners for Promise handling.
         // This is especially useful in case of an error, where a `close` event might follow the `error` event.
         const teardown = () => {
-          this.websocket.websocket.removeEventListener(closeListener);
-          this.websocket.websocket.removeEventListener(errorListener);
+          this.websocket.websocket.removeEventListener('close', closeListener);
+          this.websocket.websocket.removeEventListener('error', errorListener);
         };
 
-        // We are using event listeners (and not `onError` or `onClose`) here, since these listeners should never be overwritten.
-        // With `onError` or `onClose`, a new assignment would overwrite a previous one.
-        const closeListener = this.websocket.websocket.addEventListener('close', () => {
+        const closeListener = () => {
           resolve();
           teardown();
-        });
-        const errorListener = this.websocket.websocket.addEventListener('error', (error) => {
+        }
+
+        const errorListener = (error) => {
           reject(error);
           teardown();
           this.websocket.killWebSocket(); // In case of error, ensure we always close the connection.
-        });
+        }
+
+        // We are using event listeners (and not `onError` or `onClose`) here, since these listeners should never be overwritten.
+        // With `onError` or `onClose`, a new assignment would overwrite a previous one.
+        this.websocket.websocket.addEventListener('close', closeListener);
+        this.websocket.websocket.addEventListener('error', errorListener);
       });
     });
   },
