@@ -114,41 +114,42 @@ CodeOceanEditorRequestForComments = {
     questionElement.prop("disabled", true);
     $('#closeAskForCommentsButton').addClass('d-none');
 
-    var exercise_id = editor.data('exercise-id');
-    var file_id = $('.editor').data('id');
-    var question = questionElement.val();
+    const exercise_id = editor.data('exercise-id');
+    const file_id = $('.editor').data('id');
+    const question = questionElement.val();
 
-    var createRequestForComments = function (submission) {
-      this.showSpinner($('#askForCommentsButton'));
-      $.ajax({
-        method: 'POST',
-        url: Routes.request_for_comments_path(),
-        data: {
-          request_for_comment: {
-            exercise_id: exercise_id,
-            file_id: file_id,
-            submission_id: submission.id,
-            question: question
-          }
+    const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+    if (!submission) return;
+
+    this.showSpinner($('#askForCommentsButton'));
+
+    const response = await $.ajax({
+      method: 'POST',
+      url: Routes.request_for_comments_path(),
+      data: {
+        request_for_comment: {
+          exercise_id: exercise_id,
+          file_id: file_id,
+          submission_id: submission.id,
+          question: question
         }
-      }).done(function() {
-        // trigger a run
-        this.runSubmission.call(this, submission);
-        $.flash.success({text: $('#askForCommentsButton').data('message-success')});
-      }.bind(this)).fail(this.ajaxError.bind(this))
-      .always(function () {
-        bootstrap.Modal.getInstance($('#comment-modal')).hide();
-        this.hideSpinner();
-        $('#question').prop("disabled", false).val('');
-        $('#closeAskForCommentsButton').removeClass('d-none');
-        $('#askForCommentsButton').one('click', this.requestComments.bind(this));
-      }.bind(this));
-    };
+      }
+    }).catch(this.ajaxError.bind(this));
 
-    this.createSubmission(cause, null, createRequestForComments.bind(this));
+    bootstrap.Modal.getInstance($('#comment-modal')).hide();
+    this.hideSpinner();
+    $('#question').prop("disabled", false).val('');
+    $('#closeAskForCommentsButton').removeClass('d-none');
+    $('#askForCommentsButton').one('click', this.requestComments.bind(this));
+
     // we disabled the button to prevent that the user spams RFCs, but decided against this now.
     //var button = $('#requestComments');
     //button.prop('disabled', true);
+
+    if (response) {
+      await this.runSubmission(submission);
+      $.flash.success({text: $('#askForCommentsButton').data('message-success')});
+    }
   }
 };
 

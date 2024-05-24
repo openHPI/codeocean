@@ -894,12 +894,14 @@ var CodeOceanEditor = {
         Sentry.captureException(JSON.stringify(error, ["message", "arguments", "type", "name", "data"]));
     },
 
-    showFileDialog: function (event) {
+    showFileDialog: async function (event) {
         event.preventDefault();
-        this.createSubmission('#create-file', null, function (response) {
-            $('#code_ocean_file_context_id').val(response.id);
-            new bootstrap.Modal($('#modal-file')).show();
-        }.bind(this));
+
+        const submission = await this.createSubmission('#create-file', null).catch(this.ajaxError.bind(this));
+        if (!submission) return;
+
+        $('#code_ocean_file_context_id').val(submission.id);
+        new bootstrap.Modal($('#modal-file')).show();
     },
 
     initializeOutputBarToggle: function () {
