@@ -8,17 +8,19 @@ CodeOceanEditorEvaluation = {
      * Scoring-Functions
      */
     scoreCode: function (event) {
+        event.preventDefault();
         const cause = $('#assess');
         this.startSentryTransaction(cause);
-        event.preventDefault();
         this.stopCode(event);
         this.clearScoringOutput();
         $('#submit').addClass("d-none");
-        this.createSubmission(cause, null, function (submission) {
-            this.showSpinner($('#assess'));
-            $('#score_div').removeClass('d-none');
-            this.initializeSocketForScoring(submission.id);
-        }.bind(this));
+
+        const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+        if (!submission) return;
+
+        this.showSpinner($('#assess'));
+        $('#score_div').removeClass('d-none');
+        await this.socketScoreCode(submission.id);
     },
 
     handleScoringResponse: function (results) {

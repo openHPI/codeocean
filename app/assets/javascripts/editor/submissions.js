@@ -6,10 +6,10 @@ CodeOceanEditorSubmissions = {
   /**
    * Submission-Creation
    */
-  createSubmission: function (initiator, filter, callback) {
+  createSubmission: async function (initiator, filter) {
     const editor = $('#editor');
     this.showSpinner(initiator);
-    var url = $(initiator).data('url') || editor.data('submissions-url');
+    const url = $(initiator).data('url') || editor.data('submissions-url');
 
     if (url === undefined) {
         const data = {
@@ -19,25 +19,29 @@ CodeOceanEditorSubmissions = {
         Sentry.captureException(JSON.stringify(data));
         return;
     }
-    var jqxhr = this.ajax({
-      data: {
-        submission: {
-          cause: $(initiator).data('cause') || $(initiator).prop('id'),
-          exercise_id: editor.data('exercise-id') || $(initiator).data('exercise-id'),
-          files_attributes: (filter || _.identity)(this.collectFiles())
-        }
-      },
-      dataType: 'json',
-      method: $(initiator).data('http-method') || 'POST',
-      url: url,
-    });
-    jqxhr.always(this.hideSpinner.bind(this));
-    jqxhr.done(this.createSubmissionCallback.bind(this));
-    if(callback != null){
-      jqxhr.done(callback.bind(this));
-    }
 
-    jqxhr.fail(this.ajaxError.bind(this));
+    try {
+      const response = await this.ajax({
+        data: {
+          submission: {
+            cause: $(initiator).data('cause') || $(initiator).prop('id'),
+            exercise_id: editor.data('exercise-id') || $(initiator).data('exercise-id'),
+            files_attributes: (filter || _.identity)(this.collectFiles())
+          }
+        },
+        dataType: 'json',
+        method: $(initiator).data('http-method') || 'POST',
+        url: url,
+      });
+      this.hideSpinner();
+      this.createSubmissionCallback(response);
+      return response;
+    } catch (error) {
+      this.hideSpinner();
+
+      // We require the callee to handle this error, e.g., through `this.ajaxError(error)`
+      throw error;
+    }
   },
 
   collectFiles: function() {
@@ -81,34 +85,42 @@ CodeOceanEditorSubmissions = {
   /**
    * File-Management
    */
-  destroyFile: function() {
-    this.createSubmission($('#destroy-file'), function(files) {
+  destroyFile: async function() {
+    const submission = await this.createSubmission($('#destroy-file'), function(files) {
       return _.reject(files, function(file) {
         return file.file_id === CodeOceanEditor.active_file.id;
       });
-    }, window.CodeOcean.refresh);
+    }).catch(this.ajaxError.bind(this));
+    if(!submission) return;
+
+    window.CodeOcean.refresh();
   },
 
-  downloadCode: function(event) {
+  downloadCode: async function(event) {
     event.preventDefault();
-    this.createSubmission('#download', null,function(submission) {
-      // to download just a single file, use the following url
-      // window.location = Routes.download_file_submission_url(submission.id, CodeOceanEditor.active_file.filename);
-      window.location = Routes.download_submission_url(submission.id);
-    });
+
+    const submission = await this.createSubmission('#download', null).catch(this.ajaxError.bind(this));
+    if(!submission) return;
+
+    // to download just a single file, use the following url
+    // window.location = Routes.download_file_submission_url(submission.id, CodeOceanEditor.active_file.filename);
+    window.location = Routes.download_submission_url(submission.id);
   },
 
   resetCode: function(initiator, onlyActiveFile = false) {
     this.startSentryTransaction(initiator);
     this.showSpinner(initiator);
-    this.ajax({
+
+    const response = await this.ajax({
       method: 'GET',
       url: $('#start-over').data('url') || $('#start-over-active-file').data('url')
-    }).done(function(response) {
-      this.hideSpinner();
-      App.synchronized_editor?.reset_content(response);
-      this.setEditorContent(response, onlyActiveFile);
-    }.bind(this));
+    }).catch(this.ajaxError.bind(this));
+
+    this.hideSpinner();
+
+    if (!response) return;
+    App.synchronized_editor?.reset_content(response);
+    this.setEditorContent(response, onlyActiveFile);
   },
 
   setEditorContent: function(new_content, onlyActiveFile = false) {
@@ -126,68 +138,73 @@ CodeOceanEditorSubmissions = {
   },
 
   renderCode: function(event) {
+    event.preventDefault();
     const cause = $('#render');
     this.startSentryTransaction(cause);
-    event.preventDefault();
-    if (cause.is(':visible')) {
-      this.createSubmission(cause, null, function (submission) {
-        if (submission.render_url === undefined) return;
+    if (!cause.is(':visible')) return;
 
-        const active_file = CodeOceanEditor.active_file.filename;
-        const desired_file = submission.render_url.filter(hash => hash.filepath === active_file);
-        const url = desired_file[0].url;
-        // Allow to open the new tab even in Safari.
-        // See: https://stackoverflow.com/a/70463940
-        setTimeout(() => {
-          var pop_up_window = window.open(url, '_blank');
-          if (pop_up_window) {
-            pop_up_window.onerror = function (message) {
-              this.clearOutput();
-              this.printOutput({
-                stderr: message
-              }, true, 0);
-              this.sendError(message, submission.id);
-              this.showOutputBar();
-            };
-          }
-        })
-      });
-    }
+    const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+    if (!submission) return;
+    if (submission.render_url === undefined) return;
+
+    const active_file = CodeOceanEditor.active_file.filename;
+    const desired_file = submission.render_url.filter(hash => hash.filepath === active_file);
+    const url = desired_file[0].url;
+
+    // Allow to open the new tab even in Safari.
+    // See: https://stackoverflow.com/a/70463940
+    setTimeout(() => {
+      var pop_up_window = window.open(url, '_blank');
+      if (pop_up_window) {
+        pop_up_window.onerror = function (message) {
+          this.clearOutput();
+          this.printOutput({
+            stderr: message
+          }, true, 0);
+          this.sendError(message, submission.id);
+          this.showOutputBar();
+        };
+      }
+    })
   },
 
   /**
    * Execution-Logic
    */
   runCode: function(event) {
+    event.preventDefault();
     const cause = $('#run');
     this.startSentryTransaction(cause);
-    event.preventDefault();
     this.stopCode(event);
-    if (cause.is(':visible')) {
-      this.createSubmission(cause, null, this.runSubmission.bind(this));
-    }
+    if (!cause.is(':visible')) return;
+
+    const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+    if (!submission) return;
+
+    await this.runSubmission(submission);
   },
 
-  runSubmission: function (submission) {
+  runSubmission: async function (submission) {
     //Run part starts here
     this.running = true;
     this.showSpinner($('#run'));
     $('#score_div').addClass('d-none');
     this.toggleButtonStates();
-    this.initializeSocketForRunning(submission.id, CodeOceanEditor.active_file.filename);
+    await this.socketRunCode(submission.id, CodeOceanEditor.active_file.filename);
   },
 
   testCode: function(event) {
+    event.preventDefault();
     const cause = $('#test');
     this.startSentryTransaction(cause);
-    event.preventDefault();
-    if (cause.is(':visible')) {
-      this.createSubmission(cause, null, function(submission) {
-        this.showSpinner($('#test'));
-        $('#score_div').addClass('d-none');
-        this.initializeSocketForTesting(submission.id, CodeOceanEditor.active_file.filename);
-      }.bind(this));
-    }
+    if (!cause.is(':visible')) return;
+
+    const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+    if (!submission) return;
+
+    this.showSpinner($('#test'));
+    $('#score_div').addClass('d-none');
+    await this.socketTestCode(submission.id, CodeOceanEditor.active_file.filename);
   },
 
   /**
@@ -216,6 +233,6 @@ CodeOceanEditorSubmissions = {
   autosave: function () {
     clearTimeout(this.autosaveTimer);
     this.autosaveTimer = null;
-    this.createSubmission($('#autosave'), null);
+    this.createSubmission($('#autosave'), null).catch(this.ajaxError.bind(this));
   }
 };

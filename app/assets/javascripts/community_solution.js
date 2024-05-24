@@ -28,13 +28,13 @@ $(document).on('turbolinks:load', function() {
 function submitCode(event) {
     const button = $(event.target) || $('#submit');
     this.startSentryTransaction(button);
-    this.createSubmission(button, null, function (response) {
-        if (response.redirect) {
-            this.autosaveIfChanged();
-            this.stopCode(event);
-            this.editors = [];
-            Turbolinks.clearCache();
-            Turbolinks.visit(response.redirect);
-        }
-    })
+    const submission = await this.createSubmission(button, null).catch(this.ajaxError.bind(this));
+    if (!submission) return;
+    if (!submission.redirect) return;
+
+    this.autosaveIfChanged();
+    this.stopCode(event);
+    this.editors = [];
+    Turbolinks.clearCache();
+    Turbolinks.visit(submission.redirect);
 }
