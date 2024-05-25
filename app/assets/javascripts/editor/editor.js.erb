@@ -215,6 +215,9 @@ var CodeOceanEditor = {
                     try {
                         return await callback();
                     } catch (error) {
+                        // WebSocket errors are handled in `showWebsocketError` already.
+                        if (error.target instanceof WebSocket) return;
+
                         console.error(JSON.stringify(error));
                         Sentry.captureException(JSON.stringify(error), {mechanism: {handled: false}});
                     }
