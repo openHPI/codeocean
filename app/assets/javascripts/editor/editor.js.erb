@@ -205,23 +205,19 @@ var CodeOceanEditor = {
     newSentryTransaction: function (initiator, callback) {
         // based on Sentry recommendation.
         // See https://github.com/getsentry/sentry-javascript/issues/12116
-        return Sentry.continueTrace({ sentryTrace: '', baggage: '' }, () => {
-            // inside of this we have a new trace!
-            return Sentry.withActiveSpan(null, () => {
-                // inside of this there is no parent span, no matter what!
-                const cause = initiator.data('cause') || initiator.prop('id');
-                return Sentry.startSpan({name: cause, op: "transaction", forceTransaction: true}, async () => {
-                    // Execute the desired custom code
-                    try {
-                        return await callback();
-                    } catch (error) {
-                        // WebSocket errors are handled in `showWebsocketError` already.
-                        if (error.target instanceof WebSocket) return;
+        return Sentry.startNewTrace(() => {
+            const cause = initiator.data('cause') || initiator.prop('id');
+            return Sentry.startSpan({name: cause, op: "transaction"}, async () => {
+                // Execute the desired custom code
+                try {
+                    return await callback();
+                } catch (error) {
+                    // WebSocket errors are handled in `showWebsocketError` already.
+                    if (error.target instanceof WebSocket) return;
 
-                        console.error(JSON.stringify(error));
-                        Sentry.captureException(JSON.stringify(error), {mechanism: {handled: false}});
-                    }
-                });
+                    console.error(JSON.stringify(error));
+                    Sentry.captureException(JSON.stringify(error), {mechanism: {handled: false}});
+                }
             });
         });
     },
