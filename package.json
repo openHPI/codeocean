@@ -9,7 +9,7 @@
     "@egjs/hammerjs": "^2.0.17",
     "@fortawesome/fontawesome-free": "^6.5.2",
     "@popperjs/core": "^2.11.8",
-    "@sentry/browser": "^8.4.0",
+    "@sentry/browser": "^8.5.0",
     "@toast-ui/editor": "^3.2.2",
     "@webpack-cli/serve": "^2.0.5",
     "ace-builds": "^1.34.2",
