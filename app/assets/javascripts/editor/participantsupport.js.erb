@@ -108,11 +108,15 @@ CodeOceanEditorFlowr = {
 CodeOceanEditorRequestForComments = {
   requestComments: function () {
     const cause = $('#requestComments');
-    const editor = $('#editor')
-    const questionElement = $('#question')
     this.newSentryTransaction(cause, async () => {
+      const editor = $('#editor')
+      const questionElement = $('#question')
+      const closeAskForCommentsButton = $('#closeAskForCommentsButton');
+      const askForCommentsButton = $('#askForCommentsButton');
+      const commentModal = $('#comment-modal');
+
       questionElement.prop("disabled", true);
-      $('#closeAskForCommentsButton').addClass('d-none');
+      closeAskForCommentsButton.addClass('d-none');
 
       const exercise_id = editor.data('exercise-id');
       const file_id = $('.editor').data('id');
@@ -121,7 +125,7 @@ CodeOceanEditorRequestForComments = {
       const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
       if (!submission) return;
 
-      this.showSpinner($('#askForCommentsButton'));
+      this.showSpinner(askForCommentsButton);
 
       const response = await $.ajax({
         method: 'POST',
@@ -136,11 +140,11 @@ CodeOceanEditorRequestForComments = {
         }
       }).catch(this.ajaxError.bind(this));
 
-      bootstrap.Modal.getInstance($('#comment-modal')).hide();
+      bootstrap.Modal.getInstance(commentModal).hide();
       this.hideSpinner();
-      $('#question').prop("disabled", false).val('');
-      $('#closeAskForCommentsButton').removeClass('d-none');
-      $('#askForCommentsButton').one('click', this.requestComments.bind(this));
+      questionElement.prop("disabled", false).val('');
+      closeAskForCommentsButton.removeClass('d-none');
+      askForCommentsButton.one('click', this.requestComments.bind(this));
 
       // we disabled the button to prevent that the user spams RFCs, but decided against this now.
       //var button = $('#requestComments');
@@ -148,7 +152,7 @@ CodeOceanEditorRequestForComments = {
 
       if (response) {
         await this.runSubmission(submission);
-        $.flash.success({text: $('#askForCommentsButton').data('message-success')});
+        $.flash.success({text: askForCommentsButton.data('message-success')});
       }
     });
   }
