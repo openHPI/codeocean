@@ -134,7 +134,7 @@ jobs:
       - name: Upload slim-lint results as GitHub annotations
         uses: lcollins/checkstyle-github-action@v3.0.0
         # Only create GitHub annotations for the main repo (disable for forks):
-        if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+        if: ${{ always() && github.event.pull_request.head.repo.full_name == github.repository }}
         with:
           name: Slim-Lint Report
           title: Analyze Slim templates for linting issues
