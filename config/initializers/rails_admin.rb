@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RailsAdmin.config do |config|
-  config.asset_source = :sprockets
+  config.asset_source = :webpacker
   ### Popular gems integration
 
   ## == Devise ==
