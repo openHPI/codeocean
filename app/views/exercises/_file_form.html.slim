@@ -42,10 +42,10 @@ li.card.mt-2
               = f.label(:hidden_feedback, class: 'form-label mb-0')
               .help-block.form-text.mb-0 = t('.hints.hidden_feedback')
         .mb-3
-          = f.label(:name, class: 'form-label')
+          = f.label(:feedback_message, class: 'form-label')
           = f.text_area(:feedback_message, class: 'form-control', maxlength: 255)
           .help-block.form-text = t('.hints.feedback_message')
         .mb-3
-          = f.label(:role, class: 'form-label')
+          = f.label(:weight, class: 'form-label')
           = f.number_field(:weight, class: 'form-control', min: 0, step: 'any')
       = render('code_field', attribute: :content, form: f)
