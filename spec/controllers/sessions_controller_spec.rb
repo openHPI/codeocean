@@ -249,17 +249,47 @@ RSpec.describe SessionsController do
   end
 
   describe 'GET #destroy_through_lti' do
-    let(:perform_request) { proc { get :destroy_through_lti, params: {submission_id: submission.id} } }
-    let(:submission) { create(:submission, exercise: create(:dummy)) }
+    shared_examples 'a successful request' do # rubocop:disable RSpec/SharedContext
+      let(:perform_request) { proc { get :destroy_through_lti, params: {submission_id: submission.id} } }
+      let(:submission) { create(:submission, exercise: create(:dummy)) }
 
-    before do
-      create(:lti_parameter, external_user: submission.contributor)
-      allow(controller).to receive(:current_user).and_return(submission.contributor)
-      perform_request.call
+      before do
+        lti_parameter.save!
+        allow(controller).to receive(:current_user).and_return(submission.contributor)
+        perform_request.call
+      end
+
+      expect_http_status(:ok)
+      expect_template(:destroy_through_lti)
     end
 
-    expect_http_status(:ok)
-    expect_template(:destroy_through_lti)
+    context 'when a launch return presentation URL is provided' do
+      context 'when a LIS Outcome service URL is provided' do
+        let(:lti_parameter) { create(:lti_parameter, external_user: submission.contributor) }
+
+        it_behaves_like 'a successful request'
+      end
+
+      context 'when no LIS Outcome service URL is provided' do
+        let(:lti_parameter) { create(:lti_parameter, :without_outcome_service_url, external_user: submission.contributor) }
+
+        it_behaves_like 'a successful request'
+      end
+    end
+
+    context 'when no launch return presentation URL is provided' do
+      context 'when a LIS Outcome service URL is provided' do
+        let(:lti_parameter) { create(:lti_parameter, :without_return_url, external_user: submission.contributor) }
+
+        it_behaves_like 'a successful request'
+      end
+
+      context 'when no LIS Outcome service URL is provided' do
+        let(:lti_parameter) { create(:lti_parameter, :without_return_url, :without_outcome_service_url, external_user: submission.contributor) }
+
+        it_behaves_like 'a successful request'
+      end
+    end
   end
 
   describe 'GET #new' do

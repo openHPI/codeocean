@@ -23,5 +23,9 @@ FactoryBot.define do
     trait :without_outcome_service_url do
       lti_parameters { lti_params.except(:lis_outcome_service_url) }
     end
+
+    trait :without_return_url do
+      lti_parameters { lti_params.except(:launch_presentation_return_url) }
+    end
   end
 end
