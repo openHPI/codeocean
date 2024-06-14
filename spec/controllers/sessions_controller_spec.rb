@@ -88,10 +88,24 @@ RSpec.describe SessionsController do
     end
 
     context 'without a valid absolute LIS Outcome service URL' do
-      it 'refuses the LTI launch' do
-        allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
-        expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_lis_outcome_service_url')).and_call_original
-        post :create_through_lti, params: {oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, lis_outcome_service_url: '/relative/url'}
+      shared_examples 'a handled error' do
+        it 'refuses the LTI launch' do
+          allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
+          expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_lis_outcome_service_url')).and_call_original
+          post :create_through_lti, params: {oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, lis_outcome_service_url:}
+        end
+      end
+
+      context 'with an empty URL' do
+        let(:lis_outcome_service_url) { '' }
+
+        it_behaves_like 'a handled error'
+      end
+
+      context 'with a relative URL' do
+        let(:lis_outcome_service_url) { '/relative/url' }
+
+        it_behaves_like 'a handled error'
       end
     end
 
