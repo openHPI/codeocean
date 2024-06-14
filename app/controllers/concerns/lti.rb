@@ -96,6 +96,10 @@ module Lti
   end
 
   def return_to_consumer(options = {})
+    # The `lti_errorlog` is only *logged* at the consumer and not necessarily displayed to the user.
+    # The `lti_errormsg` is displayed to the user as an error.
+    # The `lti_log` is only *logged* at the consumer and not necessarily displayed to the user.
+    # The `lti_msg` is displayed to the user as an information.
     return_url = consumer_return_url(@provider, options)
     if return_url
       redirect_to(return_url, allow_other_host: true)
