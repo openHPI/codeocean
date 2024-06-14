@@ -56,7 +56,7 @@ module Lti
   end
 
   def refuse_lti_launch(options = {})
-    return_to_consumer(lti_errorlog: options[:message], lti_errormsg: t('sessions.oauth.failure'))
+    return_to_consumer(lti_errormsg: t('sessions.oauth.failure', error: options[:message]))
   end
 
   def require_oauth_parameters
