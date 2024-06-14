@@ -290,7 +290,7 @@ RSpec.describe SubmissionsController do
         let(:url) { supported_urls.find {|hash| hash[:filepath] == file.filepath }['url'] }
 
         it 'starts like the render path' do
-          expect(url).to start_with(Rails.application.routes.url_helpers.render_submission_url(submission, file.filepath, host: request.host))
+          expect(url).to start_with(render_submission_url(submission, file.filepath, host: request.host))
         end
 
         it 'includes a token' do
