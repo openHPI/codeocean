@@ -20,9 +20,8 @@ module Lti
   end
 
   def consumer_return_url(provider, options = {})
-    consumer_return_url = provider.try(:launch_presentation_return_url) || params[:launch_presentation_return_url]
-    consumer_return_url += "?#{options.to_query}" if consumer_return_url && options.present?
-    consumer_return_url
+    url = provider.try(:launch_presentation_return_url) || params[:launch_presentation_return_url]
+    AuthenticatedUrlHelper.add_query_parameters(url, options)
   end
 
   def external_user_email(provider)
@@ -97,10 +96,9 @@ module Lti
   end
 
   def return_to_consumer(options = {})
-    consumer_return_url = @provider.try(:launch_presentation_return_url)
-    if consumer_return_url
-      consumer_return_url += "?#{options.to_query}" if options.present?
-      redirect_to(consumer_return_url, allow_other_host: true)
+    return_url = consumer_return_url(@provider, options)
+    if return_url
+      redirect_to(return_url, allow_other_host: true)
     else
       flash[:danger] = options[:lti_errormsg]
       flash[:info] = options[:lti_msg]

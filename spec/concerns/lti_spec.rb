@@ -66,6 +66,16 @@ RSpec.describe Lti do
         expect(controller).to receive(:redirect_to).with("#{consumer_return_url}?lti_errorlog=#{CGI.escape(message)}", allow_other_host: true)
         controller.send(:return_to_consumer, lti_errorlog: message)
       end
+
+      context 'when the return URL already contains a query parameter' do
+        let(:consumer_return_url) { 'https://example.org?foo=bar' }
+
+        it 'correctly appends query parameters' do
+          message = I18n.t('sessions.oauth.failure', error: 'dummy error')
+          expect(controller).to receive(:redirect_to).with("#{consumer_return_url}&lti_errorlog=#{CGI.escape(message)}&lti_msg=#{CGI.escape(message)}", allow_other_host: true)
+          controller.send(:return_to_consumer, lti_errorlog: message, lti_msg: message)
+        end
+      end
     end
 
     context 'without a return URL' do
