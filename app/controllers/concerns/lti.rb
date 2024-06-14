@@ -72,6 +72,14 @@ module Lti
     refuse_lti_launch(message: t('sessions.oauth.invalid_consumer')) unless @consumer
   end
 
+  def require_valid_launch_presentation_return_url
+    # We want to check that any URL given is absolute, but none URL is fine, too.
+    return unless params[:launch_presentation_return_url]
+
+    url = URI.parse(params[:launch_presentation_return_url])
+    refuse_lti_launch(message: t('sessions.oauth.invalid_launch_presentation_return_url')) unless url.absolute?
+  end
+
   def require_valid_lis_outcome_service_url
     # We want to check that any URL given is absolute, but none URL is fine, too.
     return unless params[:lis_outcome_service_url]
