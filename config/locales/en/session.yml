@@ -32,6 +32,7 @@ en:
       failure: Sorry, something went wrong.
       invalid_consumer: Invalid OAuth key.
       invalid_exercise_token: Invalid exercise token.
+      invalid_launch_presentation_return_url: Invalid LTI return URL
       invalid_lis_outcome_service_url: Invalid LTI outcome service URL.
       invalid_signature: Invalid OAuth signature.
       missing_parameters: Missing OAuth parameters.
