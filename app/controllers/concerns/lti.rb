@@ -109,7 +109,7 @@ module Lti
     # The `lti_log` is only *logged* at the consumer and not necessarily displayed to the user.
     # The `lti_msg` is displayed to the user as an information.
     return_url = consumer_return_url(@provider, options)
-    if return_url
+    if return_url && URI.parse(return_url).absolute?
       redirect_to(return_url, allow_other_host: true)
     else
       flash[:danger] = options[:lti_errormsg]
