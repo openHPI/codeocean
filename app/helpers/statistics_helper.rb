@@ -71,15 +71,14 @@ module StatisticsHelper
       {
         key: 'submissions_per_minute',
           name: t('statistics.entries.exercises.submissions_per_minute'),
-          data: (Submission.where('created_at >= ?', DateTime.now - 1.hour).count.to_f / 60).round(2),
+          data: (Submission.where(created_at: DateTime.now - 1.hour..).count.to_f / 60).round(2),
           unit: '/min',
           url: statistics_graphs_path,
       },
       {
         key: 'autosaves_per_minute',
           name: t('statistics.entries.exercises.autosaves_per_minute'),
-          data: (Submission.where('created_at >= ?',
-            DateTime.now - 1.hour).where(cause: 'autosave').count.to_f / 60).round(2),
+          data: (Submission.where(created_at: DateTime.now - 1.hour..).where(cause: 'autosave').count.to_f / 60).round(2),
           unit: '/min',
       },
       {
@@ -121,13 +120,13 @@ module StatisticsHelper
         key: 'active_in_last_hour',
           name: t('statistics.entries.users.currently_active'),
           data: ExternalUser.joins(:submissions)
-            .where(['submissions.created_at >= ?', DateTime.now - 5.minutes])
+            .where(submissions: {created_at: DateTime.now - 5.minutes..})
             .distinct('external_users.id').count,
       },
       {
         key: 'submissions_per_minute',
           name: t('statistics.entries.exercises.submissions_per_minute'),
-          data: (Submission.where('created_at >= ?', DateTime.now - 1.hour).count.to_f / 60).round(2),
+          data: (Submission.where(created_at: DateTime.now - 1.hour..).count.to_f / 60).round(2),
           unit: '/min',
           axis: 'right',
       },
