@@ -10,7 +10,7 @@ class AddNormalizedScoreAndSubmissionToUserExerciseFeedback < ActiveRecord::Migr
     UserExerciseFeedback.find_each do |uef|
       latest_submission = Submission
         .where(user_id: uef.user_id, user_type: uef.user_type, exercise_id: uef.exercise_id)
-        .where('created_at < ?', uef.updated_at)
+        .where(created_at: ...uef.updated_at)
         .order(created_at: :desc).first
 
       # In the beginning, CodeOcean allowed feedback for exercises while viewing an RfC. As a RfC

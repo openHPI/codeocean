@@ -85,7 +85,7 @@ class RequestForComment < ApplicationRecord
 
     def last_per_user(count = 5)
       from(row_number_user_sql, :request_for_comments)
-        .where('row_number <= ?', count)
+        .where(row_number: ..count)
         .group('request_for_comments.id, request_for_comments.user_id, request_for_comments.user_type, ' \
                'request_for_comments.exercise_id, request_for_comments.file_id, request_for_comments.question, ' \
                'request_for_comments.created_at, request_for_comments.updated_at, request_for_comments.solved, ' \
