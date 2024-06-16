@@ -123,7 +123,7 @@ class RequestForCommentsController < ApplicationController
       if @request_for_comment.save
         format.json { render :show, status: :ok, location: @request_for_comment }
       else
-        format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
+        format.json { render json: @request_for_comment.errors, status: :unprocessable_content }
       end
     end
   end
@@ -140,7 +140,7 @@ class RequestForCommentsController < ApplicationController
       if @request_for_comment.save
         format.json { render :show, status: :ok, location: @request_for_comment }
       else
-        format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
+        format.json { render json: @request_for_comment.errors, status: :unprocessable_content }
       end
     end
   end
@@ -183,7 +183,7 @@ class RequestForCommentsController < ApplicationController
         end
       else
         format.html { render :new }
-        format.json { render json: @request_for_comment.errors, status: :unprocessable_entity }
+        format.json { render json: @request_for_comment.errors, status: :unprocessable_content }
       end
     end
     authorize!

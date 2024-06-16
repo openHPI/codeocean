@@ -44,7 +44,7 @@ class ErrorTemplatesController < ApplicationController
         format.json { render :show, status: :created, location: @error_template }
       else
         format.html { render :new }
-        format.json { render json: @error_template.errors, status: :unprocessable_entity }
+        format.json { render json: @error_template.errors, status: :unprocessable_content }
       end
     end
   end
@@ -59,7 +59,7 @@ class ErrorTemplatesController < ApplicationController
         format.json { render :show, status: :ok, location: @error_template }
       else
         format.html { render :edit }
-        format.json { render json: @error_template.errors, status: :unprocessable_entity }
+        format.json { render json: @error_template.errors, status: :unprocessable_content }
       end
     end
   end

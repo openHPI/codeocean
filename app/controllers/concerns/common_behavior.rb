@@ -32,7 +32,7 @@ module CommonBehavior
 
   def respond_with_invalid_object(format, options = {})
     format.html { render(options[:template]) }
-    format.json { render(json: @object.errors, status: :unprocessable_entity) }
+    format.json { render(json: @object.errors, status: :unprocessable_content) }
   end
 
   def respond_with_valid_object(format, options = {})

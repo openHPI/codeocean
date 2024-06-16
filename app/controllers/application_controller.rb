@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_csrf_error
-    render_error t('sessions.expired'), :unprocessable_entity
+    render_error t('sessions.expired'), :unprocessable_content
   end
 
   def render_not_authorized
