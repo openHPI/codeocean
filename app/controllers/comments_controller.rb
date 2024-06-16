@@ -45,7 +45,7 @@ class CommentsController < ApplicationController
 
       render :show, status: :created, location: @comment
     else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: @comment.errors, status: :unprocessable_content
     end
     authorize!
   end
@@ -55,7 +55,7 @@ class CommentsController < ApplicationController
     if @comment.update(comment_params_for_update)
       render :show, status: :ok, location: @comment
     else
-      render json: @comment.errors, status: :unprocessable_entity
+      render json: @comment.errors, status: :unprocessable_content
     end
     authorize!
   end

@@ -11,8 +11,8 @@ class EventsController < ApplicationController
         format.html { head :created }
         format.json { head :created }
       else
-        format.html { head :unprocessable_entity }
-        format.json { head :unprocessable_entity }
+        format.html { head :unprocessable_content }
+        format.json { head :unprocessable_content }
       end
     end
   end

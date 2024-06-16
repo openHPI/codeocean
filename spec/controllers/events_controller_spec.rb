@@ -29,13 +29,13 @@ RSpec.describe EventsController do
       before { post :create, params: {event: {exercise_id: 847_482}} }
 
       expect_assigns(event: Event)
-      expect_http_status(:unprocessable_entity)
+      expect_http_status(:unprocessable_content)
     end
 
     context 'with no event' do
       before { post :create }
 
-      expect_http_status(:unprocessable_entity)
+      expect_http_status(:unprocessable_content)
     end
   end
 end

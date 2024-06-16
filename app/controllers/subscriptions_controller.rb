@@ -13,7 +13,7 @@ class SubscriptionsController < ApplicationController
       if @subscription.save
         format.json { render json: @subscription, status: :created }
       else
-        format.json { render json: @subscription.errors, status: :unprocessable_entity }
+        format.json { render json: @subscription.errors, status: :unprocessable_content }
       end
     end
     authorize!

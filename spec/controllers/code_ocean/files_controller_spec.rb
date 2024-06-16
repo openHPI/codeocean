@@ -58,7 +58,7 @@ RSpec.describe CodeOcean::FilesController do
 
       expect_assigns(file: CodeOcean::File)
       expect_json
-      expect_http_status(:unprocessable_entity)
+      expect_http_status(:unprocessable_content)
     end
   end
 
