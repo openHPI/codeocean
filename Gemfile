@@ -75,11 +75,13 @@ group :development, :staging do
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'rack-mini-profiler'
-  gem 'rubocop', require: false
+  gem 'rubocop'
   gem 'rubocop-capybara'
+  gem 'rubocop-factory_bot'
   gem 'rubocop-performance'
-  gem 'rubocop-rails', require: false
+  gem 'rubocop-rails'
   gem 'rubocop-rspec'
+  gem 'rubocop-rspec_rails'
   gem 'slim_lint', require: false
 end
 
