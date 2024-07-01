@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class AddUserTypeToRemoteEvaluationMappings < ActiveRecord::Migration[5.2]
+  class RemoteEvaluationMapping < ApplicationRecord
+    belongs_to :user, polymorphic: true
+  end
+
   def change
     add_column :remote_evaluation_mappings, :user_type, :string
     # Update all existing records and set user_type to `ExternalUser` (safe way to prevent any function loss).
