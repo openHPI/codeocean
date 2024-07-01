@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class AddUserToProxyExercise < ActiveRecord::Migration[5.2]
+  class Internaluser < ApplicationRecord
+  end
+
+  class ProxyExercise < ApplicationRecord
+    belongs_to :user, polymorphic: true
+  end
+
   def change
     add_reference :proxy_exercises, :user, polymorphic: true, index: true
     add_column :proxy_exercises, :public, :boolean, null: false, default: false

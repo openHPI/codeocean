@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class AddCauseToTestruns < ActiveRecord::Migration[4.2]
+  class Testrun < ApplicationRecord
+    belongs_to :submission, optional: true
+  end
+
+  class Submission < ApplicationRecord
+  end
+
   def up
     add_column :testruns, :cause, :string
     Testrun.reset_column_information

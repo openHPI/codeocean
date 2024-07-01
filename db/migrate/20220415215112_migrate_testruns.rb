@@ -1,6 +1,19 @@
 # frozen_string_literal: true
 
 class MigrateTestruns < ActiveRecord::Migration[6.1]
+  class Testrun < ApplicationRecord
+    belongs_to :submission, optional: true
+    has_many :testrun_messages
+  end
+
+  class Submission < ApplicationRecord
+    has_many :testruns
+  end
+
+  class TestrunMessage < ApplicationRecord
+    belongs_to :testrun
+  end
+
   # We are not changing any tables but only backfilling data.
   disable_ddl_transaction!
 

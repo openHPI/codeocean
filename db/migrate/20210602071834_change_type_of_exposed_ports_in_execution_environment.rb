@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class ChangeTypeOfExposedPortsInExecutionEnvironment < ActiveRecord::Migration[6.1]
+  class ExecutionEnvironment < ApplicationRecord
+  end
+
   # rubocop:disable Rails/SkipsModelValidations:
   def up
     rename_column :execution_environments, :exposed_ports, :exposed_ports_migration

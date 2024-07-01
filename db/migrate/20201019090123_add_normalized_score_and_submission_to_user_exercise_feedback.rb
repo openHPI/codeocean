@@ -1,6 +1,18 @@
 # frozen_string_literal: true
 
 class AddNormalizedScoreAndSubmissionToUserExerciseFeedback < ActiveRecord::Migration[5.2]
+  class UserExerciseFeedback < ApplicationRecord
+    belongs_to :submission
+    belongs_to :exercise
+  end
+
+  class Submission < ApplicationRecord
+    belongs_to :user, polymorphic: true
+  end
+
+  class Exercise < ApplicationRecord
+  end
+
   def change
     add_column :user_exercise_feedbacks, :normalized_score, :float
     add_reference :user_exercise_feedbacks, :submission, foreign_key: true
@@ -9,7 +21,7 @@ class AddNormalizedScoreAndSubmissionToUserExerciseFeedback < ActiveRecord::Migr
     ActiveRecord::Base.record_timestamps = false
     UserExerciseFeedback.find_each do |uef|
       latest_submission = Submission
-        .where(user_id: uef.user_id, user_type: uef.user_type, exercise_id: uef.exercise_id)
+        .where(user: uef.user, exercise: uef.exercise)
         .where(created_at: ...uef.updated_at)
         .order(created_at: :desc).first
 

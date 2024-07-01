@@ -1,6 +1,19 @@
 # frozen_string_literal: true
 
 class UnifyLtiParameters < ActiveRecord::Migration[7.0]
+  class LtiParameter < ApplicationRecord
+    belongs_to :external_user
+    belongs_to :exercise
+  end
+
+  class ExternalUser < ApplicationRecord
+    has_many :lti_parameters
+  end
+
+  class Exercise < ApplicationRecord
+    has_many :lti_parameters
+  end
+
   def change
     reversible do |dir|
       dir.up do
@@ -35,10 +48,4 @@ class UnifyLtiParameters < ActiveRecord::Migration[7.0]
 
     add_index :lti_parameters, %i[external_user_id study_group_id exercise_id], unique: true, name: 'index_lti_params_on_external_user_and_study_group_and_exercise'
   end
-
-  class LtiParameter < ActiveRecord::Base; end
-
-  class ExternalUser < ActiveRecord::Base; end
-
-  class Exercise < ActiveRecord::Base; end
 end

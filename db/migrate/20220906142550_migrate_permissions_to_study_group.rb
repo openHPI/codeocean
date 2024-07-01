@@ -1,6 +1,32 @@
 # frozen_string_literal: true
 
 class MigratePermissionsToStudyGroup < ActiveRecord::Migration[6.1]
+  class Consumer < ApplicationRecord
+    has_many :study_groups
+    has_many :internal_users
+    has_many :external_users
+  end
+
+  class StudyGroup < ApplicationRecord
+    belongs_to :consumer
+    has_many :study_group_memberships
+  end
+
+  class InternalUser < ApplicationRecord
+    belongs_to :consumer
+    has_many :study_group_memberships, as: :user
+  end
+
+  class ExternalUser < ApplicationRecord
+    belongs_to :consumer
+    has_many :study_group_memberships, as: :user
+  end
+
+  class StudyGroupMembership < ApplicationRecord
+    belongs_to :study_group
+    belongs_to :user, polymorphic: true
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def up
     create_default_groups
