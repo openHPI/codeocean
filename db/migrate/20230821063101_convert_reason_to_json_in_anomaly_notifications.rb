@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class ConvertReasonToJsonInAnomalyNotifications < ActiveRecord::Migration[7.0]
+  class AnomalyNotification < ApplicationRecord
+  end
+
   def up
     AnomalyNotification.where("reason LIKE '%value:%'").find_each do |anomaly_notification|
       reason = anomaly_notification.reason
@@ -14,6 +17,4 @@ class ConvertReasonToJsonInAnomalyNotifications < ActiveRecord::Migration[7.0]
   def down
     change_column :anomaly_notifications, :reason, :string
   end
-
-  class AnomalyNotification < ActiveRecord::Base; end
 end
