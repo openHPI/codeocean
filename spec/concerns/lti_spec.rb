@@ -44,7 +44,7 @@ RSpec.describe Lti do
   describe '#refuse_lti_launch' do
     it 'returns to the tool consumer' do
       message = I18n.t('sessions.oauth.invalid_consumer')
-      expect(controller).to receive(:return_to_consumer).with(lti_errorlog: message, lti_errormsg: I18n.t('sessions.oauth.failure'))
+      expect(controller).to receive(:return_to_consumer).with(lti_errormsg: I18n.t('sessions.oauth.failure', error: message))
       controller.send(:refuse_lti_launch, message:)
     end
   end
@@ -62,9 +62,49 @@ RSpec.describe Lti do
       end
 
       it 'passes messages to the consumer' do
-        message = I18n.t('sessions.oauth.failure')
+        message = I18n.t('sessions.oauth.failure', error: 'dummy error')
         expect(controller).to receive(:redirect_to).with("#{consumer_return_url}?lti_errorlog=#{CGI.escape(message)}", allow_other_host: true)
         controller.send(:return_to_consumer, lti_errorlog: message)
+      end
+
+      context 'when the return URL already contains a query parameter' do
+        let(:consumer_return_url) { 'https://example.org?foo=bar' }
+
+        it 'correctly appends query parameters' do
+          message = I18n.t('sessions.oauth.failure', error: 'dummy error')
+          expect(controller).to receive(:redirect_to).with("#{consumer_return_url}&lti_errorlog=#{CGI.escape(message)}&lti_msg=#{CGI.escape(message)}", allow_other_host: true)
+          controller.send(:return_to_consumer, lti_errorlog: message, lti_msg: message)
+        end
+      end
+
+      context 'when the return URL is empty' do
+        let(:consumer_return_url) { '' }
+
+        it 'redirects to the root URL' do
+          expect(controller).to receive(:redirect_to).with(:root)
+          controller.send(:return_to_consumer)
+        end
+
+        it 'displays alerts' do
+          message = I18n.t('sessions.oauth.failure', error: 'dummy error')
+          controller.send(:return_to_consumer, lti_errormsg: message)
+          expect(controller.instance_variable_get(:@flash)[:danger]).to eq(obtain_message(message))
+        end
+      end
+
+      context 'when the return URL is relative' do
+        let(:consumer_return_url) { '/path' }
+
+        it 'redirects to the root URL' do
+          expect(controller).to receive(:redirect_to).with(:root)
+          controller.send(:return_to_consumer)
+        end
+
+        it 'displays alerts' do
+          message = I18n.t('sessions.oauth.failure', error: 'dummy error')
+          controller.send(:return_to_consumer, lti_errormsg: message)
+          expect(controller.instance_variable_get(:@flash)[:danger]).to eq(obtain_message(message))
+        end
       end
     end
 
@@ -79,7 +119,7 @@ RSpec.describe Lti do
       end
 
       it 'displays alerts' do
-        message = I18n.t('sessions.oauth.failure')
+        message = I18n.t('sessions.oauth.failure', error: 'dummy error')
         controller.send(:return_to_consumer, lti_errormsg: message)
         expect(controller.instance_variable_get(:@flash)[:danger]).to eq(obtain_message(message))
       end

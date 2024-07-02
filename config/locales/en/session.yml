@@ -29,10 +29,11 @@ en:
       link: Sign In
       remember_me: Remember me
     oauth:
-      failure: Sorry, something went wrong.
-      invalid_consumer: Invalid OAuth key.
-      invalid_exercise_token: Invalid exercise token.
-      invalid_lis_outcome_service_url: Invalid LTI outcome service URL.
-      invalid_signature: Invalid OAuth signature.
-      missing_parameters: Missing OAuth parameters.
-      used_nonce: Nonce has already been used.
+      failure: 'Sorry, something went wrong: %{error}. Please ask an administrator of the e-learning platform to check the configuration.'
+      invalid_consumer: Invalid OAuth key
+      invalid_exercise_token: Invalid exercise token
+      invalid_launch_presentation_return_url: Invalid LTI return URL
+      invalid_lis_outcome_service_url: Invalid LTI outcome service URL
+      invalid_signature: Invalid OAuth signature
+      missing_parameters: Missing OAuth parameters
+      used_nonce: Nonce has already been used

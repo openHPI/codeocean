@@ -29,10 +29,11 @@ de:
       link: Anmelden
       remember_me: Angemeldet bleiben
     oauth:
-      failure: Leider ist ein Fehler aufgetreten.
-      invalid_consumer: Ungültiger OAuth-Key.
-      invalid_exercise_token: Ungültiges Aufgaben-Token.
-      invalid_lis_outcome_service_url: Ungültige URL für den LTI-Ergebnisdienst.
-      invalid_signature: Ungültige OAuth-Signatur.
-      missing_parameters: OAuth-Parameter fehlen.
-      used_nonce: Die Nonce wurde bereits verwendet.
+      failure: 'Leider ist ein Fehler aufgetreten: %{error}. Bitte wenden Sie sich an einen Administrator der E-Learning-Plattform, um die Konfiguration überprüfen zu lassen.'
+      invalid_consumer: Ungültiger OAuth-Key
+      invalid_exercise_token: Ungültiges Aufgaben-Token
+      invalid_launch_presentation_return_url: Ungültige URL für die LTI-Rückgabe
+      invalid_lis_outcome_service_url: Ungültige URL für den LTI-Ergebnisdienst
+      invalid_signature: Ungültige OAuth-Signatur
+      missing_parameters: OAuth-Parameter fehlen
+      used_nonce: Die Nonce wurde bereits verwendet

@@ -65,11 +65,47 @@ RSpec.describe SessionsController do
       end
     end
 
+    context 'without a valid absolute launch return presentation URL' do
+      shared_examples 'a handled error' do
+        it 'refuses the LTI launch' do
+          allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
+          expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_launch_presentation_return_url')).and_call_original
+          post :create_through_lti, params: {oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, launch_presentation_return_url:}
+        end
+      end
+
+      context 'with an empty URL' do
+        let(:launch_presentation_return_url) { '' }
+
+        it_behaves_like 'a handled error'
+      end
+
+      context 'with a relative URL' do
+        let(:launch_presentation_return_url) { '/relative/url' }
+
+        it_behaves_like 'a handled error'
+      end
+    end
+
     context 'without a valid absolute LIS Outcome service URL' do
-      it 'refuses the LTI launch' do
-        allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
-        expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_lis_outcome_service_url')).and_call_original
-        post :create_through_lti, params: {oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, lis_outcome_service_url: '/relative/url'}
+      shared_examples 'a handled error' do
+        it 'refuses the LTI launch' do
+          allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true)
+          expect(controller).to receive(:refuse_lti_launch).with(message: I18n.t('sessions.oauth.invalid_lis_outcome_service_url')).and_call_original
+          post :create_through_lti, params: {oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, lis_outcome_service_url:}
+        end
+      end
+
+      context 'with an empty URL' do
+        let(:lis_outcome_service_url) { '' }
+
+        it_behaves_like 'a handled error'
+      end
+
+      context 'with a relative URL' do
+        let(:lis_outcome_service_url) { '/relative/url' }
+
+        it_behaves_like 'a handled error'
       end
     end
 
@@ -83,7 +119,7 @@ RSpec.describe SessionsController do
 
     context 'with valid launch parameters' do
       let(:locale) { :de }
-      let(:perform_request) { post :create_through_lti, params: {custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id, lis_outcome_service_url: 'https://example.org/'} }
+      let(:perform_request) { post :create_through_lti, params: {custom_locale: locale, custom_token: exercise.token, oauth_consumer_key: consumer.oauth_key, oauth_nonce: nonce, oauth_signature: SecureRandom.hex, user_id: user.external_id, launch_presentation_return_url: 'https://example.org/', lis_outcome_service_url: 'https://example.org/'} }
       let(:user) { create(:external_user, consumer:) }
 
       before { allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
@@ -213,17 +249,47 @@ RSpec.describe SessionsController do
   end
 
   describe 'GET #destroy_through_lti' do
-    let(:perform_request) { proc { get :destroy_through_lti, params: {submission_id: submission.id} } }
-    let(:submission) { create(:submission, exercise: create(:dummy)) }
+    shared_examples 'a successful request' do # rubocop:disable RSpec/SharedContext
+      let(:perform_request) { proc { get :destroy_through_lti, params: {submission_id: submission.id} } }
+      let(:submission) { create(:submission, exercise: create(:dummy)) }
 
-    before do
-      create(:lti_parameter, external_user: submission.contributor)
-      allow(controller).to receive(:current_user).and_return(submission.contributor)
-      perform_request.call
+      before do
+        lti_parameter.save!
+        allow(controller).to receive(:current_user).and_return(submission.contributor)
+        perform_request.call
+      end
+
+      expect_http_status(:ok)
+      expect_template(:destroy_through_lti)
     end
 
-    expect_http_status(:ok)
-    expect_template(:destroy_through_lti)
+    context 'when a launch return presentation URL is provided' do
+      context 'when a LIS Outcome service URL is provided' do
+        let(:lti_parameter) { create(:lti_parameter, external_user: submission.contributor) }
+
+        it_behaves_like 'a successful request'
+      end
+
+      context 'when no LIS Outcome service URL is provided' do
+        let(:lti_parameter) { create(:lti_parameter, :without_outcome_service_url, external_user: submission.contributor) }
+
+        it_behaves_like 'a successful request'
+      end
+    end
+
+    context 'when no launch return presentation URL is provided' do
+      context 'when a LIS Outcome service URL is provided' do
+        let(:lti_parameter) { create(:lti_parameter, :without_return_url, external_user: submission.contributor) }
+
+        it_behaves_like 'a successful request'
+      end
+
+      context 'when no LIS Outcome service URL is provided' do
+        let(:lti_parameter) { create(:lti_parameter, :without_return_url, :without_outcome_service_url, external_user: submission.contributor) }
+
+        it_behaves_like 'a successful request'
+      end
+    end
   end
 
   describe 'GET #new' do
