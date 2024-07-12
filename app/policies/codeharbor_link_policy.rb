@@ -4,11 +4,11 @@ class CodeharborLinkPolicy < ApplicationPolicy
   CODEHARBOR_CONFIG = CodeOcean::Config.new(:code_ocean).read[:codeharbor]
 
   def index?
-    false
+    no_one
   end
 
   def show?
-    false
+    no_one
   end
 
   def new?

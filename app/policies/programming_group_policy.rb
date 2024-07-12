@@ -11,7 +11,7 @@ class ProgrammingGroupPolicy < AdminOnlyPolicy
 
   def stream_sync_editor?
     # A programming group needs to exist for the user to be able to stream the synchronized editor.
-    return false if @record.blank?
+    return no_one if @record.blank?
 
     admin? || author_in_programming_group?
   end
