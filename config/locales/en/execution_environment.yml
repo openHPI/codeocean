@@ -29,7 +29,7 @@ en:
       hints:
         command: "<em>filename</em> is automatically replaced with the correct filename. The following character is disallowed: ' (single quote)"
         cpu_limit: Specify the minimum amount of CPU shares to reserve for each runner, measured in MHz.
-        docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank" rel="noopener">DockerHub</a>.
+        docker_image: Pick a Docker image listed above or add a new one which is available via <a href="https://hub.docker.com/" target="_blank" rel="noopener noreferrer">DockerHub</a>.
         exposed_ports_list: During code execution these ports are accessible for the user. Port numbers must be numeric and separated by a comma.
     index:
       shell: Shell

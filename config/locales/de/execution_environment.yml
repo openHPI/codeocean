@@ -29,7 +29,7 @@ de:
       hints:
         command: "<em>filename</em> wird automatisch durch den richtigen Dateinamen ersetzt. Das folgende Zeichen ist verboten: ' (einfaches Anführungszeichen)"
         cpu_limit: Geben Sie die Mindestmenge an CPU-Anteilen an, die für jeden Runner reserviert werden soll, gemessen in MHz.
-        docker_image: Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank" rel="noopener">DockerHub</a> verfügbar ist.
+        docker_image: Wählen Sie ein Docker-Image aus der Liste oder fügen Sie ein neues hinzu, welches über <a href="https://hub.docker.com/" target="_blank" rel="noopener noreferrer">DockerHub</a> verfügbar ist.
         exposed_ports_list: Während der Ausführung sind diese Ports für Lernende zugänglich. Die Portnummern müssen nummerisch und mit Komma voneinander getrennt sein.
     index:
       shell: Shell
