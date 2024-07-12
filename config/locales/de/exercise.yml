@@ -118,6 +118,7 @@ de:
         tests: Unit Tests
         time: Zeit (UTC)
         time_difference: Arbeitszeit bis hier*
+        title_html: "%{exercise} (%{user_class} %{user})"
         toggle_autosave_off: Zwischenspeicherungen ausblenden
         toggle_autosave_on: Zwischenspeicherungen anzeigen
         toggle_status_off: Zwischenspeicherungen sind ausgeblendet

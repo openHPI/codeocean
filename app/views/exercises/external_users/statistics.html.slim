@@ -1,8 +1,8 @@
 h1
-  => @exercise
-  ' (external user
-  = link_to_if(policy(@external_user).show?, @external_user.displayname, @external_user)
-  ' )
+  = t('.title_html',
+        exercise: @exercise,
+        user_class: @external_user.class.model_name.human,
+        user: link_to_if(policy(@external_user).show?, @external_user.displayname, @external_user))
 - submissions = @all_events.filter {|event| event.is_a? Submission }
 - current_submission = submissions.first
 - if current_submission

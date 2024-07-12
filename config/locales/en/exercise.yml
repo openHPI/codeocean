@@ -118,6 +118,7 @@ en:
         tests: Unit Test Results
         time: Time (UTC)
         time_difference: Working Time until here*
+        title_html: "%{exercise} (%{user_class} %{user})"
         toggle_autosave_off: Hide Autosaves
         toggle_autosave_on: Show Autosaves
         toggle_status_off: Autosaves are currently hidden
