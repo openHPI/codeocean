@@ -63,7 +63,7 @@ en:
       is_offline: "%{name} is offline"
       is_online: "%{name} is online"
       lastsaved: 'Last saved: '
-      network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
+      network: 'While your code is running, port %{port} is accessible using the following address: <a href="%{address}" target="_blank" rel="noopener noreferrer">%{address}</a>.'
       out_of_memory: Execution stopped. Your code exceeded the permitted RAM usage of %{memory_limit} MB.
       render: Render
       requestComments: Request Comments
@@ -168,7 +168,7 @@ en:
         go_to_question: Go to answer
         heading: Gain more insights here | Powered by StackOverflow
       intervention:
-        explanation: 'This message appears because you have been working on this exercise for %{duration} minutes. 25% of your fellow learners took more time to solve the exercise, so in that sense it''s not a problem, but this has proven to be an <a href=''https://hpi.de/en/research/publications/dissertations/dissertation-ralf-teusner.html'' style=''display: contents;'' target=''_blank'' rel=''noopener''>effective time for this message</a>.'
+        explanation: 'This message appears because you have been working on this exercise for %{duration} minutes. 25% of your fellow learners took more time to solve the exercise, so in that sense it''s not a problem, but this has proven to be an <a href=''https://hpi.de/en/research/publications/dissertations/dissertation-ralf-teusner.html'' style=''display: contents;'' target=''_blank'' rel=''noopener noreferrer''>effective time for this message</a>.'
       linter_file: Linter Feedback <span class="number d-none">%{number}</span>(<span class="filename">%{filename}</span>)
       messages: Messages
       no_execution_environment: No execution environment has been selected for the exercise yet.

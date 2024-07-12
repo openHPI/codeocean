@@ -63,7 +63,7 @@ de:
       is_offline: "%{name} ist offline"
       is_online: "%{name} ist online"
       lastsaved: 'Zuletzt gespeichert: '
-      network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank" rel="noopener">%{address}</a>.'
+      network: 'Während Ihr Code läuft, ist Port %{port} unter folgender Adresse erreichbar: <a href="%{address}" target="_blank" rel="noopener noreferrer">%{address}</a>.'
       out_of_memory: Ausführung gestoppt. Ihr Code hat den erlaubten Arbeitsspeicher von %{memory_limit} MB überschritten.
       render: Anzeigen
       requestComments: Kommentare erbitten
@@ -168,7 +168,7 @@ de:
         go_to_question: Lösung ansehen
         heading: Weitere Hinweise | Unterstützt von StackOverflow
       intervention:
-        explanation: 'Diese Meldung erscheint, weil Sie %{duration} Minuten an dieser Aufgabe gearbeitet haben. 25% Ihrer Mitlernenden arbeiten länger daran, insofern ist das kein Problem, aber dies hat sich als <a href=''https://hpi.de/forschung/publikationen/dissertationen/dissertation-ralf-teusner.html'' style=''display: contents;'' target=''_blank'' rel=''noopener''>effektiven Zeitpunkt für diese Meldung</a> erwiesen.'
+        explanation: 'Diese Meldung erscheint, weil Sie %{duration} Minuten an dieser Aufgabe gearbeitet haben. 25% Ihrer Mitlernenden arbeiten länger daran, insofern ist das kein Problem, aber dies hat sich als <a href=''https://hpi.de/forschung/publikationen/dissertationen/dissertation-ralf-teusner.html'' style=''display: contents;'' target=''_blank'' rel=''noopener noreferrer''>effektiven Zeitpunkt für diese Meldung</a> erwiesen.'
       linter_file: Linter-Feedback <span class="number d-none">%{number}</span>(<span class="filename">%{filename}</span>)
       messages: Meldungen
       no_execution_environment: Für die Aufgabe wurde noch keine Ausführungsumgebung gewählt.
