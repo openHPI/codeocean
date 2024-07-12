@@ -23,5 +23,5 @@ de:
       exercise: Übung
       runs: Abgaben
       score: Maximale Punktzahl
-      title: Statistiken für Externe Personen
+      title: Aufgabenstatistik für %{user}
       worktime: Arbeitszeit

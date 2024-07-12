@@ -1,4 +1,4 @@
-h1 = t('.title')
+h1 = t('.title', user: @user.displayname)
 
 - submissions = Submission.where(contributor: @user).in_study_group_of(current_user)
 - exercises = Exercise.where(id: submissions.joins(:exercise).group(:exercise_id).select(:exercise_id).distinct).compact

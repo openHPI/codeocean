@@ -23,5 +23,5 @@ en:
       exercise: Exercise
       runs: Submissions
       score: Maximum Score
-      title: External User Statistics
+      title: Exercise Statistics for %{user}
       worktime: Working Time
