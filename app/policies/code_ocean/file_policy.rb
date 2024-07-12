@@ -7,7 +7,7 @@ module CodeOcean
     end
 
     def show?
-      return false if @record.native_file? && !@record.native_file_location_valid?
+      return no_one if @record.native_file? && !@record.native_file_location_valid?
 
       if @record.context.is_a?(Exercise)
         admin? || author? || !@record.hidden
@@ -17,7 +17,7 @@ module CodeOcean
     end
 
     def show_protected_upload?
-      return false if @record.native_file? && !@record.native_file_location_valid?
+      return no_one if @record.native_file? && !@record.native_file_location_valid?
 
       if @record.context.is_a?(Exercise)
         admin? || author? || (!@record.context.unpublished && !@record.hidden)
