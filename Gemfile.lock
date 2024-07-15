@@ -122,7 +122,7 @@ GEM
       image_processing (~> 1.1)
       marcel (~> 1.0.0)
       ssrf_filter (~> 1.0)
-    charlock_holmes (0.7.8)
+    charlock_holmes (0.7.9)
     childprocess (5.0.0)
     chronic (0.10.2)
     coderay (1.1.3)
