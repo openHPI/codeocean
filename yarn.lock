@@ -2845,7 +2845,7 @@ __metadata:
     sorttable: "npm:^1.0.2"
     style-loader: "npm:^4.0.0"
     terser-webpack-plugin: "npm:^5.3.10"
-    underscore: "npm:^1.13.6"
+    underscore: "npm:^1.13.7"
     uuid: "npm:^10.0.0"
     vis-data: "npm:^7.1.9"
     vis-timeline: "npm:^7.7.3"
@@ -7132,10 +7132,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"underscore@npm:^1.13.6":
-  version: 1.13.6
-  resolution: "underscore@npm:1.13.6"
-  checksum: 10c0/5f57047f47273044c045fddeb8b141dafa703aa487afd84b319c2495de2e685cecd0b74abec098292320d518b267c0c4598e45aa47d4c3628d0d4020966ba521
+"underscore@npm:^1.13.7":
+  version: 1.13.7
+  resolution: "underscore@npm:1.13.7"
+  checksum: 10c0/fad2b4aac48847674aaf3c30558f383399d4fdafad6dd02dd60e4e1b8103b52c5a9e5937e0cc05dacfd26d6a0132ed0410ab4258241240757e4a4424507471cd
   languageName: node
   linkType: hard
 
