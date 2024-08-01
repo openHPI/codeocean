@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 def reset_runner_strategy
-  Runner.instance_variable_set :@strategy_class, nil
-  Runner.instance_variable_set :@management_active, nil
+  Runner.remove_instance_variable(:@strategy_class) if Runner.instance_variable_defined?(:@strategy_class)
+  Runner.remove_instance_variable(:@management_active) if Runner.instance_variable_defined?(:@management_active)
 end
 
 RSpec.configure do |config|

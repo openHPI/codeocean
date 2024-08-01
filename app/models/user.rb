@@ -31,16 +31,21 @@ class User < Contributor
 
   def learner?
     return true if current_study_group_id.nil?
+    return @learner if defined? @learner
 
-    @learner ||= current_study_group_membership.exists?(role: :learner) && !platform_admin?
+    @learner = current_study_group_membership.exists?(role: :learner) && !platform_admin?
   end
 
   def teacher?
-    @teacher ||= current_study_group_membership.exists?(role: :teacher) && !platform_admin?
+    return @teacher if defined? @teacher
+
+    @teacher = current_study_group_membership.exists?(role: :teacher) && !platform_admin?
   end
 
   def admin?
-    @admin ||= platform_admin?
+    return @admin if defined? @admin
+
+    @admin = platform_admin?
   end
 
   def id_with_type
