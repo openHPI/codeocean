@@ -1,6 +1,6 @@
 = render_markdown(t('programming_groups.new.info_pair_programming'))
 
-- content_for :modal_footer do
+- content_for :modal_footer, flush: true do
   button.btn.btn-secondary#dont_show_info_pp_modal_again data-bs-dismiss='modal'
     = t('programming_groups.new.dont_show_modal_again')
   button.btn.btn-primary data-bs-dismiss='modal'
