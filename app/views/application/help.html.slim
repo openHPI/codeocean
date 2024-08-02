@@ -5,7 +5,7 @@
   h2 = t('shared.help.execution_environment_specific_help', execution_environment:)
   = render_markdown(execution_environment.help)
 
-- content_for :modal_footer do
+- content_for :modal_footer, flush: true do
   - if ApplicationController::LEGAL_SETTINGS.present?
     ul.horizontal.dash.pull-start
       - ApplicationController::LEGAL_SETTINGS.each do |name, link|
