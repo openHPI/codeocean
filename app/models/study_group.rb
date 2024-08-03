@@ -18,10 +18,6 @@ class StudyGroup < ApplicationRecord
     external_users + internal_users
   end
 
-  def user_count
-    attributes['user_count'] || study_group_memberships.size
-  end
-
   def to_s
     name.presence || "StudyGroup #{id}"
   end

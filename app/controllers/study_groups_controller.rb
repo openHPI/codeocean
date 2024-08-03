@@ -7,10 +7,10 @@ class StudyGroupsController < ApplicationController
 
   def index
     @search = policy_scope(StudyGroup).ransack(params[:q])
-    @study_groups_paginate = @search.result.includes(:consumer).order(:name).paginate(page: params[:page], per_page: per_page_param)
-    @study_groups = @study_groups_paginate.joins(:study_group_memberships)
-      .group(:id, :name, :external_id, :consumer_id, :created_at, :updated_at)
-      .select(:id, :name, :external_id, :consumer_id, :created_at, :updated_at, 'count(study_group_memberships.id) as user_count')
+    @study_groups = StudyGroup.where(id: @search.result.ids)
+      .includes(:consumer, :study_group_memberships)
+      .order(:name)
+      .paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 

@@ -7,7 +7,7 @@ h1
 = row(label: 'study_group.external_id') do
   code = @study_group.external_id
 = row(label: 'study_group.consumer', value: link_to_if(policy(@study_group).show?, @study_group.consumer, @study_group.consumer))
-= row(label: 'study_group.member_count', value: @study_group.user_count)
+= row(label: 'study_group.member_count', value: @study_group.study_group_memberships.size)
 
 h2.mt-4 = StudyGroup.human_attribute_name('members')
 .table-responsive
