@@ -7,21 +7,23 @@ RSpec.describe ExecutionEnvironmentPolicy do
 
   let(:execution_environment) { build(:ruby) }
 
-  permissions :index? do
-    it 'grants access to admins' do
-      expect(policy).to permit(build(:admin), execution_environment)
-    end
+  %i[index? execute_command? shell? list_files? show? download_arbitrary_file?].each do |action|
+    permissions(action) do
+      it 'grants access to admins' do
+        expect(policy).to permit(build(:admin), execution_environment)
+      end
 
-    it 'grants access to teachers' do
-      expect(policy).to permit(create(:teacher), execution_environment)
-    end
+      it 'grants access to teachers' do
+        expect(policy).to permit(create(:teacher), execution_environment)
+      end
 
-    it 'does not grant access to external users' do
-      expect(policy).not_to permit(build(:external_user), execution_environment)
+      it 'does not grant access to external users' do
+        expect(policy).not_to permit(build(:external_user), execution_environment)
+      end
     end
   end
 
-  %i[execute_command? shell? statistics? show?].each do |action|
+  %i[statistics? sync_to_runner_management?].each do |action|
     permissions(action) do
       it 'grants access to admins' do
         expect(policy).to permit(build(:admin), execution_environment)

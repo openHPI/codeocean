@@ -16,4 +16,21 @@ class ExternalUserPolicy < AdminOnlyPolicy
   def tag_statistics?
     admin?
   end
+
+  class Scope < Scope
+    def resolve
+      if @user.admin?
+        @scope.all
+      elsif @user.teacher?
+        @scope.joins(:study_group_memberships)
+          .where(study_group_memberships: {
+            study_group_id: @user.study_group_memberships
+                                 .where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
+                                 .select(:study_group_id),
+          })
+      else
+        @scope.none
+      end
+    end
+  end
 end

@@ -37,11 +37,16 @@ RSpec.describe SubmissionPolicy do
   end
 
   permissions :index? do
-    it 'grants access to admins only' do
+    it 'grants access to admins' do
       expect(policy).to permit(build(:admin), Submission.new)
-      %i[external_user teacher].each do |factory_name|
-        expect(policy).not_to permit(create(factory_name), Submission.new)
-      end
+    end
+
+    it 'grants access to teachers' do
+      expect(policy).to permit(create(:teacher), Submission.new)
+    end
+
+    it 'does not grant access to external users' do
+      expect(policy).not_to permit(create(:external_user), Submission.new)
     end
   end
 end

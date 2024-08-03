@@ -46,8 +46,6 @@ class Submission < ApplicationRecord
 
   scope :latest, -> { order(updated_at: :desc).first }
 
-  scope :in_study_group_of, ->(user) { where(study_group_id: user.study_groups) unless user.admin? }
-
   validates :cause, inclusion: {in: CAUSES}
 
   attr_reader :used_execution_environment

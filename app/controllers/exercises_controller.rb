@@ -496,18 +496,9 @@ class ExercisesController < ApplicationController
     # Show general statistic page for specific exercise
     contributor_statistics = {'InternalUser' => {}, 'ExternalUser' => {}, 'ProgrammingGroup' => {}}
 
-    query = Submission.select('contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
+    query = policy_scope(Submission).select('contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
       .where(exercise_id: @exercise.id)
       .group('contributor_id, contributor_type')
-
-    query = if policy(@exercise).detailed_statistics?
-              query
-            elsif !policy(@exercise).detailed_statistics? && current_user.study_groups.count.positive?
-              query.where(study_group_id: current_user.study_groups.pluck(:id), cause: 'submit')
-            else
-              # e.g. internal user without any study groups, show no submissions
-              query.where('false')
-            end
 
     query.each do |tuple|
       contributor_statistics[tuple['contributor_type']][tuple['contributor_id'].to_i] = tuple
@@ -522,8 +513,7 @@ class ExercisesController < ApplicationController
     # Render statistics page for one specific external user
 
     if policy(@exercise).detailed_statistics?
-      submissions = Submission.where(contributor: @external_user, exercise: @exercise)
-        .in_study_group_of(current_user)
+      submissions = policy_scope(Submission).where(contributor: @external_user, exercise: @exercise)
         .order(:created_at)
         .includes(:exercise, testruns: [:testrun_messages, {file: [:file_type]}], files: [:file_type])
       @show_autosaves = params[:show_autosaves] == 'true' || submissions.where.not(cause: 'autosave').none?
@@ -539,8 +529,8 @@ class ExercisesController < ApplicationController
         @working_times_until.push((format_time_difference(@deltas[0..index].sum) if index.positive?))
       end
     else
-      final_submissions = Submission.where(contributor: @external_user,
-        exercise_id: @exercise.id).in_study_group_of(current_user).final
+      final_submissions = policy_scope(Submission).where(contributor: @external_user,
+        exercise_id: @exercise.id).final
       submissions = []
       %i[before_deadline within_grace_period after_late_deadline].each do |filter|
         relevant_submission = final_submissions.send(filter).latest

@@ -45,9 +45,7 @@ h1 = @exercise
     p = @exercise.average_working_time
 
 - {internal_users: t('.internal_users'), external_users: t('.external_users'), programming_groups: t('.programming_groups')}.each_pair do |symbol, label|
-  - submissions = Submission.where(contributor: @exercise.send(symbol), exercise: @exercise).in_study_group_of(current_user)
-  - unless policy(@exercise).detailed_statistics?
-    - submissions = submissions.final
+  - submissions = policy_scope(Submission).where(contributor: @exercise.send(symbol), exercise: @exercise)
   - if submissions.any?
     strong = label
     - if symbol == :external_users
