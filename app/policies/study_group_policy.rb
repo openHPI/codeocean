@@ -13,7 +13,7 @@ class StudyGroupPolicy < AdminOnlyPolicy
     # A default study group should not get deleted without the consumer
     return no_one if @record.external_id.blank?
 
-    admin? || teacher_in_study_group?
+    admin?
   end
 
   class Scope < Scope
