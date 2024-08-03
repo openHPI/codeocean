@@ -10,7 +10,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   %i[new? destroy? update? edit?].each do |action|
-    define_method(action) { admin? || author? }
+    define_method(action) { admin? || author? || teacher_in_study_group? }
   end
 
   def index?
