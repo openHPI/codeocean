@@ -1,6 +1,7 @@
 h1 = ExternalUser.model_name.human(count: :other)
 
 = render(layout: 'shared/form_filters') do |f|
+  - consumers_with_external_users = ConsumerPolicy::WithExternalUsersScope.new(current_user, Consumer).resolve
   - if current_user.admin?
     .col-md-9.col
       .row.align-items-center
@@ -18,7 +19,7 @@ h1 = ExternalUser.model_name.human(count: :other)
           = f.select :platform_admin_true, [[t('shared.admin_filter.only'), 1], [t('shared.admin_filter.none'), 0]], {include_blank: t('shared.admin_filter.all'), selected: params[:q] ? params[:q][:platform_admin_true] : ''}
         .col-auto.mt-3.mt-lg-0
           = f.label(:consumer_id_eq, ExternalUser.human_attribute_name('consumer'), class: 'visually-hidden form-label')
-          = f.collection_select(:consumer_id_eq, Consumer.with_external_users, :id, :name, class: 'form-control', include_blank: true, prompt: ExternalUser.human_attribute_name('consumer'))
+          = f.collection_select(:consumer_id_eq, consumers_with_external_users, :id, :name, class: 'form-control', include_blank: true, prompt: ExternalUser.human_attribute_name('consumer'))
   - else
     .col-auto
       = f.label(:name_cont, ExternalUser.human_attribute_name('name'), class: 'visually-hidden form-label')
@@ -26,6 +27,9 @@ h1 = ExternalUser.model_name.human(count: :other)
     .col-auto
       = f.label(:external_id_cont, ExternalUser.human_attribute_name('external_id'), class: 'visually-hidden form-label')
       = f.search_field(:external_id_cont, class: 'form-control', placeholder: ExternalUser.human_attribute_name('external_id'))
+    .col-auto
+      = f.label(:consumer_id_eq, ExternalUser.human_attribute_name('consumer'), class: 'visually-hidden form-label')
+      = f.collection_select(:consumer_id_eq, consumers_with_external_users, :id, :name, class: 'form-control', include_blank: true, prompt: ExternalUser.human_attribute_name('consumer'))
 .table-responsive
   table.table
     thead

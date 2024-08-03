@@ -55,4 +55,28 @@ class ExercisePolicy < AdminOrAuthorPolicy
       end
     end
   end
+
+  class WithProgrammingGroupsScope < Scope
+    def resolve
+      if @user.admin?
+        @scope.where(id: ProgrammingGroup.select(:exercise_id))
+      elsif @user.teacher?
+        @scope.where(id: ProgrammingGroupPolicy::Scope.new(@user, ProgrammingGroup).resolve.select(:exercise_id))
+      else
+        @scope.none
+      end
+    end
+  end
+
+  class WithSubmissionsScope < Scope
+    def resolve
+      if @user.admin?
+        @scope.where(id: Submission.select(:exercise_id))
+      elsif @user.teacher?
+        @scope.where(id: SubmissionPolicy::Scope.new(@user, Submission).resolve.select(:exercise_id))
+      else
+        @scope.none
+      end
+    end
+  end
 end

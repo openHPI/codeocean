@@ -35,9 +35,6 @@ class Exercise < ApplicationRecord
   has_many :pair_programming_waiting_users
   has_many :request_for_comments
 
-  scope :with_submissions, -> { where('id IN (SELECT exercise_id FROM submissions)') }
-  scope :with_programming_groups, -> { where('id IN (SELECT exercise_id FROM programming_groups)') }
-
   validate :valid_main_file?
   validate :valid_submission_deadlines?
   validates :description, presence: true
