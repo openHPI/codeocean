@@ -31,7 +31,7 @@ class ApplicationPolicy
     # !! Order is important !!
     if @record.respond_to? :study_group # e.g. submission
       study_groups = @record.study_group
-    elsif @record.respond_to? :submission # e.g. request_for_comment
+    elsif @record.respond_to? :submission # e.g. request_for_comment, comment
       study_groups = @record.submission.study_group
     elsif @record.respond_to? :user # e.g. exercise
       study_groups = @record.author.study_groups.where(study_group_memberships: {role: :teacher})
