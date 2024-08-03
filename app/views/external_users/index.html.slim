@@ -36,7 +36,8 @@ h1 = ExternalUser.model_name.human(count: :other)
       tr
         th = ExternalUser.human_attribute_name('name')
         th = ExternalUser.human_attribute_name('consumer')
-        th = ExternalUser.human_attribute_name('platform_admin')
+        - if current_user.admin?
+          th = ExternalUser.human_attribute_name('platform_admin')
         th = t('shared.actions')
     tbody
       - @users.each do |user|
