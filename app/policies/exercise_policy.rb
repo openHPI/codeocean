@@ -13,10 +13,6 @@ class ExercisePolicy < AdminOrAuthorPolicy
     admin? || teacher_in_study_group?
   end
 
-  def submission_statistics?
-    admin? || teacher_in_study_group?
-  end
-
   def detailed_statistics?
     admin?
   end

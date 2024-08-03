@@ -3,7 +3,7 @@
 class ProxyExercisesController < ApplicationController
   include CommonBehavior
 
-  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + %i[clone reload]
+  before_action :set_exercise_and_authorize, only: MEMBER_ACTIONS + %i[clone]
 
   def authorize!
     authorize(@proxy_exercise || @proxy_exercises)
