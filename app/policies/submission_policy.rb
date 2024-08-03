@@ -6,7 +6,7 @@ class SubmissionPolicy < ApplicationPolicy
   end
 
   # insights? is used in the flowr_controller.rb as we use it to authorize the user for a submission
-  %i[download? download_file? run? score? show? statistics? stop? test? insights? finalize?].each do |action|
+  %i[download? download_file? run? score? statistics? stop? test? insights? finalize?].each do |action|
     define_method(action) { admin? || author? || author_in_programming_group? }
   end
 
@@ -19,10 +19,38 @@ class SubmissionPolicy < ApplicationPolicy
   end
 
   def index?
-    admin?
+    admin? || teacher?
+  end
+
+  def show?
+    admin? || author? || author_in_programming_group? || teacher_in_study_group?
   end
 
   def show_study_group?
     admin? || teacher_in_study_group?
+  end
+
+  class Scope < Scope
+    def resolve
+      if @user.admin?
+        @scope.all
+      elsif @user.teacher?
+        @scope.where(study_group_id: @user.study_groups, cause: CausesScope.new(@user, Submission).resolve)
+      else
+        @scope.none
+      end
+    end
+  end
+
+  class CausesScope < Scope
+    def resolve
+      if @user.admin?
+        Submission::CAUSES
+      elsif @user.teacher?
+        %w[submit remoteSubmit]
+      else
+        []
+      end
+    end
   end
 end

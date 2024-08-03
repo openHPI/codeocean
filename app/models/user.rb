@@ -27,17 +27,6 @@ class User < Contributor
   has_one :codeharbor_link, dependent: :destroy
   accepts_nested_attributes_for :user_proxy_exercise_exercises
 
-  scope :in_study_group_of, lambda {|user|
-                              unless user.admin?
-                                joins(:study_group_memberships)
-                                  .where(study_group_memberships: {
-                                    study_group_id: user.study_group_memberships
-                                                        .where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
-                                                        .select(:study_group_id),
-                                  })
-                              end
-                            }
-
   validates :platform_admin, inclusion: [true, false]
 
   def learner?

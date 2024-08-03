@@ -35,6 +35,8 @@ class ApplicationPolicy
       study_groups = @record.submission.study_group
     elsif @record.respond_to? :user # e.g. exercise
       study_groups = @record.author.study_groups.where(study_group_memberships: {role: :teacher})
+    elsif @record.is_a?(ProgrammingGroup) && @record.respond_to?(:submissions) # e.g. programming group
+      study_groups = @record.submissions.select(:study_group_id)
     elsif @record.respond_to? :users # e.g. study_group
       study_groups = @record
     elsif @record.respond_to? :study_groups # e.g. user

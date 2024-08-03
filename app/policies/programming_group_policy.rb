@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 class ProgrammingGroupPolicy < AdminOnlyPolicy
+  def index?
+    admin? || teacher?
+  end
+
+  def show?
+    admin? || teacher_in_study_group?
+  end
+
   def create?
     everyone
   end
@@ -14,5 +22,22 @@ class ProgrammingGroupPolicy < AdminOnlyPolicy
     return no_one if @record.blank?
 
     admin? || author_in_programming_group?
+  end
+
+  class Scope < Scope
+    def resolve
+      if @user.admin?
+        @scope.all
+      elsif @user.teacher?
+        @scope.joins(:submissions)
+          .where(submissions: {
+            study_group_id: @user.study_group_memberships
+                                 .where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
+                                 .select(:study_group_id),
+          }).distinct
+      else
+        @scope.none
+      end
+    end
   end
 end

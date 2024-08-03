@@ -23,7 +23,7 @@ class SubmissionsController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[render_file download_file]
 
   def index
-    @search = Submission.ransack(params[:q])
+    @search = policy_scope(Submission).ransack(params[:q])
     @submissions = @search.result.includes(:exercise, :contributor).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end

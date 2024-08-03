@@ -10,7 +10,7 @@ class ProxyExercisePolicy < AdminOrAuthorPolicy
   end
 
   %i[clone? destroy? edit? update?].each do |action|
-    define_method(action) { admin? || author? }
+    define_method(action) { admin? || author? || teacher_in_study_group? }
   end
 
   class Scope < Scope
