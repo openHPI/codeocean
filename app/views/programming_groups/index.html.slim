@@ -3,7 +3,8 @@
   = render(layout: 'shared/form_filters') do |f|
     .col-auto
       = f.label(:exercise_id_eq, ProgrammingGroup.human_attribute_name('exercise'), class: 'visually-hidden form-label')
-      = f.collection_select(:exercise_id_eq, Exercise.with_programming_groups, :id, :title, class: 'form-control', prompt: ProgrammingGroup.human_attribute_name('exercise'))
+      - exercises_with_programming_groups = ExercisePolicy::WithProgrammingGroupsScope.new(current_user, Exercise).resolve
+      = f.collection_select(:exercise_id_eq, exercises_with_programming_groups, :id, :title, class: 'form-control', prompt: ProgrammingGroup.human_attribute_name('exercise'))
     .col-auto
       = f.label(:programming_group_memberships_user_of_ExternalUser_type_id_eq, ProgrammingGroup.human_attribute_name('external_user_id'), class: 'visually-hidden form-label')
       = f.search_field(:programming_group_memberships_user_of_ExternalUser_type_id_eq, class: 'form-control', placeholder: ProgrammingGroup.human_attribute_name('external_user_id'))

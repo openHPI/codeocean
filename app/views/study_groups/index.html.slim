@@ -3,7 +3,8 @@ h1 = StudyGroup.model_name.human(count: :other)
 = render(layout: 'shared/form_filters') do |f|
   .col-auto
     = f.label(:consumer_id_eq, InternalUser.human_attribute_name('consumer'), class: 'visually-hidden form-label')
-    = f.collection_select(:consumer_id_eq, Consumer.with_study_groups, :id, :name, class: 'form-control', prompt: InternalUser.human_attribute_name('consumer'))
+    - consumers_with_study_groups = ConsumerPolicy::WithStudyGroupsScope.new(current_user, Consumer).resolve
+    = f.collection_select(:consumer_id_eq, consumers_with_study_groups, :id, :name, class: 'form-control', prompt: InternalUser.human_attribute_name('consumer'))
   .col-auto
     = f.label(:name_cont, StudyGroup.human_attribute_name('name'), class: 'visually-hidden form-label')
     = f.search_field(:name_cont, class: 'form-control', placeholder: StudyGroup.human_attribute_name('name'))

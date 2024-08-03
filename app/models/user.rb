@@ -71,7 +71,7 @@ class User < Contributor
     if auth_object.present? && auth_object.admin?
       %w[name email external_id consumer_id platform_admin id]
     else
-      %w[name external_id id]
+      %w[name external_id consumer_id id]
     end
   end
 end
