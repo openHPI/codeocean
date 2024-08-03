@@ -14,7 +14,7 @@
           td
             code = group.external_id
           td = link_to_if(policy(group.consumer).show?, group.consumer, group.consumer)
-          td = group.user_count
+          td = group.study_group_memberships.size
           td = link_to(t('shared.show'), group) if policy(group).show?
           td = link_to(t('shared.edit'), edit_study_group_path(group)) if policy(group).edit?
           td = link_to(t('shared.destroy'), group, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(group).destroy?
