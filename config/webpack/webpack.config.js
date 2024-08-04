@@ -66,7 +66,9 @@ const envConfig = module.exports = {
     },
     plugins: [
         new CompressionPlugin(),
-        new MiniCssExtractPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '[name]-[contenthash].css',
+        }),
         new SubresourceIntegrityPlugin(),
         new WebpackAssetsManifest({
             entrypoints: true,
