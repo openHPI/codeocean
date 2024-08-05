@@ -57,6 +57,14 @@ class User < Contributor
     study_group_memberships.where(study_group: current_study_group_id).limit(1)
   end
 
+  def study_group_ids_as_teacher
+    @study_group_ids_as_teacher ||= study_group_memberships.where(role: :teacher).pluck(:study_group_id)
+  end
+
+  def study_group_ids_as_learner
+    @study_group_ids_as_learner ||= study_group_memberships.where(role: :learner).pluck(:study_group_id)
+  end
+
   def self.find_by_id_with_type(id_with_type)
     if id_with_type[0].casecmp('e').zero?
       ExternalUser.find(id_with_type[1..])
