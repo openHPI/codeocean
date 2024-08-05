@@ -20,9 +20,7 @@ class InternalUserPolicy < AdminOnlyPolicy
       elsif @user.teacher?
         @scope.joins(:study_group_memberships)
           .where(study_group_memberships: {
-            study_group_id: @user.study_group_memberships
-                                .where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
-                                .select(:study_group_id),
+            study_group_id: @user.study_group_ids_as_teacher,
           })
       else
         @scope.none
