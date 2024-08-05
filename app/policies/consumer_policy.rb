@@ -6,7 +6,7 @@ class ConsumerPolicy < AdminOnlyPolicy
       if @user.admin?
         @scope.where(id: InternalUser.select(:consumer_id))
       elsif @user.teacher?
-        @scope.where(id: InternalUserPolicy::Scope.new(@user, InternalUser).resolve.select(:consumer_id))
+        @scope.where(id: InternalUserPolicy::Scope.new(@user, InternalUser).resolve.distinct.pluck(:consumer_id))
       else
         @scope.none
       end
@@ -18,7 +18,7 @@ class ConsumerPolicy < AdminOnlyPolicy
       if @user.admin?
         @scope.where(id: ExternalUser.select(:consumer_id))
       elsif @user.teacher?
-        @scope.where(id: ExternalUserPolicy::Scope.new(@user, ExternalUser).resolve.select(:consumer_id))
+        @scope.where(id: ExternalUserPolicy::Scope.new(@user, ExternalUser).resolve.distinct.pluck(:consumer_id))
       else
         @scope.none
       end
@@ -30,7 +30,7 @@ class ConsumerPolicy < AdminOnlyPolicy
       if @user.admin?
         @scope.where(id: StudyGroup.select(:consumer_id))
       elsif @user.teacher?
-        @scope.where(id: StudyGroupPolicy::Scope.new(@user, StudyGroup).resolve.select(:consumer_id))
+        @scope.where(id: StudyGroupPolicy::Scope.new(@user, StudyGroup).resolve.distinct.pluck(:consumer_id))
       else
         @scope.none
       end
