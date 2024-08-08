@@ -19,13 +19,13 @@ class Runner < ApplicationRecord
   end
 
   def self.management_active?
-    @management_active ||= begin
-      runner_management = CodeOcean::Config.new(:code_ocean).read[:runner_management]
-      if runner_management
-        runner_management[:enabled]
-      else
-        false
-      end
+    return @management_active if defined? @management_active
+
+    runner_management = CodeOcean::Config.new(:code_ocean).read[:runner_management]
+    if runner_management
+      @management_active = runner_management[:enabled]
+    else
+      @management_active = false
     end
   end
 
