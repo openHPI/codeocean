@@ -47,7 +47,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
           # The exercise's author is a teacher in the study group
           .where(study_group_memberships: {role: StudyGroupMembership.roles[:teacher]})
           # The current user is a teacher in the *same* study group
-          .where(study_group_memberships: {study_group_id: @user.study_group_memberships.where(role: :teacher).select(:study_group_id)})
+          .where(study_group_memberships: {study_group_id: @user.study_group_ids_as_teacher})
           .or(@scope.distinct.where(user: @user))
           .or(@scope.distinct.where(public: true))
       else
@@ -61,7 +61,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
       if @user.admin?
         @scope.where(id: ProgrammingGroup.select(:exercise_id))
       elsif @user.teacher?
-        @scope.where(id: ProgrammingGroupPolicy::Scope.new(@user, ProgrammingGroup).resolve.select(:exercise_id))
+        @scope.where(id: ProgrammingGroupPolicy::Scope.new(@user, ProgrammingGroup).resolve.distinct.pluck(:exercise_id))
       else
         @scope.none
       end
@@ -73,7 +73,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
       if @user.admin?
         @scope.where(id: Submission.select(:exercise_id))
       elsif @user.teacher?
-        @scope.where(id: SubmissionPolicy::Scope.new(@user, Submission).resolve.select(:exercise_id))
+        @scope.where(id: SubmissionPolicy::Scope.new(@user, Submission).resolve.distinct.pluck(:exercise_id))
       else
         @scope.none
       end

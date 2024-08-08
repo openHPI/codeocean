@@ -35,7 +35,7 @@ class SubmissionPolicy < ApplicationPolicy
       if @user.admin?
         @scope.all
       elsif @user.teacher?
-        @scope.where(study_group_id: @user.study_groups, cause: CausesScope.new(@user, Submission).resolve)
+        @scope.where(study_group_id: @user.study_group_ids_as_teacher, cause: CausesScope.new(@user, Submission).resolve)
       else
         @scope.none
       end

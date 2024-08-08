@@ -25,3 +25,9 @@ Rails/DynamicFindBy:
   Whitelist:
     - find_by_sql # Default value for this cop
     - find_by_id_with_type # custom method defined in the `User` model
+
+Rails/PluckInWhere:
+  Exclude:
+    # Within scopes, we often use pluck to get the IDs of sub-records.
+    # This massively improves the performance by avoiding a rerun of the subquery for each row.
+    - "app/policies/**/*"
