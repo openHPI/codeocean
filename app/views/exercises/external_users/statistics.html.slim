@@ -79,13 +79,13 @@ h1
                       .unit-test-result.positive-result title=[run.file&.filepath, run.log].join("\n").strip
                     - else
                       .unit-test-result.unknown-result title=[run.file&.filepath, run.log].join("\n").strip
-                td = @working_times_until[event_index] if event_index.positive? && policy(@exercise).detailed_statistics?
+                td = @working_times_until[event_index] if policy(@exercise).detailed_statistics?
               - elsif this.is_a? UserExerciseIntervention
                 td = this.created_at.strftime('%F %T')
                 td = this.intervention.name
                 td
                 td
-                td = @working_times_until[event_index] if event_index.positive? && policy(@exercise).detailed_statistics?
+                td = @working_times_until[event_index] if policy(@exercise).detailed_statistics?
     small
       b
         = t('.legend')

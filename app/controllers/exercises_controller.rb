@@ -517,7 +517,7 @@ class ExercisesController < ApplicationController
         .order(:created_at)
         .includes(:exercise, testruns: [:testrun_messages, {file: [:file_type]}], files: [:file_type])
       @show_autosaves = params[:show_autosaves] == 'true' || submissions.where.not(cause: 'autosave').none?
-      submissions = submissions.where.not(cause: 'autosave') unless @show_autosaves
+
       interventions = @external_user.user_exercise_interventions.where(exercise: @exercise)
       @all_events = (submissions + interventions).sort_by(&:created_at)
       @deltas = @all_events.map.with_index do |item, index|
@@ -526,7 +526,26 @@ class ExercisesController < ApplicationController
       end
       @working_times_until = []
       @all_events.each_with_index do |_, index|
-        @working_times_until.push((format_time_difference(@deltas[0..index].sum) if index.positive?))
+        @working_times_until.push(format_time_difference(@deltas[0..index].sum))
+      end
+
+      unless @show_autosaves
+        # IMPORTANT: We always need to query the database for all submissions for the given external user and exercise.
+        #            Otherwise, the working time estimation would be completely off and inaccurate.
+        #            Consequentially, the 'show_autosaves' filter is applied here (not very nice, but it works).
+
+        autosave_indices = @all_events.each_index.select {|i| @all_events[i].is_a?(Submission) && @all_events[i].cause == 'autosave' }
+
+        # We need to delete from last to first (reverse), since we would otherwise change the indices of the following elements.
+        autosave_indices.reverse_each do |index|
+          @all_events.delete_at(index)
+          @working_times_until.delete_at(index)
+          # Hacky: If the autosave is the first element after a break, we need to set the delta of the following element to 0.
+          # Since the @delta array is "broken" for filtered views anyway, we use this hack to get the red "highlight" line right.
+          # TODO: Refactor the whole method into a more clean solution.
+          @deltas[index + 1] = 0 if (@deltas[index]).zero? && @deltas[index + 1].present?
+          @deltas.delete_at(index)
+        end
       end
     else
       final_submissions = policy_scope(Submission).where(contributor: @external_user,
