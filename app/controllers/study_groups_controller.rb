@@ -23,7 +23,7 @@ class StudyGroupsController < ApplicationController
   def update
     myparams = study_group_params
     @members = @study_group.study_group_memberships.includes(:user)
-    myparams[:external_users] = @members.where(id: myparams[:study_group_membership_ids].compact_blank).map(&:user)
+    myparams[:study_group_memberships] = @members.where(id: myparams[:study_group_membership_ids].compact_blank)
     update_and_respond(object: @study_group, params: myparams)
   end
 
