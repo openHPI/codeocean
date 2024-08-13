@@ -462,7 +462,7 @@ GEM
     ruby-progressbar (1.13.0)
     ruby-vips (2.2.1)
       ffi (~> 1.12)
-    rubytree (2.0.3)
+    rubytree (2.1.0)
       json (~> 2.0, > 2.3.1)
     rubyzip (2.3.2)
     sassc (2.4.0)
