@@ -1,0 +1,75 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "File Access",
+      "warning_code": 16,
+      "fingerprint": "1134520f0deee48edbda60f311006ade75d87dc3e24d86394a963a36069c7acf",
+      "check_name": "SendFile",
+      "message": "Model attribute used in file name",
+      "file": "app/controllers/code_ocean/files_controller.rb",
+      "line": 31,
+      "link": "https://brakemanscanner.org/docs/warning_types/file_access/",
+      "code": "send_file(Pathname(CodeOcean::File.find(params[:id]).native_file.current_path).realpath, :type => \"application/octet-stream\", :filename => CodeOcean::File.find(params[:id]).name_with_extension, :disposition => \"attachment\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CodeOcean::FilesController",
+        "method": "show_protected_upload"
+      },
+      "user_input": "CodeOcean::File.find(params[:id]).native_file",
+      "confidence": "Weak",
+      "cwe_id": [
+        22
+      ],
+      "note": "In conjunction with the CarrierWave gem, this access is needed to send a file stored on disk. Each location is double-checked with the CodeOcean::File#native_file_location_valid? method to ensure it is not outside the `uploads` directory (i.e., no system file)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "1cd85bf7cb5861691738b889b473f9419d09e7924b9f8f5665b51de2b66ff64d",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/models/exercise.rb",
+      "line": 359,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "self.class.connection.exec_query(\"\\n            WITH working_time AS\\n      (\\n               SELECT   contributor_id,\\n                        id,\\n                        exercise_id,\\n                        Max(score)                                                                                  AS max_score,\\n                        (created_at - Lag(created_at) OVER (partition BY contributor_id, exercise_id ORDER BY created_at)) AS working_time\\n               FROM     submissions\\n               WHERE    #{self.class.sanitize_sql([\"exercise_id = ?\", id])}\\n               AND      contributor_type IN ('ExternalUser', 'ProgrammingGroup')\\n               GROUP BY contributor_id,\\n                        id,\\n                        exercise_id), max_points AS\\n      (\\n               SELECT   context_id  AS ex_id,\\n                        Sum(weight) AS max_points\\n               FROM     files\\n               WHERE    context_type = 'Exercise'\\n               AND      #{self.class.sanitize_sql([\"context_id = ?\", id])}\\n               AND      role IN ('teacher_defined_test', 'teacher_defined_linter')\\n               GROUP BY context_id),\\n      -- filter for rows containing max points\\n      time_max_score AS\\n      (\\n             SELECT *\\n             FROM   working_time W1,\\n                    max_points MS\\n             WHERE  w1.exercise_id = ex_id\\n             AND    w1.max_score = ms.max_points),\\n      -- find row containing the first time max points\\n      first_time_max_score AS\\n      (\\n             SELECT id,\\n                    contributor_id,\\n                    exercise_id,\\n                    max_score,\\n                    working_time,\\n                    rn\\n             FROM   (\\n                             SELECT   id,\\n                                      contributor_id,\\n                                      exercise_id,\\n                                      max_score,\\n                                      working_time,\\n                                      Row_number() OVER(partition BY contributor_id, exercise_id ORDER BY id ASC) AS rn\\n                             FROM     time_max_score) T\\n             WHERE  rn = 1), times_until_max_points AS\\n      (\\n             SELECT w.id,\\n                    w.contributor_id,\\n                    w.exercise_id,\\n                    w.max_score,\\n                    w.working_time,\\n                    m.id AS reachedmax_at\\n             FROM   working_time W,\\n                    first_time_max_score M\\n             WHERE  w.contributor_id = m.contributor_id\\n             AND    w.exercise_id = m.exercise_id\\n             AND    w.id <= m.id),\\n      -- if user never makes it to max points, take all times\\n      all_working_times_until_max AS (\\n      (\\n             SELECT id,\\n                    contributor_id,\\n                    exercise_id,\\n                    max_score,\\n                    working_time\\n             FROM   times_until_max_points)\\n      UNION ALL\\n                (\\n                       SELECT id,\\n                              contributor_id,\\n                              exercise_id,\\n                              max_score,\\n                              working_time\\n                       FROM   working_time W1\\n                       WHERE  NOT EXISTS\\n                              (\\n                                     SELECT 1\\n                                     FROM   first_time_max_score F\\n                                     WHERE  f.contributor_id = w1.contributor_id\\n                                     AND    f.exercise_id = w1.exercise_id))), filtered_times_until_max AS\\n      (\\n             SELECT contributor_id,\\n                    exercise_id,\\n                    max_score,\\n                    CASE\\n                           WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0'\\n                           ELSE working_time\\n                    END AS working_time_new\\n             FROM   all_working_times_until_max ), result AS\\n      (\\n               SELECT   e.external_id AS external_contributor_id,\\n                        f.contributor_id,\\n                        exercise_id,\\n                        Max(max_score)        AS max_score,\\n                        Sum(working_time_new) AS working_time\\n               FROM     filtered_times_until_max f,\\n                        external_users e\\n               WHERE    f.contributor_id = e.id\\n               GROUP BY e.external_id,\\n                        f.contributor_id,\\n                        exercise_id )\\n      SELECT   unnest(percentile_cont(#{self.class.sanitize_sql([\"array[?]\", quantiles])}) within GROUP (ORDER BY working_time))\\n      FROM     result\\n      \")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Exercise",
+        "method": "get_quantiles"
+      },
+      "user_input": "StatisticsHelper.working_time_larger_delta",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "The `StatisticsHelper.working_time_larger_delta` already returns an SQL-escaped string and does not allow passing any params."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "277bcd4729b671541c9cd43b3de3423f2f621578a55ecbf547ac2f42ec50e9eb",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/models/exercise.rb",
+      "line": 453,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "self.class.connection.exec_query(\"\\n              WITH WORKING_TIME AS\\n              (SELECT contributor_id,\\n                                 id,\\n                                 exercise_id,\\n                                 max(score) AS max_score,\\n                                 (created_at - lag(created_at) OVER (PARTITION BY contributor_id, exercise_id\\n                                                                     ORDER BY created_at)) AS working_time\\n                         FROM submissions\\n                         WHERE #{self.class.sanitize_sql([\"exercise_id = :id AND contributor_id = :contributor_id AND contributor_type = :contributor_type\", { :id => id, :contributor_id => contributor.id, :contributor_type => contributor.class.name }])}\\n                         GROUP BY contributor_id, id, exercise_id),\\n              MAX_POINTS AS\\n              (SELECT context_id AS ex_id, sum(weight) AS max_points FROM files WHERE context_type = 'Exercise' AND context_id = #{id} AND role IN ('teacher_defined_test', 'teacher_defined_linter') GROUP BY context_id),\\n\\n              -- filter for rows containing max points\\n              TIME_MAX_SCORE AS\\n              (SELECT *\\n              FROM WORKING_TIME W1, MAX_POINTS MS\\n              WHERE W1.exercise_id = ex_id AND W1.max_score = MS.max_points),\\n\\n              -- find row containing the first time max points\\n              FIRST_TIME_MAX_SCORE AS\\n              ( SELECT id,contributor_id,exercise_id,max_score,working_time, rn\\n                FROM (\\n                  SELECT id,contributor_id,exercise_id,max_score,working_time,\\n                      ROW_NUMBER() OVER(PARTITION BY contributor_id, exercise_id ORDER BY id ASC) AS rn\\n                  FROM TIME_MAX_SCORE) T\\n               WHERE rn = 1),\\n\\n              TIMES_UNTIL_MAX_POINTS AS (\\n                  SELECT W.id, W.contributor_id, W.exercise_id, W.max_score, W.working_time, M.id AS reachedmax_at\\n                  FROM WORKING_TIME W, FIRST_TIME_MAX_SCORE M\\n                  WHERE W.contributor_id = M.contributor_id AND W.exercise_id = M.exercise_id AND W.id <= M.id),\\n\\n              -- if contributor never makes it to max points, take all times\\n              ALL_WORKING_TIMES_UNTIL_MAX AS\\n              ((SELECT id, contributor_id, exercise_id, max_score, working_time FROM TIMES_UNTIL_MAX_POINTS)\\n              UNION ALL\\n              (SELECT id, contributor_id, exercise_id, max_score, working_time FROM WORKING_TIME W1\\n               WHERE NOT EXISTS (SELECT 1 FROM FIRST_TIME_MAX_SCORE F WHERE F.contributor_id = W1.contributor_id AND F.exercise_id = W1.exercise_id))),\\n\\n              FILTERED_TIMES_UNTIL_MAX AS\\n              (\\n              SELECT contributor_id,exercise_id, max_score, CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_new\\n              FROM ALL_WORKING_TIMES_UNTIL_MAX\\n              )\\n                  SELECT e.external_id AS external_contributor_id, f.contributor_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time\\n                  FROM FILTERED_TIMES_UNTIL_MAX f, EXTERNAL_USERS e\\n                  WHERE f.contributor_id = e.id GROUP BY e.external_id, f.contributor_id, exercise_id\\n          \")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Exercise",
+        "method": "accumulated_working_time_for_only"
+      },
+      "user_input": "StatisticsHelper.working_time_larger_delta",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "The `StatisticsHelper.working_time_larger_delta` already returns an SQL-escaped string and does not allow passing any params."
+    }
+  ],
+  "updated": "2024-08-22 23:05:04 +0200",
+  "brakeman_version": "6.2.1"
+}

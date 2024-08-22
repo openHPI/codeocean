@@ -141,3 +141,25 @@ jobs:
           name: Slim-Lint Report
           title: Analyze Slim templates for linting issues
           path: checkstyle-result.xml
+
+  scan_ruby:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Scan for common Rails security vulnerabilities using static analysis
+        uses: reviewdog/action-brakeman@v2
+        with:
+          filter_mode: nofilter
+          reporter: github-check
+          skip_install: true
+          use_bundler: true
+          fail_on_error: true
