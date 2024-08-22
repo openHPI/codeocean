@@ -73,7 +73,7 @@ Rails.application.configure do
     policy.form_action          :self
     policy.frame_ancestors      :none
     policy.frame_src            :none
-    policy.manifest_src         :none
+    policy.manifest_src         :self
 
     # Trusted Types are not yet added to the application, thus we cannot enforce them.
     # policy.require_trusted_types_for :script

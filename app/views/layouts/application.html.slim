@@ -3,12 +3,14 @@ html lang=I18n.locale data-default-locale=I18n.default_locale
   head
     meta charset='utf8'
     meta name='viewport' content='width=device-width, initial-scale=1'
+    meta name='mobile-web-app-capable' content='yes'
     = render('breadcrumbs_and_title')
     title
       = yield(:title)
     = favicon_link_tag('/icon.png', type: 'image/png')
     = favicon_link_tag('/icon.svg', type: 'image/svg+xml')
     = favicon_link_tag('/icon.png', rel: 'apple-touch-icon', type: 'image/png')
+    = tag.link rel: 'manifest', href: pwa_manifest_path
     = action_cable_meta_tag
     = stylesheet_pack_tag('application', 'stylesheets', media: 'all', 'data-turbolinks-track': 'reload', integrity: true, crossorigin: 'anonymous')
     = stylesheet_link_tag('application', media: 'all', 'data-turbolinks-track': 'reload', integrity: true, crossorigin: 'anonymous')
