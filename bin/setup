@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require "fileutils"
+require 'fileutils'
 
 # path to your application root.
 APP_ROOT = File.expand_path('..', __dir__)
+APP_NAME = 'codeocean'
 
 def system!(*)
   system(*, exception: true)
@@ -20,11 +21,11 @@ FileUtils.chdir APP_ROOT do
   system('bundle check') || system!('bundle install')
 
   # Install JavaScript dependencies
-  system! 'bin/yarn'
+  system! "yarn install"
 
   # puts "\n== Copying sample files =="
-  # unless File.exist?('config/database.yml')
-  #   FileUtils.cp 'config/database.yml.sample', 'config/database.yml'
+  # unless File.exist?("config/database.yml")
+  #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
   # end
 
   puts "\n== Preparing database =="
@@ -35,4 +36,8 @@ FileUtils.chdir APP_ROOT do
 
   puts "\n== Restarting application server =="
   system! 'bin/rails restart'
+
+  # puts "\n== Configuring puma-dev =="
+  # system "ln -nfs #{APP_ROOT} ~/.puma-dev/#{APP_NAME}"
+  # system "curl -Is https://#{APP_NAME}.test/up | head -n 1"
 end

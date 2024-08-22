@@ -3,7 +3,7 @@
 class TestrunMessage < ApplicationRecord
   belongs_to :testrun
 
-  enum cmd: {
+  enum :cmd, {
     input: 0,
     write: 1,
     clear: 2,
@@ -18,13 +18,13 @@ class TestrunMessage < ApplicationRecord
     result: 11,
     canvasevent: 12,
     files: 13,
-  }, _default: :write, _prefix: true
+  }, default: :write, prefix: true
 
-  enum stream: {
+  enum :stream, {
     stdin: 0,
     stdout: 1,
     stderr: 2,
-  }, _prefix: true
+  }, prefix: true
 
   validates :cmd, presence: true
   validates :timestamp, presence: true

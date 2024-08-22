@@ -9,22 +9,22 @@ class Event::SynchronizedEditor < ApplicationRecord
   belongs_to :study_group
   belongs_to :file, class_name: 'CodeOcean::File', optional: true
 
-  enum action: {
+  enum :action, {
     editor_change: 0,
     connection_change: 1,
     connection_status: 2,
     current_content: 3,
-  }, _prefix: true
+  }, prefix: true
 
-  enum status: {
+  enum :status, {
     connected: 0,
     disconnected: 1,
-  }, _prefix: true
+  }, prefix: true
 
-  enum editor_action: {
+  enum :editor_action, {
     insert: 0,
     remove: 1,
-  }, _prefix: true
+  }, prefix: true
 
   validates :session_id, presence: true
   validates :status, presence: true, if: -> { action_connection_change? }

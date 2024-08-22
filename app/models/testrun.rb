@@ -9,7 +9,7 @@ class Testrun < ApplicationRecord
 
   CONSOLE_OUTPUT = %w[stdout stderr].freeze
 
-  enum status: {
+  enum :status, {
     ok: 0,
     failed: 1,
     container_depleted: 2,
@@ -17,7 +17,7 @@ class Testrun < ApplicationRecord
     out_of_memory: 4,
     terminated_by_client: 5,
     runner_in_use: 6,
-  }, _default: :ok, _prefix: true
+  }, default: :ok, prefix: true
 
   validates :exit_code, numericality: {only_integer: true, min: 0, max: 255}, allow_nil: true
   validates :status, presence: true

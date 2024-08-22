@@ -5,10 +5,10 @@ The following environment variables are specifically support in CodeOcean and ar
 | Environment Variable | Default | Description |  
 |- |- |- |
 | `RAILS_ENV` | `development` | Specifies the Rails environment which can be configured using the files in `config/environments` |  
+| `SECRET_KEY_BASE` | ` ` | Specifies a server-side secret for Rails, must be set for production |
 | `RAILS_RELATIVE_URL_ROOT` | `/` | Specifies the subpath of the application, used for links and assets |  
 | `WEB_CONCURRENCY` | Number of physical CPU cores | Puma worker count in production or staging for cluster mode |
-| `RAILS_MAX_THREADS` | `5` | Maximum Puma thread count per worker |  
-| `RAILS_MIN_THREADS` | `$RAILS_MIN_THREADS` | Minimum Puma thread count per worker |
+| `RAILS_MAX_THREADS` | `3` | Maximum Puma thread count per worker |
 | `PORT` | `7000` | Default port for the web server |
 | `PIDFILE` | `tmp/pids/server.pid` | Location of the file to store the Puma process ID |
 | `SENTRY_DSN` | ` ` | Specifies the [Sentry error reporting](https://sentry.io) endpoint for the Rails server |  
