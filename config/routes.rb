@@ -184,6 +184,10 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get 'up', to: 'rails/health#show', as: :rails_health_check
 
+  # Render dynamic PWA files from app/views/pwa/*
+  get 'service-worker', to: 'rails/pwa#service_worker', as: :pwa_service_worker, defaults: {format: :js}
+  get 'manifest', to: 'rails/pwa#manifest', as: :pwa_manifest, defaults: {format: :webmanifest}
+
   # Defines the root path route ("/")
   root to: 'application#welcome'
 end

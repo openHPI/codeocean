@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   # allow_browser versions: :modern
 
   include ApplicationHelper
+  include I18nHelper
   include Pundit::Authorization
 
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
@@ -159,45 +160,5 @@ class ApplicationController < ActionController::Base
   def set_content_type_nosniff
     # When sending a file, we want to ensure that browsers follow our Content-Type header
     response.headers['X-Content-Type-Options'] = 'nosniff'
-  end
-
-  def sanitized_lti_locale_param
-    sanitize_locale(params[:custom_locale])
-  end
-
-  def sanitized_locale_param
-    sanitize_locale(params[:locale])
-  end
-
-  def sanitized_session_locale
-    sanitize_locale(session[:locale])
-  end
-
-  def choose_locale
-    sanitized_lti_locale_param ||
-      sanitized_locale_param ||
-      sanitized_session_locale ||
-      http_accept_language.compatible_language_from(I18n.available_locales) ||
-      I18n.default_locale
-  end
-
-  def switch_locale(&)
-    locale = choose_locale
-    session[:locale] = locale
-    Sentry.set_extras(locale:)
-    I18n.with_locale(locale, &)
-  end
-
-  # Sanitize given locale.
-  #
-  # Return `nil` if the locale is blank or not available.
-  #
-  def sanitize_locale(locale)
-    return if locale.blank?
-
-    locale = locale.downcase.to_sym
-    return unless I18n.available_locales.include?(locale)
-
-    locale
   end
 end

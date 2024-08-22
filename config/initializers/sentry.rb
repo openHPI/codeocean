@@ -29,7 +29,7 @@ Sentry.init do |config|
       when /http/
         # for Rails applications, transaction_name would be the request's path (env["PATH_INFO"]) instead of "Controller#action"
         case transaction_name
-          when '/', '/ping'
+          when '/', '/ping', '/up'
             0.00 # ignore health check
           else
             ENV.fetch('SENTRY_TRACE_SAMPLE_RATE', 1.0).to_f
