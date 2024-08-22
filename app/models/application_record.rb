@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationRecord < ActiveRecord::Base
-  self.abstract_class = true
+  primary_abstract_class
 
   before_validation :strip_strings
   before_validation :remove_null_bytes

@@ -19,13 +19,16 @@ jobs:
           --health-retries 5
 
     steps:
+      - name: Install packages
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips postgresql-client
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3
+          ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Setup Node
@@ -59,7 +62,6 @@ jobs:
           cp config/action_mailer.yml.ci config/action_mailer.yml
           cp config/code_ocean.yml.ci config/code_ocean.yml
           cp config/database.yml.ci config/database.yml
-          cp config/secrets.yml.ci config/secrets.yml
           cp config/docker.yml.erb.ci config/docker.yml.erb
           cp config/mnemosyne.yml.ci config/mnemosyne.yml
           cp config/content_security_policy.yml.ci config/content_security_policy.yml
@@ -94,7 +96,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3
+          ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Run rubocop
@@ -125,7 +127,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.3
+          ruby-version: .ruby-version
           bundler-cache: true
 
       - name: Run slim-lint

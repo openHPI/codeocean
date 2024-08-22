@@ -151,7 +151,7 @@ If you have several Ruby versions installed, check that you are using the latest
 First, copy our templates:
 
 ```shell
-for f in action_mailer.yml code_ocean.yml content_security_policy.yml database.yml docker.yml.erb mnemosyne.yml secrets.yml
+for f in action_mailer.yml code_ocean.yml content_security_policy.yml database.yml docker.yml.erb mnemosyne.yml
 do
   if [ ! -f config/$f ]
   then
@@ -161,9 +161,9 @@ done
 ```
 
 Then, you should check all config files manually and adjust settings where necessary for your environment.
-For the basic setup you only need to 
-- generate a secret with e.g. `rails secret` and then add it into the three CHANGE_ME fields in `secrets.yml`.
-- add your username for the database in `database.yml`. For macOS, it is the same as your mac username.
+For the basic setup you only need to add your username for the database in `database.yml`. For macOS, it is the same as your Mac username.
+
+For a production configuration, you also need to supply a secret key base. To do so, first generate a secret with `rails secret` and then set it as environment variable `SECRET_KEY_BASE=<your secret>` for the process.
 
 ### Install required project libraries
 

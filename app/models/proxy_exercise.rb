@@ -4,10 +4,10 @@ class ProxyExercise < ApplicationRecord
   include Creation
   include DefaultValues
 
-  enum algorithm: {
+  enum :algorithm, {
     best_match: 0,
     random: 1,
-  }, _default: :write, _prefix: true
+  }, default: :write, prefix: true
 
   after_initialize :generate_token
   after_initialize :set_reason

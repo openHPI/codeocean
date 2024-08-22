@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 class Consumer < ApplicationRecord
-  enum rfc_visibility: {
+  enum :rfc_visibility, {
     all: 0,
     consumer: 1,
     study_group: 2,
-  }, _default: :all, _prefix: true
+  }, default: :all, prefix: true
 
   has_many :users
   has_many :study_groups, dependent: :destroy

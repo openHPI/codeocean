@@ -34,7 +34,7 @@ rspec:
     - sudo -u postgres /usr/lib/postgresql/13/bin/postgres -D /etc/postgresql/13/main/ &
     - sleep 3
     - sudo wrapdocker
-    - for f in action_mailer.yml database.yml secrets.yml code_ocean.yml docker.yml.erb mnemosyne.yml; do if [ ! -f config/$f ]; then cp config/$f.ci config/$f; fi; done
+    - for f in action_mailer.yml database.yml code_ocean.yml docker.yml.erb mnemosyne.yml; do if [ ! -f config/$f ]; then cp config/$f.ci config/$f; fi; done
     - source /home/codeocean/.rvm/scripts/rvm
     - bundle install
     - yarn install

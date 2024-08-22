@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+
   resources :community_solutions, only: %i[index edit update]
   resources :error_template_attributes
   resources :error_templates do
@@ -35,8 +37,6 @@ Rails.application.routes.draw do
       get :unsubscribe, to: 'subscriptions#destroy'
     end
   end
-
-  root to: 'application#welcome'
 
   namespace :admin do
     get 'dashboard', to: 'dashboard#show'
@@ -179,4 +179,11 @@ Rails.application.routes.draw do
 
   mount ActionCable.server => '/cable'
   mount RailsAdmin::Engine => '/rails_admin', as: 'rails_admin'
+
+  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
+  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  get 'up', to: 'rails/health#show', as: :rails_health_check
+
+  # Defines the root path route ("/")
+  root to: 'application#welcome'
 end

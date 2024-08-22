@@ -28,7 +28,6 @@ Please refer to the [Local Setup Guide](docs/LOCAL_SETUP.md) for more details.
 - run `bundle install`
 - create *config/action_mailer.yml*
 - create *config/database.yml*
-- create *config/secrets.yml*
 - customize *config/docker.yml.erb*
 
 Exemplary configuration files are available in the *config* directory.
