@@ -5,3 +5,7 @@ module Authentication
     page.driver.post(sessions_url, email: user.email, password:)
   end
 end
+
+RSpec.configure do |config|
+  config.include Authentication, type: :feature
+end
