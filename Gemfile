@@ -50,7 +50,7 @@ gem 'slim-rails'
 gem 'sorcery'
 gem 'sprockets-rails'
 gem 'telegraf'
-gem 'terser'
+gem 'terser', require: false
 gem 'tubesock'
 gem 'turbolinks'
 gem 'whenever', require: false
