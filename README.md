@@ -20,7 +20,7 @@ CodeOcean is mainly used in the context of MOOCs (such as those offered on openH
 
 ## Development Setup
 
-Please refer to the [Local Setup Guide](docs/LOCAL_SETUP.md) for more details.
+Please refer to the [Local Setup Guide](docs/LOCAL_SETUP.md) for more details. Please note that the [Dockerfile](Dockerfile) is intended for production only.
 
 ### Mandatory Steps
 
@@ -42,7 +42,7 @@ In order to execute code submissions using the [DockerContainerPool](https://git
 - If you already created a configuration for your local installation and want to use vagrant, too, be sure to log into the vagrant instance via ssh and add your database user manually to the database. Afterwards, create, migrate and seed.
 
 ## Production Setup
-- We recommend using [Capistrano](https://capistranorb.com/) for deployment.
+- We recommend using [Capistrano](https://capistranorb.com/) for deployment. Alternatively, the [Dockerfile](Dockerfile) can be used to build a production-ready Docker image containing the Rails application.
 - Once deployed, CodeOcean assumes to run exclusively under a (sub)domain. If you want to use it under a custom subpath, you can specify the desired path using an environment variable: `RAILS_RELATIVE_URL_ROOT=/codeocean`. Please ensure to rebuild all assets and restart the server to apply the new path.
 - When using [PgBouncer](https://www.pgbouncer.org), please make sure to correctly set the `intervalstyle` to `iso_8601` for the database. Otherwise, the application will not be able to parse timestamps correctly. See [a similar issue here](https://gitlab.com/gitlab-org/gitlab/-/issues/349912) and [our migration](./db/migrate/20221206221333_set_database_interval_style.rb) for more details.
 
