@@ -85,6 +85,8 @@ RSpec.describe 'Score', :js do
       allow(submission).to receive(:calculate_score).and_return(calculate_response)
       allow_any_instance_of(SubmissionsController).to receive(:send_scores).and_return(scoring_response)
       click_on(I18n.t('exercises.editor.score'))
+      wait_for_ajax
+      wait_for_websocket
     end
 
     shared_context 'when full score reached' do
@@ -292,6 +294,8 @@ RSpec.describe 'Score', :js do
       before do
         allow(submission).to receive(:calculate_score).and_raise(Runner::Error::RunnerInUse)
         click_on(I18n.t('exercises.editor.score'))
+        wait_for_ajax
+        wait_for_websocket
       end
 
       it_behaves_like 'notification', 'exercises.editor.runner_in_use'
@@ -305,6 +309,8 @@ RSpec.describe 'Score', :js do
       before do
         allow(submission).to receive(:calculate_score).and_raise(Runner::Error::NotAvailable)
         click_on(I18n.t('exercises.editor.score'))
+        wait_for_ajax
+        wait_for_websocket
       end
 
       it_behaves_like 'notification', 'exercises.editor.depleted'
