@@ -70,7 +70,7 @@ RSpec.describe CodeOcean::File do
 
     context 'when the path has been modified' do
       before do
-        file.update_column(:native_file, '../../../../secrets.yml') # rubocop:disable Rails/SkipsModelValidations
+        file.update_column(:native_file, '../../../../database.yml') # rubocop:disable Rails/SkipsModelValidations
         file.reload
       end
 
@@ -80,13 +80,13 @@ RSpec.describe CodeOcean::File do
     end
 
     context 'when a symlink is used' do
-      let(:fake_upload_location) { File.join(CarrierWave::Uploader::Base.new.root, 'uploads', 'files', 'secrets.yml') }
+      let(:fake_upload_location) { File.join(CarrierWave::Uploader::Base.new.root, 'uploads', 'files', 'database.yml') }
 
       before do
         FileUtils.mkdir_p(File.dirname(fake_upload_location))
-        FileUtils.touch Rails.root.join('config/secrets.yml')
-        File.symlink Rails.root.join('config/secrets.yml'), fake_upload_location
-        file.update_column(:native_file, '../secrets.yml') # rubocop:disable Rails/SkipsModelValidations
+        FileUtils.touch Rails.root.join('config/database.yml')
+        File.symlink Rails.root.join('config/database.yml'), fake_upload_location
+        file.update_column(:native_file, '../database.yml') # rubocop:disable Rails/SkipsModelValidations
         file.reload
       end
 
