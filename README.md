@@ -1,5 +1,7 @@
 # CodeOcean
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/openHPI/codeocean)
+
 [![Build Status](https://github.com/openHPI/codeocean/workflows/CI/badge.svg)](https://github.com/openHPI/codeocean/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/openHPI/codeocean/branch/master/graph/badge.svg?token=imei686C2r)](https://codecov.io/gh/openHPI/codeocean)
 
