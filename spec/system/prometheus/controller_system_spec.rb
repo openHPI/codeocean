@@ -20,7 +20,9 @@ RSpec.describe Prometheus::Controller do
     allow(codeocean_config).to receive(:read).and_return(prometheus_config)
 
     ApplicationRecord.include Prometheus::Record
-    described_class.initialize_metrics
+    initializer_thread = described_class.initialize_metrics
+    # We need to wait for the initializer thread to finish, since otherwise the specs might overlap with calls during initialization
+    initializer_thread.join
     stub_metrics
   end
 
