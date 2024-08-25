@@ -40,3 +40,13 @@ updates:
     labels:
       - dependencies
       - docker
+
+  - package-ecosystem: devcontainers
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "03:00"
+      timezone: UTC
+    labels:
+      - dependencies
+      - devcontainers

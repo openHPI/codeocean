@@ -23,10 +23,12 @@ FileUtils.chdir APP_ROOT do
   # Install JavaScript dependencies
   system! "yarn install"
 
-  # puts "\n== Copying sample files =="
-  # unless File.exist?("config/database.yml")
-  #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
-  # end
+  puts "\n== Copying sample files =="
+  %w[action_mailer.yml code_ocean.yml content_security_policy.yml database.yml docker.yml.erb mnemosyne.yml].each do |file|
+    unless File.exist?("config/#{file}")
+      FileUtils.cp "config/#{file}.example", "config/#{file}"
+    end
+  end
 
   puts "\n== Preparing database =="
   system! 'bin/rails db:prepare'
