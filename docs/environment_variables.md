@@ -23,4 +23,5 @@ The following environment variables are specifically support in CodeOcean and ar
 | `BACKTRACE` | `false` | Enables more verbose log output from framework code during debugging |  
 | `TRUSTED_IP` | ` ` in `development`    | Enables `BetterErrors` for the given IP addresses during development |  
 | `LISTEN_ADDRESS` | `127.0.0.1` in `development` | Specifies the IP address the Vagrant VM server should attach to during development |  
-| `HEADLESS_TEST` | `false` | Enables the test environment to work without a window manager for feature tests (e.g., using Vagrant) |  
+| `HEADLESS` | `false` | Enables the test environment to work without a window manager for feature tests (e.g., using Vagrant) |  
+| `BROWSER` | `chrome` | Specifies the browser to be used for system tests. Supported are `chrome` or `firefox` |  

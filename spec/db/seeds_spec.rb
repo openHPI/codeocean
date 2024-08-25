@@ -14,9 +14,8 @@ RSpec.describe 'seeds' do
     Rake::Task['db:prepare'].invoke
 
     # We want to execute the seeds for the dev environment against the test database
-    # rubocop:disable Rails/Inquiry
-    allow(Rails).to receive(:env) { 'development'.inquiry }
-    # rubocop:enable Rails/Inquiry
+    allow(Rails).to receive(:env) { 'development'.inquiry } # rubocop:disable Rails/Inquiry
+    allow(Rails.application.config.action_mailer).to receive(:default_url_options).and_return({})
     allow(ActiveRecord::Base).to receive(:establish_connection).and_call_original
     allow(ActiveRecord::Base).to receive(:establish_connection).with(:development) {
       ActiveRecord::Base.establish_connection(:test)
