@@ -27,7 +27,7 @@ RSpec.describe 'seeds' do
     allow(HighLine).to receive(:say)
   end
 
-  describe 'execute db:seed', cleaning_strategy: :truncation do
+  describe 'execute db:seed' do
     it 'collects the test results' do
       expect { seed }.not_to raise_error
     end
