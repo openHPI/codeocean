@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/integer/time'
+require_relative '../initializers/github_codespaces'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # Allowed IPs for the Vagrant setup
-  config.web_console.allowed_ips = '192.168.0.0/16'
+  if GithubCodespaces.active? || ENV.fetch('USER', nil) == 'vagrant'
+    # Allow the webconsole to be used; all traffic is proxied and thus appears to come from a private IP
+    # By default, GitHub requires an authorization to access a Codespaces domain.
+    # Vagrant is running locally in a private network and thus not accessible from the outside anyway.
+    private_ips = %w[10.0.0.0/8 172.16.0.0/12 192.168.0.0/16]
+    config.web_console.permissions = private_ips
+    private_ips.each {|ip| BetterErrors::Middleware.allow_ip! ip }
+  end
 
   # In the development environment your application's code is reloaded any time
   # it changes. This slows down response time but is perfect for development

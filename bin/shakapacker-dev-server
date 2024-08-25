@@ -10,8 +10,13 @@ ENV['SHAKAPACKER_USE_PACKAGE_JSON_GEM'] ||= 'true'
 require 'bundler/setup'
 require 'shakapacker'
 require 'shakapacker/dev_server_runner'
+require_relative '../config/initializers/github_codespaces'
 
 APP_ROOT = File.expand_path('..', __dir__)
 Dir.chdir(APP_ROOT) do
+  if GithubCodespaces.active?
+    ARGV.push('--client-web-socket-url', GithubCodespaces.client_web_socket_url)
+  end
+
   Shakapacker::DevServerRunner.run(ARGV)
 end
