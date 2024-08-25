@@ -33,7 +33,7 @@ RSpec.describe 'Request_for_Comments' do
 
   it 'works with the pagination' do
     submission = create(:submission)
-    create_list(:rfc, 25, submission:, exercise: submission.exercise) # rubocop:disable RSpec/FactoryBot/ExcessiveCreateList
+    create_list(:rfc, 25, submission:, exercise: submission.exercise) # rubocop:disable FactoryBot/ExcessiveCreateList
     visit(request_for_comments_path)
     expect(page).to have_css('ul.pagination')
   end
