@@ -26,7 +26,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = example.metadata[:cleaning_strategy] || :transaction
   end
 
-  config.before(:each, type: :feature) do
+  config.before(:each, type: :system) do
     # :rack_test driver's Rack app under test shares database connection
     # with the specs, so continue to use transaction strategy for speed.
     unless Capybara.current_driver == :rack_test

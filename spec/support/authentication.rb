@@ -7,5 +7,5 @@ module Authentication
 end
 
 RSpec.configure do |config|
-  config.include Authentication, type: :feature
+  config.include Authentication, type: :system
 end

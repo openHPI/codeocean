@@ -89,7 +89,6 @@ end
 group :test do
   gem 'capybara'
   gem 'database_cleaner'
-  gem 'headless'
   gem 'rails-controller-testing'
   gem 'rspec-collection_matchers'
   gem 'rspec-github', require: false
