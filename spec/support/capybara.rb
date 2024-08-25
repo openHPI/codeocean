@@ -16,7 +16,16 @@ RSpec.configure do |config|
 
   config.before(:each, type: :system, js: true) do
     # Selenium when we need JavaScript
-    driven_by :selenium, using: :"#{display_mode}#{browser}", &send(:"#{browser}_options")
+    if ENV['CAPYBARA_SERVER_PORT']
+      ActionDispatch::SystemTestCase.served_by host: 'rails-app', port: ENV['CAPYBARA_SERVER_PORT']
+
+      driven_by :selenium, using: :headless_chrome, options: {
+        browser: :remote,
+        url: URI::HTTP.build(host: ENV.fetch('SELENIUM_HOST', nil), port: 4444).to_s,
+      }, &chrome_options
+    else
+      driven_by :selenium, using: :"#{display_mode}#{browser}", &send(:"#{browser}_options")
+    end
   end
 
   private
