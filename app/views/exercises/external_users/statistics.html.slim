@@ -13,7 +13,7 @@ h1
       - file_types.add(ActiveSupport::JSON.encode(file.file_type))
     - all_files.push(submission.files)
   - all_files.compact_blank!
-  - file_types.reject!(&:blank?) # rubocop:disable Rails/CompactBlank because it's a set
+  - file_types.reject!(&:blank?)
 
   .d-none#data data-submissions=ActiveSupport::JSON.encode(submissions) data-files=ActiveSupport::JSON.encode(all_files) data-file-types=ActiveSupport::JSON.encode(file_types)
 

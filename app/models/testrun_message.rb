@@ -81,7 +81,7 @@ class TestrunMessage < ApplicationRecord
       end
       message
     end
-    filtered_messages.select(&:present?)
+    filtered_messages.compact_blank
   end
   private_class_method :filter_messages_by_size
 
