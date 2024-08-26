@@ -12,7 +12,7 @@ RSpec.describe ConsumersController do
 
   describe 'POST #create' do
     context 'with a valid consumer' do
-      let(:perform_request) { proc { post :create, params: {consumer: build(:consumer, name: 'New Consumer').attributes} } }
+      let(:perform_request) { proc { post :create, params: {consumer: build(:consumer, name: 'New Consumer').attributes.except('id', 'created_at', 'updated_at')} } }
 
       context 'when the request is performed' do
         before { perform_request.call }
@@ -35,7 +35,7 @@ RSpec.describe ConsumersController do
     end
 
     context 'with a duplicated consumer' do
-      let(:perform_request) { proc { post :create, params: {consumer: build(:consumer).attributes} } }
+      let(:perform_request) { proc { post :create, params: {consumer: build(:consumer).attributes.except('id', 'created_at', 'updated_at')} } }
 
       context 'when the request is performed' do
         before { perform_request.call }

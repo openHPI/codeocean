@@ -62,7 +62,7 @@ RSpec.describe ExercisesController do
   end
 
   describe 'POST #create' do
-    let(:exercise_attributes) { build(:dummy).attributes }
+    let(:exercise_attributes) { build(:dummy).attributes.except('created_at', 'id', 'token', 'updated_at', 'user_id', 'user_type', 'uuid') }
 
     context 'with a valid exercise' do
       let(:perform_request) { proc { post :create, params: {exercise: exercise_attributes} } }
@@ -82,7 +82,7 @@ RSpec.describe ExercisesController do
       let(:perform_request) { proc { post :create, params: {exercise: exercise_attributes.merge(files_attributes:)} } }
 
       context 'when specifying the file content within the form' do
-        let(:files_attributes) { {'0' => build(:file).attributes} }
+        let(:files_attributes) { {'0' => build(:file).attributes.except('context_id', 'context_type', 'created_at', 'hashed_content', 'updated_at')} }
 
         it 'creates the file' do
           expect { perform_request.call }.to change(CodeOcean::File, :count)
@@ -90,7 +90,7 @@ RSpec.describe ExercisesController do
       end
 
       context 'when uploading a file' do
-        let(:files_attributes) { {'0' => build(:file, file_type:).attributes.merge(content: uploaded_file)} }
+        let(:files_attributes) { {'0' => build(:file, file_type:).attributes.except('context_id', 'context_type', 'created_at', 'hashed_content', 'updated_at').merge(content: uploaded_file)} }
 
         context 'when uploading a binary file' do
           let(:file_path) { Rails.root.join('db/seeds/audio_video/devstories.mp4') }
@@ -291,7 +291,7 @@ RSpec.describe ExercisesController do
 
   describe 'PUT #update' do
     context 'with a valid exercise' do
-      let(:exercise_attributes) { build(:dummy).attributes }
+      let(:exercise_attributes) { build(:dummy).attributes.except('created_at', 'id', 'token', 'updated_at', 'uuid', 'user_id', 'user_type') }
 
       before { put :update, params: {exercise: exercise_attributes, id: exercise.id} }
 
