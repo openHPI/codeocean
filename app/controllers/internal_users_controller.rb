@@ -14,38 +14,11 @@ class InternalUsersController < ApplicationController
     set_up_password if request.patch? || request.put?
   end
 
-  def authorize!
-    authorize(@user || @users)
-  end
-  private :authorize!
-
-  def change_password
-    respond_to do |format|
-      if @user.update(params[:internal_user].permit(:password, :password_confirmation))
-        @user.change_password!(params[:internal_user][:password])
-        format.html { redirect_to(sign_in_path, notice: t('internal_users.reset_password.success')) }
-        format.json { head :ok }
-      else
-        respond_with_invalid_object(format, object: @user, template: :reset_password)
-      end
-    end
-  end
-  private :change_password
-
   def index
     @search = policy_scope(InternalUser).ransack(params[:q], {auth_object: current_user})
     @users = @search.result.includes(:consumer).order(:name).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
-
-  def deliver_reset_password_instructions
-    if params[:email].present?
-      user = InternalUser.arel_table
-      InternalUser.where(user[:email].matches(params[:email])).first&.deliver_reset_password_instructions!
-      redirect_to(:root, notice: t('internal_users.forgot_password.success'))
-    end
-  end
-  private :deliver_reset_password_instructions
 
   def show; end
 
@@ -65,6 +38,63 @@ class InternalUsersController < ApplicationController
 
   def edit; end
 
+  def create
+    platform_admin = platform_admin_param
+    @user = InternalUser.new(internal_user_params)
+    @user.platform_admin = platform_admin if current_user.admin?
+    authorize!
+    @user.send(:setup_activation)
+    create_and_respond(object: @user) do
+      @user.send(:send_activation_needed_email!)
+      # The return value is used as a flash message. If this block does not
+      # have any specific return value, a default success message is shown.
+      nil
+    end
+  end
+
+  def reset_password
+    change_password if request.patch? || request.put?
+  end
+
+  def update
+    # Let's skip the password validation if the user is edited through
+    # the form by another user. Otherwise, the update might fail if an
+    # activation_token or password_reset_token is present
+    @user.validate_password = current_user == @user
+    @user.platform_admin = platform_admin_param if current_user.admin?
+    update_and_respond(object: @user, params: internal_user_params)
+  end
+
+  def destroy
+    destroy_and_respond(object: @user)
+  end
+
+  private
+
+  def authorize!
+    authorize(@user || @users)
+  end
+
+  def change_password
+    respond_to do |format|
+      if @user.update(params[:internal_user].permit(:password, :password_confirmation))
+        @user.change_password!(params[:internal_user][:password])
+        format.html { redirect_to(sign_in_path, notice: t('internal_users.reset_password.success')) }
+        format.json { head :ok }
+      else
+        respond_with_invalid_object(format, object: @user, template: :reset_password)
+      end
+    end
+  end
+
+  def deliver_reset_password_instructions
+    if params[:email].present?
+      user = InternalUser.arel_table
+      InternalUser.where(user[:email].matches(params[:email])).first&.deliver_reset_password_instructions!
+      redirect_to(:root, notice: t('internal_users.forgot_password.success'))
+    end
+  end
+
   def internal_user_params
     permitted_params = params.require(:internal_user).permit(:consumer_id, :email, :name, study_group_ids: []).presence || {}
     checked_study_group_memberships = @study_group_memberships.select {|sgm| permitted_params[:study_group_ids]&.include? sgm.study_group.id.to_s }
@@ -80,52 +110,28 @@ class InternalUsersController < ApplicationController
     removed_study_group_memberships.map(&:destroy)
     permitted_params
   end
-  private :internal_user_params
 
   def platform_admin_param
     params.require(:internal_user).delete(:platform_admin)
-  end
-  private :platform_admin_param
-
-  def create
-    platform_admin = platform_admin_param
-    @user = InternalUser.new(internal_user_params)
-    @user.platform_admin = platform_admin if current_user.admin?
-    authorize!
-    @user.send(:setup_activation)
-    create_and_respond(object: @user) do
-      @user.send(:send_activation_needed_email!)
-      # The return value is used as a flash message. If this block does not
-      # have any specific return value, a default success message is shown.
-      nil
-    end
   end
 
   def render_forgot_password_form
     redirect_to(:root, alert: t('shared.already_signed_in')) if current_user
   end
-  private :render_forgot_password_form
 
   def require_activation_token
     require_token(:activation)
   end
-  private :require_activation_token
 
   def require_reset_password_token
     require_token(:reset_password)
   end
-  private :require_reset_password_token
 
   def require_token(type)
     token = params.delete(:token) # Used when a user clicks on a link in an email
     token ||= params[:internal_user]&.delete(:"#{type}_token") # Used when a user sets / changes the password and submit the form
     @user = InternalUser.send(:"load_from_#{type}_token", token)
     render_not_authorized unless @user
-  end
-  private :require_token
-
-  def reset_password
-    change_password if request.patch? || request.put?
   end
 
   def set_up_password
@@ -139,13 +145,11 @@ class InternalUsersController < ApplicationController
       end
     end
   end
-  private :set_up_password
 
   def set_user
     @user = InternalUser.find(params[:id])
     authorize!
   end
-  private :set_user
 
   def collect_set_and_unset_study_group_memberships
     @study_groups = policy_scope(StudyGroup)
@@ -156,19 +160,5 @@ class InternalUsersController < ApplicationController
     @study_group_memberships = checked_study_group_memberships + unchecked_study_groups.collect do |study_group|
       StudyGroupMembership.new(user: @user, study_group:)
     end
-  end
-  private :collect_set_and_unset_study_group_memberships
-
-  def update
-    # Let's skip the password validation if the user is edited through
-    # the form by another user. Otherwise, the update might fail if an
-    # activation_token or password_reset_token is present
-    @user.validate_password = current_user == @user
-    @user.platform_admin = platform_admin_param if current_user.admin?
-    update_and_respond(object: @user, params: internal_user_params)
-  end
-
-  def destroy
-    destroy_and_respond(object: @user)
   end
 end
