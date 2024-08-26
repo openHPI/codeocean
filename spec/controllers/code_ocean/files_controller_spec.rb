@@ -33,7 +33,7 @@ RSpec.describe CodeOcean::FilesController do
     let(:submission) { create(:submission, contributor:) }
 
     context 'with a valid file' do
-      let(:perform_request) { proc { post :create, params: {code_ocean_file: build(:file, context: submission).attributes, format: :json} } }
+      let(:perform_request) { proc { post :create, params: {code_ocean_file: build(:file, context: submission).attributes.slice('name', 'file_type_id', 'file_template_id', 'context_id'), format: :json} } }
 
       before do
         submission.exercise.update(allow_file_creation: true)
@@ -53,7 +53,7 @@ RSpec.describe CodeOcean::FilesController do
     context 'with an invalid file' do
       before do
         submission.exercise.update(allow_file_creation: true)
-        post :create, params: {code_ocean_file: {context_id: submission.id, context_type: Submission}, format: :json}
+        post :create, params: {code_ocean_file: {context_id: submission.id}, format: :json}
       end
 
       expect_assigns(file: CodeOcean::File)

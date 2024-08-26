@@ -83,13 +83,14 @@ class InternalUsersController < ApplicationController
   private :internal_user_params
 
   def platform_admin_param
-    params.require(:internal_user).permit(:platform_admin)[:platform_admin]
+    params.require(:internal_user).delete(:platform_admin)
   end
   private :platform_admin_param
 
   def create
+    platform_admin = platform_admin_param
     @user = InternalUser.new(internal_user_params)
-    @user.platform_admin = platform_admin_param if current_user.admin?
+    @user.platform_admin = platform_admin if current_user.admin?
     authorize!
     @user.send(:setup_activation)
     create_and_respond(object: @user) do
@@ -116,8 +117,9 @@ class InternalUsersController < ApplicationController
   private :require_reset_password_token
 
   def require_token(type)
-    @user = InternalUser.send(:"load_from_#{type}_token",
-      params[:token] || params[:internal_user].try(:[], :"#{type}_token"))
+    token = params.delete(:token) # Used when a user clicks on a link in an email
+    token ||= params[:internal_user]&.delete(:"#{type}_token") # Used when a user sets / changes the password and submit the form
+    @user = InternalUser.send(:"load_from_#{type}_token", token)
     render_not_authorized unless @user
   end
   private :require_token
@@ -155,7 +157,6 @@ class InternalUsersController < ApplicationController
       StudyGroupMembership.new(user: @user, study_group:)
     end
   end
-
   private :collect_set_and_unset_study_group_memberships
 
   def update

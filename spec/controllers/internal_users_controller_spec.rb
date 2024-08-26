@@ -110,34 +110,36 @@ RSpec.describe InternalUsersController do
     before { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      let(:perform_request) { proc { post :create, params: {internal_user: build(:teacher).attributes} } }
+      let(:user_attributes) { build(:teacher).attributes.slice('name', 'email', 'password', 'consumer_id', 'platform_admin', 'study_group_ids', 'study_group_membership_roles') }
+      let(:perform_request) { proc { post :create, params: {internal_user: user_attributes} } }
 
-      before { perform_request.call }
+      context 'when the request is performed' do
+        before { perform_request.call }
 
-      expect_assigns(user: InternalUser)
+        expect_assigns(user: InternalUser)
+        expect_redirect(InternalUser.last)
+
+        it 'creates an inactive user' do
+          expect(InternalUser.last).not_to be_activated
+        end
+
+        it 'sets up an activation token' do
+          expect(InternalUser.last.activation_token).to be_present
+        end
+      end
 
       it 'creates the internal user' do
         expect { perform_request.call }.to change(InternalUser, :count).by(1)
-      end
-
-      it 'creates an inactive user' do
-        expect(InternalUser.last).not_to be_activated
-      end
-
-      it 'sets up an activation token' do
-        expect(InternalUser.last.activation_token).to be_present
       end
 
       it 'sends an activation email' do
         expect_any_instance_of(InternalUser).to receive(:send_activation_needed_email!)
         perform_request.call
       end
-
-      expect_redirect(InternalUser.last)
     end
 
     context 'with an invalid internal user' do
-      before { post :create, params: {internal_user: {invalid_attribute: 'a string'}} }
+      before { post :create, params: {internal_user: {email: ''}} }
 
       expect_assigns(user: InternalUser)
       expect_http_status(:ok)
@@ -277,7 +279,7 @@ RSpec.describe InternalUsersController do
       let(:password) { 'foo' }
 
       context 'with a matching password confirmation' do
-        let(:perform_request) { proc { put :reset_password, params: {internal_user: {password:, password_confirmation: password}, id: user.id, token: user.reset_password_token} } }
+        let(:perform_request) { proc { put :reset_password, params: {internal_user: {password:, password_confirmation: password, reset_password_token: user.reset_password_token}, id: user.id} } }
 
         before { perform_request.call }
 
@@ -309,7 +311,7 @@ RSpec.describe InternalUsersController do
 
       context 'without a matching password confirmation' do
         before do
-          put :reset_password, params: {internal_user: {password:, password_confirmation: ''}, id: user.id, token: user.reset_password_token}
+          put :reset_password, params: {internal_user: {password:, password_confirmation: '', reset_password_token: user.reset_password_token}, id: user.id}
         end
 
         expect_assigns(user: :user)
@@ -334,7 +336,9 @@ RSpec.describe InternalUsersController do
     before { allow(controller).to receive(:current_user).and_return(user) }
 
     context 'with a valid internal user' do
-      before { put :update, params: {internal_user: attributes_for(:teacher), id: user.id} }
+      let(:user_attributes) { build(:teacher).attributes.slice('name', 'email', 'password', 'consumer_id', 'platform_admin', 'study_group_ids', 'study_group_membership_roles') }
+
+      before { put :update, params: {internal_user: user_attributes, id: user.id} }
 
       expect_assigns(user: InternalUser)
       expect_redirect { user }

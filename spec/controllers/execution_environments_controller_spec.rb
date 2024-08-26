@@ -15,7 +15,8 @@ RSpec.describe ExecutionEnvironmentsController do
 
   describe 'POST #create' do
     context 'with a valid execution environment' do
-      let(:perform_request) { proc { post :create, params: {execution_environment: build(:ruby, pool_size: 1).attributes} } }
+      let(:execution_environment_params) { build(:ruby, pool_size: 1).attributes.except('id', 'created_at', 'updated_at', 'user_id', 'user_type') }
+      let(:perform_request) { proc { post :create, params: {execution_environment: execution_environment_params} } }
 
       before do
         allow(Rails.env).to receive(:test?).and_return(false, true)
@@ -182,13 +183,15 @@ RSpec.describe ExecutionEnvironmentsController do
 
   describe 'PUT #update' do
     context 'with a valid execution environment' do
+      let(:execution_environment_params) { build(:ruby, pool_size: 1).attributes.except('id', 'created_at', 'updated_at', 'user_id', 'user_type') }
+
       before do
         allow(Rails.env).to receive(:test?).and_return(false, true)
         allow(Runner.strategy_class).to receive(:sync_environment).and_return(true)
         runner = instance_double Runner
         allow(Runner).to receive(:for).and_return(runner)
         allow(runner).to receive(:execute_command).and_return({})
-        put :update, params: {execution_environment: attributes_for(:ruby, pool_size: 1), id: execution_environment.id}
+        put :update, params: {execution_environment: execution_environment_params, id: execution_environment.id}
       end
 
       expect_assigns(docker_images: Array)
