@@ -132,7 +132,7 @@ jobs:
         run: bundle exec slim-lint app/views --reporter checkstyle > checkstyle-result.xml
 
       - name: Upload slim-lint results as GitHub annotations
-        uses: lcollins/checkstyle-github-action@v3.0.0
+        uses: lcollins/checkstyle-github-action@v3.1.0
         # Only create GitHub annotations for the main repo (disable for forks):
         if: ${{ always() && github.event.pull_request.head.repo.full_name == github.repository }}
         with:
