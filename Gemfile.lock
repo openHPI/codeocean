@@ -309,7 +309,7 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.7)
-    proformaxml (1.5.0)
+    proformaxml (1.5.1)
       activemodel (>= 5.2.3, < 8.0.0)
       activesupport (>= 5.2.3, < 8.0.0)
       dachsfisch (~> 1.0.0)
@@ -623,7 +623,7 @@ DEPENDENCIES
   net-smtp
   nokogiri
   pg
-  proformaxml (~> 1.5.0)
+  proformaxml (~> 1.5.1)
   prometheus_exporter
   pry-byebug
   pry-rails

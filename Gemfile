@@ -33,7 +33,7 @@ gem 'net-pop', require: false
 gem 'net-smtp', require: false
 gem 'nokogiri'
 gem 'pg'
-gem 'proformaxml', '~> 1.5.0'
+gem 'proformaxml', '~> 1.5.1'
 gem 'prometheus_exporter'
 gem 'puma'
 gem 'pundit'
