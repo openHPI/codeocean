@@ -95,6 +95,12 @@ if (webpackConfig.mode === 'development') {
     envConfig.devtool = 'source-map';
 }
 
+// Enable source map for SASS / SCSS files, including the original sources in the source map.
+webpackConfig.module.rules
+  .flatMap(rule => Array.isArray(rule.use) ? rule.use : [])
+  .filter(loaderConfig => loaderConfig.options?.sassOptions)
+  .forEach(loaderConfig => loaderConfig.options.sassOptions.sourceMapIncludeSources = true);
+
 // Use the following lines below to remove original plugins and replace them with our custom config.
 // This is especially needed for the `WebpackAssetsManifest` plugin, which would otherwise run twice.
 const customPlugins = envConfig.plugins.map((plugin) => plugin.constructor.name);
