@@ -4,9 +4,9 @@ h1 = t('.headline')
   = render('shared/form_errors', object: @user)
   .mb-3
     = f.label(:password, class: 'form-label')
-    = f.password_field(:password, class: 'form-control', required: true)
+    = f.password_field(:password, class: 'form-control', required: true, autocomplete: 'new-password')
   .mb-3
     = f.label(:password_confirmation, class: 'form-label')
-    = f.password_field(:password_confirmation, class: 'form-control', required: true)
+    = f.password_field(:password_confirmation, class: 'form-control', required: true, autocomplete: 'new-password')
   = f.hidden_field(:activation_token)
   .actions = submit_tag(t('.submit'), class: 'btn btn-primary')

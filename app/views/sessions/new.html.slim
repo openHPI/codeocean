@@ -11,10 +11,10 @@ h1 = t('.headline')
 = form_tag(sessions_path) do
   .mb-3
     = label_tag(:email, InternalUser.human_attribute_name('email'))
-    = email_field_tag(:email, params[:email], autofocus: true, class: 'form-control', required: true)
+    = email_field_tag(:email, params[:email], autofocus: true, class: 'form-control', required: true, autocomplete: 'email')
   .mb-3
     = label_tag(:password, InternalUser.human_attribute_name('password'))
-    = password_field_tag(:password, nil, class: 'form-control', required: true)
+    = password_field_tag(:password, nil, class: 'form-control', required: true, autocomplete: 'current-password')
   .form-check.mb-3
     label.form-check-label
       // Set values 1 and true/false explicit to allow passing a custom HTML class
