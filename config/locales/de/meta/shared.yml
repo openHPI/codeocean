@@ -12,6 +12,7 @@ de:
     apply_filters: Filter anwenden
     back: Zurück
     batch_update: Batch-Update
+    close: Schließen
     color_mode:
       auto: Automatisch
       dark: Dunkel

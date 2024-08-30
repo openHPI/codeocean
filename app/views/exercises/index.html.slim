@@ -58,4 +58,7 @@ h1 = Exercise.model_name.human(count: :other)
 = render('shared/pagination', collection: @exercises)
 p = render('shared/new_button', model: Exercise)
 
-= render('shared/modal', id: 'export-modal', title: t('exercises.export_codeharbor.dialogtitle'), template: 'exercises/_export_dialogcontent')
+= render 'shared/modal',
+        title: t('exercises.export_codeharbor.dialogtitle'),
+        modal_root_attributes: {id: 'export-modal'},
+        template: 'exercises/_export_dialogcontent'

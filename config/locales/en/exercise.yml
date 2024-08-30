@@ -91,7 +91,6 @@ en:
     export_codeharbor:
       buttons:
         abort: Abort
-        close: Close
         export: Export
         retry: Retry
       check:

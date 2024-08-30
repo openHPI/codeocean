@@ -3,5 +3,5 @@
 - content_for :modal_footer, flush: true do
   button.btn.btn-secondary#dont_show_info_pp_modal_again data-bs-dismiss='modal'
     = t('programming_groups.new.dont_show_modal_again')
-  button.btn.btn-primary data-bs-dismiss='modal'
-    = t('programming_groups.new.close')
+  button.btn.btn-primary data-bs-dismiss='modal' type='button'
+    = t('shared.close')

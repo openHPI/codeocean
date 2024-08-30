@@ -63,6 +63,20 @@
   - unless @embed_options[:disable_run] && @embed_options[:disable_score]
     .output-col-collapsed#output_sidebar = render('exercises/editor_output')
 
-= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.request'), template: 'exercises/_request_comment_dialogcontent') unless @embed_options[:disable_rfc]
-= render('shared/modal', id: 'break-intervention-modal', title: t('exercises.implement.break_intervention.title'), template: 'interventions/_break_intervention_modal') unless @embed_options[:disable_interventions]
-= render('shared/modal', id: 'tips-intervention-modal', title: t('exercises.implement.tips.heading'), template: 'interventions/_tips_intervention_modal') unless @embed_options[:disable_hints] || @tips.blank?
+- unless @embed_options[:disable_rfc]
+  = render 'shared/modal',
+          title: t('exercises.implement.comment.request'),
+          modal_root_attributes: {id: 'comment-modal'},
+          template: 'exercises/_request_comment_dialogcontent'
+
+- unless @embed_options[:disable_interventions]
+  = render 'shared/modal',
+          title: t('exercises.implement.break_intervention.title'),
+          modal_root_attributes: {id: 'break-intervention-modal'},
+          template: 'interventions/_break_intervention_modal'
+
+- unless @embed_options[:disable_hints] || @tips.blank?
+  = render 'shared/modal',
+          title: t('exercises.implement.tips.heading'),
+          modal_root_attributes: {id: 'tips-intervention-modal'},
+          template: 'interventions/_tips_intervention_modal'

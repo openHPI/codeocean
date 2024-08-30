@@ -21,7 +21,6 @@ en:
     implement:
       info_disconnected: You are disconnected from the server. Please check your internet connection and reload the page.
     new:
-      close: Close
       create_programming_pair: Create Programming Pair
       dont_show_modal_again: Don't display on this device anymore
       enter_partner_id: Do you know a person in the course with whom you would like to solve the task together? Then enter that person's user ID here.

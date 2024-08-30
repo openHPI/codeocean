@@ -30,4 +30,7 @@
       = render(partial: 'tips_content')
 
 - if @exercise.allow_file_creation?
-  = render('shared/modal', id: 'modal-file', template: 'code_ocean/files/_form', title: t('exercises.editor.create_file'))
+  = render 'shared/modal',
+          title: t('exercises.editor.create_file'),
+          modal_root_attributes: {id: 'modal-file'},
+          template: 'code_ocean/files/_form'
