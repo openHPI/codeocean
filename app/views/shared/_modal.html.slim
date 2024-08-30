@@ -1,14 +1,20 @@
-.fade.modal aria-hidden=true aria-labelledby='modal-title' id=id role='dialog' tabindex=-1
-  .modal-dialog.modal-dialog-scrollable class=local_assigns[:classes]
+- modal_root_attributes ||= {}
+- modal_body_attributes ||= {}
+- title ||= ''
+- size ||= '' # default is medium size, which is just ''
+
+
+.modal.fade *modal_root_attributes aria-hidden='true' aria-labelledby='modal-title' role='dialog' tabindex='-1'
+  .modal-dialog.modal-dialog-centered.modal-dialog-scrollable class=size
     .modal-content
       .modal-header
-        h4#modal-title.modal-title = title
-        button.btn-close data-bs-dismiss='modal' type='button'
-          span.visually-hidden Close
-      .modal-body
-        - if local_assigns.key?(:body)
-          = body
-        - else
-          = render(layout: false, locals: (local_assigns[:template_variables] || {}).merge(modal: true), template:)
-      .modal-footer
-        = yield(:modal_footer)
+        h4.modal-title#modal-title = title
+        button.btn-close data-bs-dismiss='modal' aria-label=t('shared.close') type='button'
+          span.visually-hidden = t('shared.close')
+
+      .modal-body *modal_body_attributes
+        = render(layout: false, locals: (local_assigns[:template_variables] || {}).merge(modal: true), template:)
+
+      - if content_for? :modal_footer
+        .modal-footer
+          = clear_content_for :modal_footer

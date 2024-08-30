@@ -37,4 +37,8 @@ h1.d-inline-block = t('programming_groups.new.create_programming_pair')
         h5 = t('programming_groups.new.work_alone')
         == t('programming_groups.new.work_alone_description', path: implement_exercise_path(@exercise))
 
-= render('shared/modal', classes: 'modal-lg', id: 'modal-info-pair-programming', template: 'programming_groups/_info_pair_programming', title: t('programming_groups.new.pair_programming_info'))
+= render 'shared/modal',
+        title: t('programming_groups.new.pair_programming_info'),
+        size: 'modal-lg',
+        modal_root_attributes: {id: 'modal-info-pair-programming'},
+        template: 'programming_groups/_info_pair_programming'

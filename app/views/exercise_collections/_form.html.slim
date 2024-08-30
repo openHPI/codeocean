@@ -35,4 +35,7 @@
 
   .actions = render('shared/submit_button', f:, object: @exercise_collection)
 
-= render('shared/modal', id: 'add-exercise-modal', title: t('.add_exercises'), template: 'exercise_collections/_add_exercise_modal')
+= render 'shared/modal',
+        title: t('.add_exercises'),
+        modal_root_attributes: {id: 'add-exercise-modal'},
+        template: 'exercise_collections/_add_exercise_modal'

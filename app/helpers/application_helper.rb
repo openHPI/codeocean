@@ -7,6 +7,10 @@ module ApplicationHelper
     APPLICATION_NAME
   end
 
+  def clear_content_for(name)
+    view_flow.content.delete(name)
+  end
+
   def code_tag(code, language = nil)
     if code.present?
       tag.pre do

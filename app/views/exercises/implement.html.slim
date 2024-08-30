@@ -44,4 +44,8 @@
 
 
   = render('editor', exercise: @exercise, files: @files, submission: @submission)
-  = render('shared/modal', classes: 'modal-lg', id: 'modal-info-pair-programming', template: 'programming_groups/_info_pair_programming', title: t('programming_groups.new.pair_programming_info'))
+  = render 'shared/modal',
+          title: t('programming_groups.new.pair_programming_info'),
+          size: 'modal-lg',
+          modal_root_attributes: {id: 'modal-info-pair-programming'},
+          template: 'programming_groups/_info_pair_programming'

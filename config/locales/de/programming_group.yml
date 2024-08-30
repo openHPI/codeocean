@@ -21,7 +21,6 @@ de:
     implement:
       info_disconnected: Ihre Verbindung zum Server wurde unterbrochen. Bitte überprüfen Sie Ihre Internetverbindung und laden Sie die Seite erneut.
     new:
-      close: Schließen
       create_programming_pair: Programmierpaar erstellen
       dont_show_modal_again: Auf diesem Gerät nicht mehr anzeigen
       enter_partner_id: Kennen Sie eine Person in dem Kurs, mit der Sie gemeinsam die Aufgabe lösen möchten? Dann geben Sie hier die zugehörige Personen-ID ein.

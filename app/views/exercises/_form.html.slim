@@ -107,4 +107,7 @@
 
   .actions = render('shared/submit_button', f:, object: @exercise)
 
-= render('shared/modal', id: 'add-tips-modal', title: t('.add_tips'), template: 'exercises/_add_tip_modal')
+= render 'shared/modal',
+        title: t('.add_tips'),
+        modal_root_attributes: {id: 'add-tips-modal'},
+        template: 'exercises/_add_tip_modal'

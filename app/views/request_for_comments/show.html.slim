@@ -79,4 +79,7 @@
   #commentitor.editor data-file-id=file.id data-mode=file.file_type.editor_mode data-read-only='true'
     = file.content
 
-= render('shared/modal', id: 'comment-modal', title: t('exercises.implement.comment.dialogtitle'), template: 'exercises/_comment_dialogcontent')
+= render 'shared/modal',
+        title: t('exercises.implement.comment.dialogtitle'),
+        modal_root_attributes: {id: 'comment-modal'},
+        template: 'exercises/_comment_dialogcontent'
