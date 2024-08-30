@@ -262,7 +262,7 @@ class Runner::Connection
     # We set the status here and wait for the connection to be closed (by the runner management).
   end
 
-  # The methods below are inspired by the Sentry::Net:HTTP class
+  # The methods below are inspired by the Sentry::Net::HTTP class
   # and adapted to the Websocket protocol running with EventMachine.
 
   def clone_sentry_hub_from_span(sentry_span)
