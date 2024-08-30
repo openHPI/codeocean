@@ -18,7 +18,7 @@
     | &nbsp;
     a.toggle-input data={text_initial: t('shared.new'), text_toggled: t('shared.back')} href='#' = t('shared.new')
     .original-input = f.select(:docker_image, @docker_images, {}, class: 'form-control')
-    = f.text_field(:docker_image, class: 'alternative-input form-control', disabled: true)
+    = f.text_field(:docker_image, class: 'alternative-input form-control', disabled: true, spellcheck: 'false', autocapitalize: 'off')
     .help-block.form-text == t('.hints.docker_image')
   .mb-3
     = f.label(:exposed_ports_list, class: 'form-label')
@@ -47,11 +47,11 @@
     = f.number_field(:pool_size, class: 'form-control', min: 0)
   .mb-3
     = f.label(:run_command, class: 'form-label')
-    = f.text_field(:run_command, class: 'form-control', placeholder: 'command %{filename}', required: true)
+    = f.text_field(:run_command, class: 'form-control', placeholder: 'command %{filename}', required: true, spellcheck: 'false', autocapitalize: 'off')
     .help-block.form-text == t('.hints.command')
   .mb-3
     = f.label(:test_command, class: 'form-label')
-    = f.text_field(:test_command, class: 'form-control', placeholder: 'command %{filename}')
+    = f.text_field(:test_command, class: 'form-control', placeholder: 'command %{filename}', spellcheck: 'false', autocapitalize: 'off')
     .help-block.form-text == t('.hints.command')
   .mb-3
     = f.label(:testing_framework, class: 'form-label')

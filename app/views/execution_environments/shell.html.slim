@@ -6,7 +6,7 @@ h1 = @execution_environment
     .input-group-text.form-switch.ps-5 class=('text-body-secondary' unless @execution_environment.privileged_execution?)
       input#sudo.form-check-input.mt-0 type='checkbox' disabled=('disabled' if @execution_environment.privileged_execution?)  checked=('checked' if @execution_environment.privileged_execution?)
       label.ms-2 for='sudo' = 'sudo'
-    input#command.form-control type='text'
+    input#command.form-control type='text' spellcheck='false' autocapitalize='off'
 
   .card.mb-3
     .card-header#download-files role='tab'
