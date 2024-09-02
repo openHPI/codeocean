@@ -85,7 +85,6 @@ class Runner < ApplicationRecord
 
       # Otherwise, we return an hash with empty files and release the runner
       release! if exclusive
-      {'files' => []}
     end
   end
 
