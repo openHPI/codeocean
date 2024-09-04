@@ -59,7 +59,7 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
-    "webpack-dev-server": "^5.0.4"
+    "webpack-dev-server": "^5.1.0"
   },
   "babel": {
     "presets": [
