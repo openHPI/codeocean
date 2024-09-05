@@ -46,7 +46,8 @@ class Runner < ApplicationRecord
   def copy_files(files)
     reserve!
     @strategy.copy_files(files)
-  rescue Runner::Error::RunnerNotFound
+  rescue Runner::Error => e
+    Sentry.capture_exception(e) unless e.is_a? Runner::Error::RunnerNotFound
     request_new_id
     save
     @strategy.copy_files(files)

@@ -134,26 +134,54 @@ RSpec.describe Runner do
       runner.copy_files(nil)
     end
 
-    context 'when a RunnerNotFound exception is raised' do
+    context 'when an exception is raised by the runner management' do
+      shared_examples 'a new runner is requested' do
+        it 'requests a new id' do
+          expect(runner).to receive(:request_new_id)
+          runner.copy_files(nil)
+        end
+      end
+
+      shared_examples 'files are still copied over' do
+        it 'calls copy_file twice' do
+          # copy_files is called again after a new runner was requested.
+          expect(strategy).to receive(:copy_files).twice
+          runner.copy_files(nil)
+        end
+      end
+
       before do
         was_called = false
         allow(strategy).to receive(:copy_files) do
           unless was_called
             was_called = true
-            raise Runner::Error::RunnerNotFound.new
+            raise mocked_exception
           end
         end
       end
 
-      it 'requests a new id' do
-        expect(runner).to receive(:request_new_id)
-        runner.copy_files(nil)
+      context 'when the runner is not found' do
+        let(:mocked_exception) { Runner::Error::RunnerNotFound.new }
+
+        it_behaves_like 'a new runner is requested'
+        it_behaves_like 'files are still copied over'
+
+        it 'does not capture an exception in Sentry' do
+          expect(Sentry).not_to receive(:capture_exception)
+          runner.copy_files(nil)
+        end
       end
 
-      it 'calls copy_file twice' do
-        # copy_files is called again after a new runner was requested.
-        expect(strategy).to receive(:copy_files).twice
-        runner.copy_files(nil)
+      context 'when another exception is raised' do
+        let(:mocked_exception) { Runner::Error::InternalServerError.new }
+
+        it_behaves_like 'a new runner is requested'
+        it_behaves_like 'files are still copied over'
+
+        it 'captures an exception in Sentry' do
+          expect(Sentry).to receive(:capture_exception)
+          runner.copy_files(nil)
+        end
       end
     end
   end
