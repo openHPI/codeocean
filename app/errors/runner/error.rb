@@ -20,6 +20,8 @@ class Runner
 
     class RunnerNotFound < Error; end
 
+    class PrewarmingPoolDepleted < Error; end
+
     class FaradayError < Error; end
 
     class UnexpectedResponse < Error; end
