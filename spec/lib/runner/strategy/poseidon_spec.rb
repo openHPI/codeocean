@@ -124,6 +124,37 @@ RSpec.describe Runner::Strategy::Poseidon do
     end
   end
 
+  describe '::health' do
+    let(:action) { -> { described_class.health } }
+    let(:faraday_connection) { instance_double Faraday::Connection }
+
+    before do
+      allow(described_class).to receive(:http_connection).and_return(faraday_connection)
+    end
+
+    it 'returns true when the api request was successful' do
+      allow(faraday_connection).to receive(:get).and_return(Faraday::Response.new(status: 204))
+      expect(action.call).to be_truthy
+    end
+
+    it 'raises an exception if Faraday raises an error' do
+      allow(faraday_connection).to receive(:get).and_raise(Faraday::TimeoutError)
+      expect { action.call }.to raise_exception Runner::Error::FaradayError
+    end
+
+    it 'raises an exception if Poseidon returns an error' do
+      allow(faraday_connection).to receive(:get).and_return(Faraday::Response.new(status: 500))
+      expect { action.call }.to raise_exception Runner::Error::UnexpectedResponse
+    end
+
+    it 'raises an exception if Poseidon reports a depleted prewarming pool' do
+      message = 'the prewarming pool is depleting: environments 10'
+      body = {message:, errorCode: 'PREWARMING_POOL_DEPLETING'}.to_json
+      allow(faraday_connection).to receive(:get).and_return(Faraday::Response.new(status: 503, body:))
+      expect { action.call }.to raise_exception Runner::Error::PrewarmingPoolDepleted, message
+    end
+  end
+
   describe '::sync_environment' do
     let(:action) { -> { described_class.sync_environment(execution_environment) } }
     let(:execution_environment) { create(:ruby) }

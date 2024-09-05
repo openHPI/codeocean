@@ -222,6 +222,8 @@ class Runner::Strategy::Poseidon < Runner::Strategy
     case response.status
       when 204
         true
+      when 503
+        raise Runner::Error::PrewarmingPoolDepleted.new parse(response)[:message]
       else
         raise Runner::Error::UnexpectedResponse.new("Poseidon sent unexpected response status code #{response.status}")
     end
