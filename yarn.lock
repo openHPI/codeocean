@@ -3172,7 +3172,7 @@ __metadata:
     pnp-webpack-plugin: "npm:^1.7.0"
     propagating-hammerjs: "npm:^3.0.0"
     rails-erb-loader: "usabilityhub/rails-erb-loader#master"
-    rails_admin: "npm:3.1.4"
+    rails_admin: "npm:3.2.0"
     sass: "npm:^1.78.0"
     sass-loader: "npm:^16.0.1"
     shakapacker: "npm:8.0.2"
@@ -5087,7 +5087,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jquery-ui@npm:^1.12.1":
+"jquery-ui@npm:^1.12.1 <1.14.0":
   version: 1.13.3
   resolution: "jquery-ui@npm:1.13.3"
   dependencies:
@@ -6478,9 +6478,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rails_admin@npm:3.1.4":
-  version: 3.1.4
-  resolution: "rails_admin@npm:3.1.4"
+"rails_admin@npm:3.2.0":
+  version: 3.2.0
+  resolution: "rails_admin@npm:3.2.0"
   dependencies:
     "@babel/runtime": "npm:^7.16.7"
     "@fortawesome/fontawesome-free": "npm:>=5.15.0 <7.0.0"
@@ -6490,8 +6490,8 @@ __metadata:
     bootstrap: "npm:^5.1.3"
     flatpickr: "npm:^4.6.9"
     jquery: "npm:^3.6.0"
-    jquery-ui: "npm:^1.12.1"
-  checksum: 10c0/1f75b45a4194b96ba0ce3f9ecc65fecaa51f9be90d3be3608f947f5fe487069f1fadda3d6a2ae7d8139efc5e9caa45ab782f31305251c6da38142625e19eeac0
+    jquery-ui: "npm:^1.12.1 <1.14.0"
+  checksum: 10c0/f472cfd38d74589b8d153c8716752a189a2decff5ba36bc31365e7881d5049003f781c71e38db9ac798759661e7f6a5ee65e4bb55d6b222db277f364ddd038d1
   languageName: node
   linkType: hard
 
