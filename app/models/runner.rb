@@ -57,6 +57,7 @@ class Runner < ApplicationRecord
   def download_file(desired_file, privileged_execution:, exclusive: true, &)
     reserve! if exclusive
     @strategy.download_file(desired_file, privileged_execution:, &)
+  ensure
     release! if exclusive
   end
 
@@ -107,9 +108,10 @@ class Runner < ApplicationRecord
       e.execution_duration = Time.zone.now - starting_time
       raise
     end
-    release! if exclusive
     Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Stopped execution with Runner #{id} for #{contributor_type} #{contributor_id}." }
     Time.zone.now - starting_time # execution duration
+  ensure
+    release! if exclusive
   end
 
   def execute_command(command, privileged_execution: false, raise_exception: true, exclusive: true)
