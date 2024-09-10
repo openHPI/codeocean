@@ -275,7 +275,7 @@ GEM
     nested_form (0.3.2)
     net-http (0.4.1)
       uri
-    net-http-persistent (4.0.2)
+    net-http-persistent (4.0.4)
       connection_pool (~> 2.2)
     net-imap (0.4.16)
       date
