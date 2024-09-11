@@ -3164,7 +3164,7 @@ __metadata:
     jquery: "npm:^3.7.1"
     jquery-ui: "npm:^1.14.0"
     jquery-ujs: "npm:^1.2.3"
-    jstree: "npm:^3.3.16"
+    jstree: "npm:^3.3.17"
     keycharm: "npm:^0.4.0"
     mini-css-extract-plugin: "npm:^2.9.1"
     moment: "npm:^2.30.1"
@@ -5194,12 +5194,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jstree@npm:^3.3.16":
-  version: 3.3.16
-  resolution: "jstree@npm:3.3.16"
+"jstree@npm:^3.3.17":
+  version: 3.3.17
+  resolution: "jstree@npm:3.3.17"
   dependencies:
     jquery: "npm:^3.5.0"
-  checksum: 10c0/1173d0c7eecfef0a0ef6c3f862e6e09e511258971a3fd0e8668e00a0b5c570433891ee75385e90fb0e127a7d81fa1a41b69f5ceab3dc4395e59b6eb3da590b96
+  checksum: 10c0/d99dc3c8dd0011ee42869ccb04b2a1e6fff73c4336340d98c4b9d8031c07b104471ee9207b7ce2e0109600739b7fbfb3df95455fb75accbf90058a74497d5c31
   languageName: node
   linkType: hard
 
