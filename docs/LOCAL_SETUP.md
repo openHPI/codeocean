@@ -1,6 +1,6 @@
 # Local Setup CodeOcean with Poseidon
 
-CodeOcean is built as a micro service architecture and requires multiple components to work. Besides the main CodeOcean web application with a PostgreSQL database, a custom-developed Go service called [Poseidon](https://github.com/openHPI/poseidon) is required to allow code execution. Poseidon manages so-called Runners, which are responsible for running learners code. It is executed in (Docker) containers managed through Nomad. The following document will guide you through the setup of CodeOcean with all aforementioned components.
+CodeOcean is built as a micro service architecture and requires multiple components to work. Besides the main CodeOcean web application with PostgreSQL databases, a custom-developed Go service called [Poseidon](https://github.com/openHPI/poseidon) is required to allow code execution. Poseidon manages so-called Runners, which are responsible for running learners code. It is executed in (Docker) containers managed through Nomad. The following document will guide you through the setup of CodeOcean with all aforementioned components.
 
 We recommend using the **native setup** as described below. We also prepared a setup with Vagrant using a virtual machine as [described in this guide](./LOCAL_SETUP_VAGRANT.md). However, the Vagrant setup might be outdated and is not actively maintained (PRs are welcome though!)
 
@@ -172,12 +172,12 @@ bundle install
 yarn install
 ```
 
-### Initialize the database
+### Initialize the databases
 
-The following command will create a database for the development and test environments, setup tables, and load seed data.
+The following command will create the necessary databases for the development and test environments, setup tables, and load seed data.
 
 ```shell
-rake db:setup
+rake db:prepare
 ```
 
 ### Start CodeOcean

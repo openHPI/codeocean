@@ -6,7 +6,9 @@
 #   * all: Objects are needed in every environment (production, development)
 #   * production: Objects are only needed for deployment
 #   * development: Only needed for local development
-#
+
+# Disable seeding if there are already internal users in the database
+return if InternalUser.any?
 
 def find_factories_by_class(klass)
   FactoryBot.factories.select do |factory|
@@ -25,13 +27,6 @@ module ActiveRecord
     end
   end
 end
-
-# delete all present records
-Rails.application.eager_load!
-(ApplicationRecord.descendants - [ActiveRecord::SchemaMigration, Contributor, User]).each(&:delete_all)
-
-# delete file uploads
-FileUtils.rm_rf(Rails.public_path.join('uploads'))
 
 ['all', Rails.env].each do |seed|
   seed_file = Rails.root.join("db/seeds/#{seed}.rb")
