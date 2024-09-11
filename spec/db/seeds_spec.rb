@@ -8,10 +8,10 @@ RSpec.describe 'seeds' do
   before do
     Rails.application.load_tasks if Rake::Task.tasks.empty?
 
-    # We need to migrate the test database before seeding
+    # We need to prepare the test database before seeding
     # Otherwise, Rails 7.1+ will throw an `NoMethodError`: `pending_migrations.any?`
     # See ActiveRecord gem, file `lib/active_record/railties/databases.rake`
-    Rake::Task['db:migrate'].invoke
+    Rake::Task['db:prepare'].invoke
 
     # We want to execute the seeds for the dev environment against the test database
     # rubocop:disable Rails/Inquiry

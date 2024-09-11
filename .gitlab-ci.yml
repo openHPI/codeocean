@@ -39,9 +39,7 @@ rspec:
     - bundle install
     - yarn install
     - export RAILS_ENV=test
-    - rake db:create
-    - rake db:schema:load
-    - rake db:migrate
+    - rake db:prepare
     - docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
     - docker pull openhpi/co_execenv_java:8-antlr
   script:

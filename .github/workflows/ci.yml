@@ -64,10 +64,10 @@ jobs:
           cp config/mnemosyne.yml.ci config/mnemosyne.yml
           cp config/content_security_policy.yml.ci config/content_security_policy.yml
 
-      - name: Create database
+      - name: Prepare database
         env:
           RAILS_ENV: test
-        run: bundler exec rake db:schema:load
+        run: bundler exec rake db:prepare
       - name: Precompile assets
         env:
           RAILS_ENV: test

@@ -40,7 +40,6 @@ In order to execute code submissions using the [DockerContainerPool](https://git
 ### Optional Steps
 - Use Docker Machine or Vagrant if there is no native support for Docker on your OS
 - If you want to use the app without Docker or a Runner management (and hence without code execution), comment the validation `validate :working_docker_image?` in `models/execution_environments.rb`. Otherwise the seed will fail.
-- Create seed data by executing `rails db:seed`
 - If you already created a configuration for your local installation and want to use vagrant, too, be sure to log into the vagrant instance via ssh and add your database user manually to the database. Afterwards, create, migrate and seed.
 
 ## Production Setup
