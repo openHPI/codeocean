@@ -23,7 +23,7 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'bin/*'
-    - 'db/schema.rb'
+    - 'db/*schema.rb'
     - 'vendor/**/*'
     # Ignore local files for faster processing
     - 'tmp/**/*'

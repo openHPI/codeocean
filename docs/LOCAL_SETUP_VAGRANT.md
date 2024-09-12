@@ -1,6 +1,6 @@
 # Vagrant setup
 
-With the Vagrant-based setup, you won't need to (manually) install CodeOcean and Poseidon including their dependencies on your local instance. Instead, a virtual machine containing all requirements will be configure
+With the Vagrant-based setup, you won't need to (manually) install CodeOcean and Poseidon including their dependencies on your local instance. Instead, a virtual machine containing all requirements will be configured.
 
 ## Install VirtualBox
 
@@ -75,7 +75,7 @@ During the first start, Vagrant will run a provision script and automatically se
 
 ## Start CodeOcean and Poseidon
 
-For the development environment with Vagrant, three server processes are required: the Rails server for the main application, a Webpack server providing JavaScript and CSS assets and Poseidon to manage runners. As those processes will be run in the virtual machine, you always need to connect to the VM with `vagrant ssh`.
+For the development environment with Vagrant, four server processes are required: the Rails server for the main application, a Webpack server providing JavaScript and CSS assets, the Solid Queue supervisor to process background jobs, and Poseidon to manage runners. As those processes will be run in the virtual machine, you always need to connect to the VM with `vagrant ssh`.
 
 1. Webpack dev server:
 
@@ -98,6 +98,26 @@ This will launch a dedicated server on port 3035 (default setting) and allow inc
   ```
 
 This will launch the CodeOcean web application server on port 7000 (default setting) for all interfaces (`0.0.0.0`) and allow incoming connections from your browser. Listening on all interfaces is required, so that you can connect from your VM-external browser to the Rails server.
+
+3. Solid Queue supervisor:
+
+  ```shell
+  vagrant ssh
+  cd codeocean
+  bundle exec rake solid_queue:start
+  ```
+
+This will launch the Solid Queue supervisor to process background jobs.
+
+4. Poseidon:
+
+  ```shell
+  vagrant ssh
+  cd poseidon
+  ./poseidon
+  ```
+
+This will launch Poseidon on port 7200 to manage runners and provide them to CodeOcean upon request.
 
 **Check with:**  
 Open your web browser at <http://localhost:7000>. Vagrant will redirect requests to your `localhost` automatically to the virtual machine.

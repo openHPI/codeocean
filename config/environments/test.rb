@@ -40,8 +40,8 @@ Rails.application.configure do
   config.active_storage.service = :test
 
   # Use a testing queuing backend for Active Job (and separate queues per environment).
-  # config.active_job.queue_adapter = :test
-  # config.active_job.queue_name_prefix = 'codeocean_test'
+  config.active_job.queue_adapter = :test
+  config.active_job.queue_name_prefix = 'codeocean_test'
 
   # Disable caching for Action Mailer templates even if Action Controller
   # caching is enabled.
