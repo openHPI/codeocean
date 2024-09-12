@@ -1,20 +1,27 @@
+default: &default
+  adapter: solid_cable # OR postgresql OR redis
+
+  ### Config options for `solid_cable`
+  connects_to:
+    database:
+      writing: cable
+  polling_interval: 0.1.seconds
+  message_retention: 1.day
+  autotrim: true
+  silence_polling: true
+
+  ### Config options for `redis`
+  # url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
+  # channel_prefix: codeocean_production
+
 development:
-  adapter: enhanced_postgresql
+  <<: *default
 
 test:
   adapter: test
 
 staging:
-  adapter: enhanced_postgresql
+  <<: *default
 
 production:
-  adapter: enhanced_postgresql # OR postgresql OR redis
-
-  ### Config options for `enhanced_postgresql`
-  # payload_encryptor_secret: # Required. Will be the defined value or `Rails.application.secret_key_base` or `ENV["SECRET_KEY_BASE"]`
-  # url: <%= ENV.fetch("DATABASE_URL") { "postgresql://localhost:5432/code_ocean_production" } %>
-  # connection_pool_size: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i %> # Only used in conjunction with `url`
-
-  ### Config options for `redis`
-  # url: <%= ENV.fetch("REDIS_URL") { "redis://localhost:6379/1" } %>
-  # channel_prefix: code_ocean_production
+  <<: *default

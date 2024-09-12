@@ -2,7 +2,6 @@
 
 source 'https://rubygems.org'
 
-gem 'actioncable-enhanced-postgresql-adapter'
 gem 'bcrypt'
 gem 'bootsnap', require: false
 gem 'bootstrap-will_paginate'
@@ -47,6 +46,7 @@ gem 'rubyzip'
 gem 'sassc-rails'
 gem 'shakapacker', '8.0.2'
 gem 'slim-rails'
+gem 'solid_cable'
 gem 'solid_queue'
 gem 'sorcery'
 gem 'sprockets-rails'

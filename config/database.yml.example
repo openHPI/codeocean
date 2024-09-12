@@ -32,6 +32,10 @@ development:
   primary: &primary_development
     <<: *default
     database: codeocean_development
+  cable:
+    <<: *primary_development
+    database: codeocean_development_cable
+    migrations_paths: db/cable_migrate
   queue:
     <<: *primary_development
     database: codeocean_development_queue
@@ -64,6 +68,10 @@ production:
   primary: &primary_production
     <<: *default
     database: codeocean_production
+  cable:
+    <<: *primary_production
+    database: codeocean_production_cable
+    migrations_paths: db/cable_migrate
   queue:
     <<: *primary_production
     database: codeocean_production_queue
