@@ -182,7 +182,7 @@ rake db:prepare
 
 ### Start CodeOcean
 
-For the development environment, two server processes are required: the Rails server for the main application and a Webpack server providing JavaScript and CSS assets.
+For the development environment, three server processes are required: the Rails server for the main application, a Webpack server providing JavaScript and CSS assets, and the Solid Queue supervisor to process background jobs.
 
 1. Webpack dev server:
 
@@ -201,6 +201,14 @@ This will launch a dedicated server on port 3035 (default setting) and allow inc
   ```
 
 This will launch the CodeOcean web application server on port 7000 (default setting) and allow incoming connections from your browser.
+
+3. Solid Queue supervisor:
+
+  ```shell
+  bundle exec rake solid_queue:start
+  ```
+
+This will launch the Solid Queue supervisor to process background jobs.
 
 **Check with:**  
 Open your web browser at <http://localhost:7000>

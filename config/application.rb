@@ -65,5 +65,8 @@ module CodeOcean
 
     # Extract Sentry-related parameters from WebSocket connection
     config.middleware.insert_before 0, Middleware::WebSocketSentryHeaders
+
+    # Configure some defaults for the Solid Queue Supervisor
+    require_relative 'solid_queue_defaults'
   end
 end
