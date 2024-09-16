@@ -467,7 +467,7 @@ var CodeOceanEditor = {
     initializeRegexes: function () {
         // These RegEx are run on the HTML escaped output!
         this.regex_for_language.set("ace/mode/python", /File &quot;(.+?)&quot;, line (\d+)/g);
-        this.regex_for_language.set("ace/mode/java", /(?:\.\/)?(.*\.java):(\d+):/g);
+        this.regex_for_language.set("ace/mode/java", /^(?:\.\/)?(.*\.java):(\d+):/g);
     },
 
     initializeWorkspaceButtons: function () {
