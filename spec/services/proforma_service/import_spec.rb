@@ -41,7 +41,7 @@ RSpec.describe ProformaService::Import do
     let(:execution_environment) { build(:java) }
     let(:files) { [] }
     let(:tests) { [] }
-    let(:exporter) { ProformaService::ExportTask.call(exercise: exercise.reload).string }
+    let(:exporter) { ProformaService::ExportTask.call(exercise:).string }
 
     before do
       zip_file.write(exporter)
@@ -51,7 +51,7 @@ RSpec.describe ProformaService::Import do
     it { is_expected.to be_an_equal_exercise_as exercise }
 
     it 'sets the correct user as owner of the exercise' do
-      expect(import_service.user).to be user
+      expect(import_service.user).to eq user
     end
 
     it 'sets the uuid' do

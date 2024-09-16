@@ -316,6 +316,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_16_105338) do
     t.string "path"
     t.integer "file_template_id"
     t.boolean "hidden_feedback", default: false, null: false
+    t.string "xml_id_path"
     t.index ["context_id", "context_type"], name: "index_files_on_context_id_and_context_type"
   end
 

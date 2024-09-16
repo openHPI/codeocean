@@ -361,10 +361,18 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
           files: test_files,
           meta_data: {
             'test-meta-data' => {
-              '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight CodeOcean:hidden-feedback],
-              'CodeOcean:feedback-message' => {'$1' => 'feedback-message', '@@order' => ['$1']},
-              'CodeOcean:weight' => {'$1' => '0.7', '@@order' => ['$1']},
-              'CodeOcean:hidden-feedback' => {'$1' => 'true', '@@order' => ['$1']},
+              '@@order' => %w[CodeOcean:test-file],
+              '@xmlns' => {'CodeOcean' => 'codeocean.openhpi.de'},
+              'CodeOcean:test-file' => {
+                'CodeOcean:test_file_id' =>
+                {
+                  '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight CodeOcean:hidden-feedback],
+                '@name' => 'test_file_name',
+                'CodeOcean:feedback-message' => {'$1' => 'feedback-message', '@@order' => ['$1']},
+                'CodeOcean:weight' => {'$1' => '0.7', '@@order' => ['$1']},
+                'CodeOcean:hidden-feedback' => {'$1' => 'true', '@@order' => ['$1']},
+                },
+              },
             },
           }
         )
@@ -506,7 +514,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
         let(:test_files) { [test_file] }
         let(:test_file) do
           ProformaXML::TaskFile.new(
-            id: 'test_file_id',
+            id: 'test-file-id',
             content: 'testfile-content',
             filename: 'testfile.txt',
             used_by_grader: 'yes',
@@ -526,7 +534,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
         let(:ms_files) { [ms_file] }
         let(:ms_file) do
           ProformaXML::TaskFile.new(
-            id: 'ms-file',
+            id: 'ms-file-id',
             content: 'ms-content',
             filename: 'filename.txt',
             used_by_grader: 'used_by_grader',
@@ -545,6 +553,26 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
               .and(include(have_attributes(content: 'content', role: 'regular_file', hidden: false)))
               .and(include(have_attributes(content: 'testfile-content', role: 'teacher_defined_test', hidden: true)))
           )
+        end
+
+        context 'when the files with correct xml_id_paths already exist' do
+          let(:exercise) do
+            create(:dummy,
+              files: co_files,
+              title: 'exercise-title',
+              description: 'exercise-description')
+          end
+          let(:co_files) do
+            [create(:file, xml_id_path: 'id', role: 'regular_file'),
+             create(:file, xml_id_path: 'ms-id/ms-file-id', role: 'reference_implementation'),
+             create(:test_file, xml_id_path: 'test-id/test-file-id')]
+          end
+
+          it 'reuses existing file' do
+            convert_to_exercise_service
+
+            expect(exercise.reload.files).to match_array(co_files)
+          end
         end
       end
     end
