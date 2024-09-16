@@ -1,34 +1,35 @@
 $(document).on('turbolinks:load', function () {
-    var TAB_KEY_CODE = 9;
+    const TAB_KEY_CODE = 9;
 
-    var execution_environments;
-    var file_types;
+    let execution_environments;
+    let file_types;
     const editors = [];
 
     var initializeEditor = function (index, element) {
-        var editor = ace.edit(element);
+        const editor = ace.edit(element);
+        const element_selector = $(element);
 
-        var document = editor.getSession().getDocument();
+        const document = editor.getSession().getDocument();
         // insert pre-existing code into editor. we have to use insertFullLines, otherwise the deltas are not properly added
-        var file_id = $(element).data('file-id');
-        var content = $('.editor-content[data-file-id=' + file_id + ']');
+        const file_id = element_selector.data('file-id');
+        let content = $(`.editor-content[data-file-id=${file_id}]`);
 
         document.insertFullLines(0, content.text().split(/\n/));
         // remove last (empty) that is there by default; disabled due to missing last line
         // document.removeFullLines(document.getLength() - 1, document.getLength() - 1);
-        editor.setReadOnly($(element).data('read-only') !== undefined);
+        editor.setReadOnly(element_selector.data('read-only') !== undefined);
         editor.setShowPrintMargin(false);
         editor.setTheme(CodeOceanEditor.THEME);
         editors.push(editor);
 
         // For creating / editing an exercise
-        var textarea = $('textarea[id="exercise_files_attributes_' + index + '_content"]');
+        let textarea = $(`textarea[id="exercise_files_attributes_${index}_content"]`);
         if ($('.edit_tip, .new_tip').isPresent()) {
             textarea = $('textarea[id="tip_example"]')
         }
-        var content = textarea.val();
+        content = textarea.val();
 
-        if (content != undefined) {
+        if (content !== undefined) {
             editor.getSession().setValue(content);
             editor.getSession().on('change', function () {
                 textarea.val(editor.getSession().getValue());
@@ -36,14 +37,14 @@ $(document).on('turbolinks:load', function () {
         }
 
         editor.commands.bindKey("ctrl+alt+0", null);
-        var session = editor.getSession();
-        session.setMode($(element).data('mode'));
-        session.setTabSize($(element).data('indent-size'));
+        const session = editor.getSession();
+        session.setMode(element_selector.data('mode'));
+        session.setTabSize(element_selector.data('indent-size'));
         session.setUseSoftTabs(true);
         session.setUseWrapMode(true);
     }
 
-    const handleAceThemeChangeEvent = function(event) {
+    const handleAceThemeChangeEvent = function(_event) {
         editors.forEach(function (editor) {
             editor.setTheme(CodeOceanEditor.THEME);
         }.bind(this));
@@ -59,11 +60,11 @@ $(document).on('turbolinks:load', function () {
 
     var addFileForm = function (event) {
         event.preventDefault();
-        var element = $('#dummies').children().first().clone();
+        const element = $('#dummies').children().first().clone();
 
         // the timestamp is used here, since it is most probably unique. This is strange, but was originally designed that way.
-        var latestTextAreaIndex = new Date().getTime();
-        var html = $('<div>').append(element).html().replace(/index/g, latestTextAreaIndex);
+        const latestTextAreaIndex = new Date().getTime();
+        const html = $('<div>').append(element).html().replace(/index/g, latestTextAreaIndex);
         $('#files').append(html);
 
         const editor = $('#files .editor').last()[0];
@@ -84,25 +85,25 @@ $(document).on('turbolinks:load', function () {
 
     var removeFileForm = function (fileUrl) {
         // validate fileUrl
-        var matches = fileUrl.match(/files\/(\d+)/);
+        const matches = fileUrl.match(/files\/(\d+)/);
         if (matches) {
             // select the file form based on the delete button
-            var fileForm = $('*[data-file-url="' + fileUrl + '"]').parent().parent().parent();
+            const fileForm = $(`*[data-file-url="${fileUrl}"]`).parent().parent().parent();
             fileForm.remove();
 
             // now remove the hidden input representing the file
-            var fileId = matches[1];
-            var input = $('input[type="hidden"][value="' + fileId + '"]')
+            const fileId = matches[1];
+            const input = $(`input[type="hidden"][value="${fileId}"]`)
             input.remove()
         }
     }
 
     var deleteFile = function (event) {
         event.preventDefault();
-        var fileUrl = $(event.target).data('file-url');
+        const fileUrl = $(event.target).data('file-url');
 
         if (confirm(I18n.t('shared.confirm_destroy'))) {
-            var jqxhr = $.ajax({
+            const jqxhr = $.ajax({
                 // normal file path (without json) would destroy the context object (the exercise) as well, due to redirection
                 // to the context after the :destroy action.
                 dataType: 'json',
@@ -128,8 +129,8 @@ $(document).on('turbolinks:load', function () {
 
     var buildCheckboxes = function () {
         $('tbody tr').each(function (index, element) {
-            var td = $('td.public', element);
-            var checkbox = $('<input>', {
+            const td = $('td.public', element);
+            const checkbox = $('<input>', {
                 checked: td.data('value'),
                 type: 'checkbox',
                 class: 'form-check-input',
@@ -234,7 +235,7 @@ $(document).on('turbolinks:load', function () {
         function addTip(id, title) {
             const tip = {id: _.escape(id), title: _.escape(title)}
             const template =
-                '<div class="list-group-item d-block" data-tip-id=' + tip.id + ' data-id="">' +
+                `<div class="list-group-item d-block" data-tip-id=${tip.id} data-id="">` +
                 '<span class="fa-solid fa-bars me-3"></span>' + tip.title +
                 `<a class="fa-regular fa-eye ms-2" href="${Routes.tip_path(tip.id)}" target="_blank"></a>` +
                 '<a class="fa-solid fa-xmark ms-2 remove-tip" href="#""></a>' +
@@ -273,19 +274,19 @@ $(document).on('turbolinks:load', function () {
 
     var inferFileAttributes = function () {
         $(document).on('change', 'input[type="file"]', function () {
-            var filename = $(this).val().split(/\\|\//g).pop();
-            var file_extension = filename.includes('.') ? '.' + filename.split('.')[1] : '';
-            var file_type = findFileTypeByFileExtension(file_extension);
-            var name = filename.split('.')[0];
-            var parent = $(this).parents('li');
+            const filename = $(this).val().split(/[\\/]/g).pop();
+            const file_extension = filename.includes('.') ? '.' + filename.split('.')[1] : '';
+            const file_type = findFileTypeByFileExtension(file_extension);
+            const name = filename.split('.')[0];
+            const parent = $(this).parents('li');
             parent.find('input[name*="name"]').val(name);
             parent.find('select[name*="file_type_id"]').val(file_type.id).trigger('chosen:updated');
         });
     };
 
     var insertTabAtCursor = function (textarea) {
-        var selection_start = textarea.get(0).selectionStart;
-        var selection_end = textarea.get(0).selectionEnd;
+        const selection_start = textarea.get(0).selectionStart;
+        const selection_end = textarea.get(0).selectionEnd;
         textarea.val(textarea.val().substring(0, selection_start) + "\t" + textarea.val().substring(selection_end));
         textarea.get(0).selectionStart = selection_start + 1;
         textarea.get(0).selectionEnd = selection_start + 1;
@@ -293,9 +294,9 @@ $(document).on('turbolinks:load', function () {
 
     var observeFileRoleChanges = function () {
         $(document).on('change', 'select[name$="[role]"]', function () {
-            var is_test_file = $(this).val() === 'teacher_defined_test' || $(this).val() === 'teacher_defined_linter';
-            var parent = $(this).parents('.card');
-            var fields = parent.find('.test-related-fields');
+            const is_test_file = $(this).val() === 'teacher_defined_test' || $(this).val() === 'teacher_defined_linter';
+            const parent = $(this).parents('.card');
+            const fields = parent.find('.test-related-fields');
             if (is_test_file) {
                 fields.slideDown();
             } else {
@@ -307,16 +308,19 @@ $(document).on('turbolinks:load', function () {
         });
     };
 
-    var old_execution_environment = $('#exercise_execution_environment_id').val();
-    var observeExecutionEnvironment = function () {
-        $('#exercise_execution_environment_id').on('change', function () {
-            new_execution_environment = $('#exercise_execution_environment_id').val();
+    const exercise_execution_environment_id_selector = $('#exercise_execution_environment_id');
+    const exercise_unpublished_selector = $('#exercise_unpublished');
 
-            if (new_execution_environment == '' && !$('#exercise_unpublished').prop('checked')) {
+    let old_execution_environment = exercise_execution_environment_id_selector.val();
+    var observeExecutionEnvironment = function () {
+        exercise_execution_environment_id_selector.on('change', function () {
+            const new_execution_environment = exercise_execution_environment_id_selector.val();
+
+            if (new_execution_environment === '' && !exercise_unpublished_selector.prop('checked')) {
                 if (confirm(I18n.t('exercises.form.unpublish_warning'))) {
-                    $('#exercise_unpublished').prop('checked', true);
+                    exercise_unpublished_selector.prop('checked', true);
                 } else {
-                    return $('#exercise_execution_environment_id').val(old_execution_environment).trigger("chosen:updated");
+                    return exercise_execution_environment_id_selector.val(old_execution_environment).trigger("chosen:updated");
                 }
             }
             old_execution_environment = new_execution_environment;
@@ -324,36 +328,37 @@ $(document).on('turbolinks:load', function () {
     };
 
     var observeUnpublishedState = function () {
-        $('#exercise_unpublished').on('change', function () {
-            if ($('#exercise_unpublished').prop('checked')) {
+        exercise_unpublished_selector.on('change', function () {
+            if (exercise_unpublished_selector.prop('checked')) {
                 if (!confirm(I18n.t('exercises.form.unpublish_warning'))) {
-                    $('#exercise_unpublished').prop('checked', false);
+                    exercise_unpublished_selector.prop('checked', false);
                 }
-            } else if ($('#exercise_execution_environment_id').val() === '') {
+            } else if (exercise_execution_environment_id_selector.val() === '') {
                 alert(I18n.t('exercises.form.no_execution_environment_selected'));
-                $('#exercise_unpublished').prop('checked', true);
+                exercise_unpublished_selector.prop('checked', true);
             }
         })
     };
 
+    const body_selector = $('body');
     var observeExportButtons = function () {
         $('.export-start').on('click', function (e) {
             e.preventDefault();
             new bootstrap.Modal($('#export-modal')).show();
             exportExerciseStart($(this).data().exerciseId);
         });
-        $('body').on('click', '.export-retry-button', function () {
+        body_selector.on('click', '.export-retry-button', function () {
             exportExerciseStart($(this).data().exerciseId);
         });
-        $('body').on('click', '.export-action', function () {
+        body_selector.on('click', '.export-action', function () {
             exportExerciseConfirm($(this).data().exerciseId);
         });
     }
 
     var exportExerciseStart = function (exerciseID) {
-        var $exerciseDiv = $('#export-exercise');
-        var $messageDiv = $exerciseDiv.children('.export-message');
-        var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
+        const $exerciseDiv = $('#export-exercise');
+        const $messageDiv = $exerciseDiv.children('.export-message');
+        const $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
 
         $messageDiv.removeClass('export-failure');
 
@@ -369,15 +374,15 @@ $(document).on('turbolinks:load', function () {
                 return $actionsDiv.html(response.actions);
             },
             error: function (a, b, c) {
-                return alert('error:' + c);
+                return alert(`error: ${c}`);
             }
         });
     };
 
     var exportExerciseConfirm = function (exerciseID) {
-        var $exerciseDiv = $('#export-exercise');
-        var $messageDiv = $exerciseDiv.children('.export-message');
-        var $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
+        const $exerciseDiv = $('#export-exercise');
+        const $messageDiv = $exerciseDiv.children('.export-message');
+        const $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
 
         return $.ajax({
             type: 'POST',
@@ -387,7 +392,7 @@ $(document).on('turbolinks:load', function () {
                 $messageDiv.html(response.message)
                 $actionsDiv.html(response.actions);
 
-                if (response.status == 'success') {
+                if (response.status === 'success') {
                     $messageDiv.addClass('export-success');
                     setTimeout((function () {
                         bootstrap.Modal.getInstance($('#export-modal')).hide();
@@ -398,7 +403,7 @@ $(document).on('turbolinks:load', function () {
                 }
             },
             error: function (a, b, c) {
-                return alert('error:' + c);
+                return alert(`error: ${c}`);
             }
         });
     };
@@ -413,7 +418,7 @@ $(document).on('turbolinks:load', function () {
     };
 
     var performBatchUpdate = function () {
-        var jqxhr = $.ajax({
+        const jqxhr = $.ajax({
             data: {
                 exercises: _.map($('tbody tr'), function (element) {
                     return {
@@ -438,14 +443,14 @@ $(document).on('turbolinks:load', function () {
     };
 
     var updateFileTemplates = function (fileType) {
-        var jqxhr = $.ajax({
+        const jqxhr = $.ajax({
             url: Routes.by_file_type_file_templates_path(fileType),
             dataType: 'json'
         });
         jqxhr.done(function (response) {
-            var noTemplateLabel = $('#noTemplateLabel').data('text');
-            var options = "<option value>" + noTemplateLabel + "</option>";
-            for (var i = 0; i < response.length; i++) {
+            const noTemplateLabel = $('#noTemplateLabel').data('text');
+            let options = "<option value>" + noTemplateLabel + "</option>";
+            for (let i = 0; i < response.length; i++) {
                 options += "<option value='" + response[i].id + "'>" + response[i].name + "</option>"
             }
             $("#code_ocean_file_file_template_id").find('option').remove().end().append($(options));
@@ -459,8 +464,9 @@ $(document).on('turbolinks:load', function () {
             enableBatchUpdate();
             observeExportButtons();
         } else if ($('.edit_exercise, .new_exercise').isPresent()) {
-            execution_environments = $('form').data('execution-environments');
-            file_types = $('form').data('file-types');
+            const form_selector = $('form');
+            execution_environments = form_selector.data('execution-environments');
+            file_types = form_selector.data('file-types');
 
             initializeSortable();
             enableInlineFileCreation();
