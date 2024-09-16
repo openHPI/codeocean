@@ -65,14 +65,21 @@ $(document).on('turbolinks:load', function () {
         var latestTextAreaIndex = new Date().getTime();
         var html = $('<div>').append(element).html().replace(/index/g, latestTextAreaIndex);
         $('#files').append(html);
-        $('#files li:last select[name*="file_type_id"]').val(getSelectedExecutionEnvironment().file_type_id);
+
+        const editor = $('#files .editor').last()[0];
+        $('#files li:last select[name*="file_type_id"]').val(getSelectedExecutionEnvironment().file_type_id)
+          .on('change chosen:ready', function(event, _parameter) {
+            const selectedFileType = event.target.value;
+            CodeOceanEditor.updateEditorModeToFileTypeID(editor, selectedFileType);
+        });
         $('#files li:last select').chosen(window.CodeOcean.CHOSEN_OPTIONS);
-        $('#files li:last>div:last').removeClass('in').addClass('show')
-        $('body, html').scrollTo('#add-file');
 
         // initialize the ace editor for the new textarea.
         // pass the correct index and the last ace editor under the node files. this is the last one, since we just added it.
-        initializeEditor(latestTextAreaIndex, $('#files .editor').last()[0]);
+        initializeEditor(latestTextAreaIndex, editor);
+
+        $('#files li:last>div:last').removeClass('in').addClass('show')
+        $('body, html').scrollTo('#add-file');
     };
 
     var removeFileForm = function (fileUrl) {
