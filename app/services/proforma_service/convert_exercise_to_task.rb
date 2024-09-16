@@ -77,62 +77,84 @@ module ProformaService
     end
 
     def model_solutions
-      @exercise.files.filter {|file| file.role == 'reference_implementation' }.map do |file|
+      model_solutions_files = @exercise.files.filter {|file| file.role == 'reference_implementation' }.group_by {|file| xml_id_from_file(file).first }
+      model_solutions_files.map do |xml_id, files|
         ProformaXML::ModelSolution.new(
-          id: "ms-#{file.id}",
-          files: model_solution_file(file)
+          id: xml_id,
+          files: files.map {|file| model_solution_file(file) }
         )
       end
     end
 
     def model_solution_file(file)
-      [
-        task_file(file).tap do |ms_file|
-          ms_file.used_by_grader = false
-          ms_file.usage_by_lms = 'display'
-        end,
-      ]
+      task_file(file).tap do |ms_file|
+        ms_file.used_by_grader = false
+        ms_file.usage_by_lms = 'display'
+      end
     end
 
     def tests
-      @exercise.files.filter(&:teacher_defined_assessment?).map do |file|
+      @exercise.files.filter(&:teacher_defined_assessment?).group_by {|file| xml_id_from_file(file).first }.map do |xml_id, files|
         ProformaXML::Test.new(
-          id: file.id,
-          title: file.name,
-          files: test_file(file),
-          meta_data: test_meta_data(file)
+          id: xml_id,
+          title: files.first.name,
+          files: files.map {|file| test_file(file) },
+          meta_data: test_meta_data(files)
         )
       end
     end
 
-    def test_meta_data(file)
+    def xml_id_from_file(file)
+      type = if file.teacher_defined_assessment?
+               'test'
+             elsif file.reference_implementation?
+               'ms'
+             else
+               'file'
+             end
+      xml_id_path_parts = file.xml_id_path&.split('/')
+      xml_id_path  = []
+
+      xml_id_path << (xml_id_path_parts&.first || "co-#{type}-#{file.id}") unless type == 'file'
+      xml_id_path << (xml_id_path_parts&.last || file.id)
+
+      xml_id_path
+    end
+
+    def test_meta_data(files)
       {
         '@@order' => %w[test-meta-data],
         'test-meta-data' => {
-          '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight CodeOcean:hidden-feedback],
+          '@@order' => %w[CodeOcean:test-file],
           '@xmlns' => {'CodeOcean' => 'codeocean.openhpi.de'},
-          'CodeOcean:feedback-message' => {
-            '@@order' => %w[$1],
-            '$1' => file.feedback_message,
-          },
-          'CodeOcean:weight' => {
-            '@@order' => %w[$1],
-            '$1' => file.weight,
-          },
-          'CodeOcean:hidden-feedback' => {
-            '@@order' => %w[$1],
-            '$1' => file.hidden_feedback,
-          },
+          'CodeOcean:test-file' => files.map do |file|
+            {
+              '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight CodeOcean:hidden-feedback],
+              '@xmlns' => {'CodeOcean' => 'codeocean.openhpi.de'},
+              '@id' =>  xml_id_from_file(file).last,
+              '@name' => file.name,
+              'CodeOcean:feedback-message' => {
+                '@@order' => %w[$1],
+                '$1' => file.feedback_message,
+              },
+              'CodeOcean:weight' => {
+                '@@order' => %w[$1],
+                '$1' => file.weight,
+              },
+              'CodeOcean:hidden-feedback' => {
+                '@@order' => %w[$1],
+                '$1' => file.hidden_feedback,
+              },
+            }
+          end,
         },
       }
     end
 
     def test_file(file)
-      [
-        task_file(file).tap do |t_file|
-          t_file.used_by_grader = true
-        end,
-      ]
+      task_file(file).tap do |t_file|
+        t_file.used_by_grader = true
+      end
     end
 
     def exercise_files
@@ -168,8 +190,11 @@ module ProformaService
     end
 
     def task_file(file)
+      file.update(xml_id_path: xml_id_from_file(file).join('/')) if file.xml_id_path.blank?
+
+      xml_id = xml_id_from_file(file).last
       task_file = ProformaXML::TaskFile.new(
-        id: file.id,
+        id: xml_id,
         filename: filename(file),
         usage_by_lms: file.read_only ? 'display' : 'edit',
         visible: file.hidden ? 'no' : 'yes'
