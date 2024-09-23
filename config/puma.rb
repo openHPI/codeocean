@@ -65,10 +65,6 @@ preload_app! false
 # Disable automatic tagging of the service.
 tag ''
 
-# Specifies the output redirection that Puma will use.
-# Params: stdout, stderr, append?
-stdout_redirect 'log/puma_access.log', 'log/puma_error.log', true if %w[production staging].include? ENV['RAILS_ENV']
-
 # Before performing a hot restart (not on phased restarts), send another watchdog message
 # TODO: Consider `on_booted` as well, which currently breaks with Pumactl.
 on_restart do
