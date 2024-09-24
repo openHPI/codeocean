@@ -127,7 +127,7 @@ RSpec.describe ProformaService::Import do
     end
 
     context 'when exercise has multiple tests' do
-      let(:tests) { build_list(:test_file, 2) }
+      let(:tests) { [build(:test_file, xml_id_path: %w[test file1]), build(:test_file, xml_id_path: %w[test file2])] }
 
       it { is_expected.to be_an_equal_exercise_as exercise }
     end

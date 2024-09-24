@@ -57,6 +57,46 @@ RSpec.describe CodeOcean::File do
     end
   end
 
+  context 'with xml_id_path' do
+    let(:exercise) { create(:dummy) }
+    let(:file) { build(:file, context: file_context, xml_id_path: xml_id_path) }
+    let(:file_context) { exercise }
+    let(:xml_id_path) { ['abcde'] }
+
+    before do
+      create(:file, context: exercise, xml_id_path: ['abcde'])
+      file.validate
+    end
+
+    it 'has an error for xml_id_path' do
+      expect(file.errors[:xml_id_path]).to be_present
+    end
+
+    context 'when second file has a different exercise' do
+      let(:file_context) { create(:dummy) }
+
+      it 'has no error for xml_id_path' do
+        expect(file.errors[:xml_id_path]).not_to be_present
+      end
+    end
+
+    context 'when second file has a different xml_id_path' do
+      let(:xml_id_path) { ['foobar'] }
+
+      it 'has no error for xml_id_path' do
+        expect(file.errors[:xml_id_path]).not_to be_present
+      end
+    end
+
+    context 'when file_context is not Exercise' do
+      let(:file_context) { create(:submission) }
+
+      it 'has an error for xml_id_path' do
+        expect(file.errors[:xml_id_path]).to be_present
+      end
+    end
+  end
+
   context 'with a native file' do
     let(:file) { create(:file, :image) }
 

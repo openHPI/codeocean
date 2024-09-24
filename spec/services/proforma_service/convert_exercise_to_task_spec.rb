@@ -22,8 +22,10 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
         execution_environment:,
         instructions: 'instruction',
         uuid: SecureRandom.uuid,
-        files: files + tests)
+        files: files + tests,
+        unpublished:)
     end
+    let(:unpublished) { false }
     let(:files) { [] }
     let(:tests) { [] }
     let(:execution_environment) { create(:java) }
@@ -77,6 +79,15 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       end
     end
 
+    context 'when exercise has no execution_environment' do
+      let(:execution_environment) { nil }
+      let(:unpublished) { true }
+
+      it 'creates a task with the correct proglang attribute' do
+        expect(task).to have_attributes(proglang: nil)
+      end
+    end
+
     context 'when exercise has a mainfile' do
       let(:files) { [file] }
       let(:file) { create(:file) }
@@ -111,13 +122,13 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       end
 
       it 'sets xml_id_path to default' do
-        expect { convert_to_task.execute }.to change(file.reload, :xml_id_path).from(nil).to(file.id.to_s)
+        expect { convert_to_task.execute }.to change(file.reload, :xml_id_path).from([]).to([file.id.to_s])
       end
 
       context 'when xml_id_path is set for file' do
-        let(:file) { create(:file, xml_id_path: 'foobar') }
+        let(:file) { create(:file, xml_id_path: ['foobar']) }
 
-        it 'does not change xml_path_id' do
+        it 'does not change xml_id_path' do
           expect { convert_to_task.execute }.not_to change(file.reload, :xml_id_path)
         end
       end
@@ -224,7 +235,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       end
 
       context 'when reference_implementations belong to the same proforma model_solution' do
-        let(:files) { build_list(:file, 2, role: 'reference_implementation') {|file, i| file.xml_id_path = "proforma_ms/xml_id_#{i}" } }
+        let(:files) { build_list(:file, 2, role: 'reference_implementation') {|file, i| file.xml_id_path = ['proforma_ms', "xml_id_#{i}"] } }
 
         it 'creates a task with one model-solution' do
           expect(task.model_solutions).to have(1).items
@@ -294,7 +305,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       end
 
       context 'when test_files belong to the same proforma test' do
-        let(:tests) { build_list(:test_file, 2) {|file, i| file.xml_id_path = "proforma_test/xml_id_#{i}" } }
+        let(:tests) { build_list(:test_file, 2) {|file, i| file.xml_id_path = ['proforma_test', "xml_id_#{i}"] } }
 
         it 'creates a test with two file' do
           expect(task.tests.first).to have_attributes(
