@@ -67,7 +67,7 @@ module ProformaService
 
     def proglang
       regex = %r{^openhpi/co_execenv_(?<language>[^:]*):(?<version>[^-]*)(?>-.*)?$}
-      match = regex.match @exercise.execution_environment.docker_image
+      match = regex.match @exercise&.execution_environment&.docker_image
       match ? {name: match[:language], version: match[:version]} : nil
     end
 
@@ -105,6 +105,9 @@ module ProformaService
     end
 
     def xml_id_from_file(file)
+      xml_id_path = file.xml_id_path || []
+      return xml_id_path if xml_id_path&.any?
+
       type = if file.teacher_defined_assessment?
                'test'
              elsif file.reference_implementation?
@@ -112,12 +115,11 @@ module ProformaService
              else
                'file'
              end
-      xml_id_path_parts = file.xml_id_path&.split('/')
-      xml_id_path  = []
 
-      xml_id_path << (xml_id_path_parts&.first || "co-#{type}-#{file.id}") unless type == 'file'
-      xml_id_path << (xml_id_path_parts&.last || file.id)
+      xml_id_path << "co-#{type}-#{file.id}" unless type == 'file'
+      xml_id_path << file.id.to_s
 
+      file.update!(xml_id_path: xml_id_from_file(file))
       xml_id_path
     end
 
@@ -190,8 +192,6 @@ module ProformaService
     end
 
     def task_file(file)
-      file.update(xml_id_path: xml_id_from_file(file).join('/')) if file.xml_id_path.blank?
-
       xml_id = xml_id_from_file(file).last
       task_file = ProformaXML::TaskFile.new(
         id: xml_id,
