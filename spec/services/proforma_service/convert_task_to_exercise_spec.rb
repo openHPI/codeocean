@@ -564,9 +564,9 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
               description: 'exercise-description')
           end
           let(:co_files) do
-            [create(:file, xml_id_path: ['id'], role: 'regular_file'),
-             create(:file, xml_id_path: %w[ms-id ms-file-id], role: 'reference_implementation'),
-             create(:test_file, xml_id_path: %w[test-id test-file-id])]
+            [build(:file, xml_id_path: ['id'], role: 'regular_file'),
+             build(:file, xml_id_path: %w[ms-id ms-file-id], role: 'reference_implementation'),
+             build(:test_file, xml_id_path: %w[test-id test-file-id])]
           end
 
           it 'reuses existing file' do

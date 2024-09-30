@@ -107,7 +107,7 @@ module ProformaService
     def codeocean_file_from_task_file(file, parent_object = nil)
       extension = File.extname(file.filename)
       # checking the last element of xml_id_path array for file.id
-      codeocean_file = @exercise.files.where('array_length(xml_id_path, 1) IS NOT NULL AND xml_id_path[array_length(xml_id_path, 1)] = ?', file.id).first_or_initialize
+      codeocean_file = @exercise.files.detect {|f| f.xml_id_path.last == file.id } || @exercise.files.new
       codeocean_file.assign_attributes(
         context: @exercise,
         file_type: file_type(extension),

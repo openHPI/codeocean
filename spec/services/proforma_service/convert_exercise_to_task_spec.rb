@@ -126,7 +126,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       end
 
       context 'when xml_id_path is set for file' do
-        let(:file) { create(:file, xml_id_path: ['foobar']) }
+        let(:file) { create(:file, xml_id_path: ['foobar'], context: create(:dummy)) }
 
         it 'does not change xml_id_path' do
           expect { convert_to_task.execute }.not_to change(file.reload, :xml_id_path)
