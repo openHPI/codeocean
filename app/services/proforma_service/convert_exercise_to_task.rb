@@ -77,8 +77,7 @@ module ProformaService
     end
 
     def model_solutions
-      model_solutions_files = @exercise.files.filter {|file| file.role == 'reference_implementation' }.group_by {|file| xml_id_from_file(file).first }
-      model_solutions_files.map do |xml_id, files|
+      @exercise.files.filter(&:reference_implementation?).group_by {|file| xml_id_from_file(file).first }.map do |xml_id, files|
         ProformaXML::ModelSolution.new(
           id: xml_id,
           files: files.map {|file| model_solution_file(file) }
