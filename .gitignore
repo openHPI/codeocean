@@ -38,6 +38,7 @@
 
 # Ignore application configuration
 /config/action_mailer.yml
+/config/ca.crt
 /config/code_ocean.yml
 /config/content_security_policy.yml
 /config/database.yml
