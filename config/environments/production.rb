@@ -114,4 +114,8 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  # Show all attributes when inspecting an object.
+  # Otherwise, only the `id` is shown by default (in contrast to `#full_inspect`).
+  config.active_record.attributes_for_inspect = :all
 end
