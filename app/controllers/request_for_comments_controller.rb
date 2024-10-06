@@ -48,7 +48,7 @@ class RequestForCommentsController < ApplicationController
       .where(user: current_user)
       .or(policy_scope(RequestForComment)
             .joins(:submission)
-            .where(submission: {contributor: current_user.programming_groups}))
+            .where(submissions: {contributor: current_user.programming_groups}))
       .order(created_at: :desc) # Order for the LIMIT part of the query
       .ransack(params[:q])
 
