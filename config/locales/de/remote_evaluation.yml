@@ -1,0 +1,4 @@
+---
+de:
+  remote_evaluations:
+    invalid_json: Die Anfrage liegt nicht im erforderlichen JSON-Format vor. Bitte prüfen Sie Ihre Anfrage anhand des Schemas und versuchen Sie es erneut.
