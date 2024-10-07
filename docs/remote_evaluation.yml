@@ -1,0 +1,630 @@
+openapi: 3.1.0
+info:
+  title: CodeOcean Remote Evaluation
+  version: '1.0'
+  license:
+    identifier: BSD-3-Clause
+    name: 'License: BSD-3-Clause'
+  contact:
+    url: 'https://open.hpi.de/helpdesk'
+    email: info@openhpi.de
+    name: openHPI Team
+  termsOfService: 'https://open.hpi.de/pages/imprint'
+  description: |
+    This API is provided by CodeOcean for learners to evaluate their current solution against teacher-defined tests. If possible, CodeOcean will also submit a score to the respective e-learning platform via LTI.
+servers:
+  - url: 'http://localhost:7000'
+    description: Development
+  - url: 'https://codeocean-staging.openhpi.de'
+    description: Staging
+  - url: 'https://codeocean.openhpi.de'
+    description: Production
+paths:
+  /evaluate:
+    post:
+      summary: Score submission
+      tags:
+        - remote evaluation
+      responses:
+        '201':
+          $ref: '#/components/responses/201Created'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '409':
+          $ref: '#/components/responses/409Conflict'
+        '422':
+          $ref: '#/components/responses/422UnprocessableContent'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+      operationId: remote_evaluation#evaluate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - remote_evaluation
+              properties:
+                remote_evaluation:
+                  $ref: '#/components/schemas/RemoteEvaluation'
+                  x-stoplight:
+                    id: kuuu2zke0p637
+                  description: All parameters are required as part of the `remote_evaluation` key.
+            examples:
+              Python:
+                $ref: '#/components/examples/PythonRemoteEvaluation'
+        description: ''
+      description: |-
+        This route allows learners to evaluate their current submission against the teacher-defined tests. Since tests are usually not included in a download offered for learners, this endpoint is required to check the current working draft against the specification. As a response, learners will receive a list of test messages - just as they would receive through the Web UI. 
+
+        If possible and supported, this endpoint also sends the current score to the e-learning platform. Furthermore, files received by this endpoint are associated with the designated learner, so that a seamless integration with the web interface is possible.
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+  /submit:
+    post:
+      summary: Submit submission result to e-learning platform
+      tags:
+        - remote evaluation
+      responses:
+        '200':
+          $ref: '#/components/responses/200Ok'
+        '202':
+          $ref: '#/components/responses/202Accepted'
+        '207':
+          $ref: '#/components/responses/207MultiStatus'
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '409':
+          $ref: '#/components/responses/409Conflict'
+        '410':
+          $ref: '#/components/responses/410Gone'
+        '417':
+          $ref: '#/components/responses/417ExpectationFailed'
+        '422':
+          $ref: '#/components/responses/422UnprocessableContent'
+        '424':
+          $ref: '#/components/responses/424FailedDependency'
+        '503':
+          $ref: '#/components/responses/503ServiceUnavailable'
+      operationId: remote_evaluation#submit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - remote_evaluation
+              properties:
+                remote_evaluation:
+                  $ref: '#/components/schemas/RemoteEvaluation'
+                  x-stoplight:
+                    id: kuuu2zke0p637
+                  description: All parameters are required as part of the `remote_evaluation` key.
+            examples:
+              Python:
+                $ref: '#/components/examples/PythonRemoteEvaluation'
+      description: |
+        This route is similar to `/evaluate` with a a major difference: The response format is different, and focusses on the score submission between CodeOcean and the e-learning platform. No test results are returned.
+      parameters:
+        - $ref: '#/components/parameters/Locale'
+components:
+  schemas:
+    FileAttributes:
+      title: FileAttributes
+      description: A JSON representation of a learner-modified file.
+      type: object
+      required:
+        - file_id
+        - content
+      properties:
+        file_id:
+          type: integer
+          format: int64
+          examples:
+            - 1234567
+          minimum: 1
+          description: 'The ID of the original file this content belongs to. In most cases, this ID refers to the teacher-defined template for the given file. The correct identification is crucial to assign the content with the correct file, apply the correct file ending and other properties. Invalid file IDs (e.g., those belonging to another exercise) won''t be accepted. The correct file ID can be retrieved from the third line onwards in the .co file. There, the file path and name of any local file that should be submitted is followed by an equal sign and the ID of the teacher-defined file.'
+          writeOnly: true
+        content:
+          type: string
+          examples:
+            - print("Hello")\nprint("World")
+          description: The desired file content as a string. The string should be escaped and may contain multiple lines as indicated by \n. Other special characters are allowed when properly escaped for JSON
+          writeOnly: true
+      examples:
+        - file_id: 1234567
+          content: |-
+            print("Hello")
+            print("World")
+    RemoteEvaluation:
+      title: RemoteEvaluation
+      type: object
+      additionalProperties: false
+      description: An API request for remote evaluation consisting of a validation token and modified files by a learner.
+      required:
+        - validation_token
+        - files_attributes
+      properties:
+        validation_token:
+          type: string
+          description: The `validation_token` is usually part of the `.co` file as the first line. The token should conform to RFC3548 and consist of an URL-safe Base64-encoded string.
+          examples:
+            - 8DfccYjzL3RupfkA4034uQ
+          pattern: '^[A-Za-z0-9-_=]+'
+          writeOnly: true
+        files_attributes:
+          type: object
+          description: 'These `files_attributes` must be a dictionary. The keys should be increasing integer values starting with 0 and matching the number of files-1. For example, a submission with three files should use indices 0, 1, 2.'
+          additionalProperties:
+            $ref: '#/components/schemas/FileAttributes'
+      examples:
+        - validation_token: 8DfccYjzL3RupfkA4034uQ
+          files_attributes:
+            '0':
+              file_id: 1234567
+              content: |-
+                print("Hello")
+                print("World")
+            '1':
+              file_id: 1234568
+              content: print("Hello World")
+    ErrorMessage:
+      title: ErrorMessage
+      x-stoplight:
+        id: 5478je0jm5nvt
+      type: object
+      examples:
+        - $ref: '#/components/examples/UnauthorizedResponse'
+        - $ref: '#/components/examples/ConflictResponse'
+        - $ref: '#/components/examples/ServiceUnavailableResponse'
+      required:
+        - message
+        - status
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+          x-stoplight:
+            id: z8cskcss4phwj
+        status:
+          $ref: '#/components/schemas/Status'
+          x-stoplight:
+            id: kjxovha6bbub5
+      description: The response format used in case of an error.
+    ScoreMessage:
+      title: ScoreMessage
+      x-stoplight:
+        id: x0zxob1wppayd
+      type: object
+      examples:
+        - $ref: '#/components/examples/OkResponse'
+        - $ref: '#/components/examples/AcceptedResponse'
+        - $ref: '#/components/examples/MultiStatusResponse'
+        - $ref: '#/components/examples/GoneResponse'
+        - $ref: '#/components/examples/ExpectationFailedResponse'
+        - $ref: '#/components/examples/FailedDependencyResponse'
+      required:
+        - message
+        - status
+        - score
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+          x-stoplight:
+            id: 3qeewke7hcgfs
+        status:
+          $ref: '#/components/schemas/Status'
+          x-stoplight:
+            id: 4862uwy9p1nup
+        score:
+          $ref: '#/components/schemas/Score'
+          x-stoplight:
+            id: v805ytmlcjdv2
+      description: The response format used for score transmissions to the e-learning platform.
+    Message:
+      title: Message
+      x-stoplight:
+        id: a1lu5lxbnxjyy
+      description: 'A human-readable explanation of the status in the desired locale. If no locale parameter was given, an English text is returned.'
+      type: string
+      readOnly: true
+    Status:
+      title: Status
+      x-stoplight:
+        id: dym68y7sfei7x
+      description: A valid HTTP status code as defined in RFC9110. It indicates the result of the score / submission process as requested by the learner. Refer to the remaining documentation for application-specific meanings.
+      type: integer
+      format: int32
+      minimum: 100
+      maximum: 599
+      examples:
+        - 422
+      readOnly: true
+    Score:
+      title: Score
+      x-stoplight:
+        id: h860f12fpf2lr
+      description: 'The score transmitted to the e-learning platform. This value specifies the correctness of the code submission in percent, ranging from 0 (not correct at all) to 100 (exercise solved correctly).'
+      type: integer
+      format: int32
+      minimum: 0
+      maximum: 100
+      examples:
+        - 100
+      readOnly: true
+    Evaluation:
+      type: object
+      description: The evaluation result of a single teacher-defined assessment file.
+      examples:
+        - $ref: '#/components/examples/PythonSuccessfulEvaluation'
+        - $ref: '#/components/examples/PythonFailedEvaluation'
+      additionalProperties: false
+      required:
+        - file_role
+        - stdout
+        - stderr
+        - exit_code
+        - status
+        - count
+        - failed
+        - passed
+        - score
+        - filename
+        - message
+        - weight
+      properties:
+        file_role:
+          enum:
+            - teacher_defined_test
+            - teacher_defined_linter
+          default: teacher_defined_test
+          examples:
+            - teacher_defined_test
+          description: The type of file executed.
+          readOnly: true
+        waiting_for_container_time:
+          type: number
+          format: double
+          description: The duration in seconds required to acquire an available runner for this submission. This duration also includes the time required to copy the files to the runner.
+          default: 0
+          examples:
+            - 0.1
+          readOnly: true
+        stdout:
+          type: string
+          description: The STDOUT stream generated by the test without further modification by CodeOcean.
+          examples:
+            - All tests passed.
+          readOnly: true
+        stderr:
+          type: string
+          description: The STDERR stream generated by the test without further modification by CodeOcean.
+          readOnly: true
+        exit_code:
+          type: integer
+          minimum: 0
+          maximum: 255
+          default: 0
+          examples:
+            - 0
+          description: The exit code of the test command being executed in accordance with Unix.
+          readOnly: true
+        container_execution_time:
+          type: number
+          description: The duration in seconds required to execute the desired test file.
+          default: 0
+          examples:
+            - 0.1
+          readOnly: true
+        status:
+          enum:
+            - ok
+            - failed
+            - timeout
+            - out_of_memory
+            - runner_in_use
+            - container_depleted
+          examples:
+            - ok
+          default: ok
+          description: |
+            An indicator whether the test was executed successfully or not. This indicator is based on a given set of enum values that are shortly introduced in the following:
+
+            - `ok`: The test execution was successful and the `exit_code` was `0`. This status usually correlates to the result of the test, but this is specific to the test suite being used. Some tools might return a successful status code even if test failures were raised.
+            - `failed`: Either, the test execution failed to run at all or the test suite reported some errors. In any case, the `exit_code` was not `0`.
+            - `timeout`: The test execution took longer than the permitted execution time. Hence, the execution was aborted by CodeOcean. This error might indicate an infinite loop in the learner's code or some other long-running function.
+            - `out_of_memory`: The test execution consumed more memory than permitted. Hence, the execution was aborted by CodeOcean. This error might indicate a memory leak or that an object was allocated that couldn't fit into the given memory boundaries.
+            - `runner_in_use`: The learner's runner for the exercise-specific execution environment was in use when executing the test command (but copying files succeeded). This should barely happen and rather indicates a concurrency problem. Retrying again after a short moment will likely succeed and result in a different status.
+            - `container_depleted`: No idle runner was available for the exercise-specific execution environment and hence the submission was not executed. This error might also happen in case of another runner-related problem, which is likely for this route (since otherwise a HTTP error `503 Service Unavailable` is expected). Retrying again after a few seconds might result in a different status.
+          readOnly: true
+        count:
+          type: integer
+          minimum: 0
+          examples:
+            - 3
+          description: 'The overall number of test cases included in this run of the assessment file. The sum of `failed` and `passed` is returned as `count`. '
+          format: int32
+          readOnly: true
+        failed:
+          type: integer
+          examples:
+            - 0
+          format: int32
+          description: The number of failed test cases.
+          minimum: 0
+          readOnly: true
+        error_messages:
+          type: array
+          description: 'If present, the `error_messages` lists test errors extracted by CodeOcean. The array is omitted if no test failed (`failed` = 0) and could be empty if no error was extracted.'
+          minItems: 0
+          items:
+            type: string
+            readOnly: true
+          readOnly: true
+        passed:
+          type: integer
+          description: The number of passed test cases.
+          examples:
+            - 3
+          format: int32
+          minimum: 0
+          readOnly: true
+        score:
+          type: number
+          format: double
+          examples:
+            - 1
+          description: 'The relative, unweighted score achieved by the learner for the given assessment. This score is calculated by `passed` by `count`. Hence, the value ranges between 0.0 and 1.0.'
+          minimum: 0
+          maximum: 1
+          readOnly: true
+        filename:
+          type: string
+          examples:
+            - test_hello_world.py
+          minLength: 1
+          description: The file name of the teacher-defined assessment executed.
+          readOnly: true
+        message:
+          type: string
+          description: 'A static feedback message depending on the `score`. Currently, the message either congratulates the learner for successfully passing the assessment or it provides the teacher-defined feedback as a hint to fix the code and try again. Either way, this value is not originating from the code execution (refer to `error_messages` for actual test results).'
+          examples:
+            - Well done. All tests have been passed.
+          readOnly: true
+        weight:
+          type: number
+          format: double
+          default: 1
+          minimum: 0
+          description: 'The relative weight of this test file in relation to all other test files. For each teacher-defined test, the `weight` is used to calculate the points received by multiplying `weight` with `score`. The overall points for an exercise is the sum of points for all teacher-defined assessments.'
+          examples:
+            - 1
+          readOnly: true
+        hidden_feedback:
+          type: boolean
+          default: false
+          description: 'This flag determines whether the feebdack is shown to learners or not. While the value `true` is supported, any evaluation with that value won''t be returned throught the API or UI.'
+          readOnly: true
+  examples:
+    PythonRemoteEvaluation:
+      value:
+        remote_evaluation:
+          validation_token: 8DfccYjzL3RupfkA4034uQ
+          files_attributes:
+            '0':
+              file_id: 1234567
+              content: |-
+                print("Hello")
+                print("World")
+            '1':
+              file_id: 1234568
+              content: print("Hello World")
+    OkResponse:
+      value:
+        message: Congratulations! You have completely solved this exercise and submitted the points to openHPI.
+        status: 200
+        score: 100
+    AcceptedResponse:
+      value:
+        message: Your code has been successfully assessed. Your grade has been transmitted to openHPI.
+        status: 202
+        score: 50
+    MultiStatusResponse:
+      value:
+        message: 'Your submission was saved successfully but was received after the deadline, so that only 80% were transmitted.'
+        status: 207
+        score: 100
+    UnauthorizedResponse:
+      value:
+        message: No exercise found for this validation token! Please keep out!
+        status: 401
+    ConflictResponse:
+      value:
+        message: 'You are currently running code. Please stop the previous execution, or wait a moment before proceeding.'
+        status: 409
+    GoneResponse:
+      value:
+        message: 'Your submission was successfully scored with 100%. However, your score could not be sent to the e-learning platform. Please check the submission deadline, reopen the exercise through the e-learning platform, and try again.'
+        status: 410
+        score: 100
+    ExpectationFailedResponse:
+      value:
+        message: The transmission of points was only partially successful. The score was not transmitted for your partner(s). The user(s) should reopen the exercise via the e-learning platform and then try to submit the points themselves.
+        status: 417
+        score: 100
+    UnprocessableContentResponse:
+      value:
+        message: The submission received is not in the expected JSON format. Please check your submission against the schema and try again.
+        status: 422
+    FailedDependencyResponse:
+      value:
+        message: An error occurred while transmitting your score. Please try again later.
+        status: 424
+        score: 100
+    ServiceUnavailableResponse:
+      value:
+        message: All execution environments are busy. Please try again later.
+        status: 503
+    PythonSuccessfulEvaluation:
+      value:
+        file_role: teacher_defined_test
+        waiting_for_container_time: 0.1
+        stdout: ''
+        stderr: |
+          .
+          ------------------------------------------------------
+          Ran 1 test in 0.000s
+          OK
+        exit_code: 0
+        container_execution_time: 0.3
+        status: ok
+        count: 1
+        failed: 0
+        passed: 1
+        score: 1
+        filename: test_hello_world.py
+        message: Well done. All tests have been passed.
+        weight: 1
+        hidden_feedback: false
+    PythonFailedEvaluation:
+      value:
+        file_role: teacher_defined_test
+        waiting_for_container_time: 0.1
+        stdout: ''
+        stderr: |
+          F
+          ------------------------------------------------------
+          Ran 1 test in 0.000s
+          FAILED (failures=1)
+        exit_code: 1
+        container_execution_time: 0.3
+        status: failed
+        count: 1
+        failed: 1
+        passed: 0
+        score: 0
+        filename: test_hello_world.py
+        message: Your code is not printing the desired greeting.
+        weight: 1
+        hidden_feedback: false
+  parameters:
+    Locale:
+      name: locale
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - en
+          - de
+        examples:
+          - de
+        default: en
+      description: An ISO-639 language code used to select appropriate localized messages. The same languages as available in CodeOcean's web UI are supported.
+  responses:
+    200Ok:
+      description: This response indicates that the learner has reached the full score on the exercise and that the score was successfully submitted via LTI to the e-learning platform.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScoreMessage'
+          examples:
+            OkResponse:
+              $ref: '#/components/examples/OkResponse'
+    201Created:
+      description: |-
+        This response indicates that the requested tests were run successfully against the provided submission. The HTTP status code does not indicate whether all tests passed or failed. Rather, it confirms the successful command execution in the container and that the files were correctly stored in the learner's workspace for the given exercise. The response body contains an array of evaluation responses, in which each element represents the result of a test run.
+
+        Despite the successful execution, CodeOcean also attempted to submit the score to the e-learning platform. For this action, however, no indication of success or failure is included in the response. It can be shown when repeating the same request to the `/submit` route.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Evaluation'
+          examples:
+            PythonSuccessfulEvaluation:
+              $ref: '#/components/examples/PythonSuccessfulEvaluation'
+            PythonFailedEvaluation:
+              $ref: '#/components/examples/PythonFailedEvaluation'
+    202Accepted:
+      description: 'This response indicates that the learner has scored their submission successfully without reaching the full score. This score, despite not representing the full score possible, was submitted successfully via LTI to the e-learning platform.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScoreMessage'
+          examples:
+            AcceptedResponse:
+              $ref: '#/components/examples/AcceptedResponse'
+    207MultiStatus:
+      description: 'This response indicates that the learner has scored their submission successfully but also indicates that the submission was received too late. The score returned in the response is the original, unmodified evaluation of the submission. To the e-learning platform, however, only 80% of this score were transmitted to account for the late submission. The transmission of this reduced score via LTI to the e-learning platform was successful.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScoreMessage'
+          examples:
+            MultiStatusResponse:
+              $ref: '#/components/examples/MultiStatusResponse'
+    401Unauthorized:
+      description: This response indicates that the the `validation_token` sent in the request was either not found or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+          examples:
+            UnauthorizedResponse:
+              $ref: '#/components/examples/UnauthorizedResponse'
+    409Conflict:
+      description: This response indicates that the learner's runner for the exercise-specific execution environment is currently in use. This might happen when two requests are performed simultaneously or when the CodeOcean web UI is used in parallel. Retrying again after waiting for the previous execution will likely succeed and result in a different status code. Runners are reserved up to the predefined maximum execution time and released as soon as a command finishes.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+          examples:
+            ConflictResponse:
+              $ref: '#/components/examples/ConflictResponse'
+    410Gone:
+      description: 'This response indicates that the learner has scored their submission successfully but also indicates that the transmission of the score to the e-learning platform was not attempted. This is usually caused by missing LTI parameters for the given exercise. Reopening the exercise in CodeOcean through the e-learning platform will update the LTI parameters and might fix the problem if the e-learning platform still accepts submissions for the activity. Some e-learning platforms like Xikolo might not include the required LTI parameters after the respective submission deadline has passed, in which this error cannot be fixed by the learner.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScoreMessage'
+          examples:
+            GoneResponse:
+              $ref: '#/components/examples/GoneResponse'
+    417ExpectationFailed:
+      description: 'This response indicates that the learner has scored their submission successfully but also indicates mixed success for the transmission of scores to the e-learning platform as part of an ongoing pair programming session. Specifically, the score was sent successfully for the requesting learner, but failed to be submitted for at least one of the fellow learners. Similar to a `424 Failed Dependency` response, this is usually caused by invalid or expired LTI parameters for the given exercise and learner. Hence, the partner(s) are advised to reopen the exercise in CodeOcean through the e-learning platform and thereby update the LTI parameters. This might fix the problem if the e-learning platform still accepts submissions for the activity. Some e-learning platforms like Xikolo might not include the required LTI parameters after the respective submission deadline has passed, in which this error cannot be fixed by the partner(s). The learner requesting the evaluation and score submission cannot fix the problem on their own, but needs to wait for their partner(s) to perform the previously-outlined steps.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScoreMessage'
+          examples:
+            ExpectationFailedResponse:
+              $ref: '#/components/examples/ExpectationFailedResponse'
+    424FailedDependency:
+      description: 'This response indicates that the learner has scored their submission successfully but also indicates that the transmission of scores to the e-learning platform failed. This status either indicates that the transmission of the score failed for the requesting user in a context without pair programming or that it failed for all partners including the requesting user in a pair programming session. This is usually caused by invalid or expired LTI parameters for the given exercise or a a temporary availability issue of the e-learning platform. If the e-learning platform is available, the learner(s) are advised to reopen the exercise in CodeOcean through the e-learning platform and thereby update the LTI parameters. This might fix the problem if the e-learning platform still accepts submissions for the activity. Some e-learning platforms like Xikolo might not include the required LTI parameters after the respective submission deadline has passed, in which this error cannot be fixed by the learner(s).'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ScoreMessage'
+          examples:
+            FailedDependencyResponse:
+              $ref: '#/components/examples/FailedDependencyResponse'
+    422UnprocessableContent:
+      description: 'This response indicates that the request received could not be parsed correctly. This either indicates that the request body was no valid JSON at all or that the JSON received was not in the expected format. Retrying again with a schema-compliant JSON will likely succeed and result in a different status code. '
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+          examples:
+            UnprocessableContentResponse:
+              $ref: '#/components/examples/UnprocessableContentResponse'
+    503ServiceUnavailable:
+      description: 'This response indicates that no idle runner was available for the exercise-specific execution environment and hence the submission was not executed. This might happen when the pre-warming pool is depleted, i.e., a huge workload is currently handled by the system. Retrying again after a few seconds will likely succeed and result in a different status code.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorMessage'
+          examples:
+            ServiceUnavailableResponse:
+              $ref: '#/components/examples/ServiceUnavailableResponse'
+tags:
+  - name: remote evaluation
+    description: Everything related to remote code evaluation
