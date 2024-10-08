@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "event",
+  "type": "object",
+  "properties": {
+    "remote_evaluation": {
+      "type": "object",
+      "properties": {
+        "validation_token": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-_=]+$"
+        },
+        "files_attributes": {
+          "type": "object",
+          "additionalProperties": false,
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "object",
+              "properties": {
+                "file_id": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "required": ["file_id", "content"],
+              "additionalProperties": false
+            }
+          }
+        }
+      },
+      "required": ["validation_token", "files_attributes"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["remote_evaluation"],
+  "additionalProperties": false
+}

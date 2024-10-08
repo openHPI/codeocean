@@ -9,7 +9,7 @@ RSpec.describe RemoteEvaluationController do
 
   let(:validation_token) { create(:remote_evaluation_mapping, user: contributor, exercise:).validation_token }
   let(:files_attributes) { {'0': {file_id: exercise.files.find_by(role: 'main_file').id, content: ''}} }
-  let(:remote_evaluation_params) { {remote_evaluation: {validation_token:, files_attributes:}} }
+  let(:remote_evaluation_body) { {remote_evaluation: {validation_token:, files_attributes:}} }
 
   let(:calculate_response) do
     [{
@@ -45,12 +45,49 @@ RSpec.describe RemoteEvaluationController do
     end
   end
 
+  shared_context 'when non schema-compliant requests are sent' do
+    context 'when the request is not schema-compliant' do
+      before { perform_request.call }
+
+      context 'with an invalid JSON' do
+        let(:remote_evaluation_body) { '{invalid_json' }
+
+        it_behaves_like 'response', {message: 'remote_evaluations.invalid_json', status: 422}
+      end
+
+      context 'with an invalid validation token' do
+        let(:validation_token) { 'abc@ABC' }
+
+        it_behaves_like 'response', {message: 'remote_evaluations.invalid_json', status: 422}
+      end
+
+      context 'with a missing remote_evaluation parameter' do
+        let(:remote_evaluation_body) { {validation_token:, files_attributes:} }
+
+        it_behaves_like 'response', {message: 'remote_evaluations.invalid_json', status: 422}
+      end
+
+      context 'with a non-numeric index for files_attributes' do
+        let(:files_attributes) { {a: {file_id: exercise.files.find_by(role: 'main_file').id, content: ''}} }
+
+        it_behaves_like 'response', {message: 'remote_evaluations.invalid_json', status: 422}
+      end
+
+      context 'with an array of files_attributes' do
+        let(:files_attributes) { {file_id: exercise.files.find_by(role: 'main_file').id, content: ''} }
+        let(:remote_evaluation_body) { {remote_evaluation: {validation_token:, files_attributes: [files_attributes]}} }
+
+        it_behaves_like 'response', {message: 'remote_evaluations.invalid_json', status: 422}
+      end
+    end
+  end
+
   before do
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(contributor)
   end
 
   describe '#POST submit' do
-    let(:perform_request) { proc { post :submit, params: remote_evaluation_params } }
+    let(:perform_request) { proc { post :submit, body: remote_evaluation_body.try(:to_json), format: :json, as: :json } }
 
     let(:scoring_response) do
       {
@@ -60,6 +97,8 @@ RSpec.describe RemoteEvaluationController do
         detailed_results: [],
       }
     end
+
+    include_context 'when non schema-compliant requests are sent'
 
     context 'when remote evaluation mapping is available' do
       context 'when the scoring is successful' do
@@ -153,7 +192,7 @@ RSpec.describe RemoteEvaluationController do
     end
 
     context 'when remote evaluation mapping is not available' do
-      let(:validation_token) { nil }
+      let(:validation_token) { 'invalidButSemanticallyCorrectToken' }
 
       before { perform_request.call }
 
@@ -162,7 +201,9 @@ RSpec.describe RemoteEvaluationController do
   end
 
   describe '#POST evaluate' do
-    let(:perform_request) { proc { post :evaluate, params: remote_evaluation_params } }
+    let(:perform_request) { proc { post :evaluate, body: remote_evaluation_body.try(:to_json), format: :json, as: :json } }
+
+    include_context 'when non schema-compliant requests are sent'
 
     context 'when remote evaluation mapping is available' do
       context 'when the scoring is successful' do
@@ -203,7 +244,7 @@ RSpec.describe RemoteEvaluationController do
     end
 
     context 'when remote evaluation mapping is not available' do
-      let(:validation_token) { nil }
+      let(:validation_token) { 'invalidButSemanticallyCorrectToken' }
 
       before { perform_request.call }
 

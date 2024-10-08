@@ -1,0 +1,4 @@
+---
+en:
+  remote_evaluations:
+    invalid_json: The submission received is not in the expected JSON format. Please check your submission against the schema and try again.
