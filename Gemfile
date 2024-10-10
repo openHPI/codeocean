@@ -52,7 +52,7 @@ gem 'sorcery'
 gem 'sprockets-rails'
 gem 'telegraf'
 gem 'terser', require: false
-gem 'tubesock'
+gem 'tubesock', github: 'openhpi/tubesock'
 gem 'turbolinks'
 gem 'whenever', require: false
 gem 'zxcvbn-ruby', require: 'zxcvbn'
