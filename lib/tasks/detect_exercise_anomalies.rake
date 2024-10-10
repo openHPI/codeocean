@@ -115,7 +115,7 @@ namespace :detect_exercise_anomalies do
 
   def notify_collection_author(collection, anomalies)
     log("Sending E-Mail to author (#{collection.user.displayname} <#{collection.user.email}>)...", 2)
-    UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_now
+    UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_later
   end
 
   def notify_contributors(collection, anomalies)

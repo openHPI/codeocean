@@ -134,7 +134,7 @@ class RequestForCommentsController < ApplicationController
     @request_for_comment.thank_you_note = params[:note]
 
     commenters = @request_for_comment.commenters
-    commenters.each {|commenter| UserMailer.send_thank_you_note(@request_for_comment, commenter).deliver_now }
+    commenters.each {|commenter| UserMailer.send_thank_you_note(@request_for_comment, commenter).deliver_later }
 
     respond_to do |format|
       if @request_for_comment.save
