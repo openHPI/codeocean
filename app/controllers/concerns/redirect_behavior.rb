@@ -4,7 +4,7 @@ module RedirectBehavior
   include Lti
 
   def redirect_after_submit
-    Rails.logger.debug { "Redirecting user with score:s #{@submission.normalized_score}" }
+    Rails.logger.debug { "Redirecting user with score: #{@submission.normalized_score}" }
 
     # Redirect to the corresponding community solution if enabled and the user is eligible.
     return redirect_to_community_solution if redirect_to_community_solution?
@@ -78,7 +78,7 @@ module RedirectBehavior
     flash.keep(:notice)
 
     # Increase counter 'times_featured' in rfc
-    @rfc.increment(:times_featured) unless own
+    @rfc.increment!(:times_featured) unless own # rubocop:disable Rails/SkipsModelValidations
 
     respond_to do |format|
       format.html { redirect_to(@rfc) }
