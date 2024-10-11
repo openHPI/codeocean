@@ -2769,7 +2769,7 @@ __metadata:
     pnp-webpack-plugin: "npm:^1.7.0"
     propagating-hammerjs: "npm:^3.0.0"
     rails-erb-loader: "usabilityhub/rails-erb-loader#master"
-    rails_admin: "npm:3.2.0"
+    rails_admin: "npm:3.2.1"
     sass: "npm:^1.79.4"
     sass-loader: "npm:^16.0.2"
     shakapacker: "npm:8.0.2"
@@ -6059,9 +6059,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rails_admin@npm:3.2.0":
-  version: 3.2.0
-  resolution: "rails_admin@npm:3.2.0"
+"rails_admin@npm:3.2.1":
+  version: 3.2.1
+  resolution: "rails_admin@npm:3.2.1"
   dependencies:
     "@babel/runtime": "npm:^7.16.7"
     "@fortawesome/fontawesome-free": "npm:>=5.15.0 <7.0.0"
@@ -6072,7 +6072,7 @@ __metadata:
     flatpickr: "npm:^4.6.9"
     jquery: "npm:^3.6.0"
     jquery-ui: "npm:^1.12.1 <1.14.0"
-  checksum: 10c0/f472cfd38d74589b8d153c8716752a189a2decff5ba36bc31365e7881d5049003f781c71e38db9ac798759661e7f6a5ee65e4bb55d6b222db277f364ddd038d1
+  checksum: 10c0/7617164234a0fbd7d545597272c68dbb67c7bcd92210c58eb7bacc8e1d369a67f8853d5e28cfb75532c7de3df5082b5a1478a2ed1dbfd7aa77a9f587a2cfd0db
   languageName: node
   linkType: hard
 
