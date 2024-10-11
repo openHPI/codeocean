@@ -18,14 +18,16 @@ class RemoteEvaluationController < ApplicationController
     result = create_and_score_submission('remoteAssess')
     # For this route, we don't want to display the LTI result, but only the result of the submission.
     try_lti if result.key?(:feedback)
-    render json: result.fetch(:feedback, result), status: result.fetch(:status, 201)
+    location = submission_url(@submission) if @submission
+    render json: result.fetch(:feedback, result), status: result.fetch(:status, 201), location:
   end
 
   # POST /submit
   def submit
     result = create_and_score_submission('remoteSubmit')
     result = try_lti if result.key?(:feedback)
-    render json: result, status: result.fetch(:status, 201)
+    location = submission_url(@submission) if @submission
+    render json: result, status: result.fetch(:status, 201), location:
   end
 
   private

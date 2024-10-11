@@ -520,6 +520,13 @@ components:
           - de
         default: en
       description: An ISO-639 language code used to select appropriate localized messages. The same languages as available in CodeOcean's web UI are supported.
+  headers:
+    Location:
+      schema:
+        type: string
+        format: iri
+        example: 'https://codeocean.openhpi.de/submissions/1'
+      description: The URL of the newly created submission that was received by CodeOcean.
   responses:
     200Ok:
       description: This response indicates that the learner has reached the full score on the exercise and that the score was successfully submitted via LTI to the e-learning platform.
@@ -530,6 +537,9 @@ components:
           examples:
             OkResponse:
               $ref: '#/components/examples/OkResponse'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
     201Created:
       description: |-
         This response indicates that the requested tests were run successfully against the provided submission. The HTTP status code does not indicate whether all tests passed or failed. Rather, it confirms the successful command execution in the container and that the files were correctly stored in the learner's workspace for the given exercise. The response body contains an array of evaluation responses, in which each element represents the result of a test run.
@@ -544,6 +554,9 @@ components:
               $ref: '#/components/examples/PythonSuccessfulEvaluation'
             PythonFailedEvaluation:
               $ref: '#/components/examples/PythonFailedEvaluation'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
     202Accepted:
       description: 'This response indicates that the learner has scored their submission successfully without reaching the full score. This score, despite not representing the full score possible, was submitted successfully via LTI to the e-learning platform.'
       content:
@@ -553,6 +566,9 @@ components:
           examples:
             AcceptedResponse:
               $ref: '#/components/examples/AcceptedResponse'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
     207MultiStatus:
       description: 'This response indicates that the learner has scored their submission successfully but also indicates that the submission was received too late. The score returned in the response is the original, unmodified evaluation of the submission. To the e-learning platform, however, only 80% of this score were transmitted to account for the late submission. The transmission of this reduced score via LTI to the e-learning platform was successful.'
       content:
@@ -562,6 +578,9 @@ components:
           examples:
             MultiStatusResponse:
               $ref: '#/components/examples/MultiStatusResponse'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
     401Unauthorized:
       description: This response indicates that the the `validation_token` sent in the request was either not found or invalid.
       content:
@@ -580,6 +599,9 @@ components:
           examples:
             ConflictResponse:
               $ref: '#/components/examples/ConflictResponse'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
     410Gone:
       description: 'This response indicates that the learner has scored their submission successfully but also indicates that the transmission of the score to the e-learning platform was not attempted. This is usually caused by missing LTI parameters for the given exercise. Reopening the exercise in CodeOcean through the e-learning platform will update the LTI parameters and might fix the problem if the e-learning platform still accepts submissions for the activity. Some e-learning platforms like Xikolo might not include the required LTI parameters after the respective submission deadline has passed, in which this error cannot be fixed by the learner.'
       content:
@@ -589,6 +611,9 @@ components:
           examples:
             GoneResponse:
               $ref: '#/components/examples/GoneResponse'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
     417ExpectationFailed:
       description: 'This response indicates that the learner has scored their submission successfully but also indicates mixed success for the transmission of scores to the e-learning platform as part of an ongoing pair programming session. Specifically, the score was sent successfully for the requesting learner, but failed to be submitted for at least one of the fellow learners. Similar to a `424 Failed Dependency` response, this is usually caused by invalid or expired LTI parameters for the given exercise and learner. Hence, the partner(s) are advised to reopen the exercise in CodeOcean through the e-learning platform and thereby update the LTI parameters. This might fix the problem if the e-learning platform still accepts submissions for the activity. Some e-learning platforms like Xikolo might not include the required LTI parameters after the respective submission deadline has passed, in which this error cannot be fixed by the partner(s). The learner requesting the evaluation and score submission cannot fix the problem on their own, but needs to wait for their partner(s) to perform the previously-outlined steps.'
       content:
@@ -598,6 +623,9 @@ components:
           examples:
             ExpectationFailedResponse:
               $ref: '#/components/examples/ExpectationFailedResponse'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
     424FailedDependency:
       description: 'This response indicates that the learner has scored their submission successfully but also indicates that the transmission of scores to the e-learning platform failed. This status either indicates that the transmission of the score failed for the requesting user in a context without pair programming or that it failed for all partners including the requesting user in a pair programming session. This is usually caused by invalid or expired LTI parameters for the given exercise or a a temporary availability issue of the e-learning platform. If the e-learning platform is available, the learner(s) are advised to reopen the exercise in CodeOcean through the e-learning platform and thereby update the LTI parameters. This might fix the problem if the e-learning platform still accepts submissions for the activity. Some e-learning platforms like Xikolo might not include the required LTI parameters after the respective submission deadline has passed, in which this error cannot be fixed by the learner(s).'
       content:
@@ -607,6 +635,9 @@ components:
           examples:
             FailedDependencyResponse:
               $ref: '#/components/examples/FailedDependencyResponse'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
     422UnprocessableContent:
       description: 'This response indicates that the request received could not be parsed correctly. This either indicates that the request body was no valid JSON at all or that the JSON received was not in the expected format. Retrying again with a schema-compliant JSON will likely succeed and result in a different status code. '
       content:
@@ -625,6 +656,9 @@ components:
           examples:
             ServiceUnavailableResponse:
               $ref: '#/components/examples/ServiceUnavailableResponse'
+      headers:
+        Location:
+          $ref: '#/components/headers/Location'
 tags:
   - name: remote evaluation
     description: Everything related to remote code evaluation
