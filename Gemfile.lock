@@ -371,7 +371,7 @@ GEM
     rails-timeago (2.20.0)
       actionpack (>= 5.2)
       activesupport (>= 5.2)
-    rails_admin (3.2.0)
+    rails_admin (3.2.1)
       activemodel-serializers-xml (>= 1.0)
       csv
       kaminari (>= 0.14, < 2.0)
