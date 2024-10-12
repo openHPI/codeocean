@@ -45,7 +45,7 @@ class PyLintAdapter < TestingFrameworkAdapter
       failed:,
       error_messages: concatenated_errors.flatten.compact_blank,
       detailed_linter_results: assertion_error_matches.flatten.compact_blank,
-    }
+    }.compact_blank
   end
 
   def self.translate_linter(assessment, locale)

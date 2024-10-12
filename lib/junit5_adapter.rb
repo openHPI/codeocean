@@ -16,7 +16,7 @@ class Junit5Adapter < TestingFrameworkAdapter
       {count:, passed: count}
     else
       error_matches = output[:stdout].scan(ASSERTION_ERROR_REGEXP) || []
-      {count:, failed:, error_messages: error_matches.flatten.compact_blank}
+      {count:, failed:, error_messages: error_matches.flatten.compact_blank}.compact_blank
     end
   end
 end

@@ -14,6 +14,6 @@ class RScriptAdapter < TestingFrameworkAdapter
     passed = captures.second
     failed = count - passed
     assertion_error_matches = output[:stdout].scan(ASSERTION_ERROR_REGEXP) || []
-    {count:, failed:, error_messages: assertion_error_matches.flatten.compact_blank}
+    {count:, failed:, error_messages: assertion_error_matches.flatten.compact_blank}.compact_blank
   end
 end
