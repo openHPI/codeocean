@@ -42,13 +42,13 @@ class JuliaAdapter < TestingFrameworkAdapter
     else
       error_matches = output.to_enum(:scan, ASSERTION_ERROR_REGEXP).map { Regexp.last_match } || []
       messages = error_matches.pluck(:message)
-      {count:, failed:, error_messages: messages.flatten.compact_blank}
+      {count:, failed:, error_messages: messages.flatten.compact_blank}.compact_blank
     end
   end
 
   def parse_error(output)
     error_matches = output.to_enum(:scan, LOAD_ERROR_REGEXP).map { Regexp.last_match } || []
     messages = error_matches.pluck(:message)
-    {count: 1, failed: 1, error_messages: messages.flatten.compact_blank}
+    {count: 1, failed: 1, error_messages: messages.flatten.compact_blank}.compact_blank
   end
 end

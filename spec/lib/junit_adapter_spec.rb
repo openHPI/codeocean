@@ -10,10 +10,9 @@ RSpec.describe JunitAdapter do
       let(:count) { 42 }
       let(:failed) { 25 }
       let(:stdout) { "FAILURES!!!\nTests run: #{count},  Failures: #{failed}" }
-      let(:error_matches) { [] }
 
       it 'returns the correct numbers' do
-        expect(adapter.parse_output(stdout:)).to eq(count:, failed:, error_messages: error_matches)
+        expect(adapter.parse_output(stdout:)).to eq(count:, failed:)
       end
     end
 

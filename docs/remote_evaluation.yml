@@ -354,7 +354,7 @@ components:
           readOnly: true
         error_messages:
           type: array
-          description: 'If present, the `error_messages` lists test errors extracted by CodeOcean. The array is omitted if no test failed (`failed` = 0) and could be empty if no error was extracted.'
+          description: 'If present, the `error_messages` lists test errors extracted by CodeOcean. The array is omitted if no test failed (`failed` = 0) or if no error was extracted.'
           minItems: 0
           items:
             type: string
