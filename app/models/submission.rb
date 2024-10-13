@@ -250,8 +250,7 @@ class Submission < ApplicationRecord
     [new_runner, new_waiting_duration]
   end
 
-  def command_for(template, file)
-    filepath = collect_files.find {|f| f.filepath == file }.filepath
+  def command_for(template, filepath)
     template % command_substitutions(filepath)
   end
 
