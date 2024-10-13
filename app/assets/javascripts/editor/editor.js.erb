@@ -473,9 +473,9 @@ var CodeOceanEditor = {
     initializeWorkspaceButtons: function () {
         $('#assess').one('click', this.scoreCode.bind(this));
         $('#render').on('click', this.renderCode.bind(this));
-        $('#run').on('click', this.runCode.bind(this));
+        $('#run').one('click', this.runCode.bind(this));
         $('#stop').on('click', this.stopCode.bind(this));
-        $('#test').on('click', this.testCode.bind(this));
+        $('#test').one('click', this.testCode.bind(this));
         $('#start-over').on('click', this.confirmReset.bind(this));
         $('#start-over-active-file').on('click', this.confirmResetActiveFile.bind(this));
     },

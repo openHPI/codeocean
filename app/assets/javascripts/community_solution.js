@@ -28,12 +28,15 @@ $(document).on('turbolinks:load', function() {
 function submitCode(event) {
     const button = $(event.target) || $('#submit');
     this.newSentryTransaction(button, async () => {
-        const submission = await this.createSubmission(button, null).catch(this.ajaxError.bind(this));
+        const submission = await this.createSubmission(button, null).catch((response) => {
+            this.ajaxError(response);
+            button.one('click', this.submitCode.bind(this));
+        });
         if (!submission) return;
         if (!submission.redirect) return;
 
         this.autosaveIfChanged();
-        this.stopCode(event);
+        await this.stopCode(event);
         this.editors = [];
         Turbolinks.clearCache();
         Turbolinks.visit(submission.redirect);
