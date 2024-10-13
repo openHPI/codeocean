@@ -4,6 +4,12 @@ class Runner < ApplicationRecord
   include ContributorCreation
   belongs_to :execution_environment
 
+  # Each reservation is extended by the specified duration.
+  # This allows us to extend the reservation in case of a timeout and a subsequent runner swap.
+  # By observation, we know that a runner swap usually takes 500ms on average, sometimes 700ms.
+  # This time includes requesting a new runner and copying the submission files to the new runner.
+  RESERVATION_BUFFER = 1.second
+
   before_validation :request_id
   validates :runner_id, presence: true
 
@@ -43,10 +49,10 @@ class Runner < ApplicationRecord
     runner
   end
 
-  def copy_files(files)
-    reserve!
+  def copy_files(files, exclusive: true)
+    reserve! if exclusive
     @strategy.copy_files(files)
-    release!
+    release! if exclusive
   rescue Runner::Error::RunnerInUse => e
     Rails.logger.debug { "Copying files failed because the runner was already in use: #{e.message}" }
     raise e
@@ -55,7 +61,7 @@ class Runner < ApplicationRecord
     request_new_id
     save
     @strategy.copy_files(files)
-    release!
+    release! if exclusive
   end
 
   def download_file(desired_file, privileged_execution:, exclusive: true, &)
@@ -192,9 +198,14 @@ class Runner < ApplicationRecord
         @error = Runner::Error::RunnerInUse.new("The desired Runner #{id} is already in use until #{reserved_until.iso8601}.")
         raise @error
       else
-        update!(reserved_until: Time.zone.now + execution_environment.permitted_execution_time.seconds)
-        @error = nil
+        lock_runner_for_permitted_execution_time!
       end
+    end
+  end
+
+  def extend!
+    with_lock do
+      lock_runner_for_permitted_execution_time!
     end
   end
 
@@ -236,5 +247,14 @@ class Runner < ApplicationRecord
         )
       end
     end
+  end
+
+  def lock_runner_for_permitted_execution_time!
+    # We reserve the runner for the permitted execution time plus the specified buffer time to ensure that the runner is
+    # not released before the execution is finished. This is especially important for the case that a command execution
+    # timed out, but subsequent commands are scheduled (i.e., when calculating a score and swapping a runner).
+    reservation = execution_environment.permitted_execution_time.seconds + RESERVATION_BUFFER
+    update!(reserved_until: Time.zone.now + reservation)
+    @error = nil
   end
 end

@@ -154,7 +154,7 @@ class Submission < ApplicationRecord
       file_scores = assessments.sort_by {|file| file.teacher_defined_linter? ? 0 : 1 }.map.with_index(1) do |file, index|
         output = run_test_file file, runner, waiting_duration
         # If the previous execution failed and there is at least one more test, we request a new runner.
-        runner, waiting_duration = swap_runner(runner) if output[:status] == :timeout && index < assessment_number
+        swap_runner(runner) if output[:status] == :timeout && index < assessment_number
         score_file(output, file, requesting_user)
       end
     end
@@ -169,7 +169,7 @@ class Submission < ApplicationRecord
     run_command = command_for execution_environment.run_command, file.filepath
     durations = {}
     prepared_runner do |runner, waiting_duration|
-      durations[:execution_duration] = runner.attach_to_execution(run_command, &block)
+      durations[:execution_duration] = runner.attach_to_execution(run_command, exclusive: false, &block)
       durations[:waiting_duration] = waiting_duration
     rescue Runner::Error => e
       e.waiting_duration = waiting_duration
@@ -193,7 +193,7 @@ class Submission < ApplicationRecord
   def run_test_file(file, runner, waiting_duration)
     test_command = command_for execution_environment.test_command, file.filepath
     result = {file_role: file.role, waiting_for_container_time: waiting_duration}
-    output = runner.execute_command(test_command, raise_exception: false)
+    output = runner.execute_command(test_command, raise_exception: false, exclusive: false)
     result.merge(output)
   end
 
@@ -211,10 +211,11 @@ class Submission < ApplicationRecord
     files&.map(&attribute.to_proc)&.zip(files).to_h
   end
 
-  def prepared_runner
+  def prepared_runner(existing_runner: nil, exclusive: true)
     request_time = Time.zone.now
     begin
-      runner = Runner.for(contributor, exercise.execution_environment)
+      runner = existing_runner || Runner.for(contributor, exercise.execution_environment)
+      runner.reserve! if exclusive
       files = collect_files
 
       case cause
@@ -227,25 +228,32 @@ class Submission < ApplicationRecord
       end
 
       Rails.logger.debug { "#{Time.zone.now.getutc.inspect}: Copying files to Runner #{runner.id} for #{contributor_type} #{contributor_id} and Submission #{id}." }
-      runner.copy_files(files)
+      # We don't want `copy_files` to be exclusive since we reserve runners for the whole `prepared_runner` block.
+      runner.copy_files(files, exclusive: false)
     rescue Runner::Error => e
       e.waiting_duration = Time.zone.now - request_time
       raise
     end
     waiting_duration = Time.zone.now - request_time
-    yield(runner, waiting_duration)
+    yield(runner, waiting_duration) if block_given?
+  ensure
+    runner&.release! if exclusive
   end
 
-  def swap_runner(old_runner)
-    old_runner.update(runner_id: nil)
-    new_runner = nil
-    new_waiting_duration = nil
-    # We request a new runner that will also include all files of the current submission
-    prepared_runner do |runner, waiting_duration|
-      new_runner = runner
-      new_waiting_duration = waiting_duration
+  def swap_runner(runner, exclusive: true)
+    # We use a transaction to ensure that the runner is swapped atomically.
+    transaction do
+      # Due to the `before_validation` callback in the `Runner` model,
+      # the following line will immediately request a new runner.
+      runner.update(runner_id: nil)
+
+      # With the new runner being ready, we only need to prepare it (by copying the files).
+      # Since no actual execution is performed, we don't need to reserve the runner.
+      prepared_runner(existing_runner: runner, exclusive: false)
+
+      # Now, we update the locks if desired. This is only necessary when a runner is used exclusively.
+      runner.extend! if exclusive
     end
-    [new_runner, new_waiting_duration]
   end
 
   def command_for(template, filepath)
