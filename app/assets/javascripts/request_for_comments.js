@@ -377,7 +377,7 @@ $(document).on('turbolinks:load', function () {
             if (commenttext !== "") {
                 createComment(fileid, row, editor, commenttext);
                 commentTextarea.val('');
-                bootstrap.Modal.getInstance(commentModal).hide();
+                bootstrap.Modal.getInstance(commentModal)?.hide();
             }
         });
 
