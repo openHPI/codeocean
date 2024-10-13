@@ -48,8 +48,6 @@ class Submission < ApplicationRecord
 
   validates :cause, inclusion: {in: CAUSES}
 
-  attr_reader :used_execution_environment
-
   # after_save :trigger_working_times_action_cable
 
   def collect_files
@@ -287,7 +285,6 @@ class Submission < ApplicationRecord
       waiting_for_container_time: output[:waiting_for_container_time]
     )
     TestrunMessage.create_for(testrun, output[:messages])
-    TestrunExecutionEnvironment.create(testrun:, execution_environment: @used_execution_environment)
 
     filename = file.filepath
 

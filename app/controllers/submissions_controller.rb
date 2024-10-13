@@ -439,7 +439,6 @@ class SubmissionsController < ApplicationController
       waiting_for_container_time: @testrun[:waiting_for_container_time]
     )
     TestrunMessage.create_for(testrun, @testrun[:messages])
-    TestrunExecutionEnvironment.create(testrun:, execution_environment: @submission.used_execution_environment)
   end
 
   def send_hints(tubesock, errors)
