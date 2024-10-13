@@ -94,7 +94,7 @@ CommandSocket.prototype.executeCommand = function(cmd) {
 CommandSocket.prototype.send = function(data) {
   // Only send message if WebSocket is open and ready.
   // Ignore all other messages (they might hit a wrong container anyway)
-  if (this.getReadyState() === this.websocket.OPEN) {
+  if (this.getReadyState() === WebSocket.OPEN) {
     this.websocket.send(data);
   }
 };
