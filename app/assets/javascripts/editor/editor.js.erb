@@ -764,6 +764,9 @@ var CodeOceanEditor = {
 
     showStatus: function (output) {
         switch (output.status) {
+            case 'container_running':
+                this.toggleButtonStates();
+                break;
             case 'timeout':
             case 'buffer_overflow':
                 this.showTimeoutMessage();

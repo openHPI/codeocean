@@ -196,7 +196,6 @@ CodeOceanEditorSubmissions = {
     this.running = true;
     this.showSpinner($('#run'));
     $('#score_div').addClass('d-none');
-    this.toggleButtonStates();
     await this.socketRunCode(submission.id, CodeOceanEditor.active_file.filename);
   },
 
