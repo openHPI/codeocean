@@ -218,10 +218,16 @@ class Submission < ApplicationRecord
       files = collect_files
 
       case cause
-        when 'run'
-          files.reject!(&:reference_implementation?)
-          files.reject!(&:teacher_defined_assessment?)
-        when 'assess'
+        when 'run', 'test'
+          files.reject! do |file|
+            next true if file.reference_implementation?
+            # Only remove teacher-defined assessments if they are hidden.
+            # Otherwise, 'test' might fail if a teacher-defined assessment is executed.
+            next true if file.teacher_defined_assessment? && file.hidden?
+
+            next false
+          end
+        when 'assess', 'submit', 'remoteAssess', 'remoteSubmit'
           regular_filepaths = files.reject(&:reference_implementation?).map(&:filepath)
           files.reject! {|file| file.reference_implementation? && regular_filepaths.include?(file.filepath) }
       end
