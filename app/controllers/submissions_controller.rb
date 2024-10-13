@@ -338,6 +338,8 @@ class SubmissionsController < ApplicationController
   end
 
   def close_client_connection(client_socket)
+    return if client_socket&.closed?
+
     # search for errors and save them as StructuredError (for scoring runs see submission.rb)
     errors = extract_errors
     send_hints(client_socket, errors)
@@ -409,7 +411,7 @@ class SubmissionsController < ApplicationController
                           end
     @testrun[:messages].push message
     @testrun[:status] = message[:status] if message[:status]
-    client_socket.send_data(message.to_json)
+    client_socket&.send_data(message.to_json)
   end
 
   def max_output_buffer_size
