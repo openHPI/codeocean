@@ -501,7 +501,7 @@ var CodeOceanEditor = {
 
         $('#askForCommentsButton').one('click', this.requestComments.bind(this));
         $('#closeAskForCommentsButton').on('click', function () {
-            bootstrap.Modal.getInstance($('#comment-modal')).hide();
+            bootstrap.Modal.getInstance($('#comment-modal'))?.hide();
         });
 
         setTimeout(function () {

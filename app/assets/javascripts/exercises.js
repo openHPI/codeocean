@@ -254,7 +254,7 @@ $(document).on('turbolinks:load', function () {
             for (let i = 0; i < selectedTips.length; i++) {
                 addTip(selectedTips[i].value, selectedTips[i].label);
             }
-            bootstrap.Modal.getInstance($('#add-tips-modal')).hide();
+            bootstrap.Modal.getInstance($('#add-tips-modal'))?.hide();
             updateTipsJSON();
             chosenInputTips.val('').trigger("chosen:updated");
         });
@@ -395,7 +395,7 @@ $(document).on('turbolinks:load', function () {
                 if (response.status === 'success') {
                     $messageDiv.addClass('export-success');
                     setTimeout((function () {
-                        bootstrap.Modal.getInstance($('#export-modal')).hide();
+                        bootstrap.Modal.getInstance($('#export-modal'))?.hide();
                         $messageDiv.html('').removeClass('export-success');
                     }), 3000);
                 } else {

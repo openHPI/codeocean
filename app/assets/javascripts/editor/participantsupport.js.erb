@@ -140,7 +140,7 @@ CodeOceanEditorRequestForComments = {
         }
       }).catch(this.ajaxError.bind(this));
 
-      bootstrap.Modal.getInstance(commentModal).hide();
+      bootstrap.Modal.getInstance(commentModal)?.hide();
       this.hideSpinner();
       questionElement.prop("disabled", false).val('');
       closeAskForCommentsButton.removeClass('d-none');

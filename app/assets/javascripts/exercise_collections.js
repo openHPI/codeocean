@@ -187,7 +187,7 @@ $(document).on('turbolinks:load', function() {
         for (var i = 0; i < selectedExercises.length; i++) {
           addExercise(selectedExercises[i].value, selectedExercises[i].label);
         }
-        bootstrap.Modal.getInstance($('#add-exercise-modal')).hide();
+        bootstrap.Modal.getInstance($('#add-exercise-modal'))?.hide();
         updateExerciseList();
         addExercisesForm.find('select').val('').trigger("chosen:updated");
       });
