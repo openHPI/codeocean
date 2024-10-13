@@ -76,6 +76,8 @@ CodeOceanEditorWebsocket = {
     return this.runSocket(Routes.test_submission_url, {id: submissionID, filename: filename}, (websocket) => {
       websocket.on('default', this.handleTestResponse.bind(this));
       websocket.on('exit', this.handleExitCommand.bind(this));
+    }).then(() => {
+      $('#test').one('click', this.testCode.bind(this));
     });
   },
 
@@ -102,6 +104,8 @@ CodeOceanEditorWebsocket = {
       websocket.on('status', this.showStatus.bind(this));
       websocket.on('hint', this.showHint.bind(this));
       websocket.on('files', this.prepareFileDownloads.bind(this));
+    }).then(() => {
+      $('#run').one('click', this.runCode.bind(this));
     });
   },
 

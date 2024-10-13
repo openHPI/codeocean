@@ -122,9 +122,17 @@ CodeOceanEditorRequestForComments = {
       const file_id = $('.editor').data('id');
       const question = questionElement.val();
 
-      const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+      const submission = await this.createSubmission(cause, null).catch((response) => {
+        this.ajaxError(response);
+        askForCommentsButton.one('click', this.requestComments.bind(this));
+        questionElement.prop("disabled", false);
+        closeAskForCommentsButton.removeClass('d-none');
+      });
       if (!submission) return;
 
+      this.showSpinner(askForCommentsButton);
+      await this.stopCode();
+      // Since `stopCode` might call `hideSpinner`, we need to show it again.
       this.showSpinner(askForCommentsButton);
 
       const response = await $.ajax({

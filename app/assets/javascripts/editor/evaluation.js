@@ -10,11 +10,14 @@ CodeOceanEditorEvaluation = {
         event.preventDefault();
         const cause = $('#assess');
         this.newSentryTransaction(cause, async () => {
-            this.stopCode(event);
+            await this.stopCode(event);
             this.clearScoringOutput();
             $('#submit').addClass("d-none");
 
-            const submission = await this.createSubmission(cause, null).catch(this.ajaxError.bind(this));
+            const submission = await this.createSubmission(cause, null).catch((response) => {
+                this.ajaxError(response);
+                cause.one('click', this.scoreCode.bind(this));
+            });
             if (!submission) return;
 
             this.showSpinner($('#assess'));
@@ -126,12 +129,18 @@ CodeOceanEditorEvaluation = {
     /**
      * Stop-Logic
      */
-    stopCode: function (event) {
-        event.preventDefault();
-        if (this.isActiveFileStoppable() && this.websocket) {
+    stopCode: async function (event) {
+        event && event.preventDefault();
+        if (this.websocket && this.websocket.getReadyState() !== WebSocket.CLOSED) {
+            const websocketClosedPromise = new Promise((resolve) => {
+                this.websocket.onClose(() => {
+                    this.killWebsocket();
+                    this.cleanUpUI();
+                    resolve();
+                });
+            })
             this.websocket.send(JSON.stringify({'cmd': 'client_kill'}));
-            this.killWebsocket();
-            this.cleanUpUI();
+            return websocketClosedPromise;
         }
     },
 
