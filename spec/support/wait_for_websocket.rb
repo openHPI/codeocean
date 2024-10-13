@@ -8,7 +8,7 @@ module WaitForWebsocket
   end
 
   def websocket_finished?
-    page.evaluate_script('CodeOceanEditorWebsocket?.websocket?.websocket?.readyState == WebSocket.CLOSED').present?
+    page.evaluate_script('CodeOceanEditorWebsocket?.websocket?.getReadyState() === WebSocket.CLOSED').present?
   end
 end
 
