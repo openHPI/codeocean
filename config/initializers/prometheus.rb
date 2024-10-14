@@ -5,6 +5,7 @@ require 'prometheus/record'
 
 return unless CodeOcean::Config.new(:code_ocean).read[:prometheus_exporter][:enabled] && !defined?(Rails::Console)
 return if %w[db: assets:].any? {|task| Rake.application.top_level_tasks.to_s.include?(task) }
+return if %w[i18n].any?(File.basename($PROGRAM_NAME))
 
 # Add metric callbacks to all models
 ActiveSupport.on_load :active_record do
