@@ -140,6 +140,7 @@ class SubmissionsController < ApplicationController
         case event[:cmd]
           when :client_kill
             @testrun[:status] = :terminated_by_client
+            runner_socket&.close(:terminated_by_client)
             close_client_connection(client_socket)
             Rails.logger.debug('Client exited container.')
           when :result, :canvasevent, :exception

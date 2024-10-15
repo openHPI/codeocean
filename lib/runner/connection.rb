@@ -84,7 +84,12 @@ class Runner::Connection
     return unless active?
 
     @status = status
-    @socket.close
+    # Close the WebSocket connection _immediately_
+    # by scheduling it for the next execution of the EventMachine reactor run.
+    # Otherwise, the message might be queued causing delays for users.
+    EventMachine.next_tick do
+      @socket.close
+    end
   end
 
   # Check if the WebSocket connection is currently established
