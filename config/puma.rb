@@ -53,7 +53,7 @@ prune_bundler
 
 # Fork all workers from worker 0 to reduce memory footprint and allow phased restarts.
 # For successful phased restarts, we need at least 3 workers (see doc).
-# See https://github.com/puma/puma/blob/master/docs/fork_worker.md.
+# See https://github.com/puma/puma/blob/HEAD/docs/fork_worker.md.
 # Passing `0` will disable automatic reforking, which currently breaks with SdNotify.
 # See https://github.com/puma/puma/issues/3273.
 fork_worker 0
@@ -75,4 +75,4 @@ end
 # Note on Phased Restarts:
 # - Phased Restarts are only supported in cluster mode with multiple workers (i.e., not in development).
 # - The Puma binary won't be upgraded on phased restarts, but since we have the unattended-upgrades, this is not a major issue.
-# - See https://github.com/casperisfine/puma/blob/master/docs/restart.md.
+# - See https://github.com/casperisfine/puma/blob/HEAD/docs/restart.md.

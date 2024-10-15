@@ -3,7 +3,7 @@
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/openHPI/codeocean)
 
 [![Build Status](https://github.com/openHPI/codeocean/workflows/CI/badge.svg)](https://github.com/openHPI/codeocean/actions?query=workflow%3ACI)
-[![codecov](https://codecov.io/gh/openHPI/codeocean/branch/master/graph/badge.svg?token=imei686C2r)](https://codecov.io/gh/openHPI/codeocean)
+[![codecov](https://codecov.io/gh/openHPI/codeocean/branch/main/graph/badge.svg?token=imei686C2r)](https://codecov.io/gh/openHPI/codeocean)
 
 ![Learner Interface](docs/implement.png)
 
@@ -53,7 +53,7 @@ The usage of [Poseidon](https://github.com/openHPI/poseidon) is highly recommend
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/openHPI/codeocean. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/openHPI/codeocean/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/openHPI/codeocean. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/openHPI/codeocean/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -61,4 +61,4 @@ CodeOcean is available as open source under the terms of the [BSD 3-Clause Licen
 
 ## Code of Conduct
 
-Everyone interacting in this project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/openHPI/codeocean/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in this project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/openHPI/codeocean/blob/main/CODE_OF_CONDUCT.md).

@@ -3,7 +3,7 @@
 ## Supported Versions
 
 To receive fixes for security vulnerabilities it is required to always upgrade to the latest version of CodeOcean. 
-See https://github.com/openHPI/codeocean/tree/master for the latest version.
+See https://github.com/openHPI/codeocean/tree/main for the latest version.
 
 ## Reporting a Vulnerability
 

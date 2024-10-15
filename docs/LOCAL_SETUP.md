@@ -88,7 +88,7 @@ export NVM_DIR="$HOME/.nvm"
 
 **Linux:**
 ```shell
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh | bash
 ```
 
 **Check with:**
