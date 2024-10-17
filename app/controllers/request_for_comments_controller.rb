@@ -16,7 +16,6 @@ class RequestForCommentsController < ApplicationController
   # GET /request_for_comments.json
   def index
     @search = policy_scope(RequestForComment)
-      .last_per_user(2)
       .joins(:exercise)
       .where(exercises: {unpublished: false})
       .order(created_at: :desc) # Order for the LIMIT part of the query
@@ -24,6 +23,7 @@ class RequestForCommentsController < ApplicationController
 
     # This total is used later to calculate the total number of entries
     request_for_comments = @search.result
+      .last_per_user(2) # This should be done after filtering, so we don't miss any records
       # All conditions are included in the query, so get the number of requested records
       .paginate(page: params[:page], per_page: per_page_param)
 
