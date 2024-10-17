@@ -7,6 +7,7 @@ class Exercise < ApplicationRecord
   include Creation
   include DefaultValues
   include TimeHelper
+  include RansackObject
 
   after_initialize :generate_token
   after_initialize :set_default_values
