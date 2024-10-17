@@ -8,7 +8,7 @@ h1 = RequestForComment.model_name.human(count: :other)
           = f.label(:exercise_title_cont, RequestForComment.human_attribute_name('exercise'), class: 'visually-hidden form-label')
           = f.search_field(:exercise_title_cont, class: 'form-control', placeholder: RequestForComment.human_attribute_name('exercise'))
       .col-auto.mt-3.mt-md-0
-        = f.label(:title_cont, t('request_for_comments.solved'), class: 'visually-hidden form-label')
+        = f.label(:state, t('request_for_comments.solved'), class: 'visually-hidden form-label')
         = f.select(:state, [[t('request_for_comments.show_all'), RequestForComment::ALL], [t('request_for_comments.show_unsolved'), RequestForComment::ONGOING], [t('request_for_comments.show_soft_solved'), RequestForComment::SOFT_SOLVED], [t('request_for_comments.show_solved'), RequestForComment::SOLVED]])
     - unless current_user.consumer.rfc_visibility_study_group?
       .row
@@ -23,12 +23,12 @@ h1 = RequestForComment.model_name.human(count: :other)
       tr
         th
           i.fa-regular.fa-lightbulb aria-hidden='true' title = t('request_for_comments.solved') align='right'
-        th.sorttable_nosort = sort_link(@search, :title, RequestForComment.human_attribute_name('exercise'))
+        th.sorttable_nosort = sort_link(@search, :exercise_title, RequestForComment.human_attribute_name('exercise'))
         th = RequestForComment.human_attribute_name('question')
         th
           i.fa-solid.fa-comment aria-hidden='true' title = t('request_for_comments.comments') align='center'
         th = RequestForComment.human_attribute_name('username')
-        th = RequestForComment.human_attribute_name('requested_at')
+        th.sorttable_nosort = sort_link(@search, :created_at, RequestForComment.human_attribute_name('requested_at'))
         th = RequestForComment.human_attribute_name('last_update')
     tbody
       - @request_for_comments.each do |request_for_comment|
@@ -49,6 +49,6 @@ h1 = RequestForComment.model_name.human(count: :other)
           td = request_for_comment.comments.size
           td = link_to_if(request_for_comment.user && policy(request_for_comment.user).show?, request_for_comment.user.displayname, request_for_comment.user)
           td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.created_at))
-          td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.last_comment.nil? ? request_for_comment.updated_at : request_for_comment.last_comment))
+          td = t('shared.time.before', time: distance_of_time_in_words_to_now(request_for_comment.last_activity.nil? ? request_for_comment.updated_at : request_for_comment.last_activity))
 
 = render('shared/pagination', collection: @request_for_comments)
