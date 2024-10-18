@@ -15,58 +15,37 @@ class RequestForCommentsController < ApplicationController
   # GET /request_for_comments
   # GET /request_for_comments.json
   def index
-    @search = policy_scope(RequestForComment)
-      .last_per_user(2)
-      .joins(:exercise)
-      .where(exercises: {unpublished: false})
-      .order(created_at: :desc) # Order for the LIMIT part of the query
-      .ransack(params[:q])
+    @search = ransack_search do |rfcs|
+      # Only show RfCs for published exercises
+      rfcs.where(exercises: {unpublished: false})
+    end
 
-    # This total is used later to calculate the total number of entries
-    request_for_comments = @search.result
-      # All conditions are included in the query, so get the number of requested records
-      .paginate(page: params[:page], per_page: per_page_param)
-
-    @request_for_comments = RequestForComment.where(id: request_for_comments)
-      .with_last_activity # expensive query, so we only do it for the current page
-      .includes(submission: %i[study_group exercise contributor])
-      .includes(:file, :comments, user: [:consumer])
-      .order(created_at: :desc) # Order for the view
-      # We need to manually enable the pagination links.
-      .extending(WillPaginate::ActiveRecord::RelationMethods)
-    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page] || 1)
-    @request_for_comments.limit_value = per_page_param
-    @request_for_comments.total_entries = @search.result.length
+    @request_for_comments = find_and_paginate_rfcs do |rfcs|
+      # Order for the view (and subqueries)
+      rfcs.order(created_at: :desc)
+    end
 
     authorize!
   end
 
   # GET /my_request_for_comments
   def my_comment_requests
-    @search = policy_scope(RequestForComment)
-      .joins(:submission)
-      .where(user: current_user)
-      .or(policy_scope(RequestForComment)
-            .joins(:submission)
-            .where(submissions: {contributor: current_user.programming_groups}))
-      .order(created_at: :desc) # Order for the LIMIT part of the query
-      .ransack(params[:q])
+    @search = ransack_search do |rfcs|
+      # Only show any RfC the user has created or any RfC for a submission of any programming group the user belongs to
+      rfcs.joins(:submission)
+        .where(user: current_user)
+        .or(policy_scope(RequestForComment)
+              .joins(:exercise)
+              .joins(:submission)
+              # Using the IDs here is much faster than using the polymorphic association.
+              # This is because the association would result in a nested loop join.
+              .where(submissions: {contributor_id: current_user.programming_group_ids}))
+    end
 
-    # This total is used later to calculate the total number of entries
-    request_for_comments = @search.result
-      # All conditions are included in the query, so get the number of requested records
-      .paginate(page: params[:page], per_page: per_page_param)
-
-    @request_for_comments = RequestForComment.where(id: request_for_comments)
-      .with_last_activity
-      .includes(submission: %i[study_group exercise])
-      .includes(:file, :comments, :user)
-      .order(created_at: :desc) # Order for the view
-      # We need to manually enable the pagination links.
-      .extending(WillPaginate::ActiveRecord::RelationMethods)
-    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page] || 1)
-    @request_for_comments.limit_value = per_page_param
-    @request_for_comments.total_entries = @search.result.length
+    @request_for_comments = find_and_paginate_rfcs(per_user: nil) do |rfcs|
+      # Order for the view (and subqueries)
+      rfcs.order(created_at: :desc)
+    end
 
     authorize!
     render 'index'
@@ -74,26 +53,16 @@ class RequestForCommentsController < ApplicationController
 
   # GET /my_rfc_activity
   def rfcs_with_my_comments
-    # As we order by `last_comment`, we need to include `with_last_activity` in the original query.
-    # Therefore, the optimization chosen above doesn't work here.
-    @search = policy_scope(RequestForComment)
-      .joins(:comments) # we don't need to outer join here, because we know the user has commented on these
-      .where(comments: {user: current_user})
-      .ransack(params[:q])
-    # This total is used later to calculate the total number of entries
-    request_for_comments = @search.result
-      .paginate(page: params[:page], per_page: per_page_param)
+    @search = ransack_search do |rfcs|
+      # Only show RfCs with comments by the user
+      rfcs.joins(:comments)
+        .where(comments: {user: current_user})
+    end
 
-    @request_for_comments = RequestForComment.where(id: request_for_comments)
-      .with_last_activity
-      .includes(submission: %i[study_group exercise contributor])
-      .includes(:file, :comments, user: [:consumer])
-      .order(last_comment: :desc)
-      # We need to manually enable the pagination links.
-      .extending(WillPaginate::ActiveRecord::RelationMethods)
-    @request_for_comments.current_page = WillPaginate::PageNumber(params[:page] || 1)
-    @request_for_comments.limit_value = per_page_param
-    @request_for_comments.total_entries = @search.result.length
+    @request_for_comments = find_and_paginate_rfcs(per_user: nil) do |rfcs|
+      # Order for the view (and subqueries)
+      rfcs.order(last_activity: :desc)
+    end
 
     authorize!
     render 'index'
@@ -102,16 +71,18 @@ class RequestForCommentsController < ApplicationController
   # GET /exercises/:id/request_for_comments
   def rfcs_for_exercise
     exercise = Exercise.find(params[:exercise_id])
-    @search = policy_scope(RequestForComment)
-      .with_last_activity
-      .where(exercise_id: exercise.id)
-      .ransack(params[:q])
-    @request_for_comments = @search.result
-      .joins(:exercise)
-      .order(last_comment: :desc)
-      .paginate(page: params[:page], per_page: per_page_param)
-    # let the exercise decide, whether its rfcs should be visible
     authorize(exercise)
+
+    @search = ransack_search do |rfcs|
+      # Only show RfCs belonging to the exercise
+      rfcs.where(exercise:)
+    end
+
+    @request_for_comments = find_and_paginate_rfcs(per_user: nil) do |rfcs|
+      # Order for the view (and subqueries)
+      rfcs.order(last_activity: :desc)
+    end
+
     render 'index'
   end
 
@@ -214,5 +185,95 @@ class RequestForCommentsController < ApplicationController
 
     @study_groups_grouping = [[t('request_for_comments.index.study_groups.current'), Array(current_study_group)],
                               [t('request_for_comments.index.study_groups.my'), my_study_groups.reject {|group| group == current_study_group }]]
+  end
+
+  def ransack_search
+    # The `policy_scope` is used to enforce the consumer's rfc_visibility setting.
+    # This is defined through Pundit, see `RequestForCommentPolicy::Scope` in `policies/request_for_comment_policy.rb`.
+    rfcs = policy_scope(RequestForComment)
+      # The join is used for the where clause below but also ensures we are not showing RfCs without an exercise
+      .joins(:exercise)
+
+    # Allow the caller to apply additional conditions to the search.
+    rfcs = yield rfcs if block_given?
+
+    # Apply the actual search and sort options.
+    # The sort options are applied, so that the resulting Ransack::Search object contains all desired options.
+    # However, the actual sorting is deferred (through a call to `reorder(nil)`) and performed later.
+    # Still, for the view helper, we need to store the sort options in the search object.
+    rfcs.ransack(params[:q])
+  end
+
+  def ransack_sort
+    # Extract the sort options from the params and apply them to a new ransack search.
+    # This is used to apply the sort options to the search result *after* filtering the results.
+    RequestForComment.ransack(s: params.dig(:q, :s))
+  end
+
+  def find_and_paginate_rfcs(per_user: 2)
+    # 1. Get any sort options from the caller.
+    # For convenience, the caller can provide these options as ActiveRecord::Relation query methods.
+    desired_sort_options = yield RequestForComment if block_given?
+    desired_sort_options = desired_sort_options&.arel&.orders
+
+    # 2. Apply the filter options to the RfCs as specified by Ransack.
+    matching_records_arel = RequestForComment.with_ransack_search_arel(@search)
+    # 3. Get the last n RfCs per user. A value of `nil` for `per_user` means all RfCs.
+    last_matching_records_arel = RequestForComment.with_last_per_user_arel(matching_records_arel, per_user)
+
+    # 4. Apply the sort options to the RfCs and paginate the result set.
+    # We need to sort first, since the pagination is applied to the sorted result set.
+    # If the sort options include the `last_activity` attribute, we need to include it in the query.
+    if desired_sort_options&.any? {|sort| sort.expr.to_s == '"last_activity"' }
+      # Annotating RfCs with the last comment activity is an expensive operation, since it includes three joins.
+      # Therefore, we only do this if the sort options include the `last_activity` attribute.
+      annotated_last_matching_records_arel = RequestForComment.with_last_activity_arel(last_matching_records_arel)
+      # On the resulting query, we apply the sort options as specified by Ransack the caller.
+      sorted_last_matching_records_arel = RequestForComment.with_ransack_sort_arel(ransack_sort, desired_sort_options, annotated_last_matching_records_arel)
+      # Now, we paginate the result set and need to convert it to an Arel query. This is necessary for compatibility with the `else` branch.
+      annotated_final_result_set_arel = RequestForComment.from(sorted_last_matching_records_arel)
+        .paginate(page: params[:page], per_page: per_page_param)
+        .arel.as(RequestForComment.arel_table.name)
+    else
+      # Apply the sort options to the RfCs as specified by Ransack and the caller.
+      sorted_last_matching_records_arel = RequestForComment.with_ransack_sort_arel(ransack_sort, desired_sort_options, last_matching_records_arel)
+      # Now, we paginate the result set and simply extract the desired RfCs (their IDs, without the last comment activity).
+      selected_request_for_comments = RequestForComment.from(sorted_last_matching_records_arel)
+        .paginate(page: params[:page], per_page: per_page_param)
+      # For the final result set, we need to include the last comment activity as a preparation for the view.
+      # Since only `per_page_param` RfCs are selected, the performance impact is limited.
+      final_result_set_arel = RequestForComment.with_id_arel(selected_request_for_comments)
+      annotated_final_result_set_arel = RequestForComment.with_last_activity_arel(final_result_set_arel)
+    end
+
+    # 5. Manually apply compatibility with WillPaginate and prefetch the necessary associations.
+    request_for_comments = RequestForComment.from(annotated_final_result_set_arel)
+      .includes(submission: %i[study_group exercise contributor])
+      .includes(:file, :comments, user: [:consumer])
+      .extending(WillPaginate::ActiveRecord::RelationMethods)
+
+    # 6. Apply the sort options to **current page** of the result set.
+    # This is needed since the sorting is not kept when annotating the result set with the last comment activity.
+    # (We're grouping by the RfC attributes and the last comment activity.)
+    if ransack_sort.result.arel.join_sources.present?
+      request_for_comments = request_for_comments.joins(*ransack_sort.result.arel.join_sources)
+        .order(*ransack_sort.result.arel.orders)
+    end
+
+    # 7. Similarly to the Ransack sort, we also need to reapply the sort options from the caller.
+    if desired_sort_options.present?
+      request_for_comments = request_for_comments.order(*desired_sort_options)
+    end
+
+    # 8. We need to manually enable the pagination links.
+    request_for_comments.current_page = WillPaginate::PageNumber(params[:page] || 1)
+    request_for_comments.limit_value = per_page_param
+    request_for_comments.total_entries = RequestForComment.from(last_matching_records_arel).count
+
+    # Debugging: Print the SQL query to the console.
+    Rails.logger.debug { request_for_comments.to_sql }
+
+    # Return the paginated, sorted result set.
+    request_for_comments
   end
 end
