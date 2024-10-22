@@ -32,6 +32,19 @@ class PyUnitAdapter < TestingFrameworkAdapter
       Sentry.capture_message({stderr: output[:stderr], regex: ASSERTION_ERROR_REGEXP}.to_json)
       assertion_error_matches = []
     end
-    {count:, failed: failed + errors, error_messages: assertion_error_matches.flatten.compact_blank}.compact_blank
+
+    total_failed = failed + errors
+
+    if count < total_failed
+      # Catch a weird edge case where the test count is less than the failed count.
+      # This might happen in PyUnit, when a test is failing (by design) during the setUpClass phase.
+      # In those cases, we might get the following output: Ran 0 tests in 0.001s, FAILED (failures=1)
+      # Normally, we would calculate the passed tests as count (0) - failed (1) = passed (-1).
+      # In the given scenario, a negative number of passed tests doesn't make sense.
+      # Hence, we assume that the count is invalid and increase it by the number of failed tests.
+      count += total_failed
+    end
+
+    {count:, failed: total_failed, error_messages: assertion_error_matches.flatten.compact_blank}.compact_blank
   end
 end
