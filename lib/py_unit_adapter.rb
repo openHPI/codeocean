@@ -45,6 +45,6 @@ class PyUnitAdapter < TestingFrameworkAdapter
       count += total_failed
     end
 
-    {count:, failed: total_failed, error_messages: assertion_error_matches.flatten.compact_blank}.compact_blank
+    {count:, failed: total_failed, error_messages: assertion_error_matches.flatten.compact_blank.sort}.compact_blank
   end
 end
