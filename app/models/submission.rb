@@ -158,8 +158,11 @@ class Submission < ApplicationRecord
         score_file(output, file, requesting_user)
       end
     end
-    # We sort the files again, so that the linter tests are displayed last.
-    file_scores&.sort_by! {|file| file[:file_role] == 'teacher_defined_linter' ? 1 : 0 }
+    # We sort the files again, so that *optional* linter tests are displayed last.
+    # All other files are sorted alphabetically.
+    file_scores&.sort_by! do |file|
+      [file[:file_role] == 'teacher_defined_linter' && file[:weight].zero? ? 1 : 0, file[:filename]]
+    end
     combine_file_scores(file_scores)
   end
 
