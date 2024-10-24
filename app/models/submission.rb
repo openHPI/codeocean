@@ -231,7 +231,7 @@ class Submission < ApplicationRecord
 
             next false
           end
-        when 'assess', 'submit', 'remoteAssess', 'remoteSubmit'
+        when 'assess', 'submit', 'remoteAssess', 'remoteSubmit', 'requestComments'
           regular_filepaths = files.reject(&:reference_implementation?).map(&:filepath)
           files.reject! {|file| file.reference_implementation? && regular_filepaths.include?(file.filepath) }
       end
