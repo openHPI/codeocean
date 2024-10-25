@@ -143,6 +143,9 @@ class RequestForCommentsController < ApplicationController
           # As the same runner is used for the score and test run, no parallelization is possible
           # A run is triggered from the frontend and does not need to be handled here.
           @request_for_comment.submission.calculate_score(current_user)
+          @request_for_comment.submission.files.select(&:user_defined_test?).each do |file|
+            @request_for_comment.submission.test(file, current_user)
+          end
         rescue Runner::Error::RunnerInUse => e
           Rails.logger.debug { "Scoring a submission failed because the runner was already in use: #{e.message}" }
           format.json { render json: {error: t('exercises.editor.runner_in_use'), status: :runner_in_use}, status: :conflict }
