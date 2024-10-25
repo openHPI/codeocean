@@ -8,6 +8,7 @@ class Testrun < ApplicationRecord
   has_many :testrun_messages, dependent: :destroy
 
   CONSOLE_OUTPUT = %w[stdout stderr].freeze
+  CAUSES = %w[assess run].freeze
 
   enum :status, {
     ok: 0,
@@ -21,6 +22,7 @@ class Testrun < ApplicationRecord
 
   validates :exit_code, numericality: {only_integer: true, min: 0, max: 255}, allow_nil: true
   validates :status, presence: true
+  validates :cause, inclusion: {in: CAUSES}
 
   def log
     if testrun_messages.loaded?
