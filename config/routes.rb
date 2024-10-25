@@ -186,7 +186,7 @@ Rails.application.routes.draw do
 
   # Render dynamic PWA files from app/views/pwa/*
   get 'service-worker', to: 'rails/pwa#service_worker', as: :pwa_service_worker, defaults: {format: :js}
-  get 'manifest', to: 'rails/pwa#manifest', as: :pwa_manifest, defaults: {format: :webmanifest}
+  get 'manifest(.:file_extension)', to: 'rails/pwa#manifest', as: :pwa_manifest, defaults: {format: :webmanifest}, format: false, constraints: {file_extension: %w[json webmanifest]}
 
   # Defines the root path route ("/")
   root to: 'application#welcome'
