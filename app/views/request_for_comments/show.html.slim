@@ -42,7 +42,7 @@
             - output_runs.each do |testrun|
               pre = testrun.log || t('request_for_comments.no_output')
 
-        - assess_runs = testruns.select {|run| run.cause == 'assess' }.sort_by {|run| [run.file&.filepath ? 0 : 1, run.file&.filepath]}
+        - assess_runs = testruns.select {|run| run.cause == 'assess' }.sort_by {|run| [run.file&.filepath ? 0 : 1, run.file&.filepath] }
         - unless current_user.admin?
           - assess_runs = assess_runs.select {|run| run.file.present? ? !run.file.hidden_feedback? : true }
         - if assess_runs.size.positive?
@@ -55,11 +55,11 @@
                     - if testrun.passed
                       span.text-success
                         i.fa-solid.fa-circle-check.me-2 aria-hidden='true'
-                        => t('request_for_comments.passed') + ':'
+                        => "#{t('request_for_comments.passed')}:"
                     - else
                       span.text-danger
                         i.fa-solid.fa-circle-xmark.me-2 aria-hidden='true'
-                        => t('request_for_comments.failed') + ':'
+                        => "#{t('request_for_comments.failed')}:"
                     = testrun.file.filepath
                 .collapsed.testrun-output.text
                   span.fa-solid.fa-chevron-down.collapse-button
