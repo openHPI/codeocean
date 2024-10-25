@@ -164,7 +164,7 @@ class RequestForCommentsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_request_for_comment
-    @request_for_comment = RequestForComment.find(params[:id])
+    @request_for_comment = RequestForComment.includes(:exercise, :user, submission: [:study_group, {files: [:file_type], testruns: [:testrun_messages, {file: [:file_type]}]}]).find(params[:id])
   end
 
   def request_for_comment_params

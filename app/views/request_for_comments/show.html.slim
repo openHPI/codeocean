@@ -8,7 +8,7 @@
   p.list-group-item-text
     - user = @request_for_comment.user
     - submission = @request_for_comment.submission
-    - testruns = Testrun.where(submission_id: @request_for_comment.submission)
+    - testruns = submission.testruns
     = link_to_if(policy(user).show?, user.displayname, user)
     | | #{@request_for_comment.created_at.localtime}
     - if @request_for_comment.submission.study_group.present? && policy(@request_for_comment.submission).show_study_group?
@@ -71,7 +71,7 @@
   | do not put a carriage return in the line below. it will be present in the presentation of the source code, otherwise.
   | also, all settings from the rails model needed for the editor configuration in the JavaScript are attached to the editor as data attributes here.
 - submission.files.each do |file|
-  = "#{file.path || ''}/#{file.name}#{file.file_type.file_extension}"
+  = file.filepath
   br
   | &nbsp;&nbsp;
   i.fa-solid.fa-arrow-down aria-hidden='true'
