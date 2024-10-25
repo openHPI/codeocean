@@ -74,11 +74,16 @@ h1
                 td = this.cause
                 td = this.score
                 td.align-middle
-                  -this.testruns.sort_by {|t| [t.file&.name ? 0 : 1, t.file&.name] }.each do |run|
-                    - if run.passed
-                      .unit-test-result.positive-result title=[run.file&.filepath, run.log].join("\n").strip
+                  - this.testruns.sort_by {|t| [t.file&.filepath ? 0 : 1, t.file&.filepath] }.each do |run|
+                    - if run.passed.nil? # run
+                      span.text-warning
+                        i.fa-solid.fa-circle-play.me-2 aria-hidden='true' title=[run.file&.filepath, run.log].join("\n").strip
+                    - elsif run.passed
+                      span.text-success
+                        i.fa-solid.fa-circle-check.me-2 aria-hidden='true' title=[run.file&.filepath, run.log].join("\n").strip
                     - else
-                      .unit-test-result.unknown-result title=[run.file&.filepath, run.log].join("\n").strip
+                      span.text-danger
+                        i.fa-solid.fa-circle-xmark.me-2 aria-hidden='true' title=[run.file&.filepath, run.log].join("\n").strip
                 td = @working_times_until[event_index] if policy(@exercise).detailed_statistics?
               - elsif this.is_a? UserExerciseIntervention
                 td = this.created_at.strftime('%F %T')

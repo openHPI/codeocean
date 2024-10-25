@@ -81,10 +81,10 @@ h1 = @exercise
                 - latest_user_submission = submissions.where(contributor:).final.latest
                 - if latest_user_submission.present?
                   - if latest_user_submission.before_deadline?
-                    .unit-test-result.positive-result
+                    .deadline-result.positive-result
                   - elsif latest_user_submission.within_grace_period?
-                    .unit-test-result.unknown-result
+                    .deadline-result.unknown-result
                   - elsif latest_user_submission.after_late_deadline?
-                    .unit-test-result.negative-result
+                    .deadline-result.negative-result
               td = us['runs'] if policy(@exercise).detailed_statistics?
               td = @exercise.average_working_time_for(contributor) || 0 if policy(@exercise).detailed_statistics?

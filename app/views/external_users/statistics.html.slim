@@ -26,11 +26,11 @@ h1 = t('.title', user: @user.displayname)
                 - latest_viewable_submission = submissions.where(exercise:).final.latest
                 - if latest_viewable_submission.present?
                   - if latest_viewable_submission.before_deadline?
-                    .unit-test-result.positive-result.before_deadline
+                    .deadline-result.positive-result.before_deadline
                   - elsif latest_viewable_submission.within_grace_period?
-                    .unit-test-result.unknown-result.within_grace_period
+                    .deadline-result.unknown-result.within_grace_period
                   - elsif latest_viewable_submission.after_late_deadline?
-                    .unit-test-result.negative-result.after_late_deadline
+                    .deadline-result.negative-result.after_late_deadline
               td = stats['runs'] || 0 if policy(exercises.first).detailed_statistics?
               td = stats['working_time'] || 0 if policy(exercises.first).detailed_statistics?
 - else

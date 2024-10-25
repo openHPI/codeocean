@@ -57,7 +57,6 @@
   .testrun-assess-results {
 
     .testrun-container {
-      display: flex;
       margin-bottom: 10px;
 
       .testrun-output {
@@ -65,40 +64,6 @@
         flex-grow: 1;
       }
     }
-
-    .result {
-      margin-right: 10px;
-      margin-top: 20px;
-      min-width: 10px;
-      max-width: 10px;
-      min-height: 10px;
-      max-height: 10px;
-    }
-
-    .passed {
-      border-radius: 50%;
-      background-color: var(--bs-success);
-      -webkit-box-shadow: 0 0 11px 1px rgba(var(--bs-success-rgb), 1);
-      -moz-box-shadow: 0 0 11px 1px rgba(var(--bs-success-rgb), 1);
-      box-shadow: 0 0 11px 1px rgba(var(--bs-success-rgb), 1);
-    }
-
-    .unknown {
-      border-radius: 50%;
-      background-color: var(--bs-warning);
-      -webkit-box-shadow: 0 0 11px 1px rgba(var(--bs-warning-rgb), 1);
-      -moz-box-shadow: 0 0 11px 1px rgba(var(--bs-warning-rgb), 1);
-      box-shadow: 0 0 11px 1px rgba(var(--bs-warning-rgb), 1);
-    }
-
-    .failed {
-      border-radius: 50%;
-      background-color: var(--bs-danger);
-      -webkit-box-shadow: 0 0 11px 1px rgba(var(--bs-danger-rgb), 1);
-      -moz-box-shadow: 0 0 11px 1px rgba(var(--bs-danger-rgb), 1);
-      box-shadow: 0 0 11px 1px rgba(var(--bs-danger-rgb), 1);
-    }
-
   }
 
   #mark-as-solved-button {

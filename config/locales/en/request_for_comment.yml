@@ -21,6 +21,7 @@ en:
     click_here: Click on this sidebar to comment!
     comment_edited: edited
     comments: Comments
+    failed: Failed
     howto: |
       To leave comments to a specific code line, click on the respective line number. <br>
       Enter your comment in the popup and save it by clicking "Comment this". <br>
@@ -40,6 +41,7 @@ en:
     modal_title: Add a comment to line %{line}
     no_output: No output.
     no_question: The author did not enter a question for this request.
+    passed: Passed
     runtime_output: Runtime Output
     send_thank_you_note: Send
     show_all: All requests

@@ -21,6 +21,7 @@ de:
     click_here: Zum Kommentieren auf die Seitenleiste klicken!
     comment_edited: bearbeitet
     comments: Kommentare
+    failed: Fehlgeschlagen
     howto: |
       Um Kommentare zu einer Programmzeile hinzuzufügen, kann einfach auf die jeweilige Zeilennummer auf der linken Seite geklickt werden. <br>
       Es öffnet sich ein Textfeld, in dem der Kommentar eingetragen werden kann. <br>
@@ -40,6 +41,7 @@ de:
     modal_title: Einen Kommentar in Zeile %{line} hinzufügen
     no_output: Keine Ausgabe.
     no_question: Der/die Autor:in hat keine Frage zu dieser Anfrage gestellt.
+    passed: Erfolgreich
     runtime_output: Programmausgabe
     send_thank_you_note: Senden
     show_all: Alle Anfragen anzeigen
