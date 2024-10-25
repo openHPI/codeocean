@@ -152,7 +152,7 @@ class Submission < ApplicationRecord
 
       # We sort the test files, so that the linter checks are run first. This prevents a modification of the test file
       file_scores = assessments.sort_by {|file| file.teacher_defined_linter? ? 0 : 1 }.map.with_index(1) do |file, index|
-        output = run_test_file file, runner, waiting_duration
+        output = run_file :test_command, file, runner, waiting_duration
         # If the previous execution failed and there is at least one more test, we request a new runner.
         swap_runner(runner) if output[:status] == :timeout && index < assessment_number
         score_file(output, file, requesting_user)
@@ -181,23 +181,9 @@ class Submission < ApplicationRecord
     durations
   end
 
-  # @raise [Runner::Error] if the file could not be tested due to a failure with the runner.
-  #                        See the specific type and message for more details.
   def test(file, requesting_user)
-    prepared_runner do |runner, waiting_duration|
-      output = run_test_file file, runner, waiting_duration
-      score_file output, file, requesting_user
-    rescue Runner::Error => e
-      e.waiting_duration = waiting_duration
-      raise
-    end
-  end
-
-  def run_test_file(file, runner, waiting_duration)
-    test_command = command_for execution_environment.test_command, file.filepath
-    result = {file_role: file.role, waiting_for_container_time: waiting_duration}
-    output = runner.execute_command(test_command, raise_exception: false, exclusive: false)
-    result.merge(output)
+    output = execute :test_command, file
+    score_file output, file, requesting_user
   end
 
   def self.ransackable_attributes(_auth_object = nil)
@@ -275,6 +261,24 @@ class Submission < ApplicationRecord
       filename:,
       module_name: File.basename(filename, File.extname(filename)).underscore,
     }
+  end
+
+  # @raise [Runner::Error] if the file could not be tested due to a failure with the runner.
+  #                        See the specific type and message for more details.
+  def execute(action, file)
+    prepared_runner do |runner, waiting_duration|
+      run_file action, file, runner, waiting_duration
+    rescue Runner::Error => e
+      e.waiting_duration = waiting_duration
+      raise
+    end
+  end
+
+  def run_file(action, file, runner, waiting_duration)
+    command = command_for execution_environment.public_send(action), file.filepath
+    result = {file_role: file.role, waiting_for_container_time: waiting_duration}
+    output = runner.execute_command(command, raise_exception: false, exclusive: false)
+    result.merge(output)
   end
 
   def score_file(output, file, requesting_user)
