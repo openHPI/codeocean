@@ -46,7 +46,7 @@
     "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.10",
     "underscore": "^1.13.7",
-    "uuid": "^10.0.0",
+    "uuid": "^11.0.1",
     "vis-data": "^7.1.9",
     "vis-timeline": "^7.7.3",
     "vis-util": "^5.0.7",
