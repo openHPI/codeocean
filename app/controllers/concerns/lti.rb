@@ -180,7 +180,7 @@ module Lti
     begin
       response = provider.post_replace_result!(score)
       {code: response.response_code, message: response.post_response.body, status: response.code_major, user:}
-    rescue IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Errno::ECONNRESET, SocketError, EOFError
+    rescue IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Errno::ECONNRESET, SocketError, EOFError, OpenSSL::SSL::SSLError
       # A parsing error might happen if the LTI provider is down and doesn't return a valid XML response
       {status: 'error', user:}
     end

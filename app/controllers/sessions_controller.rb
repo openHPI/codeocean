@@ -86,7 +86,7 @@ class SessionsController < ApplicationController
         lti_parameters = params.slice(*Lti::SESSION_PARAMETERS).permit!.to_h
         provider = build_tool_provider(consumer: current_user.consumer, parameters: lti_parameters)
         provider.post_replace_result!(1.0)
-      rescue IMS::LTI::InvalidLTIConfigError, IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Errno::ECONNRESET, SocketError, EOFError
+      rescue IMS::LTI::InvalidLTIConfigError, IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Errno::ECONNRESET, SocketError, EOFError, OpenSSL::SSL::SSLError
         # We don't do anything here because it is only a bonus point and we want the users to do the survey
       end
     end
