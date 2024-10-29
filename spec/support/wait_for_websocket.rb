@@ -6,9 +6,8 @@ module WaitForWebsocket
     timeout = Capybara.default_max_wait_time
 
     loop do
-      break if websocket_finished? || (Time.current - start_time) > timeout
-
       sleep 0.1 # Short sleep time to prevent busy waiting
+      break if websocket_finished? || (Time.current - start_time) > timeout
     end
   end
 
