@@ -142,7 +142,7 @@ GEM
     debug_inspector (1.2.0)
     diff-lcs (1.5.1)
     docile (1.4.1)
-    docker-api (2.3.0)
+    docker-api (2.4.0)
       excon (>= 0.64.0)
       multi_json
     drb (2.2.1)
@@ -150,7 +150,7 @@ GEM
     et-orbi (1.2.11)
       tzinfo
     eventmachine (1.2.7)
-    excon (1.0.0)
+    excon (1.1.1)
     execjs (2.10.0)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
