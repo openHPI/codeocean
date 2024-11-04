@@ -17,7 +17,7 @@ h1 = t('.title', user: @user.displayname)
         - exercises.each do |exercise|
           // Grab any submission in context of study group (or all if admin). Then check for permission
           - any_submission = submissions.where(exercise:).first
-          - if any_submission && policy(any_submission).show_study_group? && statistics[exercise.id]
+          - if any_submission && policy(any_submission.study_group).show? && statistics[exercise.id]
             - stats = statistics[exercise.id]
             tr
               td = link_to exercise, controller: 'exercises', action: 'external_user_statistics', external_user_id: @user.id, id: exercise.id

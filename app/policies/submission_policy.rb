@@ -23,11 +23,7 @@ class SubmissionPolicy < ApplicationPolicy
   end
 
   def show?
-    admin? || author? || author_in_programming_group? || teacher_in_study_group?
-  end
-
-  def show_study_group?
-    admin? || teacher_in_study_group?
+    admin? || author? || author_in_programming_group? || (teacher_in_study_group? && CausesScope.new(@user, @record).resolve.include?(@record.cause))
   end
 
   class Scope < Scope
