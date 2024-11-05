@@ -268,8 +268,8 @@ class SubmissionsController < ApplicationController
     # send_hints(client_socket, StructuredError.where(submission: @submission))
 
     # Finally, send the score to the LTI consumer and check for notifications
-    check_submission(send_scores(@submission)).compact.each do |notification|
-      client_socket&.send_data(notification&.merge(cmd: :status)&.to_json)
+    check_submission(send_scores(@submission)).compact_blank.each do |notification|
+      client_socket&.send_data(notification.merge(cmd: :status).to_json)
     end
   rescue Runner::Error::RunnerInUse => e
     extract_durations(e)

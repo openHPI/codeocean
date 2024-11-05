@@ -111,7 +111,9 @@ class FileTree
   private :name
 
   def path(node)
-    "#{node.parentage&.reverse&.drop(1)&.map(&:name)&.join('/')}/#{node.name}"
+    path = node.parentage
+    path = "/#{path.reverse.drop(1).map(&:name).join('/')}" unless path.nil?
+    "#{path}/#{node.name}"
   end
   private :path
 

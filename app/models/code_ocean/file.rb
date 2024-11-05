@@ -180,9 +180,9 @@ module CodeOcean
 
       # We use a bitwise AND with the permission bits and compare that to zero
       if privileged_execution.present?
-        (permissions & OWNER_READ_PERMISSION).zero?
+        permissions.nobits?(OWNER_READ_PERMISSION)
       else
-        (permissions & OTHER_READ_PERMISSION).zero?
+        permissions.nobits?(OTHER_READ_PERMISSION)
       end
     end
   end

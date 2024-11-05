@@ -38,8 +38,9 @@ class ProgrammingGroupsController < ApplicationController
   end
 
   def create
-    programming_partner_ids = programming_group_params&.fetch(:programming_partner_ids, [])&.split(',')&.map(&:strip)&.uniq
-    users = programming_partner_ids&.map do |partner_id|
+    programming_partner_ids = []
+    programming_partner_ids = programming_group_params.fetch(:programming_partner_ids, '').split(',').map(&:strip).uniq if programming_group_params
+    users = programming_partner_ids.map do |partner_id|
       User.find_by_id_with_type(partner_id)
     rescue ActiveRecord::RecordNotFound
       partner_id
@@ -47,7 +48,7 @@ class ProgrammingGroupsController < ApplicationController
     @programming_group = ProgrammingGroup.new(exercise: @exercise, users:)
     authorize!
 
-    unless programming_partner_ids&.include? current_user.id_with_type
+    unless programming_partner_ids.include? current_user.id_with_type
       @programming_group.add(current_user)
     end
 
