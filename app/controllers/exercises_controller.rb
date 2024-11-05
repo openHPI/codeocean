@@ -512,10 +512,11 @@ class ExercisesController < ApplicationController
   def external_user_statistics
     # Render statistics page for one specific external user
 
+    submissions = policy_scope(Submission).where(contributor: @external_user, exercise: @exercise)
+      .order(:created_at)
+      .includes(:exercise, testruns: [:testrun_messages, {file: [:file_type]}], files: [:file_type])
+
     if policy(@exercise).detailed_statistics?
-      submissions = policy_scope(Submission).where(contributor: @external_user, exercise: @exercise)
-        .order(:created_at)
-        .includes(:exercise, testruns: [:testrun_messages, {file: [:file_type]}], files: [:file_type])
       @show_autosaves = params[:show_autosaves] == 'true' || submissions.where.not(cause: 'autosave').none?
 
       interventions = @external_user.user_exercise_interventions.where(exercise: @exercise)
@@ -548,13 +549,11 @@ class ExercisesController < ApplicationController
         end
       end
     else
-      final_submissions = policy_scope(Submission).where(contributor: @external_user, exercise: @exercise)
-      submissions = []
+      @all_events = []
       %i[before_deadline within_grace_period after_late_deadline].each do |filter|
-        relevant_submission = final_submissions.send(filter).latest
-        submissions.push relevant_submission if relevant_submission.present?
+        relevant_submission = submissions.send(filter).latest
+        @all_events.push relevant_submission if relevant_submission.present?
       end
-      @all_events = submissions
     end
 
     render 'exercises/external_users/statistics'
