@@ -548,8 +548,7 @@ class ExercisesController < ApplicationController
         end
       end
     else
-      final_submissions = policy_scope(Submission).where(contributor: @external_user,
-        exercise_id: @exercise.id).final
+      final_submissions = policy_scope(Submission).where(contributor: @external_user, exercise: @exercise)
       submissions = []
       %i[before_deadline within_grace_period after_late_deadline].each do |filter|
         relevant_submission = final_submissions.send(filter).latest

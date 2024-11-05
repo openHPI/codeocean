@@ -78,7 +78,7 @@ h1 = @exercise
               td = link_to_if symbol == :external_users && policy(contributor).statistics?, label, {controller: 'exercises', action: 'external_user_statistics', external_user_id: contributor.id, id: @exercise.id}
               td = us['maximum_score'] || 0
               td.align-middle
-                - latest_user_submission = submissions.where(contributor:).final.latest
+                - latest_user_submission = @exercise.final_submission(contributor)
                 - if latest_user_submission.present?
                   - if latest_user_submission.before_deadline?
                     .deadline-result.positive-result

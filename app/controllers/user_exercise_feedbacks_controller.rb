@@ -59,7 +59,7 @@ class UserExerciseFeedbacksController < ApplicationController
 
   def update
     submission = begin
-      current_contributor.submissions.where(exercise: @exercise).order(created_at: :desc).final.first
+      @exercise.final_submission(current_contributor)
     rescue StandardError
       nil
     end
@@ -116,10 +116,10 @@ class UserExerciseFeedbacksController < ApplicationController
                     params[:user_exercise_feedback][:exercise_id]
                   end
 
-    latest_submission = Submission
-      .where(contributor: current_contributor, exercise_id:)
-      .order(created_at: :desc).final.first
+    exercise = Exercise.find(exercise_id)
+    authorize(exercise, :implement?)
 
+    latest_submission = exercise.final_submission(current_contributor)
     authorize(latest_submission, :show?)
 
     params[:user_exercise_feedback]

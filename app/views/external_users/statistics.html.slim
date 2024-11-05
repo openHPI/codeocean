@@ -23,7 +23,7 @@ h1 = t('.title', user: @user.displayname)
               td = link_to exercise, controller: 'exercises', action: 'external_user_statistics', external_user_id: @user.id, id: exercise.id
               td = stats['maximum_score'] || 0
               td.align-middle
-                - latest_viewable_submission = submissions.where(exercise:).final.latest
+                - latest_viewable_submission = exercise.final_submission(@user)
                 - if latest_viewable_submission.present?
                   - if latest_viewable_submission.before_deadline?
                     .deadline-result.positive-result.before_deadline
