@@ -42,6 +42,8 @@ h1 = @exercise
   = row(label: '.average_worktime') do
     p = @exercise.average_working_time
 
+.mt-3
+
 - unless policy(@exercise).detailed_statistics?
   .lead
     .card.border-info-subtle.mb-3
