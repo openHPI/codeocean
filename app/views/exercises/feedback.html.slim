@@ -14,7 +14,8 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
   ul.list-unstyled
     - comment_presets = UserExerciseFeedbacksController.new.comment_presets
     - time_presets = UserExerciseFeedbacksController.new.time_presets
-    - @feedbacks.each_with_index do |feedback, index|
+    - @feedbacks.each do |feedback|
+      - contributor = feedback.user.programming_groups.find_by(exercise: @exercise).presence || feedback.user
       li.card.mt-2
         .card-header#heading role='tab'
           .clearfix.feedback-header
@@ -31,7 +32,7 @@ h1 = link_to_if(policy(@exercise).show?, @exercise, exercise_path(@exercise))
         - if policy(@exercise).detailed_statistics?
           .card-footer
             .clearfix.feedback-header
-              span.points.flex-grow-1 = "#{t('exercises.statistics.score')}: #{@submissions[index].score}"
-              span.working_time.float-end = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(feedback.user) || 0}"
+              span.points.flex-grow-1 = "#{t('exercises.statistics.score')}: #{@exercise.maximum_score(contributor)}"
+              span.working_time.float-end = "#{t('exercises.statistics.worktime')}: #{@exercise.average_working_time_for(contributor) || 0}"
 
   = render('shared/pagination', collection: @feedbacks)
