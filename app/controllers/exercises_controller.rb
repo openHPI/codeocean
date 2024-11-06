@@ -494,14 +494,14 @@ class ExercisesController < ApplicationController
 
   def statistics
     # Show general statistic page for specific exercise
-    contributor_statistics = {'InternalUser' => {}, 'ExternalUser' => {}, 'ProgrammingGroup' => {}}
+    contributor_statistics = {InternalUser => {}, ExternalUser => {}, ProgrammingGroup => {}}
 
     query = policy_scope(Submission).select('contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
       .where(exercise_id: @exercise.id)
       .group('contributor_id, contributor_type')
 
     query.each do |tuple|
-      contributor_statistics[tuple['contributor_type']][tuple['contributor_id'].to_i] = tuple
+      contributor_statistics[tuple.contributor_type.constantize][tuple.contributor] = tuple
     end
 
     render locals: {

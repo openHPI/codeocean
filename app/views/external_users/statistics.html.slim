@@ -1,27 +1,23 @@
 h1 = t('.title', user: @user.displayname)
 
-- submissions = policy_scope(Submission).where(contributor: @user)
-- exercises = Exercise.where(id: submissions.joins(:exercise).group(:exercise_id).select(:exercise_id).distinct).compact
-
-- if submissions.any?
+- if statistics.present?
   .table-responsive
-    table.table.table-striped class=(exercises.present? ? 'sortable' : '')
+    table.table.table-striped class=(statistics.present? ? 'sortable' : '')
       thead
         tr
           th.header = t('.exercise')
           th.header = t('.score')
           th.header = t('.deadline')
-          th.header = t('.runs') if policy(exercises.first).detailed_statistics?
-          th.header = t('.worktime') if policy(exercises.first).detailed_statistics?
+          th.header = t('.runs') if policy(statistics.keys.first).detailed_statistics?
+          th.header = t('.worktime') if policy(statistics.keys.first).detailed_statistics?
       tbody
-        - exercises.each do |exercise|
+        - statistics.each do |exercise, stats|
           // Grab any submission in context of study group (or all if admin). Then check for permission
-          - any_submission = submissions.where(exercise:).first
-          - if any_submission && policy(any_submission.study_group).show? && statistics[exercise.id]
-            - stats = statistics[exercise.id]
+          - any_submission = @user.submissions.where(exercise:).first
+          - if any_submission && policy(any_submission.study_group).show?
             tr
-              td = link_to exercise, controller: 'exercises', action: 'external_user_statistics', external_user_id: @user.id, id: exercise.id
-              td = stats['maximum_score'] || 0
+              td = link_to exercise, statistics_external_user_exercise_path(@user, exercise)
+              td = stats['maximum_score'] || 0.0
               td.align-middle
                 - latest_viewable_submission = exercise.final_submission(@user)
                 - if latest_viewable_submission.present?
@@ -31,7 +27,7 @@ h1 = t('.title', user: @user.displayname)
                     .deadline-result.unknown-result.within_grace_period
                   - elsif latest_viewable_submission.after_late_deadline?
                     .deadline-result.negative-result.after_late_deadline
-              td = stats['runs'] || 0 if policy(exercises.first).detailed_statistics?
-              td = stats['working_time'] || 0 if policy(exercises.first).detailed_statistics?
+              td = stats['runs'] || 0 if policy(exercise).detailed_statistics?
+              td = stats['working_time'] || '00:00:00' if policy(exercise).detailed_statistics?
 - else
   = t('exercises.external_users.statistics.no_data_available')

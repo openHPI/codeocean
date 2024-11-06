@@ -69,9 +69,12 @@ class ExternalUsersController < ApplicationController
 
     statistics = {}
 
-    ApplicationRecord.connection.exec_query(working_time_query(tag&.id)).each do |tuple|
+    working_time_statistics = ApplicationRecord.connection.exec_query(working_time_query(tag&.id))
+    attempted_exercises = Exercise.where(id: working_time_statistics.pluck('exercise_id'))
+    working_time_statistics.each do |tuple|
       tuple = tuple.merge('working_time' => format_time_difference(tuple['working_time']))
-      statistics[tuple['exercise_id'].to_i] = tuple
+      exercise = attempted_exercises.find {|attempted_exercise| attempted_exercise.id == tuple['exercise_id'] }
+      statistics[exercise] = tuple
     end
 
     render locals: {

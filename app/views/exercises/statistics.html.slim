@@ -5,53 +5,50 @@
   - append_javascript_pack_tag('d3-tip')
 h1 = @exercise
 
-= row(label: '.participants', value: @exercise.contributors.size)
+- statistic_base = policy_scope(Submission).where(exercise: @exercise).unscope(where: :cause)
+- participants = statistic_base.group(:contributor_id, :contributor_type).count.size
+- finishers_count = @exercise.finishers_count(statistic_base)
+- average_score = @exercise.average_score(statistic_base)
+- average_percentage = @exercise.average_percentage(statistic_base)
+
+= row(label: '.participants', value: participants)
 
 - %i[intermediate final].each do |scope|
   / i18n-tasks-use t('.intermediate_submissions') t('.final_submissions')
   = row(label: ".#{scope}_submissions") do
     /TODO: Refactor next line
-    = "#{@exercise.submissions.send(scope).count} (#{t('.users_and_programming_groups', count: Submission.from(@exercise.submissions.send(scope).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)})"
+    = "#{statistic_base.send(scope).count} (#{t('.users_and_programming_groups', count: Submission.from(statistic_base.send(scope).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)})"
 
 = row(label: '.finishing_rate') do
   p
-    - if @exercise.finishers_count
-      span.number
-        = @exercise.finishers_count
-      =<> t('shared.out_of')
-      span.number
-        = @exercise.contributors.size
-      =< t('exercises.statistics.external_users')
+    - if finishers_count
+      = t('.users_and_programming_groups', count: "#{finishers_count} #{t('shared.out_of')} #{participants}")
     - else
       = empty
-  - finishers_count = @exercise.contributors.size
-  - finishers_percentage = finishers_count.zero? ? 0 : (100.0 / finishers_count * @exercise.finishers_count).round(2)
+  - finishers_percentage = participants.zero? ? 0 : (100.0 / participants * finishers_count).round(2)
   p = progress_bar(finishers_percentage)
 
 = row(label: '.average_score') do
   p
-    - if @exercise.average_score
-      span.number
-        = @exercise.average_score.round(2)
+    - if average_score
+      = average_score.round(2)
       =<> t('shared.out_of')
-      span.number
-        = @exercise.maximum_score
+      = format('%.1f', @exercise.maximum_score)
     - else
       = empty
-  p = progress_bar(@exercise.average_percentage)
+  p = progress_bar(average_percentage)
 
 - if policy(@exercise).detailed_statistics?
   = row(label: '.average_worktime') do
     p = @exercise.average_working_time
 
-- {internal_users: t('.internal_users'), external_users: t('.external_users'), programming_groups: t('.programming_groups')}.each_pair do |symbol, label|
-  - submissions = policy_scope(Submission).where(contributor: @exercise.send(symbol), exercise: @exercise)
-  - if submissions.any?
-    strong = label
-    - if symbol == :external_users
+- contributor_statistics.each_pair do |user_type, user_with_submission_stats|
+  - if user_with_submission_stats.any?
+    h5 = t(".#{user_type.model_name.collection}")
+    - if user_type == ExternalUser
       - working_time_array = []
-      - @exercise.send(symbol).distinct.each do |user|
-        - working_time = @exercise.average_working_time_for(user) || 0
+      - user_with_submission_stats.each_key do |contributor|
+        - working_time = @exercise.average_working_time_for(contributor) || 0
         - working_time_array.push working_time
       hr
       .d-none#data data-working-time=ActiveSupport::JSON.encode(working_time_array)
@@ -60,9 +57,8 @@ h1 = @exercise
       hr
       #chart_2
       hr
-    - contributors = symbol.to_s.classify.constantize.where(id: submissions.joins(symbol).group(:contributor_id).select(:contributor_id).distinct)
     .table-responsive.mb-4
-      table.table.table-striped class=(contributors.present? ? 'sortable' : '')
+      table.table.table-striped class=(user_with_submission_stats.present? ? 'sortable' : '')
         thead
           tr
             th.header = t('.user')
@@ -71,12 +67,10 @@ h1 = @exercise
             th.header = t('.runs') if policy(@exercise).detailed_statistics?
             th.header = t('.worktime') if policy(@exercise).detailed_statistics?
         tbody
-          - contributors.each do |contributor|
-            - us = contributor_statistics[contributor.class.name][contributor.id] || {'maximum_score' => nil, 'runs' => nil}
-            - label = contributor.displayname.to_s
+          - user_with_submission_stats.each do |contributor, submission_stat|
             tr
-              td = link_to_if symbol == :external_users && policy(contributor).statistics?, label, {controller: 'exercises', action: 'external_user_statistics', external_user_id: contributor.id, id: @exercise.id}
-              td = us['maximum_score'] || 0
+              td = link_to_if user_type == ExternalUser && policy(contributor).statistics?, contributor.displayname, statistics_external_user_exercise_path(contributor, @exercise)
+              td = submission_stat['maximum_score'] || '0.0'
               td.align-middle
                 - latest_user_submission = @exercise.final_submission(contributor)
                 - if latest_user_submission.present?
@@ -86,5 +80,5 @@ h1 = @exercise
                     .deadline-result.unknown-result
                   - elsif latest_user_submission.after_late_deadline?
                     .deadline-result.negative-result
-              td = us['runs'] if policy(@exercise).detailed_statistics?
-              td = @exercise.average_working_time_for(contributor) || 0 if policy(@exercise).detailed_statistics?
+              td = submission_stat['runs'] if policy(@exercise).detailed_statistics?
+              td = @exercise.average_working_time_for(contributor) || '00:00:00' if policy(@exercise).detailed_statistics?

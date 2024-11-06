@@ -44,7 +44,7 @@ class Submission < ApplicationRecord
                                 joins(:exercise).where('submissions.updated_at > exercises.late_submission_deadline')
                               }
 
-  scope :latest, -> { order(updated_at: :desc).first }
+  scope :latest, -> { order(submissions: {updated_at: :desc}).first }
 
   validates :cause, inclusion: {in: CAUSES}
 
