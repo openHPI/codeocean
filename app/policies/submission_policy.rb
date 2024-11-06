@@ -47,7 +47,7 @@ class SubmissionPolicy < ApplicationPolicy
       if @user.admin?
         Submission::CAUSES
       elsif @user.teacher?
-        %w[submit remoteSubmit]
+        %w[submit remoteSubmit requestComments]
       else
         []
       end
