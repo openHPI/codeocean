@@ -29,15 +29,15 @@ $(document).on('turbolinks:load', function() {
                 maximumValue = submission.score;
             }
 
-            if(submission.cause == "assess"){
+            if(submission.cause === "assess" || submission.cause === "remoteAssess"){
                 submissionsScoreAndTimeAssess.push(submissionArray);
-            } else if(submission.cause == "submit"){
+            } else if(submission.cause === "submit" || submission.cause === "remoteSubmit"){
                 submissionsScoreAndTimeSubmits.push(submissionArray);
-            } else if(submission.cause == "run"){
+            } else if(submission.cause === "run"){
                 submissionsScoreAndTimeRuns.push(submissionArray[1]);
-            } else if(submission.cause == "autosave"){
+            } else if(submission.cause === "autosave"){
                 submissionsAutosaves.push(submissionArray[1]);
-            }  else if(submission.cause == "save"){
+            }  else if(submission.cause === "save"){
                 submissionsSaves.push(submissionArray[1]);
             }
         }
@@ -120,10 +120,10 @@ $(document).on('turbolinks:load', function() {
             var largestSubmittedTimeStamp = submissions[submissions_length-1];
             var largestArrayForRange;
 
-            if(largestSubmittedTimeStamp.cause === "assess"){
+            if(largestSubmittedTimeStamp.cause === "assess" || largestSubmittedTimeStamp.cause === "remoteAssess"){
                 largestArrayForRange = submissionsScoreAndTimeAssess;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
-            } else if(largestSubmittedTimeStamp.cause === "submit"){
+            } else if(largestSubmittedTimeStamp.cause === "submit" || largestSubmittedTimeStamp.cause === "remoteSubmit"){
                 largestArrayForRange = submissionsScoreAndTimeSubmits;
                 x.domain([0,largestArrayForRange[largestArrayForRange.length - 1][1]]).clamp(true);
             } else if(largestSubmittedTimeStamp.cause === "run"){

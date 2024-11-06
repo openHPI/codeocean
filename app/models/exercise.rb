@@ -52,7 +52,7 @@ class Exercise < ApplicationRecord
   MAX_GROUP_EXERCISE_FEEDBACKS = 20
 
   def average_percentage(base = submissions)
-    if average_score(base) && (maximum_score.to_d != BigDecimal('0.0')) && base.exists?(cause: 'submit')
+    if average_score(base) && (maximum_score.to_d != BigDecimal('0.0')) && base.exists?(cause: %w[submit assess remoteSubmit remoteAssess])
       (average_score(base) / maximum_score * 100).round(2)
     else
       0
@@ -84,7 +84,7 @@ class Exercise < ApplicationRecord
 
   def time_maximum_score(contributor)
     submissions
-      .where(contributor:, cause: %w[submit assess])
+      .where(contributor:, cause: %w[submit assess remoteSubmit remoteAssess])
       .where.not(score: nil)
       .order(score: :desc, created_at: :asc)
       .first&.created_at || Time.zone.at(0)
@@ -528,7 +528,7 @@ class Exercise < ApplicationRecord
   def maximum_score(contributor = nil)
     if contributor
       submissions
-        .where(contributor:, cause: %w[submit assess])
+        .where(contributor:, cause: %w[submit assess remoteSubmit remoteAssess])
         .where.not(score: nil)
         .order(score: :desc)
         .first&.score || 0
