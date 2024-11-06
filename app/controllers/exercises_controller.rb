@@ -497,9 +497,10 @@ class ExercisesController < ApplicationController
     contributor_statistics = {InternalUser => {}, ExternalUser => {}, ProgrammingGroup => {}}
 
     query = SubmissionPolicy::DeadlineScope.new(current_user, Submission).resolve
-      .select('contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
+      .select("contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs, MAX(updated_at) FILTER (WHERE cause IN ('submit', 'assess', 'remoteSubmit', 'remoteAssess')) AS updated_at, exercise_id")
       .where(exercise_id: @exercise.id)
-      .group('contributor_id, contributor_type')
+      .group('contributor_id, contributor_type, exercise_id')
+      .includes(:contributor, :exercise)
 
     query.each do |tuple|
       contributor_statistics[tuple.contributor_type.constantize][tuple.contributor] = tuple

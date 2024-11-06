@@ -32,12 +32,14 @@ class ExternalUsersController < ApplicationController
            bar.exercise_id,
            max(score) as maximum_score,
            count(bar.id) as runs,
-           sum(working_time_new) AS working_time
+           sum(working_time_new) AS working_time,
+           max_updated_at as updated_at
     FROM
       (SELECT contributor_id,
               exercise_id,
               score,
               id,
+              max_updated_at,
               CASE
                   WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0'
                   ELSE working_time
@@ -46,7 +48,9 @@ class ExternalUsersController < ApplicationController
          (SELECT contributor_id,
                  exercise_id,
                  max(score) AS score,
+                 max(filtered_submissions.updated_at) FILTER (WHERE cause IN ('submit', 'assess', 'remoteSubmit', 'remoteAssess')) AS max_updated_at,
                  filtered_submissions.id,
+                 filtered_submissions.updated_at,
                  (filtered_submissions.updated_at - lag(filtered_submissions.updated_at) over (PARTITION BY contributor_id, exercise_id
                                                      ORDER BY filtered_submissions.updated_at)) AS working_time
           FROM filtered_submissions
@@ -61,7 +65,8 @@ class ExternalUsersController < ApplicationController
       ) AS bar
     #{tag.nil? ? '' : " JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND #{ExternalUser.sanitize_sql(['et.tag_id = ?', tag])}"}
     GROUP BY contributor_id,
-             bar.exercise_id;
+             bar.exercise_id,
+             max_updated_at;
     "
   end
 
@@ -75,12 +80,13 @@ class ExternalUsersController < ApplicationController
 
     statistics = {}
 
-    working_time_statistics = ApplicationRecord.connection.exec_query(working_time_query(tag&.id))
-    attempted_exercises = Exercise.where(id: working_time_statistics.pluck('exercise_id'))
+    # We fake the statistics hash to be "submissions"
+    # Available are: contributor_id, exercise_id, maximum_score, runs, working_time, updated_at
+    working_time_statistics = Submission.find_by_sql(working_time_query(tag&.id))
+    ActiveRecord::Associations::Preloader.new(records: working_time_statistics, associations: [:exercise]).call
     working_time_statistics.each do |tuple|
-      tuple = tuple.merge('working_time' => format_time_difference(tuple['working_time']))
-      exercise = attempted_exercises.find {|attempted_exercise| attempted_exercise.id == tuple['exercise_id'] }
-      statistics[exercise] = tuple
+      tuple['working_time'] = format_time_difference(tuple['working_time'])
+      statistics[tuple.exercise] = tuple
     end
 
     render locals: {

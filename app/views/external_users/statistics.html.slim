@@ -11,23 +11,19 @@ h1 = t('.title', user: @user.displayname)
           th.header = t('.runs') if policy(statistics.keys.first).detailed_statistics?
           th.header = t('.worktime') if policy(statistics.keys.first).detailed_statistics?
       tbody
-        - statistics.each do |exercise, stats|
-          // Grab any submission in context of study group (or all if admin). Then check for permission
-          - any_submission = @user.submissions.where(exercise:).first
-          - if any_submission && policy(any_submission.study_group).show?
-            tr
-              td = link_to exercise, statistics_external_user_exercise_path(@user, exercise)
-              td = stats['maximum_score'] || 0.0
-              td.align-middle
-                - latest_viewable_submission = exercise.final_submission(@user)
-                - if latest_viewable_submission.present?
-                  - if latest_viewable_submission.before_deadline?
-                    .deadline-result.positive-result.before_deadline
-                  - elsif latest_viewable_submission.within_grace_period?
-                    .deadline-result.unknown-result.within_grace_period
-                  - elsif latest_viewable_submission.after_late_deadline?
-                    .deadline-result.negative-result.after_late_deadline
-              td = stats['runs'] || 0 if policy(exercise).detailed_statistics?
-              td = stats['working_time'] || '00:00:00' if policy(exercise).detailed_statistics?
+        - statistics.each do |exercise, submission_stat|
+          tr
+            td = link_to exercise, statistics_external_user_exercise_path(@user, exercise)
+            td = submission_stat['maximum_score'] || 0.0
+            td.align-middle
+              - if submission_stat.updated_at.present?
+                - if submission_stat.before_deadline?
+                  .deadline-result.positive-result
+                - elsif submission_stat.within_grace_period?
+                  .deadline-result.unknown-result
+                - elsif submission_stat.after_late_deadline?
+                  .deadline-result.negative-result
+            td = submission_stat['runs'] || 0 if policy(exercise).detailed_statistics?
+            td = submission_stat['working_time'] || '00:00:00' if policy(exercise).detailed_statistics?
 - else
   = t('exercises.external_users.statistics.no_data_available')
