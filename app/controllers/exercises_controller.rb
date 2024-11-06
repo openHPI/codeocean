@@ -496,7 +496,8 @@ class ExercisesController < ApplicationController
     # Show general statistic page for specific exercise
     contributor_statistics = {InternalUser => {}, ExternalUser => {}, ProgrammingGroup => {}}
 
-    query = policy_scope(Submission).select('contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
+    query = SubmissionPolicy::DeadlineScope.new(current_user, Submission).resolve
+      .select('contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs')
       .where(exercise_id: @exercise.id)
       .group('contributor_id, contributor_type')
 
@@ -512,9 +513,14 @@ class ExercisesController < ApplicationController
   def external_user_statistics
     # Render statistics page for one specific external user
 
-    submissions = policy_scope(Submission).where(contributor: @external_user, exercise: @exercise)
-      .order(:created_at)
+    submissions = SubmissionPolicy::DeadlineScope.new(current_user, Submission).resolve
+      .where(contributor: @external_user, exercise: @exercise)
+      .order(submissions: {updated_at: :desc})
       .includes(:exercise, testruns: [:testrun_messages, {file: [:file_type]}], files: [:file_type])
+
+    # From here on, we switch to sort by `created_at`. This is important for the working time estimation,
+    # since a submission is updated after the corresponding testrun finishes.
+    # Sorting by `updated_at` would lead to wrong working time estimations (but is more efficient for the database).
 
     if policy(@exercise).detailed_statistics?
       @show_autosaves = params[:show_autosaves] == 'true' || submissions.where.not(cause: 'autosave').none?
@@ -549,11 +555,7 @@ class ExercisesController < ApplicationController
         end
       end
     else
-      @all_events = []
-      %i[before_deadline within_grace_period after_late_deadline].each do |filter|
-        relevant_submission = submissions.send(filter).latest
-        @all_events.push relevant_submission if relevant_submission.present?
-      end
+      @all_events = submissions.sort_by(&:created_at)
     end
 
     render 'exercises/external_users/statistics'

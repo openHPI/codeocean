@@ -22,7 +22,12 @@ class ExternalUsersController < ApplicationController
   end
 
   def working_time_query(tag = nil)
+    deadline_scope_conditions = SubmissionPolicy::DeadlineScope.new(current_user, Submission).resolve
+
     "
+    WITH filtered_submissions AS (
+      #{deadline_scope_conditions.to_sql}
+    )
     SELECT contributor_id,
            bar.exercise_id,
            max(score) as maximum_score,
@@ -41,16 +46,17 @@ class ExternalUsersController < ApplicationController
          (SELECT contributor_id,
                  exercise_id,
                  max(score) AS score,
-                 id,
-                 (created_at - lag(created_at) over (PARTITION BY contributor_id, exercise_id
-                                                     ORDER BY created_at)) AS working_time
-          FROM submissions
+                 filtered_submissions.id,
+                 (filtered_submissions.updated_at - lag(filtered_submissions.updated_at) over (PARTITION BY contributor_id, exercise_id
+                                                     ORDER BY filtered_submissions.updated_at)) AS working_time
+          FROM filtered_submissions
+          JOIN exercises ON filtered_submissions.exercise_id = exercises.id
           WHERE #{ExternalUser.sanitize_sql(['contributor_id = ?', @user.id])}
             AND contributor_type = 'ExternalUser'
-          #{current_user.admin? ? '' : "AND #{ExternalUser.sanitize_sql(['study_group_id IN (?)', current_user.study_groups.pluck(:id)])} AND cause = 'submit'"}
           GROUP BY exercise_id,
                    contributor_id,
-                   id
+                   filtered_submissions.id,
+                   filtered_submissions.updated_at
           ) AS foo
       ) AS bar
     #{tag.nil? ? '' : " JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND #{ExternalUser.sanitize_sql(['et.tag_id = ?', tag])}"}

@@ -42,6 +42,14 @@ h1 = @exercise
   = row(label: '.average_worktime') do
     p = @exercise.average_working_time
 
+- unless policy(@exercise).detailed_statistics?
+  .lead
+    .card.border-info-subtle.mb-3
+      .card-header
+        i.fa-solid.fa-circle-info.text-info
+        strong.text-info
+          => t('.final_submissions_only', count: contributor_statistics.values.sum(&:count))
+        = t('.final_submissions_only_explanation')
 - contributor_statistics.each_pair do |user_type, user_with_submission_stats|
   - if user_with_submission_stats.any?
     h5 = t(".#{user_type.model_name.collection}")

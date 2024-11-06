@@ -212,6 +212,8 @@ en:
       deadline: Deadline
       external_users: External Users
       final_submissions: Final Submissions
+      final_submissions_only: 'Details for %{count} distinct users and programming groups only:'
+      final_submissions_only_explanation: The following views display only the final submissions and assessments. This includes explicitly submitted solutions and the most recent assessment before the submission deadline was reached.
       finishing_rate: Finishing Rate
       intermediate_submissions: Intermediate Submissions
       internal_users: Internal Users

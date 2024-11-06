@@ -212,6 +212,8 @@ de:
       deadline: Abgabefrist
       external_users: Externe Personen
       final_submissions: Finale Abgaben
+      final_submissions_only: 'Details zu %{count} Teilnehmenden und Programmiergruppen:'
+      final_submissions_only_explanation: Die folgenden Ansichten zeigen ausschließlich finale Abgaben und Bewertungen. Dies umfasst explizit eingereichte Lösungen sowie die jeweils letzte Bewertung vor Ablauf der Abgabefrist.
       finishing_rate: Abschlussrate
       intermediate_submissions: Intermediäre Abgaben
       internal_users: Interne Personen
