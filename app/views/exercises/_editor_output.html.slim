@@ -51,7 +51,7 @@
                     | 0
                 = row(label: 'exercises.implement.feedback')
                 = row(label: 'exercises.implement.messages')
-      #score data-maximum-score=@exercise.maximum_score data-score=@exercise.final_submission(current_contributor).try(:score)
+      #score data-maximum-score=@exercise.maximum_score data-score=@exercise.maximum_score(current_contributor)
         h4
           span
             = Submission.human_attribute_name('score')
