@@ -21,7 +21,7 @@ class InternalUserPolicy < AdminOnlyPolicy
         @scope.joins(:study_group_memberships)
           .where(study_group_memberships: {
             study_group_id: @user.study_group_ids_as_teacher,
-          })
+          }).group(:id)
       else
         @scope.none
       end

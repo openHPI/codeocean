@@ -32,7 +32,7 @@ class ProgrammingGroupPolicy < AdminOnlyPolicy
         @scope.joins(:submissions)
           .where(submissions: {
             study_group_id: @user.study_group_ids_as_teacher,
-          }).distinct
+          }).group(:id)
       else
         @scope.none
       end
