@@ -24,6 +24,6 @@ h1 = t('.title', user: @user.displayname)
                 - elsif submission_stat.after_late_deadline?
                   .deadline-result.negative-result
             td = submission_stat['runs'] || 0 if policy(exercise).detailed_statistics?
-            td = submission_stat['working_time'] || '00:00:00' if policy(exercise).detailed_statistics?
+            td = format_time_difference(submission_stat['working_time']) if policy(exercise).detailed_statistics?
 - else
   = t('exercises.external_users.statistics.no_data_available')

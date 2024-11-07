@@ -33,7 +33,7 @@ class ExternalUsersController < ApplicationController
            max(score) as maximum_score,
            count(bar.id) as runs,
            sum(working_time_new) AS working_time,
-           max_updated_at as updated_at
+           max(max_updated_at) as updated_at
     FROM
       (SELECT contributor_id,
               exercise_id,
@@ -50,7 +50,6 @@ class ExternalUsersController < ApplicationController
                  max(score) AS score,
                  max(filtered_submissions.updated_at) FILTER (WHERE cause IN ('submit', 'assess', 'remoteSubmit', 'remoteAssess')) AS max_updated_at,
                  filtered_submissions.id,
-                 filtered_submissions.updated_at,
                  (filtered_submissions.updated_at - lag(filtered_submissions.updated_at) over (PARTITION BY contributor_id, exercise_id
                                                      ORDER BY filtered_submissions.updated_at)) AS working_time
           FROM filtered_submissions
@@ -65,8 +64,7 @@ class ExternalUsersController < ApplicationController
       ) AS bar
     #{tag.nil? ? '' : " JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND #{ExternalUser.sanitize_sql(['et.tag_id = ?', tag])}"}
     GROUP BY contributor_id,
-             bar.exercise_id,
-             max_updated_at;
+             bar.exercise_id;
     "
   end
 
@@ -85,7 +83,6 @@ class ExternalUsersController < ApplicationController
     working_time_statistics = Submission.find_by_sql(working_time_query(tag&.id))
     ActiveRecord::Associations::Preloader.new(records: working_time_statistics, associations: [:exercise]).call
     working_time_statistics.each do |tuple|
-      tuple['working_time'] = format_time_difference(tuple['working_time'])
       statistics[tuple.exercise] = tuple
     end
 
