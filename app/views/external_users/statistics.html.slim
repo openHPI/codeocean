@@ -16,7 +16,7 @@ h1 = t('.title', user: @user.displayname)
             td = link_to exercise, statistics_external_user_exercise_path(@user, exercise)
             td = submission_stat['maximum_score'] || 0.0
             td.align-middle
-              - if submission_stat.updated_at.present?
+              - if submission_stat.created_at.present?
                 - if submission_stat.before_deadline?
                   .deadline-result.positive-result
                 - elsif submission_stat.within_grace_period?

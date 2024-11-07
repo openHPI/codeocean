@@ -95,7 +95,7 @@ class SubmissionPolicy < ApplicationPolicy
         submission_table[:contributor_type],
         submission_table[:contributor_id],
         highest_scored ? submission_table[:score].desc.nulls_last : nil,
-        submission_table[:updated_at].desc,
+        submission_table[:created_at].desc,
       ].compact
 
       Submission.from(

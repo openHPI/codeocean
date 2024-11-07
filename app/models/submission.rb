@@ -35,16 +35,16 @@ class Submission < ApplicationRecord
   scope :intermediate, -> { where.not(cause: %w[submit remoteSubmit]) }
 
   scope :before_deadline, lambda {
-                            joins(:exercise).where('submissions.updated_at <= exercises.submission_deadline OR exercises.submission_deadline IS NULL')
+                            joins(:exercise).where('submissions.created_at <= exercises.submission_deadline OR exercises.submission_deadline IS NULL')
                           }
   scope :within_grace_period, lambda {
-                                joins(:exercise).where('(submissions.updated_at > exercises.submission_deadline) AND (submissions.updated_at <= exercises.late_submission_deadline OR exercises.late_submission_deadline IS NULL)')
+                                joins(:exercise).where('(submissions.created_at > exercises.submission_deadline) AND (submissions.created_at <= exercises.late_submission_deadline OR exercises.late_submission_deadline IS NULL)')
                               }
   scope :after_late_deadline, lambda {
-                                joins(:exercise).where('submissions.updated_at > exercises.late_submission_deadline')
+                                joins(:exercise).where('submissions.created_at > exercises.late_submission_deadline')
                               }
 
-  scope :latest, -> { order(submissions: {updated_at: :desc}).first }
+  scope :latest, -> { order(submissions: {created_at: :desc}).first }
 
   validates :cause, inclusion: {in: CAUSES}
 
@@ -95,7 +95,7 @@ class Submission < ApplicationRecord
 
   def before_deadline?
     if exercise.submission_deadline.present?
-      updated_at <= exercise.submission_deadline
+      created_at <= exercise.submission_deadline
     else
       false
     end
@@ -103,7 +103,7 @@ class Submission < ApplicationRecord
 
   def within_grace_period?
     if exercise.submission_deadline.present? && exercise.late_submission_deadline.present?
-      updated_at > exercise.submission_deadline && updated_at <= exercise.late_submission_deadline
+      created_at > exercise.submission_deadline && created_at <= exercise.late_submission_deadline
     else
       false
     end
@@ -111,9 +111,9 @@ class Submission < ApplicationRecord
 
   def after_late_deadline?
     if exercise.late_submission_deadline.present?
-      updated_at > exercise.late_submission_deadline
+      created_at > exercise.late_submission_deadline
     elsif exercise.submission_deadline.present?
-      updated_at > exercise.submission_deadline
+      created_at > exercise.submission_deadline
     else
       false
     end

@@ -494,7 +494,7 @@ class ExercisesController < ApplicationController
     contributor_statistics = {InternalUser => {}, ExternalUser => {}, ProgrammingGroup => {}}
 
     query = SubmissionPolicy::DeadlineScope.new(current_user, Submission).resolve
-      .select("contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs, MAX(updated_at) FILTER (WHERE cause IN ('submit', 'assess', 'remoteSubmit', 'remoteAssess')) AS updated_at, exercise_id")
+      .select("contributor_id, contributor_type, MAX(score) AS maximum_score, COUNT(id) AS runs, MAX(created_at) FILTER (WHERE cause IN ('submit', 'assess', 'remoteSubmit', 'remoteAssess')) AS created_at, exercise_id")
       .where(exercise_id: @exercise.id)
       .group('contributor_id, contributor_type, exercise_id')
       .includes(:contributor, :exercise)
@@ -513,12 +513,8 @@ class ExercisesController < ApplicationController
 
     submissions = SubmissionPolicy::DeadlineScope.new(current_user, Submission).resolve
       .where(contributor: @external_user, exercise: @exercise)
-      .order(submissions: {updated_at: :desc})
+      .order(submissions: {created_at: :desc})
       .includes(:exercise, testruns: [:testrun_messages, {file: [:file_type]}], files: [:file_type])
-
-    # From here on, we switch to sort by `created_at`. This is important for the working time estimation,
-    # since a submission is updated after the corresponding testrun finishes.
-    # Sorting by `updated_at` would lead to wrong working time estimations (but is more efficient for the database).
 
     if policy(@exercise).detailed_statistics?
       @show_autosaves = params[:show_autosaves] == 'true' || submissions.where.not(cause: 'autosave').none?

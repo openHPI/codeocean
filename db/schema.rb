@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_05_212201) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_07_004238) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -547,9 +547,9 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_05_212201) do
     t.bigint "study_group_id"
     t.index ["cause"], name: "index_submissions_on_cause", opclass: :gin_trgm_ops, using: :gin
     t.index ["contributor_id"], name: "index_submissions_on_contributor_id"
+    t.index ["created_at"], name: "index_submissions_on_created_at", order: :desc
     t.index ["exercise_id"], name: "index_submissions_on_exercise_id"
     t.index ["study_group_id"], name: "index_submissions_on_study_group_id"
-    t.index ["updated_at"], name: "index_submissions_on_updated_at", order: :desc
   end
 
   create_table "subscriptions", id: :serial, force: :cascade do |t|

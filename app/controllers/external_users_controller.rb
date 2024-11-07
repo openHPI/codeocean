@@ -33,13 +33,13 @@ class ExternalUsersController < ApplicationController
            max(score) as maximum_score,
            count(bar.id) as runs,
            sum(working_time_new) AS working_time,
-           max(max_updated_at) as updated_at
+           max(max_created_at) as created_at
     FROM
       (SELECT contributor_id,
               exercise_id,
               score,
               id,
-              max_updated_at,
+              max_created_at,
               CASE
                   WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0'
                   ELSE working_time
@@ -48,10 +48,10 @@ class ExternalUsersController < ApplicationController
          (SELECT contributor_id,
                  exercise_id,
                  max(score) AS score,
-                 max(filtered_submissions.updated_at) FILTER (WHERE cause IN ('submit', 'assess', 'remoteSubmit', 'remoteAssess')) AS max_updated_at,
+                 max(filtered_submissions.created_at) FILTER (WHERE cause IN ('submit', 'assess', 'remoteSubmit', 'remoteAssess')) AS max_created_at,
                  filtered_submissions.id,
-                 (filtered_submissions.updated_at - lag(filtered_submissions.updated_at) over (PARTITION BY contributor_id, exercise_id
-                                                     ORDER BY filtered_submissions.updated_at)) AS working_time
+                 (filtered_submissions.created_at - lag(filtered_submissions.created_at) over (PARTITION BY contributor_id, exercise_id
+                                                     ORDER BY filtered_submissions.created_at)) AS working_time
           FROM filtered_submissions
           JOIN exercises ON filtered_submissions.exercise_id = exercises.id
           WHERE #{ExternalUser.sanitize_sql(['contributor_id = ?', @user.id])}
@@ -59,7 +59,7 @@ class ExternalUsersController < ApplicationController
           GROUP BY exercise_id,
                    contributor_id,
                    filtered_submissions.id,
-                   filtered_submissions.updated_at
+                   filtered_submissions.created_at
           ) AS foo
       ) AS bar
     #{tag.nil? ? '' : " JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND #{ExternalUser.sanitize_sql(['et.tag_id = ?', tag])}"}
@@ -79,7 +79,7 @@ class ExternalUsersController < ApplicationController
     statistics = {}
 
     # We fake the statistics hash to be "submissions"
-    # Available are: contributor_id, exercise_id, maximum_score, runs, working_time, updated_at
+    # Available are: contributor_id, exercise_id, maximum_score, runs, working_time, created_at
     working_time_statistics = Submission.find_by_sql(working_time_query(tag&.id))
     ActiveRecord::Associations::Preloader.new(records: working_time_statistics, associations: [:exercise]).call
     working_time_statistics.each do |tuple|
