@@ -5,6 +5,14 @@ require 'rails_helper'
 RSpec.describe NonceStore do
   let(:nonce) { SecureRandom.hex }
 
+  # Configure the cache store to use an in-memory store for the nonce store tests.
+  around do |example|
+    original_cache_store = Rails.cache
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+    example.run
+    Rails.cache = original_cache_store
+  end
+
   before do
     stub_const('Lti::MAXIMUM_SESSION_AGE', 1)
   end
