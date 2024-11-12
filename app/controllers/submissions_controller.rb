@@ -168,6 +168,9 @@ class SubmissionsController < ApplicationController
 
     # If running is not allowed (and the socket is closed), we can stop here.
     return true if @embed_options[:disable_run]
+    # If the tubesock handshake failed (and we didn't got a socket), we can stop here.
+    # With our custom tubesock patch, this will render a 426 status code already.
+    return true if client_socket.nil?
 
     @testrun[:output] = +''
     durations = @submission.run(@file) do |socket, starting_time|
