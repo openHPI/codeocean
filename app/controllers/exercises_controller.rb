@@ -421,6 +421,8 @@ class ExercisesController < ApplicationController
     create_and_respond(object: @exercise, params: exercise_params_with_tags) do
       # We first need to create the exercise before handling tips
       handle_exercise_tips tips_params
+      # Don't return a specific value from this block, so that the default is used.
+      nil
     end
   end
 
