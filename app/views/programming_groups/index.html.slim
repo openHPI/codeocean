@@ -1,4 +1,4 @@
-- if params[:exercise_id].nil?
+- if @exercise.nil?
   h1 = ProgrammingGroup.model_name.human(count: :other)
   = render(layout: 'shared/form_filters') do |f|
     .col-auto
@@ -12,33 +12,29 @@
       = f.label(:programming_group_memberships_user_of_InternalUser_type_id_eq, ProgrammingGroup.human_attribute_name('internal_user_id'), class: 'visually-hidden form-label')
       = f.search_field(:programming_group_memberships_user_of_InternalUser_type_id_eq, class: 'form-control', placeholder: ProgrammingGroup.human_attribute_name('internal_user_id'))
 - else
-  h1 = "#{ProgrammingGroup.model_name.human(count: :other)} for Exercise '#{@exercise.title}'"
+  h1 = t('.for', model: ProgrammingGroup.model_name.human(count: :other), exercise: @exercise.title)
 
 .table-responsive
   table.table.mt-4 class=(@programming_groups.present? ? 'sortable' : '')
     thead
       tr
         th.sortable_nosort = sort_link(@search, :id, ProgrammingGroup.human_attribute_name('name'))
-        - if params[:exercise_id].blank?
+        - if @exercise.nil?
           th.sorttable_nosort = sort_link(@search, :exercise_id, ProgrammingGroup.human_attribute_name('exercise'))
         th = ProgrammingGroup.human_attribute_name('member')
         th = ProgrammingGroup.human_attribute_name('member_count')
         th.sorttable_nosort = sort_link(@search, :created_at, t('shared.created_at'))
         th colspan=3 = t('shared.actions')
     tbody
-      - if params[:exercise_id].nil?
-        - filtered_programming_groups = @programming_groups
-      - else
-        - filtered_programming_groups = @programming_groups.where(exercise_id: params[:exercise_id])
-      - filtered_programming_groups.each do |programming_group|
+      - @programming_groups.each do |programming_group|
         tr
           td = link_to_if(policy(programming_group).show?, programming_group.displayname, programming_group)
-          - if params[:exercise_id].blank?
+          - if @exercise.nil?
             td = link_to_if(policy(programming_group.exercise).show?, programming_group.exercise.title, programming_group.exercise, 'data-turbolinks': 'false')
           td == programming_group.users.map {|user| link_to_if(policy(user).show?, user.name, user) }.join(', ')
           td = programming_group.users.size
           td = l(programming_group.created_at, format: :short)
-          td = link_to(t('shared.show'), programming_group) if policy(programming_group).show?
-          td = link_to(t('shared.edit'), edit_programming_group_path(programming_group)) if policy(programming_group).edit?
-          td = link_to(t('shared.destroy'), programming_group, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(programming_group).destroy?
+          td = link_to(t('shared.show'), [@exercise, programming_group]) if policy(programming_group).show?
+          td = link_to(t('shared.edit'), polymorphic_path([@exercise, programming_group], action: :edit)) if policy(programming_group).edit?
+          td = link_to(t('shared.destroy'), [@exercise, programming_group], data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(programming_group).destroy?
 = render('shared/pagination', collection: @programming_groups)

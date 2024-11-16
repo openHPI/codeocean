@@ -20,6 +20,8 @@ en:
         programming_partner_ids: You can enter several user IDs separated by commas such as 'e123, e234'.
     implement:
       info_disconnected: You are disconnected from the server. Please check your internet connection and reload the page.
+    index:
+      for: "%{model} for Exercise '%{exercise}'"
     new:
       create_programming_pair: Create Programming Pair
       dont_show_modal_again: Don't display on this device anymore

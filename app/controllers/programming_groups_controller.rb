@@ -10,7 +10,12 @@ class ProgrammingGroupsController < ApplicationController
   def index
     set_exercise_and_authorize if params[:exercise_id].present?
     @search = policy_scope(ProgrammingGroup).ransack(params[:q], {auth_object: current_user})
-    @programming_groups = @search.result.includes(:exercise, :programming_group_memberships, :internal_users, :external_users).order(:id).paginate(page: params[:page], per_page: per_page_param)
+    if params[:exercise_id].present?
+      @programming_groups = @search.result.where(exercise: @exercise)
+    else
+      @programming_groups = @search.result
+    end
+    @programming_groups = @programming_groups.includes(:exercise, :programming_group_memberships, :internal_users, :external_users).order(:id).paginate(page: params[:page], per_page: per_page_param)
     authorize!
   end
 
