@@ -5,7 +5,7 @@ h1
 = row(label: 'exercise_collection.name', value: @exercise_collection.name)
 = row(label: 'exercise_collection.user', value: link_to_if(policy(@exercise_collection.user).show?, @exercise_collection.user.displayname, @exercise_collection.user)) unless @exercise_collection.user.nil?
 = row(label: 'exercise_collection.use_anomaly_detection', value: @exercise_collection.use_anomaly_detection)
-= row(label: 'exercise_collection.updated_at', value: @exercise_collection.updated_at)
+= row(label: 'shared.updated_at', value: l(@exercise_collection.updated_at, format: :long))
 
 h4.mt-4 = ExerciseCollection.human_attribute_name('exercises')
 .table-responsive#exercise-list

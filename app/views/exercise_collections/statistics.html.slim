@@ -1,7 +1,7 @@
 h1 = @exercise_collection
 
 = row(label: 'exercise_collection.name', value: @exercise_collection.name)
-= row(label: 'exercise_collection.updated_at', value: @exercise_collection.updated_at)
+= row(label: 'shared.updated_at', value: l(@exercise_collection.updated_at, format: :long))
 = row(label: 'exercise_collection.exercises', value: @exercise_collection.exercises.count)
 = row(label: 'exercise_collection.users_and_programming_groups', value: Submission.from(@exercise_collection.exercises.joins(:submissions).group(:contributor_id, :contributor_type).select(:contributor_id, :contributor_type)).count)
 = row(label: 'exercise_collection.solutions', value: Submission.from(@exercise_collection.exercises.joins(:submissions).group(:contributor_id, :contributor_type, :id).select(:contributor_id, :contributor_type)).count)

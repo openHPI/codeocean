@@ -8,7 +8,6 @@ de:
         name: Name
         solutions: Gesamtanzahl Lösungsversuche
         submissions: Gesamtanzahl Abgaben
-        updated_at: Letzte Änderung
         use_anomaly_detection: Abweichungen in der Arbeitszeit erkennen
         user: Verantwortliche:r
         users_and_programming_groups: Teilnehmende und Programmiergruppen

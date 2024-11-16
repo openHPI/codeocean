@@ -51,5 +51,6 @@ en:
     tooltips:
       shortcut: 'Keyboard shortcut: %{shortcut}'
     update: Update %{model}
+    updated_at: Last Update
     upload_file: Upload file
     websocket_failure: Sorry, a connection issue occurred. <a href="https://websocketstest.com" target="_blank" rel="noopener noreferrer" class="alert-link">Please check WebSocket connections with this tool</a> and try again.

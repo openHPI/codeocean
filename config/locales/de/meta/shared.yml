@@ -51,5 +51,6 @@ de:
     tooltips:
       shortcut: 'Tastaturkürzel: %{shortcut}'
     update: "%{model} aktualisieren"
+    updated_at: Letzte Änderung
     upload_file: Datei hochladen
     websocket_failure: Leider ist ein Verbindungsproblem aufgetreten. <a href="https://websocketstest.com" target="_blank" rel="noopener noreferrer" class="alert-link">Bitte überprüfen Sie Websocket-Verbindungen mit diesem Tool</a> und versuchen Sie es erneut.

@@ -8,7 +8,6 @@ en:
         name: Name
         solutions: Solution Attempts (accumulated)
         submissions: Submissions (accumulated)
-        updated_at: Last Update
         use_anomaly_detection: Enable Worktime Anomaly Detection
         user: Associated User
         users_and_programming_groups: Users and Programming Groups
