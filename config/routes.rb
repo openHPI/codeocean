@@ -138,6 +138,7 @@ Rails.application.routes.draw do
     member do
       match 'activate', to: 'internal_users#activate', via: %i[get patch put]
       match 'reset_password', to: 'internal_users#reset_password', via: %i[get patch put]
+      match 'change_password', to: 'internal_users#change_password', via: %i[get patch put]
     end
     resources :codeharbor_links, only: %i[new create edit update destroy]
   end

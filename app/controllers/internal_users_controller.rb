@@ -6,7 +6,7 @@ class InternalUsersController < ApplicationController
   before_action :require_user!, except: %i[activate forgot_password reset_password]
   before_action :require_activation_token, only: :activate
   before_action :require_reset_password_token, only: :reset_password
-  before_action :set_user, only: MEMBER_ACTIONS
+  before_action :set_user, only: MEMBER_ACTIONS + %i[change_password]
   before_action :collect_set_and_unset_study_group_memberships, only: MEMBER_ACTIONS + %i[create]
   after_action :verify_authorized, except: %i[activate forgot_password reset_password]
 
@@ -58,11 +58,26 @@ class InternalUsersController < ApplicationController
 
   def update
     # Let's skip the password validation if the user is edited through
-    # the form by another user. Otherwise, the update might fail if an
+    # the form here. Otherwise, the update might fail if an
     # activation_token or password_reset_token is present
-    @user.validate_password = current_user == @user
+    @user.validate_password = false
     @user.platform_admin = platform_admin_param if current_user.admin?
     update_and_respond(object: @user, params: internal_user_params)
+  end
+
+  def change_password
+    return render :change_password unless request.patch? || request.put?
+
+    if @user != current_user || @user.valid_password?(params[:internal_user].delete(:current_password))
+      # Always validate the password strength when changing the password
+      @user.validate_password = true
+      update_password
+    else
+      respond_to do |format|
+        @user.errors.add(:base, :current_password_invalid)
+        respond_with_invalid_object(format, object: @user, template: :change_password)
+      end
+    end
   end
 
   def destroy
@@ -75,14 +90,15 @@ class InternalUsersController < ApplicationController
     authorize(@user || @users)
   end
 
-  def change_password
+  def update_password
     respond_to do |format|
       if @user.update(params[:internal_user].permit(:password, :password_confirmation))
         @user.change_password!(params[:internal_user][:password])
-        format.html { redirect_to(sign_in_path, notice: t('internal_users.reset_password.success')) }
+        redirect_target = current_user ? internal_user_path(@user) : sign_in_path
+        format.html { redirect_to(redirect_target, notice: t('internal_users.reset_password.success')) }
         format.json { head :ok }
       else
-        respond_with_invalid_object(format, object: @user, template: :reset_password)
+        respond_with_invalid_object(format, object: @user, template: action_name.to_sym)
       end
     end
   end

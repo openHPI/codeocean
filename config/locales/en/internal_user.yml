@@ -6,10 +6,11 @@ en:
         activated: Activated
         consumer: Consumer
         consumer_id: Consumer
+        current_password: Current Password
         email: Email
         name: Name
         password: Password
-        password_confirmation: Passwort Confirmation
+        password_confirmation: Password Confirmation
         platform_admin: Platform Admin
     models:
       internal_user:
@@ -20,6 +21,12 @@ en:
       headline: Complete Registration
       submit: Set Password
       success: You successfully completed your registration.
+    change_password:
+      headline: Change Password
+      hints:
+        current_password: Please enter your current password to confirm your identity.
+      submit: Change Password
+      success: You successfully changed your password.
     forgot_password:
       headline: Reset Password
       submit: Send Password Reset Instructions
@@ -29,6 +36,7 @@ en:
       study_groups: Study Groups
     index:
       activate: Activate
+      change_password: Change Password
       forgot_password: Reset Password
       reset_password: Reset Password
     reset_password:
@@ -36,4 +44,5 @@ en:
       submit: Set Password
       success: You successfully changed your password.
     show:
+      change_password: Change Password
       link: Profile

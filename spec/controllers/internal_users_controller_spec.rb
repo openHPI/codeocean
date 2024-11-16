@@ -106,6 +106,153 @@ RSpec.describe InternalUsersController do
     end
   end
 
+  describe 'GET #change_password' do
+    context 'without a valid session' do
+      before { get :change_password, params: {id: user.id} }
+
+      expect_redirect(:sign_in)
+    end
+
+    context 'with a valid session' do
+      before do
+        allow(controller).to receive(:current_user).and_return(user)
+        get :change_password, params: {id: user.id}
+      end
+
+      expect_assigns(user: :user)
+      expect_http_status(:ok)
+      expect_template(:change_password)
+    end
+
+    context 'with a valid session and a user that is not the current user' do
+      let(:second_user) { create(:teacher, consumer:) }
+
+      before do
+        allow(controller).to receive(:current_user).and_return(user)
+        get :change_password, params: {id: second_user.id}
+      end
+
+      context 'when the current user is not an admin' do
+        let(:user) { create(:teacher, consumer:) }
+
+        expect_flash_message(:alert, I18n.t('application.not_authorized'))
+        expect_redirect(:root)
+      end
+
+      context 'when the current user is an admin' do
+        expect_assigns(user: :second_user)
+        expect_http_status(:ok)
+        expect_template(:change_password)
+      end
+    end
+  end
+
+  describe 'PUT #change_password' do
+    before { allow(controller).to receive(:current_user).and_return(user) }
+
+    context 'without a valid session' do
+      before { put :reset_password, params: {id: user.id} }
+
+      expect_flash_message(:alert, I18n.t('application.not_authorized'))
+      expect_redirect(:root)
+    end
+
+    context 'with a valid session' do
+      before do
+        allow(controller).to receive(:current_user).and_return(user)
+        user.change_password!(current_password)
+      end
+
+      let(:password) { 'foo' }
+      let(:current_password) { '$tr0ngP4ssw0rD' }
+
+      context 'with a matching password confirmation' do
+        let(:perform_request) { proc { put :change_password, params: {internal_user: {password:, password_confirmation: password, current_password:}, id: user.id} } }
+
+        before { perform_request.call }
+
+        expect_assigns(user: :user)
+
+        context 'with a weak password' do
+          let(:password) { 'foo' }
+
+          it 'does not change the password' do
+            expect { perform_request.call }.not_to change { user.reload.crypted_password }
+            expect(InternalUser.authenticate(user.email, password)).not_to eq(user)
+          end
+
+          expect_http_status(:ok)
+          expect_template(:change_password)
+        end
+
+        context 'with a strong password' do
+          let(:password) { SecureRandom.hex(128) }
+
+          it 'changes the password' do
+            expect { perform_request.call }.not_to change { user.reload.crypted_password }
+            expect(InternalUser.authenticate(user.email, password)).to eq(user)
+          end
+
+          expect_flash_message(:notice, I18n.t('internal_users.change_password.success'))
+          expect_redirect { user }
+        end
+      end
+
+      context 'without a matching password confirmation' do
+        before do
+          put :change_password, params: {internal_user: {password:, password_confirmation: '', current_password:}, id: user.id}
+        end
+
+        expect_assigns(user: :user)
+        expect_http_status(:ok)
+        expect_template(:change_password)
+      end
+
+      context 'without a valid current password' do
+        before do
+          put :change_password, params: {internal_user: {password:, password_confirmation: password, current_password: ''}, id: user.id}
+        end
+
+        expect_assigns(user: :user)
+        expect_http_status(:ok)
+        expect_template(:change_password)
+      end
+    end
+
+    context 'with a valid session and a user that is not the current user' do
+      let(:second_user) { create(:teacher, consumer:) }
+      let(:password) { SecureRandom.hex(128) }
+      let(:perform_request) { proc { put :change_password, params: {internal_user: {password:, password_confirmation: password}, id: second_user.id} } }
+
+      before do
+        allow(controller).to receive(:current_user).and_return(user)
+        perform_request.call
+      end
+
+      context 'when the current user is not an admin' do
+        let(:user) { create(:teacher, consumer:) }
+
+        expect_flash_message(:alert, I18n.t('application.not_authorized'))
+        expect_redirect(:root)
+      end
+
+      context 'when the current user is an admin' do
+        context 'when the password is strong' do
+          expect_assigns(user: :second_user)
+          expect_redirect { second_user }
+        end
+
+        context 'when the password is weak' do
+          let(:password) { 'foo' }
+
+          expect_assigns(user: :second_user)
+          expect_http_status(:ok)
+          expect_template(:change_password)
+        end
+      end
+    end
+  end
+
   describe 'POST #create' do
     before { allow(controller).to receive(:current_user).and_return(user) }
 

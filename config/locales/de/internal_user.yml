@@ -6,6 +6,7 @@ de:
         activated: Aktiviert
         consumer: Konsument
         consumer_id: Konsument
+        current_password: Aktuelles Passwort
         email: E-Mail
         name: Name
         password: Passwort
@@ -20,6 +21,12 @@ de:
       headline: Registrierung abschließen
       submit: Passwort speichern
       success: Sie haben Ihre Registrierung erfolgreich abgeschlossen.
+    change_password:
+      headline: Passwort ändern
+      hints:
+        current_password: Bitte geben Sie Ihr aktuelles Passwort ein, um Ihre Identität zu bestätigen.
+      submit: Passwort ändern
+      success: Sie haben Ihr Passwort erfolgreich geändert.
     forgot_password:
       headline: Passwort zurücksetzen
       submit: Anweisungen zum Zurücksetzen senden
@@ -29,6 +36,7 @@ de:
       study_groups: Lerngruppen
     index:
       activate: Aktivieren
+      change_password: Passwort ändern
       forgot_password: Passwort zurücksetzen
       reset_password: Passwort zurücksetzen
     reset_password:
@@ -36,4 +44,5 @@ de:
       submit: Passwort speichern
       success: Sie haben Ihr Passwort erfolgreich geändert.
     show:
+      change_password: Passwort ändern
       link: Profil

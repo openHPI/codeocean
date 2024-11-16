@@ -17,6 +17,7 @@ en:
           attributes:
             password:
               weak: is too weak. Try to use a long password with upper and lower case letters, numbers and special characters.
+          current_password_invalid: The current password is not correct.
         programming_group:
           invalid_partner_id: The user ID '%{partner_id}' is invalid and was removed. Please check the user IDs of your programming partners.
           size_too_large: The size of this programming group is too large. Enter at most one other user ID to work with.

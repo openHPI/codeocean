@@ -8,8 +8,8 @@ class InternalUser < User
   attr_accessor :validate_password
 
   validates :email, presence: true, uniqueness: true
-  validates :password, confirmation: true, if: -> { password_void? && validate_password? }, on: :update, presence: true
-  validate :password_strength, if: -> { password_void? && validate_password? }, on: :update
+  validates :password, confirmation: true, if: -> { password_void? || validate_password? }, on: :update, presence: true
+  validate :password_strength, if: -> { password_void? || validate_password? }, on: :update
 
   accepts_nested_attributes_for :study_group_memberships
 
@@ -23,7 +23,7 @@ class InternalUser < User
   private :password_void?
 
   def validate_password?
-    return true if @validate_password.nil?
+    return false if @validate_password.nil?
 
     @validate_password
   end
