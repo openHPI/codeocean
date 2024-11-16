@@ -42,8 +42,12 @@ RSpec.describe CodeharborLinkPolicy do
           expect(policy).to permit(codeharbor_link.user, codeharbor_link)
         end
 
+        it 'grants access to admins' do
+          expect(policy).to permit(create(:admin), codeharbor_link)
+        end
+
         it 'does not grant access to arbitrary users' do
-          %i[external_user admin teacher].each do |factory_name|
+          %i[external_user teacher].each do |factory_name|
             expect(policy).not_to permit(create(factory_name), codeharbor_link)
           end
         end

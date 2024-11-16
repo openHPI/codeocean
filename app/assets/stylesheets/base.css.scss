@@ -200,3 +200,9 @@ html[data-bs-theme="light"] {
     }
   }
 }
+
+.input-group {
+  .field_with_errors {
+    flex: 1 1 auto;
+  }
+}

@@ -80,6 +80,14 @@ class User < Contributor
     end
   end
 
+  def self.find_by(*args, id: nil)
+    # Allow `User.find_by(id: 'e123')` and `User.find_by(id: 'i123')`
+    # Inherited classes keep their original behavior.
+    return super unless self == User
+
+    find_by_id_with_type(id)
+  end
+
   def self.ransackable_attributes(auth_object)
     if auth_object.present? && auth_object.admin?
       %w[name email external_id consumer_id platform_admin id]

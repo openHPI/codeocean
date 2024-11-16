@@ -13,6 +13,10 @@ class InternalUserPolicy < AdminOnlyPolicy
     admin? || @record == @user || teacher_in_study_group?
   end
 
+  def change_codeharbor_link?
+    admin? || @record == @user
+  end
+
   class Scope < Scope
     def resolve
       if @user.admin?

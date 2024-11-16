@@ -3,32 +3,16 @@
 class CodeharborLinkPolicy < ApplicationPolicy
   CODEHARBOR_CONFIG = CodeOcean::Config.new(:code_ocean).read[:codeharbor]
 
-  def index?
-    no_one
+  %i[index? show?].each do |action|
+    define_method(action) { no_one }
   end
 
-  def show?
-    no_one
+  %i[new? create?].each do |action|
+    define_method(action) { enabled? && (admin? || teacher?) && (@user.admin? || @user.teacher?) }
   end
 
-  def new?
-    enabled? && (teacher? || admin?)
-  end
-
-  def create?
-    enabled? && (teacher? || admin?)
-  end
-
-  def edit?
-    enabled? && owner?
-  end
-
-  def update?
-    enabled? && owner?
-  end
-
-  def destroy?
-    enabled? && owner?
+  %i[destroy? update? edit?].each do |action|
+    define_method(action) { enabled? && (admin? || owner?) }
   end
 
   def enabled?
@@ -38,6 +22,6 @@ class CodeharborLinkPolicy < ApplicationPolicy
   private
 
   def owner?
-    @record.reload.user == @user
+    @record.user == @user
   end
 end

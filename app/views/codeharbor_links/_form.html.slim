@@ -1,18 +1,18 @@
-= form_for(@codeharbor_link) do |f|
+= form_for([@user, @codeharbor_link]) do |f|
   = render('shared/form_errors', object: @codeharbor_link)
   .mb-3
     = f.label(:push_url, class: 'form-label')
-    = f.text_field :push_url, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.push_url'), class: 'form-control'
+    = f.text_field :push_url, data: {'bs-toggle': 'tooltip', 'bs-placement': 'bottom'}, title: t('codeharbor_link.info.push_url'), class: 'form-control'
   .mb-3
     = f.label(:check_uuid_url, class: 'form-label')
-    = f.text_field :check_uuid_url, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.check_uuid_url'), class: 'form-control'
+    = f.text_field :check_uuid_url, data: {'bs-toggle': 'tooltip', 'bs-placement': 'bottom'}, title: t('codeharbor_link.info.check_uuid_url'), class: 'form-control'
   .mb-3
     = f.label(:api_key, class: 'form-label')
     .input-group
-      = f.text_field(:api_key, data: {toggle: 'tooltip', placement: 'bottom'}, title: t('codeharbor_link.info.api_key'), class: 'form-control api_key')
+      = f.text_field(:api_key, data: {'bs-toggle': 'tooltip', 'bs-placement': 'bottom'}, title: t('codeharbor_link.info.api_key'), class: 'form-control api_key')
       .input-group-btn
         = button_tag t('codeharbor_link.generate'), type: 'button', class: 'generate-api_key btn btn-default'
   .actions
     = render('shared/submit_button', f:, object: @codeharbor_link)
     - if @codeharbor_link.persisted?
-      = link_to(t('codeharbor_link.delete'), codeharbor_link_path(@codeharbor_link), data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-danger float-end')
+      = link_to(t('codeharbor_link.delete'), polymorphic_path([@codeharbor_link.user, @codeharbor_link]), data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-danger float-end')

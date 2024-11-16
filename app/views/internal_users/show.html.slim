@@ -28,5 +28,5 @@ h1
   - else
     = t('users.show.no_groups')
 
-- if @user == current_user
-  = row(label: 'codeharbor_link.profile_label', value: @user.codeharbor_link.nil? ? link_to(t('codeharbor_link.new'), new_codeharbor_link_path, class: 'btn btn-secondary') : link_to(t('codeharbor_link.edit'), edit_codeharbor_link_path(@user.codeharbor_link), class: 'btn btn-secondary'))
+- if @user == current_user || current_user.admin?
+  = row(label: 'codeharbor_link.profile_label', value: @user.codeharbor_link.nil? ? link_to(t('codeharbor_link.new'), polymorphic_path([@user, CodeharborLink], action: :new), class: 'btn btn-secondary') : link_to(t('codeharbor_link.edit'), polymorphic_path([@user, @user.codeharbor_link], action: :edit), class: 'btn btn-secondary'))

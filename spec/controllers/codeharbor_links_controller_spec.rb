@@ -15,7 +15,7 @@ RSpec.describe CodeharborLinksController do
 
   describe 'GET #new' do
     before do
-      get :new
+      get :new, params: {internal_user_id: user.id}
     end
 
     expect_http_status(:ok)
@@ -24,13 +24,13 @@ RSpec.describe CodeharborLinksController do
   describe 'GET #edit' do
     let(:codeharbor_link) { create(:codeharbor_link, user:) }
 
-    before { get :edit, params: {id: codeharbor_link.id} }
+    before { get :edit, params: {id: codeharbor_link.id, internal_user_id: user.id} }
 
     expect_http_status(:ok)
   end
 
   describe 'POST #create' do
-    let(:post_request) { post :create, params: {codeharbor_link: params} }
+    let(:post_request) { post :create, params: {codeharbor_link: params, internal_user_id: user.id} }
     let(:params) { {push_url: 'https://foo.bar/push', check_uuid_url: 'https://foo.bar/check', api_key: 'api_key'} }
 
     it 'creates a codeharbor_link' do
@@ -56,7 +56,7 @@ RSpec.describe CodeharborLinksController do
 
   describe 'PUT #update' do
     let(:codeharbor_link) { create(:codeharbor_link, user:) }
-    let(:put_request) { patch :update, params: {id: codeharbor_link.id, codeharbor_link: params} }
+    let(:put_request) { patch :update, params: {id: codeharbor_link.id, codeharbor_link: params, internal_user_id: user.id} }
     let(:params) { {push_url: 'https://foo.bar/push', check_uuid_url: 'https://foo.bar/check', api_key: 'api_key'} }
 
     it 'updates push_url' do
@@ -90,7 +90,7 @@ RSpec.describe CodeharborLinksController do
 
   describe 'DELETE #destroy' do
     let!(:codeharbor_link) { create(:codeharbor_link, user:) }
-    let(:destroy_request) { delete :destroy, params: {id: codeharbor_link.id} }
+    let(:destroy_request) { delete :destroy, params: {id: codeharbor_link.id, internal_user_id: user.id} }
 
     it 'deletes codeharbor_link' do
       expect { destroy_request }.to change(CodeharborLink, :count).by(-1)

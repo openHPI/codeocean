@@ -17,6 +17,10 @@ class ExternalUserPolicy < AdminOnlyPolicy
     admin?
   end
 
+  def change_codeharbor_link?
+    admin? || @record == @user
+  end
+
   class Scope < Scope
     def resolve
       if @user.admin?

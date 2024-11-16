@@ -13,6 +13,6 @@ RSpec.describe CodeharborLink do
 
     let(:codeharbor_link) { create(:codeharbor_link) }
 
-    it { is_expected.to eql codeharbor_link.id.to_s }
+    it { is_expected.to eql "#{described_class.model_name.human} #{codeharbor_link.id}" }
   end
 end

@@ -3,7 +3,9 @@ de:
   activerecord:
     attributes:
       codeharbor_link:
-        oauth2token: OAuth2 Token
+        api_key: API-Schlüssel
+        check_uuid_url: Check-UUID-URL
+        push_url: Push-URL
     models:
       codeharbor_link:
         one: CodeHarbor-Link
