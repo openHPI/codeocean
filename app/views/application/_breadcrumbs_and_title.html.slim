@@ -5,19 +5,19 @@
     - parent_route_key = parent_model.model_name.singular_route_key
     - if params["#{parent_route_key}_id"].present?
       - parent_object = object.try(parent_route_key) || parent_model.find_by(id: params["#{parent_route_key}_id"])
-      - parent_element = link_to_if(current_user && policy(parent_object).show?, parent_object, {controller: parent_model.model_name.route_key, action: :show, id: parent_object.id})
-      - parent_root_element = link_to_if(current_user && policy(parent_model).index?, parent_model.model_name.human(count: :other), {controller: parent_model.model_name.route_key, action: :index})
-      - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: :other), send(:"#{parent_route_key}_#{model.model_name.route_key}_path", parent_object))
+      - parent_element = link_to_if(current_user && policy(parent_object).show?, parent_object, parent_object)
+      - parent_root_element = link_to_if(current_user && policy(parent_object.class).index?, parent_object.model_name.human(count: :other), parent_object.class)
+      - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: :other), polymorphic_path([parent_object, model]))
       - if object
-        - current_element = link_to_if(current_user && policy(object).show?, object, send(:"#{parent_route_key}_#{model.model_name.singular}_path", parent_object, object))
+        - current_element = link_to_if(current_user && policy(object).show?, object, polymorphic_path([parent_object, object]))
     - else
-      - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: :other), {controller: model.model_name.route_key, action: :index})
+      - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: :other), model)
       - if object
-        - current_element = link_to_if(current_user && policy(object).show?, object, {controller: model.model_name.route_key, action: :show, id: object.id})
+        - current_element = link_to_if(current_user && policy(object).show?, object, object)
   - else
-    - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: :other), {controller: model.model_name.route_key, action: :index})
+    - root_element = link_to_if(current_user && policy(model).index?, model.model_name.human(count: :other), model)
     - if object
-      - current_element = link_to_if(current_user && policy(object).show?, object, {controller: model.model_name.route_key, action: :show, id: object.id})
+      - current_element = link_to_if(current_user && policy(object).show?, object, object)
   - if I18n.exists?("shared.#{params[:action]}")
     - active_action = t("shared.#{params[:action]}", model: model&.model_name&.human)
   - else
