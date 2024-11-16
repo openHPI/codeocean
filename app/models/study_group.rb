@@ -19,7 +19,7 @@ class StudyGroup < ApplicationRecord
   end
 
   def to_s
-    name.presence || "StudyGroup #{id}"
+    name.presence || "#{model_name.human} #{id}"
   end
 
   def self.ransackable_attributes(_auth_object = nil)

@@ -9,6 +9,8 @@ class Contributor < ApplicationRecord
 
   has_many :submissions, as: :contributor
 
+  delegate :to_s, to: :displayname
+
   def learner?
     raise NotImplementedError
   end
@@ -31,10 +33,6 @@ class Contributor < ApplicationRecord
 
   def programming_group?
     is_a?(ProgrammingGroup)
-  end
-
-  def to_s
-    displayname
   end
 
   def to_page_context

@@ -46,6 +46,8 @@ class Exercise < ApplicationRecord
   validates :token, presence: true, uniqueness: true
   validates :uuid, uniqueness: {if: -> { uuid.present? }}
 
+  delegate :to_s, to: :title
+
   @working_time_statistics = nil
   attr_reader :working_time_statistics
 
@@ -557,10 +559,6 @@ class Exercise < ApplicationRecord
     set_default_values_if_present(public: false)
   end
   private :set_default_values
-
-  def to_s
-    title
-  end
 
   def valid_main_file?
     if files.count(&:main_file?) > 1

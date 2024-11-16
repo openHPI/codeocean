@@ -8,11 +8,9 @@ class Tag < ApplicationRecord
 
   before_destroy :can_be_destroyed?, prepend: true
 
+  delegate :to_s, to: :name
+
   def can_be_destroyed?
     exercises.none?
-  end
-
-  def to_s
-    name
   end
 end

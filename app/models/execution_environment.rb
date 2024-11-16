@@ -40,9 +40,7 @@ class ExecutionEnvironment < ApplicationRecord
   after_rollback :delete_runner_environment, on: :create
   after_rollback :sync_runner_environment, on: %i[update destroy]
 
-  def to_s
-    name
-  end
+  delegate :to_s, to: :name
 
   def to_json(*_args)
     {

@@ -3,7 +3,5 @@
 class FileTemplate < ApplicationRecord
   belongs_to :file_type
 
-  def to_s
-    name
-  end
+  delegate :to_s, to: :name
 end

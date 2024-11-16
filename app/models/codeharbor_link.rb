@@ -7,5 +7,7 @@ class CodeharborLink < ApplicationRecord
 
   belongs_to :user, class_name: 'InternalUser'
 
-  delegate :to_s, to: :id
+  def to_s
+    "#{model_name.human} #{id}"
+  end
 end

@@ -16,14 +16,12 @@ class Consumer < ApplicationRecord
 
   after_create :generate_internal_study_group
 
+  delegate :to_s, to: :name
+
   def generate_internal_study_group
     StudyGroup.create!(consumer: self, name: "Default Study Group for #{name}", external_id: nil)
   end
   private :generate_internal_study_group
-
-  def to_s
-    name
-  end
 
   def self.ransackable_attributes(_auth_object = nil)
     %w[id]

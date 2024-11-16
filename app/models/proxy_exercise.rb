@@ -18,6 +18,8 @@ class ProxyExercise < ApplicationRecord
 
   validates :public, inclusion: [true, false]
 
+  delegate :to_s, to: :title
+
   def count_files
     exercises.count
   end
@@ -40,10 +42,6 @@ class ProxyExercise < ApplicationRecord
     proxy_exercise = dup
     proxy_exercise.attributes = attributes
     proxy_exercise
-  end
-
-  def to_s
-    title
   end
 
   def get_matching_exercise(user)

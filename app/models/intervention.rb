@@ -6,9 +6,7 @@ class Intervention < ApplicationRecord
   has_many :internal_users, through: :user_exercise_interventions, source: :contributor, source_type: 'InternalUser'
   has_many :programming_groups, through: :user_exercise_interventions, source: :contributor, source_type: 'ProgrammingGroup'
 
-  def to_s
-    name
-  end
+  delegate :to_s, to: :name
 
   def contributors
     @contributors ||= internal_users.distinct + external_users.distinct + programming_groups.distinct

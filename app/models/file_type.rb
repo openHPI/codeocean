@@ -28,6 +28,8 @@ class FileType < ApplicationRecord
   validates :renderable, inclusion: [true, false]
   validates :file_extension, length: {minimum: 0, allow_nil: false}
 
+  delegate :to_s, to: :name
+
   %i[audio compressed csv excel image pdf powerpoint video word].each do |type|
     define_method(:"#{type}?") do
       self.class.const_get(:"#{type.upcase}_FILE_EXTENSIONS").include?(file_extension)
@@ -41,9 +43,5 @@ class FileType < ApplicationRecord
 
   def programming_language
     editor_mode&.gsub('ace/mode/', '')
-  end
-
-  def to_s
-    name
   end
 end
