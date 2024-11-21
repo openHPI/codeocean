@@ -1161,10 +1161,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/fontawesome-free@npm:^6.7.0":
-  version: 6.7.0
-  resolution: "@fortawesome/fontawesome-free@npm:6.7.0"
-  checksum: 10c0/a84139660dc0c23811de3f63cab7325ca0f6cb56a538daf81673af3485fd577a19a5fb42b337656672684be06af892c433291b0fa8cf347ec14756bc8073633a
+"@fortawesome/fontawesome-free@npm:^6.7.1":
+  version: 6.7.1
+  resolution: "@fortawesome/fontawesome-free@npm:6.7.1"
+  checksum: 10c0/5bebf5f9684fc377fb7df36cf7ee37e112a8987e592228ac464b81edc0eb002e1fa8675977b82d15d304cda813da4fafbc38cf0c3ca2744c710390a58a460495
   languageName: node
   linkType: hard
 
@@ -2610,7 +2610,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.26.0"
     "@babel/runtime": "npm:^7.26.0"
     "@egjs/hammerjs": "npm:^2.0.17"
-    "@fortawesome/fontawesome-free": "npm:^6.7.0"
+    "@fortawesome/fontawesome-free": "npm:^6.7.1"
     "@popperjs/core": "npm:^2.11.8"
     "@sentry/browser": "npm:^8.39.0"
     "@toast-ui/editor": "npm:^3.2.2"
