@@ -1507,90 +1507,75 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry-internal/browser-utils@npm:8.39.0":
-  version: 8.39.0
-  resolution: "@sentry-internal/browser-utils@npm:8.39.0"
+"@sentry-internal/browser-utils@npm:8.40.0":
+  version: 8.40.0
+  resolution: "@sentry-internal/browser-utils@npm:8.40.0"
   dependencies:
-    "@sentry/core": "npm:8.39.0"
-    "@sentry/types": "npm:8.39.0"
-    "@sentry/utils": "npm:8.39.0"
-  checksum: 10c0/74b5c57549f71bd69c57f44312090655cd8db9db4f84adfdc74a3581b6d371b97654bb4e1f44861c2f02e88bf00f192f1c2e99ec2efa461d95322105d1ee4e25
+    "@sentry/core": "npm:8.40.0"
+    "@sentry/types": "npm:8.40.0"
+  checksum: 10c0/f69bf030fab7b388abc6d9b0db08e86c255d6a7ea7f553c4f9b7ae2b607061b24a01ebe95a75371ea38b7ddc03c0a956c763940d2eab59a89195a4fca368be03
   languageName: node
   linkType: hard
 
-"@sentry-internal/feedback@npm:8.39.0":
-  version: 8.39.0
-  resolution: "@sentry-internal/feedback@npm:8.39.0"
+"@sentry-internal/feedback@npm:8.40.0":
+  version: 8.40.0
+  resolution: "@sentry-internal/feedback@npm:8.40.0"
   dependencies:
-    "@sentry/core": "npm:8.39.0"
-    "@sentry/types": "npm:8.39.0"
-    "@sentry/utils": "npm:8.39.0"
-  checksum: 10c0/4e7b9747d8f558c97253aa28796ac67fdef8f2e00f77183d2df9b2fde947860b0b4d0c8c4d125b316ee0a051f3f927f2420bae6d0777ac5c02d9bfb5c661e8e4
+    "@sentry/core": "npm:8.40.0"
+    "@sentry/types": "npm:8.40.0"
+  checksum: 10c0/556c9ca4f63624c01eca9cfa20a76aa81fc9bacd8e0cdc99f0474b3e244e1ef58bf21e5092246f81721ad7f2389fa0bb3ae1dfbe0ef6384c71360d1f5693f394
   languageName: node
   linkType: hard
 
-"@sentry-internal/replay-canvas@npm:8.39.0":
-  version: 8.39.0
-  resolution: "@sentry-internal/replay-canvas@npm:8.39.0"
+"@sentry-internal/replay-canvas@npm:8.40.0":
+  version: 8.40.0
+  resolution: "@sentry-internal/replay-canvas@npm:8.40.0"
   dependencies:
-    "@sentry-internal/replay": "npm:8.39.0"
-    "@sentry/core": "npm:8.39.0"
-    "@sentry/types": "npm:8.39.0"
-    "@sentry/utils": "npm:8.39.0"
-  checksum: 10c0/eef8b4cbecaeb048bd43f68f9d906e51aeb99263464bc29f3f7d39e1626c1a4b1fd6c1a954a615aa17d829b0181a5616cd34e1b3eec27cc6b3fa1dfcb2f4c479
+    "@sentry-internal/replay": "npm:8.40.0"
+    "@sentry/core": "npm:8.40.0"
+    "@sentry/types": "npm:8.40.0"
+  checksum: 10c0/c6e330c33cf026f8603b4708178a2e8dde916e56dfe12efa757d3ca465cdda741b108a972725df1e58561739c82f545741ad50eb04169c1bc819c096bcd9e853
   languageName: node
   linkType: hard
 
-"@sentry-internal/replay@npm:8.39.0":
-  version: 8.39.0
-  resolution: "@sentry-internal/replay@npm:8.39.0"
+"@sentry-internal/replay@npm:8.40.0":
+  version: 8.40.0
+  resolution: "@sentry-internal/replay@npm:8.40.0"
   dependencies:
-    "@sentry-internal/browser-utils": "npm:8.39.0"
-    "@sentry/core": "npm:8.39.0"
-    "@sentry/types": "npm:8.39.0"
-    "@sentry/utils": "npm:8.39.0"
-  checksum: 10c0/ae4b7821b19ddc5e0256b0dd4aa44ffe77392e41481299378d13299737fef268e06c539e2681c78f517df9acfca17b3bfae6bc8ac94467288ea9bd5993e68c93
+    "@sentry-internal/browser-utils": "npm:8.40.0"
+    "@sentry/core": "npm:8.40.0"
+    "@sentry/types": "npm:8.40.0"
+  checksum: 10c0/d5ee4df8b116e1b1851868a992ca35348adf30843d196b7894aafcedc035fa6c6e0fac30b54f00a0c4c681a0101928ee4a5ac41bae48699a8acbe3c61779bbfe
   languageName: node
   linkType: hard
 
-"@sentry/browser@npm:^8.39.0":
-  version: 8.39.0
-  resolution: "@sentry/browser@npm:8.39.0"
+"@sentry/browser@npm:^8.40.0":
+  version: 8.40.0
+  resolution: "@sentry/browser@npm:8.40.0"
   dependencies:
-    "@sentry-internal/browser-utils": "npm:8.39.0"
-    "@sentry-internal/feedback": "npm:8.39.0"
-    "@sentry-internal/replay": "npm:8.39.0"
-    "@sentry-internal/replay-canvas": "npm:8.39.0"
-    "@sentry/core": "npm:8.39.0"
-    "@sentry/types": "npm:8.39.0"
-    "@sentry/utils": "npm:8.39.0"
-  checksum: 10c0/593d8f39c01667704f27902f4262f32ce184c313039db9d771d8c73a065b8ca745a8bf93337fe8ec1d629a7fa6468b60eff3b0ee4b77b0f8fb82a548c1af571f
+    "@sentry-internal/browser-utils": "npm:8.40.0"
+    "@sentry-internal/feedback": "npm:8.40.0"
+    "@sentry-internal/replay": "npm:8.40.0"
+    "@sentry-internal/replay-canvas": "npm:8.40.0"
+    "@sentry/core": "npm:8.40.0"
+    "@sentry/types": "npm:8.40.0"
+  checksum: 10c0/1ea0ca90df7110eda7568b83566c60b325bee142e2ee5632c06314a588d70421bdb66a275f62a8c56f34fa057fe7d27056ea3872e878392255f3cf5533fa95d8
   languageName: node
   linkType: hard
 
-"@sentry/core@npm:8.39.0":
-  version: 8.39.0
-  resolution: "@sentry/core@npm:8.39.0"
+"@sentry/core@npm:8.40.0":
+  version: 8.40.0
+  resolution: "@sentry/core@npm:8.40.0"
   dependencies:
-    "@sentry/types": "npm:8.39.0"
-    "@sentry/utils": "npm:8.39.0"
-  checksum: 10c0/2d1a9d9c208d54bf701c4b9c0ff41a814b8fe1a9e919910886c66d95f4ffdfccd51bb1c6d5fd73ebe1464a3e175df827e8e493a9442d783573d40ca6225379ed
+    "@sentry/types": "npm:8.40.0"
+  checksum: 10c0/ea66e3fd626f4c2cb4f76cf598c5f5fb684a1a13fd85dab5288ba6868282a4a401c7f545c2266820cc787cdb1c03c6e6def01c88897f530ee94c9e6f3cd7651b
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:8.39.0":
-  version: 8.39.0
-  resolution: "@sentry/types@npm:8.39.0"
-  checksum: 10c0/4c7947adf312da5b353c50b7404520129e208f7033ecaed08961cd8e8a2b4d9d0e7ed8797e024086b8329809d476b012005f9bd432cfe84008437e4388fe98a7
-  languageName: node
-  linkType: hard
-
-"@sentry/utils@npm:8.39.0":
-  version: 8.39.0
-  resolution: "@sentry/utils@npm:8.39.0"
-  dependencies:
-    "@sentry/types": "npm:8.39.0"
-  checksum: 10c0/fe1f6cb60afcf423f01c3984c93bdb07b01ba052a71f0485129378b3075bcdd9f7aabfe2c75f0234eb93f8aa3e842d16b8ebc3c81f90431abee60d36ef183583
+"@sentry/types@npm:8.40.0":
+  version: 8.40.0
+  resolution: "@sentry/types@npm:8.40.0"
+  checksum: 10c0/00f8d326a797891fde5a58d395c929aaa3bd4fd1d9c9d623f5b4cfcd603c3606168e37c4431a68753b26a1fcdd3c201fc3821d0f81f0cd74d13c4d0a1d4030aa
   languageName: node
   linkType: hard
 
@@ -2612,7 +2597,7 @@ __metadata:
     "@egjs/hammerjs": "npm:^2.0.17"
     "@fortawesome/fontawesome-free": "npm:^6.7.1"
     "@popperjs/core": "npm:^2.11.8"
-    "@sentry/browser": "npm:^8.39.0"
+    "@sentry/browser": "npm:^8.40.0"
     "@toast-ui/editor": "npm:^3.2.2"
     "@webpack-cli/serve": "npm:^2.0.5"
     ace-builds: "npm:^1.36.5"
