@@ -109,4 +109,16 @@ RSpec.describe 'Editor', :js do
       expect(page).to have_no_content(I18n.t('exercises.editor.score'))
     end
   end
+
+  context 'contains resizer' do
+    it 'contains a horizontal resizer' do
+      visit(implement_exercise_path(exercise))
+      expect(page).to have_css('#resizerHorizontal')
+    end
+    it 'contains a vertical resizer' do
+      visit(implement_exercise_path(exercise))
+      click_button(I18n.t('exercises.editor.score'))
+      expect(page).to have_css('#resizerVertical')
+    end
+  end
 end
