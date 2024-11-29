@@ -7,11 +7,6 @@
   - unless @embed_options[:hide_exercise_description]
     .exercise.clearfix
       .d-lg-flex.flex-row.justify-content-between.align-items-baseline
-        .col-lg-7
-          h1#exercise-headline
-            i#description-symbol class=(@embed_options[:collapse_exercise_description] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down')
-            = @exercise.title
-
         .col-lg-5.float-lg-end.ms-md-3.mb-md-3.d-flex.justify-content-end.pe-lg-3
           - if current_contributor.programming_group?
             span.me-3.mt-1
@@ -27,21 +22,6 @@
               button.btn.btn-sm.btn-secondary.text-nowrap#info data-bs-toggle= 'modal' data-bs-target= '#modal-info-pair-programming'
                 i.fa-solid.fa-circle-info
                 = t('programming_groups.new.pair_programming_info')
-
-            span.badge.rounded-pill.bg-primary.float-end.mt-2.mb-5.score
-
-          - unless current_contributor.programming_group?
-            span.badge.rounded-pill.bg-primary.float-end.mt-2.score
-
-      #description-card.lead class=(@embed_options[:collapse_exercise_description] ? 'description-card-collapsed' : 'description-card')
-        = render_markdown(@exercise.description)
-
-      a#toggle href='#' data-show=t('shared.show') data-hide=t('shared.hide')
-        - if @embed_options[:collapse_exercise_description]
-          = t('shared.show')
-        - else
-          = t('shared.hide')
-
 
   = render('editor', exercise: @exercise, files: @files, submission: @submission)
   = render 'shared/modal',
