@@ -117,7 +117,7 @@ jobs:
           reporter: github-check
           skip_install: true
           use_bundler: true
-          fail_on_error: true
+          fail_level: any
 
   slim-lint:
     permissions:
@@ -170,4 +170,4 @@ jobs:
           reporter: github-check
           skip_install: true
           use_bundler: true
-          fail_on_error: true
+          fail_level: any
