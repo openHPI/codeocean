@@ -114,7 +114,7 @@ RSpec.describe 'Score', :js do
 
     shared_context 'when scored after late deadline' do
       let(:deadline) { :after_late_deadline }
-      let(:score_sent) { score * 0 }
+      let(:score_sent) { 0 }
     end
 
     context 'when the LTI outcome service is supported' do

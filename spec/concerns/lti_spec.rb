@@ -216,7 +216,7 @@ RSpec.describe Lti do
           end
 
           context 'when submission is after late deadline' do
-            let(:score_sent) { score * 0 }
+            let(:score_sent) { 0 }
 
             before do
               allow(submission).to receive_messages(before_deadline?: false,
@@ -226,7 +226,7 @@ RSpec.describe Lti do
 
             it 'returns deadline and reduced score' do
               expect(send_scores[:deadline]).to eq(:after_late_deadline)
-              expect(send_scores[:score][:sent]).to eq(score * 0)
+              expect(send_scores[:score][:sent]).to eq(0)
             end
 
             it 'sends the reduced score' do
