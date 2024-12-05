@@ -16,3 +16,6 @@ en:
       rfc_activity_history: RfC Activity History
       show: Statistics
       user_activity_history: User Activity History
+    webauthn_credential_authentication:
+      create: Two-Factor Authentication via Passkey
+      new: Two-Factor Authentication via Passkey

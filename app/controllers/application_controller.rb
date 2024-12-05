@@ -7,17 +7,18 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
   include I18nHelper
   include Pundit::Authorization
+  include Webauthn::Authentication
 
   MEMBER_ACTIONS = %i[destroy edit show update].freeze
   RENDER_HOST = CodeOcean::Config.new(:code_ocean).read[:render_host]
   LEGAL_SETTINGS = CodeOcean::Config.new(:code_ocean).read[:legal] || {}
   MONITORING_USER_AGENT = /updown\.io/
 
-  before_action :require_fully_authenticated_user!
   before_action :deny_access_from_render_host, prepend: true
   after_action :verify_authorized, except: %i[welcome]
   around_action :mnemosyne_trace, prepend: true
   around_action :switch_locale, prepend: true
+  before_action :check_current_user, prepend: true
   before_action :set_sentry_context, :load_embed_options, :set_document_policy
   skip_before_action :require_fully_authenticated_user!, only: %i[welcome]
   protect_from_forgery(with: :exception, prepend: true)
@@ -46,12 +47,18 @@ class ApplicationController < ActionController::Base
   def welcome
     # Show root page
     redirect_to ping_index_path if MONITORING_USER_AGENT.match?(request.user_agent)
+    _require_webauthn_credential_authentication if current_user&.webauthn_configured?
   end
 
   private
 
-  def require_fully_authenticated_user!
-    raise Pundit::NotAuthorizedError unless current_user
+  def check_current_user
+    # Simply accessing the current_user will trigger the authentication process:
+    # If the user is not authenticated but a remember_me cookie is present,
+    # the user might be redirected to the WebAuthn Credential Authentication page.
+    # Therefore, we use `prepend: true` to ensure that this method is called before
+    # the `require_fully_authenticated_user!` method.
+    current_user
   end
 
   def deny_access_from_render_host
@@ -95,19 +102,6 @@ class ApplicationController < ActionController::Base
       session[:return_to_url] = request.fullpath
       authenticate(token.user)
     end
-  end
-
-  def authenticate(user)
-    if user.is_a? InternalUser
-      # Sorcery Login only works for InternalUsers
-      auto_login(user)
-    else
-      # All external users are logged in "manually"
-      session[:external_user_id] = user.id
-    end
-
-    flash = {notice: session.delete(:return_to_url_notice), alert: session.delete(:return_to_url_alert)}.compact_blank
-    sorcery_redirect_back_or_to(:root, flash) unless session[:return_to_url] == request.fullpath
   end
 
   def set_sentry_context

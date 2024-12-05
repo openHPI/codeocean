@@ -44,6 +44,7 @@ class WebauthnCredentialsController < ApplicationController
 
     create_and_respond(object: @webauthn_credential, path: -> { @webauthn_credential.user }) do
       session.delete(:current_challenge)
+      _store_in_webauthn_cookie(@webauthn_credential) if @webauthn_credential.user == current_user
       # Don't return a specific value from this block, so that the default is used.
       nil
     end
@@ -63,6 +64,10 @@ class WebauthnCredentialsController < ApplicationController
 
   def destroy
     destroy_and_respond(object: @webauthn_credential, path: @webauthn_credential.user)
+    if @webauthn_credential.user == current_user && !@webauthn_credential.user.webauthn_configured?
+      # If the last credential was deleted by the current user, we want to remove the cookie, too.
+      Webauthn::Cookie.new(request).clear
+    end
   end
 
   private

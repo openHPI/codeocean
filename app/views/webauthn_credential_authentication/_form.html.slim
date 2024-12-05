@@ -1,0 +1,6 @@
+= form_tag(webauthn_credential_authentication_index_path, data: {public_key: @webauthn_get_options}, id: 'new_webauthn_credential_authentication')
+  .mb-3
+    = hidden_field_tag('webauthn_credential[credential]', '')
+  .actions.mb-0
+    = submit_tag(t('.verify_identity'), class: 'btn btn-primary me-2 mb-2')
+    = link_to(t('.cancel'), sign_out_path, method: :delete, class: 'btn btn-outline-secondary mb-2')

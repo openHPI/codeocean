@@ -1,0 +1,18 @@
+- content_for :head do
+  // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
+     Otherwise, the global variable `vis` might be uninitialized in the assets (race condition)
+  meta name='turbolinks-visit-control' content='reload'
+  - append_javascript_pack_tag('webauthn')
+
+h1 = t('.headline')
+= t('.description', user_name: current_user.displayname)
+
+= render('form')
+
+.lead.mt-3
+  .card.border-info-subtle.mb-3
+    .card-header
+      i.fa-solid.fa-circle-question.text-info
+      strong.text-info
+        => t('.lost_all_webauthn_credentials')
+      = t('.lost_all_webauthn_credentials_description', application_name:)

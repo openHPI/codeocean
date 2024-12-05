@@ -1,7 +1,9 @@
 import {
   supported,
   create,
+  get,
   parseCreationOptionsFromJSON,
+  parseRequestOptionsFromJSON
 } from "@github/webauthn-json/browser-ponyfill";
 
 let form;
@@ -16,10 +18,18 @@ async function createCredential(publicKey) {
   return await create(options);
 }
 
+async function getCredential(publicKey) {
+  const options = parseRequestOptionsFromJSON(publicKey);
+  return await get(options);
+}
+
 $(document).on('turbolinks:load', function() {
   if ($.isController('webauthn_credentials')) {
     form = $('form#new_webauthn_credential');
     credentialMethod = createCredential;
+  } else if ($.isController('webauthn_credential_authentication')) {
+    form = $('form#new_webauthn_credential_authentication');
+    credentialMethod = getCredential;
   }
 
   if (!supported()) {

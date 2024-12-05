@@ -10,7 +10,8 @@ class SessionsController < ApplicationController
   end
 
   skip_before_action :verify_authenticity_token, only: :create_through_lti
-  skip_before_action :require_fully_authenticated_user!, only: %i[new create_through_lti create]
+  skip_before_action :require_fully_authenticated_user!, only: %i[new create_through_lti create destroy]
+  before_action :require_partially_authenticated_user!, only: %i[destroy]
   skip_after_action :verify_authorized
   after_action :set_sentry_context, only: %i[create_through_lti create]
 
@@ -46,6 +47,8 @@ class SessionsController < ApplicationController
       # We set the user's default study group to the "internal" group (no external id) for the given consumer.
       session[:study_group_id] = current_user.study_groups.find_by(external_id: nil)&.id
       session[:return_to_url_notice] = t('.success')
+      # Since _finalize_login requires the session information, we cannot integrate it with Sorcery directly.
+      _finalize_login(current_user) unless current_user.webauthn_configured?
     else
       flash.now[:danger] = t('.failure')
       render(:new)
@@ -68,8 +71,10 @@ class SessionsController < ApplicationController
       session.delete(:embed_options)
       session.delete(:pg_id)
       session.delete(:pair_programming)
+      destroy_webauthn_cookie
 
-      # In case we have another session as an internal user, we set the study group for this one
+      # In case we have another session as an internal user, we set the study group for this one.
+      # A second factor authentication is still required and *might cause a redirect*.
       internal_user = find_or_login_current_user
       if internal_user.present?
         session[:study_group_id] = internal_user.study_groups.find_by(external_id: nil)&.id
@@ -77,7 +82,8 @@ class SessionsController < ApplicationController
     else
       logout
     end
-    redirect_to(:root, notice: t('.success'))
+    flash[:notice] = t('.success')
+    redirect_to(:root) unless performed?
   end
 
   private
@@ -119,6 +125,7 @@ class SessionsController < ApplicationController
     uri = Addressable::URI.parse 'https://survey.openhpi.de/survey/index.php'
     uri.query_values = query_params
 
+    # This redirect skips the WebAuthn requirement
     redirect_to uri.to_s, allow_other_host: true
   end
 end
