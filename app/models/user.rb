@@ -24,6 +24,7 @@ class User < Contributor
   has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
   has_many :pair_programming_exercise_feedbacks
   has_many :pair_programming_waiting_users
+  has_many :webauthn_credentials, as: :user, dependent: :destroy
   has_one :codeharbor_link, dependent: :destroy
   accepts_nested_attributes_for :user_proxy_exercise_exercises
 

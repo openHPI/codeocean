@@ -33,6 +33,7 @@ h1 = @user.displayname
 
 - if @user == current_user || current_user.admin?
   = row(label: 'codeharbor_link.profile_label', value: @user.codeharbor_link.nil? ? link_to(t('codeharbor_link.new'), polymorphic_path([@user, CodeharborLink], action: :new), class: 'btn btn-secondary') : link_to(t('codeharbor_link.edit'), polymorphic_path([@user, @user.codeharbor_link], action: :edit), class: 'btn btn-secondary'))
+  = render 'webauthn_credentials/list'
 
 h4.mt-4 = link_to(t('.exercise_statistics'), statistics_external_user_path(@user)) if policy(@user).statistics?
 

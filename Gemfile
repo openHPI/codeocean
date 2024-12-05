@@ -54,6 +54,7 @@ gem 'telegraf'
 gem 'terser', require: false
 gem 'tubesock', github: 'openhpi/tubesock'
 gem 'turbolinks'
+gem 'webauthn'
 gem 'whenever', require: false
 gem 'zxcvbn-ruby', require: 'zxcvbn'
 

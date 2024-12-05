@@ -1,0 +1,8 @@
+h1
+  = @webauthn_credential.label
+  = render('shared/edit_button', object: @webauthn_credential, path: polymorphic_path([@user, @webauthn_credential], action: :edit))
+
+= row(label: 'webauthn_credential.label', value: @webauthn_credential.label)
+= row(label: 'shared.created_at', value: l(@webauthn_credential.created_at, format: :long))
+= row(label: 'shared.updated_at', value: l(@webauthn_credential.updated_at, format: :long))
+= row(label: 'webauthn_credential.last_used_at', value: @webauthn_credential.last_used_at.present? ? l(@webauthn_credential.last_used_at, format: :long) : empty)

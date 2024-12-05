@@ -8,6 +8,7 @@
     "@babel/runtime": "^7.26.0",
     "@egjs/hammerjs": "^2.0.17",
     "@fortawesome/fontawesome-free": "^6.7.1",
+    "@github/webauthn-json": "^2.1.1",
     "@popperjs/core": "^2.11.8",
     "@sentry/browser": "^8.40.0",
     "@toast-ui/editor": "^3.2.2",

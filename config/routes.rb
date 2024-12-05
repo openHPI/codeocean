@@ -124,6 +124,7 @@ Rails.application.routes.draw do
       get :tag_statistics
     end
     resources :codeharbor_links, only: %i[new create edit update destroy]
+    resources :webauthn_credentials, except: %i[index]
   end
 
   namespace :code_ocean do
@@ -141,6 +142,7 @@ Rails.application.routes.draw do
       match 'change_password', to: 'internal_users#change_password', via: %i[get patch put]
     end
     resources :codeharbor_links, only: %i[new create edit update destroy]
+    resources :webauthn_credentials, except: %i[index]
   end
 
   match '/forgot_password', as: 'forgot_password', to: 'internal_users#forgot_password', via: %i[get post]

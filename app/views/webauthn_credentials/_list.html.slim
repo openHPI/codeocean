@@ -1,0 +1,25 @@
+h4.mt-4 = WebauthnCredential.model_name.human(count: :other)
+
+.table-responsive
+  table.table
+    thead
+      tr
+        th = WebauthnCredential.human_attribute_name('name')
+        th = t('shared.created_at')
+        th = WebauthnCredential.human_attribute_name('last_used_at')
+        th colspan=3 = t('shared.actions')
+    tbody
+      - @user.webauthn_credentials.each do |webauthn_credential|
+        tr
+          td = link_to_if(policy(webauthn_credential).show?, webauthn_credential.label, [@user, webauthn_credential])
+          td = l(webauthn_credential.created_at, format: :short)
+          td
+            - if webauthn_credential.last_used_at.present?
+              = l(webauthn_credential.last_used_at, format: :short)
+            - else
+              = empty
+          td = link_to(t('shared.show'), [@user, webauthn_credential]) if policy(webauthn_credential).show?
+          td = link_to(t('shared.edit'), polymorphic_path([@user, webauthn_credential], action: :edit)) if policy(webauthn_credential).edit?
+          td = link_to(t('shared.destroy'), [@user, webauthn_credential], data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(webauthn_credential).destroy?
+
+p = render('shared/new_button', model: WebauthnCredential, path: polymorphic_path([@user, WebauthnCredential], action: :new))

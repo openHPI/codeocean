@@ -37,4 +37,8 @@ class InternalUser < User
   def displayname
     name
   end
+
+  def webauthn_name
+    email
+  end
 end

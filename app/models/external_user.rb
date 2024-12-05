@@ -7,4 +7,8 @@ class ExternalUser < User
   def displayname
     name.presence || "#{model_name.human} #{id}"
   end
+
+  def webauthn_name
+    "#{consumer.name}: #{displayname}"
+  end
 end
