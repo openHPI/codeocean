@@ -25,15 +25,19 @@ class ApplicationController < ActionController::Base
   add_flash_types :danger, :warning, :info, :success
 
   def current_user
-    @current_user ||= find_or_login_current_user&.store_current_study_group_id(session[:study_group_id])
+    return @current_user if defined? @current_user
+
+    @current_user = find_or_login_current_user&.store_current_study_group_id(session[:study_group_id])
   end
 
   def current_contributor
-    @current_contributor ||= if session[:pg_id]
-                               current_user.programming_groups.find(session[:pg_id])
-                             else
-                               current_user
-                             end
+    return @current_contributor if defined? @current_contributor
+
+    @current_contributor = if session[:pg_id]
+                             current_user.programming_groups.find(session[:pg_id])
+                           else
+                             current_user
+                           end
   end
   helper_method :current_contributor
 
