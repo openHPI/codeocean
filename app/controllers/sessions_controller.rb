@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   include Lti
 
   %i[require_oauth_parameters require_valid_consumer_key require_valid_oauth_signature require_unique_oauth_nonce
-     require_valid_launch_presentation_return_url require_valid_lis_outcome_service_url set_current_user require_valid_exercise_token
+     require_valid_launch_presentation_return_url require_valid_lis_outcome_service_url set_user require_valid_exercise_token
      set_study_group_membership set_embedding_options].each do |method_name|
     before_action(method_name, only: :create_through_lti)
   end
@@ -32,7 +32,7 @@ class SessionsController < ApplicationController
       redirect_to(new_exercise_programming_group_path(@exercise))
     else
       redirect_to(implement_exercise_path(@exercise),
-        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, current_user) ? 'with' : 'without'}_outcome",
+        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, @user) ? 'with' : 'without'}_outcome",
           consumer: @consumer))
     end
   end
@@ -84,7 +84,7 @@ class SessionsController < ApplicationController
       # It gives a bonus point to users who opened the survey
       begin
         lti_parameters = params.slice(*Lti::SESSION_PARAMETERS).permit!.to_h
-        provider = build_tool_provider(consumer: current_user.consumer, parameters: lti_parameters)
+        provider = build_tool_provider(consumer: @user.consumer, parameters: lti_parameters)
         provider.post_replace_result!(1.0)
       rescue IMS::LTI::InvalidLTIConfigError, IMS::LTI::XMLParseError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Errno::ECONNRESET, SocketError, EOFError, OpenSSL::SSL::SSLError
         # We don't do anything here because it is only a bonus point and we want the users to do the survey
@@ -103,12 +103,12 @@ class SessionsController < ApplicationController
         newtest: 'Y', # force a new LimeSurvey session
         xi_platform: 'openhpi' # pass a platform identifier
       ).tap do |qp|
-      if current_user
+      if @user
         # add a user pseudo ID if applicable
-        qp[:xi_pseudo_id] = Digest::SHA256.hexdigest(current_user.external_id)
-        qp[:co_study_group_id] = current_user.current_study_group_id
-        qp[:co_rfcs] = current_user.request_for_comments.includes(:submission).where(submission: {study_group_id: current_user.current_study_group_id}).size.to_s
-        qp[:co_comments] = current_user.comments.includes(:submission).where(submission: {study_group_id: current_user.current_study_group_id}).size.to_s
+        qp[:xi_pseudo_id] = Digest::SHA256.hexdigest(@user.external_id)
+        qp[:co_study_group_id] = @user.current_study_group_id
+        qp[:co_rfcs] = @user.request_for_comments.includes(:submission).where(submission: {study_group_id: @user.current_study_group_id}).size.to_s
+        qp[:co_comments] = @user.comments.includes(:submission).where(submission: {study_group_id: @user.current_study_group_id}).size.to_s
       end
     end
 

@@ -124,9 +124,9 @@ RSpec.describe SessionsController do
 
       before { allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
 
-      it 'assigns the current user' do
+      it 'assigns the current user as @user' do
         perform_request
-        expect(assigns(:current_user)).to be_an(ExternalUser)
+        expect(assigns(:user)).to be_an(ExternalUser)
         expect(session[:external_user_id]).to eq(user.id)
       end
 
