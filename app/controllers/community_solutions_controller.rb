@@ -5,7 +5,6 @@ class CommunitySolutionsController < ApplicationController
   include RedirectBehavior
   include SubmissionParameters
 
-  before_action :require_user!
   before_action :set_community_solution, only: %i[edit update]
   before_action :set_community_solution_lock, only: %i[edit]
   before_action :set_exercise_and_submission, only: %i[edit update]

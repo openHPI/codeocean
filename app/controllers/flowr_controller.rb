@@ -2,7 +2,6 @@
 
 class FlowrController < ApplicationController
   def insights
-    require_user!
     # get the latest submission for this user that also has a test run (i.e. structured_errors if applicable)
     submission = Submission.joins(:testruns)
       .where(submissions: {contributor: current_contributor})

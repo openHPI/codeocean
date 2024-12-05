@@ -3,8 +3,6 @@
 class ExternalUsersController < ApplicationController
   include TimeHelper
 
-  before_action :require_user!
-
   def authorize!
     authorize(@user || @users)
   end

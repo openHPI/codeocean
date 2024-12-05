@@ -17,10 +17,10 @@ class SubmissionsController < ApplicationController
 
   # Overwrite the CSP header and some default actions for the :render_file action
   content_security_policy false, only: :render_file
-  skip_before_action :deny_access_from_render_host, only: :render_file
-  before_action :require_user!, except: :render_file
   # We want to serve .js files without raising a `ActionController::InvalidCrossOriginRequest` exception
   skip_before_action :verify_authenticity_token, only: %i[render_file download_file]
+  skip_before_action :deny_access_from_render_host, only: :render_file
+  skip_before_action :require_fully_authenticated_user!, only: :render_file
 
   def index
     @search = policy_scope(Submission).ransack(params[:q])

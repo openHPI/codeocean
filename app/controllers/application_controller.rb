@@ -13,11 +13,13 @@ class ApplicationController < ActionController::Base
   LEGAL_SETTINGS = CodeOcean::Config.new(:code_ocean).read[:legal] || {}
   MONITORING_USER_AGENT = /updown\.io/
 
-  before_action :deny_access_from_render_host
+  before_action :require_fully_authenticated_user!
+  before_action :deny_access_from_render_host, prepend: true
   after_action :verify_authorized, except: %i[welcome]
-  around_action :mnemosyne_trace
-  around_action :switch_locale
+  around_action :mnemosyne_trace, prepend: true
+  around_action :switch_locale, prepend: true
   before_action :set_sentry_context, :load_embed_options, :set_document_policy
+  skip_before_action :require_fully_authenticated_user!, only: %i[welcome]
   protect_from_forgery(with: :exception, prepend: true)
   rescue_from Pundit::NotAuthorizedError, with: :render_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :render_not_found
@@ -48,7 +50,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def require_user!
+  def require_fully_authenticated_user!
     raise Pundit::NotAuthorizedError unless current_user
   end
 

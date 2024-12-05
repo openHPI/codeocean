@@ -9,8 +9,9 @@ class SessionsController < ApplicationController
     before_action(method_name, only: :create_through_lti)
   end
 
-  skip_after_action :verify_authorized
   skip_before_action :verify_authenticity_token, only: :create_through_lti
+  skip_before_action :require_fully_authenticated_user!, only: %i[new create_through_lti create]
+  skip_after_action :verify_authorized
   after_action :set_sentry_context, only: %i[create_through_lti create]
 
   def new
