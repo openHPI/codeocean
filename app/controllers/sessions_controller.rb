@@ -27,21 +27,24 @@ class SessionsController < ApplicationController
     store_lti_session_data(params)
     store_nonce(params[:oauth_nonce])
     if params[:custom_redirect_target]
-      redirect_to(URI.parse(params[:custom_redirect_target].to_s).path)
+      session[:return_to_url] = URI.parse(params[:custom_redirect_target].to_s).path
     elsif params[:custom_pair_programming]
-      redirect_to(new_exercise_programming_group_path(@exercise))
+      session[:return_to_url] = new_exercise_programming_group_path(@exercise)
     else
-      redirect_to(implement_exercise_path(@exercise),
-        notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, @user) ? 'with' : 'without'}_outcome",
-          consumer: @consumer))
+      session[:return_to_url] = implement_exercise_path(@exercise)
+      session[:return_to_url_notice] =
+        t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, @user) ? 'with' : 'without'}_outcome",
+          consumer: @consumer)
     end
+    session[:pair_programming] = params[:custom_pair_programming] || false
+    authenticate(@user)
   end
 
   def create
     if login(params[:email], params[:password], params[:remember_me])
       # We set the user's default study group to the "internal" group (no external id) for the given consumer.
       session[:study_group_id] = current_user.study_groups.find_by(external_id: nil)&.id
-      sorcery_redirect_back_or_to(:root, notice: t('.success'))
+      session[:return_to_url_notice] = t('.success')
     else
       flash.now[:danger] = t('.failure')
       render(:new)

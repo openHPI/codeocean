@@ -237,9 +237,6 @@ module Lti
 
     @lti_parameters.lti_parameters = parameters.slice(*SESSION_PARAMETERS).permit!.to_h
     @lti_parameters.save!
-
-    session[:external_user_id] = current_user.id
-    session[:pair_programming] = parameters[:custom_pair_programming] || false
   rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
     retry
   end

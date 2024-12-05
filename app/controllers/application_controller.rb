@@ -90,13 +90,22 @@ class ApplicationController < ActionController::Base
       token.update(expire_at: Time.zone.now)
       session[:study_group_id] = token.study_group_id
 
-      # Sorcery Login only works for InternalUsers
-      return auto_login(token.user) if token.user.is_a? InternalUser
-
-      # All external users are logged in "manually"
-      session[:external_user_id] = token.user.id
-      token.user
+      session[:return_to_url] = request.fullpath
+      authenticate(token.user)
     end
+  end
+
+  def authenticate(user)
+    if user.is_a? InternalUser
+      # Sorcery Login only works for InternalUsers
+      auto_login(user)
+    else
+      # All external users are logged in "manually"
+      session[:external_user_id] = user.id
+    end
+
+    flash = {notice: session.delete(:return_to_url_notice), alert: session.delete(:return_to_url_alert)}.compact_blank
+    sorcery_redirect_back_or_to(:root, flash) unless session[:return_to_url] == request.fullpath
   end
 
   def set_sentry_context
