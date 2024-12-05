@@ -5,6 +5,6 @@ class ExternalUser < User
   has_many :lti_parameters, dependent: :destroy
 
   def displayname
-    name.presence || "User #{id}"
+    name.presence || "#{model_name.human} #{id}"
   end
 end
