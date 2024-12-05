@@ -146,7 +146,7 @@ GEM
     csv (3.3.0)
     dachsfisch (1.0.2)
       nokogiri (>= 1.14.1, < 2.0.0)
-    date (3.4.0)
+    date (3.4.1)
     debug_inspector (1.2.0)
     diff-lcs (1.5.1)
     docile (1.4.1)
@@ -533,7 +533,7 @@ GEM
     snaky_hash (2.0.1)
       hashie
       version_gem (~> 1.1, >= 1.1.1)
-    solid_cable (3.0.2)
+    solid_cable (3.0.3)
       actioncable (>= 7.2)
       activejob (>= 7.2)
       activerecord (>= 7.2)
