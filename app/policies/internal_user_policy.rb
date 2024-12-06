@@ -17,6 +17,10 @@ class InternalUserPolicy < AdminOnlyPolicy
     define_method(action) { admin? || @record == @user }
   end
 
+  def register_webauthn_credential?
+    admin? || (@record == @user && Pundit.policy(@user, WebauthnCredential).new?)
+  end
+
   class Scope < Scope
     def resolve
       if @user.admin?

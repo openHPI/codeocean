@@ -112,7 +112,7 @@ class WebauthnCredentialsController < ApplicationController
       @user = InternalUser.find(params[:internal_user_id])
     end
     params[:user_id] = @user.id_with_type # for the breadcrumbs
-    authorize(@user, :update?)
+    authorize(@user, :register_webauthn_credential?)
   end
 
   def set_webauthn_credential
