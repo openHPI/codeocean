@@ -31,6 +31,7 @@ class ApplicationController < ActionController::Base
     return @current_user if defined? @current_user
 
     @current_user = find_or_login_current_user&.store_current_study_group_id(session[:study_group_id])
+    _store_authentication_result(@current_user)
   end
 
   def current_contributor

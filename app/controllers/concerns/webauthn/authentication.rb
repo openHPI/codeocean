@@ -114,6 +114,13 @@ module Webauthn
           session[:external_user_id] = user.id
         end
 
+        _store_authentication_result(user)
+      end
+
+      def _store_authentication_result(user)
+        return unless user
+        return user if user.fully_authenticated?
+
         if user.webauthn_configured?
           # The user is fully authenticated if the WebAuthn authentication completed
           user.store_authentication_result(_webauthn_credential_authentication_completed?(user))
