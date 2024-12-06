@@ -19,6 +19,7 @@ h1 = InternalUser.model_name.human(count: :other)
         th = InternalUser.human_attribute_name('consumer')
         - if current_user.admin?
           th = InternalUser.human_attribute_name('platform_admin')
+          th = WebauthnCredential.model_name.human
         th colspan=3 = t('shared.actions')
     tbody
       - @users.each do |user|
@@ -27,6 +28,7 @@ h1 = InternalUser.model_name.human(count: :other)
           td = user.consumer ? link_to_if(user.consumer.present? && policy(user.consumer).show?, user.consumer, user.consumer) : empty
           - if current_user.admin?
             td = symbol_for(user.platform_admin?)
+            td = symbol_for(user.webauthn_configured?)
           td = link_to(t('shared.show'), user) if policy(user).show?
           td = link_to(t('shared.edit'), edit_internal_user_path(user)) if policy(user).edit?
           td = link_to(t('shared.destroy'), user, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(user).destroy?

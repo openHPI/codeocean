@@ -38,6 +38,7 @@ h1 = ExternalUser.model_name.human(count: :other)
         th = ExternalUser.human_attribute_name('consumer')
         - if current_user.admin?
           th = ExternalUser.human_attribute_name('platform_admin')
+          th = WebauthnCredential.model_name.human
         th = t('shared.actions')
     tbody
       - @users.each do |user|
@@ -46,6 +47,7 @@ h1 = ExternalUser.model_name.human(count: :other)
           td = link_to_if(user.consumer.present? && policy(user.consumer).show?, user.consumer, user.consumer)
           - if current_user.admin?
             td = symbol_for(user.platform_admin?)
+            td = symbol_for(user.webauthn_configured?)
           td = link_to(t('shared.show'), user) if policy(user).show?
 
 = render('shared/pagination', collection: @users)
