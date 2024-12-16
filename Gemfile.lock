@@ -141,7 +141,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    csv (3.3.0)
+    csv (3.3.1)
     dachsfisch (1.0.2)
       nokogiri (>= 1.14.1, < 2.0.0)
     date (3.4.1)
