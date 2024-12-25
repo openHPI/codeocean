@@ -17,8 +17,8 @@ inherit_from:
   - .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 3.3
-  TargetRailsVersion: 7.1
+  TargetRubyVersion: 3.4
+  TargetRailsVersion: 8.0
   UseCache: True
   NewCops: enable
   Exclude:
