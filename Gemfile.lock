@@ -293,7 +293,7 @@ GEM
       timeout
     net-smtp (0.5.0)
     nio4r (2.7.4)
-    nokogiri (1.18.0)
+    nokogiri (1.18.1)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     oauth (1.1.0)
@@ -809,7 +809,7 @@ CHECKSUMS
   net-protocol (0.2.2) sha256=aa73e0cba6a125369de9837b8d8ef82a61849360eba0521900e2c3713aa162a8
   net-smtp (0.5.0) sha256=5fc0415e6ea1cc0b3dfea7270438ec22b278ca8d524986a3ae4e5ae8d087b42a
   nio4r (2.7.4) sha256=d95dee68e0bb251b8ff90ac3423a511e3b784124e5db7ff5f4813a220ae73ca9
-  nokogiri (1.18.0) sha256=119dea343386d88849f44dd8c36fb1cc36f4a4fe42cf4d60f26f4bac18b3a709
+  nokogiri (1.18.1) sha256=df18be7e96c34736b6abfdeda80c6e845134fb9afe2fe5d4fbc1cf1f89c68475
   oauth (1.1.0) sha256=38902b7f0f5ed91e858d6353f5e1e06b2c16a8aa0fd91984671eab1a1d1cddeb
   oauth-tty (1.0.5) sha256=34e25c307da4509d4deec266ff3690bbf42e391355f496201c029268862d8b17
   oauth2 (2.0.9) sha256=b21f9defcf52dc1610e0dfab4c868342173dcd707fd15c777d9f4f04e153f7fb
