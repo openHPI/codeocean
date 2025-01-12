@@ -415,7 +415,11 @@ class SubmissionsController < ApplicationController
                           end
     @testrun[:messages].push message
     @testrun[:status] = message[:status] if message[:status]
-    client_socket&.send_data(message.to_json)
+
+    # Workaround for the undesired serialization of ActiveSupport::Duration (just `to_i` rather than `to_f`)
+    message_serialized = message.dup
+    message_serialized[:timestamp] = message_serialized[:timestamp].to_f
+    client_socket&.send_data(message_serialized.to_json)
   end
 
   def max_output_buffer_size
