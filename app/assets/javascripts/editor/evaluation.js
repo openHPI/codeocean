@@ -234,7 +234,7 @@ CodeOceanEditorEvaluation = {
             if (parsedElement.src.startsWith("data:image")) {
                 const sanitizedImg = document.createElement('img');
                 sanitizedImg.src = parsedElement.src;
-                sanitizedContent = sanitizedImg.outerHTML;
+                sanitizedContent = sanitizedImg.outerHTML + "\n";
             }
         }
 
