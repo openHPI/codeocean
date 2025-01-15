@@ -56,7 +56,7 @@ class ExercisesController < ApplicationController
   end
 
   def clone
-    exercise = @exercise.duplicate(public: false, token: nil, user: current_user)
+    exercise = @exercise.duplicate(public: false, token: nil, user: current_user, uuid: nil)
     exercise.send(:generate_token)
     if exercise.save
       redirect_to(exercise_path(exercise), notice: t('shared.object_cloned', model: Exercise.model_name.human))

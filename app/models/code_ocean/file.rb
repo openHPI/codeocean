@@ -60,6 +60,11 @@ module CodeOcean
     validates :weight, absence: true, unless: :teacher_defined_assessment?
     validates :file, presence: true if :context.is_a?(Submission)
     validates :context_type, inclusion: {in: ALLOWED_CONTEXT_TYPES}
+    # xml_id_path must be unique within the scope of an exercise.
+    # Initially, it may match the record’s id (set while exporting),
+    # but it can later diverge as long as uniqueness is preserved.
+    validates :xml_id_path, uniqueness: {scope: %I[context_id context_type]}, allow_blank: true
+    validates :xml_id_path, absence: true, unless: -> { context.is_a?(Exercise) }
 
     validates_with FileNameValidator, fields: %i[name path file_type_id]
 
