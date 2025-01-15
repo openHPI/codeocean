@@ -550,7 +550,7 @@ GEM
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
     ssrf_filter (1.2.0)
-    stackprof (0.2.26)
+    stackprof (0.2.27)
     stringio (3.1.2)
     telegraf (3.0.0)
     temple (0.10.3)
@@ -900,7 +900,7 @@ CHECKSUMS
   sprockets (4.2.1) sha256=951b13dd2f2fcae840a7184722689a803e0ff9d2702d902bd844b196da773f97
   sprockets-rails (3.5.2) sha256=a9e88e6ce9f8c912d349aa5401509165ec42326baf9e942a85de4b76dbc4119e
   ssrf_filter (1.2.0) sha256=1e22130ada4b4d2c9675ac56a13802cad9c6395338bbd8d2d4c60429a071389f
-  stackprof (0.2.26) sha256=ee408cbcccd9422aabd66edff8b76a77d67955f2ee1b674961b5dfaa2cc7b8bd
+  stackprof (0.2.27) sha256=aff6d28656c852e74cf632cc2046f849033dc1dedffe7cb8c030d61b5745e80c
   stringio (3.1.2) sha256=204f1828f85cdb39d57cac4abc6dc44b04505a223f131587f2e20ae3729ba131
   telegraf (3.0.0) sha256=522974d684cc8a5897de7a8de6c6dedb2e27eab3451a15cb5185456a5690d87d
   temple (0.10.3) sha256=df3145fe6577af1e25387eb7f7122d32ed51bdb6f2e7bb0f4fbf07b66151913b
