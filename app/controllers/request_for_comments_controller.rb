@@ -171,7 +171,7 @@ class RequestForCommentsController < ApplicationController
 
   def request_for_comment_params
     # The study_group_id might not be present in the session (e.g. for internal users), resulting in session[:study_group_id] = nil which is intended.
-    params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user: current_user)
+    params.expect(request_for_comment: %i[exercise_id file_id question requested_at solved submission_id]).merge(user: current_user)
   end
 
   # The index page requires the grouping of the study groups

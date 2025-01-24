@@ -32,7 +32,7 @@ class StudyGroupsController < ApplicationController
   end
 
   def study_group_params
-    params.require(:study_group).permit(:name, study_group_membership_ids: [])
+    params.expect(study_group: [:name, {study_group_membership_ids: []}])
   end
   private :study_group_params
 

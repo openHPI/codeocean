@@ -121,7 +121,7 @@ class WebauthnCredentialsController < ApplicationController
   end
 
   def webauthn_credential_params
-    params.require(:webauthn_credential).permit(:credential, :label)
+    params.expect(webauthn_credential: %i[credential label])
   end
 
   def credential_param

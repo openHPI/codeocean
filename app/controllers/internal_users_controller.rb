@@ -112,7 +112,7 @@ class InternalUsersController < ApplicationController
   end
 
   def internal_user_params
-    permitted_params = params.require(:internal_user).permit(:consumer_id, :email, :name, study_group_ids: []).presence || {}
+    permitted_params = params.expect(internal_user: [:consumer_id, :email, :name, {study_group_ids: []}]).presence || {}
     checked_study_group_memberships = @study_group_memberships.select {|sgm| permitted_params[:study_group_ids]&.include? sgm.study_group.id.to_s }
     removed_study_group_memberships = @study_group_memberships.reject {|sgm| permitted_params[:study_group_ids]&.include? sgm.study_group.id.to_s }
 

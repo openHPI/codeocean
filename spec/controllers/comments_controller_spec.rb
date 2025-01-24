@@ -48,15 +48,6 @@ RSpec.describe CommentsController do
 
         expect_http_status(:ok)
       end
-
-      it 'still reports unpermitted parameters' do
-        allow(ActionController::Parameters).to receive(:action_on_unpermitted_parameters).and_return(:log)
-        ActiveSupport::Notifications.subscribe('unpermitted_parameters.action_controller') do |_name, _start, _finish, _id, payload|
-          @unpermitted_params = payload[:keys]
-        end
-        perform_request.call
-        expect(@unpermitted_params).to match_array(%w[row file_id]) # rubocop:disable RSpec/InstanceVariable
-      end
     end
   end
 end

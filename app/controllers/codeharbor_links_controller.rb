@@ -64,6 +64,6 @@ class CodeharborLinksController < ApplicationController
   end
 
   def codeharbor_link_params
-    params.require(:codeharbor_link).permit(:push_url, :check_uuid_url, :api_key)
+    params.expect(codeharbor_link: %i[push_url check_uuid_url api_key])
   end
 end

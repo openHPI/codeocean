@@ -65,7 +65,7 @@ class WebauthnCredentialAuthenticationController < ApplicationController
   def credential_param
     return @credential_param if defined? @credential_param
 
-    credential_param = params.require(:webauthn_credential).permit(:credential)[:credential]
+    credential_param = params.expect(webauthn_credential: [:credential])[:credential]
     @credential_param = JSON.parse(credential_param.to_s)
   rescue JSON::ParserError
     @credential_param = {}
