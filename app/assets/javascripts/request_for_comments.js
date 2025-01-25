@@ -62,6 +62,7 @@ $(document).on('turbolinks:load', function () {
     commentitor.each(function (index, editor) {
         const currentEditor = ace.edit(editor);
         currentEditor.setReadOnly(true);
+        currentEditor.getSession().setOption("useWorker", false);
         // set editor mode (used for syntax highlighting
         currentEditor.getSession().setMode($(editor).data('mode'));
         currentEditor.setTheme(CodeOceanEditor.THEME);
