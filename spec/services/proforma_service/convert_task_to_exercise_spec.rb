@@ -361,10 +361,18 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
           files: test_files,
           meta_data: {
             'test-meta-data' => {
-              '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight CodeOcean:hidden-feedback],
-              'CodeOcean:feedback-message' => {'$1' => 'feedback-message', '@@order' => ['$1']},
-              'CodeOcean:weight' => {'$1' => '0.7', '@@order' => ['$1']},
-              'CodeOcean:hidden-feedback' => {'$1' => 'true', '@@order' => ['$1']},
+              '@@order' => %w[CodeOcean:test-file],
+              '@xmlns' => {'CodeOcean' => 'codeocean.openhpi.de'},
+              'CodeOcean:test-file' => {
+                'CodeOcean:test_file_id' =>
+                {
+                  '@@order' => %w[CodeOcean:feedback-message CodeOcean:weight CodeOcean:hidden-feedback],
+                '@name' => 'test_file_name',
+                'CodeOcean:feedback-message' => {'$1' => 'feedback-message', '@@order' => ['$1']},
+                'CodeOcean:weight' => {'$1' => '0.7', '@@order' => ['$1']},
+                'CodeOcean:hidden-feedback' => {'$1' => 'true', '@@order' => ['$1']},
+                },
+              },
             },
           }
         )
@@ -506,7 +514,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
         let(:test_files) { [test_file] }
         let(:test_file) do
           ProformaXML::TaskFile.new(
-            id: 'test_file_id',
+            id: 'test-file-id',
             content: 'testfile-content',
             filename: 'testfile.txt',
             used_by_grader: 'yes',
@@ -526,7 +534,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
         let(:ms_files) { [ms_file] }
         let(:ms_file) do
           ProformaXML::TaskFile.new(
-            id: 'ms-file',
+            id: 'ms-file-id',
             content: 'ms-content',
             filename: 'filename.txt',
             used_by_grader: 'used_by_grader',
@@ -545,6 +553,78 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
               .and(include(have_attributes(content: 'content', role: 'regular_file', hidden: false)))
               .and(include(have_attributes(content: 'testfile-content', role: 'teacher_defined_test', hidden: true)))
           )
+        end
+
+        context 'when the files with correct xml_id_paths already exist' do
+          let(:exercise) do
+            create(:dummy,
+              unpublished: true,
+              files: co_files,
+              title: 'exercise-title',
+              description: 'exercise-description')
+          end
+          let(:co_files) do
+            [build(:file, xml_id_path: ['id'], role: 'regular_file'),
+             build(:file, xml_id_path: %w[ms-id ms-file-id], role: 'reference_implementation'),
+             build(:test_file, xml_id_path: %w[test-id test-file-id])]
+          end
+
+          it 'reuses existing file' do
+            convert_to_exercise_service
+            exercise.save!
+            expect(exercise.reload.files).to match_array(co_files)
+          end
+
+          context 'when files are move around' do
+            let(:files) { [test_file] }
+            let(:test_files) { [ms_file] }
+            let(:ms_files) { [file] }
+
+            it 'reuses existing file' do
+              convert_to_exercise_service
+              exercise.save!
+              expect(exercise.reload.files).to match_array(co_files)
+            end
+          end
+
+          context 'when some files are removed' do
+            let(:test_files) { [] }
+            let(:ms_files) { [] }
+
+            it 'removes files from exercise' do
+              convert_to_exercise_service
+              exercise.save!
+              expect(exercise.reload.files.count).to be 1
+            end
+
+            it 'destroys removed files' do
+              expect { convert_to_exercise_service }.to change(CodeOcean::File, :count).by(-2)
+            end
+          end
+
+          context 'when all files are removed' do
+            let(:files) { [] }
+            let(:test_files) { [] }
+            let(:ms_files) { [] }
+
+            it 'removes files from exercise' do
+              convert_to_exercise_service
+              exercise.save!
+              expect(exercise.reload.files).to be_empty
+            end
+
+            it 'destroys removed files' do
+              expect { convert_to_exercise_service }.to change(CodeOcean::File, :count).by(-3)
+            end
+
+            context 'when the import errors after the file deletion' do
+              before { allow(exercise).to receive(:assign_attributes).and_raise(StandardError) }
+
+              it 'rolls back deletion of files' do
+                expect { convert_to_exercise_service }.to raise_error(StandardError).and(avoid_change(CodeOcean::File, :count))
+              end
+            end
+          end
         end
       end
     end
