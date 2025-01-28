@@ -53,6 +53,13 @@ RSpec.describe ExerciseService::PushExternal do
 
         it { is_expected.to be response }
       end
+
+      context 'when response status is 401' do
+        let(:status) { 401 }
+        let(:response) { I18n.t('exercises.export_codeharbor.not_authorized') }
+
+        it { is_expected.to eql response }
+      end
     end
 
     context 'when an error occurs' do
