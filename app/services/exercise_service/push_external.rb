@@ -18,7 +18,11 @@ class ExerciseService
           request.body = body
         end
 
-        response.success? ? nil : response.body
+        if response.success?
+          nil
+        else
+          response.status == 401 ? I18n.t('exercises.export_codeharbor.not_authorized') : response.body
+        end
       rescue StandardError => e
         e.message
       end

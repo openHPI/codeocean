@@ -102,6 +102,7 @@ en:
       error: An error occurred while contacting CodeHarbor
       export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
       label: Export to CodeHarbor
+      not_authorized: Authorization with could not be established with CodeHarbor. Is the API Key correct?
       successfully_exported: 'Exercise has been successfully exported.<br>ID: %{id}<br>Title: %{title}'
     external_users:
       statistics:
