@@ -36,7 +36,7 @@
 #resizerHorizontal {
   position: relative;
   background: rgb(215, 215, 215);
-  width: 2px;
+  width: 4px;
   display: inline-block;
   cursor: col-resize;
   padding: 0;
@@ -45,7 +45,7 @@
 #resizerVertical {
   position: relative;
   background: rgb(215, 215, 215);
-  height: 2px;
+  height: 4px;
   cursor: row-resize;
   margin-bottom: 4px;
 }
