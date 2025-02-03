@@ -15,12 +15,10 @@ Rails.application.configure do
     private_ips.each {|ip| BetterErrors::Middleware.allow_ip! ip }
   end
 
-  # In the development environment your application's code is reloaded any time
-  # it changes. This slows down response time but is perfect for development
-  # since you don't have to restart the web server when you make code changes.
+  # Make code changes take effect immediately without server restart.
   config.enable_reloading = true
 
-  # Eager load code for prometheus exporter
+  # Eager load code for prometheus exporter.
   config.eager_load = true
 
   # Show full error reports.
@@ -29,21 +27,20 @@ Rails.application.configure do
   # Enable server timing.
   config.server_timing = true
 
-  # Enable/disable caching. By default caching is disabled.
-  # Run rails dev:cache to toggle caching.
+  # Enable/disable Action Controller caching. By default Action Controller caching is disabled.
+  # Run rails dev:cache to toggle Action Controller caching.
   if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
-
-    config.cache_store = :memory_store
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.to_i}",
+      'cache-control' => "public, max-age=#{2.days.to_i}",
     }
   else
     config.action_controller.perform_caching = false
-
-    config.cache_store = :null_store
   end
+
+  # Change to :null_store to avoid any caching.
+  config.cache_store = :memory_store
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
@@ -56,10 +53,10 @@ Rails.application.configure do
   config.solid_queue.connects_to = {database: {writing: :queue}}
   config.active_job.queue_name_prefix = 'codeocean_development'
 
-  # Disable caching for Action Mailer templates even if Action Controller
-  # caching is enabled.
+  # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
+  # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = {host: 'localhost', port: 7000}
 
   # Print deprecation notices to the Rails logger.
@@ -76,6 +73,9 @@ Rails.application.configure do
 
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
+
+  # Append comments with runtime information tags to SQL queries in logs.
+  config.active_record.query_log_tags_enabled = true
 
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true

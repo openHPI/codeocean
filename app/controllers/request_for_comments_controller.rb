@@ -2,7 +2,6 @@
 
 class RequestForCommentsController < ApplicationController
   include CommonBehavior
-  before_action :require_user!
   before_action :set_request_for_comment, only: %i[show mark_as_solved set_thank_you_note clear_question]
   before_action :set_study_group_grouping,
     only: %i[index my_comment_requests rfcs_with_my_comments rfcs_for_exercise]
@@ -172,7 +171,7 @@ class RequestForCommentsController < ApplicationController
 
   def request_for_comment_params
     # The study_group_id might not be present in the session (e.g. for internal users), resulting in session[:study_group_id] = nil which is intended.
-    params.require(:request_for_comment).permit(:exercise_id, :file_id, :question, :requested_at, :solved, :submission_id).merge(user: current_user)
+    params.expect(request_for_comment: %i[exercise_id file_id question requested_at solved submission_id]).merge(user: current_user)
   end
 
   # The index page requires the grouping of the study groups

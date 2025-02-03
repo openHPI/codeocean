@@ -9,7 +9,7 @@ class LiveStreamsController < ApplicationController
   skip_before_action :deny_access_from_render_host, only: :download_submission_file
   skip_before_action :verify_authenticity_token, only: :download_submission_file
   skip_before_action :set_sentry_context, only: :download_submission_file
-  before_action :require_user!, except: :download_submission_file
+  skip_before_action :require_fully_authenticated_user!, only: :download_submission_file
 
   def download_submission_file
     @submission = AuthenticatedUrlHelper.retrieve!(Submission, request)

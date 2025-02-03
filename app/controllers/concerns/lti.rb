@@ -93,7 +93,7 @@ module Lti
     @exercise = if proxy_exercise.nil?
                   Exercise.find_by(token: params[:custom_token])
                 else
-                  proxy_exercise.get_matching_exercise(current_user)
+                  proxy_exercise.get_matching_exercise(@user)
                 end
     refuse_lti_launch(message: t('sessions.oauth.invalid_exercise_token')) unless @exercise
   end
@@ -186,9 +186,9 @@ module Lti
     end
   end
 
-  def set_current_user
-    @current_user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
-    current_user.update(email: external_user_email(@provider), name: external_user_name(@provider))
+  def set_user
+    @user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
+    @user.update(email: external_user_email(@provider), name: external_user_name(@provider))
   end
 
   def set_study_group_membership
@@ -201,10 +201,10 @@ module Lti
               StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
             end
 
-    study_group_membership = StudyGroupMembership.find_or_create_by(study_group: group, user: current_user)
+    study_group_membership = StudyGroupMembership.find_or_create_by(study_group: group, user: @user)
     study_group_membership.update(role: external_user_role(@provider))
     session[:study_group_id] = group.id
-    current_user.store_current_study_group_id(group.id)
+    @user.store_current_study_group_id(group.id)
   end
 
   def set_embedding_options
@@ -231,15 +231,12 @@ module Lti
   end
 
   def store_lti_session_data(parameters)
-    @lti_parameters = LtiParameter.find_or_initialize_by(external_user: current_user,
+    @lti_parameters = LtiParameter.find_or_initialize_by(external_user: @user,
       study_group_id: session[:study_group_id],
       exercise: @exercise)
 
     @lti_parameters.lti_parameters = parameters.slice(*SESSION_PARAMETERS).permit!.to_h
     @lti_parameters.save!
-
-    session[:external_user_id] = current_user.id
-    session[:pair_programming] = parameters[:custom_pair_programming] || false
   rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
     retry
   end

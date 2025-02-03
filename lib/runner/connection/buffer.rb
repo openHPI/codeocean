@@ -102,9 +102,9 @@ class Runner::Connection::Buffer
 
     invalid_json = !valid_json?(message)
     # Second, if we have the beginning of a valid command but an invalid JSON
-    return true if invalid_json && message.start_with?(/\s*{"cmd/)
-    # Third, buffer the message if it contains long messages (e.g., an image or turtle batch commands)
-    return true if invalid_json && (message.start_with?('<img') || message.include?('"turtlebatch"'))
+    return true if invalid_json && (message.start_with?(/\s*{"cmd/) || message.include?('"turtlebatch"'))
+    # Third, buffer the message if it contains an incomplete image message tag not followed by `\r`
+    return true if invalid_json && message.start_with?('<img') && !message.end_with?(">\r")
     # Fourth, if we have an odd number of quotes and no `\r` at the end, we might have an incomplete message
     return true if (message.count('"').odd? || message.count("'").odd?) && !message.end_with?("\r")
 

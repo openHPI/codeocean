@@ -19,6 +19,7 @@ class ExercisesController < ApplicationController
   before_action :set_available_tips, only: %i[implement show new edit]
 
   skip_before_action :verify_authenticity_token, only: %i[import_task import_uuid_check]
+  skip_before_action :require_fully_authenticated_user!, only: %i[import_task import_uuid_check]
   skip_after_action :verify_authorized, only: %i[import_task import_uuid_check]
   skip_after_action :verify_policy_scoped, only: %i[import_task import_uuid_check], raise: false
 

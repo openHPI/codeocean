@@ -216,7 +216,7 @@ RSpec.describe Lti do
           end
 
           context 'when submission is after late deadline' do
-            let(:score_sent) { score * 0 }
+            let(:score_sent) { 0 }
 
             before do
               allow(submission).to receive_messages(before_deadline?: false,
@@ -226,7 +226,7 @@ RSpec.describe Lti do
 
             it 'returns deadline and reduced score' do
               expect(send_scores[:deadline]).to eq(:after_late_deadline)
-              expect(send_scores[:score][:sent]).to eq(score * 0)
+              expect(send_scores[:score][:sent]).to eq(0)
             end
 
             it 'sends the reduced score' do
@@ -271,17 +271,9 @@ RSpec.describe Lti do
   describe '#store_lti_session_data' do
     let(:parameters) { ActionController::Parameters.new({}) }
 
-    it 'stores data in the session' do
-      controller.instance_variable_set(:@current_user, create(:external_user))
-      controller.instance_variable_set(:@exercise, create(:fibonacci))
-      expect(controller.session).to receive(:[]=).with(:external_user_id, anything)
-      expect(controller.session).to receive(:[]=).with(:pair_programming, anything)
-      controller.send(:store_lti_session_data, parameters)
-    end
-
     it 'creates an LtiParameter Object' do
       expect do
-        controller.instance_variable_set(:@current_user, create(:external_user))
+        controller.instance_variable_set(:@user, create(:external_user))
         controller.instance_variable_set(:@exercise, create(:fibonacci))
         controller.send(:store_lti_session_data, parameters)
       end.to change(LtiParameter, :count).by(1)

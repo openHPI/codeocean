@@ -16,3 +16,6 @@ de:
       rfc_activity_history: Kommentaranfragenhistorie
       show: Statistiken
       user_activity_history: Nutzungsaktivitätshistorie
+    webauthn_credential_authentication:
+      create: Zwei-Faktor-Authentifizierung mittels Passkey
+      new: Zwei-Faktor-Authentifizierung mittels Passkey

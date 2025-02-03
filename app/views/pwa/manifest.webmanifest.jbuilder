@@ -15,12 +15,12 @@ switch_locale do
   json.icons do
     json.array!([
       {
-        src: '/icon.png',
+        src: asset_url('icon.png', skip_pipeline: true),
         sizes: '512x512',
         type: 'image/png',
       },
       {
-        src: '/icon.svg',
+        src: asset_url('icon.svg', skip_pipeline: true),
         sizes: 'any',
         type: 'image/svg+xml',
       },

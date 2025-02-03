@@ -124,9 +124,9 @@ RSpec.describe SessionsController do
 
       before { allow_any_instance_of(IMS::LTI::ToolProvider).to receive(:valid_request?).and_return(true) }
 
-      it 'assigns the current user' do
+      it 'assigns the current user as @user' do
         perform_request
-        expect(assigns(:current_user)).to be_an(ExternalUser)
+        expect(assigns(:user)).to be_an(ExternalUser)
         expect(session[:external_user_id]).to eq(user.id)
       end
 
@@ -144,8 +144,21 @@ RSpec.describe SessionsController do
         expect(assigns(:exercise)).to eq(exercise)
       end
 
-      it 'stores LTI parameters in the session' do
+      it 'persists LTI parameters' do
         expect(controller).to receive(:store_lti_session_data)
+        perform_request
+      end
+
+      it 'updates the session' do
+        expect(controller.session).to receive(:[]=).with(:locale, anything).and_call_original
+        expect(controller.session).to receive(:[]=).with(:study_group_id, anything).and_call_original
+        expect(controller.session).to receive(:[]=).with(:embed_options, anything).and_call_original
+        expect(controller.session).to receive(:[]=).with(:return_to_url, implement_exercise_path(exercise)).and_call_original # Initial redirect by the controller
+        expect(controller.session).to receive(:[]=).with(:return_to_url, nil).and_call_original # Clearing the URL as done by Sorcery
+        expect(controller.session).to receive(:[]=).with(:return_to_url_notice, anything).and_call_original
+        expect(controller.session).to receive(:[]=).with(:external_user_id, anything).and_call_original
+        expect(controller.session).to receive(:[]=).with(:pair_programming, anything).and_call_original
+        expect(controller.session).to receive(:[]=).with('flash', anything).twice.and_call_original
         perform_request
       end
 

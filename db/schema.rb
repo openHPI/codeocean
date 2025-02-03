@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_16_105338) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_16_105338) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -272,6 +272,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_105338) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "platform_admin", default: false, null: false
+    t.string "webauthn_user_id"
   end
 
   create_table "file_templates", id: :serial, force: :cascade do |t|
@@ -338,6 +339,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_105338) do
     t.string "activation_token"
     t.datetime "activation_token_expires_at"
     t.boolean "platform_admin", default: false, null: false
+    t.string "webauthn_user_id"
     t.index ["activation_token"], name: "index_internal_users_on_activation_token"
     t.index ["email"], name: "index_internal_users_on_email", unique: true
     t.index ["remember_me_token"], name: "index_internal_users_on_remember_me_token"
@@ -679,6 +681,21 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_16_105338) do
   add_foreign_key "events_synchronized_editor", "files"
   add_foreign_key "events_synchronized_editor", "programming_groups"
   add_foreign_key "events_synchronized_editor", "study_groups"
+  create_table "webauthn_credentials", force: :cascade do |t|
+    t.string "external_id", null: false
+    t.string "public_key", null: false
+    t.string "label", null: false
+    t.bigint "sign_count", default: 0, null: false
+    t.string "transports", default: [], array: true
+    t.string "user_type", null: false
+    t.bigint "user_id", null: false
+    t.datetime "last_used_at", precision: nil
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_webauthn_credentials_on_external_id", unique: true
+    t.index ["user_type", "user_id"], name: "index_webauthn_credentials_on_user"
+  end
+
   add_foreign_key "exercise_tips", "exercise_tips", column: "parent_exercise_tip_id"
   add_foreign_key "exercise_tips", "exercises"
   add_foreign_key "exercise_tips", "tips"

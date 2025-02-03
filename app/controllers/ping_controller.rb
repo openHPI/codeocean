@@ -2,7 +2,8 @@
 
 class PingController < ApplicationController
   before_action :postgres_connected!, :runner_manager_healthy!
-  after_action :verify_authorized, except: %i[index]
+  skip_before_action :require_fully_authenticated_user!, only: %i[index]
+  skip_after_action :verify_authorized, only: %i[index]
 
   def index
     render json: {

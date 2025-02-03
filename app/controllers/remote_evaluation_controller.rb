@@ -9,9 +9,10 @@ class RemoteEvaluationController < ApplicationController
   include ScoringChecks
   include RemoteEvaluationParameters
 
-  skip_after_action :verify_authorized
   skip_before_action :verify_authenticity_token
   skip_before_action :set_sentry_context
+  skip_before_action :require_fully_authenticated_user!
+  skip_after_action :verify_authorized
 
   # POST /evaluate
   def evaluate

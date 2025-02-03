@@ -106,7 +106,7 @@ class ProgrammingGroupsController < ApplicationController
   end
 
   def programming_group_params
-    params.require(:programming_group).permit(:programming_partner_ids, programming_group_membership_ids: []) if params[:programming_group].present?
+    params.expect(programming_group: [:programming_partner_ids, {programming_group_membership_ids: []}]) if params[:programming_group].present?
   end
 
   def set_exercise_and_authorize

@@ -75,7 +75,7 @@ class CommentsController < ApplicationController
   end
 
   def comment_params_for_update
-    params.require(:comment).permit(:text)
+    params.expect(comment: [:text])
   end
 
   def comment_params_without_request_id
@@ -83,7 +83,7 @@ class CommentsController < ApplicationController
   end
 
   def comment_params
-    params.require(:comment).permit(:file_id, :row, :column, :text, :request_id).merge(user: current_user)
+    params.expect(comment: %i[file_id row column text request_id]).merge(user: current_user)
   end
 
   def send_mail_to_author(comment, request_for_comment)

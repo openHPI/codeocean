@@ -3,12 +3,12 @@
 class InternalUsersController < ApplicationController
   include CommonBehavior
 
-  before_action :require_user!, except: %i[activate forgot_password reset_password]
   before_action :require_activation_token, only: :activate
   before_action :require_reset_password_token, only: :reset_password
   before_action :set_user, only: MEMBER_ACTIONS + %i[change_password]
   before_action :collect_set_and_unset_study_group_memberships, only: MEMBER_ACTIONS + %i[create]
-  after_action :verify_authorized, except: %i[activate forgot_password reset_password]
+  skip_before_action :require_fully_authenticated_user!, only: %i[activate forgot_password reset_password]
+  skip_after_action :verify_authorized, only: %i[activate forgot_password reset_password]
 
   def activate
     set_up_password if request.patch? || request.put?
@@ -112,7 +112,7 @@ class InternalUsersController < ApplicationController
   end
 
   def internal_user_params
-    permitted_params = params.require(:internal_user).permit(:consumer_id, :email, :name, study_group_ids: []).presence || {}
+    permitted_params = params.expect(internal_user: [:consumer_id, :email, :name, {study_group_ids: []}]).presence || {}
     checked_study_group_memberships = @study_group_memberships.select {|sgm| permitted_params[:study_group_ids]&.include? sgm.study_group.id.to_s }
     removed_study_group_memberships = @study_group_memberships.reject {|sgm| permitted_params[:study_group_ids]&.include? sgm.study_group.id.to_s }
 

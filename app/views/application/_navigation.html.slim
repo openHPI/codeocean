@@ -1,4 +1,4 @@
-- if current_user.try(:admin?) || current_user.try(:teacher?)
+- if current_user.try(:fully_authenticated?) && (current_user.try(:admin?) || current_user.try(:teacher?))
   ul.nav.navbar-nav
     li.nav-item.dropdown
       a.nav-link.dropdown-toggle.mx-lg-3 data-bs-toggle='dropdown' href='#'

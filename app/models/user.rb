@@ -24,10 +24,16 @@ class User < Contributor
   has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
   has_many :pair_programming_exercise_feedbacks
   has_many :pair_programming_waiting_users
+  has_many :webauthn_credentials, as: :user, dependent: :destroy
   has_one :codeharbor_link, dependent: :destroy
   accepts_nested_attributes_for :user_proxy_exercise_exercises
 
   validates :platform_admin, inclusion: [true, false]
+
+  def initialize(*args)
+    super
+    @fully_authenticated = false
+  end
 
   def learner?
     return true if current_study_group_id.nil?
@@ -57,6 +63,15 @@ class User < Contributor
     self
   end
 
+  def store_authentication_result(fully_authenticated)
+    @fully_authenticated = fully_authenticated
+    self
+  end
+
+  def fully_authenticated?
+    @fully_authenticated
+  end
+
   def current_study_group_membership
     # We use `where(...).limit(1)` instead of `find_by(...)` to allow query chaining
     study_group_memberships.where(study_group: current_study_group_id).limit(1)
@@ -68,6 +83,12 @@ class User < Contributor
 
   def study_group_ids_as_learner
     @study_group_ids_as_learner ||= study_group_memberships.where(role: :learner).pluck(:study_group_id)
+  end
+
+  def webauthn_configured?
+    return @webauthn_configured if defined? @webauthn_configured
+
+    @webauthn_configured = webauthn_credentials.any?
   end
 
   def self.find_by_id_with_type(id_with_type)
