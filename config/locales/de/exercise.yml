@@ -103,6 +103,7 @@ de:
       export_failed: 'Export ist fehlgeschlagen.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
       label: Zu CodeHarbor exportieren
       not_authorized: Die Autorisierung mit CodeHarbor konnte nicht hergestellt werden. Ist der API-Schlüssel korrekt?
+      server_error: Verbindung zu CodeHarbor fehlgeschlagen. Gegenseite nicht erreichbar.
       successfully_exported: 'Aufgabe wurde erfolgreich exportiert.<br>ID: %{id}<br>Title: %{title}'
     external_users:
       statistics:
