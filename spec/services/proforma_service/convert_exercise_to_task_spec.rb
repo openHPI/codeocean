@@ -22,8 +22,10 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
         execution_environment:,
         instructions: 'instruction',
         uuid: SecureRandom.uuid,
-        files: files + tests)
+        files: files + tests,
+        unpublished:)
     end
+    let(:unpublished) { false }
     let(:files) { [] }
     let(:tests) { [] }
     let(:execution_environment) { create(:java) }
@@ -77,13 +79,22 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       end
     end
 
+    context 'when exercise has no execution_environment' do
+      let(:execution_environment) { nil }
+      let(:unpublished) { true }
+
+      it 'creates a task with the correct proglang attribute' do
+        expect(task).to have_attributes(proglang: nil)
+      end
+    end
+
     context 'when exercise has a mainfile' do
       let(:files) { [file] }
-      let(:file) { build(:file) }
+      let(:file) { create(:file) }
 
       it 'creates a task-file with the correct attributes' do
         expect(task.files.first).to have_attributes(
-          id: file.id,
+          id: file.id.to_s,
           content: file.content,
           filename: file.name_with_extension,
           used_by_grader: true,
@@ -109,6 +120,18 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
           )
         )
       end
+
+      it 'sets xml_id_path to default' do
+        expect { convert_to_task.execute }.to change(file.reload, :xml_id_path).from([]).to([file.id.to_s])
+      end
+
+      context 'when xml_id_path is set for file' do
+        let(:file) { create(:file, xml_id_path: ['foobar'], context: create(:dummy)) }
+
+        it 'does not change xml_id_path' do
+          expect { convert_to_task.execute }.not_to change(file.reload, :xml_id_path)
+        end
+      end
     end
 
     context 'when exercise has a regular file' do
@@ -119,7 +142,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
       it 'creates a task-file with the correct attributes' do
         expect(task.files.first).to have_attributes(
-          id: file.id,
+          id: file.id.to_s,
           content: file.content,
           filename: file.name_with_extension,
           used_by_grader: true,
@@ -185,14 +208,14 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
       it 'creates a model-solution with one file' do
         expect(task.model_solutions.first).to have_attributes(
-          id: "ms-#{file.id}",
+          id: "co-ms-#{file.id}",
           files: have(1).item
         )
       end
 
       it 'creates a model-solution with one file with correct attributes' do
         expect(task.model_solutions.first.files.first).to have_attributes(
-          id: file.id,
+          id: file.id.to_s,
           content: file.content,
           filename: file.name_with_extension,
           used_by_grader: false,
@@ -210,6 +233,18 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
       it 'creates a task with two model-solutions' do
         expect(task.model_solutions).to have(2).items
       end
+
+      context 'when reference_implementations belong to the same proforma model_solution' do
+        let(:files) { build_list(:file, 2, role: 'reference_implementation') {|file, i| file.xml_id_path = ['proforma_ms', "xml_id_#{i}"] } }
+
+        it 'creates a task with one model-solution' do
+          expect(task.model_solutions).to have(1).items
+        end
+
+        it 'creates a task with a model-solution with two files' do
+          expect(task.model_solutions.first.files).to have(2).items
+        end
+      end
     end
 
     context 'when exercise has a test' do
@@ -223,14 +258,19 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
       it 'creates a test with one file' do
         expect(task.tests.first).to have_attributes(
-          id: test_file.id,
+          id: "co-test-#{test_file.id}",
           title: test_file.name,
           files: have(1).item,
           meta_data: a_hash_including(
             'test-meta-data' => a_hash_including(
-              'CodeOcean:feedback-message' => {'$1' => 'feedback_message', '@@order' => ['$1']},
-              'CodeOcean:weight' => {'$1' => test_file.weight, '@@order' => ['$1']},
-              'CodeOcean:hidden-feedback' => {'$1' => test_file.hidden_feedback, '@@order' => ['$1']}
+              'CodeOcean:test-file' => contain_exactly(
+                a_hash_including(
+                  '@name' => test_file.name,
+                  'CodeOcean:feedback-message' => {'$1' => 'feedback_message', '@@order' => ['$1']},
+                  'CodeOcean:weight' => {'$1' => test_file.weight, '@@order' => ['$1']},
+                  'CodeOcean:hidden-feedback' => {'$1' => test_file.hidden_feedback, '@@order' => ['$1']}
+                )
+              )
             )
           )
         )
@@ -238,7 +278,7 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
       it 'creates a test with one file with correct attributes' do
         expect(task.tests.first.files.first).to have_attributes(
-          id: test_file.id,
+          id: test_file.id.to_s,
           content: test_file.content,
           filename: test_file.name_with_extension,
           used_by_grader: true,
@@ -262,6 +302,36 @@ RSpec.describe ProformaService::ConvertExerciseToTask do
 
       it 'creates a task with two tests' do
         expect(task.tests).to have(2).items
+      end
+
+      context 'when test_files belong to the same proforma test' do
+        let(:tests) { build_list(:test_file, 2) {|file, i| file.xml_id_path = ['proforma_test', "xml_id_#{i}"] } }
+
+        it 'creates a test with two file' do
+          expect(task.tests.first).to have_attributes(
+            id: 'proforma_test',
+            title: tests.first.name,
+            files: have(2).item,
+            meta_data: a_hash_including(
+              'test-meta-data' => a_hash_including(
+                'CodeOcean:test-file' => contain_exactly(
+                  a_hash_including(
+                    '@name' => tests.first.name,
+                    'CodeOcean:feedback-message' => {'$1' => 'feedback_message', '@@order' => ['$1']},
+                    'CodeOcean:weight' => {'$1' => 1, '@@order' => ['$1']},
+                    'CodeOcean:hidden-feedback' => {'$1' => tests.first.hidden_feedback, '@@order' => ['$1']}
+                  ),
+                  a_hash_including(
+                    '@name' => tests.last.name,
+                    'CodeOcean:feedback-message' => {'$1' => 'feedback_message', '@@order' => ['$1']},
+                    'CodeOcean:weight' => {'$1' => 1, '@@order' => ['$1']},
+                    'CodeOcean:hidden-feedback' => {'$1' => tests.last.hidden_feedback, '@@order' => ['$1']}
+                  )
+                )
+              )
+            )
+          )
+        end
       end
     end
   end
