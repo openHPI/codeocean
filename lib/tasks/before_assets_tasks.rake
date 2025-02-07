@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 task before_assets_precompile: :environment do
-  system('bundle exec i18n export')
+  I18nJS.call(config_file: './config/i18n.yml')
+  JsRoutes.generate!(typed: true)
 end
 
 # every time you execute 'rake assets:precompile'
@@ -9,7 +10,7 @@ end
 Rake::Task['assets:precompile'].enhance ['before_assets_precompile']
 
 task before_assets_clobber: :environment do
-  system('rm -rf ./tmp/locales.json')
+  FileUtils.rm_rf('./app/javascript/generated/.', secure: true)
 end
 
 # every time you execute 'rake assets:precompile'

@@ -2588,7 +2588,6 @@ __metadata:
     opensans-webkit: "npm:^1.1.0"
     pnp-webpack-plugin: "npm:^1.7.0"
     propagating-hammerjs: "npm:^3.0.0"
-    rails-erb-loader: "usabilityhub/rails-erb-loader#master"
     rails_admin: "npm:3.3.0"
     sass: "npm:^1.83.4"
     sass-loader: "npm:^16.0.4"
@@ -4654,13 +4653,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.defaults@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "lodash.defaults@npm:4.2.0"
-  checksum: 10c0/d5b77aeb702caa69b17be1358faece33a84497bcca814897383c58b28a2f8dfc381b1d9edbec239f8b425126a3bbe4916223da2a576bb0411c2cefd67df80707
-  languageName: node
-  linkType: hard
-
 "lodash.get@npm:^4.4.2":
   version: 4.4.2
   resolution: "lodash.get@npm:4.4.2"
@@ -5847,18 +5839,6 @@ __metadata:
   dependencies:
     side-channel: "npm:^1.0.6"
   checksum: 10c0/62372cdeec24dc83a9fb240b7533c0fdcf0c5f7e0b83343edd7310f0ab4c8205a5e7c56406531f2e47e1b4878a3821d652be4192c841de5b032ca83619d8f860
-  languageName: node
-  linkType: hard
-
-"rails-erb-loader@usabilityhub/rails-erb-loader#master":
-  version: 5.5.2
-  resolution: "rails-erb-loader@https://github.com/usabilityhub/rails-erb-loader.git#commit=c4e19e8f41e259d5fbef056645f7a3e2c1ed1674"
-  dependencies:
-    loader-utils: "npm:^2.0.0"
-    lodash.defaults: "npm:^4.2.0"
-  peerDependencies:
-    webpack: ^2.0.0 || ^3.0.0 || ^4.0.0
-  checksum: 10c0/89b7765d427256e19a2b9cb3f93ed61dfc81bf1658c505316b0e8d3af6f9c155715c2c1cb891c3b7bdad4b02e6d440d878aefeebd51496b45e91123f88392215
   languageName: node
   linkType: hard
 

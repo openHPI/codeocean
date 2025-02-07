@@ -10,9 +10,6 @@ const TerserPlugin = require("terser-webpack-plugin");
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const { SubresourceIntegrityPlugin } = require("webpack-subresource-integrity");
 
-// Custom ERB loader to disable Spring and prevent crashes
-const erb = require("./loaders/erb");
-
 // This setting will change the absolute path used to refer
 // external files (images, fonts, ...) in the generated assets
 const relative_url_root = process.env.RAILS_RELATIVE_URL_ROOT || '';
@@ -44,8 +41,7 @@ const envConfig = module.exports = {
                 generator: {
                     filename: 'icons/[hash].png'
                 },
-            },
-            erb
+            }
         ]
     },
     optimization: {

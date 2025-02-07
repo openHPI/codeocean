@@ -58,7 +58,7 @@ import 'jquery-ui/themes/base/sortable.css'
 
 // I18n locales
 import { I18n } from "i18n-js";
-import locales from "../../tmp/locales.json";
+import locales from "./generated/locales.json";
 
 // Fetch user locale from html#lang.
 // This value is being set on `app/views/layouts/application.html.slim` and
@@ -73,7 +73,7 @@ i18n.locale = userLocale;
 window.I18n = i18n;
 
 // Routes
-import * as Routes from 'routes.js.erb';
+import * as Routes from 'generated/routes';
 window.Routes = Routes;
 
 // ACE editor
