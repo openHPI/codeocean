@@ -25,8 +25,16 @@
 
 #panel-left {
   position: relative;
-  max-height: 85vh;
-  overflow-y: scroll;
+}
+
+// Bootstrap breakpoint "large". See https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
+@media (min-width: 992px) { 
+
+  #panel-left {
+    position: relative;
+    max-height: 85vh;
+    overflow-y: scroll;
+  }
 }
 
 #panel-right {
@@ -83,7 +91,7 @@ html[data-bs-theme="light"] {
 }
 
 #content-left-sidebar, #content-right-sidebar {
-  min-height: 250px;
+  max-height: 500px;
 }
 
 .frame {

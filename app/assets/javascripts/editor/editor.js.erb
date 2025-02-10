@@ -237,7 +237,13 @@ var CodeOceanEditor = {
     },
 
     resizeSidebars: function () {
-        $('#content-left-sidebar').height(this.calculateEditorHeight('#content-left-sidebar', false));
+        let editorHeightLeftSidebar = this.calculateEditorHeight('#content-left-sidebar', false);
+        $('#content-left-sidebar').height(function() {
+            if($('#resizerHorizontal').css('display') === 'none')
+                return 'auto';
+            else
+                return editorHeightLeftSidebar;
+        });
         $('#content-right-sidebar').height(this.calculateEditorHeight('#content-right-sidebar', false));
     },
 
