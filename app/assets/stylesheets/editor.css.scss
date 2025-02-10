@@ -91,7 +91,8 @@ html[data-bs-theme="light"] {
 }
 
 #content-left-sidebar, #content-right-sidebar {
-  max-height: 500px;
+  max-height: 800px;
+  min-height: 250px;
 }
 
 .frame {
