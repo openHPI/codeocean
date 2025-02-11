@@ -14,13 +14,7 @@ module ProformaService
         import_result = importer.perform
         @task = import_result
 
-        exercise = base_exercise
-        exercise_files = exercise&.files&.to_a
-
-        exercise = ConvertTaskToExercise.call(task: @task, user: @user, exercise:)
-        exercise_files&.each(&:destroy) # feels suboptimal
-
-        exercise
+        ConvertTaskToExercise.call(task: @task, user: @user, exercise: base_exercise)
       else
         import_multi
       end

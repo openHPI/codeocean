@@ -49,6 +49,15 @@ RSpec.describe ExercisesController do
       expect_redirect(Exercise.last)
     end
 
+    context 'when exercise has uuid' do
+      let(:exercise) { create(:dummy, uuid: SecureRandom.hex) }
+
+      it 'clones the exercise' do
+        expect_any_instance_of(Exercise).to receive(:duplicate).with(hash_including(public: false, user:)).and_call_original
+        expect { perform_request.call }.to change(Exercise, :count).by(1)
+      end
+    end
+
     context 'when saving fails' do
       before do
         allow_any_instance_of(Exercise).to receive(:save).and_return(false)
