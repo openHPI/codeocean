@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module ExerciseService
-  class CheckExternal < ServiceBase
+class ExerciseService
+  class CheckExternal < ExerciseService
     def initialize(uuid:, codeharbor_link:)
       super()
       @uuid = uuid
@@ -9,7 +9,7 @@ module ExerciseService
     end
 
     def execute
-      response = connection.post do |req|
+      response = self.class.connection.post @codeharbor_link.check_uuid_url do |req|
         req.headers['Content-Type'] = 'application/json'
         req.headers['Authorization'] = "Bearer #{@codeharbor_link.api_key}"
         req.body = {uuid: @uuid}.to_json
@@ -28,15 +28,6 @@ module ExerciseService
         update_right ? I18n.t('exercises.export_codeharbor.check.task_found') : I18n.t('exercises.export_codeharbor.check.task_found_no_right')
       else
         I18n.t('exercises.export_codeharbor.check.no_task')
-      end
-    end
-
-    def connection
-      Faraday.new(url: @codeharbor_link.check_uuid_url) do |faraday|
-        faraday.options[:open_timeout] = 5
-        faraday.options[:timeout] = 5
-
-        faraday.adapter Faraday.default_adapter
       end
     end
   end

@@ -74,7 +74,11 @@ RSpec.describe ExerciseService::CheckExternal do
     end
 
     context 'when the request fails' do
-      before { allow(Faraday).to receive(:new).and_raise(Faraday::Error, 'error') }
+      before do
+        # Un-memoize the connection to force a reconnection
+        described_class.instance_variable_set(:@connection, nil)
+        allow(Faraday).to receive(:new).and_raise(Faraday::Error, 'error')
+      end
 
       it 'returns the correct hash' do
         expect(check_external_service).to eql(error: true, message: I18n.t('exercises.export_codeharbor.error'))
