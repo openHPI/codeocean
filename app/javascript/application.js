@@ -24,12 +24,12 @@ window.Sentry = Sentry; // Publish sentry in global namespace
 window.SentryIntegrations = function() { // Publish sentry integration in global namespace
     return [
         Sentry.browserProfilingIntegration(),
+        Sentry.browserSessionIntegration(),
         Sentry.browserTracingIntegration(),
         Sentry.extraErrorDataIntegration(),
         Sentry.httpClientIntegration(),
         Sentry.replayIntegration(),
         Sentry.reportingObserverIntegration(),
-        Sentry.sessionTimingIntegration(),
     ]
 };
 
