@@ -13,7 +13,7 @@
     "@sentry/browser": "^9.0.1",
     "@toast-ui/editor": "^3.2.2",
     "@webpack-cli/serve": "^3.0.1",
-    "ace-builds": "^1.37.5",
+    "ace-builds": "^1.38.0",
     "babel-loader": "^9.2.1",
     "bootstrap": "^5.3.3",
     "bootswatch": "^5.3.3",
