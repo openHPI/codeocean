@@ -6,7 +6,7 @@ namespace :detect_exercise_anomalies do
   # logger.level     = Logger::DEBUG
   # Rails.logger     = logger
 
-  # rubocop:disable Lint/ConstantDefinitionInBlock Style/MutableConstant
+  # rubocop:disable Lint/ConstantDefinitionInBlock, Style/MutableConstant
   # These factors determine if an exercise is an anomaly, given the average working time (avg):
   # (avg * MIN_TIME_FACTOR) <= working_time <= (avg * MAX_TIME_FACTOR)
   MIN_TIME_FACTOR = 0.1
@@ -19,11 +19,9 @@ namespace :detect_exercise_anomalies do
   MIN_CONTRIBUTOR_WORKING_TIME = 0.0
 
   # Cache exercise working times, because queries are expensive and values do not change between collections
-  # rubocop:disable Style/MutableConstant
   WORKING_TIME_CACHE = {}
   AVERAGE_WORKING_TIME_CACHE = {}
-  # rubocop:enable Style/MutableConstant
-  # rubocop:enable Lint/ConstantDefinitionInBlock
+  # rubocop:enable Lint/ConstantDefinitionInBlock, Style/MutableConstant
 
   task :with_at_least, %i[number_of_exercises number_of_contributors] => :environment do |_task, args|
     include TimeHelper

@@ -4,7 +4,7 @@ class ChangeTypeOfExposedPortsInExecutionEnvironment < ActiveRecord::Migration[6
   class ExecutionEnvironment < ApplicationRecord
   end
 
-  # rubocop:disable Rails/SkipsModelValidations:
+  # rubocop:disable Rails/SkipsModelValidations
   def up
     rename_column :execution_environments, :exposed_ports, :exposed_ports_migration
     add_column :execution_environments, :exposed_ports, :integer, array: true, default: [], nil: true
@@ -36,5 +36,5 @@ class ChangeTypeOfExposedPortsInExecutionEnvironment < ActiveRecord::Migration[6
     end
     remove_column :execution_environments, :exposed_ports_migration
   end
-  # rubocop:enable Rails/SkipsModelValidations:
+  # rubocop:enable Rails/SkipsModelValidations
 end

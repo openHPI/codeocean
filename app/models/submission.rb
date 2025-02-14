@@ -284,7 +284,7 @@ class Submission < ApplicationRecord
   def score_file(output, file, requesting_user)
     assessor = Assessor.new(execution_environment:)
     assessment = assessor.assess(output)
-    passed = (assessment[:passed] == assessment[:count]) and (assessment[:score]).positive?
+    passed = (assessment[:passed] == assessment[:count]) and assessment[:score].positive?
     testrun_output = passed ? nil : "status: #{output[:status]}\n stdout: #{output[:stdout]}\n stderr: #{output[:stderr]}"
     if testrun_output.present?
       execution_environment.error_templates.each do |template|

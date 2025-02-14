@@ -27,11 +27,11 @@ class Runner::Strategy::Null < Runner::Strategy
 
   def retrieve_files(path: './', recursive: true, privileged_execution: false); end
 
-  def download_file(_file, privileged_execution: false, &_block) # rubocop:disable Lint/UnusedMethodArgument for the keyword argument
+  def download_file(_file, privileged_execution: false, &_block) # rubocop:disable Lint/UnusedMethodArgument -- for the keyword argument
     raise Runner::Error.new
   end
 
-  def attach_to_execution(command, event_loop, starting_time, privileged_execution: false) # rubocop:disable Lint/UnusedMethodArgument for the keyword argument
+  def attach_to_execution(command, event_loop, starting_time, privileged_execution: false) # rubocop:disable Lint/UnusedMethodArgument -- for the keyword argument
     socket = Connection.new(nil, self, event_loop)
     # We don't want to return an error if the execution environment is changed
     socket.status = :terminated_by_codeocean if command == ExecutionEnvironment::VALIDATION_COMMAND

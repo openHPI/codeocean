@@ -547,7 +547,7 @@ class ExercisesController < ApplicationController
           # Hacky: If the autosave is the first element after a break, we need to set the delta of the following element to 0.
           # Since the @delta array is "broken" for filtered views anyway, we use this hack to get the red "highlight" line right.
           # TODO: Refactor the whole method into a more clean solution.
-          @deltas[index + 1] = 0 if (@deltas[index]).zero? && @deltas[index + 1].present?
+          @deltas[index + 1] = 0 if @deltas[index].zero? && @deltas[index + 1].present?
           @deltas.delete_at(index)
         end
       end
