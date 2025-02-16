@@ -39,7 +39,7 @@
     "propagating-hammerjs": "^3.0.0",
     "rails_admin": "3.3.0",
     "sass": "^1.85.0",
-    "sass-loader": "^16.0.4",
+    "sass-loader": "^16.0.5",
     "shakapacker": "8.1.0",
     "sortablejs": "^1.15.6",
     "sorttable": "^1.0.2",
@@ -60,6 +60,9 @@
   },
   "devDependencies": {
     "webpack-dev-server": "^5.2.0"
+  },
+  "resolutions": {
+    "dompurify": "^3.2.4"
   },
   "babel": {
     "presets": [
