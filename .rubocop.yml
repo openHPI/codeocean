@@ -1,10 +1,12 @@
 require:
   - rubocop-capybara
   - rubocop-factory_bot
+  - rubocop-rspec_rails
+
+plugins:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
-  - rubocop-rspec_rails
 
 inherit_from:
   - .rubocop/layout.yml
@@ -17,8 +19,6 @@ inherit_from:
   - .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 3.4
-  TargetRailsVersion: 8.0
   UseCache: True
   NewCops: enable
   Exclude:
