@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PyUnitAndPyLintAdapter < TestingFrameworkAdapter
+  delegate :translate_linter, to: :PyLintAdapter
+
   def self.framework_name
     'PyUnit and PyLint'
   end
@@ -11,9 +13,5 @@ class PyUnitAndPyLintAdapter < TestingFrameworkAdapter
     else
       PyUnitAdapter.new.parse_output(output)
     end
-  end
-
-  def translate_linter(result, locale)
-    PyLintAdapter.translate_linter(result, locale)
   end
 end
