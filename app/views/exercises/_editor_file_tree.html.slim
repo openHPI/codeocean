@@ -25,9 +25,9 @@
         - else
           = t('shared.hide')
 
-  #content-left-sidebar.overflow-scroll
+  #content-left-sidebar.overflow-auto
     - unless @exercise.hide_file_tree
-      .overflow-scroll
+      .overflow-auto
         .card.border-secondary
           .card-header.d-flex.justify-content-between.align-items-center.px-0.py-1
             .px-2 = I18n.t('exercises.editor_file_tree.file_root')
