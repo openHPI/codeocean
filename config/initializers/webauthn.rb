@@ -14,7 +14,7 @@ Rails.application.config.after_routes_loaded do
     end
     # If this origin doesn't match the request origin, the request will fail.
     # In that case, a `WebAuthn::OriginVerificationError` will be raised.
-    config.origin = Rails.application.routes.url_helpers.root_url.chomp('/')
+    config.allowed_origins = [Rails.application.routes.url_helpers.root_url.chomp('/')]
 
     # Relying Party name for display purposes
     config.rp_name = ApplicationHelper::APPLICATION_NAME
