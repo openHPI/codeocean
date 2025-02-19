@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
-
 class Exercise < ApplicationRecord
   include Context
   include Creation
@@ -472,54 +470,6 @@ class Exercise < ApplicationRecord
     exercise_tags.each  {|et| exercise.exercise_tags << et.dup }
     files.each {|file| exercise.files << file.dup }
     exercise
-  end
-
-  def determine_file_role_from_proforma_file(task_node, file_node)
-    file_id = file_node.xpath('@id')
-    file_class = file_node.xpath('@class').first.value
-    comment = file_node.xpath('@comment').first.value
-    is_referenced_by_test = task_node.xpath("p:tests/p:test/p:filerefs/p:fileref[@id=#{file_id}]")
-    is_referenced_by_model_solution = task_node.xpath("p:model-solutions/p:model-solution/p:filerefs/p:fileref[@id=#{file_id}]")
-    if is_referenced_by_test && (file_class == 'internal')
-      return 'teacher_defined_test'
-    elsif is_referenced_by_model_solution && (file_class == 'internal')
-      return 'reference_implementation'
-    elsif (file_class == 'template') && (comment == 'main')
-      return 'main_file'
-    end
-
-    'regular_file'
-  end
-
-  def from_proforma_xml(xml_string)
-    # how to extract the proforma functionality into a different module in rails?
-    xml = Nokogiri::XML(xml_string)
-    xml.collect_namespaces
-    task_node = xml.xpath('/root/p:task')
-    description = task_node.xpath('p:description/text()')[0].content
-    self.attributes = {
-      title: task_node.xpath('p:meta-data/p:title/text()')[0].content,
-      description:,
-      instructions: description,
-    }
-    task_node.xpath('p:files/p:file').all? do |file|
-      file_name_split = file.xpath('@filename').first.value.split('.')
-      file_class = file.xpath('@class').first.value
-      role = determine_file_role_from_proforma_file(task_node, file)
-      feedback_message_nodes = task_node.xpath('p:tests/p:test/p:test-configuration/c:feedback-message/text()')
-      files.build({
-        name: file_name_split.first,
-        content: file.xpath('text()').first.content,
-        read_only: false,
-        hidden: file_class == 'internal',
-        role:,
-        feedback_message: role == 'teacher_defined_test' ? feedback_message_nodes.first.content : nil,
-        file_type: FileType.find_by(
-          file_extension: ".#{file_name_split.second}"
-        ),
-      })
-    end
-    self.execution_environment_id = 1
   end
 
   def generate_token
