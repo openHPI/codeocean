@@ -59,12 +59,12 @@ class SubmissionPolicy < ApplicationPolicy
       resolved_scope = super
       return resolved_scope unless @user.teacher?
 
-      latest_before_deadline = latest_submissions_assessed.before_deadline.arel
-      latest_within_grace_period = latest_submissions_assessed.within_grace_period.arel
-      latest_after_late_deadline = latest_submissions_assessed.after_late_deadline.arel
-      highest_before_deadline = latest_submissions_assessed(highest_scored: true).before_deadline.arel
-      highest_within_grace_period = latest_submissions_assessed(highest_scored: true).within_grace_period.arel
-      highest_after_late_deadline = latest_submissions_assessed(highest_scored: true).after_late_deadline.arel
+      latest_before_deadline = latest_submissions_assessed(scope: :before_deadline).arel
+      latest_within_grace_period = latest_submissions_assessed(scope: :within_grace_period).arel
+      latest_after_late_deadline = latest_submissions_assessed(scope: :after_late_deadline).arel
+      highest_before_deadline = latest_submissions_assessed(scope: :before_deadline, highest_scored: true).arel
+      highest_within_grace_period = latest_submissions_assessed(scope: :within_grace_period, highest_scored: true).arel
+      highest_after_late_deadline = latest_submissions_assessed(scope: :after_late_deadline, highest_scored: true).arel
 
       # Yes, we construct a huge union of seven relations: all three deadlines, all three highest scores and the resolved scope
       all_unions = construct_union(
@@ -86,9 +86,13 @@ class SubmissionPolicy < ApplicationPolicy
 
     # This method is used to get the latest submission that was assessed or remote assessed.
     # By default, it will simply return the one with the last time stamp per exercise and contributor.
-    # However, with the optional parameter, the highest scored submission that was scored the latest will be returned.
-    def latest_submissions_assessed(highest_scored: false)
+    # There are two optional parameters:
+    # - `scope` can be set to filter the submissions using a predefined scope (as defined in the Submission model).
+    # - `highest_scored` can be set to get the *highest-scored* submission that was scored the latest.
+    #    Otherwise, the submission with the latest time stamp will be returned (independent of the score).
+    def latest_submissions_assessed(scope: nil, highest_scored: false)
       submission_table = Submission.arel_table
+      scoped_submissions = scope.present? ? Submission.public_send(scope).arel : submission_table
 
       desired_table_order = [
         submission_table[:exercise_id],
@@ -99,9 +103,8 @@ class SubmissionPolicy < ApplicationPolicy
       ].compact
 
       Submission.from(
-        submission_table.project(
-          Arel.sql('DISTINCT ON (submissions.exercise_id, submissions.contributor_type, submissions.contributor_id) submissions.*')
-        )
+        scoped_submissions
+        .distinct_on([submission_table[:exercise_id], submission_table[:contributor_type], submission_table[:contributor_id]])
         .order(*desired_table_order)
         .where(submission_table[:cause].in(%w[assess remoteAssess]))
         .where(submission_table[:study_group_id].in(@user.study_group_ids_as_teacher))
