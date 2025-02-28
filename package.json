@@ -14,7 +14,7 @@
     "@toast-ui/editor": "^3.2.2",
     "@webpack-cli/serve": "^3.0.1",
     "ace-builds": "^1.39.0",
-    "babel-loader": "^9.2.1",
+    "babel-loader": "^10.0.0",
     "bootstrap": "^5.3.3",
     "bootswatch": "^5.3.3",
     "chosen-js": "^1.8.7",
