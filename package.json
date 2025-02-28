@@ -44,7 +44,7 @@
     "sortablejs": "^1.15.6",
     "sorttable": "^1.0.2",
     "style-loader": "^4.0.0",
-    "terser-webpack-plugin": "^5.3.11",
+    "terser-webpack-plugin": "^5.3.12",
     "underscore": "^1.13.7",
     "uuid": "^11.1.0",
     "vis-data": "^7.1.9",
