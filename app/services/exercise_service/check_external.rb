@@ -9,6 +9,8 @@ class ExerciseService
     end
 
     def execute
+      return {error: false, message: message(false, true)} if @uuid.blank?
+
       response = self.class.connection.post @codeharbor_link.check_uuid_url do |req|
         req.headers['Content-Type'] = 'application/json'
         req.headers['Authorization'] = "Bearer #{@codeharbor_link.api_key}"
