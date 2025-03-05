@@ -150,10 +150,10 @@ class ExercisesController < ApplicationController
     user = user_from_api_key
     return render json: {}, status: :unauthorized if user.nil?
 
-    uuid = params[:uuid]
+    uuid = params[:uuid].presence
     exercise = Exercise.find_by(uuid:)
 
-    return render json: {uuid_found: false} if exercise.nil?
+    return render json: {uuid_found: false} if uuid.blank? || exercise.nil?
     return render json: {uuid_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
 
     render json: {uuid_found: true, update_right: true}
