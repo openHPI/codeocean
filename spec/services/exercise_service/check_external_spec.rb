@@ -84,5 +84,17 @@ RSpec.describe ExerciseService::CheckExternal do
         expect(check_external_service).to eql(error: true, message: I18n.t('exercises.export_codeharbor.error'))
       end
     end
+
+    context 'with no uuid' do
+      let(:uuid) { nil }
+
+      it 'does not make a request' do
+        expect(check_external_service).not_to have_requested(:post, codeharbor_link.check_uuid_url)
+      end
+
+      it 'returns the correct hash' do
+        expect(check_external_service).to eql(error: false, message: I18n.t('exercises.export_codeharbor.check.no_task'))
+      end
+    end
   end
 end
