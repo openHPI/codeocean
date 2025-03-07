@@ -21,7 +21,7 @@
     "component-emitter": "^2.0.0",
     "compression-webpack-plugin": "^11.1.0",
     "css-loader": "^7.1.2",
-    "css-minimizer-webpack-plugin": "^7.0.0",
+    "css-minimizer-webpack-plugin": "^7.0.2",
     "d3": "^7.9.0",
     "d3-tip": "^0.9.1",
     "file-loader": "^6.2.0",
