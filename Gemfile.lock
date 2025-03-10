@@ -372,7 +372,7 @@ GEM
       activesupport (>= 3.0.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.1.11)
+    rack (3.1.12)
     rack-mini-profiler (3.3.1)
       rack (>= 1.2.0)
     rack-proxy (0.7.7)
@@ -903,7 +903,7 @@ CHECKSUMS
   pundit (2.5.0) sha256=4fb6b8ad3fbfe6c34e4be172a1eac03dfcb36c29d6a1214574517af5a605beda
   raabro (1.4.0) sha256=d4fa9ff5172391edb92b242eed8be802d1934b1464061ae5e70d80962c5da882
   racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
-  rack (3.1.11) sha256=2b1111a754890d57e7bccefe3a8be28c0f9c02b43433b5a1276c07773e16e8f7
+  rack (3.1.12) sha256=00d83055c89273eb13679ab562767b8826955aa6c4371d7d161deb975c50c540
   rack-mini-profiler (3.3.1) sha256=2bf0de7d5795f54581e453b248e42cc50e8d0529efac73828653a9ad2407a801
   rack-proxy (0.7.7) sha256=446a4b57001022145d5c3ba73b775f66a2260eaf7420c6907483141900395c8a
   rack-session (2.1.0) sha256=437c3916535b58ef71c816ce4a2dee0a01c8a52ae6077dc2b6cd19085760a290
