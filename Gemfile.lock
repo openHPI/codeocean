@@ -204,7 +204,7 @@ GEM
     i18n-js (4.2.3)
       glob (>= 0.4.0)
       i18n
-    i18n-tasks (1.0.14)
+    i18n-tasks (1.0.15)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       erubi
@@ -213,6 +213,7 @@ GEM
       parser (>= 3.2.2.1)
       rails-i18n
       rainbow (>= 2.2.2, < 4.0)
+      ruby-progressbar (~> 1.8, >= 1.8.1)
       terminal-table (>= 1.5.1)
     image_processing (1.14.0)
       mini_magick (>= 4.9.5, < 6)
@@ -831,7 +832,7 @@ CHECKSUMS
   http_accept_language (2.1.1) sha256=0043f0d55a148cf45b604dbdd197cb36437133e990016c68c892d49dbea31634
   i18n (1.14.7) sha256=ceba573f8138ff2c0915427f1fc5bdf4aa3ab8ae88c8ce255eb3ecf0a11a5d0f
   i18n-js (4.2.3) sha256=ffb1a6d34afebd9ab2aff9bd86e8f2873191cbe8b9ac5c2c8efe4dfa1107ca3b
-  i18n-tasks (1.0.14) sha256=3ad8daef2a3268d6dc2232aad2b12941b353d884cd30fd3b418a73e7001a03ec
+  i18n-tasks (1.0.15) sha256=74f3e9e0e2db5d757c58e659f4269ee698c7a7532ed29066a2aaffc9efbdfb56
   image_processing (1.14.0) sha256=754cc169c9c262980889bec6bfd325ed1dafad34f85242b5a07b60af004742fb
   ims-lti (1.2.9) sha256=b6e6e444c149db873d65ae01217e7b60f1ae9a6af9ea35943746ea0fb072f09d
   io-console (0.8.0) sha256=cd6a9facbc69871d69b2cb8b926fc6ea7ef06f06e505e81a64f14a470fddefa2
