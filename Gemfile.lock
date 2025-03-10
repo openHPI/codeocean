@@ -593,7 +593,7 @@ GEM
     ssrf_filter (1.2.0)
     stackprof (0.2.27)
     stringio (3.1.5)
-    telegraf (3.1.0)
+    telegraf (3.2.0)
     temple (0.10.3)
     terminal-table (4.0.0)
       unicode-display_width (>= 1.1.1, < 4)
@@ -976,7 +976,7 @@ CHECKSUMS
   ssrf_filter (1.2.0) sha256=1e22130ada4b4d2c9675ac56a13802cad9c6395338bbd8d2d4c60429a071389f
   stackprof (0.2.27) sha256=aff6d28656c852e74cf632cc2046f849033dc1dedffe7cb8c030d61b5745e80c
   stringio (3.1.5) sha256=bca92461515a131535743bc81d5559fa1de7d80cff9a654d6c0af6f9f27e35c8
-  telegraf (3.1.0) sha256=8b7273c77dc7129de7f8f33fc0e5f0af531f6a586d980f3ccc5b0abbb6419e73
+  telegraf (3.2.0) sha256=08e7f6e06031966cc544605415822ca89a7011a3bfd4e5333f6fbd767b405bd3
   temple (0.10.3) sha256=df3145fe6577af1e25387eb7f7122d32ed51bdb6f2e7bb0f4fbf07b66151913b
   terminal-table (4.0.0) sha256=f504793203f8251b2ea7c7068333053f0beeea26093ec9962e62ea79f94301d2
   terser (1.2.5) sha256=f1e49770b61af6897770217f87c6574d5e6f81881712fb0fc6a609bab0ccbfa7
