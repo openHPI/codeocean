@@ -15,20 +15,20 @@ RSpec.describe 'Authentication' do
 
     context 'with valid credentials' do
       it 'allows to sign in' do
-        click_link(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
+        click_link(I18n.t('sessions.new.link'))
         fill_in('Email', with: user.email)
         fill_in('Password', with: password)
-        click_button(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
+        click_button(I18n.t('sessions.new.link'))
         expect(page).to have_content(I18n.t('sessions.create.success'))
       end
     end
 
     context 'with invalid credentials' do
       it 'does not allow to sign in' do
-        click_link(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
+        click_link(I18n.t('sessions.new.link'))
         fill_in('Email', with: user.email)
         fill_in('Password', with: password.reverse)
-        click_button(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
+        click_button(I18n.t('sessions.new.link'))
         expect(page).to have_content(I18n.t('sessions.create.failure'))
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe 'Authentication' do
       it 'redirects to the desired page immediately after sign-in' do
         fill_in('Email', with: user.email)
         fill_in('Password', with: password)
-        click_button(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
+        click_button(I18n.t('sessions.new.link'))
         expect(page).to have_content(exercise.title)
       end
 
@@ -59,7 +59,7 @@ RSpec.describe 'Authentication' do
         it 'informs the user about missing permissions' do
           fill_in('Email', with: user.email)
           fill_in('Password', with: password)
-          click_button(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
+          click_button(I18n.t('sessions.new.link'))
           expect(page).to have_content(I18n.t('application.not_authorized'))
         end
       end

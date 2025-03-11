@@ -9,7 +9,7 @@ RSpec.describe 'Request_for_Comments' do
     visit(sign_in_path)
     fill_in('email', with: user.email)
     fill_in('password', with: attributes_for(:teacher)[:password])
-    click_button(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
+    click_button(I18n.t('sessions.new.link'))
   end
 
   it 'does not contain rfcs for unpublished exercises' do

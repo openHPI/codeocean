@@ -29,7 +29,7 @@ RSpec.describe 'Editor', :js do
     visit(sign_in_path)
     fill_in('email', with: contributor.email)
     fill_in('password', with: attributes_for(:teacher)[:password])
-    click_button(I18n.t('sessions.new.link')) # rubocop:disable Capybara/ClickLinkOrButtonStyle
+    click_button(I18n.t('sessions.new.link'))
     allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
     visit(implement_exercise_path(exercise))
   end
