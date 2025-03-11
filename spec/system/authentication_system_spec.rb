@@ -71,10 +71,10 @@ RSpec.describe 'Authentication' do
 
       it 'denies access to the request for comment' do
         visit(rfc_path)
-        expect(page).to have_no_current_path(rfc_path)
-        expect(page).to have_no_content(request_for_comment.exercise.title)
         expect(page).to have_current_path(sign_in_path)
         expect(page).to have_content(I18n.t('application.not_signed_in'))
+        expect(page).to have_no_current_path(rfc_path)
+        expect(page).to have_no_content(request_for_comment.exercise.title)
       end
     end
 
@@ -105,10 +105,10 @@ RSpec.describe 'Authentication' do
         it 'denies access to the request for comment' do
           mail.deliver_now
           visit(rfc_link)
-          expect(page).to have_no_current_path(rfc_link)
-          expect(page).to have_no_content(request_for_comment.exercise.title)
           expect(page).to have_current_path(sign_in_path)
           expect(page).to have_content(I18n.t('application.not_signed_in'))
+          expect(page).to have_no_current_path(rfc_link)
+          expect(page).to have_no_content(request_for_comment.exercise.title)
         end
       end
 
