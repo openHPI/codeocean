@@ -312,7 +312,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   def self.http_connection
     @http_connection ||= Faraday.new(ssl: {ca_file: config[:ca_file]}, headers:) do |faraday|
       faraday.options[:open_timeout] = 5
-      faraday.options[:timeout] = 5
+      faraday.options[:timeout] = nil # No timeout. Poseidon performs some actions (e.g., sync environment) synchronously.
 
       faraday.adapter :net_http_persistent
     end
@@ -321,7 +321,7 @@ class Runner::Strategy::Poseidon < Runner::Strategy
   def self.new_http_connection
     Faraday.new(ssl: {ca_file: config[:ca_file]}, headers:) do |faraday|
       faraday.options[:open_timeout] = 5
-      faraday.options[:timeout] = 5
+      faraday.options[:timeout] = nil # No timeout. Poseidon performs some actions (e.g., sync environment) synchronously
 
       faraday.adapter :net_http
     end
