@@ -22,6 +22,7 @@ RSpec.describe 'ExternalUserStatistics', :js do
     fill_in('email', with: user.email)
     fill_in('password', with: password)
     click_button(I18n.t('sessions.new.link'))
+    wait_for_ajax
     allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
     visit(statistics_external_user_exercise_path(id: exercise.id, external_user_id: learner.id))
   end
