@@ -12,7 +12,7 @@ class ExercisesController < ApplicationController
   before_action :set_exercise_and_authorize,
     only: MEMBER_ACTIONS + %i[clone implement working_times intervention statistics reload feedback
                               study_group_dashboard export_external_check export_external_confirm
-                              external_user_statistics]
+                              external_user_statistics download_proforma]
   before_action :collect_set_and_unset_exercise_tags, only: MEMBER_ACTIONS
   before_action :set_external_user_and_authorize, only: [:external_user_statistics]
   before_action :set_file_types, only: %i[create edit new update]
@@ -179,6 +179,13 @@ class ExercisesController < ApplicationController
   rescue StandardError => e
     Sentry.capture_exception(e)
     render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: :internal_server_error
+  end
+
+  def download_proforma
+    zip_file = ProformaService::ExportTask.call(exercise: @exercise)
+    send_data(zip_file.string, type: 'application/zip', filename: "exercise_#{@exercise.id}.zip", disposition: 'attachment')
+  rescue ProformaXML::PostGenerateValidationError => e
+    redirect_to :root, danger: JSON.parse(e.message).join('<br>')
   end
 
   def user_from_api_key
