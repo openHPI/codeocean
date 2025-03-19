@@ -37,6 +37,8 @@ de:
     download_file_tree:
       file_root: Erstellte Dateien
       gone: Die angeforderte Datei konnte nicht abgerufen werden. Erstellte Dateien werden nur kurzzeitig vorgehalten und dann gelöscht. Bitte führen Sie den Code erneut aus und versuchen Sie dann wieder den Download der Datei.
+    download_proforma:
+      label: ProformaXML ZIP herunterladen
     editor:
       collapse_action_sidebar: Aktions-Leiste Einklappen
       collapse_output_sidebar: Ausgabe-Leiste Einklappen
