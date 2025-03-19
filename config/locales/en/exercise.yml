@@ -37,6 +37,8 @@ en:
     download_file_tree:
       file_root: Generated Files
       gone: The requested file could not be retrieved. Generated files are only held for a short time and are then deleted. Please run the code again and then try downloading the file a second time.
+    download_proforma:
+      label: Download ProformaXML ZIP
     editor:
       collapse_action_sidebar: Collapse Action Sidebar
       collapse_output_sidebar: Collapse Output Sidebar
