@@ -59,7 +59,7 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
-    "webpack-dev-server": "^5.2.0"
+    "webpack-dev-server": "^5.2.1"
   },
   "resolutions": {
     "dompurify": "^3.2.4"
