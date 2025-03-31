@@ -7,6 +7,9 @@ en:
       to: To
       update: Update
     entries:
+      contributors:
+        active: Active Contributors
+        currently_active: Active (5 minutes)
       exercises:
         autosaves_per_minute: Current Autosave Volume (1h)
         average_number_of_submissions: Average Number of Submissions
@@ -18,9 +21,6 @@ en:
         percent_solved: Solved Requests
         percent_unsolved: Unsolved Requests
         with_comments: RfCs with Comments
-      users:
-        active: Active Users
-        currently_active: Active (5 minutes)
     graphs:
       history: History
       rfc_activity: RfC Activity

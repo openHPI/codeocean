@@ -7,6 +7,9 @@ de:
       to: Bis
       update: Aktualisieren
     entries:
+      contributors:
+        active: Aktive Mitwirkende
+        currently_active: Aktiv (5 Minuten)
       exercises:
         autosaves_per_minute: Aktuelle Autosaves (1h)
         average_number_of_submissions: Durchschnittliche Zahl von Abgaben
@@ -18,9 +21,6 @@ de:
         percent_solved: Beantwortete Anfragen
         percent_unsolved: Unbeantwortete Anfragen
         with_comments: Anfragen mit Kommentaren
-      users:
-        active: Aktive Personen
-        currently_active: Aktiv (5 Minuten)
     graphs:
       history: Historie
       rfc_activity: Kommentaranfragenaktivität

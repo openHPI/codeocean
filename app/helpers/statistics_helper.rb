@@ -48,7 +48,7 @@ module StatisticsHelper
       },
       {
         key: 'currently_active',
-          name: t('statistics.entries.users.currently_active'),
+          name: t('statistics.entries.contributors.currently_active'),
           data: Submission.from(Submission.where(created_at: 5.minutes.ago..).distinct.select(:contributor_id, :contributor_type)).count,
           url: statistics_graphs_path,
       },
@@ -113,15 +113,12 @@ module StatisticsHelper
     ]
   end
 
-  # TODO: Need to consider and support programming groups
   def user_activity_live_data
     [
       {
         key: 'active_in_last_hour',
-          name: t('statistics.entries.users.currently_active'),
-          data: ExternalUser.joins(:submissions)
-            .where(submissions: {created_at: DateTime.now - 5.minutes..})
-            .distinct('external_users.id').count,
+          name: t('statistics.entries.contributors.currently_active'),
+          data: Submission.where(created_at: DateTime.now - 5.minutes..).distinct.select(:contributor_id, :contributor_type).count,
       },
       {
         key: 'submissions_per_minute',
@@ -215,15 +212,13 @@ module StatisticsHelper
     ]
   end
 
-  # TODO: Need to consider and support programming groups
   def ranged_user_data(interval = 'year', from = DateTime.new(0), to = DateTime.now)
     [
       {
         key: 'active',
-          name: t('statistics.entries.users.active'),
-          data: ExternalUser.joins(:submissions)
-            .where(submissions: {created_at: from..to})
-            .select(ExternalUser.sanitize_sql(['date_trunc(?, submissions.created_at) AS "key", count(distinct external_users.id) AS "value"', interval]))
+          name: t('statistics.entries.contributors.active'),
+          data: Submission.where(created_at: from..to)
+            .select(Submission.sanitize_sql(['date_trunc(?, created_at) AS "key", count(distinct CONCAT(contributor_type, contributor_id)) AS "value"', interval]))
             .group('key').order('key'),
       },
       {
