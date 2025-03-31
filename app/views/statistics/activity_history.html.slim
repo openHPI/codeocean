@@ -13,10 +13,12 @@
   form
     .mb-3
       label for='from-date' = t('.from')
-      input.form-control#from-date type='date' name='from' value=params[:from] || DateTime.new(2016).to_date
+      - from = params[:from] || DateTime.new(2014).to_date
+      input.form-control#from-date type='date' name='from' value=from
     .mb-3
       label for='to-date' = t('.to')
-      input.form-control#to-date type='date' name='to' value=params[:to] || DateTime.now.to_date
+      - to = params[:to] || DateTime.now.to_date
+      input.form-control#to-date type='date' name='to' value=to
     .mb-3
       label for='interval' = t('.interval')
       select.form-control#interval name='interval'
