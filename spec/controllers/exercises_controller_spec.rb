@@ -330,7 +330,10 @@ RSpec.describe ExercisesController do
     let(:update_right) { true }
     let(:error) { nil }
 
-    before { allow(ExerciseService::CheckExternal).to receive(:call).with(uuid: exercise.uuid, codeharbor_link:).and_return(external_check_hash) }
+    before do
+      allow(ExerciseService::CheckExternal).to receive(:call).with(uuid: exercise.uuid, codeharbor_link:).and_return(external_check_hash)
+      stub_const('CodeharborLinkPolicy::CODEHARBOR_CONFIG', {enabled: true})
+    end
 
     it 'renders the correct contents as json' do
       post_request
@@ -385,6 +388,7 @@ RSpec.describe ExercisesController do
     before do
       allow(ProformaService::ExportTask).to receive(:call).with(exercise:).and_return(zip)
       allow(ExerciseService::PushExternal).to receive(:call).with(zip:, codeharbor_link:).and_return(error)
+      stub_const('CodeharborLinkPolicy::CODEHARBOR_CONFIG', {enabled: true})
     end
 
     it 'renders correct response' do

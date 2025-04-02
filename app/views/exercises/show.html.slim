@@ -64,7 +64,8 @@ ul.list-unstyled#files
             .clearfix = link_to(t('shared.destroy'), file, class: 'btn btn-warning btn-sm float-end', data: {confirm: t('shared.confirm_destroy')}, method: :delete)
           = render('shared/file', file:)
 
-= render 'shared/modal',
-        title: t('exercises.export_codeharbor.dialogtitle'),
-        modal_root_attributes: {id: 'export-modal'},
-        template: 'exercises/_export_dialogcontent'
+- if policy(@exercise).export_external_confirm?
+  = render 'shared/modal',
+          title: t('exercises.export_codeharbor.dialogtitle'),
+          modal_root_attributes: {id: 'export-modal'},
+          template: 'exercises/_export_dialogcontent'

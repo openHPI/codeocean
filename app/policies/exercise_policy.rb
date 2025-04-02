@@ -22,7 +22,7 @@ class ExercisePolicy < AdminOrAuthorPolicy
   end
 
   %i[export_external_check? export_external_confirm?].each do |action|
-    define_method(action) { (admin? || teacher_in_study_group? || author?) && @user.codeharbor_link }
+    define_method(action) { Pundit.policy(@user, CodeharborLink).enabled? && (admin? || teacher_in_study_group? || author?) && @user.codeharbor_link }
   end
 
   %i[implement? working_times? intervention? reload?].each do |action|

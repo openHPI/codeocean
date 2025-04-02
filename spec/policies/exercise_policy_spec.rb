@@ -54,41 +54,37 @@ RSpec.describe ExercisePolicy do
 
   %i[export_external_check? export_external_confirm?].each do |action|
     permissions(action) do
-      context 'when user is author' do
-        let(:user) { exercise.author }
-
-        it 'does not grant access' do
-          expect(policy).not_to permit(user, exercise)
+      context 'when CodeHarbor is disabled' do
+        before do
+          stub_const('CodeharborLinkPolicy::CODEHARBOR_CONFIG', {enabled: false})
         end
 
-        context 'when user has codeharbor_link' do
-          before { user.codeharbor_link = build(:codeharbor_link) }
+        %i[external_user teacher admin].each do |factory_name|
+          context "when user is #{factory_name}" do
+            let(:user) { create(factory_name) }
 
-          it 'grants access' do
-            expect(policy).to permit(user, exercise)
+            it 'does not grant access' do
+              expect(policy).not_to permit(user, exercise)
+            end
+
+            context 'when user has codeharbor_link' do
+              before { user.codeharbor_link = build(:codeharbor_link) }
+
+              it 'does not grant access' do
+                expect(policy).not_to permit(user, exercise)
+              end
+            end
           end
         end
       end
 
-      context 'when user is admin' do
-        let(:user) { build(:admin) }
-
-        it 'does not grant access' do
-          expect(policy).not_to permit(user, exercise)
+      context 'when CodeHarbor is enabled' do
+        before do
+          stub_const('CodeharborLinkPolicy::CODEHARBOR_CONFIG', {enabled: true})
         end
 
-        context 'when user has codeharbor_link' do
-          before { user.codeharbor_link = build(:codeharbor_link) }
-
-          it 'grants access' do
-            expect(policy).to permit(user, exercise)
-          end
-        end
-      end
-
-      %i[external_user teacher].each do |factory_name|
-        context "when user is #{factory_name}" do
-          let(:user) { create(factory_name) }
+        context 'when user is author' do
+          let(:user) { exercise.author }
 
           it 'does not grant access' do
             expect(policy).not_to permit(user, exercise)
@@ -97,8 +93,42 @@ RSpec.describe ExercisePolicy do
           context 'when user has codeharbor_link' do
             before { user.codeharbor_link = build(:codeharbor_link) }
 
+            it 'grants access' do
+              expect(policy).to permit(user, exercise)
+            end
+          end
+        end
+
+        context 'when user is admin' do
+          let(:user) { build(:admin) }
+
+          it 'does not grant access' do
+            expect(policy).not_to permit(user, exercise)
+          end
+
+          context 'when user has codeharbor_link' do
+            before { user.codeharbor_link = build(:codeharbor_link) }
+
+            it 'grants access' do
+              expect(policy).to permit(user, exercise)
+            end
+          end
+        end
+
+        %i[external_user teacher].each do |factory_name|
+          context "when user is #{factory_name}" do
+            let(:user) { create(factory_name) }
+
             it 'does not grant access' do
               expect(policy).not_to permit(user, exercise)
+            end
+
+            context 'when user has codeharbor_link' do
+              before { user.codeharbor_link = build(:codeharbor_link) }
+
+              it 'does not grant access' do
+                expect(policy).not_to permit(user, exercise)
+              end
             end
           end
         end
