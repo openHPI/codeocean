@@ -20,8 +20,10 @@ html lang=I18n.locale data-default-locale=I18n.default_locale
     = csrf_meta_tags
     /= csp_meta_tag
     meta name='sentry' data-enabled=SentryJavascript.active?.to_s data-release=SentryJavascript.release data-dsn=SentryJavascript.dsn data-environment=SentryJavascript.environment content=''
+    - # rubocop:disable Lint/RedundantTypeConversion -- the `.to_s` is needed if `current_user` is `nil`. Otherwise, the `content` attribute would be omitted.
     meta name='current-user' content=current_user&.to_page_context&.to_json.to_s
     meta name='current-contributor' content=current_contributor&.to_page_context&.to_json.to_s
+    - # rubocop:enable Lint/RedundantTypeConversion
   body
     - unless @embed_options[:hide_navbar]
       nav.navbar.bg-dark.navbar-expand-md.mb-4.py-1 data-bs-theme="dark"
