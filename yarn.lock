@@ -2347,12 +2347,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootstrap@npm:^5.1.3, bootstrap@npm:^5.3.3":
+"bootstrap@npm:^5.1.3":
   version: 5.3.3
   resolution: "bootstrap@npm:5.3.3"
   peerDependencies:
     "@popperjs/core": ^2.11.8
   checksum: 10c0/bb68ca7b763977b9cce40cb5b8c676ae19a716d2f5d15009fa7bdbcec9dea426968e3cb748fbed7592fbf10edd7c749aea841c2920996a7c1aa5e0a6e2d4c2ad
+  languageName: node
+  linkType: hard
+
+"bootstrap@npm:^5.3.4":
+  version: 5.3.4
+  resolution: "bootstrap@npm:5.3.4"
+  peerDependencies:
+    "@popperjs/core": ^2.11.8
+  checksum: 10c0/47000ac406d2b4d2d7e2f3e52d1b927f3a5fa82910bd86cada78ae8e0e0fd85c6d21a9161bf4c8f7e528b0f7d7c8b3cde1790ae04c6702a6b63c77671ad67227
   languageName: node
   linkType: hard
 
@@ -2571,7 +2580,7 @@ __metadata:
     "@webpack-cli/serve": "npm:^3.0.1"
     ace-builds: "npm:^1.39.1"
     babel-loader: "npm:^10.0.0"
-    bootstrap: "npm:^5.3.3"
+    bootstrap: "npm:^5.3.4"
     bootswatch: "npm:^5.3.3"
     chosen-js: "npm:^1.8.7"
     component-emitter: "npm:^2.0.0"
