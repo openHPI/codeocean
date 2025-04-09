@@ -179,7 +179,7 @@ a.file-heading {
   }
 }
 
-#export-modal {
+#transfer-modal {
   .modal-content {
     min-height: 300px;
   }
@@ -189,27 +189,27 @@ a.file-heading {
   }
 }
 
-#export-exercise{
+#exercise-transfer{
   display: flex;
 }
 
-.export-message {
+.transfer-message {
   flex-grow: 1;
   font-size: 12px;
   padding-right: 5px;
   word-wrap: break-word;
 }
-.export-message + :empty {
+.transfer-message + :empty {
   max-width: 100%;
 }
 
-.export-exercise-actions:empty {
+.transfer-exercise-actions:empty {
   display: none;
 }
 
-.export-exercise-actions {
-  max-width: 110px;
-  min-width: 110px;
+.transfer-exercise-actions {
+  max-width: 140px;
+  min-width: 140px;
 }
 
 .export-button {
@@ -223,6 +223,6 @@ a.file-heading {
   font-weight: 600;
 }
 
-.export-failure {
+.transfer-failure {
   color: var(--bs-danger);
 }

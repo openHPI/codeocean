@@ -77,6 +77,8 @@ Rails.application.routes.draw do
 
   resources :exercises do
     collection do
+      post :import_start
+      post :import_confirm
       match '', to: 'exercises#batch_update', via: %i[patch put]
     end
 

@@ -68,5 +68,5 @@ ul.list-unstyled#files
 - if policy(@exercise).export_external_confirm?
   = render 'shared/modal',
           title: t('exercises.export_codeharbor.dialogtitle'),
-          modal_root_attributes: {id: 'export-modal'},
-          template: 'exercises/_export_dialogcontent'
+          modal_root_attributes: {id: 'transfer-modal'},
+          template: 'exercises/_transfer_dialogcontent'

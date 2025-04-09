@@ -16,11 +16,26 @@ RSpec.describe ProformaService::Import do
     it 'assigns user' do
       expect(import_service.instance_variable_get(:@user)).to be user
     end
+
+    it 'assigns import_type' do
+      expect(import_service.instance_variable_get(:@import_type)).to be 'import'
+    end
+
+    context 'when import_type is supplied' do
+      subject(:import_service) { described_class.new(zip:, user:, import_type:) }
+
+      let(:import_type) { 'create_new' }
+
+      it 'assigns import_type' do
+        expect(import_service.instance_variable_get(:@import_type)).to be import_type
+      end
+    end
   end
 
   describe '#execute' do
-    subject(:import_service) { described_class.call(zip: zip_file, user: import_user) }
+    subject(:import_service) { described_class.call(zip: zip_file, user: import_user, import_type:) }
 
+    let(:import_type) { 'import' }
     let(:user) { create(:teacher) }
     let(:import_user) { user }
     let(:zip_file) { Tempfile.new('proforma_test_zip_file', encoding: 'ascii-8bit') }
@@ -56,6 +71,16 @@ RSpec.describe ProformaService::Import do
 
     it 'sets the uuid' do
       expect(import_service.uuid).not_to be_blank
+    end
+
+    context 'when import_type is create_new' do
+      let(:import_type) { 'create_new' }
+
+      it { is_expected.not_to be_an_equal_exercise_as exercise }
+
+      it 'creates a new task' do
+        expect(import_service).to be_new_record
+      end
     end
 
     context 'when no exercise exists' do
