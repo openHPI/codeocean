@@ -82,14 +82,14 @@ RSpec.describe Runner::Strategy::Poseidon do
       end
 
       context 'when error code is nomad overload' do
-        include_examples(
+        it_behaves_like(
           'InternalServerError (500) with error code',
           described_class.error_nomad_overload, Runner::Error::NotAvailable
         )
       end
 
       context 'when error code is not nomad overload' do
-        include_examples(
+        it_behaves_like(
           'InternalServerError (500) with error code',
           described_class.error_unknown, Runner::Error::InternalServerError
         )
@@ -189,11 +189,11 @@ RSpec.describe Runner::Strategy::Poseidon do
     end
 
     [201, 204].each do |status|
-      include_examples 'returns true when the api request was successful', status
+      it_behaves_like 'returns true when the api request was successful', status
     end
 
     [400, 500].each do |status|
-      include_examples 'returns false when the api request failed', status
+      it_behaves_like 'returns false when the api request failed', status
     end
 
     it 'raises an exception if Faraday raises an error' do
@@ -252,8 +252,8 @@ RSpec.describe Runner::Strategy::Poseidon do
       end
     end
 
-    include_examples 'BadRequest (400) error handling'
-    include_examples 'Unauthorized (401) error handling'
+    it_behaves_like 'BadRequest (400) error handling'
+    it_behaves_like 'Unauthorized (401) error handling'
 
     context 'when Poseidon returns NotFound (404)' do
       let(:response_status) { 404 }
@@ -263,9 +263,9 @@ RSpec.describe Runner::Strategy::Poseidon do
       end
     end
 
-    include_examples 'InternalServerError (500) error handling'
-    include_examples 'unknown response status error handling'
-    include_examples 'Faraday error handling'
+    it_behaves_like 'InternalServerError (500) error handling'
+    it_behaves_like 'unknown response status error handling'
+    it_behaves_like 'Faraday error handling'
   end
 
   describe '#execute_command' do
@@ -319,12 +319,12 @@ RSpec.describe Runner::Strategy::Poseidon do
       end
     end
 
-    include_examples 'BadRequest (400) error handling'
-    include_examples 'Unauthorized (401) error handling'
-    include_examples 'Gone (410) error handling'
-    include_examples 'InternalServerError (500) error handling'
-    include_examples 'unknown response status error handling'
-    include_examples 'Faraday error handling'
+    it_behaves_like 'BadRequest (400) error handling'
+    it_behaves_like 'Unauthorized (401) error handling'
+    it_behaves_like 'Gone (410) error handling'
+    it_behaves_like 'InternalServerError (500) error handling'
+    it_behaves_like 'unknown response status error handling'
+    it_behaves_like 'Faraday error handling'
   end
 
   describe '#destroy_at_management' do
@@ -352,10 +352,10 @@ RSpec.describe Runner::Strategy::Poseidon do
       end
     end
 
-    include_examples 'Unauthorized (401) error handling'
-    include_examples 'InternalServerError (500) error handling'
-    include_examples 'unknown response status error handling'
-    include_examples 'Faraday error handling'
+    it_behaves_like 'Unauthorized (401) error handling'
+    it_behaves_like 'InternalServerError (500) error handling'
+    it_behaves_like 'unknown response status error handling'
+    it_behaves_like 'Faraday error handling'
   end
 
   describe '#copy_files' do
@@ -382,13 +382,13 @@ RSpec.describe Runner::Strategy::Poseidon do
       end
     end
 
-    include_examples 'BadRequest (400) error handling'
-    include_examples 'BadRequest (400) destroys local runner'
-    include_examples 'Unauthorized (401) error handling'
-    include_examples 'Gone (410) error handling'
-    include_examples 'InternalServerError (500) error handling'
-    include_examples 'unknown response status error handling'
-    include_examples 'Faraday error handling'
+    it_behaves_like 'BadRequest (400) error handling'
+    it_behaves_like 'BadRequest (400) destroys local runner'
+    it_behaves_like 'Unauthorized (401) error handling'
+    it_behaves_like 'Gone (410) error handling'
+    it_behaves_like 'InternalServerError (500) error handling'
+    it_behaves_like 'unknown response status error handling'
+    it_behaves_like 'Faraday error handling'
   end
 
   describe '#attach_to_execution' do

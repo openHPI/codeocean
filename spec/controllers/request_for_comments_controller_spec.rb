@@ -82,7 +82,7 @@ RSpec.describe RequestForCommentsController do
       expect(assigns(:request_for_comments)).to eq([rfc_within_my_study_group])
     end
 
-    include_examples 'RfC visibility settings'
+    it_behaves_like 'RfC visibility settings'
   end
 
   describe 'GET #my_comment_requests' do
@@ -91,7 +91,7 @@ RSpec.describe RequestForCommentsController do
     expect_http_status(:ok)
     expect_template(:index)
 
-    include_examples 'RfC visibility settings'
+    it_behaves_like 'RfC visibility settings'
   end
 
   describe 'GET #rfcs_with_my_comments' do
@@ -100,7 +100,7 @@ RSpec.describe RequestForCommentsController do
     expect_http_status(:ok)
     expect_template(:index)
 
-    include_examples 'RfC visibility settings'
+    it_behaves_like 'RfC visibility settings'
   end
 
   describe 'GET #rfcs_for_exercise' do

@@ -69,7 +69,7 @@ class ExercisesController < ApplicationController
   def collect_paths(files)
     unique_paths = files.map(&:path).compact_blank.uniq
     subpaths = unique_paths.map do |path|
-      Array.new((path.split('/').length + 1)) do |n|
+      Array.new(path.split('/').length + 1) do |n|
         path.split('/').shift(n).join('/')
       end
     end

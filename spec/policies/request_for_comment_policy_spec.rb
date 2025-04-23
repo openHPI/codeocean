@@ -103,12 +103,12 @@ RSpec.describe RequestForCommentPolicy do
           let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
 
           permissions(:show?) do
-            include_examples 'grants access to everyone'
+            it_behaves_like 'grants access to everyone'
           end
 
           %i[mark_as_solved? set_thank_you_note?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -119,7 +119,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -130,7 +130,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -143,12 +143,12 @@ RSpec.describe RequestForCommentPolicy do
           let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
 
           permissions(:show?) do
-            include_examples 'grants access to everyone'
+            it_behaves_like 'grants access to everyone'
           end
 
           %i[mark_as_solved? set_thank_you_note?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -157,12 +157,12 @@ RSpec.describe RequestForCommentPolicy do
           let(:viewer_study_groups) { author_study_groups }
 
           permissions(:show?) do
-            include_examples 'grants access to everyone'
+            it_behaves_like 'grants access to everyone'
           end
 
           %i[mark_as_solved? set_thank_you_note?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -179,7 +179,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -190,7 +190,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -201,7 +201,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -214,12 +214,12 @@ RSpec.describe RequestForCommentPolicy do
           let(:viewer_study_groups) { create_list(:study_group, 1, consumer: viewer_consumer) }
 
           permissions(:show?) do
-            include_examples 'grants access to everyone'
+            it_behaves_like 'grants access to everyone'
           end
 
           %i[mark_as_solved? set_thank_you_note?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -228,12 +228,12 @@ RSpec.describe RequestForCommentPolicy do
           let(:viewer_study_groups) { author_study_groups }
 
           permissions(:show?) do
-            include_examples 'grants access to everyone'
+            it_behaves_like 'grants access to everyone'
           end
 
           %i[mark_as_solved? set_thank_you_note?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -250,7 +250,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -261,7 +261,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -272,7 +272,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -286,7 +286,7 @@ RSpec.describe RequestForCommentPolicy do
 
           %i[mark_as_solved? set_thank_you_note? show?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end
@@ -295,12 +295,12 @@ RSpec.describe RequestForCommentPolicy do
           let(:viewer_study_groups) { author_study_groups }
 
           permissions(:show?) do
-            include_examples 'grants access to everyone'
+            it_behaves_like 'grants access to everyone'
           end
 
           %i[mark_as_solved? set_thank_you_note?].each do |action|
             permissions(action) do
-              include_examples 'grants access to admins and authors only'
+              it_behaves_like 'grants access to admins and authors only'
             end
           end
         end

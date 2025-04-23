@@ -63,7 +63,7 @@ RSpec.describe Runner::Strategy::DockerContainerPool do
       end
     end
 
-    include_examples 'Faraday error handling', :post
+    it_behaves_like 'Faraday error handling', :post
   end
 
   describe '#destroy_at_management' do
@@ -81,7 +81,7 @@ RSpec.describe Runner::Strategy::DockerContainerPool do
       expect(destroy_runner_stub).to have_been_requested.once
     end
 
-    include_examples 'Faraday error handling', :delete
+    it_behaves_like 'Faraday error handling', :delete
   end
 
   describe '#copy_files' do
