@@ -149,3 +149,7 @@ vagrant ssh
 cd codeocean
 bundle exec prometheus_exporter
 ```
+
+## Known Issues
+
+On MacOS systems, starting the virtual machine might fail due to existing port forwarding on port 7000. This port is used by the MacOS ControlCenter for Apple AirPlay. Therefore, if you are not actively using AirPlay, you can disable it in "System Preferences" --> "General" --> "AirDrop & Handoff" by disabling the "AirPlay Receiver" option. Alternatively, you can edit the Vagrant file and set a different port.
