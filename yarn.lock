@@ -1744,7 +1744,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/json-schema@npm:*, @types/json-schema@npm:^7.0.8, @types/json-schema@npm:^7.0.9":
+"@types/json-schema@npm:*, @types/json-schema@npm:^7.0.15, @types/json-schema@npm:^7.0.8, @types/json-schema@npm:^7.0.9":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
   checksum: 10c0/a996a745e6c5d60292f36731dd41341339d4eeed8180bb09226e5c8d23759067692b1d88e5d91d72ee83dfc00d3aca8e7bd43ea120516c17922cbcb7c3e252db
@@ -2606,7 +2606,7 @@ __metadata:
     vis-data: "npm:^7.1.9"
     vis-timeline: "npm:^7.7.3"
     vis-util: "npm:^5.0.7"
-    webpack: "npm:^5.99.6"
+    webpack: "npm:^5.99.7"
     webpack-assets-manifest: "npm:^5.2.1"
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.1"
@@ -6170,7 +6170,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"schema-utils@npm:^4.0.0, schema-utils@npm:^4.2.0, schema-utils@npm:^4.3.0":
+"schema-utils@npm:^4.0.0, schema-utils@npm:^4.2.0, schema-utils@npm:^4.3.0, schema-utils@npm:^4.3.2":
   version: 4.3.2
   resolution: "schema-utils@npm:4.3.2"
   dependencies:
@@ -7139,12 +7139,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.99.6":
-  version: 5.99.6
-  resolution: "webpack@npm:5.99.6"
+"webpack@npm:^5.99.7":
+  version: 5.99.7
+  resolution: "webpack@npm:5.99.7"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
     "@types/estree": "npm:^1.0.6"
+    "@types/json-schema": "npm:^7.0.15"
     "@webassemblyjs/ast": "npm:^1.14.1"
     "@webassemblyjs/wasm-edit": "npm:^1.14.1"
     "@webassemblyjs/wasm-parser": "npm:^1.14.1"
@@ -7161,7 +7162,7 @@ __metadata:
     loader-runner: "npm:^4.2.0"
     mime-types: "npm:^2.1.27"
     neo-async: "npm:^2.6.2"
-    schema-utils: "npm:^4.3.0"
+    schema-utils: "npm:^4.3.2"
     tapable: "npm:^2.1.1"
     terser-webpack-plugin: "npm:^5.3.11"
     watchpack: "npm:^2.4.1"
@@ -7171,7 +7172,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10c0/b8b44b16933a0dd83e185ad42f292bbdfa9c47e245cbe786c48520d681556ece9af6ea7fff33059fafdf3d2cd62674715308d70a6f15eda6c6de7e03ef01842a
+  checksum: 10c0/e121880d921d5500e9dd61c3428f5d8dca4786c559e7f37488173186447cd22079be677d470a4db1643febf8031b9be900f501c9b95ba94ffe3d2065ad486d31
   languageName: node
   linkType: hard
 
