@@ -7,7 +7,7 @@ const CompressionPlugin = require("compression-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const WebpackAssetsManifest = require('webpack-assets-manifest');
+const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 const { SubresourceIntegrityPlugin } = require("webpack-subresource-integrity");
 
 // This setting will change the absolute path used to refer
