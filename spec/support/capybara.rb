@@ -17,7 +17,7 @@ RSpec.configure do |config|
   config.before(:each, type: :system, js: true) do
     # Selenium when we need JavaScript
     if ENV['CAPYBARA_SERVER_PORT']
-      ActionDispatch::SystemTestCase.served_by host: 'rails-app', port: ENV['CAPYBARA_SERVER_PORT']
+      served_by host: 'rails-app', port: ENV['CAPYBARA_SERVER_PORT']
 
       driven_by :selenium, using: :headless_chrome, options: {
         browser: :remote,
