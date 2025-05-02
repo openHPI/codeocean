@@ -669,19 +669,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_26_204319) do
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user"
   end
 
-  add_foreign_key "anomaly_notifications", "exercise_collections"
-  add_foreign_key "anomaly_notifications", "exercises"
-  add_foreign_key "authentication_tokens", "study_groups"
-  add_foreign_key "community_solution_contributions", "community_solution_locks"
-  add_foreign_key "community_solution_contributions", "community_solutions"
-  add_foreign_key "community_solution_contributions", "study_groups"
-  add_foreign_key "community_solution_locks", "community_solutions"
-  add_foreign_key "community_solutions", "exercises"
-  add_foreign_key "events", "programming_groups"
-  add_foreign_key "events", "study_groups"
-  add_foreign_key "events_synchronized_editor", "files"
-  add_foreign_key "events_synchronized_editor", "programming_groups"
-  add_foreign_key "events_synchronized_editor", "study_groups"
   create_table "webauthn_credentials", force: :cascade do |t|
     t.string "external_id", null: false
     t.string "public_key", null: false
@@ -697,6 +684,19 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_26_204319) do
     t.index ["user_type", "user_id"], name: "index_webauthn_credentials_on_user"
   end
 
+  add_foreign_key "anomaly_notifications", "exercise_collections"
+  add_foreign_key "anomaly_notifications", "exercises"
+  add_foreign_key "authentication_tokens", "study_groups"
+  add_foreign_key "community_solution_contributions", "community_solution_locks"
+  add_foreign_key "community_solution_contributions", "community_solutions"
+  add_foreign_key "community_solution_contributions", "study_groups"
+  add_foreign_key "community_solution_locks", "community_solutions"
+  add_foreign_key "community_solutions", "exercises"
+  add_foreign_key "events", "programming_groups"
+  add_foreign_key "events", "study_groups"
+  add_foreign_key "events_synchronized_editor", "files"
+  add_foreign_key "events_synchronized_editor", "programming_groups"
+  add_foreign_key "events_synchronized_editor", "study_groups"
   add_foreign_key "exercise_tips", "exercise_tips", column: "parent_exercise_tip_id"
   add_foreign_key "exercise_tips", "exercises"
   add_foreign_key "exercise_tips", "tips"
