@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_26_204319) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_125320) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -267,12 +267,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_26_204319) do
   create_table "external_users", id: :serial, force: :cascade do |t|
     t.integer "consumer_id"
     t.string "email"
-    t.string "external_id"
+    t.string "external_id", null: false
     t.string "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "platform_admin", default: false, null: false
     t.string "webauthn_user_id"
+    t.index ["external_id", "consumer_id"], name: "index_external_users_on_external_id_and_consumer_id", unique: true
   end
 
   create_table "file_templates", id: :serial, force: :cascade do |t|

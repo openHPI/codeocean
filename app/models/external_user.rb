@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExternalUser < User
-  validates :external_id, presence: true
+  validates :external_id, presence: true, uniqueness: {scope: :consumer_id}
   has_many :lti_parameters, dependent: :destroy
 
   def displayname

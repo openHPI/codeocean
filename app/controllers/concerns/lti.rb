@@ -187,8 +187,10 @@ module Lti
   end
 
   def set_user
-    @user = ExternalUser.find_or_create_by(consumer_id: @consumer.id, external_id: @provider.user_id)
+    @user = ExternalUser.find_or_create_by!(consumer_id: @consumer.id, external_id: @provider.user_id)
     @user.update(email: external_user_email(@provider), name: external_user_name(@provider))
+  rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+    retry
   end
 
   def set_study_group_membership
