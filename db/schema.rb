@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_02_130326) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_133509) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -483,15 +483,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_130326) do
   end
 
   create_table "runners", force: :cascade do |t|
-    t.string "runner_id"
-    t.bigint "execution_environment_id"
-    t.string "contributor_type"
-    t.bigint "contributor_id"
+    t.string "runner_id", null: false
+    t.bigint "execution_environment_id", null: false
+    t.string "contributor_type", null: false
+    t.bigint "contributor_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "reserved_until"
     t.index ["contributor_type", "contributor_id"], name: "index_runners_on_user"
     t.index ["execution_environment_id"], name: "index_runners_on_execution_environment_id"
+    t.index ["runner_id", "contributor_id", "contributor_type"], name: "idx_on_runner_id_contributor_id_contributor_type_b9e84feea3", unique: true
+    t.index ["runner_id"], name: "index_runners_on_runner_id", unique: true
   end
 
   create_table "searches", id: :serial, force: :cascade do |t|
@@ -714,6 +716,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_130326) do
   add_foreign_key "programming_groups", "exercises"
   add_foreign_key "remote_evaluation_mappings", "programming_groups"
   add_foreign_key "remote_evaluation_mappings", "study_groups"
+  add_foreign_key "runners", "execution_environments"
   add_foreign_key "structured_error_attributes", "error_template_attributes"
   add_foreign_key "structured_error_attributes", "structured_errors"
   add_foreign_key "structured_errors", "error_templates"

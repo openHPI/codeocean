@@ -11,8 +11,8 @@ class Runner < ApplicationRecord
   RESERVATION_BUFFER = 1.second
 
   before_validation :request_id
-  validates :runner_id, presence: true
-
+  validates :runner_id, presence: true, uniqueness: true
+  validates :execution_environment_id, uniqueness: {scope: %i[contributor_id contributor_type]}
   attr_accessor :strategy
 
   def self.strategy_class

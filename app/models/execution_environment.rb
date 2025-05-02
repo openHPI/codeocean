@@ -15,6 +15,7 @@ class ExecutionEnvironment < ApplicationRecord
   belongs_to :file_type
   has_many :error_templates
   has_many :testrun_execution_environments, dependent: :destroy
+  has_many :runners, dependent: :destroy
 
   scope :with_exercises, -> { where('id IN (SELECT execution_environment_id FROM exercises)') }
 
