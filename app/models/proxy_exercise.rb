@@ -69,10 +69,12 @@ class ProxyExercise < ApplicationRecord
             raise "Unknown algorithm #{algorithm}"
         end
 
-      user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create(user:,
+      user.user_proxy_exercise_exercises << UserProxyExerciseExercise.create!(user:,
         exercise: matching_exercise, proxy_exercise: self, reason: @reason.to_json)
       matching_exercise
     end
+  rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+    retry
   end
 
   def find_matching_exercise(user)

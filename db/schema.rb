@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_02_133509) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_170658) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -660,15 +660,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_133509) do
   end
 
   create_table "user_proxy_exercise_exercises", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.string "user_type"
-    t.integer "proxy_exercise_id"
-    t.integer "exercise_id"
+    t.integer "user_id", null: false
+    t.string "user_type", null: false
+    t.integer "proxy_exercise_id", null: false
+    t.integer "exercise_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "reason"
     t.index ["exercise_id"], name: "index_user_proxy_exercise_exercises_on_exercise_id"
     t.index ["proxy_exercise_id"], name: "index_user_proxy_exercise_exercises_on_proxy_exercise_id"
+    t.index ["user_id", "user_type", "proxy_exercise_id"], name: "idx_on_user_id_user_type_proxy_exercise_id_50cfc18ee8", unique: true
     t.index ["user_type", "user_id"], name: "index_user_proxy_exercise_exercises_on_user"
   end
 
@@ -731,4 +732,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_133509) do
   add_foreign_key "user_exercise_feedbacks", "submissions"
   add_foreign_key "user_exercise_interventions", "exercises"
   add_foreign_key "user_exercise_interventions", "interventions"
+  add_foreign_key "user_proxy_exercise_exercises", "exercises"
+  add_foreign_key "user_proxy_exercise_exercises", "proxy_exercises"
 end
