@@ -14,6 +14,8 @@ class StudyGroup < ApplicationRecord
   has_many :pair_programming_exercise_feedbacks
   belongs_to :consumer
 
+  validates :external_id, uniqueness: {scope: :consumer_id}
+
   def users
     external_users + internal_users
   end

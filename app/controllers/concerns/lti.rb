@@ -196,17 +196,19 @@ module Lti
   def set_study_group_membership
     group = if context_id?
               # Ensure to find the group independent of the name and set it only once.
-              StudyGroup.find_or_create_by(external_id: @provider.context_id, consumer: @consumer) do |new_group|
+              StudyGroup.find_or_create_by!(external_id: @provider.context_id, consumer: @consumer) do |new_group|
                 new_group.name = @provider.context_title
               end
             else
-              StudyGroup.find_or_create_by(external_id: @provider.resource_link_id, consumer: @consumer)
+              StudyGroup.find_or_create_by!(external_id: @provider.resource_link_id, consumer: @consumer)
             end
 
-    study_group_membership = StudyGroupMembership.find_or_create_by(study_group: group, user: @user)
+    study_group_membership = StudyGroupMembership.find_or_create_by!(study_group: group, user: @user)
     study_group_membership.update(role: external_user_role(@provider))
     session[:study_group_id] = group.id
     @user.store_current_study_group_id(group.id)
+  rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+    retry
   end
 
   def set_embedding_options
