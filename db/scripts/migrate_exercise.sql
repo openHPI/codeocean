@@ -10,6 +10,29 @@ BEGIN
         RETURN;
     END IF;
 
+    IF EXISTS(SELECT 1
+              FROM exercise_tips
+              WHERE exercise_id = duplicated_exercise) THEN
+        RAISE NOTICE 'Exercise % has tips. Please migrate tips manually and try again', duplicated_exercise;
+        RETURN;
+    END IF;
+
+    IF EXISTS(SELECT 1
+              FROM community_solutions
+              WHERE exercise_id = duplicated_exercise) THEN
+        RAISE NOTICE 'Exercise % has a community solution. Please migrate the community solution and their contribution (locks) manually and try again', duplicated_exercise;
+        RETURN;
+    END IF;
+
+    IF EXISTS(SELECT 1
+              FROM programming_groups a, programming_groups b
+              WHERE (a.exercise_id = target_exercise AND b.exercise_id = duplicated_exercise)
+              OR (a.exercise_id = duplicated_exercise AND b.exercise_id = target_exercise)) THEN
+        RAISE NOTICE 'Both, exercise % and % have programming groups. Please re-consider the effects (and change the script).', target_exercise, duplicated_exercise;
+        RETURN;
+    END IF;
+
+    UPDATE programming_groups SET exercise_id = target_exercise WHERE exercise_id = duplicated_exercise;
     UPDATE submissions SET exercise_id = target_exercise WHERE exercise_id = duplicated_exercise;
     UPDATE request_for_comments SET exercise_id = target_exercise WHERE exercise_id = duplicated_exercise;
 
@@ -36,11 +59,63 @@ BEGIN
     UPDATE events SET exercise_id = target_exercise where exercise_id = duplicated_exercise;
     UPDATE searches SET exercise_id = target_exercise where exercise_id = duplicated_exercise;
     UPDATE user_exercise_interventions SET exercise_id = target_exercise where exercise_id = duplicated_exercise;
+
+    WITH existing_user_proxy_exercise_exercises AS (SELECT CONCAT(user_type, '_', user_id, '_', proxy_exercise_id) as existing
+        FROM user_proxy_exercise_exercises
+        WHERE exercise_id = target_exercise)
+    DELETE FROM user_proxy_exercise_exercises
+    WHERE exercise_id = duplicated_exercise
+      AND CONCAT(user_type, '_', user_id, '_', proxy_exercise_id) IN (SELECT existing FROM existing_user_proxy_exercise_exercises);
+
     UPDATE user_proxy_exercise_exercises SET exercise_id = target_exercise where exercise_id = duplicated_exercise;
 
-    DELETE FROM anomaly_notifications WHERE exercise_id = duplicated_exercise;
-    DELETE FROM exercise_tags WHERE exercise_id = duplicated_exercise;
-    DELETE FROM lti_parameters WHERE exercise_id = duplicated_exercise;
+    WITH existing_anomaly_notifications AS (SELECT CONCAT(contributor_type, '_', contributor_id, '_', exercise_collection_id) as existing
+        FROM anomaly_notifications
+        WHERE exercise_id = target_exercise)
+    DELETE FROM anomaly_notifications WHERE exercise_id = duplicated_exercise
+      AND CONCAT(contributor_type, '_', contributor_id, '_', exercise_collection_id) IN (SELECT existing FROM existing_anomaly_notifications);
+
+    UPDATE anomaly_notifications SET exercise_id = target_exercise WHERE exercise_id = duplicated_exercise;
+
+    WITH existing_exercise_tags AS (SELECT tag_id as existing
+        FROM exercise_tags
+        WHERE exercise_id = tag_id)
+    DELETE FROM exercise_tags
+    WHERE tag_id = duplicated_exercise
+      AND tag_id IN (SELECT existing FROM existing_exercise_tags);
+
+    UPDATE exercise_tags SET exercise_id = target_exercise WHERE exercise_id = duplicated_exercise;
+
+    WITH existing_lti_parameters AS (SELECT CONCAT(external_user_id, '_', study_group_id) as existing
+                                     FROM lti_parameters
+                                     WHERE exercise_id = target_exercise)
+    DELETE FROM lti_parameters
+    WHERE exercise_id = duplicated_exercise
+      AND CONCAT(external_user_id, '_', study_group_id) IN (SELECT existing FROM existing_lti_parameters);
+
+    UPDATE lti_parameters SET exercise_id = target_exercise WHERE exercise_id = duplicated_exercise;
+
+    WITH existing_pair_programming_exercise_feedbacks
+    AS (SELECT CONCAT(user_type, '_', user_id, '_', study_group_id, '_', programming_group_id) as existing
+        FROM pair_programming_exercise_feedbacks
+        WHERE exercise_id = target_exercise)
+    DELETE FROM pair_programming_exercise_feedbacks
+    WHERE exercise_id = duplicated_exercise
+      AND CONCAT(user_type, '_', user_id, '_', study_group_id, '_', programming_group_id) IN
+          (SELECT existing FROM existing_pair_programming_exercise_feedbacks);
+
+    UPDATE pair_programming_exercise_feedbacks SET exercise_id = target_exercise WHERE user_id = duplicated_exercise;
+
+    WITH existing_pair_programming_waiting_users AS (SELECT CONCAT(user_type, '_', user_id) as existing
+        FROM pair_programming_waiting_users
+        WHERE exercise_id = target_exercise)
+    DELETE FROM pair_programming_waiting_users
+    WHERE exercise_id = duplicated_exercise
+      AND CONCAT(user_type, '_', user_id) IN (SELECT existing FROM existing_pair_programming_waiting_users);
+
+    UPDATE pair_programming_waiting_users SET exercise_id = target_exercise WHERE exercise_id = duplicated_exercise;
+
+    -- We need to invalidate the remove evaluation mappings for the duplicated exercise, since the local file mapping (within the `.co` file) is broken otherwise.
     DELETE FROM remote_evaluation_mappings WHERE exercise_id = duplicated_exercise;
 
     -- Preventing duplicated entries in exercise_collection_items
@@ -90,7 +165,7 @@ $$;
 /* Execute migration
 do $$
 begin
-	perform migrate_exercise(target_exercise := 237, duplicated_exercise := 695);
+    perform migrate_exercise(target_exercise := 237, duplicated_exercise := 695);
 end
 $$;
 */
