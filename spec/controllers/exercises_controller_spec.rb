@@ -463,6 +463,18 @@ RSpec.describe ExercisesController do
         expect(response.parsed_body.symbolize_keys[:uuid_found]).to be false
       end
     end
+
+    context 'when uuid is nil' do
+      let(:exercise) { create(:dummy, uuid: nil) }
+      let(:uuid) { nil }
+
+      it 'renders correct response' do
+        post_request
+        expect(response).to have_http_status(:success)
+
+        expect(response.parsed_body.symbolize_keys[:uuid_found]).to be false
+      end
+    end
   end
 
   describe 'POST #import_task' do
