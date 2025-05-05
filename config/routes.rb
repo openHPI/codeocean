@@ -91,6 +91,7 @@ Rails.application.routes.draw do
       get 'study_group_dashboard/:study_group_id', to: 'exercises#study_group_dashboard'
       post :export_external_check
       post :export_external_confirm
+      get :download_proforma
     end
 
     resources :programming_groups

@@ -522,4 +522,34 @@ RSpec.describe ExercisesController do
       end
     end
   end
+
+  describe 'GET #download_proforma' do
+    subject(:get_request) { get :download_proforma, params: {id: exercise.id} }
+
+    let(:zip) { instance_double(StringIO, string: 'dummy') }
+
+    before do
+      allow(ProformaService::ExportTask).to receive(:call).with(exercise:).and_return(zip)
+    end
+
+    it 'calls the ExportTask service' do
+      get_request
+      expect(ProformaService::ExportTask).to have_received(:call)
+    end
+
+    it 'sends the correct data' do
+      get_request
+      expect(response.body).to eql 'dummy'
+    end
+
+    it 'sets the correct Content-Type header' do
+      get_request
+      expect(response.header['Content-Type']).to eql 'application/zip'
+    end
+
+    it 'sets the correct Content-Disposition header' do
+      get_request
+      expect(response.header['Content-Disposition']).to include "attachment; filename=\"exercise_#{exercise.id}.zip\""
+    end
+  end
 end
