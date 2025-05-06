@@ -15,7 +15,7 @@
     "@webpack-cli/serve": "^3.0.1",
     "ace-builds": "^1.41.0",
     "babel-loader": "^10.0.0",
-    "bootstrap": "^5.3.5",
+    "bootstrap": "^5.3.6",
     "bootswatch": "^5.3.5",
     "chosen-js": "^1.8.7",
     "component-emitter": "^2.0.0",
