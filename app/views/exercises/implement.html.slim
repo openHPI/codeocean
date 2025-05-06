@@ -2,6 +2,8 @@
   // Force a full page reload, see https://github.com/turbolinks/turbolinks/issues/326.
      Otherwise, lti_parameters might be nil
   meta name='turbolinks-cache-control' content='no-cache'
+  - append_stylesheet_pack_tag("multilang_#{I18n.locale}")
+
 
 #editor-column
   - unless @embed_options[:hide_exercise_description]
