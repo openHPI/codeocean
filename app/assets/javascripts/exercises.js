@@ -344,7 +344,6 @@ $(document).on('turbolinks:load', function () {
     var observeExportButtons = function () {
         $('.export-start').on('click', function (e) {
             e.preventDefault();
-            new bootstrap.Modal($('#export-modal')).show();
             exportExerciseStart($(this).data().exerciseId);
         });
         body_selector.on('click', '.export-retry-button', function () {
@@ -356,11 +355,11 @@ $(document).on('turbolinks:load', function () {
     }
 
     var exportExerciseStart = function (exerciseID) {
-        const $exerciseDiv = $('#export-exercise');
-        const $messageDiv = $exerciseDiv.children('.export-message');
-        const $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
+        const $exerciseDiv = $('#exercise-transfer');
+        const $messageDiv = $exerciseDiv.children('.transfer-message');
+        const $actionsDiv = $exerciseDiv.children('.transfer-exercise-actions');
 
-        $messageDiv.removeClass('export-failure');
+        $messageDiv.removeClass('transfer-failure');
 
         $messageDiv.html(I18n.t('exercises.export_codeharbor.checking_codeharbor'));
         $actionsDiv.html('<div class="spinner-border"></div>');
@@ -380,9 +379,9 @@ $(document).on('turbolinks:load', function () {
     };
 
     var exportExerciseConfirm = function (exerciseID) {
-        const $exerciseDiv = $('#export-exercise');
-        const $messageDiv = $exerciseDiv.children('.export-message');
-        const $actionsDiv = $exerciseDiv.children('.export-exercise-actions');
+        const $exerciseDiv = $('#exercise-transfer');
+        const $messageDiv = $exerciseDiv.children('.transfer-message');
+        const $actionsDiv = $exerciseDiv.children('.transfer-exercise-actions');
 
         return $.ajax({
             type: 'POST',
@@ -395,11 +394,11 @@ $(document).on('turbolinks:load', function () {
                 if (response.status === 'success') {
                     $messageDiv.addClass('export-success');
                     setTimeout((function () {
-                        bootstrap.Modal.getInstance($('#export-modal'))?.hide();
+                        bootstrap.Modal.getInstance($('#transfer-modal'))?.hide();
                         $messageDiv.html('').removeClass('export-success');
                     }), 3000);
                 } else {
-                    $messageDiv.addClass('export-failure');
+                    $messageDiv.addClass('transfer-failure');
                 }
             },
             error: function (a, b, c) {
@@ -408,6 +407,76 @@ $(document).on('turbolinks:load', function () {
         });
     };
 
+    var observeImportButtons = function () {
+        const $exerciseDiv = $('#exercise-transfer');
+        const $messageDiv = $exerciseDiv.children('.transfer-message');
+        const $actionsDiv = $exerciseDiv.children('.transfer-exercise-actions');
+
+        $('.import-start').on('click', function (e) {
+            e.preventDefault();
+            importExerciseStart();
+        });
+        body_selector.on('change', '#proforma-file', async function () {
+            const file = event.target.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            return $.ajax({
+                type: 'POST',
+                url: Routes.import_start_exercises_path(),
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                success: function (response) {
+                    if(response.status === 'failure')
+                        $messageDiv.addClass('transfer-failure');
+                    else
+                        $messageDiv.removeClass('transfer-failure');
+                    $messageDiv.html(response.message);
+                    return $actionsDiv.html(response.actions);
+                },
+                error: function (a, b, c) {
+                    return alert(`error: ${c}`);
+                }
+            });
+        });
+        body_selector.on('click', '.import-action', async function () {
+            let fileId = $(this).attr('data-file-id')
+            let importType = $(this).attr('data-import-type')
+            importExerciseConfirm(fileId, importType)
+        });
+    }
+    var importExerciseStart = function () {
+        const $exerciseDiv = $('#exercise-transfer');
+        const $messageDiv = $exerciseDiv.children('.transfer-message');
+        const $actionsDiv = $exerciseDiv.children('.transfer-exercise-actions');
+
+        $messageDiv.removeClass('transfer-failure');
+        $messageDiv.html(I18n.t('exercises.import_proforma.dialog.start'));
+        $actionsDiv.html(`<label for="proforma-file" class="btn btn-primary">${I18n.t('exercises.import_start.upload_file')}</label><input type="file" id="proforma-file" name="proforma-file" accept=".zip,application/zip" >`);
+    }
+
+    var importExerciseConfirm = function (fileId, importType) {
+        const $exerciseDiv = $('#exercise-transfer');
+        const $messageDiv = $exerciseDiv.children('.transfer-message');
+        const $actionsDiv = $exerciseDiv.children('.transfer-exercise-actions');
+
+        $.ajax({
+            type: 'POST',
+            url: Routes.import_confirm_exercises_path(),
+            data: {file_id: fileId, import_type: importType},
+            dataType: 'json',
+
+            success: function (response) {
+                $messageDiv.html(response.message);
+                return $actionsDiv.html(response.actions);
+            },
+            error: function (a, b, c) {
+                return alert(`error: ${c}`);
+            }
+        });
+    }
     var overrideTextareaTabBehavior = function () {
         $('.mb-3 textarea[name$="[content]"]').on('keydown', function (event) {
             if (event.which === TAB_KEY_CODE) {
@@ -463,6 +532,7 @@ $(document).on('turbolinks:load', function () {
         if ($('table:not(#tags-table)').isPresent()) {
             enableBatchUpdate();
             observeExportButtons();
+            observeImportButtons();
         } else if ($('.edit_exercise, .new_exercise').isPresent()) {
             const form_selector = $('form');
             execution_environments = form_selector.data('execution-environments');
