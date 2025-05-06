@@ -4,6 +4,7 @@
   meta name='turbolinks-visit-control' content='reload'
   - append_javascript_pack_tag('highlight')
   - append_stylesheet_pack_tag('highlight')
+  - append_stylesheet_pack_tag("multilang_#{I18n.locale}")
 
 h1
   = @tip.to_s
