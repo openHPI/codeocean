@@ -7,3 +7,14 @@
 #   command: "SoftDeletedRecord.due.delete_all"
 #   priority: 2
 #   schedule: at 5am every day
+
+detect_exercise_anomalies_job:
+  class: DetectExerciseAnomaliesJob
+  args:
+    - number_of_exercises: 10
+      number_of_contributors: 50
+  schedule: at 3am every day
+
+clear_finished_jobs:
+  command: "SolidQueue::Job.clear_finished_in_batches"
+  schedule: at 3am every day

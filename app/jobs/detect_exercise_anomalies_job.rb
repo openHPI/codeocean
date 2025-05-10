@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
-namespace :detect_exercise_anomalies do
-  # uncomment for debug logging:
-  # logger           = Logger.new($stdout)
-  # logger.level     = Logger::DEBUG
-  # Rails.logger     = logger
+class DetectExerciseAnomaliesJob < ApplicationJob
+  include TimeHelper
 
-  # rubocop:disable Lint/ConstantDefinitionInBlock, Style/MutableConstant
   # These factors determine if an exercise is an anomaly, given the average working time (avg):
   # (avg * MIN_TIME_FACTOR) <= working_time <= (avg * MAX_TIME_FACTOR)
   MIN_TIME_FACTOR = 0.1
@@ -18,19 +14,13 @@ namespace :detect_exercise_anomalies do
   # Determines margin below which contributor working times will be considered data errors (e.g. copy/paste solutions)
   MIN_CONTRIBUTOR_WORKING_TIME = 0.0
 
-  # Cache exercise working times, because queries are expensive and values do not change between collections
-  WORKING_TIME_CACHE = {}
-  AVERAGE_WORKING_TIME_CACHE = {}
-  # rubocop:enable Lint/ConstantDefinitionInBlock, Style/MutableConstant
-
-  task :with_at_least, %i[number_of_exercises number_of_contributors] => :environment do |_task, args|
-    include TimeHelper
+  def perform(number_of_exercises:, number_of_contributors:)
+    # Cache exercise working times, because queries are expensive and values do not change between collections
+    @working_time_cache = {}
+    @average_working_time_cache = {}
 
     # Set intervalstyle to iso_8601 to avoid problems with time parsing.
     ApplicationRecord.connection.exec_query("SET intervalstyle = 'iso_8601';")
-
-    number_of_exercises = args[:number_of_exercises]
-    number_of_contributors = args[:number_of_contributors]
 
     log "Searching for exercise collections with at least #{number_of_exercises} exercises and #{number_of_contributors} contributors."
     # Get all exercise collections that have at least the specified amount of exercises and at least the specified
@@ -52,7 +42,7 @@ namespace :detect_exercise_anomalies do
   end
 
   def log(message = '', indent_level = 0, prefix = '')
-    puts(("\t" * indent_level) + "#{prefix}#{message}")
+    Rails.logger.debug { ("\t" * indent_level) + "#{prefix}#{message}" }
   end
 
   def get_collections(number_of_exercises, number_of_solutions)
@@ -92,23 +82,23 @@ namespace :detect_exercise_anomalies do
   end
 
   def get_average_working_time(exercise)
-    unless AVERAGE_WORKING_TIME_CACHE.key?(exercise.id)
+    unless @average_working_time_cache.key?(exercise.id)
       seconds = time_to_f exercise.average_working_time
-      AVERAGE_WORKING_TIME_CACHE[exercise.id] = seconds
+      @average_working_time_cache[exercise.id] = seconds
     end
-    AVERAGE_WORKING_TIME_CACHE[exercise.id]
+    @average_working_time_cache[exercise.id]
   end
 
   def get_contributor_working_times(exercise)
-    unless WORKING_TIME_CACHE.key?(exercise.id)
+    unless @working_time_cache.key?(exercise.id)
       exercise.retrieve_working_time_statistics
-      WORKING_TIME_CACHE[exercise.id] = exercise.working_time_statistics.flat_map do |contributor_type, contributor_id_with_result|
+      @working_time_cache[exercise.id] = exercise.working_time_statistics.flat_map do |contributor_type, contributor_id_with_result|
         contributor_id_with_result.flat_map do |contributor_id, result|
           {[contributor_type, contributor_id] => result}
         end
       end.inject(:merge)
     end
-    WORKING_TIME_CACHE[exercise.id]
+    @working_time_cache[exercise.id]
   end
 
   def notify_collection_author(collection, anomalies)
