@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       db:
-        image: postgres:16
+        image: postgres:17
         env:
           POSTGRES_PASSWORD: postgres
         ports:
@@ -34,7 +34,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
       - name: Enable Corepack
         run: corepack enable
       - name: Get yarn cache directory path

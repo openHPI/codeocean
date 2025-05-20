@@ -22,19 +22,19 @@ sudo apt-get update
 sudo apt-get -y install git ca-certificates curl libpq-dev libicu-dev
 ```
 
-### Install PostgreSQL 16:
+### Install PostgreSQL 17:
 
 **macOS:**
 ```shell
-brew install postgresql@16
-brew services start postgresql@16
+brew install postgresql@17
+brew services start postgresql@17
 ```
 
 **Linux:**
 ```shell
 curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null
 echo "deb [arch=$(dpkg --print-architecture)] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-sudo apt-get update && sudo apt-get -y install postgresql-16 postgresql-client-16
+sudo apt-get update && sudo apt-get -y install postgresql-17 postgresql-client-17
 sudo -u postgres createuser $(whoami) -ed
 ```
 
@@ -96,12 +96,12 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh | bash
 nvm -v
 ```
 
-### Install NodeJS 20 and Yarn:
+### Install NodeJS 22 and Yarn:
 
 Reload your shell (e.g., by closing and reopening the terminal) and continue with installing Node:
 
 ```shell
-nvm install lts/iron
+nvm install lts/jod
 corepack enable 
 ```
 
@@ -110,7 +110,7 @@ corepack enable
 node -v
 yarn -v
 ```
-If you have several node versions installed, check that you are using the correct version. To view your installed versions, run `nvm list`. `lts/iron` should be the current and default version. You can adjust this by running `nvm alias default lts/iron`.
+If you have several node versions installed, check that you are using the correct version. To view your installed versions, run `nvm list`. `lts/jod` should be the current and default version. You can adjust this by running `nvm alias default lts/jod`.
 
 ### Clone the repository:
 
