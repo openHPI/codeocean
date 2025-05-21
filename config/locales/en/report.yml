@@ -1,0 +1,7 @@
+---
+en:
+  report_mailer:
+    report_content:
+      prolog: 'The following content has been reported as inappropriate:'
+      subject: 'Spam Report: A %{content_name} on CodeOcean has been marked as inappropriate.'
+      take_action: Please take action if required.

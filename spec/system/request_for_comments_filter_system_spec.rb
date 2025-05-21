@@ -37,4 +37,15 @@ RSpec.describe 'Request_for_Comments' do
     visit(request_for_comments_path)
     expect(page).to have_css('ul.pagination')
   end
+
+  it 'allows reporting of RfCs', :js do
+    request_for_comment = create(:rfc)
+    visit(request_for_comment_path(request_for_comment))
+
+    accept_confirm do
+      click_on I18n.t('request_for_comments.report.report')
+    end
+
+    expect(page).to have_text(I18n.t('request_for_comments.report.reported'))
+  end
 end
