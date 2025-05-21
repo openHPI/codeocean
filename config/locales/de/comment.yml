@@ -8,3 +8,7 @@ de:
   comments:
     deleted: Gelöscht
     save_update: Speichern
+  reports:
+    confirm: are you sure about this?
+    report: report
+    reported: We have received your Report.

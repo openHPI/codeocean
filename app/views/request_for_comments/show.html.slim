@@ -28,6 +28,7 @@
       .text
         - question = @request_for_comment.question
         = question.presence || t('request_for_comments.no_question')
+        = button_to t('reports.report'), reports_path, params: { global_content_id: @request_for_comment.to_global_id }, data: { confirm: t('reports.confirm') }
 
     - if policy(@request_for_comment).mark_as_solved? && !@request_for_comment.solved?
       = render('mark_as_solved')

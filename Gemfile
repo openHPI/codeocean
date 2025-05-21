@@ -64,6 +64,7 @@ gem 'sentry-rails' # rubocop:disable Bundler/OrderedGems
 gem 'sentry-ruby'
 
 group :development do
+  gem 'ruby-lsp'
   gem 'web-console'
 end
 

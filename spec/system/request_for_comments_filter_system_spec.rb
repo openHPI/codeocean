@@ -37,4 +37,18 @@ RSpec.describe 'Request_for_Comments' do
     visit(request_for_comments_path)
     expect(page).to have_css('ul.pagination')
   end
+
+  it 'allows reporeting requests for comments and comments', :js do
+    request_for_comment = create(:rfc)
+    visit(request_for_comment_path(request_for_comment))
+
+    expect do
+      accept_confirm do
+        click_on 'report'
+      end
+
+      expect(page).to have_text('We have received your Report.')
+    end.to have_enqueued_mail(ReportMailer, :report_content)
+      .with(params: {reported_content: request_for_comment}, args: [])
+  end
 end

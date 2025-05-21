@@ -1,0 +1,15 @@
+The following content has been reported as inappropriate:
+
+<% case @reported_content %>
+  <% when Comment %>
+    <%= @reported_content.text %>
+  <% when RequestForComment %>
+    <%= @reported_content.question %>
+  <% else %>
+    <% raise("Unexpected reported content: #{@reported_content.class.name}") %>
+<% end %>
+
+Please take action on the admin page if required.
+<%= rails_admin.show_url(
+      model_name: @reported_content.class.name.underscore,
+      id: @reported_content.id) %>
