@@ -158,6 +158,9 @@ do
     cp config/$f.example config/$f
   fi
 done
+
+sed -i.bak 's/^# - mail@example.com/- mail@example.com/' config/code_ocean.yml
+rm config/code_ocean.yml.bak
 ```
 
 Then, you should check all config files manually and adjust settings where necessary for your environment.

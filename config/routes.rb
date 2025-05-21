@@ -196,6 +196,8 @@ Rails.application.routes.draw do
   get 'service-worker', to: 'rails/pwa#service_worker', as: :pwa_service_worker, defaults: {format: :js}
   get 'manifest(.:file_extension)', to: 'rails/pwa#manifest', as: :pwa_manifest, defaults: {format: :webmanifest}, format: false, constraints: {file_extension: %w[json webmanifest]}
 
+  resources :reports, only: :create
+
   # Defines the root path route ("/")
   root to: 'application#welcome'
 end

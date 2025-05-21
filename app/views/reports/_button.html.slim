@@ -1,0 +1,5 @@
+- if policy(:report).show?
+  = button_to t('reports.report'), reports_path,
+      params: {global_content_id: reported_content.to_global_id},
+      data: {confirm: t('reports.confirm')},
+      class: 'btn btn-light btn-sm'

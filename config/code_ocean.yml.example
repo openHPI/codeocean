@@ -55,6 +55,10 @@ default: &default
     # be truly greater than any permitted execution time of an execution environment.
     unused_runner_expiration_time: 180
 
+  content_moderation:
+    # Email address to receive reports about inappropriate content.
+    report_emails:
+      # - report@example.com
 
 development:
   <<: *default
