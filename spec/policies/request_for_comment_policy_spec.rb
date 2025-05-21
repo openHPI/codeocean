@@ -5,6 +5,12 @@ require 'rails_helper'
 RSpec.describe RequestForCommentPolicy do
   subject(:policy) { described_class }
 
+  let(:reports_enabled) { false }
+
+  before do
+    stub_const('RequestForCommentPolicy::REPORT_RECEIVER_CONFIGURED', reports_enabled)
+  end
+
   context 'when the RfC visibility is not considered' do
     let(:submission) { create(:submission, study_group: create(:study_group)) }
     let(:rfc) { create(:rfc, submission:, user: submission.contributor) }
@@ -46,6 +52,27 @@ RSpec.describe RequestForCommentPolicy do
         end
       end
     end
+
+    permissions(:report?) do
+      context 'when report emails are configured' do
+        let(:reports_enabled) { true }
+
+        it 'allows anyone to report RfCs expect the author' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).to permit(create(factory_name), rfc)
+          end
+          expect(policy).not_to permit(rfc.author, rfc)
+        end
+      end
+
+      context 'when no report email is configured' do
+        it 'does not allow reports from anyone' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).not_to permit(create(factory_name), rfc)
+          end
+        end
+      end
+    end
   end
 
   context 'when the RfC visibility is considered' do
@@ -66,6 +93,24 @@ RSpec.describe RequestForCommentPolicy do
       end
     end
 
+    shared_examples 'grants report permissions to everyone but the author' do
+      permissions(:report?) do
+        let(:reports_enabled) { true }
+
+        it 'grants report permissions to everyone but the author' do
+          %i[external_user teacher admin].each do |factory_name|
+            expect(policy).to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+          end
+          expect(policy).not_to permit(rfc.author, rfc)
+        end
+
+        it 'grants report permissions to other authors of the programming group' do
+          rfc.submission.update(contributor: programming_group)
+          expect(policy).to permit(viewer_other_group_member, rfc)
+        end
+      end
+    end
+
     shared_examples 'grants access to admins and authors only' do
       it 'grants access to admins' do
         expect(policy).to permit(create(:admin, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
@@ -83,6 +128,31 @@ RSpec.describe RequestForCommentPolicy do
       it 'does not grant access to all other users' do
         %i[external_user teacher].each do |factory_name|
           expect(policy).not_to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+        end
+      end
+    end
+
+    shared_examples 'grants report permissions to admins and other authors only' do
+      permissions(:report?) do
+        let(:reports_enabled) { true }
+
+        it 'grants report permissions to admins' do
+          expect(policy).to permit(create(:admin, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+        end
+
+        it 'does not grant report permissions to authors' do
+          expect(policy).not_to permit(rfc.author, rfc)
+        end
+
+        it 'grant report permissions to other authors of the programming group' do
+          rfc.submission.update(contributor: programming_group)
+          expect(policy).to permit(viewer_other_group_member, rfc)
+        end
+
+        it 'does not grant report permissions to all other users' do
+          %i[external_user teacher].each do |factory_name|
+            expect(policy).not_to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+          end
         end
       end
     end
@@ -111,6 +181,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to everyone but the author'
         end
 
         context "when the viewer's rfc_visibility is set to consumer" do
@@ -122,6 +194,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
 
         context "when the viewer's rfc_visibility is set to study_group" do
@@ -133,6 +207,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
       end
 
@@ -151,6 +227,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to everyone but the author'
         end
 
         context 'when the viewer is from the same study group' do
@@ -165,6 +243,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to everyone but the author'
         end
       end
     end
@@ -182,6 +262,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
 
         context "when the viewer's rfc_visibility is set to consumer" do
@@ -193,6 +275,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
 
         context "when the viewer's rfc_visibility is set to study_group" do
@@ -204,6 +288,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
       end
 
@@ -222,6 +308,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to everyone but the author'
         end
 
         context 'when the viewer is from the same study group' do
@@ -236,6 +324,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to everyone but the author'
         end
       end
     end
@@ -253,6 +343,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
 
         context "when the viewer's rfc_visibility is set to consumer" do
@@ -264,6 +356,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
 
         context "when the viewer's rfc_visibility is set to study_group" do
@@ -275,6 +369,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
       end
 
@@ -289,6 +385,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to admins and other authors only'
         end
 
         context 'when the viewer is from the same study group' do
@@ -303,6 +401,8 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          it_behaves_like 'grants report permissions to everyone but the author'
         end
       end
     end

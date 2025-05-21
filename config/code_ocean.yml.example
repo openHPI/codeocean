@@ -55,6 +55,12 @@ default: &default
     # be truly greater than any permitted execution time of an execution environment.
     unused_runner_expiration_time: 180
 
+  content_moderation:
+    # Learners can report inappropriate content, such as offensive RfCs or comments.
+    # For each report, an email is sent to all addresses listed below. If no address is
+    # configured, learners cannot report user-generated content.
+    report_emails:
+      # - report@example.com
 
 development:
   <<: *default
@@ -62,6 +68,9 @@ development:
     enabled: true
   codeharbor:
     enabled: true
+  content_moderation:
+    report_emails:
+      - report@example.com
 
 
 production:
