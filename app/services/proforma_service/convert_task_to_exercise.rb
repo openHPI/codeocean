@@ -23,7 +23,7 @@ module ProformaService
       @exercise.assign_attributes(
         user: @user,
         title: @task.title,
-        description: @task.description,
+        description: @task.description.presence || @task.title,
         public: string_to_bool(extract_meta_data(@task.meta_data&.dig('meta-data'), 'public')) || false,
         hide_file_tree: string_to_bool(extract_meta_data(@task.meta_data&.dig('meta-data'), 'hide_file_tree')) || false,
         allow_file_creation: string_to_bool(extract_meta_data(@task.meta_data&.dig('meta-data'), 'allow_file_creation')) || false,
