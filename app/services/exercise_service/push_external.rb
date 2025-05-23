@@ -17,11 +17,22 @@ class ExerciseService
           request.headers['Authorization'] = "Bearer #{@codeharbor_link.api_key}"
           request.body = body
         end
+        return nil if response.success?
+        return I18n.t('exercises.export_codeharbor.not_authorized') if response.status == 401
 
-        response.success? ? nil : response.body
+        handle_error(message: response.body)
+      rescue Faraday::ServerError => e
+        handle_error(error: e, message: I18n.t('exercises.export_codeharbor.server_error'))
       rescue StandardError => e
-        e.message
+        handle_error(error: e)
       end
+    end
+
+    private
+
+    def handle_error(message: nil, error: nil)
+      Sentry.capture_exception(error) if error.present?
+      ERB::Util.html_escape(message || error.to_s)
     end
   end
 end
