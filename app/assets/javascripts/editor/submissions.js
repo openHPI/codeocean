@@ -189,6 +189,8 @@ CodeOceanEditorSubmissions = {
 
       await this.runSubmission(submission);
     });
+    this.showOutputBar();
+    $('html, body').animate({scrollTop: $(document).height() - $(window).height()}, 500);  
   },
 
   runSubmission: async function (submission) {
