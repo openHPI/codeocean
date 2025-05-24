@@ -33,6 +33,7 @@ class Exercise < ApplicationRecord
   has_many :programming_groups
   has_many :pair_programming_waiting_users
   has_many :request_for_comments
+  has_many :study_groups, through: :submissions
 
   validate :valid_main_file?
   validate :valid_submission_deadlines?
