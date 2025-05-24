@@ -63,7 +63,9 @@ Further, the following parameters can be used to customize the behavior of CodeO
 
 #### Embed Options
 
-Optionally, CodeOcean can be embedded in an another page, i.e., through an `iframe`. In this scenario, the following parameters are used to configure the behavior of the embedded CodeOcean environment. Those parameters are optional and each **must be prefixed by `custom_embed_options_`** to be recognized by CodeOcean. If an embed option should be configured, the value **must be `true`**. For example, only the configuration `custom_embed_options_hide_navbar=true` will effectively hide the top navigation bar, other combinations won't alter the behavior. 
+Optionally, CodeOcean can be embedded in an another page, i.e., through an `iframe`. In this scenario, the following parameters are used to configure the behavior of the embedded CodeOcean environment. Those parameters are optional and each **must be prefixed by `custom_embed_options_`** to be recognized by CodeOcean. If an embed option should be configured, the value **must be `true`**. For example, only the configuration `custom_embed_options_hide_navbar=true` will effectively hide the top navigation bar, other combinations won't alter the behavior.
+
+⚠️ Please consult with your LMS administrator on the correct way to pass these parameters. Some systems, such as openHPI, _automatically_ prefix the parameters with `custom_` and thus require only the remaining value to be set, e.g., `embed_options_hide_navbar=true`. Other systems, such as Moodle, require the full parameter name to be passed, e.g., `custom_embed_options_hide_navbar=true`.
 
 Embed options are stored in the user's (encrypted) session cookie and cannot be altered by them. The embed options can only be removed by logging out completely or by launching another exercise (without the respective embed options).
 
