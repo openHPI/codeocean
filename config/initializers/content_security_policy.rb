@@ -20,8 +20,10 @@ module CSP
   end
 
   def self.apply_sentry_settings_for(policy)
-    sentry_host_source = get_host_source(SentryJavascript.dsn)
-    add_policy(policy, :connect_src, [sentry_host_source])
+    SentryJavascript.dsns.each do |dsn|
+      sentry_host_source = get_host_source(dsn)
+      add_policy(policy, :connect_src, [sentry_host_source])
+    end
   end
 
   def self.apply_codespaces_settings_for(policy)

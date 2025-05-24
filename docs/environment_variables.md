@@ -13,7 +13,7 @@ The following environment variables are specifically support in CodeOcean and ar
 | `PORT` | `7000` | Default port for the web server |
 | `PIDFILE` | `tmp/pids/server.pid` | Location of the file to store the Puma process ID |
 | `SENTRY_DSN` | ` ` | Specifies the [Sentry error reporting](https://sentry.io) endpoint for the Rails server |  
-| `SENTRY_JAVASCRIPT_DSN` | ` `    | Specifies the [Sentry error reporting](https://sentry.io) endpoint for the frontend used by browsers |  
+| `SENTRY_JAVASCRIPT_DSN` | ` `    | Specifies a list of comma-separated [Sentry error reporting](https://sentry.io) endpoints for the frontend used by browsers. A subdomain endpoint for the respective request is preferred, otherwise the first value is used. |  
 | `SENTRY_CURRENT_ENV` | ` ` | Specifies the [Sentry](https://sentry.io) environment used for error reporting |  
 | `SENTRY_TRACE_SAMPLE_RATE` | `1.0` | Specifies the sampling rate for traces in [Sentry](https://sentry.io) |  
 | `RAILS_LOG_LEVEL` | `info` in production<br>`debug` in development | Specifies how many log messages to print. The available log levels are: `debug`, `info`, `warn`, `error`, `fatal`, and `unknown`. |
