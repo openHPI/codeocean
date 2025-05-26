@@ -527,7 +527,7 @@ GEM
       sprockets-rails
       tilt
     securerandom (0.4.1)
-    selenium-webdriver (4.32.0)
+    selenium-webdriver (4.33.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -957,7 +957,7 @@ CHECKSUMS
   sassc (2.4.0) sha256=4c60a2b0a3b36685c83b80d5789401c2f678c1652e3288315a1551d811d9f83e
   sassc-rails (2.1.2) sha256=5f4fdf3881fc9bdc8e856ffbd9850d70a2878866feae8114aa45996179952db5
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
-  selenium-webdriver (4.32.0) sha256=20dbdf27b586beeac9e2791a22312b414d0a30192b6ce144779f7dfde8ae8afe
+  selenium-webdriver (4.33.0) sha256=720cad35cb7c2fdd87706940ed107bf2ec6873e50fa45b26f497fa28a8f97e1d
   semantic_range (3.1.0) sha256=9fc01ee40f2e5f81042e95d421837f688177dd603753b5eab41ff9bba50a34a1
   sentry-rails (5.24.0) sha256=fb6a0c8de331cea8783806b2f2f85b93e780cc35ea0cb37ba9fdd84f112c949e
   sentry-ruby (5.24.0) sha256=420b15f4d81cf1cfddc4cb73d2282bcbaf111fe3554a6aa142f4cee2b870c437
