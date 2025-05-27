@@ -198,8 +198,8 @@ en:
         text: If you are struggling with this exercise, the available tips may help. You can find them at any time in the left sidebar and are also displayed below for your convenience.
       unpublished: The selected exercise has been deactivated. Hence, you cannot implement this exercise at the moment.
     import_confirm:
-      error: Import of ProformA task failed.
-      success: Import of ProformA Task was successful.
+      error: Import of ProFormA task failed.
+      success: Import of ProFormA Task was successful.
     import_proforma:
       button:
         import: Import
@@ -207,13 +207,13 @@ en:
         overwrite: Overwrite
         show_exercise: Show exercise
       dialog:
-        start: Press Upload and select and ProformaXML ZIP file to start importing.
+        start: Press Upload and select and ProFormAXML ZIP file to start importing.
       import_errors:
         internal_error: An internal error occurred on CodeOcean while importing the exercise.
         invalid: Invalid exercise
         invalid_zip: Invalid ZIP file
         no_xml_found: No XML file found in ZIP
-      label: Import ProformaXML ZIP
+      label: Import ProFormAXML ZIP
     import_start:
       choose_file_error: You need to choose a file.
       error: 'The following error occured: %{message}.'
