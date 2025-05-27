@@ -24,15 +24,15 @@ class ExerciseService
       rescue Faraday::ServerError => e
         handle_error(error: e, message: I18n.t('exercises.export_codeharbor.server_error'))
       rescue StandardError => e
-        handle_error(error: e)
+        handle_error(error: e, message: I18n.t('exercises.export_codeharbor.generic_error'))
       end
     end
 
     private
 
-    def handle_error(message: nil, error: nil)
+    def handle_error(message:, error: nil)
       Sentry.capture_exception(error) if error.present?
-      ERB::Util.html_escape(message || error.to_s)
+      ERB::Util.html_escape(message)
     end
   end
 end

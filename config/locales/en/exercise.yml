@@ -101,6 +101,7 @@ en:
       dialogtitle: Export to CodeHarbor
       error: An error occurred while contacting CodeHarbor
       export_failed: 'Export has failed.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
+      generic_error: An unknown error has occurred while exporting the exercise.
       label: Export to CodeHarbor
       not_authorized: Authorization with could not be established with CodeHarbor. Is the API Key correct?
       server_error: Connection to CodeHarbor failed. Remote host unreachable.

@@ -77,7 +77,7 @@ RSpec.describe ExerciseService::PushExternal do
           context 'when another error occurs' do
             let(:error) { 'another error' }
 
-            it { is_expected.to eql 'another error' }
+            it { is_expected.to eql I18n.t('exercises.export_codeharbor.generic_error') }
           end
         end
       end
