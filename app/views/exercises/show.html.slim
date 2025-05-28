@@ -23,6 +23,7 @@ h1.d-inline-block
     li = link_to(t('shared.destroy'), @exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'dropdown-item') if policy(@exercise).destroy?
     li = link_to(t('exercises.index.clone'), clone_exercise_path(@exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post, class: 'dropdown-item') if policy(@exercise).clone?
     li = link_to(t('exercises.export_codeharbor.label'), '', class: 'dropdown-item export-start', data: {'exercise-id': @exercise.id}) if policy(@exercise).export_external_confirm?
+    li = link_to(t('exercises.download_proforma.label'), download_proforma_exercise_path(@exercise), class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer') if policy(@exercise).download_proforma?
 
 = row(label: 'exercise.title', value: @exercise.title)
 = row(label: 'exercise.internal_title', value: @exercise.internal_title)

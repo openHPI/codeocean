@@ -534,4 +534,54 @@ RSpec.describe ExercisesController do
       end
     end
   end
+
+  describe 'GET #download_proforma' do
+    subject(:get_request) { get :download_proforma, params: {id: exercise.id} }
+
+    let(:zip) { instance_double(StringIO, string: 'dummy') }
+
+    context 'when export is successful' do
+      before do
+        allow(ProformaService::ExportTask).to receive(:call).with(exercise:).and_return(zip)
+      end
+
+      it 'calls the ExportTask service' do
+        get_request
+        expect(ProformaService::ExportTask).to have_received(:call)
+      end
+
+      it 'sends the correct data' do
+        get_request
+        expect(response.body).to eql 'dummy'
+      end
+
+      it 'sets the correct Content-Type header' do
+        get_request
+        expect(response.header['Content-Type']).to eql 'application/zip'
+      end
+
+      it 'sets the correct Content-Disposition header' do
+        get_request
+        expect(response.header['Content-Disposition']).to include "attachment; filename=\"exercise_#{exercise.id}.zip\""
+      end
+    end
+
+    context 'when export fails with PostGenerateValidationError' do
+      let(:error_message) { '["Error 1", "Error 2"]' }
+
+      before do
+        allow(ProformaService::ExportTask).to receive(:call).with(exercise:).and_raise(ProformaXML::PostGenerateValidationError.new(error_message))
+      end
+
+      it 'redirects to root' do
+        get_request
+        expect(response).to redirect_to(:root)
+      end
+
+      it 'sets a danger flash message' do
+        get_request
+        expect(flash[:danger]).to eq('Error 1<br>Error 2')
+      end
+    end
+  end
 end
