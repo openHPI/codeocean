@@ -101,7 +101,10 @@ de:
       dialogtitle: Zu CodeHarbor exportieren
       error: Es ist ein Fehler bei der Kommunikation mit CodeHarbor aufgetreten.
       export_failed: 'Export ist fehlgeschlagen.<br>ID: %{id}<br>Title: %{title}<br><br>Error: %{error}'
+      generic_error: Ein unbekannter Fehler ist beim exportieren der Aufgabe aufgetreten.
       label: Zu CodeHarbor exportieren
+      not_authorized: Die Autorisierung mit CodeHarbor konnte nicht hergestellt werden. Ist der API-Schlüssel korrekt?
+      server_error: Verbindung zu CodeHarbor fehlgeschlagen. Gegenseite nicht erreichbar.
       successfully_exported: 'Aufgabe wurde erfolgreich exportiert.<br>ID: %{id}<br>Title: %{title}'
     external_users:
       statistics:

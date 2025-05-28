@@ -26,7 +26,11 @@ RSpec.describe ExerciseService::PushExternal do
     let(:status) { 200 }
     let(:response) { '' }
 
-    before { stub_request(:post, codeharbor_link.push_url).to_return(status:, body: response) }
+    before do
+      # Un-memoize the connection to force a reconnection for each example
+      described_class.instance_variable_set(:@connection, nil)
+      stub_request(:post, codeharbor_link.push_url).to_return(status:, body: response)
+    end
 
     it 'calls the correct url' do
       expect(push_external).to have_requested(:post, codeharbor_link.push_url)
@@ -49,16 +53,45 @@ RSpec.describe ExerciseService::PushExternal do
 
       context 'when response status is 500' do
         let(:status) { 500 }
-        let(:response) { 'an error occured' }
+        let(:response) { 'an error occurred' }
 
-        it { is_expected.to be response }
+        it { is_expected.to eql response }
+
+        context 'when response contains problematic characters' do
+          let(:response) { 'an <error> occurred' }
+
+          it { is_expected.to eql 'an &lt;error&gt; occurred' }
+        end
+
+        context 'when faraday throws an error' do
+          let(:connection) { instance_double(Faraday::Connection) }
+          let(:error) { Faraday::ServerError }
+
+          before do
+            allow(Faraday).to receive(:new).and_return(connection)
+            allow(connection).to receive(:post).and_raise(error)
+          end
+
+          it { is_expected.to eql I18n.t('exercises.export_codeharbor.server_error') }
+
+          context 'when another error occurs' do
+            let(:error) { 'another error' }
+
+            it { is_expected.to eql I18n.t('exercises.export_codeharbor.generic_error') }
+          end
+        end
+      end
+
+      context 'when response status is 401' do
+        let(:status) { 401 }
+        let(:response) { I18n.t('exercises.export_codeharbor.not_authorized') }
+
+        it { is_expected.to eql response }
       end
     end
 
     context 'when an error occurs' do
       before do
-        # Un-memoize the connection to force a reconnection
-        described_class.instance_variable_set(:@connection, nil)
         allow(Faraday).to receive(:new).and_raise(StandardError)
       end
 
