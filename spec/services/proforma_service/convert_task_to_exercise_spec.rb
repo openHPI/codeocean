@@ -31,7 +31,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
     let(:task) do
       ProformaXML::Task.new(
         title: 'title',
-        description: 'description',
+        description:,
         proglang: {name: 'python', version: '3.4'},
         uuid: 'uuid',
         parent_uuid: 'parent_uuid',
@@ -49,6 +49,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
     let(:model_solutions) { [] }
     let(:exercise) { nil }
 
+    let(:description) { 'description' }
     let(:meta_data) { {} }
     let(:public) { 'true' }
     let(:hide_file_tree) { 'true' }
@@ -75,6 +76,16 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
     end
 
     it { is_expected.to be_valid }
+
+    context 'when task has no description' do
+      let(:description) { nil }
+
+      it 'creates an exercise with the correct description fallback' do
+        expect(convert_to_exercise_service).to have_attributes(
+                                                 description: 'title'
+                                               )
+      end
+    end
 
     context 'when meta_data is set' do
       let(:meta_data) do

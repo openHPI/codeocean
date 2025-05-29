@@ -20,7 +20,7 @@ class ExercisesController < ApplicationController
 
   skip_before_action :verify_authenticity_token, only: %i[import_task import_uuid_check]
   skip_before_action :require_fully_authenticated_user!, only: %i[import_task import_uuid_check]
-  skip_after_action :verify_authorized, only: %i[import_task import_uuid_check]
+  skip_after_action :verify_authorized, only: %i[import_task import_uuid_check import_start import_confirm]
   skip_after_action :verify_policy_scoped, only: %i[import_task import_uuid_check], raise: false
 
   rescue_from Pundit::NotAuthorizedError, with: :not_authorized_for_exercise
@@ -150,13 +150,66 @@ class ExercisesController < ApplicationController
     user = user_from_api_key
     return render json: {}, status: :unauthorized if user.nil?
 
-    uuid = params[:uuid].presence
-    exercise = Exercise.find_by(uuid:)
+    render json: uuid_check(user:, uuid: params[:uuid].presence)
+  end
 
-    return render json: {uuid_found: false} if uuid.blank? || exercise.nil?
-    return render json: {uuid_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
+  def import_start
+    zip_file = params[:file]
+    unless zip_file.is_a?(ActionDispatch::Http::UploadedFile)
+      return render json: {status: 'failure', message: t('.choose_file_error')}
+    end
 
-    render json: {uuid_found: true, update_right: true}
+    uuid = ProformaService::UuidFromZip.call(zip: zip_file)
+    exists, updatable = uuid_check(user: current_user, uuid:).values_at(:uuid_found, :update_right)
+
+    uploader = ProformaZipUploader.new
+    uploader.cache!(params[:file])
+
+    message = if exists && updatable
+                t('.exercise_exists_and_is_updatable')
+              elsif exists
+                t('.exercise_exists_and_is_not_updatable')
+              else
+                t('.exercise_is_importable')
+              end
+
+    render json: {
+      status: 'success',
+      message:,
+      actions: render_to_string(partial: 'import_actions',
+        locals: {exercise: @exercise, imported: false, exists:, updatable:, file_id: uploader.cache_name}),
+    }
+  rescue ProformaXML::InvalidZip => e
+    render json: {
+      status: 'failure',
+      message: t('.error', message: e.message),
+    }
+  end
+
+  def import_confirm
+    uploader = ProformaZipUploader.new
+    uploader.retrieve_from_cache!(params[:file_id])
+    exercise = ::ProformaService::Import.call(zip: uploader.file, user: current_user)
+    exercise.save!
+
+    render json: {
+      status: 'success',
+      message: t('.success'),
+      actions: render_to_string(partial: 'import_actions', locals: {exercise:, imported: true}),
+    }
+  rescue ProformaXML::ProformaError, ActiveRecord::RecordInvalid => e
+    render json: {
+      status: 'failure',
+      message: t('.error', error: e.message),
+      actions: '',
+    }
+  rescue StandardError => e
+    Sentry.capture_exception(e)
+    render json: {
+      status: 'failure',
+      message: t('exercises.import_proforma.import_errors.internal_error'),
+      actions: '',
+    }
   end
 
   def import_task
@@ -175,10 +228,10 @@ class ExercisesController < ApplicationController
   rescue ProformaXML::ExerciseNotOwned
     render json: {}, status: :unauthorized
   rescue ProformaXML::ProformaError
-    render json: t('exercises.import_codeharbor.import_errors.invalid'), status: :bad_request
+    render json: t('exercises.import_proforma.import_errors.invalid'), status: :bad_request
   rescue StandardError => e
     Sentry.capture_exception(e)
-    render json: t('exercises.import_codeharbor.import_errors.internal_error'), status: :internal_server_error
+    render json: t('exercises.import_proforma.import_errors.internal_error'), status: :internal_server_error
   end
 
   def download_proforma
@@ -578,5 +631,18 @@ class ExercisesController < ApplicationController
       .order(created_at: :desc)
 
     @graph_data = @exercise.get_working_times_for_study_group(@study_group_id)
+  end
+
+  private
+
+  def uuid_check(user:, uuid:)
+    return {uuid_found: false} if uuid.blank?
+
+    exercise = Exercise.find_by(uuid:)
+
+    return {uuid_found: false} if exercise.nil?
+    return {uuid_found: true, update_right: false} unless ExercisePolicy.new(user, exercise).update?
+
+    {uuid_found: true, update_right: true}
   end
 end

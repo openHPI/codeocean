@@ -197,10 +197,30 @@ de:
       tips_intervention:
         text: Falls Sie bei dieser Aufgabe momentan nicht weiterkommen, können Sie die verfügbaren Tipps vielleicht unterstützen. Diese finden Sie jederzeit in der linken Seitenleiste und werden auch direkt hier angezeigt.
       unpublished: Die gewählte Aufgabe wurde deaktiviert und kann daher derzeit nicht bearbeitet werden.
-    import_codeharbor:
+    import_confirm:
+      error: Import von ProFormA Task ist fehlgeschlagen.
+      success: Import von ProFormA Task war erfolgreich.
+    import_proforma:
+      button:
+        import: Importieren
+        import_copy: Importiere Kopie
+        overwrite: Überschreiben
+        show_exercise: Zeige Aufgabe
+      dialog:
+        start: Klicke auf Datei hochladen und wähle eine ProFormAXML ZIP Datei aus, um das Importieren zu starten.
       import_errors:
         internal_error: Beim Import der Aufgabe ist ein interner Fehler aufgetreten.
         invalid: Fehlerhafte Aufgabe
+        invalid_zip: Ungültige ZIP Datei
+        no_xml_found: Keine XML Datei in ZIP Datei gefunden
+      label: ProFormAXML ZIP importieren
+    import_start:
+      choose_file_error: Sie müssen eine Datei auswählen.
+      error: 'Der folgende Fehler ist aufgetreten: %{message}.'
+      exercise_exists_and_is_not_updatable: Die Übung existiert bereits in CodeOcean. Sie haben nicht die erforderlichen Rechte, um die bestehende Übung zu aktualisieren. Sie können sie als Kopie importieren.
+      exercise_exists_and_is_updatable: Die Aufgabe existiert bereits in CodeOcean. Die Übung existiert bereits in CodeOcean. Sie kann importiert werden und überschreibt die bestehende Version.
+      exercise_is_importable: Diese Übung kann importiert werden.
+      upload_file: Datei hochladen
     index:
       clone: Duplizieren
       external_user_statistics: Statistik für externe Personen

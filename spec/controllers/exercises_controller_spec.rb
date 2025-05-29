@@ -584,4 +584,161 @@ RSpec.describe ExercisesController do
       end
     end
   end
+
+  describe 'POST #import_start' do
+    let(:valid_file) { fixture_file_upload('proforma_import/testfile.zip', 'application/zip') }
+    let(:invalid_file) { 'invalid_file' }
+    let(:mock_uploader) { instance_double(ProformaZipUploader) }
+    let(:uuid) { 'mocked-uuid' }
+    let(:post_request) { post :import_start, params: {file: file} }
+    let(:file) { valid_file }
+
+    before do
+      allow(controller).to receive(:current_user).and_return(user)
+      allow(ProformaZipUploader).to receive(:new).and_return(mock_uploader)
+    end
+
+    context 'when the file is valid' do
+      before do
+        allow(ProformaService::UuidFromZip).to receive(:call).and_return(uuid)
+        allow(mock_uploader).to receive(:cache!)
+        allow(mock_uploader).to receive(:cache_name).and_return('mocked-cache-name')
+      end
+
+      context 'when the exercise exists and is updatable' do
+        before do
+          allow(controller).to receive(:uuid_check).with(user: user, uuid: uuid)
+            .and_return(uuid_found: true, update_right: true)
+        end
+
+        it 'renders success JSON with updatable message' do
+          post_request
+
+          expect(response).to have_http_status(:ok)
+          parsed_response = response.parsed_body
+          expect(parsed_response['status']).to eq('success')
+          expect(parsed_response['message']).to eq(I18n.t('exercises.import_start.exercise_exists_and_is_updatable'))
+        end
+      end
+
+      context 'when the exercise exists but is not updatable' do
+        before do
+          allow(controller).to receive(:uuid_check).with(user: user, uuid: uuid)
+            .and_return(uuid_found: true, update_right: false)
+        end
+
+        it 'renders success JSON with not updatable message' do
+          post_request
+
+          expect(response).to have_http_status(:ok)
+          parsed_response = response.parsed_body
+          expect(parsed_response['status']).to eq('success')
+          expect(parsed_response['message']).to eq(I18n.t('exercises.import_start.exercise_exists_and_is_not_updatable'))
+        end
+      end
+
+      context 'when the exercise does not exist' do
+        before do
+          allow(controller).to receive(:uuid_check).with(user: user, uuid: uuid)
+            .and_return(uuid_found: false, update_right: false)
+        end
+
+        it 'renders success JSON with importable message' do
+          post_request
+
+          expect(response).to have_http_status(:ok)
+          parsed_response = response.parsed_body
+          expect(parsed_response['status']).to eq('success')
+          expect(parsed_response['message']).to eq(I18n.t('exercises.import_start.exercise_is_importable'))
+        end
+      end
+    end
+
+    context 'when the file is invalid' do
+      let(:file) { invalid_file }
+
+      it 'renders failure JSON with correct error' do
+        post_request
+
+        expect(response).to have_http_status(:ok)
+        parsed_response = response.parsed_body
+        expect(parsed_response['status']).to eq('failure')
+        expect(parsed_response['message']).to eq(I18n.t('exercises.import_start.choose_file_error'))
+      end
+    end
+
+    context 'when the uploaded zip file is invalid' do
+      it 'renders failure JSON with correct error' do
+        error_message = I18n.t('exercises.import_proforma.import_errors.invalid_zip')
+        allow(ProformaService::UuidFromZip).to receive(:call).and_raise(ProformaXML::InvalidZip.new(error_message))
+
+        post_request
+        expect(response).to have_http_status(:ok)
+
+        parsed_response = response.parsed_body
+        expect(parsed_response['status']).to eq('failure')
+        expect(parsed_response['message']).to include(error_message)
+      end
+    end
+  end
+
+  describe 'POST #import_confirm' do
+    let(:file_id) { 'file_id' }
+    let(:mock_uploader) { instance_double(ProformaZipUploader, file: 'mocked_file') }
+    let(:post_request) { post :import_confirm, params: {file_id: file_id} }
+
+    before do
+      allow(ProformaZipUploader).to receive(:new).and_return(mock_uploader)
+    end
+
+    context 'when the import is successful' do
+      before do
+        allow(mock_uploader).to receive(:retrieve_from_cache!).with(file_id)
+        allow(ProformaService::Import).to receive(:call).with(zip: 'mocked_file', user: user).and_return(exercise)
+        allow(exercise).to receive(:save!).and_return(true)
+      end
+
+      it 'renders success JSON' do
+        post_request
+
+        expect(response).to have_http_status(:ok)
+        parsed_response = response.parsed_body
+        expect(parsed_response['status']).to eq('success')
+        expect(parsed_response['message']).to eq(I18n.t('exercises.import_confirm.success'))
+      end
+    end
+
+    context 'when ProformaError or validation error occurs' do
+      before do
+        allow(mock_uploader).to receive(:retrieve_from_cache!).with(file_id)
+        allow(ProformaService::Import).to receive(:call).and_raise(ProformaXML::ProformaError, 'Proforma error')
+      end
+
+      it 'renders failure JSON' do
+        post_request
+
+        expect(response).to have_http_status(:ok)
+        parsed_response = response.parsed_body
+        expect(parsed_response['status']).to eq('failure')
+        expect(parsed_response['message']).to eq(I18n.t('exercises.import_confirm.error', error: 'Proforma error message'))
+      end
+    end
+
+    context 'when StandardError occurs' do
+      before do
+        allow(mock_uploader).to receive(:retrieve_from_cache!).and_raise(StandardError, 'Unexpected error')
+        allow(Sentry).to receive(:capture_exception)
+      end
+
+      it 'logs the error and renders internal error JSON' do
+        post_request
+
+        expect(Sentry).to have_received(:capture_exception).with(instance_of(StandardError))
+        expect(response).to have_http_status(:ok)
+        parsed_response = response.parsed_body
+        expect(parsed_response['status']).to eq('failure')
+        expect(parsed_response['message']).to eq(I18n.t('exercises.import_proforma.import_errors.internal_error'))
+      end
+    end
+  end
 end
