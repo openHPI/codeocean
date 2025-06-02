@@ -2,10 +2,11 @@
 
 module ProformaService
   class Import < ServiceBase
-    def initialize(zip:, user:)
+    def initialize(zip:, user:, import_type: 'import')
       super()
       @zip = zip
       @user = user
+      @import_type = import_type
     end
 
     def execute
@@ -23,6 +24,8 @@ module ProformaService
     private
 
     def base_exercise
+      return Exercise.new(uuid: SecureRandom.uuid, unpublished: true) if @import_type == 'create_new'
+
       exercise = Exercise.find_by(uuid: @task.uuid)
       if exercise
         raise ProformaXML::ExerciseNotOwned unless ExercisePolicy.new(@user, exercise).update?
