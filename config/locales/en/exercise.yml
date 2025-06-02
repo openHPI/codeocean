@@ -38,7 +38,7 @@ en:
       file_root: Generated Files
       gone: The requested file could not be retrieved. Generated files are only held for a short time and are then deleted. Please run the code again and then try downloading the file a second time.
     download_proforma:
-      label: Download ProformaXML ZIP
+      label: Download ProFormA ZIP
     editor:
       collapse_action_sidebar: Collapse Action Sidebar
       collapse_output_sidebar: Collapse Output Sidebar
@@ -207,13 +207,13 @@ en:
         overwrite: Overwrite
         show_exercise: Show exercise
       dialog:
-        start: Press Upload and select and ProFormAXML ZIP file to start importing.
+        start: Press Upload and select and ProFormA ZIP file to start importing.
       import_errors:
         internal_error: An internal error occurred on CodeOcean while importing the exercise.
         invalid: Invalid exercise
         invalid_zip: Invalid ZIP file
         no_xml_found: No XML file found in ZIP
-      label: Import ProFormAXML ZIP
+      label: Import ProFormA ZIP
     import_start:
       choose_file_error: You need to choose a file.
       error: 'The following error occured: %{message}.'
