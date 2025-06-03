@@ -1,6 +1,73 @@
 .editor {
   height: 100%;
+  max-height: 100%;
   width: 100%;
+  display: flex;
+}
+
+
+
+.btn, #description, #content-left-sidebar, #content-right-sidebar {
+  border-radius: 5px !important;
+}
+
+#editor-buttons .btn {
+  margin-left: 2px;
+}
+
+#editor-buttons span {
+  border-radius: 5px !important;
+}
+
+#editor-column {
+  max-height: 85vh;
+}
+
+#panel-left {
+  position: relative;
+}
+
+// Bootstrap breakpoint "large". See https://getbootstrap.com/docs/4.0/layout/overview/#responsive-breakpoints
+@media (min-width: 992px) { 
+
+  #panel-left {
+    position: relative;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+}
+
+#panel-right {
+  position: relative;
+}
+
+#resizerHorizontal {
+  position: relative;
+  background: rgb(215, 215, 215);
+  width: 4px;
+  display: inline-block;
+  cursor: col-resize;
+  padding: 0;
+}
+
+#resizerVertical {
+  position: relative;
+  background: rgb(215, 215, 215);
+  height: 4px;
+  cursor: row-resize;
+  margin-bottom: 4px;
+}
+
+.panel-bottom {
+  overflow: auto;
+  position: relative;
+}
+
+.panel-top {
+  overflow: auto;
+  position: relative;
+  min-height: 30vh;
+  max-height: 60vh;
 }
 
 .own-editor {
@@ -24,6 +91,7 @@ html[data-bs-theme="light"] {
 }
 
 #content-left-sidebar, #content-right-sidebar {
+  max-height: 800px;
   min-height: 250px;
 }
 
@@ -116,20 +184,17 @@ html[data-bs-theme="light"] {
   -webkit-transition: width .2s;
   transition: width .2s;
   width:67px;
-  float:left;
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 .sidebar-col {
   -webkit-transition: width .2s;
   transition: width .2s;
-  width:20%;
-  float:left;
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 3px;
+  padding-right: 3px;
 }
 
 .editor-col {
@@ -142,13 +207,14 @@ html[data-bs-theme="light"] {
 .output-col {
   -webkit-transition: width .2s;
   transition: width .2s;
-  width:40%;
+  width:100%;
   float:right;
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 3px;
+  padding-right: 3px;
   box-sizing: border-box;
   margin-left: auto;
+  min-height: 40vh;
 }
 
 .output-col-collapsed {
@@ -157,8 +223,8 @@ html[data-bs-theme="light"] {
   width:67px;
   float:right;
   min-height: 1px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 3px;
+  padding-right: 3px;
   box-sizing: border-box;
   margin-left: auto;
 }
