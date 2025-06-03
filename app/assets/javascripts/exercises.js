@@ -355,6 +355,7 @@ $(document).on('turbolinks:load', function () {
     }
 
     var exportExerciseStart = function (exerciseID) {
+        $('#transfer-modal .modal-title').html(I18n.t('exercises.export_codeharbor.dialogtitle'));
         const $exerciseDiv = $('#exercise-transfer');
         const $messageDiv = $exerciseDiv.children('.transfer-message');
         const $actionsDiv = $exerciseDiv.children('.transfer-exercise-actions');
@@ -448,6 +449,7 @@ $(document).on('turbolinks:load', function () {
         });
     }
     var importExerciseStart = function () {
+        $('#transfer-modal .modal-title').html(I18n.t('exercises.import_proforma.label'));
         const $exerciseDiv = $('#exercise-transfer');
         const $messageDiv = $exerciseDiv.children('.transfer-message');
         const $actionsDiv = $exerciseDiv.children('.transfer-exercise-actions');
