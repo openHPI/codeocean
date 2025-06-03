@@ -10,19 +10,19 @@ The implementation of multilanguage support in CodeOcean is inspired by [Moodle'
 
 ## Usage
 
-When making exercise descriptions or tips multilingual, the `.multilang`class must be assigned to all multilingual content. The `lang` attribute must be set to the appropriate locale, e.g. `"en"` or `"de"`. This very simple solution can be applied in many different ways:
+When making exercise descriptions or tips multilingual, the `.multilang` class must be assigned to all multilingual content. The `lang` attribute must be set to the appropriate locale, e. g., `"en"` or `"de"`. This very simple solution can be applied in many different ways:
 
 Example 1 (Separated Multilingual Content Blocks):
 
-```
+```md
 <p class="multilang" lang="de">Implementieren Sie eine Funktion, die für einen gegebenen Parameter entscheidet, ob er gerade oder ungerade ist.</p>
 <p class="multilang" lang="en">Implement a function that decides for a given parameter whether it is even or odd.</p>
 ```
 
 Example 2 (Inline Separation of Multilingual Content):
 
-```
-<p><span class="multilang" lang="de">Implementieren Sie eine Funktion, die für einen gegebenen Parameter entscheidet, ob er gerade oder ungerade ist.</span> <span class="multilang" lang="en">Implement a function that decides for a given parameter whether it is even or odd.</span></p>
+```md
+<p><span class="multilang" lang="de">Implementieren Sie eine Funktion, die für einen gegebenen Parameter entscheidet, ob er gerade oder ungerade ist.</span><span class="multilang" lang="en">Implement a function that decides for a given parameter whether it is even or odd.</span></p>
 ```
 
 This approach also applies to the description of tips, including their example sections.
