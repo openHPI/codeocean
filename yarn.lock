@@ -2704,7 +2704,7 @@ __metadata:
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.1"
     webpack-merge: "npm:^6.0.1"
-    webpack-sources: "npm:^3.3.0"
+    webpack-sources: "npm:^3.3.2"
     webpack-subresource-integrity: "npm:^5.2.0-rc.1"
     xss: "npm:^1.0.15"
   languageName: unknown
@@ -7176,10 +7176,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "webpack-sources@npm:3.3.0"
-  checksum: 10c0/d9366eef6db95dffe154b6ffb50424c34f42d51ba3441efe9134642d13b0ccdf43897bdc7742f9f58eb4e834378f7ff67596137d3fca21ce34fe7cee8796e97a
+"webpack-sources@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "webpack-sources@npm:3.3.2"
+  checksum: 10c0/b5308d8acba4c7c6710b6df77187b274800afe0856c1508cba8aa310304558634e745b7eac4991ea086175ea6da3c64d11d958cf508980e6cb7506aa5983913e
   languageName: node
   linkType: hard
 
