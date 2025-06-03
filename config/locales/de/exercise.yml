@@ -38,7 +38,7 @@ de:
       file_root: Erstellte Dateien
       gone: Die angeforderte Datei konnte nicht abgerufen werden. Erstellte Dateien werden nur kurzzeitig vorgehalten und dann gelöscht. Bitte führen Sie den Code erneut aus und versuchen Sie dann wieder den Download der Datei.
     download_proforma:
-      label: ProFormA ZIP herunterladen
+      label: ProFormA-ZIP herunterladen
     editor:
       collapse_action_sidebar: Aktions-Leiste Einklappen
       collapse_output_sidebar: Ausgabe-Leiste Einklappen
@@ -207,13 +207,13 @@ de:
         overwrite: Überschreiben
         show_exercise: Zeige Aufgabe
       dialog:
-        start: Klicke auf Datei hochladen und wähle eine ProFormA ZIP Datei aus, um das Importieren zu starten.
+        start: Klicke auf "Datei hochladen" und wähle eine ProFormA-ZIP-Datei aus, um das Importieren zu starten.
       import_errors:
         internal_error: Beim Import der Aufgabe ist ein interner Fehler aufgetreten.
         invalid: Fehlerhafte Aufgabe
-        invalid_zip: Ungültige ZIP Datei
-        no_xml_found: Keine XML Datei in ZIP Datei gefunden
-      label: ProFormA ZIP importieren
+        invalid_zip: Ungültige ZIP-Datei
+        no_xml_found: Keine XML-Datei in ZIP-Datei gefunden
+      label: ProFormA-ZIP importieren
     import_start:
       choose_file_error: Sie müssen eine Datei auswählen.
       error: 'Der folgende Fehler ist aufgetreten: %{message}.'
