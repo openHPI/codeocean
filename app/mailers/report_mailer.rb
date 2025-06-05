@@ -6,6 +6,6 @@ class ReportMailer < ApplicationMailer
   def report_content
     @reported_content = params.fetch(:reported_content)
 
-    mail(subject: "Spam Report: A #{@reported_content.class.name} on CodeOcean has been marked as inappropriate.")
+    mail(subject: I18n.t('report_mailer.report_content.subject', content_name: @reported_content.model_name.human))
   end
 end

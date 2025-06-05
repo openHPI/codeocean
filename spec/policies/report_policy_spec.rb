@@ -19,6 +19,12 @@ RSpec.describe ReportPolicy do
 
       expect(policy).not_to permit(user, Comment.new)
     end
+    
+    it 'dose not allow reports of your own content' do
+      user = build_stubbed(:external_user)
+
+      expect(policy).not_to permit(user, Comment.new(user: user))
+    end
   end
 
   permissions(:create?) do
@@ -26,6 +32,14 @@ RSpec.describe ReportPolicy do
       %i[admin external_user teacher].each do |factory_name|
         expect(policy).to permit(create(factory_name), Comment.new)
       end
+    end
+
+    it 'allows reports on RfCs and Comments' do
+      user = build_stubbed(:external_user)
+
+      expect(policy).to permit(user, Comment.new)
+      expect(policy).to permit(user, RequestForComment.new)
+      expect(policy).not_to permit(user, ExternalUser.new)
     end
 
     it 'dose not allow reports when no report email is configured' do
@@ -36,12 +50,10 @@ RSpec.describe ReportPolicy do
       expect(policy).not_to permit(user, Comment.new)
     end
 
-    it 'allows reports on RfCs and Comments' do
+    it 'dose not allow reports of your own content' do
       user = build_stubbed(:external_user)
 
-      expect(policy).to permit(user, Comment.new)
-      expect(policy).to permit(user, RequestForComment.new)
-      expect(policy).not_to permit(user, ExternalUser.new)
+      expect(policy).not_to permit(user, Comment.new(user: user))
     end
   end
 end

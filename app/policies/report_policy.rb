@@ -2,16 +2,24 @@
 
 class ReportPolicy < ApplicationPolicy
   def show?
-    reciever_awalible? && @user
+    receiver_available? && reportable_content? && reports_other_user?
   end
 
   def create?
-    reciever_awalible? && @user && [RequestForComment, Comment].include?(@record.class)
+    receiver_available? && reportable_content? && reports_other_user?
   end
 
   private
 
-  def reciever_awalible?
+  def reportable_content?
+    [RequestForComment, Comment].include?(@record.class)
+  end
+
+  def reports_other_user?
+    @record.user != @user
+  end
+
+  def receiver_available?
     ReportMailer.default_params.fetch(:to).present?
   end
 end

@@ -150,6 +150,8 @@ Rails.application.routes.draw do
 
   match '/forgot_password', as: 'forgot_password', to: 'internal_users#forgot_password', via: %i[get post]
 
+  resources :reports, only: :create
+
   resources :sessions, only: %i[create destroy new]
   resources :webauthn_credential_authentication, only: %i[new create]
 
@@ -195,8 +197,6 @@ Rails.application.routes.draw do
   # Render dynamic PWA files from app/views/pwa/*
   get 'service-worker', to: 'rails/pwa#service_worker', as: :pwa_service_worker, defaults: {format: :js}
   get 'manifest(.:file_extension)', to: 'rails/pwa#manifest', as: :pwa_manifest, defaults: {format: :webmanifest}, format: false, constraints: {file_extension: %w[json webmanifest]}
-
-  resources :reports, only: :create
 
   # Defines the root path route ("/")
   root to: 'application#welcome'

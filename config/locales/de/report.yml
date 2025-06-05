@@ -4,3 +4,8 @@ de:
     confirm: Möchten Sie diesen Inhalt melden?
     report: melden
     reported: Vielen Dank, dass Sie uns auf dieses Problem aufmerksam gemacht haben. Wir werden uns in Kürze darum kümmern.
+  report_mailer:
+    report_content:
+      subject: "Spam Report: A %{content_name} on CodeOcean has been marked as inappropriate."
+      prolog: "Die folgenden Inhalte wurden als unangemessen gemeldet:"
+      take_action: Bitte ergreifen Sie gegebenenfalls Maßnahmen.

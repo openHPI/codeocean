@@ -44,10 +44,10 @@ RSpec.describe 'Request_for_Comments' do
 
     expect do
       accept_confirm do
-        click_on 'report'
+        click_on I18n.t('reports.report')
       end
 
-      expect(page).to have_text('We have received your Report.')
+      expect(page).to have_text(I18n.t('reports.reported'))
     end.to have_enqueued_mail(ReportMailer, :report_content)
       .with(params: {reported_content: request_for_comment}, args: [])
   end

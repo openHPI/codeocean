@@ -2,5 +2,10 @@
 en:
   reports:
     confirm: Do you want to report this content?
-    report: report
+    report: Report
     reported: Thank you for letting us know about this issue. We look into the matter shorty.
+  report_mailer:
+    report_content:
+      subject: "Spam Report: A %{content_name} on CodeOcean has been marked as inappropriate."
+      prolog: "The following content has been reported as inappropriate:"
+      take_action: Please take action if required.
