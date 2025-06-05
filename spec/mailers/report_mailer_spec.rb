@@ -12,7 +12,7 @@ RSpec.describe ReportMailer do
       let(:reported_content) { create(:rfc, question: 'Inappropriate content for RfC.') }
 
       it 'sets the correct subject' do
-        expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', content_name: RequestForComment.model_name.human ))
+        expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', content_name: RequestForComment.model_name.human))
       end
 
       it 'includes the reported content' do
@@ -25,7 +25,7 @@ RSpec.describe ReportMailer do
     end
 
     it 'sets the correct subject' do
-      expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', content_name: Comment.model_name.human ))
+      expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', content_name: Comment.model_name.human))
     end
 
     it 'sets the correct receiver' do

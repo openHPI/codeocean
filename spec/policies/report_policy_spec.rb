@@ -19,7 +19,7 @@ RSpec.describe ReportPolicy do
 
       expect(policy).not_to permit(user, Comment.new)
     end
-    
+
     it 'dose not allow reports of your own content' do
       user = build_stubbed(:external_user)
 
