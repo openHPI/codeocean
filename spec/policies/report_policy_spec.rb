@@ -15,7 +15,9 @@ RSpec.describe ReportPolicy do
     it 'dose not allow reports when no report email is configured' do
       user = build_stubbed(:external_user)
 
-      allow(ReportMailer).to receive(:default_params).and_return(ReportMailer.default_params.merge(to: []))
+      codeocean_config = instance_double(CodeOcean::Config)
+      allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+      allow(codeocean_config).to receive(:read).and_return({})
 
       expect(policy).not_to permit(user, Comment.new)
     end
@@ -45,7 +47,9 @@ RSpec.describe ReportPolicy do
     it 'dose not allow reports when no report email is configured' do
       user = build_stubbed(:external_user)
 
-      allow(ReportMailer).to receive(:default_params).and_return(ReportMailer.default_params.merge(to: []))
+      codeocean_config = instance_double(CodeOcean::Config)
+      allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+      allow(codeocean_config).to receive(:read).and_return({})
 
       expect(policy).not_to permit(user, Comment.new)
     end

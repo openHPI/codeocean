@@ -20,6 +20,6 @@ class ReportPolicy < ApplicationPolicy
   end
 
   def receiver_available?
-    ReportMailer.default_params.fetch(:to).present?
+    CodeOcean::Config.new(:code_ocean).read.dig(:content_moderation, :report_emails).present?
   end
 end
