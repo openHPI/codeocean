@@ -1,4 +1,4 @@
-- if policy(:report, reported_content).show?
+- if ReportPolicy.new(current_user, reported_content).show?
   = button_to t('reports.report'), reports_path,
       params: {global_content_id: reported_content.to_global_id},
       data: {confirm: t('reports.confirm')},
