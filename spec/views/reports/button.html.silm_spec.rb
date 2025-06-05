@@ -9,7 +9,7 @@ RSpec.describe 'reports/button.html.slim' do
 
   it 'displayes the report button when the request is authorized' do
     report_policy = instance_double(ReportPolicy, show?: true)
-    allow(view).to receive(:policy).with(:report).and_return(report_policy)
+    allow(ReportPolicy).to receive(:new).and_return(report_policy)
 
     render('reports/button', reported_content: build_stubbed(:comment))
 
@@ -18,7 +18,7 @@ RSpec.describe 'reports/button.html.slim' do
 
   it 'has not report button when reporting is not authorized' do
     report_policy = instance_double(ReportPolicy, show?: false)
-    allow(view).to receive(:policy).with(:report).and_return(report_policy)
+    allow(ReportPolicy).to receive(:new).and_return(report_policy)
 
     render('reports/button', reported_content: build_stubbed(:comment))
 
