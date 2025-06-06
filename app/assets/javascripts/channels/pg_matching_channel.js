@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function () {
+$(document).on('turbo:load', function () {
 
     if ($.isController('programming_groups') && window.location.pathname.includes('programming_groups/new')) {
         const matching_page = $('#matching');

@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
   if ($.isController('exercise_collections')) {
     var dataElement = $('#data');
     var exerciseList = $('#exercise-list');

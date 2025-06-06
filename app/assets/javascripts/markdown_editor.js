@@ -192,7 +192,7 @@ const setResizeBtn = (formInput, editor) => {
   });
 };
 
-$(document).on("turbolinks:load", function () {
+$(document).on("turbo:load", function () {
   initializeMarkdownEditors();
   disableImageUpload();
 });

@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
 
   function manageActivityHistory(prefix) {
     var containerId = prefix + '-activity-history';

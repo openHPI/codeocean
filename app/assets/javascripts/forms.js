@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
   var CHOSEN_OPTIONS = {
     allow_single_deselect: true,
     disable_search_threshold: 5,
@@ -50,6 +50,6 @@ $(document).on('turbolinks:load', function() {
 });
 
 // Remove some elements before going back to an older site. Otherwise, they might not work.
-$(document).on('turbolinks:before-cache', function() {
+$(document).on('turbo:before-cache', function() {
     $('.chosen-container').remove();
 });

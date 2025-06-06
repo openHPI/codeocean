@@ -6,8 +6,8 @@
         span.caret
       ul.dropdown-menu.p-0.mt-1 role='menu'
         - if current_user.admin?
-          li = link_to(t('breadcrumbs.dashboard.show'), admin_dashboard_path, class: 'dropdown-item', 'data-turbolinks': 'false') if policy(%i[admin dashboard]).show?
-          li = link_to(t('breadcrumbs.rails_admin.show'), rails_admin.dashboard_path, class: 'dropdown-item', 'data-turbolinks': 'false') if policy(%i[admin dashboard]).show?
+          li = link_to(t('breadcrumbs.dashboard.show'), admin_dashboard_path, class: 'dropdown-item', 'data-turbo': 'false') if policy(%i[admin dashboard]).show?
+          li = link_to(t('breadcrumbs.rails_admin.show'), rails_admin.dashboard_path, class: 'dropdown-item', 'data-turbo': 'false') if policy(%i[admin dashboard]).show?
           li = link_to(t('breadcrumbs.statistics.show'), statistics_path, class: 'dropdown-item') if policy(:statistics).show?
           li.dropdown-divider role='separator'
         = render('navigation_submenu', title: Exercise.model_name.human(count: :other),

@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
     if ($.isController('exercises') && $('.teacher_dashboard').isPresent()) {
 
         const exercise_id = $('.teacher_dashboard').data().exerciseId;

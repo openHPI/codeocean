@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
 
     if ($.isController('community_solutions') && $('#community-solution-editor').isPresent()) {
         CodeOceanEditor.sendEvents = false;

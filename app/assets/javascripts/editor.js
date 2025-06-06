@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function(event) {
+$(document).on('turbo:load', function(event) {
 
   //Merge all editor components.
   $.extend(
@@ -13,7 +13,7 @@ $(document).on('turbolinks:load', function(event) {
       CodeOceanEditorRequestForComments
   );
 
-  if ($('#editor').isPresent() && CodeOceanEditor && event.originalEvent.data.url.includes("/implement")) {
+  if ($('#editor').isPresent() && CodeOceanEditor && event.originalEvent.detail.url.includes("/implement")) {
     // This call will (amon other things) initializeEditors and load the content except for the last line
     // It must not be called during page navigation. Otherwise, content will be duplicated!
     // Search for insertFullLines and Turbolinks reload / cache control
