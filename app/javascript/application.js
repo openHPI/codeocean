@@ -18,6 +18,7 @@ import * as _ from 'underscore';
 import * as d3 from 'd3';
 import * as Sentry from '@sentry/browser';
 import 'sorttable';
+import 'tooltip';
 window.bootstrap = bootstrap; // Publish bootstrap in global namespace
 window._ = _; // Publish underscore's `_` in global namespace
 window.d3 = d3; // Publish d3 in global namespace
