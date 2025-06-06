@@ -150,6 +150,8 @@ Rails.application.routes.draw do
 
   match '/forgot_password', as: 'forgot_password', to: 'internal_users#forgot_password', via: %i[get post]
 
+  resources :reports, only: :create
+
   resources :sessions, only: %i[create destroy new]
   resources :webauthn_credential_authentication, only: %i[new create]
 
