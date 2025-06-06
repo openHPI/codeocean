@@ -10,7 +10,6 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require turbolinks
 //= require rails-timeago
 //= require locales/jquery.timeago.de.js
 //

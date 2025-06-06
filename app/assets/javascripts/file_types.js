@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
   if ($.isController('file_types')) {
     const select_tag = $('#file_type_editor_mode');
 
