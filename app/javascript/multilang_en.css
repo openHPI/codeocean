@@ -1,0 +1,3 @@
+:root[lang="en"] .multilang:not([lang="en"]) {
+  display: none;
+}
