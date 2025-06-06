@@ -8,6 +8,7 @@
 // layout file, like app/views/layouts/application.html.slim
 
 // JS
+import '@hotwired/turbo-rails'
 import 'jquery';
 import 'jquery-ujs'
 import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle';

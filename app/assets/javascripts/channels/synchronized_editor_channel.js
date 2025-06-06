@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function () {
+$(document).on('turbo:load', function () {
 
   if (window.location.pathname.includes('/implement')) {
     var editor = $('#editor');

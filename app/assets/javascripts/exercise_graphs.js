@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
     // /exercises/38/statistics good for testing
 
     if ($.isController('exercises') && $('.graph-functions-2').isPresent()) {

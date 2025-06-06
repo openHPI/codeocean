@@ -4,7 +4,7 @@ Array.prototype.includes = function(element) {
 
 window.CodeOcean = {
   refresh: function() {
-    Turbolinks.visit(window.location.pathname);
+    Turbo.visit(window.location.pathname);
   }
 };
 
@@ -24,7 +24,7 @@ $.fn.scrollTo = function(selector) {
   }, ANIMATION_DURATION);
 };
 
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
     // Update all CSRF tokens on the page to reduce InvalidAuthenticityToken errors
     // See https://github.com/rails/jquery-ujs/issues/456 for details
     $.rails.refreshCSRFTokens();
