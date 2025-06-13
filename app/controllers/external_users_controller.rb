@@ -60,7 +60,7 @@ class ExternalUsersController < ApplicationController
                    filtered_submissions.created_at
           ) AS foo
       ) AS bar
-    #{tag.nil? ? '' : " JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND #{ExternalUser.sanitize_sql(['et.tag_id = ?', tag])}"}
+    #{" JOIN exercise_tags et ON et.exercise_id = bar.exercise_id AND #{ExternalUser.sanitize_sql(['et.tag_id = ?', tag])}" unless tag.nil?}
     GROUP BY contributor_id,
              bar.exercise_id;
     "

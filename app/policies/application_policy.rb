@@ -16,13 +16,13 @@ class ApplicationPolicy
   end
   private :author?
 
-  def everyone
+  def everyone # rubocop:disable Naming/PredicateMethod
     # As the ApplicationController forces to have any authorization, `everyone` here means `every user logged in`
     true
   end
   private :everyone
 
-  def no_one
+  def no_one # rubocop:disable Naming/PredicateMethod
     false
   end
   private :no_one

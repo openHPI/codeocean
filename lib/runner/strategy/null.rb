@@ -45,7 +45,7 @@ class Runner::Strategy::Null < Runner::Strategy
 
   def self.config; end
 
-  def self.health
+  def self.health # rubocop:disable Naming/PredicateMethod
     true
   end
 
