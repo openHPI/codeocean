@@ -91,4 +91,13 @@ module ApplicationHelper
   def yes
     tag.i(nil, class: 'fa-solid fa-check')
   end
+
+  def html_data_attributes
+    {
+      'data-default-locale' => I18n.default_locale,
+      'data-events-enabled' => CodeOcean::Config.new(:code_ocean).read.dig('codeocean_events', 'enabled'),
+      'data-flowr-enabled' => CodeOcean::Config.new(:code_ocean).read.dig(:flowr, :enabled),
+      'data-flowr-answers-per-query' => CodeOcean::Config.new(:code_ocean).read[:flowranswers_per_query] || 3,
+    }
+  end
 end

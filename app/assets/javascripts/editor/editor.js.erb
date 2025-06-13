@@ -33,7 +33,7 @@ var CodeOceanEditor = {
 
     lastCopyText: null,
 
-    sendEvents: <%= config_file.read['codeocean_events'] ? config_file.read['codeocean_events']['enabled'] : false %>,
+    sendEvents: document.documentElement.dataset.eventsEnabled === 'true',
     eventURL: Routes.events_path(),
     fileTypeURL: Routes.file_types_path(),
 
