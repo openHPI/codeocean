@@ -30,7 +30,7 @@
         tr
           td = link_to_if(policy(programming_group).show?, programming_group.displayname, programming_group)
           - if @exercise.nil?
-            td = link_to_if(policy(programming_group.exercise).show?, programming_group.exercise.title, programming_group.exercise, 'data-turbolinks': 'false')
+            td = link_to_if(policy(programming_group.exercise).show?, programming_group.exercise.title, programming_group.exercise, 'data-turbo': 'false')
           td == programming_group.users.map {|user| link_to_if(policy(user).show?, user.name, user) }.join(', ')
           td = programming_group.users.size
           td = l(programming_group.created_at, format: :short)

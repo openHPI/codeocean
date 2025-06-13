@@ -2,6 +2,8 @@
 
 module WaitForAjax
   def wait_for_ajax
+    wait_for_turbojs
+
     start_time = Time.current
     timeout = Capybara.default_max_wait_time
 
@@ -9,6 +11,11 @@ module WaitForAjax
       sleep 0.1 # Short sleep time to prevent busy waiting
       break if ajax_requests_finished? || (Time.current - start_time) > timeout
     end
+  end
+
+  def wait_for_turbojs
+    has_css?('.turbo-progress-bar', visible: true)
+    has_no_css?('.turbo-progress-bar')
   end
 
   def ajax_requests_finished?

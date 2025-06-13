@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo:load', function() {
   var CHART_START = window.vis ? vis.moment().add(-1, 'minute') : undefined;
   var DEFAULT_REFRESH_INTERVAL = 5000;
 

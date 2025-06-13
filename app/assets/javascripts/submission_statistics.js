@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function(event) {
+$(document).on('turbo:load', function(event) {
   var currentSubmission = 0;
   var active_file = undefined;
   var fileTrees = [];
@@ -60,7 +60,7 @@ $(document).on('turbolinks:load', function(event) {
     $(fileTrees[index]).show();
   };
 
-  if ($.isController('exercises') && $('#timeline').isPresent() && event.originalEvent.data.url.includes("/statistics")) {
+  if ($.isController('exercises') && $('#timeline').isPresent() && event.originalEvent.detail.url.includes("/statistics")) {
 
     var slider = $('#submissions-slider>input');
     var submissions = $('#data').data('submissions');

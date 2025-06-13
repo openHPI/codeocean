@@ -3,7 +3,7 @@
     = yield(f)
     .col-sm.ge-4.gy-2
       .btn-group.float-end.ms-auto.text-nowrap
-        button.btn.btn-primary type='submit' = t('shared.apply_filters')
+        button.btn.btn-primary type='submit' data-turbo='false' = t('shared.apply_filters')
         button.btn.btn-primary.dropdown-toggle data-bs-toggle='dropdown' type='button'
         ul.dropdown-menu.dropdown-menu-end role='menu'
           li
