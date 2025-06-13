@@ -38,7 +38,7 @@ class GithubCodespaces
   end
 end
 
-if GithubCodespaces.active? && defined? Rails
+if GithubCodespaces.active? && defined?(Rails) && !Rails.env.test?
   Rails.application.configure do
     # Allow the Rails server to be accessed from the Codespaces domain
     config.hosts << GithubCodespaces.domain_for(:rails_server)
