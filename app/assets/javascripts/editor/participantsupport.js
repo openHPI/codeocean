@@ -1,5 +1,5 @@
 CodeOceanEditorFlowr = {
-  isFlowrEnabled: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] %>,
+  isFlowrEnabled: document.documentElement.dataset.flowrEnabled === 'true',
   flowrResultHtml:
     '<div class="card mb-2">' +
       '<div id="{{headingId}}" role="tab" class="card-header">' +
@@ -29,7 +29,7 @@ CodeOceanEditorFlowr = {
       var stackoverflowRequests = _.map(insights, function (insight) {
         var queryParams = {
           accepted: true,
-          pagesize: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:answers_per_query] or 3 %>,
+          pagesize: Number(document.documentElement.dataset.flowrAnswersPerQuery),
           order: 'desc',
           sort: 'relevance',
           site: 'stackoverflow',
