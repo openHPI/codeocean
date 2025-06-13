@@ -1,5 +1,5 @@
 doctype html
-html lang=I18n.locale data-default-locale=I18n.default_locale
+html lang=I18n.locale data-default-locale=I18n.default_locale data-events-enabled=CodeOcean::Config.new(:code_ocean).read.dig('codeocean_events', 'enabled') data-flowr-enabled=CodeOcean::Config.new(:code_ocean).read.dig(:flowr, :enabled) data-flowr-answers-per-query=CodeOcean::Config.new(:code_ocean).read[:flowranswers_per_query] || 3
   head
     meta charset='utf-8'
     meta name='viewport' content='width=device-width, initial-scale=1'
