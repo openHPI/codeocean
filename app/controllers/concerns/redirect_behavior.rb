@@ -74,7 +74,7 @@ module RedirectBehavior
 
   def redirect_to_unsolved_rfc(own: false)
     # Set a message that informs the user that their own RFC should be closed or help in another RFC is greatly appreciated.
-    flash[:notice] = I18n.t("exercises.editor.exercise_finished_redirect_to_#{own ? 'own_' : ''}rfc")
+    flash[:notice] = I18n.t("exercises.editor.exercise_finished_redirect_to_#{'own_' if own}rfc")
     flash.keep(:notice)
 
     # Increase counter 'times_featured' in rfc

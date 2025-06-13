@@ -5,7 +5,7 @@ module CodeOcean
     attr_reader :path, :read
 
     def initialize(filename, options = {})
-      @path = Rails.root.join('config', "#{filename}.yml#{options[:erb] ? '.erb' : ''}")
+      @path = Rails.root.join('config', "#{filename}.yml#{'.erb' if options[:erb]}")
       @read = parse(options)
     end
 
