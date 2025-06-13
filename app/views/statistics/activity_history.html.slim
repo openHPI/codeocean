@@ -24,4 +24,4 @@
       select.form-control#interval name='interval'
         = %i[year quarter month day hour minute second].each do |key|
           option selected=(key.to_s == params[:interval]) = key
-    button.btn.btn-primary type='submit' = t('.update')
+    button.btn.btn-primary type='submit' data-turbo='false' = t('.update')

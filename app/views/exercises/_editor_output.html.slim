@@ -73,7 +73,7 @@
         span.input-group-text data-prompt=t('exercises.editor.input') = t('exercises.editor.input')
         input#prompt-input.form-control type='text'
         span.input-group-btn
-          button#prompt-submit.btn.btn-primary type='button' = t('exercises.editor.send')
+          button#prompt-submit.btn.btn-primary type='button' data-turbo='false' = t('exercises.editor.send')
       - unless @embed_options[:disable_hints]
         #error-hints.mb-2.p-2
           .heading = t('exercises.implement.error_hints.heading')
