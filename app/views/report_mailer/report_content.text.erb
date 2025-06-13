@@ -1,14 +1,6 @@
 <%= t('.prolog') %>
 
 <% case @reported_content %>
-  <% when Comment %>
-    <%= @reported_content.text %>
-
-    <%= t('.take_action') %>
-
-    <%= rails_admin.show_url(
-          model_name: 'comment',
-          id: @reported_content.id) %>
   <% when RequestForComment %>
     <%= @reported_content.question %>
 

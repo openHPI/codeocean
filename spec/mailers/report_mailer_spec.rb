@@ -23,19 +23,5 @@ RSpec.describe ReportMailer do
         expect(mail.body).to include('Inappropriate content for RfC.')
       end
     end
-
-    context 'when a Comment is reported' do
-      it 'sets the correct subject' do
-        expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', content_name: Comment.model_name.human))
-      end
-
-      it 'sets the correct receiver' do
-        expect(mail.to).to include('report@example.com')
-      end
-
-      it 'includes the reported content' do
-        expect(mail.body).to include('Inappropriate content for Comment.')
-      end
-    end
   end
 end
