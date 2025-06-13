@@ -1,4 +1,4 @@
-const tooltipMap = new WeakMap();
+const tooltipMap = new Map();
 
 function manageTooltips() {
   const selector = '[data-bs-toggle="tooltip"]';
