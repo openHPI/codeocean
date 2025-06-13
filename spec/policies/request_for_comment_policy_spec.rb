@@ -307,4 +307,26 @@ RSpec.describe RequestForCommentPolicy do
       end
     end
   end
+
+  permissions(:report?) do
+    let(:user) { build_stubbed(:external_user) }
+
+    it 'allows anyone to report RfCs' do
+      %i[admin external_user teacher].each do |factory_name|
+        expect(policy).to permit(create(factory_name), Comment.new)
+      end
+    end
+
+    it 'dose not allow reports when no report email is configured' do
+      codeocean_config = instance_double(CodeOcean::Config)
+      allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+      allow(codeocean_config).to receive(:read).and_return({})
+
+      expect(policy).not_to permit(user, RequestForComment.new)
+    end
+
+    it 'dose not allow reports of your own content' do
+      expect(policy).not_to permit(user, Comment.new(user: user))
+    end
+  end
 end

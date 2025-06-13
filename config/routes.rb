@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       get :mark_as_solved, defaults: {format: :json}
       post :set_thank_you_note, defaults: {format: :json}
       post :clear_question
+      post :report
     end
   end
   resources :comments, defaults: {format: :json}
