@@ -9,7 +9,7 @@ RSpec.describe 'POST /request_for_comments/:rfc_id/report', type: :request do
     login_as(user, password)
     rfc = create(:rfc)
 
-    expect { post(report_request_for_comment_path(rfc, session: {foo: 'bar'})) }
+    expect { post(report_request_for_comment_path(rfc)) }
       .to have_enqueued_mail(ReportMailer, :report_content)
       .with(params: {reported_content: rfc}, args: [])
   end
