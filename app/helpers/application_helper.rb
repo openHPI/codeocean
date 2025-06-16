@@ -97,9 +97,9 @@ module ApplicationHelper
 
     {
       'data-default-locale' => I18n.default_locale,
-      'data-events-enabled' => config.dig('codeocean_events', 'enabled'),
+      'data-events-enabled' => config.dig(:codeocean_events, :enabled),
       'data-flowr-enabled' => config.dig(:flowr, :enabled),
-      'data-flowr-answers-per-query' => config.fetch(:flowranswers_per_query, 3),
+      'data-flowr-answers-per-query' => config.dig(:flowr, :answers_per_query) || 3,
     }
   end
 end
