@@ -313,15 +313,15 @@ RSpec.describe RequestForCommentPolicy do
 
     it 'allows anyone to report RfCs' do
       %i[admin external_user teacher].each do |factory_name|
-        expect(policy).to permit(create(factory_name), Comment.new)
+        expect(policy).to permit(create(factory_name), create(:rfc))
       end
     end
 
     it 'dose not allow reports when the RfC is not accessable' do
-      allow(policy).to receive(:show?).and_return(false) # rubocop:disable RSpec/SubjectStub
+      allow_any_instance_of(policy).to receive(:show?).and_return(false)
 
       %i[admin external_user teacher].each do |factory_name|
-        expect(policy).not_to permit(create(factory_name), Comment.new)
+        expect(policy).not_to permit(create(factory_name), RequestForComment.new)
       end
     end
 
@@ -334,7 +334,7 @@ RSpec.describe RequestForCommentPolicy do
     end
 
     it 'dose not allow reports of your own content' do
-      expect(policy).not_to permit(user, Comment.new(user: user))
+      expect(policy).not_to permit(user, RequestForComment.new(user: user))
     end
   end
 end
