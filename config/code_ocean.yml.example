@@ -56,9 +56,11 @@ default: &default
     unused_runner_expiration_time: 180
 
   content_moderation:
-    # Email address to receive reports about inappropriate content.
+    # Email address to receive reports about inappropriate content. Please make sure to update
+    # the emails in the deployment configuration. If you don't want to receive reports, remove
+    # all emails to disable the feature.
     report_emails:
-      # - report@example.com
+      - report@example.com
 
 development:
   <<: *default
