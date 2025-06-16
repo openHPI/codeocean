@@ -42,7 +42,7 @@ class RequestForCommentPolicy < ApplicationPolicy
   end
 
   def report?
-    report_receiver_configured? && !author?
+    report_receiver_configured? && show? && !author?
   end
 
   private

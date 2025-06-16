@@ -317,6 +317,14 @@ RSpec.describe RequestForCommentPolicy do
       end
     end
 
+    it 'dose not allow reports when the RfC is not accessable' do
+      allow(policy).to receive(:show?).and_return(false) # rubocop:disable RSpec/SubjectStub
+
+      %i[admin external_user teacher].each do |factory_name|
+        expect(policy).not_to permit(create(factory_name), Comment.new)
+      end
+    end
+
     it 'dose not allow reports when no report email is configured' do
       codeocean_config = instance_double(CodeOcean::Config)
       allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
