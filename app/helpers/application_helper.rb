@@ -93,11 +93,13 @@ module ApplicationHelper
   end
 
   def html_data_attributes
+    config = CodeOcean::Config.new(:code_ocean).read
+
     {
       'data-default-locale' => I18n.default_locale,
-      'data-events-enabled' => CodeOcean::Config.new(:code_ocean).read.dig('codeocean_events', 'enabled'),
-      'data-flowr-enabled' => CodeOcean::Config.new(:code_ocean).read.dig(:flowr, :enabled),
-      'data-flowr-answers-per-query' => CodeOcean::Config.new(:code_ocean).read[:flowranswers_per_query] || 3,
+      'data-events-enabled' => config.dig('codeocean_events', 'enabled'),
+      'data-flowr-enabled' => config.dig(:flowr, :enabled),
+      'data-flowr-answers-per-query' => config.fetch(:flowranswers_per_query, 3),
     }
   end
 end
