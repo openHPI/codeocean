@@ -1,9 +1,3 @@
-// Note: Directives are only processed if they come before any application code.
-// Once you have a line that does not include a comment or whitespace then Sprockets will stop looking for directives.
-// If you use a directive outside of the "header" of the document it will not do anything, and won't raise any errors.
-// <% config_file = CodeOcean::Config.new(:code_ocean, erb: false) %>
-//= depend_on <%= config_file.path.basename %>
-
 var CodeOceanEditor = {
     THEME: window.getCurrentTheme() === 'dark' ? 'ace/theme/tomorrow_night' : 'ace/theme/tomorrow',
 
