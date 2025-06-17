@@ -46,18 +46,40 @@ RSpec.describe RequestForCommentPolicy do
         end
       end
     end
+
+    permissions(:report?) do
+      before do
+        codeocean_config = instance_double(CodeOcean::Config)
+        allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+        allow(codeocean_config).to receive(:read).and_return({
+          content_moderation: {report_emails: ['report@example.com']},
+        })
+      end
+
+      it 'allows anyone to report RfCs' do
+        %i[admin external_user teacher].each do |factory_name|
+          expect(policy).to permit(create(factory_name), create(:rfc))
+        end
+      end
+    end
   end
 
   context 'when the RfC visibility is considered' do
-    shared_examples 'grants access to everyone' do
+    shared_examples 'grants access to everyone' do |params|
       it 'grants access to everyone' do
         %i[external_user teacher admin].each do |factory_name|
           expect(policy).to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
         end
       end
 
-      it 'grants access to authors' do
-        expect(policy).to permit(rfc.author, rfc)
+      if params && params[:block_author]
+        it 'dose not grant access to authors' do
+          expect(policy).not_to permit(rfc.author, rfc)
+        end
+      else
+        it 'grants access to authors' do
+          expect(policy).to permit(rfc.author, rfc)
+        end
       end
 
       it 'grant access to other authors of the programming group' do
@@ -73,6 +95,27 @@ RSpec.describe RequestForCommentPolicy do
 
       it 'grants access to authors' do
         expect(policy).to permit(rfc.author, rfc)
+      end
+
+      it 'grant access to other authors of the programming group' do
+        rfc.submission.update(contributor: programming_group)
+        expect(policy).to permit(viewer_other_group_member, rfc)
+      end
+
+      it 'does not grant access to all other users' do
+        %i[external_user teacher].each do |factory_name|
+          expect(policy).not_to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+        end
+      end
+    end
+
+    shared_examples 'grants access to admins only' do
+      it 'grants access to admins' do
+        expect(policy).to permit(create(:admin, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
+      end
+
+      it 'dose not grant access to authors' do
+        expect(policy).not_to permit(rfc.author, rfc)
       end
 
       it 'grant access to other authors of the programming group' do
@@ -111,6 +154,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to everyone', {block_author: true}
+          end
         end
 
         context "when the viewer's rfc_visibility is set to consumer" do
@@ -122,6 +177,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
+          end
         end
 
         context "when the viewer's rfc_visibility is set to study_group" do
@@ -132,6 +199,18 @@ RSpec.describe RequestForCommentPolicy do
             permissions(action) do
               it_behaves_like 'grants access to admins and authors only'
             end
+          end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
           end
         end
       end
@@ -151,6 +230,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to everyone', {block_author: true}
+          end
         end
 
         context 'when the viewer is from the same study group' do
@@ -164,6 +255,18 @@ RSpec.describe RequestForCommentPolicy do
             permissions(action) do
               it_behaves_like 'grants access to admins and authors only'
             end
+          end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to everyone', {block_author: true}
           end
         end
       end
@@ -182,6 +285,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
+          end
         end
 
         context "when the viewer's rfc_visibility is set to consumer" do
@@ -193,6 +308,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
+          end
         end
 
         context "when the viewer's rfc_visibility is set to study_group" do
@@ -203,6 +330,18 @@ RSpec.describe RequestForCommentPolicy do
             permissions(action) do
               it_behaves_like 'grants access to admins and authors only'
             end
+          end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
           end
         end
       end
@@ -222,6 +361,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to everyone', {block_author: true}
+          end
         end
 
         context 'when the viewer is from the same study group' do
@@ -235,6 +386,18 @@ RSpec.describe RequestForCommentPolicy do
             permissions(action) do
               it_behaves_like 'grants access to admins and authors only'
             end
+          end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to everyone', {block_author: true}
           end
         end
       end
@@ -253,6 +416,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
+          end
         end
 
         context "when the viewer's rfc_visibility is set to consumer" do
@@ -264,6 +439,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
+          end
         end
 
         context "when the viewer's rfc_visibility is set to study_group" do
@@ -274,6 +461,18 @@ RSpec.describe RequestForCommentPolicy do
             permissions(action) do
               it_behaves_like 'grants access to admins and authors only'
             end
+          end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
           end
         end
       end
@@ -289,6 +488,18 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to admins only'
+          end
         end
 
         context 'when the viewer is from the same study group' do
@@ -303,38 +514,30 @@ RSpec.describe RequestForCommentPolicy do
               it_behaves_like 'grants access to admins and authors only'
             end
           end
+
+          permissions(:report?) do
+            before do
+              codeocean_config = instance_double(CodeOcean::Config)
+              allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+              allow(codeocean_config).to receive(:read).and_return({
+                content_moderation: {report_emails: ['report@example.com']},
+              })
+            end
+
+            it_behaves_like 'grants access to everyone', {block_author: true}
+          end
         end
       end
     end
-  end
 
-  permissions(:report?) do
-    let(:user) { build_stubbed(:external_user) }
-
-    it 'allows anyone to report RfCs' do
-      %i[admin external_user teacher].each do |factory_name|
-        expect(policy).to permit(create(factory_name), create(:rfc))
+    context 'when no report email is configured' do
+      permissions(:report?) do
+        it 'dose not allow reports from anyone' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).not_to permit(create(factory_name), RequestForComment.new)
+          end
+        end
       end
-    end
-
-    it 'dose not allow reports when the RfC is not accessable' do
-      allow_any_instance_of(policy).to receive(:show?).and_return(false)
-
-      %i[admin external_user teacher].each do |factory_name|
-        expect(policy).not_to permit(create(factory_name), RequestForComment.new)
-      end
-    end
-
-    it 'dose not allow reports when no report email is configured' do
-      codeocean_config = instance_double(CodeOcean::Config)
-      allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
-      allow(codeocean_config).to receive(:read).and_return({})
-
-      expect(policy).not_to permit(user, RequestForComment.new)
-    end
-
-    it 'dose not allow reports of your own content' do
-      expect(policy).not_to permit(user, RequestForComment.new(user: user))
     end
   end
 end
