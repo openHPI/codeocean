@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'POST /request_for_comments/:rfc_id/report', type: :request do
   before do
+    user = create(:learner)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
     codeocean_config = instance_double(CodeOcean::Config)
     allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
