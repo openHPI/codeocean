@@ -60,7 +60,7 @@ default: &default
     # the emails in the deployment configuration. If you don't want to receive reports, remove
     # all emails to disable the feature.
     report_emails:
-      - report@example.com
+      # - report@example.com
 
 development:
   <<: *default

@@ -3,6 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe 'POST /request_for_comments/:rfc_id/report', type: :request do
+  before do
+    codeocean_config = instance_double(CodeOcean::Config)
+    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+    allow(codeocean_config).to receive(:read).and_return({
+      content_moderation: {report_emails: ['report@example.com']},
+    })
+  end
+
   it 'sends an email to let admins know about the report' do
     user = create(:learner)
     password = attributes_for(:learner).fetch(:password)

@@ -39,6 +39,12 @@ RSpec.describe 'Request_for_Comments' do
   end
 
   it 'allows reporting of RfCs', :js do
+    codeocean_config = instance_double(CodeOcean::Config)
+    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+    allow(codeocean_config).to receive(:read).and_return({
+      content_moderation: {report_emails: ['report@example.com']},
+    })
+
     request_for_comment = create(:rfc)
     visit(request_for_comment_path(request_for_comment))
 
