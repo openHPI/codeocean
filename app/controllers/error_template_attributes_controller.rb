@@ -76,7 +76,7 @@ class ErrorTemplateAttributesController < ApplicationController
     @error_template_attribute.destroy
     respond_to do |format|
       format.html do
-        redirect_to error_template_attributes_url, notice: t('shared.object_destroyed', model: @error_template_attribute.class.model_name.human)
+        redirect_to ErrorTemplateAttribute, notice: t('shared.object_destroyed', model: @error_template_attribute.class.model_name.human)
       end
       format.json { head :no_content }
     end

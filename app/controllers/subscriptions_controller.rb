@@ -26,7 +26,7 @@ class SubscriptionsController < ApplicationController
   rescue StandardError
     skip_authorization
     respond_to do |format|
-      format.html { redirect_to request_for_comments_url, alert: t('subscriptions.subscription_not_existent') }
+      format.html { redirect_to RequestForComment, alert: t('subscriptions.subscription_not_existent') }
       format.json { render json: {message: t('subscriptions.subscription_not_existent')}, status: :not_found }
     end
   else
@@ -35,12 +35,12 @@ class SubscriptionsController < ApplicationController
     @subscription.deleted = true
     if @subscription.save
       respond_to do |format|
-        format.html { redirect_to request_for_comment_url(rfc), notice: t('subscriptions.successfully_unsubscribed') }
+        format.html { redirect_to rfc, notice: t('subscriptions.successfully_unsubscribed') }
         format.json { render json: {message: t('subscriptions.successfully_unsubscribed')}, status: :ok }
       end
     else
       respond_to do |format|
-        format.html { redirect_to request_for_comment_url(rfc), flash: {danger: t('shared.message_failure')} }
+        format.html { redirect_to rfc, flash: {danger: t('shared.message_failure')} }
         format.json { render json: {message: t('shared.message_failure')}, status: :internal_server_error }
       end
     end

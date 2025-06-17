@@ -70,7 +70,7 @@ class ErrorTemplatesController < ApplicationController
     authorize!
     @error_template.destroy
     respond_to do |format|
-      format.html { redirect_to error_templates_url, notice: t('shared.object_destroyed', model: @error_template.class.model_name.human) }
+      format.html { redirect_to ErrorTemplate, notice: t('shared.object_destroyed', model: @error_template.class.model_name.human) }
       format.json { head :no_content }
     end
   end

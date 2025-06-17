@@ -78,7 +78,7 @@ class FileTemplatesController < ApplicationController
     authorize!
     @file_template.destroy
     respond_to do |format|
-      format.html { redirect_to file_templates_url, notice: t('shared.object_destroyed', model: @file_template.class.model_name.human) }
+      format.html { redirect_to FileTemplate, notice: t('shared.object_destroyed', model: @file_template.class.model_name.human) }
       format.json { head :no_content }
     end
   end
