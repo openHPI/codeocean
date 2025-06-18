@@ -48,17 +48,35 @@ RSpec.describe RequestForCommentPolicy do
     end
 
     permissions(:report?) do
-      before do
-        codeocean_config = instance_double(CodeOcean::Config)
-        allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
-        allow(codeocean_config).to receive(:read).and_return({
-          content_moderation: {report_emails: ['report@example.com']},
-        })
+      context 'when report emails are configured' do
+        before do
+          codeocean_config = instance_double(CodeOcean::Config)
+          allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+          allow(codeocean_config).to receive(:read).and_return({
+            content_moderation: {report_emails: ['report@example.com']},
+          })
+        end
+
+        it 'allows anyone to report RfCs' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).to permit(create(factory_name), create(:rfc))
+          end
+        end
       end
 
-      it 'allows anyone to report RfCs' do
-        %i[admin external_user teacher].each do |factory_name|
-          expect(policy).to permit(create(factory_name), create(:rfc))
+      context 'when no report email is configured' do
+        before do
+          codeocean_config = instance_double(CodeOcean::Config)
+          allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+          allow(codeocean_config).to receive(:read).and_return({
+            content_moderation: {report_emails: []},
+          })
+        end
+
+        it 'dose not allow reports from anyone' do
+          %i[admin external_user teacher].each do |factory_name|
+            expect(policy).not_to permit(create(factory_name), RequestForComment.new)
+          end
         end
       end
     end
@@ -525,16 +543,6 @@ RSpec.describe RequestForCommentPolicy do
             end
 
             it_behaves_like 'grants access to everyone', {block_author: true}
-          end
-        end
-      end
-    end
-
-    context 'when no report email is configured' do
-      permissions(:report?) do
-        it 'dose not allow reports from anyone' do
-          %i[admin external_user teacher].each do |factory_name|
-            expect(policy).not_to permit(create(factory_name), RequestForComment.new)
           end
         end
       end
