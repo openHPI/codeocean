@@ -71,7 +71,7 @@ RSpec.describe RequestForCommentPolicy do
       context 'when no report email is configured' do
         let(:report_emails) { [] }
 
-        it 'dose not allow reports from anyone' do
+        it 'does not allow reports from anyone' do
           %i[admin external_user teacher].each do |factory_name|
             expect(policy).not_to permit(create(factory_name), RequestForComment.new)
           end
@@ -89,7 +89,7 @@ RSpec.describe RequestForCommentPolicy do
       end
 
       if params && params[:block_author]
-        it 'dose not grant access to authors' do
+        it 'does not grant access to authors' do
           expect(policy).not_to permit(rfc.author, rfc)
         end
       else
@@ -130,7 +130,7 @@ RSpec.describe RequestForCommentPolicy do
         expect(policy).to permit(create(:admin, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
       end
 
-      it 'dose not grant access to authors' do
+      it 'does not grant access to authors' do
         expect(policy).not_to permit(rfc.author, rfc)
       end
 
