@@ -6,7 +6,8 @@ RSpec.describe ReportMailer do
   describe '#report_content' do
     subject(:mail) { described_class.with(reported_content:).report_content }
 
-    let(:reported_content) { create(:rfc, question: 'Inappropriate content for RfC.') }
+    let(:question) { 'Inappropriate content for RfC.' }
+    let(:reported_content) { create(:rfc, question:) }
 
     it 'sets the correct sender' do
       expect(mail.from).to include('codeocean@openhpi.de')
@@ -18,8 +19,8 @@ RSpec.describe ReportMailer do
       end
 
       it 'includes the reported content' do
-        expect(mail.text_part.body).to include('Inappropriate content for RfC.')
-        expect(mail.html_part.body).to include('Inappropriate content for RfC.')
+        expect(mail.text_part.body).to include(question)
+        expect(mail.html_part.body).to include(question)
       end
     end
   end
