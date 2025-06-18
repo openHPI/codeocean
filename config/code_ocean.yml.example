@@ -74,6 +74,9 @@ production:
   <<: *default
   prometheus_exporter:
     enabled: true
+  content_moderation:
+    report_emails:
+      - report@example.com
 
 
 test:
