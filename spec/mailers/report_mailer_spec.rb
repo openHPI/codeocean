@@ -12,7 +12,7 @@ RSpec.describe ReportMailer do
       expect(mail.from).to include('codeocean@openhpi.de')
     end
 
-    context 'when a RfC is reported' do
+    context 'when an RfC is reported' do
       it 'sets the correct subject' do
         expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', content_name: RequestForComment.model_name.human))
       end
