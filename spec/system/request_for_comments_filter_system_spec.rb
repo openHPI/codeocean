@@ -4,8 +4,15 @@ require 'rails_helper'
 
 RSpec.describe 'Request_for_Comments' do
   let(:user) { create(:teacher) }
+  let(:report_emails) { [] }
 
   before do
+    codeocean_config = instance_double(CodeOcean::Config)
+    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
+    allow(codeocean_config).to receive(:read).and_return({
+      content_moderation: {report_emails:},
+    })
+
     visit(sign_in_path)
     fill_in('email', with: user.email)
     fill_in('password', with: attributes_for(:teacher)[:password])
@@ -38,20 +45,18 @@ RSpec.describe 'Request_for_Comments' do
     expect(page).to have_css('ul.pagination')
   end
 
-  it 'allows reporting of RfCs', :js do
-    codeocean_config = instance_double(CodeOcean::Config)
-    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
-    allow(codeocean_config).to receive(:read).and_return({
-      content_moderation: {report_emails: ['report@example.com']},
-    })
+  context 'when reporting is enabled' do
+    let(:report_emails) { ['report@example.com'] }
 
-    request_for_comment = create(:rfc)
-    visit(request_for_comment_path(request_for_comment))
+    it 'allows reporting of RfCs', :js do
+      request_for_comment = create(:rfc)
+      visit(request_for_comment_path(request_for_comment))
 
-    accept_confirm do
-      click_on I18n.t('request_for_comments.report.report')
+      accept_confirm do
+        click_on I18n.t('request_for_comments.report.report')
+      end
+
+      expect(page).to have_text(I18n.t('request_for_comments.report.reported'))
     end
-
-    expect(page).to have_text(I18n.t('request_for_comments.report.reported'))
   end
 end
