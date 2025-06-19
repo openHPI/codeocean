@@ -25,7 +25,7 @@ FactoryBot.define do
     after(:create) do |user, evaluator|
       # Do not create a study group if already passed
       if user.study_groups.blank?
-        study_group = StudyGroup.find_by!(external_id: nil)
+        study_group = create(:study_group)
         user.study_groups << study_group
       end
 
