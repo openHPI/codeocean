@@ -79,21 +79,32 @@ RSpec.describe RequestForCommentPolicy do
   end
 
   context 'when the RfC visibility is considered' do
-    shared_examples 'grants access to everyone' do |params|
+    shared_examples 'grants access to everyone' do
       it 'grants access to everyone' do
         %i[external_user teacher admin].each do |factory_name|
           expect(policy).to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
         end
       end
 
-      if params && params[:block_author]
-        it 'does not grant access to authors' do
-          expect(policy).not_to permit(rfc.author, rfc)
+      it 'grants access to authors' do
+        expect(policy).to permit(rfc.author, rfc)
+      end
+
+      it 'grant access to other authors of the programming group' do
+        rfc.submission.update(contributor: programming_group)
+        expect(policy).to permit(viewer_other_group_member, rfc)
+      end
+    end
+
+    shared_examples 'grants access to everyone but the author' do
+      it 'grants access to everyone' do
+        %i[external_user teacher admin].each do |factory_name|
+          expect(policy).to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
         end
-      else
-        it 'grants access to authors' do
-          expect(policy).to permit(rfc.author, rfc)
-        end
+      end
+
+      it 'does not grant access to authors' do
+        expect(policy).not_to permit(rfc.author, rfc)
       end
 
       it 'grant access to other authors of the programming group' do
@@ -172,7 +183,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to everyone', {block_author: true}
+            it_behaves_like 'grants access to everyone but the author'
           end
         end
 
@@ -230,7 +241,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to everyone', {block_author: true}
+            it_behaves_like 'grants access to everyone but the author'
           end
         end
 
@@ -250,7 +261,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to everyone', {block_author: true}
+            it_behaves_like 'grants access to everyone but the author'
           end
         end
       end
@@ -331,7 +342,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to everyone', {block_author: true}
+            it_behaves_like 'grants access to everyone but the author'
           end
         end
 
@@ -351,7 +362,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to everyone', {block_author: true}
+            it_behaves_like 'grants access to everyone but the author'
           end
         end
       end
@@ -448,7 +459,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to everyone', {block_author: true}
+            it_behaves_like 'grants access to everyone but the author'
           end
         end
       end
