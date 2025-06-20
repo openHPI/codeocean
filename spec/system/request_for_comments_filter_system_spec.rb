@@ -45,18 +45,27 @@ RSpec.describe 'Request_for_Comments' do
     expect(page).to have_css('ul.pagination')
   end
 
-  context 'when reporting is enabled' do
-    let(:report_emails) { ['report@example.com'] }
+  describe 'reporting of user content' do
+    before do
+      visit(request_for_comment_path(create(:rfc)))
+    end
 
-    it 'allows reporting of RfCs', :js do
-      request_for_comment = create(:rfc)
-      visit(request_for_comment_path(request_for_comment))
+    context 'when reporting is enabled' do
+      let(:report_emails) { ['report@example.com'] }
 
-      accept_confirm do
-        click_on I18n.t('request_for_comments.report.report')
+      it 'allows reporting of RfCs', :js do
+        accept_confirm do
+          click_on I18n.t('request_for_comments.report.report')
+        end
+
+        expect(page).to have_text(I18n.t('request_for_comments.report.reported'))
       end
+    end
 
-      expect(page).to have_text(I18n.t('request_for_comments.report.reported'))
+    context 'when reporting is disabled' do
+      it 'dose not display the report button' do
+        expect(page).to have_no_button(I18n.t('request_for_comments.report.report'))
+      end
     end
   end
 end
