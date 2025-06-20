@@ -71,7 +71,7 @@ RSpec.describe RequestForCommentPolicy do
       context 'when no report email is configured' do
         it 'does not allow reports from anyone' do
           %i[admin external_user teacher].each do |factory_name|
-            expect(policy).not_to permit(create(factory_name), RequestForComment.new)
+            expect(policy).not_to permit(create(factory_name), rfc)
           end
         end
       end
@@ -123,7 +123,7 @@ RSpec.describe RequestForCommentPolicy do
       end
     end
 
-    shared_examples 'grants access to admins only' do
+    shared_examples 'grants access to admins and other authors only' do
       it 'grants access to admins' do
         expect(policy).to permit(create(:admin, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
       end
@@ -189,7 +189,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
 
@@ -206,7 +206,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
       end
@@ -273,7 +273,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
 
@@ -290,7 +290,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
 
@@ -307,7 +307,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
       end
@@ -374,7 +374,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
 
@@ -391,7 +391,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
 
@@ -408,7 +408,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
       end
@@ -428,7 +428,7 @@ RSpec.describe RequestForCommentPolicy do
           permissions(:report?) do
             let(:reports_enabled) { true }
 
-            it_behaves_like 'grants access to admins only'
+            it_behaves_like 'grants access to admins and other authors only'
           end
         end
 
