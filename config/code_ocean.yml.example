@@ -55,6 +55,12 @@ default: &default
     # be truly greater than any permitted execution time of an execution environment.
     unused_runner_expiration_time: 180
 
+  content_moderation:
+    # Email address to receive reports about inappropriate content. Please make sure to update
+    # the emails in the deployment configuration. If you don't want to receive reports, remove
+    # all emails to disable the feature.
+    report_emails:
+      # - report@example.com
 
 development:
   <<: *default
@@ -68,6 +74,9 @@ production:
   <<: *default
   prometheus_exporter:
     enabled: true
+  content_moderation:
+    report_emails:
+      - report@example.com
 
 
 test:

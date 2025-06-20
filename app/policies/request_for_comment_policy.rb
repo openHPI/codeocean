@@ -41,6 +41,16 @@ class RequestForCommentPolicy < ApplicationPolicy
     everyone
   end
 
+  def report?
+    report_receiver_configured? && show? && !author?
+  end
+
+  private
+
+  def report_receiver_configured?
+    CodeOcean::Config.new(:code_ocean).read.dig(:content_moderation, :report_emails).present?
+  end
+
   def rfc_visibility
     # The consumer with the most restricted visibility determines the visibility of the RfC
     case [@user.consumer.rfc_visibility, @record.author.consumer.rfc_visibility]

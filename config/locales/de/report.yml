@@ -1,0 +1,7 @@
+---
+de:
+  report_mailer:
+    report_content:
+      prolog: 'Die folgenden Inhalte wurden als unangemessen gemeldet:'
+      subject: 'Spam Report: Ein %{content_name} in CodeOcean wurde als unangemessen markiert.'
+      take_action: Bitte ergreifen Sie gegebenenfalls Maßnahmen.
