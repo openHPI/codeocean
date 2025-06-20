@@ -18,7 +18,7 @@ RSpec.describe 'request_for_comments/report.html.slim' do
     expect(rendered).to have_button
   end
 
-  it 'has not report button when reporting is not authorized' do
+  it 'has no report button when reporting is not authorized' do
     report_policy = instance_double(RequestForCommentPolicy, report?: false)
     allow(view).to receive(:policy).with(rfc).and_return(report_policy)
 
