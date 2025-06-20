@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class RequestForCommentPolicy < ApplicationPolicy
+  REPORT_RECEIVER_CONFIGURED = CodeOcean::Config.new(:code_ocean).read.dig(:content_moderation, :report_emails).present?
+
   def create?
     everyone
   end
@@ -42,14 +44,10 @@ class RequestForCommentPolicy < ApplicationPolicy
   end
 
   def report?
-    report_receiver_configured? && show? && !author?
+    REPORT_RECEIVER_CONFIGURED && show? && !author?
   end
 
   private
-
-  def report_receiver_configured?
-    CodeOcean::Config.new(:code_ocean).read.dig(:content_moderation, :report_emails).present?
-  end
 
   def rfc_visibility
     # The consumer with the most restricted visibility determines the visibility of the RfC

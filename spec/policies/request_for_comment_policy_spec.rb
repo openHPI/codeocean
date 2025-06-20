@@ -5,14 +5,10 @@ require 'rails_helper'
 RSpec.describe RequestForCommentPolicy do
   subject(:policy) { described_class }
 
-  let(:report_emails) { [] }
+  let(:reports_enabled) { false }
 
   before do
-    codeocean_config = instance_double(CodeOcean::Config)
-    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
-    allow(codeocean_config).to receive(:read).and_return({
-      content_moderation: {report_emails:},
-    })
+    stub_const('RequestForCommentPolicy::REPORT_RECEIVER_CONFIGURED', reports_enabled)
   end
 
   context 'when the RfC visibility is not considered' do
@@ -59,7 +55,7 @@ RSpec.describe RequestForCommentPolicy do
 
     permissions(:report?) do
       context 'when report emails are configured' do
-        let(:report_emails) { ['report@example.com'] }
+        let(:reports_enabled) { true }
 
         it 'allows anyone to report RfCs' do
           %i[admin external_user teacher].each do |factory_name|
@@ -69,8 +65,6 @@ RSpec.describe RequestForCommentPolicy do
       end
 
       context 'when no report email is configured' do
-        let(:report_emails) { [] }
-
         it 'does not allow reports from anyone' do
           %i[admin external_user teacher].each do |factory_name|
             expect(policy).not_to permit(create(factory_name), RequestForComment.new)
@@ -172,7 +166,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to everyone', {block_author: true}
           end
@@ -189,7 +183,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -206,7 +200,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -230,7 +224,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to everyone', {block_author: true}
           end
@@ -250,7 +244,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to everyone', {block_author: true}
           end
@@ -273,7 +267,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -290,7 +284,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -307,7 +301,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -331,7 +325,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to everyone', {block_author: true}
           end
@@ -351,7 +345,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to everyone', {block_author: true}
           end
@@ -374,7 +368,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -391,7 +385,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -408,7 +402,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -428,7 +422,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to admins only'
           end
@@ -448,7 +442,7 @@ RSpec.describe RequestForCommentPolicy do
           end
 
           permissions(:report?) do
-            let(:report_emails) { ['report@example.com'] }
+            let(:reports_enabled) { true }
 
             it_behaves_like 'grants access to everyone', {block_author: true}
           end
