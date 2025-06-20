@@ -57,10 +57,14 @@ RSpec.describe RequestForCommentPolicy do
       context 'when report emails are configured' do
         let(:reports_enabled) { true }
 
-        it 'allows anyone to report RfCs' do
+        it 'allows anyone to report RfCs expect the author' do
           %i[admin external_user teacher].each do |factory_name|
-            expect(policy).to permit(create(factory_name), create(:rfc))
+            expect(policy).to permit(create(factory_name), rfc)
           end
+        end
+
+        it 'blocks authors from reporting their content' do
+          expect(policy).not_to permit(rfc.author, rfc)
         end
       end
 
