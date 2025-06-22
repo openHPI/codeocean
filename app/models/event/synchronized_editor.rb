@@ -91,12 +91,12 @@ class Event::SynchronizedEditor < ApplicationRecord
     event.presence if event.present? # TODO: As of now, we are storing the `session_id` most of the times. Intended?
   end
   private_class_method :data_attribute
-end
 
-private
+  private
 
-def lines_not_nil
-  if lines.nil?
-    errors.add(:lines, 'cannot be nil')
+  def lines_not_nil
+    if lines.nil?
+      errors.add(:lines, 'cannot be nil')
+    end
   end
 end
