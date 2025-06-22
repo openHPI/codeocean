@@ -71,21 +71,21 @@ module StatisticsHelper
       {
         key: 'submissions_per_minute',
           name: t('statistics.entries.exercises.submissions_per_minute'),
-          data: (Submission.where(created_at: DateTime.now - 1.hour..).count.to_f / 60).round(2),
+          data: (Submission.where(created_at: (DateTime.now - 1.hour)..).count.to_f / 60).round(2),
           unit: '/min',
           url: statistics_graphs_path,
       },
       {
         key: 'autosaves_per_minute',
           name: t('statistics.entries.exercises.autosaves_per_minute'),
-          data: (Submission.where(created_at: DateTime.now - 1.hour..).where(cause: 'autosave').count.to_f / 60).round(2),
+          data: (Submission.where(created_at: (DateTime.now - 1.hour)..).where(cause: 'autosave').count.to_f / 60).round(2),
           unit: '/min',
       },
       {
         key: 'container_requests_per_minute',
           name: t('statistics.entries.exercises.container_requests_per_minute'),
           # This query is actually quite expensive since we do not have an index on the created_at column.
-          data: (Testrun.where(created_at: DateTime.now - 1.hour..).count.to_f / 60).round(2),
+          data: (Testrun.where(created_at: (DateTime.now - 1.hour)..).count.to_f / 60).round(2),
           unit: '/min',
       },
       {
@@ -118,12 +118,12 @@ module StatisticsHelper
       {
         key: 'active_in_last_hour',
           name: t('statistics.entries.contributors.currently_active'),
-          data: Submission.where(created_at: DateTime.now - 5.minutes..).distinct.select(:contributor_id, :contributor_type).count,
+          data: Submission.where(created_at: (DateTime.now - 5.minutes)..).distinct.select(:contributor_id, :contributor_type).count,
       },
       {
         key: 'submissions_per_minute',
           name: t('statistics.entries.exercises.submissions_per_minute'),
-          data: (Submission.where(created_at: DateTime.now - 1.hour..).count.to_f / 60).round(2),
+          data: (Submission.where(created_at: (DateTime.now - 1.hour)..).count.to_f / 60).round(2),
           unit: '/min',
           axis: 'right',
       },
