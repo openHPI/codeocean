@@ -9,7 +9,7 @@ RSpec.describe 'request_for_comments/report.html.slim' do
     assign(:current_user, build_stubbed(:external_user))
   end
 
-  it 'displayes the report button when the request is authorized' do
+  it 'displays the report button when the request is authorized' do
     report_policy = instance_double(RequestForCommentPolicy, report?: true)
     allow(view).to receive(:policy).with(rfc).and_return(report_policy)
 
