@@ -7,23 +7,23 @@ RSpec.describe 'request_for_comments/report.html.slim' do
 
   before do
     assign(:current_user, build_stubbed(:external_user))
+    allow(view).to receive(:policy).with(rfc).and_return(report_policy)
+    render('request_for_comments/report', request_for_comment: rfc)
   end
 
-  it 'displays the report button when the request is authorized' do
-    report_policy = instance_double(RequestForCommentPolicy, report?: true)
-    allow(view).to receive(:policy).with(rfc).and_return(report_policy)
+  context 'when reporting is allowed' do
+    let(:report_policy) { instance_double(RequestForCommentPolicy, report?: true) }
 
-    render('request_for_comments/report', request_for_comment: rfc)
-
-    expect(rendered).to have_button
+    it 'displays the report button when the request is authorized' do
+      expect(rendered).to have_button
+    end
   end
 
-  it 'dose not display report button when reporting is not authorized' do
-    report_policy = instance_double(RequestForCommentPolicy, report?: false)
-    allow(view).to receive(:policy).with(rfc).and_return(report_policy)
+  context 'when reporting is prohibbeted' do
+    let(:report_policy) { instance_double(RequestForCommentPolicy, report?: false) }
 
-    render('request_for_comments/report', request_for_comment: rfc)
-
-    expect(rendered).to have_no_button
+    it 'dose not display report button when reporting is not authorized' do
+      expect(rendered).to have_no_button
+    end
   end
 end
