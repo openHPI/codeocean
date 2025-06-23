@@ -1,6 +1,6 @@
 == t('.prolog')
 == "\n\n"
-== "> #{@reported_content.question}"
+== @reported_content.question.lines.map { "> #{it}" }.join
 == "\n\n"
 == t('.take_action')
 == "\n\n"
