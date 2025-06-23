@@ -8,12 +8,8 @@ RSpec.describe 'POST /request_for_comments/:rfc_id/report', type: :request do
   let(:report_emails) { ['report@example.com'] }
 
   before do
+    stub_const('RequestForCommentPolicy::REPORT_RECEIVER_CONFIGURED', true)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-    codeocean_config = instance_double(CodeOcean::Config)
-    allow(CodeOcean::Config).to receive(:new).with(:code_ocean).and_return(codeocean_config)
-    allow(codeocean_config).to receive(:read).and_return({
-      content_moderation: {report_emails:},
-    })
   end
 
   it 'sends an email to let admins know about the report' do
