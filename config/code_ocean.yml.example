@@ -56,9 +56,9 @@ default: &default
     unused_runner_expiration_time: 180
 
   content_moderation:
-    # Email address to receive reports about inappropriate content. Please make sure to update
-    # the emails in the deployment configuration. If you don't want to receive reports, remove
-    # all emails to disable the feature.
+    # Learners can report inappropriate content, such as offensive RfCs or comments.
+    # For each report, an email is sent to all addresses listed below. If no address is
+    # configured, learners cannot report user-generated content.
     report_emails:
       # - report@example.com
 
