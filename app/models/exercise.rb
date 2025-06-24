@@ -377,7 +377,7 @@ class Exercise < ApplicationRecord
       SELECT   unnest(percentile_cont(#{self.class.sanitize_sql(['array[?]', quantiles])}) within GROUP (ORDER BY working_time))
       FROM     result
       ")
-    if result.count.positive?
+    if result.any?
       quantiles.each_with_index.map {|_q, i| parse_duration(result[i]['unnest']).to_f }
     else
       quantiles.map {|_q| 0 }
@@ -512,7 +512,7 @@ class Exercise < ApplicationRecord
   private :set_default_values
 
   def valid_main_file?
-    if files.count(&:main_file?) > 1
+    if files.many?(&:main_file?)
       errors.add(:files, :at_most_one_main_file)
     end
   end

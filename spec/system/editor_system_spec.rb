@@ -44,7 +44,7 @@ RSpec.describe 'Editor', :js do
 
   it 'displays all visible files in a file tree' do
     within('#files') do
-      exercise.files.select(&:visible).each do |file|
+      exercise.files.select(&:visible?).each do |file|
         expect(page).to have_content(file.name_with_extension)
       end
     end

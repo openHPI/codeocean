@@ -469,7 +469,7 @@ class SubmissionsController < ApplicationController
   end
 
   def set_files
-    @files = @submission.collect_files.select(&:visible)
+    @files = @submission.collect_files.select(&:visible?)
   end
 
   def set_submission
