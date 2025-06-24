@@ -4,7 +4,7 @@ require './exercise'
 require './reference'
 
 describe '#fibonacci' do
-  let(:sample_count) { 32 }
+  sample_count = 32
 
   let(:reference) { Class.new.extend(Reference) }
 
