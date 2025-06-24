@@ -3,12 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe 'Exercise', :js do
+  # TODO: Research why the base study group is created more then once.
   let(:study_group) do
     create(:study_group, external_id: nil)
   rescue StandardError
     StudyGroup.find_by(external_id: nil)
   end
 
+  # Only teachers in the base study group will be teachers after sign in.
+  # Teachers from other sources need to session parameters.
   let(:teacher) { create(:teacher, study_groups: [study_group]) }
 
   before do
@@ -17,9 +20,10 @@ RSpec.describe 'Exercise', :js do
     fill_in('email', with: teacher.email)
     fill_in('password', with: attributes_for(:teacher)[:password])
     click_button(I18n.t('sessions.new.link'))
+    wait_for_ajax
   end
 
-  it 'creates an exercise' do
+  it 'creates a minimal exercise' do
     visit new_exercise_path
 
     fill_in :exercise_title, with: 'Ruby challenge'
@@ -42,8 +46,6 @@ RSpec.describe 'Exercise', :js do
     chosen_select('exercise_submission_deadline_3i_chosen', submission_deadline.day.to_s)
     chosen_select('exercise_submission_deadline_4i_chosen', submission_deadline.hour.to_s)
     chosen_select('exercise_submission_deadline_5i_chosen', submission_deadline.min.to_s)
-
-    # TODO: Find a way to select the day correctly with inputs like 1,2,3
 
     late_submission_deadline = submission_deadline + 1.week
 

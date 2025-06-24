@@ -158,20 +158,6 @@ FactoryBot.define do
     end
   end
 
-  factory :sql_select, class: 'Exercise' do
-    created_by_teacher
-    description { 'Learn to use the SELECT statement.' }
-    execution_environment { association :sqlite, user: }
-    instructions { "Write a query which selects the full rows for all people with the last name 'Doe'." }
-    title { 'SELECT' }
-
-    after(:create) do |exercise|
-      create_seed_file(exercise, 'sql_select/exercise.sql', role: 'main_file')
-      create_seed_file(exercise, 'sql_select/comparator.rb', feedback_message: 'Your solution is not correct yet.', hidden: true, role: 'teacher_defined_test')
-      create_seed_file(exercise, 'sql_select/reference.sql', hidden: true, role: 'reference_implementation')
-    end
-  end
-
   factory :tdd, class: 'Exercise' do
     created_by_teacher
     description { 'Learn to appreciate test-driven development.' }
@@ -182,18 +168,6 @@ FactoryBot.define do
     after(:create) do |exercise|
       create_seed_file(exercise, 'tdd/exercise.rb', role: 'main_file')
       create_seed_file(exercise, 'tdd/exercise_spec.rb', role: 'user_defined_test')
-    end
-  end
-
-  factory :web_app, class: 'Exercise' do
-    created_by_teacher
-    description { 'Build a simple Web application with Sinatra.' }
-    execution_environment { association :sinatra, user: }
-    instructions
-    title { 'A Simple Web Application' }
-
-    after(:create) do |exercise|
-      create_seed_file(exercise, 'web_app/app.rb', role: 'main_file')
     end
   end
 
