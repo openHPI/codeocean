@@ -153,7 +153,7 @@ module CodeOcean
     end
     private :set_default_values
 
-    def visible
+    def visible?
       !hidden
     end
 

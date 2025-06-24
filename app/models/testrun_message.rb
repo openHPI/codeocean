@@ -99,7 +99,7 @@ class TestrunMessage < ApplicationRecord
   private_class_method :validate_and_store!
 
   def either_data_or_log
-    if [data, log].count(&:present?) > 1
+    if [data, log].many?(&:present?)
       errors.add(log, "can't be present if data is also present")
     end
   end

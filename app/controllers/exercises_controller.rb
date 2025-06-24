@@ -418,7 +418,7 @@ class ExercisesController < ApplicationController
     @hide_rfc_button = @embed_options[:disable_rfc]
 
     @submission = current_contributor.submissions.order(created_at: :desc).find_by(exercise: @exercise)
-    @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible).sort_by(&:filepath)
+    @files = (@submission ? @submission.collect_files : @exercise.files).select(&:visible?).sort_by(&:filepath)
     @paths = collect_paths(@files)
   end
 
