@@ -286,9 +286,15 @@ var CodeOceanEditor = {
             var content = $('.editor-content[data-file-id=' + file_id + ']');
             this.setActiveFile($(element).parent().data('filename'), file_id);
 
-            document.insertFullLines(0, content.text().split(/\n/));
-            // remove last (empty) that is there by default line
-            document.removeFullLines(document.getLength() - 1, document.getLength() - 1);
+            const full_lines = content.text().split(/\n/);
+            if (full_lines.length > 1 && full_lines[0] !== "") {
+                document.insertFullLines(0, full_lines);
+                // remove last (empty) that is there by default line
+                document.removeFullLines(document.getLength() - 1, document.getLength() - 1);
+                // remove content from DOM, so that it won't be readded during Turbo navigation
+                content.text("");
+            }
+
             editor.setReadOnly($(element).parent().data('read-only') !== undefined);
             if (editor.getReadOnly()) {
                 editor.setHighlightActiveLine(false);
