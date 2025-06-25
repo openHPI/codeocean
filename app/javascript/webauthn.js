@@ -23,7 +23,7 @@ async function getCredential(publicKey) {
   return await get(options);
 }
 
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
   if ($.isController('webauthn_credentials')) {
     form = $('form#new_webauthn_credential');
     credentialMethod = createCredential;

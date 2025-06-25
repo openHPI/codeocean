@@ -26,7 +26,7 @@ var ProgrammingGroups = {
     }
 };
 
-$(document).on('turbolinks:load', function () {
+$(document).on('turbo-migration:load', function (event) {
     const modal = $('#modal-info-pair-programming');
     if (modal.isPresent()) {
         ProgrammingGroups.initializeEventHandler();

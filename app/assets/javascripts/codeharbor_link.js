@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
     if($.isController('codeharbor_links')) {
         if ($('.edit_codeharbor_link, .new_codeharbor_link').isPresent()) {
 
@@ -33,4 +33,3 @@ $(document).on('turbolinks:load', function() {
         }
     }
 });
-

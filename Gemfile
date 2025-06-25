@@ -53,7 +53,7 @@ gem 'sprockets-rails'
 gem 'telegraf'
 gem 'terser', require: false
 gem 'tubesock', github: 'openhpi/tubesock'
-gem 'turbolinks'
+gem 'turbo-rails'
 gem 'webauthn'
 gem 'zxcvbn-ruby', require: 'zxcvbn'
 

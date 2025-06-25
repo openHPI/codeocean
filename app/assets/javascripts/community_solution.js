@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
 
     if ($.isController('community_solutions') && $('#community-solution-editor').isPresent()) {
         CodeOceanEditor.sendEvents = false;
@@ -38,7 +38,7 @@ function submitCode(event) {
         this.autosaveIfChanged();
         await this.stopCode(event);
         this.editors = [];
-        Turbolinks.clearCache();
-        Turbolinks.visit(submission.redirect);
+        Turbo.cache.clear();
+        Turbo.visit(submission.redirect);
     });
 }
