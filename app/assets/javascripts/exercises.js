@@ -9,14 +9,6 @@ $(document).on('turbolinks:load', function () {
         const editor = ace.edit(element);
         const element_selector = $(element);
 
-        const document = editor.getSession().getDocument();
-        // insert pre-existing code into editor. we have to use insertFullLines, otherwise the deltas are not properly added
-        const file_id = element_selector.data('file-id');
-        let content = $(`.editor-content[data-file-id=${file_id}]`);
-
-        document.insertFullLines(0, content.text().split(/\n/));
-        // remove last (empty) that is there by default; disabled due to missing last line
-        // document.removeFullLines(document.getLength() - 1, document.getLength() - 1);
         editor.setReadOnly(element_selector.data('read-only') !== undefined);
         editor.setShowPrintMargin(false);
         editor.setTheme(CodeOceanEditor.THEME);
@@ -27,7 +19,7 @@ $(document).on('turbolinks:load', function () {
         if ($('.edit_tip, .new_tip').isPresent()) {
             textarea = $('textarea[id="tip_example"]')
         }
-        content = textarea.val();
+        const content = textarea.val();
 
         if (content !== undefined) {
             editor.getSession().setValue(content);
