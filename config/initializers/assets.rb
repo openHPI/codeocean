@@ -6,5 +6,4 @@
 Rails.application.config.assets.version = '1.0'
 
 # Add additional assets to the asset load path.
-# We require the config directory to enable asset dependencies on CodeOcean::Config values (stored as YML files in `config`).
-Rails.application.config.assets.paths << Rails.root.join('config')
+# Rails.application.config.assets.paths << Emoji.images_path

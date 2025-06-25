@@ -1,5 +1,4 @@
 CodeOceanEditorFlowr = {
-  isFlowrEnabled: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:enabled] %>,
   flowrResultHtml:
     '<div class="card mb-2">' +
       '<div id="{{headingId}}" role="tab" class="card-header">' +
@@ -18,6 +17,13 @@ CodeOceanEditorFlowr = {
       '</div>' +
     '</div>',
 
+  getFlowrSettings: function () {
+    if (this._flowrSettings === undefined) {
+      this._flowrSettings = $('#editor').data('flowr');
+    }
+    return this._flowrSettings;
+  },
+
   getInsights: function () {
     var stackOverflowUrl = 'https://api.stackexchange.com/2.2/search/advanced';
 
@@ -29,7 +35,7 @@ CodeOceanEditorFlowr = {
       var stackoverflowRequests = _.map(insights, function (insight) {
         var queryParams = {
           accepted: true,
-          pagesize: <%= CodeOcean::Config.new(:code_ocean).read[:flowr][:answers_per_query] or 3 %>,
+          pagesize: this.getFlowrSettings().answers_per_query,
           order: 'desc',
           sort: 'relevance',
           site: 'stackoverflow',
@@ -43,9 +49,9 @@ CodeOceanEditorFlowr = {
           url: stackOverflowUrl,
           data: queryParams
         }).promise();
-      });
+      }.bind(this));
       return jQuery.when.apply(jQuery, stackoverflowRequests);
-    });
+    }.bind(this));
   },
   collectResults: function(response) {
     var results = [];
@@ -71,7 +77,7 @@ CodeOceanEditorFlowr = {
     return results;
   },
   handleStderrOutputForFlowr: function () {
-    if (! this.isFlowrEnabled) return;
+    if (! this.getFlowrSettings().enabled) return;
 
     var flowrHintBody = $('#flowrHint .card-body');
     flowrHintBody.empty();
