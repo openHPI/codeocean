@@ -59,6 +59,16 @@ RSpec.describe 'Exercise', :js do
 
     fill_in 'Difficulty', with: 5
 
+    click_on 'Add file'
+
+    wait_for_ajax
+
+    within(find_by_id('files').all('li').last) do
+      fill_in 'Name', with: 'main'
+
+      all('input').last.set(Rails.root.join('db/seeds/fibonacci/reference.rb'))
+    end
+
     click_on 'Create Exercise'
 
     expect(page).to have_text 'Exercise has successfully been created.'
