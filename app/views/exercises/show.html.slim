@@ -55,7 +55,7 @@ ul.list-unstyled#files
   - @exercise.files.each do |file|
     li.card.mt-2
       .card-header#heading role='tab'
-        a.file-heading.collapsed data-bs-toggle='collapse' data-bs-parent='#files' href=".collapse#{file.id}"
+        a.file-heading.collapsed data-bs-toggle='collapse' data-bs-parent='#files' data-bs-target=".collapse#{file.id}"
           .clearfix role='button'
             i.fa-solid aria-hidden='true'
             span = file.filepath
