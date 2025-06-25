@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
   if ($.isController('exercise_collections')) {
     var dataElement = $('#data');
     var exerciseList = $('#exercise-list');
@@ -100,7 +100,7 @@ $(document).on('turbolinks:load', function() {
           tooltip.style("display", "none");
         })
         .on("click", function (_event, d) {
-          Turbolinks.visit(Routes.statistics_exercise_path(d.exercise_id));
+          Turbo.visit(Routes.statistics_exercise_path(d.exercise_id));
         })
         .attr("x", function (d) {
           return x(d.index);

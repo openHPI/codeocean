@@ -84,3 +84,7 @@ import "ace-builds/src-noconflict/ext-language_tools"; // Enable autocompletion
 import "ace-builds/src-noconflict/ext-modelist"; // Enable language mode detection
 ace.config.set("useStrictCSP", true); // Enable strict CSP mode
 window.ace = ace; // Publish ace in global namespace
+
+// Turbo
+import '@hotwired/turbo-rails';
+import './turbo-migration';

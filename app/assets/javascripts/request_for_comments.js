@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function () {
+$(document).on('turbo-migration:load', function () {
     const exerciseCaption = $('#exercise_caption');
 
     if (!$.isController('request_for_comments') || !exerciseCaption.isPresent()) {

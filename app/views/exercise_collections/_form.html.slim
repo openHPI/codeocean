@@ -24,7 +24,7 @@
             td
               span.fa-solid.fa-bars
             td = item.exercise.title
-            td = link_to(t('shared.show'), item.exercise, 'data-turbolinks': 'false')
+            td = link_to(t('shared.show'), item.exercise, 'data-turbo': 'false')
             td
               a.remove-exercise href='#' = t('shared.destroy')
   .d-none

@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function () {
+$(document).on('turbo-migration:load', function () {
     const ENTER_KEY_CODE = 13;
 
     const clearOutput = function () {
