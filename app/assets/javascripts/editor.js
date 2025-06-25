@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function(event) {
+$(document).on('turbo-migration:load', function(event) {
 
   //Merge all editor components.
   $.extend(
@@ -13,7 +13,7 @@ $(document).on('turbolinks:load', function(event) {
       CodeOceanEditorRequestForComments
   );
 
-  if ($('#editor').isPresent() && CodeOceanEditor && event.originalEvent.data.url.includes("/implement")) {
+  if ($('#editor').isPresent() && CodeOceanEditor && event.detail.url.includes("/implement")) {
     CodeOceanEditor.initializeEverything();
   }
 

@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function () {
+$(document).on('turbo-migration:load', function () {
     const TAB_KEY_CODE = 9;
 
     let execution_environments;

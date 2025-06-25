@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
     // /38/statistics good for testing
 
   if ($.isController('exercises') && $('.working-time-graphs').isPresent()) {

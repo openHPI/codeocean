@@ -1106,10 +1106,10 @@ var CodeOceanEditor = {
         this.initializeDeadlines();
         CodeOceanEditorTips.initializeEventHandlers();
 
-        window.addEventListener("turbolinks:before-render", App.synchronized_editor?.disconnect.bind(App.synchronized_editor));
+        window.addEventListener("turbo:visit", App.synchronized_editor?.disconnect.bind(App.synchronized_editor));
         window.addEventListener("beforeunload", App.synchronized_editor?.disconnect.bind(App.synchronized_editor));
 
-        window.addEventListener("turbolinks:before-render", this.autosaveIfChanged.bind(this));
+        window.addEventListener("turbo:visit", this.autosaveIfChanged.bind(this));
         window.addEventListener("beforeunload", this.autosaveIfChanged.bind(this));
         // create autosave when the editor is opened the first time
         this.autosave();

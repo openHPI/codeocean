@@ -10,7 +10,6 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require turbolinks
 //= require rails-timeago
 //= require locales/jquery.timeago.de.js
 //
@@ -35,3 +34,8 @@
 //
 // All remaining assets are loaded in alphabetical order
 //= require_tree .
+//
+// Finally, we dispatch a custom event to signal that all assets are loaded.
+// This is used by our custom migration for Turbo to trigger the `turbo-migration:load` event
+const sprocketsLoad = new Event('sprockets:load');
+document.dispatchEvent(sprocketsLoad);

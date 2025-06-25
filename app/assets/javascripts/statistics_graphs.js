@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
   if ($.isController('statistics') && $('.graph#user-activity').isPresent()) {
 
     function manageGraph(containerId, url, refreshAfter) {
