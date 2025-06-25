@@ -66,9 +66,6 @@ $(document).on('turbo-migration:load', function() {
         });
     }
 
-    // Enable all tooltips
-    $('[data-bs-toggle="tooltip"]').tooltip();
-
     // Enable sorttable again, as it is disabled otherwise by Turbo
     if (sorttable) {
         sorttable.init.done = false;
