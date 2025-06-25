@@ -1,3 +1,5 @@
+import { initializeTooltips, destroyTooltips } from './tooltips';
+
 // `turbo:load` is dispatched earlier than the previous `turbolinks:load` event.
 // This is causing issues for our migration, since some assets are not fully loaded
 // when the event is dispatched. To ensure that the DOM content is fully rendered,
@@ -46,6 +48,8 @@ function forwardTurboLoad(event) {
   requestAnimationFrame(() => {
     const delayedEvent = new CustomEvent('turbo-migration:load', { detail: { ...event.detail } });
     document.dispatchEvent(delayedEvent);
+
+    initializeTooltips();
   });
 }
 
@@ -53,3 +57,7 @@ const flushQueue = (queue) => {
   queue.forEach(forwardTurboLoad);
   queue.length = 0;
 };
+
+document.addEventListener('turbo:visit', (event) => {
+  destroyTooltips();
+})
