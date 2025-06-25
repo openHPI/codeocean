@@ -935,10 +935,6 @@ var CodeOceanEditor = {
         $('#output_sidebar').removeClass('output-col').addClass('output-col-collapsed');
     },
 
-    initializeSideBarTooltips: function () {
-        $('[data-bs-toggle="tooltip"]').tooltip()
-    },
-
     initializeDescriptionToggle: function () {
         $('#exercise-headline').on('click', this.toggleDescriptionCard.bind(this));
         $('a#toggle').on('click', this.toggleDescriptionCard.bind(this));
@@ -1096,7 +1092,6 @@ var CodeOceanEditor = {
         this.initializeSideBarCollapse();
         this.initializeOutputBarToggle();
         this.initializeDescriptionToggle();
-        this.initializeSideBarTooltips();
         this.initializeInterventionTimer();
         this.initPrompt();
         this.renderScore();
