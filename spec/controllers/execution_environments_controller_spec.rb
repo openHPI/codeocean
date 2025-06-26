@@ -49,7 +49,7 @@ RSpec.describe ExecutionEnvironmentsController do
       end
 
       expect_assigns(execution_environment: ExecutionEnvironment)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
 
       it 'does not register the execution environment with the runner management' do
@@ -211,7 +211,7 @@ RSpec.describe ExecutionEnvironmentsController do
       end
 
       expect_assigns(execution_environment: ExecutionEnvironment)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:edit)
 
       it 'does not update the execution environment at the runner management' do

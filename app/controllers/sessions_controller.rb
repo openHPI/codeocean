@@ -51,7 +51,7 @@ class SessionsController < ApplicationController
       _finalize_login(current_user) unless current_user.webauthn_configured?
     else
       flash.now[:danger] = t('.failure')
-      render(:new)
+      render :new, status: :unprocessable_content
     end
   end
 
