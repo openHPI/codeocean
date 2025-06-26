@@ -94,13 +94,10 @@ RSpec.describe RequestForCommentPolicy do
     end
 
     shared_examples 'grants access to everyone but the author' do
-      it 'grants access to everyone' do
+      it 'grants access to everyone but the author' do
         %i[external_user teacher admin].each do |factory_name|
           expect(policy).to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
         end
-      end
-
-      it 'does not grant access to authors' do
         expect(policy).not_to permit(rfc.author, rfc)
       end
 
