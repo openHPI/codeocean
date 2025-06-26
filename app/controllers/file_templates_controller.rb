@@ -51,7 +51,7 @@ class FileTemplatesController < ApplicationController
         format.html { redirect_to @file_template, notice: t('shared.object_created', model: @file_template.class.model_name.human) }
         format.json { render :show, status: :created, location: @file_template }
       else
-        format.html { render :new }
+        format.html { render :new, status: :unprocessable_content }
         format.json { render json: @file_template.errors, status: :unprocessable_content }
       end
     end
@@ -66,7 +66,7 @@ class FileTemplatesController < ApplicationController
         format.html { redirect_to @file_template, notice: t('shared.object_updated', model: @file_template.class.model_name.human) }
         format.json { render :show, status: :ok, location: @file_template }
       else
-        format.html { render :edit }
+        format.html { render :edit, status: :unprocessable_content }
         format.json { render json: @file_template.errors, status: :unprocessable_content }
       end
     end

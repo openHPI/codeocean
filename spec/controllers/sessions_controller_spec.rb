@@ -26,6 +26,7 @@ RSpec.describe SessionsController do
       before { post :create, params: {email: user.email, password: '', remember_me: 1} }
 
       expect_flash_message(:danger, :'sessions.create.failure')
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
     end
   end

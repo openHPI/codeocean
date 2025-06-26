@@ -137,7 +137,7 @@ RSpec.describe ExercisesController do
       before { post :create, params: {exercise: {}} }
 
       expect_assigns(exercise: Exercise)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
     end
   end
@@ -312,7 +312,7 @@ RSpec.describe ExercisesController do
       before { put :update, params: {exercise: {title: ''}, id: exercise.id} }
 
       expect_assigns(exercise: Exercise)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:edit)
     end
   end
