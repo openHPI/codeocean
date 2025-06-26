@@ -61,9 +61,6 @@ RSpec.describe RequestForCommentPolicy do
           %i[admin external_user teacher].each do |factory_name|
             expect(policy).to permit(create(factory_name), rfc)
           end
-        end
-
-        it 'blocks authors from reporting their content' do
           expect(policy).not_to permit(rfc.author, rfc)
         end
       end
