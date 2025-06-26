@@ -97,14 +97,14 @@ RSpec.describe RequestForCommentPolicy do
       permissions(:report?) do
         let(:reports_enabled) { true }
 
-        it 'grants access to everyone but the author' do
+        it 'grants report permissions to everyone but the author' do
           %i[external_user teacher admin].each do |factory_name|
             expect(policy).to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
           end
           expect(policy).not_to permit(rfc.author, rfc)
         end
 
-        it 'grant access to other authors of the programming group' do
+        it 'grant report permissions to other authors of the programming group' do
           rfc.submission.update(contributor: programming_group)
           expect(policy).to permit(viewer_other_group_member, rfc)
         end
@@ -135,20 +135,21 @@ RSpec.describe RequestForCommentPolicy do
     shared_examples 'grants report permissions to admins and other authors only' do
       permissions(:report?) do
         let(:reports_enabled) { true }
-        it 'grants access to admins' do
+
+        it 'grants report permissions to admins' do
           expect(policy).to permit(create(:admin, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
         end
 
-        it 'does not grant access to authors' do
+        it 'does not grant report permissions to authors' do
           expect(policy).not_to permit(rfc.author, rfc)
         end
 
-        it 'grant access to other authors of the programming group' do
+        it 'grant report permissions to other authors of the programming group' do
           rfc.submission.update(contributor: programming_group)
           expect(policy).to permit(viewer_other_group_member, rfc)
         end
 
-        it 'does not grant access to all other users' do
+        it 'does not grant report permissions to all other users' do
           %i[external_user teacher].each do |factory_name|
             expect(policy).not_to permit(create(factory_name, consumer: viewer_consumer, study_groups: viewer_study_groups), rfc)
           end
