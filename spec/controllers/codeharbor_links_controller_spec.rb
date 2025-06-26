@@ -50,6 +50,7 @@ RSpec.describe CodeharborLinksController do
         expect { post_request }.not_to change(CodeharborLink, :count)
       end
 
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
     end
   end
@@ -84,6 +85,7 @@ RSpec.describe CodeharborLinksController do
         expect { put_request }.not_to(change { codeharbor_link.reload.attributes })
       end
 
+      expect_http_status(:unprocessable_content)
       expect_template(:edit)
     end
   end

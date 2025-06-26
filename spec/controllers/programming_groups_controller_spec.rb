@@ -58,7 +58,7 @@ RSpec.describe ProgrammingGroupsController do
       before { post :create, params: {exercise_id:, programming_group: pg_params} }
 
       expect_assigns(exercise: :exercise, programming_group: ProgrammingGroup)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
 
       it 'does not create a new programming group' do
@@ -89,7 +89,7 @@ RSpec.describe ProgrammingGroupsController do
         before { perform_request.call }
 
         expect_assigns(exercise: :exercise, programming_group: ProgrammingGroup)
-        expect_http_status(:ok)
+        expect_http_status(:unprocessable_content)
         expect_template(:new)
       end
 
@@ -153,7 +153,7 @@ RSpec.describe ProgrammingGroupsController do
       before { post :create, params: {exercise_id:, programming_group: pg_params} }
 
       expect_assigns(exercise: :exercise, programming_group: ProgrammingGroup)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
 
       it 'does not create a new programming group' do
@@ -172,7 +172,7 @@ RSpec.describe ProgrammingGroupsController do
       before { post :create, params: {exercise_id:, programming_group: pg_params} }
 
       expect_assigns(exercise: :exercise, programming_group: ProgrammingGroup)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
 
       it 'does not create a new programming group' do
@@ -329,7 +329,7 @@ RSpec.describe ProgrammingGroupsController do
         before { perform_request.call }
 
         expect_assigns(programming_group: ProgrammingGroup)
-        expect_http_status(:ok)
+        expect_http_status(:unprocessable_content)
         expect_template(:edit)
       end
 

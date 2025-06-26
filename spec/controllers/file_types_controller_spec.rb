@@ -29,7 +29,7 @@ RSpec.describe FileTypesController do
       before { post :create, params: {file_type: {}} }
 
       expect_assigns(file_type: FileType)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
     end
   end
@@ -94,7 +94,7 @@ RSpec.describe FileTypesController do
       before { put :update, params: {file_type: {name: ''}, id: file_type.id} }
 
       expect_assigns(file_type: FileType)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:edit)
     end
   end

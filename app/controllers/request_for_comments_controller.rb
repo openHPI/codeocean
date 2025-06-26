@@ -155,7 +155,7 @@ class RequestForCommentsController < ApplicationController
           format.json { render :show, status: :created, location: @request_for_comment }
         end
       else
-        format.html { render :new }
+        format.html { render :new, status: :unprocessable_content }
         format.json { render json: @request_for_comment.errors, status: :unprocessable_content }
       end
     end

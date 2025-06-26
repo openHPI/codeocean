@@ -31,7 +31,7 @@ module CommonBehavior
   private :destroy_and_respond
 
   def respond_with_invalid_object(format, options = {})
-    format.html { render(options[:template]) }
+    format.html { render(options[:template], status: :unprocessable_content) }
     format.json { render(json: @object.errors, status: :unprocessable_content) }
   end
 

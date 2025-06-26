@@ -89,6 +89,7 @@ RSpec.describe InternalUsersController do
         expect(assigns(:user).errors).to be_present
       end
 
+      expect_http_status(:unprocessable_content)
       expect_template(:activate)
     end
 
@@ -181,7 +182,7 @@ RSpec.describe InternalUsersController do
             expect(InternalUser.authenticate(user.email, password)).not_to eq(user)
           end
 
-          expect_http_status(:ok)
+          expect_http_status(:unprocessable_content)
           expect_template(:change_password)
         end
 
@@ -204,7 +205,7 @@ RSpec.describe InternalUsersController do
         end
 
         expect_assigns(user: :user)
-        expect_http_status(:ok)
+        expect_http_status(:unprocessable_content)
         expect_template(:change_password)
       end
 
@@ -214,7 +215,7 @@ RSpec.describe InternalUsersController do
         end
 
         expect_assigns(user: :user)
-        expect_http_status(:ok)
+        expect_http_status(:unprocessable_content)
         expect_template(:change_password)
       end
     end
@@ -246,7 +247,7 @@ RSpec.describe InternalUsersController do
           let(:password) { 'foo' }
 
           expect_assigns(user: :second_user)
-          expect_http_status(:ok)
+          expect_http_status(:unprocessable_content)
           expect_template(:change_password)
         end
       end
@@ -289,7 +290,7 @@ RSpec.describe InternalUsersController do
       before { post :create, params: {internal_user: {email: ''}} }
 
       expect_assigns(user: InternalUser)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
     end
   end
@@ -440,7 +441,7 @@ RSpec.describe InternalUsersController do
             expect(InternalUser.authenticate(user.email, password)).not_to eq(user)
           end
 
-          expect_http_status(:ok)
+          expect_http_status(:unprocessable_content)
           expect_template(:reset_password)
         end
 
@@ -462,7 +463,7 @@ RSpec.describe InternalUsersController do
         end
 
         expect_assigns(user: :user)
-        expect_http_status(:ok)
+        expect_http_status(:unprocessable_content)
         expect_template(:reset_password)
       end
     end
@@ -495,7 +496,7 @@ RSpec.describe InternalUsersController do
       before { put :update, params: {internal_user: {email: ''}, id: user.id} }
 
       expect_assigns(user: InternalUser)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:edit)
     end
   end
