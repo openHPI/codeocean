@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe 'POST /request_for_comments/:rfc_id/report', type: :request do
   let(:user) { create(:learner) }
   let(:rfc) { create(:rfc) }
-  let(:report_emails) { ['report@example.com'] }
+ 
 
   before do
     stub_const('RequestForCommentPolicy::REPORT_RECEIVER_CONFIGURED', true)
