@@ -66,7 +66,7 @@ RSpec.describe 'Request_for_Comments' do
     context 'when reporting is disabled' do
       let(:reports_enabled) { false }
 
-      it 'dose not display the report button' do
+      it 'does not display the report button' do
         expect(page).to have_no_button(I18n.t('request_for_comments.report.report'))
       end
     end
