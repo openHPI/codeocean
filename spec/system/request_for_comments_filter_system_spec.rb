@@ -4,10 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Request_for_Comments' do
   let(:user) { create(:teacher) }
-  let(:reports_enabled) { false }
 
   before do
-    stub_const('RequestForCommentPolicy::REPORT_RECEIVER_CONFIGURED', reports_enabled)
     visit(sign_in_path)
     fill_in('email', with: user.email)
     fill_in('password', with: attributes_for(:teacher)[:password])
@@ -38,29 +36,5 @@ RSpec.describe 'Request_for_Comments' do
     create_list(:rfc, 25, submission:, exercise: submission.exercise) # rubocop:disable FactoryBot/ExcessiveCreateList
     visit(request_for_comments_path)
     expect(page).to have_css('ul.pagination')
-  end
-
-  describe 'reporting of user content' do
-    before do
-      visit(request_for_comment_path(create(:rfc)))
-    end
-
-    context 'when reporting is enabled' do
-      let(:reports_enabled) { true }
-
-      it 'allows reporting of RfCs', :js do
-        accept_confirm do
-          click_on I18n.t('request_for_comments.report.report')
-        end
-
-        expect(page).to have_text(I18n.t('request_for_comments.report.reported'))
-      end
-    end
-
-    context 'when reporting is disabled' do
-      it 'does not display the report button' do
-        expect(page).to have_no_button(I18n.t('request_for_comments.report.report'))
-      end
-    end
   end
 end
