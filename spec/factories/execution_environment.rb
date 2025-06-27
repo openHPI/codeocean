@@ -1,27 +1,11 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :coffee_script, class: 'ExecutionEnvironment' do
-    created_by_teacher
-    default_memory_limit
-    default_cpu_limit
-    docker_image { 'hklement/ubuntu-coffee:latest' }
-    file_type { association :dot_coffee, user: }
-    help
-    name { 'CoffeeScript' }
-    network_enabled { false }
-    privileged_execution { false }
-    permitted_execution_time { 10.seconds }
-    pool_size { 0 }
-    run_command { 'coffee' }
-    singleton_execution_environment
-  end
-
   factory :html, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     default_cpu_limit
-    docker_image { 'hklement/ubuntu-html:latest' }
+    docker_image { 'openhpi/co_execenv_ruby:latest' }
     file_type { association :dot_html, user: }
     help
     name { 'HTML5' }
@@ -53,29 +37,11 @@ FactoryBot.define do
     testing_framework { 'JunitAdapter' }
   end
 
-  factory :jruby, class: 'ExecutionEnvironment' do
-    created_by_teacher
-    default_memory_limit
-    default_cpu_limit
-    docker_image { 'hklement/ubuntu-jruby:latest' }
-    file_type { association :dot_rb, user: }
-    help
-    name { 'JRuby 1.7' }
-    network_enabled { false }
-    privileged_execution { false }
-    permitted_execution_time { 10.seconds }
-    pool_size { 0 }
-    run_command { 'jruby %{filename}' }
-    singleton_execution_environment
-    test_command { 'rspec %{filename} --format documentation' }
-    testing_framework { 'RspecAdapter' }
-  end
-
   factory :node_js, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
     default_cpu_limit
-    docker_image { 'hklement/ubuntu-node:latest' }
+    docker_image { 'openhpi/co_execenv_node:latest' }
     file_type { association :dot_js, user: }
     help
     name { 'Node.js' }
@@ -109,7 +75,7 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     default_cpu_limit
-    docker_image { 'hklement/ubuntu-ruby:latest' }
+    docker_image { 'openhpi/co_execenv_ruby:latest' }
     file_type { association :dot_rb, user: }
     help
     name { 'Ruby 2.2' }
@@ -121,43 +87,6 @@ FactoryBot.define do
     singleton_execution_environment
     test_command { 'rspec %{filename} --format documentation' }
     testing_framework { 'RspecAdapter' }
-  end
-
-  factory :sinatra, class: 'ExecutionEnvironment' do
-    created_by_teacher
-    default_memory_limit
-    default_cpu_limit
-    docker_image { 'hklement/ubuntu-sinatra:latest' }
-    file_type { association :dot_rb, user: }
-    exposed_ports { [4567] }
-    help
-    name { 'Sinatra' }
-    network_enabled { true }
-    privileged_execution { false }
-    permitted_execution_time { 15.minutes }
-    pool_size { 0 }
-    run_command { 'ruby %{filename}' }
-    singleton_execution_environment
-    test_command { 'rspec %{filename} --format documentation' }
-    testing_framework { 'RspecAdapter' }
-  end
-
-  factory :sqlite, class: 'ExecutionEnvironment' do
-    created_by_teacher
-    default_memory_limit
-    default_cpu_limit
-    docker_image { 'hklement/ubuntu-sqlite:latest' }
-    file_type { association :dot_sql, user: }
-    help
-    name { 'SQLite' }
-    network_enabled { false }
-    privileged_execution { false }
-    permitted_execution_time { 1.minute }
-    pool_size { 0 }
-    run_command { 'sqlite3 /database.db -init %{filename} -html' }
-    singleton_execution_environment
-    test_command { 'ruby %{filename}' }
-    testing_framework { 'SqlResultSetComparatorAdapter' }
   end
 
   trait :default_memory_limit do
