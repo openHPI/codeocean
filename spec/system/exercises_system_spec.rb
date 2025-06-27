@@ -19,13 +19,17 @@ RSpec.describe 'Exercise', :js do
     visit(sign_in_path)
     fill_in('email', with: teacher.email)
     fill_in('password', with: attributes_for(:teacher)[:password])
-    click_button(I18n.t('sessions.new.link'))
+    click_on(I18n.t('sessions.new.link'))
+    wait_for_ajax
+    click_on('Administration')
+    click_on('Exercises')
+    all('a', text: 'Exercises').last.click
+    click_on('Add Exercise')
+
     wait_for_ajax
   end
 
   it 'creates a minimal exercise' do
-    visit new_exercise_path
-
     fill_in :exercise_title, with: 'Ruby challenge'
     fill_in :exercise_internal_title, with: 'Project Ruby first challenge'
 
@@ -41,19 +45,11 @@ RSpec.describe 'Exercise', :js do
 
     submission_deadline = 3.months.from_now
 
-    chosen_select('exercise_submission_deadline_1i', submission_deadline.year.to_s)
-    chosen_select('exercise_submission_deadline_2i', submission_deadline.strftime('%B'))
-    chosen_select('exercise_submission_deadline_3i', submission_deadline.day.to_s)
-    chosen_select('exercise_submission_deadline_4i', submission_deadline.hour.to_s)
-    chosen_select('exercise_submission_deadline_5i', submission_deadline.min.to_s)
+    chosen_date_time_select('Submission Deadline', submission_deadline)
 
     late_submission_deadline = submission_deadline + 1.week
 
-    chosen_select('exercise_late_submission_deadline_1i', late_submission_deadline.year.to_s)
-    chosen_select('exercise_late_submission_deadline_2i', late_submission_deadline.strftime('%B'))
-    chosen_select('exercise_late_submission_deadline_3i', late_submission_deadline.day.to_s)
-    chosen_select('exercise_late_submission_deadline_4i', late_submission_deadline.hour.to_s)
-    chosen_select('exercise_late_submission_deadline_5i', late_submission_deadline.min.to_s)
+    chosen_date_time_select('Late Submission Deadline', submission_deadline)
 
     check 'Public'
 
@@ -69,7 +65,7 @@ RSpec.describe 'Exercise', :js do
       chosen_select('File Type', 'Ruby')
       chosen_select('Role', 'Main File')
 
-      select('Read-only')
+      check('Read-only')
 
       all('input').last.set(Rails.root.join('db/seeds/fibonacci/reference.rb'))
     end
@@ -80,8 +76,19 @@ RSpec.describe 'Exercise', :js do
   end
 
   def chosen_select(name, value)
-    id = find('label', text: name)[:for]
+    id = first('label', text: name)[:for]
+
     set_value_for_chosen_element(id, value)
+  end
+
+  def chosen_date_time_select(name, date)
+    id = first('label', text: name)[:for]
+
+    set_value_for_chosen_element("#{id}_1i", date.year.to_s)
+    set_value_for_chosen_element("#{id}_2i", date.strftime('%B'))
+    set_value_for_chosen_element("#{id}_3i", date.day.to_s)
+    set_value_for_chosen_element("#{id}_4i", date.hour.to_s)
+    set_value_for_chosen_element("#{id}_5i", date.min.to_s)
   end
 
   def set_value_for_chosen_element(id, value)
