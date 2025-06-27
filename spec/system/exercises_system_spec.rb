@@ -37,23 +37,23 @@ RSpec.describe 'Exercise', :js do
       TEXT
     end
 
-    chosen_select('exercise_execution_environment_id_chosen', 'Ruby 2.2')
+    chosen_select('Execution Environment', 'Ruby 2.2')
 
     submission_deadline = 3.months.from_now
 
-    chosen_select('exercise_submission_deadline_1i_chosen', submission_deadline.year.to_s)
-    chosen_select('exercise_submission_deadline_2i_chosen', submission_deadline.strftime('%B'))
-    chosen_select('exercise_submission_deadline_3i_chosen', submission_deadline.day.to_s)
-    chosen_select('exercise_submission_deadline_4i_chosen', submission_deadline.hour.to_s)
-    chosen_select('exercise_submission_deadline_5i_chosen', submission_deadline.min.to_s)
+    chosen_select('exercise_submission_deadline_1i', submission_deadline.year.to_s)
+    chosen_select('exercise_submission_deadline_2i', submission_deadline.strftime('%B'))
+    chosen_select('exercise_submission_deadline_3i', submission_deadline.day.to_s)
+    chosen_select('exercise_submission_deadline_4i', submission_deadline.hour.to_s)
+    chosen_select('exercise_submission_deadline_5i', submission_deadline.min.to_s)
 
     late_submission_deadline = submission_deadline + 1.week
 
-    chosen_select('exercise_late_submission_deadline_1i_chosen', late_submission_deadline.year.to_s)
-    chosen_select('exercise_late_submission_deadline_2i_chosen', late_submission_deadline.strftime('%B'))
-    chosen_select('exercise_late_submission_deadline_3i_chosen', late_submission_deadline.day.to_s)
-    chosen_select('exercise_late_submission_deadline_4i_chosen', late_submission_deadline.hour.to_s)
-    chosen_select('exercise_late_submission_deadline_5i_chosen', late_submission_deadline.min.to_s)
+    chosen_select('exercise_late_submission_deadline_1i', late_submission_deadline.year.to_s)
+    chosen_select('exercise_late_submission_deadline_2i', late_submission_deadline.strftime('%B'))
+    chosen_select('exercise_late_submission_deadline_3i', late_submission_deadline.day.to_s)
+    chosen_select('exercise_late_submission_deadline_4i', late_submission_deadline.hour.to_s)
+    chosen_select('exercise_late_submission_deadline_5i', late_submission_deadline.min.to_s)
 
     check 'Public'
 
@@ -66,6 +66,11 @@ RSpec.describe 'Exercise', :js do
     within(find_by_id('files').all('li').last) do
       fill_in 'Name', with: 'main'
 
+      chosen_select('File Type', 'Ruby')
+      chosen_select('Role', 'Main File')
+
+      select('Read-only')
+
       all('input').last.set(Rails.root.join('db/seeds/fibonacci/reference.rb'))
     end
 
@@ -74,8 +79,13 @@ RSpec.describe 'Exercise', :js do
     expect(page).to have_text 'Exercise has successfully been created.'
   end
 
-  def chosen_select(id, value)
-    element = find_by_id(id)
+  def chosen_select(name, value)
+    id = find('label', text: name)[:for]
+    set_value_for_chosen_element(id, value)
+  end
+
+  def set_value_for_chosen_element(id, value)
+    element = find_by_id("#{id}_chosen")
     element.click
 
     within(element) do
