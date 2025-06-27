@@ -28,6 +28,7 @@
       .text
         - question = @request_for_comment.question
         = question.presence || t('request_for_comments.no_question')
+      = render('report', request_for_comment: @request_for_comment)
 
     - if policy(@request_for_comment).mark_as_solved? && !@request_for_comment.solved?
       = render('mark_as_solved')
