@@ -83,6 +83,8 @@ class SessionsController < ApplicationController
       logout
     end
     flash[:notice] = t('.success')
+    # Instruct Turbo to clear the cache
+    session[:clear_turbo_cache] = true
     redirect_to(:root) unless performed?
   end
 

@@ -25,6 +25,7 @@ html lang=I18n.locale data-default-locale=I18n.default_locale
     meta name='current-user' content=current_user&.to_page_context&.to_json.to_s
     meta name='current-contributor' content=current_contributor&.to_page_context&.to_json.to_s
     - # rubocop:enable Lint/RedundantTypeConversion
+    = clear_turbo_cache_meta_tag
   body
     - unless @embed_options[:hide_navbar]
       nav.navbar.bg-dark.navbar-expand-md.mb-4.py-1 data-bs-theme="dark"
