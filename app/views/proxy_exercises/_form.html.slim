@@ -1,7 +1,4 @@
 - content_for :head do
-  // Force a full page reload, see https://turbo.hotwired.dev/handbook/drive#ensuring-specific-pages-trigger-a-full-reload.
-     Otherwise, code might not be highlighted correctly (race condition)
-  meta name='turbo-visit-control' content='reload'
   - append_javascript_pack_tag('toast-ui')
   - append_stylesheet_pack_tag('toast-ui')
 
