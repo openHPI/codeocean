@@ -11,6 +11,7 @@
 
 let sprocketsLoaded = false;
 const sprocketsLoadQueue = [];
+const turboRenderQueue = [];
 
 document.addEventListener('turbo:load', (event) => {
   sprocketsLoaded ? forwardTurboLoad(event) : sprocketsLoadQueue.push(event);
@@ -20,6 +21,25 @@ document.addEventListener('turbo:load', (event) => {
 document.addEventListener('sprockets:load', () => {
   sprocketsLoaded = true;
   flushQueue(sprocketsLoadQueue);
+});
+
+// Handle failed form submissions by waiting for `turbo:render` events
+document.addEventListener('turbo:submit-end', (event) => {
+  if (!event.detail.success) {
+    // If the form submission was _not_ successful, we need to re-initialize JavaScript elements.
+    // This is necessary since Turbo does not dispatch a `turbo:load` event in this case.
+    turboRenderQueue.push(event);
+  }
+});
+
+document.addEventListener('turbo:render', () => {
+  if (sprocketsLoaded) {
+    flushQueue(turboRenderQueue);
+  } else {
+    // In the unlikely case that Sprockets isn't ready yet, we queue the events.
+    sprocketsLoadQueue.push(...turboRenderQueue);
+    turboRenderQueue.length = 0;
+  }
 });
 
 function forwardTurboLoad(event) {
