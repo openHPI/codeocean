@@ -1101,12 +1101,33 @@ var CodeOceanEditor = {
         this.initializeDeadlines();
         CodeOceanEditorTips.initializeEventHandlers();
 
-        window.addEventListener("turbo:visit", App.synchronized_editor?.disconnect.bind(App.synchronized_editor));
-        window.addEventListener("beforeunload", App.synchronized_editor?.disconnect.bind(App.synchronized_editor));
+        $(document).one("turbo:visit", this.unloadEverything.bind(this, App.synchronized_editor));
+        $(window).one("beforeunload", this.unloadEverything.bind(this, App.synchronized_editor));
 
-        window.addEventListener("turbo:visit", this.autosaveIfChanged.bind(this));
-        window.addEventListener("beforeunload", this.autosaveIfChanged.bind(this));
         // create autosave when the editor is opened the first time
         this.autosave();
+    },
+
+    unloadEverything: function () {
+        App.synchronized_editor?.disconnect();
+        this.autosaveIfChanged();
+        this.cacheEditorContent();
+        this.teardownEventHandlers();
+        this.destroyEditors();
+    },
+
+    cacheEditorContent: function () {
+        // Persist the content of the editors in a hidden textarea to enable Turbo caching.
+        // In this case, we iterate over _all_ editors, not just writable ones.
+        for (const [file_id, editor] of this.editor_for_file) {
+            const file_content = editor.getValue();
+            const editorContent = $(`.editor-content[data-file-id='${file_id}']`);
+            editorContent.text(file_content);
+        }
+    },
+
+    destroyEditors: function () {
+        CodeOceanEditor.editors.forEach(editor => editor.destroy());
+        CodeOceanEditor.editors = [];
     }
 };
