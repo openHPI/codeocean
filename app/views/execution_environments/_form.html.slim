@@ -5,7 +5,7 @@
   - append_javascript_pack_tag('toast-ui')
   - append_stylesheet_pack_tag('toast-ui')
 
-= form_for(@execution_environment, builder: MarkdownFormBuilder) do |f|
+= form_for(@execution_environment, builder: MarkdownFormBuilder, data: {turbo: false}) do |f|
   = render('shared/form_errors', object: @execution_environment)
   .mb-3
     = f.label(:name, class: 'form-label')
