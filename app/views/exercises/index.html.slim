@@ -52,7 +52,7 @@ h1 = Exercise.model_name.human(count: :other)
                 li = link_to(RequestForComment.model_name.human(count: :other), exercise_request_for_comments_path(exercise), class: 'dropdown-item') if policy(exercise).rfcs_for_exercise?
                 li = link_to(ProgrammingGroup.model_name.human(count: :other), exercise_programming_groups_path(exercise), class: 'dropdown-item') if policy(exercise).programming_groups_for_exercise?
                 li = button_to(t('shared.destroy'), exercise, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'dropdown-item') if policy(exercise).destroy?
-                li = button_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy')}, method: :post, class: 'dropdown-item') if policy(exercise).clone?
+                li = button_to(t('.clone'), clone_exercise_path(exercise), data: {confirm: t('shared.confirm_destroy'), turbo: false}, method: :post, class: 'dropdown-item') if policy(exercise).clone?
                 li = link_to(t('exercises.export_codeharbor.label'), '', class: 'dropdown-item export-start', data: {'exercise-id': exercise.id, 'bs-toggle': 'modal', 'bs-target': '#transfer-modal'}) if policy(exercise).export_external_confirm?
                 li = link_to(t('exercises.download_proforma.label'), download_proforma_exercise_path(exercise), class: 'dropdown-item', target: '_blank', rel: 'noopener noreferrer') if policy(exercise).download_proforma?
 

@@ -5,7 +5,7 @@
   - append_javascript_pack_tag('toast-ui')
   - append_stylesheet_pack_tag('toast-ui')
 
-= form_for(@proxy_exercise, multipart: true, builder: MarkdownFormBuilder) do |f|
+= form_for(@proxy_exercise, multipart: true, builder: MarkdownFormBuilder, data: {turbo: false}) do |f|
   = render('shared/form_errors', object: @proxy_exercise)
   .mb-3
     = f.label(:title, class: 'form-label')
