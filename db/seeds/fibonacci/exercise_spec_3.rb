@@ -3,12 +3,12 @@
 require './exercise'
 require './reference'
 
-describe '#fibonacci' do
-  let(:sample_count) { 32 }
+SAMPLE_COUNT = 32
 
+describe '#fibonacci' do
   let(:reference) { Class.new.extend(Reference) }
 
-  sample_count.times do |i|
+  SAMPLE_COUNT.times do |i|
     instance_eval do
       it "obtains the correct result for input #{i}" do
         expect(fibonacci(i)).to eq(reference.fibonacci(i))
