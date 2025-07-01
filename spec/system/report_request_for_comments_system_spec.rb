@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Report RfCs for unapprporiat content' do
+RSpec.describe 'Report RfCs for inappropriate content' do
   let(:user) { create(:learner) }
 
   before do
