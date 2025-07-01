@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Authentication' do
-  let(:user) { create(:teacher) }
+  let(:user) { create(:external_teacher) }
   let(:password) { attributes_for(:teacher)[:password] }
 
   context 'when signed out' do

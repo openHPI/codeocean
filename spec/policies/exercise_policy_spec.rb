@@ -209,10 +209,18 @@ RSpec.describe ExercisePolicy do
           expect(policy).to permit(exercise.author, exercise)
         end
 
-        it 'does not grant access to everyone' do
-          %i[external_user teacher].each do |factory_name|
-            expect(policy).not_to permit(create(factory_name), exercise)
-          end
+        it 'grants access to teachers of the same study group' do
+          # By default, the exercise author and the teacher are internal users and share the same study group
+          expect(policy).to permit(create(:teacher), exercise)
+        end
+
+        it 'does not grant access to teachers of another consumer' do
+          # With another consumer, the teacher is in another study group, too.
+          expect(policy).not_to permit(create(:external_teacher), exercise)
+        end
+
+        it 'does not grant access to external users' do
+          expect(policy).not_to permit(create(:external_user), exercise)
         end
       end
     end
@@ -222,7 +230,7 @@ RSpec.describe ExercisePolicy do
     describe '#resolve' do
       let(:admin) { create(:admin) }
       let(:external_user) { create(:external_user) }
-      let(:teacher) { create(:teacher) }
+      let(:teacher) { create(:external_teacher) }
 
       before do
         [admin, teacher].each do |user|
