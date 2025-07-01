@@ -202,7 +202,7 @@ RSpec.describe ExercisesController do
 
     context 'with other users accessing an unpublished exercise' do
       let(:exercise) { create(:fibonacci, unpublished: true) }
-      let(:user) { create(:teacher) }
+      let(:user) { create(:external_teacher) }
 
       before { perform_request.call }
 
@@ -442,7 +442,8 @@ RSpec.describe ExercisesController do
     end
 
     context 'when the user cannot update the exercise' do
-      let(:codeharbor_link) { create(:codeharbor_link, api_key: 'anotherkey') }
+      let(:user) { create(:external_teacher) }
+      let(:codeharbor_link) { create(:codeharbor_link, user:, api_key: 'anotherkey') }
 
       it 'renders correct response' do
         post_request

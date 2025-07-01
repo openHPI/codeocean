@@ -157,7 +157,7 @@ RSpec.describe RequestForCommentPolicy do
       end
     end
 
-    let(:rfc_author) { create(:learner, consumer: author_consumer, study_groups: author_study_groups) }
+    let(:rfc_author) { create(:external_user, consumer: author_consumer, study_groups: author_study_groups) }
     let(:author_study_groups) { create_list(:study_group, 1, consumer: author_consumer) }
     let(:rfc) { create(:rfc, user: rfc_author) }
 

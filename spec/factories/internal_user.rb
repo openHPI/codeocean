@@ -27,6 +27,10 @@ FactoryBot.define do
     transient do
       teacher_in_study_group { true }
     end
+
+    factory :external_teacher do
+      consumer { association :consumer, name: 'Other Consumer' }
+    end
   end
 
   factory :learner, class: 'InternalUser' do

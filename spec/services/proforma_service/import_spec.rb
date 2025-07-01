@@ -182,7 +182,7 @@ RSpec.describe ProformaService::Import do
       end
 
       context 'when another user imports the exercise' do
-        let(:import_user) { create(:teacher) }
+        let(:import_user) { create(:external_teacher) }
 
         it 'raises a proforma error' do
           expect { imported_exercise.save! }.to raise_error ProformaXML::ExerciseNotOwned
