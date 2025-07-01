@@ -2,10 +2,10 @@
 
 require './exercise'
 
-describe '#write_to_file' do
+describe '#copy_file' do
   before(:each) do
     @file_content = File.new(SOURCE_FILENAME, 'r').read
-    write_to_file
+    copy_file
   end
 
   it 'preserves the source file' do

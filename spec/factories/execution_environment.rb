@@ -109,10 +109,10 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     default_cpu_limit
-    docker_image { 'hklement/ubuntu-ruby:latest' }
+    docker_image { 'openhpi/co_execenv_ruby:2.5' }
     file_type { association :dot_rb, user: }
     help
-    name { 'Ruby 2.2' }
+    name { 'Ruby 2.5' }
     network_enabled { false }
     privileged_execution { false }
     permitted_execution_time { 10.seconds }
