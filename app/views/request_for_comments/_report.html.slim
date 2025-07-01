@@ -1,5 +1,7 @@
+/# locals: (request_for_comment:)
+
 - if policy(request_for_comment).report?
-  .text-end
-    = button_to t('.report'), report_request_for_comment_path(request_for_comment),
-        data: {confirm: t('.confirm')},
-        class: 'btn btn-light btn-sm'
+  = button_to t('.report'), report_request_for_comment_path(request_for_comment),
+      data: {confirm: t('.confirm')},
+      class: 'btn btn-light btn-sm',
+      form: {class: 'd-inline float-end'}
