@@ -534,10 +534,10 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     semantic_range (3.1.0)
-    sentry-rails (5.25.0)
+    sentry-rails (5.26.0)
       railties (>= 5.0)
-      sentry-ruby (~> 5.25.0)
-    sentry-ruby (5.25.0)
+      sentry-ruby (~> 5.26.0)
+    sentry-ruby (5.26.0)
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
     set (1.1.2)
@@ -960,8 +960,8 @@ CHECKSUMS
   securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
   selenium-webdriver (4.34.0) sha256=ec7bb718cbe66fe2b247d8ca5e6ba26caed0976d76579d7cb2fadd8dae8b271e
   semantic_range (3.1.0) sha256=9fc01ee40f2e5f81042e95d421837f688177dd603753b5eab41ff9bba50a34a1
-  sentry-rails (5.25.0) sha256=f0667c4e23df107537f3669bc89d1a6d0218a1c63894abbd72fc3fc60ff703da
-  sentry-ruby (5.25.0) sha256=b58da7f2cc5742076a356ae251b19426de01aed8d57ddcd309a8ee2b78e52fe8
+  sentry-rails (5.26.0) sha256=ae4d196dec9f722a40840c98dc8daec33ab4c98bc6c8e5f1a37a58df6449618c
+  sentry-ruby (5.26.0) sha256=37b82d4849683f7172cbdb0867ee6697e0d8ad8fe9c242b5df0edf690894554b
   set (1.1.2) sha256=ca33a60d202e788041d94a5d4c12315b1639875576f1a266f3a10913646d8ef1
   shakapacker (8.3.0) sha256=bdf41f950792f049235bc15e6936811c11cfde920cf3436bc0438eaf0aba01c0
   shoulda-matchers (6.5.0) sha256=ef6b572b2bed1ac4aba6ab2c5ff345a24b6d055a93a3d1c3bfc86d9d499e3f44
