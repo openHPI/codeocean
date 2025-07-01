@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe 'Report RfCs for unapprporiat content' do
-  let(:user) { create(:teacher) }
+  let(:user) { create(:learner) }
 
   before do
     stub_const('RequestForCommentPolicy::REPORT_RECEIVER_CONFIGURED', reports_enabled)
     visit(sign_in_path)
     fill_in('email', with: user.email)
-    fill_in('password', with: attributes_for(:teacher)[:password])
+    fill_in('password', with: attributes_for(:learner)[:password])
     click_button(I18n.t('sessions.new.link'))
     visit(request_for_comment_path(create(:rfc)))
   end
