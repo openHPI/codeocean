@@ -42,6 +42,10 @@ de:
     no_output: Keine Ausgabe.
     no_question: Der/die Autor:in hat keine Frage zu dieser Anfrage gestellt.
     passed: Erfolgreich
+    report:
+      confirm: Möchten Sie diesen Inhalt melden?
+      report: Melden
+      reported: Vielen Dank, dass Sie uns auf dieses Problem aufmerksam gemacht haben. Wir werden uns in Kürze darum kümmern.
     runtime_output: Programmausgabe
     send_thank_you_note: Senden
     show_all: Alle Anfragen anzeigen

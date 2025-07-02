@@ -1,0 +1,7 @@
+== t('.prolog')
+== "\n\n"
+== @reported_content.question.lines.map { "> #{it}" }.join
+== "\n\n"
+== t('.take_action')
+== "\n\n"
+== request_for_comment_url(@reported_content)
