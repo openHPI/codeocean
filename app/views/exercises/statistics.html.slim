@@ -79,7 +79,7 @@ h1 = @exercise
         tbody
           - user_with_submission_stats.each do |contributor, submission_stat|
             tr
-              td = link_to_if user_type == ExternalUser && policy(contributor).statistics?, contributor.displayname, statistics_external_user_exercise_path(contributor, @exercise)
+              td = link_to_if user_type == ExternalUser && policy(contributor).statistics?, contributor ? contributor.displayname : 'Unknown User', (contributor ? statistics_external_user_exercise_path(contributor, @exercise) : '')
               td = submission_stat['maximum_score'] || '0.0'
               td.align-middle
                 - if submission_stat.created_at.present?
@@ -90,4 +90,4 @@ h1 = @exercise
                   - elsif submission_stat.after_late_deadline?
                     .deadline-result.negative-result
               td = submission_stat['runs'] if policy(@exercise).detailed_statistics?
-              td = @exercise.average_working_time_for(contributor) || '00:00:00' if policy(@exercise).detailed_statistics?
+              td = @exercise.average_working_time_for(contributor) || '00:00:00' if contributor && policy(@exercise).detailed_statistics?
