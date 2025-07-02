@@ -22,12 +22,12 @@ RSpec.describe 'ExternalUserStatistics', :js do
     fill_in('email', with: user.email)
     fill_in('password', with: password)
     click_button(I18n.t('sessions.new.link'))
-    wait_for_ajax
+    has_content?(I18n.t('sessions.create.success'))
     allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(true)
     visit(statistics_external_user_exercise_path(id: exercise.id, external_user_id: learner.id))
   end
 
-  context 'when a admin accesses the page' do
+  context 'when an admin accesses the page' do
     let(:user) { create(:admin, password:) }
 
     it 'does display the option to enable autosaves' do
