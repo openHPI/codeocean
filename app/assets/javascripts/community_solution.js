@@ -25,6 +25,18 @@ $(document).on('turbo-migration:load', function() {
     }
 });
 
+$(document).one('turbo-migration:load', function() {
+    if ($.isController('community_solutions') && $('#community-solution-editor').isPresent()) {
+        $(document).one('turbo:visit', unloadEditorHandler);
+        $(window).one('beforeunload', unloadEditorHandler);
+    }
+});
+
+function unloadEditorHandler() {
+    CodeOceanEditor.autosaveIfChanged();
+    CodeOceanEditor.unloadEditor();
+}
+
 function submitCode(event) {
     const button = $(event.target) || $('#submit');
     this.newSentryTransaction(button, async () => {
@@ -35,10 +47,7 @@ function submitCode(event) {
         if (!submission) return;
         if (!submission.redirect) return;
 
-        this.autosaveIfChanged();
-        await this.stopCode(event);
-        this.editors = [];
-        Turbo.cache.clear();
+        unloadEditorHandler();
         Turbo.visit(submission.redirect);
     });
 }

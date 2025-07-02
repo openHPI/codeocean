@@ -110,7 +110,7 @@ $(document).on('turbo-migration:load', function(event) {
 
     slider.on('change', onSliderChange);
 
-    stopReplay = function() {
+    const stopReplay = function() {
       clearInterval(playInterval);
       playInterval = undefined;
       playButton.find('span.fa-solid').removeClass('fa-pause').addClass('fa-play')
@@ -145,6 +145,17 @@ $(document).on('turbo-migration:load', function(event) {
     // Start with newest submission
     slider.val(submissions.length - 1);
     onSliderChange();
+
+    const unloadSubmissionStatistics = function() {
+      if (playInterval) {
+        stopReplay();
+      }
+      $(document).off('theme:change:ace');
+      editor.destroy();
+    }
+
+    $(document).on('turbo:visit', unloadSubmissionStatistics);
+    $(window).on('beforeunload', unloadSubmissionStatistics);
   }
 
 });

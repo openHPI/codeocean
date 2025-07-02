@@ -34,6 +34,17 @@ $(document).on('turbo-migration:load', function () {
         session.setTabSize(element_selector.data('indent-size'));
         session.setUseSoftTabs(true);
         session.setUseWrapMode(true);
+
+        function unloadTeacherEditor() {
+            $(document).off('theme:change:ace');
+            const value = editor.getValue();
+            editor.destroy();
+            // "Restore" the editor's content to the original element for caching.
+            textarea.val = value;
+        }
+
+        $(document).one('turbo:visit', unloadTeacherEditor);
+        $(window).one('beforeunload', unloadTeacherEditor);
     }
 
     const handleAceThemeChangeEvent = function(_event) {
@@ -42,12 +53,11 @@ $(document).on('turbo-migration:load', function () {
         }.bind(this));
     };
 
-    $(document).on('theme:change:ace', handleAceThemeChangeEvent.bind(this));
-
     var initializeEditors = function () {
         // initialize ace editors for all code textareas in the dom except the last one. The last one is the dummy area for new files, which is cloned when needed.
         // this one must NOT! be initialized.
         $('.editor:not(:last)').each(initializeEditor)
+        $(document).on('theme:change:ace', handleAceThemeChangeEvent.bind(this));
     };
 
     var addFileForm = function (event) {

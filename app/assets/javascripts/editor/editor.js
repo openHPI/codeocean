@@ -1111,9 +1111,14 @@ var CodeOceanEditor = {
     unloadEverything: function () {
         App.synchronized_editor?.disconnect();
         this.autosaveIfChanged();
-        this.cacheEditorContent();
+        this.unloadEditor();
         this.teardownEventHandlers();
-        this.destroyEditors();
+    },
+
+    unloadEditor: function () {
+        $(document).off('theme:change:ace');
+        CodeOceanEditor.cacheEditorContent();
+        CodeOceanEditor.destroyEditors();
     },
 
     cacheEditorContent: function () {
