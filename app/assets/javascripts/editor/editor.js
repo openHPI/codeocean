@@ -418,7 +418,31 @@ var CodeOceanEditor = {
             this.showFrame(frame);
             this.toggleButtonStates();
         }.bind(this));
-        $(document).on('theme:change', function(event) {
+
+        this.installFileTreeEventHandlers(filesInstance);
+    },
+
+    installFileTreeEventHandlers: function (filesInstance) {
+        // Prevent duplicate event listeners by removing them during unload.
+        const themeListener = this.createFileTreeThemeChangeListener(filesInstance);
+        const jsTree = filesInstance?.jstree(true);
+        $(document).on('theme:change', themeListener);
+        $(document).one('turbo:visit', function() {
+            $(document).off('theme:change', themeListener);
+            if (jsTree && jsTree.element) {
+                jsTree.destroy(true);
+            }
+        });
+        $(window).one('beforeunload', function() {
+            $(document).off('theme:change', themeListener);
+            if (jsTree && jsTree.element) {
+                jsTree.destroy(true);
+            }
+        });
+    },
+
+    createFileTreeThemeChangeListener: function (filesInstance) {
+      return function (event) {
             const jsTree = filesInstance?.jstree(true);
 
             if (jsTree) {
@@ -426,7 +450,7 @@ var CodeOceanEditor = {
                 // Update the JStree theme
                 jsTree?.set_theme(newColorScheme === "dark" ? "default-dark" : "default");
             }
-        });
+        }
     },
 
     initializeFileTreeButtons: function () {
