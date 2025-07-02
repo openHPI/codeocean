@@ -103,7 +103,7 @@ class DetectExerciseAnomaliesJob < ApplicationJob
 
   def notify_collection_author(collection, anomalies)
     log("Sending E-Mail to author (#{collection.user.displayname} <#{collection.user.email}>)...", 2)
-    UserMailer.exercise_anomaly_detected(collection, anomalies).deliver_later
+    UserMailer.with(exercise_collection: collection, anomalies:).exercise_anomaly_detected.deliver_later
   end
 
   def notify_contributors(collection, anomalies)
@@ -145,7 +145,7 @@ class DetectExerciseAnomaliesJob < ApplicationJob
           token = AuthenticationToken.generate!(user, last_submission.study_group).shared_secret
           feedback_link = Rails.application.routes.url_helpers.url_for(action: :new,
             controller: :user_exercise_feedbacks, exercise_id: exercise.id, host:, token:)
-          UserMailer.exercise_anomaly_needs_feedback(user, exercise, feedback_link).deliver
+          UserMailer.with(user:, exercise:, link: feedback_link).exercise_anomaly_needs_feedback.deliver_later
         end
       end
       log("Asked #{contributors_to_notify.size} contributors for feedback.", 2)

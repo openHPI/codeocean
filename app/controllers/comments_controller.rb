@@ -88,7 +88,7 @@ class CommentsController < ApplicationController
 
   def send_mail_to_author(comment, request_for_comment)
     if current_user != request_for_comment.user
-      UserMailer.got_new_comment(comment, request_for_comment, current_user).deliver_later
+      UserMailer.with(comment:, request_for_comment:, commenting_user: current_user).got_new_comment.deliver_later
     end
   end
 
@@ -101,7 +101,7 @@ class CommentsController < ApplicationController
       )
       subscriptions.each do |subscription|
         if (((subscription.subscription_type == 'author') && (current_user == request_for_comment.user)) || (subscription.subscription_type == 'all')) && !((subscription.user == current_user) || already_sent_mail)
-          UserMailer.got_new_comment_for_subscription(comment, subscription, current_user).deliver_later
+          UserMailer.with(comment:, subscription:, from_user: current_user).got_new_comment_for_subscription.deliver_later
           already_sent_mail = true
         end
       end

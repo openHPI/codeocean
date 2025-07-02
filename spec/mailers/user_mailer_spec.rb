@@ -66,7 +66,7 @@ RSpec.describe UserMailer do
     let(:token) { AuthenticationToken.find_by(user:) }
     let(:request_for_comment) { create(:rfc_with_comment, user:) }
     let(:commenting_user) { InternalUser.create(attributes_for(:teacher)) }
-    let(:mail) { described_class.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user).deliver_now }
+    let(:mail) { described_class.with(comment: request_for_comment.comments.first, request_for_comment:, commenting_user:).got_new_comment.deliver_now }
 
     it 'sets the correct sender' do
       expect(mail.from).to include('codeocean@openhpi.de')
@@ -120,7 +120,7 @@ RSpec.describe UserMailer do
     let(:request_for_comment) { create(:rfc_with_comment, user:) }
     let(:subscription) { Subscription.create(request_for_comment:, user:, study_group_id: user.current_study_group_id) }
     let(:from_user) { InternalUser.create(attributes_for(:teacher)) }
-    let(:mail) { described_class.got_new_comment_for_subscription(request_for_comment.comments.first, subscription, from_user).deliver_now }
+    let(:mail) { described_class.with(comment: request_for_comment.comments.first, subscription:, from_user:).got_new_comment_for_subscription.deliver_now }
 
     it 'sets the correct sender' do
       expect(mail.from).to include('codeocean@openhpi.de')
@@ -173,7 +173,7 @@ RSpec.describe UserMailer do
     let(:receiver) { create(:teacher) }
     let(:token) { AuthenticationToken.find_by(user: receiver) }
     let(:request_for_comment) { create(:rfc_with_comment, user:) }
-    let(:mail) { described_class.send_thank_you_note(request_for_comment, receiver).deliver_now }
+    let(:mail) { described_class.with(request_for_comment:, receiver:).send_thank_you_note.deliver_now }
 
     it 'sets the correct sender' do
       expect(mail.from).to include('codeocean@openhpi.de')
