@@ -83,7 +83,7 @@ RSpec.describe 'Authentication' do
       let(:study_group) { request_for_comment.submission.study_group }
       let(:request_for_comment) { create(:rfc_with_comment, user:) }
       let(:commenting_user) { InternalUser.create(attributes_for(:teacher)) }
-      let(:mail) { UserMailer.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user) }
+      let(:mail) { UserMailer.with(comment: request_for_comment.comments.first, request_for_comment:, commenting_user:).got_new_comment }
       let(:rfc_link) { request_for_comment_url(request_for_comment, token: token.shared_secret) }
 
       before { allow(AuthenticationToken).to receive(:generate!).with(user, study_group).and_return(token).once }
@@ -143,12 +143,12 @@ RSpec.describe 'Authentication' do
       let(:request_for_comment) { create(:rfc_with_comment, user:) }
       let(:study_group) { request_for_comment.submission.study_group }
       let(:commenting_user) { InternalUser.create(attributes_for(:teacher)) }
-      let(:mail) { UserMailer.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user) }
+      let(:mail) { UserMailer.with(comment: request_for_comment.comments.first, request_for_comment:, commenting_user:).got_new_comment }
       let(:rfc_link) { request_for_comment_url(request_for_comment, token: token.shared_secret) }
 
       it 'still invalidates the token on login' do
         token = create(:authentication_token, user:, study_group:)
-        mail = UserMailer.got_new_comment(request_for_comment.comments.first, request_for_comment, commenting_user)
+        mail = UserMailer.with(comment: request_for_comment.comments.first, request_for_comment:, commenting_user:).got_new_comment
         mail.deliver_now
         visit(request_for_comment_url(request_for_comment, token: token.shared_secret))
         expect(token.reload.expire_at).to be_within(10.seconds).of(Time.zone.now)
