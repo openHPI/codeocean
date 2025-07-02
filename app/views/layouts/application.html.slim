@@ -12,7 +12,7 @@ html lang=I18n.locale data-default-locale=I18n.default_locale
     = favicon_link_tag('/icon.png', rel: 'apple-touch-icon', type: 'image/png')
     = tag.link rel: 'manifest', href: pwa_manifest_path
     = action_cable_meta_tag
-    = stylesheet_pack_tag('application', 'stylesheets', media: 'all', 'data-turbo-track': 'reload', integrity: true, crossorigin: 'anonymous')
+    = stylesheet_pack_tag('application', 'stylesheets', "multilang_#{I18n.locale}", media: 'all', 'data-turbo-track': 'reload', integrity: true, crossorigin: 'anonymous')
     = stylesheet_link_tag('application', media: 'all', 'data-turbo-track': 'reload', integrity: true, crossorigin: 'anonymous')
     // Since d3-tip is loaded via a separate pack and requires the application pack to be loaded first, we cannot use `defer` here.
     = javascript_pack_tag('application', 'data-turbo-track': 'reload', defer: false, integrity: true, crossorigin: 'anonymous')
