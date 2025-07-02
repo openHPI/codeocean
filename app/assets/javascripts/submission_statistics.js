@@ -46,11 +46,7 @@ $(document).on('turbo-migration:load', function(event) {
         });
         showActiveFile();
       });
-      $(document).on('theme:change', function(event) {
-          const newColorScheme = event.detail.currentTheme;
-          // Update the JStree theme
-          fileTree.jstree(true).set_theme(newColorScheme === "dark" ? "default-dark" : "default");
-      });
+      CodeOceanEditor.installFileTreeEventHandlers(fileTree);
       fileTrees.push(fileTree);
     });
   };
