@@ -11,6 +11,12 @@ module ApplicationHelper
     view_flow.content.delete(name)
   end
 
+  def clear_turbo_cache_meta_tag
+    if session.delete(:clear_turbo_cache)
+      tag.meta(name: 'custom-turbo-cache', content: 'clear')
+    end
+  end
+
   def code_tag(code, language = nil)
     if code.present?
       tag.pre do

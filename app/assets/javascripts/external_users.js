@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
   const grid = $('#tag-grid');
 
   if ($.isController('external_users') && grid.isPresent()) {

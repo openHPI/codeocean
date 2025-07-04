@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
     if ($.isController('exercises') && $('.teacher_dashboard').isPresent()) {
 
         const exercise_id = $('.teacher_dashboard').data().exerciseId;
@@ -11,7 +11,7 @@ $(document).on('turbolinks:load', function() {
 
         function addClickEventToRfCEntry($row) {
             $row.click(function () {
-                Turbolinks.visit($(this).data("href"));
+                Turbo.visit($(this).data("href"));
             });
         }
 

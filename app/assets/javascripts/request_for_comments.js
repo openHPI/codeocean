@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function () {
+$(document).on('turbo-migration:load', function () {
     const exerciseCaption = $('#exercise_caption');
 
     if (!$.isController('request_for_comments') || !exerciseCaption.isPresent()) {
@@ -394,4 +394,18 @@ $(document).on('turbolinks:load', function () {
             showPermanent: response.status === 422,
         });
     }
+
+    function unloadRfCEditors() {
+        $(document).off('theme:change:ace');
+        $('.editor').each(function (_, editor) {
+            const aceEditor = ace.edit(editor);
+            const value = aceEditor.getValue();
+            aceEditor.destroy();
+            // "Restore" the editor's content to the original element for caching.
+            editor.textContent = value;
+        });
+    }
+
+    $(document).one('turbo:visit', unloadRfCEditors);
+    $(window).one('beforeunload', unloadRfCEditors);
 });

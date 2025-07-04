@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function() {
+$(document).on('turbo-migration:load', function() {
     if ($.isController('error_templates')) {
         const button = $('#add-attribute').find('button')
         button.on('click', function () {

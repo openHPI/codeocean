@@ -84,7 +84,9 @@ RSpec.describe 'Score', :js do
       allow_any_instance_of(LtiHelper).to receive(:lti_outcome_service?).and_return(lti_outcome_service?)
       allow(submission).to receive(:calculate_score).and_return(calculate_response)
       allow_any_instance_of(SubmissionsController).to receive(:send_scores).and_return(scoring_response)
+      has_content?(exercise.files.visible.first.name_with_extension) # Wait for JsTree to finish loading
       click_on(I18n.t('exercises.editor.score'))
+      has_content?(I18n.t('exercises.editor.collapse_output_sidebar')) # Wait for the output sidebar to appear
       wait_for_ajax
       wait_for_websocket
     end
@@ -293,7 +295,9 @@ RSpec.describe 'Score', :js do
     context 'when the desired runner is already in use' do
       before do
         allow(submission).to receive(:calculate_score).and_raise(Runner::Error::RunnerInUse)
+        has_content?(exercise.files.visible.first.name_with_extension) # Wait for JsTree to finish loading
         click_on(I18n.t('exercises.editor.score'))
+        has_content?(I18n.t('exercises.editor.collapse_output_sidebar')) # Wait for the output sidebar to appear
         wait_for_ajax
         wait_for_websocket
       end
@@ -308,7 +312,9 @@ RSpec.describe 'Score', :js do
     context 'when no runner is available' do
       before do
         allow(submission).to receive(:calculate_score).and_raise(Runner::Error::NotAvailable)
+        has_content?(exercise.files.visible.first.name_with_extension) # Wait for JsTree to finish loading
         click_on(I18n.t('exercises.editor.score'))
+        has_content?(I18n.t('exercises.editor.collapse_output_sidebar')) # Wait for the output sidebar to appear
         wait_for_ajax
         wait_for_websocket
       end

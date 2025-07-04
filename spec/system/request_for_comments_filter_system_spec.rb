@@ -10,6 +10,7 @@ RSpec.describe 'Request_for_Comments' do
     fill_in('email', with: user.email)
     fill_in('password', with: attributes_for(:teacher)[:password])
     click_button(I18n.t('sessions.new.link'))
+    has_content?(I18n.t('sessions.create.success'))
   end
 
   it 'does not contain rfcs for unpublished exercises' do

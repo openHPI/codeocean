@@ -51,7 +51,7 @@ class SessionsController < ApplicationController
       _finalize_login(current_user) unless current_user.webauthn_configured?
     else
       flash.now[:danger] = t('.failure')
-      render(:new)
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -83,6 +83,8 @@ class SessionsController < ApplicationController
       logout
     end
     flash[:notice] = t('.success')
+    # Instruct Turbo to clear the cache
+    session[:clear_turbo_cache] = true
     redirect_to(:root) unless performed?
   end
 

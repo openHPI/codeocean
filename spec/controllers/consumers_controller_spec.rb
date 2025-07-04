@@ -30,7 +30,7 @@ RSpec.describe ConsumersController do
       before { post :create, params: {consumer: {}} }
 
       expect_assigns(consumer: Consumer)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:new)
     end
 
@@ -41,7 +41,7 @@ RSpec.describe ConsumersController do
         before { perform_request.call }
 
         expect_assigns(consumer: Consumer)
-        expect_http_status(:ok)
+        expect_http_status(:unprocessable_content)
         expect_template(:new)
       end
 
@@ -111,7 +111,7 @@ RSpec.describe ConsumersController do
       before { put :update, params: {consumer: {name: ''}, id: consumer.id} }
 
       expect_assigns(consumer: Consumer)
-      expect_http_status(:ok)
+      expect_http_status(:unprocessable_content)
       expect_template(:edit)
     end
   end

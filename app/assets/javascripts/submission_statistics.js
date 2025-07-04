@@ -1,4 +1,4 @@
-$(document).on('turbolinks:load', function(event) {
+$(document).on('turbo-migration:load', function(event) {
   var currentSubmission = 0;
   var active_file = undefined;
   var fileTrees = [];
@@ -46,11 +46,7 @@ $(document).on('turbolinks:load', function(event) {
         });
         showActiveFile();
       });
-      $(document).on('theme:change', function(event) {
-          const newColorScheme = event.detail.currentTheme;
-          // Update the JStree theme
-          fileTree.jstree(true).set_theme(newColorScheme === "dark" ? "default-dark" : "default");
-      });
+      CodeOceanEditor.installFileTreeEventHandlers(fileTree);
       fileTrees.push(fileTree);
     });
   };
@@ -60,7 +56,7 @@ $(document).on('turbolinks:load', function(event) {
     $(fileTrees[index]).show();
   };
 
-  if ($.isController('exercises') && $('#timeline').isPresent() && event.originalEvent.data.url.includes("/statistics")) {
+  if ($.isController('exercises') && $('#timeline').isPresent() && event.detail.url.includes("/statistics")) {
 
     var slider = $('#submissions-slider>input');
     var submissions = $('#data').data('submissions');
@@ -110,7 +106,7 @@ $(document).on('turbolinks:load', function(event) {
 
     slider.on('change', onSliderChange);
 
-    stopReplay = function() {
+    const stopReplay = function() {
       clearInterval(playInterval);
       playInterval = undefined;
       playButton.find('span.fa-solid').removeClass('fa-pause').addClass('fa-play')
@@ -145,6 +141,17 @@ $(document).on('turbolinks:load', function(event) {
     // Start with newest submission
     slider.val(submissions.length - 1);
     onSliderChange();
+
+    const unloadSubmissionStatistics = function() {
+      if (playInterval) {
+        stopReplay();
+      }
+      $(document).off('theme:change:ace');
+      editor.destroy();
+    }
+
+    $(document).on('turbo:visit', unloadSubmissionStatistics);
+    $(window).on('beforeunload', unloadSubmissionStatistics);
   }
 
 });

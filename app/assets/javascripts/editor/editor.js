@@ -418,7 +418,31 @@ var CodeOceanEditor = {
             this.showFrame(frame);
             this.toggleButtonStates();
         }.bind(this));
-        $(document).on('theme:change', function(event) {
+
+        this.installFileTreeEventHandlers(filesInstance);
+    },
+
+    installFileTreeEventHandlers: function (filesInstance) {
+        // Prevent duplicate event listeners by removing them during unload.
+        const themeListener = this.createFileTreeThemeChangeListener(filesInstance);
+        const jsTree = filesInstance?.jstree(true);
+        $(document).on('theme:change', themeListener);
+        $(document).one('turbo:visit', function() {
+            $(document).off('theme:change', themeListener);
+            if (jsTree && jsTree.element) {
+                jsTree.destroy(true);
+            }
+        });
+        $(window).one('beforeunload', function() {
+            $(document).off('theme:change', themeListener);
+            if (jsTree && jsTree.element) {
+                jsTree.destroy(true);
+            }
+        });
+    },
+
+    createFileTreeThemeChangeListener: function (filesInstance) {
+      return function (event) {
             const jsTree = filesInstance?.jstree(true);
 
             if (jsTree) {
@@ -426,7 +450,7 @@ var CodeOceanEditor = {
                 // Update the JStree theme
                 jsTree?.set_theme(newColorScheme === "dark" ? "default-dark" : "default");
             }
-        });
+        }
     },
 
     initializeFileTreeButtons: function () {
@@ -935,10 +959,6 @@ var CodeOceanEditor = {
         $('#output_sidebar').removeClass('output-col').addClass('output-col-collapsed');
     },
 
-    initializeSideBarTooltips: function () {
-        $('[data-bs-toggle="tooltip"]').tooltip()
-    },
-
     initializeDescriptionToggle: function () {
         $('#exercise-headline').on('click', this.toggleDescriptionCard.bind(this));
         $('a#toggle').on('click', this.toggleDescriptionCard.bind(this));
@@ -1096,7 +1116,6 @@ var CodeOceanEditor = {
         this.initializeSideBarCollapse();
         this.initializeOutputBarToggle();
         this.initializeDescriptionToggle();
-        this.initializeSideBarTooltips();
         this.initializeInterventionTimer();
         this.initPrompt();
         this.renderScore();
@@ -1106,12 +1125,38 @@ var CodeOceanEditor = {
         this.initializeDeadlines();
         CodeOceanEditorTips.initializeEventHandlers();
 
-        window.addEventListener("turbolinks:before-render", App.synchronized_editor?.disconnect.bind(App.synchronized_editor));
-        window.addEventListener("beforeunload", App.synchronized_editor?.disconnect.bind(App.synchronized_editor));
+        $(document).one("turbo:visit", this.unloadEverything.bind(this, App.synchronized_editor));
+        $(window).one("beforeunload", this.unloadEverything.bind(this, App.synchronized_editor));
 
-        window.addEventListener("turbolinks:before-render", this.autosaveIfChanged.bind(this));
-        window.addEventListener("beforeunload", this.autosaveIfChanged.bind(this));
         // create autosave when the editor is opened the first time
         this.autosave();
+    },
+
+    unloadEverything: function () {
+        App.synchronized_editor?.disconnect();
+        this.autosaveIfChanged();
+        this.unloadEditor();
+        this.teardownEventHandlers();
+    },
+
+    unloadEditor: function () {
+        $(document).off('theme:change:ace');
+        CodeOceanEditor.cacheEditorContent();
+        CodeOceanEditor.destroyEditors();
+    },
+
+    cacheEditorContent: function () {
+        // Persist the content of the editors in a hidden textarea to enable Turbo caching.
+        // In this case, we iterate over _all_ editors, not just writable ones.
+        for (const [file_id, editor] of this.editor_for_file) {
+            const file_content = editor.getValue();
+            const editorContent = $(`.editor-content[data-file-id='${file_id}']`);
+            editorContent.text(file_content);
+        }
+    },
+
+    destroyEditors: function () {
+        CodeOceanEditor.editors.forEach(editor => editor.destroy());
+        CodeOceanEditor.editors = [];
     }
 };
