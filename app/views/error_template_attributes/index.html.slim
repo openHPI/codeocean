@@ -23,7 +23,7 @@ h1 = ErrorTemplateAttribute.model_name.human(count: :other)
             code = error_template_attribute.regex
           td = link_to(t('shared.show'), error_template_attribute) if policy(error_template_attribute).show?
           td = link_to(t('shared.edit'), edit_error_template_attribute_path(error_template_attribute)) if policy(error_template_attribute).edit?
-          td = link_to(t('shared.destroy'), error_template_attribute, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(error_template_attribute).destroy?
+          td = button_to(t('shared.destroy'), error_template_attribute, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-sm btn-link') if policy(error_template_attribute).destroy?
 
 = render('shared/pagination', collection: @error_template_attributes)
 p = render('shared/new_button', model: ErrorTemplateAttribute)

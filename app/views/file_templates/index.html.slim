@@ -14,7 +14,7 @@ h1 = FileTemplate.model_name.human(count: :other)
           td = link_to_if(policy(file_template.file_type).show?, file_template.file_type, file_type_path(file_template.file_type))
           td = link_to(t('shared.show'), file_template) if policy(file_template).show?
           td = link_to(t('shared.edit'), edit_file_template_path(file_template)) if policy(file_template).edit?
-          td = link_to(t('shared.destroy'), file_template, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(file_template).destroy?
+          td = button_to(t('shared.destroy'), file_template, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-sm btn-link') if policy(file_template).destroy?
 
 = render('shared/pagination', collection: @file_templates)
 p = render('shared/new_button', model: FileTemplate)

@@ -35,7 +35,7 @@ h2.mt-4
             code = attribute.regex
           td = link_to(t('shared.show'), attribute) if policy(attribute).show?
           td = link_to(t('shared.edit'), edit_error_template_attribute_path(attribute)) if policy(attribute).edit?
-          td = link_to(t('shared.destroy'), attribute_error_template_url(error_template_attribute_id: attribute.id), method: :delete) if policy(attribute).destroy?
+          td = button_to(t('shared.destroy'), attribute_error_template_url(error_template_attribute_id: attribute.id), method: :delete, class: 'btn btn-sm btn-link') if policy(attribute).destroy?
 
 #add-attribute
   = collection_select({}, :error_template_attribute_id,

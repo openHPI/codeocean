@@ -12,7 +12,7 @@ h1 = Consumer.model_name.human(count: :other)
           td = link_to_if(policy(consumer).show?, consumer.name, consumer)
           td = link_to(t('shared.show'), consumer) if policy(consumer).show?
           td = link_to(t('shared.edit'), edit_consumer_path(consumer)) if policy(consumer).edit?
-          td = link_to(t('shared.destroy'), consumer, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(consumer).destroy?
+          td = button_to(t('shared.destroy'), consumer, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-sm btn-link') if policy(consumer).destroy?
 
 = render('shared/pagination', collection: @consumers)
 p = render('shared/new_button', model: Consumer)

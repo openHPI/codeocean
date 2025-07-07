@@ -19,7 +19,7 @@ h1 = ExerciseCollection.model_name.human(count: :other)
           td = link_to(t('shared.show'), collection) if policy(collection).show?
           td = link_to(t('shared.edit'), edit_exercise_collection_path(collection)) if policy(collection).edit?
           td = link_to(t('shared.statistics'), statistics_exercise_collection_path(collection)) if policy(collection).statistics?
-          td = link_to(t('shared.destroy'), collection, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(collection).destroy?
+          td = button_to(t('shared.destroy'), collection, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-sm btn-link') if policy(collection).destroy?
 
 = render('shared/pagination', collection: @exercise_collections)
 p = render('shared/new_button', model: ExerciseCollection)

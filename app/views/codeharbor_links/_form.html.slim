@@ -15,4 +15,4 @@
   .actions
     = render('shared/submit_button', f:, object: @codeharbor_link)
     - if @codeharbor_link.persisted?
-      = link_to(t('codeharbor_link.delete'), polymorphic_path([@codeharbor_link.user, @codeharbor_link]), data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-danger float-end')
+      = button_to(t('codeharbor_link.delete'), polymorphic_path([@codeharbor_link.user, @codeharbor_link]), data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-danger float-end')

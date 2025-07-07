@@ -17,11 +17,11 @@
         - if current_user.admin? || current_user.teacher? || current_user.internal_user?
           li = link_to(t('consumers.show.link'), current_user.consumer, class: 'dropdown-item') if current_user.consumer && policy(current_user.consumer).show?
           li = link_to(t('internal_users.show.link'), current_user, class: 'dropdown-item') if policy(current_user).show?
-          li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
+          li = button_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
         - elsif current_user.webauthn_configured?
-          li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
+          li = button_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
       - else
-        li = link_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
+        li = button_to(t('sessions.destroy.link'), sign_out_path, method: :delete, class: 'dropdown-item')
 - else
   li.nav-item = link_to(sign_in_path, class: 'nav-link') do
     i.fa-solid.fa-arrow-right-to-bracket
