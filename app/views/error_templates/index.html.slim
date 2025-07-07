@@ -16,7 +16,7 @@ h1 = ErrorTemplate.model_name.human(count: :other)
           td = link_to(error_template.execution_environment)
           td = link_to(t('shared.show'), error_template) if policy(error_template).show?
           td = link_to(t('shared.edit'), edit_error_template_path(error_template)) if policy(error_template).edit?
-          td = link_to(t('shared.destroy'), error_template, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(error_template).destroy?
+          td = button_to(t('shared.destroy'), error_template, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-sm btn-link') if policy(error_template).destroy?
 
 = render('shared/pagination', collection: @error_templates)
 p = render('shared/new_button', model: ErrorTemplate)

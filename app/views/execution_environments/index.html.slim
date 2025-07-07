@@ -31,7 +31,7 @@ h1.d-inline-block = ExecutionEnvironment.model_name.human(count: :other)
           td = execution_environment.permitted_execution_time
           td = link_to(t('shared.show'), execution_environment) if policy(execution_environment).show?
           td = link_to(t('shared.edit'), edit_execution_environment_path(execution_environment)) if policy(execution_environment).edit?
-          td = link_to(t('shared.destroy'), execution_environment, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(execution_environment).destroy?
+          td = button_to(t('shared.destroy'), execution_environment, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-sm btn-link') if policy(execution_environment).destroy?
           td = link_to(t('.shell'), shell_execution_environment_path(execution_environment)) if policy(execution_environment).shell?
           td = link_to(t('shared.statistics'), statistics_execution_environment_path(execution_environment)) if policy(execution_environment).statistics?
 

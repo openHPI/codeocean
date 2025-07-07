@@ -23,7 +23,7 @@ h1
             - if study_group_membership.study_group_id == current_user.current_study_group_id
               span.text-success =< t('users.show.current_study_group')
             - else
-              =< link_to(t('users.show.set_as_current_study_group'), set_as_current_study_group_path(study_group_membership.study_group), method: :post, class: 'text-body-secondary')
+              =< button_to(t('users.show.set_as_current_study_group'), set_as_current_study_group_path(study_group_membership.study_group), method: :post, class: 'btn btn-sm btn-link text-body-secondary')
           | )
   - else
     = t('users.show.no_groups')

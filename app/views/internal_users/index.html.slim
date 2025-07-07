@@ -31,7 +31,7 @@ h1 = InternalUser.model_name.human(count: :other)
             td = symbol_for(user.webauthn_configured?)
           td = link_to(t('shared.show'), user) if policy(user).show?
           td = link_to(t('shared.edit'), edit_internal_user_path(user)) if policy(user).edit?
-          td = link_to(t('shared.destroy'), user, data: {confirm: t('shared.confirm_destroy')}, method: :delete) if policy(user).destroy?
+          td = button_to(t('shared.destroy'), user, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'btn btn-sm btn-link') if policy(user).destroy?
 
 = render('shared/pagination', collection: @users)
 p = render('shared/new_button', model: InternalUser)
