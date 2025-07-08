@@ -15,7 +15,7 @@ h1 = RequestForComment.model_name.human(count: :other)
         .col
           = f.label(:submission_study_group_id_eq, t('request_for_comments.index.study_groups.placeholder'), class: 'visually-hidden form-label')
           = f.grouped_collection_select(:submission_study_group_id_in, @study_groups_grouping, :second, :first, :id, :to_s, {},
-                  {class: 'form-control', multiple: true, 'data-placeholder': t('request_for_comments.index.study_groups.placeholder')})
+                  {class: 'form-control', multiple: true, data: {placeholder: t('request_for_comments.index.study_groups.placeholder')}})
 
 .table-responsive
   table.table.mt-4 class=(@request_for_comments.present? ? 'sortable' : '')

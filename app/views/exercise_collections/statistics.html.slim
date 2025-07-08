@@ -48,4 +48,4 @@ h4.mt-4 = ExerciseCollection.human_attribute_name('exercises')
           td = exercise.submissions.send(:final).distinct.count(:contributor_id)
           td = exercise.finishers_percentage
           td = exercise.average_percentage
-          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), 'data-turbo': 'false') if policy(exercise).statistics?
+          td = link_to(t('shared.statistics'), statistics_exercise_path(exercise), data: {turbo: false}) if policy(exercise).statistics?

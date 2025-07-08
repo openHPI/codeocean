@@ -2,14 +2,14 @@
   = render('shared/form_errors', object: @codeharbor_link)
   .mb-3
     = f.label(:push_url, class: 'form-label')
-    = f.text_field :push_url, data: {'bs-toggle': 'tooltip', 'bs-placement': 'bottom'}, title: t('codeharbor_link.info.push_url'), class: 'form-control'
+    = f.text_field :push_url, data: {bs_toggle: 'tooltip', bs_placement: 'bottom'}, title: t('codeharbor_link.info.push_url'), class: 'form-control'
   .mb-3
     = f.label(:check_uuid_url, class: 'form-label')
-    = f.text_field :check_uuid_url, data: {'bs-toggle': 'tooltip', 'bs-placement': 'bottom'}, title: t('codeharbor_link.info.check_uuid_url'), class: 'form-control'
+    = f.text_field :check_uuid_url, data: {bs_toggle: 'tooltip', bs_placement: 'bottom'}, title: t('codeharbor_link.info.check_uuid_url'), class: 'form-control'
   .mb-3
     = f.label(:api_key, class: 'form-label')
     .input-group
-      = f.text_field(:api_key, data: {'bs-toggle': 'tooltip', 'bs-placement': 'bottom'}, title: t('codeharbor_link.info.api_key'), class: 'form-control api_key')
+      = f.text_field(:api_key, data: {bs_toggle: 'tooltip', bs_placement: 'bottom'}, title: t('codeharbor_link.info.api_key'), class: 'form-control api_key')
       .input-group-btn
         = button_tag(t('codeharbor_link.generate'), type: 'button', class: 'generate-api_key btn btn-default')
   .actions

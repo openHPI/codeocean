@@ -5,7 +5,7 @@ h1.d-inline-block = @execution_environment
   ul.dropdown-menu.dropdown-menu-end role='menu'
     li = button_to(t('execution_environments.index.synchronize.button'), sync_to_runner_management_execution_environment_path(@execution_environment), method: :post, class: 'dropdown-item') if policy(@execution_environment).sync_to_runner_management?
     li = link_to(t('execution_environments.index.shell'), shell_execution_environment_path(@execution_environment), class: 'dropdown-item') if policy(@execution_environment).shell?
-    li = link_to(t('shared.statistics'), statistics_execution_environment_path(@execution_environment), 'data-turbo': 'false', class: 'dropdown-item') if policy(@execution_environment).statistics?
+    li = link_to(t('shared.statistics'), statistics_execution_environment_path(@execution_environment), data: {turbo: false}, class: 'dropdown-item') if policy(@execution_environment).statistics?
     li = button_to(t('shared.destroy'), @execution_environment, data: {confirm: t('shared.confirm_destroy')}, method: :delete, class: 'dropdown-item') if policy(@execution_environment).destroy?
 
 = row(label: 'execution_environment.name', value: @execution_environment.name)
