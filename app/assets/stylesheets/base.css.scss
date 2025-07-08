@@ -51,7 +51,7 @@ span.caret {
   margin-left: 0.5em;
 }
 
-.btn {
+.btn:not(.btn-link) {
   -webkit-font-smoothing: antialiased;
   font-weight: 500;
   :not(.btn-lg) {

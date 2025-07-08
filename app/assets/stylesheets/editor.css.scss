@@ -96,15 +96,19 @@ html[data-bs-theme="light"] {
   display: none;
 }
 
-#statusbar{
+#statusbar {
   visibility: hidden;
   margin-top: .2em;
   height: 1.6em;
   color: var(--bs-tertiary-color);
-  font-size: 0.8em;
+  font-size: 0.8rem;
 }
 
-#turtlecanvas{
+.btn-statusbar {
+  --bs-btn-font-size: 0.8rem;
+}
+
+#turtlecanvas {
   border-style:solid;
   border-width:thin;
   display: block;

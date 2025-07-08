@@ -40,6 +40,15 @@ html[data-bs-theme="light"] {
   }
 }
 
+
+// Match the button styles for .btn-link to regular links.
+.btn-link {
+  @extend .p-0;
+  @extend .border-0;
+  @extend .align-baseline;
+}
+
+
 $fa-font-path: '@fortawesome/fontawesome-free/webfonts/';
 @import '@fortawesome/fontawesome-free/scss/fontawesome';
 @import '@fortawesome/fontawesome-free/scss/solid';
