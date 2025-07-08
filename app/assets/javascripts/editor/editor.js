@@ -242,8 +242,8 @@ var CodeOceanEditor = {
         }
 
         const bottom = considerStatusbar ? ($('#statusbar').height() || 0) : 0;
-        // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 5 for bar margins
-        return window.innerHeight - jqueryElement.offset().top - bottom - 5;
+        // calculate needed size: window height - position of top of ACE editor - height of autosave label below editor - 7 for bar margins
+        return window.innerHeight - jqueryElement.offset().top - bottom - 7;
     },
 
     resizeParentOfAceEditor: function (element) {
