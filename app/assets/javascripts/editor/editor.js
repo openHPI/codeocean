@@ -281,7 +281,7 @@ var CodeOceanEditor = {
             this.setActiveFile($(element).parent().data('filename'), file_id);
 
             const full_lines = content.text().split(/\n/);
-            if (full_lines.length > 1 && full_lines[0] !== "") {
+            if (full_lines.length >= 1 && full_lines[0] !== "") {
                 document.insertFullLines(0, full_lines);
                 // remove last (empty) that is there by default line
                 document.removeFullLines(document.getLength() - 1, document.getLength() - 1);
