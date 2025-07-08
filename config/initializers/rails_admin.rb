@@ -20,7 +20,7 @@ RailsAdmin.config do |config|
     # Important! We need to check the authorization here, we skip Pundit checks in the RailsAdminController.
     unless current_user&.admin?
       flash[:alert] = t('application.not_authorized')
-      redirect_to main_app.root_path
+      redirect_to main_app.root_path, status: :see_other
     end
   end
 

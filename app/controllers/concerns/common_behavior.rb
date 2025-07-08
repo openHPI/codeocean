@@ -24,7 +24,7 @@ module CommonBehavior
     @object.destroy
     respond_to do |format|
       path = options[:path] || send(:"#{@object.class.model_name.collection}_path")
-      format.html { redirect_to(path, notice: t('shared.object_destroyed', model: @object.class.model_name.human)) }
+      format.html { redirect_to path, notice: t('shared.object_destroyed', model: @object.class.model_name.human), status: :see_other }
       format.json { head(:no_content) }
     end
   end
@@ -36,7 +36,7 @@ module CommonBehavior
   end
 
   def respond_with_valid_object(format, options = {})
-    format.html { redirect_to(options[:path], notice: options[:notice]) }
+    format.html { redirect_to options[:path], notice: options[:notice], status: :see_other }
     format.json { render(:show, location: @object, status: options[:status]) }
   end
   private :respond_with_valid_object

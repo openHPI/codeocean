@@ -53,7 +53,7 @@ class UserExerciseFeedbacksController < ApplicationController
       create_and_respond(object: @uef, path: proc { path })
     else
       flash.now[:danger] = t('shared.message_failure')
-      redirect_back fallback_location: exercise_user_exercise_feedback_path(@uef)
+      redirect_back fallback_location: exercise_user_exercise_feedback_path(@uef), status: :see_other
     end
   end
 
@@ -75,7 +75,7 @@ class UserExerciseFeedbacksController < ApplicationController
       update_and_respond(object: @uef, params: uef_params, path:)
     else
       flash.now[:danger] = t('shared.message_failure')
-      redirect_back fallback_location: exercise_user_exercise_feedback_path(@uef)
+      redirect_back fallback_location: exercise_user_exercise_feedback_path(@uef), status: :see_other
     end
   end
 

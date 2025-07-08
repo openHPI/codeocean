@@ -121,7 +121,8 @@ class ProgrammingGroupsController < ApplicationController
 
   def redirect_to_exercise
     skip_authorization
-    redirect_to(implement_exercise_path(@exercise),
-      notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, current_user) ? 'with' : 'without'}_outcome", consumer: @consumer))
+    redirect_to implement_exercise_path(@exercise),
+      notice: t("sessions.create_through_lti.session_#{lti_outcome_service?(@exercise, current_user) ? 'with' : 'without'}_outcome", consumer: @consumer),
+      status: :see_other
   end
 end

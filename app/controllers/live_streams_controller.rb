@@ -21,7 +21,7 @@ class LiveStreamsController < ApplicationController
     # Using the submission ID parameter would allow looking up the corresponding exercise ID
     # Therefore, we just redirect to the root_path, but actually expect to redirect back (that should work!)
     skip_authorization
-    redirect_back_or_to(root_path, allow_other_host: true, alert: t('exercises.download_file_tree.gone'))
+    redirect_back_or_to root_path, allow_other_host: true, alert: t('exercises.download_file_tree.gone'), status: :see_other
   else
     desired_file = params[:filename].to_s
     runner = Runner.for(current_contributor, @submission.exercise.execution_environment)
@@ -65,7 +65,7 @@ class LiveStreamsController < ApplicationController
         end
       end
     rescue Runner::Error
-      redirect_back_or_to(redirect_fallback, alert: t('exercises.download_file_tree.gone'))
+      redirect_back_or_to redirect_fallback, alert: t('exercises.download_file_tree.gone'), status: :see_other
     end
   end
 end

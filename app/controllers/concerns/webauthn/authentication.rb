@@ -39,7 +39,7 @@ module Webauthn
         _sign_in_as(user)
         return _finalize_login(user) if user.fully_authenticated?
 
-        redirect_to new_webauthn_credential_authentication_path
+        redirect_to new_webauthn_credential_authentication_path, status: :see_other
         user
       end
 
@@ -92,7 +92,7 @@ module Webauthn
 
       # Redirect to the WebAuthn authentication page if the user has not completed the WebAuthn authentication.
       def _require_webauthn_credential_authentication(user = current_user)
-        redirect_to new_webauthn_credential_authentication_path unless _webauthn_credential_authentication_completed?(user)
+        redirect_to(new_webauthn_credential_authentication_path, status: :see_other) unless _webauthn_credential_authentication_completed?(user)
       end
 
       # Finish the login process and redirect the user to the return_to_url.

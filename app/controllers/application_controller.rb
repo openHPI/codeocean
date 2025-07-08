@@ -142,15 +142,15 @@ class ApplicationController < ActionController::Base
       format.any do
         # Prevent redirect loop
         if request.url == request.referer || request.referer&.match?(sign_in_path)
-          redirect_to :root, alert: message
+          redirect_to :root, alert: message, status: :see_other
         # Redirect to main domain if the request originated from our render_host
         elsif request.path == '/' && request.host == RENDER_HOST
-          redirect_to Rails.application.config.action_mailer.default_url_options, allow_other_host: true
+          redirect_to Rails.application.config.action_mailer.default_url_options, allow_other_host: true, status: :see_other
         elsif current_user.nil? && status == :unauthorized
           session[:return_to_url] = request.fullpath if current_user.nil?
-          redirect_to sign_in_path, alert: t('application.not_signed_in')
+          redirect_to sign_in_path, alert: t('application.not_signed_in'), status: :see_other
         else
-          redirect_back fallback_location: :root, allow_other_host: false, alert: message
+          redirect_back fallback_location: :root, allow_other_host: false, alert: message, status: :see_other
         end
       end
       format.json { render json: {error: message}, status: }

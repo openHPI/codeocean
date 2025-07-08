@@ -57,13 +57,13 @@ RSpec.describe Lti do
       before { controller.instance_variable_set(:@provider, provider) }
 
       it 'redirects to the tool consumer' do
-        expect(controller).to receive(:redirect_to).with(consumer_return_url, allow_other_host: true)
+        expect(controller).to receive(:redirect_to).with(consumer_return_url, allow_other_host: true, status: :see_other)
         controller.send(:return_to_consumer)
       end
 
       it 'passes messages to the consumer' do
         message = I18n.t('sessions.oauth.failure', error: 'dummy error')
-        expect(controller).to receive(:redirect_to).with("#{consumer_return_url}?lti_errorlog=#{CGI.escape(message)}", allow_other_host: true)
+        expect(controller).to receive(:redirect_to).with("#{consumer_return_url}?lti_errorlog=#{CGI.escape(message)}", allow_other_host: true, status: :see_other)
         controller.send(:return_to_consumer, lti_errorlog: message)
       end
 
@@ -72,7 +72,7 @@ RSpec.describe Lti do
 
         it 'correctly appends query parameters' do
           message = I18n.t('sessions.oauth.failure', error: 'dummy error')
-          expect(controller).to receive(:redirect_to).with("#{consumer_return_url}&lti_errorlog=#{CGI.escape(message)}&lti_msg=#{CGI.escape(message)}", allow_other_host: true)
+          expect(controller).to receive(:redirect_to).with("#{consumer_return_url}&lti_errorlog=#{CGI.escape(message)}&lti_msg=#{CGI.escape(message)}", allow_other_host: true, status: :see_other)
           controller.send(:return_to_consumer, lti_errorlog: message, lti_msg: message)
         end
       end
@@ -81,7 +81,7 @@ RSpec.describe Lti do
         let(:consumer_return_url) { '' }
 
         it 'redirects to the root URL' do
-          expect(controller).to receive(:redirect_to).with(:root)
+          expect(controller).to receive(:redirect_to).with(:root, status: :see_other)
           controller.send(:return_to_consumer)
         end
 
@@ -96,7 +96,7 @@ RSpec.describe Lti do
         let(:consumer_return_url) { '/path' }
 
         it 'redirects to the root URL' do
-          expect(controller).to receive(:redirect_to).with(:root)
+          expect(controller).to receive(:redirect_to).with(:root, status: :see_other)
           controller.send(:return_to_consumer)
         end
 
@@ -114,7 +114,7 @@ RSpec.describe Lti do
       end
 
       it 'redirects to the root URL' do
-        expect(controller).to receive(:redirect_to).with(:root)
+        expect(controller).to receive(:redirect_to).with(:root, status: :see_other)
         controller.send(:return_to_consumer)
       end
 

@@ -194,9 +194,9 @@ class ExecutionEnvironmentsController < ApplicationController
       Runner.strategy_class.sync_environment(@execution_environment)
     rescue Runner::Error => e
       Rails.logger.warn { "Runner error while synchronizing execution environment with id #{@execution_environment.id}: #{e.message}" }
-      redirect_to @execution_environment, alert: t('execution_environments.index.synchronize.failure', error: ERB::Util.html_escape(e.message))
+      redirect_to @execution_environment, alert: t('execution_environments.index.synchronize.failure', error: ERB::Util.html_escape(e.message)), status: :see_other
     else
-      redirect_to @execution_environment, notice: t('execution_environments.index.synchronize.success')
+      redirect_to @execution_environment, notice: t('execution_environments.index.synchronize.success'), status: :see_other
     end
   end
 
@@ -239,9 +239,9 @@ class ExecutionEnvironmentsController < ApplicationController
     end
 
     if success.all?
-      redirect_to ExecutionEnvironment, notice: t('execution_environments.index.synchronize_all.success')
+      redirect_to ExecutionEnvironment, notice: t('execution_environments.index.synchronize_all.success'), status: :see_other
     else
-      redirect_to ExecutionEnvironment, alert: t('execution_environments.index.synchronize_all.failure')
+      redirect_to ExecutionEnvironment, alert: t('execution_environments.index.synchronize_all.failure'), status: :see_other
     end
   end
 

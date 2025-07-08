@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
   after_action :set_sentry_context, only: %i[create_through_lti create]
 
   def new
-    redirect_to(:root, alert: t('shared.already_signed_in')) if current_user
+    redirect_to(:root, alert: t('shared.already_signed_in'), status: :see_other) if current_user
   end
 
   def create_through_lti
@@ -83,7 +83,7 @@ class SessionsController < ApplicationController
       logout
     end
     flash[:notice] = t('.success')
-    redirect_to(:root) unless performed?
+    redirect_to(:root, status: :see_other) unless performed?
   end
 
   private
@@ -126,6 +126,6 @@ class SessionsController < ApplicationController
     uri.query_values = query_params
 
     # This redirect skips the WebAuthn requirement
-    redirect_to uri.to_s, allow_other_host: true
+    redirect_to uri.to_s, allow_other_host: true, status: :see_other
   end
 end

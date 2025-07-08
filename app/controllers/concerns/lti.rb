@@ -110,11 +110,11 @@ module Lti
     # The `lti_msg` is displayed to the user as an information.
     return_url = consumer_return_url(@provider, options)
     if return_url && URI.parse(return_url).absolute?
-      redirect_to(return_url, allow_other_host: true)
+      redirect_to return_url, allow_other_host: true, status: :see_other
     else
       flash[:danger] = options[:lti_errormsg]
       flash[:info] = options[:lti_msg]
-      redirect_to(:root)
+      redirect_to :root, status: :see_other
     end
   end
 

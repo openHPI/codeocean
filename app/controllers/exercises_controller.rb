@@ -59,10 +59,10 @@ class ExercisesController < ApplicationController
     exercise = @exercise.duplicate(public: false, token: nil, user: current_user, uuid: nil)
     exercise.send(:generate_token)
     if exercise.save
-      redirect_to(exercise_path(exercise), notice: t('shared.object_cloned', model: Exercise.model_name.human))
+      redirect_to exercise_path(exercise), notice: t('shared.object_cloned', model: Exercise.model_name.human), status: :see_other
     else
       flash[:danger] = t('shared.message_failure')
-      redirect_to(@exercise)
+      redirect_to @exercise, status: :see_other
     end
   end
 
@@ -238,7 +238,7 @@ class ExercisesController < ApplicationController
     zip_file = ProformaService::ExportTask.call(exercise: @exercise)
     send_data(zip_file.string, type: 'application/zip', filename: "exercise_#{@exercise.id}.zip", disposition: 'attachment')
   rescue ProformaXML::PostGenerateValidationError => e
-    redirect_to :root, danger: JSON.parse(e.message).join('<br>')
+    redirect_to :root, danger: JSON.parse(e.message).join('<br>'), status: :see_other
   end
 
   def user_from_api_key
@@ -331,7 +331,7 @@ class ExercisesController < ApplicationController
       ExerciseTip.destroy(previous_exercise_tips - remaining_exercise_tips)
     rescue JSON::ParserError => e
       flash[:danger] = "JSON error: #{e.message}"
-      redirect_to(edit_exercise_path(@exercise))
+      redirect_to edit_exercise_path(@exercise), status: :see_other
     end
   end
 
@@ -349,7 +349,7 @@ class ExercisesController < ApplicationController
       rank += 1
       unless current_exercise_tip.save
         flash[:danger] = current_exercise_tip.errors.full_messages.join('. ')
-        redirect_to(edit_exercise_path(@exercise)) and break
+        redirect_to(edit_exercise_path(@exercise), status: :see_other) and break
       end
 
       children = update_exercise_tips exercise_tip[:children], current_exercise_tip.id, rank
@@ -371,17 +371,16 @@ class ExercisesController < ApplicationController
         session.delete(:pair_programming)
         @current_contributor = current_user
       else
-        return redirect_back_or_to(
-          implement_exercise_path(current_contributor.exercise),
-          alert: t('exercises.implement.existing_programming_group', exercise: current_contributor.exercise.title)
-        )
+        return redirect_back_or_to implement_exercise_path(current_contributor.exercise),
+          alert: t('exercises.implement.existing_programming_group', exercise: current_contributor.exercise.title),
+          status: :see_other
       end
     elsif session[:pg_id].blank? && (pg = current_user.programming_groups.find_by(exercise: @exercise)) && pg.submissions.where(study_group_id: current_user.current_study_group_id).any?
       # we are just acting on behalf of a single user who has already worked on this exercise as part of a programming group **in the context of the current study group**
       session[:pg_id] = pg.id
       @current_contributor = pg
     elsif session[:pg_id].blank? && session[:pair_programming] == 'mandatory'
-      return redirect_back_or_to(new_exercise_programming_group_path(@exercise))
+      return redirect_back_or_to new_exercise_programming_group_path(@exercise), status: :see_other
     elsif session[:pg_id].blank? && session[:pair_programming] == 'optional' && current_user.submissions.where(study_group_id: current_user.current_study_group_id, exercise: @exercise).none?
       Event.find_or_create_by(category: 'pp_work_alone', user: current_user, exercise: @exercise, data: nil, file_id: nil)
       current_user.pair_programming_waiting_users&.find_by(exercise: @exercise)&.update(status: :worked_alone)
@@ -492,9 +491,9 @@ class ExercisesController < ApplicationController
     return render_not_authorized unless %w[implement working_times intervention reload].include?(action_name)
 
     if current_user.admin? || current_user.teacher?
-      redirect_to(@exercise, alert: t('exercises.implement.unpublished')) if @exercise.unpublished?
-      redirect_to(@exercise, alert: t('exercises.implement.no_files')) unless @exercise.files.visible.exists?
-      redirect_to(@exercise, alert: t('exercises.implement.no_execution_environment')) if @exercise.execution_environment.blank?
+      redirect_to(@exercise, alert: t('exercises.implement.unpublished'), status: :see_other) if @exercise.unpublished?
+      redirect_to(@exercise, alert: t('exercises.implement.no_files'), status: :see_other) unless @exercise.files.visible.exists?
+      redirect_to(@exercise, alert: t('exercises.implement.no_execution_environment'), status: :see_other) if @exercise.execution_environment.blank?
     else
       render_not_authorized
     end
