@@ -20,7 +20,7 @@ h1 = @execution_environment
       .card-body.pt-0.pe-0.ps-1.pb-1
         #download-file-tree.justify-content-center.d-flex.my-3
           span.mx-1 = t('execution_environments.shell.file_tree.empty')
-          button#reload-now-link.btn.btn-link.p-0.m-0.border-0 = t('execution_environments.shell.file_tree.list_now')
+          button#reload-now-link.btn.btn-link = t('execution_environments.shell.file_tree.list_now')
       - unless @execution_environment.privileged_execution?
         .card-footer.justify-content-center.align-items-center.d-flex.text-body-secondary
           i.fa-solid.fa-info
