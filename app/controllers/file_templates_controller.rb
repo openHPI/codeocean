@@ -48,7 +48,7 @@ class FileTemplatesController < ApplicationController
 
     respond_to do |format|
       if @file_template.save
-        format.html { redirect_to @file_template, notice: t('shared.object_created', model: @file_template.class.model_name.human) }
+        format.html { redirect_to @file_template, notice: t('shared.object_created', model: @file_template.class.model_name.human), status: :see_other }
         format.json { render :show, status: :created, location: @file_template }
       else
         format.html { render :new, status: :unprocessable_content }
@@ -63,7 +63,7 @@ class FileTemplatesController < ApplicationController
     authorize!
     respond_to do |format|
       if @file_template.update(file_template_params)
-        format.html { redirect_to @file_template, notice: t('shared.object_updated', model: @file_template.class.model_name.human) }
+        format.html { redirect_to @file_template, notice: t('shared.object_updated', model: @file_template.class.model_name.human), status: :see_other }
         format.json { render :show, status: :ok, location: @file_template }
       else
         format.html { render :edit, status: :unprocessable_content }
@@ -78,7 +78,7 @@ class FileTemplatesController < ApplicationController
     authorize!
     @file_template.destroy
     respond_to do |format|
-      format.html { redirect_to FileTemplate, notice: t('shared.object_destroyed', model: @file_template.class.model_name.human) }
+      format.html { redirect_to FileTemplate, notice: t('shared.object_destroyed', model: @file_template.class.model_name.human), status: :see_other }
       format.json { head :no_content }
     end
   end

@@ -36,7 +36,7 @@ class WebauthnCredentialAuthenticationController < ApplicationController
 
     authenticate_webauthn_for(credential)
   rescue WebAuthn::Error => e
-    redirect_to new_webauthn_credential_authentication_path, danger: t('.failed', error: e.message)
+    redirect_to new_webauthn_credential_authentication_path, danger: t('.failed', error: e.message), status: :see_other
   end
 
   private

@@ -95,7 +95,7 @@ class InternalUsersController < ApplicationController
       if @user.update(params[:internal_user].permit(:password, :password_confirmation))
         @user.change_password!(params[:internal_user][:password])
         redirect_target = current_user ? internal_user_path(@user) : sign_in_path
-        format.html { redirect_to(redirect_target, notice: t('internal_users.reset_password.success')) }
+        format.html { redirect_to redirect_target, notice: t('internal_users.reset_password.success'), status: :see_other }
         format.json { head :ok }
       else
         respond_with_invalid_object(format, object: @user, template: action_name.to_sym)
@@ -107,7 +107,7 @@ class InternalUsersController < ApplicationController
     if params[:email].present?
       user = InternalUser.arel_table
       InternalUser.where(user[:email].matches(params[:email])).first&.deliver_reset_password_instructions!
-      redirect_to(:root, notice: t('internal_users.forgot_password.success'))
+      redirect_to :root, notice: t('internal_users.forgot_password.success'), status: :see_other
     end
   end
 
@@ -132,7 +132,7 @@ class InternalUsersController < ApplicationController
   end
 
   def render_forgot_password_form
-    redirect_to(:root, alert: t('shared.already_signed_in')) if current_user
+    redirect_to(:root, alert: t('shared.already_signed_in'), status: :see_other) if current_user
   end
 
   def require_activation_token
@@ -154,7 +154,7 @@ class InternalUsersController < ApplicationController
     respond_to do |format|
       if @user.update(params[:internal_user].permit(:password, :password_confirmation))
         @user.activate!
-        format.html { redirect_to(sign_in_path, notice: t('internal_users.activate.success')) }
+        format.html { redirect_to sign_in_path, notice: t('internal_users.activate.success'), status: :see_other }
         format.json { head :ok }
       else
         respond_with_invalid_object(format, object: @user, template: :activate)

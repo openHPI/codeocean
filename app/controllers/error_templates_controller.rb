@@ -40,7 +40,7 @@ class ErrorTemplatesController < ApplicationController
 
     respond_to do |format|
       if @error_template.save
-        format.html { redirect_to @error_template, notice: t('shared.object_created', model: @error_template.class.model_name.human) }
+        format.html { redirect_to @error_template, notice: t('shared.object_created', model: @error_template.class.model_name.human), status: :see_other }
         format.json { render :show, status: :created, location: @error_template }
       else
         format.html { render :new, status: :unprocessable_content }
@@ -55,7 +55,7 @@ class ErrorTemplatesController < ApplicationController
     authorize!
     respond_to do |format|
       if @error_template.update(error_template_params)
-        format.html { redirect_to @error_template, notice: t('shared.object_updated', model: @error_template.class.model_name.human) }
+        format.html { redirect_to @error_template, notice: t('shared.object_updated', model: @error_template.class.model_name.human), status: :see_other }
         format.json { render :show, status: :ok, location: @error_template }
       else
         format.html { render :edit, status: :unprocessable_content }
@@ -70,7 +70,7 @@ class ErrorTemplatesController < ApplicationController
     authorize!
     @error_template.destroy
     respond_to do |format|
-      format.html { redirect_to ErrorTemplate, notice: t('shared.object_destroyed', model: @error_template.class.model_name.human) }
+      format.html { redirect_to ErrorTemplate, notice: t('shared.object_destroyed', model: @error_template.class.model_name.human), status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -79,7 +79,7 @@ class ErrorTemplatesController < ApplicationController
     authorize!
     @error_template.error_template_attributes << ErrorTemplateAttribute.find(params[:error_template_attribute_id])
     respond_to do |format|
-      format.html { redirect_to @error_template }
+      format.html { redirect_to @error_template, status: :see_other }
       format.json { head :no_content }
     end
   end
@@ -88,7 +88,7 @@ class ErrorTemplatesController < ApplicationController
     authorize!
     @error_template.error_template_attributes.delete(ErrorTemplateAttribute.find(params[:error_template_attribute_id]))
     respond_to do |format|
-      format.html { redirect_to @error_template }
+      format.html { redirect_to @error_template, status: :see_other }
       format.json { head :no_content }
     end
   end

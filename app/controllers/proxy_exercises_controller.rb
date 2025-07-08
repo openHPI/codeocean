@@ -15,10 +15,10 @@ class ProxyExercisesController < ApplicationController
       user: current_user)
     proxy_exercise.send(:generate_token)
     if proxy_exercise.save
-      redirect_to(proxy_exercise_path(proxy_exercise), notice: t('shared.object_cloned', model: ProxyExercise.model_name.human))
+      redirect_to proxy_exercise_path(proxy_exercise), notice: t('shared.object_cloned', model: ProxyExercise.model_name.human), status: :see_other
     else
       flash[:danger] = t('shared.message_failure')
-      redirect_to(@proxy_exercise)
+      redirect_to @proxy_exercise, status: :see_other
     end
   end
 
