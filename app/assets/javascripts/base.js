@@ -46,7 +46,7 @@ $(document).on('turbo-migration:load', function() {
     const sentrySettings = $('meta[name="sentry"]')
 
     // Workaround for Turbo: We must not re-initialize the Relay object when visiting another page
-    if (sentrySettings && sentrySettings.data()['enabled'] && Sentry.getReplay() === undefined) {
+    if (sentrySettings && sentrySettings.data() && sentrySettings.data()['enabled'] && Sentry.getReplay() === undefined) {
         Sentry.init({
             dsn: sentrySettings.data('dsn'),
             attachStacktrace: true,
