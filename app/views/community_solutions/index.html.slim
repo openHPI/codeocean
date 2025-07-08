@@ -11,6 +11,6 @@ h1 = CommunitySolution.model_name.human(count: :other)
       - @community_solutions.each do |community_solution|
         tr
           td = community_solution.exercise.title
-          td = link_to 'Edit', edit_community_solution_path(community_solution)
+          td = link_to('Edit', edit_community_solution_path(community_solution))
 
 = render('shared/pagination', collection: @community_solutions)

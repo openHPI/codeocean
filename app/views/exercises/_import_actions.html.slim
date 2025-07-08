@@ -1,14 +1,14 @@
 - if imported
-  = link_to t('exercises.import_proforma.button.show_exercise'), exercise, class: 'btn btn-light btn-sm float-end show-action import-export-button', target: '_blank', rel: 'noopener noreferrer'
+  = link_to(t('exercises.import_proforma.button.show_exercise'), exercise, class: 'btn btn-light btn-sm float-end show-action import-export-button', target: '_blank', rel: 'noopener noreferrer')
 - elsif exists && updatable
-  = button_tag type: 'button', class: 'btn btn-success btn-sm float-end import-action import-export-button', data: {'import-type' => 'import', 'file-id' => file_id} do
+  = button_tag(type: 'button', class: 'btn btn-success btn-sm float-end import-action import-export-button', data: {'import-type' => 'import', 'file-id' => file_id}) do
     i.fa-solid.fa-check.confirm-icon.export-button-icon
     = t('exercises.import_proforma.button.overwrite')
 - elsif exists
-  = button_tag type: 'button', class: 'btn btn-success btn-sm float-end import-action import-export-button', data: {'import-type' => 'create_new', 'file-id' => file_id} do
+  = button_tag(type: 'button', class: 'btn btn-success btn-sm float-end import-action import-export-button', data: {'import-type' => 'create_new', 'file-id' => file_id}) do
     i.fa-solid.fa-check.confirm-icon-alt.export-button-icon
     = t('exercises.import_proforma.button.import_copy')
 - else
-  = button_tag type: 'button', class: 'btn btn-success btn-sm float-end import-action import-export-button', data: {'import-type' => 'import', 'file-id' => file_id} do
+  = button_tag(type: 'button', class: 'btn btn-success btn-sm float-end import-action import-export-button', data: {'import-type' => 'import', 'file-id' => file_id}) do
     i.fa-solid.fa-check.confirm-icon.export-button-icon
     = t('exercises.import_proforma.button.import')

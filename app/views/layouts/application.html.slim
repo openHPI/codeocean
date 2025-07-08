@@ -53,9 +53,9 @@ html lang=I18n.locale data-default-locale=I18n.default_locale
         = yield
 
     - template_variables = {execution_environment: @exercise.execution_environment} if action_name == 'implement'
-    = render 'shared/modal',
+    = render('shared/modal',
             title: t('shared.help.headline'),
             size: 'modal-lg',
             modal_root_attributes: {id: 'modal-help'},
             template: 'application/help',
-            template_variables:
+            template_variables:)

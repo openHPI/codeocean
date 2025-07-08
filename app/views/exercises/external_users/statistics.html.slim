@@ -43,12 +43,12 @@ h1
         span.ps-1.pb-1
           i.fa-solid.fa-circle-info.align-middle
           small.me-5.ms-1 = t('.toggle_status_on')
-        = link_to t('.toggle_autosave_off'), statistics_external_user_exercise_path(show_autosaves: false), class: 'btn btn-outline-contrast float-end btn-sm'
+        = link_to(t('.toggle_autosave_off'), statistics_external_user_exercise_path(show_autosaves: false), class: 'btn btn-outline-contrast float-end btn-sm')
       - else
         span.ps-1.pb-1
           i.fa-solid.fa-circle-info.align-middle
           small.me-5.ms-1 = t('.toggle_status_off')
-        = link_to t('.toggle_autosave_on'), statistics_external_user_exercise_path(show_autosaves: true), class: 'btn btn-outline-contrast float-end btn-sm'
+        = link_to(t('.toggle_autosave_on'), statistics_external_user_exercise_path(show_autosaves: true), class: 'btn btn-outline-contrast float-end btn-sm')
   #timeline
     .table-responsive
       table.table

@@ -21,7 +21,7 @@ h1 = @execution_environment
         - if wts then average_time = wts['average_time'] else 0 # rubocop:disable Lint/ElseLayout
         - if wts then stddev_time = wts['stddev_time'] else 0 # rubocop:disable Lint/ElseLayout
         tr
-          td = link_to_if policy(exercise).statistics?, exercise.title, controller: 'exercises', action: 'statistics', id: exercise.id, 'data-turbo': 'false'
+          td = link_to_if(policy(exercise).statistics?, exercise.title, controller: 'exercises', action: 'statistics', id: exercise.id, 'data-turbo': 'false')
           td = us['contributors']
           td = us['average_score'].to_f.round(4)
           td = us['maximum_score'].to_f.round(2)

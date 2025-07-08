@@ -39,8 +39,8 @@
 
 
   = render('editor', exercise: @exercise, files: @files, submission: @submission)
-  = render 'shared/modal',
+  = render('shared/modal',
           title: t('programming_groups.new.pair_programming_info'),
           size: 'modal-lg',
           modal_root_attributes: {id: 'modal-info-pair-programming'},
-          template: 'programming_groups/_info_pair_programming'
+          template: 'programming_groups/_info_pair_programming')
