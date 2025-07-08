@@ -12,7 +12,7 @@ module Admin
       authorize(self)
       respond_to do |format|
         format.html
-        format.json { render(json: dashboard_data) }
+        format.json { render json: dashboard_data }
       end
     end
   end

@@ -28,7 +28,7 @@ module RedirectBehavior
     url = edit_community_solution_path(@community_solution, lock_id: @community_solution_lock.id)
     respond_to do |format|
       format.html { redirect_to url, status: :see_other }
-      format.json { render(json: {redirect: url}) }
+      format.json { render json: {redirect: url} }
     end
   end
 
@@ -68,7 +68,7 @@ module RedirectBehavior
 
     respond_to do |format|
       format.html { redirect_to url, status: :see_other }
-      format.json { render(json: {redirect: url}) }
+      format.json { render json: {redirect: url} }
     end
   end
 
@@ -82,7 +82,7 @@ module RedirectBehavior
 
     respond_to do |format|
       format.html { redirect_to @rfc, status: :see_other }
-      format.json { render(json: {redirect: url_for(@rfc)}) }
+      format.json { render json: {redirect: url_for(@rfc)} }
     end
   end
 
@@ -112,7 +112,7 @@ module RedirectBehavior
     path = lti_return_path(submission_id: @submission.id)
     respond_to do |format|
       format.html { redirect_to path, status: :see_other }
-      format.json { render(json: {redirect: path}) }
+      format.json { render json: {redirect: path} }
     end
   end
 end

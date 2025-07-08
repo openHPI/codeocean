@@ -52,7 +52,7 @@ class ExercisesController < ApplicationController
     @exercises.each do |exercise|
       exercise.update(public: update_map[exercise.id.to_s])
     end
-    render(json: {exercises: @exercises})
+    render json: {exercises: @exercises}
   end
 
   def clone
@@ -451,21 +451,21 @@ class ExercisesController < ApplicationController
   def working_times
     working_time_accumulated = @exercise.accumulated_working_time_for_only(current_contributor)
     working_time_75_percentile = @exercise.get_quantiles([0.75]).first
-    render(json: {working_time_75_percentile:,
-                   working_time_accumulated:})
+    render json: {working_time_75_percentile:,
+                   working_time_accumulated:}
   end
 
   def intervention
     intervention = Intervention.find_by(name: params[:intervention_type])
     if intervention.nil?
-      render(json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"})
+      render json: {success: 'false', error: "undefined intervention #{params[:intervention_type]}"}
     else
       uei = UserExerciseIntervention.new(
         user: current_contributor, exercise: @exercise, intervention:,
         accumulated_worktime_s: @exercise.accumulated_working_time_for_only(current_contributor)
       )
       uei.save
-      render(json: {success: 'true'})
+      render json: {success: 'true'}
     end
   end
 

@@ -31,13 +31,13 @@ module CommonBehavior
   private :destroy_and_respond
 
   def respond_with_invalid_object(format, options = {})
-    format.html { render(options[:template], status: :unprocessable_content) }
-    format.json { render(json: @object.errors, status: :unprocessable_content) }
+    format.html { render options[:template], status: :unprocessable_content }
+    format.json { render json: @object.errors, status: :unprocessable_content }
   end
 
   def respond_with_valid_object(format, options = {})
     format.html { redirect_to options[:path], notice: options[:notice], status: :see_other }
-    format.json { render(:show, location: @object, status: options[:status]) }
+    format.json { render :show, location: @object, status: options[:status] }
   end
   private :respond_with_valid_object
 

@@ -69,7 +69,7 @@ module CodeOcean
             flash[:danger] = t('code_ocean/files.error.filename', name: filename)
             redirect_to options[:path], status: :see_other
           end
-          format.json { render(json: @object.errors, status: :unprocessable_content) }
+          format.json { render json: @object.errors, status: :unprocessable_content }
         end
       end
     end

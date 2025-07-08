@@ -102,7 +102,7 @@ class ExternalUsersController < ApplicationController
     statistics.sort_by! {|item| -item[:value] }
 
     respond_to do |format|
-      format.json { render(json: statistics) }
+      format.json { render json: statistics }
     end
   end
 end

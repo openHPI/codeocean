@@ -13,7 +13,7 @@ class StatisticsController < ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.json { render(json: statistics_data) }
+      format.json { render json: statistics_data }
     end
   end
 
@@ -21,26 +21,26 @@ class StatisticsController < ApplicationController
 
   def user_activity
     respond_to do |format|
-      format.json { render(json: user_activity_live_data) }
+      format.json { render json: user_activity_live_data }
     end
   end
 
   def user_activity_history
     respond_to do |format|
-      format.html { render('activity_history', locals: {resource: :user}) }
+      format.html { render 'activity_history', locals: {resource: :user} }
       format.json { render_ranged_data :ranged_user_data }
     end
   end
 
   def rfc_activity
     respond_to do |format|
-      format.json { render(json: rfc_activity_data) }
+      format.json { render json: rfc_activity_data }
     end
   end
 
   def rfc_activity_history
     respond_to do |format|
-      format.html { render('activity_history', locals: {resource: :rfc}) }
+      format.html { render 'activity_history', locals: {resource: :rfc} }
       format.json { render_ranged_data :ranged_rfc_data }
     end
   end
@@ -57,7 +57,7 @@ class StatisticsController < ApplicationController
     rescue StandardError
       DateTime.now
     end
-    render(json: send(data_source, interval, from, to))
+    render json: send(data_source, interval, from, to)
   end
 
   def authorize!
