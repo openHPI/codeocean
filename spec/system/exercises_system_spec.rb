@@ -109,7 +109,6 @@ RSpec.describe 'Exercise creation', :js do
 
     it 'updates an exercise with nested data' do
       click_on exercise.title
-      click_on 'Edit'
       click_on I18n.t('shared.edit')
 
       fill_in Exercise.human_attribute_name(:difficulty), with: 5
