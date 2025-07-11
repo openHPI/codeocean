@@ -780,7 +780,10 @@ var CodeOceanEditor = {
         const element = $(initiator);
 
         if (initiator && element) {
-            $(initiator).closest('[data-bs-toggle="tooltip"]').tooltip('hide');
+            const tooltipElement = $(initiator).closest('[data-bs-toggle="tooltip"]');
+            if (typeof tooltipElement.tooltip === 'function') {
+                tooltipElement.tooltip('hide');
+            }
             $(initiator).find('i.fa-solid, i.fa-regular').hide();
             $(initiator).find('i.fa-spin').addClass('d-inline-block').removeClass('d-none');
         }
