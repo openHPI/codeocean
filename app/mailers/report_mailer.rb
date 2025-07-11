@@ -8,9 +8,9 @@ class ReportMailer < ApplicationMailer
     study_group = @reported_content.submission.study_group
     exercise = @reported_content.exercise
 
-    # NOTE: This implementation assumes the curse URL is static and does not vary per user.
-    # This is currently valid for all known use cases. However, in dynamic environments—such as
-    # advanced content trees in openHPI or A/B/n testing—this assumption may break.
+    # NOTE: This implementation assumes the course URL is static and does not vary per user.
+    # This is currently valid for a majority of use cases. However, in dynamic scenarios (such as
+    # content trees in openHPI used in conjunction with A/B/n testing) this assumption may no longer hold true.
     @course_url = LtiParameter.find_by(study_group:, exercise:)&.lti_parameters&.[]('launch_presentation_return_url')
 
     mail(subject: I18n.t('report_mailer.report_content.subject', content_name: @reported_content.model_name.human))
