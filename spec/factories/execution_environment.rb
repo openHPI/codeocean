@@ -53,24 +53,6 @@ FactoryBot.define do
     testing_framework { 'JunitAdapter' }
   end
 
-  factory :jruby, class: 'ExecutionEnvironment' do
-    created_by_teacher
-    default_memory_limit
-    default_cpu_limit
-    docker_image { 'hklement/ubuntu-jruby:latest' }
-    file_type { association :dot_rb, user: }
-    help
-    name { 'JRuby 1.7' }
-    network_enabled { false }
-    privileged_execution { false }
-    permitted_execution_time { 10.seconds }
-    pool_size { 0 }
-    run_command { 'jruby %{filename}' }
-    singleton_execution_environment
-    test_command { 'rspec %{filename} --format documentation' }
-    testing_framework { 'RspecAdapter' }
-  end
-
   factory :node_js, class: 'ExecutionEnvironment' do
     created_by_teacher
     default_memory_limit
