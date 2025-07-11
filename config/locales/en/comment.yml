@@ -7,4 +7,5 @@ en:
         other: Comments
   comments:
     deleted: Deleted
+    reported: Comment is Reported.
     save_update: Save

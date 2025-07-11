@@ -168,7 +168,7 @@ class RequestForCommentsController < ApplicationController
 
     ReportMailer.with(reported_content: @request_for_comment).report_content.deliver_later
 
-    redirect_to @request_for_comment, notice: t('.report.reported'), status: :see_other
+    redirect_to @request_for_comment, notice: t('.reported'), status: :see_other
   end
 
   private

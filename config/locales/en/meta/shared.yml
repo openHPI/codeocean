@@ -42,6 +42,7 @@ en:
     object_destroyed: "%{model} has successfully been deleted."
     object_updated: "%{model} has successfully been updated."
     out_of: out of
+    report: Report
     reset_filters: Reset filters
     resources: Resources
     show: Show

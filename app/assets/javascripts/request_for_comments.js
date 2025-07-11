@@ -116,6 +116,9 @@ $(document).on('turbo-migration:load', function () {
             <button class="action-edit btn btn-sm btn-warning">' + I18n.t('shared.edit') + '</button> \
             <button class="action-delete btn btn-sm btn-danger">' + I18n.t('shared.destroy') + '</button> \
           </div> \
+          <div class="text-warning' + (comment.reportable ? '' : ' d-none') + '"> \
+            <button class="action-report btn btn-light btn-sm">' + I18n.t('shared.report') + '</button> \
+          </div> \
         </div>';
         });
         return htmlContent;
@@ -164,6 +167,17 @@ $(document).on('turbo-migration:load', function () {
         return editor.getSession().getAnnotations().filter(function (element) {
             return element.row === row;
         })
+    }
+
+    function reportComment(commentId, callback) {
+        const jqxhr = $.ajax({
+            type: 'POST',
+            url: Routes.report_comment_path(commentId)
+        });
+        jqxhr.done(function () {
+            callback();
+        });
+        jqxhr.fail(ajaxError);
     }
 
     function deleteComment(commentId, editor, file_id, callback) {
@@ -312,6 +326,17 @@ $(document).on('turbo-migration:load', function () {
             otherComments.show();
             const container = otherComments.find('.container');
             container.html(htmlContent);
+
+            const reportButtons = container.find('.action-report');
+            reportButtons.on('click', function (event) {
+                const button = $(event.target);
+                const parent = $(button).parent().parent();
+                const commentId = parent.data('comment-id');
+
+                reportComment(commentId, function () {
+                  parent.html('<div class="comment-reported">' + I18n.t('comments.reported') + '</div>');
+                });
+            });
 
             const deleteButtons = container.find('.action-delete');
             deleteButtons.on('click', function (event) {

@@ -6,31 +6,36 @@ RSpec.describe ReportMailer do
   describe '#report_content' do
     subject(:mail) { described_class.with(reported_content:).report_content }
 
-    context 'when an RfC is reported' do
-      let(:question) { 'Inappropriate content for RfC.' }
-      let(:reported_content) { create(:rfc, question:) }
+    let(:reported_content) { instance_double(Comment) }
+    let(:reported_message) { 'Repoted message' }
+    let(:human_model_name) { 'ReportedModle' }
+    let(:course_url) { 'https://example.com/course/1' }
 
-      it 'sets the correct sender' do
-        expect(mail.from).to include('codeocean@openhpi.de')
-      end
+    before do
+      stamp_report = instance_double(SpamReport,
+        human_model_name:,
+        reported_message:,
+        related_request_for_comment: instance_double(RequestForComment),
+        course_url:)
+      allow(SpamReport).to receive(:new).with(reported_content:).and_return(stamp_report)
+    end
 
-      it 'sets the correct subject' do
-        expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', content_name: RequestForComment.model_name.human))
-      end
+    it 'sets the correct sender' do
+      expect(mail.from).to include('codeocean@openhpi.de')
+    end
 
-      it 'includes the reported content' do
-        expect(mail.text_part.body).to include(question)
-        expect(mail.html_part.body).to include(question)
-      end
+    it 'includes the reported content' do
+      expect(mail.text_part.body).to include(reported_message)
+      expect(mail.html_part.body).to include(reported_message)
+    end
 
-      it 'includes the LTI retrun URL for course authentication' do
-        create(:lti_parameter,
-          exercise: reported_content.exercise,
-          study_group: reported_content.submission.study_group)
+    it 'sets the correct subject' do
+      expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', human_model_name:))
+    end
 
-        expect(mail.text_part.body).to match(%r{https.+/courses/})
-        expect(mail.html_part.body).to match(%r{https.+/courses/})
-      end
+    it 'includes the LTI retrun URL for course authentication' do
+      expect(mail.text_part.body).to include(course_url)
+      expect(mail.html_part.body).to include(course_url)
     end
   end
 end
