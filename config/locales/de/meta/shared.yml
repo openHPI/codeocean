@@ -42,6 +42,7 @@ de:
     object_destroyed: "%{model} wurde erfolgreich gelöscht."
     object_updated: "%{model} wurde erfolgreich bearbeitet."
     out_of: von
+    report: Inhalt melden
     reset_filters: Filter zurücksetzen
     resources: Ressourcen
     show: Anzeigen
@@ -49,7 +50,7 @@ de:
     time:
       before: "%{time} zuvor"
     tooltips:
-      shortcut: 'Tastaturkürzel: %{shortcut}'
+      shortcut: "Tastaturkürzel: %{shortcut}"
     update: "%{model} aktualisieren"
     updated_at: Letzte Änderung
     upload_file: Datei hochladen
