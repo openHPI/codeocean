@@ -22,6 +22,15 @@ RSpec.describe ReportMailer do
         expect(mail.text_part.body).to include(question)
         expect(mail.html_part.body).to include(question)
       end
+
+      it 'includes the LTI retrun URL for course authentication' do
+        create(:lti_parameter,
+          exercise: reported_content.exercise,
+          study_group: reported_content.submission.study_group)
+
+        expect(mail.text_part.body).to match(%r{https.+/courses/})
+        expect(mail.html_part.body).to match(%r{https.+/courses/})
+      end
     end
   end
 end
