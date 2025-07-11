@@ -1,8 +1,8 @@
 ---
 en:
-  report_mailer:
+  user_content_report_mailer:
     report_content:
       authentication: Course URL for LTI authentication.
       prolog: 'The following content has been reported as inappropriate:'
-      subject: 'Spam Report: A %{content_name} on CodeOcean has been marked as inappropriate.'
+      subject: 'Content Report: A %{human_model_name} on CodeOcean has been marked as inappropriate.'
       take_action: Please take action if required.
