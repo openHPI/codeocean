@@ -38,15 +38,18 @@ class Runner < ApplicationRecord
   def self.for(contributor, execution_environment)
     runner = find_by(contributor:, execution_environment:)
     if runner.nil?
-      runner = Runner.create(contributor:, execution_environment:)
       # The `strategy` is added through the before_validation hook `:request_id`.
-      raise Runner::Error::Unknown.new("Runner could not be saved: #{runner.errors.inspect}") unless runner.persisted?
+      runner = Runner.create!(contributor:, execution_environment:)
     else
       # This information is required but not persisted in the runner model.
       runner.strategy = strategy_class.new(runner.runner_id, runner.execution_environment)
     end
 
     runner
+  rescue ActiveRecord::RecordNotUnique
+    retry
+  rescue ActiveRecord::RecordInvalid => e
+    raise Runner::Error::Unknown.new("Runner could not be saved: #{e.inspect}")
   end
 
   def copy_files(files, exclusive: true)
