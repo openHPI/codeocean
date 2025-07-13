@@ -279,12 +279,11 @@ GEM
       net-pop
       net-smtp
     marcel (1.0.4)
-    matrix (0.4.2)
+    matrix (0.4.3)
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
-    mini_magick (5.2.0)
-      benchmark
+    mini_magick (5.3.0)
       logger
     mini_mime (1.1.5)
     mini_portile2 (2.8.9)
@@ -293,7 +292,7 @@ GEM
       activesupport (>= 6.1)
       bunny
     msgpack (1.8.0)
-    multi_json (1.15.0)
+    multi_json (1.16.0)
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
     nested_form (0.3.2)
@@ -443,7 +442,7 @@ GEM
     rb-inotify (0.11.1)
       ffi (~> 1.0)
     rbtree (0.4.6)
-    rdoc (6.14.1)
+    rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
     regexp_parser (2.10.0)
@@ -453,7 +452,7 @@ GEM
     rouge (4.5.2)
     rspec-collection_matchers (1.2.1)
       rspec-expectations (>= 2.99.0.beta1)
-    rspec-core (3.13.4)
+    rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -575,14 +574,14 @@ GEM
       activejob (>= 7.2)
       activerecord (>= 7.2)
       railties (>= 7.2)
-    solid_queue (1.1.5)
+    solid_queue (1.2.0)
       activejob (>= 7.1)
       activerecord (>= 7.1)
       concurrent-ruby (>= 1.3.1)
       fugit (~> 1.11.0)
       railties (>= 7.1)
       thor (~> 1.3.1)
-    sorbet-runtime (0.5.12176)
+    sorbet-runtime (0.5.12222)
     sorcery (0.17.0)
       bcrypt (~> 3.1)
       oauth (>= 0.6)
@@ -609,7 +608,7 @@ GEM
     terser (1.2.6)
       execjs (>= 0.3.0, < 3)
     thor (1.3.2)
-    tilt (2.6.0)
+    tilt (2.6.1)
     timeout (0.4.3)
     tpm-key_attestation (0.14.1)
       bindata (~> 2.4)
@@ -860,15 +859,15 @@ CHECKSUMS
   loofah (2.24.1) sha256=655a30842b70ec476410b347ab1cd2a5b92da46a19044357bbd9f401b009a337
   mail (2.8.1) sha256=ec3b9fadcf2b3755c78785cb17bc9a0ca9ee9857108a64b6f5cfc9c0b5bfc9ad
   marcel (1.0.4) sha256=0d5649feb64b8f19f3d3468b96c680bae9746335d02194270287868a661516a4
-  matrix (0.4.2) sha256=71083ccbd67a14a43bfa78d3e4dc0f4b503b9cc18e5b4b1d686dc0f9ef7c4cc0
+  matrix (0.4.3) sha256=a0d5ab7ddcc1973ff690ab361b67f359acbb16958d1dc072b8b956a286564c5b
   mimemagic (0.4.3) sha256=08ac2d41e2d7cd967b00843dea8c189f91939e3f47732204944908f1ab7ecc9f
-  mini_magick (5.2.0) sha256=2757ffbfdb1d38242d1da9ff1505360ab75d59dc02eb7ab79ff6d5acb1243f4a
+  mini_magick (5.3.0) sha256=6f13309c90f9ebe204b4c3f04d0a5a9265c5f734950894e83fa2480d4aa79ba4
   mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
   mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
   minitest (5.25.5) sha256=391b6c6cb43a4802bfb7c93af1ebe2ac66a210293f4a3fb7db36f2fc7dc2c756
   mnemosyne-ruby (2.1.2) sha256=6350d4cb0295689d733d25b9a7760c0ebf2963a4b3b52a4dcb02962316558e13
   msgpack (1.8.0) sha256=e64ce0212000d016809f5048b48eb3a65ffb169db22238fb4b72472fecb2d732
-  multi_json (1.15.0) sha256=1fd04138b6e4a90017e8d1b804c039031399866ff3fbabb7822aea367c78615d
+  multi_json (1.16.0) sha256=111f3120b69989829e7819321e3f626b943c04017cedf912b8fc7125fefa7636
   multi_xml (0.7.2) sha256=307a96dc48613badb7b2fc174fd4e62d7c7b619bc36ea33bfd0c49f64f5787ce
   nested_form (0.3.2) sha256=b1c468d7eac781235861c2f74fc9f675df0c4d915d5724aaf7fd29f7891c0538
   net-http (0.6.0) sha256=9621b20c137898af9d890556848c93603716cab516dc2c89b01a38b894e259fb
@@ -927,13 +926,13 @@ CHECKSUMS
   rb-fsevent (0.11.2) sha256=43900b972e7301d6570f64b850a5aa67833ee7d87b458ee92805d56b7318aefe
   rb-inotify (0.11.1) sha256=a0a700441239b0ff18eb65e3866236cd78613d6b9f78fea1f9ac47a85e47be6e
   rbtree (0.4.6) sha256=14eea4469b24fd2472542e5f3eb105d6344c8ccf36f0b56d55fdcfeb4e0f10fc
-  rdoc (6.14.1) sha256=905efa796cd296ef252af4fb31fe41c073dee894de6aad715821f335c632516b
+  rdoc (6.14.2) sha256=9fdd44df130f856ae70cc9a264dfd659b9b40de369b16581f4ab746e42439226
   regexp_parser (2.10.0) sha256=cb6f0ddde88772cd64bff1dbbf68df66d376043fe2e66a9ef77fcb1b0c548c61
   reline (0.6.1) sha256=1afcc9d7cb1029cdbe780d72f2f09251ce46d3780050f3ec39c3ccc6b60675fb
   rexml (3.4.1) sha256=c74527a9a0a04b4ec31dbe0dc4ed6004b960af943d8db42e539edde3a871abca
   rouge (4.5.2) sha256=034233fb8a69d0ad0e0476943184e04cb971b68e3c2239724e02f428878b68a3
   rspec-collection_matchers (1.2.1) sha256=ff7626d2bbf16ac237fbb46439694c78b7d9c6dc49c4b216df437968133b56a2
-  rspec-core (3.13.4) sha256=f9da156b7b775c82610a7b580624df51a55102f8c8e4a103b98f5d7a9fa23958
+  rspec-core (3.13.5) sha256=ab3f682897c6131c67f9a17cfee5022a597f283aebe654d329a565f9937a4fa3
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
   rspec-github (3.0.0) sha256=46af3cd8cad3e4434c20598752b6e721c5325e73d7e36e256379f0d3a85968af
   rspec-mocks (3.13.5) sha256=e4338a6f285ada9fe56f5893f5457783af8194f5d08884d17a87321d5195ea81
@@ -971,8 +970,8 @@ CHECKSUMS
   slim_lint (0.33.0) sha256=1d05f92915c02febf6bdb5557b73c81e75ca683293d3a51a2ad0e490bb0018de
   snaky_hash (2.0.3) sha256=25a3d299566e8153fb02fa23fd9a9358845950f7a523ddbbe1fa1e0d79a6d456
   solid_cable (3.0.11) sha256=b7cb3de7eb65fada32f4a70e47897c7dd3ee4a8d3ad08a278f2340037e07384c
-  solid_queue (1.1.5) sha256=bae0c9d76310f4953ebc57466f2e8c78703a0fbf4b89d25756c23c88f9b6df9b
-  sorbet-runtime (0.5.12176) sha256=91499b894f7f902f391cad156394f3a638fe0660c2daaaa220b12ca89f8b6aa2
+  solid_queue (1.2.0) sha256=482ac5305cbe91ebf845627caec493fda8545bf22b18205df01afb80999e28de
+  sorbet-runtime (0.5.12222) sha256=d26c4e4645a0ef4eb6cffd6a159c02c6c2b1526968a674b41029bb76e0e3dcac
   sorcery (0.17.0) sha256=cde1853d4fa0bf40f0ee5ea97a3b5bc1b22e431ed6bb256876f5b4d2e415a2c2
   sorted_set (1.0.3) sha256=4f2b8bee6e8c59cbd296228c0f1f81679357177a8b6859dcc2a99e86cce6372f
   sprockets (4.2.2) sha256=761e5a49f1c288704763f73139763564c845a8f856d52fba013458f8af1b59b1
@@ -985,7 +984,7 @@ CHECKSUMS
   terminal-table (4.0.0) sha256=f504793203f8251b2ea7c7068333053f0beeea26093ec9962e62ea79f94301d2
   terser (1.2.6) sha256=6ddf00b93df7015b07e2b9b149e74cd70fa7aa4f0f89a15d9922a6ebd13f37ab
   thor (1.3.2) sha256=eef0293b9e24158ccad7ab383ae83534b7ad4ed99c09f96f1a6b036550abbeda
-  tilt (2.6.0) sha256=263d748466e0d83e510aa1a2e2281eff547937f0ef06be33d3632721e255f76b
+  tilt (2.6.1) sha256=35a99bba2adf7c1e362f5b48f9b581cce4edfba98117e34696dde6d308d84770
   timeout (0.4.3) sha256=9509f079b2b55fe4236d79633bd75e34c1c1e7e3fb4b56cb5fda61f80a0fe30e
   tpm-key_attestation (0.14.1) sha256=7fd4e4653a7afd0a386632ddfb05d10ecfdd47678299c5e69165bc9ae111193f
   tubesock (0.2.9)
