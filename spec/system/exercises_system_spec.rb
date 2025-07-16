@@ -13,7 +13,7 @@ RSpec.describe 'Exercise creation', :js do
     wait_for_ajax
   end
 
-  context 'when an exercise created' do
+  context 'when an exercise is created' do
     let(:teacher) { create(:teacher) }
     let(:submission_deadline) { 3.months.from_now.beginning_of_minute }
     let(:late_submission_deadline) { submission_deadline + 1.week }
