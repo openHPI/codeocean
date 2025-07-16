@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Exercise creation', :js do
   let!(:ruby) { create(:ruby) }
-    let(:teacher) { create(:teacher) }
+  let(:teacher) { create(:teacher) }
 
   before do
     visit(sign_in_path)
