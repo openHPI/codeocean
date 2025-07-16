@@ -75,7 +75,8 @@ RSpec.describe 'Exercise creation', :js do
 
       click_button I18n.t('shared.create', model: Exercise.model_name.human)
 
-      expect(page).to have_text 'Exercise has successfully been created.'
+      expect(page).to have_text \
+        I18n.t('shared.object_created', model: Exercise.model_name.human)
 
       # Exercise is created with expected attributes
       expect(page).to have_text(title)
