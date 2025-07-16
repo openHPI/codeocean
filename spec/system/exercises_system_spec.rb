@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Exercise creation', :js do
   let!(:ruby) { create(:ruby) }
+    let(:teacher) { create(:teacher) }
 
   before do
     visit(sign_in_path)
@@ -14,7 +15,6 @@ RSpec.describe 'Exercise creation', :js do
   end
 
   context 'when an exercise is created' do
-    let(:teacher) { create(:teacher) }
     let(:submission_deadline) { 3.months.from_now.beginning_of_minute }
     let(:late_submission_deadline) { submission_deadline + 1.week }
     let(:title) { 'Ruby challenge' }
@@ -99,8 +99,7 @@ RSpec.describe 'Exercise creation', :js do
   end
 
   context 'when an exercise is updated' do
-    let!(:exercise) { create(:fibonacci) }
-    let(:teacher) { exercise.user }
+    let!(:exercise) { create(:fibonacci, user: teacher) }
     let(:deleted_file_name) { 'reference.rb' }
     let(:updated_file_name) { 'exercise.rb' }
 
