@@ -1,5 +1,5 @@
 .d-grid#output_sidebar_collapsed
-  = render('editor_button', classes: 'btn-outline-contrast btn', data: {'data-bs-toggle': 'tooltip', 'data-bs-placement': 'left'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa-solid fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
+  = render('editor_button', classes: 'btn-outline-contrast btn', data: {'data-bs-toggle': 'tooltip', 'data-bs-placement': 'left', 'data-bs-trigger': 'hover'}, title: t('exercises.editor.expand_output_sidebar'), icon: 'fa-solid fa-square-plus', id: 'toggle-sidebar-output-collapsed', label: '')
 .d-grid.d-none.col-sm-12.enforce-bottom-margin#output_sidebar_uncollapsed data-message-no-output=t('exercises.implement.no_output_yet')
   = render('editor_button', classes: 'btn-outline-contrast btn overflow-hidden mb-2', icon: 'fa-solid fa-square-minus', id: 'toggle-sidebar-output', label: t('exercises.editor.collapse_output_sidebar'))
 
