@@ -1,7 +1,3 @@
-Array.prototype.includes = function(element) {
-  return this.indexOf(element) !== -1;
-};
-
 window.CodeOcean = {
   refresh: function() {
     Turbo.visit(window.location.pathname);
