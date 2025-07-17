@@ -93,5 +93,6 @@ import './turbo-migration';
 import "@rails/actioncable"
 import "./channels"
 
-// Import of Rails sprocket assets with minimal changes.
-import 'sprocket_assets'
+// Import of Rails sprocket assets with minimal changes. After the inital migration this 
+// files should be included in the application after some adjstments to fit modern Rails JS.
+import 'sprocket_asset_import'
