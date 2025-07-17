@@ -88,3 +88,11 @@ window.ace = ace; // Publish ace in global namespace
 // Turbo
 import '@hotwired/turbo-rails';
 import './turbo-migration';
+
+// ActionCable
+import "@rails/actioncable"
+import "./channels"
+
+// Import of Rails sprocket assets with minimal changes. After the inital migration this 
+// files should be included in the application after some adjstments to fit modern Rails JS.
+import 'sprocket_asset_import'

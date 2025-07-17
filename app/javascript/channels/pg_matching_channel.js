@@ -1,3 +1,5 @@
+import consumer from "./consumer";
+
 $(document).on('turbo-migration:load', function () {
 
     if ($.isController('programming_groups') && window.location.pathname.includes('programming_groups/new')) {
@@ -5,7 +7,7 @@ $(document).on('turbo-migration:load', function () {
         const exercise_id = matching_page.data('exercise-id');
         const specific_channel = { channel: "PgMatchingChannel", exercise_id: exercise_id};
 
-        App.pg_matching = App.cable.subscriptions.create(specific_channel, {
+        consumer.subscriptions.create(specific_channel, {
             connected() {
                 // Called when the subscription is ready for use on the server
             },

@@ -13,23 +13,16 @@
 //= require rails-timeago
 //= require locales/jquery.timeago.de.js
 //
-// lib/assets
-//= require flash
-//= require color_mode_picker
-//
 // app/assets
 // --> Include some assets first, as they are used by other assets.
 // --> Hence, the order specified here is important.
 //
-// 1. Some common base functions and monkey patches
-//= require base
-// 2. Programming groups are required by "channels/synchronized_editor_channel.js"
+// 1. Programming groups are required by "channels/synchronized_editor_channel.js"
 //= require programming_groups
-// 3. The turtle library is required by "editor/turtle.js"
+// 2. The turtle library is required by "editor/turtle.js"
 //= require turtle
-// 4. Some channels are required by "editor/editor.js.erb"
-//= require_tree ./channels
-// 5. Require the editor components, as needed by "./editor.js" and "./community_solution.js"
+// 3. Some channels are required by "editor/editor.js.erb"
+// 4. Require the editor components, as needed by "./editor.js" and "./community_solution.js"
 //= require_tree ./editor
 //
 // All remaining assets are loaded in alphabetical order
