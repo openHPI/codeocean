@@ -102,11 +102,13 @@ CodeOceanEditorSubmissions = {
     const submission = await this.createSubmission('#download', null).catch(this.ajaxError.bind(this));
     if(!submission) return;
 
-    $(window).off("beforeunload");
+    $(window).off('beforeunload');
     // to download just a single file, use the following url
     // window.location = Routes.download_file_submission_url(submission.id, CodeOceanEditor.active_file.filename);
     window.location = Routes.download_submission_url(submission.id);
-    $(window).one("beforeunload", this.unloadEverything.bind(this, App.synchronized_editor));
+    setTimeout(() => {
+      $(window).one("beforeunload", this.unloadEverything.bind(this, App.synchronized_editor));
+    }, 250);
   },
 
   resetCode: function(initiator, onlyActiveFile = false) {

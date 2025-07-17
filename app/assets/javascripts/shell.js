@@ -132,9 +132,11 @@ $(document).on('turbo-migration:load', function () {
                 } else {
                     $(window).off('beforeunload');
                     window.location = downloadPath;
-                    $(window).one('beforeunload', function () {
-                        CodeOceanEditor.removeFileTreeEventHandlers(fileTree);
-                    })
+                    setTimeout(() => {
+                        $(window).one('beforeunload', function () {
+                            CodeOceanEditor.removeFileTreeEventHandlers(fileTree);
+                        })
+                    }, 250);
                 }
             }.bind(this));
             CodeOceanEditor.installFileTreeEventHandlers(fileTree);

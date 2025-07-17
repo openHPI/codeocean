@@ -856,9 +856,11 @@ var CodeOceanEditor = {
             selected.instance.deselect_all();
             const downloadPath = selected.node.original.download_path;
             if (downloadPath) {
-                $(window).off("beforeunload");
+                $(window).off('beforeunload');
                 window.location = downloadPath;
-                $(window).one("beforeunload", this.unloadEverything.bind(this, App.synchronized_editor));
+                setTimeout(() => {
+                    $(window).one('beforeunload', this.unloadEverything.bind(this, App.synchronized_editor));
+                }, 250);
             }
         }.bind(this));
         $('#download-files').removeClass('d-none');
