@@ -37,7 +37,7 @@ $(document).on('turbo-migration:load', function () {
 
         function unloadTeacherEditor() {
             $(document).off('theme:change:ace');
-            const value = editor.getValue();
+            const value = editor.getValue().replace(/\r\n/g, '\n');
             editor.destroy();
             // "Restore" the editor's content to the original element for caching.
             textarea.val = value;

@@ -1152,7 +1152,7 @@ var CodeOceanEditor = {
         // Persist the content of the editors in a hidden textarea to enable Turbo caching.
         // In this case, we iterate over _all_ editors, not just writable ones.
         for (const [file_id, editor] of this.editor_for_file) {
-            const file_content = editor.getValue();
+            const file_content = editor.getValue().replace(/\r\n/g, '\n');
             const editorContent = $(`.editor-content[data-file-id='${file_id}']`);
             editorContent.text(file_content);
         }

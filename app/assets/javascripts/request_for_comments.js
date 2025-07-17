@@ -399,7 +399,7 @@ $(document).on('turbo-migration:load', function () {
         $(document).off('theme:change:ace');
         $('.editor').each(function (_, editor) {
             const aceEditor = ace.edit(editor);
-            const value = aceEditor.getValue();
+            const value = aceEditor.getValue().replace(/\r\n/g, '\n');
             aceEditor.destroy();
             // "Restore" the editor's content to the original element for caching.
             editor.textContent = value;
