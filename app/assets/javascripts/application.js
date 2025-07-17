@@ -13,10 +13,6 @@
 //= require rails-timeago
 //= require locales/jquery.timeago.de.js
 //
-// lib/assets
-//= require flash
-//= require color_mode_picker
-//
 // app/assets
 // --> Include some assets first, as they are used by other assets.
 // --> Hence, the order specified here is important.
