@@ -1,3 +1,7 @@
+import consumer from "./consumer"
+import ProgrammingGroups from '../sprocket_asset_import/programming_groups';
+import CodeOceanEditor from '../sprocket_asset_import/editor/evaluation';
+
 $(document).on('turbo-migration:load', function () {
 
   if (window.location.pathname.includes('/implement')) {
@@ -6,7 +10,7 @@ $(document).on('turbo-migration:load', function () {
 
     if ($.isController('exercises') && ProgrammingGroups.is_other_user(current_contributor)) {
 
-      App.synchronized_editor = App.cable.subscriptions.create({
+      consumer.subscriptions.create({
         channel: "SynchronizedEditorChannel", exercise_id: exercise_id
       }, {
         connected() {
@@ -70,7 +74,7 @@ $(document).on('turbo-migration:load', function () {
         },
 
         is_connected() {
-          return App.cable.subscriptions.findAll(App.synchronized_editor.identifier).length > 0
+          return consumer.subscriptions.findAll(App.synchronized_editor.identifier).length > 0
         },
 
         disconnect() {

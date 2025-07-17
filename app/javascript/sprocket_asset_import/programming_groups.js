@@ -48,3 +48,5 @@ $(document).on('turbo-migration:load', function (event) {
         });
     }
 });
+
+export default ProgrammingGroups;

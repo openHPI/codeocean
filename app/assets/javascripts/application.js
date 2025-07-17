@@ -13,20 +13,6 @@
 //= require rails-timeago
 //= require locales/jquery.timeago.de.js
 //
-// app/assets
-// --> Include some assets first, as they are used by other assets.
-// --> Hence, the order specified here is important.
-//
-// 1. Some common base functions and monkey patches
-//= require base
-// 2. Programming groups are required by "channels/synchronized_editor_channel.js"
-//= require programming_groups
-// 3. Some channels are required by "editor/editor.js.erb"
-//= require_tree ./channels
-//
-// All remaining assets are loaded in alphabetical order
-//= require_tree .
-//
 // Finally, we dispatch a custom event to signal that all assets are loaded.
 // This is used by our custom migration for Turbo to trigger the `turbo-migration:load` event
 const sprocketsLoad = new Event('sprockets:load');

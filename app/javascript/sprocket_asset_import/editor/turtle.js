@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 import Turtle from '../turtle';
 
+=======
+>>>>>>> 787f0509 (refactor: Move Sprocket JS files to Webpack)
 window.CodeOceanEditorTurtle = {
   turtlecanvas: null,
   turtlescreen: null,
