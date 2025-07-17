@@ -26,7 +26,7 @@ RSpec.describe CommentPolicy do
       expect(described_class).not_to permit(build_stubbed(:learner), comment)
     end
 
-    it 'does not grant access to teachers not in the same study group' do
+    it 'grants no access to teachers not in the same study group' do
       expect(described_class).not_to permit(build_stubbed(:teacher), comment)
     end
 
