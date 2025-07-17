@@ -428,17 +428,20 @@ var CodeOceanEditor = {
         const jsTree = filesInstance?.jstree(true);
         $(document).on('theme:change', themeListener);
         $(document).one('turbo:visit', function() {
-            $(document).off('theme:change', themeListener);
-            if (jsTree && jsTree.element) {
-                jsTree.destroy(true);
-            }
+            CodeOceanEditor.removeFileTreeEventHandlers(filesInstance);
         });
         $(window).one('beforeunload', function() {
-            $(document).off('theme:change', themeListener);
-            if (jsTree && jsTree.element) {
-                jsTree.destroy(true);
-            }
+            CodeOceanEditor.removeFileTreeEventHandlers(filesInstance);
         });
+    },
+
+    removeFileTreeEventHandlers: function (filesInstance) {
+        const themeListener = this.createFileTreeThemeChangeListener(filesInstance);
+        const jsTree = filesInstance?.jstree(true);
+        $(document).off('theme:change', themeListener);
+        if (jsTree && jsTree.element) {
+            jsTree.destroy(true);
+        }
     },
 
     createFileTreeThemeChangeListener: function (filesInstance) {
@@ -853,7 +856,9 @@ var CodeOceanEditor = {
             selected.instance.deselect_all();
             const downloadPath = selected.node.original.download_path;
             if (downloadPath) {
+                $(window).off("beforeunload");
                 window.location = downloadPath;
+                $(window).one("beforeunload", this.unloadEverything.bind(this, App.synchronized_editor));
             }
         }.bind(this));
         $('#download-files').removeClass('d-none');

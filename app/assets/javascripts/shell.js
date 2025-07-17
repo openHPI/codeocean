@@ -130,7 +130,11 @@ $(document).on('turbo-migration:load', function () {
                         text: I18n.t('execution_environments.shell.file_tree.permission_denied')
                     });
                 } else {
+                    $(window).off('beforeunload');
                     window.location = downloadPath;
+                    $(window).one('beforeunload', function () {
+                        CodeOceanEditor.removeFileTreeEventHandlers(fileTree);
+                    })
                 }
             }.bind(this));
             CodeOceanEditor.installFileTreeEventHandlers(fileTree);
