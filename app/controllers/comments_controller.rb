@@ -65,7 +65,7 @@ class CommentsController < ApplicationController
   def report
     authorize!
 
-    ReportMailer.with(reported_content: @comment).report_content.deliver_later
+    UserContentReportMailer.with(reported_content: @comment).report_content.deliver_later
 
     head :no_content
   end

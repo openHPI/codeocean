@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SpamReport do
+RSpec.describe UserContentReport do
   describe '#related_request_for_comment' do
     it 'returns the RfC when the RfC itself is reported' do
       rfc = build_stubbed(:rfc)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SpamReport
+class UserContentReport
   def initialize(reported_content:)
     unless [Comment, RequestForComment].include?(reported_content.class)
       raise("#{reported_content.model_name} is not configured for spam reports.")

@@ -1,6 +1,6 @@
 ---
 en:
-  report_mailer:
+  user_content_report_mailer:
     report_content:
       authentication: Course URL for LTI authentication.
       prolog: 'The following content has been reported as inappropriate:'

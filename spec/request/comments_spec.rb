@@ -13,7 +13,7 @@ RSpec.describe 'POST /comments/:comment_id/report', type: :request do
 
   it 'sends an email to let admins know about the report' do
     expect { post(report_comment_path(comment)) }
-      .to have_enqueued_mail(ReportMailer, :report_content)
+      .to have_enqueued_mail(UserContentReportMailer, :report_content)
       .with(params: {reported_content: comment}, args: [])
   end
 end

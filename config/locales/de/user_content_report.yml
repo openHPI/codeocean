@@ -1,6 +1,6 @@
 ---
 de:
-  report_mailer:
+  user_content_report_mailer:
     report_content:
       authentication: Kurs-URL für die LTI-Authentifizierung.
       prolog: 'Die folgenden Inhalte wurden als unangemessen gemeldet:'

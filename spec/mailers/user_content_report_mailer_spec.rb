@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ReportMailer do
+RSpec.describe UserContentReportMailer do
   describe '#report_content' do
     subject(:mail) { described_class.with(reported_content:).report_content }
 
@@ -12,12 +12,12 @@ RSpec.describe ReportMailer do
     let(:course_url) { 'https://example.com/course/1' }
 
     before do
-      stamp_report = instance_double(SpamReport,
+      user_content_report = instance_double(UserContentReport,
         human_model_name:,
         reported_message:,
         related_request_for_comment: instance_double(RequestForComment),
         course_url:)
-      allow(SpamReport).to receive(:new).with(reported_content:).and_return(stamp_report)
+      allow(UserContentReport).to receive(:new).with(reported_content:).and_return(user_content_report)
     end
 
     it 'sets the correct sender' do
@@ -30,7 +30,7 @@ RSpec.describe ReportMailer do
     end
 
     it 'sets the correct subject' do
-      expect(mail.subject).to eq(I18n.t('report_mailer.report_content.subject', human_model_name:))
+      expect(mail.subject).to eq(I18n.t('user_content_report_mailer.report_content.subject', human_model_name:))
     end
 
     it 'includes the LTI retrun URL for course authentication' do
