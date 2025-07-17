@@ -58,7 +58,7 @@ RSpec.describe CommentPolicy do
         end
       end
 
-      it 'dose not grants access to the author' do
+      it 'does not grants access to the author' do
         expect(described_class).not_to permit(comment.user, comment)
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe CommentPolicy do
     context 'when content moderation is disabled' do
       let(:reports_enabled) { false }
 
-      it 'grants no access to all user types' do
+      it 'does not grant access to all user types' do
         user_types.each do |user_type|
           expect(described_class).not_to permit(build_stubbed(user_type), comment)
         end
