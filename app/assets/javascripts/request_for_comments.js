@@ -112,12 +112,10 @@ $(document).on('turbo-migration:load', function () {
           </div> \
           <div class="comment-content">' + commentText + '</div> \
           <textarea class="comment-editor">' + commentText + '</textarea> \
-          <div class="comment-actions' + (comment.editable ? '' : ' d-none') + '"> \
-            <button class="action-edit btn btn-sm btn-warning">' + I18n.t('shared.edit') + '</button> \
-            <button class="action-delete btn btn-sm btn-danger">' + I18n.t('shared.destroy') + '</button> \
-          </div> \
-          <div class="text-warning' + (comment.reportable ? '' : ' d-none') + '"> \
-            <button class="action-report btn btn-light btn-sm">' + I18n.t('shared.report') + '</button> \
+          <div class="comment-actions' + (comment.editable || comment.reportable ? '' : ' d-none') + '"> \
+            <button class="action-edit btn btn-sm btn-warning' + (comment.editable ? '' : ' d-none') + '">' + I18n.t('shared.edit') + '</button> \
+            <button class="action-delete btn btn-sm btn-danger' + (comment.editable ? '' : ' d-none') + '">' + I18n.t('shared.destroy') + '</button> \
+            <button class="action-report btn btn-light btn-sm' + (comment.reportable ? '' : ' d-none') + '">' + I18n.t('shared.report') + '</button> \
           </div> \
         </div>';
         });
