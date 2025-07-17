@@ -30,7 +30,7 @@ RSpec.describe CommentPolicy do
       expect(described_class).not_to permit(build_stubbed(:teacher), comment)
     end
 
-    it 'grants access to teachers in study group' do
+    it 'grants access to teachers in the same study group' do
       comment = create(:comment)
       teacher = create(:teacher, study_groups: [comment.submission.study_group])
 
