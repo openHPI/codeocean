@@ -41,4 +41,36 @@ RSpec.describe CommentPolicy do
       expect(described_class).to permit(build_stubbed(:admin), comment)
     end
   end
+
+  permissions :report? do
+    let(:comment) { build_stubbed(:comment) }
+
+    before do
+      stub_const('CommentPolicy::REPORT_RECEIVER_CONFIGURED', reports_enabled)
+    end
+
+    context 'when content moderation is enabled' do
+      let(:reports_enabled) { true }
+
+      it 'grants access to all user types' do
+        user_types.each do |user_type|
+          expect(described_class).to permit(build_stubbed(user_type), comment)
+        end
+      end
+
+      it 'does not grants access to the author' do
+        expect(described_class).not_to permit(comment.user, comment)
+      end
+    end
+
+    context 'when content moderation is disabled' do
+      let(:reports_enabled) { false }
+
+      it 'does not grant access to all user types' do
+        user_types.each do |user_type|
+          expect(described_class).not_to permit(build_stubbed(user_type), comment)
+        end
+      end
+    end
+  end
 end
