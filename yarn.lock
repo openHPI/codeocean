@@ -2650,7 +2650,7 @@ __metadata:
     underscore: "npm:^1.13.7"
     uuid: "npm:^11.1.0"
     vis-data: "npm:^8.0.1"
-    vis-timeline: "npm:^8.1.0"
+    vis-timeline: "npm:^8.1.1"
     vis-util: "npm:^6.0.0"
     webpack: "npm:^5.100.2"
     webpack-assets-manifest: "npm:^6.2.1"
@@ -6943,9 +6943,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vis-timeline@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "vis-timeline@npm:8.1.0"
+"vis-timeline@npm:^8.1.1":
+  version: 8.1.1
+  resolution: "vis-timeline@npm:8.1.1"
   peerDependencies:
     "@egjs/hammerjs": ^2.0.0
     component-emitter: ^1.3.0
@@ -6956,7 +6956,7 @@ __metadata:
     vis-data: ">=8.0.0"
     vis-util: ">=6.0.0"
     xss: ^1.0.0
-  checksum: 10c0/0d0e4d56951c37c1979594e1d21bbeab294d7194aa6a1b76603883924825d4ae82885a515edbff01c14ed9e92a22a479482aa59abbe255d8b38f0487e6b83eb5
+  checksum: 10c0/80e2f896ca0beffe39dab064152224811b053fe02c6f8461121a4cd48bdc46c14626087592fabe26a619df1e57ffc630bb6875b9b8d492b506afc19cf124ab0b
   languageName: node
   linkType: hard
 

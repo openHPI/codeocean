@@ -49,7 +49,7 @@
     "underscore": "^1.13.7",
     "uuid": "^11.1.0",
     "vis-data": "^8.0.1",
-    "vis-timeline": "^8.1.0",
+    "vis-timeline": "^8.1.1",
     "vis-util": "^6.0.0",
     "webpack": "^5.100.2",
     "webpack-assets-manifest": "^6.2.1",
