@@ -75,6 +75,20 @@ FactoryBot.define do
     end
   end
 
+  factory :turtle, class: 'Exercise' do
+    created_by_teacher
+    description { 'Interactive Turtle test exercise.' }
+    execution_environment { association :python, user: }
+    instructions
+    title { 'Interactive Turtle' }
+
+    after(:create) do |exercise|
+      create_seed_file(exercise, 'turtle/main.py', role: 'main_file')
+      create_seed_file(exercise, 'turtle/test_style.py', feedback_message: 'Your solution is not correctly formated.', hidden: true, role: 'teacher_defined_linter')
+      create_seed_file(exercise, 'turtle/default.pylintrc', hidden: true, role: 'regular_file')
+    end
+  end
+
   factory :fibonacci, class: 'Exercise' do
     created_by_teacher
     description { 'Implement a recursive function that calculates a requested Fibonacci number.' }
