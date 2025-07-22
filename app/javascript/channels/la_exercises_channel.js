@@ -1,3 +1,5 @@
+import consumer from "./consumer"
+
 $(document).on('turbo-migration:load', function() {
     if ($.isController('exercises') && $('.teacher_dashboard').isPresent()) {
 
@@ -18,7 +20,7 @@ $(document).on('turbo-migration:load', function() {
         const specific_channel = { channel: "LaExercisesChannel", exercise_id: exercise_id, study_group_id: study_group_id };
 
 
-        App.la_exercise = App.cable.subscriptions.create(specific_channel, {
+        consumer.subscriptions.create(specific_channel, {
             connected: function () {
                 // Called when the subscription is ready for use on the server
             },

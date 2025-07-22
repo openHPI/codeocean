@@ -111,7 +111,7 @@ window.CodeOceanEditorFlowr = {
   }
 };
 
-CodeOceanEditorRequestForComments = {
+window.CodeOceanEditorRequestForComments = {
   requestComments: function () {
     const cause = $('#requestComments');
     this.newSentryTransaction(cause, async () => {
@@ -172,7 +172,7 @@ CodeOceanEditorRequestForComments = {
   }
 };
 
-CodeOceanEditorTips = {
+window.CodeOceanEditorTips = {
     initializeEventHandlers: function() {
         const card_headers = $('#tips .card-collapse');
         for (let tip of card_headers) {
