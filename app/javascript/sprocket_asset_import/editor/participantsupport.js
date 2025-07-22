@@ -1,4 +1,4 @@
-CodeOceanEditorFlowr = {
+export const CodeOceanEditorFlowr = {
   flowrResultHtml:
     '<div class="card mb-2">' +
       '<div id="{{headingId}}" role="tab" class="card-header">' +
@@ -111,7 +111,7 @@ CodeOceanEditorFlowr = {
   }
 };
 
-CodeOceanEditorRequestForComments = {
+export const CodeOceanEditorRequestForComments = {
   requestComments: function () {
     const cause = $('#requestComments');
     this.newSentryTransaction(cause, async () => {
@@ -172,7 +172,7 @@ CodeOceanEditorRequestForComments = {
   }
 };
 
-CodeOceanEditorTips = {
+export const CodeOceanEditorTips = {
     initializeEventHandlers: function() {
         const card_headers = $('#tips .card-collapse');
         for (let tip of card_headers) {

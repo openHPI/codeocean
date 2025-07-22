@@ -1,4 +1,4 @@
-CodeOceanEditorAJAX = {
+export default {
   ajax: function(options) {
     return $.ajax(_.extend({
       dataType: 'json',

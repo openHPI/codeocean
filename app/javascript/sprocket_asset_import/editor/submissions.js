@@ -1,4 +1,4 @@
-CodeOceanEditorSubmissions = {
+export default {
   AUTOSAVE_INTERVAL: 15 * 1000,
   autosaveTimer: null,
   autosaveLabel: "#statusbar #autosave",

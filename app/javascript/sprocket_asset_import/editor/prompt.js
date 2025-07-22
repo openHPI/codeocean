@@ -1,4 +1,4 @@
-CodeOceanEditorPrompt = {
+export default {
     prompt: '#prompt',
 
     showPrompt: function(msg) {

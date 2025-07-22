@@ -1,4 +1,6 @@
-CodeOceanEditorTurtle = {
+import Turtle from '../turtle';
+
+export default {
   turtlecanvas: null,
   turtlescreen: null,
   resetTurtle: true,
