@@ -1,4 +1,4 @@
-CodeOceanEditorWebsocket = {
+window.CodeOceanEditorWebsocket = {
   websocket: null,
   // Replace `http` with `ws` for the WebSocket connection. This also works with `https` and `wss`.
   webSocketProtocol: window.location.protocol.replace(/^http/, 'ws').split(':')[0],

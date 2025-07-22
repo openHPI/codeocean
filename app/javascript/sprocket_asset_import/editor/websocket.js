@@ -1,4 +1,4 @@
-CommandSocket = function(url, onOpen) {
+window.CommandSocket = function(url, onOpen) {
   this.handlers = {};
   this.websocket = new WebSocket(url);
   this.websocket.onopen = onOpen;

@@ -1,4 +1,4 @@
-CodeOceanEditorFlowr = {
+window.CodeOceanEditorFlowr = {
   flowrResultHtml:
     '<div class="card mb-2">' +
       '<div id="{{headingId}}" role="tab" class="card-header">' +

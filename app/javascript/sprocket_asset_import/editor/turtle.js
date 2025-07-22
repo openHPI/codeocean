@@ -1,4 +1,6 @@
-CodeOceanEditorTurtle = {
+import Turtle from '../turtle';
+
+window.CodeOceanEditorTurtle = {
   turtlecanvas: null,
   turtlescreen: null,
   resetTurtle: true,

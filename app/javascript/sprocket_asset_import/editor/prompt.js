@@ -1,4 +1,4 @@
-CodeOceanEditorPrompt = {
+window.CodeOceanEditorPrompt = {
     prompt: '#prompt',
 
     showPrompt: function(msg) {

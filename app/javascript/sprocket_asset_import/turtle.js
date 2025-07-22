@@ -217,3 +217,5 @@ Turtle.prototype.css = function (key, value) {
         this.canvas.css(key, value);
     }
 };
+
+export default Turtle;

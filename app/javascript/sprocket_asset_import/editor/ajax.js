@@ -1,4 +1,4 @@
-CodeOceanEditorAJAX = {
+window.CodeOceanEditorAJAX = {
   ajax: function(options) {
     return $.ajax(_.extend({
       dataType: 'json',
