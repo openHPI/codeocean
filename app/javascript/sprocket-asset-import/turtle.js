@@ -4,7 +4,7 @@
 var height;
 var width;
 
-function Turtle(canvas) {
+export default function Turtle(canvas) {
     var dx, dy, xpos, ypos;
     this.canvas = canvas; // jQuery object
 

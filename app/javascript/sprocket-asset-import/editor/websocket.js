@@ -1,4 +1,4 @@
-CommandSocket = function(url, onOpen) {
+const CommandSocket = function(url, onOpen) {
   this.handlers = {};
   this.websocket = new WebSocket(url);
   this.websocket.onopen = onOpen;
@@ -120,3 +120,5 @@ CommandSocket.prototype.killWebSocket = function() {
   this.websocket.flush();
   this.websocket.close(1000);
 };
+
+export default CommandSocket;

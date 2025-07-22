@@ -1,4 +1,6 @@
-var CodeOceanEditor = {
+import { CodeOceanEditorTips }  from './participantsupport';
+
+const CodeOceanEditor = {
     THEME: window.getCurrentTheme() === 'dark' ? 'ace/theme/tomorrow_night' : 'ace/theme/tomorrow',
 
     //Color-Encoding for Percentages in Progress Bars (For submissions)
@@ -28,8 +30,8 @@ var CodeOceanEditor = {
     lastCopyText: null,
 
     sendEvents: null,
-    eventURL: Routes.events_path(),
-    fileTypeURL: Routes.file_types_path(),
+    eventURL: Routes.events_path,
+    fileTypeURL: Routes.file_types_path,
 
     confirmDestroy: function (event) {
         event.preventDefault();
@@ -389,7 +391,7 @@ var CodeOceanEditor = {
     updateEditorModeToFileTypeID: function (editor, fileTypeID) {
         var newMode = 'ace/mode/text'
 
-        $.ajax(this.fileTypeURL + '/' + fileTypeID, {
+        $.ajax(this.fileTypeURL() + '/' + fileTypeID, {
             dataType: 'json'
         }).done(function (data) {
             if (data['editor_mode'] !== null) {
@@ -668,7 +670,7 @@ var CodeOceanEditor = {
 
     publishCodeOceanEvent: function (payload) {
         if (this.sendEvents) {
-            $.ajax(this.eventURL, {
+            $.ajax(this.eventURL(), {
                 type: 'POST',
                 cache: false,
                 dataType: 'JSON',
@@ -1170,3 +1172,5 @@ var CodeOceanEditor = {
         CodeOceanEditor.editors = [];
     }
 };
+
+export default CodeOceanEditor;
