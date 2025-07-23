@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CommentPolicy < ApplicationPolicy
+  REPORT_RECEIVER_CONFIGURED = CodeOcean::Config.new(:code_ocean).read.dig(:content_moderation, :report_emails).present?
+
   def create?
     everyone
   end
@@ -15,5 +17,9 @@ class CommentPolicy < ApplicationPolicy
 
   def index?
     everyone
+  end
+
+  def report?
+    REPORT_RECEIVER_CONFIGURED && everyone && !author?
   end
 end

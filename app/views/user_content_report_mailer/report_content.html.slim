@@ -1,0 +1,6 @@
+h3 = t('.prolog')
+blockquote style="white-space: pre-wrap;" = @user_content_report.reported_message
+p = t('.take_action')
+p = link_to(request_for_comment_url(@user_content_report.related_request_for_comment), request_for_comment_url(@user_content_report.related_request_for_comment))
+- if @user_content_report.course_url.present?
+  p = link_to(t('.authentication'), @user_content_report.course_url)
