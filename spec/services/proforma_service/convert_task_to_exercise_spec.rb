@@ -146,7 +146,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
       before { create(:python) }
 
       it 'sets the execution_environment based on proglang name and value' do
-        expect(convert_to_exercise_service).to have_attributes(execution_environment: have_attributes(name: 'Python 3.4'))
+        expect(convert_to_exercise_service).to have_attributes(execution_environment: have_attributes(name: 'Python 3.8'))
       end
     end
 

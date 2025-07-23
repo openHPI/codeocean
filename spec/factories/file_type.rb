@@ -124,6 +124,16 @@ FactoryBot.define do
     singleton_file_type
   end
 
+  factory :dot_pylintrc, class: 'FileType' do
+    created_by_admin
+    editor_mode { 'ace/mode/plain_text' }
+    executable
+    file_extension { '.pylintrc' }
+    indent_size { 4 }
+    name { 'Python' }
+    singleton_file_type
+  end
+
   factory :dot_rb, class: 'FileType' do
     created_by_admin
     editor_mode { 'ace/mode/ruby' }
