@@ -20,7 +20,7 @@ $.fn.scrollTo = function(selector) {
   }, ANIMATION_DURATION);
 };
 
-$(document).on('turbo-migration:load', function() {
+$(document).on('turbo-migration:load', function(event) {
     // Update all CSRF tokens on the page to reduce InvalidAuthenticityToken errors
     // See https://github.com/rails/jquery-ujs/issues/456 for details
     $.rails.refreshCSRFTokens();
@@ -63,7 +63,9 @@ $(document).on('turbo-migration:load', function() {
     }
 
     // Enable sorttable again, as it is disabled otherwise by Turbo
-    if (sorttable) {
+    // We use the event details to determine whether an ordinary page load occurred or a Turbo visit
+    // In some events (i.e., for a failed form submission), `event.detail.timing` is not set (despite a Turbo "visit").
+    if (sorttable && (event.detail?.timing ? Object.keys(event.detail.timing).length > 0 : true)) {
         sorttable.init.done = false;
         sorttable.init();
     }
