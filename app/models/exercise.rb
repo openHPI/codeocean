@@ -117,21 +117,33 @@ class Exercise < ApplicationRecord
 
   def study_group_working_time_query(exercise_id, study_group_id, additional_filter)
     "
-    WITH working_time_between_submissions AS (
-      SELECT submissions.contributor_id,
-         submissions.contributor_type,
-         score,
-         created_at,
-         (created_at - lag(created_at) over (PARTITION BY submissions.contributor_type, submissions.contributor_id, exercise_id
-           ORDER BY created_at)) AS working_time
+    WITH exercises_with_maximum_score AS (
+      SELECT exercises.id,
+             COALESCE(SUM(files.weight) FILTER (WHERE files.role IN ('teacher_defined_test', 'teacher_defined_linter')), 0) AS exercise_maximum_score
+      FROM exercises
+      LEFT JOIN files
+        ON files.context_id = exercises.id AND files.context_type = 'Exercise'
+      GROUP BY exercises.id
+    ),
+    working_time_between_submissions AS (
+      SELECT contributor_id,
+             contributor_type,
+             exercise_id,
+             score,
+             created_at,
+             -- the `working_time` specifies the time taken between the current submission and the NEXT one.
+             (lag(created_at) OVER (PARTITION BY contributor_type, contributor_id, exercise_id
+                 ORDER BY created_at DESC) - created_at) AS working_time
       FROM submissions
-      WHERE #{self.class.sanitize_sql(['exercise_id = ? and study_group_id = ?', exercise_id, study_group_id])} #{self.class.sanitize_sql(additional_filter)}),
+      WHERE #{self.class.sanitize_sql(['exercise_id = ? and study_group_id = ?', exercise_id, study_group_id])} #{self.class.sanitize_sql(additional_filter)}
+    ),
     working_time_with_deltas_ignored AS (
       SELECT contributor_id,
              contributor_type,
+             exercise_id,
              score,
              sum(CASE WHEN score IS NOT NULL THEN 1 ELSE 0 END)
-                 over (ORDER BY contributor_type, contributor_id, created_at ASC)                 AS change_in_score,
+                 OVER (ORDER BY contributor_type, contributor_id, exercise_id, created_at ASC) AS potential_change_in_score,
              created_at,
              CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_filtered
       FROM working_time_between_submissions
@@ -139,87 +151,147 @@ class Exercise < ApplicationRecord
     working_times_with_score_expanded AS (
       SELECT contributor_id,
              contributor_type,
-             created_at,
-             working_time_filtered,
-             first_value(score)
-                         over (PARTITION BY contributor_type, contributor_id, change_in_score ORDER BY created_at ASC) AS corrected_score
-      FROM working_time_with_deltas_ignored
-    ),
-    working_times_with_duplicated_last_row_per_score AS (
-      SELECT *
-      FROM working_times_with_score_expanded
-      UNION ALL
-      -- Duplicate last row per user and score and make it unique by setting another created_at timestamp.
-      -- In addition, the working time is set to zero in order to prevent getting a wrong time.
-      -- This duplication is needed, as we will shift the scores and working times by one and need to ensure not to loose any information.
-      SELECT DISTINCT ON (contributor_type, contributor_id, corrected_score) contributor_id,
-                                                               contributor_type,
-                                                               created_at + INTERVAL '1us',
-                                                               '00:00:00' as working_time_filtered,
-                                                               corrected_score
-      FROM working_times_with_score_expanded
-    ),
-    working_times_with_score_not_null_and_shifted AS (
-      SELECT contributor_id,
-             contributor_type,
-             coalesce(lag(corrected_score) over (PARTITION BY contributor_type, contributor_id ORDER BY created_at ASC),
-                      0) AS shifted_score,
+             exercise_id,
+             coalesce(first_value(score)
+                 OVER (PARTITION BY contributor_type, contributor_id, exercise_id, potential_change_in_score
+                 ORDER BY created_at ASC), 0) AS corrected_score,
+             exercise_maximum_score,
              created_at,
              working_time_filtered
-      FROM working_times_with_duplicated_last_row_per_score
+      FROM working_time_with_deltas_ignored
+      JOIN exercises_with_maximum_score
+        ON exercises_with_maximum_score.id = working_time_with_deltas_ignored.exercise_id
     ),
-    working_times_to_be_sorted AS (
+    earliest_max_score AS (
+      SELECT contributor_id, contributor_type, exercise_id,
+             -- earliest_high_score_time is NULL if maximum score not reached.
+             MIN(MIN(created_at) FILTER (WHERE corrected_score = exercise_maximum_score))
+                 OVER (PARTITION BY contributor_id, contributor_type, exercise_id) AS earliest_max_score_time
+      FROM working_times_with_score_expanded
+      GROUP BY contributor_id, contributor_type, exercise_id
+    ),
+    working_times_until_high_score AS (
+      SELECT working_times_with_score_expanded.contributor_id,
+             working_times_with_score_expanded.contributor_type,
+             working_times_with_score_expanded.exercise_id,
+             coalesce(corrected_score != lag(corrected_score) OVER
+                 (PARTITION BY working_times_with_score_expanded.contributor_id, working_times_with_score_expanded.contributor_type, working_times_with_score_expanded.exercise_id
+                 ORDER BY created_at ASC), false) AS score_changed,
+             corrected_score AS score,
+             exercise_maximum_score,
+             CASE WHEN corrected_score = exercise_maximum_score THEN true ELSE false END AS is_maximum_score,
+             created_at,
+             working_time_filtered
+      FROM working_times_with_score_expanded
+      JOIN earliest_max_score
+        ON working_times_with_score_expanded.contributor_id = earliest_max_score.contributor_id AND
+           working_times_with_score_expanded.contributor_type = earliest_max_score.contributor_type AND
+           working_times_with_score_expanded.exercise_id = earliest_max_score.exercise_id
+      WHERE earliest_max_score_time IS NULL OR created_at <= earliest_max_score_time
+    ),
+    working_times_with_change AS (
       SELECT contributor_id,
              contributor_type,
-             shifted_score                                                          AS score,
-             MIN(created_at)                                                        AS start_time,
-             SUM(working_time_filtered)                                             AS working_time_per_score,
-             SUM(SUM(working_time_filtered)) over (PARTITION BY contributor_type, contributor_id) AS total_working_time
-      FROM working_times_with_score_not_null_and_shifted
-      GROUP BY contributor_id, contributor_type, score
-    ),
-    working_times_with_index AS (
-      SELECT (dense_rank() over (ORDER BY total_working_time, contributor_type, contributor_id ASC) - 1) AS index,
-             contributor_id,
-             contributor_type,
+             exercise_id,
              score,
-             start_time,
-             working_time_per_score,
+             SUM(score_changed::int) OVER (ORDER BY contributor_id, contributor_type, exercise_id, created_at) AS change_in_score,
+             exercise_maximum_score,
+             is_maximum_score,
+             created_at,
+             working_time_filtered
+      FROM working_times_until_high_score
+    ),
+    total_working_times AS (
+      SELECT contributor_id,
+             contributor_type,
+             exercise_id,
+             score,
+             exercise_maximum_score,
+             is_maximum_score,
+             -- the highest score reached the latest is the final score.
+             -- If the highest score is the maximum score, only one occurrence is expected (which is the final score).
+             lead(false, 1, true)
+                 OVER (PARTITION BY exercise_id, contributor_type, contributor_id ORDER BY score ASC, MIN(created_at) ASC) AS is_final_score,
+             MIN(created_at) AS start_time,
+             COALESCE(SUM(working_time_filtered)
+                 FILTER (WHERE NOT is_maximum_score), '00:00:00') AS working_time_per_score,
+             COALESCE(SUM(SUM(working_time_filtered))
+                 FILTER (WHERE NOT is_maximum_score)
+                 OVER (PARTITION BY contributor_id, contributor_type, exercise_id),'00:00:00') AS total_working_time
+      FROM working_times_with_change
+      GROUP BY contributor_id, contributor_type, exercise_id, score, change_in_score, exercise_maximum_score, is_maximum_score
+    ),
+    grouped_scores AS (
+      SELECT contributor_id,
+             contributor_type,
+             exercise_id,
+             score,
+             exercise_maximum_score,
+             is_maximum_score,
+             BOOL_OR(is_final_score) AS is_final_score,
+             MIN(start_time) AS start_time,
+             SUM(working_time_per_score) AS working_time_per_score,
              total_working_time
-      FROM working_times_to_be_sorted)
+      FROM total_working_times
+      GROUP BY contributor_id, contributor_type, exercise_id, score, exercise_maximum_score, is_maximum_score, total_working_time
+      ORDER BY exercise_id, contributor_id, contributor_type, score ASC
+    ),
+    total_working_times_with_index AS (
+      SELECT (dense_rank() OVER (PARTITION BY exercise_id ORDER BY total_working_time, contributor_type, contributor_id ASC) - 1) AS index,
+             *
+      FROM grouped_scores
+    )
     SELECT index,
-       contributor_id,
-       contributor_type,
-       name,
-       score,
-       start_time,
-       working_time_per_score,
-       total_working_time
-    FROM working_times_with_index
-       JOIN external_users ON contributor_type = 'ExternalUser' AND contributor_id = external_users.id
+           contributor_id,
+           contributor_type,
+           name,
+           exercise_id,
+           exercise_maximum_score,
+           score,
+           is_maximum_score,
+           is_final_score,
+           start_time,
+           working_time_per_score,
+           total_working_time
+    FROM total_working_times_with_index
+    JOIN external_users
+      ON contributor_type = 'ExternalUser' AND
+         contributor_id = external_users.id
     UNION ALL
     SELECT index,
-       contributor_id,
-       contributor_type,
-       name,
-       score,
-       start_time,
-       working_time_per_score,
-       total_working_time
-    FROM working_times_with_index
-       JOIN internal_users ON contributor_type = 'InternalUser' AND contributor_id = internal_users.id
+           contributor_id,
+           contributor_type,
+           name,
+           exercise_id,
+           exercise_maximum_score,
+           score,
+           is_maximum_score,
+           is_final_score,
+           start_time,
+           working_time_per_score,
+           total_working_time
+    FROM total_working_times_with_index
+    JOIN internal_users
+      ON contributor_type = 'InternalUser' AND
+         contributor_id = internal_users.id
     UNION ALL
     SELECT index,
-       contributor_id,
-       contributor_type,
-       concat('PG ', programming_groups.id::varchar) AS name,
-       score,
-       start_time,
-       working_time_per_score,
-       total_working_time
-    FROM working_times_with_index
-       JOIN programming_groups ON contributor_type = 'ProgrammingGroup' AND contributor_id = programming_groups.id
-    ORDER BY index, score ASC;
+           contributor_id,
+           contributor_type,
+           concat('PG ', programming_groups.id::varchar) AS name,
+           total_working_times_with_index.exercise_id,
+           exercise_maximum_score,
+           score,
+           is_maximum_score,
+           is_final_score,
+           start_time,
+           working_time_per_score,
+           total_working_time
+    FROM total_working_times_with_index
+    JOIN programming_groups
+      ON contributor_type = 'ProgrammingGroup' AND
+         contributor_id = programming_groups.id
+    ORDER BY exercise_id, index, score ASC;
     "
   end
 
@@ -251,6 +323,8 @@ class Exercise < ApplicationRecord
       additional_user_data[bucket] ||= []
       additional_user_data[max_bucket + 1] ||= []
 
+      # TODO: Buckets might be overwritten, causing wrong data to be displayed.
+      # The SQL query is correct (despite interventions missing, which are shown for regular external user statistics)!
       user_progress[bucket][tuple['index']] = format_time_difference(tuple['working_time_per_score'])
       additional_user_data[bucket][tuple['index']] = {start_time: tuple['start_time'], score: tuple['score']}
       additional_user_data[max_bucket + 1][tuple['index']] =
@@ -274,14 +348,15 @@ class Exercise < ApplicationRecord
             WITH working_time AS
       (
                SELECT   contributor_id,
-                        id,
+                        contributor_type,
+                        created_at,
                         exercise_id,
                         Max(score)                                                                                  AS max_score,
                         (created_at - Lag(created_at) OVER (partition BY contributor_id, exercise_id ORDER BY created_at)) AS working_time
                FROM     submissions
                WHERE    #{self.class.sanitize_sql(['exercise_id = ?', id])}
-               AND      contributor_type IN ('ExternalUser', 'ProgrammingGroup')
                GROUP BY contributor_id,
+                        contributor_type,
                         id,
                         exercise_id), max_points AS
       (
@@ -303,46 +378,52 @@ class Exercise < ApplicationRecord
       -- find row containing the first time max points
       first_time_max_score AS
       (
-             SELECT id,
+             SELECT created_at,
                     contributor_id,
+                    contributor_type,
                     exercise_id,
                     max_score,
                     working_time,
                     rn
              FROM   (
-                             SELECT   id,
+                             SELECT   created_at,
                                       contributor_id,
+                                      contributor_type,
                                       exercise_id,
                                       max_score,
                                       working_time,
-                                      Row_number() OVER(partition BY contributor_id, exercise_id ORDER BY id ASC) AS rn
+                                      Row_number() OVER(partition BY contributor_id, contributor_type, exercise_id ORDER BY created_at ASC) AS rn
                              FROM     time_max_score) T
              WHERE  rn = 1), times_until_max_points AS
       (
-             SELECT w.id,
+             SELECT w.created_at,
                     w.contributor_id,
+                    w.contributor_type,
                     w.exercise_id,
                     w.max_score,
                     w.working_time,
-                    m.id AS reachedmax_at
+                    m.created_at AS reachedmax_at
              FROM   working_time W,
                     first_time_max_score M
              WHERE  w.contributor_id = m.contributor_id
+             AND    w.contributor_type = m.contributor_type
              AND    w.exercise_id = m.exercise_id
-             AND    w.id <= m.id),
+             AND    w.created_at <= m.created_at),
       -- if user never makes it to max points, take all times
       all_working_times_until_max AS (
       (
-             SELECT id,
+             SELECT created_at,
                     contributor_id,
+                    contributor_type,
                     exercise_id,
                     max_score,
                     working_time
              FROM   times_until_max_points)
       UNION ALL
                 (
-                       SELECT id,
+                       SELECT created_at,
                               contributor_id,
+                              contributor_type,
                               exercise_id,
                               max_score,
                               working_time
@@ -352,9 +433,11 @@ class Exercise < ApplicationRecord
                                      SELECT 1
                                      FROM   first_time_max_score F
                                      WHERE  f.contributor_id = w1.contributor_id
+                                     AND    f.contributor_type = w1.contributor_type
                                      AND    f.exercise_id = w1.exercise_id))), filtered_times_until_max AS
       (
              SELECT contributor_id,
+                    contributor_type,
                     exercise_id,
                     max_score,
                     CASE
@@ -363,16 +446,14 @@ class Exercise < ApplicationRecord
                     END AS working_time_new
              FROM   all_working_times_until_max ), result AS
       (
-               SELECT   e.external_id AS external_contributor_id,
-                        f.contributor_id,
+               SELECT   contributor_id,
+                        contributor_type,
                         exercise_id,
                         Max(max_score)        AS max_score,
                         Sum(working_time_new) AS working_time
-               FROM     filtered_times_until_max f,
-                        external_users e
-               WHERE    f.contributor_id = e.id
-               GROUP BY e.external_id,
-                        f.contributor_id,
+               FROM     filtered_times_until_max
+               GROUP BY contributor_id,
+                        contributor_type,
                         exercise_id )
       SELECT   unnest(percentile_cont(#{self.class.sanitize_sql(['array[?]', quantiles])}) within GROUP (ORDER BY working_time))
       FROM     result
@@ -412,14 +493,15 @@ class Exercise < ApplicationRecord
       result = self.class.connection.exec_query("
               WITH WORKING_TIME AS
               (SELECT contributor_id,
-                                 id,
+                                 contributor_type,
+                                 created_at,
                                  exercise_id,
                                  max(score) AS max_score,
-                                 (created_at - lag(created_at) OVER (PARTITION BY contributor_id, exercise_id
+                                 (created_at - lag(created_at) OVER (PARTITION BY contributor_id, contributor_type, exercise_id
                                                                      ORDER BY created_at)) AS working_time
                          FROM submissions
                          WHERE #{self.class.sanitize_sql(['exercise_id = :id AND contributor_id = :contributor_id AND contributor_type = :contributor_type', submission_filter])}
-                         GROUP BY contributor_id, id, exercise_id),
+                         GROUP BY contributor_id, contributor_type, created_at, exercise_id),
               MAX_POINTS AS
               (SELECT context_id AS ex_id, sum(weight) AS max_points FROM files WHERE context_type = 'Exercise' AND context_id = #{id} AND role IN ('teacher_defined_test', 'teacher_defined_linter') GROUP BY context_id),
 
@@ -431,33 +513,33 @@ class Exercise < ApplicationRecord
 
               -- find row containing the first time max points
               FIRST_TIME_MAX_SCORE AS
-              ( SELECT id,contributor_id,exercise_id,max_score,working_time, rn
+              ( SELECT created_at, contributor_id, contributor_type, exercise_id, max_score, working_time, rn
                 FROM (
-                  SELECT id,contributor_id,exercise_id,max_score,working_time,
-                      ROW_NUMBER() OVER(PARTITION BY contributor_id, exercise_id ORDER BY id ASC) AS rn
+                  SELECT created_at, contributor_id, contributor_type, exercise_id, max_score, working_time,
+                      ROW_NUMBER() OVER(PARTITION BY contributor_id, contributor_type, exercise_id ORDER BY created_at ASC) AS rn
                   FROM TIME_MAX_SCORE) T
                WHERE rn = 1),
 
               TIMES_UNTIL_MAX_POINTS AS (
-                  SELECT W.id, W.contributor_id, W.exercise_id, W.max_score, W.working_time, M.id AS reachedmax_at
+                  SELECT W.created_at, W.contributor_id, W.contributor_type, W.exercise_id, W.max_score, W.working_time, M.created_at AS reachedmax_at
                   FROM WORKING_TIME W, FIRST_TIME_MAX_SCORE M
-                  WHERE W.contributor_id = M.contributor_id AND W.exercise_id = M.exercise_id AND W.id <= M.id),
+                  WHERE W.contributor_id = M.contributor_id AND W.contributor_type = M.contributor_type AND W.exercise_id = M.exercise_id AND W.created_at <= M.created_at),
 
               -- if contributor never makes it to max points, take all times
               ALL_WORKING_TIMES_UNTIL_MAX AS
-              ((SELECT id, contributor_id, exercise_id, max_score, working_time FROM TIMES_UNTIL_MAX_POINTS)
+              ((SELECT created_at, contributor_id, contributor_type, exercise_id, max_score, working_time FROM TIMES_UNTIL_MAX_POINTS)
               UNION ALL
-              (SELECT id, contributor_id, exercise_id, max_score, working_time FROM WORKING_TIME W1
-               WHERE NOT EXISTS (SELECT 1 FROM FIRST_TIME_MAX_SCORE F WHERE F.contributor_id = W1.contributor_id AND F.exercise_id = W1.exercise_id))),
+              (SELECT created_at, contributor_id, contributor_type, exercise_id, max_score, working_time FROM WORKING_TIME W1
+               WHERE NOT EXISTS (SELECT 1 FROM FIRST_TIME_MAX_SCORE F WHERE F.contributor_id = W1.contributor_id AND F.contributor_type = W1.contributor_type AND F.exercise_id = W1.exercise_id))),
 
               FILTERED_TIMES_UNTIL_MAX AS
               (
-              SELECT contributor_id,exercise_id, max_score, CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_new
+              SELECT contributor_id, contributor_type, exercise_id, max_score, CASE WHEN #{StatisticsHelper.working_time_larger_delta} THEN '0' ELSE working_time END AS working_time_new
               FROM ALL_WORKING_TIMES_UNTIL_MAX
               )
-                  SELECT e.external_id AS external_contributor_id, f.contributor_id, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time
-                  FROM FILTERED_TIMES_UNTIL_MAX f, EXTERNAL_USERS e
-                  WHERE f.contributor_id = e.id GROUP BY e.external_id, f.contributor_id, exercise_id
+                  SELECT contributor_id, contributor_type, exercise_id, MAX(max_score) AS max_score, sum(working_time_new) AS working_time
+                  FROM FILTERED_TIMES_UNTIL_MAX
+                  GROUP BY contributor_id, contributor_type, exercise_id
           ")
       parse_duration(result.first['working_time']).to_f
     rescue StandardError
