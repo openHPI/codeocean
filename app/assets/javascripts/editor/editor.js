@@ -723,7 +723,7 @@ var CodeOceanEditor = {
         this.selectFileInJsTree($('#files'), file_id);
 
         const editor = this.editor_for_file.get(file_id);
-        editor.gotoLine(line, 0);
+        editor?.gotoLine(line, 0);
         event.preventDefault();
     },
 
