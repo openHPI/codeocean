@@ -77,7 +77,7 @@ CodeOceanEditorFlowr = {
     return results;
   },
   handleStderrOutputForFlowr: function () {
-    if (! this.getFlowrSettings().enabled) return;
+    if (! this.getFlowrSettings()?.enabled) return;
 
     var flowrHintBody = $('#flowrHint .card-body');
     flowrHintBody.empty();
