@@ -2,6 +2,7 @@
 
 class Event < ApplicationRecord
   include Creation
+
   belongs_to :exercise
   belongs_to :file, class_name: 'CodeOcean::File', optional: true
   belongs_to :study_group, optional: true

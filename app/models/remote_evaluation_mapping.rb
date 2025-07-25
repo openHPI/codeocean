@@ -3,6 +3,7 @@
 # TODO: reference to lti_param_model
 class RemoteEvaluationMapping < ApplicationRecord
   include Creation
+
   before_create :generate_token, unless: :validation_token?
   belongs_to :exercise
   belongs_to :programming_group, optional: true

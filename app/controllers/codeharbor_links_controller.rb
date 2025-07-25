@@ -2,6 +2,7 @@
 
 class CodeharborLinksController < ApplicationController
   include CommonBehavior
+
   before_action :verify_codeharbor_activation
   before_action :set_codeharbor_link, only: %i[edit update destroy]
   before_action :set_user_and_authorize

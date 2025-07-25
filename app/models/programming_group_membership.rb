@@ -2,6 +2,7 @@
 
 class ProgrammingGroupMembership < ApplicationRecord
   include Creation
+
   belongs_to :programming_group
 
   validate :unique_membership_for_exercise

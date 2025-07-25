@@ -2,6 +2,7 @@
 
 class RequestForCommentsController < ApplicationController
   include CommonBehavior
+
   before_action :set_request_for_comment, only: %i[show mark_as_solved set_thank_you_note clear_question report]
   before_action :set_study_group_grouping,
     only: %i[index my_comment_requests rfcs_with_my_comments rfcs_for_exercise]
