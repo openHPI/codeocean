@@ -10,7 +10,7 @@
       thead
         tr
           th = Exercise.human_attribute_name('selection')
-          th = StudyGroup.human_attribute_name('member')
+          th = ExternalUser.human_attribute_name('name')
       = collection_check_boxes :study_group, :study_group_membership_ids, @members, :id, :id do |b|
         tr
           td = b.check_box class: 'form-check-input'
