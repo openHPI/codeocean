@@ -2,6 +2,7 @@
 
 class Runner < ApplicationRecord
   include ContributorCreation
+
   belongs_to :execution_environment
 
   # Each reservation is extended by the specified duration.

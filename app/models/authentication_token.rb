@@ -4,6 +4,7 @@ require 'securerandom'
 
 class AuthenticationToken < ApplicationRecord
   include Creation
+
   belongs_to :study_group, optional: true
 
   def self.generate!(user, study_group)

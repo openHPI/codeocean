@@ -2,6 +2,7 @@
 
 class UserProxyExerciseExercise < ApplicationRecord
   include Creation
+
   belongs_to :exercise
   belongs_to :proxy_exercise
 

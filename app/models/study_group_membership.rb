@@ -2,6 +2,7 @@
 
 class StudyGroupMembership < ApplicationRecord
   include Creation
+
   belongs_to :study_group
 
   before_save :destroy_if_empty_study_group_or_user

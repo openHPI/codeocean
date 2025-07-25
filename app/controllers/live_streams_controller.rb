@@ -4,6 +4,7 @@ class LiveStreamsController < ApplicationController
   # Including ActionController::Live changes all actions in this controller!
   # Therefore, it is extracted into a separate controller
   include ActionController::Live
+
   before_action :set_content_type_nosniff
 
   skip_before_action :deny_access_from_render_host, only: :download_submission_file
