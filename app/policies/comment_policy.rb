@@ -4,11 +4,11 @@ class CommentPolicy < ApplicationPolicy
   REPORT_RECEIVER_CONFIGURED = CodeOcean::Config.new(:code_ocean).read.dig(:content_moderation, :report_emails).present?
 
   def create?
-    everyone
+    show?
   end
 
   def show?
-    everyone
+    Pundit.policy(@user, @record.request_for_comment).show? && everyone
   end
 
   %i[destroy? update? edit?].each do |action|
@@ -16,10 +16,10 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def index?
-    everyone
+    show?
   end
 
   def report?
-    REPORT_RECEIVER_CONFIGURED && everyone && !author?
+    REPORT_RECEIVER_CONFIGURED && show? && !author?
   end
 end

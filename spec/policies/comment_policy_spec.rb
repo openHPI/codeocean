@@ -13,6 +13,15 @@ RSpec.describe CommentPolicy do
         expect(described_class).to permit(build_stubbed(user_type), comment)
       end
     end
+
+    it 'does not grant access to users who have no access to the RfC' do
+      learner = build_stubbed(:learner)
+      rfc_policy = instance_double(RequestForCommentPolicy, show?: false)
+      allow(RequestForCommentPolicy).to receive(:new).with(learner, comment.request_for_comment)
+        .and_return(rfc_policy)
+
+      expect(described_class).not_to permit(learner, comment)
+    end
   end
 
   permissions :destroy?, :update?, :edit? do
@@ -60,6 +69,15 @@ RSpec.describe CommentPolicy do
 
       it 'does not grants access to the author' do
         expect(described_class).not_to permit(comment.user, comment)
+      end
+
+      it 'does not grant access to users who have no access to the RfC' do
+        learner = build_stubbed(:learner)
+        rfc_policy = instance_double(RequestForCommentPolicy, show?: false)
+        allow(RequestForCommentPolicy).to receive(:new).with(learner, comment.request_for_comment)
+          .and_return(rfc_policy)
+
+        expect(described_class).not_to permit(learner, comment)
       end
     end
 
