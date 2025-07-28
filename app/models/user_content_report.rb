@@ -31,7 +31,7 @@ class UserContentReport
       when RequestForComment
         reported_content
       when Comment
-        RequestForComment.find_by!(file: reported_content.file)
+        reported_content.request_for_comment
     end
   end
 
