@@ -1,3 +1,4 @@
+import * as Routes from 'generated/routes';
 import { CodeOceanEditorTips }  from './participantsupport';
 
 const CodeOceanEditor = {
