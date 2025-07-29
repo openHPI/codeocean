@@ -22,23 +22,6 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Max: 25
 
-# We don't want to change previous migrations...
-#
-Rails/CreateTableWithTimestamps:
-  Enabled: false
-
-Rails/BulkChangeTable:
-  Enabled: false
-
-Rails/ReversibleMigration:
-  Enabled: false
-
-Rails/NotNullColumn:
-  Enabled: false
-
-Rails/ThreeStateBooleanColumn:
-  Enabled: false
-
 # The models need to be fixed anyway
 #
 Rails/UniqueValidationWithoutIndex:
