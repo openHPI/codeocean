@@ -1,3 +1,9 @@
+# Examples are based on the "Learning to program with Python - school version"
+# course of the HPI student team for Python consists of the students 
+# Selina Reinhard, Nina Ihde, Kira Grammel and the doctoral student Sebastian Serth.
+#
+# Course available at: https://open.hpi.de/courses/pythonjunior-schule2024
+
 from turtle import *
 
 def erstelle_turtle(x, y, rotationsWinkel = 0, shape = "triangle", color = "green"):

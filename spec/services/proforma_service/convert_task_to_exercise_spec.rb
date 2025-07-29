@@ -32,7 +32,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
       ProformaXML::Task.new(
         title: 'title',
         description:,
-        proglang: {name: 'python', version: '3.4'},
+        proglang: {name: 'python', version: '3.8'},
         uuid: 'uuid',
         parent_uuid: 'parent_uuid',
         language: 'language',
