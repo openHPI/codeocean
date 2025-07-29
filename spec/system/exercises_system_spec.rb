@@ -51,11 +51,11 @@ RSpec.describe 'Exercise creation', :js do
         find('.ProseMirror').set(description)
       end
 
-      chosen_select(Exercise.human_attribute_name(:execution_environment), ruby.name)
+      chosenjs_select_helper(Exercise.human_attribute_name(:execution_environment), ruby.name)
 
-      chosen_date_time_select(Exercise.human_attribute_name(:submission_deadline), submission_deadline)
+      chosenjs_date_time_select_helper(Exercise.human_attribute_name(:submission_deadline), submission_deadline)
 
-      chosen_date_time_select(Exercise.human_attribute_name(:late_submission_deadline), late_submission_deadline)
+      chosenjs_date_time_select_helper(Exercise.human_attribute_name(:late_submission_deadline), late_submission_deadline)
 
       check Exercise.human_attribute_name(:public)
 
@@ -64,8 +64,8 @@ RSpec.describe 'Exercise creation', :js do
       within(find_by_id('files').all('li').last) do
         fill_in CodeOcean::File.human_attribute_name(:name), with: 'main'
 
-        chosen_select(CodeOcean::File.human_attribute_name(:file_type), ruby.file_type.name)
-        chosen_select(CodeOcean::File.human_attribute_name(:role), I18n.t('code_ocean/files.roles.main_file'))
+        chosenjs_select_helper(CodeOcean::File.human_attribute_name(:file_type), ruby.file_type.name)
+        chosenjs_select_helper(CodeOcean::File.human_attribute_name(:role), I18n.t('code_ocean/files.roles.main_file'))
 
         check(CodeOcean::File.human_attribute_name(:read_only))
 
@@ -135,23 +135,23 @@ RSpec.describe 'Exercise creation', :js do
     end
   end
 
-  def chosen_select(name, value)
+  def chosenjs_select_helper(name, value)
     id = first('label', text: name)[:for]
 
-    set_value_for_chosen_element(id, value)
+    set_value_for_chosenjs_element(id, value)
   end
 
-  def chosen_date_time_select(name, date)
+  def chosenjs_date_time_select_helper(name, date)
     id = first('label', text: name)[:for]
 
-    set_value_for_chosen_element("#{id}_1i", date.year.to_s)
-    set_value_for_chosen_element("#{id}_2i", date.strftime('%B'))
-    set_value_for_chosen_element("#{id}_3i", date.day.to_s)
-    set_value_for_chosen_element("#{id}_4i", date.hour.to_s)
-    set_value_for_chosen_element("#{id}_5i", date.min.to_s)
+    set_value_for_chosenjs_element("#{id}_1i", date.year.to_s)
+    set_value_for_chosenjs_element("#{id}_2i", date.strftime('%B'))
+    set_value_for_chosenjs_element("#{id}_3i", date.day.to_s)
+    set_value_for_chosenjs_element("#{id}_4i", date.hour.to_s)
+    set_value_for_chosenjs_element("#{id}_5i", date.min.to_s)
   end
 
-  def set_value_for_chosen_element(id, value)
+  def set_value_for_chosenjs_element(id, value)
     element = find_by_id("#{id}_chosen")
     element.click
 
