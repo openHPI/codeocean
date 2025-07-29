@@ -52,7 +52,7 @@
     "vis-timeline": "^8.2.1",
     "vis-util": "^6.0.0",
     "webpack": "^5.101.0",
-    "webpack-assets-manifest": "^6.2.1",
+    "webpack-assets-manifest": "^6.2.2",
     "webpack-cli": "^6.0.1",
     "webpack-merge": "^6.0.1",
     "webpack-sources": "^3.3.3",

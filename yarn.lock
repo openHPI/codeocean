@@ -2653,7 +2653,7 @@ __metadata:
     vis-timeline: "npm:^8.2.1"
     vis-util: "npm:^6.0.0"
     webpack: "npm:^5.101.0"
-    webpack-assets-manifest: "npm:^6.2.1"
+    webpack-assets-manifest: "npm:^6.2.2"
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.2"
     webpack-merge: "npm:^6.0.1"
@@ -7010,9 +7010,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-assets-manifest@npm:^6.2.1":
-  version: 6.2.1
-  resolution: "webpack-assets-manifest@npm:6.2.1"
+"webpack-assets-manifest@npm:^6.2.2":
+  version: 6.2.2
+  resolution: "webpack-assets-manifest@npm:6.2.2"
   dependencies:
     deepmerge: "npm:^4.3.1"
     lockfile: "npm:^1.0.4"
@@ -7020,7 +7020,7 @@ __metadata:
     tapable: "npm:^2.2.2"
   peerDependencies:
     webpack: ^5.61.0
-  checksum: 10c0/610d300431df707164b4d33f14ff0f33799f3dd09843798b765f905306d26b8339df62079f1c6f1656b0daa72d4340ddf749937dc63ffdd19274811493cbb217
+  checksum: 10c0/c183386f7422d6c8ed5da3ecaba7f99f618354c13ef64bc298dd03a4688fa81d73056185e0d805a5eaa3a8b897d803b766f95acdbec8c33a32f1d648b7f50822
   languageName: node
   linkType: hard
 
