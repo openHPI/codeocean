@@ -16,7 +16,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def index?
-    show?
+    everyone
   end
 
   def report?

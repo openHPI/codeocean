@@ -5,7 +5,17 @@ require 'rails_helper'
 RSpec.describe CommentPolicy do
   let(:user_types) { %i[learner teacher admin] }
 
-  permissions :create?, :show?, :index? do
+  permissions :index? do
+    let(:comment) { build_stubbed(:comment) }
+
+    it 'grants access to all user types' do
+      user_types.each do |user_type|
+        expect(described_class).to permit(build_stubbed(user_type), comment)
+      end
+    end
+  end
+
+  permissions :create?, :show? do
     let(:comment) { build_stubbed(:comment) }
 
     it 'grants access to all user types' do
