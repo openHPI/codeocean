@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_114125) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_29_085843) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
@@ -312,7 +312,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_114125) do
     t.string "native_file"
     t.string "role"
     t.string "hashed_content"
-    t.string "feedback_message"
+    t.string "feedback_message", default: "", null: false
     t.float "weight"
     t.string "path"
     t.integer "file_template_id"

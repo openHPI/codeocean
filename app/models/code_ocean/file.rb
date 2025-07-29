@@ -16,6 +16,7 @@ module CodeOcean
 
     after_initialize :set_default_values
     before_validation :clear_weight, unless: :teacher_defined_assessment?
+    before_validation :clear_feedback_message, unless: :teacher_defined_assessment?
     before_validation :hash_content, if: :content_present?
     before_validation :set_ancestor_values, if: :incomplete_descendent?
 
@@ -49,7 +50,6 @@ module CodeOcean
     default_scope { order(path: :asc, name: :asc) }
 
     validates :feedback_message, if: :teacher_defined_assessment?, presence: true
-    validates :feedback_message, absence: true, unless: :teacher_defined_assessment?
     validates :hashed_content, if: :content_present?, presence: true
     validates :hidden, inclusion: [true, false]
     validates :hidden_feedback, inclusion: [true, false]
@@ -152,6 +152,11 @@ module CodeOcean
       set_default_values_if_present(weight: DEFAULT_WEIGHT) if teacher_defined_assessment?
     end
     private :set_default_values
+
+    def clear_feedback_message
+      self.feedback_message = ''
+    end
+    private :clear_feedback_message
 
     def visible?
       !hidden

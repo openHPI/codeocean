@@ -3,7 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe CodeOcean::File do
-  let(:file) { described_class.create.tap {|file| file.update(content: nil, hidden: nil, read_only: nil) } }
+  let(:file) do
+    described_class.new.tap do |file|
+      file.assign_attributes(content: nil, hidden: nil, read_only: nil)
+      file.validate
+    end
+  end
 
   it 'validates the presence of a file type' do
     expect(file.errors[:file_type]).to be_present
@@ -11,7 +16,8 @@ RSpec.describe CodeOcean::File do
 
   it 'validates the presence of the hidden flag' do
     expect(file.errors[:hidden]).to be_present
-    file.update(hidden: false)
+    file.hidden = false
+    file.validate
     expect(file.errors[:hidden]).to be_blank
   end
 
@@ -21,19 +27,24 @@ RSpec.describe CodeOcean::File do
 
   it 'validates the presence of the read-only flag' do
     expect(file.errors[:read_only]).to be_present
-    file.update(read_only: false)
+    file.read_only = false
+    file.validate
     expect(file.errors[:read_only]).to be_blank
   end
 
   context 'with a teacher-defined test' do
-    before { file.update(role: 'teacher_defined_test') }
+    before do
+      file.role = 'teacher_defined_test'
+      file.validate
+    end
 
     it 'validates the presence of a feedback message' do
       expect(file.errors[:feedback_message]).to be_present
     end
 
     it 'validates the numericality of a weight' do
-      file.update(weight: 'heavy')
+      file.weight = 'heavy'
+      file.validate
       expect(file.errors[:weight]).to be_present
     end
 
@@ -43,16 +54,21 @@ RSpec.describe CodeOcean::File do
   end
 
   context 'with another file type' do
-    before { file.update(role: 'regular_file') }
+    before do
+      file.role = 'regular_file'
+    end
 
-    it 'validates the absence of a feedback message' do
-      file.update(feedback_message: 'Your solution is not correct yet.')
-      expect(file.errors[:feedback_message]).to be_present
+    it 'removes the feedback message' do
+      file.feedback_message = 'Your solution is not correct yet.'
+
+      expect { file.validate }
+        .to change(file, :feedback_message).to('')
     end
 
     it 'validates the absence of a weight' do
       allow(file).to receive(:clear_weight)
-      file.update(weight: 1)
+      file.weight = 1
+      file.validate
       expect(file.errors[:weight]).to be_present
     end
   end
