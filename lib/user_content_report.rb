@@ -3,7 +3,7 @@
 class UserContentReport
   def initialize(reported_content:)
     unless [Comment, RequestForComment].include?(reported_content.class)
-      raise("#{reported_content.model_name} is not configured for spam reports.")
+      raise("#{reported_content.model_name} is not configured for content reports.")
     end
 
     @reported_content = reported_content

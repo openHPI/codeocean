@@ -62,6 +62,6 @@ RSpec.describe UserContentReport do
   end
 
   it 'raise an error if an unsupported model is reported' do
-    expect { described_class.new(reported_content: Exercise.new) }.to raise_error('Exercise is not configured for spam reports.')
+    expect { described_class.new(reported_content: Exercise.new) }.to raise_error('Exercise is not configured for content reports.')
   end
 end
