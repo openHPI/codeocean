@@ -1,4 +1,4 @@
-import './flash';
-import './color-mode-picker';
+require('./flash');
+require('./color-mode-picker');
 
-import './request-for-comments';
+require('./request-for-comments');

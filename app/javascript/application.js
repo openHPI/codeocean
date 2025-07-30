@@ -91,4 +91,4 @@ import './turbo-migration';
 
 // Import of Rails sprocket assets with minimal changes. After the initial migration these files should
 // be moved to an appropriate place after some adjustments to fit modern Rails JS.
-import 'sprocket-asset-import';
+require('sprocket-asset-import');
