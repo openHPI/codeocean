@@ -22,13 +22,13 @@ class Submission < ApplicationRecord
 
   belongs_to :external_users, lambda {
                                 where(submissions: {contributor_type: 'ExternalUser'}).includes(:submissions)
-                              }, foreign_key: :contributor_id, class_name: 'ExternalUser', optional: true
+                              }, foreign_key: :contributor_id, class_name: 'ExternalUser', optional: true, inverse_of: :submissions
   belongs_to :internal_users, lambda {
                                 where(submissions: {contributor_type: 'InternalUser'}).includes(:submissions)
-                              }, foreign_key: :contributor_id, class_name: 'InternalUser', optional: true
+                              }, foreign_key: :contributor_id, class_name: 'InternalUser', optional: true, inverse_of: :submissions
   belongs_to :programming_groups, lambda {
                                     where(submissions: {contributor_type: 'ProgrammingGroup'}).includes(:submissions)
-                                  }, foreign_key: :contributor_id, class_name: 'ProgrammingGroup', optional: true
+                                  }, foreign_key: :contributor_id, class_name: 'ProgrammingGroup', optional: true, inverse_of: :submissions
   delegate :execution_environment, to: :exercise
 
   scope :final, -> { where(cause: %w[submit remoteSubmit]) }
