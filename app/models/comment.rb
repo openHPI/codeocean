@@ -5,8 +5,6 @@ class Comment < ApplicationRecord
   include Creation
   include ActionCableHelper
 
-  attr_accessor :username, :date, :updated, :editable
-
   belongs_to :file, class_name: 'CodeOcean::File'
   has_one :submission, through: :file, source: :context, source_type: 'Submission'
   has_one :request_for_comment, through: :submission
