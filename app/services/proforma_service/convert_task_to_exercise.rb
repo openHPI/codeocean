@@ -89,7 +89,6 @@ module ProformaService
         model_solution.files.map do |task_file|
           codeocean_file_from_task_file(task_file, model_solution).tap do |file|
             file.role ||= 'reference_implementation'
-            file.feedback_message = nil
           end
         end
       end
@@ -99,7 +98,6 @@ module ProformaService
       @task.files.reject {|file| file.id == 'ms-placeholder-file' }.map do |task_file|
         codeocean_file_from_task_file(task_file).tap do |file|
           file.role ||= 'regular_file'
-          file.feedback_message = nil
         end
       end
     end
