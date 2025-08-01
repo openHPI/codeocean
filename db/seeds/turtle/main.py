@@ -1,8 +1,10 @@
-# Examples are based on the "Learning to program with Python - school version"
-# course of the HPI student team for Python consists of the students 
-# Selina Reinhard, Nina Ihde, Kira Grammel and the doctoral student Sebastian Serth.
-#
-# Course available at: https://open.hpi.de/courses/pythonjunior-schule2024
+# This example is based on content from the 2020 openHPI course  
+# "Programmieren lernen mit Python" ("Learning to Program with Python")  
+# Authors: Kira Grammel, Nina Ihde, Selina Reinhard, and Sebastian Serth  
+# Published by: openHPI, Hasso-Plattner-Institut für Digital Engineering gGmbH  
+# License: CC BY-NC-SA 4.0, https://creativecommons.org/licenses/by-nc-sa/4.0
+# 
+# The course is freely available at: https://open.hpi.de/courses/pythonjunior2020
 
 from turtle import *
 
