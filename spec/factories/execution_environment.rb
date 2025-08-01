@@ -73,18 +73,18 @@ FactoryBot.define do
     created_by_teacher
     default_memory_limit
     default_cpu_limit
-    docker_image { 'openhpi/co_execenv_python:3.4' }
+    docker_image { 'openhpi/co_execenv_python:3.8' }
     file_type { association :dot_py, user: }
     help
-    name { 'Python 3.4' }
+    name { 'Python 3.8' }
     network_enabled { false }
     privileged_execution { false }
     permitted_execution_time { 10.seconds }
     pool_size { 0 }
-    run_command { 'python3 %{filename}' }
+    run_command { 'python3 -B /usr/lib/python3.8/webpython.py -f %{filename}' }
     singleton_execution_environment
     test_command { 'python3 -m unittest --verbose %{module_name}' }
-    testing_framework { 'PyUnitAdapter' }
+    testing_framework { 'PyUnitAndPyLintAdapter' }
   end
 
   factory :ruby, class: 'ExecutionEnvironment' do
