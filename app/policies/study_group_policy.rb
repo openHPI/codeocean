@@ -5,7 +5,7 @@ class StudyGroupPolicy < AdminOnlyPolicy
     admin? || teacher?
   end
 
-  %i[show? edit? update? stream_la? set_as_current?].each do |action|
+  %i[show? edit? update? set_as_current?].each do |action|
     define_method(action) { admin? || teacher_in_study_group? }
   end
 

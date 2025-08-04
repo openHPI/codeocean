@@ -250,9 +250,7 @@ en:
       users_and_programming_groups: "%{count} distinct users and programming groups"
       worktime: Working Time
     study_group_dashboard:
-      learner: Learner
       live_dashboard: Live Dashboard
       no_data_yet: No data available yet
       related_requests_for_comments: Related Requests for Comments
-      time_spent_in_minutes: Time spent in Minutes
       time_spent_per_learner: Time spent per Learner
