@@ -1,9 +1,9 @@
-# This example is based on content from the 2020 openHPI course  
-# "Programmieren lernen mit Python" ("Learning to Program with Python")  
-# Authors: Kira Grammel, Nina Ihde, Selina Reinhard, and Sebastian Serth  
-# Published by: openHPI, Hasso-Plattner-Institut für Digital Engineering gGmbH  
+# This example is based on content from the 2020 openHPI course
+# "Programmieren lernen mit Python" ("Learning to Program with Python")
+# Authors: Kira Grammel, Nina Ihde, Selina Reinhard, and Sebastian Serth
+# Published by: openHPI, Hasso-Plattner-Institut für Digital Engineering gGmbH
 # License: CC BY-NC-SA 4.0, https://creativecommons.org/licenses/by-nc-sa/4.0
-# 
+#
 # The course is freely available at: https://open.hpi.de/courses/pythonjunior2020
 
 from turtle import *
