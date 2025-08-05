@@ -346,7 +346,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
           ProformaXML::TaskFile.new(
             id: 'ms-file-2',
             content: 'content',
-            filename: 'filename.txt',
+            filename: 'filename2.txt',
             used_by_grader: 'used_by_grader',
             visible: 'yes',
             usage_by_lms: 'display',
@@ -456,7 +456,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
           ProformaXML::TaskFile.new(
             id: 'test_file_id2',
             content: 'testfile-content',
-            filename: 'testfile.txt',
+            filename: 'testfile2.txt',
             used_by_grader: 'yes',
             visible: 'no',
             usage_by_lms: 'display',
