@@ -36,7 +36,6 @@ $(document).on('turbo-migration:load', function(event) {
     const htmlTag = $('html')
     I18n.defaultLocale = htmlTag.data('default-locale');
     I18n.locale = htmlTag.attr('lang');
-    jQuery.timeago.settings.lang = I18n.locale;
 
     // Initialize Sentry
     const sentrySettings = $('meta[name="sentry"]')

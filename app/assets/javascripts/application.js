@@ -10,9 +10,6 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require rails-timeago
-//= require locales/jquery.timeago.de.js
-//
 // app/assets
 // --> Include some assets first, as they are used by other assets.
 // --> Hence, the order specified here is important.

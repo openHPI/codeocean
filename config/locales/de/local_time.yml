@@ -1,0 +1,71 @@
+---
+de:
+  local_time:
+    date:
+      abbrDayNames:
+      - So
+      - Mo
+      - Di
+      - Mi
+      - Do
+      - Fr
+      - Sa
+      abbrMonthNames:
+      - Jan
+      - Feb
+      - Mär
+      - Apr
+      - Mai
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Okt
+      - Nov
+      - Dez
+      dayNames:
+      - Sonntag
+      - Montag
+      - Dienstag
+      - Mittwoch
+      - Donnerstag
+      - Freitag
+      - Samstag
+      formats:
+        default: "%e. %b %Y"
+        thisYear: "%e. %b"
+      monthNames:
+      - Januar
+      - Februar
+      - März
+      - April
+      - Mai
+      - Juni
+      - Juli
+      - August
+      - September
+      - Oktober
+      - November
+      - Dezember
+      today: heute
+      tomorrow: morgen
+      'true': am {date}
+      yesterday: gestern
+    datetime:
+      at: "{date} um {time}"
+      formats:
+        default: "%e. %B %Y um %H:%M %Z"
+        default_24h: "%e. %B %Y um %H:%M %Z"
+    time:
+      elapsed: vor {time}
+      formats:
+        default: "%H:%M"
+        default_24h: "%H:%M"
+      hour: Stunde
+      hours: Stunden
+      minute: Minute
+      minutes: Minuten
+      second: Sekunde
+      seconds: Sekunden
+      singular: vor einer {time}
+      singularAn: vor einer {time}
