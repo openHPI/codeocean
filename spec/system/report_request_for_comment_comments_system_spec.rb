@@ -18,7 +18,7 @@ RSpec.describe 'Report RfC comments for inappropriate content', :js do
   context 'when reporting is enabled' do
     let(:reports_enabled) { true }
 
-    it 'allows reporting of RfCs' do
+    it 'allows reporting the comment' do
       within('.modal-content') do
         click_on I18n.t('shared.report')
       end
