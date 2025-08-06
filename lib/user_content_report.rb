@@ -15,34 +15,34 @@ class UserContentReport
   # longer hold true.
   def course_url = lti_parameters['launch_presentation_return_url']
 
-  def human_model_name = reported_content.model_name.human
+  def human_model_name = @reported_content.model_name.human
 
   def reported_message
-    case reported_content
+    case @reported_content
       when RequestForComment
-        reported_content.question
+        @reported_content.question
       when Comment
-        reported_content.text
+        @reported_content.text
     end
   end
 
   def related_request_for_comment
-    case reported_content
+    case @reported_content
       when RequestForComment
-        reported_content
+        @reported_content
       when Comment
-        reported_content.request_for_comment
+        @reported_content.request_for_comment
     end
   end
 
   private
 
-  attr_reader :reported_content
-
-  def lti_parameters = LtiParameter.find_by(study_group:, exercise:)&.lti_parameters || {}
+  def lti_parameters
+    LtiParameter.find_by(study_group:, exercise:)&.lti_parameters || {}
+  end
 
   def study_group
-    reported_content.submission.study_group
+    @reported_content.submission.study_group
   end
 
   def exercise
