@@ -85,6 +85,11 @@ import "ace-builds/src-noconflict/ext-modelist"; // Enable language mode detecti
 ace.config.set("useStrictCSP", true); // Enable strict CSP mode
 window.ace = ace; // Publish ace in global namespace
 
+import LocalTime from "local-time"
+LocalTime.config.locale = 'default';
+LocalTime.config.i18n['default'] = i18n.t('local_time');
+LocalTime.start()
+
 // Turbo
 import '@hotwired/turbo-rails';
 import './turbo-migration';

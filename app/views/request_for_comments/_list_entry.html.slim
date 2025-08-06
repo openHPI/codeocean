@@ -12,4 +12,4 @@ tr.table-row-clickable data-id=request_for_comment.id data-href=request_for_comm
   - else
     td.text-black-50.font-italic = t('request_for_comments.no_question')
   td = request_for_comment.user
-  td = timeago_tag request_for_comment.created_at
+  td = local_time_ago request_for_comment.created_at

@@ -134,6 +134,7 @@ ignore_unused:
   - 'activerecord.{attributes,errors,models}.*'
   - 'linter.*'
   - 'will_paginate.*'
+  - 'local_time.*'
 
 ## Exclude these keys from the `i18n_tasks eq-base' report:
 # ignore_eq_base:
