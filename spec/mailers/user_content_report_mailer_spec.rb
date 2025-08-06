@@ -7,8 +7,8 @@ RSpec.describe UserContentReportMailer do
     subject(:mail) { described_class.with(reported_content:).report_content }
 
     let(:reported_content) { instance_double(Comment) }
-    let(:reported_message) { 'Repoted message' }
-    let(:human_model_name) { 'ReportedModle' }
+    let(:reported_message) { 'Reported message' }
+    let(:human_model_name) { 'Reported model' }
     let(:course_url) { 'https://example.com/course/1' }
 
     before do
