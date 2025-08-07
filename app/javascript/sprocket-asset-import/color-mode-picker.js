@@ -77,7 +77,7 @@ function showActiveTheme(theme, focus = false) {
     }
 }
 
-$(document).on('turbo-migration:load', function() {
+$(document).on('turbo:load', function() {
     setTheme(getPreferredTheme())
 
     showActiveTheme(getPreferredTheme())
