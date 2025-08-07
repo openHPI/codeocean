@@ -24,13 +24,19 @@ RSpec.describe CommentPolicy do
       end
     end
 
-    it 'does not grant access to users who have no access to the RfC' do
-      learner = build_stubbed(:learner)
-      rfc_policy = instance_double(RequestForCommentPolicy, show?: false)
-      allow(RequestForCommentPolicy).to receive(:new).with(learner, comment.request_for_comment)
-        .and_return(rfc_policy)
+    context 'without access to the RfC' do
+      let(:learner) { build_stubbed(:learner) }
+      let(:rfc_policy) { instance_double(RequestForCommentPolicy, show?: false) }
 
-      expect(described_class).not_to permit(learner, comment)
+      before do
+        allow(RequestForCommentPolicy).to receive(:new)
+          .with(learner, comment.request_for_comment)
+          .and_return(rfc_policy)
+      end
+
+      it 'does not grant access' do
+        expect(described_class).not_to permit(learner, comment)
+      end
     end
   end
 
