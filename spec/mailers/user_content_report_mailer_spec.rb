@@ -11,12 +11,15 @@ RSpec.describe UserContentReportMailer do
     let(:human_model_name) { 'Reported model' }
     let(:course_url) { 'https://example.com/course/1' }
 
-    before do
-      user_content_report = instance_double(UserContentReport,
+    let(:user_content_report) do
+      instance_double(UserContentReport,
         human_model_name:,
         reported_message:,
         related_request_for_comment: instance_double(RequestForComment),
         course_url:)
+    end
+
+    before do
       allow(UserContentReport).to receive(:new).with(reported_content:).and_return(user_content_report)
     end
 
