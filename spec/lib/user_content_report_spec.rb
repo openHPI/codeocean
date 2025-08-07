@@ -3,65 +3,90 @@
 require 'rails_helper'
 
 RSpec.describe UserContentReport do
-  describe '#related_request_for_comment' do
-    it 'returns the RfC when the RfC itself is reported' do
-      rfc = build_stubbed(:rfc)
+  subject(:report) { described_class.new(reported_content:) }
 
-      expect(described_class.new(reported_content: rfc).related_request_for_comment).to eq rfc
+  describe '#related_request_for_comment' do
+    context 'when a PfC is reported' do
+      let(:reported_content) { build_stubbed(:rfc) }
+
+      it 'returns the RfC itself' do
+        expect(report.related_request_for_comment).to eq reported_content
+      end
     end
 
-    it 'returns the associated RfC when a comment is reported' do
-      rfc = create(:rfc)
-      comment = create(:comment, file: rfc.file)
-      expect(described_class.new(reported_content: comment).related_request_for_comment).to eq rfc
+    context 'when a comment is reported' do
+      let(:rfc) { create(:rfc) }
+      let(:reported_content) { create(:comment, file: rfc.file) }
+
+      it 'returns the associated RfC' do
+        expect(report.related_request_for_comment).to eq rfc
+      end
     end
   end
 
   describe '#reported_message' do
     let(:message) { 'This message is reported.' }
 
-    it 'returns the comments text' do
-      comment = build_stubbed(:comment, text: message)
+    context 'when a comment is reported' do
+      let(:reported_content) { build_stubbed(:comment, text: message) }
 
-      expect(described_class.new(reported_content: comment).reported_message).to eq message
+      it 'returns the comments text' do
+        expect(report.reported_message).to eq message
+      end
     end
 
-    it 'returns the RfCs question' do
-      rfc = build_stubbed(:rfc, question: message)
+    context 'when a PfC is reported' do
+      let(:reported_content) { build_stubbed(:rfc, question: message) }
 
-      expect(described_class.new(reported_content: rfc).reported_message).to eq message
+      it 'returns the RfCs question' do
+        expect(report.reported_message).to eq message
+      end
     end
   end
 
   describe '#course_url' do
-    it 'has no course URL if the LTI parameters are absent' do
-      rfc = build_stubbed(:rfc)
+    context 'when the LTI parameter is missing' do
+      let(:reported_content) { build_stubbed(:rfc) }
 
-      expect(described_class.new(reported_content: rfc).course_url).to be_nil
+      it 'returns no course URL' do
+        expect(report.course_url).to be_nil
+      end
     end
 
-    it 'has no course URL if the required LTI attribute is missing' do
-      rfc = create(:rfc)
+    context 'when the LTI parameter has no retrun URL' do
+      let(:reported_content) { create(:rfc) }
 
-      create(:lti_parameter, :without_return_url,
-        exercise: rfc.file.request_for_comment.exercise,
-        study_group: rfc.submission.study_group)
+      before do
+        create(:lti_parameter, :without_return_url,
+          exercise: reported_content.file.request_for_comment.exercise,
+          study_group: reported_content.submission.study_group)
+      end
 
-      expect(described_class.new(reported_content: rfc).course_url).to be_nil
+      it 'returns no course URL' do
+        expect(report.course_url).to be_nil
+      end
     end
 
-    it 'returns the LTI parameter course URL' do
-      rfc = create(:rfc)
+    context 'when the LTI parameter has the retrun URL' do
+      let(:reported_content) { create(:rfc) }
 
-      create(:lti_parameter,
-        exercise: rfc.file.request_for_comment.exercise,
-        study_group: rfc.submission.study_group)
+      before do
+        create(:lti_parameter,
+          exercise: reported_content.file.request_for_comment.exercise,
+          study_group: reported_content.submission.study_group)
+      end
 
-      expect(described_class.new(reported_content: rfc).course_url).to match(%r{https.+/courses/})
+      it 'returns the LTI parameter course URL' do
+        expect(report.course_url).to match(%r{https.+/courses/})
+      end
     end
   end
 
-  it 'raise an error if an unsupported model is reported' do
-    expect { described_class.new(reported_content: Exercise.new) }.to raise_error('Exercise is not configured for content reports.')
+  context 'when an unsupported model is reported' do
+    let(:reported_content) { Exercise.new }
+
+    it 'raise an error' do
+      expect { report }.to raise_error('Exercise is not configured for content reports.')
+    end
   end
 end
