@@ -239,6 +239,11 @@ For exporting metrics, enable the Prometheus exporter in `config/code_ocean.yml`
 bundle exec prometheus_exporter
 ```
 
+#### Overmind (optional)
+
+A Procfile is configured to run all services with the `bin/dev` command. [Overmind](https://github.com/DarthSim/overmind) is required as a process manager and the Poseidon must be in placed in the parent directory (../poseidon/poseidon). 
+
+
 ## Native Setup for Nomad
 
 As detailed earlier, this guide focuses on CodeOcean. Nevertheless, the following provides a short overview of the most important steps to get started with Nomad (as required for Poseidon). Please refer to the [full setup guide](https://github.com/openHPI/poseidon/blob/main/docs/development.md) for more details.
