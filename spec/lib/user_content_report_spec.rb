@@ -34,7 +34,7 @@ RSpec.describe UserContentReport do
   end
 
   describe '#course_url' do
-    it 'has no course URL if the LTI paramters are absent' do
+    it 'has no course URL if the LTI parameters are absent' do
       rfc = build_stubbed(:rfc)
 
       expect(described_class.new(reported_content: rfc).course_url).to be_nil
