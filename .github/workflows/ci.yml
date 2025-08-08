@@ -79,9 +79,6 @@ jobs:
         env:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: true
-          # Use Firefox for system tests until Chrome headless works reliably again.
-          # See https://github.com/SeleniumHQ/selenium/issues/15273
-          BROWSER: firefox
         run: bundle exec rspec --color --format RSpec::Github::Formatter --format progress
 
       - name: Upload coverage reports to Codecov
