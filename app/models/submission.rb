@@ -3,7 +3,6 @@
 class Submission < ApplicationRecord
   include Context
   include ContributorCreation
-  include ActionCableHelper
 
   CAUSES = %w[assess download file render run save submit test autosave requestComments remoteAssess
               remoteSubmit].freeze
@@ -47,8 +46,6 @@ class Submission < ApplicationRecord
   scope :latest, -> { order(submissions: {created_at: :desc}).first }
 
   validates :cause, inclusion: {in: CAUSES}
-
-  # after_save :trigger_working_times_action_cable
 
   def collect_files
     @collect_files ||= begin
