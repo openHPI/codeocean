@@ -11,7 +11,7 @@
     "@github/webauthn-json": "^2.1.1",
     "@hotwired/turbo-rails": "^8.0.16",
     "@popperjs/core": "^2.11.8",
-    "@sentry/browser": "^10.2.0",
+    "@sentry/browser": "^10.3.0",
     "@toast-ui/editor": "^3.2.2",
     "@webpack-cli/serve": "^3.0.1",
     "ace-builds": "^1.43.2",
