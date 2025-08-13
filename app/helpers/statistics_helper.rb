@@ -184,7 +184,7 @@ module StatisticsHelper
           name: RequestForComment.model_name.human(count: :other),
           data: RequestForComment.in_range(from, to)
             .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
-            .group('key').order('key'),
+            .group(:key).order(:key),
       },
       {
         key: 'rfcs_solved',
@@ -192,7 +192,7 @@ module StatisticsHelper
           data: RequestForComment.in_range(from, to)
             .where(solved: true)
             .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
-            .group('key').order('key'),
+            .group(:key).order(:key),
       },
       {
         key: 'rfcs_soft_solved',
@@ -200,14 +200,14 @@ module StatisticsHelper
           data: RequestForComment.in_range(from, to).unsolved
             .where(full_score_reached: true)
             .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
-            .group('key').order('key'),
+            .group(:key).order(:key),
       },
       {
         key: 'rfcs_unsolved',
           name: t('statistics.entries.request_for_comments.percent_unsolved'),
           data: RequestForComment.in_range(from, to).unsolved
             .select(RequestForComment.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
-            .group('key').order('key'),
+            .group(:key).order(:key),
       },
     ]
   end
@@ -219,14 +219,14 @@ module StatisticsHelper
           name: t('statistics.entries.contributors.active'),
           data: Submission.where(created_at: from..to)
             .select(Submission.sanitize_sql(['date_trunc(?, created_at) AS "key", count(distinct CONCAT(contributor_type, contributor_id)) AS "value"', interval]))
-            .group('key').order('key'),
+            .group(:key).order(:key),
       },
       {
         key: 'submissions',
           name: t('statistics.entries.exercises.submissions'),
           data: Submission.where(created_at: from..to)
             .select(Submission.sanitize_sql(['date_trunc(?, created_at) AS "key", count(id) AS "value"', interval]))
-            .group('key').order('key'),
+            .group(:key).order(:key),
           axis: 'right',
       },
     ]
