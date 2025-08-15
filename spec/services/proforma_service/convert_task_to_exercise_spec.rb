@@ -187,6 +187,27 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
         expect { convert_to_exercise_service.save! }.to change(Exercise, :count).by(1)
       end
 
+      context 'with two files with similar contents' do
+        let(:file_dup) do
+          ProformaXML::TaskFile.new(
+            id: 'id2',
+            content:,
+            filename:,
+            used_by_grader: 'used_by_grader',
+            visible: 'yes',
+            usage_by_lms:,
+            binary:,
+            mimetype:
+          )
+        end
+
+        let(:files) { [file, file_dup] }
+
+        it 'creates an exercises with only one file' do
+          expect(convert_to_exercise_service.files.length).to be 1
+        end
+      end
+
       context 'when file is a Makefile' do
         let(:filename) { "#{path}Makefile" }
 
@@ -346,7 +367,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
           ProformaXML::TaskFile.new(
             id: 'ms-file-2',
             content: 'content',
-            filename: 'filename.txt',
+            filename: 'filename2.txt',
             used_by_grader: 'used_by_grader',
             visible: 'yes',
             usage_by_lms: 'display',
@@ -456,7 +477,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
           ProformaXML::TaskFile.new(
             id: 'test_file_id2',
             content: 'testfile-content',
-            filename: 'testfile.txt',
+            filename: 'testfile2.txt',
             used_by_grader: 'yes',
             visible: 'no',
             usage_by_lms: 'display',
