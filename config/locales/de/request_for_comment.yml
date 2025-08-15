@@ -43,7 +43,7 @@ de:
     no_question: Der/die Autor:in hat keine Frage zu dieser Anfrage gestellt.
     passed: Erfolgreich
     report:
-      confirm: Sind Sie sicher, dass Sie diesen Inhalt **als unangemessen** melden möchten?
+      confirm: Sind Sie sicher, dass Sie diesen Inhalt als unangemessen melden möchten?
       report: Inhalt melden
       reported: Vielen Dank, dass Sie uns auf dieses Problem aufmerksam gemacht haben. Wir werden uns in Kürze darum kümmern.
     runtime_output: Programmausgabe
