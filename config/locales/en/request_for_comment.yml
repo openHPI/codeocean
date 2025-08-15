@@ -43,7 +43,7 @@ en:
     no_question: The author did not enter a question for this request.
     passed: Passed
     report:
-      confirm: Do you want to report this content?
+      confirm: Are you sure you want to report this content as inappropriate?
       report: Report
       reported: Thank you for letting us know about this issue. We will look into the matter shortly.
     runtime_output: Runtime Output
