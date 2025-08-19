@@ -161,9 +161,8 @@ class ExercisesController < ApplicationController
 
     uuid = ProformaService::UuidFromZip.call(zip: zip_file)
     exists, updatable = uuid_check(user: current_user, uuid:).values_at(:uuid_found, :update_right)
-
-    uploader = ProformaZipUploader.new
-    uploader.cache!(params[:file])
+    key = SecureRandom.hex
+    ActiveStorage::Blob.create_and_upload!(key:, io: zip_file, filename: zip_file.original_filename)
 
     message = if exists && updatable
                 t('.exercise_exists_and_is_updatable')
@@ -177,7 +176,7 @@ class ExercisesController < ApplicationController
       status: 'success',
       message:,
       actions: render_to_string(partial: 'import_actions',
-        locals: {exercise: @exercise, imported: false, exists:, updatable:, file_id: uploader.cache_name}),
+        locals: {exercise: @exercise, imported: false, exists:, updatable:, file_id: key}),
     }
   rescue ProformaXML::InvalidZip => e
     render json: {
@@ -187,16 +186,16 @@ class ExercisesController < ApplicationController
   end
 
   def import_confirm
-    uploader = ProformaZipUploader.new
-    uploader.retrieve_from_cache!(params[:file_id])
-    exercise = ::ProformaService::Import.call(zip: uploader.file, user: current_user)
-    exercise.save!
+    ActiveStorage::Blob.find_by(key: params[:file_id]).open do |zip|
+      exercise = ::ProformaService::Import.call(zip:, user: current_user)
+      exercise.save!
 
-    render json: {
-      status: 'success',
-      message: t('.success'),
-      actions: render_to_string(partial: 'import_actions', locals: {exercise:, imported: true}),
-    }
+      render json: {
+        status: 'success',
+        message: t('.success'),
+        actions: render_to_string(partial: 'import_actions', locals: {exercise:, imported: true}),
+      }
+    end
   rescue ProformaXML::ProformaError, ActiveRecord::RecordInvalid => e
     render json: {
       status: 'failure',
