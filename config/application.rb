@@ -56,9 +56,9 @@ module CodeOcean
     config.action_mailer.preview_paths << Rails.root.join('spec/mailers/previews')
 
     # Specify default options for Rails generators
-    config.generators do |g|
-      g.orm :active_record, primary_key_type: :uuid
-    end
+    # config.generators do |g|
+    #   g.orm :active_record, primary_key_type: :uuid
+    # end
 
     # Allow tables in addition to existing default tags
     config.action_view.sanitized_allowed_tags = ActionView::Base.sanitized_allowed_tags + %w[table thead tbody tfoot td tr details summary]
