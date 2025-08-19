@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema[8.0].define(version: 2024_09_30_231316) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
