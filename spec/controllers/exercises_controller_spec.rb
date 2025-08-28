@@ -91,7 +91,7 @@ RSpec.describe ExercisesController do
       let(:perform_request) { proc { post :create, params: {exercise: exercise_attributes.merge(files_attributes:)} } }
 
       context 'when specifying the file content within the form' do
-        let(:files_attributes) { {'0' => build(:file).attributes.except('context_id', 'context_type', 'created_at', 'hashed_content', 'updated_at')} }
+        let(:files_attributes) { {'0' => build(:file).attributes.except('context_id', 'context_type', 'created_at', 'hashed_content', 'updated_at', 'native_file')} }
 
         it 'creates the file' do
           expect { perform_request.call }.to change(CodeOcean::File, :count)
@@ -99,7 +99,7 @@ RSpec.describe ExercisesController do
       end
 
       context 'when uploading a file' do
-        let(:files_attributes) { {'0' => build(:file, file_type:).attributes.except('context_id', 'context_type', 'created_at', 'hashed_content', 'updated_at').merge(content: uploaded_file)} }
+        let(:files_attributes) { {'0' => build(:file, file_type:).attributes.except('context_id', 'context_type', 'created_at', 'hashed_content', 'updated_at', 'native_file').merge(attachment: uploaded_file)} }
 
         context 'when uploading a binary file' do
           let(:file_path) { Rails.root.join('db/seeds/audio_video/devstories.mp4') }
@@ -112,7 +112,7 @@ RSpec.describe ExercisesController do
 
           it 'assigns the native file' do
             perform_request.call
-            expect(Exercise.last.files.first.native_file).to be_a(FileUploader)
+            expect(assigns(:exercise).files.first.attachment).to be_attached
           end
         end
 
@@ -127,7 +127,7 @@ RSpec.describe ExercisesController do
 
           it 'assigns the file content' do
             perform_request.call
-            expect(Exercise.last.files.first.content).to eq(File.read(file_path))
+            expect(assigns(:exercise).files.first.content).to eq(File.read(file_path))
           end
         end
       end
@@ -690,10 +690,17 @@ RSpec.describe ExercisesController do
   describe 'POST #import_confirm' do
     let(:file_id) { 'file_id' }
     let(:post_request) { post :import_confirm, params: {file_id: file_id} }
+    let(:blob_double) { instance_double(ActiveStorage::Blob) }
+    let(:tempfile) { Tempfile.new }
+
+    before do
+      allow(ActiveStorage::Blob).to receive(:find_by).and_return(blob_double)
+      allow(blob_double).to receive(:open).and_yield(tempfile)
+    end
 
     context 'when the import is successful' do
       before do
-        allow(ProformaService::Import).to receive(:call).with(zip: 'mocked_file', user: user).and_return(exercise)
+        allow(ProformaService::Import).to receive(:call).with(zip: tempfile, user: user).and_return(exercise)
         allow(exercise).to receive(:save!).and_return(true)
       end
 
@@ -730,7 +737,7 @@ RSpec.describe ExercisesController do
       it 'logs the error and renders internal error JSON' do
         post_request
 
-        expect(Sentry).to have_received(:capture_exception).with(instance_of(StandardError))
+        expect(Sentry).to have_received(:capture_exception).with(a_kind_of(StandardError))
         expect(response).to have_http_status(:ok)
         parsed_response = response.parsed_body
         expect(parsed_response['status']).to eq('failure')

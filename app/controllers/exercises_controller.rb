@@ -304,12 +304,12 @@ class ExercisesController < ApplicationController
   def handle_file_uploads
     if exercise_params
       exercise_params[:files_attributes].try(:each) do |_index, file_attributes|
-        if file_attributes[:content].respond_to?(:read)
+        if file_attributes[:attachment].respond_to?(:read)
           if FileType.find_by(id: file_attributes[:file_type_id]).try(:binary?)
-            file_attributes[:native_file] = file_attributes[:content]
             file_attributes[:content] = nil
           else
-            file_attributes[:content] = file_attributes[:content].read.detect_encoding!.encode.delete("\x00")
+            file_attributes[:content] = file_attributes[:attachment].read.detect_encoding!.encode.delete("\x00")
+            file_attributes[:attachment] = nil
           end
         end
       end
