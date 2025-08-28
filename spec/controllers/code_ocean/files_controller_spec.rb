@@ -19,11 +19,12 @@ RSpec.describe CodeOcean::FilesController do
         let(:file) { submission.collect_files.detect {|file| file.file_type.file_extension == '.mp4' } }
 
         expect_assigns(file: :file)
-        expect_content_type('application/octet-stream')
-        expect_http_status(:ok)
+        expect_redirect
 
-        it 'sets the correct filename' do
-          expect(response.headers['Content-Disposition']).to include("attachment; filename=\"#{file.name_with_extension}\"")
+        it 'redirects to ActiveStorage blob with correct filename' do
+          location = response.headers['Location'] || response.location
+          expect(location).to include(file.name_with_extension)
+          expect(location).to include('disposition=attachment')
         end
       end
     end

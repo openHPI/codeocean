@@ -61,11 +61,13 @@ RSpec.describe 'Editor', :js do
     end
 
     context 'when selecting a binary file' do
+      let(:upload_path) { protected_upload_path(id: file.id, filename: file.filepath) }
+
       context 'when selecting an audio file' do
         let(:file) { exercise.files.detect {|file| file.file_type.audio? } }
 
         it 'contains an <audio> tag' do
-          expect(page).to have_css("audio[src='#{file.native_file.url}']")
+          expect(page).to have_css("audio[src='#{upload_path}']")
         end
       end
 
@@ -73,7 +75,7 @@ RSpec.describe 'Editor', :js do
         let(:file) { exercise.files.detect {|file| file.file_type.image? } }
 
         it 'contains an <img> tag' do
-          expect(page).to have_css("img[src='#{file.native_file.url}']")
+          expect(page).to have_css("img[src='#{upload_path}']")
         end
       end
 
@@ -81,7 +83,7 @@ RSpec.describe 'Editor', :js do
         let(:file) { exercise.files.detect {|file| file.file_type.video? } }
 
         it 'contains a <video> tag' do
-          expect(page).to have_css("video[src='#{file.native_file.url}']")
+          expect(page).to have_css("video[src='#{upload_path}']")
         end
       end
     end
