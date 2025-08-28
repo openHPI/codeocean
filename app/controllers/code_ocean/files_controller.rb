@@ -6,7 +6,6 @@ module CodeOcean
     include FileParameters
 
     before_action :set_content_type_nosniff
-    # Overwrite the CSP header and some default actions for the :render_protected_upload action
     content_security_policy false, only: :render_protected_upload
     skip_before_action :deny_access_from_render_host, only: :render_protected_upload
     skip_before_action :verify_authenticity_token, only: :render_protected_upload
@@ -25,10 +24,10 @@ module CodeOcean
       @file = CodeOcean::File.find(params[:id])
       authorize!
       # The `@file.name_with_extension` is assembled based on the user-selected file type, not on the actual file name stored on disk.
-      raise Pundit::NotAuthorizedError if @embed_options[:disable_download] || @file.filepath != params[:filename] || @file.native_file.blank?
+      raise Pundit::NotAuthorizedError if @embed_options[:disable_download] || @file.filepath != params[:filename] || @file.attachment.blank?
 
-      real_location = Pathname(@file.native_file.current_path).realpath
-      send_file(real_location, type: 'application/octet-stream', filename: @file.name_with_extension, disposition: 'attachment')
+      url = rails_blob_path(@file.attachment, disposition: 'attachment', expires_in: 5.minutes)
+      redirect_to url, allow_other_host: true
     end
 
     def render_protected_upload
@@ -36,43 +35,43 @@ module CodeOcean
       @current_user = ExternalUser.new
 
       @file = authorize AuthenticatedUrlHelper.retrieve!(CodeOcean::File, request)
-
       # The `@file.name_with_extension` is assembled based on the user-selected file type, not on the actual file name stored on disk.
-      raise Pundit::NotAuthorizedError unless @file.filepath == params[:filename] || @file.native_file.present?
+      raise Pundit::NotAuthorizedError unless @file.filepath == params[:filename] || @file.attachment.present?
 
-      real_location = Pathname(@file.native_file.current_path).realpath
-      send_file(real_location, type: @file.native_file.content_type, filename: @file.name_with_extension)
+      url = rails_blob_path(@file.attachment, disposition: 'inline', expires_in: 5.minutes)
+
+      redirect_to url, allow_other_host: true
     end
 
-    def create
-      @file = CodeOcean::File.new(file_params)
-      if @file.file_template_id
-        content = FileTemplate.find(@file.file_template_id).content
-        content.sub! '{{file_name}}', @file.name
-        @file.content = content
-      end
-      authorize!
-      create_and_respond(object: @file, path: proc { implement_exercise_path(@file.context.exercise) })
-    end
-
-    def create_and_respond(options = {})
-      @object = options[:object]
-      respond_to do |format|
-        if @object.save
-          yield if block_given?
-          path = options[:path].try(:call) || @object
-          respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human),
-            path:, status: :created)
-        else
-          filename = "#{@object.path || ''}/#{@object.name || ''}#{@object.file_type.try(:file_extension) || ''}"
-          format.html do
-            flash[:danger] = t('code_ocean/files.error.filename', name: filename)
-            redirect_to options[:path], status: :see_other
-          end
-          format.json { render json: @object.errors, status: :unprocessable_content }
-        end
-      end
-    end
+    # def create
+    #   @file = CodeOcean::File.new(file_params)
+    #   if @file.file_template_id
+    #     content = FileTemplate.find(@file.file_template_id).content
+    #     content.sub! '{{file_name}}', @file.name
+    #     @file.content = content
+    #   end
+    #   authorize!
+    #   create_and_respond(object: @file, path: proc { implement_exercise_path(@file.context.exercise) })
+    # end
+    #
+    # def create_and_respond(options = {})
+    #   @object = options[:object]
+    #   respond_to do |format|
+    #     if @object.save
+    #       yield if block_given?
+    #       path = options[:path].try(:call) || @object
+    #       respond_with_valid_object(format, notice: t('shared.object_created', model: @object.class.model_name.human),
+    #         path:, status: :created)
+    #     else
+    #       filename = "#{@object.path || ''}/#{@object.name || ''}#{@object.file_type.try(:file_extension) || ''}"
+    #       format.html do
+    #         flash[:danger] = t('code_ocean/files.error.filename', name: filename)
+    #         redirect_to options[:path], status: :see_other
+    #       end
+    #       format.json { render json: @object.errors, status: :unprocessable_content }
+    #     end
+    #   end
+    # end
 
     def destroy
       @file = CodeOcean::File.find(params[:id])

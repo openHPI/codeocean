@@ -36,6 +36,8 @@ module CodeOcean
     has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
     alias descendants files
 
+    has_one_attached :attachment
+
     mount_uploader :native_file, FileUploader
 
     scope :editable, -> { where(read_only: false) }
