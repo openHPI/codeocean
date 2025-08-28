@@ -10,7 +10,7 @@ div class=(defined?(own_solution) ? 'own-frame' : 'frame') data-executable=file.
         - elsif file.file_type.video?
           = video_tag(file_path, controls: true)
       - else
-        = link_to(file.native_file.file.filename, file_path)
+        = link_to(file.attachment.filename, file_path)
   - else
     .editor-content.d-none data-file-id=file.ancestor_id = file.content
     div class=(defined?(own_solution) ? 'own-editor' : 'editor') data-file-id=file.ancestor_id data-indent-size=file.file_type.indent_size data-mode=file.file_type.editor_mode data-allow-auto-completion=exercise.allow_auto_completion.to_s data-id=file.id
