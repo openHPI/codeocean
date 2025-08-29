@@ -589,21 +589,21 @@ RSpec.describe ExercisesController do
   describe 'POST #import_start' do
     let(:valid_file) { fixture_file_upload('proforma_import/testfile.zip', 'application/zip') }
     let(:invalid_file) { 'invalid_file' }
-    let(:mock_uploader) { instance_double(ProformaZipUploader) }
     let(:uuid) { 'mocked-uuid' }
     let(:post_request) { post :import_start, params: {file: file} }
     let(:file) { valid_file }
 
     before do
       allow(controller).to receive(:current_user).and_return(user)
-      allow(ProformaZipUploader).to receive(:new).and_return(mock_uploader)
     end
 
     context 'when the file is valid' do
       before do
         allow(ProformaService::UuidFromZip).to receive(:call).and_return(uuid)
-        allow(mock_uploader).to receive(:cache!)
-        allow(mock_uploader).to receive(:cache_name).and_return('mocked-cache-name')
+      end
+
+      it 'saves the file to the server' do
+        expect { post_request }.to change(ActiveStorage::Blob, :count).by(1)
       end
 
       context 'when the exercise exists and is updatable' do
@@ -658,6 +658,10 @@ RSpec.describe ExercisesController do
     context 'when the file is invalid' do
       let(:file) { invalid_file }
 
+      it 'does not save the file to the server' do
+        expect { post_request }.not_to change(ActiveStorage::Blob, :count)
+      end
+
       it 'renders failure JSON with correct error' do
         post_request
 
@@ -685,16 +689,10 @@ RSpec.describe ExercisesController do
 
   describe 'POST #import_confirm' do
     let(:file_id) { 'file_id' }
-    let(:mock_uploader) { instance_double(ProformaZipUploader, file: 'mocked_file') }
     let(:post_request) { post :import_confirm, params: {file_id: file_id} }
-
-    before do
-      allow(ProformaZipUploader).to receive(:new).and_return(mock_uploader)
-    end
 
     context 'when the import is successful' do
       before do
-        allow(mock_uploader).to receive(:retrieve_from_cache!).with(file_id)
         allow(ProformaService::Import).to receive(:call).with(zip: 'mocked_file', user: user).and_return(exercise)
         allow(exercise).to receive(:save!).and_return(true)
       end
@@ -711,7 +709,6 @@ RSpec.describe ExercisesController do
 
     context 'when ProformaError or validation error occurs' do
       before do
-        allow(mock_uploader).to receive(:retrieve_from_cache!).with(file_id)
         allow(ProformaService::Import).to receive(:call).and_raise(ProformaXML::ProformaError, 'Proforma error')
       end
 
@@ -727,7 +724,6 @@ RSpec.describe ExercisesController do
 
     context 'when StandardError occurs' do
       before do
-        allow(mock_uploader).to receive(:retrieve_from_cache!).and_raise(StandardError, 'Unexpected error')
         allow(Sentry).to receive(:capture_exception)
       end
 
