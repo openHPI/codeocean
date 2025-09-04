@@ -50,7 +50,7 @@ de:
     time:
       before: "%{time} zuvor"
     tooltips:
-      shortcut: "Tastaturkürzel: %{shortcut}"
+      shortcut: 'Tastaturkürzel: %{shortcut}'
     update: "%{model} aktualisieren"
     updated_at: Letzte Änderung
     upload_file: Datei hochladen
