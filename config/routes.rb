@@ -24,7 +24,11 @@ Rails.application.routes.draw do
       post :report
     end
   end
-  resources :comments, defaults: {format: :json}
+  resources :comments, defaults: {format: :json} do
+    member do
+      post :report
+    end
+  end
   get '/my_request_for_comments', as: 'my_request_for_comments', to: 'request_for_comments#my_comment_requests'
   get '/my_rfc_activity', as: 'my_rfc_activity', to: 'request_for_comments#rfcs_with_my_comments'
   get '/exercises/:exercise_id/request_for_comments', as: 'exercise_request_for_comments', to: 'request_for_comments#rfcs_for_exercise'

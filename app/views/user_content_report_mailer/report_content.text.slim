@@ -1,0 +1,12 @@
+== t('.prolog')
+== "\n\n"
+== @user_content_report.reported_message.lines.map { "> #{it}" }.join
+== "\n\n"
+== t('.take_action')
+== "\n\n"
+== request_for_comment_url(@user_content_report.related_request_for_comment)
+== "\n\n"
+- if @user_content_report.course_url.present?
+  == t('.authentication')
+  == "\n\n"
+  == @user_content_report.course_url
