@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_27_203150) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_07_230600) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -337,7 +337,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_27_203150) do
     t.boolean "read_only"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "native_file"
     t.string "role"
     t.string "hashed_content"
     t.string "feedback_message"
