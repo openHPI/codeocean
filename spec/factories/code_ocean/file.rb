@@ -16,7 +16,13 @@ module CodeOcean
       trait(:image) do
         file_type factory: :dot_png
         name { 'poster' }
-        native_file { Rack::Test::UploadedFile.new(Rails.root.join('db/seeds/audio_video/poster.png'), 'image/png') }
+        after(:build) do |file|
+          file.attachment.attach(
+            io: Rails.root.join('db/seeds/audio_video/poster.png').open,
+            filename: 'poster.png',
+            content_type: 'image/png'
+          )
+        end
       end
     end
 

@@ -48,4 +48,5 @@ li.card.mt-2
         .mb-3
           = f.label(:weight, class: 'form-label')
           = f.number_field(:weight, class: 'form-control', min: 0, step: 'any')
-      = render('code_field', attribute: :content, form: f)
+      = render('code_field', attribute: :attachment, form: f)
+      / = render('code_field', attribute: :content, form: f)
