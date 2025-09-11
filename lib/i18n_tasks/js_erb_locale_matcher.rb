@@ -10,7 +10,7 @@ module I18nTasks
     # @return [Array<[absolute key, Results::Occurrence]>]
     def scan_file(path)
       text = read_file(path)
-      text.scan(/I18n.t\(['"]([\.\w]*)["'].*\)/).map do |match|
+      text.scan(/I18n.t\(['"]([.\w]*)["'].*\)/).map do |match|
         occurrence = occurrence_from_position(
           path, text, Regexp.last_match.offset(0).first
         )
