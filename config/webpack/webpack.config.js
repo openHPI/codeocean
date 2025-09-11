@@ -1,14 +1,12 @@
 // See the shakacode/shakapacker README and docs directory for advice on customizing your webpackConfig.
 
-const { generateWebpackConfig, config, merge } = require('shakapacker')
+const { generateWebpackConfig, merge } = require('shakapacker')
 const webpackConfig = generateWebpackConfig()
 
 const CompressionPlugin = require("compression-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const { WebpackAssetsManifest } = require('webpack-assets-manifest');
-const { SubresourceIntegrityPlugin } = require("webpack-subresource-integrity");
 
 // This setting will change the absolute path used to refer
 // external files (images, fonts, ...) in the generated assets
@@ -53,8 +51,6 @@ const envConfig = module.exports = {
     },
     output: {
         publicPath: relative_url_root + public_output_path,
-        // the following setting is required for SRI to work:
-        crossOriginLoading: 'anonymous',
     },
     performance: {
         // Turn off size warnings for large assets
@@ -65,15 +61,6 @@ const envConfig = module.exports = {
         new MiniCssExtractPlugin({
             filename: '[name]-[contenthash].css',
         }),
-        new SubresourceIntegrityPlugin(),
-        new WebpackAssetsManifest({
-            entrypoints: true,
-            integrity: true,
-            writeToDisk: true,
-            entrypointsUseAssets: true,
-            publicPath: true,
-            output: config.manifestPath,
-        })
     ],
     resolve: {
         extensions: ['.css', '.ts', '.tsx'],
@@ -96,14 +83,6 @@ webpackConfig.module.rules
   .flatMap(rule => Array.isArray(rule.use) ? rule.use : [])
   .filter(loaderConfig => loaderConfig.options?.sassOptions)
   .forEach(loaderConfig => loaderConfig.options.sassOptions.sourceMapIncludeSources = true);
-
-// Use the following lines below to remove original plugins and replace them with our custom config.
-// This is especially needed for the `WebpackAssetsManifest` plugin, which would otherwise run twice.
-const customPlugins = envConfig.plugins.map((plugin) => plugin.constructor.name);
-const filteredDefaultPlugins = webpackConfig.plugins.filter((plugin) => {
-    return !customPlugins.includes(plugin.constructor.name);
-});
-webpackConfig.plugins = filteredDefaultPlugins;
 
 // Create the resulting config by merging the (modified) default config and our custom setup
 module.exports = merge(webpackConfig, envConfig)
