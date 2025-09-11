@@ -72,14 +72,15 @@ preload_app! false
 # Disable automatic tagging of the service.
 tag ''
 
-# Before performing a hot restart (not on phased restarts), send another watchdog message
-# TODO: Consider `on_booted` as well, which currently breaks with Pumactl.
-on_restart do
+# Before performing a hot restart (not on phased restarts) and directly after booting, send another watchdog message
+def notify_watchdog
   require 'puma/sd_notify'
   Puma::SdNotify.watchdog
 end
+before_restart { notify_watchdog }
+after_booted   { notify_watchdog }
 
 # Note on Phased Restarts:
 # - Phased Restarts are only supported in cluster mode with multiple workers (i.e., not in development).
 # - The Puma binary won't be upgraded on phased restarts, but since we have the unattended-upgrades, this is not a major issue.
-# - See https://github.com/casperisfine/puma/blob/HEAD/docs/restart.md.
+# - See https://github.com/puma/puma/blob/HEAD/docs/restart.md.
