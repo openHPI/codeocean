@@ -2773,7 +2773,7 @@ __metadata:
     terser-webpack-plugin: "npm:^5.3.14"
     underscore: "npm:^1.13.7"
     uuid: "npm:^11.1.0"
-    vis-data: "npm:^8.0.1"
+    vis-data: "npm:^8.0.3"
     vis-timeline: "npm:^8.3.0"
     vis-util: "npm:^6.0.0"
     webpack: "npm:^5.101.3"
@@ -7074,13 +7074,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vis-data@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "vis-data@npm:8.0.1"
+"vis-data@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "vis-data@npm:8.0.3"
   peerDependencies:
-    uuid: ^3.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0
+    uuid: ^3.4.0 || ^7.0.0 || ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^13.0.0
     vis-util: ">=6.0.0"
-  checksum: 10c0/7653f514e59740a5d375173731b955e818d47f39771638eb808d977aa952696ae05be295ef0037d54575a52f5b7baed454907d855a2cb82644c7a7c7e1cfbd96
+  checksum: 10c0/c344a8c6ce2ce31bd00b6a51da3c3d20ac0bef735b76644d937b999d70d6a3a847f5f0fa78222f1d7d659f80be877302edd78f2747a972b15368686eff6a9034
   languageName: node
   linkType: hard
 
