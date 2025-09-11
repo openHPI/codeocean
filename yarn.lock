@@ -2525,10 +2525,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bootswatch@npm:^5.3.7":
-  version: 5.3.7
-  resolution: "bootswatch@npm:5.3.7"
-  checksum: 10c0/647f8679ea570580eba31428b650940f022793a5ebad58f3bbde6a89fd8171ad6fb03fc304448e3241c7215543b602523e9705ae0d0c82c1a86ead68a89a3bba
+"bootswatch@npm:^5.3.8":
+  version: 5.3.8
+  resolution: "bootswatch@npm:5.3.8"
+  checksum: 10c0/dac5c0da1330d514ac1e6a95d62c04c2c1928516b6e6f7dfeceb3162f8e602b9082aa72746c133d213a8b74a3590de8bba1341a06d70ce632eda2d3c3d6326b8
   languageName: node
   linkType: hard
 
@@ -2742,7 +2742,7 @@ __metadata:
     ace-builds: "npm:^1.43.3"
     babel-loader: "npm:^10.0.0"
     bootstrap: "npm:^5.3.8"
-    bootswatch: "npm:^5.3.7"
+    bootswatch: "npm:^5.3.8"
     chosen-js: "npm:^1.8.7"
     component-emitter: "npm:^2.0.0"
     compression-webpack-plugin: "npm:^11.1.0"
