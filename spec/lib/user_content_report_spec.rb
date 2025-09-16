@@ -35,7 +35,7 @@ RSpec.describe UserContentReport do
       end
     end
 
-    context 'when a PfC is reported' do
+    context 'when a RfC is reported' do
       let(:reported_content) { build_stubbed(:rfc, question: message) }
 
       it 'returns the RfCs question' do
