@@ -108,4 +108,21 @@ RSpec.describe CodeOcean::File do
       end
     end
   end
+
+  describe '#size' do
+    subject { file.size }
+
+    let(:content) { 'file content' }
+    let(:file) { create(:file, :image, content:) }
+
+    after { file.attachment.purge }
+
+    it { is_expected.to be file.attachment.byte_size }
+
+    context 'when the file is not attached' do
+      before { file.attachment.purge }
+
+      it { is_expected.to be content.length }
+    end
+  end
 end

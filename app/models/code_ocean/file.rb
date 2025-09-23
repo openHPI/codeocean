@@ -91,11 +91,6 @@ module CodeOcean
       teacher_defined_test? || teacher_defined_linter?
     end
 
-    def content_present?
-      content? || attachment.attached?
-    end
-    private :content_present?
-
     def filepath
       if path.present?
         ::File.join(path, name_with_extension)
