@@ -65,7 +65,7 @@ class SubmissionsController < ApplicationController
   def download_file
     raise Pundit::NotAuthorizedError if @embed_options[:disable_download]
 
-    if @file.native_file?
+    if @file.attachment.attached?
       redirect_to protected_upload_path(id: @file.id, filename: @file.filepath), status: :see_other
     else
       response.set_header('Content-Length', @file.size)
@@ -96,7 +96,7 @@ class SubmissionsController < ApplicationController
     end
 
     # Finally grant access and send the file
-    if @file.native_file?
+    if @file.attachment.attached?
       url = render_protected_upload_url(id: @file.id, filename: @file.filepath)
       redirect_to AuthenticatedUrlHelper.sign(url, @file), status: :see_other
     else
