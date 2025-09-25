@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CommentsController < ApplicationController
-  before_action :set_comment, only: %i[show update destroy]
+  before_action :set_comment, only: %i[show update destroy report]
 
   def authorize!
     authorize(@comment || @comments)
@@ -15,12 +15,6 @@ class CommentsController < ApplicationController
     submission = Submission.find_by(id: file.context_id)
     if submission
       @comments = Comment.where(file_id: params[:file_id])
-      @comments.map do |comment|
-        comment.username = comment.user.displayname
-        comment.date = comment.created_at.strftime('%d.%m.%Y %k:%M')
-        comment.updated = (comment.created_at != comment.updated_at)
-        comment.editable = policy(comment).edit?
-      end
     else
       @comments = []
     end
@@ -64,6 +58,15 @@ class CommentsController < ApplicationController
   def destroy
     authorize!
     @comment.destroy
+    head :no_content
+  end
+
+  # POST /comments/1/report.json
+  def report
+    authorize!
+
+    UserContentReportMailer.with(reported_content: @comment).report_content.deliver_later
+
     head :no_content
   end
 
