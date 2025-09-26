@@ -4,7 +4,7 @@ cd /home/vagrant/codeocean
 
 ######## VERSION INFORMATION ########
 
-postgres_version=17
+postgres_version=18
 node_version=lts/jod
 ruby_version=$(cat .ruby-version)
 

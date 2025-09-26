@@ -22,19 +22,19 @@ sudo apt-get update
 sudo apt-get -y install git ca-certificates curl libpq-dev libicu-dev
 ```
 
-### Install PostgreSQL 17:
+### Install PostgreSQL 18:
 
 **macOS:**
 ```shell
-brew install postgresql@17
-brew services start postgresql@17
+brew install postgresql@18
+brew services start postgresql@18
 ```
 
 **Linux:**
 ```shell
 curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null
 echo "deb [arch=$(dpkg --print-architecture)] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-sudo apt-get update && sudo apt-get -y install postgresql-17 postgresql-client-17
+sudo apt-get update && sudo apt-get -y install postgresql-18 postgresql-client-18
 sudo -u postgres createuser $(whoami) -ed
 ```
 
