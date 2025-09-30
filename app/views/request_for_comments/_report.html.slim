@@ -1,7 +1,7 @@
 /# locals: (request_for_comment:)
 
 - if policy(request_for_comment).report?
-  = button_to(t('.report'), report_request_for_comment_path(request_for_comment),
+  = button_to(t('shared.report'), report_request_for_comment_path(request_for_comment),
       data: {confirm: t('.confirm')},
       class: 'btn btn-light btn-sm',
       form: {class: 'd-inline float-end'})

@@ -44,7 +44,6 @@ de:
     passed: Erfolgreich
     report:
       confirm: Sind Sie sicher, dass Sie diesen Inhalt als unangemessen melden möchten?
-      report: Inhalt melden
       reported: Vielen Dank, dass Sie uns auf dieses Problem aufmerksam gemacht haben. Wir werden uns in Kürze darum kümmern.
     runtime_output: Programmausgabe
     send_thank_you_note: Senden

@@ -44,7 +44,6 @@ en:
     passed: Passed
     report:
       confirm: Are you sure you want to report this content as inappropriate?
-      report: Report
       reported: Thank you for letting us know about this issue. We will look into the matter shortly.
     runtime_output: Runtime Output
     send_thank_you_note: Send

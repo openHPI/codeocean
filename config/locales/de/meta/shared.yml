@@ -42,6 +42,7 @@ de:
     object_destroyed: "%{model} wurde erfolgreich gelöscht."
     object_updated: "%{model} wurde erfolgreich bearbeitet."
     out_of: von
+    report: Inhalt melden
     reset_filters: Filter zurücksetzen
     resources: Ressourcen
     show: Anzeigen
