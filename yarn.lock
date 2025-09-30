@@ -2692,7 +2692,7 @@ __metadata:
     vis-timeline: "npm:^8.3.1"
     vis-util: "npm:^6.0.0"
     webpack: "npm:^5.101.3"
-    webpack-assets-manifest: "npm:^6.2.2"
+    webpack-assets-manifest: "npm:^6.3.0"
     webpack-cli: "npm:^6.0.1"
     webpack-dev-server: "npm:^5.2.2"
     webpack-merge: "npm:^6.0.1"
@@ -6707,7 +6707,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tapable@npm:^2.1.1, tapable@npm:^2.2.0, tapable@npm:^2.2.1, tapable@npm:^2.2.2":
+"tapable@npm:^2.1.1, tapable@npm:^2.2.0, tapable@npm:^2.2.1, tapable@npm:^2.2.3":
   version: 2.2.3
   resolution: "tapable@npm:2.2.3"
   checksum: 10c0/e57fd8e2d756c317f8726a1bec8f2c904bc42e37fcbd4a78211daeab89f42c734b6a20e61774321f47be9a421da628a0c78b62d36c5ed186f4d5232d09ae15f2
@@ -7036,17 +7036,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack-assets-manifest@npm:^6.2.2":
-  version: 6.2.2
-  resolution: "webpack-assets-manifest@npm:6.2.2"
+"webpack-assets-manifest@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "webpack-assets-manifest@npm:6.3.0"
   dependencies:
     deepmerge: "npm:^4.3.1"
     lockfile: "npm:^1.0.4"
     schema-utils: "npm:^4.3.2"
-    tapable: "npm:^2.2.2"
+    tapable: "npm:^2.2.3"
   peerDependencies:
     webpack: ^5.61.0
-  checksum: 10c0/c183386f7422d6c8ed5da3ecaba7f99f618354c13ef64bc298dd03a4688fa81d73056185e0d805a5eaa3a8b897d803b766f95acdbec8c33a32f1d648b7f50822
+  checksum: 10c0/3f92bd50ede6b150577f5498e1d12020461d32d8bd026fbbdd49e1af0e0e75ce0a16e5daa875be5a45bcb1b0599847a25277ad30a4139ef8f7b0b0660f9cd241
   languageName: node
   linkType: hard
 
