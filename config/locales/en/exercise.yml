@@ -159,8 +159,8 @@ en:
         others: Other comments on this line
         question: Please shortly describe your problem or the program part you would like to get feedback for. Your program code and potential error messages are automatically appended to your request.
         request: Request Comments
-      default_linter_feedback: Well done. The linter is completly satisfied.
-      default_test_feedback: Well done. All tests have been passed.
+      default_linter_feedback: Well done! The linter is completely satisfied.
+      default_test_feedback: Well done! All tests passed successfully.
       error_hints:
         heading: Hints
       error_messages: Error Messages
@@ -188,7 +188,7 @@ en:
       results: Results
       rfc_intervention:
         text: If you are struggling with this exercise and don't want to continue on your own, your fellow learners can help out! </br> </br>
-      test_count: <span class="number">%{count}</span> test files have been executed.
+      test_count: <span class="number">%{count}</span> test files were executed.
       test_file: Test File <span class="number">%{number}</span> (<span class="filename">%{filename}</span>)
       tips:
         description: Description

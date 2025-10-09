@@ -159,8 +159,8 @@ de:
         others: Andere Kommentare auf dieser Zeile
         question: Bitte beschreiben Sie kurz Ihre Probleme oder nennen Sie den Programmteil, zu dem Sie Feedback wünschen. Ihr Programmcode und eventuelle Fehlermeldungen werden automatisch zur Anfrage hinzugefügt.
         request: Kommentaranfrage stellen
-      default_linter_feedback: Sehr gut. Der Linter hat nichts mehr zu beanstanden.
-      default_test_feedback: Sehr gut. Alle Tests waren erfolgreich.
+      default_linter_feedback: Sehr gut! Der Linter hat nichts mehr zu beanstanden.
+      default_test_feedback: Sehr gut! Alle Tests waren erfolgreich.
       error_hints:
         heading: Hinweise
       error_messages: Fehlermeldungen
