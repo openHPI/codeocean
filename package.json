@@ -41,7 +41,7 @@
     "rails_admin": "3.3.0",
     "sass": "^1.93.2",
     "sass-loader": "^16.0.5",
-    "shakapacker": "8.4.0",
+    "shakapacker": "9.1.0",
     "sortablejs": "^1.15.6",
     "sorttable": "^1.0.2",
     "style-loader": "^4.0.0",
