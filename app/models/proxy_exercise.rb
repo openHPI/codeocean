@@ -78,13 +78,18 @@ class ProxyExercise < ApplicationRecord
   end
 
   def find_matching_exercise(user)
-    exercises_user_has_accessed = user.submissions.where(cause: %w[submit assess remoteSubmit remoteAssess]).map(&:exercise).uniq.compact
-    tags_user_has_seen = exercises_user_has_accessed.map(&:tags).uniq.flatten
+    exercises_user_has_accessed =
+      Exercise
+        .joins(:submissions)
+        .merge(user.submissions.where(cause: %w[submit assess remoteSubmit remoteAssess]))
+        .includes(:tags, :files)
+        .distinct
+    tags_user_has_seen = exercises_user_has_accessed.flat_map(&:tags).uniq
     Rails.logger.debug { "exercises_user_has_accessed #{exercises_user_has_accessed.map(&:id).join(',')}" }
 
     # find exercises
     potential_recommended_exercises = []
-    exercises.where('expected_difficulty >= 1').find_each do |ex|
+    exercises.where('expected_difficulty >= 1').includes(:tags, exercise_tags: :tag).find_each do |ex|
       ## find exercises which have only tags the user has already seen
       if (ex.tags - tags_user_has_seen).empty?
         potential_recommended_exercises << ex
@@ -119,9 +124,9 @@ class ProxyExercise < ApplicationRecord
       relative_knowledge_improvement[potex] = 0.0
       Rails.logger.debug { "review potential exercise #{potex.id}" }
       tags.each do |tag|
-        tag_ratio = potex.exercise_tags.find_by(tag:).factor.to_f / potex.exercise_tags.inject(0) do |sum, et|
-                                                                      sum + et.factor
-                                                                    end
+        tag_ratio = potex.exercise_tags.find {|et| et.tag == tag }.factor.to_f / potex.exercise_tags.inject(0) do |sum, et|
+          sum + et.factor
+        end
         max_topic_knowledge_ratio = potex.expected_difficulty * tag_ratio
         old_relative_loss_tag = topic_knowledge_user[tag] / topic_knowledge_max[tag]
         new_relative_loss_tag = topic_knowledge_user[tag] / (topic_knowledge_max[tag] + max_topic_knowledge_ratio)
