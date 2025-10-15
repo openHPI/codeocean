@@ -11,11 +11,16 @@ def create_seed_file(exercise, path, file_attributes = {})
   name = File.basename(path).gsub(file_extension, '')
   file_attributes.merge!(file_type:, name:, path: path.split('/')[1..-2].join('/'), role: file_attributes[:role] || 'regular_file')
   if file_type.binary?
-    file_attributes[:native_file] = File.open(SeedsHelper.seed_file_path(path), 'r')
+    file_record = exercise.add_file!(file_attributes)
+    file_record.attachment.attach(
+      io: File.open(SeedsHelper.seed_file_path(path), 'rb'),
+      filename: File.basename(path)
+    )
+    file_record
   else
     file_attributes[:content] = SeedsHelper.read_seed_file(path)
+    exercise.add_file!(file_attributes)
   end
-  exercise.add_file!(file_attributes)
 end
 
 FactoryBot.define do
