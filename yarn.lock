@@ -2148,10 +2148,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ace-builds@npm:^1.43.3":
-  version: 1.43.3
-  resolution: "ace-builds@npm:1.43.3"
-  checksum: 10c0/03c4aade861464e3204cad8cc8277f422d1dcbab86cd676fda1f6cbacd9ec11a73223dc837d56b2ec986db8644ed64a43be5aa3f63ff1f269ff7b9d17c5a6ba0
+"ace-builds@npm:^1.43.4":
+  version: 1.43.4
+  resolution: "ace-builds@npm:1.43.4"
+  checksum: 10c0/5389f4ce025b55198693688f09a8023f8dee69c19d0f451387677ad1c3f93d2f7f3cb60eb4f433f5c4b53783d3d6aa6c2e0d7f22d619335c2ee9b4eeca529708
   languageName: node
   linkType: hard
 
@@ -2685,7 +2685,7 @@ __metadata:
     "@sentry/browser": "npm:^10.21.0"
     "@toast-ui/editor": "npm:^3.2.2"
     "@webpack-cli/serve": "npm:^3.0.1"
-    ace-builds: "npm:^1.43.3"
+    ace-builds: "npm:^1.43.4"
     babel-loader: "npm:^10.0.0"
     bootstrap: "npm:^5.3.8"
     bootswatch: "npm:^5.3.8"
