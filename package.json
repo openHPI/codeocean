@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "@babel/core": "^7.28.5",
-    "@babel/plugin-transform-runtime": "^7.28.3",
+    "@babel/plugin-transform-runtime": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
     "@babel/runtime": "^7.28.4",
     "@egjs/hammerjs": "^2.0.17",
