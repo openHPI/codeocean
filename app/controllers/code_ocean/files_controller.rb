@@ -25,10 +25,10 @@ module CodeOcean
       @file = CodeOcean::File.find(params[:id])
       authorize!
       # The `@file.name_with_extension` is assembled based on the user-selected file type, not on the actual file name stored on disk.
-      raise Pundit::NotAuthorizedError if @embed_options[:disable_download] || @file.filepath != params[:filename] || @file.native_file.blank?
+      raise Pundit::NotAuthorizedError if @embed_options[:disable_download] || @file.filepath != params[:filename] || @file.attachment.blank?
 
-      real_location = Pathname(@file.native_file.current_path).realpath
-      send_file(real_location, type: 'application/octet-stream', filename: @file.name_with_extension, disposition: 'attachment')
+      url = rails_blob_path(@file.attachment, disposition: 'attachment', expires_in: 5.minutes)
+      redirect_to url, allow_other_host: true
     end
 
     def render_protected_upload
@@ -36,12 +36,12 @@ module CodeOcean
       @current_user = ExternalUser.new
 
       @file = authorize AuthenticatedUrlHelper.retrieve!(CodeOcean::File, request)
-
       # The `@file.name_with_extension` is assembled based on the user-selected file type, not on the actual file name stored on disk.
-      raise Pundit::NotAuthorizedError unless @file.filepath == params[:filename] || @file.native_file.present?
+      raise Pundit::NotAuthorizedError unless @file.filepath == params[:filename] || @file.attachment.present?
 
-      real_location = Pathname(@file.native_file.current_path).realpath
-      send_file(real_location, type: @file.native_file.content_type, filename: @file.name_with_extension)
+      url = rails_blob_path(@file.attachment, disposition: 'inline', expires_in: 5.minutes)
+
+      redirect_to url, allow_other_host: true
     end
 
     def create

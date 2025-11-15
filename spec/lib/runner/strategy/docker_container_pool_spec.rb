@@ -157,7 +157,7 @@ RSpec.describe Runner::Strategy::DockerContainerPool do
     end
 
     context 'when receiving a binary file' do
-      let(:files) { [build(:file, :image)] }
+      let(:files) { [create(:file, :image)] }
 
       it 'copies the file inside the workspace' do
         expect(File).to receive(:write).with(local_path.join(files.first.filepath), files.first.read)

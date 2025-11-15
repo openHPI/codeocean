@@ -16,7 +16,6 @@ module CodeOcean
 
     after_initialize :set_default_values
     before_validation :clear_weight, unless: :teacher_defined_assessment?
-    before_validation :hash_content, if: :content_present?
     before_validation :set_ancestor_values, if: :incomplete_descendent?
 
     attr_writer :size
@@ -36,7 +35,7 @@ module CodeOcean
     has_many :events_synchronized_editor, class_name: 'Event::SynchronizedEditor'
     alias descendants files
 
-    mount_uploader :native_file, FileUploader
+    has_one_attached :attachment
 
     scope :editable, -> { where(read_only: false) }
     scope :visible, -> { where(hidden: false) }
@@ -50,7 +49,6 @@ module CodeOcean
 
     validates :feedback_message, if: :teacher_defined_assessment?, presence: true
     validates :feedback_message, absence: true, unless: :teacher_defined_assessment?
-    validates :hashed_content, if: :content_present?, presence: true
     validates :hidden, inclusion: [true, false]
     validates :hidden_feedback, inclusion: [true, false]
     validates :name, presence: true
@@ -73,19 +71,11 @@ module CodeOcean
     end
 
     def read
-      if native_file?
-        return nil unless native_file_location_valid?
-
-        native_file.read
+      if attachment.attached?
+        attachment.download
       else
         content
       end
-    end
-
-    def native_file_location_valid?
-      real_location = Pathname(native_file.current_path).realpath
-      upload_location = Pathname(::File.join(native_file.root, 'uploads')).realpath
-      real_location.fnmatch? ::File.join(upload_location.to_s, '**')
     end
 
     def ancestor_id
@@ -100,11 +90,6 @@ module CodeOcean
     def teacher_defined_assessment?
       teacher_defined_test? || teacher_defined_linter?
     end
-
-    def content_present?
-      content? || native_file?
-    end
-    private :content_present?
 
     def filepath
       if path.present?
@@ -121,11 +106,6 @@ module CodeOcean
         name
       end
     end
-
-    def hash_content
-      self.hashed_content = Digest::MD5.new.hexdigest(read || '')
-    end
-    private :hash_content
 
     def incomplete_descendent?
       file_id.present? && file_type_id.blank?
@@ -158,8 +138,8 @@ module CodeOcean
     end
 
     def size
-      @size ||= if native_file?
-                  native_file.size
+      @size ||= if attachment.attached?
+                  attachment.byte_size
                 else
                   content.size
                 end

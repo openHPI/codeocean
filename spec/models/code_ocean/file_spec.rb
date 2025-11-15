@@ -100,41 +100,29 @@ RSpec.describe CodeOcean::File do
   context 'with a native file' do
     let(:file) { create(:file, :image) }
 
-    after { file.native_file.remove! }
+    after { file.attachment.purge }
 
     context 'when the path has not been modified' do
       it 'reads the native file' do
         expect(file.read).to be_present
       end
     end
+  end
 
-    context 'when the path has been modified' do
-      before do
-        file.update_column(:native_file, '../../../../database.yml') # rubocop:disable Rails/SkipsModelValidations
-        file.reload
-      end
+  describe '#size' do
+    subject { file.size }
 
-      it 'does not read the native file' do
-        expect(file.read).not_to be_present
-      end
-    end
+    let(:content) { 'file content' }
+    let(:file) { create(:file, :image, content:) }
 
-    context 'when a symlink is used' do
-      let(:fake_upload_location) { File.join(CarrierWave::Uploader::Base.new.root, 'uploads', 'files', 'database.yml') }
+    after { file.attachment.purge }
 
-      before do
-        FileUtils.mkdir_p(File.dirname(fake_upload_location))
-        FileUtils.touch Rails.root.join('config/database.yml')
-        File.symlink Rails.root.join('config/database.yml'), fake_upload_location
-        file.update_column(:native_file, '../database.yml') # rubocop:disable Rails/SkipsModelValidations
-        file.reload
-      end
+    it { is_expected.to be file.attachment.byte_size }
 
-      after { File.delete(fake_upload_location) }
+    context 'when the file is not attached' do
+      before { file.attachment.purge }
 
-      it 'does not read the native file' do
-        expect(file.read).not_to be_present
-      end
+      it { is_expected.to be content.length }
     end
   end
 end
