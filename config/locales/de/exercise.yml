@@ -250,9 +250,7 @@ de:
       users_and_programming_groups: "%{count} verschiedene Teilnehmende und Programmiergruppen"
       worktime: Arbeitszeit
     study_group_dashboard:
-      learner: Lerner
       live_dashboard: Live Dashboard
       no_data_yet: Bisher sind keine Daten verfügbar
       related_requests_for_comments: Zugehörige Kommentaranfragen
-      time_spent_in_minutes: benötigte Zeit in Minuten
       time_spent_per_learner: Verwendete Zeit pro Lerner
