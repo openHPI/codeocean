@@ -259,7 +259,7 @@ RSpec.describe ProformaService::ConvertTaskToExercise do
         let(:binary) { true }
 
         it 'creates an exercise with a file with attachment and the correct attributes' do
-          expect(convert_to_exercise_service.files.first.native_file).to be_present
+          expect(convert_to_exercise_service.files.first.attachment).to be_attached
         end
       end
 

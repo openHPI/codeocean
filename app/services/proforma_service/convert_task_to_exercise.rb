@@ -119,7 +119,7 @@ module ProformaService
         xml_id_path: (parent_object.nil? ? [file.id] : [parent_object.id, file.id]).map(&:to_s)
       )
       if file.binary
-        codeocean_file.native_file = FileIO.new(file.content.dup.force_encoding('UTF-8'), File.basename(file.filename))
+        codeocean_file.attachment.attach(io: StringIO.new(file.content.dup.force_encoding('UTF-8')), filename: file.filename)
       else
         codeocean_file.content = file.content
       end
