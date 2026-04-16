@@ -46,9 +46,11 @@ namespace :gdpr do
         next
       end
 
-      if user.update(name: 'Deleted User', email: nil)
+      begin
+        user.soft_delete
         users_deleted += 1
-      else
+      rescue StandardError => e
+        warn "An error occurred while anonymizing user #{user_id}: #{e.message}"
         errored_user_ids << user_id
       end
     end

@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_13_114125) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_21_114010) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
-  enable_extension "plpgsql"
 
   create_table "anomaly_notifications", id: :serial, force: :cascade do |t|
     t.integer "contributor_id", null: false
@@ -273,6 +273,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_13_114125) do
     t.datetime "updated_at"
     t.boolean "platform_admin", default: false, null: false
     t.string "webauthn_user_id"
+    t.datetime "deleted_at"
     t.index ["external_id", "consumer_id"], name: "index_external_users_on_external_id_and_consumer_id", unique: true
   end
 

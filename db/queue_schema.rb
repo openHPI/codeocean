@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema[8.0].define(version: 2024_09_04_193154) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|
     t.bigint "job_id", null: false
