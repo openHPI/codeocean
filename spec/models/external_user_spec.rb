@@ -42,4 +42,19 @@ RSpec.describe ExternalUser do
       expect(build(:external_user).learner?).to be true
     end
   end
+
+  describe '#soft_delete' do
+    let(:user) { create(:external_user, name: 'Test User', email: 'testmail@gmail.com') }
+
+    it 'sets the name to "Deleted User" and email to nil' do
+      user.soft_delete
+      expect(user.name).to eq('Deleted User')
+      expect(user.email).to be_nil
+    end
+
+    it 'raises an error if the update fails' do
+      allow(user).to receive(:update!).and_raise(ActiveRecord::RecordInvalid.new(user))
+      expect { user.soft_delete }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
 end

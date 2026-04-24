@@ -25,3 +25,4 @@ The following environment variables are specifically support in CodeOcean and ar
 | `LISTEN_ADDRESS` | `127.0.0.1` in `development` | Specifies the IP address the Vagrant VM server should attach to during development |  
 | `HEADLESS` | `false` | Enables the test environment to work without a window manager for feature tests (e.g., using Vagrant) |  
 | `BROWSER` | `chrome` | Specifies the browser to be used for system tests. Supported are `chrome` or `firefox` |  
+| `INTERNAL_API_TOKEN` | ` ` | Bearer token for authenticating requests from openHPI for user anonymization |

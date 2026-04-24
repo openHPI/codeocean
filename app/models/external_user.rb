@@ -8,6 +8,10 @@ class ExternalUser < User
     name.presence || "#{model_name.human} #{id}"
   end
 
+  def soft_delete
+    update!(name: 'Deleted User', email: nil, deleted_at: Time.zone.now)
+  end
+
   def webauthn_name
     "#{consumer.name}: #{displayname}"
   end
