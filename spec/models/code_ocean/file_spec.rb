@@ -137,4 +137,18 @@ RSpec.describe CodeOcean::File do
       end
     end
   end
+
+  context 'when a file with same attributes (path, name file_type context_id context_type role) already exists' do
+    before do
+      create(:file, name: 'static', context: exercise)
+      file.validate
+    end
+
+    let(:exercise) { create(:dummy) }
+    let(:file) { build(:file, name: 'static', context: exercise) }
+
+    it 'has an error for path' do
+      expect(file.errors[:path]).to be_present
+    end
+  end
 end
