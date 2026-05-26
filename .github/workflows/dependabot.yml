@@ -1,15 +1,22 @@
 name: Dependabot Automerge Check
-on:
-  - pull_request_target
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  auto-merge:
-    if: github.actor == 'dependabot[bot]'
+  dependabot:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'openHPI/codeocean'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-      - name: Automerge dependabot dependencies
-        uses: ahmadnassri/action-dependabot-auto-merge@v2
+      - name: Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7
         with:
-          github-token: ${{ secrets.OPENHPI_BOT_TOKEN }}
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
