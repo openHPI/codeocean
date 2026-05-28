@@ -271,7 +271,7 @@ class Runner::Connection
   # and adapted to the Websocket protocol running with EventMachine.
 
   def clone_sentry_hub_from_span(sentry_span)
-    Thread.current.thread_variable_set(Sentry::THREAD_LOCAL, sentry_span.transaction.hub.clone) if sentry_span
+    Thread.current.thread_variable_set(Sentry::THREAD_LOCAL, Sentry.get_current_hub.clone) if sentry_span
   end
 
   def sentry_trace_header(sentry_span)
@@ -304,6 +304,6 @@ class Runner::Connection
         url: @socket.url,
       }
     )
-    sentry_span.transaction.hub.add_breadcrumb(crumb)
+    Sentry.get_current_hub.add_breadcrumb(crumb)
   end
 end
