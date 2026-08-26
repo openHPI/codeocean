@@ -2,7 +2,6 @@
 
 class RequestForComment < ApplicationRecord
   include Creation
-  include ActionCableHelper
 
   # SOLVED:      The author explicitly marked the RfC as solved.
   # SOFT_SOLVED: The author did not mark the RfC as solved but reached the maximum score in the corresponding exercise at any time.
@@ -20,8 +19,6 @@ class RequestForComment < ApplicationRecord
   scope :unsolved, -> { where(solved: [false, nil]) }
   scope :in_range, ->(from, to) { from == DateTime.new(0) && to > 5.seconds.ago ? all : where(created_at: from..to) }
   scope :with_comments, -> { select {|rfc| rfc.comments.any? } }
-
-  # after_save :trigger_rfc_action_cable
 
   def commenters
     comments.map(&:user).uniq
