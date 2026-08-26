@@ -89,12 +89,12 @@ $(document).on('turbo-migration:load', function () {
         // validate fileUrl
         const matches = fileUrl.match(/files\/(\d+)/);
         if (matches) {
-            // select the file form based on the delete button
-            const fileForm = $(`*[data-file-url="${fileUrl}"]`).parent().parent().parent();
-            fileForm.remove();
-
-            // now remove the hidden input representing the file
             const fileId = matches[1];
+
+            $(`#file-form-${fileId}`).remove();
+
+            // The remaining hidden input field associated with the
+            // deleted file needs to be removed.
             const input = $(`input[type="hidden"][value="${fileId}"]`)
             input.remove()
         }
