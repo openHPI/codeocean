@@ -68,7 +68,7 @@ module ProformaService
     end
 
     def files
-      model_solution_files + test_files + task_files
+      (model_solution_files + test_files + task_files).uniq {|f| [f.name, f.file_type_id, f.role, f.path] }
     end
 
     def test_files
@@ -106,16 +106,20 @@ module ProformaService
 
     def codeocean_file_from_task_file(file, parent_object = nil)
       extension = File.extname(file.filename)
+      path = File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename)
+      name = File.basename(file.filename, '.*')
+      role = extract_meta_data(@task.meta_data&.dig('meta-data'), 'files', "CO-#{file.id}", 'role')
+
       # checking the last element of xml_id_path array for file.id
       codeocean_file = @exercise.files.detect {|f| f.xml_id_path.last == file.id } || @exercise.files.new
       codeocean_file.assign_attributes(
         context: @exercise,
         file_type: file_type(extension),
         hidden: file.visible != 'yes', # hides 'delayed' and 'no'
-        name: File.basename(file.filename, '.*'),
+        name:,
         read_only: file.usage_by_lms != 'edit',
-        role: extract_meta_data(@task.meta_data&.dig('meta-data'), 'files', "CO-#{file.id}", 'role'),
-        path: File.dirname(file.filename).in?(['.', '']) ? nil : File.dirname(file.filename),
+        role:,
+        path:,
         xml_id_path: (parent_object.nil? ? [file.id] : [parent_object.id, file.id]).map(&:to_s)
       )
       if file.binary
